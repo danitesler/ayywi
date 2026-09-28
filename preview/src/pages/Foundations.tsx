@@ -158,7 +158,9 @@ function ColorsPage() {
         Components only use the semantic colours below. They switch with the theme, so the same markup works in every one of them.
       </Header>
 
-      <h2 className="pv-h pv-h--section">Themes</h2>
+      <h2 className="pv-h pv-h--section" id="colors-themes">
+        Themes
+      </h2>
       <p className="pv-note">
         Set <code className="pv-inline-code">data-theme</code> on the page or any section. The soft themes lower the contrast (charcoal and off-white instead
         of black and white) for easier reading; every text colour still passes WCAG AA, and <code className="pv-inline-code">pnpm check</code> enforces it.
@@ -178,11 +180,15 @@ function ColorsPage() {
         </section>
       ))}
 
-      <h2 className="pv-h pv-h--section">Accents</h2>
+      <h2 className="pv-h pv-h--section" id="colors-accents">
+        Accents
+      </h2>
       <p className="pv-note">Colour comes from content: categories, spotlights, charts. The same in every theme.</p>
       <Swatches entries={group("accent")} />
 
-      <h2 className="pv-h pv-h--section">Palette</h2>
+      <h2 className="pv-h pv-h--section" id="colors-palette">
+        Palette
+      </h2>
       <p className="pv-note">
         Raw primitives, named by lightness. Semantic tokens point at these; components never use them directly. Brands (
         {brands.map((b) => (
@@ -329,17 +335,46 @@ function MotionPage() {
 
 // ---- Registry: sidebar, routes and search all read this ----
 
+export interface FoundationSection {
+  /** Heading id is `${route}-${id}`; the sidebar links to #/<route>/<id>. */
+  id: string;
+  title: string;
+  /** Extra searchable text (token names in the section). */
+  text: string;
+}
+
 export interface Foundation {
   route: string;
   title: string;
   /** Token groups on the page; their names feed the search. */
   groups: string[];
+  /** Sub-sections listed under the page in the sidebar. */
+  sections?: FoundationSection[];
   keywords: string;
   Page: ComponentType;
 }
 
 export const foundations: Foundation[] = [
-  { route: "colors", title: "Colors", groups: ["color", "accent", "palette"], keywords: `theme themes dark light soft contrast ${colorCategories.join(" ")}`, Page: ColorsPage },
+  {
+    route: "colors",
+    title: "Colors",
+    groups: ["color", "accent", "palette"],
+    keywords: `theme themes dark light soft contrast ${colorCategories.join(" ")}`,
+    sections: [
+      { id: "themes", title: "Themes", text: "dark light dark-soft light-soft data-theme contrast" },
+      ...colorCategories.map((category) => ({
+        id: slug(category),
+        title: category,
+        text: group("color")
+          .filter(([, t]) => (t.category ?? "Other") === category)
+          .map(([name, t]) => `${name} ${t.cssVar}`)
+          .join(" "),
+      })),
+      { id: "accents", title: "Accents", text: group("accent").map(([name, t]) => `${name} ${t.cssVar}`).join(" ") },
+      { id: "palette", title: "Palette", text: "palette primitives neutral red green amber blue violet" },
+    ],
+    Page: ColorsPage,
+  },
   { route: "typography", title: "Typography", groups: ["font", "text", "weight", "leading", "tracking"], keywords: "type fonts headings", Page: TypographyPage },
   { route: "spacing", title: "Spacing & sizing", groups: ["space", "size", "control"], keywords: "density layout gap padding", Page: SpacingPage },
   { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow", "z"], keywords: "corners depth z-index layers", Page: ElevationPage },

@@ -12,7 +12,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - Colour categories (Surfaces, Text, Lines, Interactive, Status, AI, Effects) on the colour tokens, in the manifest and the generated `tokens` table.
 - `ayywi lint` flags unknown `data-theme` and `data-density` values (e.g. `data-theme="dim"`) and lists the valid ones.
 - `pnpm check` enforces 4.5:1 contrast for every text colour on every surface, in every theme and brand. That includes status text on a 15% tint of itself (badges, alerts, destructive buttons).
-- Preview: the sidebar is grouped into Foundations and component categories, with search (`/` or Ctrl/⌘K). The Tokens page is split into Colors (every theme side by side), Typography, Spacing & sizing, Radius & elevation, and Motion.
+- Preview: the sidebar is grouped into Foundations and component categories, with search (`/` or Ctrl/⌘K). Colors lists its categories (Themes, Surfaces, Text, Lines, Interactive, Status, AI, Effects, Accents, Palette), and each one jumps to its section. The Tokens page is split into Colors (every theme side by side), Typography, Spacing & sizing, Radius & elevation, and Motion.
 
 ### Changed
 - Light-theme status colours are one shade darker: destructive, success, warning, info and AI-active. They passed on white but not on their own tints: destructive text on the destructive button's hover fill measured 3.6:1.

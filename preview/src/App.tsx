@@ -13,6 +13,8 @@ interface NavItem {
   title: string;
   /** Everything the search matches against. */
   text: string;
+  /** Sections of the page, listed under it (Colors → Surfaces, Text, Status…). */
+  children?: NavItem[];
 }
 
 interface NavSection {
@@ -22,7 +24,15 @@ interface NavSection {
 
 const SECTIONS: NavSection[] = [
   { title: "Start", items: [{ route: "", title: "Overview", text: "home install quick start ai agents" }] },
-  { title: "Foundations", items: foundations.map((f) => ({ route: f.route, title: f.title, text: foundationText(f) })) },
+  {
+    title: "Foundations",
+    items: foundations.map((f) => ({
+      route: f.route,
+      title: f.title,
+      text: foundationText(f),
+      children: f.sections?.map((sec) => ({ route: `${f.route}/${sec.id}`, title: sec.title, text: `${f.title} ${sec.text}` })),
+    })),
+  },
   ...componentGroups.map((g) => ({
     title: g.category,
     items: g.components.map((c) => ({
@@ -33,18 +43,24 @@ const SECTIONS: NavSection[] = [
   })),
 ];
 
-/** Every word must appear in the item, its section or its search text. */
+/** Every word must appear in the item, its section or its search text. A page stays listed when one of its sections matches. */
 function search(query: string): NavSection[] {
   const words = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (!words.length) return SECTIONS;
+  const matches = (section: NavSection, item: NavItem) => {
+    const haystack = `${section.title} ${item.title} ${item.text}`.toLowerCase();
+    return words.every((w) => haystack.includes(w));
+  };
   return SECTIONS.map((s) => ({
     ...s,
-    items: s.items.filter((i) => {
-      const haystack = `${s.title} ${i.title} ${i.text}`.toLowerCase();
-      return words.every((w) => haystack.includes(w));
+    items: s.items.flatMap((item) => {
+      const children = item.children?.filter((child) => matches(s, child));
+      return matches(s, item) || children?.length ? [{ ...item, children }] : [];
     }),
   })).filter((s) => s.items.length > 0);
 }
+
+const flat = (items: NavItem[]): NavItem[] => items.flatMap((i) => [i, ...(i.children ?? [])]);
 
 const sectionId = (title: string) => `pv-nav-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
@@ -91,13 +107,19 @@ function Picker<T extends string>({ id, label, value, options, onChange }: { id:
 export function App() {
   const raw = useHashRoute();
   const route = raw === "tokens" ? "colors" : raw; // old links
+  const [page, part] = route.split("/");
   const { theme, setTheme, density, setDensity, brand, setBrand, renderer, setRenderer } = useSettings();
   const component = components.find((c) => c.slug === route);
-  const foundation = foundations.find((f) => f.route === route);
+  const foundation = foundations.find((f) => f.route === page);
+
+  // #/colors/status → the Colors page, scrolled to its Status section.
+  useEffect(() => {
+    if (part) document.getElementById(`${page}-${part}`)?.scrollIntoView({ block: "start" });
+  }, [page, part]);
 
   const [query, setQuery] = useState("");
   const sections = useMemo(() => search(query), [query]);
-  const results = sections.flatMap((s) => s.items);
+  const results = flat(sections.flatMap((s) => s.items));
   const searchRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLElement>(null);
 
@@ -129,11 +151,14 @@ export function App() {
     }
   };
 
-  const link = (item: NavItem) => (
-    <a href={`#/${item.route}`} className="pv-nav__link" aria-current={route === item.route ? "page" : undefined}>
-      {item.title}
-    </a>
-  );
+  const link = (item: NavItem, sub = false) => {
+    const current = sub ? (route === item.route ? "location" : undefined) : page === item.route || route === item.route ? "page" : undefined;
+    return (
+      <a href={`#/${item.route}`} className={sub ? "pv-nav__link pv-nav__link--sub" : "pv-nav__link"} aria-current={current}>
+        {item.title}
+      </a>
+    );
+  };
 
   return (
     <div className="pv-shell">
@@ -173,7 +198,16 @@ export function App() {
                 </p>
                 <ul className="pv-nav__list" aria-labelledby={sectionId(s.title)}>
                   {s.items.map((item) => (
-                    <li key={item.route || "overview"}>{link(item)}</li>
+                    <li key={item.route || "overview"}>
+                      {link(item)}
+                      {item.children?.length ? (
+                        <ul className="pv-nav__sub" aria-label={`${item.title} sections`}>
+                          {item.children.map((child) => (
+                            <li key={child.route}>{link(child, true)}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </li>
                   ))}
                 </ul>
               </div>

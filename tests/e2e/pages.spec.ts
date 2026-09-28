@@ -42,10 +42,28 @@ test("overview and foundation pages render", async ({ page }) => {
 test("sidebar groups every component under its category", async ({ page }) => {
   await open(page, "");
   const nav = page.getByRole("navigation", { name: "Design system" });
-  await expect(nav.getByRole("list", { name: "Foundations" }).getByRole("link")).toHaveCount(Object.keys(FOUNDATIONS).length);
+  for (const title of Object.values(FOUNDATIONS)) {
+    await expect(nav.getByRole("list", { name: "Foundations" }).getByRole("link", { name: title, exact: true })).toBeVisible();
+  }
+  const colorCategories = [...new Set(manifest.tokens.flatMap((t: { category?: string }) => (t.category ? [t.category] : [])))];
+  await expect(nav.getByRole("list", { name: "Colors sections" }).getByRole("link")).toHaveText(["Themes", ...colorCategories, "Accents", "Palette"]);
   for (const c of manifest.components as { name: string; category: string }[]) {
     await expect(nav.getByRole("list", { name: c.category, exact: true }).getByRole("link", { name: c.name, exact: true })).toBeVisible();
   }
+});
+
+test("colour categories in the sidebar jump to their section", async ({ page }) => {
+  await open(page, "");
+  const nav = page.getByRole("navigation", { name: "Design system" });
+  await nav.getByRole("link", { name: "Status", exact: true }).click();
+  await expect(page).toHaveURL(/#\/colors\/status$/);
+  const heading = page.getByRole("heading", { level: 2, name: "Status", exact: true });
+  await expect(heading).toBeInViewport();
+  await expect(nav.getByRole("link", { name: "Status", exact: true })).toHaveAttribute("aria-current", "location");
+  await expect(nav.getByRole("link", { name: "Colors", exact: true })).toHaveAttribute("aria-current", "page");
+  // The heading clears the sticky toolbar.
+  const toolbar = (await page.locator(".pv-toolbar").boundingBox())!;
+  expect((await heading.boundingBox())!.y).toBeGreaterThanOrEqual(toolbar.y + toolbar.height);
 });
 
 test("search filters the sidebar and jumps to a result", async ({ page }) => {
@@ -60,8 +78,8 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
   await expect(nav.getByRole("link")).toHaveText(["Dropdown menu"]);
   await expect(page.getByRole("status")).toHaveText("1 result");
 
-  await box.fill("surface-raised"); // token names match
-  await expect(nav.getByRole("link")).toHaveText(["Colors"]);
+  await box.fill("surface-raised"); // token names match, down to the colour category
+  await expect(nav.getByRole("link")).toHaveText(["Colors", "Surfaces"]);
 
   await box.fill("forms"); // categories match
   await expect(nav.getByRole("link")).toHaveCount(7);

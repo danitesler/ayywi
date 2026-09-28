@@ -92,6 +92,29 @@
   list-style: none;
 }
 
+/* Sections of a page (Colors → Surfaces, Text…): indented along a guide line. */
+.pv-nav__sub {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 2px 0 var(--ayy-space-1);
+  margin-inline-start: var(--ayy-space-3);
+  padding: 0;
+  padding-inline-start: var(--ayy-space-2);
+  border-inline-start: 1px solid var(--ayy-color-hairline);
+  list-style: none;
+}
+
+.pv-nav__link--sub {
+  padding-block: var(--ayy-space-1);
+  font-size: var(--ayy-text-xs);
+}
+
+.pv-nav__link[aria-current="location"] {
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+}
+
 .pv-nav__empty {
   margin: 0;
   padding-inline: var(--ayy-space-2);
@@ -219,6 +242,7 @@
 
 .pv-h--section {
   margin-block-start: var(--ayy-space-10);
+  scroll-margin-block-start: 88px; /* clear the sticky toolbar when jumped to */
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-xl);
   font-weight: var(--ayy-weight-medium);
@@ -630,7 +654,8 @@
     display: contents;
   }
 
-  .pv-nav__group {
+  .pv-nav__group,
+  .pv-nav__sub {
     display: none;
   }
 
