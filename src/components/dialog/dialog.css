@@ -1,0 +1,154 @@
+/* Native <dialog> opened with showModal(): top layer, inert background, Esc to close — no JS library needed. */
+
+.ayy-dialog {
+  --_w: 32rem;
+  position: fixed;
+  inset: 0;
+  z-index: var(--ayy-z-overlay);
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--ayy-space-4);
+  inline-size: min(var(--_w), calc(100vw - 2rem));
+  block-size: fit-content;
+  max-block-size: calc(100dvh - 2rem);
+  margin: auto;
+  padding: var(--ayy-space-6);
+  overflow: auto;
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay), var(--ayy-shadow-rest);
+  overscroll-behavior: contain;
+  /* Opens and closes with a fade + scale. allow-discrete keeps it rendered (and in the top layer) while it fades out.
+     Browsers without @starting-style/allow-discrete simply skip the animation. */
+  transition:
+    opacity var(--ayy-duration-base) var(--ayy-ease-menu),
+    transform var(--ayy-duration-base) var(--ayy-ease-menu),
+    overlay var(--ayy-duration-base) allow-discrete,
+    display var(--ayy-duration-base) allow-discrete;
+}
+
+/* Author display:grid would otherwise override the UA's display:none on a closed <dialog>. */
+dialog.ayy-dialog:not([open]) {
+  display: none;
+  opacity: 0;
+  transform: scale(0.96) translateY(6px);
+}
+
+@starting-style {
+  dialog.ayy-dialog[open] {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+}
+
+.ayy-dialog::backdrop {
+  background-color: var(--ayy-color-overlay);
+  backdrop-filter: blur(4px);
+  transition:
+    opacity var(--ayy-duration-base) ease,
+    overlay var(--ayy-duration-base) allow-discrete,
+    display var(--ayy-duration-base) allow-discrete;
+}
+
+dialog.ayy-dialog:not([open])::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  dialog.ayy-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+html:has(.ayy-dialog:modal) {
+  overflow: hidden;
+}
+
+/* <ayy-dialog> is a behaviour wrapper around the trigger and the <dialog>; it adds no box of its own. */
+ayy-dialog {
+  display: contents;
+}
+
+.ayy-dialog--sm { --_w: 24rem; }
+.ayy-dialog--lg { --_w: 42rem; }
+.ayy-dialog--xl { --_w: 56rem; }
+
+.ayy-dialog__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1-5);
+  padding-inline-end: var(--ayy-space-8);
+  text-align: start;
+}
+
+.ayy-dialog__title {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+  letter-spacing: var(--ayy-tracking-tight);
+}
+
+.ayy-dialog__description {
+  margin: 0;
+  font-size: var(--ayy-text-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-dialog__footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--ayy-space-2);
+  padding-block-start: var(--ayy-space-2);
+}
+
+@media (min-width: 640px) {
+  .ayy-dialog__footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.ayy-dialog__close {
+  position: absolute;
+  inset-block-start: var(--ayy-space-4);
+  inset-inline-end: var(--ayy-space-4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: transparent;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-dialog__close:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-dialog__close:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-dialog__close > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+@media (forced-colors: active) {
+  .ayy-dialog {
+    border-color: CanvasText;
+  }
+}

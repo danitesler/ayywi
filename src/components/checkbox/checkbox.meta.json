@@ -1,0 +1,44 @@
+{
+  "name": "Checkbox",
+  "slug": "checkbox",
+  "status": "stable",
+  "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
+  "whenToUse": [
+    "Choices submitted with a form (terms, preferences saved with a Save button).",
+    "Selecting several items in a list or table, with an indeterminate select-all."
+  ],
+  "whenNotToUse": ["Settings that apply instantly — use Switch.", "Picking exactly one option — use Radio."],
+  "classes": {
+    "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density."
+  },
+  "variants": {},
+  "states": {
+    ":checked": "Checked.",
+    ":indeterminate": "Mixed — set input.indeterminate = true (React: indeterminate prop).",
+    "aria-invalid=\"true\"": "Red border.",
+    "disabled": "Dimmed."
+  },
+  "js": "checkboxClass constant",
+  "react": {
+    "import": "import { Checkbox } from \"ayywi/react\";",
+    "components": {
+      "Checkbox": {
+        "renders": "<input type=\"checkbox\">",
+        "props": {
+          "indeterminate": "boolean — mixed state",
+          "onCheckedChange": "(checked: boolean) => void",
+          "checked / defaultChecked": "Controlled / uncontrolled.",
+          "...rest": "All native <input> attributes."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Wrap it in a <label class=\"ayy-label\"> with the text, or pair with <label for>.",
+    "Indeterminate is announced as \"mixed\" automatically.",
+    "Group related checkboxes in a <fieldset> with a <legend>."
+  ],
+  "do": ["Phrase labels positively: \"Email me updates\", not \"Don't email me\"."],
+  "dont": ["Don't use a checkbox to trigger an immediate action."],
+  "examples": [{ "id": "basic", "title": "States" }]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "Tabs",
+  "slug": "tabs",
+  "status": "stable",
+  "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
+  "whenToUse": ["Switching views of the same object (Overview / Activity / Members).", "Segmented filters with 2–6 options."],
+  "whenNotToUse": ["Page-level navigation between routes — use links.", "Sequential steps — use a stepper or separate pages."],
+  "classes": {
+    "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
+    "ayy-tabs__list": "role=\"tablist\" pill container.",
+    "ayy-tabs__tab": "role=\"tab\" button. Selected when aria-selected=\"true\".",
+    "ayy-tabs__panel": "role=\"tabpanel\". Hide inactive panels with the hidden attribute."
+  },
+  "variants": {},
+  "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
+  "element": {
+    "tag": "ayy-tabs",
+    "attributes": {
+      "value": "The selected tab's data-value (or index). Two-way.",
+      "class": "Put ayy-tabs on it for block layout."
+    },
+    "events": { "ayy-value-change": "{ value: string } — the user picked a tab" },
+    "children": "A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you."
+  },
+  "react": {
+    "import": "import { Tabs, TabsList, TabsTrigger, TabsContent } from \"ayywi/react\";",
+    "components": {
+      "Tabs": { "renders": "<div>", "props": { "value / defaultValue": "Selected tab value (controlled / uncontrolled).", "onValueChange": "(value: string) => void" } },
+      "TabsList": { "renders": "<div role=\"tablist\">", "props": { "aria-label": "Recommended." } },
+      "TabsTrigger": { "renders": "<button role=\"tab\">", "props": { "value": "string (required)" } },
+      "TabsContent": { "renders": "<div role=\"tabpanel\">", "props": { "value": "string (required)", "keepMounted": "Keep children mounted while hidden. Default false." } }
+    }
+  },
+  "a11y": [
+    "Arrow keys move between tabs (flipped in RTL), Home/End jump to first/last. Activation follows focus.",
+    "Only the selected tab is in the tab order (roving tabindex).",
+    "Give the tablist an aria-label when there's no visible heading."
+  ],
+  "do": ["Keep tab labels to one or two words.", "Keep the tab set stable — don't add/remove tabs based on content."],
+  "dont": ["Don't nest tabs inside tabs.", "Don't use tabs for more than ~6 options."],
+  "examples": [{ "id": "basic", "title": "Basic" }]
+}

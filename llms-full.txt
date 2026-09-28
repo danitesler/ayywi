@@ -1,0 +1,2402 @@
+# ayywi 0.2.0 — full context for LLMs
+
+> Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.
+
+Generated from source by scripts/build-manifest.mjs. Structured version: manifest/components.json. Query it live with the MCP server: `npx ayywi mcp`.
+
+## How to use it
+
+- Any framework / plain HTML: load `ayywi/css` and write the class names below.
+- React: `import { Button } from "ayywi/react"` plus the CSS.
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "ayywi"`), and `import "ayywi/elements"` for interactive components (<ayy-tabs>, <ayy-dialog>, <ayy-popover>, <ayy-menu>, <ayy-tooltip>).
+- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi.toast).
+- Check your work: `npx ayywi lint`.
+
+## Rules
+
+- Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.
+- Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.
+- Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.
+- Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
+- Theme with data-theme="light|dark" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.
+- Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).
+- Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
+- Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations.
+- No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
+- Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
+- In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>).
+- Run `npx ayywi lint` after UI changes and fix every error it reports.
+
+## Conventions
+
+- **classPrefix**: ayy-
+- **naming**: BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class="ayy-button ayy-button--outline ayy-button--sm".
+- **state**: State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.
+- **theming**: No attribute = follow OS. data-theme="dark" | "light" (or class .dark/.light) forces a theme on any element and its subtree.
+- **density**: Controls default to compact (touch on touch-first devices). data-density="compact" | "comfortable" | "touch" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.
+- **brands**: Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.
+- **direction**: All layout uses logical properties; set dir="rtl" on any ancestor and components mirror.
+- **elements**: Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith("ayy-"); Angular: CUSTOM_ELEMENTS_SCHEMA.
+- **highContrast**: Every stateful component has a forced-colors (Windows High Contrast) style using system colours.
+
+## Global attributes
+
+- `data-theme`: "dark" | "light" — force a theme on this element and its subtree. None = follow the OS.
+- `data-density`: "compact" | "comfortable" | "touch" — control sizes for this subtree. None = compact, or touch on touch-first devices.
+- `data-brand`: Brand name (e.g. "violet"); needs ayywi/brands/<name>.css loaded.
+- `dir`: "rtl" mirrors every component (logical properties throughout).
+
+## Tokens
+
+| token | css var | dark (default) | light | notes |
+|---|---|---|---|---|
+| palette.neutral.0 | `--ayy-palette-neutral-0` | #000000 |  |  |
+| palette.neutral.4 | `--ayy-palette-neutral-4` | #0a0a0a |  |  |
+| palette.neutral.8 | `--ayy-palette-neutral-8` | #141414 |  |  |
+| palette.neutral.15 | `--ayy-palette-neutral-15` | #262626 |  |  |
+| palette.neutral.28 | `--ayy-palette-neutral-28` | #474747 |  |  |
+| palette.neutral.42 | `--ayy-palette-neutral-42` | #6b6b6b |  |  |
+| palette.neutral.58 | `--ayy-palette-neutral-58` | #939393 |  |  |
+| palette.neutral.60 | `--ayy-palette-neutral-60` | #9a9a9a |  |  |
+| palette.neutral.73 | `--ayy-palette-neutral-73` | #bbbbbb |  |  |
+| palette.neutral.85 | `--ayy-palette-neutral-85` | #dadada |  |  |
+| palette.neutral.97 | `--ayy-palette-neutral-97` | #f7f7f8 |  |  |
+| palette.neutral.100 | `--ayy-palette-neutral-100` | #ffffff |  |  |
+| palette.red.51 | `--ayy-palette-red-51` | #dc2626 |  |  |
+| palette.red.71 | `--ayy-palette-red-71` | #f87171 |  |  |
+| palette.green.24 | `--ayy-palette-green-24` | #047857 |  |  |
+| palette.green.51 | `--ayy-palette-green-51` | #35d07f |  |  |
+| palette.amber.37 | `--ayy-palette-amber-37` | #b45309 |  |  |
+| palette.amber.61 | `--ayy-palette-amber-61` | #f5c542 |  |  |
+| palette.blue.53 | `--ayy-palette-blue-53` | #2563eb |  |  |
+| palette.blue.68 | `--ayy-palette-blue-68` | #5b9dff |  |  |
+| palette.violet.58 | `--ayy-palette-violet-58` | #7c3aed |  |  |
+| palette.violet.77 | `--ayy-palette-violet-77` | #b98cff |  |  |
+| palette.emerald.52 | `--ayy-palette-emerald-52` | #34d399 |  |  |
+| palette.pink.70 | `--ayy-palette-pink-70` | #f472b6 |  |  |
+| palette.orange.65 | `--ayy-palette-orange-65` | #ff8a4c |  |  |
+| color.bg | `--ayy-color-bg` | #000000 | #ffffff | Page background. |
+| color.surface | `--ayy-color-surface` | #0a0a0a | #f7f7f8 | Cards, panels, inputs sit on this. |
+| color.surface-raised | `--ayy-color-surface-raised` | #141414 | #ffffff | Popovers, menus, tooltips, toasts. |
+| color.text | `--ayy-color-text` | #ffffff | #0a0a0a | Primary text. Also the base every line/wash is mixed from. |
+| color.text-soft | `--ayy-color-text-soft` | #bbbbbb | #474747 | Secondary text that still needs to read comfortably. |
+| color.muted | `--ayy-color-muted` | #939393 | #6b6b6b | Captions, placeholders, de-emphasised labels. |
+| color.border | `--ayy-color-border` | #262626 | #dadada | Opaque border, for places where a mixed line can't be used. |
+| color.ring | `--ayy-color-ring` | #ffffff | #0a0a0a | Focus ring. |
+| color.primary | `--ayy-color-primary` | #ffffff | #0a0a0a | Primary action fill. Monochrome by design; brands usually override it. |
+| color.primary-fg | `--ayy-color-primary-fg` | #000000 | #ffffff | Text on primary. |
+| color.destructive | `--ayy-color-destructive` | #f87171 | #dc2626 | Errors and destructive actions. |
+| color.success | `--ayy-color-success` | #35d07f | #047857 | Positive status. |
+| color.warning | `--ayy-color-warning` | #f5c542 | #b45309 | Caution status. |
+| color.info | `--ayy-color-info` | #5b9dff | #2563eb | Informational status. |
+| color.ai | `--ayy-color-ai` | #9a9a9a | #6b6b6b | AI features at rest. |
+| color.ai-active | `--ayy-color-ai-active` | #b98cff | #7c3aed | AI features while active / generating. |
+| color.glow | `--ayy-color-glow` | #ffffff | #00000073 | Glow source colour (mixed down, never used raw). |
+| color.shadow | `--ayy-color-shadow` | #000000 | #0000004d | Shadow source colour (mixed down, never used raw). |
+| color.glass | `--ayy-color-glass` | #000000bf | #ffffffc7 | Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter. |
+| color.overlay | `--ayy-color-overlay` | #000000bf | #0a0a0a73 | Modal backdrop. |
+| color.wash | `--ayy-color-wash` | #ffffff0a | #0a0a0a0a | 4% text mix. Resting fill for subtle controls (badges, tab lists, secondary buttons). |
+| color.highlight | `--ayy-color-highlight` | #ffffff0f | #0a0a0a0f | 6% text mix. Inset top highlight on cards and dialogs. |
+| color.wash-hover | `--ayy-color-wash-hover` | #ffffff14 | #0a0a0a14 | 8% text mix. Hover fill. |
+| color.hairline | `--ayy-color-hairline` | #ffffff14 | #0a0a0a14 | 8% text mix. Table rows, quiet dividers. |
+| color.line | `--ayy-color-line` | #ffffff1f | #0a0a0a1f | 12% text mix. Card and secondary-control borders. |
+| color.line-strong | `--ayy-color-line-strong` | #ffffff24 | #0a0a0a24 | 14% text mix. Inputs, outline buttons, badges, dialogs. |
+| color.line-hover | `--ayy-color-line-hover` | #ffffff40 | #0a0a0a40 | 25% text mix. Hovered borders. |
+| accent.research | `--ayy-accent-research` | #f5c542 |  |  |
+| accent.product | `--ayy-accent-product` | #5b9dff |  |  |
+| accent.ai | `--ayy-accent-ai` | #b98cff |  |  |
+| accent.system | `--ayy-accent-system` | #34d399 |  |  |
+| accent.brand | `--ayy-accent-brand` | #f472b6 |  |  |
+| accent.marketing | `--ayy-accent-marketing` | #ff8a4c |  |  |
+| font.heading | `--ayy-font-heading` | Unbounded, Arial Black, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, sans-serif |  | Headings and big numbers. Unbounded covers Latin and Cyrillic; other scripts fall through to the system font. |
+| font.body | `--ayy-font-body` | Sora, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Helvetica Neue, Arial, sans-serif |  | Body and UI text. Always ends in system fonts so CJK, Arabic, Cyrillic, Devanagari etc. render natively. |
+| font.signature | `--ayy-font-signature` | Caveat, Segoe Script, cursive |  | Handwritten accent. Decorative only. |
+| font.mono | `--ayy-font-mono` | ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Noto Sans Mono, monospace |  |  |
+| text.2xs | `--ayy-text-2xs` | 0.6875rem |  | 11px — badges, table headers, eyebrows. |
+| text.xs | `--ayy-text-xs` | 0.75rem |  | 12px — dense captions. |
+| text.sm | `--ayy-text-sm` | 0.875rem |  | 14px — body in dense UIs, descriptions. |
+| text.md | `--ayy-text-md` | 1rem |  | 16px — body. |
+| text.lg | `--ayy-text-lg` | 1.125rem |  | 18px — lede. |
+| text.xl | `--ayy-text-xl` | 1.375rem |  | 22px — card titles. |
+| text.2xl | `--ayy-text-2xl` | 1.75rem |  | 28px — H3. |
+| text.3xl | `--ayy-text-3xl` | 2.25rem |  | 36px — H2. |
+| text.4xl | `--ayy-text-4xl` | 3rem |  | 48px — H1 / metrics. |
+| weight.regular | `--ayy-weight-regular` | 400 |  |  |
+| weight.medium | `--ayy-weight-medium` | 500 |  |  |
+| weight.semibold | `--ayy-weight-semibold` | 600 |  |  |
+| weight.bold | `--ayy-weight-bold` | 700 |  |  |
+| leading.none | `--ayy-leading-none` | 1 |  |  |
+| leading.tight | `--ayy-leading-tight` | 1.2 |  |  |
+| leading.snug | `--ayy-leading-snug` | 1.35 |  |  |
+| leading.normal | `--ayy-leading-normal` | 1.55 |  |  |
+| tracking.tight | `--ayy-tracking-tight` | -0.01em |  |  |
+| tracking.wide | `--ayy-tracking-wide` | 0.06em |  |  |
+| tracking.eyebrow | `--ayy-tracking-eyebrow` | 0.14em |  |  |
+| space.1 | `--ayy-space-1` | 0.25rem |  |  |
+| space.2 | `--ayy-space-2` | 0.5rem |  |  |
+| space.3 | `--ayy-space-3` | 0.75rem |  |  |
+| space.4 | `--ayy-space-4` | 1rem |  |  |
+| space.5 | `--ayy-space-5` | 1.25rem |  |  |
+| space.6 | `--ayy-space-6` | 1.5rem |  |  |
+| space.8 | `--ayy-space-8` | 2rem |  |  |
+| space.10 | `--ayy-space-10` | 2.5rem |  |  |
+| space.12 | `--ayy-space-12` | 3rem |  |  |
+| space.16 | `--ayy-space-16` | 4rem |  |  |
+| space.0-5 | `--ayy-space-0-5` | 0.125rem |  |  |
+| space.1-5 | `--ayy-space-1-5` | 0.375rem |  |  |
+| size.control-sm | `--ayy-size-control-sm` | 1.75rem |  | Small control height. · density: comfortable 2rem, touch 2.5rem |
+| size.control-md | `--ayy-size-control-md` | 2rem |  | Default control height. · density: comfortable 2.5rem, touch 2.75rem |
+| size.control-lg | `--ayy-size-control-lg` | 2.5rem |  | Large control height. · density: comfortable 3rem, touch 3.25rem |
+| size.switch | `--ayy-size-switch` | 1.25rem |  | Switch track height (width is 1.8×). · density: comfortable 1.375rem, touch 1.625rem |
+| size.check | `--ayy-size-check` | 1rem |  | Checkbox and radio box size. · density: comfortable 1.125rem, touch 1.25rem |
+| size.touch | `--ayy-size-touch` | 2.75rem |  | 44px minimum touch target. |
+| control.text-sm | `--ayy-control-text-sm` | 0.6875rem |  | density: comfortable 0.75rem, touch 0.875rem |
+| control.text-md | `--ayy-control-text-md` | 0.75rem |  | density: comfortable 0.875rem, touch 1rem |
+| control.text-lg | `--ayy-control-text-lg` | 0.875rem |  | density: comfortable 1rem, touch 1.125rem |
+| control.pad-sm | `--ayy-control-pad-sm` | 0.75rem |  | density: comfortable 0.875rem, touch 1rem |
+| control.pad-md | `--ayy-control-pad-md` | 1rem |  | density: comfortable 1.125rem, touch 1.25rem |
+| control.pad-lg | `--ayy-control-pad-lg` | 1.5rem |  | density: comfortable 1.5rem, touch 1.75rem |
+| radius.sm | `--ayy-radius-sm` | 4px |  |  |
+| radius.md | `--ayy-radius-md` | 6px |  |  |
+| radius.lg | `--ayy-radius-lg` | 8px |  |  |
+| radius.xl | `--ayy-radius-xl` | 12px |  |  |
+| radius.2xl | `--ayy-radius-2xl` | 16px |  |  |
+| radius.3xl | `--ayy-radius-3xl` | 24px |  |  |
+| radius.pill | `--ayy-radius-pill` | 999px |  |  |
+| radius.control | `--ayy-radius-control` | 12px |  | Inputs, selects, textareas, tooltips, menus. |
+| radius.card | `--ayy-radius-card` | 16px |  | Cards, dialogs, popovers. |
+| radius.button | `--ayy-radius-button` | 999px |  | Buttons, tabs, badges. |
+| shadow.rest | `--ayy-shadow-rest` | inset 0 1px 0 #ffffff0f | inset 0 1px 0 #0a0a0a0f | Inset top highlight. Cards at rest. |
+| shadow.lift | `--ayy-shadow-lift` | 0 16px 36px #00000066 | 0 16px 36px #0000001f | Hovered / lifted cards. |
+| shadow.overlay | `--ayy-shadow-overlay` | 0 24px 60px #00000080 | 0 24px 60px #00000026 | Dialogs, menus, popovers, tooltips, toasts. |
+| shadow.glow | `--ayy-shadow-glow` | 0 0 18px #ffffff2e | 0 0 18px #0000001a | Primary button hover glow. |
+| ease.standard | `--ayy-ease-standard` | 0.2, 0, 0, 1 |  |  |
+| ease.spring | `--ayy-ease-spring` | 0.175, 0.885, 0.32, 1.275 |  | Slight overshoot. Small lifts and toggles. |
+| ease.out-expo | `--ayy-ease-out-expo` | 0.25, 1, 0.5, 1 |  | Default for entrances and card lifts. |
+| ease.menu | `--ayy-ease-menu` | 0.22, 1, 0.36, 1 |  | Menus, dialogs, popovers. |
+| duration.fast | `--ayy-duration-fast` | 150ms |  |  |
+| duration.base | `--ayy-duration-base` | 300ms |  |  |
+| duration.slow | `--ayy-duration-slow` | 450ms |  |  |
+| duration.slower | `--ayy-duration-slower` | 600ms |  |  |
+| z.sticky | `--ayy-z-sticky` | 20 |  |  |
+| z.overlay | `--ayy-z-overlay` | 50 |  |  |
+| z.tooltip | `--ayy-z-tooltip` | 60 |  |  |
+| z.toast | `--ayy-z-toast` | 70 |  |  |
+
+## Brands
+
+- `violet` — Example brand: violet primary and focus ring, softer button and card corners. Overrides are semantic tokens only. Load ayywi/brands/violet.css and set data-brand="violet" on any element. Overrides: `--ayy-color-primary`, `--ayy-color-primary-fg`, `--ayy-color-ring`, `--ayy-color-glow`, `--ayy-color-ai-active`, `--ayy-radius-button`, `--ayy-radius-card`
+
+## Public custom properties
+
+- `--ayy-spot`: Card spotlight colour (any colour, usually an --ayy-accent-* token).
+- `--ayy-mx`: Card spotlight pointer X in px (set by React Card or ayywi/elements).
+- `--ayy-my`: Card spotlight pointer Y in px (set by React Card or ayywi/elements).
+- `--ayy-dot`: Badge status-dot colour override.
+- `--ayy-value`: Progress value, a unitless number 0–100.
+- `--ayy-progress-color`: Progress fill colour override.
+- `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster.
+
+## Utility classes
+
+- `.ayy-h1`: Heading 1 style (48px, heading font).
+- `.ayy-h2`: Heading 2 style (36px).
+- `.ayy-h3`: Heading 3 style (28px).
+- `.ayy-h4`: Heading 4 style (22px).
+- `.ayy-lede`: Intro paragraph, 18px soft text.
+- `.ayy-muted`: Muted text colour.
+- `.ayy-eyebrow`: Small uppercase label above a heading.
+- `.ayy-signature`: Handwritten accent font.
+- `.ayy-mono`: Monospace font.
+- `.ayy-stack`: Vertical flex stack; gap via --ayy-gap (default 12px).
+- `.ayy-cluster`: Wrapping horizontal row; gap via --ayy-gap (default 8px).
+- `.ayy-sr-only`: Visually hidden, still read by screen readers.
+- `.ayy-scroll`: Thin, quiet scrollbars on a scroll container.
+
+## Button
+
+Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
+
+**Use for**
+- Any action the user can take: submit, open, save, delete.
+- Links that should look like actions (apply buttonClass() to the <a>).
+
+**Don't use for**
+- Navigation inside running text — use a plain link.
+- Toggling a setting on/off — use Switch.
+
+**Classes**
+- `.ayy-button` — Root. Alone it is the primary button.
+- `.ayy-button--secondary` — Quiet filled button for secondary actions.
+- `.ayy-button--outline` — Bordered, transparent. Neutral alternative to secondary.
+- `.ayy-button--ghost` — No border or fill until hover. Toolbars, icon buttons.
+- `.ayy-button--destructive` — Tinted red. Irreversible actions.
+- `.ayy-button--link` — Looks like a text link.
+- `.ayy-button--sm` — 28px tall.
+- `.ayy-button--lg` — 40px tall.
+- `.ayy-button--icon` — Square 32px, for a single icon.
+- `.ayy-button--icon-sm` — Square 28px, for a single icon.
+
+**JS (framework-free)**: buttonClass({ variant?, size?, className? }) → string
+
+**React** — `import { Button } from "ayywi/react";`
+- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm"; `type` Defaults to "button" (not "submit").; `...rest` All native <button> attributes.
+
+**Accessibility**
+- Icon-only buttons need aria-label.
+- Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both).
+- Visible focus ring on :focus-visible is built in — never remove it.
+
+**Do**
+- One primary button per view or section; everything else secondary/outline/ghost.
+- Put the icon before the label; it inherits size from the button (1.25em).
+
+**Don't**
+- Don't restyle colours per button — add a variant to the design system instead.
+- Don't use destructive for non-destructive emphasis.
+
+### Button — Variants
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<button type="button" class="ayy-button">Primary</button>
+<button type="button" class="ayy-button ayy-button--secondary">Secondary</button>
+<button type="button" class="ayy-button ayy-button--outline">Outline</button>
+<button type="button" class="ayy-button ayy-button--ghost">Ghost</button>
+<button type="button" class="ayy-button ayy-button--destructive">Delete</button>
+<button type="button" class="ayy-button ayy-button--link">Link</button>
+<button type="button" class="ayy-button" disabled>Disabled</button>
+```
+
+React:
+
+```tsx
+import { Button } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Button>Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Delete</Button>
+      <Button variant="link">Link</Button>
+      <Button disabled>Disabled</Button>
+    </>
+  );
+}
+```
+
+### Button — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<button type="button" class="ayy-button ayy-button--sm">Small</button>
+<button type="button" class="ayy-button">Medium</button>
+<button type="button" class="ayy-button ayy-button--lg">Large</button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--sm">Small</button>
+<button type="button" class="ayy-button ayy-button--outline">Medium</button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--lg">Large</button>
+```
+
+React:
+
+```tsx
+import { Button } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Button size="sm">Small</Button>
+      <Button>Medium</Button>
+      <Button size="lg">Large</Button>
+      <Button variant="outline" size="sm">Small</Button>
+      <Button variant="outline">Medium</Button>
+      <Button variant="outline" size="lg">Large</Button>
+    </>
+  );
+}
+```
+
+### Button — With icon & icon-only
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<button type="button" class="ayy-button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+  New project
+</button>
+<button type="button" class="ayy-button ayy-button--secondary">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+  Invite member
+</button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-label="Add">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+</button>
+<button type="button" class="ayy-button ayy-button--ghost ayy-button--icon-sm" aria-label="Add">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+</button>
+```
+
+React:
+
+```tsx
+import { Button } from "ayywi/react";
+
+const PlusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export default function Example() {
+  return (
+    <>
+      <Button>
+        <PlusIcon />
+        New project
+      </Button>
+      <Button variant="secondary">
+        <PlusIcon />
+        Invite member
+      </Button>
+      <Button variant="outline" size="icon" aria-label="Add">
+        <PlusIcon />
+      </Button>
+      <Button variant="ghost" size="icon-sm" aria-label="Add">
+        <PlusIcon />
+      </Button>
+    </>
+  );
+}
+```
+
+### Button — Link styled as a button
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<a href="#docs" class="ayy-button ayy-button--outline">Read the docs</a>
+<a href="#docs" class="ayy-button ayy-button--ghost ayy-button--sm">Changelog</a>
+```
+
+React:
+
+```tsx
+import { buttonClass } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <a href="#docs" className={buttonClass({ variant: "outline" })}>
+        Read the docs
+      </a>
+      <a href="#docs" className={buttonClass({ variant: "ghost", size: "sm" })}>
+        Changelog
+      </a>
+    </>
+  );
+}
+```
+
+## Card
+
+Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
+
+**Use for**
+- Grouping a unit of content: a project, a person, a plan, a stat.
+- Clickable tiles in a grid (add interactive).
+
+**Don't use for**
+- Page sections — use plain layout, not a card around everything.
+- Nesting cards inside cards.
+
+**Classes**
+- `.ayy-card` — Root surface.
+- `.ayy-card--interactive` — Lifts on hover. Use when the whole card is clickable.
+- `.ayy-card--spotlight` — Pointer-following glow + lit border. Colour via the --ayy-spot custom property.
+- `.ayy-card__header` — Top block (title + description).
+- `.ayy-card__title` — Heading. Use an h2–h4 that fits your outline.
+- `.ayy-card__description` — Muted supporting text.
+- `.ayy-card__content` — Body.
+- `.ayy-card__footer` — Actions row, pinned to the bottom.
+
+**JS (framework-free)**: cardClass({ interactive?, spotlight?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
+
+**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "ayywi/react";`
+- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"
+- `<CardHeader>` renders <div>.
+- `<CardTitle>` renders <h3>.
+- `<CardDescription>` renders <p>.
+- `<CardContent>` renders <div>.
+- `<CardFooter>` renders <div>.
+
+**Accessibility**
+- If the whole card is a link, put the <a> on the title and stretch it (::after inset:0), don't wrap the card in <a>.
+- Spotlight layers are pseudo-elements, invisible to assistive tech.
+
+**Do**
+- Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.
+- Keep one level of cards; use hairline dividers inside.
+
+**Don't**
+- Don't set background colours on cards; the surface token keeps both themes correct.
+- Don't use spotlight on dense lists — it's for showcase grids.
+
+### Card — Basic
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-card" style="max-width: 360px">
+  <div class="ayy-card__header">
+    <h3 class="ayy-card__title">Weekly report</h3>
+    <p class="ayy-card__description">A summary of activity across your workspace.</p>
+  </div>
+  <div class="ayy-card__content">
+    <p class="ayy-muted" style="margin: 0">12 projects · updated 2 minutes ago</p>
+  </div>
+  <div class="ayy-card__footer">
+    <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Share</button>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Card style={{ maxWidth: 360 }}>
+      <CardHeader>
+        <CardTitle>Weekly report</CardTitle>
+        <CardDescription>A summary of activity across your workspace.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="ayy-muted" style={{ margin: 0 }}>
+          12 projects · updated 2 minutes ago
+        </p>
+      </CardContent>
+      <CardFooter>
+        <Button size="sm">Open report</Button>
+        <Button size="sm" variant="ghost">
+          Share
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### Card — Interactive with spotlight
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- Pointer tracking comes from ayywi/elements (or call trackSpotlight on pointermove yourself). -->
+<div class="ayy-card ayy-card--interactive ayy-card--spotlight" style="width: 240px; --ayy-spot: var(--ayy-accent-product)">
+  <div class="ayy-card__header">
+    <span class="ayy-badge ayy-badge--info">Product</span>
+    <h3 class="ayy-card__title">Roadmap</h3>
+    <p class="ayy-card__description">Move your pointer over me.</p>
+  </div>
+</div>
+<div class="ayy-card ayy-card--interactive ayy-card--spotlight" style="width: 240px; --ayy-spot: var(--ayy-accent-ai)">
+  <div class="ayy-card__header">
+    <span class="ayy-badge ayy-badge--ai">AI</span>
+    <h3 class="ayy-card__title">Assistant</h3>
+    <p class="ayy-card__description">Colour comes from the content.</p>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Card interactive spotlight spotColor="var(--ayy-accent-product)" style={{ width: 240 }}>
+        <CardHeader>
+          <Badge variant="info">Product</Badge>
+          <CardTitle>Roadmap</CardTitle>
+          <CardDescription>Move your pointer over me.</CardDescription>
+        </CardHeader>
+      </Card>
+      <Card interactive spotlight spotColor="var(--ayy-accent-ai)" style={{ width: 240 }}>
+        <CardHeader>
+          <Badge variant="ai">AI</Badge>
+          <CardTitle>Assistant</CardTitle>
+          <CardDescription>Colour comes from the content.</CardDescription>
+        </CardHeader>
+      </Card>
+    </>
+  );
+}
+```
+
+## Badge
+
+Small pill label for status, category or count. Optional pulsing status dot.
+
+**Use for**
+- Status of an item (Synced, Error, Beta).
+- Category or tag next to a title.
+- Live indicators (dot).
+
+**Don't use for**
+- Anything clickable — use Button (ghost/outline, sm).
+- Long text — badges never wrap.
+
+**Classes**
+- `.ayy-badge` — Root. Neutral by default.
+- `.ayy-badge--muted` — Quieter neutral.
+- `.ayy-badge--outline` — Border only.
+- `.ayy-badge--success` — Positive status.
+- `.ayy-badge--warning` — Caution status.
+- `.ayy-badge--destructive` — Error / failed.
+- `.ayy-badge--info` — Informational.
+- `.ayy-badge--ai` — AI-related.
+- `.ayy-badge__dot` — Leading status dot (first child). Pulses. Colour follows the variant, or set --ayy-dot.
+- `.ayy-badge__dot--static` — Dot without the pulse.
+
+**JS (framework-free)**: badgeClass({ variant?, className? }) → string
+
+**React** — `import { Badge } from "ayywi/react";`
+- `<Badge>` renders <span>. Props: `variant` "default" | "muted" | "outline" | "success" | "warning" | "destructive" | "info" | "ai"; `dot` boolean | "pulse" | "static" — leading status dot
+
+**Accessibility**
+- Colour is never the only signal — the label text must say the status.
+- The dot is aria-hidden; it's decorative.
+
+**Do**
+- Keep labels to one or two words.
+- Use the status variants for status, accent spotlights for categories.
+
+**Don't**
+- Don't stack more than three badges in a row.
+- Don't put buttons inside badges.
+
+### Badge — Variants
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<span class="ayy-badge">Default</span>
+<span class="ayy-badge ayy-badge--muted">Muted</span>
+<span class="ayy-badge ayy-badge--outline">Outline</span>
+<span class="ayy-badge ayy-badge--success">Synced</span>
+<span class="ayy-badge ayy-badge--warning">Pending</span>
+<span class="ayy-badge ayy-badge--destructive">Failed</span>
+<span class="ayy-badge ayy-badge--info">Info</span>
+<span class="ayy-badge ayy-badge--ai">AI</span>
+```
+
+React:
+
+```tsx
+import { Badge } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Badge>Default</Badge>
+      <Badge variant="muted">Muted</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="success">Synced</Badge>
+      <Badge variant="warning">Pending</Badge>
+      <Badge variant="destructive">Failed</Badge>
+      <Badge variant="info">Info</Badge>
+      <Badge variant="ai">AI</Badge>
+    </>
+  );
+}
+```
+
+### Badge — Status dot
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<span class="ayy-badge"><span class="ayy-badge__dot" aria-hidden="true"></span>Live</span>
+<span class="ayy-badge ayy-badge--warning"><span class="ayy-badge__dot" aria-hidden="true"></span>Syncing</span>
+<span class="ayy-badge ayy-badge--destructive"><span class="ayy-badge__dot ayy-badge__dot--static" aria-hidden="true"></span>Offline</span>
+<span class="ayy-badge ayy-badge--muted" style="--ayy-dot: var(--ayy-accent-brand)"><span class="ayy-badge__dot ayy-badge__dot--static" aria-hidden="true"></span>Custom dot</span>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Badge } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Badge dot>Live</Badge>
+      <Badge variant="warning" dot>
+        Syncing
+      </Badge>
+      <Badge variant="destructive" dot="static">
+        Offline
+      </Badge>
+      <Badge variant="muted" dot="static" style={{ "--ayy-dot": "var(--ayy-accent-brand)" } as CSSProperties}>
+        Custom dot
+      </Badge>
+    </>
+  );
+}
+```
+
+## Avatar
+
+Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
+
+**Use for**
+- People and workspaces in lists, headers, comments.
+- Stacks of collaborators (AvatarGroup).
+
+**Don't use for**
+- Decorative illustrations — use a plain <img>.
+- Icons — use an icon.
+
+**Classes**
+- `.ayy-avatar` — Root (role="img" + aria-label). 32px circle.
+- `.ayy-avatar--sm` — 24px.
+- `.ayy-avatar--lg` — 40px.
+- `.ayy-avatar--xl` — 56px.
+- `.ayy-avatar--square` — Rounded square (workspaces, teams).
+- `.ayy-avatar__fallback` — Initials, underneath the image.
+- `.ayy-avatar__image` — The <img alt="">. Covers the initials when it loads.
+- `.ayy-avatar-group` — Overlapping stack of avatars.
+
+**JS (framework-free)**: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
+
+**React** — `import { Avatar, AvatarGroup } from "ayywi/react";`
+- `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "sm" | "md" | "lg" | "xl"; `shape` "circle" | "square"
+- `<AvatarGroup>` renders <div role="group">.
+
+**Accessibility**
+- The name goes on the root (aria-label); the <img> has alt="" and the initials are aria-hidden, so it's announced once.
+- Give an AvatarGroup an aria-label like "5 collaborators".
+- A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
+
+**Do**
+- Show at most 4–5 avatars in a group and a "+3" badge for the rest.
+
+**Don't**
+- Don't rely on the picture alone to identify someone — show the name nearby.
+
+### Avatar — Sizes, fallback, group
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<span class="ayy-avatar ayy-avatar--sm" role="img" aria-label="Maya Chen">
+  <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+  <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+</span>
+<span class="ayy-avatar" role="img" aria-label="Maya Chen">
+  <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+  <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+</span>
+<span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Leo Park"><span class="ayy-avatar__fallback" aria-hidden="true">LP</span></span>
+<!-- The image fails; ayywi/elements hides it so the initials show through. -->
+<span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Broken Image">
+  <span class="ayy-avatar__fallback" aria-hidden="true">BI</span>
+  <img class="ayy-avatar__image" alt="" src="/missing.png" />
+</span>
+<span class="ayy-avatar ayy-avatar--xl ayy-avatar--square" role="img" aria-label="Northwind"><span class="ayy-avatar__fallback" aria-hidden="true">N</span></span>
+<div class="ayy-avatar-group" role="group" aria-label="4 collaborators">
+  <span class="ayy-avatar" role="img" aria-label="Maya Chen"><span class="ayy-avatar__fallback" aria-hidden="true">MC</span></span>
+  <span class="ayy-avatar" role="img" aria-label="Leo Park"><span class="ayy-avatar__fallback" aria-hidden="true">LP</span></span>
+  <span class="ayy-avatar" role="img" aria-label="Ana Ruiz"><span class="ayy-avatar__fallback" aria-hidden="true">AR</span></span>
+  <span class="ayy-avatar" role="img" aria-label="Sam Okafor"><span class="ayy-avatar__fallback" aria-hidden="true">SO</span></span>
+</div>
+<span class="ayy-badge ayy-badge--muted">+3</span>
+```
+
+React:
+
+```tsx
+import { Avatar, AvatarGroup, Badge } from "ayywi/react";
+
+const photo =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>";
+
+export default function Example() {
+  return (
+    <>
+      <Avatar name="Maya Chen" src={photo} size="sm" />
+      <Avatar name="Maya Chen" src={photo} />
+      <Avatar name="Leo Park" size="lg" />
+      <Avatar name="Broken Image" src="/missing.png" size="lg" />
+      <Avatar name="Northwind" shape="square" size="xl" />
+      <AvatarGroup aria-label="4 collaborators">
+        <Avatar name="Maya Chen" src={photo} />
+        <Avatar name="Leo Park" />
+        <Avatar name="Ana Ruiz" />
+        <Avatar name="Sam Okafor" />
+      </AvatarGroup>
+      <Badge variant="muted">+3</Badge>
+    </>
+  );
+}
+```
+
+## Input
+
+Single-line text field. Works for every native input type (text, email, search, number, file…).
+
+**Use for**
+- Short free-text entry: names, URLs, search, API keys.
+
+**Don't use for**
+- Multi-line text — use Textarea.
+- On/off — use Switch.
+
+**Classes**
+- `.ayy-input` — Root, on the <input> itself.
+- `.ayy-input--sm` — 28px tall.
+- `.ayy-input--lg` — 40px tall.
+
+**States**
+- `aria-invalid="true"` — Red border and focus ring. Pair with a Field error message.
+- `disabled` — Dimmed, not-allowed cursor.
+
+**JS (framework-free)**: inputClass({ size?, className? }) → string
+
+**React** — `import { Input } from "ayywi/react";`
+- `<Input>` renders <input>. Props: `size` "sm" | "md" | "lg" (visual size; native size attr not exposed); `...rest` All native <input> attributes.
+
+**Accessibility**
+- Every input needs a label: wrap in a Field with a Label (for/id), or aria-label for search boxes.
+- Errors: aria-invalid="true" + aria-describedby pointing at the error text.
+
+**Do**
+- Match the input size to neighbouring buttons in a toolbar (sm with sm).
+
+**Don't**
+- Don't use placeholder as the label.
+- Don't hardcode widths in px inside flexible layouts — the input fills its container.
+
+### Input — Types & sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="width: 100%; max-width: 320px">
+  <input class="ayy-input ayy-input--sm" placeholder="Small" aria-label="Small input" />
+  <input class="ayy-input" type="email" placeholder="you@example.com" aria-label="Email" />
+  <input class="ayy-input ayy-input--lg" type="search" placeholder="Search projects…" aria-label="Search projects" />
+  <input class="ayy-input" placeholder="Disabled" aria-label="Disabled input" disabled />
+</div>
+```
+
+React:
+
+```tsx
+import { Input } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ width: "100%", maxWidth: 320 }}>
+      <Input size="sm" placeholder="Small" aria-label="Small input" />
+      <Input placeholder="you@example.com" type="email" aria-label="Email" />
+      <Input size="lg" type="search" placeholder="Search projects…" aria-label="Search projects" />
+      <Input disabled placeholder="Disabled" aria-label="Disabled input" />
+    </div>
+  );
+}
+```
+
+### Input — Invalid
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-field" style="width: 100%; max-width: 320px">
+  <label class="ayy-label" for="api-key-html">API key</label>
+  <input class="ayy-input" id="api-key-html" value="sk-123" aria-invalid="true" aria-describedby="api-key-html-error" />
+  <p class="ayy-field__error" id="api-key-html-error">Key looks too short.</p>
+</div>
+```
+
+React:
+
+```tsx
+import { Field, FieldError, Input, Label } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Field style={{ width: "100%", maxWidth: 320 }}>
+      <Label htmlFor="api-key">API key</Label>
+      <Input id="api-key" defaultValue="sk-123" aria-invalid="true" aria-describedby="api-key-error" />
+      <FieldError id="api-key-error">Key looks too short.</FieldError>
+    </Field>
+  );
+}
+```
+
+## Textarea
+
+Multi-line text field. Optional auto-grow and monospace modes.
+
+**Use for**
+- Descriptions, notes, prompts, config snippets (mono).
+
+**Don't use for**
+- Rich text editing — use a dedicated editor and theme it with ayywi tokens.
+
+**Classes**
+- `.ayy-textarea` — Root, on the <textarea>.
+- `.ayy-textarea--autosize` — Grows with content (CSS field-sizing). Falls back to fixed height.
+- `.ayy-textarea--mono` — Monospace font.
+
+**States**
+- `aria-invalid="true"` — Red border and focus ring.
+- `disabled` — Dimmed.
+
+**JS (framework-free)**: textareaClass({ autosize?, mono?, className? }) → string
+
+**React** — `import { Textarea } from "ayywi/react";`
+- `<Textarea>` renders <textarea>. Props: `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
+
+**Accessibility**
+- Label it (Field + Label), same as Input.
+
+**Do**
+- Set rows for a sensible starting height.
+
+**Don't**
+- Don't disable resize on non-autosize textareas; users need it.
+
+### Textarea — Basic, autosize, mono
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="width: 100%; max-width: 420px">
+  <textarea class="ayy-textarea" placeholder="Write a short description…" aria-label="Description"></textarea>
+  <textarea class="ayy-textarea ayy-textarea--autosize" rows="2" placeholder="I grow as you type" aria-label="Notes"></textarea>
+  <textarea class="ayy-textarea ayy-textarea--mono" rows="3" aria-label="Config">{
+  "theme": "dark"
+}</textarea>
+</div>
+```
+
+React:
+
+```tsx
+import { Textarea } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ width: "100%", maxWidth: 420 }}>
+      <Textarea placeholder="Write a short description…" aria-label="Description" />
+      <Textarea autosize rows={2} placeholder="I grow as you type" aria-label="Notes" />
+      <Textarea mono rows={3} defaultValue={'{\n  "theme": "dark"\n}'} aria-label="Config" />
+    </div>
+  );
+}
+```
+
+## Select
+
+Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
+
+**Use for**
+- Choosing one option from a longer list (country, time zone, role).
+
+**Don't use for**
+- 2–5 options that should all be visible — use Radio.
+- Actions — use a Dropdown menu.
+- Searching thousands of options — build a combobox.
+
+**Classes**
+- `.ayy-select` — Wrapper element. Draws the chevron and sets the height.
+- `.ayy-select__control` — On the <select> inside the wrapper.
+- `.ayy-select--sm` — Small.
+- `.ayy-select--lg` — Large.
+
+**States**
+- `aria-invalid="true"` — Red border (on the <select>).
+- `disabled` — Dimmed, chevron too.
+- `multiple` — Renders as a list box: auto height, no chevron.
+
+**JS (framework-free)**: selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>
+
+**React** — `import { Select } from "ayywi/react";`
+- `<Select>` renders <div class="ayy-select"><select class="ayy-select__control">. Props: `size` "sm" | "md" | "lg"; `wrapperProps` Props for the wrapper <div>; `...rest` All native <select> attributes; className goes to the <select>.
+
+**Accessibility**
+- Label it like any input (Field + Label with for/id).
+- The native picker is fully accessible and mobile-friendly — don't replace it without a strong reason.
+
+**Do**
+- Put a sensible default first, or a disabled placeholder option.
+
+**Don't**
+- Don't use a select for yes/no — use a Switch or Checkbox.
+
+### Select — Sizes and states
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="width: 100%; max-width: 320px">
+  <div class="ayy-field">
+    <label class="ayy-label" for="region-html">Region</label>
+    <div class="ayy-select">
+      <select class="ayy-select__control" id="region-html">
+        <option value="us">United States</option>
+        <option value="eu" selected>Europe</option>
+        <option value="apac">Asia Pacific</option>
+      </select>
+    </div>
+  </div>
+  <div class="ayy-select ayy-select--sm">
+    <select class="ayy-select__control" aria-label="Sort by">
+      <option value="recent">Most recent</option>
+      <option value="name">Name</option>
+    </select>
+  </div>
+  <div class="ayy-select">
+    <select class="ayy-select__control" aria-label="Plan" disabled>
+      <option>Enterprise</option>
+    </select>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Field, Label, Select } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ width: "100%", maxWidth: 320 }}>
+      <Field>
+        <Label htmlFor="region">Region</Label>
+        <Select id="region" defaultValue="eu">
+          <option value="us">United States</option>
+          <option value="eu">Europe</option>
+          <option value="apac">Asia Pacific</option>
+        </Select>
+      </Field>
+      <Select size="sm" aria-label="Sort by" defaultValue="recent">
+        <option value="recent">Most recent</option>
+        <option value="name">Name</option>
+      </Select>
+      <Select disabled aria-label="Plan">
+        <option>Enterprise</option>
+      </Select>
+    </div>
+  );
+}
+```
+
+## Checkbox
+
+Native checkbox with a drawn box, check mark and indeterminate state.
+
+**Use for**
+- Choices submitted with a form (terms, preferences saved with a Save button).
+- Selecting several items in a list or table, with an indeterminate select-all.
+
+**Don't use for**
+- Settings that apply instantly — use Switch.
+- Picking exactly one option — use Radio.
+
+**Classes**
+- `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
+
+**States**
+- `:checked` — Checked.
+- `:indeterminate` — Mixed — set input.indeterminate = true (React: indeterminate prop).
+- `aria-invalid="true"` — Red border.
+- `disabled` — Dimmed.
+
+**JS (framework-free)**: checkboxClass constant
+
+**React** — `import { Checkbox } from "ayywi/react";`
+- `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
+
+**Accessibility**
+- Wrap it in a <label class="ayy-label"> with the text, or pair with <label for>.
+- Indeterminate is announced as "mixed" automatically.
+- Group related checkboxes in a <fieldset> with a <legend>.
+
+**Do**
+- Phrase labels positively: "Email me updates", not "Don't email me".
+
+**Don't**
+- Don't use a checkbox to trigger an immediate action.
+
+### Checkbox — States
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" checked /> Email me when a deploy fails</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" /> Weekly summary</label>
+  <!-- Indeterminate is a DOM property, not an attribute: set it from JS with input.indeterminate = true -->
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" /> Select all projects</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" disabled checked /> Security alerts (always on)</label>
+</div>
+```
+
+React:
+
+```tsx
+import { Checkbox } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <label className="ayy-label">
+        <Checkbox defaultChecked />
+        Email me when a deploy fails
+      </label>
+      <label className="ayy-label">
+        <Checkbox />
+        Weekly summary
+      </label>
+      <label className="ayy-label">
+        <Checkbox indeterminate />
+        Select all projects
+      </label>
+      <label className="ayy-label">
+        <Checkbox disabled defaultChecked />
+        Security alerts (always on)
+      </label>
+    </div>
+  );
+}
+```
+
+## Radio
+
+Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
+
+**Use for**
+- Picking exactly one of 2–6 visible options (plan, visibility, region).
+
+**Don't use for**
+- More than ~6 options — use Select.
+- Switching views — use Tabs.
+- Independent on/off choices — use Checkbox.
+
+**Classes**
+- `.ayy-radio` — On <input type="radio">. Size follows density.
+- `.ayy-radio-group` — On the <fieldset> holding the radios. Vertical stack.
+- `.ayy-radio-group--horizontal` — Options in a wrapping row.
+- `.ayy-radio-group__legend` — The group's <legend>.
+
+**States**
+- `:checked` — Selected.
+- `disabled` — Dimmed.
+
+**JS (framework-free)**: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
+
+**React** — `import { RadioGroup, Radio } from "ayywi/react";`
+- `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"
+- `<Radio>` renders <input type="radio">. Props: `value` string (required); `...rest` All native <input> attributes.
+
+**Accessibility**
+- Arrow keys move between radios in a group natively — no JS needed.
+- Always give the group a legend (label prop) and each radio a wrapping <label class="ayy-label">.
+
+**Do**
+- Pre-select the most common option when there's a sensible default.
+
+**Don't**
+- Don't use a single radio on its own — use a Checkbox.
+
+### Radio — Group
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<fieldset class="ayy-radio-group">
+  <legend class="ayy-radio-group__legend">Visibility</legend>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="visibility-html" value="private" /> Only me</label>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="visibility-html" value="team" checked /> My team</label>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="visibility-html" value="public" /> Anyone with the link</label>
+</fieldset>
+<fieldset class="ayy-radio-group ayy-radio-group--horizontal">
+  <legend class="ayy-radio-group__legend">Billing</legend>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="billing-html" value="monthly" checked /> Monthly</label>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="billing-html" value="yearly" /> Yearly</label>
+</fieldset>
+```
+
+React:
+
+```tsx
+import { Radio, RadioGroup } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <RadioGroup label="Visibility" defaultValue="team">
+        <label className="ayy-label">
+          <Radio value="private" /> Only me
+        </label>
+        <label className="ayy-label">
+          <Radio value="team" /> My team
+        </label>
+        <label className="ayy-label">
+          <Radio value="public" /> Anyone with the link
+        </label>
+      </RadioGroup>
+      <RadioGroup label="Billing" defaultValue="monthly" orientation="horizontal">
+        <label className="ayy-label">
+          <Radio value="monthly" /> Monthly
+        </label>
+        <label className="ayy-label">
+          <Radio value="yearly" /> Yearly
+        </label>
+      </RadioGroup>
+    </>
+  );
+}
+```
+
+## Field
+
+Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
+
+**Use for**
+- Every labelled form control: Input, Textarea, Switch, native <select>.
+
+**Don't use for**
+- Search boxes in toolbars — an aria-label on the Input is enough.
+
+**Classes**
+- `.ayy-field` — Wrapper, vertical stack.
+- `.ayy-field--inline` — Label and control side by side (Switch, checkbox).
+- `.ayy-label` — The <label>. Usable on its own too.
+- `.ayy-field__hint` — Muted helper text under the control.
+- `.ayy-field__error` — Error text under the control.
+
+**JS (framework-free)**: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
+
+**React** — `import { Field, Label, FieldHint, FieldError } from "ayywi/react";`
+- `<Field>` renders <div>. Props: `inline` boolean
+- `<Label>` renders <label>. Props: `htmlFor` id of the control
+- `<FieldHint>` renders <p>.
+- `<FieldError>` renders <p>.
+
+**Accessibility**
+- Label htmlFor/for must match the control id.
+- Link hint/error to the control with aria-describedby; set aria-invalid="true" on the control when there's an error.
+- The label dims automatically when the control inside the field is disabled.
+
+**Do**
+- Keep hints to one short sentence.
+- Show errors after the user leaves the field or submits, not on every keystroke.
+
+**Don't**
+- Don't show a hint and an error at the same time — the error replaces the hint.
+
+### Field — Form fields
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<form class="ayy-stack" style="width: 100%; max-width: 380px; --ayy-gap: 1rem" onsubmit="return false">
+  <div class="ayy-field">
+    <label class="ayy-label" for="project-slug-html">Project name</label>
+    <input class="ayy-input" id="project-slug-html" placeholder="marketing-site" aria-describedby="project-slug-html-hint" />
+    <p class="ayy-field__hint" id="project-slug-html-hint">Lowercase, dashes allowed.</p>
+  </div>
+  <div class="ayy-field">
+    <label class="ayy-label" for="project-description-html">Description</label>
+    <textarea class="ayy-textarea" id="project-description-html" rows="3" placeholder="What is this project for?"></textarea>
+  </div>
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="project-public-html" checked />
+    <label class="ayy-label" for="project-public-html">Anyone with the link can view</label>
+  </div>
+  <div class="ayy-cluster">
+    <button type="submit" class="ayy-button">Create project</button>
+    <button type="button" class="ayy-button ayy-button--ghost">Cancel</button>
+  </div>
+</form>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <form
+      className="ayy-stack"
+      style={{ width: "100%", maxWidth: 380, "--ayy-gap": "1rem" } as CSSProperties}
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <Field>
+        <Label htmlFor="project-slug">Project name</Label>
+        <Input id="project-slug" placeholder="marketing-site" aria-describedby="project-slug-hint" />
+        <FieldHint id="project-slug-hint">Lowercase, dashes allowed.</FieldHint>
+      </Field>
+      <Field>
+        <Label htmlFor="project-description">Description</Label>
+        <Textarea id="project-description" rows={3} placeholder="What is this project for?" />
+      </Field>
+      <Field inline>
+        <Switch id="project-public" defaultChecked />
+        <Label htmlFor="project-public">Anyone with the link can view</Label>
+      </Field>
+      <div className="ayy-cluster">
+        <Button type="submit">Create project</Button>
+        <Button variant="ghost">Cancel</Button>
+      </div>
+    </form>
+  );
+}
+```
+
+## Switch
+
+On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
+
+**Use for**
+- Settings that take effect instantly (enable sync, dark mode).
+
+**Don't use for**
+- Choices submitted later with a form's Save button — a checkbox reads better there.
+- Choosing between more than two options — use Tabs or a select.
+
+**Classes**
+- `.ayy-switch` — On <input type="checkbox" role="switch"> (preferred) or <button role="switch" aria-checked>. Thumb is ::before.
+
+**States**
+- `:checked / aria-checked="true"` — On.
+- `disabled` — Dimmed, not-allowed.
+
+**JS (framework-free)**: switchClass constant
+
+**React** — `import { Switch } from "ayywi/react";`
+- `<Switch>` renders <input type="checkbox" role="switch">. Props: `checked / defaultChecked` Controlled / uncontrolled, same as a checkbox.; `onCheckedChange` (checked: boolean) => void; `...rest` All native <input> attributes (name, value, disabled, required…).
+
+**Accessibility**
+- Always pair with a <label for> (Field inline) or aria-label.
+- Space toggles it; that's native checkbox behaviour.
+- The thumb direction flips automatically in RTL.
+
+**Do**
+- Label describes the 'on' state: 'Sync on save', not 'Toggle sync'.
+
+**Don't**
+- Don't require a Save click after flipping a switch.
+
+### Switch — States
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="sw-sync-html" checked />
+    <label class="ayy-label" for="sw-sync-html">Sync on save</label>
+  </div>
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="sw-telemetry-html" />
+    <label class="ayy-label" for="sw-telemetry-html">Share anonymous usage</label>
+  </div>
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="sw-disabled-html" disabled checked />
+    <label class="ayy-label" for="sw-disabled-html">Managed by your organisation</label>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Field, Label, Switch } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <Field inline>
+        <Switch id="sw-sync" defaultChecked />
+        <Label htmlFor="sw-sync">Sync on save</Label>
+      </Field>
+      <Field inline>
+        <Switch id="sw-telemetry" />
+        <Label htmlFor="sw-telemetry">Share anonymous usage</Label>
+      </Field>
+      <Field inline>
+        <Switch id="sw-disabled" disabled defaultChecked />
+        <Label htmlFor="sw-disabled">Managed by your organisation</Label>
+      </Field>
+    </div>
+  );
+}
+```
+
+## Tabs
+
+Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
+
+**Use for**
+- Switching views of the same object (Overview / Activity / Members).
+- Segmented filters with 2–6 options.
+
+**Don't use for**
+- Page-level navigation between routes — use links.
+- Sequential steps — use a stepper or separate pages.
+
+**Classes**
+- `.ayy-tabs` — Wrapper (block). Also put it on <ayy-tabs>.
+- `.ayy-tabs__list` — role="tablist" pill container.
+- `.ayy-tabs__tab` — role="tab" button. Selected when aria-selected="true".
+- `.ayy-tabs__panel` — role="tabpanel". Hide inactive panels with the hidden attribute.
+
+**JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
+
+**Custom element** `<ayy-tabs>` (ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
+- attribute `value`: The selected tab's data-value (or index). Two-way.
+- attribute `class`: Put ayy-tabs on it for block layout.
+- event `ayy-value-change`: { value: string } — the user picked a tab
+
+**React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "ayywi/react";`
+- `<Tabs>` renders <div>. Props: `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
+- `<TabsList>` renders <div role="tablist">. Props: `aria-label` Recommended.
+- `<TabsTrigger>` renders <button role="tab">. Props: `value` string (required)
+- `<TabsContent>` renders <div role="tabpanel">. Props: `value` string (required); `keepMounted` Keep children mounted while hidden. Default false.
+
+**Accessibility**
+- Arrow keys move between tabs (flipped in RTL), Home/End jump to first/last. Activation follows focus.
+- Only the selected tab is in the tab order (roving tabindex).
+- Give the tablist an aria-label when there's no visible heading.
+
+**Do**
+- Keep tab labels to one or two words.
+- Keep the tab set stable — don't add/remove tabs based on content.
+
+**Don't**
+- Don't nest tabs inside tabs.
+- Don't use tabs for more than ~6 options.
+
+### Tabs — Basic
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-tabs> (ayywi/elements) wires ids, clicks and arrow keys. The initial aria-selected / hidden avoid a flash before it loads.
+     Vue/Svelte/Angular: bind `value` and listen for `ayy-value-change`. -->
+<ayy-tabs class="ayy-tabs" value="overview">
+  <div class="ayy-tabs__list" role="tablist" aria-label="Project settings">
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="overview" aria-selected="true">Overview</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="activity" aria-selected="false" tabindex="-1">Activity</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="members" aria-selected="false" tabindex="-1">Members</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="billing" aria-selected="false" tabindex="-1" disabled>Billing</button>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="overview">
+    <p class="ayy-muted">3 environments · 12 deploys this week</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="activity" hidden>
+    <p class="ayy-muted">Latest changes from your team.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="members" hidden>
+    <p class="ayy-muted">People with access to this project.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="billing" hidden></div>
+</ayy-tabs>
+```
+
+React:
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Tabs defaultValue="overview">
+      <TabsList aria-label="Project settings">
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="activity">Activity</TabsTrigger>
+        <TabsTrigger value="members">Members</TabsTrigger>
+        <TabsTrigger value="billing" disabled>
+          Billing
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="overview">
+        <p className="ayy-muted">3 environments · 12 deploys this week</p>
+      </TabsContent>
+      <TabsContent value="activity">
+        <p className="ayy-muted">Latest changes from your team.</p>
+      </TabsContent>
+      <TabsContent value="members">
+        <p className="ayy-muted">People with access to this project.</p>
+      </TabsContent>
+    </Tabs>
+  );
+}
+```
+
+## Dialog
+
+Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.
+
+**Use for**
+- Confirming a destructive action.
+- Short focused tasks that must finish before continuing (rename, create).
+
+**Don't use for**
+- Long forms or multi-step flows — use a page.
+- Non-blocking messages — use an inline notice.
+
+**Classes**
+- `.ayy-dialog` — On the <dialog> element. Open with dialog.showModal().
+- `.ayy-dialog--sm` — 24rem wide.
+- `.ayy-dialog--lg` — 42rem wide.
+- `.ayy-dialog--xl` — 56rem wide.
+- `.ayy-dialog__header` — Title + description block.
+- `.ayy-dialog__title` — Heading (h2). Reference it with aria-labelledby on the dialog.
+- `.ayy-dialog__description` — Muted supporting text.
+- `.ayy-dialog__footer` — Actions. Stacked on mobile, right-aligned (end-aligned in RTL) from 640px.
+- `.ayy-dialog__close` — Icon button in the top-end corner.
+
+**JS (framework-free)**: dialogClass({ size?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (SVG string). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
+
+**Custom element** `<ayy-dialog>` (ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog">. Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.
+- attribute `open`: Two-way open state
+- attribute `persistent`: Backdrop clicks don't close it (Esc still does)
+- event `ayy-open-change`: { open: boolean, returnValue?: string }
+
+**React** — `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "ayywi/react";`
+- `<Dialog>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
+- `<DialogTrigger>` renders Button. Props: `...ButtonProps` variant, size…
+- `<DialogContent>` renders <dialog>. Props: `size` "sm" | "md" | "lg" | "xl"; `hideClose` boolean — hide the corner close button; `closeLabel` string — accessible name of the close button (translate it). Default "Close"; `closeOnBackdrop` boolean — default true
+- `<DialogHeader>` renders <div>.
+- `<DialogTitle>` renders <h2>, auto-wired to aria-labelledby.
+- `<DialogDescription>` renders <p>, auto-wired to aria-describedby.
+- `<DialogFooter>` renders <div>.
+- `<DialogClose>` renders Button (secondary by default).
+
+**Accessibility**
+- Always include a DialogTitle (or aria-label on the dialog).
+- Focus moves into the dialog on open and returns to the trigger on close (native behaviour).
+- Esc closes; background is inert while open; page scroll is locked.
+- Opening and closing fade/scale; the closing animation is skipped in browsers without @starting-style and under reduced motion.
+
+**Do**
+- Put the primary action last in the footer.
+- Use destructive variant for the confirm button of irreversible actions.
+
+**Don't**
+- Don't open a dialog from inside another dialog.
+- Don't render DialogContent's children while closed — the React component already skips them for you.
+
+### Dialog — Confirm
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-dialog> (ayywi/elements): [data-ayy-open] opens, [data-ayy-close] closes, backdrop click closes.
+     Without it, call dialog.showModal() / dialog.close() yourself. -->
+<ayy-dialog>
+  <button type="button" class="ayy-button ayy-button--destructive" data-ayy-open aria-haspopup="dialog">Delete project</button>
+  <dialog class="ayy-dialog ayy-dialog--sm" aria-labelledby="confirm-delete-title" aria-describedby="confirm-delete-desc">
+    <div class="ayy-dialog__header">
+      <h2 class="ayy-dialog__title" id="confirm-delete-title">Delete Marketing site?</h2>
+      <p class="ayy-dialog__description" id="confirm-delete-desc">Its deployments and settings are removed. This can't be undone.</p>
+    </div>
+    <div class="ayy-dialog__footer">
+      <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close>Cancel</button>
+      <button type="button" class="ayy-button ayy-button--destructive" data-ayy-close="delete">Delete</button>
+    </div>
+    <button type="button" class="ayy-dialog__close" aria-label="Close" data-ayy-close>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </dialog>
+</ayy-dialog>
+```
+
+React:
+
+```tsx
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Dialog>
+      <DialogTrigger variant="destructive">Delete project</DialogTrigger>
+      <DialogContent size="sm">
+        <DialogHeader>
+          <DialogTitle>Delete Marketing site?</DialogTitle>
+          <DialogDescription>Its deployments and settings are removed. This can't be undone.</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose>Cancel</DialogClose>
+          <DialogClose variant="destructive">Delete</DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+```
+
+### Dialog — With a form
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- method="dialog" closes the dialog on submit with zero JS; the submit button's value becomes dialog.returnValue. -->
+<ayy-dialog>
+  <button type="button" class="ayy-button ayy-button--outline" data-ayy-open aria-haspopup="dialog">Rename project</button>
+  <dialog class="ayy-dialog" aria-labelledby="rename-project-title">
+    <form method="dialog" class="ayy-stack" style="gap: 1rem">
+      <div class="ayy-dialog__header">
+        <h2 class="ayy-dialog__title" id="rename-project-title">Rename project</h2>
+      </div>
+      <div class="ayy-field">
+        <label class="ayy-label" for="project-name-html">Name</label>
+        <input class="ayy-input" id="project-name-html" name="name" value="marketing-site" autofocus />
+      </div>
+      <div class="ayy-dialog__footer">
+        <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close>Cancel</button>
+        <button type="submit" class="ayy-button" value="save">Save</button>
+      </div>
+    </form>
+    <button type="button" class="ayy-dialog__close" aria-label="Close" data-ayy-close>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </dialog>
+</ayy-dialog>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Field,
+  Input,
+  Label,
+} from "ayywi/react";
+
+export default function Example() {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("marketing-site");
+
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Rename project ({name})
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <form
+            className="ayy-stack"
+            style={{ gap: "1rem" }}
+            onSubmit={(event) => {
+              event.preventDefault();
+              setName(String(new FormData(event.currentTarget).get("name") ?? ""));
+              setOpen(false);
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Rename project</DialogTitle>
+            </DialogHeader>
+            <Field>
+              <Label htmlFor="project-name">Name</Label>
+              <Input id="project-name" name="name" defaultValue={name} autoFocus />
+            </Field>
+            <DialogFooter>
+              <DialogClose>Cancel</DialogClose>
+              <Button type="submit">Save</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+```
+
+## Popover
+
+Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
+
+**Use for**
+- Small forms or details next to their trigger (share link, filters, quick edit).
+
+**Don't use for**
+- A list of actions — use Dropdown menu.
+- Anything that must block the page — use Dialog.
+- Hints on hover — use Tooltip.
+
+**Classes**
+- `.ayy-popover` — On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.
+
+**States**
+- `:popover-open` — Open.
+
+**JS (framework-free)**: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
+
+**Custom element** `<ayy-popover>` (ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
+- attribute `side`: bottom | top | start | end
+- attribute `align`: center | start | end
+- attribute `open`: Two-way open state
+- event `ayy-open-change`: { open: boolean }
+
+**React** — `import { Popover, PopoverTrigger, PopoverContent } from "ayywi/react";`
+- `<Popover>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
+- `<PopoverTrigger>` renders Button. Props: `...ButtonProps` variant, size…
+- `<PopoverContent>` renders <div popover role="dialog">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "center" | "start" | "end"
+
+**Accessibility**
+- Give the content an accessible name (aria-label or aria-labelledby pointing at its heading).
+- The trigger gets aria-expanded automatically; Esc and click-outside close it and focus returns to the trigger.
+- It's not a focus trap — use Dialog when the user must finish something first.
+
+**Do**
+- Keep content short; if it scrolls, it probably wants to be a Dialog or a page.
+
+**Don't**
+- Don't open popovers on hover.
+- Don't nest popovers more than one level.
+
+### Popover — Share link
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (ayywi/elements) places it next to the trigger. -->
+<ayy-popover align="start">
+  <button type="button" class="ayy-button ayy-button--outline" popovertarget="share-popover-html" aria-haspopup="dialog">Share</button>
+  <div class="ayy-popover" id="share-popover-html" popover role="dialog" aria-labelledby="share-title-html">
+    <div class="ayy-stack" style="width: 260px">
+      <p id="share-title-html" style="margin: 0; font-weight: 600">Share this project</p>
+      <p class="ayy-muted" style="margin: 0">Anyone with the link can view.</p>
+      <div class="ayy-cluster" style="flex-wrap: nowrap">
+        <input class="ayy-input ayy-input--sm" readonly value="https://example.com/p/42" aria-label="Share link" />
+        <button type="button" class="ayy-button ayy-button--sm">Copy</button>
+      </div>
+    </div>
+  </div>
+</ayy-popover>
+```
+
+React:
+
+```tsx
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Popover>
+      <PopoverTrigger variant="outline">Share</PopoverTrigger>
+      <PopoverContent align="start" aria-labelledby="share-title">
+        <div className="ayy-stack" style={{ width: 260 }}>
+          <p id="share-title" style={{ margin: 0, fontWeight: 600 }}>
+            Share this project
+          </p>
+          <p className="ayy-muted" style={{ margin: 0 }}>
+            Anyone with the link can view.
+          </p>
+          <div className="ayy-cluster" style={{ flexWrap: "nowrap" }}>
+            <Input size="sm" readOnly defaultValue="https://example.com/p/42" aria-label="Share link" />
+            <Button size="sm">Copy</Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+## Dropdown menu
+
+List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
+
+**Use for**
+- Secondary actions for an item (rename, duplicate, delete).
+- Overflow “⋯” menus in toolbars and table rows.
+
+**Don't use for**
+- Choosing a value in a form — use Select or Radio.
+- Navigation between pages — use links.
+- Rich content or form fields — use Popover.
+
+**Classes**
+- `.ayy-menu` — On the element with popover and role="menu".
+- `.ayy-menu__item` — Each action: a <button role="menuitem">.
+- `.ayy-menu__item--destructive` — Red item for destructive actions.
+- `.ayy-menu__shortcut` — Keyboard shortcut hint at the end of an item.
+- `.ayy-menu__label` — Small uppercase group label.
+- `.ayy-menu__separator` — Divider (role="separator").
+
+**States**
+- `:popover-open` — Open.
+- `disabled / aria-disabled="true"` — Item skipped by the keyboard and dimmed.
+
+**JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
+
+**Custom element** `<ayy-menu>` (ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
+- attribute `side`: bottom | top | start | end
+- attribute `align`: start | center | end
+- attribute `open`: Two-way open state
+- event `ayy-select`: { value: string, item: HTMLElement } — value is the item's data-value, else its text
+- event `ayy-open-change`: { open: boolean }
+
+**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "ayywi/react";`
+- `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
+- `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…
+- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"
+- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes; `destructive` boolean; `shortcut` string — hint like "⌘D"
+- `<DropdownMenuLabel>` renders <div role="presentation">.
+- `<DropdownMenuSeparator>` renders <div role="separator">.
+
+**Accessibility**
+- Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items.
+- Esc or Tab closes the menu and focus returns to the trigger.
+- Icon-only triggers (⋯) need aria-label.
+
+**Do**
+- Put destructive actions last, after a separator.
+- Keep item labels to a verb + noun: "Rename project".
+
+**Don't**
+- Don't put form fields or links to other pages in a menu.
+- Don't nest menus.
+
+### Dropdown menu — Item actions
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-menu> (ayywi/elements) adds placement and the menu keyboard model, and fires "ayy-select" with the item's data-value. -->
+<ayy-menu>
+  <button type="button" class="ayy-button ayy-button--outline" popovertarget="project-menu-html" aria-haspopup="menu">Project actions</button>
+  <div class="ayy-menu" id="project-menu-html" popover role="menu">
+    <div class="ayy-menu__label" role="presentation">Marketing site</div>
+    <button type="button" class="ayy-menu__item" role="menuitem" data-value="rename">Rename <span class="ayy-menu__shortcut">⌘R</span></button>
+    <button type="button" class="ayy-menu__item" role="menuitem" data-value="duplicate">Duplicate <span class="ayy-menu__shortcut">⌘D</span></button>
+    <button type="button" class="ayy-menu__item" role="menuitem" disabled>Transfer ownership</button>
+    <div class="ayy-menu__separator" role="separator"></div>
+    <button type="button" class="ayy-menu__item ayy-menu__item--destructive" role="menuitem" data-value="delete">Delete project</button>
+  </div>
+</ayy-menu>
+```
+
+React:
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  toast,
+} from "ayywi/react";
+
+export default function Example() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger variant="outline">Project actions</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Marketing site</DropdownMenuLabel>
+        <DropdownMenuItem onSelect={() => toast("Rename")} shortcut="⌘R">
+          Rename
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => toast("Duplicated")} shortcut="⌘D">
+          Duplicate
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>Transfer ownership</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem destructive onSelect={() => toast.error("Project deleted")}>
+          Delete project
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
+## Tooltip
+
+Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
+
+**Use for**
+- Naming icon-only buttons visually (they still need aria-label).
+- Short clarifications: shortcuts, truncated values.
+
+**Don't use for**
+- Essential information — tooltips are invisible on touch devices.
+- Interactive content (links, buttons) — use a popover or dialog.
+- CSS-only (no JS) inside overflow:hidden containers — it can be clipped there; use the React component or <ayy-tooltip>.
+
+**Classes**
+- `.ayy-tooltip` — Wrapper around the trigger. Shows the content on :hover and :focus-within.
+- `.ayy-tooltip__content` — The bubble (role="tooltip"). Placement via data-side="top|bottom|start|end" (start/end follow text direction).
+
+**JS (framework-free)**: tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).
+
+**Custom element** `<ayy-tooltip>` (ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.
+- attribute `side`: top | bottom | start | end
+- attribute `class`: Put ayy-tooltip on it.
+
+**React** — `import { Tooltip } from "ayywi/react";`
+- `<Tooltip>` renders <span class="ayy-tooltip"> + child + <span role="tooltip">. Props: `content` ReactNode (required) — the hint; `side` "top" | "bottom" | "start" | "end"; `children` One focusable element; aria-describedby is added for you
+
+**Accessibility**
+- Trigger must be focusable so keyboard users see it too.
+- aria-describedby links trigger → tooltip (React does it automatically).
+- Esc dismisses (WCAG 1.4.13); the bubble stays open while hovered.
+
+**Do**
+- Keep it under ~60 characters.
+- Use side="start"/"end", not left/right, so RTL works.
+
+**Don't**
+- Don't put the only copy of important info in a tooltip.
+- Don't wrap disabled buttons — they can't receive focus or hover events reliably.
+
+### Tooltip — Sides
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- Works with CSS alone. <ayy-tooltip> (ayywi/elements) adds ids, Esc-to-dismiss and edge-aware placement. -->
+<ayy-tooltip class="ayy-tooltip">
+  <button type="button" class="ayy-button ayy-button--outline">Top</button>
+  <span class="ayy-tooltip__content" role="tooltip">Save changes (⌘S)</span>
+</ayy-tooltip>
+<ayy-tooltip class="ayy-tooltip" side="bottom">
+  <button type="button" class="ayy-button ayy-button--outline">Bottom</button>
+  <span class="ayy-tooltip__content" role="tooltip" data-side="bottom">Opens in a new window</span>
+</ayy-tooltip>
+<ayy-tooltip class="ayy-tooltip" side="start">
+  <button type="button" class="ayy-button ayy-button--outline">Start</button>
+  <span class="ayy-tooltip__content" role="tooltip" data-side="start">Start side</span>
+</ayy-tooltip>
+<ayy-tooltip class="ayy-tooltip" side="end">
+  <button type="button" class="ayy-button ayy-button--outline">End</button>
+  <span class="ayy-tooltip__content" role="tooltip" data-side="end">End side</span>
+</ayy-tooltip>
+```
+
+React:
+
+```tsx
+import { Button, Tooltip } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Tooltip content="Save changes (⌘S)">
+        <Button variant="outline">Top</Button>
+      </Tooltip>
+      <Tooltip content="Opens in a new window" side="bottom">
+        <Button variant="outline">Bottom</Button>
+      </Tooltip>
+      <Tooltip content="Start side" side="start">
+        <Button variant="outline">Start</Button>
+      </Tooltip>
+      <Tooltip content="End side" side="end">
+        <Button variant="outline">End</Button>
+      </Tooltip>
+    </>
+  );
+}
+```
+
+## Toast
+
+Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
+
+**Use for**
+- Confirming something happened (Saved, Deployed, Copied).
+- Background results that don't need a decision, optionally with one Undo-style action.
+
+**Don't use for**
+- Errors the user must fix — show them inline next to the problem.
+- Anything needing a decision — use Dialog.
+- Long or important content — it disappears.
+
+**Classes**
+- `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position.
+- `.ayy-toast` — One toast.
+- `.ayy-toast--success` — Green edge.
+- `.ayy-toast--warning` — Amber edge.
+- `.ayy-toast--destructive` — Red edge; announced with role="alert".
+- `.ayy-toast--info` — Blue edge.
+- `.ayy-toast__title` — Message.
+- `.ayy-toast__description` — Optional second line.
+- `.ayy-toast__actions` — Action button row.
+- `.ayy-toast__close` — Close button.
+
+**JS (framework-free)**: toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })
+
+**React** — `import { toast, Toaster } from "ayywi/react";`
+- `<Toaster>` renders nothing — configures the shared region. Props: `position` "bottom-end" | "bottom-start" | "bottom-center" | "top-end" | "top-start" | "top-center"; `label` string — region name (translate); `closeLabel` string — close button name (translate)
+
+**Accessibility**
+- The region is aria-live="polite"; destructive toasts use role="alert".
+- Timers pause while a toast is hovered or focused, so there's time to read it and reach its action.
+- Messages are set with textContent — never HTML.
+
+**Do**
+- Say what happened in 2–5 words: "Project deleted".
+- Offer Undo instead of a confirmation dialog for reversible actions.
+
+**Don't**
+- Don't stack several toasts for one action — reuse an id to update it.
+- Don't put links the user must follow in a toast.
+
+### Toast — Variants and actions
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "ayywi". -->
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Changes saved')">Default</button>
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.success('Deployed', { description: 'Marketing site is live.' })">Success</button>
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Project archived', { action: { label: 'Undo', onClick: () => ayywi.toast.info('Project restored') } })">With action</button>
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.error('Build failed', { description: '3 type errors in api/server.ts' })">Error</button>
+```
+
+React:
+
+```tsx
+import { Button, toast } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Button variant="outline" onClick={() => toast("Changes saved")}>
+        Default
+      </Button>
+      <Button variant="outline" onClick={() => toast.success("Deployed", { description: "Marketing site is live." })}>
+        Success
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() =>
+          toast("Project archived", {
+            action: { label: "Undo", onClick: () => toast.info("Project restored") },
+          })
+        }
+      >
+        With action
+      </Button>
+      <Button variant="outline" onClick={() => toast.error("Build failed", { description: "3 type errors in api/server.ts" })}>
+        Error
+      </Button>
+    </>
+  );
+}
+```
+
+## Alert
+
+Inline message box with optional icon, title, description and actions.
+
+**Use for**
+- Page- or section-level messages that stay until resolved (billing issue, read-only mode, maintenance).
+
+**Don't use for**
+- Confirmations that can disappear — use Toast.
+- Field errors — use FieldError next to the field.
+
+**Classes**
+- `.ayy-alert` — Root. Neutral by default.
+- `.ayy-alert--info` — Blue tint.
+- `.ayy-alert--success` — Green tint.
+- `.ayy-alert--warning` — Amber tint.
+- `.ayy-alert--destructive` — Red tint.
+- `.ayy-alert__title` — Bold first line.
+- `.ayy-alert__description` — Supporting text.
+- `.ayy-alert__actions` — Row of buttons.
+
+**JS (framework-free)**: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
+
+**React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "ayywi/react";`
+- `<Alert>` renders <div>. Props: `variant` "default" | "info" | "success" | "warning" | "destructive"
+- `<AlertTitle>` renders <p>.
+- `<AlertDescription>` renders <p>.
+- `<AlertActions>` renders <div>.
+
+**Accessibility**
+- Static alerts need no role. If it appears in response to an action, add role="alert" (urgent) or role="status" (polite).
+- The icon is decorative: aria-hidden="true". The text must carry the meaning.
+
+**Do**
+- Lead with what happened, then what to do about it.
+
+**Don't**
+- Don't stack several alerts — combine them.
+- Don't use destructive for things that aren't errors.
+
+### Alert — Variants
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="width: 100%; max-width: 520px">
+  <div class="ayy-alert">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+    <p class="ayy-alert__title">Read-only mode</p>
+    <p class="ayy-alert__description">You're viewing a shared project. Ask the owner for edit access.</p>
+  </div>
+  <div class="ayy-alert ayy-alert--warning">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+    <p class="ayy-alert__title">Your trial ends in 3 days</p>
+    <p class="ayy-alert__description">Add a payment method to keep your projects online.</p>
+    <div class="ayy-alert__actions">
+      <button type="button" class="ayy-button ayy-button--sm">Add payment method</button>
+      <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Later</button>
+    </div>
+  </div>
+  <div class="ayy-alert ayy-alert--destructive" role="alert">
+    <p class="ayy-alert__title">Deploy failed</p>
+    <p class="ayy-alert__description">The build ran out of memory. Increase the limit or split the job.</p>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Alert, AlertActions, AlertDescription, AlertTitle, Button } from "ayywi/react";
+
+const InfoIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5M12 8h.01" />
+  </svg>
+);
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ width: "100%", maxWidth: 520 }}>
+      <Alert>
+        <InfoIcon />
+        <AlertTitle>Read-only mode</AlertTitle>
+        <AlertDescription>You're viewing a shared project. Ask the owner for edit access.</AlertDescription>
+      </Alert>
+      <Alert variant="warning">
+        <InfoIcon />
+        <AlertTitle>Your trial ends in 3 days</AlertTitle>
+        <AlertDescription>Add a payment method to keep your projects online.</AlertDescription>
+        <AlertActions>
+          <Button size="sm">Add payment method</Button>
+          <Button size="sm" variant="ghost">
+            Later
+          </Button>
+        </AlertActions>
+      </Alert>
+      <Alert variant="destructive" role="alert">
+        <AlertTitle>Deploy failed</AlertTitle>
+        <AlertDescription>The build ran out of memory. Increase the limit or split the job.</AlertDescription>
+      </Alert>
+    </div>
+  );
+}
+```
+
+## Progress
+
+Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
+
+**Use for**
+- Sync, upload, install — anything with measurable progress.
+- Indeterminate: work of unknown length that takes more than ~1s.
+
+**Don't use for**
+- Quotas or meters that aren't 'progress' — still fine visually, but use role="meter" instead of progressbar.
+
+**Classes**
+- `.ayy-progress` — Track. Set --ayy-value (0–100) on it.
+- `.ayy-progress__bar` — Fill (only child).
+- `.ayy-progress--sm` — 4px tall.
+- `.ayy-progress--lg` — 10px tall.
+- `.ayy-progress--success` — Green fill.
+- `.ayy-progress--warning` — Amber fill.
+- `.ayy-progress--destructive` — Red fill.
+- `.ayy-progress--ai` — Purple fill.
+- `.ayy-progress--indeterminate` — Looping animation; omit aria-valuenow.
+
+**JS (framework-free)**: progressClass({ tone?, size?, indeterminate?, className? }) → string
+
+**React** — `import { Progress } from "ayywi/react";`
+- `<Progress>` renders <div role="progressbar">. Props: `value` number 0–100; omit/null → indeterminate; `tone` "default" | "success" | "warning" | "destructive" | "ai"; `size` "sm" | "md" | "lg"
+
+**Accessibility**
+- role="progressbar" with aria-valuenow/min/max (React sets them).
+- Give it an accessible name: aria-label or aria-labelledby.
+
+**Do**
+- Show the percentage or step as text nearby for anything longer than a few seconds.
+
+**Don't**
+- Don't animate a determinate bar backwards.
+
+### Progress — Values, tones, indeterminate
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="width: 100%; max-width: 360px">
+  <div class="ayy-progress" role="progressbar" aria-label="Build progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" style="--ayy-value: 30">
+    <div class="ayy-progress__bar"></div>
+  </div>
+  <div class="ayy-progress ayy-progress--success" role="progressbar" aria-label="Upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72" style="--ayy-value: 72">
+    <div class="ayy-progress__bar"></div>
+  </div>
+  <div class="ayy-progress ayy-progress--warning ayy-progress--lg" role="progressbar" aria-label="Storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="90" style="--ayy-value: 90">
+    <div class="ayy-progress__bar"></div>
+  </div>
+  <div class="ayy-progress ayy-progress--ai ayy-progress--sm ayy-progress--indeterminate" role="progressbar" aria-label="Generating">
+    <div class="ayy-progress__bar"></div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Progress } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ width: "100%", maxWidth: 360 }}>
+      <Progress value={30} aria-label="Build progress" />
+      <Progress value={72} tone="success" aria-label="Upload progress" />
+      <Progress value={90} tone="warning" size="lg" aria-label="Storage used" />
+      <Progress tone="ai" size="sm" aria-label="Generating" />
+    </div>
+  );
+}
+```
+
+## Skeleton
+
+Placeholder shapes shown while content loads, with a subtle shimmer.
+
+**Use for**
+- Content that takes more than ~300ms and has a predictable layout (cards, lists, profile headers).
+
+**Don't use for**
+- Unknown layouts or long jobs — use Progress.
+- Instant loads — skeletons that flash are worse than nothing.
+
+**Classes**
+- `.ayy-skeleton` — Block placeholder. Set its size to match the content.
+- `.ayy-skeleton--text` — Text line (0.75em tall).
+- `.ayy-skeleton--circle` — Circle (avatars, icons).
+
+**JS (framework-free)**: skeletonClass({ shape?, className? }) → string
+
+**React** — `import { Skeleton } from "ayywi/react";`
+- `<Skeleton>` renders <div aria-hidden="true">. Props: `shape` "block" | "text" | "circle"
+
+**Accessibility**
+- Skeletons are aria-hidden. Put aria-busy="true" on the container while loading, and remove it when content arrives. To name the loading region, give it role="status" and an aria-label — aria-label on a plain div is ignored.
+- The shimmer stops under prefers-reduced-motion.
+
+**Do**
+- Match the real layout closely so nothing jumps when content arrives.
+
+**Don't**
+- Don't show skeletons for errors or empty states.
+
+### Skeleton — Loading card
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-card" style="width: 320px" role="status" aria-busy="true" aria-label="Loading project">
+  <div class="ayy-card__header" style="flex-direction: row; align-items: center; gap: 12px">
+    <div class="ayy-skeleton ayy-skeleton--circle" aria-hidden="true"></div>
+    <div class="ayy-stack" style="flex: 1; --ayy-gap: 0.5rem">
+      <div class="ayy-skeleton ayy-skeleton--text" style="width: 60%" aria-hidden="true"></div>
+      <div class="ayy-skeleton ayy-skeleton--text" style="width: 40%" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="ayy-card__content">
+    <div class="ayy-skeleton" style="height: 96px" aria-hidden="true"></div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Card, CardContent, CardHeader, Skeleton } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Card style={{ width: 320 }} role="status" aria-busy="true" aria-label="Loading project">
+      <CardHeader style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+        <Skeleton shape="circle" />
+        <div className="ayy-stack" style={{ flex: 1, "--ayy-gap": "0.5rem" } as CSSProperties}>
+          <Skeleton shape="text" style={{ width: "60%" }} />
+          <Skeleton shape="text" style={{ width: "40%" }} />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Skeleton style={{ height: 96 }} />
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+## Table
+
+Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
+
+**Use for**
+- Comparing items across the same attributes (projects × status × builds).
+
+**Don't use for**
+- Layout — never use tables for layout.
+- Lists with one attribute — use a list.
+
+**Classes**
+- `.ayy-table-wrap` — Scroll container around the table (horizontal overflow).
+- `.ayy-table` — On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.
+- `.ayy-table--compact` — Tighter rows.
+- `.ayy-table__num` — On th/td with numbers: end-aligned, tabular digits.
+
+**States**
+- `tr[aria-selected="true"]` — Selected row highlight.
+
+**JS (framework-free)**: tableClass({ compact?, className? }); tableWrapClass, tableNumClass constants
+
+**React** — `import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from "ayywi/react";`
+- `<Table>` renders <div class="ayy-table-wrap"><table>. Props: `compact` boolean
+- `<TableHeader>` renders <thead>.
+- `<TableBody>` renders <tbody>.
+- `<TableFooter>` renders <tfoot>.
+- `<TableRow>` renders <tr>.
+- `<TableHead>` renders <th scope="col">. Props: `numeric` boolean
+- `<TableCell>` renders <td>. Props: `numeric` boolean
+- `<TableCaption>` renders <caption>.
+
+**Accessibility**
+- Use real <th> header cells with scope (React sets scope="col").
+- A <caption> or aria-label names the table for screen readers.
+
+**Do**
+- End-align numbers with numeric/ayy-table__num.
+- Keep cell content short; truncate with a tooltip if needed.
+
+**Don't**
+- Don't zebra-stripe; hairlines + hover are enough.
+- Don't nest interactive controls in every cell — one action column is plenty.
+
+### Table — Basic
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-table-wrap">
+  <table class="ayy-table">
+    <caption>Deployments</caption>
+    <thead>
+      <tr>
+        <th scope="col">Project</th>
+        <th scope="col">Status</th>
+        <th scope="col" class="ayy-table__num">Builds</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Marketing site</td>
+        <td><span class="ayy-badge ayy-badge--success">Live</span></td>
+        <td class="ayy-table__num">128</td>
+      </tr>
+      <tr>
+        <td>Mobile API</td>
+        <td><span class="ayy-badge ayy-badge--warning">Building</span></td>
+        <td class="ayy-table__num">42</td>
+      </tr>
+      <tr>
+        <td>Docs</td>
+        <td><span class="ayy-badge ayy-badge--destructive">Failed</span></td>
+        <td class="ayy-table__num">7</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+React:
+
+```tsx
+import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "ayywi/react";
+
+const deployments = [
+  { project: "Marketing site", status: "Live", variant: "success", builds: 128 },
+  { project: "Mobile API", status: "Building", variant: "warning", builds: 42 },
+  { project: "Docs", status: "Failed", variant: "destructive", builds: 7 },
+] as const;
+
+export default function Example() {
+  return (
+    <Table>
+      <TableCaption>Deployments</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Project</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead numeric>Builds</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {deployments.map((d) => (
+          <TableRow key={d.project}>
+            <TableCell>{d.project}</TableCell>
+            <TableCell>
+              <Badge variant={d.variant}>{d.status}</Badge>
+            </TableCell>
+            <TableCell numeric>{d.builds}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```

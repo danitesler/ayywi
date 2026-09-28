@@ -1,0 +1,50 @@
+{
+  "name": "Tooltip",
+  "slug": "tooltip",
+  "status": "stable",
+  "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
+  "whenToUse": ["Naming icon-only buttons visually (they still need aria-label).", "Short clarifications: shortcuts, truncated values."],
+  "whenNotToUse": [
+    "Essential information — tooltips are invisible on touch devices.",
+    "Interactive content (links, buttons) — use a popover or dialog.",
+    "CSS-only (no JS) inside overflow:hidden containers — it can be clipped there; use the React component or <ayy-tooltip>."
+  ],
+  "classes": {
+    "ayy-tooltip": "Wrapper around the trigger. Shows the content on :hover and :focus-within.",
+    "ayy-tooltip__content": "The bubble (role=\"tooltip\"). Placement via data-side=\"top|bottom|start|end\" (start/end follow text direction)."
+  },
+  "variants": {
+    "side": { "values": ["top", "bottom", "start", "end"], "default": "top" }
+  },
+  "js": "tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).",
+  "element": {
+    "tag": "ayy-tooltip",
+    "attributes": {
+      "side": "top | bottom | start | end",
+      "class": "Put ayy-tooltip on it."
+    },
+    "events": {},
+    "children": "One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you."
+  },
+  "react": {
+    "import": "import { Tooltip } from \"ayywi/react\";",
+    "components": {
+      "Tooltip": {
+        "renders": "<span class=\"ayy-tooltip\"> + child + <span role=\"tooltip\">",
+        "props": {
+          "content": "ReactNode (required) — the hint",
+          "side": "\"top\" | \"bottom\" | \"start\" | \"end\"",
+          "children": "One focusable element; aria-describedby is added for you"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Trigger must be focusable so keyboard users see it too.",
+    "aria-describedby links trigger → tooltip (React does it automatically).",
+    "Esc dismisses (WCAG 1.4.13); the bubble stays open while hovered."
+  ],
+  "do": ["Keep it under ~60 characters.", "Use side=\"start\"/\"end\", not left/right, so RTL works."],
+  "dont": ["Don't put the only copy of important info in a tooltip.", "Don't wrap disabled buttons — they can't receive focus or hover events reliably."],
+  "examples": [{ "id": "sides", "title": "Sides" }]
+}

@@ -1,0 +1,79 @@
+/* Inline message box. Static by default; add role="alert" only when it appears in response to something. */
+
+.ayy-alert {
+  --_c: var(--ayy-color-text);
+  --_line: var(--ayy-color-line-strong);
+  --_bg: var(--ayy-color-wash);
+
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--ayy-space-3);
+  row-gap: var(--ayy-space-1);
+  padding: var(--ayy-space-3) var(--ayy-space-4);
+  border: 1px solid var(--_line);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--_bg);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+}
+
+.ayy-alert:has(> svg) {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.ayy-alert > svg {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  margin-block-start: 0.1em;
+  color: var(--_c);
+}
+
+.ayy-alert__title,
+.ayy-alert__description,
+.ayy-alert__actions {
+  grid-column: -2;
+}
+
+.ayy-alert__title {
+  margin: 0;
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-alert__description {
+  margin: 0;
+  color: var(--ayy-color-text-soft);
+}
+
+.ayy-alert__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-2);
+}
+
+.ayy-alert--info { --_c: var(--ayy-color-info); }
+.ayy-alert--success { --_c: var(--ayy-color-success); }
+.ayy-alert--warning { --_c: var(--ayy-color-warning); }
+.ayy-alert--destructive { --_c: var(--ayy-color-destructive); }
+
+.ayy-alert--info,
+.ayy-alert--success,
+.ayy-alert--warning,
+.ayy-alert--destructive {
+  --_line: color-mix(in srgb, var(--_c) 35%, transparent);
+  --_bg: color-mix(in srgb, var(--_c) 8%, transparent);
+}
+
+@media (forced-colors: active) {
+  .ayy-alert {
+    border-color: CanvasText;
+  }
+  .ayy-alert > svg {
+    color: CanvasText;
+  }
+}

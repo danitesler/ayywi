@@ -1,0 +1,126 @@
+/* Dropdown menu: a native popover with role="menu". Keyboard handling comes from React DropdownMenu or <ayy-menu>. */
+
+.ayy-menu {
+  box-sizing: border-box;
+  min-inline-size: 11rem;
+  max-inline-size: min(20rem, calc(100vw - 1rem));
+  padding: var(--ayy-space-1);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay);
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    transform var(--ayy-duration-fast) var(--ayy-ease-menu),
+    overlay var(--ayy-duration-fast) allow-discrete,
+    display var(--ayy-duration-fast) allow-discrete;
+}
+
+.ayy-menu:not(:popover-open) {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+@starting-style {
+  .ayy-menu:popover-open {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.ayy-menu__item {
+  appearance: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  inline-size: 100%;
+  min-block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-2) var(--ayy-space-3);
+  border: 0;
+  border-radius: var(--ayy-radius-lg);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--ayy-control-text-md);
+  text-align: start;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Items take focus with the arrow keys; the highlight is the focus indicator. */
+.ayy-menu__item:is(:hover, :focus-visible, :focus) {
+  outline: none;
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-menu__item > svg {
+  flex: none;
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-menu__item--destructive,
+.ayy-menu__item--destructive > svg {
+  color: var(--ayy-color-destructive);
+}
+
+.ayy-menu__item:is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ayy-menu__shortcut {
+  margin-inline-start: auto;
+  padding-inline-start: var(--ayy-space-4);
+  color: var(--ayy-color-muted);
+  font-family: inherit;
+  font-size: var(--ayy-text-2xs);
+  letter-spacing: var(--ayy-tracking-wide);
+}
+
+.ayy-menu__label {
+  padding: var(--ayy-space-1-5) var(--ayy-space-2) var(--ayy-space-1);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: var(--ayy-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.ayy-menu__separator {
+  block-size: 1px;
+  margin-block: var(--ayy-space-1);
+  margin-inline: calc(-1 * var(--ayy-space-1));
+  border: 0;
+  background-color: var(--ayy-color-hairline);
+}
+
+/* <ayy-menu> only adds behaviour; it has no box of its own. */
+ayy-menu {
+  display: contents;
+}
+
+@media (forced-colors: active) {
+  .ayy-menu {
+    border-color: CanvasText;
+  }
+  .ayy-menu__item:is(:hover, :focus-visible, :focus) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-menu__item:is(:hover, :focus-visible, :focus) > svg {
+    color: HighlightText;
+  }
+  .ayy-menu__separator {
+    background-color: CanvasText;
+  }
+}

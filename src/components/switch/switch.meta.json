@@ -1,0 +1,41 @@
+{
+  "name": "Switch",
+  "slug": "switch",
+  "status": "stable",
+  "description": "On/off toggle for a setting that applies immediately. A native checkbox with role=\"switch\".",
+  "whenToUse": ["Settings that take effect instantly (enable sync, dark mode)."],
+  "whenNotToUse": [
+    "Choices submitted later with a form's Save button — a checkbox reads better there.",
+    "Choosing between more than two options — use Tabs or a select."
+  ],
+  "classes": {
+    "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before."
+  },
+  "variants": {},
+  "states": {
+    ":checked / aria-checked=\"true\"": "On.",
+    "disabled": "Dimmed, not-allowed."
+  },
+  "js": "switchClass constant",
+  "react": {
+    "import": "import { Switch } from \"ayywi/react\";",
+    "components": {
+      "Switch": {
+        "renders": "<input type=\"checkbox\" role=\"switch\">",
+        "props": {
+          "checked / defaultChecked": "Controlled / uncontrolled, same as a checkbox.",
+          "onCheckedChange": "(checked: boolean) => void",
+          "...rest": "All native <input> attributes (name, value, disabled, required…)."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Always pair with a <label for> (Field inline) or aria-label.",
+    "Space toggles it; that's native checkbox behaviour.",
+    "The thumb direction flips automatically in RTL."
+  ],
+  "do": ["Label describes the 'on' state: 'Sync on save', not 'Toggle sync'."],
+  "dont": ["Don't require a Save click after flipping a switch."],
+  "examples": [{ "id": "basic", "title": "States" }]
+}

@@ -1,0 +1,75 @@
+/*
+ * ayywi for Tailwind CSS v4. After `@import "tailwindcss";`:
+ *
+ *   @import "ayywi/css";            (or just "ayywi/tokens.css" if you only want the tokens)
+ *   @import "ayywi/tailwind.css";
+ *
+ * `inline` makes utilities reference the --ayy-* variables directly, so they follow data-theme switches.
+ */
+
+/* dark: = forced dark, or OS dark when no light theme is forced. You rarely need it — tokens already switch. */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:not(:where([data-theme=light], [data-theme=light] *, .light, .light *)) {
+      @slot;
+    }
+  }
+  &:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *) {
+    @slot;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--ayy-color-bg);
+  --color-surface: var(--ayy-color-surface);
+  --color-surface-raised: var(--ayy-color-surface-raised);
+  --color-fg: var(--ayy-color-text);
+  --color-fg-soft: var(--ayy-color-text-soft);
+  --color-muted: var(--ayy-color-muted);
+  --color-border: var(--ayy-color-border);
+  --color-ring: var(--ayy-color-ring);
+  --color-primary: var(--ayy-color-primary);
+  --color-primary-fg: var(--ayy-color-primary-fg);
+  --color-destructive: var(--ayy-color-destructive);
+  --color-success: var(--ayy-color-success);
+  --color-warning: var(--ayy-color-warning);
+  --color-info: var(--ayy-color-info);
+  --color-ai: var(--ayy-color-ai);
+  --color-ai-active: var(--ayy-color-ai-active);
+  --color-wash: var(--ayy-color-wash);
+  --color-wash-hover: var(--ayy-color-wash-hover);
+  --color-hairline: var(--ayy-color-hairline);
+  --color-line: var(--ayy-color-line);
+  --color-line-strong: var(--ayy-color-line-strong);
+  --color-line-hover: var(--ayy-color-line-hover);
+  --color-overlay: var(--ayy-color-overlay);
+  --color-glass: var(--ayy-color-glass);
+  --color-accent-research: var(--ayy-accent-research);
+  --color-accent-product: var(--ayy-accent-product);
+  --color-accent-ai: var(--ayy-accent-ai);
+  --color-accent-system: var(--ayy-accent-system);
+  --color-accent-brand: var(--ayy-accent-brand);
+  --color-accent-marketing: var(--ayy-accent-marketing);
+
+  --font-sans: var(--ayy-font-body);
+  --font-heading: var(--ayy-font-heading);
+  --font-signature: var(--ayy-font-signature);
+  --font-mono: var(--ayy-font-mono);
+
+  --text-2xs: var(--ayy-text-2xs);
+
+  --radius-control: var(--ayy-radius-control);
+  --radius-card: var(--ayy-radius-card);
+  --radius-button: var(--ayy-radius-button);
+  --radius-pill: var(--ayy-radius-pill);
+
+  --shadow-rest: var(--ayy-shadow-rest);
+  --shadow-lift: var(--ayy-shadow-lift);
+  --shadow-overlay: var(--ayy-shadow-overlay);
+  --shadow-glow: var(--ayy-shadow-glow);
+
+  --ease-standard: var(--ayy-ease-standard);
+  --ease-spring: var(--ayy-ease-spring);
+  --ease-expo: var(--ayy-ease-out-expo);
+  --ease-menu: var(--ayy-ease-menu);
+}

@@ -1,0 +1,52 @@
+{
+  "name": "Popover",
+  "slug": "popover",
+  "status": "stable",
+  "description": "Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.",
+  "whenToUse": ["Small forms or details next to their trigger (share link, filters, quick edit)."],
+  "whenNotToUse": [
+    "A list of actions — use Dropdown menu.",
+    "Anything that must block the page — use Dialog.",
+    "Hints on hover — use Tooltip."
+  ],
+  "classes": {
+    "ayy-popover": "On the element with the popover attribute. Surface, padding, shadow, fade/scale transition."
+  },
+  "variants": {
+    "side": { "values": ["bottom", "top", "start", "end"], "default": "bottom", "component": "PopoverContent" },
+    "align": { "values": ["center", "start", "end"], "default": "center", "component": "PopoverContent" }
+  },
+  "states": {
+    ":popover-open": "Open."
+  },
+  "js": "popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }",
+  "element": {
+    "tag": "ayy-popover",
+    "attributes": {
+      "side": "bottom | top | start | end",
+      "align": "center | start | end",
+      "open": "Two-way open state"
+    },
+    "events": { "ayy-open-change": "{ open: boolean }" },
+    "children": "A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute."
+  },
+  "react": {
+    "import": "import { Popover, PopoverTrigger, PopoverContent } from \"ayywi/react\";",
+    "components": {
+      "Popover": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
+      "PopoverTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },
+      "PopoverContent": {
+        "renders": "<div popover role=\"dialog\">",
+        "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"center\" | \"start\" | \"end\"" }
+      }
+    }
+  },
+  "a11y": [
+    "Give the content an accessible name (aria-label or aria-labelledby pointing at its heading).",
+    "The trigger gets aria-expanded automatically; Esc and click-outside close it and focus returns to the trigger.",
+    "It's not a focus trap — use Dialog when the user must finish something first."
+  ],
+  "do": ["Keep content short; if it scrolls, it probably wants to be a Dialog or a page."],
+  "dont": ["Don't open popovers on hover.", "Don't nest popovers more than one level."],
+  "examples": [{ "id": "share", "title": "Share link" }]
+}

@@ -1,0 +1,104 @@
+/*
+ * Works on <input type="checkbox" role="switch"> (recommended: native forms + keyboard)
+ * and on <button role="switch" aria-checked="…">. The thumb is ::before, so no child markup.
+ * Size follows --ayy-size-switch (density-aware): width is 1.8× the height.
+ */
+.ayy-switch {
+  --_h: var(--ayy-size-switch);
+  --_thumb: calc(var(--_h) - 6px);
+
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  flex: none;
+  inline-size: calc(var(--_h) * 1.8);
+  block-size: var(--_h);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash-hover);
+  vertical-align: middle;
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    border-color var(--ayy-duration-fast) ease;
+}
+
+/* The thumb moves with inset-inline-start (a logical property), so it slides the right way in RTL without
+   any direction detection. Deliberately not :dir() — some CSS minifiers rewrite it into :lang() lists. */
+.ayy-switch::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 2px;
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  border-radius: 50%;
+  background-color: var(--ayy-color-muted);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent);
+  translate: 0 -50%;
+  transition:
+    inset-inline-start var(--ayy-duration-base) var(--ayy-ease-spring),
+    background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-switch:hover {
+  border-color: var(--ayy-color-line-hover);
+}
+
+.ayy-switch:checked,
+.ayy-switch[aria-checked="true"] {
+  border-color: transparent;
+  background-color: var(--ayy-color-text);
+}
+
+.ayy-switch:checked::before,
+.ayy-switch[aria-checked="true"]::before {
+  background-color: var(--ayy-color-bg);
+  inset-inline-start: calc(100% - var(--_thumb) - 2px);
+}
+
+.ayy-switch:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-switch:disabled,
+.ayy-switch[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Forced colors (Windows High Contrast): fills are erased, so paint on/off with system colours. */
+@media (forced-colors: active) {
+  .ayy-switch {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background-color: Canvas;
+  }
+  .ayy-switch::before {
+    background-color: CanvasText;
+    box-shadow: none;
+  }
+  .ayy-switch:checked,
+  .ayy-switch[aria-checked="true"] {
+    border-color: Highlight;
+    background-color: Highlight;
+  }
+  .ayy-switch:checked::before,
+  .ayy-switch[aria-checked="true"]::before {
+    background-color: HighlightText;
+  }
+  .ayy-switch:disabled,
+  .ayy-switch[aria-disabled="true"] {
+    opacity: 1;
+    border-color: GrayText;
+  }
+  .ayy-switch:disabled::before,
+  .ayy-switch[aria-disabled="true"]::before {
+    background-color: GrayText;
+  }
+}

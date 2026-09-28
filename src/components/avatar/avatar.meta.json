@@ -1,0 +1,47 @@
+{
+  "name": "Avatar",
+  "slug": "avatar",
+  "status": "stable",
+  "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
+  "whenToUse": ["People and workspaces in lists, headers, comments.", "Stacks of collaborators (AvatarGroup)."],
+  "whenNotToUse": ["Decorative illustrations — use a plain <img>.", "Icons — use an icon."],
+  "classes": {
+    "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
+    "ayy-avatar--sm": "24px.",
+    "ayy-avatar--lg": "40px.",
+    "ayy-avatar--xl": "56px.",
+    "ayy-avatar--square": "Rounded square (workspaces, teams).",
+    "ayy-avatar__fallback": "Initials, underneath the image.",
+    "ayy-avatar__image": "The <img alt=\"\">. Covers the initials when it loads.",
+    "ayy-avatar-group": "Overlapping stack of avatars."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg", "xl"], "default": "md" },
+    "shape": { "values": ["circle", "square"], "default": "circle" }
+  },
+  "js": "avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants",
+  "react": {
+    "import": "import { Avatar, AvatarGroup } from \"ayywi/react\";",
+    "components": {
+      "Avatar": {
+        "renders": "<span role=\"img\">",
+        "props": {
+          "name": "string (required) — accessible name and initials",
+          "src": "string — image URL",
+          "fallback": "string — custom initials",
+          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "shape": "\"circle\" | \"square\""
+        }
+      },
+      "AvatarGroup": { "renders": "<div role=\"group\">" }
+    }
+  },
+  "a11y": [
+    "The name goes on the root (aria-label); the <img> has alt=\"\" and the initials are aria-hidden, so it's announced once.",
+    "Give an AvatarGroup an aria-label like \"5 collaborators\".",
+    "A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
+  ],
+  "do": ["Show at most 4–5 avatars in a group and a \"+3\" badge for the rest."],
+  "dont": ["Don't rely on the picture alone to identify someone — show the name nearby."],
+  "examples": [{ "id": "basic", "title": "Sizes, fallback, group" }]
+}

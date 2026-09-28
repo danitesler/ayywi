@@ -1,0 +1,133 @@
+{
+  "name": "ayywi",
+  "version": "0.2.0",
+  "description": "Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danitesler/ayywi.git"
+  },
+  "homepage": "https://github.com/danitesler/ayywi#readme",
+  "bugs": "https://github.com/danitesler/ayywi/issues",
+  "keywords": [
+    "design-system",
+    "css",
+    "design-tokens",
+    "react",
+    "vue",
+    "svelte",
+    "web",
+    "ai",
+    "llms",
+    "dark-mode",
+    "rtl"
+  ],
+  "sideEffects": [
+    "*.css",
+    "./dist/elements.*",
+    "./src/elements/*"
+  ],
+  "bin": {
+    "ayywi": "./cli/index.mjs"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/types/react/index.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./elements": {
+      "types": "./dist/types/elements/index.d.ts",
+      "import": "./dist/elements.js",
+      "require": "./dist/elements.cjs"
+    },
+    "./css": "./dist/ayywi.css",
+    "./ayywi.css": "./dist/ayywi.css",
+    "./ayywi.min.css": "./dist/ayywi.min.css",
+    "./ayywi.unlayered.css": "./dist/ayywi.unlayered.css",
+    "./ayywi.unlayered.min.css": "./dist/ayywi.unlayered.min.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./css/*": "./dist/css/*",
+    "./brands/*": "./dist/brands/*",
+    "./fonts.css": "./dist/fonts.css",
+    "./fonts-google.css": "./dist/fonts-google.css",
+    "./tokens.json": "./tokens/tokens.json",
+    "./tokens/*": "./dist/tokens/*",
+    "./tailwind-preset": "./tailwind/preset.cjs",
+    "./tailwind.css": "./tailwind/theme.css",
+    "./manifest": "./manifest/components.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "cli",
+    "tokens",
+    "tailwind",
+    "manifest",
+    "ai",
+    "llms.txt",
+    "llms-full.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "manifest": "node scripts/build-manifest.mjs",
+    "generate": "node scripts/build-tokens.mjs && node scripts/build-manifest.mjs",
+    "build": "node scripts/build-tokens.mjs && node scripts/build-manifest.mjs && node scripts/build.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p preview/tsconfig.json && tsc --noEmit -p tests/tsconfig.json",
+    "check": "node scripts/check.mjs",
+    "lint:examples": "node cli/index.mjs lint src/components",
+    "test": "node --test \"tests/node/*.test.mjs\"",
+    "test:e2e": "playwright test",
+    "preview": "vite --config preview/vite.config.ts",
+    "preview:build": "node scripts/build-tokens.mjs && node scripts/build-manifest.mjs && vite build --config preview/vite.config.ts",
+    "preview:serve": "vite preview --config preview/vite.config.ts",
+    "prepare": "node scripts/build.mjs",
+    "prepublishOnly": "node scripts/check.mjs"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "peerDependencies": {
+    "react": ">=18.2",
+    "react-dom": ">=18.2"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@fontsource-variable/caveat": "^5.3.0",
+    "@fontsource-variable/sora": "^5.3.0",
+    "@fontsource-variable/unbounded": "^5.3.0",
+    "@playwright/test": "1.56.1",
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "esbuild": "^0.28.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "sass": "^1.105.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

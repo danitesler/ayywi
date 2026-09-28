@@ -1,0 +1,18 @@
+<!-- <ayy-dialog> (ayywi/elements): [data-ayy-open] opens, [data-ayy-close] closes, backdrop click closes.
+     Without it, call dialog.showModal() / dialog.close() yourself. -->
+<ayy-dialog>
+  <button type="button" class="ayy-button ayy-button--destructive" data-ayy-open aria-haspopup="dialog">Delete project</button>
+  <dialog class="ayy-dialog ayy-dialog--sm" aria-labelledby="confirm-delete-title" aria-describedby="confirm-delete-desc">
+    <div class="ayy-dialog__header">
+      <h2 class="ayy-dialog__title" id="confirm-delete-title">Delete Marketing site?</h2>
+      <p class="ayy-dialog__description" id="confirm-delete-desc">Its deployments and settings are removed. This can't be undone.</p>
+    </div>
+    <div class="ayy-dialog__footer">
+      <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close>Cancel</button>
+      <button type="button" class="ayy-button ayy-button--destructive" data-ayy-close="delete">Delete</button>
+    </div>
+    <button type="button" class="ayy-dialog__close" aria-label="Close" data-ayy-close>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </dialog>
+</ayy-dialog>

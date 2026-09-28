@@ -1,0 +1,40 @@
+{
+  "name": "Input",
+  "slug": "input",
+  "status": "stable",
+  "description": "Single-line text field. Works for every native input type (text, email, search, number, file…).",
+  "whenToUse": ["Short free-text entry: names, URLs, search, API keys."],
+  "whenNotToUse": ["Multi-line text — use Textarea.", "On/off — use Switch."],
+  "classes": {
+    "ayy-input": "Root, on the <input> itself.",
+    "ayy-input--sm": "28px tall.",
+    "ayy-input--lg": "40px tall."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
+  "states": {
+    "aria-invalid=\"true\"": "Red border and focus ring. Pair with a Field error message.",
+    "disabled": "Dimmed, not-allowed cursor."
+  },
+  "js": "inputClass({ size?, className? }) → string",
+  "react": {
+    "import": "import { Input } from \"ayywi/react\";",
+    "components": {
+      "Input": {
+        "renders": "<input>",
+        "props": { "size": "\"sm\" | \"md\" | \"lg\" (visual size; native size attr not exposed)", "...rest": "All native <input> attributes." }
+      }
+    }
+  },
+  "a11y": [
+    "Every input needs a label: wrap in a Field with a Label (for/id), or aria-label for search boxes.",
+    "Errors: aria-invalid=\"true\" + aria-describedby pointing at the error text."
+  ],
+  "do": ["Match the input size to neighbouring buttons in a toolbar (sm with sm)."],
+  "dont": ["Don't use placeholder as the label.", "Don't hardcode widths in px inside flexible layouts — the input fills its container."],
+  "examples": [
+    { "id": "basic", "title": "Types & sizes" },
+    { "id": "invalid", "title": "Invalid" }
+  ]
+}

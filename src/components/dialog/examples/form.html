@@ -1,0 +1,22 @@
+<!-- method="dialog" closes the dialog on submit with zero JS; the submit button's value becomes dialog.returnValue. -->
+<ayy-dialog>
+  <button type="button" class="ayy-button ayy-button--outline" data-ayy-open aria-haspopup="dialog">Rename project</button>
+  <dialog class="ayy-dialog" aria-labelledby="rename-project-title">
+    <form method="dialog" class="ayy-stack" style="gap: 1rem">
+      <div class="ayy-dialog__header">
+        <h2 class="ayy-dialog__title" id="rename-project-title">Rename project</h2>
+      </div>
+      <div class="ayy-field">
+        <label class="ayy-label" for="project-name-html">Name</label>
+        <input class="ayy-input" id="project-name-html" name="name" value="marketing-site" autofocus />
+      </div>
+      <div class="ayy-dialog__footer">
+        <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close>Cancel</button>
+        <button type="submit" class="ayy-button" value="save">Save</button>
+      </div>
+    </form>
+    <button type="button" class="ayy-dialog__close" aria-label="Close" data-ayy-close>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </dialog>
+</ayy-dialog>

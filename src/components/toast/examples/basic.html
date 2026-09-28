@@ -1,0 +1,5 @@
+<!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "ayywi". -->
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Changes saved')">Default</button>
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.success('Deployed', { description: 'Marketing site is live.' })">Success</button>
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Project archived', { action: { label: 'Undo', onClick: () => ayywi.toast.info('Project restored') } })">With action</button>
+<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.error('Build failed', { description: '3 type errors in api/server.ts' })">Error</button>

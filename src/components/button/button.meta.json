@@ -1,0 +1,64 @@
+{
+  "name": "Button",
+  "slug": "button",
+  "status": "stable",
+  "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
+  "whenToUse": [
+    "Any action the user can take: submit, open, save, delete.",
+    "Links that should look like actions (apply buttonClass() to the <a>)."
+  ],
+  "whenNotToUse": [
+    "Navigation inside running text — use a plain link.",
+    "Toggling a setting on/off — use Switch."
+  ],
+  "classes": {
+    "ayy-button": "Root. Alone it is the primary button.",
+    "ayy-button--secondary": "Quiet filled button for secondary actions.",
+    "ayy-button--outline": "Bordered, transparent. Neutral alternative to secondary.",
+    "ayy-button--ghost": "No border or fill until hover. Toolbars, icon buttons.",
+    "ayy-button--destructive": "Tinted red. Irreversible actions.",
+    "ayy-button--link": "Looks like a text link.",
+    "ayy-button--sm": "28px tall.",
+    "ayy-button--lg": "40px tall.",
+    "ayy-button--icon": "Square 32px, for a single icon.",
+    "ayy-button--icon-sm": "Square 28px, for a single icon."
+  },
+  "variants": {
+    "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link"], "default": "primary" },
+    "size": { "values": ["sm", "md", "lg", "icon", "icon-sm"], "default": "md" }
+  },
+  "js": "buttonClass({ variant?, size?, className? }) → string",
+  "react": {
+    "import": "import { Button } from \"ayywi/react\";",
+    "components": {
+      "Button": {
+        "renders": "<button>",
+        "props": {
+          "variant": "\"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"destructive\" | \"link\"",
+          "size": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-sm\"",
+          "type": "Defaults to \"button\" (not \"submit\").",
+          "...rest": "All native <button> attributes."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Icon-only buttons need aria-label.",
+    "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
+    "Visible focus ring on :focus-visible is built in — never remove it."
+  ],
+  "do": [
+    "One primary button per view or section; everything else secondary/outline/ghost.",
+    "Put the icon before the label; it inherits size from the button (1.25em)."
+  ],
+  "dont": [
+    "Don't restyle colours per button — add a variant to the design system instead.",
+    "Don't use destructive for non-destructive emphasis."
+  ],
+  "examples": [
+    { "id": "variants", "title": "Variants" },
+    { "id": "sizes", "title": "Sizes" },
+    { "id": "icon", "title": "With icon & icon-only" },
+    { "id": "as-link", "title": "Link styled as a button" }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "name": "Dialog",
+  "slug": "dialog",
+  "status": "stable",
+  "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.",
+  "whenToUse": ["Confirming a destructive action.", "Short focused tasks that must finish before continuing (rename, create)."],
+  "whenNotToUse": ["Long forms or multi-step flows — use a page.", "Non-blocking messages — use an inline notice."],
+  "classes": {
+    "ayy-dialog": "On the <dialog> element. Open with dialog.showModal().",
+    "ayy-dialog--sm": "24rem wide.",
+    "ayy-dialog--lg": "42rem wide.",
+    "ayy-dialog--xl": "56rem wide.",
+    "ayy-dialog__header": "Title + description block.",
+    "ayy-dialog__title": "Heading (h2). Reference it with aria-labelledby on the dialog.",
+    "ayy-dialog__description": "Muted supporting text.",
+    "ayy-dialog__footer": "Actions. Stacked on mobile, right-aligned (end-aligned in RTL) from 640px.",
+    "ayy-dialog__close": "Icon button in the top-end corner."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg", "xl"], "default": "md", "component": "DialogContent" }
+  },
+  "js": "dialogClass({ size?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (SVG string). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
+  "element": {
+    "tag": "ayy-dialog",
+    "attributes": {
+      "open": "Two-way open state",
+      "persistent": "Backdrop clicks don't close it (Esc still does)"
+    },
+    "events": { "ayy-open-change": "{ open: boolean, returnValue?: string }" },
+    "children": "A trigger with data-ayy-open and a <dialog class=\"ayy-dialog\">. Inside the dialog, data-ayy-close=\"value\" closes it and sets dialog.returnValue."
+  },
+  "react": {
+    "import": "import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from \"ayywi/react\";",
+    "components": {
+      "Dialog": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
+      "DialogTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },
+      "DialogContent": {
+        "renders": "<dialog>",
+        "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "hideClose": "boolean — hide the corner close button",
+          "closeLabel": "string — accessible name of the close button (translate it). Default \"Close\"",
+          "closeOnBackdrop": "boolean — default true"
+        }
+      },
+      "DialogHeader": { "renders": "<div>" },
+      "DialogTitle": { "renders": "<h2>, auto-wired to aria-labelledby" },
+      "DialogDescription": { "renders": "<p>, auto-wired to aria-describedby" },
+      "DialogFooter": { "renders": "<div>" },
+      "DialogClose": { "renders": "Button (secondary by default)" }
+    }
+  },
+  "a11y": [
+    "Always include a DialogTitle (or aria-label on the dialog).",
+    "Focus moves into the dialog on open and returns to the trigger on close (native behaviour).",
+    "Esc closes; background is inert while open; page scroll is locked.",
+    "Opening and closing fade/scale; the closing animation is skipped in browsers without @starting-style and under reduced motion."
+  ],
+  "do": ["Put the primary action last in the footer.", "Use destructive variant for the confirm button of irreversible actions."],
+  "dont": ["Don't open a dialog from inside another dialog.", "Don't render DialogContent's children while closed — the React component already skips them for you."],
+  "examples": [
+    { "id": "confirm", "title": "Confirm" },
+    { "id": "form", "title": "With a form" }
+  ]
+}

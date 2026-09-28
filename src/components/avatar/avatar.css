@@ -1,0 +1,77 @@
+/*
+ * Avatar: initials underneath, image on top. If the image fails, React and ayywi/elements hide it so the
+ * initials show; with CSS alone a failed image becomes a plain disc instead of the browser's broken-image icon.
+ * The accessible name lives on the root (role="img" + aria-label).
+ */
+
+.ayy-avatar {
+  --_s: 2rem;
+  position: relative;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--_s);
+  block-size: var(--_s);
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text-soft);
+  font-size: calc(var(--_s) * 0.38);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.ayy-avatar__fallback,
+.ayy-avatar__image {
+  grid-area: 1 / 1;
+}
+
+.ayy-avatar__image {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* Only a broken image renders pseudo-elements: cover the broken-image icon. */
+.ayy-avatar__image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--ayy-color-surface-raised);
+}
+
+.ayy-avatar__image[hidden] {
+  display: none;
+}
+
+.ayy-avatar--sm { --_s: 1.5rem; }
+.ayy-avatar--lg { --_s: 2.5rem; }
+.ayy-avatar--xl { --_s: 3.5rem; }
+
+.ayy-avatar--square {
+  border-radius: var(--ayy-radius-lg);
+}
+
+/* Overlapping stack. The ring uses the page background so avatars read as separate discs. */
+.ayy-avatar-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ayy-avatar-group > .ayy-avatar {
+  box-shadow: 0 0 0 2px var(--ayy-color-bg);
+}
+
+.ayy-avatar-group > .ayy-avatar + .ayy-avatar {
+  margin-inline-start: calc(var(--_s) * -0.2);
+}
+
+@media (forced-colors: active) {
+  .ayy-avatar {
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,165 @@
+.ayy-button {
+  --_bg: var(--ayy-color-primary);
+  --_fg: var(--ayy-color-primary-fg);
+  --_border: transparent;
+  --_bg-hover: var(--_bg);
+  --_border-hover: var(--_border);
+  --_weight: var(--ayy-weight-semibold);
+  --_shadow-hover: var(--ayy-shadow-glow);
+  --_opacity-hover: 0.9;
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1-5);
+  block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-control-pad-md);
+  border: 1px solid var(--_border);
+  border-radius: var(--ayy-radius-button);
+  background-color: var(--_bg);
+  color: var(--_fg);
+  font-family: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--_weight);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--ayy-duration-base) var(--ayy-ease-spring),
+    background-color var(--ayy-duration-base) ease,
+    border-color var(--ayy-duration-base) ease,
+    box-shadow var(--ayy-duration-base) ease,
+    opacity var(--ayy-duration-base) ease;
+}
+
+.ayy-button:hover {
+  background-color: var(--_bg-hover);
+  border-color: var(--_border-hover);
+  box-shadow: var(--_shadow-hover);
+  opacity: var(--_opacity-hover);
+  transform: translateY(-2px);
+}
+
+.ayy-button:active {
+  transform: none;
+}
+
+.ayy-button:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-button:disabled,
+.ayy-button[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.ayy-button > svg {
+  flex: none;
+  inline-size: 1.25em;
+  block-size: 1.25em;
+}
+
+/* ---- Variants (primary is the base above) ---- */
+
+.ayy-button--secondary,
+.ayy-button--outline,
+.ayy-button--ghost,
+.ayy-button--destructive,
+.ayy-button--link {
+  --_weight: var(--ayy-weight-medium);
+  --_shadow-hover: none;
+  --_opacity-hover: 1;
+}
+
+.ayy-button--secondary {
+  --_bg: var(--ayy-color-wash);
+  --_fg: var(--ayy-color-text);
+  --_border: var(--ayy-color-line);
+  --_bg-hover: var(--ayy-color-wash-hover);
+  --_border-hover: var(--ayy-color-line-hover);
+}
+
+.ayy-button--outline {
+  --_bg: transparent;
+  --_fg: var(--ayy-color-text);
+  --_border: var(--ayy-color-line-strong);
+  --_bg-hover: var(--ayy-color-wash);
+  --_border-hover: var(--ayy-color-line-hover);
+}
+
+.ayy-button--ghost {
+  --_bg: transparent;
+  --_fg: var(--ayy-color-text);
+  --_bg-hover: var(--ayy-color-wash);
+}
+
+.ayy-button--destructive {
+  --_bg: color-mix(in srgb, var(--ayy-color-destructive) 10%, transparent);
+  --_fg: var(--ayy-color-destructive);
+  --_border: color-mix(in srgb, var(--ayy-color-destructive) 25%, transparent);
+  --_bg-hover: color-mix(in srgb, var(--ayy-color-destructive) 15%, transparent);
+  --_border-hover: color-mix(in srgb, var(--ayy-color-destructive) 40%, transparent);
+}
+
+.ayy-button--link {
+  --_bg: transparent;
+  --_fg: var(--ayy-color-text);
+  block-size: auto;
+  padding-inline: 0;
+  text-underline-offset: 4px;
+}
+.ayy-button--link:hover {
+  transform: none;
+  text-decoration: underline;
+}
+
+/* ---- Sizes ---- */
+
+.ayy-button--sm {
+  block-size: var(--ayy-size-control-sm);
+  padding-inline: var(--ayy-control-pad-sm);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-button--lg {
+  block-size: var(--ayy-size-control-lg);
+  padding-inline: var(--ayy-control-pad-lg);
+  font-size: var(--ayy-control-text-lg);
+}
+
+.ayy-button--icon,
+.ayy-button--icon-sm {
+  aspect-ratio: 1;
+  padding-inline: 0;
+}
+.ayy-button--icon {
+  block-size: var(--ayy-size-control-md);
+}
+.ayy-button--icon-sm {
+  block-size: var(--ayy-size-control-sm);
+}
+
+/* ---- Windows High Contrast / forced colors: fills are replaced by the system, so give every button an edge. ---- */
+@media (forced-colors: active) {
+  .ayy-button {
+    border-color: ButtonText;
+  }
+  .ayy-button--ghost,
+  .ayy-button--link {
+    border-color: transparent;
+  }
+  .ayy-button:disabled,
+  .ayy-button[aria-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+}

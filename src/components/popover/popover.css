@@ -1,0 +1,48 @@
+/*
+ * Native popover (the `popover` attribute): top layer, light dismiss (click outside / Esc), no z-index fights.
+ * Placement next to the trigger comes from React Popover or <ayy-popover>; without JS it opens centred.
+ */
+
+.ayy-popover {
+  box-sizing: border-box;
+  inline-size: max-content;
+  max-inline-size: min(22rem, calc(100vw - 1rem));
+  padding: var(--ayy-space-4);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    transform var(--ayy-duration-fast) var(--ayy-ease-menu),
+    overlay var(--ayy-duration-fast) allow-discrete,
+    display var(--ayy-duration-fast) allow-discrete;
+}
+
+.ayy-popover:not(:popover-open) {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+@starting-style {
+  .ayy-popover:popover-open {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+/* <ayy-popover> only adds behaviour; it has no box of its own. */
+ayy-popover {
+  display: contents;
+}
+
+@media (forced-colors: active) {
+  .ayy-popover {
+    border-color: CanvasText;
+  }
+}

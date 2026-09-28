@@ -1,0 +1,52 @@
+/* Loading placeholder with a quiet shimmer (stops under reduced motion). Size it like the content it stands in for. */
+
+.ayy-skeleton {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: 1rem;
+  overflow: hidden;
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ayy-color-text) 7%, transparent),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: ayy-shimmer 1.6s var(--ayy-ease-standard) infinite;
+}
+
+.ayy-skeleton--text {
+  block-size: 0.75em;
+  border-radius: var(--ayy-radius-sm);
+}
+
+.ayy-skeleton--circle {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  flex: none;
+  border-radius: 50%;
+}
+
+@keyframes ayy-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-skeleton {
+    border: 1px dashed CanvasText;
+  }
+  .ayy-skeleton::after {
+    display: none;
+  }
+}

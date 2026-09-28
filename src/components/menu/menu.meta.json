@@ -1,0 +1,67 @@
+{
+  "name": "Dropdown menu",
+  "slug": "menu",
+  "status": "stable",
+  "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
+  "whenToUse": ["Secondary actions for an item (rename, duplicate, delete).", "Overflow “⋯” menus in toolbars and table rows."],
+  "whenNotToUse": [
+    "Choosing a value in a form — use Select or Radio.",
+    "Navigation between pages — use links.",
+    "Rich content or form fields — use Popover."
+  ],
+  "classes": {
+    "ayy-menu": "On the element with popover and role=\"menu\".",
+    "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",
+    "ayy-menu__item--destructive": "Red item for destructive actions.",
+    "ayy-menu__shortcut": "Keyboard shortcut hint at the end of an item.",
+    "ayy-menu__label": "Small uppercase group label.",
+    "ayy-menu__separator": "Divider (role=\"separator\")."
+  },
+  "variants": {
+    "side": { "values": ["bottom", "top", "start", "end"], "default": "bottom", "component": "DropdownMenuContent" },
+    "align": { "values": ["start", "center", "end"], "default": "start", "component": "DropdownMenuContent" }
+  },
+  "states": {
+    ":popover-open": "Open.",
+    "disabled / aria-disabled=\"true\"": "Item skipped by the keyboard and dimmed."
+  },
+  "js": "menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })",
+  "element": {
+    "tag": "ayy-menu",
+    "attributes": {
+      "side": "bottom | top | start | end",
+      "align": "start | center | end",
+      "open": "Two-way open state"
+    },
+    "events": {
+      "ayy-select": "{ value: string, item: HTMLElement } — value is the item's data-value, else its text",
+      "ayy-open-change": "{ open: boolean }"
+    },
+    "children": "A trigger <button> and a [popover] element with role=\"menu\" containing .ayy-menu__item buttons."
+  },
+  "react": {
+    "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from \"ayywi/react\";",
+    "components": {
+      "DropdownMenu": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
+      "DropdownMenuTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },
+      "DropdownMenuContent": {
+        "renders": "<div popover role=\"menu\">",
+        "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"start\" | \"center\" | \"end\"" }
+      },
+      "DropdownMenuItem": {
+        "renders": "<button role=\"menuitem\">",
+        "props": { "onSelect": "() => void — runs when chosen; the menu then closes", "destructive": "boolean", "shortcut": "string — hint like \"⌘D\"" }
+      },
+      "DropdownMenuLabel": { "renders": "<div role=\"presentation\">" },
+      "DropdownMenuSeparator": { "renders": "<div role=\"separator\">" }
+    }
+  },
+  "a11y": [
+    "Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items.",
+    "Esc or Tab closes the menu and focus returns to the trigger.",
+    "Icon-only triggers (⋯) need aria-label."
+  ],
+  "do": ["Put destructive actions last, after a separator.", "Keep item labels to a verb + noun: \"Rename project\"."],
+  "dont": ["Don't put form fields or links to other pages in a menu.", "Don't nest menus."],
+  "examples": [{ "id": "actions", "title": "Item actions" }]
+}

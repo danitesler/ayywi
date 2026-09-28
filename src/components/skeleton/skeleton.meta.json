@@ -1,0 +1,30 @@
+{
+  "name": "Skeleton",
+  "slug": "skeleton",
+  "status": "stable",
+  "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
+  "whenToUse": ["Content that takes more than ~300ms and has a predictable layout (cards, lists, profile headers)."],
+  "whenNotToUse": ["Unknown layouts or long jobs — use Progress.", "Instant loads — skeletons that flash are worse than nothing."],
+  "classes": {
+    "ayy-skeleton": "Block placeholder. Set its size to match the content.",
+    "ayy-skeleton--text": "Text line (0.75em tall).",
+    "ayy-skeleton--circle": "Circle (avatars, icons)."
+  },
+  "variants": {
+    "shape": { "values": ["block", "text", "circle"], "default": "block" }
+  },
+  "js": "skeletonClass({ shape?, className? }) → string",
+  "react": {
+    "import": "import { Skeleton } from \"ayywi/react\";",
+    "components": {
+      "Skeleton": { "renders": "<div aria-hidden=\"true\">", "props": { "shape": "\"block\" | \"text\" | \"circle\"" } }
+    }
+  },
+  "a11y": [
+    "Skeletons are aria-hidden. Put aria-busy=\"true\" on the container while loading, and remove it when content arrives. To name the loading region, give it role=\"status\" and an aria-label — aria-label on a plain div is ignored.",
+    "The shimmer stops under prefers-reduced-motion."
+  ],
+  "do": ["Match the real layout closely so nothing jumps when content arrives."],
+  "dont": ["Don't show skeletons for errors or empty states."],
+  "examples": [{ "id": "card", "title": "Loading card" }]
+}

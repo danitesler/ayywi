@@ -1,0 +1,6 @@
+/*
+ * Opt-in brand fonts (Unbounded, Sora, Caveat — all SIL OFL) from Google Fonts.
+ * Import this BEFORE ayywi.css, or self-host the same families (e.g. @fontsource/sora)
+ * for offline apps and better privacy/perf. Without it, ayywi falls back to system fonts.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Sora:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap");

@@ -1,0 +1,44 @@
+{
+  "name": "Progress",
+  "slug": "progress",
+  "status": "stable",
+  "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
+  "whenToUse": ["Sync, upload, install — anything with measurable progress.", "Indeterminate: work of unknown length that takes more than ~1s."],
+  "whenNotToUse": ["Quotas or meters that aren't 'progress' — still fine visually, but use role=\"meter\" instead of progressbar."],
+  "classes": {
+    "ayy-progress": "Track. Set --ayy-value (0–100) on it.",
+    "ayy-progress__bar": "Fill (only child).",
+    "ayy-progress--sm": "4px tall.",
+    "ayy-progress--lg": "10px tall.",
+    "ayy-progress--success": "Green fill.",
+    "ayy-progress--warning": "Amber fill.",
+    "ayy-progress--destructive": "Red fill.",
+    "ayy-progress--ai": "Purple fill.",
+    "ayy-progress--indeterminate": "Looping animation; omit aria-valuenow."
+  },
+  "variants": {
+    "tone": { "values": ["default", "success", "warning", "destructive", "ai"], "default": "default" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
+  "js": "progressClass({ tone?, size?, indeterminate?, className? }) → string",
+  "react": {
+    "import": "import { Progress } from \"ayywi/react\";",
+    "components": {
+      "Progress": {
+        "renders": "<div role=\"progressbar\">",
+        "props": {
+          "value": "number 0–100; omit/null → indeterminate",
+          "tone": "\"default\" | \"success\" | \"warning\" | \"destructive\" | \"ai\"",
+          "size": "\"sm\" | \"md\" | \"lg\""
+        }
+      }
+    }
+  },
+  "a11y": [
+    "role=\"progressbar\" with aria-valuenow/min/max (React sets them).",
+    "Give it an accessible name: aria-label or aria-labelledby."
+  ],
+  "do": ["Show the percentage or step as text nearby for anything longer than a few seconds."],
+  "dont": ["Don't animate a determinate bar backwards."],
+  "examples": [{ "id": "basic", "title": "Values, tones, indeterminate" }]
+}

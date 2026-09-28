@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="node_modules/ayywi/dist/ayywi.min.css" />
+<main class="ayy-stack">
+  <div class="ayy-field">
+    <label class="ayy-label" for="name">Project name</label>
+    <input class="ayy-input" id="name" aria-describedby="name-hint" />
+    <p class="ayy-field__hint" id="name-hint">Shown in the dashboard.</p>
+  </div>
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="previews" />
+    <label class="ayy-label" for="previews">Deploy previews</label>
+  </div>
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="alerts" />
+    <label class="ayy-label" for="alerts">Email alerts</label>
+  </div>
+  <div class="ayy-cluster">
+    <button class="ayy-button">Save</button>
+    <button class="ayy-button ayy-button--outline">Cancel</button>
+  </div>
+</main>

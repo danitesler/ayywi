@@ -1,0 +1,41 @@
+{
+  "name": "Table",
+  "slug": "table",
+  "status": "stable",
+  "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
+  "whenToUse": ["Comparing items across the same attributes (projects × status × builds)."],
+  "whenNotToUse": ["Layout — never use tables for layout.", "Lists with one attribute — use a list."],
+  "classes": {
+    "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
+    "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
+    "ayy-table--compact": "Tighter rows.",
+    "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits."
+  },
+  "variants": {
+    "compact": { "values": [true, false], "default": false }
+  },
+  "states": {
+    "tr[aria-selected=\"true\"]": "Selected row highlight."
+  },
+  "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass constants",
+  "react": {
+    "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from \"ayywi/react\";",
+    "components": {
+      "Table": { "renders": "<div class=\"ayy-table-wrap\"><table>", "props": { "compact": "boolean" } },
+      "TableHeader": { "renders": "<thead>" },
+      "TableBody": { "renders": "<tbody>" },
+      "TableFooter": { "renders": "<tfoot>" },
+      "TableRow": { "renders": "<tr>" },
+      "TableHead": { "renders": "<th scope=\"col\">", "props": { "numeric": "boolean" } },
+      "TableCell": { "renders": "<td>", "props": { "numeric": "boolean" } },
+      "TableCaption": { "renders": "<caption>" }
+    }
+  },
+  "a11y": [
+    "Use real <th> header cells with scope (React sets scope=\"col\").",
+    "A <caption> or aria-label names the table for screen readers."
+  ],
+  "do": ["End-align numbers with numeric/ayy-table__num.", "Keep cell content short; truncate with a tooltip if needed."],
+  "dont": ["Don't zebra-stripe; hairlines + hover are enough.", "Don't nest interactive controls in every cell — one action column is plenty."],
+  "examples": [{ "id": "basic", "title": "Basic" }]
+}

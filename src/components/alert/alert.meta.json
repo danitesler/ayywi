@@ -1,0 +1,38 @@
+{
+  "name": "Alert",
+  "slug": "alert",
+  "status": "stable",
+  "description": "Inline message box with optional icon, title, description and actions.",
+  "whenToUse": ["Page- or section-level messages that stay until resolved (billing issue, read-only mode, maintenance)."],
+  "whenNotToUse": ["Confirmations that can disappear — use Toast.", "Field errors — use FieldError next to the field."],
+  "classes": {
+    "ayy-alert": "Root. Neutral by default.",
+    "ayy-alert--info": "Blue tint.",
+    "ayy-alert--success": "Green tint.",
+    "ayy-alert--warning": "Amber tint.",
+    "ayy-alert--destructive": "Red tint.",
+    "ayy-alert__title": "Bold first line.",
+    "ayy-alert__description": "Supporting text.",
+    "ayy-alert__actions": "Row of buttons."
+  },
+  "variants": {
+    "variant": { "values": ["default", "info", "success", "warning", "destructive"], "default": "default" }
+  },
+  "js": "alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
+  "react": {
+    "import": "import { Alert, AlertTitle, AlertDescription, AlertActions } from \"ayywi/react\";",
+    "components": {
+      "Alert": { "renders": "<div>", "props": { "variant": "\"default\" | \"info\" | \"success\" | \"warning\" | \"destructive\"" } },
+      "AlertTitle": { "renders": "<p>" },
+      "AlertDescription": { "renders": "<p>" },
+      "AlertActions": { "renders": "<div>" }
+    }
+  },
+  "a11y": [
+    "Static alerts need no role. If it appears in response to an action, add role=\"alert\" (urgent) or role=\"status\" (polite).",
+    "The icon is decorative: aria-hidden=\"true\". The text must carry the meaning."
+  ],
+  "do": ["Lead with what happened, then what to do about it."],
+  "dont": ["Don't stack several alerts — combine them.", "Don't use destructive for things that aren't errors."],
+  "examples": [{ "id": "variants", "title": "Variants" }]
+}

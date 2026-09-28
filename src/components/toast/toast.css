@@ -1,0 +1,145 @@
+/*
+ * Toasts are created by toast() into one .ayy-toaster region (a manual popover, so it sits in the top layer above
+ * modal dialogs). The region itself ignores the pointer; each toast re-enables it.
+ */
+
+.ayy-toaster {
+  position: fixed;
+  inset: auto;
+  inset-block-end: var(--ayy-space-4);
+  inset-inline-end: var(--ayy-space-4);
+  z-index: var(--ayy-z-toast);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  inline-size: min(22rem, calc(100vw - 2rem));
+  block-size: auto;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  color: var(--ayy-color-text);
+  pointer-events: none;
+}
+
+.ayy-toaster:not(:has(.ayy-toast)) {
+  visibility: hidden;
+}
+
+.ayy-toaster[data-position^="top"] {
+  inset-block-end: auto;
+  inset-block-start: var(--ayy-space-4);
+  flex-direction: column-reverse;
+}
+
+.ayy-toaster[data-position$="start"] {
+  inset-inline-end: auto;
+  inset-inline-start: var(--ayy-space-4);
+}
+
+.ayy-toaster[data-position$="center"] {
+  inset-inline: 0;
+  margin-inline: auto;
+}
+
+.ayy-toast {
+  --_c: transparent;
+  pointer-events: auto;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--ayy-space-3);
+  row-gap: var(--ayy-space-1);
+  padding: var(--ayy-space-3) var(--ayy-space-3) var(--ayy-space-3) var(--ayy-space-4);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-inline-start: 3px solid var(--_c);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-snug);
+  animation: ayy-toast-in var(--ayy-duration-base) var(--ayy-ease-menu);
+}
+
+.ayy-toast--success { --_c: var(--ayy-color-success); }
+.ayy-toast--warning { --_c: var(--ayy-color-warning); }
+.ayy-toast--destructive { --_c: var(--ayy-color-destructive); }
+.ayy-toast--info { --_c: var(--ayy-color-info); }
+
+.ayy-toast[data-leaving] {
+  animation: ayy-toast-out var(--ayy-duration-fast) ease forwards;
+}
+
+/* Only the 4 newest are shown; older ones wait their turn. */
+.ayy-toast:nth-last-child(n + 5) {
+  display: none;
+}
+
+.ayy-toast__title {
+  grid-column: 1;
+  margin: 0;
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-toast__description {
+  grid-column: 1;
+  margin: 0;
+  color: var(--ayy-color-text-soft);
+}
+
+.ayy-toast__actions {
+  grid-column: 1;
+  display: flex;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-1);
+}
+
+.ayy-toast__close {
+  grid-column: 2;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin: calc(-1 * var(--ayy-space-1));
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: transparent;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+}
+
+.ayy-toast__close:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-toast__close:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 1px;
+}
+
+.ayy-toast__close > svg {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+}
+
+@keyframes ayy-toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+
+@keyframes ayy-toast-out {
+  to { opacity: 0; transform: scale(0.96); }
+}
+
+@media (forced-colors: active) {
+  .ayy-toast {
+    border-color: CanvasText;
+  }
+}

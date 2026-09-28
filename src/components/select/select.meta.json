@@ -1,0 +1,40 @@
+{
+  "name": "Select",
+  "slug": "select",
+  "status": "stable",
+  "description": "Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.",
+  "whenToUse": ["Choosing one option from a longer list (country, time zone, role)."],
+  "whenNotToUse": ["2–5 options that should all be visible — use Radio.", "Actions — use a Dropdown menu.", "Searching thousands of options — build a combobox."],
+  "classes": {
+    "ayy-select": "Wrapper element. Draws the chevron and sets the height.",
+    "ayy-select__control": "On the <select> inside the wrapper.",
+    "ayy-select--sm": "Small.",
+    "ayy-select--lg": "Large."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
+  "states": {
+    "aria-invalid=\"true\"": "Red border (on the <select>).",
+    "disabled": "Dimmed, chevron too.",
+    "multiple": "Renders as a list box: auto height, no chevron."
+  },
+  "js": "selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>",
+  "react": {
+    "import": "import { Select } from \"ayywi/react\";",
+    "components": {
+      "Select": {
+        "renders": "<div class=\"ayy-select\"><select class=\"ayy-select__control\">",
+        "props": {
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "wrapperProps": "Props for the wrapper <div>",
+          "...rest": "All native <select> attributes; className goes to the <select>."
+        }
+      }
+    }
+  },
+  "a11y": ["Label it like any input (Field + Label with for/id).", "The native picker is fully accessible and mobile-friendly — don't replace it without a strong reason."],
+  "do": ["Put a sensible default first, or a disabled placeholder option."],
+  "dont": ["Don't use a select for yes/no — use a Switch or Checkbox."],
+  "examples": [{ "id": "basic", "title": "Sizes and states" }]
+}

@@ -1,0 +1,52 @@
+/* Value comes from --ayy-value (0–100) on the root. Fills from the inline-start edge, so RTL just works. */
+
+.ayy-progress {
+  --_color: var(--ayy-progress-color, var(--ayy-color-text));
+  position: relative;
+  box-sizing: border-box;
+  display: block;
+  inline-size: 100%;
+  block-size: 6px;
+  overflow: hidden;
+  border-radius: var(--ayy-radius-pill);
+  background-color: color-mix(in srgb, var(--ayy-color-text) 10%, transparent);
+}
+
+.ayy-progress__bar {
+  position: relative;
+  block-size: 100%;
+  inline-size: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
+  border-radius: inherit;
+  background-color: var(--_color);
+  transition: inline-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+.ayy-progress--sm { block-size: 4px; }
+.ayy-progress--lg { block-size: 10px; }
+
+.ayy-progress--success { --_color: var(--ayy-color-success); }
+.ayy-progress--warning { --_color: var(--ayy-color-warning); }
+.ayy-progress--destructive { --_color: var(--ayy-color-destructive); }
+.ayy-progress--ai { --_color: var(--ayy-color-ai-active); }
+
+/* Unknown duration: omit aria-valuenow and add this modifier. Slides along the inline axis, so RTL reverses it. */
+.ayy-progress--indeterminate .ayy-progress__bar {
+  inline-size: 40%;
+  animation: ayy-progress-slide 1.4s var(--ayy-ease-standard) infinite;
+}
+
+@keyframes ayy-progress-slide {
+  from { inset-inline-start: -40%; }
+  to { inset-inline-start: 100%; }
+}
+
+/* Forced colors: outline the track and paint the fill with the system highlight so progress stays visible. */
+@media (forced-colors: active) {
+  .ayy-progress {
+    border: 1px solid CanvasText;
+  }
+  .ayy-progress__bar {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+}

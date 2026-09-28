@@ -1,0 +1,56 @@
+{
+  "name": "Card",
+  "slug": "card",
+  "status": "stable",
+  "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
+  "whenToUse": [
+    "Grouping a unit of content: a project, a person, a plan, a stat.",
+    "Clickable tiles in a grid (add interactive)."
+  ],
+  "whenNotToUse": [
+    "Page sections — use plain layout, not a card around everything.",
+    "Nesting cards inside cards."
+  ],
+  "classes": {
+    "ayy-card": "Root surface.",
+    "ayy-card--interactive": "Lifts on hover. Use when the whole card is clickable.",
+    "ayy-card--spotlight": "Pointer-following glow + lit border. Colour via the --ayy-spot custom property.",
+    "ayy-card__header": "Top block (title + description).",
+    "ayy-card__title": "Heading. Use an h2–h4 that fits your outline.",
+    "ayy-card__description": "Muted supporting text.",
+    "ayy-card__content": "Body.",
+    "ayy-card__footer": "Actions row, pinned to the bottom."
+  },
+  "variants": {
+    "interactive": { "values": [true, false], "default": false },
+    "spotlight": { "values": [true, false], "default": false }
+  },
+  "js": "cardClass({ interactive?, spotlight?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
+  "react": {
+    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from \"ayywi/react\";",
+    "components": {
+      "Card": { "renders": "<div>", "props": { "interactive": "boolean", "spotlight": "boolean — tracks the pointer for you", "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"" } },
+      "CardHeader": { "renders": "<div>" },
+      "CardTitle": { "renders": "<h3>" },
+      "CardDescription": { "renders": "<p>" },
+      "CardContent": { "renders": "<div>" },
+      "CardFooter": { "renders": "<div>" }
+    }
+  },
+  "a11y": [
+    "If the whole card is a link, put the <a> on the title and stretch it (::after inset:0), don't wrap the card in <a>.",
+    "Spotlight layers are pseudo-elements, invisible to assistive tech."
+  ],
+  "do": [
+    "Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.",
+    "Keep one level of cards; use hairline dividers inside."
+  ],
+  "dont": [
+    "Don't set background colours on cards; the surface token keeps both themes correct.",
+    "Don't use spotlight on dense lists — it's for showcase grids."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Basic" },
+    { "id": "spotlight", "title": "Interactive with spotlight" }
+  ]
+}

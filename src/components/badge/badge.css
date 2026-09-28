@@ -1,0 +1,103 @@
+.ayy-badge {
+  --_c: var(--ayy-color-text);
+  --_line: var(--ayy-color-line-strong);
+  --_bg: var(--ayy-color-wash);
+  --_fg: var(--ayy-color-text);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  max-inline-size: 100%;
+  padding-block: var(--ayy-space-0-5);
+  padding-inline: 0.625rem;
+  border: 1px solid var(--_line);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--_bg);
+  color: var(--_fg);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-normal);
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    border-color var(--ayy-duration-base) ease,
+    background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-badge--muted {
+  --_line: var(--ayy-color-hairline);
+  --_fg: var(--ayy-color-muted);
+}
+
+.ayy-badge--outline {
+  --_bg: transparent;
+  --_fg: var(--ayy-color-muted);
+}
+
+.ayy-badge--success { --_c: var(--ayy-color-success); }
+.ayy-badge--warning { --_c: var(--ayy-color-warning); }
+.ayy-badge--destructive { --_c: var(--ayy-color-destructive); }
+.ayy-badge--info { --_c: var(--ayy-color-info); }
+.ayy-badge--ai { --_c: var(--ayy-color-ai-active); }
+
+.ayy-badge--success,
+.ayy-badge--warning,
+.ayy-badge--destructive,
+.ayy-badge--info,
+.ayy-badge--ai {
+  --_line: color-mix(in srgb, var(--_c) 30%, transparent);
+  --_bg: color-mix(in srgb, var(--_c) 10%, transparent);
+  --_fg: var(--_c);
+}
+
+/* ---- Status dot (live indicator) ---- */
+
+.ayy-badge:has(> .ayy-badge__dot:first-child) {
+  padding-inline-start: var(--ayy-space-2);
+}
+
+.ayy-badge__dot {
+  --_dot: var(--ayy-dot, var(--ayy-color-success));
+  position: relative;
+  flex: none;
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background-color: var(--_dot);
+}
+
+.ayy-badge:is(.ayy-badge--success, .ayy-badge--warning, .ayy-badge--destructive, .ayy-badge--info, .ayy-badge--ai) > .ayy-badge__dot {
+  --_dot: var(--ayy-dot, var(--_c));
+}
+
+.ayy-badge__dot::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--_dot) 55%, transparent);
+  opacity: 0;
+  animation: ayy-dot-pulse 2.4s ease-out infinite;
+}
+
+.ayy-badge__dot--static::after {
+  animation: none;
+}
+
+/* Forced colors: the dot's fill would be erased, so draw it in the text colour. */
+@media (forced-colors: active) {
+  .ayy-badge__dot {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+  .ayy-badge__dot::after {
+    display: none;
+  }
+}
+
+@keyframes ayy-dot-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  60% { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}

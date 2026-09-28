@@ -1,0 +1,109 @@
+/* Styled native <select>: the OS picker, keyboard and form behaviour stay native. The wrapper draws the chevron. */
+
+.ayy-select {
+  --_h: var(--ayy-size-control-md);
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  color: var(--ayy-color-text);
+}
+
+.ayy-select__control {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--_h);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-3) calc(var(--ayy-space-3) + 1.25rem);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--ayy-control-text-md);
+  line-height: var(--ayy-leading-normal);
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-select__control option,
+.ayy-select__control optgroup {
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+}
+
+.ayy-select::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--ayy-space-3);
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-right: 1.5px solid currentColor; /* ayy-allow-physical: chevron shape, points down in any direction */
+  border-bottom: 1.5px solid currentColor;
+  color: var(--ayy-color-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.ayy-select__control:hover {
+  border-color: var(--ayy-color-line-hover);
+}
+
+.ayy-select__control:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.ayy-select__control:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ayy-select:has(> .ayy-select__control:disabled)::after {
+  opacity: 0.4;
+}
+
+.ayy-select__control[aria-invalid="true"] {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+/* multiple / size > 1 render a list box: no fixed height, no chevron. */
+.ayy-select__control:is([multiple], [size]:not([size="1"])) {
+  block-size: auto;
+  padding: var(--ayy-space-1);
+}
+.ayy-select:has(> .ayy-select__control:is([multiple], [size]:not([size="1"])))::after {
+  display: none;
+}
+
+.ayy-select--sm {
+  --_h: var(--ayy-size-control-sm);
+}
+.ayy-select--sm .ayy-select__control {
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-select--lg {
+  --_h: var(--ayy-size-control-lg);
+}
+.ayy-select--lg .ayy-select__control {
+  font-size: var(--ayy-control-text-lg);
+}
+
+@media (forced-colors: active) {
+  .ayy-select__control {
+    border-color: FieldText;
+  }
+  .ayy-select::after {
+    color: FieldText;
+  }
+}

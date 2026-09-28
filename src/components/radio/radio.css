@@ -1,0 +1,100 @@
+/* Native <input type="radio"> with a drawn circle and dot. Group radios in a <fieldset class="ayy-radio-group">. */
+
+.ayy-radio {
+  --_s: var(--ayy-size-check);
+
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  inline-size: var(--_s);
+  block-size: var(--_s);
+  margin: 0;
+  border: 1px solid var(--ayy-color-line-hover);
+  border-radius: 50%;
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-primary-fg);
+  vertical-align: middle;
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-radio::before {
+  content: "";
+  inline-size: calc(var(--_s) * 0.4);
+  block-size: calc(var(--_s) * 0.4);
+  border-radius: 50%;
+  background-color: currentColor;
+  transform: scale(0);
+  transition: transform var(--ayy-duration-fast) var(--ayy-ease-spring);
+}
+
+.ayy-radio:hover {
+  border-color: var(--ayy-color-text-soft);
+}
+
+.ayy-radio:checked {
+  border-color: var(--ayy-color-primary);
+  background-color: var(--ayy-color-primary);
+}
+
+.ayy-radio:checked::before {
+  transform: scale(1);
+}
+
+.ayy-radio:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-radio:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Group ---- */
+
+.ayy-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ayy-radio-group--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--ayy-space-2) var(--ayy-space-5);
+}
+
+.ayy-radio-group__legend {
+  margin-block-end: var(--ayy-space-1);
+  padding: 0;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  color: var(--ayy-color-text);
+}
+
+@media (forced-colors: active) {
+  .ayy-radio {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background-color: Canvas;
+    color: HighlightText;
+  }
+  .ayy-radio:checked {
+    border-color: Highlight;
+    background-color: Highlight;
+  }
+  .ayy-radio:disabled {
+    opacity: 1;
+    border-color: GrayText;
+  }
+}

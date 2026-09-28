@@ -1,0 +1,89 @@
+/* Native <input type="checkbox"> with a drawn box and check mark (::before). Size follows --ayy-size-check (density-aware). */
+
+.ayy-checkbox {
+  --_s: var(--ayy-size-check);
+
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  inline-size: var(--_s);
+  block-size: var(--_s);
+  margin: 0;
+  border: 1px solid var(--ayy-color-line-hover);
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-primary-fg);
+  vertical-align: middle;
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-checkbox::before {
+  content: "";
+  inline-size: calc(var(--_s) * 0.62);
+  block-size: calc(var(--_s) * 0.62);
+  background-color: currentColor;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transition: transform var(--ayy-duration-fast) var(--ayy-ease-spring);
+}
+
+.ayy-checkbox:hover {
+  border-color: var(--ayy-color-text-soft);
+}
+
+.ayy-checkbox:checked,
+.ayy-checkbox:indeterminate {
+  border-color: var(--ayy-color-primary);
+  background-color: var(--ayy-color-primary);
+}
+
+.ayy-checkbox:checked::before {
+  transform: scale(1);
+}
+
+/* Indeterminate ("some selected"): a bar instead of a tick. Set el.indeterminate = true (React: indeterminate prop). */
+.ayy-checkbox:indeterminate::before {
+  clip-path: inset(38% 8% round 1px);
+  transform: scale(1);
+}
+
+.ayy-checkbox:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-checkbox:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ayy-checkbox[aria-invalid="true"] {
+  border-color: var(--ayy-color-destructive);
+}
+
+@media (forced-colors: active) {
+  .ayy-checkbox {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background-color: Canvas;
+    color: HighlightText;
+  }
+  .ayy-checkbox:checked,
+  .ayy-checkbox:indeterminate {
+    border-color: Highlight;
+    background-color: Highlight;
+  }
+  .ayy-checkbox:disabled {
+    opacity: 1;
+    border-color: GrayText;
+  }
+  .ayy-checkbox:disabled:checked {
+    background-color: GrayText;
+  }
+}

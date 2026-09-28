@@ -1,0 +1,91 @@
+/* Style lives on plain table elements under .ayy-table, so any template engine can output it. */
+
+.ayy-table-wrap {
+  position: relative;
+  inline-size: 100%;
+  overflow: auto;
+}
+
+.ayy-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  caption-side: bottom;
+  font-size: var(--ayy-text-xs);
+  color: var(--ayy-color-text);
+}
+
+.ayy-table thead {
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-table tr {
+  border-block-end: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-table tbody tr {
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-table tbody tr:last-child {
+  border-block-end: 0;
+}
+
+.ayy-table tbody tr:hover {
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-table tr[aria-selected="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-table th {
+  block-size: 2.25rem;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-3);
+  vertical-align: middle;
+  text-align: start;
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: var(--ayy-tracking-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-table td {
+  padding: var(--ayy-space-3);
+  vertical-align: middle;
+}
+
+.ayy-table tfoot {
+  border-block-start: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-wash);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-table caption {
+  margin-block-start: var(--ayy-space-4);
+  font-size: var(--ayy-text-sm);
+  color: var(--ayy-color-muted);
+}
+
+/* Numbers: end-aligned (right in LTR, left in RTL), fixed-width digits. */
+.ayy-table .ayy-table__num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (forced-colors: active) {
+  .ayy-table tr[aria-selected="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
+.ayy-table--compact td {
+  padding-block: var(--ayy-space-1-5);
+}
+.ayy-table--compact th {
+  block-size: 2rem;
+}

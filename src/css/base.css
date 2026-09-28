@@ -1,0 +1,109 @@
+/* ayywi base. Everything here is wrapped in :where() (zero specificity) so a host app's own styles always win. */
+
+:where(body) {
+  margin: 0;
+  background-color: var(--ayy-color-bg);
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+:where(h1, h2, h3) {
+  font-family: var(--ayy-font-heading);
+}
+
+/* ---- Typography helpers ---- */
+
+:where(.ayy-h1, .ayy-h2, .ayy-h3, .ayy-h4) {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  color: var(--ayy-color-text);
+  text-wrap: balance;
+}
+:where(.ayy-h1) { font-size: var(--ayy-text-4xl); font-weight: var(--ayy-weight-bold); line-height: var(--ayy-leading-tight); letter-spacing: var(--ayy-tracking-tight); }
+:where(.ayy-h2) { font-size: var(--ayy-text-3xl); font-weight: var(--ayy-weight-bold); line-height: var(--ayy-leading-tight); letter-spacing: var(--ayy-tracking-tight); }
+:where(.ayy-h3) { font-size: var(--ayy-text-2xl); font-weight: var(--ayy-weight-semibold); line-height: var(--ayy-leading-snug); }
+:where(.ayy-h4) { font-size: var(--ayy-text-xl); font-weight: var(--ayy-weight-medium); line-height: var(--ayy-leading-snug); }
+
+:where(.ayy-lede) {
+  font-size: var(--ayy-text-lg);
+  line-height: var(--ayy-leading-normal);
+  color: var(--ayy-color-text-soft);
+  text-wrap: pretty;
+}
+
+:where(.ayy-muted) {
+  color: var(--ayy-color-muted);
+}
+
+:where(.ayy-eyebrow) {
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-normal);
+  letter-spacing: var(--ayy-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ayy-color-muted);
+}
+
+:where(.ayy-signature) {
+  font-family: var(--ayy-font-signature);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-tight);
+}
+
+:where(.ayy-mono) {
+  font-family: var(--ayy-font-mono);
+}
+
+/* ---- Layout helpers (for projects without a utility framework). Gap is overridable via --ayy-gap. ---- */
+
+:where(.ayy-stack) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-gap, var(--ayy-space-3));
+}
+
+:where(.ayy-cluster) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-gap, var(--ayy-space-2));
+}
+
+/* ---- Utilities ---- */
+
+:where(.ayy-sr-only) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Quiet monochrome scrollbars on any scroll container that opts in. */
+:where(.ayy-scroll) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ayy-color-line-strong) transparent;
+}
+
+/* ---- Motion safety: every ayywi animation/transition collapses when the user asks for less motion. ---- */
+@media (prefers-reduced-motion: reduce) {
+  [class*="ayy-"],
+  [class*="ayy-"]::before,
+  [class*="ayy-"]::after,
+  [class*="ayy-"]::backdrop {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

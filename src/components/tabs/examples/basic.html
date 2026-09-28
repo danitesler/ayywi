@@ -1,0 +1,20 @@
+<!-- <ayy-tabs> (ayywi/elements) wires ids, clicks and arrow keys. The initial aria-selected / hidden avoid a flash before it loads.
+     Vue/Svelte/Angular: bind `value` and listen for `ayy-value-change`. -->
+<ayy-tabs class="ayy-tabs" value="overview">
+  <div class="ayy-tabs__list" role="tablist" aria-label="Project settings">
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="overview" aria-selected="true">Overview</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="activity" aria-selected="false" tabindex="-1">Activity</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="members" aria-selected="false" tabindex="-1">Members</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="billing" aria-selected="false" tabindex="-1" disabled>Billing</button>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="overview">
+    <p class="ayy-muted">3 environments · 12 deploys this week</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="activity" hidden>
+    <p class="ayy-muted">Latest changes from your team.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="members" hidden>
+    <p class="ayy-muted">People with access to this project.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="billing" hidden></div>
+</ayy-tabs>

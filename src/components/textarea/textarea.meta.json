@@ -1,0 +1,32 @@
+{
+  "name": "Textarea",
+  "slug": "textarea",
+  "status": "stable",
+  "description": "Multi-line text field. Optional auto-grow and monospace modes.",
+  "whenToUse": ["Descriptions, notes, prompts, config snippets (mono)."],
+  "whenNotToUse": ["Rich text editing — use a dedicated editor and theme it with ayywi tokens."],
+  "classes": {
+    "ayy-textarea": "Root, on the <textarea>.",
+    "ayy-textarea--autosize": "Grows with content (CSS field-sizing). Falls back to fixed height.",
+    "ayy-textarea--mono": "Monospace font."
+  },
+  "variants": {
+    "autosize": { "values": [true, false], "default": false },
+    "mono": { "values": [true, false], "default": false }
+  },
+  "states": {
+    "aria-invalid=\"true\"": "Red border and focus ring.",
+    "disabled": "Dimmed."
+  },
+  "js": "textareaClass({ autosize?, mono?, className? }) → string",
+  "react": {
+    "import": "import { Textarea } from \"ayywi/react\";",
+    "components": {
+      "Textarea": { "renders": "<textarea>", "props": { "autosize": "boolean", "mono": "boolean", "...rest": "All native <textarea> attributes." } }
+    }
+  },
+  "a11y": ["Label it (Field + Label), same as Input."],
+  "do": ["Set rows for a sensible starting height."],
+  "dont": ["Don't disable resize on non-autosize textareas; users need it."],
+  "examples": [{ "id": "basic", "title": "Basic, autosize, mono" }]
+}

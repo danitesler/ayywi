@@ -1,0 +1,38 @@
+{
+  "name": "Field",
+  "slug": "field",
+  "status": "stable",
+  "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
+  "whenToUse": ["Every labelled form control: Input, Textarea, Switch, native <select>."],
+  "whenNotToUse": ["Search boxes in toolbars — an aria-label on the Input is enough."],
+  "classes": {
+    "ayy-field": "Wrapper, vertical stack.",
+    "ayy-field--inline": "Label and control side by side (Switch, checkbox).",
+    "ayy-label": "The <label>. Usable on its own too.",
+    "ayy-field__hint": "Muted helper text under the control.",
+    "ayy-field__error": "Error text under the control."
+  },
+  "variants": {
+    "inline": { "values": [true, false], "default": false }
+  },
+  "js": "fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants",
+  "react": {
+    "import": "import { Field, Label, FieldHint, FieldError } from \"ayywi/react\";",
+    "components": {
+      "Field": { "renders": "<div>", "props": { "inline": "boolean" } },
+      "Label": { "renders": "<label>", "props": { "htmlFor": "id of the control" } },
+      "FieldHint": { "renders": "<p>" },
+      "FieldError": { "renders": "<p>" }
+    }
+  },
+  "a11y": [
+    "Label htmlFor/for must match the control id.",
+    "Link hint/error to the control with aria-describedby; set aria-invalid=\"true\" on the control when there's an error.",
+    "The label dims automatically when the control inside the field is disabled."
+  ],
+  "do": ["Keep hints to one short sentence.", "Show errors after the user leaves the field or submits, not on every keystroke."],
+  "dont": ["Don't show a hint and an error at the same time — the error replaces the hint."],
+  "examples": [
+    { "id": "form", "title": "Form fields" }
+  ]
+}

@@ -1,0 +1,116 @@
+/*
+ * Tooltip: shows on hover and keyboard focus of anything inside .ayy-tooltip. Wire the trigger to the bubble with
+ * aria-describedby. Two modes:
+ *  - CSS only (no JS): the bubble is absolutely positioned next to the trigger; an overflow:hidden ancestor can clip it.
+ *  - Enhanced (React Tooltip or <ayy-tooltip>): the bubble becomes a top-layer popover with [data-floating] and fixed
+ *    coordinates, so it can't be clipped and it flips at the viewport edge. Esc dismisses it.
+ */
+
+.ayy-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.ayy-tooltip__content {
+  --_gap: 6px;
+  --_x: 0px;
+  --_y: 4px;
+  position: absolute;
+  z-index: var(--ayy-z-tooltip);
+  box-sizing: border-box;
+  inline-size: max-content;
+  max-inline-size: 16rem;
+  padding-block: var(--ayy-space-1-5);
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay);
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-regular);
+  line-height: var(--ayy-leading-snug);
+  text-align: start;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  translate: var(--_x) var(--_y);
+  transition:
+    opacity var(--ayy-duration-fast) ease 80ms,
+    translate var(--ayy-duration-fast) var(--ayy-ease-out-expo) 80ms,
+    visibility 0s linear calc(var(--ayy-duration-fast) + 80ms);
+}
+
+/* ---- Placement. data-side: top (default) | bottom | start | end ---- */
+
+.ayy-tooltip__content,
+.ayy-tooltip__content[data-side="top"] {
+  inset-block-end: calc(100% + var(--_gap));
+  left: 50%; /* ayy-allow-physical: centring is direction-neutral */
+  --_x: -50%;
+}
+
+.ayy-tooltip__content[data-side="bottom"] {
+  inset-block-end: auto;
+  inset-block-start: calc(100% + var(--_gap));
+  --_y: -4px;
+}
+
+.ayy-tooltip__content[data-side="start"],
+.ayy-tooltip__content[data-side="end"] {
+  inset-block-end: auto;
+  inset-block-start: 50%;
+  left: auto; /* ayy-allow-physical: resets the centring above */
+  --_x: 0px;
+  --_y: -50%;
+}
+
+.ayy-tooltip__content[data-side="start"] {
+  inset-inline-end: calc(100% + var(--_gap));
+}
+
+.ayy-tooltip__content[data-side="end"] {
+  inset-inline-start: calc(100% + var(--_gap));
+}
+
+/* ---- Visible ---- */
+
+.ayy-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .ayy-tooltip__content {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 200ms, 200ms, 0s;
+}
+
+.ayy-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .ayy-tooltip__content:not([data-side]),
+.ayy-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .ayy-tooltip__content:is([data-side="top"], [data-side="bottom"]) {
+  --_y: 0px;
+}
+
+.ayy-tooltip:focus-within:not([data-dismissed]) > .ayy-tooltip__content {
+  transition-delay: 0s;
+}
+
+/* ---- Enhanced mode: top-layer popover placed by JS ---- */
+
+.ayy-tooltip__content[data-floating] {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  overflow: visible;
+  translate: none;
+}
+
+@starting-style {
+  .ayy-tooltip__content[data-floating]:popover-open {
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-tooltip__content {
+    border-color: CanvasText;
+  }
+}

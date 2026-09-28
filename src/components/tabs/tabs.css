@@ -1,0 +1,96 @@
+/* WAI-ARIA tabs. Selected state is read from aria-selected, so any framework (or <ayy-tabs>) can drive it. */
+
+/* Block so it also works on the <ayy-tabs> custom element (unknown elements default to inline). */
+.ayy-tabs {
+  display: block;
+  min-inline-size: 0;
+}
+
+.ayy-tabs__list {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  max-inline-size: 100%;
+  block-size: var(--ayy-size-control-md);
+  padding: 3px;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-muted);
+  overflow-x: auto;
+  scrollbar-width: none;
+  user-select: none;
+}
+
+.ayy-tabs__tab {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1-5);
+  block-size: 100%;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-3);
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-base) var(--ayy-ease-spring),
+    color var(--ayy-duration-base) ease;
+}
+
+.ayy-tabs__tab:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-tabs__tab[aria-selected="true"] {
+  background-color: var(--ayy-color-text);
+  color: var(--ayy-color-bg);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent);
+}
+
+.ayy-tabs__tab:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-tabs__tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ayy-tabs__panel {
+  margin-block-start: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-lg);
+}
+
+.ayy-tabs__panel:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* Forced colors: the selected fill is erased, so mark the selected tab with the system highlight. */
+@media (forced-colors: active) {
+  .ayy-tabs__list {
+    border-color: CanvasText;
+  }
+  .ayy-tabs__tab[aria-selected="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-tabs__tab:disabled {
+    color: GrayText;
+    opacity: 1;
+  }
+}

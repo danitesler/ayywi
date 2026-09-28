@@ -1,0 +1,109 @@
+.ayy-card {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-rest);
+  transition:
+    transform var(--ayy-duration-slow) var(--ayy-ease-out-expo),
+    box-shadow var(--ayy-duration-slow) var(--ayy-ease-out-expo),
+    border-color var(--ayy-duration-base) ease;
+}
+
+.ayy-card:hover {
+  border-color: var(--ayy-color-line-hover);
+}
+
+/* Lifts on hover. Use when the whole card is clickable. */
+.ayy-card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ayy-shadow-lift), var(--ayy-shadow-rest);
+}
+
+.ayy-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1-5);
+  padding: var(--ayy-space-5);
+}
+
+.ayy-card__title {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+  letter-spacing: var(--ayy-tracking-tight);
+}
+
+.ayy-card__description {
+  margin: 0;
+  font-size: var(--ayy-text-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-card__content {
+  padding-inline: var(--ayy-space-5);
+  padding-block-end: var(--ayy-space-5);
+}
+
+.ayy-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  margin-block-start: auto;
+  padding-inline: var(--ayy-space-5);
+  padding-block-end: var(--ayy-space-5);
+}
+
+/* ---- Spotlight: a soft glow + lit border that follows the pointer. Needs --ayy-mx/--ayy-my (set by React Card or ayywi/elements). ---- */
+
+.ayy-card--spotlight::before,
+.ayy-card--spotlight::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ayy-duration-slow) var(--ayy-ease-out-expo);
+}
+
+.ayy-card--spotlight::before {
+  background: radial-gradient(
+    380px circle at var(--ayy-mx, 50%) var(--ayy-my, 50%),
+    color-mix(in srgb, var(--ayy-spot, var(--ayy-accent-ai)) 14%, transparent),
+    transparent 65%
+  );
+}
+
+.ayy-card--spotlight::after {
+  z-index: 1;
+  padding: 1px;
+  background: radial-gradient(
+    280px circle at var(--ayy-mx, 50%) var(--ayy-my, 50%),
+    var(--ayy-spot, var(--ayy-accent-ai)),
+    transparent 70%
+  );
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
+}
+
+.ayy-card--spotlight:hover::before,
+.ayy-card--spotlight:hover::after {
+  opacity: 1;
+}
+
+@media (forced-colors: active) {
+  .ayy-card--spotlight::before,
+  .ayy-card--spotlight::after {
+    display: none;
+  }
+}

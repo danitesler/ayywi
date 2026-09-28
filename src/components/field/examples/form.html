@@ -1,0 +1,19 @@
+<form class="ayy-stack" style="width: 100%; max-width: 380px; --ayy-gap: 1rem" onsubmit="return false">
+  <div class="ayy-field">
+    <label class="ayy-label" for="project-slug-html">Project name</label>
+    <input class="ayy-input" id="project-slug-html" placeholder="marketing-site" aria-describedby="project-slug-html-hint" />
+    <p class="ayy-field__hint" id="project-slug-html-hint">Lowercase, dashes allowed.</p>
+  </div>
+  <div class="ayy-field">
+    <label class="ayy-label" for="project-description-html">Description</label>
+    <textarea class="ayy-textarea" id="project-description-html" rows="3" placeholder="What is this project for?"></textarea>
+  </div>
+  <div class="ayy-field ayy-field--inline">
+    <input class="ayy-switch" type="checkbox" role="switch" id="project-public-html" checked />
+    <label class="ayy-label" for="project-public-html">Anyone with the link can view</label>
+  </div>
+  <div class="ayy-cluster">
+    <button type="submit" class="ayy-button">Create project</button>
+    <button type="button" class="ayy-button ayy-button--ghost">Cancel</button>
+  </div>
+</form>

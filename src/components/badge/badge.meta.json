@@ -1,0 +1,53 @@
+{
+  "name": "Badge",
+  "slug": "badge",
+  "status": "stable",
+  "description": "Small pill label for status, category or count. Optional pulsing status dot.",
+  "whenToUse": [
+    "Status of an item (Synced, Error, Beta).",
+    "Category or tag next to a title.",
+    "Live indicators (dot)."
+  ],
+  "whenNotToUse": [
+    "Anything clickable — use Button (ghost/outline, sm).",
+    "Long text — badges never wrap."
+  ],
+  "classes": {
+    "ayy-badge": "Root. Neutral by default.",
+    "ayy-badge--muted": "Quieter neutral.",
+    "ayy-badge--outline": "Border only.",
+    "ayy-badge--success": "Positive status.",
+    "ayy-badge--warning": "Caution status.",
+    "ayy-badge--destructive": "Error / failed.",
+    "ayy-badge--info": "Informational.",
+    "ayy-badge--ai": "AI-related.",
+    "ayy-badge__dot": "Leading status dot (first child). Pulses. Colour follows the variant, or set --ayy-dot.",
+    "ayy-badge__dot--static": "Dot without the pulse."
+  },
+  "variants": {
+    "variant": { "values": ["default", "muted", "outline", "success", "warning", "destructive", "info", "ai"], "default": "default" }
+  },
+  "js": "badgeClass({ variant?, className? }) → string",
+  "react": {
+    "import": "import { Badge } from \"ayywi/react\";",
+    "components": {
+      "Badge": {
+        "renders": "<span>",
+        "props": {
+          "variant": "\"default\" | \"muted\" | \"outline\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"ai\"",
+          "dot": "boolean | \"pulse\" | \"static\" — leading status dot"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Colour is never the only signal — the label text must say the status.",
+    "The dot is aria-hidden; it's decorative."
+  ],
+  "do": ["Keep labels to one or two words.", "Use the status variants for status, accent spotlights for categories."],
+  "dont": ["Don't stack more than three badges in a row.", "Don't put buttons inside badges."],
+  "examples": [
+    { "id": "variants", "title": "Variants" },
+    { "id": "dot", "title": "Status dot" }
+  ]
+}
