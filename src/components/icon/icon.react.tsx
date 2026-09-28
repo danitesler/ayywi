@@ -6,6 +6,8 @@ export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "strokeWid
   icon: IconData;
   /** "auto" (default) follows the text size; sm, md, lg and xl are 16, 20, 24 and 32px. */
   size?: IconSize;
+  /** The icon points along the reading direction (an arrow): mirror it in right-to-left text. */
+  directional?: boolean;
   /** Accessible name. Without one the icon is decorative and hidden from screen readers. */
   label?: string;
   /** Stroke width of every stroked shape. Hugeicons draw at 1.5. */
@@ -13,11 +15,14 @@ export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "strokeWid
 }
 
 /** A Hugeicons icon (or any icon in the same format) as inline SVG. It takes the text colour. */
-export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon({ icon, size, label, strokeWidth, className, ...props }, ref) {
+export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
+  { icon, size, directional, label, strokeWidth, className, ...props },
+  ref,
+) {
   return (
     <svg
       ref={ref}
-      className={iconClass({ size, className })}
+      className={iconClass({ size, directional, className })}
       viewBox="0 0 24 24"
       fill="none"
       role={label ? "img" : undefined}

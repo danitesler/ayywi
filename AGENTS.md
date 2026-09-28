@@ -80,6 +80,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - Custom elements must not render markup or use shadow DOM: they only wire behaviour onto author HTML, and must be SSR-safe to import (`src/lib/element.ts`).
 - Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close buttons) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
+- Mirroring a glyph in RTL has no logical property. `.ayy-icon--directional` reads `--_ayy-dir`, which `icon.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme × brand, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning

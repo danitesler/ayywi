@@ -15,3 +15,13 @@
 .ayy-icon--md { --_s: var(--ayy-size-icon-md); }
 .ayy-icon--lg { --_s: var(--ayy-size-icon-lg); }
 .ayy-icon--xl { --_s: var(--ayy-size-icon-xl); }
+
+/* Icons that point along the reading direction (arrows, send, undo) mirror in right-to-left text.
+   Custom properties inherit, so the nearest dir attribute wins, as with dir itself. (:dir() would be simpler,
+   but minifiers rewrite it into :lang() lists.) */
+:where([dir="rtl"]) { --_ayy-dir: -1; }
+:where([dir="ltr"]) { --_ayy-dir: 1; }
+
+.ayy-icon--directional {
+  scale: var(--_ayy-dir, 1) 1;
+}

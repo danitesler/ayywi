@@ -164,9 +164,9 @@ Round (or square) picture of a person or workspace, with initials that show when
 
 ## Icon (Data display)
 Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
-- Classes: `.ayy-icon` `.ayy-icon--sm` `.ayy-icon--md` `.ayy-icon--lg` `.ayy-icon--xl`
-- React: `<Icon icon size label strokeWidth>`
-- JS: iconSvg(icon, { size?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
+- Classes: `.ayy-icon` `.ayy-icon--sm` `.ayy-icon--md` `.ayy-icon--lg` `.ayy-icon--xl` `.ayy-icon--directional`
+- React: `<Icon icon size directional label strokeWidth>`
+- JS: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
 - A11y: Icons are decorative by default (aria-hidden): the text next to them carries the meaning. When the icon is the only thing saying something (a status, a verified mark), give it a label: <Icon label="Deployed">, or role="img" + aria-label on the <svg>. Icon-only buttons: aria-label goes on the button, the icon stays decorative. Strokes use currentColor, so icons follow the theme and Windows High Contrast colours with no extra CSS.
 
 ## Table (Data display)

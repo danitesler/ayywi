@@ -12,11 +12,13 @@ export type IconData = readonly (readonly [string, { readonly [attribute: string
 export interface IconClassOptions {
   /** "auto" (default) is 1.25em, so the icon follows the text around it. The others are fixed: 16, 20, 24, 32px. */
   size?: IconSize;
+  /** The icon points along the reading direction (an arrow): mirror it in right-to-left text. */
+  directional?: boolean;
   className?: string;
 }
 
-export function iconClass({ size = "auto", className }: IconClassOptions = {}): string {
-  return cx("ayy-icon", size !== "auto" && `ayy-icon--${size}`, className);
+export function iconClass({ size = "auto", directional = false, className }: IconClassOptions = {}): string {
+  return cx("ayy-icon", size !== "auto" && `ayy-icon--${size}`, directional && "ayy-icon--directional", className);
 }
 
 export interface IconSvgOptions extends IconClassOptions {
@@ -40,7 +42,7 @@ const escape = (value: string | number) => String(value).replace(/&/g, "&amp;").
  * SVG markup for an icon, for everything that isn't React: innerHTML, v-html, {@html}, server templates.
  * iconSvg(Search01Icon) → '<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">…</svg>'
  */
-export function iconSvg(icon: IconData, { size, className, label, strokeWidth }: IconSvgOptions = {}): string {
+export function iconSvg(icon: IconData, { size, directional, className, label, strokeWidth }: IconSvgOptions = {}): string {
   const a11y = label ? `role="img" aria-label="${escape(label)}"` : 'aria-hidden="true"';
   const shapes = icon.map(([tag, { key: _key, ...attributes }]) => {
     // strokeWidth only replaces existing strokes: filled shapes (dots, two-tone layers) keep their look.
@@ -50,5 +52,5 @@ export function iconSvg(icon: IconData, { size, className, label, strokeWidth }:
       .join("");
     return `<${tag}${attrs}/>`;
   });
-  return `<svg class="${escape(iconClass({ size, className }))}" viewBox="0 0 24 24" fill="none" ${a11y}>${shapes.join("")}</svg>`;
+  return `<svg class="${escape(iconClass({ size, directional, className }))}" viewBox="0 0 24 24" fill="none" ${a11y}>${shapes.join("")}</svg>`;
 }

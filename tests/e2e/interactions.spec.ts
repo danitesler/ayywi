@@ -191,6 +191,19 @@ test("side modal slides from the end edge in RTL too, and side-start mirrors it"
   await expect(dialog).toBeHidden();
 });
 
+test("directional icons mirror under the nearest dir attribute", async ({ page }) => {
+  await open(page, "icon", { renderer: "html" });
+  const s = stage(page, 2);
+  const flip = (nav: string) =>
+    s.getByRole("navigation", { name: nav }).locator("svg").evaluateAll((els) => els.map((el) => getComputedStyle(el).scale.split(" ")[0]));
+  expect(await flip("Pagination")).toEqual(["1", "1"]);
+  expect(await flip("עימוד")).toEqual(["-1", "-1"]);
+  // An LTR island inside RTL takes its own direction back.
+  await s.evaluate((el) => el.setAttribute("dir", "rtl"));
+  await s.getByRole("navigation", { name: "Pagination" }).evaluate((el) => el.setAttribute("dir", "ltr"));
+  expect(await flip("Pagination")).toEqual(["1", "1"]);
+});
+
 test("icons: sizes come from tokens, auto follows the text", async ({ page }) => {
   await open(page, "icon", { renderer: "html" });
   const icons = stage(page).locator("svg.ayy-icon");

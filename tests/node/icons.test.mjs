@@ -31,6 +31,7 @@ test("iconSvg options: size, label, stroke width on strokes only, escaping", { s
   assert.match(svg, /<path d="M4 4H20" stroke="currentColor" stroke-width="2"\/>/);
   assert.match(svg, /<rect width="4" height="4" gradientTransform="rotate\(45\)"\/>/, "real camelCase SVG attributes stay camelCase");
   assert.doesNotMatch(svg, /aria-hidden/);
+  assert.match(iconSvg(icon, { directional: true }), /^<svg class="ayy-icon ayy-icon--directional"/);
 });
 
 test("React <Icon> renders the same markup as iconSvg()", { skip }, async () => {
@@ -40,6 +41,7 @@ test("React <Icon> renders the same markup as iconSvg()", { skip }, async () => 
     [{}, {}],
     [{ size: "sm" }, { size: "sm" }],
     [{ label: "Branch", strokeWidth: 2 }, { label: "Branch", strokeWidth: 2 }],
+    [{ directional: true, size: "lg" }, { directional: true, size: "lg" }],
   ]) {
     const react = renderToStaticMarkup(createElement(Icon, { icon: GitBranchIcon, ...props }));
     assert.equal(selfClose(react), iconSvg(GitBranchIcon, options));

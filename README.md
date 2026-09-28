@@ -105,7 +105,7 @@ import { Icon } from "ayywi/react";
 
 Outside React, `iconSvg(Search01Icon)` from `ayywi` returns the SVG markup for `innerHTML`, `v-html`, `{@html}` or a server template. In plain HTML, paste the SVG from hugeicons.com, add `class="ayy-icon"`, and remove any fixed colour (`color`, `fill` or `stroke` set to a hex value) on the `<svg>`: a black icon disappears in the dark theme. `ayywi lint` flags it.
 
-Icons take the text colour and are 1.25em by default. `size` (or `ayy-icon--sm|md|lg|xl`) sets 16, 20, 24 or 32px. Inside buttons, menu items and alerts the component sizes them.
+Icons take the text colour and are 1.25em by default. `size` (or `ayy-icon--sm|md|lg|xl`) sets 16, 20, 24 or 32px. Inside buttons, menu items and alerts the component sizes them. Arrows and other icons that point along the reading direction take `directional` (`ayy-icon--directional`) and mirror in right-to-left text.
 
 ## Components
 
