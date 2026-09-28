@@ -18,7 +18,7 @@ Zero runtime dependencies. React is an optional peer.
 ```
 tokens/tokens.json          SOURCE OF TRUTH for tokens (DTCG-style; $value = dark, $extensions.ayywi.light = light,
                             $extensions.ayywi.density = comfortable/touch). palette.* = primitives, the rest = semantic
-tokens/themes/*.json        extra themes (dark-soft, light-soft): overrides of a base theme's colours, compiled into tokens.css
+tokens/themes/*.json        extra themes (dark-soft, light-gray): overrides of a base theme's colours, compiled into tokens.css
 tokens/brands/*.json        brand overrides of semantic tokens → src/css/brands/*.css
 src/css/tokens.css          generated
 src/tokens.ts               generated

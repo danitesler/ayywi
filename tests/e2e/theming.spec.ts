@@ -87,7 +87,7 @@ test.describe("forced colors (Windows High Contrast)", () => {
   });
 });
 
-test("soft themes lift the background and soften text", async ({ page }) => {
+test("dark-soft softens the contrast, light-gray greys the page under white cards", async ({ page }) => {
   const read = () =>
     page.evaluate(() => {
       const s = getComputedStyle(document.body);
@@ -96,8 +96,9 @@ test("soft themes lift the background and soften text", async ({ page }) => {
   await open(page, "", { theme: "dark-soft" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark-soft");
   expect(await read()).toEqual({ bg: "rgb(30, 30, 30)", text: "rgb(229, 229, 229)", scheme: "dark" });
-  await open(page, "", { theme: "light-soft" });
-  expect(await read()).toEqual({ bg: "rgb(242, 242, 242)", text: "rgb(38, 38, 38)", scheme: "light" });
+  await open(page, "", { theme: "light-gray" });
+  expect(await read()).toEqual({ bg: "rgb(235, 235, 235)", text: "rgb(10, 10, 10)", scheme: "light" });
+  expect(await page.locator(".ayy-card").first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(255, 255, 255)");
   await open(page, "", { theme: "dark" });
   expect(await read()).toEqual({ bg: "rgb(0, 0, 0)", text: "rgb(255, 255, 255)", scheme: "dark" });
 });
@@ -105,12 +106,12 @@ test("soft themes lift the background and soften text", async ({ page }) => {
 test("a themed section inside another theme gets its own colours", async ({ page }) => {
   await open(page, "colors", { theme: "dark" });
   const bg = (name: string) => page.locator(`.pv-theme[data-theme="${name}"]`).evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(await bg("light-soft")).toBe("rgb(242, 242, 242)");
+  expect(await bg("light-gray")).toBe("rgb(235, 235, 235)");
   expect(await bg("dark-soft")).toBe("rgb(30, 30, 30)");
   expect(await bg("light")).toBe("rgb(255, 255, 255)");
 });
 
-for (const theme of ["dark", "light", "dark-soft", "light-soft"] as const) {
+for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
   test(`axe: no serious violations on any page (${theme})`, async ({ page }) => {
     test.setTimeout(180_000);
     await open(page, "", { theme });

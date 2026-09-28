@@ -1,6 +1,6 @@
 import { themeBase, themes, type ThemeName } from "./tokens";
 
-/** A theme name ("dark", "light", "dark-soft", "light-soft"), or "system" to follow the OS. */
+/** A theme name ("dark", "light", "dark-soft", "light-gray"), or "system" to follow the OS. */
 export type ThemeMode = ThemeName | "system";
 /** The theme an element actually renders in. */
 export type ResolvedTheme = ThemeName;

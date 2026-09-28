@@ -31,7 +31,7 @@ Check `package.json` and existing components before choosing. Match what's there
 2. No hardcoded colours: `var(--ayy-color-*)`, the wash/line tokens, or `color-mix(in srgb, var(--ayy-color-text) N%, transparent)`.
 3. Logical properties only (`margin-inline-start`, `padding-inline`, `inset-inline-end`, `text-align: start`). No `left`/`right`, no `:dir()`.
 4. Spacing, radius, type, shadow and motion from tokens (`--ayy-space-*`, `--ayy-radius-*`, `--ayy-text-*`, `--ayy-shadow-*`, `--ayy-ease-*`, `--ayy-duration-*`).
-5. No per-theme colour code. Tokens switch with `data-theme` (`dark`, `light`, `dark-soft`, `light-soft`) or the OS preference on their own. Same for `data-density` and `data-brand` — don't hand-size controls.
+5. No per-theme colour code. Tokens switch with `data-theme` (`dark`, `light`, `dark-soft`, `light-gray`) or the OS preference on their own. Same for `data-density` and `data-brand` — don't hand-size controls.
 6. Accessibility is part of the component: labels for every control, `aria-label` on icon-only buttons, never remove focus rings, keep dialog titles.
 7. State goes in native/ARIA attributes (`disabled`, `checked`, `aria-selected`, `aria-invalid`, `open`) — the CSS reads them.
 8. Icons are Hugeicons: `<Icon icon={Search01Icon} />` in React (icons from `@hugeicons/core-free-icons`; install it if it's missing), `iconSvg(Search01Icon)` or an `<svg class="ayy-icon">` elsewhere. No other icon set, no hand-drawn SVGs. Decorative unless you pass a `label`.

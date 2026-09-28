@@ -87,7 +87,7 @@ export function createServer(contract = loadContract()) {
       },
     },
     get_tokens: {
-      description: "Design tokens (CSS custom properties) with their value in every theme (dark, light, dark-soft, light-soft). Optionally filter by group: color, accent, palette, space, radius, text, control, size, shadow, ease, duration, font, z.",
+      description: "Design tokens (CSS custom properties) with their value in every theme (dark, light, dark-soft, light-gray). Optionally filter by group: color, accent, palette, space, radius, text, control, size, shadow, ease, duration, font, z.",
       inputSchema: { type: "object", properties: { group: { type: "string" } } },
       run: ({ group } = {}) =>
         manifest.tokens

@@ -15,13 +15,10 @@
   --ayy-palette-neutral-58: #939393;
   --ayy-palette-neutral-60: #9a9a9a;
   --ayy-palette-neutral-73: #bbbbbb;
-  --ayy-palette-neutral-82: #d1d1d1;
   --ayy-palette-neutral-85: #dadada;
   --ayy-palette-neutral-90: #e5e5e5;
   --ayy-palette-neutral-92: #ebebeb;
-  --ayy-palette-neutral-95: #f2f2f2;
   --ayy-palette-neutral-97: #f7f7f8;
-  --ayy-palette-neutral-98: #fafafa;
   --ayy-palette-neutral-100: #ffffff;
   --ayy-palette-red-35: #991b1b;
   --ayy-palette-red-42: #b91c1c;
@@ -233,19 +230,19 @@
   --ayy-color-overlay: #00000099;
 }
 
-/* light-soft, built on light. Light with softer contrast: an off-white background instead of white, and charcoal text. Less glare; every text colour still meets WCAG AA. */
-[data-theme="light-soft"] {
+/* light-gray, built on light. Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA. */
+[data-theme="light-gray"] {
   color-scheme: light;
-  --ayy-color-bg: var(--ayy-palette-neutral-95);
-  --ayy-color-surface: var(--ayy-palette-neutral-92);
-  --ayy-color-surface-raised: var(--ayy-palette-neutral-98);
-  --ayy-color-text: var(--ayy-palette-neutral-15);
+  --ayy-color-bg: var(--ayy-palette-neutral-92);
+  --ayy-color-surface: var(--ayy-palette-neutral-100);
+  --ayy-color-surface-raised: var(--ayy-palette-neutral-100);
+  --ayy-color-text: var(--ayy-palette-neutral-4);
   --ayy-color-text-soft: var(--ayy-palette-neutral-28);
   --ayy-color-muted: var(--ayy-palette-neutral-39);
-  --ayy-color-border: var(--ayy-palette-neutral-82);
-  --ayy-color-ring: var(--ayy-palette-neutral-15);
-  --ayy-color-primary: var(--ayy-palette-neutral-15);
-  --ayy-color-primary-fg: var(--ayy-palette-neutral-98);
+  --ayy-color-border: var(--ayy-palette-neutral-85);
+  --ayy-color-ring: var(--ayy-palette-neutral-4);
+  --ayy-color-primary: var(--ayy-palette-neutral-4);
+  --ayy-color-primary-fg: var(--ayy-palette-neutral-100);
   --ayy-color-destructive: var(--ayy-palette-red-35);
   --ayy-color-success: var(--ayy-palette-green-20);
   --ayy-color-warning: var(--ayy-palette-amber-31);
@@ -254,7 +251,7 @@
   --ayy-color-ai-active: var(--ayy-palette-violet-50);
   --ayy-color-glow: #00000073;
   --ayy-color-shadow: #0000004d;
-  --ayy-color-glass: #f2f2f2c7;
+  --ayy-color-glass: #ebebebc7;
   --ayy-color-overlay: #0a0a0a73;
 }
 

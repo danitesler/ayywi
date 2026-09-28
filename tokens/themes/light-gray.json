@@ -1,0 +1,13 @@
+{
+  "$description": "Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA.",
+  "$extensions": { "ayywi": { "base": "light" } },
+  "color": {
+    "bg": { "$type": "color", "$value": "{palette.neutral.92}" },
+    "surface": { "$type": "color", "$value": "{palette.neutral.100}" },
+    "muted": { "$type": "color", "$value": "{palette.neutral.39}" },
+    "destructive": { "$type": "color", "$value": "{palette.red.35}" },
+    "info": { "$type": "color", "$value": "{palette.blue.40}" },
+    "ai": { "$type": "color", "$value": "{palette.neutral.39}" },
+    "glass": { "$type": "color", "$value": "#ebebebc7" }
+  }
+}
