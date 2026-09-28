@@ -133,7 +133,7 @@ export interface TokenDefinition {
   readonly value: string | number | readonly (string | number)[];
   /** Light-theme value, for themed tokens. */
   readonly light?: string;
-  /** Values in the other themes (dark-soft, light-soft…), for themed tokens. */
+  /** Values in the other themes (dark-soft, light-gray…), for themed tokens. */
   readonly themes?: Readonly<Record<string, string>>;
   /** Grouping for docs, e.g. "Surfaces", "Text", "Status" (colour tokens). */
   readonly category?: string;

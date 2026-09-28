@@ -13,7 +13,7 @@
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
     "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-tabs>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, setTheme, setDensity, setBrand).",
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
-    "ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-soft.json, light-soft.json, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
+    "ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-soft.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
     "ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
     "npx ayywi": "CLI: `lint` (checks app code against this manifest), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
@@ -22,7 +22,7 @@
     "classPrefix": "ayy-",
     "naming": "BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class=\"ayy-button ayy-button--outline ayy-button--sm\".",
     "state": "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
-    "theming": "No attribute = follow OS (dark or light). data-theme=\"dark\" | \"light\" | \"dark-soft\" | \"light-soft\" forces a theme on any element and its subtree (.dark/.light classes work too). The -soft themes lower the contrast (charcoal/off-white instead of black/white); every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says \"dark\" or \"light\".",
+    "theming": "No attribute = follow OS (dark or light). data-theme=\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" forces a theme on any element and its subtree (.dark/.light classes work too). See \"themes\" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says \"dark\" or \"light\".",
     "density": "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
     "brands": "Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.",
     "direction": "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror.",
@@ -34,7 +34,7 @@
     "Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
     "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.",
     "Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
-    "Theme with data-theme=\"dark|light|dark-soft|light-soft\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.",
+    "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.",
     "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).",
     "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
     "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations.",
@@ -44,7 +44,7 @@
     "Run `npx ayywi lint` after UI changes and fix every error it reports."
   ],
   "attributes": {
-    "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-soft\" — force a theme on this element and its subtree. None = follow the OS (dark or light). The -soft themes have lower contrast: charcoal/off-white instead of black/white.",
+    "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft lowers the contrast (charcoal instead of black); light-gray puts white cards and panels on a grey page.",
     "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
     "data-brand": "Brand name (e.g. \"violet\"); needs ayywi/brands/<name>.css loaded.",
     "dir": "\"rtl\" mirrors every component (logical properties throughout)."
@@ -66,9 +66,9 @@
       "description": "Dark with softer contrast: a charcoal background instead of black, and off-white text. Easier on the eyes for long reading; every text colour still meets WCAG AA."
     },
     {
-      "name": "light-soft",
+      "name": "light-gray",
       "base": "light",
-      "description": "Light with softer contrast: an off-white background instead of white, and charcoal text. Less glare; every text colour still meets WCAG AA."
+      "description": "Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA."
     }
   ],
   "categories": {
@@ -197,12 +197,6 @@
       "value": "#bbbbbb"
     },
     {
-      "name": "palette.neutral.82",
-      "cssVar": "--ayy-palette-neutral-82",
-      "type": "color",
-      "value": "#d1d1d1"
-    },
-    {
       "name": "palette.neutral.85",
       "cssVar": "--ayy-palette-neutral-85",
       "type": "color",
@@ -221,22 +215,10 @@
       "value": "#ebebeb"
     },
     {
-      "name": "palette.neutral.95",
-      "cssVar": "--ayy-palette-neutral-95",
-      "type": "color",
-      "value": "#f2f2f2"
-    },
-    {
       "name": "palette.neutral.97",
       "cssVar": "--ayy-palette-neutral-97",
       "type": "color",
       "value": "#f7f7f8"
-    },
-    {
-      "name": "palette.neutral.98",
-      "cssVar": "--ayy-palette-neutral-98",
-      "type": "color",
-      "value": "#fafafa"
     },
     {
       "name": "palette.neutral.100",
@@ -390,7 +372,7 @@
       "light": "#ffffff",
       "themes": {
         "dark-soft": "#1e1e1e",
-        "light-soft": "#f2f2f2"
+        "light-gray": "#ebebeb"
       },
       "category": "Surfaces",
       "description": "Page background."
@@ -403,7 +385,7 @@
       "light": "#f7f7f8",
       "themes": {
         "dark-soft": "#262626",
-        "light-soft": "#ebebeb"
+        "light-gray": "#ffffff"
       },
       "category": "Surfaces",
       "description": "Cards, panels, inputs sit on this."
@@ -416,7 +398,7 @@
       "light": "#ffffff",
       "themes": {
         "dark-soft": "#2e2e2e",
-        "light-soft": "#fafafa"
+        "light-gray": "#ffffff"
       },
       "category": "Surfaces",
       "description": "Popovers, menus, tooltips, toasts."
@@ -429,7 +411,7 @@
       "light": "#0a0a0a",
       "themes": {
         "dark-soft": "#e5e5e5",
-        "light-soft": "#262626"
+        "light-gray": "#0a0a0a"
       },
       "category": "Text",
       "description": "Primary text. Also the base every line/wash is mixed from."
@@ -442,7 +424,7 @@
       "light": "#474747",
       "themes": {
         "dark-soft": "#bbbbbb",
-        "light-soft": "#474747"
+        "light-gray": "#474747"
       },
       "category": "Text",
       "description": "Secondary text that still needs to read comfortably."
@@ -455,7 +437,7 @@
       "light": "#6b6b6b",
       "themes": {
         "dark-soft": "#9a9a9a",
-        "light-soft": "#636363"
+        "light-gray": "#636363"
       },
       "category": "Text",
       "description": "Captions, placeholders, de-emphasised labels."
@@ -468,7 +450,7 @@
       "light": "#dadada",
       "themes": {
         "dark-soft": "#333333",
-        "light-soft": "#d1d1d1"
+        "light-gray": "#dadada"
       },
       "category": "Lines",
       "description": "Opaque border, for places where a mixed line can't be used."
@@ -481,7 +463,7 @@
       "light": "#0a0a0a",
       "themes": {
         "dark-soft": "#e5e5e5",
-        "light-soft": "#262626"
+        "light-gray": "#0a0a0a"
       },
       "category": "Interactive",
       "description": "Focus ring."
@@ -494,7 +476,7 @@
       "light": "#0a0a0a",
       "themes": {
         "dark-soft": "#e5e5e5",
-        "light-soft": "#262626"
+        "light-gray": "#0a0a0a"
       },
       "category": "Interactive",
       "description": "Primary action fill. Monochrome by design; brands usually override it."
@@ -507,7 +489,7 @@
       "light": "#ffffff",
       "themes": {
         "dark-soft": "#1e1e1e",
-        "light-soft": "#fafafa"
+        "light-gray": "#ffffff"
       },
       "category": "Interactive",
       "description": "Text on primary."
@@ -520,7 +502,7 @@
       "light": "#b91c1c",
       "themes": {
         "dark-soft": "#fb9696",
-        "light-soft": "#991b1b"
+        "light-gray": "#991b1b"
       },
       "category": "Status",
       "description": "Errors and destructive actions."
@@ -533,7 +515,7 @@
       "light": "#065f46",
       "themes": {
         "dark-soft": "#35d07f",
-        "light-soft": "#065f46"
+        "light-gray": "#065f46"
       },
       "category": "Status",
       "description": "Positive status."
@@ -546,7 +528,7 @@
       "light": "#92400e",
       "themes": {
         "dark-soft": "#f5c542",
-        "light-soft": "#92400e"
+        "light-gray": "#92400e"
       },
       "category": "Status",
       "description": "Caution status."
@@ -559,7 +541,7 @@
       "light": "#1d4ed8",
       "themes": {
         "dark-soft": "#8ab9ff",
-        "light-soft": "#1e40af"
+        "light-gray": "#1e40af"
       },
       "category": "Status",
       "description": "Informational status."
@@ -572,7 +554,7 @@
       "light": "#6b6b6b",
       "themes": {
         "dark-soft": "#9a9a9a",
-        "light-soft": "#636363"
+        "light-gray": "#636363"
       },
       "category": "AI",
       "description": "AI features at rest."
@@ -585,7 +567,7 @@
       "light": "#6d28d9",
       "themes": {
         "dark-soft": "#cbabff",
-        "light-soft": "#6d28d9"
+        "light-gray": "#6d28d9"
       },
       "category": "AI",
       "description": "AI features while active / generating."
@@ -598,7 +580,7 @@
       "light": "#00000073",
       "themes": {
         "dark-soft": "#e5e5e5",
-        "light-soft": "#00000073"
+        "light-gray": "#00000073"
       },
       "category": "Effects",
       "description": "Glow source colour (mixed down, never used raw)."
@@ -611,7 +593,7 @@
       "light": "#0000004d",
       "themes": {
         "dark-soft": "#000000",
-        "light-soft": "#0000004d"
+        "light-gray": "#0000004d"
       },
       "category": "Effects",
       "description": "Shadow source colour (mixed down, never used raw)."
@@ -624,7 +606,7 @@
       "light": "#ffffffc7",
       "themes": {
         "dark-soft": "#1e1e1ec7",
-        "light-soft": "#f2f2f2c7"
+        "light-gray": "#ebebebc7"
       },
       "category": "Surfaces",
       "description": "Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter."
@@ -637,7 +619,7 @@
       "light": "#0a0a0a73",
       "themes": {
         "dark-soft": "#00000099",
-        "light-soft": "#0a0a0a73"
+        "light-gray": "#0a0a0a73"
       },
       "category": "Surfaces",
       "description": "Modal backdrop."

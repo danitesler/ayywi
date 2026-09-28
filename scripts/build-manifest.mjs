@@ -86,7 +86,7 @@ const manifest = {
     classPrefix: "ayy-",
     naming: "BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class=\"ayy-button ayy-button--outline ayy-button--sm\".",
     state: "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
-    theming: `No attribute = follow OS (dark or light). data-theme=${themes.map((t) => `"${t.name}"`).join(" | ")} forces a theme on any element and its subtree (.dark/.light classes work too). The -soft themes lower the contrast (charcoal/off-white instead of black/white); every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".`,
+    theming: `No attribute = follow OS (dark or light). data-theme=${themes.map((t) => `"${t.name}"`).join(" | ")} forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".`,
     density: "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
     brands: "Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.",
     direction: "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror.",

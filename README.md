@@ -5,7 +5,7 @@ A small design system that works in any stack and is built for AI agents to use.
 Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by tokens (`--ayy-color-bg`…), so they work anywhere that outputs HTML. React gets typed components that render the same markup; every other framework gets a few light-DOM custom elements for the interactive parts.
 
 - **Small:** zero runtime dependencies. All 21 components are ~8 kB of CSS gzipped.
-- **Themes, density, brands:** dark, light and two lower-contrast "soft" themes; compact/comfortable/touch sizing; swappable brands. Each one is a single attribute.
+- **Themes, density, brands:** dark, light, a softer dark and a grey light theme; compact/comfortable/touch sizing; swappable brands. Each one is a single attribute.
 - **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in. axe runs on every component in CI.
 - **AI-first:** a machine-readable manifest, `llms.txt`, a skill for Claude/Cursor/Codex, an MCP server, and a linter that checks what agents write.
 
@@ -74,7 +74,10 @@ Each component page in the preview shows copy-ready HTML and React. The full API
 <html data-theme="dark-soft" data-density="comfortable" data-brand="violet">
 ```
 
-- **Theme:** `dark`, `light`, `dark-soft` or `light-soft`. Leave it off to follow the OS. It can also go on any section. The soft themes swap black/white for charcoal/off-white (main text about 13:1 instead of 20:1), which is easier on the eyes for long reading. Every theme keeps all text at WCAG AA, and `pnpm check` enforces it. To add a theme, drop a file in `tokens/themes/` (see `dark-soft.json`).
+- **Theme:** `dark`, `light`, `dark-soft` or `light-gray`. Leave it off to follow the OS. It can also go on any section.
+  - `dark-soft` swaps black for charcoal and white text for off-white (about 13:1 instead of 21:1), which is easier on the eyes for long reading.
+  - `light-gray` puts white cards and panels on a grey page with full-strength text, so surfaces stand out more than in the all-white theme.
+  - Every theme keeps all text at WCAG AA, and `pnpm check` enforces it. To add a theme, drop a file in `tokens/themes/`.
 - **Density:** `compact` is the default. Phones and tablets get `touch` automatically.
 - **Brand:** load `dist/brands/<name>.css`. To add a brand, copy `tokens/brands/violet.json`, edit it and run `pnpm build`.
 

@@ -18,7 +18,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.
 - Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.
 - Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
-- Theme with data-theme="dark|light|dark-soft|light-soft" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.
+- Theme with data-theme="dark|light|dark-soft|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
 - Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations.
@@ -32,7 +32,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - **classPrefix**: ayy-
 - **naming**: BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class="ayy-button ayy-button--outline ayy-button--sm".
 - **state**: State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.
-- **theming**: No attribute = follow OS (dark or light). data-theme="dark" | "light" | "dark-soft" | "light-soft" forces a theme on any element and its subtree (.dark/.light classes work too). The -soft themes lower the contrast (charcoal/off-white instead of black/white); every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".
+- **theming**: No attribute = follow OS (dark or light). data-theme="dark" | "light" | "dark-soft" | "light-gray" forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".
 - **density**: Controls default to compact (touch on touch-first devices). data-density="compact" | "comfortable" | "touch" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.
 - **brands**: Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.
 - **direction**: All layout uses logical properties; set dir="rtl" on any ancestor and components mirror.
@@ -41,7 +41,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 ## Global attributes
 
-- `data-theme`: "dark" | "light" | "dark-soft" | "light-soft" — force a theme on this element and its subtree. None = follow the OS (dark or light). The -soft themes have lower contrast: charcoal/off-white instead of black/white.
+- `data-theme`: "dark" | "light" | "dark-soft" | "light-gray" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft lowers the contrast (charcoal instead of black); light-gray puts white cards and panels on a grey page.
 - `data-density`: "compact" | "comfortable" | "touch" — control sizes for this subtree. None = compact, or touch on touch-first devices.
 - `data-brand`: Brand name (e.g. "violet"); needs ayywi/brands/<name>.css loaded.
 - `dir`: "rtl" mirrors every component (logical properties throughout).
@@ -63,13 +63,10 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | palette.neutral.58 | `--ayy-palette-neutral-58` | #939393 |  |  |
 | palette.neutral.60 | `--ayy-palette-neutral-60` | #9a9a9a |  |  |
 | palette.neutral.73 | `--ayy-palette-neutral-73` | #bbbbbb |  |  |
-| palette.neutral.82 | `--ayy-palette-neutral-82` | #d1d1d1 |  |  |
 | palette.neutral.85 | `--ayy-palette-neutral-85` | #dadada |  |  |
 | palette.neutral.90 | `--ayy-palette-neutral-90` | #e5e5e5 |  |  |
 | palette.neutral.92 | `--ayy-palette-neutral-92` | #ebebeb |  |  |
-| palette.neutral.95 | `--ayy-palette-neutral-95` | #f2f2f2 |  |  |
 | palette.neutral.97 | `--ayy-palette-neutral-97` | #f7f7f8 |  |  |
-| palette.neutral.98 | `--ayy-palette-neutral-98` | #fafafa |  |  |
 | palette.neutral.100 | `--ayy-palette-neutral-100` | #ffffff |  |  |
 | palette.red.35 | `--ayy-palette-red-35` | #991b1b |  |  |
 | palette.red.42 | `--ayy-palette-red-42` | #b91c1c |  |  |
@@ -207,7 +204,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - `dark` — The default: black background, white text.
 - `light` — White background, near-black text.
 - `dark-soft` (built on dark) — Dark with softer contrast: a charcoal background instead of black, and off-white text. Easier on the eyes for long reading; every text colour still meets WCAG AA. Overrides of dark: `--ayy-color-bg` #1e1e1e, `--ayy-color-surface` #262626, `--ayy-color-surface-raised` #2e2e2e, `--ayy-color-text` #e5e5e5, `--ayy-color-muted` #9a9a9a, `--ayy-color-border` #333333, `--ayy-color-ring` #e5e5e5, `--ayy-color-primary` #e5e5e5, `--ayy-color-primary-fg` #1e1e1e, `--ayy-color-destructive` #fb9696, `--ayy-color-info` #8ab9ff, `--ayy-color-ai-active` #cbabff, `--ayy-color-glow` #e5e5e5, `--ayy-color-glass` #1e1e1ec7, `--ayy-color-overlay` #00000099.
-- `light-soft` (built on light) — Light with softer contrast: an off-white background instead of white, and charcoal text. Less glare; every text colour still meets WCAG AA. Overrides of light: `--ayy-color-bg` #f2f2f2, `--ayy-color-surface` #ebebeb, `--ayy-color-surface-raised` #fafafa, `--ayy-color-text` #262626, `--ayy-color-muted` #636363, `--ayy-color-border` #d1d1d1, `--ayy-color-ring` #262626, `--ayy-color-primary` #262626, `--ayy-color-primary-fg` #fafafa, `--ayy-color-destructive` #991b1b, `--ayy-color-info` #1e40af, `--ayy-color-ai` #636363, `--ayy-color-glass` #f2f2f2c7.
+- `light-gray` (built on light) — Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA. Overrides of light: `--ayy-color-bg` #ebebeb, `--ayy-color-surface` #ffffff, `--ayy-color-muted` #636363, `--ayy-color-destructive` #991b1b, `--ayy-color-info` #1e40af, `--ayy-color-ai` #636363, `--ayy-color-glass` #ebebebc7.
 
 ## Brands
 

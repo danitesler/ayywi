@@ -162,8 +162,9 @@ function ColorsPage() {
         Themes
       </h2>
       <p className="pv-note">
-        Set <code className="pv-inline-code">data-theme</code> on the page or any section. The soft themes lower the contrast (charcoal and off-white instead
-        of black and white) for easier reading; every text colour still passes WCAG AA, and <code className="pv-inline-code">pnpm check</code> enforces it.
+        Set <code className="pv-inline-code">data-theme</code> on the page or any section. Dark soft lowers the contrast (charcoal instead of
+        black) for easier reading. Light gray puts white cards and panels on a grey page, so surfaces stand out more than on white. Every text colour
+        passes WCAG AA in every theme, and <code className="pv-inline-code">pnpm check</code> enforces it.
       </p>
       <div className="pv-themes">
         {themeOptions.map((th) => (
@@ -361,7 +362,7 @@ export const foundations: Foundation[] = [
     groups: ["color", "accent", "palette"],
     keywords: `theme themes dark light soft contrast ${colorCategories.join(" ")}`,
     sections: [
-      { id: "themes", title: "Themes", text: "dark light dark-soft light-soft data-theme contrast" },
+      { id: "themes", title: "Themes", text: "dark light dark-soft light-gray grey data-theme contrast" },
       ...colorCategories.map((category) => ({
         id: slug(category),
         title: category,

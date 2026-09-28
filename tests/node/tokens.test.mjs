@@ -6,7 +6,7 @@ import * as sass from "sass";
 
 const dist = (p) => fileURLToPath(new URL(`../../dist/${p}`, import.meta.url));
 
-const THEMES = ["dark", "light", "dark-soft", "light-soft"];
+const THEMES = ["dark", "light", "dark-soft", "light-gray"];
 
 test("platform token files exist and agree", { skip: !existsSync(dist("tokens")) && "run pnpm build first" }, () => {
   const [dark, ...others] = THEMES.map((t) => JSON.parse(readFileSync(dist(`tokens/${t}.json`), "utf8")));
@@ -15,11 +15,12 @@ test("platform token files exist and agree", { skip: !existsSync(dist("tokens"))
     assert.notEqual(JSON.stringify(other), JSON.stringify(dark));
   }
   assert.equal(others[1].color.bg.$value, "#1e1e1e"); // dark-soft
-  assert.equal(others[2].color.bg.$value, "#f2f2f2"); // light-soft
+  assert.equal(others[2].color.bg.$value, "#ebebeb"); // light-gray
+  assert.equal(others[2].color.surface.$value, "#ffffff");
   const swift = readFileSync(dist("tokens/Ayywi.swift"), "utf8");
   assert.match(swift, /static let darkSoft = AyywiColors/);
   assert.match(swift, /static let `switch`: CGFloat/, "Swift keywords are escaped");
-  assert.match(readFileSync(dist("tokens/Ayywi.kt"), "utf8"), /val AyywiLightSoftColors = AyywiColors/);
+  assert.match(readFileSync(dist("tokens/Ayywi.kt"), "utf8"), /val AyywiLightGrayColors = AyywiColors/);
   for (const f of ["tokens/density/comfortable.json", "tokens/density/touch.json", "tokens/Ayywi.swift", "tokens/Ayywi.kt"]) {
     assert.ok(existsSync(dist(f)), f);
   }

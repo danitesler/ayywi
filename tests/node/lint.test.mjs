@@ -29,7 +29,7 @@ test("unknown element attribute value", () => {
 });
 
 test("data-theme and data-density values", () => {
-  assert.deepEqual(rules(`<html data-theme="dark-soft" data-density="touch"><section data-theme="light-soft"></section></html>`, "a.html"), []);
+  assert.deepEqual(rules(`<html data-theme="dark-soft" data-density="touch"><section data-theme="light-gray"></section></html>`, "a.html"), []);
   assert.deepEqual(rules(`<html data-theme="dim"><div data-density="cozy"></div></html>`, "a.html"), ["unknown-attribute-value", "unknown-attribute-value"]);
   assert.deepEqual(rules(`<div :data-theme="mode" data-theme={mode}></div>`, "a.vue"), [], "bound values are skipped");
   const [f] = lintText(`<html data-theme="soft">`, "a.html", contract);
