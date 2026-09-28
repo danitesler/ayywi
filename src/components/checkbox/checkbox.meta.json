@@ -2,6 +2,7 @@
   "name": "Checkbox",
   "slug": "checkbox",
   "status": "stable",
+  "category": "Forms",
   "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
   "whenToUse": [
     "Choices submitted with a form (terms, preferences saved with a Save button).",

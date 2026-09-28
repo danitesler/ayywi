@@ -1,10 +1,52 @@
-import { Button } from "ayywi/react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Button, Select } from "ayywi/react";
 import type { DensityMode, ThemeMode } from "ayywi";
-import { components } from "./data";
+import { componentGroups, components } from "./data";
 import { ComponentPage } from "./pages/ComponentPage";
+import { foundations, foundationText } from "./pages/Foundations";
 import { HomePage } from "./pages/HomePage";
-import { TokensPage } from "./pages/TokensPage";
-import { useHashRoute, useSettings, type Brand, type Direction, type Renderer } from "./settings";
+import { useHashRoute, useSettings, type Brand, type Renderer } from "./settings";
+import { themeOptions } from "./themes";
+
+interface NavItem {
+  route: string;
+  title: string;
+  /** Everything the search matches against. */
+  text: string;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+const SECTIONS: NavSection[] = [
+  { title: "Start", items: [{ route: "", title: "Overview", text: "home install quick start ai agents" }] },
+  { title: "Foundations", items: foundations.map((f) => ({ route: f.route, title: f.title, text: foundationText(f) })) },
+  ...componentGroups.map((g) => ({
+    title: g.category,
+    items: g.components.map((c) => ({
+      route: c.slug,
+      title: c.name,
+      text: [c.slug, c.description, ...Object.keys(c.classes), ...Object.keys(c.react.components), c.element?.tag ?? ""].join(" "),
+    })),
+  })),
+];
+
+/** Every word must appear in the item, its section or its search text. */
+function search(query: string): NavSection[] {
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return SECTIONS;
+  return SECTIONS.map((s) => ({
+    ...s,
+    items: s.items.filter((i) => {
+      const haystack = `${s.title} ${i.title} ${i.text}`.toLowerCase();
+      return words.every((w) => haystack.includes(w));
+    }),
+  })).filter((s) => s.items.length > 0);
+}
+
+const sectionId = (title: string) => `pv-nav-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
 function Segmented<T extends string>({
   label,
@@ -29,15 +71,67 @@ function Segmented<T extends string>({
   );
 }
 
-export function App() {
-  const route = useHashRoute();
-  const { theme, setTheme, density, setDensity, brand, setBrand, renderer, setRenderer, dir, setDir } = useSettings();
-  const component = components.find((c) => c.slug === route);
-  const isComponent = Boolean(component);
+function Picker<T extends string>({ id, label, value, options, onChange }: { id: string; label: string; value: T; options: [T, string][]; onChange: (value: T) => void }) {
+  return (
+    <div className="pv-seg">
+      <span className="pv-seg__label" id={id}>
+        {label}
+      </span>
+      <Select size="sm" aria-labelledby={id} value={value} onChange={(e) => onChange(e.target.value as T)}>
+        {options.map(([key, text]) => (
+          <option key={key} value={key}>
+            {text}
+          </option>
+        ))}
+      </Select>
+    </div>
+  );
+}
 
-  const link = (slug: string, text: string) => (
-    <a href={`#/${slug}`} className="pv-nav__link" aria-current={route === slug ? "page" : undefined}>
-      {text}
+export function App() {
+  const raw = useHashRoute();
+  const route = raw === "tokens" ? "colors" : raw; // old links
+  const { theme, setTheme, density, setDensity, brand, setBrand, renderer, setRenderer } = useSettings();
+  const component = components.find((c) => c.slug === route);
+  const foundation = foundations.find((f) => f.route === route);
+
+  const [query, setQuery] = useState("");
+  const sections = useMemo(() => search(query), [query]);
+  const results = sections.flatMap((s) => s.items);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+
+  // "/" or Ctrl/⌘K jumps to search from anywhere.
+  useEffect(() => {
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      const typing = (event.target as Element | null)?.closest?.("input, textarea, select, [contenteditable='true']");
+      if ((event.key === "/" && !typing) || (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey))) {
+        event.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  const onSearchKey = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && results.length) {
+      const q = query.trim().toLowerCase();
+      const best = results.find((r) => r.title.toLowerCase().startsWith(q)) ?? results[0];
+      window.location.hash = `#/${best.route}`;
+    } else if (event.key === "Escape") {
+      if (query) setQuery("");
+      else searchRef.current?.blur();
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      navRef.current?.querySelector<HTMLElement>("a")?.focus();
+    }
+  };
+
+  const link = (item: NavItem) => (
+    <a href={`#/${item.route}`} className="pv-nav__link" aria-current={route === item.route ? "page" : undefined}>
+      {item.title}
     </a>
   );
 
@@ -48,14 +142,45 @@ export function App() {
           <span className="pv-brand__mark" aria-hidden="true" />
           ayywi
         </a>
-        <nav className="pv-nav" aria-label="Design system">
-          <p className="ayy-eyebrow pv-nav__group">Start</p>
-          {link("", "Overview")}
-          {link("tokens", "Tokens")}
-          <p className="ayy-eyebrow pv-nav__group">Components</p>
-          {components.map((c) => (
-            <span key={c.slug}>{link(c.slug, c.name)}</span>
-          ))}
+        <div className="pv-search" role="search">
+          <input
+            ref={searchRef}
+            className="ayy-input pv-search__input"
+            type="search"
+            placeholder="Search"
+            aria-label="Search components and foundations"
+            aria-controls="pv-nav"
+            aria-keyshortcuts="/ Control+K Meta+K"
+            autoComplete="off"
+            spellCheck={false}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={onSearchKey}
+          />
+          <kbd className="pv-search__kbd" aria-hidden="true">
+            /
+          </kbd>
+        </div>
+        <p className="ayy-sr-only" role="status">
+          {query ? `${results.length} result${results.length === 1 ? "" : "s"}` : ""}
+        </p>
+        <nav id="pv-nav" ref={navRef} className="pv-nav" aria-label="Design system">
+          {sections.length ? (
+            sections.map((s) => (
+              <div className="pv-nav__section" key={s.title}>
+                <p className="ayy-eyebrow pv-nav__group" id={sectionId(s.title)}>
+                  {s.title}
+                </p>
+                <ul className="pv-nav__list" aria-labelledby={sectionId(s.title)}>
+                  {s.items.map((item) => (
+                    <li key={item.route || "overview"}>{link(item)}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <p className="pv-nav__empty">No matches for “{query}”.</p>
+          )}
         </nav>
       </aside>
 
@@ -65,13 +190,10 @@ export function App() {
             label="Theme"
             value={theme}
             onChange={setTheme}
-            options={[
-              ["system", "System"],
-              ["dark", "Dark"],
-              ["light", "Light"],
-            ]}
+            options={[["system", "System"], ...themeOptions.map((t): [ThemeMode, string] => [t.name, t.label])]}
           />
-          <Segmented<DensityMode>
+          <Picker<DensityMode>
+            id="pv-density"
             label="Density"
             value={density}
             onChange={setDensity}
@@ -82,7 +204,8 @@ export function App() {
               ["touch", "Touch"],
             ]}
           />
-          <Segmented<Brand>
+          <Picker<Brand>
+            id="pv-brand"
             label="Brand"
             value={brand}
             onChange={setBrand}
@@ -91,16 +214,7 @@ export function App() {
               ["violet", "Violet"],
             ]}
           />
-          <Segmented<Direction>
-            label="Direction"
-            value={dir}
-            onChange={setDir}
-            options={[
-              ["ltr", "LTR"],
-              ["rtl", "RTL"],
-            ]}
-          />
-          {isComponent ? (
+          {component ? (
             <Segmented<Renderer>
               label="Render with"
               value={renderer}
@@ -115,15 +229,11 @@ export function App() {
 
         <main className="pv-content" id="main">
           {component ? (
-            <ComponentPage key={component.slug} component={component} renderer={renderer} dir={dir} />
-          ) : route === "tokens" ? (
-            <div dir={dir}>
-              <TokensPage />
-            </div>
+            <ComponentPage key={component.slug} component={component} renderer={renderer} />
+          ) : foundation ? (
+            <foundation.Page key={foundation.route} />
           ) : (
-            <div dir={dir}>
-              <HomePage />
-            </div>
+            <HomePage />
           )}
         </main>
       </div>

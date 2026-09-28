@@ -1,7 +1,7 @@
-import { tokens } from "ayywi";
+import { themes, tokens } from "ayywi";
 import { Badge, Card, CardDescription, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
 import { CodeBlock } from "../CodeBlock";
-import { components } from "../data";
+import { componentGroups, components } from "../data";
 
 const QUICKSTART = {
   html: `<!-- No build step. Swap @latest for a pinned version in production. -->
@@ -69,6 +69,7 @@ export function HomePage() {
             {components.length} components
           </Badge>
           <Badge>{Object.keys(tokens).length} tokens</Badge>
+          <Badge>{themes.length} themes</Badge>
           <Badge>0 runtime dependencies</Badge>
           <Badge variant="ai">AI-first</Badge>
         </div>
@@ -111,21 +112,32 @@ export function HomePage() {
       </div>
 
       <h2 className="pv-h pv-h--section">Components</h2>
-      <div className="pv-grid">
-        {components.map((c, i) => {
-          const accents = ["product", "ai", "system", "brand", "marketing", "research"];
-          return (
-            <a key={c.slug} href={`#/${c.slug}`} className="pv-card-link">
-              <Card interactive spotlight spotColor={`var(--ayy-accent-${accents[i % accents.length]})`}>
-                <CardHeader>
-                  <CardTitle>{c.name}</CardTitle>
-                  <CardDescription>{c.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            </a>
-          );
-        })}
-      </div>
+      {componentGroups.map((g, gi) => (
+        <section key={g.category} className="pv-cat" aria-labelledby={`cat-${gi}`}>
+          <div className="pv-cat__head">
+            <h3 className="pv-cat__title" id={`cat-${gi}`}>
+              {g.category}
+            </h3>
+            <p className="pv-note">{g.description}</p>
+          </div>
+          <div className="pv-grid">
+            {g.components.map((c) => {
+              const accents = ["product", "ai", "system", "brand", "marketing", "research"];
+              const i = components.indexOf(c);
+              return (
+                <a key={c.slug} href={`#/${c.slug}`} className="pv-card-link">
+                  <Card interactive spotlight spotColor={`var(--ayy-accent-${accents[i % accents.length]})`}>
+                    <CardHeader>
+                      <CardTitle>{c.name}</CardTitle>
+                      <CardDescription>{c.description}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      ))}
     </article>
   );
 }

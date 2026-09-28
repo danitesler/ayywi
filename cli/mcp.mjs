@@ -9,7 +9,7 @@ function componentMarkdown(c) {
   const list = (items) => (items ?? []).map((i) => `- ${i}`).join("\n");
   const parts = [
     `# ${c.name}`,
-    c.description,
+    `${c.category ? `Category: ${c.category}. ` : ""}${c.description}`,
     `Use for:\n${list(c.whenToUse)}`,
     `Don't use for:\n${list(c.whenNotToUse)}`,
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
@@ -53,7 +53,12 @@ export function createServer(contract = loadContract()) {
     list_components: {
       description: "List every ayywi component with a one-line description. Start here.",
       inputSchema: { type: "object", properties: {} },
-      run: () => manifest.components.map((c) => `- ${c.name} (${c.slug}): ${c.description}`).join("\n"),
+      run: () => {
+        const categories = [...new Set(manifest.components.map((c) => c.category ?? "Other"))];
+        return categories
+          .map((cat) => `${cat}:\n${manifest.components.filter((c) => (c.category ?? "Other") === cat).map((c) => `- ${c.name} (${c.slug}): ${c.description}`).join("\n")}`)
+          .join("\n\n");
+      },
     },
     get_component: {
       description: "Full spec of one component: classes, variants, states, React props, custom element, a11y, do/don't, copy-ready HTML + React examples.",
@@ -82,12 +87,15 @@ export function createServer(contract = loadContract()) {
       },
     },
     get_tokens: {
-      description: "Design tokens (CSS custom properties) with dark/light values. Optionally filter by group: color, accent, palette, space, radius, text, control, size, shadow, ease, duration, font, z.",
+      description: "Design tokens (CSS custom properties) with their value in every theme (dark, light, dark-soft, light-soft). Optionally filter by group: color, accent, palette, space, radius, text, control, size, shadow, ease, duration, font, z.",
       inputSchema: { type: "object", properties: { group: { type: "string" } } },
       run: ({ group } = {}) =>
         manifest.tokens
           .filter((t) => !group || t.name.startsWith(`${group}.`))
-          .map((t) => `${t.cssVar}: ${Array.isArray(t.value) ? t.value.join(", ") : t.value}${t.light ? ` (light ${t.light})` : ""}${t.description ? ` — ${t.description}` : ""}`)
+          .map((t) => {
+            const other = [t.light ? `light ${t.light}` : "", ...Object.entries(t.themes ?? {}).map(([name, v]) => `${name} ${v}`)].filter(Boolean);
+            return `${t.cssVar}: ${Array.isArray(t.value) ? t.value.join(", ") : t.value}${other.length ? ` (${other.join(", ")})` : ""}${t.category ? ` [${t.category}]` : ""}${t.description ? ` — ${t.description}` : ""}`;
+          })
           .join("\n"),
     },
     get_rules: {

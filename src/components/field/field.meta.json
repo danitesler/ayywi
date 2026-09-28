@@ -2,6 +2,7 @@
   "name": "Field",
   "slug": "field",
   "status": "stable",
+  "category": "Forms",
   "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
   "whenToUse": ["Every labelled form control: Input, Textarea, Switch, native <select>."],
   "whenNotToUse": ["Search boxes in toolbars — an aria-label on the Input is enough."],

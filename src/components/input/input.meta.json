@@ -2,6 +2,7 @@
   "name": "Input",
   "slug": "input",
   "status": "stable",
+  "category": "Forms",
   "description": "Single-line text field. Works for every native input type (text, email, search, number, file…).",
   "whenToUse": ["Short free-text entry: names, URLs, search, API keys."],
   "whenNotToUse": ["Multi-line text — use Textarea.", "On/off — use Switch."],

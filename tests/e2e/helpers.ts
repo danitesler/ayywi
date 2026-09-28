@@ -2,10 +2,9 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 export interface Settings {
   renderer?: "react" | "html";
-  theme?: "dark" | "light";
+  theme?: "dark" | "light" | "dark-soft" | "light-soft";
   density?: "compact" | "comfortable" | "touch";
   brand?: "default" | "violet";
-  dir?: "ltr" | "rtl";
 }
 
 const watched = new WeakMap<Page, string[]>();
@@ -38,7 +37,6 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
     set("ayy-theme", s.theme);
     set("ayy-density", s.density);
     set("ayy-preview-brand", s.brand);
-    set("ayy-preview-dir", s.dir);
   }, s);
   await page.goto(`/?load=${++loads}#/${route}`);
   await expect(page.locator(".pv-page").first()).toBeVisible();
@@ -50,3 +48,6 @@ export const stage = (page: Page, n = 0) => page.locator(".pv-stage").nth(n);
 
 /** Wait for entry transitions/animations to finish, so boxes are measured at rest. */
 export const settle = (l: Locator) => l.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+
+/** Mirror a stage right-to-left, the way a page with dir="rtl" on an ancestor would. */
+export const rtl = (l: Locator) => l.evaluate((el) => el.setAttribute("dir", "rtl"));

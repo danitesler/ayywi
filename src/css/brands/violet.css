@@ -9,7 +9,6 @@
     --ayy-color-primary-fg: light-dark(var(--ayy-palette-neutral-100), var(--ayy-palette-neutral-0));
     --ayy-color-ring: light-dark(var(--ayy-palette-violet-58), var(--ayy-palette-violet-77));
     --ayy-color-glow: light-dark(var(--ayy-palette-violet-58), var(--ayy-palette-violet-77));
-    --ayy-color-ai-active: light-dark(var(--ayy-palette-violet-58), var(--ayy-palette-violet-77));
     --ayy-radius-button: 10px;
     --ayy-radius-card: 20px;
   }

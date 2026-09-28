@@ -5,7 +5,8 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cssRuleFindings, lintPaths, loadContract } from "../cli/lint.mjs";
-import { PUBLIC_HOOKS, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, PUBLIC_HOOKS, UTILITIES } from "./lib/contract.mjs";
+import { contrast, mix } from "./lib/contrast.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -70,7 +71,7 @@ const indexCss = read("src/css/index.css");
 const reactIndex = read("src/react/index.ts");
 const jsIndex = read("src/index.ts");
 const elementsIndex = read("src/elements/index.ts");
-const REQUIRED_META = ["name", "slug", "status", "description", "whenToUse", "whenNotToUse", "classes", "variants", "react", "a11y", "do", "dont", "examples"];
+const REQUIRED_META = ["name", "slug", "status", "category", "description", "whenToUse", "whenNotToUse", "classes", "variants", "react", "a11y", "do", "dont", "examples"];
 const STATEFUL = /:checked|\[aria-selected|\[aria-checked|:indeterminate|__bar\b/;
 
 for (const slug of readdirSync(join(root, "src/components"))) {
@@ -100,6 +101,7 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
   for (const key of REQUIRED_META) if (!(key in meta)) fail(files.meta, `missing "${key}"`);
   if (meta.slug !== slug) fail(files.meta, `slug "${meta.slug}" should be "${slug}"`);
+  if ("category" in meta && !(meta.category in CATEGORIES)) fail(files.meta, `category "${meta.category}" should be one of: ${Object.keys(CATEGORIES).join(", ")} (scripts/lib/contract.mjs)`);
 
   // CSS classes ↔ documented classes
   const defined = selectorClasses(css);
@@ -171,9 +173,34 @@ const baseClasses = selectorClasses(base);
 for (const cls of baseClasses) if (!(cls in UTILITIES)) fail("scripts/lib/contract.mjs", `utility .${cls} (base.css) isn't documented in UTILITIES`);
 for (const cls of Object.keys(UTILITIES)) if (!baseClasses.has(cls)) fail("scripts/lib/contract.mjs", `UTILITIES documents .${cls}, which base.css doesn't define`);
 
-// ---- Brands (loadTokens validates that overrides are real, non-derived tokens) ----
+// ---- Themes and brands (loadTokens validates their overrides), text contrast in every combination ----
+const TEXT_COLORS = ["text", "text-soft", "muted", "destructive", "success", "warning", "info", "ai", "ai-active"];
+const SURFACES = ["bg", "surface", "surface-raised"];
+// Status text also sits on a tint of itself (badges 10%, alerts 8%, destructive buttons 10% / 15% on hover).
+const TINTED = ["destructive", "success", "warning", "info", "ai-active"];
+const TINT = 0.15;
 try {
-  loadTokens(root);
+  const { byName, valueIn, resolve, themes, brands } = loadTokens(root);
+  for (const theme of themes) {
+    if (!ATTRIBUTES["data-theme"].includes(`"${theme.name}"`)) fail("scripts/lib/contract.mjs", `ATTRIBUTES["data-theme"] doesn't list "${theme.name}"`);
+    for (const brand of [null, ...brands]) {
+      const where = `tokens (${theme.name}${brand ? ` + brand ${brand.name}` : ""})`;
+      const color = (name) => {
+        const o = brand?.overrides.find((x) => x.name === `color.${name}`);
+        if (o) return resolve(theme.base === "light" && o.light !== undefined ? o.light : o.value);
+        return valueIn(byName.get(`color.${name}`), theme.name);
+      };
+      const need = (fg, bg, tint = 0) => {
+        const behind = tint ? mix(color(fg), color(bg), tint) : color(bg);
+        const ratio = contrast(color(fg), behind);
+        const on = tint ? `a ${tint * 100}% tint of itself over color.${bg}` : `color.${bg}`;
+        if (ratio < 4.5) fail(where, `color.${fg} on ${on} is ${ratio.toFixed(2)}:1 — text needs at least 4.5:1 (WCAG AA)`);
+      };
+      for (const fg of TEXT_COLORS) for (const bg of SURFACES) need(fg, bg);
+      for (const fg of TINTED) for (const bg of SURFACES) need(fg, bg, TINT);
+      need("primary-fg", "primary");
+    }
+  }
 } catch (e) {
   fail("tokens/", e.message);
 }

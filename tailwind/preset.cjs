@@ -19,8 +19,8 @@ module.exports = {
   darkMode: [
     "variant",
     [
-      "@media (prefers-color-scheme: dark) { &:not(:where([data-theme=light], [data-theme=light] *, .light, .light *)) }",
-      "&:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *)",
+      "@media (prefers-color-scheme: dark) { &:not(:where([data-theme^=light], [data-theme^=light] *, .light, .light *)) }",
+      "&:where([data-theme^=dark], [data-theme^=dark] *, .dark, .dark *)",
     ],
   ],
   theme: {

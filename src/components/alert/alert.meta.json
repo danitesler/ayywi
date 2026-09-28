@@ -2,6 +2,7 @@
   "name": "Alert",
   "slug": "alert",
   "status": "stable",
+  "category": "Feedback",
   "description": "Inline message box with optional icon, title, description and actions.",
   "whenToUse": ["Page- or section-level messages that stay until resolved (billing issue, read-only mode, maintenance)."],
   "whenNotToUse": ["Confirmations that can disappear — use Toast.", "Field errors — use FieldError next to the field."],

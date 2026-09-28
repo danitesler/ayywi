@@ -7,7 +7,7 @@ This project's UI uses **ayywi** (`ayywi` on npm). Look up a component before us
 2. Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.
 3. Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.
 4. Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
-5. Theme with data-theme="light|dark" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.
+5. Theme with data-theme="dark|light|dark-soft|light-soft" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.
 6. Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).
 7. Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
 8. Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations.
@@ -16,4 +16,4 @@ This project's UI uses **ayywi** (`ayywi` on npm). Look up a component before us
 11. In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>).
 12. Run `npx ayywi lint` after UI changes and fix every error it reports.
 
-Components: Button, Card, Badge, Avatar, Input, Textarea, Select, Checkbox, Radio, Field, Switch, Tabs, Dialog, Popover, Dropdown menu, Tooltip, Toast, Alert, Progress, Skeleton, Table. If something is missing, compose it from these and the tokens — don't pull in another UI kit.
+Components — Actions: Button, Dropdown menu; Forms: Field, Input, Textarea, Select, Checkbox, Radio, Switch; Layout: Card, Tabs; Overlays: Dialog, Popover, Tooltip; Feedback: Alert, Toast, Progress, Skeleton; Data display: Badge, Avatar, Table. If something is missing, compose it from these and the tokens — don't pull in another UI kit.

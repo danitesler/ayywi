@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import manifest from "../../manifest/components.json" with { type: "json" };
-import { open, settle, stage } from "./helpers";
+import { open, rtl, settle, stage } from "./helpers";
 
 const slugs = manifest.components.map((c: { slug: string }) => c.slug);
 
@@ -39,7 +39,8 @@ test("brand swaps the primary colour in both themes", async ({ page }) => {
 });
 
 test("RTL flips logical layout", async ({ page }) => {
-  await open(page, "popover", { dir: "rtl", renderer: "html" });
+  await open(page, "popover", { renderer: "html" });
+  await rtl(stage(page));
   const trigger = stage(page).getByRole("button", { name: "Share" });
   await trigger.click();
   const pop = page.getByRole("dialog", { name: "Share this project" });
@@ -50,7 +51,8 @@ test("RTL flips logical layout", async ({ page }) => {
   // align="start" in RTL: right edges line up.
   expect(Math.abs(p.x + p.width - (t.x + t.width))).toBeLessThan(2);
 
-  await open(page, "switch", { dir: "rtl" });
+  await open(page, "switch");
+  await rtl(stage(page));
   const sw = stage(page).getByRole("switch", { name: "Sync on save" });
   const label = stage(page).getByText("Sync on save");
   expect((await label.boundingBox())!.x).toBeLessThan((await sw.boundingBox())!.x);
@@ -85,20 +87,48 @@ test.describe("forced colors (Windows High Contrast)", () => {
   });
 });
 
-for (const theme of ["dark", "light"] as const) {
-  test(`axe: no serious violations on any component page (${theme})`, async ({ page }) => {
-    test.setTimeout(120_000);
+test("soft themes lift the background and soften text", async ({ page }) => {
+  const read = () =>
+    page.evaluate(() => {
+      const s = getComputedStyle(document.body);
+      return { bg: s.backgroundColor, text: s.color, scheme: getComputedStyle(document.documentElement).colorScheme };
+    });
+  await open(page, "", { theme: "dark-soft" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark-soft");
+  expect(await read()).toEqual({ bg: "rgb(30, 30, 30)", text: "rgb(229, 229, 229)", scheme: "dark" });
+  await open(page, "", { theme: "light-soft" });
+  expect(await read()).toEqual({ bg: "rgb(242, 242, 242)", text: "rgb(38, 38, 38)", scheme: "light" });
+  await open(page, "", { theme: "dark" });
+  expect(await read()).toEqual({ bg: "rgb(0, 0, 0)", text: "rgb(255, 255, 255)", scheme: "dark" });
+});
+
+test("a themed section inside another theme gets its own colours", async ({ page }) => {
+  await open(page, "colors", { theme: "dark" });
+  const bg = (name: string) => page.locator(`.pv-theme[data-theme="${name}"]`).evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(await bg("light-soft")).toBe("rgb(242, 242, 242)");
+  expect(await bg("dark-soft")).toBe("rgb(30, 30, 30)");
+  expect(await bg("light")).toBe("rgb(255, 255, 255)");
+});
+
+for (const theme of ["dark", "light", "dark-soft", "light-soft"] as const) {
+  test(`axe: no serious violations on any page (${theme})`, async ({ page }) => {
+    test.setTimeout(180_000);
     await open(page, "", { theme });
     const failures: string[] = [];
-    for (const slug of slugs) {
-      await page.goto(`/#/${slug}`);
+    // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
+    const targets: [string, string][] = [
+      ...slugs.map((slug: string): [string, string] => [slug, ".pv-stage"]),
+      ...["", "colors", "typography", "spacing", "elevation", "motion"].map((r): [string, string] => [r, ".pv-shell"]),
+    ];
+    for (const [route, scope] of targets) {
+      await page.goto(`/#/${route}`);
       await expect(page.locator("h1")).toBeVisible();
       const results = await new AxeBuilder({ page })
-        .include(".pv-stage")
+        .include(scope)
         .disableRules(["region"]) // examples are fragments, not full pages
         .analyze();
       for (const v of results.violations.filter((v) => v.impact === "serious" || v.impact === "critical")) {
-        failures.push(`${slug}: ${v.id} — ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
+        failures.push(`${route || "overview"}: ${v.id} — ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
       }
     }
     expect(failures).toEqual([]);

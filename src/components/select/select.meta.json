@@ -2,6 +2,7 @@
   "name": "Select",
   "slug": "select",
   "status": "stable",
+  "category": "Forms",
   "description": "Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.",
   "whenToUse": ["Choosing one option from a longer list (country, time zone, role)."],
   "whenNotToUse": ["2–5 options that should all be visible — use Radio.", "Actions — use a Dropdown menu.", "Searching thousands of options — build a combobox."],

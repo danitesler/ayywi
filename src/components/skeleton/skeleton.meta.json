@@ -2,6 +2,7 @@
   "name": "Skeleton",
   "slug": "skeleton",
   "status": "stable",
+  "category": "Feedback",
   "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
   "whenToUse": ["Content that takes more than ~300ms and has a predictable layout (cards, lists, profile headers)."],
   "whenNotToUse": ["Unknown layouts or long jobs — use Progress.", "Instant loads — skeletons that flash are worse than nothing."],

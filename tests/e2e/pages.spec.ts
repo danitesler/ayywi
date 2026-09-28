@@ -20,18 +20,68 @@ for (const renderer of ["react", "html"] as const) {
   });
 }
 
-test("overview and tokens pages render", async ({ page }) => {
+const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion" };
+
+test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
   await expect(page.locator(".pv-card-link")).toHaveCount(slugs.length);
-  await page.goto("/#/tokens");
-  await expect(page.getByRole("heading", { name: "Palette" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Density" })).toBeVisible();
+  for (const [route, title] of Object.entries(FOUNDATIONS)) {
+    await page.goto(`/#/${route}`);
+    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+  }
+  await page.goto("/#/colors");
+  await expect(page.locator(".pv-theme")).toHaveCount(4);
+  for (const category of manifest.tokens.map((t: { category?: string }) => t.category).filter(Boolean)) {
+    await expect(page.getByRole("heading", { level: 2, name: category, exact: true })).toBeVisible();
+  }
+  await page.goto("/#/tokens"); // old link
+  await expect(page.getByRole("heading", { level: 1, name: "Colors" })).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test("sidebar groups every component under its category", async ({ page }) => {
+  await open(page, "");
+  const nav = page.getByRole("navigation", { name: "Design system" });
+  await expect(nav.getByRole("list", { name: "Foundations" }).getByRole("link")).toHaveCount(Object.keys(FOUNDATIONS).length);
+  for (const c of manifest.components as { name: string; category: string }[]) {
+    await expect(nav.getByRole("list", { name: c.category, exact: true }).getByRole("link", { name: c.name, exact: true })).toBeVisible();
+  }
+});
+
+test("search filters the sidebar and jumps to a result", async ({ page }) => {
+  await open(page, "");
+  const nav = page.getByRole("navigation", { name: "Design system" });
+  const box = page.getByRole("searchbox", { name: "Search components and foundations" });
+
+  await page.locator("body").press("/");
+  await expect(box).toBeFocused();
+
+  await box.fill("ayy-menu__item"); // class names match
+  await expect(nav.getByRole("link")).toHaveText(["Dropdown menu"]);
+  await expect(page.getByRole("status")).toHaveText("1 result");
+
+  await box.fill("surface-raised"); // token names match
+  await expect(nav.getByRole("link")).toHaveText(["Colors"]);
+
+  await box.fill("forms"); // categories match
+  await expect(nav.getByRole("link")).toHaveCount(7);
+
+  await box.fill("zzzz");
+  await expect(nav).toContainText("No matches");
+
+  await box.fill("dialog");
+  await box.press("Enter");
+  await expect(page).toHaveURL(/#\/dialog$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Dialog" })).toBeVisible();
+
+  await box.press("Escape");
+  await expect(box).toHaveValue("");
+  await expect(nav.getByRole("link", { name: "Button", exact: true })).toBeVisible();
 });
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "tokens", "button", "table", "dialog"]) {
+  for (const route of ["", "colors", "button", "table", "dialog"]) {
     await open(page, route);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `/#/${route}`).toBeLessThanOrEqual(0);

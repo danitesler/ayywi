@@ -1,7 +1,7 @@
 // Framework-free entry: tokens, class helpers, controllers, theme utilities. Safe to import anywhere (and during SSR).
 import { tokens, type TokenName } from "./tokens";
 
-export { tokens, brands, type TokenName, type TokenDefinition, type BrandName } from "./tokens";
+export { tokens, brands, themes, themeBase, type TokenName, type TokenDefinition, type BrandName, type ThemeName } from "./tokens";
 export { cx, type ClassValue } from "./lib/cx";
 export { place, autoPlace, supportsPopover, type FloatingSide, type FloatingAlign, type PlaceOptions } from "./lib/position";
 export * from "./theme";

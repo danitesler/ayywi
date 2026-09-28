@@ -8,6 +8,10 @@ export interface TokenDefinition {
   readonly value: string | number | readonly (string | number)[];
   /** Light-theme value, for themed tokens. */
   readonly light?: string;
+  /** Values in the other themes (dark-soft, light-soft…), for themed tokens. */
+  readonly themes?: Readonly<Record<string, string>>;
+  /** Grouping for docs, e.g. "Surfaces", "Text", "Status" (colour tokens). */
+  readonly category?: string;
   /** Values for the other densities, for density-aware tokens. */
   readonly density?: { readonly comfortable: string; readonly touch: string };
   readonly description?: string;
@@ -17,55 +21,74 @@ export const tokens = {
   "palette.neutral.0": { cssVar: "--ayy-palette-neutral-0", type: "color", value: "#000000" },
   "palette.neutral.4": { cssVar: "--ayy-palette-neutral-4", type: "color", value: "#0a0a0a" },
   "palette.neutral.8": { cssVar: "--ayy-palette-neutral-8", type: "color", value: "#141414" },
+  "palette.neutral.12": { cssVar: "--ayy-palette-neutral-12", type: "color", value: "#1e1e1e" },
   "palette.neutral.15": { cssVar: "--ayy-palette-neutral-15", type: "color", value: "#262626" },
+  "palette.neutral.18": { cssVar: "--ayy-palette-neutral-18", type: "color", value: "#2e2e2e" },
+  "palette.neutral.20": { cssVar: "--ayy-palette-neutral-20", type: "color", value: "#333333" },
   "palette.neutral.28": { cssVar: "--ayy-palette-neutral-28", type: "color", value: "#474747" },
+  "palette.neutral.39": { cssVar: "--ayy-palette-neutral-39", type: "color", value: "#636363" },
   "palette.neutral.42": { cssVar: "--ayy-palette-neutral-42", type: "color", value: "#6b6b6b" },
   "palette.neutral.58": { cssVar: "--ayy-palette-neutral-58", type: "color", value: "#939393" },
   "palette.neutral.60": { cssVar: "--ayy-palette-neutral-60", type: "color", value: "#9a9a9a" },
   "palette.neutral.73": { cssVar: "--ayy-palette-neutral-73", type: "color", value: "#bbbbbb" },
+  "palette.neutral.82": { cssVar: "--ayy-palette-neutral-82", type: "color", value: "#d1d1d1" },
   "palette.neutral.85": { cssVar: "--ayy-palette-neutral-85", type: "color", value: "#dadada" },
+  "palette.neutral.90": { cssVar: "--ayy-palette-neutral-90", type: "color", value: "#e5e5e5" },
+  "palette.neutral.92": { cssVar: "--ayy-palette-neutral-92", type: "color", value: "#ebebeb" },
+  "palette.neutral.95": { cssVar: "--ayy-palette-neutral-95", type: "color", value: "#f2f2f2" },
   "palette.neutral.97": { cssVar: "--ayy-palette-neutral-97", type: "color", value: "#f7f7f8" },
+  "palette.neutral.98": { cssVar: "--ayy-palette-neutral-98", type: "color", value: "#fafafa" },
   "palette.neutral.100": { cssVar: "--ayy-palette-neutral-100", type: "color", value: "#ffffff" },
+  "palette.red.35": { cssVar: "--ayy-palette-red-35", type: "color", value: "#991b1b" },
+  "palette.red.42": { cssVar: "--ayy-palette-red-42", type: "color", value: "#b91c1c" },
   "palette.red.51": { cssVar: "--ayy-palette-red-51", type: "color", value: "#dc2626" },
   "palette.red.71": { cssVar: "--ayy-palette-red-71", type: "color", value: "#f87171" },
+  "palette.red.79": { cssVar: "--ayy-palette-red-79", type: "color", value: "#fb9696" },
+  "palette.green.20": { cssVar: "--ayy-palette-green-20", type: "color", value: "#065f46" },
   "palette.green.24": { cssVar: "--ayy-palette-green-24", type: "color", value: "#047857" },
   "palette.green.51": { cssVar: "--ayy-palette-green-51", type: "color", value: "#35d07f" },
+  "palette.amber.31": { cssVar: "--ayy-palette-amber-31", type: "color", value: "#92400e" },
   "palette.amber.37": { cssVar: "--ayy-palette-amber-37", type: "color", value: "#b45309" },
   "palette.amber.61": { cssVar: "--ayy-palette-amber-61", type: "color", value: "#f5c542" },
+  "palette.blue.40": { cssVar: "--ayy-palette-blue-40", type: "color", value: "#1e40af" },
+  "palette.blue.48": { cssVar: "--ayy-palette-blue-48", type: "color", value: "#1d4ed8" },
   "palette.blue.53": { cssVar: "--ayy-palette-blue-53", type: "color", value: "#2563eb" },
   "palette.blue.68": { cssVar: "--ayy-palette-blue-68", type: "color", value: "#5b9dff" },
+  "palette.blue.77": { cssVar: "--ayy-palette-blue-77", type: "color", value: "#8ab9ff" },
+  "palette.violet.50": { cssVar: "--ayy-palette-violet-50", type: "color", value: "#6d28d9" },
   "palette.violet.58": { cssVar: "--ayy-palette-violet-58", type: "color", value: "#7c3aed" },
   "palette.violet.77": { cssVar: "--ayy-palette-violet-77", type: "color", value: "#b98cff" },
+  "palette.violet.84": { cssVar: "--ayy-palette-violet-84", type: "color", value: "#cbabff" },
   "palette.emerald.52": { cssVar: "--ayy-palette-emerald-52", type: "color", value: "#34d399" },
   "palette.pink.70": { cssVar: "--ayy-palette-pink-70", type: "color", value: "#f472b6" },
   "palette.orange.65": { cssVar: "--ayy-palette-orange-65", type: "color", value: "#ff8a4c" },
-  "color.bg": { cssVar: "--ayy-color-bg", type: "color", value: "#000000", light: "#ffffff", description: "Page background." },
-  "color.surface": { cssVar: "--ayy-color-surface", type: "color", value: "#0a0a0a", light: "#f7f7f8", description: "Cards, panels, inputs sit on this." },
-  "color.surface-raised": { cssVar: "--ayy-color-surface-raised", type: "color", value: "#141414", light: "#ffffff", description: "Popovers, menus, tooltips, toasts." },
-  "color.text": { cssVar: "--ayy-color-text", type: "color", value: "#ffffff", light: "#0a0a0a", description: "Primary text. Also the base every line/wash is mixed from." },
-  "color.text-soft": { cssVar: "--ayy-color-text-soft", type: "color", value: "#bbbbbb", light: "#474747", description: "Secondary text that still needs to read comfortably." },
-  "color.muted": { cssVar: "--ayy-color-muted", type: "color", value: "#939393", light: "#6b6b6b", description: "Captions, placeholders, de-emphasised labels." },
-  "color.border": { cssVar: "--ayy-color-border", type: "color", value: "#262626", light: "#dadada", description: "Opaque border, for places where a mixed line can't be used." },
-  "color.ring": { cssVar: "--ayy-color-ring", type: "color", value: "#ffffff", light: "#0a0a0a", description: "Focus ring." },
-  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", description: "Primary action fill. Monochrome by design; brands usually override it." },
-  "color.primary-fg": { cssVar: "--ayy-color-primary-fg", type: "color", value: "#000000", light: "#ffffff", description: "Text on primary." },
-  "color.destructive": { cssVar: "--ayy-color-destructive", type: "color", value: "#f87171", light: "#dc2626", description: "Errors and destructive actions." },
-  "color.success": { cssVar: "--ayy-color-success", type: "color", value: "#35d07f", light: "#047857", description: "Positive status." },
-  "color.warning": { cssVar: "--ayy-color-warning", type: "color", value: "#f5c542", light: "#b45309", description: "Caution status." },
-  "color.info": { cssVar: "--ayy-color-info", type: "color", value: "#5b9dff", light: "#2563eb", description: "Informational status." },
-  "color.ai": { cssVar: "--ayy-color-ai", type: "color", value: "#9a9a9a", light: "#6b6b6b", description: "AI features at rest." },
-  "color.ai-active": { cssVar: "--ayy-color-ai-active", type: "color", value: "#b98cff", light: "#7c3aed", description: "AI features while active / generating." },
-  "color.glow": { cssVar: "--ayy-color-glow", type: "color", value: "#ffffff", light: "#00000073", description: "Glow source colour (mixed down, never used raw)." },
-  "color.shadow": { cssVar: "--ayy-color-shadow", type: "color", value: "#000000", light: "#0000004d", description: "Shadow source colour (mixed down, never used raw)." },
-  "color.glass": { cssVar: "--ayy-color-glass", type: "color", value: "#000000bf", light: "#ffffffc7", description: "Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter." },
-  "color.overlay": { cssVar: "--ayy-color-overlay", type: "color", value: "#000000bf", light: "#0a0a0a73", description: "Modal backdrop." },
-  "color.wash": { cssVar: "--ayy-color-wash", type: "color", value: "#ffffff0a", light: "#0a0a0a0a", description: "4% text mix. Resting fill for subtle controls (badges, tab lists, secondary buttons)." },
-  "color.highlight": { cssVar: "--ayy-color-highlight", type: "color", value: "#ffffff0f", light: "#0a0a0a0f", description: "6% text mix. Inset top highlight on cards and dialogs." },
-  "color.wash-hover": { cssVar: "--ayy-color-wash-hover", type: "color", value: "#ffffff14", light: "#0a0a0a14", description: "8% text mix. Hover fill." },
-  "color.hairline": { cssVar: "--ayy-color-hairline", type: "color", value: "#ffffff14", light: "#0a0a0a14", description: "8% text mix. Table rows, quiet dividers." },
-  "color.line": { cssVar: "--ayy-color-line", type: "color", value: "#ffffff1f", light: "#0a0a0a1f", description: "12% text mix. Card and secondary-control borders." },
-  "color.line-strong": { cssVar: "--ayy-color-line-strong", type: "color", value: "#ffffff24", light: "#0a0a0a24", description: "14% text mix. Inputs, outline buttons, badges, dialogs." },
-  "color.line-hover": { cssVar: "--ayy-color-line-hover", type: "color", value: "#ffffff40", light: "#0a0a0a40", description: "25% text mix. Hovered borders." },
+  "color.bg": { cssVar: "--ayy-color-bg", type: "color", value: "#000000", light: "#ffffff", themes: {"dark-soft":"#1e1e1e","light-soft":"#f2f2f2"}, category: "Surfaces", description: "Page background." },
+  "color.surface": { cssVar: "--ayy-color-surface", type: "color", value: "#0a0a0a", light: "#f7f7f8", themes: {"dark-soft":"#262626","light-soft":"#ebebeb"}, category: "Surfaces", description: "Cards, panels, inputs sit on this." },
+  "color.surface-raised": { cssVar: "--ayy-color-surface-raised", type: "color", value: "#141414", light: "#ffffff", themes: {"dark-soft":"#2e2e2e","light-soft":"#fafafa"}, category: "Surfaces", description: "Popovers, menus, tooltips, toasts." },
+  "color.text": { cssVar: "--ayy-color-text", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#e5e5e5","light-soft":"#262626"}, category: "Text", description: "Primary text. Also the base every line/wash is mixed from." },
+  "color.text-soft": { cssVar: "--ayy-color-text-soft", type: "color", value: "#bbbbbb", light: "#474747", themes: {"dark-soft":"#bbbbbb","light-soft":"#474747"}, category: "Text", description: "Secondary text that still needs to read comfortably." },
+  "color.muted": { cssVar: "--ayy-color-muted", type: "color", value: "#939393", light: "#6b6b6b", themes: {"dark-soft":"#9a9a9a","light-soft":"#636363"}, category: "Text", description: "Captions, placeholders, de-emphasised labels." },
+  "color.border": { cssVar: "--ayy-color-border", type: "color", value: "#262626", light: "#dadada", themes: {"dark-soft":"#333333","light-soft":"#d1d1d1"}, category: "Lines", description: "Opaque border, for places where a mixed line can't be used." },
+  "color.ring": { cssVar: "--ayy-color-ring", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#e5e5e5","light-soft":"#262626"}, category: "Interactive", description: "Focus ring." },
+  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#e5e5e5","light-soft":"#262626"}, category: "Interactive", description: "Primary action fill. Monochrome by design; brands usually override it." },
+  "color.primary-fg": { cssVar: "--ayy-color-primary-fg", type: "color", value: "#000000", light: "#ffffff", themes: {"dark-soft":"#1e1e1e","light-soft":"#fafafa"}, category: "Interactive", description: "Text on primary." },
+  "color.destructive": { cssVar: "--ayy-color-destructive", type: "color", value: "#f87171", light: "#b91c1c", themes: {"dark-soft":"#fb9696","light-soft":"#991b1b"}, category: "Status", description: "Errors and destructive actions." },
+  "color.success": { cssVar: "--ayy-color-success", type: "color", value: "#35d07f", light: "#065f46", themes: {"dark-soft":"#35d07f","light-soft":"#065f46"}, category: "Status", description: "Positive status." },
+  "color.warning": { cssVar: "--ayy-color-warning", type: "color", value: "#f5c542", light: "#92400e", themes: {"dark-soft":"#f5c542","light-soft":"#92400e"}, category: "Status", description: "Caution status." },
+  "color.info": { cssVar: "--ayy-color-info", type: "color", value: "#5b9dff", light: "#1d4ed8", themes: {"dark-soft":"#8ab9ff","light-soft":"#1e40af"}, category: "Status", description: "Informational status." },
+  "color.ai": { cssVar: "--ayy-color-ai", type: "color", value: "#9a9a9a", light: "#6b6b6b", themes: {"dark-soft":"#9a9a9a","light-soft":"#636363"}, category: "AI", description: "AI features at rest." },
+  "color.ai-active": { cssVar: "--ayy-color-ai-active", type: "color", value: "#b98cff", light: "#6d28d9", themes: {"dark-soft":"#cbabff","light-soft":"#6d28d9"}, category: "AI", description: "AI features while active / generating." },
+  "color.glow": { cssVar: "--ayy-color-glow", type: "color", value: "#ffffff", light: "#00000073", themes: {"dark-soft":"#e5e5e5","light-soft":"#00000073"}, category: "Effects", description: "Glow source colour (mixed down, never used raw)." },
+  "color.shadow": { cssVar: "--ayy-color-shadow", type: "color", value: "#000000", light: "#0000004d", themes: {"dark-soft":"#000000","light-soft":"#0000004d"}, category: "Effects", description: "Shadow source colour (mixed down, never used raw)." },
+  "color.glass": { cssVar: "--ayy-color-glass", type: "color", value: "#000000bf", light: "#ffffffc7", themes: {"dark-soft":"#1e1e1ec7","light-soft":"#f2f2f2c7"}, category: "Surfaces", description: "Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter." },
+  "color.overlay": { cssVar: "--ayy-color-overlay", type: "color", value: "#000000bf", light: "#0a0a0a73", themes: {"dark-soft":"#00000099","light-soft":"#0a0a0a73"}, category: "Surfaces", description: "Modal backdrop." },
+  "color.wash": { cssVar: "--ayy-color-wash", type: "color", value: "#ffffff0a", light: "#0a0a0a0a", category: "Interactive", description: "4% text mix. Resting fill for subtle controls (badges, tab lists, secondary buttons)." },
+  "color.highlight": { cssVar: "--ayy-color-highlight", type: "color", value: "#ffffff0f", light: "#0a0a0a0f", category: "Interactive", description: "6% text mix. Inset top highlight on cards and dialogs." },
+  "color.wash-hover": { cssVar: "--ayy-color-wash-hover", type: "color", value: "#ffffff14", light: "#0a0a0a14", category: "Interactive", description: "8% text mix. Hover fill." },
+  "color.hairline": { cssVar: "--ayy-color-hairline", type: "color", value: "#ffffff14", light: "#0a0a0a14", category: "Lines", description: "8% text mix. Table rows, quiet dividers." },
+  "color.line": { cssVar: "--ayy-color-line", type: "color", value: "#ffffff1f", light: "#0a0a0a1f", category: "Lines", description: "12% text mix. Card and secondary-control borders." },
+  "color.line-strong": { cssVar: "--ayy-color-line-strong", type: "color", value: "#ffffff24", light: "#0a0a0a24", category: "Lines", description: "14% text mix. Inputs, outline buttons, badges, dialogs." },
+  "color.line-hover": { cssVar: "--ayy-color-line-hover", type: "color", value: "#ffffff40", light: "#0a0a0a40", category: "Lines", description: "25% text mix. Hovered borders." },
   "accent.research": { cssVar: "--ayy-accent-research", type: "color", value: "#f5c542" },
   "accent.product": { cssVar: "--ayy-accent-product", type: "color", value: "#5b9dff" },
   "accent.ai": { cssVar: "--ayy-accent-ai", type: "color", value: "#b98cff" },
@@ -149,6 +172,13 @@ export const tokens = {
 } as const satisfies Record<string, TokenDefinition>;
 
 export type TokenName = keyof typeof tokens;
+
+/** Themes for data-theme / setTheme(). Each extra theme builds on "dark" or "light" and starts with its name. */
+export const themes = ["dark","light","dark-soft","light-soft"] as const;
+export type ThemeName = (typeof themes)[number];
+
+/** The base colour scheme of each theme. */
+export const themeBase = {"dark":"dark","light":"light","dark-soft":"dark","light-soft":"light"} as const satisfies Record<ThemeName, "dark" | "light">;
 
 /** Brands shipped in ayywi/brands/<name>.css. */
 export const brands = ["violet"] as const;

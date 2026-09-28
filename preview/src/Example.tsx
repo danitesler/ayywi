@@ -1,14 +1,14 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
 import { CodeBlock } from "./CodeBlock";
 import type { ExampleEntry } from "./data";
-import type { Direction, Renderer } from "./settings";
+import type { Renderer } from "./settings";
 
 function HtmlStage({ html }: { html: string }) {
   // <ayy-*> elements upgrade themselves on insertion, exactly like a server-rendered page.
   return <div className="pv-stage__inner" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-export function Example({ example, renderer, dir }: { example: ExampleEntry; renderer: Renderer; dir: Direction }) {
+export function Example({ example, renderer }: { example: ExampleEntry; renderer: Renderer }) {
   const { Component } = example;
   const showHtml = renderer === "html" || !Component;
   return (
@@ -16,9 +16,9 @@ export function Example({ example, renderer, dir }: { example: ExampleEntry; ren
       <h3 className="pv-example__title" id={`ex-${example.id}`}>
         {example.title}
       </h3>
-      <div className="pv-stage" dir={dir} data-renderer={showHtml ? "html" : "react"}>
+      <div className="pv-stage" data-renderer={showHtml ? "html" : "react"}>
         {showHtml ? (
-          <HtmlStage key={`${example.id}-${dir}`} html={example.htmlSource} />
+          <HtmlStage key={example.id} html={example.htmlSource} />
         ) : (
           <div className="pv-stage__inner">{Component ? <Component /> : null}</div>
         )}

@@ -2,6 +2,7 @@
   "name": "Badge",
   "slug": "badge",
   "status": "stable",
+  "category": "Data display",
   "description": "Small pill label for status, category or count. Optional pulsing status dot.",
   "whenToUse": [
     "Status of an item (Synced, Error, Beta).",

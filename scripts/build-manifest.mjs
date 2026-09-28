@@ -2,27 +2,30 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ATTRIBUTES, PUBLIC_HOOKS, RULES, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, PUBLIC_HOOKS, RULES, UTILITIES } from "./lib/contract.mjs";
 import { finish, output } from "./lib/output.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const { tokens, resolve, brands } = loadTokens(root);
+const { tokens, resolve, valueIn, themes, brands } = loadTokens(root);
+const extraThemes = themes.filter((t) => t.name !== t.base);
 
 const read = (p) => readFileSync(join(root, p), "utf8").trimEnd();
 
+/** Order within a category (categories themselves follow CATEGORIES). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
-  "button", "card", "badge", "avatar", "input", "textarea", "select", "checkbox", "radio", "field", "switch",
-  "tabs", "dialog", "popover", "menu", "tooltip", "toast", "alert", "progress", "skeleton", "table",
+  "button", "menu",
+  "field", "input", "textarea", "select", "checkbox", "radio", "switch",
+  "card", "tabs",
+  "dialog", "popover", "tooltip",
+  "alert", "toast", "progress", "skeleton",
+  "badge", "avatar", "table",
 ];
-const slugs = readdirSync(join(root, "src/components")).sort((a, b) => {
-  const ia = ORDER.indexOf(a);
-  const ib = ORDER.indexOf(b);
-  return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
-});
+const CATEGORY_ORDER = Object.keys(CATEGORIES);
+const rank = (list, x) => (list.includes(x) ? list.indexOf(x) : list.length);
 
-const components = slugs.map((slug) => {
+const components = readdirSync(join(root, "src/components")).map((slug) => {
   const dir = `src/components/${slug}`;
   const meta = JSON.parse(read(`${dir}/${slug}.meta.json`));
   const files = {
@@ -41,11 +44,16 @@ const components = slugs.map((slug) => {
       react: existsSync(join(root, `${dir}/examples/${ex.id}.tsx`)) ? read(`${dir}/examples/${ex.id}.tsx`) : null,
     })),
   };
-});
+}).sort((a, b) => rank(CATEGORY_ORDER, a.category) - rank(CATEGORY_ORDER, b.category) || rank(ORDER, a.slug) - rank(ORDER, b.slug) || a.slug.localeCompare(b.slug));
+
+/** Components grouped by category, in display order: [["Actions", [button, menu]], …]. */
+const byCategory = CATEGORY_ORDER.map((cat) => [cat, components.filter((c) => c.category === cat)]).filter(([, list]) => list.length);
 
 const manifestTokens = tokens.map((t) => {
   const entry = { name: t.name, cssVar: t.cssVar, type: t.type, value: resolve(t.value) };
   if (t.light !== undefined) entry.light = resolve(t.light);
+  if (t.light !== undefined && t.css === undefined && extraThemes.length) entry.themes = Object.fromEntries(extraThemes.map((th) => [th.name, valueIn(t, th.name)]));
+  if (t.category) entry.category = t.category;
   if (t.density !== undefined) entry.density = t.density;
   if (t.css !== undefined) entry.css = t.css;
   if (t.description) entry.description = t.description;
@@ -68,8 +76,8 @@ const manifest = {
     ayywi: "Framework-free JS: tokens, class helpers (buttonClass…), controllers (connectPopover, connectMenu, enhanceTooltip), toast(), setTheme/setDensity/setBrand, cssVar(). Server-safe.",
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
     "ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, setTheme, setDensity, setBrand).`,
-    "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density).",
-    "ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
+    "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
+    "ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
     "ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
     "npx ayywi": "CLI: `lint` (checks app code against this manifest), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio).",
@@ -78,7 +86,7 @@ const manifest = {
     classPrefix: "ayy-",
     naming: "BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class=\"ayy-button ayy-button--outline ayy-button--sm\".",
     state: "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
-    theming: "No attribute = follow OS. data-theme=\"dark\" | \"light\" (or class .dark/.light) forces a theme on any element and its subtree.",
+    theming: `No attribute = follow OS (dark or light). data-theme=${themes.map((t) => `"${t.name}"`).join(" | ")} forces a theme on any element and its subtree (.dark/.light classes work too). The -soft themes lower the contrast (charcoal/off-white instead of black/white); every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".`,
     density: "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
     brands: "Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.",
     direction: "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror.",
@@ -87,6 +95,8 @@ const manifest = {
   },
   rules: RULES,
   attributes: ATTRIBUTES,
+  themes: themes.map((t) => ({ name: t.name, base: t.base, description: t.description })),
+  categories: CATEGORIES,
   publicCustomProperties: PUBLIC_HOOKS,
   utilities: UTILITIES,
   brands: brands.map((b) => ({ name: b.name, description: b.description, overrides: b.overrides.map((o) => o.cssVar) })),
@@ -122,13 +132,22 @@ md.push(
     })
     .join("\n")}`,
 );
+md.push(
+  `## Themes\n\n${list(
+    themes.map((t) => {
+      const overrides = t.name === t.base ? "" : ` Overrides of ${t.base}: ${t.overrides.map((o) => `\`${o.cssVar}\` ${resolve(o.value)}`).join(", ")}.`;
+      return `\`${t.name}\`${t.name === t.base ? "" : ` (built on ${t.base})`} — ${t.description ?? ""}${overrides}`;
+    }),
+  )}`,
+);
 if (brands.length) {
   md.push(`## Brands\n\n${list(brands.map((b) => `\`${b.name}\` — ${b.description ?? ""} Overrides: ${b.overrides.map((o) => `\`${o.cssVar}\``).join(", ")}`))}`);
 }
 md.push(`## Public custom properties\n\n${list(Object.entries(PUBLIC_HOOKS).map(([k, v]) => `\`${k}\`: ${v}`))}`);
 md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => `\`.${k}\`: ${v}`))}`);
+md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
 for (const c of components) {
-  const part = [`## ${c.name}`, c.description];
+  const part = [`## ${c.name}`, `Category: ${c.category}. ${c.description}`];
   if (c.whenToUse?.length) part.push(`**Use for**\n${list(c.whenToUse)}`);
   if (c.whenNotToUse?.length) part.push(`**Don't use for**\n${list(c.whenNotToUse)}`);
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
@@ -178,7 +197,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ## Components
 
-${components.map((c) => `- [${c.name}](${c.files.meta}): ${c.description}`).join("\n")}
+${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}](${c.files.meta}): ${c.description}`).join("\n")}`).join("\n\n")}
 
 ## Optional
 
@@ -198,7 +217,7 @@ This project's UI uses **ayywi** (\`ayywi\` on npm). ${lookup}
 
 ${numbered}
 
-Components: ${components.map((c) => c.name).join(", ")}. If something is missing, compose it from these and the tokens — don't pull in another UI kit.
+Components — ${byCategory.map(([cat, list]) => `${cat}: ${list.map((c) => c.name).join(", ")}`).join("; ")}. If something is missing, compose it from these and the tokens — don't pull in another UI kit.
 `;
 
 const cursorRule = `---
@@ -229,7 +248,7 @@ Public custom properties: ${Object.keys(PUBLIC_HOOKS).map((h) => `\`${h}\``).joi
     const react = Object.entries(c.react.components)
       .map(([name, def]) => `\`<${name}${def.props ? ` ${Object.keys(def.props).filter((p) => !p.startsWith("...")).join(" ")}` : ""}>\``)
       .join(", ");
-    const lines = [`## ${c.name}`, c.description, `- Classes: ${Object.keys(c.classes).map((k) => `\`.${k}\``).join(" ")}`];
+    const lines = [`## ${c.name} (${c.category})`, c.description, `- Classes: ${Object.keys(c.classes).map((k) => `\`.${k}\``).join(" ")}`];
     if (c.states) lines.push(`- States: ${Object.keys(c.states).map((s) => `\`${s}\``).join(", ")}`);
     lines.push(`- React: ${react}`);
     if (c.element) lines.push(`- Element: \`<${c.element.tag}${Object.keys(c.element.attributes ?? {}).filter((a) => a !== "class").map((a) => ` ${a}`).join("")}>\`${Object.keys(c.element.events ?? {}).length ? `, events ${Object.keys(c.element.events).map((e) => `\`${e}\``).join(", ")}` : ""}`);

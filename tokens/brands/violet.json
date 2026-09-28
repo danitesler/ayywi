@@ -4,8 +4,7 @@
     "primary": { "$type": "color", "$value": "{palette.violet.77}", "$extensions": { "ayywi": { "light": "{palette.violet.58}" } } },
     "primary-fg": { "$type": "color", "$value": "{palette.neutral.0}", "$extensions": { "ayywi": { "light": "{palette.neutral.100}" } } },
     "ring": { "$type": "color", "$value": "{palette.violet.77}", "$extensions": { "ayywi": { "light": "{palette.violet.58}" } } },
-    "glow": { "$type": "color", "$value": "{palette.violet.77}", "$extensions": { "ayywi": { "light": "{palette.violet.58}" } } },
-    "ai-active": { "$type": "color", "$value": "{palette.violet.77}", "$extensions": { "ayywi": { "light": "{palette.violet.58}" } } }
+    "glow": { "$type": "color", "$value": "{palette.violet.77}", "$extensions": { "ayywi": { "light": "{palette.violet.58}" } } }
   },
   "radius": {
     "button": { "$type": "dimension", "$value": "10px" },

@@ -2,6 +2,7 @@
   "name": "Popover",
   "slug": "popover",
   "status": "stable",
+  "category": "Overlays",
   "description": "Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.",
   "whenToUse": ["Small forms or details next to their trigger (share link, filters, quick edit)."],
   "whenNotToUse": [

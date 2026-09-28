@@ -2,6 +2,7 @@
   "name": "Avatar",
   "slug": "avatar",
   "status": "stable",
+  "category": "Data display",
   "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
   "whenToUse": ["People and workspaces in lists, headers, comments.", "Stacks of collaborators (AvatarGroup)."],
   "whenNotToUse": ["Decorative illustrations — use a plain <img>.", "Icons — use an icon."],

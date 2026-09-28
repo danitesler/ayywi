@@ -6,21 +6,42 @@ import * as sass from "sass";
 
 const dist = (p) => fileURLToPath(new URL(`../../dist/${p}`, import.meta.url));
 
+const THEMES = ["dark", "light", "dark-soft", "light-soft"];
+
 test("platform token files exist and agree", { skip: !existsSync(dist("tokens")) && "run pnpm build first" }, () => {
-  const dark = JSON.parse(readFileSync(dist("tokens/dark.json"), "utf8"));
-  const light = JSON.parse(readFileSync(dist("tokens/light.json"), "utf8"));
-  assert.deepEqual(Object.keys(dark).sort(), Object.keys(light).sort());
-  assert.notEqual(JSON.stringify(dark), JSON.stringify(light));
+  const [dark, ...others] = THEMES.map((t) => JSON.parse(readFileSync(dist(`tokens/${t}.json`), "utf8")));
+  for (const other of others) {
+    assert.deepEqual(Object.keys(other).sort(), Object.keys(dark).sort());
+    assert.notEqual(JSON.stringify(other), JSON.stringify(dark));
+  }
+  assert.equal(others[1].color.bg.$value, "#1e1e1e"); // dark-soft
+  assert.equal(others[2].color.bg.$value, "#f2f2f2"); // light-soft
+  const swift = readFileSync(dist("tokens/Ayywi.swift"), "utf8");
+  assert.match(swift, /static let darkSoft = AyywiColors/);
+  assert.match(swift, /static let `switch`: CGFloat/, "Swift keywords are escaped");
+  assert.match(readFileSync(dist("tokens/Ayywi.kt"), "utf8"), /val AyywiLightSoftColors = AyywiColors/);
   for (const f of ["tokens/density/comfortable.json", "tokens/density/touch.json", "tokens/Ayywi.swift", "tokens/Ayywi.kt"]) {
     assert.ok(existsSync(dist(f)), f);
   }
 });
 
 test("SCSS tokens compile", { skip: !existsSync(dist("tokens")) && "run pnpm build first" }, () => {
-  const src = `@use "ayywi" as ayy;\n@use "sass:map";\n.x { color: ayy.$ayy-color-text; background: map.get(ayy.$ayy-dark, "color-bg"); }`;
+  const src = `@use "ayywi" as ayy;\n@use "sass:map";\n.x { color: ayy.$ayy-color-text; background: map.get(ayy.$ayy-dark, "color-bg"); }\n.y { background: map.get(ayy.$ayy-dark-soft, "color-bg"); }`;
   const { css } = sass.compileString(src, { loadPaths: [dist("tokens")] });
   assert.match(css, /color: var\(--ayy-color-text\)/);
-  assert.match(css, /background: #/);
+  assert.match(css, /background: #000/);
+  assert.match(css, /background: #1e1e1e/);
+});
+
+test("themeInitScript applies every stored theme before paint", { skip: !existsSync(dist("index.js")) && "run pnpm build first" }, async () => {
+  const { themeInitScript, themes } = await import(dist("index.js"));
+  assert.deepEqual([...themes], THEMES);
+  for (const stored of [...THEMES, "bogus"]) {
+    const attrs = {};
+    const run = new Function("localStorage", "document", themeInitScript);
+    run({ getItem: (k) => (k === "ayy-theme" ? stored : null) }, { documentElement: { setAttribute: (k, v) => (attrs[k] = v) } });
+    assert.equal(attrs["data-theme"], stored === "bogus" ? undefined : stored);
+  }
 });
 
 test("CSS bundles: layered and unlayered, React build marked use client", { skip: !existsSync(dist("ayywi.css")) && "run pnpm build first" }, () => {

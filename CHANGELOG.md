@@ -2,6 +2,28 @@
 
 All notable changes to ayywi. Semver: renaming or removing a class, token or prop is a breaking change.
 
+## 0.3.0 — 2026-09-28
+
+### Added
+- Two lower-contrast themes. `dark-soft` has a charcoal background (#1e1e1e) and off-white text; `light-soft` has an off-white background (#f2f2f2) and charcoal text. Main text is about 13:1 instead of 20–21:1, and every text colour still meets WCAG AA. Use `data-theme="dark-soft"` or `setTheme("light-soft")`. Themes live in `tokens/themes/*.json`, so adding one is a single file.
+- `themes`, `themeBase` and `ThemeName` exports, plus `getColorScheme()`, which returns "dark" or "light" for any theme.
+- Per-theme platform exports: `dark-soft.json` and `light-soft.json`, SCSS maps `$ayy-dark-soft` and `$ayy-light-soft`, Swift `AyywiColors.darkSoft`/`.lightSoft`, Compose `AyywiDarkSoftColors`/`AyywiLightSoftColors`.
+- Component categories (Actions, Forms, Layout, Overlays, Feedback, Data display). Every component's meta has a `category`, and the manifest, llms files and the MCP `list_components` tool group by it.
+- Colour categories (Surfaces, Text, Lines, Interactive, Status, AI, Effects) on the colour tokens, in the manifest and the generated `tokens` table.
+- `ayywi lint` flags unknown `data-theme` and `data-density` values (e.g. `data-theme="dim"`) and lists the valid ones.
+- `pnpm check` enforces 4.5:1 contrast for every text colour on every surface, in every theme and brand. That includes status text on a 15% tint of itself (badges, alerts, destructive buttons).
+- Preview: the sidebar is grouped into Foundations and component categories, with search (`/` or Ctrl/⌘K). The Tokens page is split into Colors (every theme side by side), Typography, Spacing & sizing, Radius & elevation, and Motion.
+
+### Changed
+- Light-theme status colours are one shade darker: destructive, success, warning, info and AI-active. They passed on white but not on their own tints: destructive text on the destructive button's hover fill measured 3.6:1.
+- `getResolvedTheme()` can return the soft themes: `ResolvedTheme` is now `ThemeName`. If you only need light or dark, use `getColorScheme()`.
+- The Tailwind `dark:` variant matches every dark theme (`[data-theme^=dark]`).
+- The violet brand no longer overrides `--ayy-color-ai-active`; the override matched the default anyway.
+- Preview: the LTR/RTL toggle is gone. RTL is still covered by the browser tests.
+
+### Fixed
+- The Swift token export declared `switch` without backticks, which isn't valid Swift.
+
 ## 0.2.0 — 2026-09-28
 
 ayywi now lives in its own repository: https://github.com/danitesler/ayywi.

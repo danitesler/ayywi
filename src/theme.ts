@@ -1,11 +1,17 @@
-export type ThemeMode = "light" | "dark" | "system";
-export type ResolvedTheme = "light" | "dark";
+import { themeBase, themes, type ThemeName } from "./tokens";
+
+/** A theme name ("dark", "light", "dark-soft", "light-soft"), or "system" to follow the OS. */
+export type ThemeMode = ThemeName | "system";
+/** The theme an element actually renders in. */
+export type ResolvedTheme = ThemeName;
+/** The base scheme of a theme: what charts, canvas and native widgets need to know. */
+export type ColorScheme = "light" | "dark";
 export type DensityMode = "compact" | "comfortable" | "touch" | "auto";
 
 export const THEME_STORAGE_KEY = "ayy-theme";
 export const DENSITY_STORAGE_KEY = "ayy-density";
 
-const THEMES: readonly string[] = ["light", "dark", "system"];
+const THEMES: readonly string[] = [...themes, "system"];
 const DENSITIES: readonly string[] = ["compact", "comfortable", "touch", "auto"];
 
 function store(key: string, value: string): void {
@@ -44,8 +50,13 @@ export function getTheme(): ThemeMode {
 /** What `el` actually renders as right now: the nearest forced theme, else the OS preference. */
 export function getResolvedTheme(el: Element = document.documentElement): ResolvedTheme {
   const forced = el.closest("[data-theme]")?.getAttribute("data-theme");
-  if (forced === "light" || forced === "dark") return forced;
+  if (forced && (themes as readonly string[]).includes(forced)) return forced as ThemeName;
   return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+
+/** "light" or "dark": the scheme `el` renders in (dark-soft counts as dark). */
+export function getColorScheme(el: Element = document.documentElement): ColorScheme {
+  return themeBase[getResolvedTheme(el)];
 }
 
 /**
@@ -76,4 +87,4 @@ export function setBrand(name: string | null, target: HTMLElement = document.doc
  * Inline this in <head> (before CSS paints) to apply a stored theme and density without a flash:
  * <script>{themeInitScript}</script>
  */
-export const themeInitScript = `(function(){try{var d=document.documentElement,t=localStorage.getItem("${THEME_STORAGE_KEY}"),n=localStorage.getItem("${DENSITY_STORAGE_KEY}");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(n==="compact"||n==="comfortable"||n==="touch")d.setAttribute("data-density",n)}catch(e){}})();`;
+export const themeInitScript = `(function(){try{var d=document.documentElement,t=localStorage.getItem("${THEME_STORAGE_KEY}"),n=localStorage.getItem("${DENSITY_STORAGE_KEY}");if(${JSON.stringify(themes)}.indexOf(t)>-1)d.setAttribute("data-theme",t);if(n==="compact"||n==="comfortable"||n==="touch")d.setAttribute("data-density",n)}catch(e){}})();`;

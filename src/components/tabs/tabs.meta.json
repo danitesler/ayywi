@@ -2,6 +2,7 @@
   "name": "Tabs",
   "slug": "tabs",
   "status": "stable",
+  "category": "Layout",
   "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
   "whenToUse": ["Switching views of the same object (Overview / Activity / Members).", "Segmented filters with 2–6 options."],
   "whenNotToUse": ["Page-level navigation between routes — use links.", "Sequential steps — use a stepper or separate pages."],

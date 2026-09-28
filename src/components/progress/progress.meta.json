@@ -2,6 +2,7 @@
   "name": "Progress",
   "slug": "progress",
   "status": "stable",
+  "category": "Feedback",
   "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
   "whenToUse": ["Sync, upload, install — anything with measurable progress.", "Indeterminate: work of unknown length that takes more than ~1s."],
   "whenNotToUse": ["Quotas or meters that aren't 'progress' — still fine visually, but use role=\"meter\" instead of progressbar."],

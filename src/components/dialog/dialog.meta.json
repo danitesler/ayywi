@@ -2,6 +2,7 @@
   "name": "Dialog",
   "slug": "dialog",
   "status": "stable",
+  "category": "Overlays",
   "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.",
   "whenToUse": ["Confirming a destructive action.", "Short focused tasks that must finish before continuing (rename, create)."],
   "whenNotToUse": ["Long forms or multi-step flows — use a page.", "Non-blocking messages — use an inline notice."],

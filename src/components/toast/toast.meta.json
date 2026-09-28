@@ -2,6 +2,7 @@
   "name": "Toast",
   "slug": "toast",
   "status": "stable",
+  "category": "Feedback",
   "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
   "whenToUse": ["Confirming something happened (Saved, Deployed, Copied).", "Background results that don't need a decision, optionally with one Undo-style action."],
   "whenNotToUse": [

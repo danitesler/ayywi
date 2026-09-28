@@ -2,6 +2,7 @@
   "name": "Radio",
   "slug": "radio",
   "status": "stable",
+  "category": "Forms",
   "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
   "whenToUse": ["Picking exactly one of 2–6 visible options (plan, visibility, region)."],
   "whenNotToUse": ["More than ~6 options — use Select.", "Switching views — use Tabs.", "Independent on/off choices — use Checkbox."],

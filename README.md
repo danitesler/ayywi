@@ -5,7 +5,7 @@ A small design system that works in any stack and is built for AI agents to use.
 Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by tokens (`--ayy-color-bg`…), so they work anywhere that outputs HTML. React gets typed components that render the same markup; every other framework gets a few light-DOM custom elements for the interactive parts.
 
 - **Small:** zero runtime dependencies. All 21 components are ~8 kB of CSS gzipped.
-- **Themes, density, brands:** dark and light, compact/comfortable/touch sizing, swappable brands. Each one is a single attribute.
+- **Themes, density, brands:** dark, light and two lower-contrast "soft" themes; compact/comfortable/touch sizing; swappable brands. Each one is a single attribute.
 - **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in. axe runs on every component in CI.
 - **AI-first:** a machine-readable manifest, `llms.txt`, a skill for Claude/Cursor/Codex, an MCP server, and a linter that checks what agents write.
 
@@ -16,7 +16,7 @@ pnpm install
 pnpm preview    # http://localhost:5173
 ```
 
-Every component with live examples. Switch theme, density, brand, direction, and React vs. plain HTML from the toolbar.
+Every component and foundation (colours, type, spacing…), grouped by category, with search (<kbd>/</kbd> or <kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>K</kbd>). Switch theme, density, brand, and React vs. plain HTML from the toolbar.
 
 ## Install
 
@@ -27,8 +27,8 @@ npm i github:danitesler/ayywi    # private repo: needs GitHub access (SSH key, o
 Once it's on npm: `npm i ayywi`, or with no build step:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ayywi@0.2/dist/ayywi.min.css">
-<script src="https://cdn.jsdelivr.net/npm/ayywi@0.2/dist/elements.global.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ayywi@0.3/dist/ayywi.min.css">
+<script src="https://cdn.jsdelivr.net/npm/ayywi@0.3/dist/elements.global.js" defer></script>
 ```
 
 ## Use it
@@ -64,21 +64,21 @@ import { Button, toast } from "ayywi/react";
 
 **Tailwind**: alongside `ayywi/css`, v4 `@import "ayywi/tailwind.css"`; v3 `presets: [require("ayywi/tailwind-preset")]`.
 
-**Other platforms**: `pnpm build` writes SCSS, SwiftUI, Compose and JSON tokens to `dist/tokens/`.
+**Other platforms**: `pnpm build` writes SCSS, SwiftUI, Compose and JSON tokens to `dist/tokens/`, one palette per theme.
 
 Each component page in the preview shows copy-ready HTML and React. The full API is in `manifest/components.json` and `llms-full.txt`.
 
 ## Theme, density, brand
 
 ```html
-<html data-theme="dark" data-density="comfortable" data-brand="violet">
+<html data-theme="dark-soft" data-density="comfortable" data-brand="violet">
 ```
 
-- **Theme:** leave it off to follow the OS. It can also go on any section.
+- **Theme:** `dark`, `light`, `dark-soft` or `light-soft`. Leave it off to follow the OS. It can also go on any section. The soft themes swap black/white for charcoal/off-white (main text about 13:1 instead of 20:1), which is easier on the eyes for long reading. Every theme keeps all text at WCAG AA, and `pnpm check` enforces it. To add a theme, drop a file in `tokens/themes/` (see `dark-soft.json`).
 - **Density:** `compact` is the default. Phones and tablets get `touch` automatically.
 - **Brand:** load `dist/brands/<name>.css`. To add a brand, copy `tokens/brands/violet.json`, edit it and run `pnpm build`.
 
-From JS: `setTheme()`, `setDensity()`, `setBrand()`. Put `themeInitScript` in `<head>` to avoid a flash on load.
+From JS: `setTheme()`, `setDensity()`, `setBrand()`, and `getColorScheme()` when you only need "dark" or "light" (charts, canvas). Put `themeInitScript` in `<head>` to avoid a flash on load.
 
 **CSS layers:** ayywi's CSS is in cascade layers, so your own CSS always wins. That includes global resets like `button { background: none }`, so either put your reset in a layer or use `ayywi/ayywi.unlayered.css`. Use the unlayered file with Tailwind v3 too.
 
@@ -86,7 +86,14 @@ From JS: `setTheme()`, `setDensity()`, `setBrand()`. Put `themeInitScript` in `<
 
 ## Components
 
-Button · Card · Badge · Avatar · Input · Textarea · Select · Checkbox · Radio · Field · Switch · Tabs · Dialog · Popover · Dropdown menu · Tooltip · Toast · Alert · Progress · Skeleton · Table
+| Category | Components |
+|---|---|
+| Actions | Button, Dropdown menu |
+| Forms | Field, Input, Textarea, Select, Checkbox, Radio, Switch |
+| Layout | Card, Tabs |
+| Overlays | Dialog, Popover, Tooltip |
+| Feedback | Alert, Toast, Progress, Skeleton |
+| Data display | Badge, Avatar, Table |
 
 ## AI setup
 

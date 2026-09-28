@@ -14,26 +14,43 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ## Components
 
+### Actions
+
 - [Button](src/components/button/button.meta.json): Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
-- [Card](src/components/card/card.meta.json): Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
-- [Badge](src/components/badge/badge.meta.json): Small pill label for status, category or count. Optional pulsing status dot.
-- [Avatar](src/components/avatar/avatar.meta.json): Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
+- [Dropdown menu](src/components/menu/menu.meta.json): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
+
+### Forms
+
+- [Field](src/components/field/field.meta.json): Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
 - [Input](src/components/input/input.meta.json): Single-line text field. Works for every native input type (text, email, search, number, file…).
 - [Textarea](src/components/textarea/textarea.meta.json): Multi-line text field. Optional auto-grow and monospace modes.
 - [Select](src/components/select/select.meta.json): Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
 - [Checkbox](src/components/checkbox/checkbox.meta.json): Native checkbox with a drawn box, check mark and indeterminate state.
 - [Radio](src/components/radio/radio.meta.json): Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
-- [Field](src/components/field/field.meta.json): Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
 - [Switch](src/components/switch/switch.meta.json): On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
+
+### Layout
+
+- [Card](src/components/card/card.meta.json): Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
 - [Tabs](src/components/tabs/tabs.meta.json): Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
+
+### Overlays
+
 - [Dialog](src/components/dialog/dialog.meta.json): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.
 - [Popover](src/components/popover/popover.meta.json): Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
-- [Dropdown menu](src/components/menu/menu.meta.json): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
 - [Tooltip](src/components/tooltip/tooltip.meta.json): Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
-- [Toast](src/components/toast/toast.meta.json): Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
+
+### Feedback
+
 - [Alert](src/components/alert/alert.meta.json): Inline message box with optional icon, title, description and actions.
+- [Toast](src/components/toast/toast.meta.json): Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
 - [Progress](src/components/progress/progress.meta.json): Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
 - [Skeleton](src/components/skeleton/skeleton.meta.json): Placeholder shapes shown while content loads, with a subtle shimmer.
+
+### Data display
+
+- [Badge](src/components/badge/badge.meta.json): Small pill label for status, category or count. Optional pulsing status dot.
+- [Avatar](src/components/avatar/avatar.meta.json): Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
 - [Table](src/components/table/table.meta.json): Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
 
 ## Optional

@@ -2,6 +2,7 @@
   "name": "Card",
   "slug": "card",
   "status": "stable",
+  "category": "Layout",
   "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
   "whenToUse": [
     "Grouping a unit of content: a project, a person, a plan, a stat.",

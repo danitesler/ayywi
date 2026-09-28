@@ -2,6 +2,7 @@
   "name": "Button",
   "slug": "button",
   "status": "stable",
+  "category": "Actions",
   "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
   "whenToUse": [
     "Any action the user can take: submit, open, save, delete.",

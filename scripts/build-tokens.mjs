@@ -1,11 +1,12 @@
-// tokens/tokens.json (+ tokens/brands/*.json) → src/css/tokens.css, src/css/brands/*.css, src/tokens.ts
+// tokens/tokens.json (+ tokens/themes/*.json, tokens/brands/*.json) → src/css/tokens.css, src/css/brands/*.css, src/tokens.ts
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkMode, finish, output } from "./lib/output.mjs";
 import { DENSITIES, loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const { tokens, resolve, toCss, brands } = loadTokens(root);
+const { tokens, resolve, toCss, rawIn, valueIn, themes, brands } = loadTokens(root);
+const extraThemes = themes.filter((t) => t.name !== t.base);
 
 const decl = (t, v) => `  ${t.cssVar}: ${v};`;
 const indent = (s) => s.replace(/^/gm, "  ");
@@ -50,7 +51,17 @@ ${indent(lightBlock)}
   color-scheme: light;
 ${lightBlock}
 }
-
+${extraThemes
+  .map(
+    (theme) => `
+/* ${theme.name}, built on ${theme.base}. ${theme.description ?? ""} */
+[data-theme="${theme.name}"] {
+  color-scheme: ${theme.base};
+${themed.map((t) => decl(t, toCss(rawIn(t, theme.name), t.type))).join("\n")}
+}
+`,
+  )
+  .join("")}
 /* Derived from the themed tokens above. Redeclared on every theme and brand root so nested ones recompute. */
 :root,
 [data-theme],
@@ -102,6 +113,10 @@ const tsEntries = tokens
       `value: ${JSON.stringify(resolve(t.value))}`,
     ];
     if (t.light !== undefined) fields.push(`light: ${JSON.stringify(resolve(t.light))}`);
+    if (t.light !== undefined && t.css === undefined && extraThemes.length) {
+      fields.push(`themes: ${JSON.stringify(Object.fromEntries(extraThemes.map((th) => [th.name, valueIn(t, th.name)])))}`);
+    }
+    if (t.category) fields.push(`category: ${JSON.stringify(t.category)}`);
     if (t.density !== undefined) fields.push(`density: ${JSON.stringify(t.density)}`);
     if (t.description) fields.push(`description: ${JSON.stringify(t.description)}`);
     return `  ${JSON.stringify(t.name)}: { ${fields.join(", ")} },`;
@@ -118,6 +133,10 @@ export interface TokenDefinition {
   readonly value: string | number | readonly (string | number)[];
   /** Light-theme value, for themed tokens. */
   readonly light?: string;
+  /** Values in the other themes (dark-soft, light-soft…), for themed tokens. */
+  readonly themes?: Readonly<Record<string, string>>;
+  /** Grouping for docs, e.g. "Surfaces", "Text", "Status" (colour tokens). */
+  readonly category?: string;
   /** Values for the other densities, for density-aware tokens. */
   readonly density?: { readonly comfortable: string; readonly touch: string };
   readonly description?: string;
@@ -129,6 +148,13 @@ ${tsEntries}
 
 export type TokenName = keyof typeof tokens;
 
+/** Themes for data-theme / setTheme(). Each extra theme builds on "dark" or "light" and starts with its name. */
+export const themes = ${JSON.stringify(themes.map((t) => t.name))} as const;
+export type ThemeName = (typeof themes)[number];
+
+/** The base colour scheme of each theme. */
+export const themeBase = ${JSON.stringify(Object.fromEntries(themes.map((t) => [t.name, t.base])))} as const satisfies Record<ThemeName, "dark" | "light">;
+
 /** Brands shipped in ayywi/brands/<name>.css. */
 export const brands = ${JSON.stringify(brands.map((b) => b.name))} as const;
 export type BrandName = (typeof brands)[number];
@@ -138,6 +164,6 @@ output(join(root, "src/tokens.ts"), ts);
 finish("tokens");
 if (!checkMode) {
   console.log(
-    `tokens: ${tokens.length} (${staticTokens.length} static, ${themed.length} themed, ${derived.length} derived, ${dense.length} density-aware); brands: ${brands.map((b) => b.name).join(", ") || "none"}`,
+    `tokens: ${tokens.length} (${staticTokens.length} static, ${themed.length} themed, ${derived.length} derived, ${dense.length} density-aware); themes: ${themes.map((t) => t.name).join(", ")}; brands: ${brands.map((b) => b.name).join(", ") || "none"}`,
   );
 }

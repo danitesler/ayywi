@@ -4,6 +4,7 @@ export interface ComponentMeta {
   name: string;
   slug: string;
   status: string;
+  category: string;
   description: string;
   whenToUse: string[];
   whenNotToUse: string[];
@@ -12,6 +13,7 @@ export interface ComponentMeta {
   states?: Record<string, string>;
   js?: string;
   react: { import: string; components: Record<string, { renders: string; props?: Record<string, string> }> };
+  element?: { tag: string };
   a11y: string[];
   do: string[];
   dont: string[];
@@ -35,12 +37,25 @@ const reactModules = import.meta.glob<ComponentType>("../../src/components/*/exa
 const reactSources = import.meta.glob<string>("../../src/components/*/examples/*.tsx", { eager: true, query: "?raw", import: "default" });
 const htmlSources = import.meta.glob<string>("../../src/components/*/examples/*.html", { eager: true, query: "?raw", import: "default" });
 
-// Keep in sync with ORDER in scripts/build-manifest.mjs (unknown slugs sort last).
+// Keep in sync with CATEGORIES in scripts/lib/contract.mjs and ORDER in scripts/build-manifest.mjs. Unknown ones sort last.
+export const CATEGORIES: Record<string, string> = {
+  Actions: "Things people click to do something.",
+  Forms: "Inputs, choices and their labels.",
+  Layout: "Containers and ways to organise content.",
+  Overlays: "Content that floats above the page.",
+  Feedback: "Status, progress and messages.",
+  "Data display": "Values, people and records.",
+};
 const ORDER = [
-  "button", "card", "badge", "avatar", "input", "textarea", "select", "checkbox", "radio", "field", "switch",
-  "tabs", "dialog", "popover", "menu", "tooltip", "toast", "alert", "progress", "skeleton", "table",
+  "button", "menu",
+  "field", "input", "textarea", "select", "checkbox", "radio", "switch",
+  "card", "tabs",
+  "dialog", "popover", "tooltip",
+  "alert", "toast", "progress", "skeleton",
+  "badge", "avatar", "table",
 ];
-const rank = (slug: string) => (ORDER.includes(slug) ? ORDER.indexOf(slug) : ORDER.length);
+const rank = (list: string[], x: string) => (list.includes(x) ? list.indexOf(x) : list.length);
+const CATEGORY_ORDER = Object.keys(CATEGORIES);
 
 export const components: ComponentEntry[] = Object.values(metas)
   .map((meta) => ({
@@ -55,14 +70,19 @@ export const components: ComponentEntry[] = Object.values(metas)
       };
     }),
   }))
-  .sort((a, b) => rank(a.slug) - rank(b.slug));
+  .sort((a, b) => rank(CATEGORY_ORDER, a.category) - rank(CATEGORY_ORDER, b.category) || rank(ORDER, a.slug) - rank(ORDER, b.slug));
+
+/** Components grouped by category, in display order. */
+export const componentGroups: { category: string; description: string; components: ComponentEntry[] }[] = [
+  ...new Set(components.map((c) => c.category)),
+].map((category) => ({ category, description: CATEGORIES[category] ?? "", components: components.filter((c) => c.category === category) }));
 
 /** One component's full context as markdown — handy to paste into any AI chat. */
 export function componentMarkdown(c: ComponentEntry): string {
   const list = (items: string[]) => items.map((i) => `- ${i}`).join("\n");
   const parts = [
     `# ayywi ${c.name}`,
-    c.description,
+    `Category: ${c.category}. ${c.description}`,
     `Use for:\n${list(c.whenToUse)}`,
     `Don't use for:\n${list(c.whenNotToUse)}`,
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,

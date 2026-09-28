@@ -18,6 +18,7 @@ Zero runtime dependencies. React is an optional peer.
 ```
 tokens/tokens.json          SOURCE OF TRUTH for tokens (DTCG-style; $value = dark, $extensions.ayywi.light = light,
                             $extensions.ayywi.density = comfortable/touch). palette.* = primitives, the rest = semantic
+tokens/themes/*.json        extra themes (dark-soft, light-soft): overrides of a base theme's colours, compiled into tokens.css
 tokens/brands/*.json        brand overrides of semantic tokens → src/css/brands/*.css
 src/css/tokens.css          generated
 src/tokens.ts               generated
@@ -77,6 +78,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - A modal `<dialog>` makes everything outside it inert, top layer included. Anything that must stay clickable over a modal (the toaster) has to live inside it.
 - Measure floating elements with `offsetWidth/Height`, not `getBoundingClientRect()` — entry animations scale them.
 - Custom elements must not render markup or use shadow DOM: they only wire behaviour onto author HTML, and must be SSR-safe to import (`src/lib/element.ts`).
+- axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme × brand, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning
 

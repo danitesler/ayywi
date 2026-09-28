@@ -2,6 +2,7 @@
   "name": "Switch",
   "slug": "switch",
   "status": "stable",
+  "category": "Forms",
   "description": "On/off toggle for a setting that applies immediately. A native checkbox with role=\"switch\".",
   "whenToUse": ["Settings that take effect instantly (enable sync, dark mode)."],
   "whenNotToUse": [

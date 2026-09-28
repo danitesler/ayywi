@@ -5,25 +5,44 @@
   --ayy-palette-neutral-0: #000000;
   --ayy-palette-neutral-4: #0a0a0a;
   --ayy-palette-neutral-8: #141414;
+  --ayy-palette-neutral-12: #1e1e1e;
   --ayy-palette-neutral-15: #262626;
+  --ayy-palette-neutral-18: #2e2e2e;
+  --ayy-palette-neutral-20: #333333;
   --ayy-palette-neutral-28: #474747;
+  --ayy-palette-neutral-39: #636363;
   --ayy-palette-neutral-42: #6b6b6b;
   --ayy-palette-neutral-58: #939393;
   --ayy-palette-neutral-60: #9a9a9a;
   --ayy-palette-neutral-73: #bbbbbb;
+  --ayy-palette-neutral-82: #d1d1d1;
   --ayy-palette-neutral-85: #dadada;
+  --ayy-palette-neutral-90: #e5e5e5;
+  --ayy-palette-neutral-92: #ebebeb;
+  --ayy-palette-neutral-95: #f2f2f2;
   --ayy-palette-neutral-97: #f7f7f8;
+  --ayy-palette-neutral-98: #fafafa;
   --ayy-palette-neutral-100: #ffffff;
+  --ayy-palette-red-35: #991b1b;
+  --ayy-palette-red-42: #b91c1c;
   --ayy-palette-red-51: #dc2626;
   --ayy-palette-red-71: #f87171;
+  --ayy-palette-red-79: #fb9696;
+  --ayy-palette-green-20: #065f46;
   --ayy-palette-green-24: #047857;
   --ayy-palette-green-51: #35d07f;
+  --ayy-palette-amber-31: #92400e;
   --ayy-palette-amber-37: #b45309;
   --ayy-palette-amber-61: #f5c542;
+  --ayy-palette-blue-40: #1e40af;
+  --ayy-palette-blue-48: #1d4ed8;
   --ayy-palette-blue-53: #2563eb;
   --ayy-palette-blue-68: #5b9dff;
+  --ayy-palette-blue-77: #8ab9ff;
+  --ayy-palette-violet-50: #6d28d9;
   --ayy-palette-violet-58: #7c3aed;
   --ayy-palette-violet-77: #b98cff;
+  --ayy-palette-violet-84: #cbabff;
   --ayy-palette-emerald-52: #34d399;
   --ayy-palette-pink-70: #f472b6;
   --ayy-palette-orange-65: #ff8a4c;
@@ -146,12 +165,12 @@
     --ayy-color-ring: var(--ayy-palette-neutral-4);
     --ayy-color-primary: var(--ayy-palette-neutral-4);
     --ayy-color-primary-fg: var(--ayy-palette-neutral-100);
-    --ayy-color-destructive: var(--ayy-palette-red-51);
-    --ayy-color-success: var(--ayy-palette-green-24);
-    --ayy-color-warning: var(--ayy-palette-amber-37);
-    --ayy-color-info: var(--ayy-palette-blue-53);
+    --ayy-color-destructive: var(--ayy-palette-red-42);
+    --ayy-color-success: var(--ayy-palette-green-20);
+    --ayy-color-warning: var(--ayy-palette-amber-31);
+    --ayy-color-info: var(--ayy-palette-blue-48);
     --ayy-color-ai: var(--ayy-palette-neutral-42);
-    --ayy-color-ai-active: var(--ayy-palette-violet-58);
+    --ayy-color-ai-active: var(--ayy-palette-violet-50);
     --ayy-color-glow: #00000073;
     --ayy-color-shadow: #0000004d;
     --ayy-color-glass: #ffffffc7;
@@ -173,15 +192,65 @@
   --ayy-color-ring: var(--ayy-palette-neutral-4);
   --ayy-color-primary: var(--ayy-palette-neutral-4);
   --ayy-color-primary-fg: var(--ayy-palette-neutral-100);
-  --ayy-color-destructive: var(--ayy-palette-red-51);
-  --ayy-color-success: var(--ayy-palette-green-24);
-  --ayy-color-warning: var(--ayy-palette-amber-37);
-  --ayy-color-info: var(--ayy-palette-blue-53);
+  --ayy-color-destructive: var(--ayy-palette-red-42);
+  --ayy-color-success: var(--ayy-palette-green-20);
+  --ayy-color-warning: var(--ayy-palette-amber-31);
+  --ayy-color-info: var(--ayy-palette-blue-48);
   --ayy-color-ai: var(--ayy-palette-neutral-42);
-  --ayy-color-ai-active: var(--ayy-palette-violet-58);
+  --ayy-color-ai-active: var(--ayy-palette-violet-50);
   --ayy-color-glow: #00000073;
   --ayy-color-shadow: #0000004d;
   --ayy-color-glass: #ffffffc7;
+  --ayy-color-overlay: #0a0a0a73;
+}
+
+/* dark-soft, built on dark. Dark with softer contrast: a charcoal background instead of black, and off-white text. Easier on the eyes for long reading; every text colour still meets WCAG AA. */
+[data-theme="dark-soft"] {
+  color-scheme: dark;
+  --ayy-color-bg: var(--ayy-palette-neutral-12);
+  --ayy-color-surface: var(--ayy-palette-neutral-15);
+  --ayy-color-surface-raised: var(--ayy-palette-neutral-18);
+  --ayy-color-text: var(--ayy-palette-neutral-90);
+  --ayy-color-text-soft: var(--ayy-palette-neutral-73);
+  --ayy-color-muted: var(--ayy-palette-neutral-60);
+  --ayy-color-border: var(--ayy-palette-neutral-20);
+  --ayy-color-ring: var(--ayy-palette-neutral-90);
+  --ayy-color-primary: var(--ayy-palette-neutral-90);
+  --ayy-color-primary-fg: var(--ayy-palette-neutral-12);
+  --ayy-color-destructive: var(--ayy-palette-red-79);
+  --ayy-color-success: var(--ayy-palette-green-51);
+  --ayy-color-warning: var(--ayy-palette-amber-61);
+  --ayy-color-info: var(--ayy-palette-blue-77);
+  --ayy-color-ai: var(--ayy-palette-neutral-60);
+  --ayy-color-ai-active: var(--ayy-palette-violet-84);
+  --ayy-color-glow: var(--ayy-palette-neutral-90);
+  --ayy-color-shadow: var(--ayy-palette-neutral-0);
+  --ayy-color-glass: #1e1e1ec7;
+  --ayy-color-overlay: #00000099;
+}
+
+/* light-soft, built on light. Light with softer contrast: an off-white background instead of white, and charcoal text. Less glare; every text colour still meets WCAG AA. */
+[data-theme="light-soft"] {
+  color-scheme: light;
+  --ayy-color-bg: var(--ayy-palette-neutral-95);
+  --ayy-color-surface: var(--ayy-palette-neutral-92);
+  --ayy-color-surface-raised: var(--ayy-palette-neutral-98);
+  --ayy-color-text: var(--ayy-palette-neutral-15);
+  --ayy-color-text-soft: var(--ayy-palette-neutral-28);
+  --ayy-color-muted: var(--ayy-palette-neutral-39);
+  --ayy-color-border: var(--ayy-palette-neutral-82);
+  --ayy-color-ring: var(--ayy-palette-neutral-15);
+  --ayy-color-primary: var(--ayy-palette-neutral-15);
+  --ayy-color-primary-fg: var(--ayy-palette-neutral-98);
+  --ayy-color-destructive: var(--ayy-palette-red-35);
+  --ayy-color-success: var(--ayy-palette-green-20);
+  --ayy-color-warning: var(--ayy-palette-amber-31);
+  --ayy-color-info: var(--ayy-palette-blue-40);
+  --ayy-color-ai: var(--ayy-palette-neutral-39);
+  --ayy-color-ai-active: var(--ayy-palette-violet-50);
+  --ayy-color-glow: #00000073;
+  --ayy-color-shadow: #0000004d;
+  --ayy-color-glass: #f2f2f2c7;
   --ayy-color-overlay: #0a0a0a73;
 }
 

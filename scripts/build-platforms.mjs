@@ -22,6 +22,13 @@ function toNumber(value) {
 }
 
 const camel = (s) => s.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+const pascal = (s) => camel(s).replace(/^\w/, (c) => c.toUpperCase());
+
+// Token keys that are reserved words need escaping ("size.switch" → `switch` in Swift).
+const SWIFT_KEYWORDS = new Set("associatedtype class deinit enum extension fileprivate func import init inout internal let open operator private protocol public rethrows static struct subscript typealias var break case catch continue default defer do else fallthrough for guard if in repeat return throw switch where while as false is nil self super throws true try".split(" "));
+const KOTLIN_KEYWORDS = new Set("as break class continue do else false for fun if in interface is null object package return super this throw true try typealias typeof val var when while".split(" "));
+const swiftId = (id) => (SWIFT_KEYWORDS.has(id) ? `\`${id}\`` : id);
+const kotlinId = (id) => (KOTLIN_KEYWORDS.has(id) ? `\`${id}\`` : id);
 
 /** Valid identifier for native code: "surface-raised" → surfaceRaised, "2xl" → xl2, "1-5" → <group>1_5. */
 function ident(group, key) {
@@ -33,7 +40,8 @@ function ident(group, key) {
 }
 
 export function buildPlatforms(root, outDir) {
-  const { tokens, valueIn, resolve } = loadTokens(root);
+  const { tokens, valueIn, resolve, themes } = loadTokens(root);
+  const themeNames = themes.map((t) => t.name);
   mkdirSync(join(outDir, "density"), { recursive: true });
 
   // ---- Per-theme DTCG JSON: plain $value, no extensions, so any DTCG tool reads the right theme. ----
@@ -48,7 +56,7 @@ export function buildPlatforms(root, outDir) {
     return tree;
   };
   const leaf = (t, value) => ({ $type: t.type, $value: value, ...(t.description ? { $description: t.description } : {}) });
-  for (const theme of ["dark", "light"]) {
+  for (const theme of themeNames) {
     const tree = nest(tokens.map((t) => [t.name, leaf(t, valueIn(t, theme))]));
     writeFileSync(join(outDir, `${theme}.json`), `${JSON.stringify({ $description: `ayywi tokens, ${theme} theme, compact density. ${HEADER}`, ...tree }, null, 2)}\n`);
   }
@@ -65,19 +73,19 @@ export function buildPlatforms(root, outDir) {
   const key = (t) => t.name.replace(/\./g, "-");
   const scss = `// ${HEADER}
 // Prefer the CSS custom properties — they follow theme, density and brand at runtime.
-// The maps hold raw values for build-time maths: map.get($ayy-dark, "color-bg").
+// The maps hold raw values for build-time maths: map.get($ayy-dark, "color-bg"). One map per theme: ${themeNames.map((n) => `$ayy-${n}`).join(", ")}.
 @use "sass:map";
 
 ${tokens.map((t) => `$ayy-${key(t)}: var(${t.cssVar});`).join("\n")}
-
-$ayy-dark: (
-${tokens.map((t) => `  "${key(t)}": ${scssValue(t, valueIn(t, "dark"))},`).join("\n")}
+${themeNames
+  .map(
+    (theme) => `
+$ayy-${theme}: (
+${tokens.map((t) => `  "${key(t)}": ${scssValue(t, valueIn(t, theme))},`).join("\n")}
 );
-
-$ayy-light: (
-${tokens.map((t) => `  "${key(t)}": ${scssValue(t, valueIn(t, "light"))},`).join("\n")}
-);
-
+`,
+  )
+  .join("")}
 @function ayy($name) {
   @return var(--ayy-#{$name});
 }
@@ -104,37 +112,38 @@ ${tokens.map((t) => `  "${key(t)}": ${scssValue(t, valueIn(t, "light"))},`).join
     return `Color(.sRGB, red: ${f(r)}, green: ${f(g)}, blue: ${f(b)}, opacity: ${f(a)})`;
   };
   const swift = `// ${HEADER}
-// SwiftUI tokens. Colours come in a dark and a light palette; pick one from the colour scheme:
+// SwiftUI tokens. Colours come in one palette per theme (${themeNames.map(camel).join(", ")}); pick one from the colour scheme:
 //   let colors = scheme == .dark ? AyywiColors.dark : AyywiColors.light
 // Dimensions are points (1rem = 16pt), durations are seconds.
 import SwiftUI
 
 public struct AyywiColors {
-${colorTokens.map((t) => `    public let ${colorName(t)}: Color`).join("\n")}
+${colorTokens.map((t) => `    public let ${swiftId(colorName(t))}: Color`).join("\n")}
 
-    public static let dark = AyywiColors(
-${colorTokens.map((t, i) => `        ${colorName(t)}: ${swiftColor(valueIn(t, "dark"))}${i < colorTokens.length - 1 ? "," : ""}`).join("\n")}
+${themeNames
+  .map(
+    (theme) => `
+    public static let ${camel(theme)} = AyywiColors(
+${colorTokens.map((t, i) => `        ${colorName(t)}: ${swiftColor(valueIn(t, theme))}${i < colorTokens.length - 1 ? "," : ""}`).join("\n")}
     )
-
-    public static let light = AyywiColors(
-${colorTokens.map((t, i) => `        ${colorName(t)}: ${swiftColor(valueIn(t, "light"))}${i < colorTokens.length - 1 ? "," : ""}`).join("\n")}
-    )
-}
+`,
+  )
+  .join("")}}
 ${Object.entries(dims)
   .map(
     ([name, list]) => `
 public enum Ayywi${name} {
-${list.map(({ id, n }) => `    public static let ${id}: CGFloat = ${n}`).join("\n")}
+${list.map(({ id, n }) => `    public static let ${swiftId(id)}: CGFloat = ${n}`).join("\n")}
 }`,
   )
   .join("\n")}
 
 public enum AyywiDuration {
-${durations.map(({ id, n }) => `    public static let ${id}: Double = ${n / 1000}`).join("\n")}
+${durations.map(({ id, n }) => `    public static let ${swiftId(id)}: Double = ${n / 1000}`).join("\n")}
 }
 
 public enum AyywiWeight {
-${weights.map(({ id, n }) => `    public static let ${id}: Font.Weight = ${{ 400: ".regular", 500: ".medium", 600: ".semibold", 700: ".bold" }[n]}`).join("\n")}
+${weights.map(({ id, n }) => `    public static let ${swiftId(id)}: Font.Weight = ${{ 400: ".regular", 500: ".medium", 600: ".semibold", 700: ".bold" }[n]}`).join("\n")}
 }
 `;
   writeFileSync(join(outDir, "Ayywi.swift"), swift);
@@ -146,7 +155,7 @@ ${weights.map(({ id, n }) => `    public static let ${id}: Font.Weight = ${{ 400
   };
   const kotlinUnit = (name) => (name === "Text" ? "sp" : "dp");
   const kotlin = `// ${HEADER}
-// Jetpack Compose tokens. Pick a palette from the system theme:
+// Jetpack Compose tokens. One palette per theme (${themeNames.map((n) => `Ayywi${pascal(n)}Colors`).join(", ")}). Pick one from the system theme:
 //   val colors = if (isSystemInDarkTheme()) AyywiDarkColors else AyywiLightColors
 // Dimensions: 1rem = 16dp (text in sp). Durations in milliseconds.
 package ayywi.tokens
@@ -159,34 +168,36 @@ import androidx.compose.ui.unit.sp
 
 @Immutable
 data class AyywiColors(
-${colorTokens.map((t) => `    val ${colorName(t)}: Color,`).join("\n")}
+${colorTokens.map((t) => `    val ${kotlinId(colorName(t))}: Color,`).join("\n")}
 )
 
-val AyywiDarkColors = AyywiColors(
-${colorTokens.map((t) => `    ${colorName(t)} = ${kotlinColor(valueIn(t, "dark"))},`).join("\n")}
+${themeNames
+  .map(
+    (theme) => `
+val Ayywi${pascal(theme)}Colors = AyywiColors(
+${colorTokens.map((t) => `    ${kotlinId(colorName(t))} = ${kotlinColor(valueIn(t, theme))},`).join("\n")}
 )
-
-val AyywiLightColors = AyywiColors(
-${colorTokens.map((t) => `    ${colorName(t)} = ${kotlinColor(valueIn(t, "light"))},`).join("\n")}
-)
+`,
+  )
+  .join("")}
 ${Object.entries(dims)
   .map(
     ([name, list]) => `
 object Ayywi${name} {
-${list.map(({ id, n }) => `    val ${id} = ${n}.${kotlinUnit(name)}`).join("\n")}
+${list.map(({ id, n }) => `    val ${kotlinId(id)} = ${n}.${kotlinUnit(name)}`).join("\n")}
 }`,
   )
   .join("\n")}
 
 object AyywiDuration {
-${durations.map(({ id, n }) => `    const val ${id}: Int = ${n}`).join("\n")}
+${durations.map(({ id, n }) => `    const val ${kotlinId(id)}: Int = ${n}`).join("\n")}
 }
 
 object AyywiWeight {
-${weights.map(({ id, n }) => `    val ${id} = FontWeight(${n})`).join("\n")}
+${weights.map(({ id, n }) => `    val ${kotlinId(id)} = FontWeight(${n})`).join("\n")}
 }
 `;
   writeFileSync(join(outDir, "Ayywi.kt"), kotlin);
 
-  return ["dark.json", "light.json", "density/comfortable.json", "density/touch.json", "ayywi.scss", "Ayywi.swift", "Ayywi.kt"];
+  return [...themeNames.map((n) => `${n}.json`), "density/comfortable.json", "density/touch.json", "ayywi.scss", "Ayywi.swift", "Ayywi.kt"];
 }

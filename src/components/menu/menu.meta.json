@@ -2,6 +2,7 @@
   "name": "Dropdown menu",
   "slug": "menu",
   "status": "stable",
+  "category": "Actions",
   "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
   "whenToUse": ["Secondary actions for an item (rename, duplicate, delete).", "Overflow “⋯” menus in toolbars and table rows."],
   "whenNotToUse": [

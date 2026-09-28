@@ -2,6 +2,7 @@
   "name": "Textarea",
   "slug": "textarea",
   "status": "stable",
+  "category": "Forms",
   "description": "Multi-line text field. Optional auto-grow and monospace modes.",
   "whenToUse": ["Descriptions, notes, prompts, config snippets (mono)."],
   "whenNotToUse": ["Rich text editing — use a dedicated editor and theme it with ayywi tokens."],

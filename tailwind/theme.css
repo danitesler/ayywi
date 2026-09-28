@@ -7,14 +7,14 @@
  * `inline` makes utilities reference the --ayy-* variables directly, so they follow data-theme switches.
  */
 
-/* dark: = forced dark, or OS dark when no light theme is forced. You rarely need it — tokens already switch. */
+/* dark: = a forced dark theme (dark, dark-soft…), or OS dark when no light theme is forced. You rarely need it — tokens already switch. */
 @custom-variant dark {
   @media (prefers-color-scheme: dark) {
-    &:not(:where([data-theme=light], [data-theme=light] *, .light, .light *)) {
+    &:not(:where([data-theme^=light], [data-theme^=light] *, .light, .light *)) {
       @slot;
     }
   }
-  &:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *) {
+  &:where([data-theme^=dark], [data-theme^=dark] *, .dark, .dark *) {
     @slot;
   }
 }

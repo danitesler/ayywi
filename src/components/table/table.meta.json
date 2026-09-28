@@ -2,6 +2,7 @@
   "name": "Table",
   "slug": "table",
   "status": "stable",
+  "category": "Data display",
   "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
   "whenToUse": ["Comparing items across the same attributes (projects × status × builds)."],
   "whenNotToUse": ["Layout — never use tables for layout.", "Lists with one attribute — use a list."],

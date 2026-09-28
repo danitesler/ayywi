@@ -2,7 +2,7 @@ import { Badge } from "ayywi/react";
 import { CopyButton } from "../CodeBlock";
 import { componentMarkdown, type ComponentEntry } from "../data";
 import { Example } from "../Example";
-import type { Direction, Renderer } from "../settings";
+import type { Renderer } from "../settings";
 
 function List({ items }: { items: string[] }) {
   return (
@@ -14,11 +14,11 @@ function List({ items }: { items: string[] }) {
   );
 }
 
-export function ComponentPage({ component: c, renderer, dir }: { component: ComponentEntry; renderer: Renderer; dir: Direction }) {
+export function ComponentPage({ component: c, renderer }: { component: ComponentEntry; renderer: Renderer }) {
   return (
     <article className="pv-page">
       <header className="pv-page__header">
-        <p className="ayy-eyebrow">Component</p>
+        <p className="ayy-eyebrow">{c.category}</p>
         <div className="pv-title-row">
           <h1 className="ayy-h2">{c.name}</h1>
           <Badge variant={c.status === "stable" ? "success" : "warning"} dot="static">
@@ -45,7 +45,7 @@ export function ComponentPage({ component: c, renderer, dir }: { component: Comp
 
       <h2 className="pv-h pv-h--section">Examples</h2>
       {c.examples.map((ex) => (
-        <Example key={ex.id} example={ex} renderer={renderer} dir={dir} />
+        <Example key={ex.id} example={ex} renderer={renderer} />
       ))}
 
       <h2 className="pv-h pv-h--section">CSS classes</h2>

@@ -1,6 +1,6 @@
 {
   "name": "ayywi",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.",
   "type": "module",
   "license": "MIT",
