@@ -26,6 +26,7 @@ export {
   DialogTrigger,
   DialogContent,
   DialogHeader,
+  DialogBody,
   DialogFooter,
   DialogTitle,
   DialogDescription,
@@ -51,6 +52,7 @@ export { Alert, AlertTitle, AlertDescription, AlertActions, type AlertProps } fr
 export { Progress, type ProgressProps } from "../components/progress/progress.react";
 export { Skeleton, type SkeletonProps } from "../components/skeleton/skeleton.react";
 export { Avatar, AvatarGroup, type AvatarProps } from "../components/avatar/avatar.react";
+export { Icon, type IconProps } from "../components/icon/icon.react";
 export {
   Table,
   TableHeader,

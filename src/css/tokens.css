@@ -94,6 +94,10 @@
   --ayy-size-switch: 1.25rem;
   --ayy-size-check: 1rem;
   --ayy-size-touch: 2.75rem;
+  --ayy-size-icon-sm: 1rem;
+  --ayy-size-icon-md: 1.25rem;
+  --ayy-size-icon-lg: 1.5rem;
+  --ayy-size-icon-xl: 2rem;
   --ayy-control-text-sm: 0.6875rem;
   --ayy-control-text-md: 0.75rem;
   --ayy-control-text-lg: 0.875rem;

@@ -5,7 +5,7 @@
   "category": "Data display",
   "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
   "whenToUse": ["People and workspaces in lists, headers, comments.", "Stacks of collaborators (AvatarGroup)."],
-  "whenNotToUse": ["Decorative illustrations — use a plain <img>.", "Icons — use an icon."],
+  "whenNotToUse": ["Decorative illustrations — use a plain <img>.", "Icons — use Icon."],
   "classes": {
     "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
     "ayy-avatar--sm": "24px.",

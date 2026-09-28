@@ -53,3 +53,17 @@ test("config can turn a rule off", () => {
   const found = lintText(`.x { margin-left: 4px; }`, "a.css", contract, { rules: { "physical-property": "off" } });
   assert.deepEqual(found, []);
 });
+
+test("icons: another icon set warns, a pasted colour errors, variants are checked", () => {
+  const imports = `import { Search } from "lucide-react";
+import { Search01Icon } from "@hugeicons/core-free-icons";
+const fa = require("react-icons/fa");`;
+  assert.deepEqual(
+    lintText(imports, "a.tsx", contract).map((f) => [f.rule, f.severity, f.line]),
+    [["icon-library", "warn", 1], ["icon-library", "warn", 3]],
+  );
+  assert.deepEqual(rules(`<svg class="ayy-icon" viewBox="0 0 24 24" color="#000000" fill="none"></svg>`, "a.html"), ["hardcoded-color"]);
+  assert.deepEqual(rules(`<svg class="ayy-icon ayy-icon--lg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" /></svg>`, "a.html"), []);
+  assert.deepEqual(rules(`<Icon icon={Search01Icon} size="huge" />\n<DialogContent side="left" />`, "a.tsx"), ["unknown-variant", "unknown-variant"]);
+  assert.deepEqual(rules(`<Icon icon={Search01Icon} size="lg" label="Search" />\n<DialogContent side="end" />`, "a.tsx"), []);
+});

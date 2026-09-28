@@ -1,18 +1,21 @@
-/* Native <dialog> opened with showModal(): top layer, inert background, Esc to close — no JS library needed. */
+/* Native <dialog> opened with showModal(): top layer, inert background, Esc to close — no JS library needed.
+   Centred by default. ayy-dialog--side-start / --side-end make it a side modal: a full-height panel on that edge. */
 
 .ayy-dialog {
   --_w: 32rem;
+  --_pad: var(--ayy-space-6);
   position: fixed;
   inset: 0;
   z-index: var(--ayy-z-overlay);
   box-sizing: border-box;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--ayy-space-4);
   inline-size: min(var(--_w), calc(100vw - 2rem));
   block-size: fit-content;
   max-block-size: calc(100dvh - 2rem);
   margin: auto;
-  padding: var(--ayy-space-6);
+  padding: var(--_pad);
   overflow: auto;
   border: 1px solid var(--ayy-color-line-strong);
   border-radius: var(--ayy-radius-card);
@@ -29,7 +32,7 @@
     display var(--ayy-duration-base) allow-discrete;
 }
 
-/* Author display:grid would otherwise override the UA's display:none on a closed <dialog>. */
+/* Author display:flex would otherwise override the UA's display:none on a closed <dialog>. */
 dialog.ayy-dialog:not([open]) {
   display: none;
   opacity: 0;
@@ -75,6 +78,64 @@ ayy-dialog {
 .ayy-dialog--lg { --_w: 42rem; }
 .ayy-dialog--xl { --_w: 56rem; }
 
+/* ---- Side modal: full height on the inline-start or inline-end edge, width from the size modifiers ---- */
+
+.ayy-dialog--side-start,
+.ayy-dialog--side-end {
+  --_side: min(var(--_w), calc(100vw - 3rem));
+  inset-block: 0;
+  inline-size: var(--_side);
+  block-size: 100dvh;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  border-block-width: 0;
+  border-radius: 0;
+  /* Slides in from its edge. It animates inset-inline-*, not transform, so it comes from the right side in RTL too. */
+  transition:
+    inset-inline-start var(--ayy-duration-base) var(--ayy-ease-menu),
+    inset-inline-end var(--ayy-duration-base) var(--ayy-ease-menu),
+    overlay var(--ayy-duration-base) allow-discrete,
+    display var(--ayy-duration-base) allow-discrete;
+}
+
+.ayy-dialog--side-start {
+  inset-inline: 0 auto;
+  border-inline-start-width: 0;
+}
+
+.ayy-dialog--side-end {
+  inset-inline: auto 0;
+  border-inline-end-width: 0;
+}
+
+dialog.ayy-dialog--side-start:not([open]) {
+  opacity: 1;
+  transform: none;
+  inset-inline-start: calc(-1 * var(--_side));
+}
+
+dialog.ayy-dialog--side-end:not([open]) {
+  opacity: 1;
+  transform: none;
+  inset-inline-end: calc(-1 * var(--_side));
+}
+
+@starting-style {
+  dialog.ayy-dialog--side-start[open] {
+    opacity: 1;
+    transform: none;
+    inset-inline-start: calc(-1 * var(--_side));
+  }
+  dialog.ayy-dialog--side-end[open] {
+    opacity: 1;
+    transform: none;
+    inset-inline-end: calc(-1 * var(--_side));
+  }
+}
+
+/* ---- Parts ---- */
+
 .ayy-dialog__header {
   display: flex;
   flex-direction: column;
@@ -98,11 +159,45 @@ ayy-dialog {
   color: var(--ayy-color-muted);
 }
 
+/* The body scrolls on its own, so the header and footer stay in view; in a side modal it fills the height.
+   It runs edge to edge (its scrollbar sits at the dialog's edge), with a hairline where it meets the header or footer
+   so scrolled content has a clear edge. */
+.ayy-dialog__body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  margin-inline: calc(-1 * var(--_pad));
+  padding: var(--ayy-space-4) var(--_pad);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-block: 1px solid transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ayy-color-line-strong) transparent;
+}
+
+.ayy-dialog__header + .ayy-dialog__body {
+  border-block-start-color: var(--ayy-color-hairline);
+}
+
+.ayy-dialog__body:has(+ .ayy-dialog__footer) {
+  border-block-end-color: var(--ayy-color-hairline);
+}
+
+/* A text-only body that scrolls needs tabindex="0" so keyboard users can scroll it. */
+.ayy-dialog__body:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
 .ayy-dialog__footer {
   display: flex;
   flex-direction: column-reverse;
   gap: var(--ayy-space-2);
   padding-block-start: var(--ayy-space-2);
+}
+
+/* The body's hairline already sets the actions apart. */
+.ayy-dialog__body + .ayy-dialog__footer {
+  padding-block-start: 0;
 }
 
 @media (min-width: 640px) {

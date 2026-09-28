@@ -50,7 +50,7 @@
   ],
   "do": [
     "One primary button per view or section; everything else secondary/outline/ghost.",
-    "Put the icon before the label; it inherits size from the button (1.25em)."
+    "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (1.25em)."
   ],
   "dont": [
     "Don't restyle colours per button — add a variant to the design system instead.",

@@ -36,7 +36,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ### Overlays
 
-- [Dialog](src/components/dialog/dialog.meta.json): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.
+- [Dialog](src/components/dialog/dialog.meta.json): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge.
 - [Popover](src/components/popover/popover.meta.json): Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
 - [Tooltip](src/components/tooltip/tooltip.meta.json): Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
 
@@ -51,6 +51,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 - [Badge](src/components/badge/badge.meta.json): Small pill label for status, category or count. Optional pulsing status dot.
 - [Avatar](src/components/avatar/avatar.meta.json): Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
+- [Icon](src/components/icon/icon.meta.json): Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
 - [Table](src/components/table/table.meta.json): Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
 
 ## Optional

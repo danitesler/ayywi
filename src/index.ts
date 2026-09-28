@@ -26,6 +26,7 @@ export * from "./components/alert/alert";
 export * from "./components/progress/progress";
 export * from "./components/skeleton/skeleton";
 export * from "./components/avatar/avatar";
+export * from "./components/icon/icon";
 export * from "./components/table/table";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */

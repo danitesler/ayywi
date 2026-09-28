@@ -52,7 +52,7 @@ const ORDER = [
   "card", "tabs",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "skeleton",
-  "badge", "avatar", "table",
+  "badge", "avatar", "icon", "table",
 ];
 const rank = (list: string[], x: string) => (list.includes(x) ? list.indexOf(x) : list.length);
 const CATEGORY_ORDER = Object.keys(CATEGORIES);

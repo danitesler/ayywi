@@ -13,7 +13,8 @@ This project's UI uses **ayywi** (`ayywi` on npm). Look up a component before us
 8. Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations.
 9. No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 10. Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
-11. In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>).
-12. Run `npx ayywi lint` after UI changes and fix every error it reports.
+11. Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label.
+12. In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>).
+13. Run `npx ayywi lint` after UI changes and fix every error it reports.
 
-Components — Actions: Button, Dropdown menu; Forms: Field, Input, Textarea, Select, Checkbox, Radio, Switch; Layout: Card, Tabs; Overlays: Dialog, Popover, Tooltip; Feedback: Alert, Toast, Progress, Skeleton; Data display: Badge, Avatar, Table. If something is missing, compose it from these and the tokens — don't pull in another UI kit.
+Components — Actions: Button, Dropdown menu; Forms: Field, Input, Textarea, Select, Checkbox, Radio, Switch; Layout: Card, Tabs; Overlays: Dialog, Popover, Tooltip; Feedback: Alert, Toast, Progress, Skeleton; Data display: Badge, Avatar, Icon, Table. If something is missing, compose it from these and the tokens — don't pull in another UI kit.

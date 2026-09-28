@@ -114,7 +114,7 @@ export function createServer(contract = loadContract()) {
         ].join("\n"),
     },
     lint: {
-      description: "Check a code snippet against ayywi before writing it: unknown classes/tokens/variants, hardcoded colours, physical left/right, unlabeled icon buttons.",
+      description: "Check a code snippet against ayywi before writing it: unknown classes/tokens/variants, hardcoded colours, physical left/right, unlabeled icon buttons, icon sets other than Hugeicons.",
       inputSchema: {
         type: "object",
         properties: { code: { type: "string" }, filename: { type: "string", description: "Decides the parser, e.g. App.tsx, page.html, styles.css. Default snippet.tsx." } },

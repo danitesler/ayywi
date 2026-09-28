@@ -1,22 +1,16 @@
-import { Alert, AlertActions, AlertDescription, AlertTitle, Button } from "ayywi/react";
-
-const InfoIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M12 11v5M12 8h.01" />
-  </svg>
-);
+import { Alert02Icon, InformationCircleIcon } from "@hugeicons/core-free-icons";
+import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "ayywi/react";
 
 export default function Example() {
   return (
     <div className="ayy-stack" style={{ width: "100%", maxWidth: 520 }}>
       <Alert>
-        <InfoIcon />
+        <Icon icon={InformationCircleIcon} />
         <AlertTitle>Read-only mode</AlertTitle>
         <AlertDescription>You're viewing a shared project. Ask the owner for edit access.</AlertDescription>
       </Alert>
       <Alert variant="warning">
-        <InfoIcon />
+        <Icon icon={Alert02Icon} />
         <AlertTitle>Your trial ends in 3 days</AlertTitle>
         <AlertDescription>Add a payment method to keep your projects online.</AlertDescription>
         <AlertActions>

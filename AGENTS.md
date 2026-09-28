@@ -25,7 +25,7 @@ src/tokens.ts               generated
 src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion
 src/css/index.css           declares the layers, imports tokens, base, every component into them
 src/components/<slug>/      one folder per component — see .claude/skills/ayywi-add-component/SKILL.md
-src/lib/                    cx, refs, position (floating placement), element (SSR-safe custom element base)
+src/lib/                    cx, refs, position (floating placement), element (SSR-safe custom element base), icons (Hugeicons glyphs ayywi draws)
 src/index.ts                "ayywi" entry: tokens, helpers, toast, theme/density/brand — no React
 src/react/index.ts          "ayywi/react" entry
 src/elements/               "ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
@@ -78,6 +78,8 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - A modal `<dialog>` makes everything outside it inert, top layer included. Anything that must stay clickable over a modal (the toaster) has to live inside it.
 - Measure floating elements with `offsetWidth/Height`, not `getBoundingClientRect()` — entry animations scale them.
 - Custom elements must not render markup or use shadow DOM: they only wire behaviour onto author HTML, and must be SSR-safe to import (`src/lib/element.ts`).
+- Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close buttons) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
+- `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme × brand, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning
