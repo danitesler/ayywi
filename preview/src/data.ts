@@ -40,6 +40,7 @@ const htmlSources = import.meta.glob<string>("../../src/components/*/examples/*.
 // Keep in sync with CATEGORIES in scripts/lib/contract.mjs and ORDER in scripts/build-manifest.mjs. Unknown ones sort last.
 export const CATEGORIES: Record<string, string> = {
   Actions: "Things people click to do something.",
+  Navigation: "Getting around a site and a page.",
   Forms: "Inputs, choices and their labels.",
   Layout: "Containers and ways to organise content.",
   Overlays: "Content that floats above the page.",
@@ -47,12 +48,13 @@ export const CATEGORIES: Record<string, string> = {
   "Data display": "Values, people and records.",
 };
 const ORDER = [
-  "button", "menu",
+  "button", "menu", "theme-toggle",
+  "navbar", "breadcrumb", "toc",
   "field", "input", "textarea", "select", "checkbox", "radio", "switch",
-  "card", "tabs",
+  "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "skeleton",
-  "badge", "avatar", "table",
+  "badge", "avatar", "icon-tile", "stat", "data-list", "frame", "chat", "table",
 ];
 const rank = (list: string[], x: string) => (list.includes(x) ? list.indexOf(x) : list.length);
 const CATEGORY_ORDER = Object.keys(CATEGORIES);

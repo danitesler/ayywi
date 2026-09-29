@@ -1,0 +1,118 @@
+/* On-page contents with a scrollspy: the link of the section being read gets aria-current and an accent bar.
+   Accent from --ayy-spot. Put it in a <nav>; <ayy-toc> (or connectToc) keeps aria-current in sync with scrolling. */
+.ayy-toc {
+  --_accent: var(--ayy-spot, var(--ayy-color-text));
+  box-sizing: border-box;
+  display: block;
+  min-inline-size: 0;
+  font-size: var(--ayy-text-sm);
+}
+
+/* Stays in view beside long content, below the navbar. Give it its own grid column or flex item. */
+.ayy-toc--sticky {
+  position: sticky;
+  inset-block-start: calc(var(--ayy-size-header) + var(--ayy-space-8));
+  align-self: start;
+  max-block-size: calc(100vh - var(--ayy-size-header) - var(--ayy-space-16));
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.ayy-toc__title {
+  margin-block: 0 var(--ayy-space-4);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: var(--ayy-tracking-eyebrow);
+  line-height: var(--ayy-leading-normal);
+  text-transform: uppercase;
+}
+
+.ayy-toc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  border-inline-start: 1px solid var(--ayy-color-hairline);
+  list-style: none;
+}
+
+.ayy-toc__list .ayy-toc__list {
+  border-inline-start: 0;
+}
+
+.ayy-toc__link {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: var(--ayy-space-3);
+  margin-inline-start: -1px;
+  padding-block: var(--ayy-space-1-5);
+  padding-inline: var(--ayy-space-4) var(--ayy-space-2);
+  border-radius: var(--ayy-radius-sm);
+  color: var(--ayy-color-muted);
+  line-height: var(--ayy-leading-snug);
+  text-decoration: none;
+  transition: color var(--ayy-duration-base) ease;
+}
+
+.ayy-toc__list .ayy-toc__list .ayy-toc__link {
+  padding-inline-start: var(--ayy-space-8);
+  font-size: var(--ayy-text-xs);
+}
+
+/* The accent bar on the rail. */
+.ayy-toc__link::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--ayy-space-1-5);
+  inset-inline-start: 0;
+  inline-size: 2px;
+  border-radius: 2px;
+  background-color: var(--_accent);
+  transform: scaleY(0);
+  transition: transform var(--ayy-duration-base) var(--ayy-ease-out-expo);
+}
+
+.ayy-toc__link:hover,
+.ayy-toc__link[aria-current]:not([aria-current="false"]),
+.ayy-toc__list li:has(.ayy-toc__link[aria-current]:not([aria-current="false"])) > .ayy-toc__link {
+  color: var(--ayy-color-text);
+}
+
+.ayy-toc__link[aria-current]:not([aria-current="false"])::before {
+  transform: scaleY(1);
+}
+
+.ayy-toc__link:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.ayy-toc__number {
+  flex: none;
+  min-inline-size: 1.5em;
+  color: var(--ayy-color-muted);
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-2xs);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--ayy-duration-base) ease;
+}
+
+.ayy-toc__link[aria-current]:not([aria-current="false"]) .ayy-toc__number {
+  color: light-dark(color-mix(in srgb, var(--_accent) 45%, var(--ayy-color-text)), var(--_accent));
+}
+
+@media (forced-colors: active) {
+  .ayy-toc__list {
+    border-inline-start-color: CanvasText;
+  }
+  .ayy-toc__link[aria-current]:not([aria-current="false"]) {
+    text-decoration: underline;
+  }
+  .ayy-toc__link[aria-current]:not([aria-current="false"])::before {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+}

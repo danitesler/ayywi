@@ -1,0 +1,124 @@
+/* Site header: sticky, translucent, a hairline underneath. Brand at the start; the nav and everything after it at the end. */
+.ayy-navbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--ayy-z-sticky);
+  box-sizing: border-box;
+  block-size: var(--ayy-size-header);
+  border-block-end: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-glass);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: var(--ayy-color-text);
+}
+
+/* Anchor jumps and scrollIntoView() land below the sticky bar. */
+:root:has(.ayy-navbar) {
+  scroll-padding-block-start: calc(var(--ayy-size-header) + var(--ayy-space-4));
+}
+
+.ayy-navbar__inner {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  block-size: 100%;
+  max-inline-size: var(--ayy-size-container);
+  margin-inline: auto;
+  padding-inline: var(--ayy-space-6);
+}
+
+.ayy-navbar__brand {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-md);
+  color: inherit;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ayy-navbar__brand:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 4px;
+}
+
+/* Scrolls sideways when the links don't fit (phones); the padding keeps focus rings from being clipped. */
+.ayy-navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+  margin-block: calc(var(--ayy-space-1) * -1);
+  margin-inline-start: auto;
+  padding: var(--ayy-space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ayy-navbar__link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-pill);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-control-text-lg);
+  font-weight: var(--ayy-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--ayy-duration-base) ease,
+    background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-navbar__link:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-navbar__link[aria-current="page"] {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-navbar__link:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-navbar__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-2);
+}
+
+/* Without a nav, the last group of actions goes to the end. */
+.ayy-navbar__actions:last-child {
+  margin-inline-start: auto;
+}
+
+.ayy-navbar__nav ~ .ayy-navbar__actions {
+  margin-inline-start: 0;
+}
+
+@media (max-width: 64rem) {
+  .ayy-navbar__inner {
+    padding-inline: var(--ayy-space-4);
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-navbar {
+    border-block-end-color: CanvasText;
+  }
+  .ayy-navbar__link[aria-current="page"] {
+    outline: 1px solid CanvasText;
+  }
+}

@@ -301,7 +301,9 @@
 }
 
 .pv-stage__inner > .ayy-tabs,
-.pv-stage__inner > .ayy-table-wrap {
+.pv-stage__inner > .ayy-table-wrap,
+.pv-stage__inner > .ayy-navbar,
+.pv-stage__inner > .ayy-section {
   inline-size: 100%;
 }
 

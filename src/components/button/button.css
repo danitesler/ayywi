@@ -121,6 +121,54 @@
   text-decoration: underline;
 }
 
+/* ---- Ring: the showcase call to action. A gradient ring that spins while hovered or focused. One per view. ---- */
+
+@property --_ring-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.ayy-button--ring {
+  --_bg: var(--ayy-color-wash);
+  --_fg: var(--ayy-color-text);
+  --_bg-hover: var(--ayy-color-highlight);
+  --_opacity-hover: 1;
+  position: relative;
+  isolation: isolate;
+}
+
+.ayy-button--ring::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--_ring-angle),
+    color-mix(in srgb, var(--ayy-color-text) 8%, transparent),
+    color-mix(in srgb, var(--ayy-color-text) 55%, transparent),
+    color-mix(in srgb, var(--ayy-color-text) 15%, transparent),
+    color-mix(in srgb, var(--ayy-color-text) 55%, transparent),
+    color-mix(in srgb, var(--ayy-color-text) 8%, transparent)
+  );
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
+  pointer-events: none;
+}
+
+.ayy-button--ring:is(:hover, :focus-visible)::before {
+  animation: ayy-ring-spin calc(var(--ayy-duration-slower) * 2) linear infinite;
+}
+
+@keyframes ayy-ring-spin {
+  to {
+    --_ring-angle: 360deg;
+  }
+}
+
 /* ---- Sizes ---- */
 
 .ayy-button--sm {
@@ -155,6 +203,9 @@
   .ayy-button--ghost,
   .ayy-button--link {
     border-color: transparent;
+  }
+  .ayy-button--ring::before {
+    display: none;
   }
   .ayy-button:disabled,
   .ayy-button[aria-disabled="true"] {

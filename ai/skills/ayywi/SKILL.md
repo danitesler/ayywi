@@ -19,7 +19,7 @@ ayywi is a CSS class contract (`.ayy-*`) plus design tokens (`--ayy-*`), with ty
 | Project | Write |
 |---|---|
 | React / Next / Remix | `import { Button, Dialog, … } from "ayywi/react"` |
-| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"ayywi"`); `<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>` from `"ayywi/elements"` for interactive parts; `toast()` from `"ayywi"` |
+| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"ayywi"`); `<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>` from `"ayywi/elements"` for interactive parts; `toast()` from `"ayywi"` |
 | Plain HTML, Rails, Django, Laravel, Go, .NET, PHP | same markup + `dist/elements.global.js` (also gives `window.ayywi.toast`) |
 | Tailwind | keep ayywi components; use the preset utilities (`bg-surface`, `border-line`, `rounded-card`) for layout glue |
 
@@ -35,12 +35,31 @@ Check `package.json` and existing components before choosing. Match what's there
 6. Accessibility is part of the component: labels for every control, `aria-label` on icon-only buttons, never remove focus rings, keep dialog titles.
 7. State goes in native/ARIA attributes (`disabled`, `checked`, `aria-selected`, `aria-invalid`, `open`) — the CSS reads them.
 
-## 4. When something is missing
+## 4. Websites, landing pages and portfolios
+
+Build pages from the site kit instead of hand-rolled layout:
+
+| Need | Use |
+|---|---|
+| Page width, gutters | `.ayy-container` (1400px, 24px gutter, 16px on phones) |
+| Top bar | `Navbar` (sticky glass; brand, links with `aria-current="page"`, actions) + `ThemeToggle` + one `ring` button |
+| Hero | `.ayy-bg-grid` behind it, `Badge` with a dot for status, `.ayy-signature`, `.ayy-display` (+ `.ayy-text-outline` for a second word), `.ayy-lede`, ring + outline buttons |
+| Page section | `Section` (`center` on marketing pages; `SectionEyebrow number="01"` in long reads), fading `Separator` between sections |
+| Grid of work | `.ayy-grid` of `Card interactive spotlight` with `CardMedia` and a `CardLink` title, `--ayy-spot` per item |
+| Profile / product tile | `IconTile` + title + `Stat` (big number, unit, label) |
+| Case-study page | `Breadcrumb pill`, `Frame` around screenshots, `DataList row` for Role/Years/Platform, `Toc sticky numbered` beside `.ayy-prose` sections |
+| Photo strip, feature strip | `Carousel` |
+| Closing "say hi" | `Chat` with quick replies handing off to email or LinkedIn |
+| Motion | `.ayy-reveal` on blocks, `.ayy-scroll-progress` at the top of long reads — CSS only |
+
+Colour comes from the content: set `--ayy-spot` to an `--ayy-accent-*` token on the card, section or `<main>` — never tint the chrome.
+
+## 5. When something is missing
 
 Compose it from existing components and tokens in the app's own code, following the ayywi conventions (`ayy-`-style BEM naming is not required locally, but tokens are). If it's generic enough to belong in the system, say so and suggest adding it to ayywi.
 
-## 5. Before you finish
+## 6. Before you finish
 
-- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every error. It catches invented classes, unknown tokens and variants, raw colours, `left/right` and unlabeled icon buttons.
+- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every error. It catches invented classes, unknown tokens and variants, raw colours, `left/right`, unlabeled icon buttons and images without a size.
 - If the app has a theme switch, check the screen in both themes. If it supports RTL, check with `dir="rtl"`.
 - Interactive pieces work by keyboard: Tab to reach, Enter/Space to activate, Esc closes dialogs and tooltips, arrows move between tabs.

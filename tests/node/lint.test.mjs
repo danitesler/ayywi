@@ -42,6 +42,11 @@ test("CSS: raw colours, unknown tokens, physical properties, :dir()", () => {
   assert.deepEqual(rules(css, "a.css").sort(), ["dir-selector", "hardcoded-color", "physical-property", "unknown-token"].sort());
 });
 
+test("images need width and height (warning)", () => {
+  const found = lintText(`<img src="a.webp" alt="">\n<img src="b.webp" width="1024" height="798" alt="">\n<Image {...props} />`, "a.tsx", contract);
+  assert.deepEqual(found.map((f) => [f.rule, f.severity, f.line]), [["img-size", "warn", 1]]);
+});
+
 test("disable comments", () => {
   const css = `.x { color: #fff; } /* ayywi-lint-disable-line */
 /* ayywi-lint-disable-next-line */

@@ -1,4 +1,4 @@
-# ayywi 0.3.0 — full context for LLMs
+# ayywi 0.4.0 — full context for LLMs
 
 > Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.
 
@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `ayywi/css` and write the class names below.
 - React: `import { Button } from "ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "ayywi"`), and `import "ayywi/elements"` for interactive components (<ayy-menu>, <ayy-tabs>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "ayywi"`), and `import "ayywi/elements"` for interactive components (<ayy-menu>, <ayy-theme-toggle>, <ayy-toc>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi.toast).
 - Check your work: `npx ayywi lint`.
 
@@ -21,10 +21,13 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Theme with data-theme="dark|light|dark-soft|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
-- Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations.
+- Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.
+- The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, buttons or page background per page.
+- Pages follow one anatomy: .ayy-skip-link, Navbar, then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the footer. One call to action per view: a ring (marketing) or primary (app) button; everything else outline or ghost.
+- Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
-- In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>).
+- In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>).
 - Run `npx ayywi lint` after UI changes and fix every error it reports.
 
 ## Conventions
@@ -137,6 +140,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | text.2xl | `--ayy-text-2xl` | 1.75rem |  | 28px — H3. |
 | text.3xl | `--ayy-text-3xl` | 2.25rem |  | 36px — H2. |
 | text.4xl | `--ayy-text-4xl` | 3rem |  | 48px — H1 / metrics. |
+| text.display | `--ayy-text-display` | clamp(2.75rem, 13vw, 12.5rem) |  | Fluid hero title, 44px on a phone to 200px on a wide screen. CSS only; platform exports skip it. |
 | weight.regular | `--ayy-weight-regular` | 400 |  |  |
 | weight.medium | `--ayy-weight-medium` | 500 |  |  |
 | weight.semibold | `--ayy-weight-semibold` | 600 |  |  |
@@ -145,9 +149,11 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | leading.tight | `--ayy-leading-tight` | 1.2 |  |  |
 | leading.snug | `--ayy-leading-snug` | 1.35 |  |  |
 | leading.normal | `--ayy-leading-normal` | 1.55 |  |  |
+| leading.display | `--ayy-leading-display` | 0.9 |  | Display titles: lines sit close enough to read as one block. |
 | tracking.tight | `--ayy-tracking-tight` | -0.01em |  |  |
 | tracking.wide | `--ayy-tracking-wide` | 0.06em |  |  |
 | tracking.eyebrow | `--ayy-tracking-eyebrow` | 0.14em |  |  |
+| tracking.display | `--ayy-tracking-display` | -0.03em |  | Display titles. |
 | space.1 | `--ayy-space-1` | 0.25rem |  |  |
 | space.2 | `--ayy-space-2` | 0.5rem |  |  |
 | space.3 | `--ayy-space-3` | 0.75rem |  |  |
@@ -158,6 +164,9 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | space.10 | `--ayy-space-10` | 2.5rem |  |  |
 | space.12 | `--ayy-space-12` | 3rem |  |  |
 | space.16 | `--ayy-space-16` | 4rem |  |  |
+| space.20 | `--ayy-space-20` | 5rem |  | Section padding on phones. |
+| space.24 | `--ayy-space-24` | 6rem |  | Section padding. |
+| space.32 | `--ayy-space-32` | 8rem |  | Section padding on wide screens. |
 | space.0-5 | `--ayy-space-0-5` | 0.125rem |  |  |
 | space.1-5 | `--ayy-space-1-5` | 0.375rem |  |  |
 | size.control-sm | `--ayy-size-control-sm` | 1.75rem |  | Small control height. · density: comfortable 2rem, touch 2.5rem |
@@ -166,6 +175,9 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | size.switch | `--ayy-size-switch` | 1.25rem |  | Switch track height (width is 1.8×). · density: comfortable 1.375rem, touch 1.625rem |
 | size.check | `--ayy-size-check` | 1rem |  | Checkbox and radio box size. · density: comfortable 1.125rem, touch 1.25rem |
 | size.touch | `--ayy-size-touch` | 2.75rem |  | 44px minimum touch target. |
+| size.container | `--ayy-size-container` | 87.5rem |  | Widest page content (1400px): navbar, hero, grids. Used by .ayy-container. |
+| size.measure | `--ayy-size-measure` | 46rem |  | Comfortable reading width for long text (~70 characters). Used by .ayy-prose. |
+| size.header | `--ayy-size-header` | 4.5rem |  | Navbar height; sticky elements and anchor targets sit below it. |
 | control.text-sm | `--ayy-control-text-sm` | 0.6875rem |  | density: comfortable 0.75rem, touch 0.875rem |
 | control.text-md | `--ayy-control-text-md` | 0.75rem |  | density: comfortable 0.875rem, touch 1rem |
 | control.text-lg | `--ayy-control-text-lg` | 0.875rem |  | density: comfortable 1rem, touch 1.125rem |
@@ -186,6 +198,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | shadow.lift | `--ayy-shadow-lift` | 0 16px 36px #00000066 | 0 16px 36px #0000001f | Hovered / lifted cards. |
 | shadow.overlay | `--ayy-shadow-overlay` | 0 24px 60px #00000080 | 0 24px 60px #00000026 | Dialogs, menus, popovers, tooltips, toasts. |
 | shadow.glow | `--ayy-shadow-glow` | 0 0 18px #ffffff2e | 0 0 18px #0000001a | Primary button hover glow. |
+| shadow.frame | `--ayy-shadow-frame` | 0 30px 80px -40px #000000e6 | 0 30px 80px -40px #0000004d | Screenshots and browser frames: a long, soft drop under the image. |
 | ease.standard | `--ayy-ease-standard` | 0.2, 0, 0, 1 |  |  |
 | ease.spring | `--ayy-ease-spring` | 0.175, 0.885, 0.32, 1.275 |  | Slight overshoot. Small lifts and toggles. |
 | ease.out-expo | `--ayy-ease-out-expo` | 0.25, 1, 0.5, 1 |  | Default for entrances and card lifts. |
@@ -212,13 +225,15 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 ## Public custom properties
 
-- `--ayy-spot`: Card spotlight colour (any colour, usually an --ayy-accent-* token).
+- `--ayy-spot`: The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.
 - `--ayy-mx`: Card spotlight pointer X in px (set by React Card or ayywi/elements).
 - `--ayy-my`: Card spotlight pointer Y in px (set by React Card or ayywi/elements).
 - `--ayy-dot`: Badge status-dot colour override.
 - `--ayy-value`: Progress value, a unitless number 0–100.
 - `--ayy-progress-color`: Progress fill colour override.
-- `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster.
+- `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster / .ayy-grid and the carousel track.
+- `--ayy-min`: Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column.
+- `--ayy-slide`: Width of each carousel slide (default min(22rem, 85%)).
 
 ## Utility classes
 
@@ -231,19 +246,31 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - `.ayy-eyebrow`: Small uppercase label above a heading.
 - `.ayy-signature`: Handwritten accent font.
 - `.ayy-mono`: Monospace font.
+- `.ayy-display`: Hero title: heading font at the fluid display size (44px on a phone to 200px), tight leading.
+- `.ayy-text-outline`: Hollow letters stroked in the text colour. For big display words and numbers; combine with .ayy-muted to dim.
+- `.ayy-accent-text`: Text in the local accent (--ayy-spot), darkened on light themes so accent tokens keep 4.5:1.
+- `.ayy-link`: Inline text link: underlined, text colour, focus ring.
+- `.ayy-prose`: Long-form reading (articles, case studies): 18px soft text at a readable measure; styles the headings, lists, links, quotes, code and images inside.
+- `.ayy-container`: Centred page width (--ayy-size-container, 1400px) with a 24px gutter, 16px on tablets and phones.
+- `.ayy-grid`: Responsive grid: as many columns of at least --ayy-min (16rem) as fit; gap via --ayy-gap (16px).
 - `.ayy-stack`: Vertical flex stack; gap via --ayy-gap (default 12px).
 - `.ayy-cluster`: Wrapping horizontal row; gap via --ayy-gap (default 8px).
 - `.ayy-sr-only`: Visually hidden, still read by screen readers.
 - `.ayy-scroll`: Thin, quiet scrollbars on a scroll container.
+- `.ayy-skip-link`: "Skip to content" link: hidden above the viewport until it gets keyboard focus. Make it the first thing in <body>.
+- `.ayy-bg-grid`: Decorative ambient grid behind a hero or closing section, fading out towards the edges. Sets position: relative.
+- `.ayy-scroll-progress`: Reading-progress bar fixed to the top of the viewport, in --ayy-spot. Put an empty aria-hidden <div> with it at the start of <body>. CSS scroll timelines only; hidden where unsupported.
+- `.ayy-reveal`: Fades and lifts the element in as it scrolls into view. CSS only; off under reduced motion.
 
 ## Components by category
 
-- **Actions** (Things people click to do something.): Button, Dropdown menu
+- **Actions** (Things people click to do something.): Button, Dropdown menu, Theme toggle
+- **Navigation** (Getting around a site and a page.): Navbar, Breadcrumb, Contents
 - **Forms** (Inputs, choices and their labels.): Field, Input, Textarea, Select, Checkbox, Radio, Switch
-- **Layout** (Containers and ways to organise content.): Card, Tabs
+- **Layout** (Containers and ways to organise content.): Section, Card, Tabs, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Skeleton
-- **Data display** (Values, people and records.): Badge, Avatar, Table
+- **Data display** (Values, people and records.): Badge, Avatar, Icon tile, Stat, Data list, Frame, Chat, Table
 
 ## Button
 
@@ -264,6 +291,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `.ayy-button--ghost` — No border or fill until hover. Toolbars, icon buttons.
 - `.ayy-button--destructive` — Tinted red. Irreversible actions.
 - `.ayy-button--link` — Looks like a text link.
+- `.ayy-button--ring` — Showcase call to action: quiet fill inside a gradient ring that spins on hover and focus. For marketing and portfolio pages; one per view.
 - `.ayy-button--sm` — 28px tall.
 - `.ayy-button--lg` — 40px tall.
 - `.ayy-button--icon` — Square 32px, for a single icon.
@@ -272,7 +300,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 **JS (framework-free)**: buttonClass({ variant?, size?, className? }) → string
 
 **React** — `import { Button } from "ayywi/react";`
-- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm"; `type` Defaults to "button" (not "submit").; `...rest` All native <button> attributes.
+- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm"; `type` Defaults to "button" (not "submit").; `...rest` All native <button> attributes.
 
 **Accessibility**
 - Icon-only buttons need aria-label.
@@ -281,6 +309,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 
 **Do**
 - One primary button per view or section; everything else secondary/outline/ghost.
+- On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
 - Put the icon before the label; it inherits size from the button (1.25em).
 
 **Don't**
@@ -435,6 +464,35 @@ export default function Example() {
 }
 ```
 
+### Button — Ring call to action
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- The site-wide call to action beside a quieter outline link, as in a hero. -->
+<a href="#connect" class="ayy-button ayy-button--ring ayy-button--lg">Let's connect</a>
+<a href="#work" class="ayy-button ayy-button--outline ayy-button--lg">See the work</a>
+```
+
+React:
+
+```tsx
+import { buttonClass } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <a href="#connect" className={buttonClass({ variant: "ring", size: "lg" })}>
+        Let's connect
+      </a>
+      <a href="#work" className={buttonClass({ variant: "outline", size: "lg" })}>
+        See the work
+      </a>
+    </>
+  );
+}
+```
+
 ## Dropdown menu
 
 Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
@@ -541,6 +599,353 @@ export default function Example() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+```
+
+## Theme toggle
+
+Category: Actions. An icon button that switches between a dark and a light theme and remembers the choice. The moon or sun shows from CSS alone, following the colour scheme, so it's right on first paint.
+
+**Use for**
+- A site or app header where readers pick light or dark.
+
+**Don't use for**
+- Choosing between more than two themes, or "system" — use a Select or radio group with setTheme().
+- Theming one section — set data-theme on it.
+
+**Classes**
+- `.ayy-theme-toggle` — On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons.
+- `.ayy-theme-toggle__moon` — Icon shown in dark themes.
+- `.ayy-theme-toggle__sun` — Icon shown in light themes.
+
+**JS (framework-free)**: themeToggleClass, themeToggleMoonClass, themeToggleSunClass constants; connectThemeToggle(button, { dark?, light?, onChange? }) → cleanup.
+
+**Custom element** `<ayy-theme-toggle>` (ayywi/elements) — One <button> with both icons. aria-pressed (true while dark) is kept in sync for you, including when the OS preference changes.
+- attribute `dark`: dark | dark-soft — theme to switch to for dark
+- attribute `light`: light | light-gray — theme to switch to for light
+- event `ayy-value-change`: { value: string } — the theme just applied
+
+**React** — `import { ThemeToggle } from "ayywi/react";`
+- `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons. Props: `dark` ThemeName for dark. Default "dark".; `light` ThemeName for light. Default "light".; `onValueChange` (theme: ThemeName) => void; `aria-label` Default "Dark theme".
+
+**Accessibility**
+- A toggle button: a fixed name ("Dark theme") and aria-pressed="true" while dark, so screen readers announce the state.
+- The icons are aria-hidden; the name and state carry the meaning.
+
+**Do**
+- Add themeInitScript to <head> so the stored theme applies before first paint.
+- Put it next to the brand or before the call to action in the Navbar.
+
+**Don't**
+- Don't change the label with the state; aria-pressed already says it.
+
+### Theme toggle — Toggle
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-theme-toggle> (ayywi/elements) switches <html> between dark and light and remembers it. -->
+<ayy-theme-toggle>
+  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle" aria-label="Dark theme">
+    <svg class="ayy-theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" /></svg>
+    <svg class="ayy-theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+  </button>
+</ayy-theme-toggle>
+```
+
+React:
+
+```tsx
+import { ThemeToggle } from "ayywi/react";
+
+export default function Example() {
+  return <ThemeToggle />;
+}
+```
+
+## Navbar
+
+Category: Navigation. Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width.
+
+**Use for**
+- The top bar of a website or app shell: logo, a few top-level links, one call to action.
+
+**Don't use for**
+- Switching views inside a page — use Tabs.
+- Long lists of links — keep two to five, and move the rest into a DropdownMenu or the footer.
+
+**Classes**
+- `.ayy-navbar` — Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.
+- `.ayy-navbar__inner` — Centred row at page width (--ayy-size-container) with the page gutter.
+- `.ayy-navbar__brand` — Logo / name link at the start.
+- `.ayy-navbar__nav` — <nav> of links. It and everything after it sit at the end. Scrolls sideways if the links don't fit.
+- `.ayy-navbar__link` — Top-level link. aria-current="page" marks the page you're on.
+- `.ayy-navbar__actions` — Group of buttons (theme toggle, call to action). Next to the brand, or at the end after the nav.
+
+**JS (framework-free)**: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass constants.
+
+**React** — `import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions } from "ayywi/react";`
+- `<Navbar>` renders <header class="ayy-navbar"><div class="ayy-navbar__inner">.
+- `<NavbarBrand>` renders <a>.
+- `<NavbarNav>` renders <nav>. Props: `aria-label` Defaults to "Main".
+- `<NavbarLink>` renders <a>. Props: `current` boolean — sets aria-current="page".
+- `<NavbarActions>` renders <div>.
+
+**Accessibility**
+- Use <header> for the bar and <nav aria-label="Main"> for the links; one main nav per page.
+- Mark the current page with aria-current="page", not only with colour.
+- Put a .ayy-skip-link before the navbar so keyboard users can jump past it.
+
+**Do**
+- Keep one call to action in the actions group (a ring or primary button, size sm).
+- On phones keep the brand, one or two links and the call to action; move the rest into a menu.
+
+**Don't**
+- Don't give the navbar its own background colour; the glass token keeps both themes right.
+- Don't nest a second navbar inside the page.
+
+### Navbar — Site header
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<header class="ayy-navbar">
+  <div class="ayy-navbar__inner">
+    <a class="ayy-navbar__brand" href="#top">
+      <span class="ayy-avatar ayy-avatar--sm" aria-hidden="true"><span class="ayy-avatar__fallback">DT</span></span>
+      <span class="ayy-signature">Dani Tesler</span>
+    </a>
+    <nav class="ayy-navbar__nav" aria-label="Main">
+      <a class="ayy-navbar__link" href="#work" aria-current="page">Work</a>
+      <a class="ayy-navbar__link" href="#projects">Projects</a>
+    </nav>
+    <div class="ayy-navbar__actions">
+      <a class="ayy-button ayy-button--ring ayy-button--sm" href="#connect">Let's connect</a>
+    </div>
+  </div>
+</header>
+```
+
+React:
+
+```tsx
+import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Navbar>
+      <NavbarBrand href="#top">
+        <span className="ayy-avatar ayy-avatar--sm" aria-hidden="true">
+          <span className="ayy-avatar__fallback">DT</span>
+        </span>
+        <span className="ayy-signature">Dani Tesler</span>
+      </NavbarBrand>
+      <NavbarNav>
+        <NavbarLink href="#work" current>
+          Work
+        </NavbarLink>
+        <NavbarLink href="#projects">Projects</NavbarLink>
+      </NavbarNav>
+      <NavbarActions>
+        <a className={buttonClass({ variant: "ring", size: "sm" })} href="#connect">
+          Let's connect
+        </a>
+      </NavbarActions>
+    </Navbar>
+  );
+}
+```
+
+## Breadcrumb
+
+Category: Navigation. Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
+
+**Use for**
+- Opening a page that sits two or more levels deep: an index page, a case study, an article.
+
+**Don't use for**
+- The home page or a single-level site.
+- Steps in a process — that's a stepper, not a location.
+
+**Classes**
+- `.ayy-breadcrumb` — Root <nav aria-label="Breadcrumb">.
+- `.ayy-breadcrumb--pill` — Bordered, blurred capsule that stays readable over hero images and grids.
+- `.ayy-breadcrumb__list` — The <ol>.
+- `.ayy-breadcrumb__item` — Each <li>. A slash separates items; screen readers skip it.
+- `.ayy-breadcrumb__link` — Link to an ancestor page. The last item is a <span aria-current="page"> instead.
+
+**JS (framework-free)**: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
+
+**React** — `import { Breadcrumb } from "ayywi/react";`
+- `<Breadcrumb>` renders <nav aria-label="Breadcrumb"><ol>…. Props: `items` { label: ReactNode; href?: string }[] — top level first; the last one is the current page.; `pill` boolean; `aria-label` Defaults to "Breadcrumb".
+
+**Accessibility**
+- Wrap it in <nav aria-label="Breadcrumb"> and use an <ol>, so it's announced as an ordered path.
+- The current page is plain text with aria-current="page", not a link to itself.
+
+**Do**
+- Use the page titles as they appear in their own headings.
+- Use pill over imagery or the ambient grid; plain elsewhere.
+
+**Don't**
+- Don't include the current page as a link.
+- Don't use it as the only navigation.
+
+### Breadcrumb — Plain and pill
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<nav class="ayy-breadcrumb" aria-label="Breadcrumb">
+  <ol class="ayy-breadcrumb__list">
+    <li class="ayy-breadcrumb__item"><a class="ayy-breadcrumb__link" href="#home">Home</a></li>
+    <li class="ayy-breadcrumb__item"><a class="ayy-breadcrumb__link" href="#work">Case studies</a></li>
+    <li class="ayy-breadcrumb__item"><span aria-current="page">Oktopost</span></li>
+  </ol>
+</nav>
+<nav class="ayy-breadcrumb ayy-breadcrumb--pill" aria-label="Breadcrumb, pill">
+  <ol class="ayy-breadcrumb__list">
+    <li class="ayy-breadcrumb__item"><a class="ayy-breadcrumb__link" href="#home">Home</a></li>
+    <li class="ayy-breadcrumb__item"><span aria-current="page">My projects</span></li>
+  </ol>
+</nav>
+```
+
+React:
+
+```tsx
+import { Breadcrumb } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Breadcrumb
+        items={[
+          { label: "Home", href: "#home" },
+          { label: "Case studies", href: "#work" },
+          { label: "Oktopost" },
+        ]}
+      />
+      <Breadcrumb pill aria-label="Breadcrumb, pill" items={[{ label: "Home", href: "#home" }, { label: "My projects" }]} />
+    </>
+  );
+}
+```
+
+## Contents
+
+Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
+
+**Use for**
+- Long pages with named sections: case studies, docs, articles, settings pages.
+
+**Don't use for**
+- Short pages with two or three sections.
+- Navigation between pages — use Navbar or links.
+
+**Classes**
+- `.ayy-toc` — Root <nav>. Accent from --ayy-spot.
+- `.ayy-toc--sticky` — Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.
+- `.ayy-toc__title` — Small uppercase heading ("Contents"). Point the nav's aria-labelledby at it.
+- `.ayy-toc__list` — <ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.
+- `.ayy-toc__link` — Section link (href="#id"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.
+- `.ayy-toc__number` — Optional section number (01, 02…) before the label, in the accent while current.
+
+**JS (framework-free)**: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
+
+**Custom element** `<ayy-toc>` (ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
+- attribute `offset`: Distance in px below the top of the viewport at which a section becomes current. Default: the page's scroll-padding-top (the navbar sets it) + 24.
+- event `ayy-value-change`: { value: string } — id of the section now being read ("" above the first)
+
+**React** — `import { Toc } from "ayywi/react";`
+- `<Toc>` renders <nav class="ayy-toc">. Props: `items` { id: string; label: ReactNode; children?: TocItem[] }[] — ids of sections on the page, in page order.; `title` ReactNode — visible heading; also becomes the nav's accessible name.; `numbered` boolean — number top-level items 01, 02…; `sticky` boolean; `offset` number — px below the top of the viewport at which a section becomes current.; `onValueChange` (id: string) => void — the section being read changed.; `aria-label` Used when there's no title. Defaults to "On this page".
+
+**Accessibility**
+- It's a <nav> with a name (the title via aria-labelledby, or aria-label="On this page"), so it shows up in landmark lists.
+- The current section is aria-current="location", announced by screen readers, not only drawn as a colour bar.
+- Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header.
+
+**Do**
+- List sections in page order; the scrollspy assumes it.
+- Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.
+- On narrow screens, move it above the content or into a Popover instead of a side column.
+
+**Don't**
+- Don't nest more than one level.
+- Don't list every heading — sections and their direct sub-sections only.
+
+### Contents — Numbered, beside the content
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-toc> (ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->
+<div style="display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)">
+  <nav class="ayy-toc ayy-toc--sticky" aria-labelledby="toc-title">
+    <ayy-toc>
+      <p class="ayy-toc__title" id="toc-title">Contents</p>
+      <ol class="ayy-toc__list">
+        <li><a class="ayy-toc__link" href="#toc-overview"><span class="ayy-toc__number">01</span>Overview</a></li>
+        <li>
+          <a class="ayy-toc__link" href="#toc-system"><span class="ayy-toc__number">02</span>Design system</a>
+          <ol class="ayy-toc__list">
+            <li><a class="ayy-toc__link" href="#toc-tokens">Tokens</a></li>
+          </ol>
+        </li>
+        <li><a class="ayy-toc__link" href="#toc-impact"><span class="ayy-toc__number">03</span>Impact</a></li>
+      </ol>
+    </ayy-toc>
+  </nav>
+  <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-10)">
+    <section id="toc-overview"><h3 class="ayy-h4">Overview</h3><p class="ayy-muted">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p></section>
+    <section id="toc-system"><h3 class="ayy-h4">Design system</h3><p class="ayy-muted">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p></section>
+    <section id="toc-tokens"><h3 class="ayy-h4">Tokens</h3><p class="ayy-muted">Colour, type and spacing became tokens first, so the redesign could ship on them.</p></section>
+    <section id="toc-impact"><h3 class="ayy-h4">Impact</h3><p class="ayy-muted">The board redesign, the editor rebuild and the AI features all shipped on shared components.</p></section>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Toc } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div
+      style={{ display: "grid", gridTemplateColumns: "minmax(0, 11rem) minmax(0, 1fr)", gap: "var(--ayy-space-8)", inlineSize: "100%", "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties}
+    >
+      <Toc
+        sticky
+        numbered
+        title="Contents"
+        items={[
+          { id: "toc-overview", label: "Overview" },
+          { id: "toc-system", label: "Design system", children: [{ id: "toc-tokens", label: "Tokens" }] },
+          { id: "toc-impact", label: "Impact" },
+        ]}
+      />
+      <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-10)" } as CSSProperties}>
+        <section id="toc-overview">
+          <h3 className="ayy-h4">Overview</h3>
+          <p className="ayy-muted">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p>
+        </section>
+        <section id="toc-system">
+          <h3 className="ayy-h4">Design system</h3>
+          <p className="ayy-muted">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p>
+        </section>
+        <section id="toc-tokens">
+          <h3 className="ayy-h4">Tokens</h3>
+          <p className="ayy-muted">Colour, type and spacing became tokens first, so the redesign could ship on them.</p>
+        </section>
+        <section id="toc-impact">
+          <h3 className="ayy-h4">Impact</h3>
+          <p className="ayy-muted">The board redesign, the editor rebuild and the AI features all shipped on shared components.</p>
+        </section>
+      </div>
+    </div>
   );
 }
 ```
@@ -1144,6 +1549,135 @@ export default function Example() {
 }
 ```
 
+## Section
+
+Category: Layout. A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.
+
+**Use for**
+- Each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).
+- Chapters of a long case study or article, with numbered eyebrows that match the contents list.
+
+**Don't use for**
+- Grouping inside an app screen — use Card or plain headings.
+- A single heading with no content under it.
+
+**Classes**
+- `.ayy-section` — Root <section>. 96px block padding (80px on phones, 128px on wide screens). Add ayy-container for page width.
+- `.ayy-section--center` — Header centred over the content; start-aligned again on phones.
+- `.ayy-section__header` — Eyebrow, title and description, capped at a readable width.
+- `.ayy-section__eyebrow` — Small uppercase label above the title.
+- `.ayy-section__number` — Section number inside the eyebrow ("01"), followed by a short rule, in the accent (--ayy-spot).
+- `.ayy-section__title` — The section's <h2>. Fluid, 28px on phones to 48px.
+- `.ayy-section__description` — One or two sentences under the title, muted.
+
+**JS (framework-free)**: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
+
+**React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "ayywi/react";`
+- `<Section>` renders <section>. Props: `center` boolean
+- `<SectionHeader>` renders <header>.
+- `<SectionEyebrow>` renders <p>. Props: `number` ReactNode — shown before the label, e.g. "01".
+- `<SectionTitle>` renders <h2>.
+- `<SectionDescription>` renders <p>.
+
+**Accessibility**
+- Name the section with its title: aria-labelledby on the <section> pointing at the title's id makes it a landmark.
+- Keep the heading order: page title h1, section titles h2.
+
+**Do**
+- Separate homepage sections with a fading Separator.
+- Use the same numbers in the eyebrow and the Contents list of a long page.
+- Set --ayy-spot on a case study's <main> so the numbers take its accent.
+
+**Don't**
+- Don't stack two sections' paddings with extra margins; the padding is the rhythm.
+- Don't write a paragraph as the description — one or two sentences.
+
+### Section — Centred header
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<section class="ayy-section ayy-section--center ayy-container" aria-labelledby="work-title">
+  <header class="ayy-section__header">
+    <h2 class="ayy-section__title" id="work-title">Portfolio work</h2>
+    <p class="ayy-section__description">Selected case studies in product design, systems and UX strategy.</p>
+  </header>
+  <div class="ayy-grid" style="--ayy-min: 12rem">
+    <div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Oktopost</h3></div></div>
+    <div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Comeet</h3></div></div>
+    <div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Scalez</h3></div></div>
+  </div>
+</section>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Card, CardHeader, CardTitle, Section, SectionDescription, SectionHeader, SectionTitle } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Section center className="ayy-container" aria-labelledby="work-title">
+      <SectionHeader>
+        <SectionTitle id="work-title">Portfolio work</SectionTitle>
+        <SectionDescription>Selected case studies in product design, systems and UX strategy.</SectionDescription>
+      </SectionHeader>
+      <div className="ayy-grid" style={{ "--ayy-min": "12rem" } as CSSProperties}>
+        {["Oktopost", "Comeet", "Scalez"].map((name) => (
+          <Card key={name}>
+            <CardHeader>
+              <CardTitle>{name}</CardTitle>
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </Section>
+  );
+}
+```
+
+### Section — Numbered chapter
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- A case-study chapter. --ayy-spot (usually set once on <main>) colours the number. -->
+<section class="ayy-section" style="--ayy-spot: var(--ayy-accent-product)" aria-labelledby="ds-title">
+  <header class="ayy-section__header">
+    <p class="ayy-section__eyebrow"><span class="ayy-section__number">02</span>Design system</p>
+    <h2 class="ayy-section__title" id="ds-title">Lobster: the shared language behind every screen</h2>
+  </header>
+  <div class="ayy-prose">
+    <p>The product had outgrown its shared UI: navigation, cards and colour varied from screen to screen, and every new feature risked drifting further.</p>
+  </div>
+</section>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Section style={{ "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties} aria-labelledby="ds-title">
+      <SectionHeader>
+        <SectionEyebrow number="02">Design system</SectionEyebrow>
+        <SectionTitle id="ds-title">Lobster: the shared language behind every screen</SectionTitle>
+      </SectionHeader>
+      <div className="ayy-prose">
+        <p>
+          The product had outgrown its shared UI: navigation, cards and colour varied from screen to screen, and every new feature risked
+          drifting further.
+        </p>
+      </div>
+    </Section>
+  );
+}
+```
+
 ## Card
 
 Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
@@ -1165,19 +1699,24 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - `.ayy-card__description` — Muted supporting text.
 - `.ayy-card__content` — Body.
 - `.ayy-card__footer` — Actions row, pinned to the bottom.
+- `.ayy-card__media` — Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly on an interactive card's hover.
+- `.ayy-card__link` — Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable.
 
 **JS (framework-free)**: cardClass({ interactive?, spotlight?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
 
-**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "ayywi/react";`
+**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "ayywi/react";`
 - `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
 - `<CardDescription>` renders <p>.
 - `<CardContent>` renders <div>.
 - `<CardFooter>` renders <div>.
+- `<CardMedia>` renders <div>. Props: `children` An <img>, <picture>, <video> or <svg>. Give images width and height.
+- `<CardLink>` renders <a class="ayy-card__link">. Props: `...rest` All native <a> attributes (href…).
 
 **Accessibility**
-- If the whole card is a link, put the <a> on the title and stretch it (::after inset:0), don't wrap the card in <a>.
+- If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card.
+- Media images are content: give them alt text, or alt="" when the title already says it all.
 - Spotlight layers are pseudo-elements, invisible to assistive tech.
 
 **Do**
@@ -1285,6 +1824,104 @@ export default function Example() {
 }
 ```
 
+### Card — Linked card with media
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- A portfolio grid: the title link covers each card, the cover is coded SVG so it themes with the page. -->
+<div class="ayy-grid" style="--ayy-min: 15rem; inline-size: 100%; max-inline-size: 40rem">
+  <article class="ayy-card ayy-card--interactive ayy-card--spotlight" style="--ayy-spot: var(--ayy-accent-product)">
+    <div class="ayy-card__media">
+      <svg viewBox="0 0 320 180" aria-hidden="true">
+        <rect width="320" height="180" style="fill: color-mix(in srgb, var(--ayy-spot) 20%, var(--ayy-color-surface))" />
+        <rect x="56" y="36" width="208" height="160" rx="10" style="fill: var(--ayy-color-surface-raised); stroke: var(--ayy-color-line-strong)" />
+        <rect x="76" y="60" width="96" height="10" rx="5" style="fill: var(--ayy-color-line-hover)" />
+        <rect x="76" y="84" width="168" height="44" rx="6" style="fill: color-mix(in srgb, var(--ayy-spot) 45%, transparent)" />
+        <rect x="76" y="140" width="80" height="44" rx="6" style="fill: var(--ayy-color-wash-hover)" />
+        <rect x="164" y="140" width="80" height="44" rx="6" style="fill: var(--ayy-color-wash-hover)" />
+      </svg>
+    </div>
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title"><a class="ayy-card__link" href="#oktopost">Oktopost</a></h3>
+      <p class="ayy-card__description">Design system realignment, a new post editor and seamless AI for a B2B social platform.</p>
+    </div>
+  </article>
+  <article class="ayy-card ayy-card--interactive ayy-card--spotlight" style="--ayy-spot: var(--ayy-accent-research)">
+    <div class="ayy-card__media">
+      <svg viewBox="0 0 320 180" aria-hidden="true">
+        <rect width="320" height="180" style="fill: color-mix(in srgb, var(--ayy-spot) 20%, var(--ayy-color-surface))" />
+        <rect x="56" y="36" width="208" height="160" rx="10" style="fill: var(--ayy-color-surface-raised); stroke: var(--ayy-color-line-strong)" />
+        <circle cx="196" cy="100" r="40" style="fill: color-mix(in srgb, var(--ayy-spot) 55%, transparent)" />
+        <rect x="76" y="80" width="84" height="8" rx="4" style="fill: var(--ayy-color-line-hover)" />
+        <rect x="76" y="96" width="64" height="8" rx="4" style="fill: var(--ayy-color-line-hover)" />
+      </svg>
+    </div>
+    <div class="ayy-card__header">
+      <span class="ayy-badge ayy-badge--ai">AI</span>
+      <h3 class="ayy-card__title"><a class="ayy-card__link" href="#scalez">Scalez</a></h3>
+      <p class="ayy-card__description">A conversational AI marketplace, and Savvy, its first use case: personal styling.</p>
+    </div>
+  </article>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties, ReactNode } from "react";
+import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "ayywi/react";
+
+function Cover({ children }: { children: ReactNode }) {
+  return (
+    <svg viewBox="0 0 320 180" aria-hidden="true">
+      <rect width="320" height="180" style={{ fill: "color-mix(in srgb, var(--ayy-spot) 20%, var(--ayy-color-surface))" }} />
+      <rect x="56" y="36" width="208" height="160" rx="10" style={{ fill: "var(--ayy-color-surface-raised)", stroke: "var(--ayy-color-line-strong)" }} />
+      {children}
+    </svg>
+  );
+}
+
+export default function Example() {
+  return (
+    <div className="ayy-grid" style={{ "--ayy-min": "15rem", inlineSize: "100%", maxInlineSize: "40rem" } as CSSProperties}>
+      <Card interactive spotlight spotColor="var(--ayy-accent-product)">
+        <CardMedia>
+          <Cover>
+            <rect x="76" y="60" width="96" height="10" rx="5" style={{ fill: "var(--ayy-color-line-hover)" }} />
+            <rect x="76" y="84" width="168" height="44" rx="6" style={{ fill: "color-mix(in srgb, var(--ayy-spot) 45%, transparent)" }} />
+            <rect x="76" y="140" width="80" height="44" rx="6" style={{ fill: "var(--ayy-color-wash-hover)" }} />
+            <rect x="164" y="140" width="80" height="44" rx="6" style={{ fill: "var(--ayy-color-wash-hover)" }} />
+          </Cover>
+        </CardMedia>
+        <CardHeader>
+          <CardTitle>
+            <CardLink href="#oktopost">Oktopost</CardLink>
+          </CardTitle>
+          <CardDescription>Design system realignment, a new post editor and seamless AI for a B2B social platform.</CardDescription>
+        </CardHeader>
+      </Card>
+      <Card interactive spotlight spotColor="var(--ayy-accent-research)">
+        <CardMedia>
+          <Cover>
+            <circle cx="196" cy="100" r="40" style={{ fill: "color-mix(in srgb, var(--ayy-spot) 55%, transparent)" }} />
+            <rect x="76" y="80" width="84" height="8" rx="4" style={{ fill: "var(--ayy-color-line-hover)" }} />
+            <rect x="76" y="96" width="64" height="8" rx="4" style={{ fill: "var(--ayy-color-line-hover)" }} />
+          </Cover>
+        </CardMedia>
+        <CardHeader>
+          <Badge variant="ai">AI</Badge>
+          <CardTitle>
+            <CardLink href="#scalez">Scalez</CardLink>
+          </CardTitle>
+          <CardDescription>A conversational AI marketplace, and Savvy, its first use case: personal styling.</CardDescription>
+        </CardHeader>
+      </Card>
+    </div>
+  );
+}
+```
+
 ## Tabs
 
 Category: Layout. Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
@@ -1302,6 +1939,7 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 - `.ayy-tabs__list` — role="tablist" pill container.
 - `.ayy-tabs__tab` — role="tab" button. Selected when aria-selected="true".
 - `.ayy-tabs__panel` — role="tabpanel". Hide inactive panels with the hidden attribute.
+- `.ayy-tabs__count` — Small count after a tab's label (items in a filter). Inverts with the selected tab.
 
 **JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
 
@@ -1382,6 +2020,232 @@ export default function Example() {
         <p className="ayy-muted">People with access to this project.</p>
       </TabsContent>
     </Tabs>
+  );
+}
+```
+
+### Tabs — Filters with counts
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- Filters over one list: a count after each label. -->
+<ayy-tabs class="ayy-tabs" value="all">
+  <div class="ayy-tabs__list" role="tablist" aria-label="Filter projects">
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All <span class="ayy-tabs__count">18</span></button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="templates" aria-selected="false" tabindex="-1">Design templates <span class="ayy-tabs__count">6</span></button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="extensions" aria-selected="false" tabindex="-1">Extensions <span class="ayy-tabs__count">12</span></button>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="all">
+    <p class="ayy-muted">Every Figma resource and plugin.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="templates" hidden>
+    <p class="ayy-muted">UI kits, icon packs and website sections.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="extensions" hidden>
+    <p class="ayy-muted">Open-source add-ons for Playnite.</p>
+  </div>
+</ayy-tabs>
+```
+
+React:
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <Tabs defaultValue="all">
+      <TabsList aria-label="Filter projects">
+        <TabsTrigger value="all">
+          All <span className="ayy-tabs__count">18</span>
+        </TabsTrigger>
+        <TabsTrigger value="templates">
+          Design templates <span className="ayy-tabs__count">6</span>
+        </TabsTrigger>
+        <TabsTrigger value="extensions">
+          Extensions <span className="ayy-tabs__count">12</span>
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="all">
+        <p className="ayy-muted">Every Figma resource and plugin.</p>
+      </TabsContent>
+      <TabsContent value="templates">
+        <p className="ayy-muted">UI kits, icon packs and website sections.</p>
+      </TabsContent>
+      <TabsContent value="extensions">
+        <p className="ayy-muted">Open-source add-ons for Playnite.</p>
+      </TabsContent>
+    </Tabs>
+  );
+}
+```
+
+## Carousel
+
+Category: Layout. A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
+
+**Use for**
+- A row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas.
+
+**Don't use for**
+- Content everyone must see — lay it out in a grid.
+- Auto-rotating banners — ayywi doesn't auto-play, on purpose.
+- Switching between views of one thing — use Tabs.
+
+**Classes**
+- `.ayy-carousel` — Root (also on <ayy-carousel>). role="region" aria-roledescription="carousel" and an aria-label.
+- `.ayy-carousel__track` — The scrolling, snapping row. Give it tabindex="0" so keyboards can scroll it. Gap via --ayy-gap.
+- `.ayy-carousel__slide` — Each slide: role="group" aria-roledescription="slide". Width via --ayy-slide (default min(22rem, 85%)).
+- `.ayy-carousel__controls` — Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows flip in RTL.
+
+**JS (framework-free)**: carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.
+
+**Custom element** `<ayy-carousel>` (ayywi/elements) — A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled="true" at the ends. Slides without a label are named "2 of 6".
+- attribute `class`: Put ayy-carousel on it for block layout.
+
+**React** — `import { Carousel, CarouselSlide } from "ayywi/react";`
+- `<Carousel>` renders <div class="ayy-carousel" role="region"> with the track and the two buttons. Props: `label` string (required) — accessible name, e.g. "Team photos".; `slideWidth` CSS length for every slide. Default min(22rem, 85%).; `previousLabel / nextLabel` Button names. Default "Previous" / "Next".
+- `<CarouselSlide>` renders <div role="group" aria-roledescription="slide">.
+
+**Accessibility**
+- The root is a named region with aria-roledescription="carousel"; each slide is a group named "n of total" unless you name it.
+- The track is focusable, so arrow keys scroll it; the buttons stay focusable at the ends (aria-disabled, not disabled) so focus isn't lost.
+- Nothing moves on its own, and smooth scrolling turns off under prefers-reduced-motion.
+
+**Do**
+- Let the last slide peek in, so it's clear there's more.
+- Give images inside slides width and height so the strip doesn't jump.
+
+**Don't**
+- Don't hide essential content in later slides.
+- Don't auto-advance.
+
+### Carousel — Cards
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-carousel> (ayywi/elements) wires the buttons. Swipe, scroll or focus the strip and use the arrow keys. -->
+<ayy-carousel class="ayy-carousel" role="region" aria-roledescription="carousel" aria-label="AI assistant features" style="inline-size: 100%; --ayy-slide: 15rem">
+  <div class="ayy-carousel__track" tabindex="0">
+    <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Identity</h3><p class="ayy-card__description">One four-point star wherever a feature is powered by AI.</p></div></div></div>
+    <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Assist</h3><p class="ayy-card__description">Rephrase, change tone or shorten, one task at a time.</p></div></div></div>
+    <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Processing</h3><p class="ayy-card__description">A calm loading state while a response is written.</p></div></div></div>
+    <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Feedback</h3><p class="ayy-card__description">Thumbs up or down on every answer, right where it appears.</p></div></div></div>
+    <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Errors</h3><p class="ayy-card__description">Plain words and a retry when something fails.</p></div></div></div>
+  </div>
+  <div class="ayy-carousel__controls">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--icon" data-ayy-prev aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+    </button>
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--icon" data-ayy-next aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+    </button>
+  </div>
+</ayy-carousel>
+```
+
+React:
+
+```tsx
+import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "ayywi/react";
+
+const features = [
+  { title: "Identity", text: "One four-point star wherever a feature is powered by AI." },
+  { title: "Assist", text: "Rephrase, change tone or shorten, one task at a time." },
+  { title: "Processing", text: "A calm loading state while a response is written." },
+  { title: "Feedback", text: "Thumbs up or down on every answer, right where it appears." },
+  { title: "Errors", text: "Plain words and a retry when something fails." },
+];
+
+export default function Example() {
+  return (
+    <Carousel label="AI assistant features" slideWidth="15rem" style={{ inlineSize: "100%" }}>
+      {features.map((f) => (
+        <CarouselSlide key={f.title}>
+          <Card>
+            <CardHeader>
+              <CardTitle>{f.title}</CardTitle>
+              <CardDescription>{f.text}</CardDescription>
+            </CardHeader>
+          </Card>
+        </CarouselSlide>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+## Separator
+
+Category: Layout. A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).
+
+**Use for**
+- Between the sections of a long page (fade).
+- Between groups in a footer, toolbar or card (plain or vertical).
+
+**Don't use for**
+- Around every block — spacing usually separates better than lines.
+- Inside menus — use the menu's own separator.
+
+**Classes**
+- `.ayy-separator` — Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).
+- `.ayy-separator--vertical` — Vertical rule in a flex row; add aria-orientation="vertical".
+- `.ayy-separator--fade` — Fades to transparent at both ends.
+
+**JS (framework-free)**: separatorClass({ orientation?, fade?, className? }) → string
+
+**React** — `import { Separator } from "ayywi/react";`
+- `<Separator>` renders <hr>. Props: `orientation` "horizontal" | "vertical" — vertical also sets aria-orientation.; `fade` boolean
+
+**Accessibility**
+- <hr> is a separator to screen readers. If the line is purely decorative, use role="presentation" or a CSS border instead.
+- Vertical separators need aria-orientation="vertical" (the React component adds it).
+
+**Do**
+- Give the separator room with the layout's gap or the sections' padding.
+
+**Don't**
+- Don't colour it; hairline keeps it quiet in every theme.
+
+### Separator — Plain, fading and vertical
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: 100%; --ayy-gap: var(--ayy-space-6)">
+  <hr class="ayy-separator" />
+  <hr class="ayy-separator ayy-separator--fade" />
+  <div class="ayy-cluster" style="--ayy-gap: var(--ayy-space-4)">
+    <span>Web</span>
+    <hr class="ayy-separator ayy-separator--vertical" aria-orientation="vertical" />
+    <span>Mobile web</span>
+    <hr class="ayy-separator ayy-separator--vertical" aria-orientation="vertical" />
+    <span>Email</span>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Separator } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "100%", "--ayy-gap": "var(--ayy-space-6)" } as CSSProperties}>
+      <Separator />
+      <Separator fade />
+      <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
+        <span>Web</span>
+        <Separator orientation="vertical" />
+        <span>Mobile web</span>
+        <Separator orientation="vertical" />
+        <span>Email</span>
+      </div>
+    </div>
   );
 }
 ```
@@ -2311,6 +3175,412 @@ export default function Example() {
       </AvatarGroup>
       <Badge variant="muted">+3</Badge>
     </>
+  );
+}
+```
+
+## Icon tile
+
+Category: Data display. An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.
+
+**Use for**
+- The icon of a product, plugin, platform or service in a card or list row.
+
+**Don't use for**
+- People — use Avatar.
+- Icons inside buttons or text — use the bare SVG.
+
+**Classes**
+- `.ayy-icon-tile` — Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.
+- `.ayy-icon-tile--sm` — 32px.
+- `.ayy-icon-tile--lg` — 64px.
+
+**JS (framework-free)**: iconTileClass({ size?, className? }) → string
+
+**React** — `import { IconTile } from "ayywi/react";`
+- `<IconTile>` renders <span class="ayy-icon-tile">. Props: `size` "sm" | "md" | "lg"; `spotColor` CSS colour for the glow and glyph, e.g. "var(--ayy-accent-system)". Else inherits --ayy-spot.; `aria-label` Makes the tile an image with this name; without it the tile is aria-hidden.
+
+**Accessibility**
+- Usually decorative next to the product's name: aria-hidden="true" (React does this unless you pass aria-label).
+- Standing alone, give it role="img" and an aria-label.
+
+**Do**
+- Draw glyphs in currentColor so they take the accent; brand marks with their own colours can keep them.
+- Use one accent per product and reuse it wherever that product appears.
+
+**Don't**
+- Don't put text or numbers in the tile.
+
+### Icon tile — Accents and sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<span class="ayy-icon-tile ayy-icon-tile--lg" style="--ayy-spot: var(--ayy-accent-brand)" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="M5 7c4 1 9 5 11 13M3 13c5-2 11-2 17 1M9 3.5c3 3 5 6 6 8" /></svg>
+</span>
+<span class="ayy-icon-tile" style="--ayy-spot: var(--ayy-accent-system)" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="2" /><rect x="13" y="4" width="7" height="7" rx="2" /><rect x="4" y="13" width="7" height="7" rx="2" /><circle cx="16.5" cy="16.5" r="3.5" /></svg>
+</span>
+<span class="ayy-icon-tile ayy-icon-tile--sm" style="--ayy-spot: var(--ayy-accent-marketing)" role="img" aria-label="Autogrid">
+  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="7" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /><rect x="13" y="13" width="7" height="7" rx="1.5" /></svg>
+</span>
+```
+
+React:
+
+```tsx
+import { IconTile } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <IconTile size="lg" spotColor="var(--ayy-accent-brand)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M5 7c4 1 9 5 11 13M3 13c5-2 11-2 17 1M9 3.5c3 3 5 6 6 8" />
+        </svg>
+      </IconTile>
+      <IconTile spotColor="var(--ayy-accent-system)">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <rect x="4" y="4" width="7" height="7" rx="2" />
+          <rect x="13" y="4" width="7" height="7" rx="2" />
+          <rect x="4" y="13" width="7" height="7" rx="2" />
+          <circle cx="16.5" cy="16.5" r="3.5" />
+        </svg>
+      </IconTile>
+      <IconTile size="sm" spotColor="var(--ayy-accent-marketing)" aria-label="Autogrid">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <rect x="4" y="4" width="7" height="7" rx="1.5" />
+          <rect x="13" y="4" width="7" height="7" rx="1.5" />
+          <rect x="4" y="13" width="7" height="7" rx="1.5" />
+          <rect x="13" y="13" width="7" height="7" rx="1.5" />
+        </svg>
+      </IconTile>
+    </>
+  );
+}
+```
+
+## Stat
+
+Category: Data display. A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
+
+**Use for**
+- Showing a result or reach at a glance: "200k downloads", "+34% conversion".
+- A row of key numbers in a case study or dashboard header.
+
+**Don't use for**
+- Tables of numbers — use Table.
+- Progress towards a goal — use Progress.
+
+**Classes**
+- `.ayy-stat` — Root.
+- `.ayy-stat--sm` — Smaller number (28px instead of 48px), for rows of several stats or inside cards.
+- `.ayy-stat__value` — The number, pre-formatted ("4.2k"). Tabular figures.
+- `.ayy-stat__unit` — Muted word after the number, inside the value.
+- `.ayy-stat__label` — Short context, above or below the value.
+
+**JS (framework-free)**: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
+
+**React** — `import { Stat } from "ayywi/react";`
+- `<Stat>` renders <div class="ayy-stat">. Props: `value` ReactNode (required) — the formatted number.; `unit` ReactNode; `label` ReactNode; `labelFirst` boolean — label above the number.; `size` "md" | "sm"
+
+**Accessibility**
+- Write abbreviations the way they should be read, or add the full number: <span aria-hidden="true">200k</span><span class="ayy-sr-only">200,000</span>.
+- Keep the unit as text, not only an icon.
+
+**Do**
+- Format the number before it gets here (4.2k, 87%).
+- Line several up with .ayy-grid or .ayy-cluster.
+
+**Don't**
+- Don't colour the number to mean good or bad without saying so in words.
+
+### Stat — Row of stats
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-grid" style="--ayy-min: 10rem; inline-size: 100%">
+  <div class="ayy-stat">
+    <p class="ayy-stat__label">On Dribbble since 2017</p>
+    <p class="ayy-stat__value">373k<span class="ayy-stat__unit">Views</span></p>
+  </div>
+  <div class="ayy-stat">
+    <p class="ayy-stat__label">Figma Community resources</p>
+    <p class="ayy-stat__value">200k<span class="ayy-stat__unit">Downloads</span></p>
+  </div>
+  <div class="ayy-stat ayy-stat--sm">
+    <p class="ayy-stat__label">Playnite extensions</p>
+    <p class="ayy-stat__value">4.2k<span class="ayy-stat__unit">Downloads</span></p>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Stat } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-grid" style={{ "--ayy-min": "10rem", inlineSize: "100%" } as CSSProperties}>
+      <Stat labelFirst label="On Dribbble since 2017" value="373k" unit="Views" />
+      <Stat labelFirst label="Figma Community resources" value="200k" unit="Downloads" />
+      <Stat labelFirst size="sm" label="Playnite extensions" value="4.2k" unit="Downloads" />
+    </div>
+  );
+}
+```
+
+## Data list
+
+Category: Data display. Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
+
+**Use for**
+- Facts about a thing: Role, Company, Years, Platform on a case study; plan details; file metadata.
+
+**Don't use for**
+- Many records with the same fields — use Table.
+- Editable settings — use Field with inputs.
+
+**Classes**
+- `.ayy-data-list` — Root <dl>. Items stacked.
+- `.ayy-data-list--row` — Items side by side, wrapping to fit (each at least --ayy-min, default 9rem).
+- `.ayy-data-list__item` — A <div> holding one <dt> and its <dd>.
+- `.ayy-data-list__label` — The <dt>: small uppercase muted label.
+- `.ayy-data-list__value` — The <dd>: the value, in body text.
+
+**JS (framework-free)**: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
+
+**React** — `import { DataList, DataListItem } from "ayywi/react";`
+- `<DataList>` renders <dl>. Props: `row` boolean
+- `<DataListItem>` renders <div><dt>label</dt><dd>children</dd></div>. Props: `label` ReactNode (required)
+
+**Accessibility**
+- A real <dl>/<dt>/<dd>, so screen readers announce each value with its term.
+- Links in values keep their focus ring; external ones should say so.
+
+**Do**
+- Keep labels to one or two words.
+- Use the row form under a title, as the facts line of a case study.
+
+**Don't**
+- Don't use it for prose; values should be short.
+
+### Data list — Facts row
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<dl class="ayy-data-list ayy-data-list--row" style="inline-size: 100%">
+  <div class="ayy-data-list__item">
+    <dt class="ayy-data-list__label">Role</dt>
+    <dd class="ayy-data-list__value">Product designer</dd>
+  </div>
+  <div class="ayy-data-list__item">
+    <dt class="ayy-data-list__label">Company</dt>
+    <dd class="ayy-data-list__value"><a class="ayy-link" href="#oktopost">oktopost.com</a></dd>
+  </div>
+  <div class="ayy-data-list__item">
+    <dt class="ayy-data-list__label">Years</dt>
+    <dd class="ayy-data-list__value">2023 – present</dd>
+  </div>
+  <div class="ayy-data-list__item">
+    <dt class="ayy-data-list__label">Platform</dt>
+    <dd class="ayy-data-list__value">Web, mobile web &amp; email</dd>
+  </div>
+</dl>
+```
+
+React:
+
+```tsx
+import { DataList, DataListItem } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <DataList row style={{ inlineSize: "100%" }}>
+      <DataListItem label="Role">Product designer</DataListItem>
+      <DataListItem label="Company">
+        <a className="ayy-link" href="#oktopost">
+          oktopost.com
+        </a>
+      </DataListItem>
+      <DataListItem label="Years">2023 – present</DataListItem>
+      <DataListItem label="Platform">Web, mobile web &amp; email</DataListItem>
+    </DataList>
+  );
+}
+```
+
+## Frame
+
+Category: Data display. A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.
+
+**Use for**
+- Showing product screens in a case study, landing page or portfolio card, so they read as product and not decoration.
+
+**Don't use for**
+- Photos and illustrations — they don't need a window.
+- Live, interactive UI inside an app.
+
+**Classes**
+- `.ayy-frame` — Root: bordered, rounded, with the frame shadow.
+- `.ayy-frame__bar` — Top bar with the three window dots.
+- `.ayy-frame__title` — Optional address or page name in the bar, centred.
+- `.ayy-frame__body` — Holds the <img>, <video>, <picture> or <svg>, edge to edge.
+
+**JS (framework-free)**: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
+
+**React** — `import { Frame } from "ayywi/react";`
+- `<Frame>` renders <div class="ayy-frame"> with the bar and body. Props: `title` ReactNode — text in the address bar.
+
+**Accessibility**
+- The screenshot is the content: give the <img> alt text that says what it shows, or wrap the frame in a <figure> with a <figcaption>.
+- The dots are decoration (a pseudo-element).
+
+**Do**
+- Give images width and height so the frame keeps its size while loading.
+- Blur real names and customer data in production screenshots, and say so in the caption.
+
+**Don't**
+- Don't put text that matters inside the screenshot; write it next to the frame.
+
+### Frame — Screenshot in a window
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<figure class="ayy-stack" style="margin: 0; inline-size: min(100%, 28rem)">
+  <div class="ayy-frame">
+    <div class="ayy-frame__bar"><span class="ayy-frame__title">app.oktopost.com/board</span></div>
+    <div class="ayy-frame__body">
+      <svg viewBox="0 0 400 220" role="img" aria-label="Advocacy board: featured stories and a leaderboard">
+        <rect width="400" height="220" style="fill: var(--ayy-color-surface)" />
+        <rect x="16" y="16" width="72" height="188" rx="6" style="fill: var(--ayy-color-wash-hover)" />
+        <rect x="104" y="16" width="136" height="90" rx="8" style="fill: color-mix(in srgb, var(--ayy-accent-product) 40%, transparent)" />
+        <rect x="248" y="16" width="136" height="90" rx="8" style="fill: color-mix(in srgb, var(--ayy-accent-ai) 35%, transparent)" />
+        <rect x="104" y="118" width="280" height="86" rx="8" style="fill: var(--ayy-color-wash-hover)" />
+      </svg>
+    </div>
+  </div>
+  <figcaption class="ayy-muted">The redesigned board. Customer data blurred.</figcaption>
+</figure>
+```
+
+React:
+
+```tsx
+import { Frame } from "ayywi/react";
+
+export default function Example() {
+  return (
+    <figure className="ayy-stack" style={{ margin: 0, inlineSize: "min(100%, 28rem)" }}>
+      <Frame title="app.oktopost.com/board">
+        <svg viewBox="0 0 400 220" role="img" aria-label="Advocacy board: featured stories and a leaderboard">
+          <rect width="400" height="220" style={{ fill: "var(--ayy-color-surface)" }} />
+          <rect x="16" y="16" width="72" height="188" rx="6" style={{ fill: "var(--ayy-color-wash-hover)" }} />
+          <rect x="104" y="16" width="136" height="90" rx="8" style={{ fill: "color-mix(in srgb, var(--ayy-accent-product) 40%, transparent)" }} />
+          <rect x="248" y="16" width="136" height="90" rx="8" style={{ fill: "color-mix(in srgb, var(--ayy-accent-ai) 35%, transparent)" }} />
+          <rect x="104" y="118" width="280" height="86" rx="8" style={{ fill: "var(--ayy-color-wash-hover)" }} />
+        </svg>
+      </Frame>
+      <figcaption className="ayy-muted">The redesigned board. Customer data blurred.</figcaption>
+    </figure>
+  );
+}
+```
+
+## Chat
+
+Category: Data display. A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
+
+**Use for**
+- AI assistants and agents.
+- Support or feedback widgets.
+- A scripted "say hi" section on a marketing page that hands off to email or LinkedIn.
+
+**Don't use for**
+- Comments and threads on a document — use a list of cards.
+- Toast-style status messages — use Toast.
+
+**Classes**
+- `.ayy-chat` — Root. role="log" when messages arrive live, so they're announced.
+- `.ayy-chat__message` — One message row: an optional avatar and its bubble.
+- `.ayy-chat__message--out` — Sent by the reader: end edge, primary colours.
+- `.ayy-chat__bubble` — The bubble. The corner by the avatar is squared off.
+- `.ayy-chat__typing` — Three pulsing dots inside a bubble while a reply is written. Give it role="img" and an aria-label.
+- `.ayy-chat__replies` — Quick replies under the conversation: small outline buttons, at the end edge.
+
+**JS (framework-free)**: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
+
+**React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "ayywi/react";`
+- `<Chat>` renders <div role="log" class="ayy-chat">.
+- `<ChatMessage>` renders <div class="ayy-chat__message"> with the avatar and a bubble around children. Props: `direction` "in" | "out"; `avatar` ReactNode — e.g. an Avatar size sm.
+- `<ChatTyping>` renders A message whose bubble holds the typing dots. Props: `label` Screen-reader text. Default "Typing".; `avatar` ReactNode
+- `<ChatReplies>` renders <div class="ayy-chat__replies">.
+
+**Accessibility**
+- Use role="log" on the conversation when messages arrive while the reader watches; they're announced politely, in order.
+- The typing dots are an image with a name ("Dani is typing"); remove the element when the message lands.
+- Quick replies are real buttons; after one is chosen, move focus to the next sensible place, not back to the top.
+
+**Do**
+- Keep bubbles short; split long answers into several messages.
+- Pair incoming messages with the sender's avatar the first time.
+
+**Don't**
+- Don't auto-scroll the page while someone is reading above.
+- Don't use colour alone to tell who's speaking; the side and avatar do it too.
+
+### Chat — Conversation with quick replies
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-chat" role="log" aria-label="Chat with Dani" style="inline-size: min(100%, 26rem)">
+  <div class="ayy-chat__message">
+    <span class="ayy-avatar ayy-avatar--sm" role="img" aria-label="Dani"><span class="ayy-avatar__fallback" aria-hidden="true">DT</span></span>
+    <div class="ayy-chat__bubble">Hey, I'm Dani. What's on your mind?</div>
+  </div>
+  <div class="ayy-chat__message ayy-chat__message--out">
+    <div class="ayy-chat__bubble">I have a project.</div>
+  </div>
+  <div class="ayy-chat__message">
+    <span class="ayy-avatar ayy-avatar--sm" role="img" aria-label="Dani"><span class="ayy-avatar__fallback" aria-hidden="true">DT</span></span>
+    <div class="ayy-chat__bubble"><span class="ayy-chat__typing" role="img" aria-label="Dani is typing"><span></span><span></span><span></span></span></div>
+  </div>
+  <div class="ayy-chat__replies">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">Need design advice</button>
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">Just saying hi</button>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "ayywi/react";
+
+export default function Example() {
+  const dani = <Avatar size="sm" name="Dani" fallback="DT" />;
+  return (
+    <Chat aria-label="Chat with Dani" style={{ inlineSize: "min(100%, 26rem)" }}>
+      <ChatMessage avatar={dani}>Hey, I'm Dani. What's on your mind?</ChatMessage>
+      <ChatMessage direction="out">I have a project.</ChatMessage>
+      <ChatTyping avatar={dani} label="Dani is typing" />
+      <ChatReplies>
+        <Button variant="outline" size="sm">
+          Need design advice
+        </Button>
+        <Button variant="outline" size="sm">
+          Just saying hi
+        </Button>
+      </ChatReplies>
+    </Chat>
   );
 }
 ```

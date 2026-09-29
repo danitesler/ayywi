@@ -2,6 +2,34 @@
 
 All notable changes to ayywi. Semver: renaming or removing a class, token or prop is a breaking change.
 
+## 0.4.0 — 2026-09-29
+
+Everything needed to build a website (danitesler.com was the test case: its header, hero, portfolio grid, project cards, case studies and "say hi" chat), not only app screens. No breaking changes.
+
+### Added
+- 12 components, 33 in total:
+  - **Navigation** (new category): `Navbar` (sticky glass header; anchor jumps land below it), `Breadcrumb` (plain or a blurred `pill`), `Contents` (`Toc`: on-page contents with a scrollspy, numbers, one level of nesting, sticky).
+  - **Layout:** `Section` (page band with eyebrow, section number, fluid title and description; `center`), `Separator` (plain, `fade`, vertical), `Carousel` (scroll-snap strip with previous/next buttons; RTL-aware, no auto-play).
+  - **Data display:** `Stat`, `Data list` (`<dl>`, stacked or `row`), `Frame` (browser window for screenshots), `Icon tile` (app icon lit by the content's accent), `Chat` (bubbles, typing dots, quick replies).
+  - **Actions:** `Theme toggle`. The moon or sun comes from CSS (`light-dark()`), so it's right before JS loads; the button is `aria-pressed` and remembers the choice.
+- Custom elements `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`, and framework-free `connectToc()`, `connectCarousel()`, `connectThemeToggle()`.
+- Button `ring` variant: a gradient ring that spins while hovered or focused. The showcase call to action, one per view.
+- Card `ayy-card__media` (edge-to-edge image or video that zooms on hover) and `ayy-card__link` (the title link covers the whole card). React `CardMedia`, `CardLink`.
+- Tabs `ayy-tabs__count`: a count after a tab's label.
+- Page utilities: `.ayy-container`, `.ayy-grid`, `.ayy-display`, `.ayy-text-outline`, `.ayy-accent-text`, `.ayy-link`, `.ayy-prose`, `.ayy-skip-link`, `.ayy-bg-grid`, `.ayy-scroll-progress` and `.ayy-reveal`. The last two use CSS scroll timelines: no JS, off under reduced motion, hidden or static where unsupported.
+- Tokens: `space.20/24/32` (section rhythm), `size.container` (1400px), `size.measure` (reading width), `size.header` (navbar height), `text.display` (fluid, 44–200px), `leading.display`, `tracking.display`, `shadow.frame`. Tailwind: `text-display`, `max-w-page`/`max-w-measure` (v3) or `--container-page`/`--container-measure` (v4), `shadow-frame`.
+- Public hooks `--ayy-min` (grid column width) and `--ayy-slide` (carousel slide width). `--ayy-spot` now means "the content's accent" for everything inside, not just the card spotlight.
+- Rules: colour comes from content via `--ayy-spot`; a page anatomy (skip link, navbar, sections, one call to action); images need a size, screenshots go in a Frame.
+- `ayywi lint` warns about `<img>` without `width` and `height` (`img-size`).
+- `pnpm check` also enforces 4.5:1 for every accent used as text, in every theme.
+- The AI skill has a websites section mapping page parts to components.
+
+### Changed
+- `.ayy-card__header` lines its children up at the start instead of stretching them. Badges no longer fill the header's width; a block that should span it needs `align-self: stretch`.
+
+### Fixed
+- Platform token exports skip fluid values (`clamp()`) instead of writing invalid Swift and Kotlin.
+
 ## 0.3.0 — 2026-09-28
 
 ### Added

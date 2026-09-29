@@ -1,0 +1,43 @@
+{
+  "name": "Navbar",
+  "slug": "navbar",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width.",
+  "whenToUse": ["The top bar of a website or app shell: logo, a few top-level links, one call to action."],
+  "whenNotToUse": [
+    "Switching views inside a page — use Tabs.",
+    "Long lists of links — keep two to five, and move the rest into a DropdownMenu or the footer."
+  ],
+  "classes": {
+    "ayy-navbar": "Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.",
+    "ayy-navbar__inner": "Centred row at page width (--ayy-size-container) with the page gutter.",
+    "ayy-navbar__brand": "Logo / name link at the start.",
+    "ayy-navbar__nav": "<nav> of links. It and everything after it sit at the end. Scrolls sideways if the links don't fit.",
+    "ayy-navbar__link": "Top-level link. aria-current=\"page\" marks the page you're on.",
+    "ayy-navbar__actions": "Group of buttons (theme toggle, call to action). Next to the brand, or at the end after the nav."
+  },
+  "variants": {},
+  "js": "navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass constants.",
+  "react": {
+    "import": "import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions } from \"ayywi/react\";",
+    "components": {
+      "Navbar": { "renders": "<header class=\"ayy-navbar\"><div class=\"ayy-navbar__inner\">" },
+      "NavbarBrand": { "renders": "<a>" },
+      "NavbarNav": { "renders": "<nav>", "props": { "aria-label": "Defaults to \"Main\"." } },
+      "NavbarLink": { "renders": "<a>", "props": { "current": "boolean — sets aria-current=\"page\"." } },
+      "NavbarActions": { "renders": "<div>" }
+    }
+  },
+  "a11y": [
+    "Use <header> for the bar and <nav aria-label=\"Main\"> for the links; one main nav per page.",
+    "Mark the current page with aria-current=\"page\", not only with colour.",
+    "Put a .ayy-skip-link before the navbar so keyboard users can jump past it."
+  ],
+  "do": [
+    "Keep one call to action in the actions group (a ring or primary button, size sm).",
+    "On phones keep the brand, one or two links and the call to action; move the rest into a menu."
+  ],
+  "dont": ["Don't give the navbar its own background colour; the glass token keeps both themes right.", "Don't nest a second navbar inside the page."],
+  "examples": [{ "id": "site", "title": "Site header" }]
+}

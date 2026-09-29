@@ -1,0 +1,52 @@
+{
+  "name": "Theme toggle",
+  "slug": "theme-toggle",
+  "status": "beta",
+  "category": "Actions",
+  "description": "An icon button that switches between a dark and a light theme and remembers the choice. The moon or sun shows from CSS alone, following the colour scheme, so it's right on first paint.",
+  "whenToUse": ["A site or app header where readers pick light or dark."],
+  "whenNotToUse": [
+    "Choosing between more than two themes, or \"system\" — use a Select or radio group with setTheme().",
+    "Theming one section — set data-theme on it."
+  ],
+  "classes": {
+    "ayy-theme-toggle": "On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons.",
+    "ayy-theme-toggle__moon": "Icon shown in dark themes.",
+    "ayy-theme-toggle__sun": "Icon shown in light themes."
+  },
+  "variants": {
+    "dark": { "values": ["dark", "dark-soft"], "default": "dark" },
+    "light": { "values": ["light", "light-gray"], "default": "light" }
+  },
+  "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass constants; connectThemeToggle(button, { dark?, light?, onChange? }) → cleanup.",
+  "element": {
+    "tag": "ayy-theme-toggle",
+    "attributes": {
+      "dark": "dark | dark-soft — theme to switch to for dark",
+      "light": "light | light-gray — theme to switch to for light"
+    },
+    "events": { "ayy-value-change": "{ value: string } — the theme just applied" },
+    "children": "One <button> with both icons. aria-pressed (true while dark) is kept in sync for you, including when the OS preference changes."
+  },
+  "react": {
+    "import": "import { ThemeToggle } from \"ayywi/react\";",
+    "components": {
+      "ThemeToggle": {
+        "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons",
+        "props": {
+          "dark": "ThemeName for dark. Default \"dark\".",
+          "light": "ThemeName for light. Default \"light\".",
+          "onValueChange": "(theme: ThemeName) => void",
+          "aria-label": "Default \"Dark theme\"."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "A toggle button: a fixed name (\"Dark theme\") and aria-pressed=\"true\" while dark, so screen readers announce the state.",
+    "The icons are aria-hidden; the name and state carry the meaning."
+  ],
+  "do": ["Add themeInitScript to <head> so the stored theme applies before first paint.", "Put it next to the brand or before the call to action in the Navbar."],
+  "dont": ["Don't change the label with the state; aria-pressed already says it."],
+  "examples": [{ "id": "basic", "title": "Toggle" }]
+}

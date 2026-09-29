@@ -1,0 +1,46 @@
+/* A horizontal strip of slides that scrolls and snaps, with previous/next buttons. Native scrolling does the work,
+   so touch, trackpads and arrow keys (on the focused track) all just work. Block so it also works on <ayy-carousel>. */
+.ayy-carousel {
+  display: block;
+  min-inline-size: 0;
+}
+
+.ayy-carousel__track {
+  display: flex;
+  gap: var(--ayy-gap, var(--ayy-space-4));
+  padding-block: var(--ayy-space-1);
+  border-radius: var(--ayy-radius-card);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.ayy-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.ayy-carousel__track:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* A grid, so a card inside fills the slide and every slide in the row is as tall as the tallest. */
+.ayy-carousel__slide {
+  display: grid;
+  flex: 0 0 var(--ayy-slide, min(22rem, 85%));
+  min-inline-size: 0;
+  scroll-snap-align: start;
+}
+
+.ayy-carousel__controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-4);
+}
+
+/* Arrows point the way the strip moves, so they flip in right-to-left pages. */
+:where([dir="rtl"]) .ayy-carousel__controls svg {
+  transform: scaleX(-1);
+}

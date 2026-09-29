@@ -1,0 +1,33 @@
+{
+  "name": "Frame",
+  "slug": "frame",
+  "status": "beta",
+  "category": "Data display",
+  "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
+  "whenToUse": ["Showing product screens in a case study, landing page or portfolio card, so they read as product and not decoration."],
+  "whenNotToUse": ["Photos and illustrations — they don't need a window.", "Live, interactive UI inside an app."],
+  "classes": {
+    "ayy-frame": "Root: bordered, rounded, with the frame shadow.",
+    "ayy-frame__bar": "Top bar with the three window dots.",
+    "ayy-frame__title": "Optional address or page name in the bar, centred.",
+    "ayy-frame__body": "Holds the <img>, <video>, <picture> or <svg>, edge to edge."
+  },
+  "variants": {},
+  "js": "frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.",
+  "react": {
+    "import": "import { Frame } from \"ayywi/react\";",
+    "components": {
+      "Frame": { "renders": "<div class=\"ayy-frame\"> with the bar and body", "props": { "title": "ReactNode — text in the address bar." } }
+    }
+  },
+  "a11y": [
+    "The screenshot is the content: give the <img> alt text that says what it shows, or wrap the frame in a <figure> with a <figcaption>.",
+    "The dots are decoration (a pseudo-element)."
+  ],
+  "do": [
+    "Give images width and height so the frame keeps its size while loading.",
+    "Blur real names and customer data in production screenshots, and say so in the caption."
+  ],
+  "dont": ["Don't put text that matters inside the screenshot; write it next to the frame."],
+  "examples": [{ "id": "basic", "title": "Screenshot in a window" }]
+}

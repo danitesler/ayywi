@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`) for every other framework and plain HTML,
+- light-DOM custom elements (`<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`) for every other framework and plain HTML,
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -78,6 +78,10 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - A modal `<dialog>` makes everything outside it inert, top layer included. Anything that must stay clickable over a modal (the toaster) has to live inside it.
 - Measure floating elements with `offsetWidth/Height`, not `getBoundingClientRect()` — entry animations scale them.
 - Custom elements must not render markup or use shadow DOM: they only wire behaviour onto author HTML, and must be SSR-safe to import (`src/lib/element.ts`).
+- base.css's reduced-motion rule shortens durations, which scroll-driven animations (`animation-timeline`) ignore. Wrap them in `@media (prefers-reduced-motion: no-preference)` instead.
+- `light-dark()` only takes colours. To swap icons by scheme (Theme toggle), switch their `color` between `currentColor` and `transparent`, and set `forced-color-adjust: none` so High Contrast doesn't paint both.
+- Playwright's `toBeEnabled()` treats `aria-disabled="true"` as disabled. To check a button is still focusable, read `el.disabled`.
+- The preview routes on the URL hash, so in-page anchors in examples (`href="#section"`) are intercepted in `preview/src/Example.tsx` and scrolled to instead.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme × brand, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning

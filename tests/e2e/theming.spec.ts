@@ -58,6 +58,27 @@ test("RTL flips logical layout", async ({ page }) => {
   expect((await label.boundingBox())!.x).toBeLessThan((await sw.boundingBox())!.x);
 });
 
+test("carousel pages towards the inline end in RTL", async ({ page }) => {
+  await open(page, "carousel", { renderer: "html" });
+  await rtl(stage(page));
+  const track = stage(page).locator(".ayy-carousel__track");
+  await stage(page).getByRole("button", { name: "Next" }).click();
+  await expect.poll(() => track.evaluate((el) => el.scrollLeft)).toBeLessThan(-100);
+});
+
+test("accent text is darker on light themes than the raw accent", async ({ page }) => {
+  const colors = async () =>
+    stage(page, 1)
+      .locator(".ayy-section__number")
+      .evaluate((el) => [getComputedStyle(el).color, getComputedStyle(el.closest(".ayy-section")!).getPropertyValue("--ayy-spot")]);
+  await open(page, "section", { renderer: "html", theme: "dark" });
+  const [dark] = await colors();
+  await open(page, "section", { renderer: "html", theme: "light" });
+  const [light] = await colors();
+  expect(dark).toBe("rgb(91, 157, 255)"); // --ayy-accent-product, raw
+  expect(light).not.toBe(dark);
+});
+
 test.describe("forced colors (Windows High Contrast)", () => {
 
   test("stateful parts keep a visible state", async ({ page }) => {
@@ -84,6 +105,13 @@ test.describe("forced colors (Windows High Contrast)", () => {
         return `${s.backgroundColor}|${s.color}|${s.borderBlockEndColor}|${s.outlineStyle}`;
       });
     expect(await look(selected)).not.toBe(await look(other));
+
+    // Only one of the theme toggle's two stacked icons shows.
+    await page.goto("/#/theme-toggle");
+    const icons = await stage(page)
+      .locator(".ayy-theme-toggle svg")
+      .evaluateAll((svgs) => svgs.map((s) => getComputedStyle(s).color === "rgba(0, 0, 0, 0)"));
+    expect(icons.sort()).toEqual([false, true]);
   });
 });
 

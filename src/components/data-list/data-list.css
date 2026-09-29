@@ -1,0 +1,36 @@
+/* Label / value pairs on a <dl>: Role, Years, Platform. Stacked, or side by side with --row. */
+.ayy-data-list {
+  display: grid;
+  gap: var(--ayy-space-4);
+  margin: 0;
+}
+
+.ayy-data-list--row {
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ayy-min, 9rem), 100%), 1fr));
+  gap: var(--ayy-space-4) var(--ayy-space-8);
+}
+
+.ayy-data-list__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+}
+
+.ayy-data-list__label {
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: var(--ayy-tracking-eyebrow);
+  line-height: var(--ayy-leading-normal);
+  text-transform: uppercase;
+}
+
+.ayy-data-list__value {
+  margin: 0;
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-md);
+  line-height: var(--ayy-leading-snug);
+  overflow-wrap: anywhere;
+}

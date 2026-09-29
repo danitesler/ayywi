@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
 import { CodeBlock } from "./CodeBlock";
 import type { ExampleEntry } from "./data";
@@ -8,6 +9,16 @@ function HtmlStage({ html }: { html: string }) {
   return <div className="pv-stage__inner" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
+/** In-page anchors in examples (contents links, "#work") scroll to their target instead of changing the preview's route. */
+function onStageClick(event: MouseEvent<HTMLDivElement>) {
+  const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
+  if (!link || link.getAttribute("href")?.startsWith("#/")) return;
+  event.preventDefault();
+  const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+  const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  target?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+}
+
 export function Example({ example, renderer }: { example: ExampleEntry; renderer: Renderer }) {
   const { Component } = example;
   const showHtml = renderer === "html" || !Component;
@@ -16,7 +27,7 @@ export function Example({ example, renderer }: { example: ExampleEntry; renderer
       <h3 className="pv-example__title" id={`ex-${example.id}`}>
         {example.title}
       </h3>
-      <div className="pv-stage" data-renderer={showHtml ? "html" : "react"}>
+      <div className="pv-stage" data-renderer={showHtml ? "html" : "react"} onClick={onStageClick}>
         {showHtml ? (
           <HtmlStage key={example.id} html={example.htmlSource} />
         ) : (

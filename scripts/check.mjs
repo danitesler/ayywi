@@ -179,8 +179,10 @@ const SURFACES = ["bg", "surface", "surface-raised"];
 // Status text also sits on a tint of itself (badges 10%, alerts 8%, destructive buttons 10% / 15% on hover).
 const TINTED = ["destructive", "success", "warning", "info", "ai-active"];
 const TINT = 0.15;
+// Share of the accent in accent text on light themes; keep in sync with .ayy-accent-text (color-mix … 45%).
+const ACCENT_TEXT_MIX = 0.45;
 try {
-  const { byName, valueIn, resolve, themes, brands } = loadTokens(root);
+  const { tokens, byName, valueIn, resolve, themes, brands } = loadTokens(root);
   for (const theme of themes) {
     if (!ATTRIBUTES["data-theme"].includes(`"${theme.name}"`)) fail("scripts/lib/contract.mjs", `ATTRIBUTES["data-theme"] doesn't list "${theme.name}"`);
     for (const brand of [null, ...brands]) {
@@ -199,6 +201,15 @@ try {
       for (const fg of TEXT_COLORS) for (const bg of SURFACES) need(fg, bg);
       for (const fg of TINTED) for (const bg of SURFACES) need(fg, bg, TINT);
       need("primary-fg", "primary");
+      // Accent text (.ayy-accent-text, section numbers, contents): raw on dark themes, mixed with the text colour on light ones.
+      for (const accent of tokens.filter((t) => t.name.startsWith("accent."))) {
+        const raw = resolve(accent.value);
+        const fg = theme.base === "light" ? mix(raw, color("text"), ACCENT_TEXT_MIX) : raw;
+        for (const bg of SURFACES) {
+          const ratio = contrast(fg, color(bg));
+          if (ratio < 4.5) fail(where, `${accent.name} as accent text on color.${bg} is ${ratio.toFixed(2)}:1 — needs 4.5:1 (see .ayy-accent-text in base.css)`);
+        }
+      }
     }
   }
 } catch (e) {

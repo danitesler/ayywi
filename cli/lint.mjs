@@ -15,6 +15,7 @@ export const DEFAULT_RULES = {
   "hardcoded-color": "error",
   "dir-selector": "error",
   "physical-property": "warn",
+  "img-size": "warn",
 };
 
 const CSS_EXT = new Set([".css", ".scss", ".sass", ".less", ".pcss"]);
@@ -301,6 +302,14 @@ function lintMarkup(text, contract) {
     const icon = /ayy-button--icon(?:-sm)?\b/.test(openTag) || /\bsize=(?:"|\{\s*["'])icon(?:-sm)?["']/.test(openTag);
     if (icon && !/\baria-label(?:ledby)?\s*=/.test(openTag) && !/\{\s*\.\.\./.test(openTag))
       push("icon-button-label", "icon-only button needs aria-label (or aria-labelledby)", m.index);
+  }
+
+  // Images without their size make the page jump while they load (and leave no box for a loading placeholder)
+  for (const m of text.matchAll(/<img(?=[\s/>])/g)) {
+    const openTag = text.slice(m.index, tagEnd(text, m.index));
+    if (/\{\s*\.\.\./.test(openTag) || /ayy-avatar__image/.test(openTag)) continue; // spread props; avatars have a fixed box
+    if (!/\swidth\s*=/.test(openTag) || !/\sheight\s*=/.test(openTag))
+      push("img-size", "<img> needs width and height (its real pixel size) so the layout doesn't jump while it loads", m.index);
   }
 
   // <style> blocks inside templates

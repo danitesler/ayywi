@@ -95,8 +95,12 @@ ${tokens.map((t) => `  "${key(t)}": ${scssValue(t, valueIn(t, theme))},`).join("
   // ---- Native: colours per theme + dimension scales ----
   const colorTokens = tokens.filter((t) => t.type === "color" && (t.name.startsWith("color.") || t.name.startsWith("accent.")));
   const colorName = (t) => (t.name.startsWith("accent.") ? `accent${camel("-" + t.name.split(".")[1])}` : camel(t.name.split(".")[1]));
+  // Fluid values (clamp(), vw) have no fixed size on native platforms, so they're left out.
   const group = (prefix, filter = () => true) =>
-    tokens.filter((t) => t.name.startsWith(`${prefix}.`) && filter(t)).map((t) => ({ t, id: ident(prefix, t.name.split(".").slice(1).join("-")), n: toNumber(resolve(t.value)) }));
+    tokens
+      .filter((t) => t.name.startsWith(`${prefix}.`) && filter(t))
+      .map((t) => ({ t, id: ident(prefix, t.name.split(".").slice(1).join("-")), n: toNumber(resolve(t.value)) }))
+      .filter((d) => d.n !== null);
   const dims = {
     Space: group("space"),
     Radius: group("radius"),

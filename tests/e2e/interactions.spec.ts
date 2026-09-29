@@ -120,6 +120,64 @@ for (const renderer of ["react", "html"] as const) {
       await act.click(); // fails if the modal's inert backdrop covers it
       await expect(page.locator(".ayy-toast", { hasText: "Over modal" })).toBeHidden();
     });
+
+    test("carousel pages through its slides and stops at the ends", async ({ page }) => {
+      await open(page, "carousel", { renderer });
+      const region = stage(page).getByRole("region", { name: "AI assistant features" });
+      const prev = region.getByRole("button", { name: "Previous" });
+      const next = region.getByRole("button", { name: "Next" });
+      const track = region.locator(".ayy-carousel__track");
+      await expect(region.getByRole("group", { name: "1 of 5" })).toBeVisible();
+      await expect(prev).toHaveAttribute("aria-disabled", "true");
+      await expect(next).toHaveAttribute("aria-disabled", "false");
+      await next.click();
+      await expect.poll(() => track.evaluate((el) => el.scrollLeft)).toBeGreaterThan(100);
+      await expect(prev).toHaveAttribute("aria-disabled", "false");
+      await track.evaluate((el) => el.scrollTo({ left: el.scrollWidth }));
+      await expect(next).toHaveAttribute("aria-disabled", "true");
+      expect(await next.evaluate((el) => (el as HTMLButtonElement).disabled)).toBe(false); // aria-disabled only, so focus isn't lost
+    });
+
+    test("contents marks the section being read", async ({ page }) => {
+      await open(page, "toc", { renderer });
+      const nav = stage(page).getByRole("navigation", { name: "Contents" });
+      const impact = nav.getByRole("link", { name: /Impact/ });
+      await page.evaluate(() => {
+        const target = document.getElementById("toc-impact")!;
+        window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 8);
+      });
+      await expect(impact).toHaveAttribute("aria-current", "location");
+      await expect(nav.locator("[aria-current]")).toHaveCount(1);
+
+      await nav.getByRole("link", { name: /Tokens/ }).click();
+      await expect(nav.getByRole("link", { name: "Tokens" })).toHaveAttribute("aria-current", "location");
+      await expect(page).toHaveURL(/#\/toc$/); // in-page links don't change the preview route
+    });
+
+    test("theme toggle switches the page theme and remembers it", async ({ page }) => {
+      await open(page, "theme-toggle", { renderer, theme: "dark" });
+      const toggle = stage(page).getByRole("button", { name: "Dark theme" });
+      await expect(toggle).toHaveAttribute("aria-pressed", "true");
+      await toggle.click();
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+      await expect(toggle).toHaveAttribute("aria-pressed", "false");
+      expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("light");
+      const shown = () =>
+        toggle.locator("svg").evaluateAll((svgs) => svgs.filter((s) => getComputedStyle(s).color !== "rgba(0, 0, 0, 0)").map((s) => s.getAttribute("class")));
+      await expect.poll(shown).toEqual(["ayy-theme-toggle__sun"]);
+      await toggle.click();
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+      await expect.poll(shown).toEqual(["ayy-theme-toggle__moon"]);
+    });
+
+    test("a card link covers the whole card", async ({ page }) => {
+      await open(page, "card", { renderer });
+      const card = stage(page, 2).locator(".ayy-card").first();
+      await card.scrollIntoViewIfNeeded();
+      const box = (await card.boundingBox())!;
+      const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest("a")?.textContent, [box.x + box.width / 2, box.y + 24]);
+      expect(hit).toBe("Oktopost");
+    });
   });
 }
 

@@ -1,0 +1,26 @@
+/* Light/dark switch on an icon button. Put both icons inside: the one shown follows the colour scheme the button
+   renders in (moon in dark themes, sun in light ones), so the icon is right before any JS runs. */
+.ayy-theme-toggle {
+  display: inline-grid;
+  place-items: center;
+}
+
+.ayy-theme-toggle > svg {
+  grid-area: 1 / 1;
+  transition: color var(--ayy-duration-base) ease;
+}
+
+.ayy-theme-toggle__moon {
+  color: light-dark(transparent, currentColor);
+}
+
+.ayy-theme-toggle__sun {
+  color: light-dark(currentColor, transparent);
+}
+
+/* Forced colours would paint both icons; keep the transparent one transparent. */
+@media (forced-colors: active) {
+  .ayy-theme-toggle > svg {
+    forced-color-adjust: none;
+  }
+}

@@ -19,13 +19,14 @@
     "ayy-button--ghost": "No border or fill until hover. Toolbars, icon buttons.",
     "ayy-button--destructive": "Tinted red. Irreversible actions.",
     "ayy-button--link": "Looks like a text link.",
+    "ayy-button--ring": "Showcase call to action: quiet fill inside a gradient ring that spins on hover and focus. For marketing and portfolio pages; one per view.",
     "ayy-button--sm": "28px tall.",
     "ayy-button--lg": "40px tall.",
     "ayy-button--icon": "Square 32px, for a single icon.",
     "ayy-button--icon-sm": "Square 28px, for a single icon."
   },
   "variants": {
-    "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link"], "default": "primary" },
+    "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"], "default": "primary" },
     "size": { "values": ["sm", "md", "lg", "icon", "icon-sm"], "default": "md" }
   },
   "js": "buttonClass({ variant?, size?, className? }) → string",
@@ -35,7 +36,7 @@
       "Button": {
         "renders": "<button>",
         "props": {
-          "variant": "\"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"destructive\" | \"link\"",
+          "variant": "\"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"destructive\" | \"link\" | \"ring\"",
           "size": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-sm\"",
           "type": "Defaults to \"button\" (not \"submit\").",
           "...rest": "All native <button> attributes."
@@ -50,6 +51,7 @@
   ],
   "do": [
     "One primary button per view or section; everything else secondary/outline/ghost.",
+    "On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.",
     "Put the icon before the label; it inherits size from the button (1.25em)."
   ],
   "dont": [
@@ -60,6 +62,7 @@
     { "id": "variants", "title": "Variants" },
     { "id": "sizes", "title": "Sizes" },
     { "id": "icon", "title": "With icon & icon-only" },
-    { "id": "as-link", "title": "Link styled as a button" }
+    { "id": "as-link", "title": "Link styled as a button" },
+    { "id": "ring", "title": "Ring call to action" }
   ]
 }

@@ -60,6 +60,137 @@
   font-family: var(--ayy-font-mono);
 }
 
+/* Hero titles. Fluid: 44px on a phone up to 200px on a wide screen. */
+:where(.ayy-display) {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-display);
+  font-weight: var(--ayy-weight-bold);
+  line-height: var(--ayy-leading-display);
+  letter-spacing: var(--ayy-tracking-display);
+  color: var(--ayy-color-text);
+}
+
+/* Hollow letters: the stroke takes the text colour, so .ayy-muted dims it. For big display words and numbers only. */
+:where(.ayy-text-outline) {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: max(1px, 0.012em) currentColor;
+}
+
+/* Text in the local accent (--ayy-spot). Raw on dark themes; mixed 45% with the text colour on light ones, so every
+   accent token stays at 4.5:1 or better. */
+:where(.ayy-accent-text) {
+  color: var(--ayy-spot, var(--ayy-color-text));
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-spot, var(--ayy-color-text)) 45%, var(--ayy-color-text)),
+    var(--ayy-spot, var(--ayy-color-text))
+  );
+}
+
+/* Inline text link. */
+:where(.ayy-link) {
+  border-radius: var(--ayy-radius-sm);
+  color: var(--ayy-color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--ayy-color-line-hover);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--ayy-duration-base) ease;
+}
+:where(.ayy-link:hover) {
+  text-decoration-color: currentColor;
+}
+:where(.ayy-link:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* Long-form reading: case studies, articles, docs. Styles the plain HTML inside it. */
+:where(.ayy-prose) {
+  max-inline-size: var(--ayy-size-measure);
+  font-size: var(--ayy-text-lg);
+  line-height: var(--ayy-leading-normal);
+  color: var(--ayy-color-text-soft);
+  text-wrap: pretty;
+}
+:where(.ayy-prose > *) {
+  margin-block: 0;
+}
+:where(.ayy-prose > * + *) {
+  margin-block-start: var(--ayy-space-5);
+}
+:where(.ayy-prose :is(h2, h3, h4)) {
+  font-family: var(--ayy-font-heading);
+  font-weight: var(--ayy-weight-bold);
+  line-height: var(--ayy-leading-tight);
+  letter-spacing: var(--ayy-tracking-tight);
+  color: var(--ayy-color-text);
+  text-wrap: balance;
+}
+:where(.ayy-prose h2) {
+  margin-block-start: var(--ayy-space-12);
+  font-size: var(--ayy-text-2xl);
+}
+:where(.ayy-prose :is(h3, h4)) {
+  margin-block-start: var(--ayy-space-10);
+  font-size: var(--ayy-text-xl);
+}
+:where(.ayy-prose :is(h2, h3, h4) + *) {
+  margin-block-start: var(--ayy-space-3);
+}
+:where(.ayy-prose :is(strong, b)) {
+  font-weight: var(--ayy-weight-semibold);
+  color: var(--ayy-color-text);
+}
+:where(.ayy-prose a) {
+  border-radius: var(--ayy-radius-sm);
+  color: var(--ayy-color-text);
+  text-decoration-color: var(--ayy-color-line-hover);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+:where(.ayy-prose a:hover) {
+  text-decoration-color: currentColor;
+}
+:where(.ayy-prose a:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+:where(.ayy-prose :is(ul, ol)) {
+  padding-inline-start: var(--ayy-space-6);
+}
+:where(.ayy-prose li + li) {
+  margin-block-start: var(--ayy-space-2);
+}
+:where(.ayy-prose li::marker) {
+  color: var(--ayy-color-muted);
+}
+:where(.ayy-prose blockquote) {
+  margin-inline: 0;
+  padding-inline-start: var(--ayy-space-5);
+  border-inline-start: 2px solid var(--ayy-spot, var(--ayy-color-line-strong));
+  color: var(--ayy-color-text);
+}
+:where(.ayy-prose code) {
+  padding-block: 0.1em;
+  padding-inline: 0.35em;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash-hover);
+  font-family: var(--ayy-font-mono);
+  font-size: 0.875em;
+}
+:where(.ayy-prose :is(img, video)) {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--ayy-radius-card);
+}
+:where(.ayy-prose hr) {
+  margin-block: var(--ayy-space-10);
+  border: 0;
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
 /* ---- Layout helpers (for projects without a utility framework). Gap is overridable via --ayy-gap. ---- */
 
 :where(.ayy-stack) {
@@ -73,6 +204,27 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--ayy-gap, var(--ayy-space-2));
+}
+
+/* Centred page width with a gutter (24px, 16px on tablets and phones). */
+:where(.ayy-container) {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: var(--ayy-size-container);
+  margin-inline: auto;
+  padding-inline: var(--ayy-space-6);
+}
+@media (max-width: 64rem) {
+  :where(.ayy-container) {
+    padding-inline: var(--ayy-space-4);
+  }
+}
+
+/* Responsive grid: as many columns of at least --ayy-min (default 16rem) as fit, one column on narrow screens. */
+:where(.ayy-grid) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ayy-min, 16rem), 100%), 1fr));
+  gap: var(--ayy-gap, var(--ayy-space-4));
 }
 
 /* ---- Utilities ---- */
@@ -93,6 +245,99 @@
 :where(.ayy-scroll) {
   scrollbar-width: thin;
   scrollbar-color: var(--ayy-color-line-strong) transparent;
+}
+
+/* First focusable element on the page: hidden above the viewport until it gets keyboard focus. */
+:where(.ayy-skip-link) {
+  position: fixed;
+  inset-block-start: var(--ayy-space-3);
+  inset-inline-start: var(--ayy-space-3);
+  z-index: var(--ayy-z-toast);
+  padding-block: var(--ayy-space-3);
+  padding-inline: var(--ayy-space-5);
+  border-radius: var(--ayy-radius-button);
+  background-color: var(--ayy-color-primary);
+  color: var(--ayy-color-primary-fg);
+  font-weight: var(--ayy-weight-semibold);
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--ayy-duration-base) var(--ayy-ease-out-expo);
+}
+:where(.ayy-skip-link:focus) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+  transform: none;
+}
+
+/* Ambient grid behind a hero or closing section. Decorative: drawn on ::before, faded out towards the edges. */
+:where(.ayy-bg-grid) {
+  position: relative;
+  isolation: isolate;
+}
+:where(.ayy-bg-grid)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--ayy-color-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ayy-color-hairline) 1px, transparent 1px);
+  background-position: 50% 0;
+  background-size: var(--ayy-space-24) var(--ayy-space-24);
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 40%, black 25%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 65% at 50% 40%, black 25%, transparent 100%);
+}
+
+/* Reading progress along the top of the viewport, in the local accent (--ayy-spot). CSS scroll timelines only:
+   where they aren't supported the bar stays hidden. <div class="ayy-scroll-progress" aria-hidden="true"></div> */
+:where(.ayy-scroll-progress) {
+  display: none;
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--ayy-z-overlay);
+  block-size: 2px;
+  background-color: var(--ayy-spot, var(--ayy-color-text));
+  pointer-events: none;
+}
+@supports (animation-timeline: scroll()) {
+  :where(.ayy-scroll-progress) {
+    display: block;
+    animation: ayy-scroll-progress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes ayy-scroll-progress {
+  from { inset-inline-end: 100%; }
+  to { inset-inline-end: 0; }
+}
+
+/* Fade up as the element scrolls into view. CSS view timelines, no JS; off under reduced motion and where
+   unsupported (the content simply shows). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :where(.ayy-reveal) {
+      animation: ayy-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 10rem;
+    }
+  }
+}
+@keyframes ayy-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--ayy-space-6));
+  }
+}
+
+@media (forced-colors: active) {
+  :where(.ayy-text-outline) {
+    -webkit-text-fill-color: currentColor;
+  }
+  :where(.ayy-bg-grid)::before {
+    display: none;
+  }
 }
 
 /* ---- Motion safety: every ayywi animation/transition collapses when the user asks for less motion. ---- */

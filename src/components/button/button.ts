@@ -1,6 +1,6 @@
 import { cx } from "../../lib/cx";
 
-export const buttonVariants = ["primary", "secondary", "outline", "ghost", "destructive", "link"] as const;
+export const buttonVariants = ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"] as const;
 export const buttonSizes = ["sm", "md", "lg", "icon", "icon-sm"] as const;
 
 export type ButtonVariant = (typeof buttonVariants)[number];

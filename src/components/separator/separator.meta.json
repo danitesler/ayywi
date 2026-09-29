@@ -1,0 +1,35 @@
+{
+  "name": "Separator",
+  "slug": "separator",
+  "status": "beta",
+  "category": "Layout",
+  "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
+  "whenToUse": ["Between the sections of a long page (fade).", "Between groups in a footer, toolbar or card (plain or vertical)."],
+  "whenNotToUse": ["Around every block — spacing usually separates better than lines.", "Inside menus — use the menu's own separator."],
+  "classes": {
+    "ayy-separator": "Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).",
+    "ayy-separator--vertical": "Vertical rule in a flex row; add aria-orientation=\"vertical\".",
+    "ayy-separator--fade": "Fades to transparent at both ends."
+  },
+  "variants": {
+    "orientation": { "values": ["horizontal", "vertical"], "default": "horizontal" },
+    "fade": { "values": [true, false], "default": false }
+  },
+  "js": "separatorClass({ orientation?, fade?, className? }) → string",
+  "react": {
+    "import": "import { Separator } from \"ayywi/react\";",
+    "components": {
+      "Separator": {
+        "renders": "<hr>",
+        "props": { "orientation": "\"horizontal\" | \"vertical\" — vertical also sets aria-orientation.", "fade": "boolean" }
+      }
+    }
+  },
+  "a11y": [
+    "<hr> is a separator to screen readers. If the line is purely decorative, use role=\"presentation\" or a CSS border instead.",
+    "Vertical separators need aria-orientation=\"vertical\" (the React component adds it)."
+  ],
+  "do": ["Give the separator room with the layout's gap or the sections' padding."],
+  "dont": ["Don't colour it; hairline keeps it quiet in every theme."],
+  "examples": [{ "id": "variants", "title": "Plain, fading and vertical" }]
+}

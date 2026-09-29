@@ -15,12 +15,13 @@ const read = (p) => readFileSync(join(root, p), "utf8").trimEnd();
 
 /** Order within a category (categories themselves follow CATEGORIES). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
-  "button", "menu",
+  "button", "menu", "theme-toggle",
+  "navbar", "breadcrumb", "toc",
   "field", "input", "textarea", "select", "checkbox", "radio", "switch",
-  "card", "tabs",
+  "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "skeleton",
-  "badge", "avatar", "table",
+  "badge", "avatar", "icon-tile", "stat", "data-list", "frame", "chat", "table",
 ];
 const CATEGORY_ORDER = Object.keys(CATEGORIES);
 const rank = (list, x) => (list.includes(x) ? list.indexOf(x) : list.length);

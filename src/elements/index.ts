@@ -1,14 +1,17 @@
 // "ayywi/elements": custom elements for the interactive components, for any framework or plain HTML.
 // Importing registers them (idempotent, no-op during SSR) and starts the card spotlight listener.
 import { trackSpotlight } from "../components/card/card";
+import { AyyCarouselElement } from "../components/carousel/carousel.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyMenuElement } from "../components/menu/menu.element";
 import { AyyPopoverElement } from "../components/popover/popover.element";
 import { AyyTabsElement } from "../components/tabs/tabs.element";
+import { AyyThemeToggleElement } from "../components/theme-toggle/theme-toggle.element";
+import { AyyTocElement } from "../components/toc/toc.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { define } from "../lib/element";
 
-export { AyyDialogElement, AyyMenuElement, AyyPopoverElement, AyyTabsElement, AyyTooltipElement };
+export { AyyCarouselElement, AyyDialogElement, AyyMenuElement, AyyPopoverElement, AyyTabsElement, AyyThemeToggleElement, AyyTocElement, AyyTooltipElement };
 
 let spotlightListening = false;
 
@@ -23,13 +26,16 @@ function onError(event: Event): void {
   if (target instanceof HTMLImageElement && target.classList.contains("ayy-avatar__image")) target.hidden = true;
 }
 
-/** Register <ayy-tabs>, <ayy-dialog>, <ayy-tooltip>, <ayy-popover>, <ayy-menu>, the card spotlight and avatar fallbacks. Safe to call twice. */
+/** Register every <ayy-*> element, the card spotlight and avatar fallbacks. Safe to call twice. */
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
   define("ayy-dialog", AyyDialogElement);
   define("ayy-tooltip", AyyTooltipElement);
   define("ayy-popover", AyyPopoverElement);
   define("ayy-menu", AyyMenuElement);
+  define("ayy-toc", AyyTocElement);
+  define("ayy-carousel", AyyCarouselElement);
+  define("ayy-theme-toggle", AyyThemeToggleElement);
   if (!spotlightListening && typeof document !== "undefined") {
     spotlightListening = true;
     document.addEventListener("pointermove", onPointerMove, { passive: true });

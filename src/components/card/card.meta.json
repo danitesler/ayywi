@@ -20,7 +20,9 @@
     "ayy-card__title": "Heading. Use an h2–h4 that fits your outline.",
     "ayy-card__description": "Muted supporting text.",
     "ayy-card__content": "Body.",
-    "ayy-card__footer": "Actions row, pinned to the bottom."
+    "ayy-card__footer": "Actions row, pinned to the bottom.",
+    "ayy-card__media": "Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly on an interactive card's hover.",
+    "ayy-card__link": "Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable."
   },
   "variants": {
     "interactive": { "values": [true, false], "default": false },
@@ -28,18 +30,21 @@
   },
   "js": "cardClass({ interactive?, spotlight?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
   "react": {
-    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from \"ayywi/react\";",
+    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"ayywi/react\";",
     "components": {
       "Card": { "renders": "<div>", "props": { "interactive": "boolean", "spotlight": "boolean — tracks the pointer for you", "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"" } },
       "CardHeader": { "renders": "<div>" },
       "CardTitle": { "renders": "<h3>" },
       "CardDescription": { "renders": "<p>" },
       "CardContent": { "renders": "<div>" },
-      "CardFooter": { "renders": "<div>" }
+      "CardFooter": { "renders": "<div>" },
+      "CardMedia": { "renders": "<div>", "props": { "children": "An <img>, <picture>, <video> or <svg>. Give images width and height." } },
+      "CardLink": { "renders": "<a class=\"ayy-card__link\">", "props": { "...rest": "All native <a> attributes (href…)." } }
     }
   },
   "a11y": [
-    "If the whole card is a link, put the <a> on the title and stretch it (::after inset:0), don't wrap the card in <a>.",
+    "If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card.",
+    "Media images are content: give them alt text, or alt=\"\" when the title already says it all.",
     "Spotlight layers are pseudo-elements, invisible to assistive tech."
   ],
   "do": [
@@ -52,6 +57,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
-    { "id": "spotlight", "title": "Interactive with spotlight" }
+    { "id": "spotlight", "title": "Interactive with spotlight" },
+    { "id": "media", "title": "Linked card with media" }
   ]
 }

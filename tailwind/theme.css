@@ -57,6 +57,12 @@
   --font-mono: var(--ayy-font-mono);
 
   --text-2xs: var(--ayy-text-2xs);
+  --text-display: var(--ayy-text-display);
+  --text-display--line-height: var(--ayy-leading-display);
+  --text-display--letter-spacing: var(--ayy-tracking-display);
+
+  --container-page: var(--ayy-size-container);
+  --container-measure: var(--ayy-size-measure);
 
   --radius-control: var(--ayy-radius-control);
   --radius-card: var(--ayy-radius-card);
@@ -67,6 +73,7 @@
   --shadow-lift: var(--ayy-shadow-lift);
   --shadow-overlay: var(--ayy-shadow-overlay);
   --shadow-glow: var(--ayy-shadow-glow);
+  --shadow-frame: var(--ayy-shadow-frame);
 
   --ease-standard: var(--ayy-ease-standard);
   --ease-spring: var(--ayy-ease-spring);

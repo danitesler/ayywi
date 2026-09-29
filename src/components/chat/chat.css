@@ -1,0 +1,100 @@
+/* A conversation: incoming bubbles at the start, the reader's own at the end, a typing indicator and quick replies.
+   For AI assistants, support widgets and scripted "say hi" sections. */
+.ayy-chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+}
+
+.ayy-chat__message {
+  display: flex;
+  align-items: flex-end;
+  align-self: flex-start;
+  gap: var(--ayy-space-2);
+  max-inline-size: 85%;
+}
+
+/* Sent by the reader: at the end edge, inverted. */
+.ayy-chat__message--out {
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.ayy-chat__bubble {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-hairline);
+  border-radius: var(--ayy-radius-xl);
+  border-end-start-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+  overflow-wrap: anywhere;
+}
+
+.ayy-chat__message--out .ayy-chat__bubble {
+  border-color: transparent;
+  border-end-start-radius: var(--ayy-radius-xl);
+  border-end-end-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-primary);
+  color: var(--ayy-color-primary-fg);
+}
+
+/* Three dots, inside a bubble, while a reply is being written. */
+.ayy-chat__typing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  block-size: 1lh;
+}
+
+.ayy-chat__typing > span {
+  inline-size: 0.375rem;
+  block-size: 0.375rem;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.35;
+  animation: ayy-chat-typing 1.2s ease-in-out infinite;
+}
+
+.ayy-chat__typing > span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.ayy-chat__typing > span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes ayy-chat-typing {
+  0%, 60%, 100% {
+    opacity: 0.35;
+    transform: none;
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+/* Suggested answers under the conversation, at the end edge. Use small outline buttons. */
+.ayy-chat__replies {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-2);
+}
+
+@media (forced-colors: active) {
+  .ayy-chat__bubble {
+    border-color: CanvasText;
+  }
+  .ayy-chat__typing > span {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+}

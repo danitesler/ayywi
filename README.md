@@ -4,7 +4,7 @@ A small design system that works in any stack and is built for AI agents to use.
 
 Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by tokens (`--ayy-color-bg`…), so they work anywhere that outputs HTML. React gets typed components that render the same markup; every other framework gets a few light-DOM custom elements for the interactive parts.
 
-- **Small:** zero runtime dependencies. All 21 components are ~8 kB of CSS gzipped.
+- **Small:** zero runtime dependencies. All 33 components are ~12 kB of CSS gzipped.
 - **Themes, density, brands:** dark, light, a softer dark and a grey light theme; compact/comfortable/touch sizing; swappable brands. Each one is a single attribute.
 - **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in. axe runs on every component in CI.
 - **AI-first:** a machine-readable manifest, `llms.txt`, a skill for Claude/Cursor/Codex, an MCP server, and a linter that checks what agents write.
@@ -27,8 +27,8 @@ npm i github:danitesler/ayywi    # private repo: needs GitHub access (SSH key, o
 Once it's on npm: `npm i ayywi`, or with no build step:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ayywi@0.3/dist/ayywi.min.css">
-<script src="https://cdn.jsdelivr.net/npm/ayywi@0.3/dist/elements.global.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ayywi@0.4/dist/ayywi.min.css">
+<script src="https://cdn.jsdelivr.net/npm/ayywi@0.4/dist/elements.global.js" defer></script>
 ```
 
 ## Use it
@@ -91,12 +91,38 @@ From JS: `setTheme()`, `setDensity()`, `setBrand()`, and `getColorScheme()` when
 
 | Category | Components |
 |---|---|
-| Actions | Button, Dropdown menu |
+| Actions | Button, Dropdown menu, Theme toggle |
+| Navigation | Navbar, Breadcrumb, Contents |
 | Forms | Field, Input, Textarea, Select, Checkbox, Radio, Switch |
-| Layout | Card, Tabs |
+| Layout | Section, Card, Tabs, Carousel, Separator |
 | Overlays | Dialog, Popover, Tooltip |
 | Feedback | Alert, Toast, Progress, Skeleton |
-| Data display | Badge, Avatar, Table |
+| Data display | Badge, Avatar, Icon tile, Stat, Data list, Frame, Chat, Table |
+
+## Websites and portfolios
+
+ayywi covers marketing sites as well as apps. A page is a skip link, a `Navbar`, then `<main>` built from `.ayy-section` blocks at `.ayy-container` width, with fading separators between them:
+
+```html
+<html data-theme="dark" data-density="comfortable">
+<body>
+  <a class="ayy-skip-link" href="#main">Skip to content</a>
+  <div class="ayy-scroll-progress" aria-hidden="true"></div>
+  <header class="ayy-navbar">…</header>
+  <main id="main">
+    <section class="ayy-bg-grid ayy-container" aria-labelledby="hero">
+      <h1 class="ayy-display" id="hero">Product <span class="ayy-text-outline">designer</span></h1>
+      <a class="ayy-button ayy-button--ring ayy-button--lg" href="/contact">Let's connect</a>
+    </section>
+    <hr class="ayy-separator ayy-separator--fade" />
+    <section class="ayy-section ayy-section--center ayy-container" aria-labelledby="work">…</section>
+  </main>
+</body>
+```
+
+- **Colour comes from the content.** The frame stays monochrome. Set `--ayy-spot` to an accent token on a card, section or whole page, and the card spotlight, the contents bar, section numbers, icon tiles, the progress bar and `.ayy-accent-text` take it, darkened on light themes so text stays at 4.5:1.
+- **Page utilities:** `.ayy-container`, `.ayy-grid`, `.ayy-display`, `.ayy-text-outline`, `.ayy-prose` (long-form reading), `.ayy-link`, `.ayy-skip-link`, `.ayy-bg-grid` (ambient grid), `.ayy-reveal` (fade in on scroll) and `.ayy-scroll-progress`. The last two use CSS scroll timelines: no JS, off under reduced motion.
+- **Modes:** use the existing ones. Dark or light theme with a `Theme toggle`, and `comfortable` density for roomier controls on desktop; phones get `touch` on their own.
 
 ## AI setup
 
@@ -104,7 +130,7 @@ In the app that uses ayywi:
 
 ```sh
 npx ayywi init        # installs the skill, AGENTS.md section, Cursor rule and MCP config
-npx ayywi lint src    # checks classes, tokens, variants, raw colours, left/right, missing labels
+npx ayywi lint src    # checks classes, tokens, variants, raw colours, left/right, missing labels, image sizes
 ```
 
 Then ask your agent to *"build the settings page with ayywi"*. Add `ayywi lint` to CI to catch mistakes whoever made them.

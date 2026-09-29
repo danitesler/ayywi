@@ -1,0 +1,31 @@
+{
+  "name": "Data list",
+  "slug": "data-list",
+  "status": "beta",
+  "category": "Data display",
+  "description": "Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.",
+  "whenToUse": ["Facts about a thing: Role, Company, Years, Platform on a case study; plan details; file metadata."],
+  "whenNotToUse": ["Many records with the same fields — use Table.", "Editable settings — use Field with inputs."],
+  "classes": {
+    "ayy-data-list": "Root <dl>. Items stacked.",
+    "ayy-data-list--row": "Items side by side, wrapping to fit (each at least --ayy-min, default 9rem).",
+    "ayy-data-list__item": "A <div> holding one <dt> and its <dd>.",
+    "ayy-data-list__label": "The <dt>: small uppercase muted label.",
+    "ayy-data-list__value": "The <dd>: the value, in body text."
+  },
+  "variants": {
+    "row": { "values": [true, false], "default": false }
+  },
+  "js": "dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.",
+  "react": {
+    "import": "import { DataList, DataListItem } from \"ayywi/react\";",
+    "components": {
+      "DataList": { "renders": "<dl>", "props": { "row": "boolean" } },
+      "DataListItem": { "renders": "<div><dt>label</dt><dd>children</dd></div>", "props": { "label": "ReactNode (required)" } }
+    }
+  },
+  "a11y": ["A real <dl>/<dt>/<dd>, so screen readers announce each value with its term.", "Links in values keep their focus ring; external ones should say so."],
+  "do": ["Keep labels to one or two words.", "Use the row form under a title, as the facts line of a case study."],
+  "dont": ["Don't use it for prose; values should be short."],
+  "examples": [{ "id": "row", "title": "Facts row" }]
+}

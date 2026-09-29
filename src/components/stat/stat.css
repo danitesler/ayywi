@@ -1,0 +1,41 @@
+/* A headline number with its unit and a short label: downloads, views, results. */
+.ayy-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1-5);
+  min-inline-size: 0;
+}
+
+.ayy-stat__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ayy-space-2);
+  margin: 0;
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-4xl);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--ayy-weight-bold);
+  letter-spacing: var(--ayy-tracking-tight);
+  line-height: var(--ayy-leading-none);
+}
+
+.ayy-stat__unit {
+  color: var(--ayy-color-muted);
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-medium);
+  letter-spacing: 0;
+}
+
+.ayy-stat__label {
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-stat--sm .ayy-stat__value {
+  font-size: var(--ayy-text-2xl);
+}

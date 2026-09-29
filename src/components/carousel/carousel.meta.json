@@ -1,0 +1,51 @@
+{
+  "name": "Carousel",
+  "slug": "carousel",
+  "status": "beta",
+  "category": "Layout",
+  "description": "A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.",
+  "whenToUse": ["A row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas."],
+  "whenNotToUse": [
+    "Content everyone must see — lay it out in a grid.",
+    "Auto-rotating banners — ayywi doesn't auto-play, on purpose.",
+    "Switching between views of one thing — use Tabs."
+  ],
+  "classes": {
+    "ayy-carousel": "Root (also on <ayy-carousel>). role=\"region\" aria-roledescription=\"carousel\" and an aria-label.",
+    "ayy-carousel__track": "The scrolling, snapping row. Give it tabindex=\"0\" so keyboards can scroll it. Gap via --ayy-gap.",
+    "ayy-carousel__slide": "Each slide: role=\"group\" aria-roledescription=\"slide\". Width via --ayy-slide (default min(22rem, 85%)).",
+    "ayy-carousel__controls": "Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows flip in RTL."
+  },
+  "variants": {},
+  "js": "carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.",
+  "element": {
+    "tag": "ayy-carousel",
+    "attributes": {
+      "class": "Put ayy-carousel on it for block layout."
+    },
+    "events": {},
+    "children": "A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled=\"true\" at the ends. Slides without a label are named \"2 of 6\"."
+  },
+  "react": {
+    "import": "import { Carousel, CarouselSlide } from \"ayywi/react\";",
+    "components": {
+      "Carousel": {
+        "renders": "<div class=\"ayy-carousel\" role=\"region\"> with the track and the two buttons",
+        "props": {
+          "label": "string (required) — accessible name, e.g. \"Team photos\".",
+          "slideWidth": "CSS length for every slide. Default min(22rem, 85%).",
+          "previousLabel / nextLabel": "Button names. Default \"Previous\" / \"Next\"."
+        }
+      },
+      "CarouselSlide": { "renders": "<div role=\"group\" aria-roledescription=\"slide\">" }
+    }
+  },
+  "a11y": [
+    "The root is a named region with aria-roledescription=\"carousel\"; each slide is a group named \"n of total\" unless you name it.",
+    "The track is focusable, so arrow keys scroll it; the buttons stay focusable at the ends (aria-disabled, not disabled) so focus isn't lost.",
+    "Nothing moves on its own, and smooth scrolling turns off under prefers-reduced-motion."
+  ],
+  "do": ["Let the last slide peek in, so it's clear there's more.", "Give images inside slides width and height so the strip doesn't jump."],
+  "dont": ["Don't hide essential content in later slides.", "Don't auto-advance."],
+  "examples": [{ "id": "cards", "title": "Cards" }]
+}

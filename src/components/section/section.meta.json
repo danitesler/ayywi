@@ -1,0 +1,49 @@
+{
+  "name": "Section",
+  "slug": "section",
+  "status": "beta",
+  "category": "Layout",
+  "description": "A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.",
+  "whenToUse": [
+    "Each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).",
+    "Chapters of a long case study or article, with numbered eyebrows that match the contents list."
+  ],
+  "whenNotToUse": ["Grouping inside an app screen — use Card or plain headings.", "A single heading with no content under it."],
+  "classes": {
+    "ayy-section": "Root <section>. 96px block padding (80px on phones, 128px on wide screens). Add ayy-container for page width.",
+    "ayy-section--center": "Header centred over the content; start-aligned again on phones.",
+    "ayy-section__header": "Eyebrow, title and description, capped at a readable width.",
+    "ayy-section__eyebrow": "Small uppercase label above the title.",
+    "ayy-section__number": "Section number inside the eyebrow (\"01\"), followed by a short rule, in the accent (--ayy-spot).",
+    "ayy-section__title": "The section's <h2>. Fluid, 28px on phones to 48px.",
+    "ayy-section__description": "One or two sentences under the title, muted."
+  },
+  "variants": {
+    "center": { "values": [true, false], "default": false }
+  },
+  "js": "sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.",
+  "react": {
+    "import": "import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from \"ayywi/react\";",
+    "components": {
+      "Section": { "renders": "<section>", "props": { "center": "boolean" } },
+      "SectionHeader": { "renders": "<header>" },
+      "SectionEyebrow": { "renders": "<p>", "props": { "number": "ReactNode — shown before the label, e.g. \"01\"." } },
+      "SectionTitle": { "renders": "<h2>" },
+      "SectionDescription": { "renders": "<p>" }
+    }
+  },
+  "a11y": [
+    "Name the section with its title: aria-labelledby on the <section> pointing at the title's id makes it a landmark.",
+    "Keep the heading order: page title h1, section titles h2."
+  ],
+  "do": [
+    "Separate homepage sections with a fading Separator.",
+    "Use the same numbers in the eyebrow and the Contents list of a long page.",
+    "Set --ayy-spot on a case study's <main> so the numbers take its accent."
+  ],
+  "dont": ["Don't stack two sections' paddings with extra margins; the padding is the rhythm.", "Don't write a paragraph as the description — one or two sentences."],
+  "examples": [
+    { "id": "centered", "title": "Centred header" },
+    { "id": "numbered", "title": "Numbered chapter" }
+  ]
+}

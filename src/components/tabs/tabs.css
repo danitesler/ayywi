@@ -69,6 +69,25 @@
   cursor: not-allowed;
 }
 
+/* Count beside a tab label, e.g. how many items a filter shows. */
+.ayy-tabs__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.5em;
+  padding-block: var(--ayy-space-0-5);
+  padding-inline: var(--ayy-space-1-5);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash-hover);
+  font-size: var(--ayy-text-2xs);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-tabs__tab[aria-selected="true"] .ayy-tabs__count {
+  background-color: color-mix(in srgb, var(--ayy-color-bg) 15%, transparent);
+}
+
 .ayy-tabs__panel {
   margin-block-start: var(--ayy-space-3);
   border-radius: var(--ayy-radius-lg);
@@ -92,5 +111,8 @@
   .ayy-tabs__tab:disabled {
     color: GrayText;
     opacity: 1;
+  }
+  .ayy-tabs__count {
+    border: 1px solid currentColor;
   }
 }

@@ -1,0 +1,100 @@
+/* A page section: generous block padding and an optional header (eyebrow, title, description) above its content.
+   Combine with .ayy-container on the same element, or put one inside. */
+.ayy-section {
+  box-sizing: border-box;
+  padding-block: var(--ayy-space-24);
+}
+
+.ayy-section__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ayy-space-3);
+  max-inline-size: var(--ayy-size-measure);
+  margin-block-end: var(--ayy-space-10);
+}
+
+/* Header centred over the content; back to the start edge on phones. */
+.ayy-section--center .ayy-section__header {
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.ayy-section__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: var(--ayy-tracking-eyebrow);
+  line-height: var(--ayy-leading-normal);
+  text-transform: uppercase;
+}
+
+/* "01 ——" before the eyebrow label, in the local accent (--ayy-spot). */
+.ayy-section__number {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  color: var(--ayy-spot, var(--ayy-color-text));
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-spot, var(--ayy-color-text)) 45%, var(--ayy-color-text)),
+    var(--ayy-spot, var(--ayy-color-text))
+  );
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.ayy-section__number::after {
+  content: "";
+  inline-size: var(--ayy-space-8);
+  block-size: 1px;
+  background-color: color-mix(in srgb, var(--ayy-spot, var(--ayy-color-text)) 45%, transparent);
+}
+
+.ayy-section__title {
+  margin: 0;
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-heading);
+  font-size: clamp(var(--ayy-text-2xl), 1rem + 3vw, var(--ayy-text-4xl));
+  font-weight: var(--ayy-weight-bold);
+  letter-spacing: var(--ayy-tracking-tight);
+  line-height: var(--ayy-leading-tight);
+  text-wrap: balance;
+}
+
+.ayy-section__description {
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-lg);
+  line-height: var(--ayy-leading-normal);
+  text-wrap: pretty;
+}
+
+@media (max-width: 48rem) {
+  .ayy-section {
+    padding-block: var(--ayy-space-20);
+  }
+  .ayy-section--center .ayy-section__header {
+    align-items: flex-start;
+    margin-inline: 0;
+    text-align: start;
+  }
+}
+
+@media (min-width: 90rem) {
+  .ayy-section {
+    padding-block: var(--ayy-space-32);
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-section__number::after {
+    background-color: CanvasText;
+  }
+}

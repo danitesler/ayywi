@@ -60,6 +60,11 @@ module.exports = {
       },
       fontSize: {
         "2xs": v("text-2xs"),
+        display: [v("text-display"), { lineHeight: v("leading-display"), letterSpacing: v("tracking-display") }],
+      },
+      maxWidth: {
+        page: v("size-container"),
+        measure: v("size-measure"),
       },
       borderRadius: {
         control: v("radius-control"),
@@ -72,6 +77,7 @@ module.exports = {
         lift: v("shadow-lift"),
         overlay: v("shadow-overlay"),
         glow: v("shadow-glow"),
+        frame: v("shadow-frame"),
       },
       transitionTimingFunction: {
         standard: v("ease-standard"),

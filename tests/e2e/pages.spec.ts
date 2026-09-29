@@ -99,7 +99,7 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "colors", "button", "table", "dialog"]) {
+  for (const route of ["", "colors", "button", "table", "dialog", "navbar", "section", "toc", "carousel", "chat", "data-list"]) {
     await open(page, route);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `/#/${route}`).toBeLessThanOrEqual(0);

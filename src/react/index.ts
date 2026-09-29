@@ -3,7 +3,17 @@
 export * from "../index";
 
 export { Button, type ButtonProps } from "../components/button/button.react";
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, type CardProps } from "../components/card/card.react";
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  CardMedia,
+  CardLink,
+  type CardProps,
+} from "../components/card/card.react";
 export { Badge, type BadgeProps } from "../components/badge/badge.react";
 export { Input, type InputProps } from "../components/input/input.react";
 export { Textarea, type TextareaProps } from "../components/textarea/textarea.react";
@@ -63,3 +73,37 @@ export {
   type TableProps,
   type TableCellProps,
 } from "../components/table/table.react";
+export {
+  Navbar,
+  NavbarBrand,
+  NavbarNav,
+  NavbarLink,
+  NavbarActions,
+  type NavbarLinkProps,
+} from "../components/navbar/navbar.react";
+export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
+export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
+export {
+  Section,
+  SectionHeader,
+  SectionEyebrow,
+  SectionTitle,
+  SectionDescription,
+  type SectionProps,
+  type SectionEyebrowProps,
+} from "../components/section/section.react";
+export { Separator, type SeparatorProps } from "../components/separator/separator.react";
+export { Carousel, CarouselSlide, type CarouselProps } from "../components/carousel/carousel.react";
+export { ThemeToggle, type ThemeToggleProps } from "../components/theme-toggle/theme-toggle.react";
+export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";
+export { Stat, type StatProps } from "../components/stat/stat.react";
+export { DataList, DataListItem, type DataListProps, type DataListItemProps } from "../components/data-list/data-list.react";
+export { Frame, type FrameProps } from "../components/frame/frame.react";
+export {
+  Chat,
+  ChatMessage,
+  ChatTyping,
+  ChatReplies,
+  type ChatMessageProps,
+  type ChatTypingProps,
+} from "../components/chat/chat.react";

@@ -1,4 +1,4 @@
-import { forwardRef, type CSSProperties, type HTMLAttributes } from "react";
+import { forwardRef, type AnchorHTMLAttributes, type CSSProperties, type HTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
 import { cardClass, trackSpotlight } from "./card";
 
@@ -63,4 +63,19 @@ export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
   ref,
 ) {
   return <div ref={ref} className={cx("ayy-card__footer", className)} {...props} />;
+});
+
+export const CardMedia = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardMedia(
+  { className, ...props },
+  ref,
+) {
+  return <div ref={ref} className={cx("ayy-card__media", className)} {...props} />;
+});
+
+/** The title's link, stretched over the whole card. Put it inside <CardTitle>. */
+export const CardLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement>>(function CardLink(
+  { className, ...props },
+  ref,
+) {
+  return <a ref={ref} className={cx("ayy-card__link", className)} {...props} />;
 });

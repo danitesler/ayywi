@@ -28,6 +28,7 @@
 .ayy-card__header {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--ayy-space-1-5);
   padding: var(--ayy-space-5);
 }
@@ -59,6 +60,64 @@
   margin-block-start: auto;
   padding-inline: var(--ayy-space-5);
   padding-block-end: var(--ayy-space-5);
+}
+
+/* ---- Media: a cover image, screenshot or video edge to edge. Rounds the corners it touches; zooms a little when an
+   interactive card is hovered. ---- */
+
+.ayy-card__media {
+  overflow: hidden;
+}
+
+.ayy-card__media:first-child {
+  border-start-start-radius: calc(var(--ayy-radius-card) - 1px);
+  border-start-end-radius: calc(var(--ayy-radius-card) - 1px);
+}
+
+.ayy-card__media:last-child {
+  border-end-start-radius: calc(var(--ayy-radius-card) - 1px);
+  border-end-end-radius: calc(var(--ayy-radius-card) - 1px);
+}
+
+.ayy-card__media > :is(img, video, picture, svg) {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: cover;
+  transition: transform var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+.ayy-card--interactive:hover .ayy-card__media > :is(img, video, picture, svg) {
+  transform: scale(1.03);
+}
+
+/* ---- Link: the title's <a> covers the whole card, so one tab stop opens it. Other controls stay clickable above. ---- */
+
+.ayy-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ayy-card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--ayy-radius-card);
+}
+
+.ayy-card__link:focus-visible {
+  outline: none;
+}
+
+.ayy-card__link:focus-visible::after {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-card:has(.ayy-card__link) :is(a, button, input, select, textarea, summary, [tabindex]):not(.ayy-card__link) {
+  position: relative;
+  z-index: 2;
 }
 
 /* ---- Spotlight: a soft glow + lit border that follows the pointer. Needs --ayy-mx/--ayy-my (set by React Card or ayywi/elements). ---- */

@@ -1,0 +1,58 @@
+{
+  "name": "Contents",
+  "slug": "toc",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
+  "whenToUse": ["Long pages with named sections: case studies, docs, articles, settings pages."],
+  "whenNotToUse": ["Short pages with two or three sections.", "Navigation between pages — use Navbar or links."],
+  "classes": {
+    "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
+    "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.",
+    "ayy-toc__title": "Small uppercase heading (\"Contents\"). Point the nav's aria-labelledby at it.",
+    "ayy-toc__list": "<ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.",
+    "ayy-toc__link": "Section link (href=\"#id\"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.",
+    "ayy-toc__number": "Optional section number (01, 02…) before the label, in the accent while current."
+  },
+  "variants": {
+    "sticky": { "values": [true, false], "default": false }
+  },
+  "js": "tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.",
+  "element": {
+    "tag": "ayy-toc",
+    "attributes": {
+      "offset": "Distance in px below the top of the viewport at which a section becomes current. Default: the page's scroll-padding-top (the navbar sets it) + 24."
+    },
+    "events": { "ayy-value-change": "{ value: string } — id of the section now being read (\"\" above the first)" },
+    "children": "Goes inside <nav class=\"ayy-toc\"> and wraps the title and list. Every .ayy-toc__link with href=\"#id\" is spied; aria-current=\"location\" is set and removed for you."
+  },
+  "react": {
+    "import": "import { Toc } from \"ayywi/react\";",
+    "components": {
+      "Toc": {
+        "renders": "<nav class=\"ayy-toc\">",
+        "props": {
+          "items": "{ id: string; label: ReactNode; children?: TocItem[] }[] — ids of sections on the page, in page order.",
+          "title": "ReactNode — visible heading; also becomes the nav's accessible name.",
+          "numbered": "boolean — number top-level items 01, 02…",
+          "sticky": "boolean",
+          "offset": "number — px below the top of the viewport at which a section becomes current.",
+          "onValueChange": "(id: string) => void — the section being read changed.",
+          "aria-label": "Used when there's no title. Defaults to \"On this page\"."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "It's a <nav> with a name (the title via aria-labelledby, or aria-label=\"On this page\"), so it shows up in landmark lists.",
+    "The current section is aria-current=\"location\", announced by screen readers, not only drawn as a colour bar.",
+    "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header."
+  ],
+  "do": [
+    "List sections in page order; the scrollspy assumes it.",
+    "Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.",
+    "On narrow screens, move it above the content or into a Popover instead of a side column."
+  ],
+  "dont": ["Don't nest more than one level.", "Don't list every heading — sections and their direct sub-sections only."],
+  "examples": [{ "id": "sticky", "title": "Numbered, beside the content" }]
+}

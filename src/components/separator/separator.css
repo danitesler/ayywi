@@ -1,0 +1,35 @@
+/* A hairline between blocks. Use it on <hr>. */
+.ayy-separator {
+  box-sizing: border-box;
+  flex: none;
+  inline-size: 100%;
+  block-size: 1px;
+  margin: 0;
+  border: 0;
+  background-color: var(--ayy-color-hairline);
+}
+
+.ayy-separator--vertical {
+  align-self: stretch;
+  inline-size: 1px;
+  block-size: auto;
+  min-block-size: 1em;
+}
+
+/* Fades out at both ends: between the sections of a page. */
+.ayy-separator--fade {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+.ayy-separator--vertical.ayy-separator--fade {
+  -webkit-mask-image: linear-gradient(transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(transparent, black 12%, black 88%, transparent);
+}
+
+@media (forced-colors: active) {
+  .ayy-separator {
+    forced-color-adjust: none;
+    background-color: GrayText;
+  }
+}

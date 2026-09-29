@@ -8,6 +8,7 @@
 @import "./base.css" layer(ayywi.base);
 
 @import "../components/button/button.css" layer(ayywi.components);
+@import "../components/section/section.css" layer(ayywi.components);
 @import "../components/card/card.css" layer(ayywi.components);
 @import "../components/badge/badge.css" layer(ayywi.components);
 @import "../components/input/input.css" layer(ayywi.components);
@@ -18,13 +19,24 @@
 @import "../components/field/field.css" layer(ayywi.components);
 @import "../components/switch/switch.css" layer(ayywi.components);
 @import "../components/tabs/tabs.css" layer(ayywi.components);
+@import "../components/carousel/carousel.css" layer(ayywi.components);
+@import "../components/separator/separator.css" layer(ayywi.components);
 @import "../components/dialog/dialog.css" layer(ayywi.components);
 @import "../components/popover/popover.css" layer(ayywi.components);
 @import "../components/menu/menu.css" layer(ayywi.components);
+@import "../components/theme-toggle/theme-toggle.css" layer(ayywi.components);
+@import "../components/navbar/navbar.css" layer(ayywi.components);
+@import "../components/breadcrumb/breadcrumb.css" layer(ayywi.components);
+@import "../components/toc/toc.css" layer(ayywi.components);
 @import "../components/tooltip/tooltip.css" layer(ayywi.components);
 @import "../components/toast/toast.css" layer(ayywi.components);
 @import "../components/alert/alert.css" layer(ayywi.components);
 @import "../components/progress/progress.css" layer(ayywi.components);
 @import "../components/skeleton/skeleton.css" layer(ayywi.components);
 @import "../components/avatar/avatar.css" layer(ayywi.components);
+@import "../components/icon-tile/icon-tile.css" layer(ayywi.components);
+@import "../components/stat/stat.css" layer(ayywi.components);
+@import "../components/data-list/data-list.css" layer(ayywi.components);
+@import "../components/frame/frame.css" layer(ayywi.components);
+@import "../components/chat/chat.css" layer(ayywi.components);
 @import "../components/table/table.css" layer(ayywi.components);

@@ -1,0 +1,41 @@
+{
+  "name": "Chat",
+  "slug": "chat",
+  "status": "beta",
+  "category": "Data display",
+  "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
+  "whenToUse": ["AI assistants and agents.", "Support or feedback widgets.", "A scripted \"say hi\" section on a marketing page that hands off to email or LinkedIn."],
+  "whenNotToUse": ["Comments and threads on a document — use a list of cards.", "Toast-style status messages — use Toast."],
+  "classes": {
+    "ayy-chat": "Root. role=\"log\" when messages arrive live, so they're announced.",
+    "ayy-chat__message": "One message row: an optional avatar and its bubble.",
+    "ayy-chat__message--out": "Sent by the reader: end edge, primary colours.",
+    "ayy-chat__bubble": "The bubble. The corner by the avatar is squared off.",
+    "ayy-chat__typing": "Three pulsing dots inside a bubble while a reply is written. Give it role=\"img\" and an aria-label.",
+    "ayy-chat__replies": "Quick replies under the conversation: small outline buttons, at the end edge."
+  },
+  "variants": {
+    "direction": { "values": ["in", "out"], "default": "in", "component": "ChatMessage" }
+  },
+  "js": "chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.",
+  "react": {
+    "import": "import { Chat, ChatMessage, ChatTyping, ChatReplies } from \"ayywi/react\";",
+    "components": {
+      "Chat": { "renders": "<div role=\"log\" class=\"ayy-chat\">" },
+      "ChatMessage": {
+        "renders": "<div class=\"ayy-chat__message\"> with the avatar and a bubble around children",
+        "props": { "direction": "\"in\" | \"out\"", "avatar": "ReactNode — e.g. an Avatar size sm." }
+      },
+      "ChatTyping": { "renders": "A message whose bubble holds the typing dots", "props": { "label": "Screen-reader text. Default \"Typing\".", "avatar": "ReactNode" } },
+      "ChatReplies": { "renders": "<div class=\"ayy-chat__replies\">" }
+    }
+  },
+  "a11y": [
+    "Use role=\"log\" on the conversation when messages arrive while the reader watches; they're announced politely, in order.",
+    "The typing dots are an image with a name (\"Dani is typing\"); remove the element when the message lands.",
+    "Quick replies are real buttons; after one is chosen, move focus to the next sensible place, not back to the top."
+  ],
+  "do": ["Keep bubbles short; split long answers into several messages.", "Pair incoming messages with the sender's avatar the first time."],
+  "dont": ["Don't auto-scroll the page while someone is reading above.", "Don't use colour alone to tell who's speaking; the side and avatar do it too."],
+  "examples": [{ "id": "conversation", "title": "Conversation with quick replies" }]
+}

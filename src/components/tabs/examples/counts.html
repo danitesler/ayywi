@@ -1,0 +1,17 @@
+<!-- Filters over one list: a count after each label. -->
+<ayy-tabs class="ayy-tabs" value="all">
+  <div class="ayy-tabs__list" role="tablist" aria-label="Filter projects">
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All <span class="ayy-tabs__count">18</span></button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="templates" aria-selected="false" tabindex="-1">Design templates <span class="ayy-tabs__count">6</span></button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="extensions" aria-selected="false" tabindex="-1">Extensions <span class="ayy-tabs__count">12</span></button>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="all">
+    <p class="ayy-muted">Every Figma resource and plugin.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="templates" hidden>
+    <p class="ayy-muted">UI kits, icon packs and website sections.</p>
+  </div>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="extensions" hidden>
+    <p class="ayy-muted">Open-source add-ons for Playnite.</p>
+  </div>
+</ayy-tabs>

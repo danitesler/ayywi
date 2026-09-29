@@ -10,7 +10,8 @@
     "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
     "ayy-tabs__list": "role=\"tablist\" pill container.",
     "ayy-tabs__tab": "role=\"tab\" button. Selected when aria-selected=\"true\".",
-    "ayy-tabs__panel": "role=\"tabpanel\". Hide inactive panels with the hidden attribute."
+    "ayy-tabs__panel": "role=\"tabpanel\". Hide inactive panels with the hidden attribute.",
+    "ayy-tabs__count": "Small count after a tab's label (items in a filter). Inverts with the selected tab."
   },
   "variants": {},
   "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
@@ -39,5 +40,8 @@
   ],
   "do": ["Keep tab labels to one or two words.", "Keep the tab set stable — don't add/remove tabs based on content."],
   "dont": ["Don't nest tabs inside tabs.", "Don't use tabs for more than ~6 options."],
-  "examples": [{ "id": "basic", "title": "Basic" }]
+  "examples": [
+    { "id": "basic", "title": "Basic" },
+    { "id": "counts", "title": "Filters with counts" }
+  ]
 }
