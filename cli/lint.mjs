@@ -12,6 +12,7 @@ export const DEFAULT_RULES = {
   "unknown-attribute-value": "error",
   "reserved-prefix": "error",
   "icon-button-label": "error",
+  "icon-library": "warn",
   "hardcoded-color": "error",
   "dir-selector": "error",
   "physical-property": "warn",
@@ -155,6 +156,10 @@ function readValue(text, i) {
   }
   return ["", i];
 }
+
+// Icon packages other than Hugeicons. Mixing sets brings a second stroke weight and grid into the UI.
+const OTHER_ICON_SETS =
+  /^(?:lucide(?:-[\w-]+)?|@lucide\/[\w-]+|react-icons(?:\/[\w-]+)?|@heroicons\/[\w/-]+|@tabler\/icons(?:-[\w-]+)?|@phosphor-icons\/[\w-]+|phosphor-(?:react|vue|svelte)|@radix-ui\/react-icons|@mui\/icons-material(?:\/[\w-]+)?|(?:react|vue)-feather|feather-icons|@fortawesome\/[\w-]+|@iconify\/[\w-]+|@remixicon\/[\w-]+|remixicon|(?:react-)?bootstrap-icons|ionicons|@primer\/octicons(?:-react)?|@carbon\/icons(?:-[\w-]+)?|iconoir(?:-[\w-]+)?|@mdi\/[\w-]+|material-(?:icons|symbols)|@material-symbols\/[\w-]+)$/;
 
 const stripCssComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "));
 const CLASS_TOKEN = /(?<![\w-])ayy-[a-z0-9]+(?:(?:-{1,2}|_{2})[a-z0-9]+)*/g;
@@ -310,6 +315,26 @@ function lintMarkup(text, contract) {
     if (/\{\s*\.\.\./.test(openTag) || /ayy-avatar__image/.test(openTag)) continue; // spread props; avatars have a fixed box
     if (!/\swidth\s*=/.test(openTag) || !/\sheight\s*=/.test(openTag))
       push("img-size", "<img> needs width and height (its real pixel size) so the layout doesn't jump while it loads", m.index);
+  }
+
+  // Icons take the text colour. A fixed colour on the <svg> (easy to keep when pasting one) makes it vanish in one theme.
+  for (const m of text.matchAll(/<svg(?=[\s/>])/g)) {
+    const openTag = text.slice(m.index, tagEnd(text, m.index));
+    if (!/(?<![\w-])ayy-icon(?![\w-])/.test(openTag)) continue;
+    for (const a of openTag.matchAll(/\s(color|fill|stroke)=["']([^"']*)["']/g)) {
+      if (/^(?:currentColor|none|inherit|transparent)$/i.test(a[2]) || a[2].startsWith("var(")) continue;
+      push("hardcoded-color", `<svg class="ayy-icon" ${a[1]}="${a[2]}"> — icons take the text colour; remove the attribute`, m.index + a.index + 1);
+    }
+  }
+
+  // Another icon set next to Hugeicons
+  for (const m of text.matchAll(/(?:\bfrom\s*|\bimport\s*\(\s*|\brequire\s*\(\s*|^\s*import\s+)(["'])([^"'\n]+)\1/gm)) {
+    if (!OTHER_ICON_SETS.test(m[2])) continue;
+    push(
+      "icon-library",
+      `"${m[2]}" — ayywi's icon library is Hugeicons: <Icon icon={…} /> with icons from @hugeicons/core-free-icons (iconSvg() outside React)`,
+      m.index + m[0].indexOf(m[2]),
+    );
   }
 
   // <style> blocks inside templates

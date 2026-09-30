@@ -1,0 +1,27 @@
+/* Inline SVG icons from Hugeicons (@hugeicons/core-free-icons). Strokes use currentColor, so an icon takes the text colour.
+   Inside buttons, menu items, alerts and close buttons the component sets the size; elsewhere pick one. */
+
+.ayy-icon {
+  --_s: 1.25em;
+  display: inline-block;
+  flex: none;
+  inline-size: var(--_s);
+  block-size: var(--_s);
+  /* Centred on the capital letters of the surrounding text, at any size. */
+  vertical-align: calc(0.35em - var(--_s) / 2);
+}
+
+.ayy-icon--sm { --_s: var(--ayy-size-icon-sm); }
+.ayy-icon--md { --_s: var(--ayy-size-icon-md); }
+.ayy-icon--lg { --_s: var(--ayy-size-icon-lg); }
+.ayy-icon--xl { --_s: var(--ayy-size-icon-xl); }
+
+/* Icons that point along the reading direction (arrows, send, undo) mirror in right-to-left text.
+   Custom properties inherit, so the nearest dir attribute wins, as with dir itself. (:dir() would be simpler,
+   but minifiers rewrite it into :lang() lists.) */
+:where([dir="rtl"]) { --_ayy-dir: -1; }
+:where([dir="ltr"]) { --_ayy-dir: 1; }
+
+.ayy-icon--directional {
+  scale: var(--_ayy-dir, 1) 1;
+}

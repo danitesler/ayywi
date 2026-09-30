@@ -34,6 +34,7 @@
 @import "../components/progress/progress.css" layer(ayywi.components);
 @import "../components/skeleton/skeleton.css" layer(ayywi.components);
 @import "../components/avatar/avatar.css" layer(ayywi.components);
+@import "../components/icon/icon.css" layer(ayywi.components);
 @import "../components/icon-tile/icon-tile.css" layer(ayywi.components);
 @import "../components/stat/stat.css" layer(ayywi.components);
 @import "../components/data-list/data-list.css" layer(ayywi.components);

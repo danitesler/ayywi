@@ -148,12 +148,12 @@ A hairline between blocks: full, fading out at both ends (between page sections)
 - A11y: <hr> is a separator to screen readers. If the line is purely decorative, use role="presentation" or a CSS border instead. Vertical separators need aria-orientation="vertical" (the React component adds it).
 
 ## Dialog (Overlays)
-Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.
-- Classes: `.ayy-dialog` `.ayy-dialog--sm` `.ayy-dialog--lg` `.ayy-dialog--xl` `.ayy-dialog__header` `.ayy-dialog__title` `.ayy-dialog__description` `.ayy-dialog__footer` `.ayy-dialog__close`
-- React: `<Dialog open / defaultOpen onOpenChange>`, `<DialogTrigger >`, `<DialogContent size hideClose closeLabel closeOnBackdrop>`, `<DialogHeader>`, `<DialogTitle>`, `<DialogDescription>`, `<DialogFooter>`, `<DialogClose>`
+Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge.
+- Classes: `.ayy-dialog` `.ayy-dialog--sm` `.ayy-dialog--lg` `.ayy-dialog--xl` `.ayy-dialog--side-start` `.ayy-dialog--side-end` `.ayy-dialog__header` `.ayy-dialog__title` `.ayy-dialog__description` `.ayy-dialog__body` `.ayy-dialog__footer` `.ayy-dialog__close`
+- React: `<Dialog open / defaultOpen onOpenChange>`, `<DialogTrigger >`, `<DialogContent size side hideClose closeLabel closeOnBackdrop>`, `<DialogHeader>`, `<DialogTitle>`, `<DialogDescription>`, `<DialogBody>`, `<DialogFooter>`, `<DialogClose>`
 - Element: `<ayy-dialog open persistent>`, events `ayy-open-change`
-- JS: dialogClass({ size?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (SVG string). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
-- A11y: Always include a DialogTitle (or aria-label on the dialog). Focus moves into the dialog on open and returns to the trigger on close (native behaviour). Esc closes; background is inert while open; page scroll is locked. Opening and closing fade/scale; the closing animation is skipped in browsers without @starting-style and under reduced motion.
+- JS: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
+- A11y: Always include a DialogTitle (or aria-label on the dialog). Focus moves into the dialog on open and returns to the trigger on close (native behaviour). Esc closes; background is inert while open; page scroll is locked. A side modal is still a modal: same rules. A body with only text that scrolls needs tabindex="0" so keyboard users can scroll it; form fields inside make that unnecessary. Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion.
 
 ## Popover (Overlays)
 Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
@@ -213,6 +213,13 @@ Round (or square) picture of a person or workspace, with initials that show when
 - React: `<Avatar name src fallback size shape>`, `<AvatarGroup>`
 - JS: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 - A11y: The name goes on the root (aria-label); the <img> has alt="" and the initials are aria-hidden, so it's announced once. Give an AvatarGroup an aria-label like "5 collaborators". A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
+
+## Icon (Data display)
+Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
+- Classes: `.ayy-icon` `.ayy-icon--sm` `.ayy-icon--md` `.ayy-icon--lg` `.ayy-icon--xl` `.ayy-icon--directional`
+- React: `<Icon icon size directional label strokeWidth>`
+- JS: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
+- A11y: Icons are decorative by default (aria-hidden): the text next to them carries the meaning. When the icon is the only thing saying something (a status, a verified mark), give it a label: <Icon label="Deployed">, or role="img" + aria-label on the <svg>. Icon-only buttons: aria-label goes on the button, the icon stays decorative. Strokes use currentColor, so icons follow the theme and Windows High Contrast colours with no extra CSS.
 
 ## Icon tile (Data display)
 An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.

@@ -1,27 +1,22 @@
-import { Button } from "ayywi/react";
-
-const PlusIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <path d="M12 5v14M5 12h14" />
-  </svg>
-);
+import { PlusSignIcon, UserAdd01Icon } from "@hugeicons/core-free-icons";
+import { Button, Icon } from "ayywi/react";
 
 export default function Example() {
   return (
     <>
       <Button>
-        <PlusIcon />
+        <Icon icon={PlusSignIcon} />
         New project
       </Button>
       <Button variant="secondary">
-        <PlusIcon />
+        <Icon icon={UserAdd01Icon} />
         Invite member
       </Button>
       <Button variant="outline" size="icon" aria-label="Add">
-        <PlusIcon />
+        <Icon icon={PlusSignIcon} />
       </Button>
       <Button variant="ghost" size="icon-sm" aria-label="Add">
-        <PlusIcon />
+        <Icon icon={PlusSignIcon} />
       </Button>
     </>
   );

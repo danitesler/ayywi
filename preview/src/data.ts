@@ -54,7 +54,7 @@ const ORDER = [
   "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "skeleton",
-  "badge", "avatar", "icon-tile", "stat", "data-list", "frame", "chat", "table",
+  "badge", "avatar", "icon", "icon-tile", "stat", "data-list", "frame", "chat", "table",
 ];
 const rank = (list: string[], x: string) => (list.includes(x) ? list.indexOf(x) : list.length);
 const CATEGORY_ORDER = Object.keys(CATEGORIES);

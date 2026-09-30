@@ -6,7 +6,7 @@ export interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   variant?: AlertVariant;
 }
 
-/** Inline message. Put an optional <svg> icon first, then AlertTitle / AlertDescription / AlertActions. */
+/** Inline message. Put an optional <Icon> first, then AlertTitle / AlertDescription / AlertActions. */
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert({ variant, className, ...props }, ref) {
   return <div ref={ref} className={alertClass({ variant, className })} {...props} />;
 });

@@ -4,7 +4,7 @@ A small design system that works in any stack and is built for AI agents to use.
 
 Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by tokens (`--ayy-color-bg`…), so they work anywhere that outputs HTML. React gets typed components that render the same markup; every other framework gets a few light-DOM custom elements for the interactive parts.
 
-- **Small:** zero runtime dependencies. All 33 components are ~12 kB of CSS gzipped.
+- **Small:** zero runtime dependencies. All 34 components are ~12 kB of CSS gzipped.
 - **Themes, density, brands:** dark, light, a softer dark and a grey light theme; compact/comfortable/touch sizing; swappable brands. Each one is a single attribute.
 - **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in. axe runs on every component in CI.
 - **AI-first:** a machine-readable manifest, `llms.txt`, a skill for Claude/Cursor/Codex, an MCP server, and a linter that checks what agents write.
@@ -87,6 +87,26 @@ From JS: `setTheme()`, `setDensity()`, `setBrand()`, and `getColorScheme()` when
 
 **Fonts** are opt-in: `ayywi/fonts.css` serves them from the package, `ayywi/fonts-google.css` from Google Fonts. Without either you get system fonts.
 
+## Icons
+
+The icon library is [Hugeicons](https://hugeicons.com): 6,000+ free Stroke Rounded icons, MIT licensed. Install the icon data next to ayywi. ayywi only renders it, so it still has no runtime dependencies.
+
+```sh
+npm i @hugeicons/core-free-icons
+```
+
+```tsx
+import { Search01Icon } from "@hugeicons/core-free-icons";
+import { Icon } from "ayywi/react";
+
+<Icon icon={Search01Icon} />                  // decorative, follows the text size
+<Icon icon={Search01Icon} size="lg" label="Search" />
+```
+
+Outside React, `iconSvg(Search01Icon)` from `ayywi` returns the SVG markup for `innerHTML`, `v-html`, `{@html}` or a server template. In plain HTML, paste the SVG from hugeicons.com, add `class="ayy-icon"`, and remove any fixed colour (`color`, `fill` or `stroke` set to a hex value) on the `<svg>`: a black icon disappears in the dark theme. `ayywi lint` flags it.
+
+Icons take the text colour and are 1.25em by default. `size` (or `ayy-icon--sm|md|lg|xl`) sets 16, 20, 24 or 32px. Inside buttons, menu items and alerts the component sizes them. Arrows and other icons that point along the reading direction take `directional` (`ayy-icon--directional`) and mirror in right-to-left text.
+
 ## Components
 
 | Category | Components |
@@ -95,9 +115,9 @@ From JS: `setTheme()`, `setDensity()`, `setBrand()`, and `getColorScheme()` when
 | Navigation | Navbar, Breadcrumb, Contents |
 | Forms | Field, Input, Textarea, Select, Checkbox, Radio, Switch |
 | Layout | Section, Card, Tabs, Carousel, Separator |
-| Overlays | Dialog, Popover, Tooltip |
+| Overlays | Dialog (centred or side modal), Popover, Tooltip |
 | Feedback | Alert, Toast, Progress, Skeleton |
-| Data display | Badge, Avatar, Icon tile, Stat, Data list, Frame, Chat, Table |
+| Data display | Badge, Avatar, Icon, Icon tile, Stat, Data list, Frame, Chat, Table |
 
 ## Websites and portfolios
 
@@ -130,7 +150,7 @@ In the app that uses ayywi:
 
 ```sh
 npx ayywi init        # installs the skill, AGENTS.md section, Cursor rule and MCP config
-npx ayywi lint src    # checks classes, tokens, variants, raw colours, left/right, missing labels, image sizes
+npx ayywi lint src    # checks classes, tokens, variants, raw colours, left/right, missing labels, image sizes, other icon sets
 ```
 
 Then ask your agent to *"build the settings page with ayywi"*. Add `ayywi lint` to CI to catch mistakes whoever made them.

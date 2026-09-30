@@ -1,5 +1,7 @@
 import { cx } from "../../lib/cx";
+import { Cancel01Icon } from "../../lib/icons";
 import { supportsPopover } from "../../lib/position";
+import { iconSvg } from "../icon/icon";
 
 export const toastVariants = ["default", "success", "warning", "destructive", "info"] as const;
 export type ToastVariant = (typeof toastVariants)[number];
@@ -39,8 +41,7 @@ export interface ToastHandle {
   dismiss: () => void;
 }
 
-const CLOSE_ICON =
-  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+const CLOSE_ICON = iconSvg(Cancel01Icon);
 
 let config: Required<ToasterOptions> = { position: "bottom-end", label: "Notifications", closeLabel: "Dismiss" };
 const live = new Map<string, { el: HTMLElement; dismiss: () => void }>();

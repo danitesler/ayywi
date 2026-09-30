@@ -84,6 +84,9 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
   await box.fill("forms"); // categories match
   await expect(nav.getByRole("link")).toHaveCount(7);
 
+  await box.fill("drawer"); // the side modal is a Dialog
+  await expect(nav.getByRole("link")).toHaveText(["Dialog"]);
+
   await box.fill("zzzz");
   await expect(nav).toContainText("No matches");
 

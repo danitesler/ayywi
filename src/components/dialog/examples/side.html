@@ -1,0 +1,53 @@
+<!-- A side modal is the same <dialog> with ayy-dialog--side-end (or --side-start). Only the body scrolls.
+     The footer's submit button reaches the form with form="…"; method="dialog" closes the dialog on submit. -->
+<ayy-dialog>
+  <button type="button" class="ayy-button ayy-button--outline" data-ayy-open aria-haspopup="dialog">Project settings</button>
+  <dialog class="ayy-dialog ayy-dialog--side-end" aria-labelledby="project-settings-title-html" aria-describedby="project-settings-desc-html">
+    <div class="ayy-dialog__header">
+      <h2 class="ayy-dialog__title" id="project-settings-title-html">Project settings</h2>
+      <p class="ayy-dialog__description" id="project-settings-desc-html">Marketing site. Changes apply to the next deployment.</p>
+    </div>
+    <div class="ayy-dialog__body">
+      <form method="dialog" id="project-settings-form-html" class="ayy-stack" style="--ayy-gap: 1.25rem">
+        <div class="ayy-field">
+          <label class="ayy-label" for="settings-name-html">Project name</label>
+          <input class="ayy-input" id="settings-name-html" name="name" value="marketing-site" required />
+        </div>
+        <div class="ayy-field">
+          <label class="ayy-label" for="settings-region-html">Region</label>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="settings-region-html" name="region">
+              <option value="fra1">Frankfurt (fra1)</option>
+              <option value="iad1">Washington, D.C. (iad1)</option>
+              <option value="hnd1">Tokyo (hnd1)</option>
+            </select>
+          </div>
+        </div>
+        <div class="ayy-field">
+          <label class="ayy-label" for="settings-build-html">Build command</label>
+          <input class="ayy-input" id="settings-build-html" name="build" value="pnpm build" aria-describedby="settings-build-html-hint" />
+          <p class="ayy-field__hint" id="settings-build-html-hint">Runs in the project root after install.</p>
+        </div>
+        <div class="ayy-field">
+          <label class="ayy-label" for="settings-output-html">Output directory</label>
+          <input class="ayy-input" id="settings-output-html" name="output" value="dist" />
+        </div>
+        <div class="ayy-field ayy-field--inline">
+          <input class="ayy-switch" type="checkbox" role="switch" id="settings-autodeploy-html" name="autodeploy" checked />
+          <label class="ayy-label" for="settings-autodeploy-html">Deploy every push to main</label>
+        </div>
+        <div class="ayy-field ayy-field--inline">
+          <input class="ayy-switch" type="checkbox" role="switch" id="settings-previews-html" name="previews" checked />
+          <label class="ayy-label" for="settings-previews-html">Preview deployments for pull requests</label>
+        </div>
+      </form>
+    </div>
+    <div class="ayy-dialog__footer">
+      <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close>Cancel</button>
+      <button type="submit" class="ayy-button" form="project-settings-form-html" value="save">Save changes</button>
+    </div>
+    <button type="button" class="ayy-dialog__close" aria-label="Close" data-ayy-close>
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+    </button>
+  </dialog>
+</ayy-dialog>

@@ -13,8 +13,10 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
+import { Cancel01Icon } from "../../lib/icons";
 import { Button, type ButtonProps } from "../button/button.react";
-import { dialogClass, isBackdropClick, type DialogSize } from "./dialog";
+import { Icon } from "../icon/icon.react";
+import { dialogClass, isBackdropClick, type DialogSide, type DialogSize } from "./dialog";
 
 interface DialogContextValue {
   open: boolean;
@@ -82,6 +84,8 @@ export const DialogTrigger = forwardRef<HTMLButtonElement, ButtonProps>(function
 
 export interface DialogContentProps extends DialogHTMLAttributes<HTMLDialogElement> {
   size?: DialogSize;
+  /** "start" / "end" turn it into a side modal: a full-height panel sliding in from that inline edge. Default "center". */
+  side?: DialogSide;
   /** Hide the built-in top-corner close button. */
   hideClose?: boolean;
   /** Accessible label of the close button. Translate it. Default "Close". */
@@ -100,7 +104,7 @@ function transitionMs(el: Element): number {
 }
 
 export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(function DialogContent(
-  { size, className, children, hideClose, closeLabel = "Close", closeOnBackdrop = true, onClose, onClick, ...props },
+  { size, side, className, children, hideClose, closeLabel = "Close", closeOnBackdrop = true, onClose, onClick, ...props },
   forwardedRef,
 ) {
   const ctx = useDialog("DialogContent");
@@ -141,7 +145,7 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
         if (typeof forwardedRef === "function") forwardedRef(el);
         else if (forwardedRef) forwardedRef.current = el;
       }}
-      className={dialogClass({ size, className })}
+      className={dialogClass({ size, side, className })}
       aria-labelledby={ctx.titleId}
       aria-describedby={ctx.hasDescription ? ctx.descriptionId : undefined}
       onClose={(event) => {
@@ -159,9 +163,7 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
           {children}
           {hideClose ? null : (
             <button type="button" className="ayy-dialog__close" aria-label={closeLabel} onClick={() => ctx.setOpen(false)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
+              <Icon icon={Cancel01Icon} />
             </button>
           )}
         </>
@@ -175,6 +177,11 @@ export const DialogHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEle
   ref,
 ) {
   return <div ref={ref} className={cx("ayy-dialog__header", className)} {...props} />;
+});
+
+/** Scrolls on its own between the header and the footer, which stay in view. Fills the height of a side modal. */
+export const DialogBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DialogBody({ className, ...props }, ref) {
+  return <div ref={ref} className={cx("ayy-dialog__body", className)} {...props} />;
 });
 
 export const DialogFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DialogFooter(

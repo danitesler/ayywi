@@ -21,7 +21,7 @@ export const ORDER = [
   "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "skeleton",
-  "badge", "avatar", "icon-tile", "stat", "data-list", "frame", "chat", "table",
+  "badge", "avatar", "icon", "icon-tile", "stat", "data-list", "frame", "chat", "table",
 ];
 const CATEGORY_ORDER = Object.keys(CATEGORIES);
 const rank = (list, x) => (list.includes(x) ? list.indexOf(x) : list.length);
@@ -74,7 +74,7 @@ const manifest = {
     "ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
     "ayywi/brands/<name>.css": `Brand overrides (${brands.map((b) => b.name).join(", ") || "none"}), applied with data-brand="<name>".`,
     "ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). ayywi/fonts-google.css loads them from Google instead.",
-    ayywi: "Framework-free JS: tokens, class helpers (buttonClass…), controllers (connectPopover, connectMenu, enhanceTooltip), toast(), setTheme/setDensity/setBrand, cssVar(). Server-safe.",
+    ayywi: "Framework-free JS: tokens, class helpers (buttonClass…), controllers (connectPopover, connectMenu, enhanceTooltip), toast(), iconSvg(), setTheme/setDensity/setBrand, cssVar(). Server-safe.",
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
     "ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, setTheme, setDensity, setBrand).`,
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
@@ -90,9 +90,10 @@ const manifest = {
     theming: `No attribute = follow OS (dark or light). data-theme=${themes.map((t) => `"${t.name}"`).join(" | ")} forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".`,
     density: "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
     brands: "Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.",
-    direction: "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror.",
+    direction: "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.",
     elements: "Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith(\"ayy-\"); Angular: CUSTOM_ELEMENTS_SCHEMA.",
     highContrast: "Every stateful component has a forced-colors (Windows High Contrast) style using system colours.",
+    icons: "Hugeicons is the icon library: install @hugeicons/core-free-icons (an optional peer; ayywi renders its data, so there's still no runtime dependency). React: <Icon icon={Search01Icon} />. Elsewhere: iconSvg(Search01Icon), or the SVG pasted from hugeicons.com with class=\"ayy-icon\" and no fixed colour attributes. Icons use currentColor and 1.25em (the text size); size sm/md/lg/xl is 16/20/24/32px (--ayy-size-icon-*).",
   },
   rules: RULES,
   attributes: ATTRIBUTES,

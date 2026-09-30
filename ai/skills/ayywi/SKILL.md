@@ -34,6 +34,8 @@ Check `package.json` and existing components before choosing. Match what's there
 5. No per-theme colour code. Tokens switch with `data-theme` (`dark`, `light`, `dark-soft`, `light-gray`) or the OS preference on their own. Same for `data-density` and `data-brand` — don't hand-size controls.
 6. Accessibility is part of the component: labels for every control, `aria-label` on icon-only buttons, never remove focus rings, keep dialog titles.
 7. State goes in native/ARIA attributes (`disabled`, `checked`, `aria-selected`, `aria-invalid`, `open`) — the CSS reads them.
+8. Icons are Hugeicons: `<Icon icon={Search01Icon} />` in React (icons from `@hugeicons/core-free-icons`; install it if it's missing), `iconSvg(Search01Icon)` or an `<svg class="ayy-icon">` elsewhere. No other icon set, no hand-drawn SVGs. Decorative unless you pass a `label`. Arrows get `directional` so they mirror in RTL.
+9. Side panels, drawers and sheets are a Dialog with `side="end"` (or `"start"`), not a custom fixed div.
 
 ## 4. Websites, landing pages and portfolios
 
@@ -60,6 +62,6 @@ Compose it from existing components and tokens in the app's own code, following 
 
 ## 6. Before you finish
 
-- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every error. It catches invented classes, unknown tokens and variants, raw colours, `left/right`, unlabeled icon buttons and images without a size.
+- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every error. It catches invented classes, unknown tokens and variants, raw colours, `left/right`, unlabeled icon buttons, images without a size and other icon sets.
 - If the app has a theme switch, check the screen in both themes. If it supports RTL, check with `dir="rtl"`.
 - Interactive pieces work by keyboard: Tab to reach, Enter/Space to activate, Esc closes dialogs and tooltips, arrows move between tabs.

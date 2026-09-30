@@ -3,24 +3,32 @@
   "slug": "dialog",
   "status": "stable",
   "category": "Overlays",
-  "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free.",
-  "whenToUse": ["Confirming a destructive action.", "Short focused tasks that must finish before continuing (rename, create)."],
-  "whenNotToUse": ["Long forms or multi-step flows — use a page.", "Non-blocking messages — use an inline notice."],
+  "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge.",
+  "whenToUse": [
+    "Confirming a destructive action.",
+    "Short focused tasks that must finish before continuing (rename, create).",
+    "Side modal: editing or inspecting a record without leaving the page, settings, filters, a mobile nav drawer."
+  ],
+  "whenNotToUse": ["Long forms or multi-step flows — use a page.", "Non-blocking messages — use an inline notice.", "A panel people keep open while they work with the page — use a layout column, not a modal."],
   "classes": {
     "ayy-dialog": "On the <dialog> element. Open with dialog.showModal().",
     "ayy-dialog--sm": "24rem wide.",
     "ayy-dialog--lg": "42rem wide.",
     "ayy-dialog--xl": "56rem wide.",
+    "ayy-dialog--side-start": "Side modal on the inline-start edge (left in LTR, right in RTL): full height, slides in. Width from the size modifiers.",
+    "ayy-dialog--side-end": "Side modal on the inline-end edge (right in LTR, left in RTL): full height, slides in. Width from the size modifiers.",
     "ayy-dialog__header": "Title + description block.",
     "ayy-dialog__title": "Heading (h2). Reference it with aria-labelledby on the dialog.",
     "ayy-dialog__description": "Muted supporting text.",
+    "ayy-dialog__body": "Content that scrolls on its own, between the header and the footer. Fills the height of a side modal, so the footer sits at the bottom.",
     "ayy-dialog__footer": "Actions. Stacked on mobile, right-aligned (end-aligned in RTL) from 640px.",
     "ayy-dialog__close": "Icon button in the top-end corner."
   },
   "variants": {
-    "size": { "values": ["sm", "md", "lg", "xl"], "default": "md", "component": "DialogContent" }
+    "size": { "values": ["sm", "md", "lg", "xl"], "default": "md", "component": "DialogContent" },
+    "side": { "values": ["center", "start", "end"], "default": "center", "component": "DialogContent" }
   },
-  "js": "dialogClass({ size?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (SVG string). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
+  "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
   "element": {
     "tag": "ayy-dialog",
     "attributes": {
@@ -28,17 +36,18 @@
       "persistent": "Backdrop clicks don't close it (Esc still does)"
     },
     "events": { "ayy-open-change": "{ open: boolean, returnValue?: string }" },
-    "children": "A trigger with data-ayy-open and a <dialog class=\"ayy-dialog\">. Inside the dialog, data-ayy-close=\"value\" closes it and sets dialog.returnValue."
+    "children": "A trigger with data-ayy-open and a <dialog class=\"ayy-dialog\"> (centred or side). Inside the dialog, data-ayy-close=\"value\" closes it and sets dialog.returnValue."
   },
   "react": {
-    "import": "import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from \"ayywi/react\";",
+    "import": "import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from \"ayywi/react\";",
     "components": {
       "Dialog": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
       "DialogTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },
       "DialogContent": {
         "renders": "<dialog>",
         "props": {
-          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\" — width",
+          "side": "\"center\" | \"start\" | \"end\" — start/end make a side modal on that inline edge",
           "hideClose": "boolean — hide the corner close button",
           "closeLabel": "string — accessible name of the close button (translate it). Default \"Close\"",
           "closeOnBackdrop": "boolean — default true"
@@ -47,6 +56,7 @@
       "DialogHeader": { "renders": "<div>" },
       "DialogTitle": { "renders": "<h2>, auto-wired to aria-labelledby" },
       "DialogDescription": { "renders": "<p>, auto-wired to aria-describedby" },
+      "DialogBody": { "renders": "<div>, scrolls between header and footer" },
       "DialogFooter": { "renders": "<div>" },
       "DialogClose": { "renders": "Button (secondary by default)" }
     }
@@ -54,13 +64,19 @@
   "a11y": [
     "Always include a DialogTitle (or aria-label on the dialog).",
     "Focus moves into the dialog on open and returns to the trigger on close (native behaviour).",
-    "Esc closes; background is inert while open; page scroll is locked.",
-    "Opening and closing fade/scale; the closing animation is skipped in browsers without @starting-style and under reduced motion."
+    "Esc closes; background is inert while open; page scroll is locked. A side modal is still a modal: same rules.",
+    "A body with only text that scrolls needs tabindex=\"0\" so keyboard users can scroll it; form fields inside make that unnecessary.",
+    "Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion."
   ],
-  "do": ["Put the primary action last in the footer.", "Use destructive variant for the confirm button of irreversible actions."],
+  "do": [
+    "Put the primary action last in the footer.",
+    "Use destructive variant for the confirm button of irreversible actions.",
+    "In a side modal, put the form fields in the body and submit from the footer with <button type=\"submit\" form=\"form-id\">."
+  ],
   "dont": ["Don't open a dialog from inside another dialog.", "Don't render DialogContent's children while closed — the React component already skips them for you."],
   "examples": [
     { "id": "confirm", "title": "Confirm" },
-    { "id": "form", "title": "With a form" }
+    { "id": "form", "title": "With a form" },
+    { "id": "side", "title": "Side modal" }
   ]
 }
