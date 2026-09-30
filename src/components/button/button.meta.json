@@ -4,14 +4,6 @@
   "status": "stable",
   "category": "Actions",
   "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
-  "whenToUse": [
-    "Any action the user can take: submit, open, save, delete.",
-    "Links that should look like actions (apply buttonClass() to the <a>)."
-  ],
-  "whenNotToUse": [
-    "Navigation inside running text — use a plain link.",
-    "Toggling a setting on/off — use Switch."
-  ],
   "classes": {
     "ayy-button": "Root. Alone it is the primary button.",
     "ayy-button--secondary": "Quiet filled button for secondary actions.",
@@ -50,11 +42,15 @@
     "Visible focus ring on :focus-visible is built in — never remove it."
   ],
   "do": [
-    "One primary button per view or section; everything else secondary/outline/ghost.",
+    "Use a button for any action the user can take: submit, open, save, delete.",
+    "Apply buttonClass() to an <a> when a link should look like an action.",
+    "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
     "On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.",
     "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (1.25em)."
   ],
   "dont": [
+    "Don't use a button for navigation inside running text — use a plain link.",
+    "Don't use a button to toggle a setting on/off — use Switch.",
     "Don't restyle colours per button — add a variant to the design system instead.",
     "Don't use destructive for non-destructive emphasis."
   ],

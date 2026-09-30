@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Navigation",
   "description": "Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.",
-  "whenToUse": ["Opening a page that sits two or more levels deep: an index page, a case study, an article."],
-  "whenNotToUse": ["The home page or a single-level site.", "Steps in a process — that's a stepper, not a location."],
   "classes": {
     "ayy-breadcrumb": "Root <nav aria-label=\"Breadcrumb\">.",
     "ayy-breadcrumb--pill": "Bordered, blurred capsule that stays readable over hero images and grids.",
@@ -34,7 +32,16 @@
     "Wrap it in <nav aria-label=\"Breadcrumb\"> and use an <ol>, so it's announced as an ordered path.",
     "The current page is plain text with aria-current=\"page\", not a link to itself."
   ],
-  "do": ["Use the page titles as they appear in their own headings.", "Use pill over imagery or the ambient grid; plain elsewhere."],
-  "dont": ["Don't include the current page as a link.", "Don't use it as the only navigation."],
+  "do": [
+    "Use a breadcrumb on pages that sit two or more levels deep: an index page, a case study, an article.",
+    "Use the page titles as they appear in their own headings.",
+    "Use pill over imagery or the ambient grid; plain elsewhere."
+  ],
+  "dont": [
+    "Don't add one to the home page or a single-level site.",
+    "Don't use it for steps in a process — that's a stepper, not a location.",
+    "Don't include the current page as a link.",
+    "Don't use it as the only navigation."
+  ],
   "examples": [{ "id": "basic", "title": "Plain and pill" }]
 }

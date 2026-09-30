@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Data display",
   "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
-  "whenToUse": ["AI assistants and agents.", "Support or feedback widgets.", "A scripted \"say hi\" section on a marketing page that hands off to email or LinkedIn."],
-  "whenNotToUse": ["Comments and threads on a document — use a list of cards.", "Toast-style status messages — use Toast."],
   "classes": {
     "ayy-chat": "Root. role=\"log\" when messages arrive live, so they're announced.",
     "ayy-chat__message": "One message row: an optional avatar and its bubble.",
@@ -35,7 +33,17 @@
     "The typing dots are an image with a name (\"Dani is typing\"); remove the element when the message lands.",
     "Quick replies are real buttons; after one is chosen, move focus to the next sensible place, not back to the top."
   ],
-  "do": ["Keep bubbles short; split long answers into several messages.", "Pair incoming messages with the sender's avatar the first time."],
-  "dont": ["Don't auto-scroll the page while someone is reading above.", "Don't use colour alone to tell who's speaking; the side and avatar do it too."],
+  "do": [
+    "Use chat for AI assistants and agents, and for support or feedback widgets.",
+    "On a marketing page, use it for a scripted \"say hi\" section that hands off to email or LinkedIn.",
+    "Keep bubbles short; split long answers into several messages.",
+    "Pair incoming messages with the sender's avatar the first time."
+  ],
+  "dont": [
+    "Don't use it for comments and threads on a document — use a list of cards.",
+    "Don't use it for toast-style status messages — use Toast.",
+    "Don't auto-scroll the page while someone is reading above.",
+    "Don't use colour alone to tell who's speaking; the side and avatar do it too."
+  ],
   "examples": [{ "id": "conversation", "title": "Conversation with quick replies" }]
 }

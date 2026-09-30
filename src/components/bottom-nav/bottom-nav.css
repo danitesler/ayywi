@@ -1,0 +1,90 @@
+/* Bottom nav: a phone app's tab bar. Three to five top-level destinations, icon over a short label, pinned to the bottom
+   of its scroll container (sticky) and clear of the home indicator. The current page is a pill behind the icon and a heavier label. */
+.ayy-bottom-nav {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--ayy-z-sticky);
+  box-sizing: border-box;
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--ayy-space-1);
+  padding-block: var(--ayy-space-2) calc(var(--ayy-space-2) + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--ayy-space-2);
+  border-block-start: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-bottom-nav__link {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+  min-block-size: var(--ayy-size-control-lg);
+  padding: var(--ayy-space-1);
+  border-radius: var(--ayy-radius-md);
+  color: inherit;
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+  text-align: center;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--ayy-duration-base) ease;
+}
+
+/* The label stays on one line; a long one is cut rather than pushing the bar taller. */
+.ayy-bottom-nav__label {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-bottom-nav__link > svg {
+  flex: none;
+  box-sizing: content-box;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-4);
+  border-radius: var(--ayy-radius-pill);
+  transition: background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-bottom-nav__link:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-bottom-nav__link:hover > svg {
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-bottom-nav__link[aria-current="page"] {
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-bottom-nav__link[aria-current="page"] > svg {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-bottom-nav__link:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+@media (forced-colors: active) {
+  .ayy-bottom-nav {
+    border-color: CanvasText;
+  }
+  .ayy-bottom-nav__link[aria-current="page"] > svg {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

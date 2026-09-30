@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Data display",
   "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
-  "whenToUse": ["Comparing items across the same attributes (projects × status × builds)."],
-  "whenNotToUse": ["Layout — never use tables for layout.", "Lists with one attribute — use a list."],
   "classes": {
     "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
     "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
@@ -36,7 +34,16 @@
     "Use real <th> header cells with scope (React sets scope=\"col\").",
     "A <caption> or aria-label names the table for screen readers."
   ],
-  "do": ["End-align numbers with numeric/ayy-table__num.", "Keep cell content short; truncate with a tooltip if needed."],
-  "dont": ["Don't zebra-stripe; hairlines + hover are enough.", "Don't nest interactive controls in every cell — one action column is plenty."],
+  "do": [
+    "Use a table to compare items across the same attributes (projects × status × builds).",
+    "End-align numbers with numeric/ayy-table__num.",
+    "Keep cell content short; truncate with a tooltip if needed."
+  ],
+  "dont": [
+    "Don't use tables for layout.",
+    "Don't use a table for lists with one attribute — use a list.",
+    "Don't zebra-stripe; hairlines + hover are enough.",
+    "Don't nest interactive controls in every cell — one action column is plenty."
+  ],
   "examples": [{ "id": "basic", "title": "Basic" }]
 }

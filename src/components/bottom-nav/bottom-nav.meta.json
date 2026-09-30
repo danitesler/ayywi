@@ -1,0 +1,47 @@
+{
+  "name": "Bottom nav",
+  "slug": "bottom-nav",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator.",
+  "classes": {
+    "ayy-bottom-nav": "The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below.",
+    "ayy-bottom-nav__link": "Destination link: icon over label. aria-current=\"page\" marks the page you're on: a pill behind the icon and a heavier label.",
+    "ayy-bottom-nav__label": "The link's text, one line, cut with an ellipsis if it's too long."
+  },
+  "variants": {},
+  "js": "bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.",
+  "react": {
+    "import": "import { BottomNav, BottomNavLink } from \"ayywi/react\";",
+    "components": {
+      "BottomNav": { "renders": "<nav class=\"ayy-bottom-nav\">", "props": { "aria-label": "Defaults to \"Main\"." } },
+      "BottomNavLink": {
+        "renders": "<a class=\"ayy-bottom-nav__link\"> with the icon and a <span class=\"ayy-bottom-nav__label\">",
+        "props": {
+          "icon": "ReactNode — the icon above the label (an <Icon>).",
+          "current": "boolean — sets aria-current=\"page\"."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "It's a <nav>: give it an aria-label (\"Main\" by default in React). If the app also has a sidebar or drawer with the same links, show only one of them at a time.",
+    "Mark the current page with aria-current=\"page\". It also gets a pill and a heavier weight, so colour isn't the only cue; High Contrast mode fills the pill with the system highlight.",
+    "Every link keeps a visible text label. Icon-only tabs are guesswork.",
+    "Each link is at least the large control height, so it's a comfortable touch target at every density.",
+    "Content above it needs bottom padding (or to end before it) so the last line isn't hidden behind the bar."
+  ],
+  "do": [
+    "Use a bottom nav for the three to five top-level destinations of a phone app, so they're one thumb-tap away.",
+    "Keep labels to one short word: Home, Search, Inbox, Account.",
+    "Show it on phones only and switch to the App shell sidebar on wider screens (hide it from 48rem with a media query).",
+    "Use the same icons as the sidebar for the same destinations."
+  ],
+  "dont": [
+    "Don't use a bottom nav for actions (compose, share) — use a Button, or a bottom-sheet Dialog for a list of actions.",
+    "Don't use it to switch views of one thing inside a page — use Tabs.",
+    "Don't put more than five links in it; put the rest in a drawer (App shell with a bar) or on an Account page.",
+    "Don't nest menus in it or change its links from page to page."
+  ],
+  "examples": [{ "id": "basic", "title": "Phone tab bar" }]
+}

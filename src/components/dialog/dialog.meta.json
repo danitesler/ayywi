@@ -3,13 +3,7 @@
   "slug": "dialog",
   "status": "stable",
   "category": "Overlays",
-  "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge.",
-  "whenToUse": [
-    "Confirming a destructive action.",
-    "Short focused tasks that must finish before continuing (rename, create).",
-    "Side modal: editing or inspecting a record without leaving the page, settings, filters, a mobile nav drawer."
-  ],
-  "whenNotToUse": ["Long forms or multi-step flows — use a page.", "Non-blocking messages — use an inline notice.", "A panel people keep open while they work with the page — use a layout column, not a modal."],
+  "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.",
   "classes": {
     "ayy-dialog": "On the <dialog> element. Open with dialog.showModal().",
     "ayy-dialog--sm": "24rem wide.",
@@ -17,6 +11,7 @@
     "ayy-dialog--xl": "56rem wide.",
     "ayy-dialog--side-start": "Side modal on the inline-start edge (left in LTR, right in RTL): full height, slides in. Width from the size modifiers.",
     "ayy-dialog--side-end": "Side modal on the inline-end edge (right in LTR, left in RTL): full height, slides in. Width from the size modifiers.",
+    "ayy-dialog--side-bottom": "Bottom sheet: anchored to the bottom edge with a grab handle, slides up. Full width on phones, centred at the size modifier's width on wider screens; clears the home indicator (safe-area inset).",
     "ayy-dialog__header": "Title + description block.",
     "ayy-dialog__title": "Heading (h2). Reference it with aria-labelledby on the dialog.",
     "ayy-dialog__description": "Muted supporting text.",
@@ -26,7 +21,7 @@
   },
   "variants": {
     "size": { "values": ["sm", "md", "lg", "xl"], "default": "md", "component": "DialogContent" },
-    "side": { "values": ["center", "start", "end"], "default": "center", "component": "DialogContent" }
+    "side": { "values": ["center", "start", "end", "bottom"], "default": "center", "component": "DialogContent" }
   },
   "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
   "element": {
@@ -47,7 +42,7 @@
         "renders": "<dialog>",
         "props": {
           "size": "\"sm\" | \"md\" | \"lg\" | \"xl\" — width",
-          "side": "\"center\" | \"start\" | \"end\" — start/end make a side modal on that inline edge",
+          "side": "\"center\" | \"start\" | \"end\" | \"bottom\" — start/end make a side modal on that inline edge, bottom a bottom sheet",
           "hideClose": "boolean — hide the corner close button",
           "closeLabel": "string — accessible name of the close button (translate it). Default \"Close\"",
           "closeOnBackdrop": "boolean — default true"
@@ -69,14 +64,25 @@
     "Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion."
   ],
   "do": [
+    "Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.",
+    "Use a dialog for short, focused tasks that must finish before continuing (rename, create).",
+    "Use a side modal to edit or inspect a record without leaving the page, and for settings, filters or a mobile nav drawer.",
     "Put the primary action last in the footer.",
-    "Use destructive variant for the confirm button of irreversible actions.",
+    "Use a bottom sheet on phones for a short list of actions or options on the thing just tapped (share, sort, quick settings): it sits under the thumb.",
     "In a side modal, put the form fields in the body and submit from the footer with <button type=\"submit\" form=\"form-id\">."
   ],
-  "dont": ["Don't open a dialog from inside another dialog.", "Don't render DialogContent's children while closed — the React component already skips them for you."],
+  "dont": [
+    "Don't use a dialog for long forms or multi-step flows — use a page.",
+    "Don't use a dialog for non-blocking messages — use an inline notice.",
+    "Don't use a modal for a panel people keep open while they work with the page — use a layout column.",
+    "Don't open a dialog from inside another dialog.",
+    "Don't fill a bottom sheet with a long form — it stops being a quick choice; use a page or a side modal.",
+    "Don't render DialogContent's children while closed — the React component already skips them for you."
+  ],
   "examples": [
     { "id": "confirm", "title": "Confirm" },
     { "id": "form", "title": "With a form" },
-    { "id": "side", "title": "Side modal" }
+    { "id": "side", "title": "Side modal" },
+    { "id": "sheet", "title": "Bottom sheet" }
   ]
 }

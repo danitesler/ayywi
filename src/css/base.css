@@ -18,7 +18,7 @@
 
 /* ---- Typography helpers ---- */
 
-:where(.ayy-h1, .ayy-h2, .ayy-h3, .ayy-h4) {
+:where(.ayy-h1, .ayy-h2, .ayy-h3, .ayy-h4, .ayy-h5, .ayy-h6) {
   margin: 0;
   font-family: var(--ayy-font-heading);
   color: var(--ayy-color-text);
@@ -28,6 +28,8 @@
 :where(.ayy-h2) { font-size: var(--ayy-text-3xl); font-weight: var(--ayy-weight-bold); line-height: var(--ayy-leading-tight); letter-spacing: var(--ayy-tracking-tight); }
 :where(.ayy-h3) { font-size: var(--ayy-text-2xl); font-weight: var(--ayy-weight-semibold); line-height: var(--ayy-leading-snug); }
 :where(.ayy-h4) { font-size: var(--ayy-text-xl); font-weight: var(--ayy-weight-medium); line-height: var(--ayy-leading-snug); }
+:where(.ayy-h5) { font-size: var(--ayy-text-lg); font-weight: var(--ayy-weight-medium); line-height: var(--ayy-leading-snug); }
+:where(.ayy-h6) { font-size: var(--ayy-text-md); font-weight: var(--ayy-weight-semibold); line-height: var(--ayy-leading-snug); }
 
 :where(.ayy-lede) {
   font-size: var(--ayy-text-lg);

@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Forms",
   "description": "Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.",
-  "whenToUse": ["Choosing one option from a longer list (country, time zone, role)."],
-  "whenNotToUse": ["2–5 options that should all be visible — use Radio.", "Actions — use a Dropdown menu.", "Searching thousands of options — build a combobox."],
   "classes": {
     "ayy-select": "Wrapper element. Draws the chevron and sets the height.",
     "ayy-select__control": "On the <select> inside the wrapper.",
@@ -35,7 +33,15 @@
     }
   },
   "a11y": ["Label it like any input (Field + Label with for/id).", "The native picker is fully accessible and mobile-friendly — don't replace it without a strong reason."],
-  "do": ["Put a sensible default first, or a disabled placeholder option."],
-  "dont": ["Don't use a select for yes/no — use a Switch or Checkbox."],
+  "do": [
+    "Use a select to choose one option from a longer list (country, time zone, role).",
+    "Put a sensible default first, or a disabled placeholder option."
+  ],
+  "dont": [
+    "Don't use a select for 2–5 options that should all be visible — use Radio.",
+    "Don't use a select for actions — use a Dropdown menu.",
+    "Don't use a select to search thousands of options — build a combobox.",
+    "Don't use a select for yes/no — use a Switch or Checkbox."
+  ],
   "examples": [{ "id": "basic", "title": "Sizes and states" }]
 }

@@ -19,12 +19,12 @@ export async function copyText(text: string): Promise<boolean> {
   }
 }
 
-export function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
+export function CopyButton({ text, label = "Copy", variant = "ghost" }: { text: string; label?: string; variant?: "ghost" | "outline" }) {
   const [copied, setCopied] = useState(false);
   return (
     <Button
       size="sm"
-      variant="ghost"
+      variant={variant}
       onClick={async () => {
         if (await copyText(text)) {
           setCopied(true);
@@ -37,14 +37,14 @@ export function CopyButton({ text, label = "Copy" }: { text: string; label?: str
   );
 }
 
-export function CodeBlock({ code, label }: { code: string; label?: string }) {
+export function CodeBlock({ code, label, wrap }: { code: string; label?: string; wrap?: boolean }) {
   return (
     <div className="pv-code">
       <div className="pv-code__bar">
         <span className="ayy-eyebrow">{label}</span>
         <CopyButton text={code} />
       </div>
-      <pre className="pv-code__pre ayy-scroll" dir="ltr">
+      <pre className={`pv-code__pre ayy-scroll${wrap ? " pv-code__pre--wrap" : ""}`} dir="ltr">
         <code>{code}</code>
       </pre>
     </div>

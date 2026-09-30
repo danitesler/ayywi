@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Forms",
   "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
-  "whenToUse": ["Picking exactly one of 2–6 visible options (plan, visibility, region)."],
-  "whenNotToUse": ["More than ~6 options — use Select.", "Switching views — use Tabs.", "Independent on/off choices — use Checkbox."],
   "classes": {
     "ayy-radio": "On <input type=\"radio\">. Size follows density.",
     "ayy-radio-group": "On the <fieldset> holding the radios. Vertical stack.",
@@ -40,7 +38,15 @@
     "Arrow keys move between radios in a group natively — no JS needed.",
     "Always give the group a legend (label prop) and each radio a wrapping <label class=\"ayy-label\">."
   ],
-  "do": ["Pre-select the most common option when there's a sensible default."],
-  "dont": ["Don't use a single radio on its own — use a Checkbox."],
+  "do": [
+    "Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).",
+    "Pre-select the most common option when there's a sensible default."
+  ],
+  "dont": [
+    "Don't use radios for more than ~6 options — use Select.",
+    "Don't use radios to switch views — use Tabs.",
+    "Don't use radios for independent on/off choices — use Checkbox.",
+    "Don't use a single radio on its own — use a Checkbox."
+  ],
   "examples": [{ "id": "group", "title": "Group" }]
 }

@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Forms",
   "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
-  "whenToUse": ["Every labelled form control: Input, Textarea, Switch, native <select>."],
-  "whenNotToUse": ["Search boxes in toolbars — an aria-label on the Input is enough."],
   "classes": {
     "ayy-field": "Wrapper, vertical stack.",
     "ayy-field--inline": "Label and control side by side (Switch, checkbox).",
@@ -31,8 +29,15 @@
     "Link hint/error to the control with aria-describedby; set aria-invalid=\"true\" on the control when there's an error.",
     "The label dims automatically when the control inside the field is disabled."
   ],
-  "do": ["Keep hints to one short sentence.", "Show errors after the user leaves the field or submits, not on every keystroke."],
-  "dont": ["Don't show a hint and an error at the same time — the error replaces the hint."],
+  "do": [
+    "Wrap every labelled form control in a Field: Input, Textarea, Switch, native <select>.",
+    "Keep hints to one short sentence.",
+    "Show errors after the user leaves the field or submits, not on every keystroke."
+  ],
+  "dont": [
+    "Don't wrap search boxes in toolbars — an aria-label on the Input is enough.",
+    "Don't show a hint and an error at the same time — the error replaces the hint."
+  ],
   "examples": [
     { "id": "form", "title": "Form fields" }
   ]

@@ -24,7 +24,7 @@ const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spac
 
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
-  await expect(page.locator(".pv-card-link")).toHaveCount(slugs.length);
+  await expect(page.locator(".pv-chip")).toHaveCount(slugs.length);
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
     await page.goto(`/#/${route}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
@@ -45,25 +45,24 @@ test("sidebar groups every component under its category", async ({ page }) => {
   for (const title of Object.values(FOUNDATIONS)) {
     await expect(nav.getByRole("list", { name: "Foundations" }).getByRole("link", { name: title, exact: true })).toBeVisible();
   }
-  const colorCategories = [...new Set(manifest.tokens.flatMap((t: { category?: string }) => (t.category ? [t.category] : [])))];
-  await expect(nav.getByRole("list", { name: "Colors sections" }).getByRole("link")).toHaveText(["Themes", ...colorCategories, "Accents", "Palette"]);
   for (const c of manifest.components as { name: string; category: string }[]) {
     await expect(nav.getByRole("list", { name: c.category, exact: true }).getByRole("link", { name: c.name, exact: true })).toBeVisible();
   }
 });
 
-test("colour categories in the sidebar jump to their section", async ({ page }) => {
-  await open(page, "");
+test("a section link opens the page scrolled to that section", async ({ page }) => {
+  await open(page, "colors/status");
+  await expect(page.getByRole("heading", { level: 2, name: "Status", exact: true })).toBeInViewport();
   const nav = page.getByRole("navigation", { name: "Design system" });
-  await nav.getByRole("link", { name: "Status", exact: true }).click();
-  await expect(page).toHaveURL(/#\/colors\/status$/);
-  const heading = page.getByRole("heading", { level: 2, name: "Status", exact: true });
-  await expect(heading).toBeInViewport();
-  await expect(nav.getByRole("link", { name: "Status", exact: true })).toHaveAttribute("aria-current", "location");
   await expect(nav.getByRole("link", { name: "Colors", exact: true })).toHaveAttribute("aria-current", "page");
-  // The heading clears the sticky toolbar.
-  const toolbar = (await page.locator(".pv-toolbar").boundingBox())!;
-  expect((await heading.boundingBox())!.y).toBeGreaterThanOrEqual(toolbar.y + toolbar.height);
+});
+
+test("example code is one click away", async ({ page }) => {
+  await open(page, "button");
+  const code = page.locator(".pv-example").first().locator(".pv-code");
+  await expect(code).toBeHidden();
+  await page.locator(".pv-source__toggle").first().click();
+  await expect(code).toBeVisible();
 });
 
 test("search filters the sidebar and jumps to a result", async ({ page }) => {
@@ -78,8 +77,8 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
   await expect(nav.getByRole("link")).toHaveText(["Dropdown menu"]);
   await expect(page.getByRole("status")).toHaveText("1 result");
 
-  await box.fill("surface-raised"); // token names match, down to the colour category
-  await expect(nav.getByRole("link")).toHaveText(["Colors", "Surfaces"]);
+  await box.fill("surface-raised"); // token names match
+  await expect(nav.getByRole("link")).toHaveText(["Colors"]);
 
   await box.fill("forms"); // categories match
   await expect(nav.getByRole("link")).toHaveCount(7);
@@ -102,9 +101,65 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "colors", "button", "table", "dialog", "navbar", "section", "toc", "carousel", "chat", "data-list"]) {
+  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "section", "toc", "carousel", "chat", "data-list"]) {
     await open(page, route);
+    for (const dir of ["ltr", "rtl"]) {
+      await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow, `/#/${route} (${dir})`).toBeLessThanOrEqual(0);
+    }
+  }
+});
+
+test("on a phone the preview's sidebar is a drawer opened from the top bar", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, "button");
+  const toggle = page.getByRole("button", { name: "Open navigation" });
+  const nav = page.getByRole("navigation", { name: "Design system" });
+  await expect(nav).toBeHidden();
+  await toggle.click();
+  await expect(nav).toBeVisible();
+  await nav.getByRole("link", { name: "Dialog", exact: true }).click();
+  await expect(page).toHaveURL(/#\/dialog$/);
+  await expect(nav).toBeHidden();
+  await expect(page.locator(".pv-page h1")).toHaveText("Dialog");
+});
+
+const SHOWCASE = [
+  { id: "dashboard", name: "Pulse", theme: "dark", density: "compact" },
+  { id: "landing", name: "Northwind", theme: "light", density: "comfortable" },
+  { id: "inbox", name: "Relay", theme: "dark-soft", density: "comfortable" },
+  { id: "settings", name: "Ledger", theme: "light-gray", density: "touch" },
+];
+
+test("what you can build: cards open a device preview", async ({ page }) => {
+  const errors = await open(page, "showcase");
+  await expect(page.getByRole("heading", { level: 1, name: "What you can build" })).toBeVisible();
+  const cards = page.locator(".pv-showcase__card");
+  await expect(cards).toHaveCount(SHOWCASE.length);
+
+  await cards.filter({ hasText: "Relay" }).click();
+  await expect(page).toHaveURL(/#\/showcase\/inbox$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Relay" })).toBeVisible();
+
+  const frame = page.locator(".pv-device iframe");
+  const device = page.getByRole("group", { name: "Device" });
+  for (const [label, width] of [["Tablet", 834], ["Mobile", 390], ["Desktop", 1280]] as const) {
+    await device.getByRole("button", { name: label }).click();
+    await expect(device.getByRole("button", { name: label })).toHaveAttribute("aria-pressed", "true");
+    await expect(frame).toHaveCSS("width", `${width}px`);
+  }
+  expect(errors).toEqual([]);
+});
+
+test("each showcase app renders in its own theme and density, and fits a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const app of SHOWCASE) {
+    await page.goto(`/?app=${app.id}`);
+    await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", app.theme);
+    await expect(page.locator("html")).toHaveAttribute("data-density", app.density);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    expect(overflow, `/#/${route}`).toBeLessThanOrEqual(0);
+    expect(overflow, app.id).toBeLessThanOrEqual(0);
   }
 });

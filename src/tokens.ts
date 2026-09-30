@@ -190,7 +190,3 @@ export type ThemeName = (typeof themes)[number];
 
 /** The base colour scheme of each theme. */
 export const themeBase = {"dark":"dark","light":"light","dark-soft":"dark","light-gray":"light"} as const satisfies Record<ThemeName, "dark" | "light">;
-
-/** Brands shipped in ayywi/brands/<name>.css. */
-export const brands = ["violet"] as const;
-export type BrandName = (typeof brands)[number];

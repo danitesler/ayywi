@@ -4,12 +4,6 @@
   "status": "stable",
   "category": "Overlays",
   "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
-  "whenToUse": ["Naming icon-only buttons visually (they still need aria-label).", "Short clarifications: shortcuts, truncated values."],
-  "whenNotToUse": [
-    "Essential information — tooltips are invisible on touch devices.",
-    "Interactive content (links, buttons) — use a popover or dialog.",
-    "CSS-only (no JS) inside overflow:hidden containers — it can be clipped there; use the React component or <ayy-tooltip>."
-  ],
   "classes": {
     "ayy-tooltip": "Wrapper around the trigger. Shows the content on :hover and :focus-within.",
     "ayy-tooltip__content": "The bubble (role=\"tooltip\"). Placement via data-side=\"top|bottom|start|end\" (start/end follow text direction)."
@@ -45,7 +39,16 @@
     "aria-describedby links trigger → tooltip (React does it automatically).",
     "Esc dismisses (WCAG 1.4.13); the bubble stays open while hovered."
   ],
-  "do": ["Keep it under ~60 characters.", "Use side=\"start\"/\"end\", not left/right, so RTL works."],
-  "dont": ["Don't put the only copy of important info in a tooltip.", "Don't wrap disabled buttons — they can't receive focus or hover events reliably."],
+  "do": [
+    "Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.",
+    "Keep it under ~60 characters.",
+    "Use side=\"start\"/\"end\", not left/right, so RTL works.",
+    "Inside overflow:hidden containers, use the React component or <ayy-tooltip> — the CSS-only version can be clipped there."
+  ],
+  "dont": [
+    "Don't put essential information in a tooltip — tooltips are invisible on touch devices.",
+    "Don't put interactive content (links, buttons) in a tooltip — use a popover or dialog.",
+    "Don't wrap disabled buttons — they can't receive focus or hover events reliably."
+  ],
   "examples": [{ "id": "sides", "title": "Sides" }]
 }

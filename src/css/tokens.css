@@ -264,10 +264,9 @@
   --ayy-color-overlay: #0a0a0a73;
 }
 
-/* Derived from the themed tokens above. Redeclared on every theme and brand root so nested ones recompute. */
+/* Derived from the themed tokens above. Redeclared on every theme root so nested ones recompute. */
 :root,
 [data-theme],
-[data-brand],
 .dark,
 .light {
   --ayy-color-wash: color-mix(in srgb, var(--ayy-color-text) 4%, transparent);

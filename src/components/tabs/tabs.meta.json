@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Layout",
   "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
-  "whenToUse": ["Switching views of the same object (Overview / Activity / Members).", "Segmented filters with 2–6 options."],
-  "whenNotToUse": ["Page-level navigation between routes — use links.", "Sequential steps — use a stepper or separate pages."],
   "classes": {
     "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
     "ayy-tabs__list": "role=\"tablist\" pill container.",
@@ -38,8 +36,17 @@
     "Only the selected tab is in the tab order (roving tabindex).",
     "Give the tablist an aria-label when there's no visible heading."
   ],
-  "do": ["Keep tab labels to one or two words.", "Keep the tab set stable — don't add/remove tabs based on content."],
-  "dont": ["Don't nest tabs inside tabs.", "Don't use tabs for more than ~6 options."],
+  "do": [
+    "Use tabs to switch views of the same object (Overview / Activity / Members) or as segmented filters with 2–6 options.",
+    "Keep tab labels to one or two words.",
+    "Keep the tab set stable — don't add/remove tabs based on content."
+  ],
+  "dont": [
+    "Don't use tabs for page-level navigation between routes — use links.",
+    "Don't use tabs for sequential steps — use a stepper or separate pages.",
+    "Don't nest tabs inside tabs.",
+    "Don't use tabs for more than ~6 options."
+  ],
   "examples": [
     { "id": "basic", "title": "Basic" },
     { "id": "counts", "title": "Filters with counts" }

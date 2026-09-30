@@ -4,12 +4,6 @@
   "status": "stable",
   "category": "Feedback",
   "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
-  "whenToUse": ["Confirming something happened (Saved, Deployed, Copied).", "Background results that don't need a decision, optionally with one Undo-style action."],
-  "whenNotToUse": [
-    "Errors the user must fix — show them inline next to the problem.",
-    "Anything needing a decision — use Dialog.",
-    "Long or important content — it disappears."
-  ],
   "classes": {
     "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position.",
     "ayy-toast": "One toast.",
@@ -45,7 +39,17 @@
     "Timers pause while a toast is hovered or focused, so there's time to read it and reach its action.",
     "Messages are set with textContent — never HTML."
   ],
-  "do": ["Say what happened in 2–5 words: \"Project deleted\".", "Offer Undo instead of a confirmation dialog for reversible actions."],
-  "dont": ["Don't stack several toasts for one action — reuse an id to update it.", "Don't put links the user must follow in a toast."],
+  "do": [
+    "Use a toast to confirm something happened (Saved, Deployed, Copied) or to report a background result that needs no decision.",
+    "Say what happened in 2–5 words: \"Project deleted\".",
+    "Offer one Undo-style action instead of a confirmation dialog for reversible actions."
+  ],
+  "dont": [
+    "Don't use a toast for errors the user must fix — show them inline next to the problem.",
+    "Don't use a toast for anything needing a decision — use Dialog.",
+    "Don't put long or important content in a toast — it disappears.",
+    "Don't stack several toasts for one action — reuse an id to update it.",
+    "Don't put links the user must follow in a toast."
+  ],
   "examples": [{ "id": "basic", "title": "Variants and actions" }]
 }

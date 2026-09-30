@@ -4,11 +4,6 @@
   "status": "beta",
   "category": "Layout",
   "description": "A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.",
-  "whenToUse": [
-    "Each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).",
-    "Chapters of a long case study or article, with numbered eyebrows that match the contents list."
-  ],
-  "whenNotToUse": ["Grouping inside an app screen — use Card or plain headings.", "A single heading with no content under it."],
   "classes": {
     "ayy-section": "Root <section>. 96px block padding (80px on phones, 128px on wide screens). Add ayy-container for page width.",
     "ayy-section--center": "Header centred over the content; start-aligned again on phones.",
@@ -37,11 +32,17 @@
     "Keep the heading order: page title h1, section titles h2."
   ],
   "do": [
+    "Use a section for each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).",
+    "Use sections for the chapters of a long case study or article, with numbered eyebrows that match the Contents list.",
     "Separate homepage sections with a fading Separator.",
-    "Use the same numbers in the eyebrow and the Contents list of a long page.",
     "Set --ayy-spot on a case study's <main> so the numbers take its accent."
   ],
-  "dont": ["Don't stack two sections' paddings with extra margins; the padding is the rhythm.", "Don't write a paragraph as the description — one or two sentences."],
+  "dont": [
+    "Don't use it for grouping inside an app screen — use Card or plain headings.",
+    "Don't use a section for a single heading with no content under it.",
+    "Don't stack two sections' paddings with extra margins; the padding is the rhythm.",
+    "Don't write a paragraph as the description — one or two sentences."
+  ],
   "examples": [
     { "id": "centered", "title": "Centred header" },
     { "id": "numbered", "title": "Numbered chapter" }

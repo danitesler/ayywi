@@ -134,6 +134,50 @@ dialog.ayy-dialog--side-end:not([open]) {
   }
 }
 
+/* ---- Bottom sheet: full width on a phone (the UA's modal max-width would leave a gap), anchored to the bottom edge, slides up. Width from the size modifiers on wider screens. ---- */
+
+.ayy-dialog--side-bottom {
+  inset-block: auto 0;
+  inset-inline: 0;
+  inline-size: min(var(--_w), 100vw);
+  max-inline-size: none;
+  max-block-size: calc(100dvh - var(--ayy-space-12));
+  margin-block: 0;
+  margin-inline: auto;
+  padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom, 0px));
+  border-block-end-width: 0;
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+  transition:
+    transform var(--ayy-duration-base) var(--ayy-ease-menu),
+    overlay var(--ayy-duration-base) allow-discrete,
+    display var(--ayy-duration-base) allow-discrete;
+}
+
+/* A grab handle: a visual cue that this is a sheet. Not interactive. */
+.ayy-dialog--side-bottom::before {
+  content: "";
+  flex: none;
+  align-self: center;
+  inline-size: var(--ayy-space-10);
+  block-size: 4px;
+  margin-block: calc(-1 * var(--ayy-space-2)) 0;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-line-strong);
+}
+
+dialog.ayy-dialog--side-bottom:not([open]) {
+  opacity: 1;
+  transform: translateY(100%);
+}
+
+@starting-style {
+  dialog.ayy-dialog--side-bottom[open] {
+    opacity: 1;
+    transform: translateY(100%);
+  }
+}
+
 /* ---- Parts ---- */
 
 .ayy-dialog__header {
@@ -205,6 +249,11 @@ dialog.ayy-dialog--side-end:not([open]) {
     flex-direction: row;
     justify-content: flex-end;
   }
+}
+
+/* A sheet's actions are a list of choices, top to bottom in reading order, at every width. */
+.ayy-dialog--side-bottom .ayy-dialog__footer {
+  flex-direction: column;
 }
 
 .ayy-dialog__close {

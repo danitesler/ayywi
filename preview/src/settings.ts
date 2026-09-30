@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { getDensity, getTheme, setBrand, setDensity, setTheme, type DensityMode, type ThemeMode } from "ayywi";
+import { getDensity, getTheme, setDensity, setTheme, type DensityMode, type ThemeMode } from "ayywi";
 
 export type Renderer = "react" | "html";
-export type Brand = "default" | "violet";
 
 function load<T extends string>(key: string, allowed: readonly T[], fallback: T): T {
   try {
@@ -38,13 +37,11 @@ export function useSettings() {
   const [theme, setThemeState] = useState<ThemeMode>(() => getTheme());
   const [density, setDensityState] = useState<DensityMode>(() => getDensity());
   const [renderer, setRenderer] = usePersisted<Renderer>("ayy-preview-renderer", ["react", "html"], "react");
-  const [brand, setBrandState] = usePersisted<Brand>("ayy-preview-brand", ["default", "violet"], "default");
 
   useEffect(() => setTheme(theme), [theme]);
   useEffect(() => setDensity(density), [density]);
-  useEffect(() => setBrand(brand === "default" ? null : brand), [brand]);
 
-  return { theme, setTheme: setThemeState, density, setDensity: setDensityState, brand, setBrand: setBrandState, renderer, setRenderer };
+  return { theme, setTheme: setThemeState, density, setDensity: setDensityState, renderer, setRenderer };
 }
 
 export function useHashRoute(): string {

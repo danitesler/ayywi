@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Feedback",
   "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
-  "whenToUse": ["Sync, upload, install — anything with measurable progress.", "Indeterminate: work of unknown length that takes more than ~1s."],
-  "whenNotToUse": ["Quotas or meters that aren't 'progress' — still fine visually, but use role=\"meter\" instead of progressbar."],
   "classes": {
     "ayy-progress": "Track. Set --ayy-value (0–100) on it.",
     "ayy-progress__bar": "Fill (only child).",
@@ -39,7 +37,14 @@
     "role=\"progressbar\" with aria-valuenow/min/max (React sets them).",
     "Give it an accessible name: aria-label or aria-labelledby."
   ],
-  "do": ["Show the percentage or step as text nearby for anything longer than a few seconds."],
-  "dont": ["Don't animate a determinate bar backwards."],
+  "do": [
+    "Use a determinate bar for sync, upload, install — anything with measurable progress.",
+    "Use indeterminate for work of unknown length that takes more than ~1s.",
+    "Show the percentage or step as text nearby for anything longer than a few seconds.",
+    "For quotas or meters that aren't progress, the look still works — set role=\"meter\" instead of progressbar."
+  ],
+  "dont": [
+    "Don't animate a determinate bar backwards."
+  ],
   "examples": [{ "id": "basic", "title": "Values, tones, indeterminate" }]
 }

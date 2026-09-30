@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Data display",
   "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
-  "whenToUse": ["The icon of a product, plugin, platform or service in a card or list row."],
-  "whenNotToUse": ["People — use Avatar.", "Icons inside buttons or text — use the bare SVG."],
   "classes": {
     "ayy-icon-tile": "Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.",
     "ayy-icon-tile--sm": "32px.",
@@ -33,9 +31,14 @@
     "Standing alone, give it role=\"img\" and an aria-label."
   ],
   "do": [
+    "Use an icon tile for the icon of a product, plugin, platform or service in a card or list row.",
     "Draw glyphs in currentColor so they take the accent; brand marks with their own colours can keep them.",
     "Use one accent per product and reuse it wherever that product appears."
   ],
-  "dont": ["Don't put text or numbers in the tile."],
+  "dont": [
+    "Don't use it for people — use Avatar.",
+    "Don't use it for icons inside buttons or text — use the bare SVG.",
+    "Don't put text or numbers in the tile."
+  ],
   "examples": [{ "id": "sizes", "title": "Accents and sizes" }]
 }

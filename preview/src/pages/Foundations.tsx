@@ -1,12 +1,14 @@
-import type { ComponentType, CSSProperties, ReactNode } from "react";
-import { brands, tokens, type TokenDefinition } from "ayywi";
-import { contrast, themeOptions, valueIn } from "../themes";
+import { useEffect, useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
+import { tokens, type TokenDefinition } from "ayywi";
+import { themeOptions } from "../themes";
 
 type Entry = [string, TokenDefinition];
 const all = Object.entries(tokens) as Entry[];
 const group = (prefix: string) => all.filter(([name]) => name.startsWith(`${prefix}.`));
-const show = (v: TokenDefinition["value"]) => (Array.isArray(v) ? v.join(", ") : String(v));
+const short = (name: string) => name.split(".").slice(1).join(".");
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+/** "1.5rem" → "24px", for people who think in pixels. */
+const px = (v: TokenDefinition["value"]) => (typeof v === "string" && v.endsWith("rem") ? `${parseFloat(v) * 16}px` : String(v));
 
 function Header({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -18,95 +20,17 @@ function Header({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function Rows({ entries, render }: { entries: Entry[]; render?: (t: TokenDefinition) => ReactNode }) {
-  return (
-    <div className="ayy-table-wrap">
-      <table className="ayy-table">
-        <thead>
-          <tr>
-            <th scope="col">Token</th>
-            <th scope="col">Value</th>
-            {render ? <th scope="col">Preview</th> : null}
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map(([name, t]) => (
-            <tr key={name}>
-              <td>
-                <code className="pv-inline-code">{t.cssVar}</code>
-                {t.description ? <span className="pv-token-desc">{t.description}</span> : null}
-              </td>
-              <td className="ayy-muted">{show(t.value)}</td>
-              {render ? <td>{render(t)}</td> : null}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 // ---- Colors ----
 
-function ThemeSample({ name, label, base }: (typeof themeOptions)[number]) {
-  const text = contrast(valueIn(tokens["color.text"], name)!, valueIn(tokens["color.bg"], name)!);
-  const muted = contrast(valueIn(tokens["color.muted"], name)!, valueIn(tokens["color.bg"], name)!);
+function ThemeSample({ name, label }: (typeof themeOptions)[number]) {
   return (
     <div className="pv-theme" data-theme={name}>
-      <div className="pv-theme__head">
-        <strong>{label}</strong>
-        <code className="pv-theme__attr">data-theme="{name}"</code>
-      </div>
+      <strong className="pv-theme__head">{label}</strong>
       <p className="pv-theme__big">Aa</p>
-      <p className="pv-theme__line">
-        Text {text.toFixed(1)}:1 · <span className="ayy-muted">muted {muted.toFixed(1)}:1</span>
-      </p>
       <div className="ayy-cluster">
         <span className="ayy-button ayy-button--sm">Primary</span>
         <span className="ayy-button ayy-button--sm ayy-button--outline">Outline</span>
-        <span className="ayy-badge ayy-badge--success">
-          <span className="ayy-badge__dot" />
-          {base}
-        </span>
       </div>
-    </div>
-  );
-}
-
-function ColorTable({ entries }: { entries: Entry[] }) {
-  return (
-    <div className="ayy-table-wrap">
-      <table className="ayy-table pv-colors">
-        <thead>
-          <tr>
-            <th scope="col">Token</th>
-            {themeOptions.map((th) => (
-              <th scope="col" key={th.name}>
-                {th.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map(([name, t]) => (
-            <tr key={name}>
-              <td className="pv-colors__token">
-                <code className="pv-inline-code">{t.cssVar}</code>
-                {t.description ? <span className="pv-token-desc">{t.description}</span> : null}
-              </td>
-              {themeOptions.map((th) => {
-                const v = valueIn(t, th.name);
-                return (
-                  <td key={th.name} className="pv-colors__cell" data-theme={th.name}>
-                    <span className="pv-colors__chip" style={{ background: `var(${t.cssVar})` }} />
-                    {v ? <code className="pv-colors__hex">{v}</code> : null}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }
@@ -118,30 +42,8 @@ function Swatches({ entries }: { entries: Entry[] }) {
         <div className="pv-swatch" key={name}>
           <div className="pv-swatch__chip" style={{ background: `var(${t.cssVar})` }} />
           <div className="pv-swatch__meta">
-            <strong>{name.split(".").slice(1).join(".")}</strong>
-            <code className="pv-inline-code">{t.cssVar}</code>
-            <span className="ayy-muted">{show(t.value)}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Palette() {
-  const hues = [...new Set(group("palette").map(([name]) => name.split(".")[1]))];
-  return (
-    <div className="pv-palette">
-      {hues.map((hue) => (
-        <div key={hue} className="pv-palette__row">
-          <span className="pv-palette__hue">{hue}</span>
-          <div className="pv-palette__chips">
-            {group(`palette.${hue}`).map(([name, t]) => (
-              <div key={name} className="pv-palette__chip" title={`${t.cssVar}: ${show(t.value)}`}>
-                <span className="pv-palette__fill" style={{ background: `var(${t.cssVar})` }} />
-                <code>{name.split(".")[2]}</code>
-              </div>
-            ))}
+            <strong>{short(name)}</strong>
+            {t.description ? <span className="pv-swatch__desc">{t.description}</span> : null}
           </div>
         </div>
       ))}
@@ -155,16 +57,16 @@ function ColorsPage() {
   return (
     <article className="pv-page">
       <Header title="Colors">
-        Components only use the semantic colours below. They switch with the theme, so the same markup works in every one of them.
+        Components use these named colours, never raw hex. They switch with the theme, so one design works in all of them. Switch the theme at the bottom of
+        the sidebar to see each set.
       </Header>
 
       <h2 className="pv-h pv-h--section" id="colors-themes">
         Themes
       </h2>
       <p className="pv-note">
-        Set <code className="pv-inline-code">data-theme</code> on the page or any section. Dark soft lowers the contrast (charcoal instead of
-        black) for easier reading. Light gray puts white cards and panels on a grey page, so surfaces stand out more than on white. Every text colour
-        passes WCAG AA in every theme, and <code className="pv-inline-code">pnpm check</code> enforces it.
+        Dark soft is charcoal instead of black, for easier reading. Light gray puts white cards on a grey page. All text passes WCAG AA contrast in every
+        theme.
       </p>
       <div className="pv-themes">
         {themeOptions.map((th) => (
@@ -177,110 +79,127 @@ function ColorsPage() {
           <h2 className="pv-h pv-h--section" id={`colors-${slug(category)}`}>
             {category}
           </h2>
-          <ColorTable entries={group("color").filter(([, t]) => (t.category ?? "Other") === category)} />
+          <Swatches entries={group("color").filter(([, t]) => (t.category ?? "Other") === category)} />
         </section>
       ))}
 
       <h2 className="pv-h pv-h--section" id="colors-accents">
         Accents
       </h2>
-      <p className="pv-note">Colour comes from content: categories, spotlights, charts. The same in every theme.</p>
+      <p className="pv-note">For content, not chrome: categories, spotlights, charts. The same in every theme.</p>
       <Swatches entries={group("accent")} />
-
-      <h2 className="pv-h pv-h--section" id="colors-palette">
-        Palette
-      </h2>
-      <p className="pv-note">
-        Raw primitives, named by lightness. Semantic tokens point at these; components never use them directly. Brands (
-        {brands.map((b) => (
-          <code key={b} className="pv-inline-code">
-            {b}
-          </code>
-        ))}
-        ) and themes re-point semantic tokens at different primitives.
-      </p>
-      <Palette />
     </article>
   );
 }
 
 // ---- Typography ----
 
+const byValue = (entries: Entry[]) => [...entries].sort(([, a], [, b]) => parseFloat(String(a.value)) - parseFloat(String(b.value)));
+
+const TYPE_STYLES: { sample: ReactNode; use: string }[] = [
+  { sample: <p className="ayy-eyebrow">Eyebrow</p>, use: "Small label above a heading or section: a category, a step, a page name. One line, never a sentence." },
+  { sample: <p className="ayy-h1">Heading 1</p>, use: "The page title. One per page, at the top." },
+  { sample: <p className="ayy-h2">Heading 2</p>, use: "Major sections of a page. Use .ayy-display instead for a marketing hero." },
+  { sample: <p className="ayy-h3">Heading 3</p>, use: "Sub-sections, and titles of large cards or dialogs." },
+  { sample: <p className="ayy-h4">Heading 4</p>, use: "Card and panel titles, group titles inside a section." },
+  { sample: <p className="ayy-h5">Heading 5</p>, use: "Titles inside dense UI: list groups, sidebar sections, form fieldsets." },
+  { sample: <p className="ayy-h6">Heading 6</p>, use: "The smallest heading: table headers, inline group labels." },
+  { sample: <p className="ayy-lede">Lede, a calm intro paragraph that sets up the page.</p>, use: "The intro paragraph right under a page or section title. Keep it to two lines or so." },
+  { sample: <p>Body text. 日本語、العربية، Ελληνικά, हिन्दी all render with the OS font.</p>, use: "Everything else: paragraphs, labels, table cells, form text. It is the default, so it needs no class." },
+  { sample: <p className="ayy-muted">Muted, for captions and secondary info.</p>, use: "Captions, hints, timestamps, helper text. Not for anything the reader must not miss." },
+  { sample: <p className="ayy-signature" style={{ fontSize: "var(--ayy-text-2xl)" }}>Signature accent</p>, use: "A personal touch: a sign-off, a name, one highlighted word. Once per screen, and never for UI text." },
+  { sample: <p className="ayy-mono">Mono, for code</p>, use: "Code, commands, tokens, IDs and anything where characters must line up." },
+];
+
 function TypographyPage() {
+  const sizes = byValue(group("text").filter(([, t]) => String(t.value).endsWith("rem")));
   return (
     <article className="pv-page">
-      <Header title="Typography">Sizes are in rem, so they follow the reader's browser font size. Body text always ends in system fonts.</Header>
+      <Header title="Typography">Four families and one size scale. Sizes follow the reader's browser font size, and every script falls back to the system font.</Header>
       <div className="pv-type">
-        <p className="ayy-eyebrow">Eyebrow · .ayy-eyebrow</p>
-        <p className="ayy-h1">Heading 1</p>
-        <p className="ayy-h2">Heading 2</p>
-        <p className="ayy-h3">Heading 3</p>
-        <p className="ayy-h4">Heading 4</p>
-        <p className="ayy-lede">Lede — a calm intro paragraph that sets up the page.</p>
-        <p>Body — Sora with system fallbacks. 日本語、العربية، Ελληνικά, हिन्दी all render with the OS font.</p>
-        <p className="ayy-muted">Muted — captions and secondary info.</p>
-        <p className="ayy-signature" style={{ fontSize: "var(--ayy-text-2xl)" }}>
-          Signature accent
-        </p>
-        <p className="ayy-mono">Mono — const theme = "dark";</p>
+        {TYPE_STYLES.map(({ sample, use }) => (
+          <div key={use} className="pv-type__row">
+            {sample}
+            <p className="pv-type__use">{use}</p>
+          </div>
+        ))}
       </div>
+
       <h2 className="pv-h pv-h--section">Families</h2>
-      <Rows entries={group("font")} render={(t) => <span style={{ fontFamily: `var(${t.cssVar})` }}>Aa Bb 123</span>} />
+      <div className="pv-scale">
+        {group("font").map(([name, t]) => (
+          <div key={name} className="pv-scale__row">
+            <span className="pv-scale__label">
+              {short(name)}
+              <span className="ayy-muted">{Array.isArray(t.value) ? t.value[0] : String(t.value)}</span>
+            </span>
+            <span style={{ fontFamily: `var(${t.cssVar})`, fontSize: "var(--ayy-text-xl)" }}>Build it once, ship it everywhere</span>
+          </div>
+        ))}
+      </div>
+
       <h2 className="pv-h pv-h--section">Sizes</h2>
-      <Rows entries={group("text")} render={(t) => <span style={{ fontSize: `var(${t.cssVar})`, lineHeight: 1.2 }}>Ag</span>} />
-      <h2 className="pv-h pv-h--section">Weight, leading, tracking</h2>
-      <Rows entries={[...group("weight"), ...group("leading"), ...group("tracking")]} />
+      <div className="pv-scale">
+        {sizes.map(([name, t]) => (
+          <div key={name} className="pv-scale__row">
+            <span className="pv-scale__label">
+              {short(name)}
+              <span className="ayy-muted">{px(t.value)}</span>
+            </span>
+            <span className="pv-scale__sample" style={{ fontSize: `var(${t.cssVar})` }}>
+              Build it once, ship it everywhere
+            </span>
+          </div>
+        ))}
+      </div>
     </article>
   );
 }
 
 // ---- Spacing & sizing ----
 
-function DensityRows() {
-  const entries = all.filter(([, t]) => t.density);
-  return (
-    <div className="ayy-table-wrap">
-      <table className="ayy-table">
-        <thead>
-          <tr>
-            <th scope="col">Token</th>
-            <th scope="col">Compact</th>
-            <th scope="col">Comfortable</th>
-            <th scope="col">Touch</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map(([name, t]) => (
-            <tr key={name}>
-              <td>
-                <code className="pv-inline-code">{t.cssVar}</code>
-                {t.description ? <span className="pv-token-desc">{t.description}</span> : null}
-              </td>
-              <td className="ayy-muted">{show(t.value)}</td>
-              <td className="ayy-muted">{t.density?.comfortable}</td>
-              <td className="ayy-muted">{t.density?.touch}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const DENSITIES: [string, string][] = [
+  ["compact", "Compact, the default on desktop."],
+  ["comfortable", "Comfortable, a little more room."],
+  ["touch", "Touch, automatic on touch screens."],
+];
 
 function SpacingPage() {
   return (
     <article className="pv-page">
-      <Header title="Spacing & sizing">A 4px grid for layout, and control sizes that follow the density setting.</Header>
+      <Header title="Spacing & sizing">Layout spacing sits on a 4px grid. Controls grow or shrink with the density setting.</Header>
+
       <h2 className="pv-h pv-h--section">Spacing</h2>
-      <Rows entries={group("space")} render={(t) => <span className="pv-bar" style={{ inlineSize: `var(${t.cssVar})` }} />} />
+      <div className="pv-scale">
+        {byValue(group("space")).map(([name, t]) => (
+          <div key={name} className="pv-scale__row">
+            <span className="pv-scale__label">
+              {short(name)}
+              <span className="ayy-muted">{px(t.value)}</span>
+            </span>
+            <span className="pv-bar" style={{ inlineSize: `var(${t.cssVar})` }} />
+          </div>
+        ))}
+      </div>
+
       <h2 className="pv-h pv-h--section">Density</h2>
-      <p className="pv-note">
-        Control heights, paddings and text follow <code className="pv-inline-code">data-density</code> (compact · comfortable · touch). Left alone, touch
-        screens get touch sizes automatically. Switch it in the toolbar.
-      </p>
-      <DensityRows />
-      <h2 className="pv-h pv-h--section">Fixed sizes</h2>
-      <Rows entries={group("size").filter(([, t]) => !t.density)} />
+      <p className="pv-note">The same controls at each density. Pick one for the whole site at the bottom of the sidebar.</p>
+      <div className="pv-densities">
+        {DENSITIES.map(([mode, text]) => (
+          <div key={mode} className="pv-density" data-density={mode}>
+            <p className="pv-note">{text}</p>
+            <input className="ayy-input" aria-label={`Name (${mode})`} placeholder="Project name" />
+            <div className="ayy-cluster">
+              <button type="button" className="ayy-button">
+                Save
+              </button>
+              <button type="button" className="ayy-button ayy-button--outline">
+                Cancel
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </article>
   );
 }
@@ -290,12 +209,12 @@ function SpacingPage() {
 function ElevationPage() {
   return (
     <article className="pv-page">
-      <Header title="Radius & elevation">Corner radii, shadows and stacking order.</Header>
+      <Header title="Radius & elevation">Corner radii, and the shadows that lift cards, menus and dialogs off the page.</Header>
       <h2 className="pv-h pv-h--section">Radius</h2>
       <div className="pv-tiles">
         {group("radius").map(([name, t]) => (
           <div key={name} className="pv-tile" style={{ borderRadius: `var(${t.cssVar})` }}>
-            <code className="pv-inline-code">{name.replace("radius.", "")}</code>
+            {short(name)}
           </div>
         ))}
       </div>
@@ -303,82 +222,79 @@ function ElevationPage() {
       <div className="pv-tiles">
         {group("shadow").map(([name, t]) => (
           <div key={name} className="pv-tile" style={{ boxShadow: `var(${t.cssVar})` }}>
-            <code className="pv-inline-code">{name.replace("shadow.", "")}</code>
+            {short(name)}
           </div>
         ))}
       </div>
-      <h2 className="pv-h pv-h--section">Stacking</h2>
-      <Rows entries={group("z")} />
     </article>
   );
 }
 
 // ---- Motion ----
 
+/** Flips every dot between the track's ends, so each run takes exactly its token's duration. */
+function useFlip(ms: number) {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => setOn((v) => !v), ms);
+    return () => clearInterval(id);
+  }, [ms]);
+  return on;
+}
+
+function MotionRow({ name, value, ease, duration, end }: { name: string; value: string; ease: string; duration: string; end: boolean }) {
+  return (
+    <div className="pv-motion__row">
+      <div className="pv-motion__label">
+        <strong>{name}</strong>
+        <code>{value}</code>
+      </div>
+      <div className="pv-motion__track" aria-hidden="true" data-end={end || undefined} style={{ "--pv-ease": ease, "--pv-duration": duration } as CSSProperties}>
+        <span className="pv-motion__dot" />
+      </div>
+    </div>
+  );
+}
+
 function MotionPage() {
+  const end = useFlip(1600);
   return (
     <article className="pv-page">
-      <Header title="Motion">Only transform and opacity animate, and everything collapses under reduced motion.</Header>
+      <Header title="Motion">Only position and opacity animate, and motion is cut short when the reader asks for reduced motion.</Header>
       <h2 className="pv-h pv-h--section">Easing</h2>
-      <p className="pv-note">Hover or focus a tile.</p>
-      <div className="pv-tiles">
+      <p className="pv-note">Same distance over the slower duration (600ms); only the curve changes.</p>
+      <div className="pv-motion">
         {group("ease").map(([name, t]) => (
-          <div key={name} className="pv-tile pv-tile--motion" style={{ "--pv-ease": `var(${t.cssVar})` } as CSSProperties} tabIndex={0}>
-            <code className="pv-inline-code">{name.replace("ease.", "")}</code>
-          </div>
+          <MotionRow key={name} name={short(name)} value={Array.isArray(t.value) ? `cubic-bezier(${t.value.join(", ")})` : String(t.value)} ease={`var(${t.cssVar})`} duration="var(--ayy-duration-slower)" end={end} />
         ))}
       </div>
-      <h2 className="pv-h pv-h--section">Durations</h2>
-      <Rows entries={group("duration")} />
+      <h2 className="pv-h pv-h--section">Duration</h2>
+      <p className="pv-note">Same curve (standard), different lengths.</p>
+      <div className="pv-motion">
+        {group("duration").map(([name, t]) => (
+          <MotionRow key={name} name={short(name)} value={String(t.value)} ease="var(--ayy-ease-standard)" duration={`var(${t.cssVar})`} end={end} />
+        ))}
+      </div>
     </article>
   );
 }
 
 // ---- Registry: sidebar, routes and search all read this ----
 
-export interface FoundationSection {
-  /** Heading id is `${route}-${id}`; the sidebar links to #/<route>/<id>. */
-  id: string;
-  title: string;
-  /** Extra searchable text (token names in the section). */
-  text: string;
-}
-
 export interface Foundation {
   route: string;
   title: string;
   /** Token groups on the page; their names feed the search. */
   groups: string[];
-  /** Sub-sections listed under the page in the sidebar. */
-  sections?: FoundationSection[];
   keywords: string;
   Page: ComponentType;
 }
 
 export const foundations: Foundation[] = [
-  {
-    route: "colors",
-    title: "Colors",
-    groups: ["color", "accent", "palette"],
-    keywords: `theme themes dark light soft contrast ${colorCategories.join(" ")}`,
-    sections: [
-      { id: "themes", title: "Themes", text: "dark light dark-soft light-gray grey data-theme contrast" },
-      ...colorCategories.map((category) => ({
-        id: slug(category),
-        title: category,
-        text: group("color")
-          .filter(([, t]) => (t.category ?? "Other") === category)
-          .map(([name, t]) => `${name} ${t.cssVar}`)
-          .join(" "),
-      })),
-      { id: "accents", title: "Accents", text: group("accent").map(([name, t]) => `${name} ${t.cssVar}`).join(" ") },
-      { id: "palette", title: "Palette", text: "palette primitives neutral red green amber blue violet" },
-    ],
-    Page: ColorsPage,
-  },
-  { route: "typography", title: "Typography", groups: ["font", "text", "weight", "leading", "tracking"], keywords: "type fonts headings", Page: TypographyPage },
-  { route: "spacing", title: "Spacing & sizing", groups: ["space", "size", "control"], keywords: "density layout gap padding", Page: SpacingPage },
-  { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow", "z"], keywords: "corners depth z-index layers", Page: ElevationPage },
+  { route: "colors", title: "Colors", groups: ["color", "accent"], keywords: `theme themes dark light soft gray contrast accents ${colorCategories.join(" ")}`, Page: ColorsPage },
+  { route: "typography", title: "Typography", groups: ["font", "text"], keywords: "type fonts headings", Page: TypographyPage },
+  { route: "spacing", title: "Spacing & sizing", groups: ["space", "size"], keywords: "density compact comfortable touch layout gap padding", Page: SpacingPage },
+  { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow"], keywords: "corners depth shadow", Page: ElevationPage },
   { route: "motion", title: "Motion", groups: ["ease", "duration"], keywords: "animation easing transition reduced motion", Page: MotionPage },
 ];
 

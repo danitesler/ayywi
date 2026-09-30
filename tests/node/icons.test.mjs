@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import Cancel01Icon from "@hugeicons/core-free-icons/Cancel01Icon";
+import Menu01Icon from "@hugeicons/core-free-icons/Menu01Icon";
 import GitBranchIcon from "@hugeicons/core-free-icons/GitBranchIcon";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -51,4 +52,9 @@ test("React <Icon> renders the same markup as iconSvg()", { skip }, async () => 
 test("ayywi's close buttons draw Hugeicons' Cancel01Icon (vendored copy matches the package)", { skip }, async () => {
   const { dialogCloseIcon, iconSvg } = await import(dist("index.js"));
   assert.equal(dialogCloseIcon, iconSvg(Cancel01Icon));
+});
+
+test("the app shell's menu button draws Hugeicons' Menu01Icon (vendored copy matches the package)", { skip }, async () => {
+  const { appShellMenuIcon, iconSvg } = await import(dist("index.js"));
+  assert.equal(appShellMenuIcon, iconSvg(Menu01Icon));
 });

@@ -4,12 +4,6 @@
   "status": "beta",
   "category": "Layout",
   "description": "A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.",
-  "whenToUse": ["A row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas."],
-  "whenNotToUse": [
-    "Content everyone must see — lay it out in a grid.",
-    "Auto-rotating banners — ayywi doesn't auto-play, on purpose.",
-    "Switching between views of one thing — use Tabs."
-  ],
   "classes": {
     "ayy-carousel": "Root (also on <ayy-carousel>). role=\"region\" aria-roledescription=\"carousel\" and an aria-label.",
     "ayy-carousel__track": "The scrolling, snapping row. Give it tabindex=\"0\" so keyboards can scroll it. Gap via --ayy-gap.",
@@ -45,7 +39,16 @@
     "The track is focusable, so arrow keys scroll it; the buttons stay focusable at the ends (aria-disabled, not disabled) so focus isn't lost.",
     "Nothing moves on its own, and smooth scrolling turns off under prefers-reduced-motion."
   ],
-  "do": ["Let the last slide peek in, so it's clear there's more.", "Give images inside slides width and height so the strip doesn't jump."],
-  "dont": ["Don't hide essential content in later slides.", "Don't auto-advance."],
+  "do": [
+    "Use a carousel for a row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas.",
+    "Let the last slide peek in, so it's clear there's more.",
+    "Give images inside slides width and height so the strip doesn't jump."
+  ],
+  "dont": [
+    "Don't put content everyone must see in a carousel — lay it out in a grid.",
+    "Don't hide essential content in later slides.",
+    "Don't auto-advance or build rotating banners — ayywi doesn't auto-play, on purpose.",
+    "Don't use it to switch between views of one thing — use Tabs."
+  ],
   "examples": [{ "id": "cards", "title": "Cards" }]
 }

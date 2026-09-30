@@ -1,0 +1,54 @@
+<!-- The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the block-size on the shell. -->
+<div style="inline-size: 100%; block-size: 32rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
+  <div class="ayy-app-shell" style="block-size: 100%">
+    <aside class="ayy-app-shell__sidebar">
+      <a class="ayy-app-shell__brand" href="#home">Northwind Docs</a>
+      <nav class="ayy-app-shell__nav" aria-label="Docs">
+        <div class="ayy-app-shell__group">
+          <p class="ayy-app-shell__group-label" id="docs-start">Start</p>
+          <ul class="ayy-app-shell__list" aria-labelledby="docs-start">
+            <li><a class="ayy-app-shell__link" href="#overview">Overview</a></li>
+            <li>
+              <a class="ayy-app-shell__link" href="#get-started">Get started</a>
+              <ul class="ayy-app-shell__sublist" aria-label="Get started sections">
+                <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#install">Install</a></li>
+                <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#first-screen">Build your first screen</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="ayy-app-shell__group">
+          <p class="ayy-app-shell__group-label" id="docs-foundations">Foundations</p>
+          <ul class="ayy-app-shell__list" aria-labelledby="docs-foundations">
+            <li>
+              <details class="ayy-app-shell__collapse" open>
+                <summary class="ayy-app-shell__link">Colors</summary>
+                <ul class="ayy-app-shell__sublist">
+                  <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#themes" aria-current="page">Themes</a></li>
+                  <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#surfaces">Surfaces</a></li>
+                  <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#status">Status</a></li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <details class="ayy-app-shell__collapse">
+                <summary class="ayy-app-shell__link">Typography</summary>
+                <ul class="ayy-app-shell__sublist">
+                  <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#scale">Scale</a></li>
+                  <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#fonts">Fonts</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="ayy-app-shell__link" href="#spacing">Spacing</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main class="ayy-app-shell__main">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
+        <h2 class="ayy-h3">Themes</h2>
+        <p class="ayy-muted">Dark, dark soft, light and light gray. Each one remaps the same semantic tokens.</p>
+      </div>
+    </main>
+  </div>
+</div>

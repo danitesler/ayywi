@@ -4,7 +4,6 @@ export interface Settings {
   renderer?: "react" | "html";
   theme?: "dark" | "light" | "dark-soft" | "light-gray";
   density?: "compact" | "comfortable" | "touch";
-  brand?: "default" | "violet";
 }
 
 const watched = new WeakMap<Page, string[]>();
@@ -36,7 +35,6 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
     set("ayy-preview-renderer", s.renderer);
     set("ayy-theme", s.theme);
     set("ayy-density", s.density);
-    set("ayy-preview-brand", s.brand);
   }, s);
   await page.goto(`/?load=${++loads}#/${route}`);
   await expect(page.locator(".pv-page").first()).toBeVisible();

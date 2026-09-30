@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Navigation",
   "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
-  "whenToUse": ["Long pages with named sections: case studies, docs, articles, settings pages."],
-  "whenNotToUse": ["Short pages with two or three sections.", "Navigation between pages — use Navbar or links."],
   "classes": {
     "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
     "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.",
@@ -49,10 +47,16 @@
     "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header."
   ],
   "do": [
+    "Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.",
     "List sections in page order; the scrollspy assumes it.",
     "Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.",
     "On narrow screens, move it above the content or into a Popover instead of a side column."
   ],
-  "dont": ["Don't nest more than one level.", "Don't list every heading — sections and their direct sub-sections only."],
+  "dont": [
+    "Don't add one to short pages with two or three sections.",
+    "Don't use it to navigate between pages — use Navbar or links.",
+    "Don't nest more than one level.",
+    "Don't list every heading — sections and their direct sub-sections only."
+  ],
   "examples": [{ "id": "sticky", "title": "Numbered, beside the content" }]
 }

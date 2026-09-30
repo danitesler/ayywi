@@ -4,12 +4,6 @@
   "status": "stable",
   "category": "Overlays",
   "description": "Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.",
-  "whenToUse": ["Small forms or details next to their trigger (share link, filters, quick edit)."],
-  "whenNotToUse": [
-    "A list of actions — use Dropdown menu.",
-    "Anything that must block the page — use Dialog.",
-    "Hints on hover — use Tooltip."
-  ],
   "classes": {
     "ayy-popover": "On the element with the popover attribute. Surface, padding, shadow, fade/scale transition."
   },
@@ -47,7 +41,15 @@
     "The trigger gets aria-expanded automatically; Esc and click-outside close it and focus returns to the trigger.",
     "It's not a focus trap — use Dialog when the user must finish something first."
   ],
-  "do": ["Keep content short; if it scrolls, it probably wants to be a Dialog or a page."],
-  "dont": ["Don't open popovers on hover.", "Don't nest popovers more than one level."],
+  "do": [
+    "Use a popover for small forms or details next to their trigger (share link, filters, quick edit).",
+    "Keep content short; if it scrolls, it probably wants to be a Dialog or a page."
+  ],
+  "dont": [
+    "Don't use a popover for a list of actions — use Dropdown menu.",
+    "Don't use a popover for anything that must block the page — use Dialog.",
+    "Don't open popovers on hover — hover hints are a Tooltip.",
+    "Don't nest popovers more than one level."
+  ],
   "examples": [{ "id": "share", "title": "Share link" }]
 }

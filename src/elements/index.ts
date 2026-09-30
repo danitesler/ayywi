@@ -1,5 +1,6 @@
 // "ayywi/elements": custom elements for the interactive components, for any framework or plain HTML.
 // Importing registers them (idempotent, no-op during SSR) and starts the card spotlight listener.
+import { AyyAppShellElement } from "../components/app-shell/app-shell.element";
 import { trackSpotlight } from "../components/card/card";
 import { AyyCarouselElement } from "../components/carousel/carousel.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
@@ -11,7 +12,7 @@ import { AyyTocElement } from "../components/toc/toc.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { define } from "../lib/element";
 
-export { AyyCarouselElement, AyyDialogElement, AyyMenuElement, AyyPopoverElement, AyyTabsElement, AyyThemeToggleElement, AyyTocElement, AyyTooltipElement };
+export { AyyAppShellElement, AyyCarouselElement, AyyDialogElement, AyyMenuElement, AyyPopoverElement, AyyTabsElement, AyyThemeToggleElement, AyyTocElement, AyyTooltipElement };
 
 let spotlightListening = false;
 
@@ -29,6 +30,7 @@ function onError(event: Event): void {
 /** Register every <ayy-*> element, the card spotlight and avatar fallbacks. Safe to call twice. */
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
+  define("ayy-app-shell", AyyAppShellElement);
   define("ayy-dialog", AyyDialogElement);
   define("ayy-tooltip", AyyTooltipElement);
   define("ayy-popover", AyyPopoverElement);

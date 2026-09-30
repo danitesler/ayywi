@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Layout",
   "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
-  "whenToUse": ["Between the sections of a long page (fade).", "Between groups in a footer, toolbar or card (plain or vertical)."],
-  "whenNotToUse": ["Around every block — spacing usually separates better than lines.", "Inside menus — use the menu's own separator."],
   "classes": {
     "ayy-separator": "Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).",
     "ayy-separator--vertical": "Vertical rule in a flex row; add aria-orientation=\"vertical\".",
@@ -29,7 +27,15 @@
     "<hr> is a separator to screen readers. If the line is purely decorative, use role=\"presentation\" or a CSS border instead.",
     "Vertical separators need aria-orientation=\"vertical\" (the React component adds it)."
   ],
-  "do": ["Give the separator room with the layout's gap or the sections' padding."],
-  "dont": ["Don't colour it; hairline keeps it quiet in every theme."],
+  "do": [
+    "Use a fading separator between the sections of a long page.",
+    "Use a plain or vertical separator between groups in a footer, toolbar or card.",
+    "Give the separator room with the layout's gap or the sections' padding."
+  ],
+  "dont": [
+    "Don't put one around every block — spacing usually separates better than lines.",
+    "Don't use it inside menus — use the menu's own separator.",
+    "Don't colour it; hairline keeps it quiet in every theme."
+  ],
   "examples": [{ "id": "variants", "title": "Plain, fading and vertical" }]
 }

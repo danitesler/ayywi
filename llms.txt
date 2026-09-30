@@ -2,7 +2,7 @@
 
 > Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.
 
-Dark-first, monochrome frame with colour coming from content. Tokens are CSS custom properties prefixed --ayy-, classes are prefixed ayy-. Works in any framework; React components and custom elements render the same markup. Themes, density, brands and RTL are attributes on any element.
+Dark-first, monochrome frame with colour coming from content. Tokens are CSS custom properties prefixed --ayy-, classes are prefixed ayy-. Works in any framework; React components and custom elements render the same markup. Themes, density and RTL are attributes on any element.
 
 ## Start here
 
@@ -18,12 +18,13 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 - [Button](src/components/button/button.meta.json): Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
 - [Dropdown menu](src/components/menu/menu.meta.json): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
-- [Theme toggle](src/components/theme-toggle/theme-toggle.meta.json): An icon button that switches between a dark and a light theme and remembers the choice. The moon or sun shows from CSS alone, following the colour scheme, so it's right on first paint.
+- [Theme toggle](src/components/theme-toggle/theme-toggle.meta.json): An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
 
 ### Navigation
 
 - [Navbar](src/components/navbar/navbar.meta.json): Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width.
-- [App shell](src/components/app-shell/app-shell.meta.json): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently; on phones the sidebar stacks above the content as a single row that scrolls sideways.
+- [App shell](src/components/app-shell/app-shell.meta.json): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently. On phones the sidebar either stacks above the content as a single row that scrolls sideways, or — with a top bar — becomes a drawer that a menu button opens.
+- [Bottom nav](src/components/bottom-nav/bottom-nav.meta.json): A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator.
 - [Breadcrumb](src/components/breadcrumb/breadcrumb.meta.json): Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
 - [Contents](src/components/toc/toc.meta.json): On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
 
@@ -47,7 +48,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ### Overlays
 
-- [Dialog](src/components/dialog/dialog.meta.json): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge.
+- [Dialog](src/components/dialog/dialog.meta.json): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.
 - [Popover](src/components/popover/popover.meta.json): Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
 - [Tooltip](src/components/tooltip/tooltip.meta.json): Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
 

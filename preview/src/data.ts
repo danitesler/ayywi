@@ -6,8 +6,6 @@ export interface ComponentMeta {
   status: string;
   category: string;
   description: string;
-  whenToUse: string[];
-  whenNotToUse: string[];
   classes: Record<string, string>;
   variants: Record<string, { values: (string | boolean)[]; default: string | boolean }>;
   states?: Record<string, string>;
@@ -49,7 +47,7 @@ export const CATEGORIES: Record<string, string> = {
 };
 const ORDER = [
   "button", "menu", "theme-toggle",
-  "navbar", "app-shell", "breadcrumb", "toc",
+  "navbar", "app-shell", "bottom-nav", "breadcrumb", "toc",
   "field", "input", "textarea", "select", "checkbox", "radio", "switch",
   "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",
@@ -78,27 +76,3 @@ export const components: ComponentEntry[] = Object.values(metas)
 export const componentGroups: { category: string; description: string; components: ComponentEntry[] }[] = [
   ...new Set(components.map((c) => c.category)),
 ].map((category) => ({ category, description: CATEGORIES[category] ?? "", components: components.filter((c) => c.category === category) }));
-
-/** One component's full context as markdown — handy to paste into any AI chat. */
-export function componentMarkdown(c: ComponentEntry): string {
-  const list = (items: string[]) => items.map((i) => `- ${i}`).join("\n");
-  const parts = [
-    `# ayywi ${c.name}`,
-    `Category: ${c.category}. ${c.description}`,
-    `Use for:\n${list(c.whenToUse)}`,
-    `Don't use for:\n${list(c.whenNotToUse)}`,
-    `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
-    c.states ? `States:\n${list(Object.entries(c.states).map(([k, v]) => `${k} — ${v}`))}` : "",
-    c.js ? `JS helpers (framework-free, from "ayywi"): ${c.js}` : "",
-    `React: ${c.react.import}\n${list(
-      Object.entries(c.react.components).map(
-        ([name, d]) => `<${name}> renders ${d.renders}${d.props ? `; props: ${Object.entries(d.props).map(([p, t]) => `${p} ${t}`).join("; ")}` : ""}`,
-      ),
-    )}`,
-    `Accessibility:\n${list(c.a11y)}`,
-    `Do:\n${list(c.do)}`,
-    `Don't:\n${list(c.dont)}`,
-    ...c.examples.map((ex) => `## ${ex.title}\n\nHTML:\n\`\`\`html\n${ex.htmlSource}\n\`\`\`\n\nReact:\n\`\`\`tsx\n${ex.reactSource}\n\`\`\``),
-  ];
-  return parts.filter(Boolean).join("\n\n");
-}

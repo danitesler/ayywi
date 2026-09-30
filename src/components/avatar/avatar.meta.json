@@ -4,8 +4,6 @@
   "status": "stable",
   "category": "Data display",
   "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
-  "whenToUse": ["People and workspaces in lists, headers, comments.", "Stacks of collaborators (AvatarGroup)."],
-  "whenNotToUse": ["Decorative illustrations — use a plain <img>.", "Icons — use Icon."],
   "classes": {
     "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
     "ayy-avatar--sm": "24px.",
@@ -42,7 +40,14 @@
     "Give an AvatarGroup an aria-label like \"5 collaborators\".",
     "A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
   ],
-  "do": ["Show at most 4–5 avatars in a group and a \"+3\" badge for the rest."],
-  "dont": ["Don't rely on the picture alone to identify someone — show the name nearby."],
+  "do": [
+    "Use avatars for people and workspaces in lists, headers and comments.",
+    "Use AvatarGroup for a stack of collaborators: show at most 4–5 and a \"+3\" badge for the rest."
+  ],
+  "dont": [
+    "Don't use an avatar for decorative illustrations — use a plain <img>.",
+    "Don't use an avatar for icons — use Icon.",
+    "Don't rely on the picture alone to identify someone — show the name nearby."
+  ],
   "examples": [{ "id": "basic", "title": "Sizes, fallback, group" }]
 }

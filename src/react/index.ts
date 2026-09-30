@@ -91,8 +91,18 @@ export {
   AppShellLink,
   AppShellFooter,
   AppShellMain,
+  AppShellGroup,
+  AppShellItem,
+  AppShellSublist,
+  AppShellCollapse,
+  AppShellBar,
+  AppShellToggle,
   type AppShellLinkProps,
+  type AppShellGroupProps,
+  type AppShellSublistProps,
+  type AppShellCollapseProps,
 } from "../components/app-shell/app-shell.react";
+export { BottomNav, BottomNavLink, type BottomNavLinkProps } from "../components/bottom-nav/bottom-nav.react";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
 export {

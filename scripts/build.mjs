@@ -1,4 +1,4 @@
-// Builds dist/: layered + unlayered CSS, per-file CSS, brands, fonts, JS (ESM, CJS, <script>), .d.ts,
+// Builds dist/: layered + unlayered CSS, per-file CSS, fonts, JS (ESM, CJS, <script>), .d.ts,
 // and token exports for other platforms. Prints gzip sizes.
 import { build, transform } from "esbuild";
 import { execFileSync } from "node:child_process";
@@ -11,10 +11,10 @@ import { buildPlatforms } from "./build-platforms.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const src = (p) => join(root, "src", p);
-const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;";
+const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components;";
 
 rmSync(dist, { recursive: true, force: true });
-for (const dir of ["css", "brands", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
+for (const dir of ["css", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
 
 // ---- CSS: layered (default) ----
 const indexCss = src("css/index.css");
@@ -42,7 +42,6 @@ writeFileSync(join(dist, "css/base.css"), wrap("ayywi.base", readFileSync(src("c
 for (const name of readdirSync(src("components"))) {
   writeFileSync(join(dist, `css/${name}.css`), wrap("ayywi.components", readFileSync(src(`components/${name}/${name}.css`), "utf8")));
 }
-for (const file of readdirSync(src("css/brands"))) copyFileSync(src(`css/brands/${file}`), join(dist, `brands/${file}`));
 
 // ---- Fonts: self-hosted (default) + Google Fonts alternative ----
 const families = { sora: "Sora", unbounded: "Unbounded", caveat: "Caveat" };

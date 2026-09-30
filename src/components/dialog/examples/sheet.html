@@ -1,0 +1,15 @@
+<!-- A bottom sheet: the same <dialog>, anchored to the bottom edge. Each choice closes it and sets dialog.returnValue. -->
+<ayy-dialog>
+  <button type="button" class="ayy-button ayy-button--secondary" data-ayy-open aria-haspopup="dialog">Sort projects</button>
+  <dialog class="ayy-dialog ayy-dialog--sm ayy-dialog--side-bottom" aria-labelledby="sort-sheet-title" aria-describedby="sort-sheet-desc">
+    <div class="ayy-dialog__header">
+      <h2 class="ayy-dialog__title" id="sort-sheet-title">Sort projects</h2>
+      <p class="ayy-dialog__description" id="sort-sheet-desc">Applies to the list on this page.</p>
+    </div>
+    <div class="ayy-dialog__footer">
+      <button type="button" class="ayy-button" data-ayy-close="updated">Last updated</button>
+      <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close="name">Name</button>
+      <button type="button" class="ayy-button ayy-button--secondary" data-ayy-close="created">Date created</button>
+    </div>
+  </dialog>
+</ayy-dialog>

@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`) for every other framework and plain HTML,
+- light-DOM custom elements (`<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`, `<ayy-app-shell>`) for every other framework and plain HTML,
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -19,14 +19,13 @@ Zero runtime dependencies. React is an optional peer.
 tokens/tokens.json          SOURCE OF TRUTH for tokens (DTCG-style; $value = dark, $extensions.ayywi.light = light,
                             $extensions.ayywi.density = comfortable/touch). palette.* = primitives, the rest = semantic
 tokens/themes/*.json        extra themes (dark-soft, light-gray): overrides of a base theme's colours, compiled into tokens.css
-tokens/brands/*.json        brand overrides of semantic tokens → src/css/brands/*.css
 src/css/tokens.css          generated
 src/tokens.ts               generated
 src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion
 src/css/index.css           declares the layers, imports tokens, base, every component into them
 src/components/<slug>/      one folder per component — see .claude/skills/ayywi-add-component/SKILL.md
 src/lib/                    cx, refs, position (floating placement), element (SSR-safe custom element base), icons (Hugeicons glyphs ayywi draws)
-src/index.ts                "ayywi" entry: tokens, helpers, toast, theme/density/brand — no React
+src/index.ts                "ayywi" entry: tokens, helpers, toast, theme/density — no React
 src/react/index.ts          "ayywi/react" entry
 src/elements/               "ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
 cli/                        shipped `ayywi` bin: lint.mjs, init.mjs, mcp.mjs (plain Node ESM, no deps)
@@ -85,7 +84,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close buttons) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
 - Mirroring a glyph in RTL has no logical property. `.ayy-icon--directional` reads `--_ayy-dir`, which `icon.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
-- axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme × brand, plus status text on its own tint). New text colours or surfaces belong in its lists.
+- axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning
 

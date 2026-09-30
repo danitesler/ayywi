@@ -10,8 +10,6 @@ function componentMarkdown(c) {
   const parts = [
     `# ${c.name}`,
     `${c.category ? `Category: ${c.category}. ` : ""}${c.description}`,
-    `Use for:\n${list(c.whenToUse)}`,
-    `Don't use for:\n${list(c.whenNotToUse)}`,
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
   ];
   if (c.states) parts.push(`States:\n${list(Object.entries(c.states).map(([k, v]) => `${k} — ${v}`))}`);
@@ -76,7 +74,7 @@ export function createServer(contract = loadContract()) {
         const words = String(query).toLowerCase().split(/\s+/).filter(Boolean);
         const score = (text) => words.reduce((n, w) => n + (text.toLowerCase().includes(w) ? 1 : 0), 0);
         const hits = [
-          ...manifest.components.map((c) => [score(JSON.stringify([c.name, c.description, c.whenToUse, c.classes])), `component ${c.slug}: ${c.description}`]),
+          ...manifest.components.map((c) => [score(JSON.stringify([c.name, c.description, c.do, c.classes])), `component ${c.slug}: ${c.description}`]),
           ...manifest.tokens.map((t) => [score(`${t.name} ${t.description ?? ""}`), `token ${t.cssVar}: ${t.description ?? t.value}`]),
           ...Object.entries(manifest.utilities ?? {}).map(([k, v]) => [score(`${k} ${v}`), `utility .${k}: ${v}`]),
         ]
@@ -99,7 +97,7 @@ export function createServer(contract = loadContract()) {
           .join("\n"),
     },
     get_rules: {
-      description: "The rules every ayywi UI must follow, plus conventions and global attributes (theme, density, brand, dir).",
+      description: "The rules every ayywi UI must follow, plus conventions and global attributes (theme, density, dir).",
       inputSchema: { type: "object", properties: {} },
       run: () =>
         [

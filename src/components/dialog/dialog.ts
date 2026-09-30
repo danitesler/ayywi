@@ -4,8 +4,8 @@ import { iconSvg } from "../icon/icon";
 
 export const dialogSizes = ["sm", "md", "lg", "xl"] as const;
 export type DialogSize = (typeof dialogSizes)[number];
-/** "center" is a regular modal; "start" and "end" make a side modal on that inline edge (end = right in LTR, left in RTL). */
-export const dialogSides = ["center", "start", "end"] as const;
+/** "center" is a regular modal; "start" and "end" make a side modal on that inline edge (end = right in LTR, left in RTL); "bottom" is a bottom sheet. */
+export const dialogSides = ["center", "start", "end", "bottom"] as const;
 export type DialogSide = (typeof dialogSides)[number];
 
 export interface DialogClassOptions {

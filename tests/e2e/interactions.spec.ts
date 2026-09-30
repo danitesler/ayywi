@@ -3,6 +3,112 @@ import { open, rtl, settle, stage } from "./helpers";
 
 for (const renderer of ["react", "html"] as const) {
   test.describe(renderer, () => {
+    test("app shell collapse toggles with the keyboard, the sub-list indents, and phones drop nested items", async ({ page }) => {
+      await open(page, "app-shell", { renderer });
+      const shell = stage(page, 1);
+      const typography = shell.locator("summary", { hasText: "Typography" });
+      const scale = shell.getByRole("link", { name: "Scale" });
+      const details = typography.locator("xpath=..");
+
+      await expect(scale).toBeHidden();
+      await typography.focus();
+      await page.keyboard.press("Enter");
+      await expect(details).toHaveJSProperty("open", true);
+      await expect(scale).toBeVisible();
+      await page.keyboard.press("Space");
+      await expect(scale).toBeHidden();
+
+      // Children sit further along the inline axis than their parent, in both directions.
+      await page.keyboard.press("Enter");
+      const x = async (l: typeof scale) => (await l.boundingBox())!.x;
+      const end = async (l: typeof scale) => {
+        const b = (await l.boundingBox())!;
+        return b.x + b.width;
+      };
+      expect(await x(scale)).toBeGreaterThan(await x(typography));
+      await rtl(stage(page, 1));
+      expect(await end(scale)).toBeLessThan(await end(typography));
+      await stage(page, 1).evaluate((el) => el.removeAttribute("dir"));
+
+      // A closed group that holds the current page is drawn bolder than a plain one.
+      const colors = shell.locator("summary", { hasText: "Colors" });
+      await colors.click();
+      await expect(shell.getByRole("link", { name: "Themes" })).toBeHidden();
+      const weight = (l: typeof colors) => l.evaluate((el) => Number(getComputedStyle(el).fontWeight));
+      await typography.click();
+      expect(await weight(colors)).toBeGreaterThan(await weight(typography));
+
+      // On a phone the row keeps top-level links only.
+      await page.setViewportSize({ width: 390, height: 800 });
+      await expect(shell.locator(".ayy-app-shell__group-label").first()).toBeHidden();
+      await expect(typography).toBeHidden();
+      await page.setViewportSize({ width: 1280, height: 720 });
+    });
+
+    test("app shell drawer: the bar's toggle opens the sidebar on phones, Esc and links close it", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 });
+      await open(page, "app-shell", { renderer });
+      const shell = stage(page, 2).locator(".ayy-app-shell");
+      const toggle = shell.getByRole("button", { name: "Menu" });
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const main = shell.locator(".ayy-app-shell__main");
+
+      // Closed: the drawer is out of view and out of the tab order.
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(toggle).toHaveAttribute("aria-controls", (await sidebar.getAttribute("id"))!);
+      await expect(sidebar).toBeHidden();
+
+      // Open: groups survive (unlike the sideways row), focus moves in, the rest goes inert.
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await expect(sidebar).toBeVisible();
+      await expect(sidebar.getByText("Billing")).toBeVisible();
+      await expect(sidebar.locator("a").first()).toBeFocused();
+      await expect(main).toHaveJSProperty("inert", true);
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.x - (await shell.boundingBox())!.x)).toBe(0);
+
+      await page.keyboard.press("Escape");
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(toggle).toBeFocused();
+      await expect(main).toHaveJSProperty("inert", false);
+
+      // A link in the drawer closes it.
+      await toggle.click();
+      await sidebar.getByRole("link", { name: "Projects" }).click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+      // RTL: it comes from the right edge.
+      await rtl(stage(page, 2));
+      await toggle.click();
+      await expect
+        .poll(async () => {
+          const s = (await sidebar.boundingBox())!;
+          const b = (await shell.boundingBox())!;
+          return Math.round(b.x + b.width - (s.x + s.width));
+        })
+        .toBe(0);
+      await page.keyboard.press("Escape");
+      await stage(page, 2).evaluate((el) => el.removeAttribute("dir"));
+
+      // Wider than a phone: no bar, the sidebar in place.
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await expect(shell.locator(".ayy-app-shell__bar")).toBeHidden();
+      await expect(sidebar).toBeVisible();
+    });
+
+    test("bottom sheet sits on the bottom edge, full width on a phone", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 });
+      await open(page, "dialog", { renderer });
+      await stage(page, 3).getByRole("button", { name: "Sort projects" }).click();
+      const sheet = page.getByRole("dialog", { name: "Sort projects" });
+      await expect(sheet).toBeVisible();
+      await expect.poll(async () => { const b = (await sheet.boundingBox())!; return Math.round(b.y + b.height); }).toBe(800);
+      expect((await sheet.boundingBox())!.width).toBe(390);
+      await sheet.getByRole("button", { name: "Name" }).click();
+      await expect(sheet).toBeHidden();
+      await page.setViewportSize({ width: 1280, height: 720 });
+    });
+
     test("dialog opens, traps Esc, returns focus, closes on backdrop", async ({ page }) => {
       await open(page, "dialog", { renderer });
       const trigger = stage(page).getByRole("button", { name: "Delete project" });
@@ -169,6 +275,8 @@ for (const renderer of ["react", "html"] as const) {
       await open(page, "toc", { renderer });
       const nav = stage(page).getByRole("navigation", { name: "Contents" });
       const impact = nav.getByRole("link", { name: /Impact/ });
+      // Room below the example, so every section can scroll up to the reading line (the page itself is short).
+      await page.locator(".pv-page").evaluate((el) => (el.style.paddingBlockEnd = "100vh"));
       await page.evaluate(() => {
         const target = document.getElementById("toc-impact")!;
         window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 8);
@@ -181,20 +289,22 @@ for (const renderer of ["react", "html"] as const) {
       await expect(page).toHaveURL(/#\/toc$/); // in-page links don't change the preview route
     });
 
-    test("theme toggle switches the page theme and remembers it", async ({ page }) => {
+    test("theme toggle lists every theme, applies the choice and remembers it", async ({ page }) => {
       await open(page, "theme-toggle", { renderer, theme: "dark" });
-      const toggle = stage(page).getByRole("button", { name: "Dark theme" });
-      await expect(toggle).toHaveAttribute("aria-pressed", "true");
+      const toggle = stage(page).getByRole("button", { name: "Theme" });
       await toggle.click();
-      await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-      await expect(toggle).toHaveAttribute("aria-pressed", "false");
-      expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("light");
+      const items = page.getByRole("menuitemradio");
+      await expect(items).toHaveText(["System", "Dark", "Dark soft", "Light", "Light gray"]);
+      await items.filter({ hasText: /^Light gray$/ }).click();
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "light-gray");
+      expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("light-gray");
       const shown = () =>
         toggle.locator("svg").evaluateAll((svgs) => svgs.filter((s) => getComputedStyle(s).color !== "rgba(0, 0, 0, 0)").map((s) => s.getAttribute("class")));
       await expect.poll(shown).toEqual(["ayy-theme-toggle__sun"]);
       await toggle.click();
-      await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-      await expect.poll(shown).toEqual(["ayy-theme-toggle__moon"]);
+      await expect(page.getByRole("menuitemradio", { name: "Light gray" })).toHaveAttribute("aria-checked", "true");
+      await page.getByRole("menuitemradio", { name: "System" }).click();
+      await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.+/);
     });
 
     test("a card link covers the whole card", async ({ page }) => {

@@ -3,50 +3,47 @@
   "slug": "theme-toggle",
   "status": "beta",
   "category": "Actions",
-  "description": "An icon button that switches between a dark and a light theme and remembers the choice. The moon or sun shows from CSS alone, following the colour scheme, so it's right on first paint.",
-  "whenToUse": ["A site or app header where readers pick light or dark."],
-  "whenNotToUse": [
-    "Choosing between more than two themes, or \"system\" — use a Select or radio group with setTheme().",
-    "Theming one section — set data-theme on it."
-  ],
+  "description": "An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.",
   "classes": {
-    "ayy-theme-toggle": "On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons.",
+    "ayy-theme-toggle": "On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.",
     "ayy-theme-toggle__moon": "Icon shown in dark themes.",
-    "ayy-theme-toggle__sun": "Icon shown in light themes."
+    "ayy-theme-toggle__sun": "Icon shown in light themes.",
+    "ayy-theme-toggle__item": "On each ayy-menu__item (role=\"menuitemradio\", data-value = theme name or \"system\"). The one with aria-checked=\"true\" is bold and shows a check."
   },
-  "variants": {
-    "dark": { "values": ["dark", "dark-soft"], "default": "dark" },
-    "light": { "values": ["light", "light-gray"], "default": "light" }
-  },
-  "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass constants; connectThemeToggle(button, { dark?, light?, onChange? }) → cleanup.",
+  "variants": {},
+  "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange? }) → cleanup.",
   "element": {
     "tag": "ayy-theme-toggle",
-    "attributes": {
-      "dark": "dark | dark-soft — theme to switch to for dark",
-      "light": "light | light-gray — theme to switch to for light"
-    },
-    "events": { "ayy-value-change": "{ value: string } — the theme just applied" },
-    "children": "One <button> with both icons. aria-pressed (true while dark) is kept in sync for you, including when the OS preference changes."
+    "attributes": {},
+    "events": { "ayy-value-change": "{ value: string } — the theme just applied (\"system\" clears the override)" },
+    "children": "The icon <button> and a [popover] menu whose items are role=\"menuitemradio\" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere."
   },
   "react": {
     "import": "import { ThemeToggle } from \"ayywi/react\";",
     "components": {
       "ThemeToggle": {
-        "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons",
+        "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons, plus the <div class=\"ayy-menu\" popover> listing System and every theme",
         "props": {
-          "dark": "ThemeName for dark. Default \"dark\".",
-          "light": "ThemeName for light. Default \"light\".",
-          "onValueChange": "(theme: ThemeName) => void",
-          "aria-label": "Default \"Dark theme\"."
+          "onValueChange": "(theme: ThemeMode) => void",
+          "aria-label": "Default \"Theme\"."
         }
       }
     }
   },
   "a11y": [
-    "A toggle button: a fixed name (\"Dark theme\") and aria-pressed=\"true\" while dark, so screen readers announce the state.",
-    "The icons are aria-hidden; the name and state carry the meaning."
+    "A menu button: aria-haspopup=\"menu\" with the fixed name \"Theme\". Arrow keys move through the items, Esc closes and returns focus.",
+    "Items are menuitemradio; aria-checked marks the theme in force, and the check is not the only cue (the item is also bold).",
+    "The icons are aria-hidden; the name carries the meaning."
   ],
-  "do": ["Add themeInitScript to <head> so the stored theme applies before first paint.", "Put it next to the brand or before the call to action in the Navbar."],
-  "dont": ["Don't change the label with the state; aria-pressed already says it."],
-  "examples": [{ "id": "basic", "title": "Toggle" }]
+  "do": [
+    "Use it in a site or app header where readers pick a theme, including following the system.",
+    "Put it next to the brand or before the call to action in the Navbar.",
+    "Add themeInitScript to <head> so the stored theme applies before first paint."
+  ],
+  "dont": [
+    "Don't use it when there are only ever two themes and no \"system\" — a plain Button calling setTheme() is enough.",
+    "Don't use it to theme one section — set data-theme on it.",
+    "Don't change the button's label with the theme; the menu shows which one is selected."
+  ],
+  "examples": [{ "id": "basic", "title": "Theme menu" }]
 }

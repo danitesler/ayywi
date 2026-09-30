@@ -60,7 +60,7 @@ function readDir(root, dir) {
     .map((file) => ({ file: `tokens/${dir}/${file}`, name: basename(file, ".json"), source: JSON.parse(readFileSync(join(path, file), "utf8")) }));
 }
 
-/** Flattened tokens from tokens/tokens.json (file order) plus brand overrides from tokens/brands/*.json. */
+/** Flattened tokens from tokens/tokens.json (file order). */
 export function loadTokens(root) {
   const tokens = flatten(JSON.parse(readFileSync(join(root, "tokens/tokens.json"), "utf8")));
   const byName = new Map(tokens.map((t) => [t.name, t]));
@@ -129,18 +129,5 @@ export function loadTokens(root) {
     return resolve(rawIn(t, theme));
   }
 
-  const brands = readDir(root, "brands").map(({ file, name, source }) => {
-    const overrides = flatten(source, file);
-    for (const o of overrides) {
-      const base = byName.get(o.name);
-      if (!base) throw new Error(`${file}: ${o.name} is not a token`);
-      if (base.css !== undefined) throw new Error(`${file}: ${o.name} is derived; override its source tokens instead`);
-      if (o.light !== undefined && base.type !== "color") throw new Error(`${file}: only colours can have light values (${o.name})`);
-      o.cssVar = base.cssVar;
-      o.type = base.type;
-    }
-    return { name, description: source.$description, overrides };
-  });
-
-  return { tokens, byName, resolve, toCss, rawIn, valueIn, themes, brands };
+  return { tokens, byName, resolve, toCss, rawIn, valueIn, themes };
 }

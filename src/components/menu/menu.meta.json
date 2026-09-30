@@ -4,12 +4,6 @@
   "status": "stable",
   "category": "Actions",
   "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
-  "whenToUse": ["Secondary actions for an item (rename, duplicate, delete).", "Overflow “⋯” menus in toolbars and table rows."],
-  "whenNotToUse": [
-    "Choosing a value in a form — use Select or Radio.",
-    "Navigation between pages — use links.",
-    "Rich content or form fields — use Popover."
-  ],
   "classes": {
     "ayy-menu": "On the element with popover and role=\"menu\".",
     "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",
@@ -62,7 +56,16 @@
     "Esc or Tab closes the menu and focus returns to the trigger.",
     "Icon-only triggers (⋯) need aria-label."
   ],
-  "do": ["Put destructive actions last, after a separator.", "Keep item labels to a verb + noun: \"Rename project\"."],
-  "dont": ["Don't put form fields or links to other pages in a menu.", "Don't nest menus."],
+  "do": [
+    "Use a menu for an item's secondary actions (rename, duplicate, delete) and for overflow “⋯” menus in toolbars and table rows.",
+    "Put destructive actions last, after a separator.",
+    "Keep item labels to a verb + noun: \"Rename project\"."
+  ],
+  "dont": [
+    "Don't use a menu to choose a value in a form — use Select or Radio.",
+    "Don't use a menu to navigate between pages — use links.",
+    "Don't put form fields or rich content in a menu — use Popover.",
+    "Don't nest menus."
+  ],
   "examples": [{ "id": "actions", "title": "Item actions" }]
 }

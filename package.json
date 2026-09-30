@@ -59,7 +59,6 @@
     "./ayywi.unlayered.min.css": "./dist/ayywi.unlayered.min.css",
     "./tokens.css": "./dist/tokens.css",
     "./css/*": "./dist/css/*",
-    "./brands/*": "./dist/brands/*",
     "./fonts.css": "./dist/fonts.css",
     "./fonts-google.css": "./dist/fonts-google.css",
     "./tokens.json": "./tokens/tokens.json",

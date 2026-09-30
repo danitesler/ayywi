@@ -1,5 +1,5 @@
-/* Light/dark switch on an icon button. Put both icons inside: the one shown follows the colour scheme the button
-   renders in (moon in dark themes, sun in light ones), so the icon is right before any JS runs. */
+/* Theme picker: an icon button that opens a menu of themes. Put both icons inside the button: the one shown follows the
+   colour scheme the button renders in (moon in dark themes, sun in light ones), so the icon is right before any JS runs. */
 .ayy-theme-toggle {
   display: inline-grid;
   place-items: center;
@@ -16,6 +16,23 @@
 
 .ayy-theme-toggle__sun {
   color: light-dark(currentColor, transparent);
+}
+
+/* The theme in force gets a check at the inline end, drawn from borders so it follows currentColor and text direction. */
+.ayy-theme-toggle__item[aria-checked="true"] {
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-theme-toggle__item[aria-checked="true"]::after {
+  content: "";
+  flex: none;
+  inline-size: 0.35em;
+  block-size: 0.65em;
+  margin-inline-start: auto;
+  margin-block-end: 0.15em;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  transform: rotate(45deg);
 }
 
 /* Forced colours would paint both icons; keep the transparent one transparent. */

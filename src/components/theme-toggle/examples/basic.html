@@ -1,7 +1,14 @@
-<!-- <ayy-theme-toggle> (ayywi/elements) switches <html> between dark and light and remembers it. -->
+<!-- <ayy-theme-toggle> (ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or "system". -->
 <ayy-theme-toggle>
-  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle" aria-label="Dark theme">
+  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle" aria-label="Theme" aria-haspopup="menu" popovertarget="theme-menu-html">
     <svg class="ayy-theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" /></svg>
     <svg class="ayy-theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
   </button>
+  <div class="ayy-menu" id="theme-menu-html" popover role="menu" aria-label="Theme">
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="true" data-value="system">System</button>
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark">Dark</button>
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark-soft">Dark soft</button>
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light">Light</button>
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light-gray">Light gray</button>
+  </div>
 </ayy-theme-toggle>

@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Data display",
   "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
-  "whenToUse": ["Showing a result or reach at a glance: \"200k downloads\", \"+34% conversion\".", "A row of key numbers in a case study or dashboard header."],
-  "whenNotToUse": ["Tables of numbers — use Table.", "Progress towards a goal — use Progress."],
   "classes": {
     "ayy-stat": "Root.",
     "ayy-stat--sm": "Smaller number (28px instead of 48px), for rows of several stats or inside cards.",
@@ -36,7 +34,15 @@
     "Write abbreviations the way they should be read, or add the full number: <span aria-hidden=\"true\">200k</span><span class=\"ayy-sr-only\">200,000</span>.",
     "Keep the unit as text, not only an icon."
   ],
-  "do": ["Format the number before it gets here (4.2k, 87%).", "Line several up with .ayy-grid or .ayy-cluster."],
-  "dont": ["Don't colour the number to mean good or bad without saying so in words."],
+  "do": [
+    "Use a stat to show a result or reach at a glance: \"200k downloads\", \"+34% conversion\".",
+    "Line several up with .ayy-grid or .ayy-cluster for the key numbers in a case study or dashboard header.",
+    "Format the number before it gets here (4.2k, 87%)."
+  ],
+  "dont": [
+    "Don't use stats for tables of numbers — use Table.",
+    "Don't use a stat for progress towards a goal — use Progress.",
+    "Don't colour the number to mean good or bad without saying so in words."
+  ],
   "examples": [{ "id": "row", "title": "Row of stats" }]
 }

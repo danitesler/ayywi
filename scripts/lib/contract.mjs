@@ -19,6 +19,8 @@ export const UTILITIES = {
   "ayy-h2": "Heading 2 style (36px).",
   "ayy-h3": "Heading 3 style (28px).",
   "ayy-h4": "Heading 4 style (22px).",
+  "ayy-h5": "Heading 5 style (18px).",
+  "ayy-h6": "Heading 6 style (16px, semibold).",
   "ayy-lede": "Intro paragraph, 18px soft text.",
   "ayy-muted": "Muted text colour.",
   "ayy-eyebrow": "Small uppercase label above a heading.",
@@ -56,7 +58,6 @@ export const CATEGORIES = {
 export const ATTRIBUTES = {
   "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft lowers the contrast (charcoal instead of black); light-gray puts white cards and panels on a grey page.",
   "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
-  "data-brand": "Brand name (e.g. \"violet\"); needs ayywi/brands/<name>.css loaded.",
   dir: "\"rtl\" mirrors every component (logical properties throughout).",
 };
 
@@ -66,7 +67,7 @@ export const RULES = [
   "Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
   "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.",
   "Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
-  "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.",
+  "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
   "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).",
   "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
@@ -76,6 +77,6 @@ export const RULES = [
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label.",
-  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>).",
+  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>, <ayy-app-shell>).",
   "Run `npx ayywi lint` after UI changes and fix every error it reports.",
 ];

@@ -4,8 +4,6 @@
   "status": "beta",
   "category": "Data display",
   "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
-  "whenToUse": ["Showing product screens in a case study, landing page or portfolio card, so they read as product and not decoration."],
-  "whenNotToUse": ["Photos and illustrations — they don't need a window.", "Live, interactive UI inside an app."],
   "classes": {
     "ayy-frame": "Root: bordered, rounded, with the frame shadow.",
     "ayy-frame__bar": "Top bar with the three window dots.",
@@ -25,9 +23,14 @@
     "The dots are decoration (a pseudo-element)."
   ],
   "do": [
+    "Use a frame to show product screens in a case study, landing page or portfolio card, so they read as product and not decoration.",
     "Give images width and height so the frame keeps its size while loading.",
     "Blur real names and customer data in production screenshots, and say so in the caption."
   ],
-  "dont": ["Don't put text that matters inside the screenshot; write it next to the frame."],
+  "dont": [
+    "Don't frame photos and illustrations — they don't need a window.",
+    "Don't frame live, interactive UI inside an app.",
+    "Don't put text that matters inside the screenshot; write it next to the frame."
+  ],
   "examples": [{ "id": "basic", "title": "Screenshot in a window" }]
 }

@@ -84,7 +84,7 @@ export const DialogTrigger = forwardRef<HTMLButtonElement, ButtonProps>(function
 
 export interface DialogContentProps extends DialogHTMLAttributes<HTMLDialogElement> {
   size?: DialogSize;
-  /** "start" / "end" turn it into a side modal: a full-height panel sliding in from that inline edge. Default "center". */
+  /** "start" / "end" turn it into a side modal: a full-height panel sliding in from that inline edge. "bottom" is a bottom sheet. Default "center". */
   side?: DialogSide;
   /** Hide the built-in top-corner close button. */
   hideClose?: boolean;

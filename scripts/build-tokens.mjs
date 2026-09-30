@@ -1,11 +1,11 @@
-// tokens/tokens.json (+ tokens/themes/*.json, tokens/brands/*.json) → src/css/tokens.css, src/css/brands/*.css, src/tokens.ts
+// tokens/tokens.json (+ tokens/themes/*.json) → src/css/tokens.css, src/tokens.ts
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkMode, finish, output } from "./lib/output.mjs";
 import { DENSITIES, loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const { tokens, resolve, toCss, rawIn, valueIn, themes, brands } = loadTokens(root);
+const { tokens, resolve, toCss, rawIn, valueIn, themes } = loadTokens(root);
 const extraThemes = themes.filter((t) => t.name !== t.base);
 
 const decl = (t, v) => `  ${t.cssVar}: ${v};`;
@@ -62,10 +62,9 @@ ${themed.map((t) => decl(t, toCss(rawIn(t, theme.name), t.type))).join("\n")}
 `,
   )
   .join("")}
-/* Derived from the themed tokens above. Redeclared on every theme and brand root so nested ones recompute. */
+/* Derived from the themed tokens above. Redeclared on every theme root so nested ones recompute. */
 :root,
 [data-theme],
-[data-brand],
 .dark,
 .light {
 ${derived.map((t) => decl(t, t.css)).join("\n")}
@@ -81,28 +80,6 @@ ${DENSITIES.map((mode) => `\n[data-density="${mode}"] {\n${densityBlock(mode)}\n
 `;
 
 output(join(root, "src/css/tokens.css"), css);
-
-// ---- Brands: semantic overrides in a later cascade layer. light-dark() follows the inherited color-scheme,
-// so one declaration serves both themes and nested themed sections.
-for (const brand of brands) {
-  const value = (o) =>
-    o.light !== undefined ? `light-dark(${toCss(o.light, o.type)}, ${toCss(o.value, o.type)})` : toCss(o.value, o.type);
-  const sel = `[data-brand="${brand.name}"]`;
-  output(
-    join(root, `src/css/brands/${brand.name}.css`),
-    `${HEADER}
-/* ${brand.description ?? `Brand "${brand.name}".`} */
-@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;
-
-@layer ayywi.brand {
-  ${sel},
-  ${sel} :is([data-theme], .dark, .light) {
-${brand.overrides.map((o) => `  ${decl(o, value(o))}`).join("\n")}
-  }
-}
-`,
-  );
-}
 
 // ---- TypeScript ----
 const tsEntries = tokens
@@ -154,16 +131,12 @@ export type ThemeName = (typeof themes)[number];
 
 /** The base colour scheme of each theme. */
 export const themeBase = ${JSON.stringify(Object.fromEntries(themes.map((t) => [t.name, t.base])))} as const satisfies Record<ThemeName, "dark" | "light">;
-
-/** Brands shipped in ayywi/brands/<name>.css. */
-export const brands = ${JSON.stringify(brands.map((b) => b.name))} as const;
-export type BrandName = (typeof brands)[number];
 `;
 
 output(join(root, "src/tokens.ts"), ts);
 finish("tokens");
 if (!checkMode) {
   console.log(
-    `tokens: ${tokens.length} (${staticTokens.length} static, ${themed.length} themed, ${derived.length} derived, ${dense.length} density-aware); themes: ${themes.map((t) => t.name).join(", ")}; brands: ${brands.map((b) => b.name).join(", ") || "none"}`,
+    `tokens: ${tokens.length} (${staticTokens.length} static, ${themed.length} themed, ${derived.length} derived, ${dense.length} density-aware); themes: ${themes.map((t) => t.name).join(", ")}`,
   );
 }

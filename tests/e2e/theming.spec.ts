@@ -26,18 +26,6 @@ test("coarse pointers get touch sizes when density is unset", async ({ browser }
   await context.close();
 });
 
-test("brand swaps the primary colour in both themes", async ({ page }) => {
-  const primary = () => stage(page).locator(".ayy-button").first().evaluate((el) => getComputedStyle(el).backgroundColor);
-  await open(page, "button", { theme: "dark" });
-  const plainDark = await primary();
-  await open(page, "button", { theme: "dark", brand: "violet" });
-  const violetDark = await primary();
-  await open(page, "button", { theme: "light", brand: "violet" });
-  const violetLight = await primary();
-  expect(violetDark).not.toBe(plainDark);
-  expect(violetLight).not.toBe(violetDark);
-});
-
 test("RTL flips logical layout", async ({ page }) => {
   await open(page, "popover", { renderer: "html" });
   await rtl(stage(page));
@@ -84,12 +72,11 @@ test("app shell: sidebar and main scroll on their own, the sidebar follows the i
     // The footer is pinned to the bottom of the sidebar.
     expect((await box(sidebar)).y + (await box(sidebar)).height - ((await box(footer)).y + (await box(footer)).height)).toBeLessThan(16);
 
-    // The current link is marked by more than colour: weight, and an accent bar.
+    // The current link is marked by more than colour: a heavier weight.
     const current = shell.locator('.ayy-app-shell__link[aria-current="page"]');
     const other = shell.locator(".ayy-app-shell__nav .ayy-app-shell__link:not([aria-current])").first();
     const weight = (l: typeof current) => l.evaluate((el) => Number(getComputedStyle(el).fontWeight));
     expect(await weight(current)).toBeGreaterThan(await weight(other));
-    expect(await current.evaluate((el) => getComputedStyle(el, "::before").content)).toBe('""');
 
     // Sidebar at the inline start: left in LTR, right in RTL.
     expect((await box(sidebar)).x).toBeLessThan((await box(main)).x);
@@ -200,11 +187,11 @@ for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
       ...slugs.map((slug: string): [string, string] => [slug, ".pv-stage"]),
-      ...["", "colors", "typography", "spacing", "elevation", "motion"].map((r): [string, string] => [r, ".pv-shell"]),
+      ...["", "get-started", "showcase", "showcase/inbox", "colors", "typography", "spacing", "elevation", "motion"].map((r): [string, string] => [r, ".pv-shell"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
-      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator("h1"), `/#/${route}`).toBeVisible();
       const results = await new AxeBuilder({ page })
         .include(scope)
         .disableRules(["region"]) // examples are fragments, not full pages
@@ -216,3 +203,16 @@ for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
     expect(failures).toEqual([]);
   });
 }
+
+test("axe: no serious violations in the showcase apps", async ({ page }) => {
+  const failures: string[] = [];
+  for (const id of ["dashboard", "landing", "inbox", "settings"]) {
+    await page.goto(`/?app=${id}`);
+    await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
+    const results = await new AxeBuilder({ page }).analyze();
+    for (const v of results.violations.filter((v) => v.impact === "serious" || v.impact === "critical")) {
+      failures.push(`${id}: ${v.id} — ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
+    }
+  }
+  expect(failures).toEqual([]);
+});

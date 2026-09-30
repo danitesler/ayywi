@@ -4,15 +4,6 @@
   "status": "stable",
   "category": "Data display",
   "description": "Small pill label for status, category or count. Optional pulsing status dot.",
-  "whenToUse": [
-    "Status of an item (Synced, Error, Beta).",
-    "Category or tag next to a title.",
-    "Live indicators (dot)."
-  ],
-  "whenNotToUse": [
-    "Anything clickable — use Button (ghost/outline, sm).",
-    "Long text — badges never wrap."
-  ],
   "classes": {
     "ayy-badge": "Root. Neutral by default.",
     "ayy-badge--muted": "Quieter neutral.",
@@ -45,8 +36,17 @@
     "Colour is never the only signal — the label text must say the status.",
     "The dot is aria-hidden; it's decorative."
   ],
-  "do": ["Keep labels to one or two words.", "Use the status variants for status, accent spotlights for categories."],
-  "dont": ["Don't stack more than three badges in a row.", "Don't put buttons inside badges."],
+  "do": [
+    "Use a badge for the status of an item (Synced, Error, Beta), a category or tag next to a title, or a live indicator (dot).",
+    "Keep labels to one or two words.",
+    "Use the status variants for status, accent spotlights for categories."
+  ],
+  "dont": [
+    "Don't make a badge clickable — use Button (ghost/outline, sm).",
+    "Don't put long text in a badge — badges never wrap.",
+    "Don't stack more than three badges in a row.",
+    "Don't put buttons inside badges."
+  ],
   "examples": [
     { "id": "variants", "title": "Variants" },
     { "id": "dot", "title": "Status dot" }

@@ -2,4 +2,4 @@
 import "./index";
 
 export { toast, configureToaster } from "../components/toast/toast";
-export { setTheme, getTheme, getColorScheme, setDensity, getDensity, setBrand } from "../theme";
+export { setTheme, getTheme, getColorScheme, setDensity, getDensity } from "../theme";

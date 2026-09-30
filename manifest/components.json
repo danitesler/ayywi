@@ -4,14 +4,13 @@
   "version": "0.4.0",
   "description": "Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.",
   "entrypoints": {
-    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.brand — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
+    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
     "ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
     "ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
-    "ayywi/brands/<name>.css": "Brand overrides (violet), applied with data-brand=\"<name>\".",
     "ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). ayywi/fonts-google.css loads them from Google instead.",
-    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers (connectPopover, connectMenu, enhanceTooltip), toast(), iconSvg(), setTheme/setDensity/setBrand, cssVar(). Server-safe.",
+    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers (connectPopover, connectMenu, enhanceTooltip), toast(), iconSvg(), setTheme/setDensity, cssVar(). Server-safe.",
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-theme-toggle>, <ayy-toc>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, setTheme, setDensity, setBrand).",
+    "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-theme-toggle>, <ayy-app-shell>, <ayy-toc>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, setTheme, setDensity).",
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-soft.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
@@ -24,7 +23,6 @@
     "state": "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
     "theming": "No attribute = follow OS (dark or light). data-theme=\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" forces a theme on any element and its subtree (.dark/.light classes work too). See \"themes\" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says \"dark\" or \"light\".",
     "density": "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
-    "brands": "Semantic tokens can be overridden per brand: load ayywi/brands/<name>.css and set data-brand. Components never change.",
     "direction": "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.",
     "elements": "Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith(\"ayy-\"); Angular: CUSTOM_ELEMENTS_SCHEMA.",
     "highContrast": "Every stateful component has a forced-colors (Windows High Contrast) style using system colours.",
@@ -35,7 +33,7 @@
     "Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
     "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.",
     "Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
-    "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. Rebrand by overriding semantic tokens or loading a brand file, not by restyling components.",
+    "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
     "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).",
     "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
     "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
@@ -45,13 +43,12 @@
     "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
     "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
     "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label.",
-    "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>).",
+    "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>, <ayy-app-shell>).",
     "Run `npx ayywi lint` after UI changes and fix every error it reports."
   ],
   "attributes": {
     "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft lowers the contrast (charcoal instead of black); light-gray puts white cards and panels on a grey page.",
     "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
-    "data-brand": "Brand name (e.g. \"violet\"); needs ayywi/brands/<name>.css loaded.",
     "dir": "\"rtl\" mirrors every component (logical properties throughout)."
   },
   "themes": [
@@ -101,6 +98,8 @@
     "ayy-h2": "Heading 2 style (36px).",
     "ayy-h3": "Heading 3 style (28px).",
     "ayy-h4": "Heading 4 style (22px).",
+    "ayy-h5": "Heading 5 style (18px).",
+    "ayy-h6": "Heading 6 style (16px, semibold).",
     "ayy-lede": "Intro paragraph, 18px soft text.",
     "ayy-muted": "Muted text colour.",
     "ayy-eyebrow": "Small uppercase label above a heading.",
@@ -122,20 +121,6 @@
     "ayy-scroll-progress": "Reading-progress bar fixed to the top of the viewport, in --ayy-spot. Put an empty aria-hidden <div> with it at the start of <body>. CSS scroll timelines only; hidden where unsupported.",
     "ayy-reveal": "Fades and lifts the element in as it scrolls into view. CSS only; off under reduced motion."
   },
-  "brands": [
-    {
-      "name": "violet",
-      "description": "Example brand: violet primary and focus ring, softer button and card corners. Overrides are semantic tokens only. Load ayywi/brands/violet.css and set data-brand=\"violet\" on any element.",
-      "overrides": [
-        "--ayy-color-primary",
-        "--ayy-color-primary-fg",
-        "--ayy-color-ring",
-        "--ayy-color-glow",
-        "--ayy-radius-button",
-        "--ayy-radius-card"
-      ]
-    }
-  ],
   "tokens": [
     {
       "name": "palette.neutral.0",
@@ -1432,14 +1417,6 @@
       "status": "stable",
       "category": "Actions",
       "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
-      "whenToUse": [
-        "Any action the user can take: submit, open, save, delete.",
-        "Links that should look like actions (apply buttonClass() to the <a>)."
-      ],
-      "whenNotToUse": [
-        "Navigation inside running text — use a plain link.",
-        "Toggling a setting on/off — use Switch."
-      ],
       "classes": {
         "ayy-button": "Root. Alone it is the primary button.",
         "ayy-button--secondary": "Quiet filled button for secondary actions.",
@@ -1498,11 +1475,15 @@
         "Visible focus ring on :focus-visible is built in — never remove it."
       ],
       "do": [
-        "One primary button per view or section; everything else secondary/outline/ghost.",
+        "Use a button for any action the user can take: submit, open, save, delete.",
+        "Apply buttonClass() to an <a> when a link should look like an action.",
+        "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
         "On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.",
         "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (1.25em)."
       ],
       "dont": [
+        "Don't use a button for navigation inside running text — use a plain link.",
+        "Don't use a button to toggle a setting on/off — use Switch.",
         "Don't restyle colours per button — add a variant to the design system instead.",
         "Don't use destructive for non-destructive emphasis."
       ],
@@ -1551,15 +1532,6 @@
       "status": "stable",
       "category": "Actions",
       "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
-      "whenToUse": [
-        "Secondary actions for an item (rename, duplicate, delete).",
-        "Overflow “⋯” menus in toolbars and table rows."
-      ],
-      "whenNotToUse": [
-        "Choosing a value in a form — use Select or Radio.",
-        "Navigation between pages — use links.",
-        "Rich content or form fields — use Popover."
-      ],
       "classes": {
         "ayy-menu": "On the element with popover and role=\"menu\".",
         "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",
@@ -1652,11 +1624,14 @@
         "Icon-only triggers (⋯) need aria-label."
       ],
       "do": [
+        "Use a menu for an item's secondary actions (rename, duplicate, delete) and for overflow “⋯” menus in toolbars and table rows.",
         "Put destructive actions last, after a separator.",
         "Keep item labels to a verb + noun: \"Rename project\"."
       ],
       "dont": [
-        "Don't put form fields or links to other pages in a menu.",
+        "Don't use a menu to choose a value in a form — use Select or Radio.",
+        "Don't use a menu to navigate between pages — use links.",
+        "Don't put form fields or rich content in a menu — use Popover.",
         "Don't nest menus."
       ],
       "examples": [
@@ -1680,77 +1655,55 @@
       "slug": "theme-toggle",
       "status": "beta",
       "category": "Actions",
-      "description": "An icon button that switches between a dark and a light theme and remembers the choice. The moon or sun shows from CSS alone, following the colour scheme, so it's right on first paint.",
-      "whenToUse": [
-        "A site or app header where readers pick light or dark."
-      ],
-      "whenNotToUse": [
-        "Choosing between more than two themes, or \"system\" — use a Select or radio group with setTheme().",
-        "Theming one section — set data-theme on it."
-      ],
+      "description": "An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.",
       "classes": {
-        "ayy-theme-toggle": "On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons.",
+        "ayy-theme-toggle": "On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.",
         "ayy-theme-toggle__moon": "Icon shown in dark themes.",
-        "ayy-theme-toggle__sun": "Icon shown in light themes."
+        "ayy-theme-toggle__sun": "Icon shown in light themes.",
+        "ayy-theme-toggle__item": "On each ayy-menu__item (role=\"menuitemradio\", data-value = theme name or \"system\"). The one with aria-checked=\"true\" is bold and shows a check."
       },
-      "variants": {
-        "dark": {
-          "values": [
-            "dark",
-            "dark-soft"
-          ],
-          "default": "dark"
-        },
-        "light": {
-          "values": [
-            "light",
-            "light-gray"
-          ],
-          "default": "light"
-        }
-      },
-      "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass constants; connectThemeToggle(button, { dark?, light?, onChange? }) → cleanup.",
+      "variants": {},
+      "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange? }) → cleanup.",
       "element": {
         "tag": "ayy-theme-toggle",
-        "attributes": {
-          "dark": "dark | dark-soft — theme to switch to for dark",
-          "light": "light | light-gray — theme to switch to for light"
-        },
+        "attributes": {},
         "events": {
-          "ayy-value-change": "{ value: string } — the theme just applied"
+          "ayy-value-change": "{ value: string } — the theme just applied (\"system\" clears the override)"
         },
-        "children": "One <button> with both icons. aria-pressed (true while dark) is kept in sync for you, including when the OS preference changes."
+        "children": "The icon <button> and a [popover] menu whose items are role=\"menuitemradio\" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere."
       },
       "react": {
         "import": "import { ThemeToggle } from \"ayywi/react\";",
         "components": {
           "ThemeToggle": {
-            "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons",
+            "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons, plus the <div class=\"ayy-menu\" popover> listing System and every theme",
             "props": {
-              "dark": "ThemeName for dark. Default \"dark\".",
-              "light": "ThemeName for light. Default \"light\".",
-              "onValueChange": "(theme: ThemeName) => void",
-              "aria-label": "Default \"Dark theme\"."
+              "onValueChange": "(theme: ThemeMode) => void",
+              "aria-label": "Default \"Theme\"."
             }
           }
         }
       },
       "a11y": [
-        "A toggle button: a fixed name (\"Dark theme\") and aria-pressed=\"true\" while dark, so screen readers announce the state.",
-        "The icons are aria-hidden; the name and state carry the meaning."
+        "A menu button: aria-haspopup=\"menu\" with the fixed name \"Theme\". Arrow keys move through the items, Esc closes and returns focus.",
+        "Items are menuitemradio; aria-checked marks the theme in force, and the check is not the only cue (the item is also bold).",
+        "The icons are aria-hidden; the name carries the meaning."
       ],
       "do": [
-        "Add themeInitScript to <head> so the stored theme applies before first paint.",
-        "Put it next to the brand or before the call to action in the Navbar."
+        "Use it in a site or app header where readers pick a theme, including following the system.",
+        "Put it next to the brand or before the call to action in the Navbar.",
+        "Add themeInitScript to <head> so the stored theme applies before first paint."
       ],
       "dont": [
-        "Don't change the label with the state; aria-pressed already says it."
+        "Don't use it when there are only ever two themes and no \"system\" — a plain Button calling setTheme() is enough.",
+        "Don't use it to theme one section — set data-theme on it.",
+        "Don't change the button's label with the theme; the menu shows which one is selected."
       ],
       "examples": [
         {
           "id": "basic",
-          "title": "Toggle",
-          "html": "<!-- <ayy-theme-toggle> (ayywi/elements) switches <html> between dark and light and remembers it. -->\n<ayy-theme-toggle>\n  <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\" aria-label=\"Dark theme\">\n    <svg class=\"ayy-theme-toggle__moon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z\" /></svg>\n    <svg class=\"ayy-theme-toggle__sun\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\" /><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\" /></svg>\n  </button>\n</ayy-theme-toggle>",
+          "title": "Theme menu",
+          "html": "<!-- <ayy-theme-toggle> (ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or \"system\". -->\n<ayy-theme-toggle>\n  <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\" aria-label=\"Theme\" aria-haspopup=\"menu\" popovertarget=\"theme-menu-html\">\n    <svg class=\"ayy-theme-toggle__moon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z\" /></svg>\n    <svg class=\"ayy-theme-toggle__sun\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\" /><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\" /></svg>\n  </button>\n  <div class=\"ayy-menu\" id=\"theme-menu-html\" popover role=\"menu\" aria-label=\"Theme\">\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"true\" data-value=\"system\">System</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"dark\">Dark</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"dark-soft\">Dark soft</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"light\">Light</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"light-gray\">Light gray</button>\n  </div>\n</ayy-theme-toggle>",
           "react": "import { ThemeToggle } from \"ayywi/react\";\n\nexport default function Example() {\n  return <ThemeToggle />;\n}"
         }
       ],
@@ -1768,13 +1721,6 @@
       "status": "beta",
       "category": "Navigation",
       "description": "Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width.",
-      "whenToUse": [
-        "The top bar of a website or app shell: logo, a few top-level links, one call to action."
-      ],
-      "whenNotToUse": [
-        "Switching views inside a page — use Tabs.",
-        "Long lists of links — keep two to five, and move the rest into a DropdownMenu or the footer."
-      ],
       "classes": {
         "ayy-navbar": "Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.",
         "ayy-navbar__inner": "Centred row at page width (--ayy-size-container) with the page gutter.",
@@ -1817,10 +1763,13 @@
         "Put a .ayy-skip-link before the navbar so keyboard users can jump past it."
       ],
       "do": [
+        "Use a navbar as the top bar of a website or app shell: logo, two to five top-level links, one call to action.",
         "Keep one call to action in the actions group (a ring or primary button, size sm).",
         "On phones keep the brand, one or two links and the call to action; move the rest into a menu."
       ],
       "dont": [
+        "Don't use it to switch views inside a page — use Tabs.",
+        "Don't fill it with long lists of links — move the extras into a DropdownMenu or the footer.",
         "Don't give the navbar its own background colour; the glass token keeps both themes right.",
         "Don't nest a second navbar inside the page."
       ],
@@ -1844,32 +1793,31 @@
       "slug": "app-shell",
       "status": "beta",
       "category": "Navigation",
-      "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently; on phones the sidebar stacks above the content as a single row that scrolls sideways.",
-      "whenToUse": [
-        "The outer layout of a signed-in app or dashboard: a persistent list of destinations next to the page content.",
-        "Anything with five or more top-level destinations that should stay one click away."
-      ],
-      "whenNotToUse": [
-        "A marketing site or a content page — use Navbar and Sections.",
-        "Switching views of one object inside a page — use Tabs.",
-        "A sidebar that opens and closes on demand — the shell has no toggle; put a menu in a side Dialog instead."
-      ],
+      "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently. On phones the sidebar either stacks above the content as a single row that scrolls sideways, or — with a top bar — becomes a drawer that a menu button opens.",
       "classes": {
-        "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. To embed the shell in a box with a fixed height, set block-size: 100% on it.",
+        "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it.",
         "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport.",
         "ayy-app-shell__brand": "Logo / product name link at the top of the sidebar.",
         "ayy-app-shell__nav": "<nav> holding the links, stacked vertically (side by side on phones).",
-        "ayy-app-shell__link": "Destination link. aria-current=\"page\" marks the page you're on: it gets a tint, a heavier weight and an accent bar.",
+        "ayy-app-shell__link": "Destination link. aria-current=\"page\" marks the page you're on: it gets a tint and a heavier weight.",
+        "ayy-app-shell__group": "A headed section of the nav: a __group-label over a __list. Groups after the first get a hairline above them.",
+        "ayy-app-shell__group-label": "The group's heading: a small uppercase <p>. Give it an id and point the list's aria-labelledby at it.",
+        "ayy-app-shell__list": "The <ul> of a group. Each <li> holds a link, a link followed by a __sublist, or a __collapse.",
+        "ayy-app-shell__sublist": "A nested <ul> of child links, indented along a guide line. One level only. Follows a parent link, or sits inside a __collapse. Give it an aria-label when it follows a link.",
+        "ayy-app-shell__collapse": "A native <details> for a group of child links that opens and closes. Its <summary class=\"ayy-app-shell__link\"> is the toggle, with a chevron at the inline end; put the links in a __sublist inside it. Add `open` when it holds the current page.",
+        "ayy-app-shell__link--sub": "Modifier for a child link inside a __sublist: a smaller control and a lighter weight.",
         "ayy-app-shell__footer": "Pinned to the bottom of the sidebar (the end of the row on phones): settings, account, help link. Keep it short.",
-        "ayy-app-shell__main": "The <main> content column. Scrolls on its own and has the page gutter."
+        "ayy-app-shell__main": "The <main> content column. Scrolls on its own and has the page gutter.",
+        "ayy-app-shell__bar": "Phone top bar, first child of the shell: holds the __toggle, the brand and maybe a search button. Hidden from 48rem. Its presence switches the phone layout from the sideways row to a drawer: the sidebar keeps its full layout (groups, sub-lists, collapses) and slides in from the inline-start edge over a scrim.",
+        "ayy-app-shell__toggle": "The menu button in the __bar (combine with ayy-button ayy-button--ghost ayy-button--icon). Its aria-expanded is the drawer's state: \"true\" shows the drawer. connectAppShell() / <ayy-app-shell> / React AppShell manage it."
       },
       "variants": {},
-      "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass constants.",
+      "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).",
       "react": {
-        "import": "import { AppShell, AppShellSidebar, AppShellBrand, AppShellNav, AppShellLink, AppShellFooter, AppShellMain } from \"ayywi/react\";",
+        "import": "import { AppShell, AppShellSidebar, AppShellBrand, AppShellNav, AppShellLink, AppShellFooter, AppShellMain, AppShellBar, AppShellToggle } from \"ayywi/react\";",
         "components": {
           "AppShell": {
-            "renders": "<div class=\"ayy-app-shell\">"
+            "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellBar"
           },
           "AppShellSidebar": {
             "renders": "<aside class=\"ayy-app-shell__sidebar\">"
@@ -1886,7 +1834,30 @@
           "AppShellLink": {
             "renders": "<a class=\"ayy-app-shell__link\">",
             "props": {
-              "current": "boolean — sets aria-current=\"page\"."
+              "current": "boolean — sets aria-current=\"page\".",
+              "sub": "boolean — a child link (ayy-app-shell__link--sub)."
+            }
+          },
+          "AppShellGroup": {
+            "renders": "<div class=\"ayy-app-shell__group\"> with a label <p> and a <ul>",
+            "props": {
+              "label": "The heading. Names the list."
+            }
+          },
+          "AppShellItem": {
+            "renders": "<li>"
+          },
+          "AppShellSublist": {
+            "renders": "<ul class=\"ayy-app-shell__sublist\">",
+            "props": {
+              "aria-label": "Required. Names the list."
+            }
+          },
+          "AppShellCollapse": {
+            "renders": "<details class=\"ayy-app-shell__collapse\"> with a link-styled <summary> and a <ul>",
+            "props": {
+              "label": "The toggle row: an icon and a short label.",
+              "open": "Start open. Set it when the group holds the current page."
             }
           },
           "AppShellFooter": {
@@ -1894,25 +1865,53 @@
           },
           "AppShellMain": {
             "renders": "<main class=\"ayy-app-shell__main\">"
+          },
+          "AppShellBar": {
+            "renders": "<header class=\"ayy-app-shell__bar\">"
+          },
+          "AppShellToggle": {
+            "renders": "<button class=\"ayy-button ayy-button--ghost ayy-button--icon ayy-app-shell__toggle\"> with a menu icon",
+            "props": {
+              "aria-label": "Defaults to \"Menu\" (translate it).",
+              "children": "Replaces the default menu icon."
+            }
           }
         }
       },
       "a11y": [
         "The sidebar is an <aside> (a complementary landmark) and the content is a <main>: one <main> per page, and no other element with that landmark.",
         "Keep one <nav aria-label=\"Main\"> in the sidebar. Give a second nav (say, a settings menu) its own label.",
-        "Mark the current page with aria-current=\"page\". The link also gets a heavier weight and an accent bar, so colour is not the only cue; High Contrast mode fills it with the system highlight.",
+        "Mark the current page with aria-current=\"page\". The link also gets a tint and a heavier weight, so colour is not the only cue; High Contrast mode fills it with the system highlight.",
         "Put a .ayy-skip-link before the shell, pointing at an id on <main>, so keyboard users can jump past the sidebar.",
-        "Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex=\"0\" so keyboard users can scroll it."
+        "Group with a heading and a list: the <p> label names the <ul> through aria-labelledby, so a screen reader announces \"Foundations, list, 5 items\".",
+        "A collapse is a native <details>: Enter and Space toggle it, and the open state is exposed for you. Don't add aria-expanded to the <summary>.",
+        "Mark the current child with aria-current=\"page\" and open its collapse. A closed collapse that holds the current page is drawn bolder, so the location isn't hidden.",
+        "Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex=\"0\" so keyboard users can scroll it.",
+        "The drawer's toggle is a real <button> with aria-expanded and aria-controls pointing at the sidebar (set for you). Opening moves focus to the first link in the drawer and makes the rest of the shell inert; Esc closes it and returns focus to the toggle.",
+        "The closed drawer is visibility: hidden, so its links are out of the tab order and the accessibility tree until it opens."
       ],
       "do": [
+        "Use the app shell as the outer layout of a signed-in app or dashboard: a persistent list of destinations next to the page content.",
+        "Reach for it once there are five or more top-level destinations that should stay one click away.",
+        "Group destinations under a heading once there are more than about six; one group can hold up to a dozen links.",
+        "Use a collapse when a parent has children that are destinations in their own right and you'd otherwise scroll past them; keep the tree one level deep.",
+        "Use a link followed by a __sublist when the parent is itself a page and its children are sections of it (Colors → Surfaces, Text…).",
         "Keep to one line per link: an icon and a short label.",
         "Put account and help links in the footer, not among the destinations.",
-        "Keep the footer to one or two compact items (settings, a user menu): on phones it joins the scrolling row."
+        "Keep the footer to one or two compact items (settings, a user menu): on phones it joins the scrolling row.",
+        "Add a __bar once phones need the nested nav (groups, sub-lists, collapses) or there are more than about five top-level links: the drawer keeps the whole tree.",
+        "For a phone app with three to five destinations, use a Bottom nav instead of the drawer, or alongside it for the most frequent ones."
       ],
       "dont": [
+        "Don't use it for a marketing site or a content page — use Navbar and Sections.",
+        "Don't use it to switch views of one object inside a page — use Tabs.",
+        "Don't nest deeper than one level, and don't put a collapse inside a collapse.",
+        "Don't rely on the phone row for nested items: it shows top-level links only. Headings, sub-lists and collapses are left out; add a __bar to get a drawer that keeps them.",
+        "Don't make a collapse the only way to reach a page the user needs often.",
         "Don't nest a second app shell, and don't put a Navbar above it: the sidebar is the site navigation.",
         "Don't scroll the page body as well; the shell already fills the viewport.",
-        "Don't give the sidebar its own background colour; the surface token follows every theme."
+        "Don't give the sidebar its own background colour; the surface token follows every theme.",
+        "Don't keep the drawer open as a persistent panel on phones, and don't open it on page load."
       ],
       "examples": [
         {
@@ -1920,13 +1919,97 @@
           "title": "Sidebar with navigation",
           "html": "<!-- The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the block-size on the shell. -->\n<div style=\"inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)\">\n  <div class=\"ayy-app-shell\" style=\"block-size: 100%\">\n    <aside class=\"ayy-app-shell__sidebar\">\n      <a class=\"ayy-app-shell__brand\" href=\"#home\">\n        <span class=\"ayy-avatar ayy-avatar--sm\" aria-hidden=\"true\"><span class=\"ayy-avatar__fallback\">NW</span></span>\n        Northwind\n      </a>\n      <nav class=\"ayy-app-shell__nav\" aria-label=\"Main\">\n        <a class=\"ayy-app-shell__link\" href=\"#dashboard\" aria-current=\"page\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.6903 19.4567C13.5 18.9973 13.5 18.4149 13.5 17.25C13.5 16.0851 13.5 15.5027 13.6903 15.0433C13.944 14.4307 14.4307 13.944 15.0433 13.6903C15.5027 13.5 16.0851 13.5 17.25 13.5C18.4149 13.5 18.9973 13.5 19.4567 13.6903C20.0693 13.944 20.556 14.4307 20.8097 15.0433C21 15.5027 21 16.0851 21 17.25C21 18.4149 21 18.9973 20.8097 19.4567C20.556 20.0693 20.0693 20.556 19.4567 20.8097C18.9973 21 18.4149 21 17.25 21C16.0851 21 15.5027 21 15.0433 20.8097C14.4307 20.556 13.944 20.0693 13.6903 19.4567Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M13.6903 8.95671C13.5 8.49728 13.5 7.91485 13.5 6.75C13.5 5.58515 13.5 5.00272 13.6903 4.54329C13.944 3.93072 14.4307 3.44404 15.0433 3.1903C15.5027 3 16.0851 3 17.25 3C18.4149 3 18.9973 3 19.4567 3.1903C20.0693 3.44404 20.556 3.93072 20.8097 4.54329C21 5.00272 21 5.58515 21 6.75C21 7.91485 21 8.49728 20.8097 8.95671C20.556 9.56928 20.0693 10.056 19.4567 10.3097C18.9973 10.5 18.4149 10.5 17.25 10.5C16.0851 10.5 15.5027 10.5 15.0433 10.3097C14.4307 10.056 13.944 9.56928 13.6903 8.95671Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M3.1903 19.4567C3 18.9973 3 18.4149 3 17.25C3 16.0851 3 15.5027 3.1903 15.0433C3.44404 14.4307 3.93072 13.944 4.54329 13.6903C5.00272 13.5 5.58515 13.5 6.75 13.5C7.91485 13.5 8.49728 13.5 8.95671 13.6903C9.56928 13.944 10.056 14.4307 10.3097 15.0433C10.5 15.5027 10.5 16.0851 10.5 17.25C10.5 18.4149 10.5 18.9973 10.3097 19.4567C10.056 20.0693 9.56928 20.556 8.95671 20.8097C8.49728 21 7.91485 21 6.75 21C5.58515 21 5.00272 21 4.54329 20.8097C3.93072 20.556 3.44404 20.0693 3.1903 19.4567Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M3.1903 8.95671C3 8.49728 3 7.91485 3 6.75C3 5.58515 3 5.00272 3.1903 4.54329C3.44404 3.93072 3.93072 3.44404 4.54329 3.1903C5.00272 3 5.58515 3 6.75 3C7.91485 3 8.49728 3 8.95671 3.1903C9.56928 3.44404 10.056 3.93072 10.3097 4.54329C10.5 5.00272 10.5 5.58515 10.5 6.75C10.5 7.91485 10.5 8.49728 10.3097 8.95671C10.056 9.56928 9.56928 10.056 8.95671 10.3097C8.49728 10.5 7.91485 10.5 6.75 10.5C5.58515 10.5 5.00272 10.5 4.54329 10.3097C3.93072 10.056 3.44404 9.56928 3.1903 8.95671Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n          Dashboard\n        </a>\n        <a class=\"ayy-app-shell__link\" href=\"#projects\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n          Projects\n        </a>\n        <a class=\"ayy-app-shell__link\" href=\"#team\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18.4995 20.5C18.2663 17.5685 15.8417 15.2477 12.808 15.0521L11.9995 15C11.7107 15.0076 11.4416 15.0178 11.1877 15.0298C8.18075 15.1723 5.7304 17.5974 5.49951 20.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M15.2495 9.25C15.2495 11.0449 13.7944 12.5 11.9995 12.5C10.2046 12.5 8.74952 11.0449 8.74952 9.25C8.74952 7.45507 10.2046 6 11.9995 6C13.7944 6 15.2495 7.45507 15.2495 9.25Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M5.50249 8.5C5.17908 7.99485 4.99158 7.39432 4.99158 6.75C4.99158 4.95507 6.44665 3.5 8.24157 3.5C8.68752 3.5 9.1125 3.58982 9.49939 3.75235\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M18.4963 8.5C18.8197 7.99485 19.0072 7.39432 19.0072 6.75C19.0072 4.95507 17.5521 3.5 15.7572 3.5C15.3113 3.5 14.8863 3.58982 14.4994 3.75235\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M22.0007 17.9996C21.8208 15.7374 19.9995 13.5 17.9995 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M1.99927 17.9996C2.17923 15.7374 4.00049 13.5 6.00049 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n          Team\n        </a>\n      </nav>\n      <div class=\"ayy-app-shell__footer\">\n        <a class=\"ayy-app-shell__link\" href=\"#settings\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n          Settings\n        </a>\n      </div>\n    </aside>\n    <main class=\"ayy-app-shell__main\">\n      <div class=\"ayy-stack\" style=\"--ayy-gap: var(--ayy-space-4)\">\n        <h2 class=\"ayy-h3\">Dashboard</h2>\n        <p class=\"ayy-muted\">What's moving across your projects this week.</p>\n        <div class=\"ayy-grid\" style=\"--ayy-min: 9rem\">\n          <div class=\"ayy-stat\">\n            <p class=\"ayy-stat__label\">Open projects</p>\n            <p class=\"ayy-stat__value\">12</p>\n          </div>\n          <div class=\"ayy-stat\">\n            <p class=\"ayy-stat__label\">Shipped this week</p>\n            <p class=\"ayy-stat__value\">38</p>\n          </div>\n          <div class=\"ayy-stat\">\n            <p class=\"ayy-stat__label\">Team members</p>\n            <p class=\"ayy-stat__value\">9</p>\n          </div>\n        </div>\n      </div>\n    </main>\n  </div>\n</div>",
           "react": "import type { CSSProperties } from \"react\";\nimport { DashboardSquare01Icon, Folder01Icon, Settings02Icon, UserGroupIcon } from \"@hugeicons/core-free-icons\";\nimport {\n  AppShell,\n  AppShellBrand,\n  AppShellFooter,\n  AppShellLink,\n  AppShellMain,\n  AppShellNav,\n  AppShellSidebar,\n  Icon,\n  Stat,\n} from \"ayywi/react\";\n\nexport default function Example() {\n  // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.\n  return (\n    <div style={{ inlineSize: \"100%\", blockSize: \"28rem\", overflow: \"hidden\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <AppShell style={{ blockSize: \"100%\" }}>\n        <AppShellSidebar>\n          <AppShellBrand href=\"#home\">\n            <span className=\"ayy-avatar ayy-avatar--sm\" aria-hidden=\"true\">\n              <span className=\"ayy-avatar__fallback\">NW</span>\n            </span>\n            Northwind\n          </AppShellBrand>\n          <AppShellNav>\n            <AppShellLink href=\"#dashboard\" current>\n              <Icon icon={DashboardSquare01Icon} />\n              Dashboard\n            </AppShellLink>\n            <AppShellLink href=\"#projects\">\n              <Icon icon={Folder01Icon} />\n              Projects\n            </AppShellLink>\n            <AppShellLink href=\"#team\">\n              <Icon icon={UserGroupIcon} />\n              Team\n            </AppShellLink>\n          </AppShellNav>\n          <AppShellFooter>\n            <AppShellLink href=\"#settings\">\n              <Icon icon={Settings02Icon} />\n              Settings\n            </AppShellLink>\n          </AppShellFooter>\n        </AppShellSidebar>\n        <AppShellMain>\n          <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-4)\" } as CSSProperties}>\n            <h2 className=\"ayy-h3\">Dashboard</h2>\n            <p className=\"ayy-muted\">What's moving across your projects this week.</p>\n            <div className=\"ayy-grid\" style={{ \"--ayy-min\": \"9rem\" } as CSSProperties}>\n              <Stat labelFirst label=\"Open projects\" value=\"12\" />\n              <Stat labelFirst label=\"Shipped this week\" value=\"38\" />\n              <Stat labelFirst label=\"Team members\" value=\"9\" />\n            </div>\n          </div>\n        </AppShellMain>\n      </AppShell>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "grouped",
+          "title": "Groups, sub-sections and a collapse",
+          "html": "<!-- The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the block-size on the shell. -->\n<div style=\"inline-size: 100%; block-size: 32rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)\">\n  <div class=\"ayy-app-shell\" style=\"block-size: 100%\">\n    <aside class=\"ayy-app-shell__sidebar\">\n      <a class=\"ayy-app-shell__brand\" href=\"#home\">Northwind Docs</a>\n      <nav class=\"ayy-app-shell__nav\" aria-label=\"Docs\">\n        <div class=\"ayy-app-shell__group\">\n          <p class=\"ayy-app-shell__group-label\" id=\"docs-start\">Start</p>\n          <ul class=\"ayy-app-shell__list\" aria-labelledby=\"docs-start\">\n            <li><a class=\"ayy-app-shell__link\" href=\"#overview\">Overview</a></li>\n            <li>\n              <a class=\"ayy-app-shell__link\" href=\"#get-started\">Get started</a>\n              <ul class=\"ayy-app-shell__sublist\" aria-label=\"Get started sections\">\n                <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#install\">Install</a></li>\n                <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#first-screen\">Build your first screen</a></li>\n              </ul>\n            </li>\n          </ul>\n        </div>\n        <div class=\"ayy-app-shell__group\">\n          <p class=\"ayy-app-shell__group-label\" id=\"docs-foundations\">Foundations</p>\n          <ul class=\"ayy-app-shell__list\" aria-labelledby=\"docs-foundations\">\n            <li>\n              <details class=\"ayy-app-shell__collapse\" open>\n                <summary class=\"ayy-app-shell__link\">Colors</summary>\n                <ul class=\"ayy-app-shell__sublist\">\n                  <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#themes\" aria-current=\"page\">Themes</a></li>\n                  <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#surfaces\">Surfaces</a></li>\n                  <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#status\">Status</a></li>\n                </ul>\n              </details>\n            </li>\n            <li>\n              <details class=\"ayy-app-shell__collapse\">\n                <summary class=\"ayy-app-shell__link\">Typography</summary>\n                <ul class=\"ayy-app-shell__sublist\">\n                  <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#scale\">Scale</a></li>\n                  <li><a class=\"ayy-app-shell__link ayy-app-shell__link--sub\" href=\"#fonts\">Fonts</a></li>\n                </ul>\n              </details>\n            </li>\n            <li><a class=\"ayy-app-shell__link\" href=\"#spacing\">Spacing</a></li>\n          </ul>\n        </div>\n      </nav>\n    </aside>\n    <main class=\"ayy-app-shell__main\">\n      <div class=\"ayy-stack\" style=\"--ayy-gap: var(--ayy-space-4)\">\n        <h2 class=\"ayy-h3\">Themes</h2>\n        <p class=\"ayy-muted\">Dark, dark soft, light and light gray. Each one remaps the same semantic tokens.</p>\n      </div>\n    </main>\n  </div>\n</div>",
+          "react": "import type { CSSProperties } from \"react\";\nimport {\n  AppShell,\n  AppShellBrand,\n  AppShellCollapse,\n  AppShellGroup,\n  AppShellItem,\n  AppShellLink,\n  AppShellMain,\n  AppShellNav,\n  AppShellSidebar,\n  AppShellSublist,\n} from \"ayywi/react\";\n\nexport default function Example() {\n  // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.\n  return (\n    <div style={{ inlineSize: \"100%\", blockSize: \"32rem\", overflow: \"hidden\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <AppShell style={{ blockSize: \"100%\" }}>\n        <AppShellSidebar>\n          <AppShellBrand href=\"#home\">Northwind Docs</AppShellBrand>\n          <AppShellNav aria-label=\"Docs\">\n            <AppShellGroup label=\"Start\">\n              <AppShellItem>\n                <AppShellLink href=\"#overview\">Overview</AppShellLink>\n              </AppShellItem>\n              <AppShellItem>\n                <AppShellLink href=\"#get-started\">Get started</AppShellLink>\n                <AppShellSublist aria-label=\"Get started sections\">\n                  <AppShellItem>\n                    <AppShellLink sub href=\"#install\">Install</AppShellLink>\n                  </AppShellItem>\n                  <AppShellItem>\n                    <AppShellLink sub href=\"#first-screen\">Build your first screen</AppShellLink>\n                  </AppShellItem>\n                </AppShellSublist>\n              </AppShellItem>\n            </AppShellGroup>\n            <AppShellGroup label=\"Foundations\">\n              <AppShellItem>\n                <AppShellCollapse label=\"Colors\" open>\n                  <AppShellItem>\n                    <AppShellLink sub current href=\"#themes\">Themes</AppShellLink>\n                  </AppShellItem>\n                  <AppShellItem>\n                    <AppShellLink sub href=\"#surfaces\">Surfaces</AppShellLink>\n                  </AppShellItem>\n                  <AppShellItem>\n                    <AppShellLink sub href=\"#status\">Status</AppShellLink>\n                  </AppShellItem>\n                </AppShellCollapse>\n              </AppShellItem>\n              <AppShellItem>\n                <AppShellCollapse label=\"Typography\">\n                  <AppShellItem>\n                    <AppShellLink sub href=\"#scale\">Scale</AppShellLink>\n                  </AppShellItem>\n                  <AppShellItem>\n                    <AppShellLink sub href=\"#fonts\">Fonts</AppShellLink>\n                  </AppShellItem>\n                </AppShellCollapse>\n              </AppShellItem>\n              <AppShellItem>\n                <AppShellLink href=\"#spacing\">Spacing</AppShellLink>\n              </AppShellItem>\n            </AppShellGroup>\n          </AppShellNav>\n        </AppShellSidebar>\n        <AppShellMain>\n          <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-4)\" } as CSSProperties}>\n            <h2 className=\"ayy-h3\">Themes</h2>\n            <p className=\"ayy-muted\">Dark, dark soft, light and light gray. Each one remaps the same semantic tokens.</p>\n          </div>\n        </AppShellMain>\n      </AppShell>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "drawer",
+          "title": "Phone drawer",
+          "html": "<!-- Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer. <ayy-app-shell> (ayywi/elements) wires it;\n     without it, call connectAppShell(shell) from \"ayywi\". The shell is 100dvh high; the outer box only stands in for the browser window. -->\n<div style=\"inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)\">\n  <ayy-app-shell>\n    <div class=\"ayy-app-shell\" style=\"block-size: 100%\">\n      <header class=\"ayy-app-shell__bar\">\n        <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon ayy-app-shell__toggle\" aria-label=\"Menu\" aria-expanded=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 5L20 5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M4 12L20 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M4 19L20 19\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n        </button>\n        <a class=\"ayy-app-shell__brand\" href=\"#home\">\n          Northwind\n        </a>\n      </header>\n      <aside class=\"ayy-app-shell__sidebar\">\n        <a class=\"ayy-app-shell__brand\" href=\"#home\">\n          Northwind\n        </a>\n        <nav class=\"ayy-app-shell__nav\" aria-label=\"Main\">\n          <div class=\"ayy-app-shell__group\">\n            <p class=\"ayy-app-shell__group-label\" id=\"drawer-workspace\">\n              Workspace\n            </p>\n            <ul class=\"ayy-app-shell__list\" aria-labelledby=\"drawer-workspace\">\n              <li>\n                <a class=\"ayy-app-shell__link\" aria-current=\"page\" href=\"#dashboard\">\n                  <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.6903 19.4567C13.5 18.9973 13.5 18.4149 13.5 17.25C13.5 16.0851 13.5 15.5027 13.6903 15.0433C13.944 14.4307 14.4307 13.944 15.0433 13.6903C15.5027 13.5 16.0851 13.5 17.25 13.5C18.4149 13.5 18.9973 13.5 19.4567 13.6903C20.0693 13.944 20.556 14.4307 20.8097 15.0433C21 15.5027 21 16.0851 21 17.25C21 18.4149 21 18.9973 20.8097 19.4567C20.556 20.0693 20.0693 20.556 19.4567 20.8097C18.9973 21 18.4149 21 17.25 21C16.0851 21 15.5027 21 15.0433 20.8097C14.4307 20.556 13.944 20.0693 13.6903 19.4567Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M13.6903 8.95671C13.5 8.49728 13.5 7.91485 13.5 6.75C13.5 5.58515 13.5 5.00272 13.6903 4.54329C13.944 3.93072 14.4307 3.44404 15.0433 3.1903C15.5027 3 16.0851 3 17.25 3C18.4149 3 18.9973 3 19.4567 3.1903C20.0693 3.44404 20.556 3.93072 20.8097 4.54329C21 5.00272 21 5.58515 21 6.75C21 7.91485 21 8.49728 20.8097 8.95671C20.556 9.56928 20.0693 10.056 19.4567 10.3097C18.9973 10.5 18.4149 10.5 17.25 10.5C16.0851 10.5 15.5027 10.5 15.0433 10.3097C14.4307 10.056 13.944 9.56928 13.6903 8.95671Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M3.1903 19.4567C3 18.9973 3 18.4149 3 17.25C3 16.0851 3 15.5027 3.1903 15.0433C3.44404 14.4307 3.93072 13.944 4.54329 13.6903C5.00272 13.5 5.58515 13.5 6.75 13.5C7.91485 13.5 8.49728 13.5 8.95671 13.6903C9.56928 13.944 10.056 14.4307 10.3097 15.0433C10.5 15.5027 10.5 16.0851 10.5 17.25C10.5 18.4149 10.5 18.9973 10.3097 19.4567C10.056 20.0693 9.56928 20.556 8.95671 20.8097C8.49728 21 7.91485 21 6.75 21C5.58515 21 5.00272 21 4.54329 20.8097C3.93072 20.556 3.44404 20.0693 3.1903 19.4567Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M3.1903 8.95671C3 8.49728 3 7.91485 3 6.75C3 5.58515 3 5.00272 3.1903 4.54329C3.44404 3.93072 3.93072 3.44404 4.54329 3.1903C5.00272 3 5.58515 3 6.75 3C7.91485 3 8.49728 3 8.95671 3.1903C9.56928 3.44404 10.056 3.93072 10.3097 4.54329C10.5 5.00272 10.5 5.58515 10.5 6.75C10.5 7.91485 10.5 8.49728 10.3097 8.95671C10.056 9.56928 9.56928 10.056 8.95671 10.3097C8.49728 10.5 7.91485 10.5 6.75 10.5C5.58515 10.5 5.00272 10.5 4.54329 10.3097C3.93072 10.056 3.44404 9.56928 3.1903 8.95671Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n                  Dashboard\n                </a>\n              </li>\n              <li>\n                <a class=\"ayy-app-shell__link\" href=\"#projects\">\n                  <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n                  Projects\n                </a>\n              </li>\n              <li>\n                <a class=\"ayy-app-shell__link\" href=\"#team\">\n                  <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18.4995 20.5C18.2663 17.5685 15.8417 15.2477 12.808 15.0521L11.9995 15C11.7107 15.0076 11.4416 15.0178 11.1877 15.0298C8.18075 15.1723 5.7304 17.5974 5.49951 20.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M15.2495 9.25C15.2495 11.0449 13.7944 12.5 11.9995 12.5C10.2046 12.5 8.74952 11.0449 8.74952 9.25C8.74952 7.45507 10.2046 6 11.9995 6C13.7944 6 15.2495 7.45507 15.2495 9.25Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M5.50249 8.5C5.17908 7.99485 4.99158 7.39432 4.99158 6.75C4.99158 4.95507 6.44665 3.5 8.24157 3.5C8.68752 3.5 9.1125 3.58982 9.49939 3.75235\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M18.4963 8.5C18.8197 7.99485 19.0072 7.39432 19.0072 6.75C19.0072 4.95507 17.5521 3.5 15.7572 3.5C15.3113 3.5 14.8863 3.58982 14.4994 3.75235\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M22.0007 17.9996C21.8208 15.7374 19.9995 13.5 17.9995 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M1.99927 17.9996C2.17923 15.7374 4.00049 13.5 6.00049 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n                  Team\n                </a>\n              </li>\n            </ul>\n          </div>\n          <div class=\"ayy-app-shell__group\">\n            <p class=\"ayy-app-shell__group-label\" id=\"drawer-billing\">\n              Billing\n            </p>\n            <ul class=\"ayy-app-shell__list\" aria-labelledby=\"drawer-billing\">\n              <li>\n                <a class=\"ayy-app-shell__link\" href=\"#invoices\">\n                  <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 18.6458V8.05426C4 5.20025 4 3.77325 4.87868 2.88663C5.75736 2 7.17157 2 10 2H14C16.8284 2 18.2426 2 19.1213 2.88663C20 3.77325 20 5.20025 20 8.05426V18.6458C20 20.1575 20 20.9133 19.538 21.2108C18.7831 21.6971 17.6161 20.6774 17.0291 20.3073C16.5441 20.0014 16.3017 19.8485 16.0325 19.8397C15.7417 19.8301 15.4949 19.9768 14.9709 20.3073L13.06 21.5124C12.5445 21.8374 12.2868 22 12 22C11.7132 22 11.4555 21.8374 10.94 21.5124L9.02913 20.3073C8.54415 20.0014 8.30166 19.8485 8.03253 19.8397C7.74172 19.8301 7.49493 19.9768 6.97087 20.3073C6.38395 20.6774 5.21687 21.6971 4.46195 21.2108C4 20.9133 4 20.1575 4 18.6458Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M11 11H8\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M14 7L8 7\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n                  Invoices\n                </a>\n              </li>\n            </ul>\n          </div>\n        </nav>\n        <div class=\"ayy-app-shell__footer\">\n          <a class=\"ayy-app-shell__link\" href=\"#settings\">\n            <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n            Settings\n          </a>\n        </div>\n      </aside>\n      <main class=\"ayy-app-shell__main\">\n        <div class=\"ayy-stack\">\n          <h2 class=\"ayy-h3\">\n            Dashboard\n          </h2>\n          <p class=\"ayy-muted\">\n            What&#x27;s moving across your projects this week.\n          </p>\n        </div>\n      </main>\n    </div>\n  </ayy-app-shell>\n</div>",
+          "react": "import { DashboardSquare01Icon, Folder01Icon, Invoice01Icon, Settings02Icon, UserGroupIcon } from \"@hugeicons/core-free-icons\";\nimport {\n  AppShell,\n  AppShellBar,\n  AppShellBrand,\n  AppShellFooter,\n  AppShellGroup,\n  AppShellItem,\n  AppShellLink,\n  AppShellMain,\n  AppShellNav,\n  AppShellSidebar,\n  AppShellToggle,\n  Icon,\n} from \"ayywi/react\";\n\nexport default function Example() {\n  // Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer.\n  // The shell is 100dvh high; this box only stands in for the browser window.\n  return (\n    <div style={{ inlineSize: \"100%\", blockSize: \"28rem\", overflow: \"hidden\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <AppShell style={{ blockSize: \"100%\" }}>\n        <AppShellBar>\n          <AppShellToggle />\n          <AppShellBrand href=\"#home\">Northwind</AppShellBrand>\n        </AppShellBar>\n        <AppShellSidebar>\n          <AppShellBrand href=\"#home\">Northwind</AppShellBrand>\n          <AppShellNav>\n            <AppShellGroup label=\"Workspace\">\n              <AppShellItem>\n                <AppShellLink href=\"#dashboard\" current>\n                  <Icon icon={DashboardSquare01Icon} />\n                  Dashboard\n                </AppShellLink>\n              </AppShellItem>\n              <AppShellItem>\n                <AppShellLink href=\"#projects\">\n                  <Icon icon={Folder01Icon} />\n                  Projects\n                </AppShellLink>\n              </AppShellItem>\n              <AppShellItem>\n                <AppShellLink href=\"#team\">\n                  <Icon icon={UserGroupIcon} />\n                  Team\n                </AppShellLink>\n              </AppShellItem>\n            </AppShellGroup>\n            <AppShellGroup label=\"Billing\">\n              <AppShellItem>\n                <AppShellLink href=\"#invoices\">\n                  <Icon icon={Invoice01Icon} />\n                  Invoices\n                </AppShellLink>\n              </AppShellItem>\n            </AppShellGroup>\n          </AppShellNav>\n          <AppShellFooter>\n            <AppShellLink href=\"#settings\">\n              <Icon icon={Settings02Icon} />\n              Settings\n            </AppShellLink>\n          </AppShellFooter>\n        </AppShellSidebar>\n        <AppShellMain>\n          <div className=\"ayy-stack\">\n            <h2 className=\"ayy-h3\">Dashboard</h2>\n            <p className=\"ayy-muted\">What's moving across your projects this week.</p>\n          </div>\n        </AppShellMain>\n      </AppShell>\n    </div>\n  );\n}"
         }
       ],
+      "element": {
+        "tag": "ayy-app-shell",
+        "attributes": {},
+        "events": {},
+        "children": "A <div class=\"ayy-app-shell\"> with a __bar holding a __toggle. The toggle opens and closes the sidebar drawer on phones; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a bar it does nothing."
+      },
       "files": {
         "css": "src/components/app-shell/app-shell.css",
         "js": "src/components/app-shell/app-shell.ts",
         "react": "src/components/app-shell/app-shell.react.tsx",
-        "meta": "src/components/app-shell/app-shell.meta.json"
+        "meta": "src/components/app-shell/app-shell.meta.json",
+        "element": "src/components/app-shell/app-shell.element.ts"
+      }
+    },
+    {
+      "name": "Bottom nav",
+      "slug": "bottom-nav",
+      "status": "beta",
+      "category": "Navigation",
+      "description": "A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator.",
+      "classes": {
+        "ayy-bottom-nav": "The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below.",
+        "ayy-bottom-nav__link": "Destination link: icon over label. aria-current=\"page\" marks the page you're on: a pill behind the icon and a heavier label.",
+        "ayy-bottom-nav__label": "The link's text, one line, cut with an ellipsis if it's too long."
+      },
+      "variants": {},
+      "js": "bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.",
+      "react": {
+        "import": "import { BottomNav, BottomNavLink } from \"ayywi/react\";",
+        "components": {
+          "BottomNav": {
+            "renders": "<nav class=\"ayy-bottom-nav\">",
+            "props": {
+              "aria-label": "Defaults to \"Main\"."
+            }
+          },
+          "BottomNavLink": {
+            "renders": "<a class=\"ayy-bottom-nav__link\"> with the icon and a <span class=\"ayy-bottom-nav__label\">",
+            "props": {
+              "icon": "ReactNode — the icon above the label (an <Icon>).",
+              "current": "boolean — sets aria-current=\"page\"."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "It's a <nav>: give it an aria-label (\"Main\" by default in React). If the app also has a sidebar or drawer with the same links, show only one of them at a time.",
+        "Mark the current page with aria-current=\"page\". It also gets a pill and a heavier weight, so colour isn't the only cue; High Contrast mode fills the pill with the system highlight.",
+        "Every link keeps a visible text label. Icon-only tabs are guesswork.",
+        "Each link is at least the large control height, so it's a comfortable touch target at every density.",
+        "Content above it needs bottom padding (or to end before it) so the last line isn't hidden behind the bar."
+      ],
+      "do": [
+        "Use a bottom nav for the three to five top-level destinations of a phone app, so they're one thumb-tap away.",
+        "Keep labels to one short word: Home, Search, Inbox, Account.",
+        "Show it on phones only and switch to the App shell sidebar on wider screens (hide it from 48rem with a media query).",
+        "Use the same icons as the sidebar for the same destinations."
+      ],
+      "dont": [
+        "Don't use a bottom nav for actions (compose, share) — use a Button, or a bottom-sheet Dialog for a list of actions.",
+        "Don't use it to switch views of one thing inside a page — use Tabs.",
+        "Don't put more than five links in it; put the rest in a drawer (App shell with a bar) or on an Account page.",
+        "Don't nest menus in it or change its links from page to page."
+      ],
+      "examples": [
+        {
+          "id": "basic",
+          "title": "Phone tab bar",
+          "html": "<!-- A phone-sized screen. The nav is sticky, so it stays at the bottom of whatever scrolls: the page, or a box like this one. -->\n<div style=\"display: flex; flex-direction: column; inline-size: min(100%, 24rem); block-size: 22rem; overflow: auto; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)\">\n  <div class=\"ayy-stack\" style=\"flex: 1; padding: var(--ayy-space-4)\">\n    <h2 class=\"ayy-h4\">\n      Home\n    </h2>\n    <p class=\"ayy-muted\">\n      Three deploys went out this morning. Nothing needs you.\n    </p>\n  </div>\n  <nav class=\"ayy-bottom-nav\" aria-label=\"Main\">\n    <a class=\"ayy-bottom-nav__link\" aria-current=\"page\" href=\"#home\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.6903 19.4567C13.5 18.9973 13.5 18.4149 13.5 17.25C13.5 16.0851 13.5 15.5027 13.6903 15.0433C13.944 14.4307 14.4307 13.944 15.0433 13.6903C15.5027 13.5 16.0851 13.5 17.25 13.5C18.4149 13.5 18.9973 13.5 19.4567 13.6903C20.0693 13.944 20.556 14.4307 20.8097 15.0433C21 15.5027 21 16.0851 21 17.25C21 18.4149 21 18.9973 20.8097 19.4567C20.556 20.0693 20.0693 20.556 19.4567 20.8097C18.9973 21 18.4149 21 17.25 21C16.0851 21 15.5027 21 15.0433 20.8097C14.4307 20.556 13.944 20.0693 13.6903 19.4567Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M13.6903 8.95671C13.5 8.49728 13.5 7.91485 13.5 6.75C13.5 5.58515 13.5 5.00272 13.6903 4.54329C13.944 3.93072 14.4307 3.44404 15.0433 3.1903C15.5027 3 16.0851 3 17.25 3C18.4149 3 18.9973 3 19.4567 3.1903C20.0693 3.44404 20.556 3.93072 20.8097 4.54329C21 5.00272 21 5.58515 21 6.75C21 7.91485 21 8.49728 20.8097 8.95671C20.556 9.56928 20.0693 10.056 19.4567 10.3097C18.9973 10.5 18.4149 10.5 17.25 10.5C16.0851 10.5 15.5027 10.5 15.0433 10.3097C14.4307 10.056 13.944 9.56928 13.6903 8.95671Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M3.1903 19.4567C3 18.9973 3 18.4149 3 17.25C3 16.0851 3 15.5027 3.1903 15.0433C3.44404 14.4307 3.93072 13.944 4.54329 13.6903C5.00272 13.5 5.58515 13.5 6.75 13.5C7.91485 13.5 8.49728 13.5 8.95671 13.6903C9.56928 13.944 10.056 14.4307 10.3097 15.0433C10.5 15.5027 10.5 16.0851 10.5 17.25C10.5 18.4149 10.5 18.9973 10.3097 19.4567C10.056 20.0693 9.56928 20.556 8.95671 20.8097C8.49728 21 7.91485 21 6.75 21C5.58515 21 5.00272 21 4.54329 20.8097C3.93072 20.556 3.44404 20.0693 3.1903 19.4567Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M3.1903 8.95671C3 8.49728 3 7.91485 3 6.75C3 5.58515 3 5.00272 3.1903 4.54329C3.44404 3.93072 3.93072 3.44404 4.54329 3.1903C5.00272 3 5.58515 3 6.75 3C7.91485 3 8.49728 3 8.95671 3.1903C9.56928 3.44404 10.056 3.93072 10.3097 4.54329C10.5 5.00272 10.5 5.58515 10.5 6.75C10.5 7.91485 10.5 8.49728 10.3097 8.95671C10.056 9.56928 9.56928 10.056 8.95671 10.3097C8.49728 10.5 7.91485 10.5 6.75 10.5C5.58515 10.5 5.00272 10.5 4.54329 10.3097C3.93072 10.056 3.44404 9.56928 3.1903 8.95671Z\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n      <span class=\"ayy-bottom-nav__label\">\n        Home\n      </span>\n    </a>\n    <a class=\"ayy-bottom-nav__link\" href=\"#projects\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n      <span class=\"ayy-bottom-nav__label\">\n        Projects\n      </span>\n    </a>\n    <a class=\"ayy-bottom-nav__link\" href=\"#inbox\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 18.5011L18.349 7.93407C17.8603 4.80601 15.166 2.5 12 2.5C8.83398 2.5 6.13971 4.80601 5.65098 7.93407L4 18.5011\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M20 18.5C20 16.8431 16.4183 15.5 12 15.5C7.58172 15.5 4 16.8431 4 18.5C4 20.1569 7.58172 21.5 12 21.5C16.4183 21.5 20 20.1569 20 18.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M13 18.5H11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n      <span class=\"ayy-bottom-nav__label\">\n        Inbox\n      </span>\n    </a>\n    <a class=\"ayy-bottom-nav__link\" href=\"#account\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><circle cx=\"12\" cy=\"6.99988\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n      <span class=\"ayy-bottom-nav__label\">\n        Account\n      </span>\n    </a>\n  </nav>\n</div>",
+          "react": "import { DashboardSquare01Icon, Folder01Icon, Notification03Icon, UserIcon } from \"@hugeicons/core-free-icons\";\nimport { BottomNav, BottomNavLink, Icon } from \"ayywi/react\";\n\nexport default function Example() {\n  // A phone-sized screen. The nav is sticky, so it stays at the bottom of whatever scrolls: the page, or a box like this one.\n  return (\n    <div style={{ display: \"flex\", flexDirection: \"column\", inlineSize: \"min(100%, 24rem)\", blockSize: \"22rem\", overflow: \"auto\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <div className=\"ayy-stack\" style={{ flex: 1, padding: \"var(--ayy-space-4)\" }}>\n        <h2 className=\"ayy-h4\">Home</h2>\n        <p className=\"ayy-muted\">Three deploys went out this morning. Nothing needs you.</p>\n      </div>\n      <BottomNav>\n        <BottomNavLink href=\"#home\" icon={<Icon icon={DashboardSquare01Icon} />} current>\n          Home\n        </BottomNavLink>\n        <BottomNavLink href=\"#projects\" icon={<Icon icon={Folder01Icon} />}>\n          Projects\n        </BottomNavLink>\n        <BottomNavLink href=\"#inbox\" icon={<Icon icon={Notification03Icon} />}>\n          Inbox\n        </BottomNavLink>\n        <BottomNavLink href=\"#account\" icon={<Icon icon={UserIcon} />}>\n          Account\n        </BottomNavLink>\n      </BottomNav>\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/bottom-nav/bottom-nav.css",
+        "js": "src/components/bottom-nav/bottom-nav.ts",
+        "react": "src/components/bottom-nav/bottom-nav.react.tsx",
+        "meta": "src/components/bottom-nav/bottom-nav.meta.json"
       }
     },
     {
@@ -1935,13 +2018,6 @@
       "status": "beta",
       "category": "Navigation",
       "description": "Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.",
-      "whenToUse": [
-        "Opening a page that sits two or more levels deep: an index page, a case study, an article."
-      ],
-      "whenNotToUse": [
-        "The home page or a single-level site.",
-        "Steps in a process — that's a stepper, not a location."
-      ],
       "classes": {
         "ayy-breadcrumb": "Root <nav aria-label=\"Breadcrumb\">.",
         "ayy-breadcrumb--pill": "Bordered, blurred capsule that stays readable over hero images and grids.",
@@ -1977,10 +2053,13 @@
         "The current page is plain text with aria-current=\"page\", not a link to itself."
       ],
       "do": [
+        "Use a breadcrumb on pages that sit two or more levels deep: an index page, a case study, an article.",
         "Use the page titles as they appear in their own headings.",
         "Use pill over imagery or the ambient grid; plain elsewhere."
       ],
       "dont": [
+        "Don't add one to the home page or a single-level site.",
+        "Don't use it for steps in a process — that's a stepper, not a location.",
         "Don't include the current page as a link.",
         "Don't use it as the only navigation."
       ],
@@ -2005,13 +2084,6 @@
       "status": "beta",
       "category": "Navigation",
       "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
-      "whenToUse": [
-        "Long pages with named sections: case studies, docs, articles, settings pages."
-      ],
-      "whenNotToUse": [
-        "Short pages with two or three sections.",
-        "Navigation between pages — use Navbar or links."
-      ],
       "classes": {
         "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
         "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.",
@@ -2063,11 +2135,14 @@
         "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header."
       ],
       "do": [
+        "Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.",
         "List sections in page order; the scrollspy assumes it.",
         "Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.",
         "On narrow screens, move it above the content or into a Popover instead of a side column."
       ],
       "dont": [
+        "Don't add one to short pages with two or three sections.",
+        "Don't use it to navigate between pages — use Navbar or links.",
         "Don't nest more than one level.",
         "Don't list every heading — sections and their direct sub-sections only."
       ],
@@ -2093,12 +2168,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
-      "whenToUse": [
-        "Every labelled form control: Input, Textarea, Switch, native <select>."
-      ],
-      "whenNotToUse": [
-        "Search boxes in toolbars — an aria-label on the Input is enough."
-      ],
       "classes": {
         "ayy-field": "Wrapper, vertical stack.",
         "ayy-field--inline": "Label and control side by side (Switch, checkbox).",
@@ -2145,10 +2214,12 @@
         "The label dims automatically when the control inside the field is disabled."
       ],
       "do": [
+        "Wrap every labelled form control in a Field: Input, Textarea, Switch, native <select>.",
         "Keep hints to one short sentence.",
         "Show errors after the user leaves the field or submits, not on every keystroke."
       ],
       "dont": [
+        "Don't wrap search boxes in toolbars — an aria-label on the Input is enough.",
         "Don't show a hint and an error at the same time — the error replaces the hint."
       ],
       "examples": [
@@ -2172,13 +2243,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "Single-line text field. Works for every native input type (text, email, search, number, file…).",
-      "whenToUse": [
-        "Short free-text entry: names, URLs, search, API keys."
-      ],
-      "whenNotToUse": [
-        "Multi-line text — use Textarea.",
-        "On/off — use Switch."
-      ],
       "classes": {
         "ayy-input": "Root, on the <input> itself.",
         "ayy-input--sm": "28px tall.",
@@ -2216,9 +2280,12 @@
         "Errors: aria-invalid=\"true\" + aria-describedby pointing at the error text."
       ],
       "do": [
+        "Use an input for short free-text entry: names, URLs, search, API keys.",
         "Match the input size to neighbouring buttons in a toolbar (sm with sm)."
       ],
       "dont": [
+        "Don't use an input for multi-line text — use Textarea.",
+        "Don't use an input for on/off — use Switch.",
         "Don't use placeholder as the label.",
         "Don't hardcode widths in px inside flexible layouts — the input fills its container."
       ],
@@ -2249,12 +2316,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "Multi-line text field. Optional auto-grow and monospace modes.",
-      "whenToUse": [
-        "Descriptions, notes, prompts, config snippets (mono)."
-      ],
-      "whenNotToUse": [
-        "Rich text editing — use a dedicated editor and theme it with ayywi tokens."
-      ],
       "classes": {
         "ayy-textarea": "Root, on the <textarea>.",
         "ayy-textarea--autosize": "Grows with content (CSS field-sizing). Falls back to fixed height.",
@@ -2298,9 +2359,11 @@
         "Label it (Field + Label), same as Input."
       ],
       "do": [
+        "Use a textarea for descriptions, notes, prompts and config snippets (mono).",
         "Set rows for a sensible starting height."
       ],
       "dont": [
+        "Don't use it for rich text editing — use a dedicated editor and theme it with ayywi tokens.",
         "Don't disable resize on non-autosize textareas; users need it."
       ],
       "examples": [
@@ -2324,14 +2387,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.",
-      "whenToUse": [
-        "Choosing one option from a longer list (country, time zone, role)."
-      ],
-      "whenNotToUse": [
-        "2–5 options that should all be visible — use Radio.",
-        "Actions — use a Dropdown menu.",
-        "Searching thousands of options — build a combobox."
-      ],
       "classes": {
         "ayy-select": "Wrapper element. Draws the chevron and sets the height.",
         "ayy-select__control": "On the <select> inside the wrapper.",
@@ -2372,9 +2427,13 @@
         "The native picker is fully accessible and mobile-friendly — don't replace it without a strong reason."
       ],
       "do": [
+        "Use a select to choose one option from a longer list (country, time zone, role).",
         "Put a sensible default first, or a disabled placeholder option."
       ],
       "dont": [
+        "Don't use a select for 2–5 options that should all be visible — use Radio.",
+        "Don't use a select for actions — use a Dropdown menu.",
+        "Don't use a select to search thousands of options — build a combobox.",
         "Don't use a select for yes/no — use a Switch or Checkbox."
       ],
       "examples": [
@@ -2398,14 +2457,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
-      "whenToUse": [
-        "Choices submitted with a form (terms, preferences saved with a Save button).",
-        "Selecting several items in a list or table, with an indeterminate select-all."
-      ],
-      "whenNotToUse": [
-        "Settings that apply instantly — use Switch.",
-        "Picking exactly one option — use Radio."
-      ],
       "classes": {
         "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density."
       },
@@ -2437,9 +2488,13 @@
         "Group related checkboxes in a <fieldset> with a <legend>."
       ],
       "do": [
+        "Use a checkbox for choices submitted with a form (terms, preferences saved with a Save button).",
+        "Use checkboxes to select several items in a list or table, with an indeterminate select-all.",
         "Phrase labels positively: \"Email me updates\", not \"Don't email me\"."
       ],
       "dont": [
+        "Don't use a checkbox for settings that apply instantly — use Switch.",
+        "Don't use checkboxes to pick exactly one option — use Radio.",
         "Don't use a checkbox to trigger an immediate action."
       ],
       "examples": [
@@ -2463,14 +2518,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
-      "whenToUse": [
-        "Picking exactly one of 2–6 visible options (plan, visibility, region)."
-      ],
-      "whenNotToUse": [
-        "More than ~6 options — use Select.",
-        "Switching views — use Tabs.",
-        "Independent on/off choices — use Checkbox."
-      ],
       "classes": {
         "ayy-radio": "On <input type=\"radio\">. Size follows density.",
         "ayy-radio-group": "On the <fieldset> holding the radios. Vertical stack.",
@@ -2518,9 +2565,13 @@
         "Always give the group a legend (label prop) and each radio a wrapping <label class=\"ayy-label\">."
       ],
       "do": [
+        "Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).",
         "Pre-select the most common option when there's a sensible default."
       ],
       "dont": [
+        "Don't use radios for more than ~6 options — use Select.",
+        "Don't use radios to switch views — use Tabs.",
+        "Don't use radios for independent on/off choices — use Checkbox.",
         "Don't use a single radio on its own — use a Checkbox."
       ],
       "examples": [
@@ -2544,13 +2595,6 @@
       "status": "stable",
       "category": "Forms",
       "description": "On/off toggle for a setting that applies immediately. A native checkbox with role=\"switch\".",
-      "whenToUse": [
-        "Settings that take effect instantly (enable sync, dark mode)."
-      ],
-      "whenNotToUse": [
-        "Choices submitted later with a form's Save button — a checkbox reads better there.",
-        "Choosing between more than two options — use Tabs or a select."
-      ],
       "classes": {
         "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before."
       },
@@ -2579,9 +2623,12 @@
         "The thumb direction flips automatically in RTL."
       ],
       "do": [
-        "Label describes the 'on' state: 'Sync on save', not 'Toggle sync'."
+        "Use a switch for settings that take effect instantly (enable sync, dark mode).",
+        "Make the label describe the 'on' state: 'Sync on save', not 'Toggle sync'."
       ],
       "dont": [
+        "Don't use a switch for choices submitted later with a form's Save button — a checkbox reads better there.",
+        "Don't use a switch to choose between more than two options — use Tabs or a select.",
         "Don't require a Save click after flipping a switch."
       ],
       "examples": [
@@ -2605,14 +2652,6 @@
       "status": "beta",
       "category": "Layout",
       "description": "A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.",
-      "whenToUse": [
-        "Each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).",
-        "Chapters of a long case study or article, with numbered eyebrows that match the contents list."
-      ],
-      "whenNotToUse": [
-        "Grouping inside an app screen — use Card or plain headings.",
-        "A single heading with no content under it."
-      ],
       "classes": {
         "ayy-section": "Root <section>. 96px block padding (80px on phones, 128px on wide screens). Add ayy-container for page width.",
         "ayy-section--center": "Header centred over the content; start-aligned again on phones.",
@@ -2663,11 +2702,14 @@
         "Keep the heading order: page title h1, section titles h2."
       ],
       "do": [
+        "Use a section for each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).",
+        "Use sections for the chapters of a long case study or article, with numbered eyebrows that match the Contents list.",
         "Separate homepage sections with a fading Separator.",
-        "Use the same numbers in the eyebrow and the Contents list of a long page.",
         "Set --ayy-spot on a case study's <main> so the numbers take its accent."
       ],
       "dont": [
+        "Don't use it for grouping inside an app screen — use Card or plain headings.",
+        "Don't use a section for a single heading with no content under it.",
         "Don't stack two sections' paddings with extra margins; the padding is the rhythm.",
         "Don't write a paragraph as the description — one or two sentences."
       ],
@@ -2698,14 +2740,6 @@
       "status": "stable",
       "category": "Layout",
       "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
-      "whenToUse": [
-        "Grouping a unit of content: a project, a person, a plan, a stat.",
-        "Clickable tiles in a grid (add interactive)."
-      ],
-      "whenNotToUse": [
-        "Page sections — use plain layout, not a card around everything.",
-        "Nesting cards inside cards."
-      ],
       "classes": {
         "ayy-card": "Root surface.",
         "ayy-card--interactive": "Lifts on hover. Use when the whole card is clickable.",
@@ -2781,10 +2815,14 @@
         "Spotlight layers are pseudo-elements, invisible to assistive tech."
       ],
       "do": [
+        "Use a card to group a unit of content: a project, a person, a plan, a stat.",
+        "Add interactive for clickable tiles in a grid.",
         "Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.",
         "Keep one level of cards; use hairline dividers inside."
       ],
       "dont": [
+        "Don't wrap page sections in a card — use plain layout.",
+        "Don't nest cards inside cards.",
         "Don't set background colours on cards; the surface token keeps both themes correct.",
         "Don't use spotlight on dense lists — it's for showcase grids."
       ],
@@ -2821,14 +2859,6 @@
       "status": "stable",
       "category": "Layout",
       "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
-      "whenToUse": [
-        "Switching views of the same object (Overview / Activity / Members).",
-        "Segmented filters with 2–6 options."
-      ],
-      "whenNotToUse": [
-        "Page-level navigation between routes — use links.",
-        "Sequential steps — use a stepper or separate pages."
-      ],
       "classes": {
         "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
         "ayy-tabs__list": "role=\"tablist\" pill container.",
@@ -2886,10 +2916,13 @@
         "Give the tablist an aria-label when there's no visible heading."
       ],
       "do": [
+        "Use tabs to switch views of the same object (Overview / Activity / Members) or as segmented filters with 2–6 options.",
         "Keep tab labels to one or two words.",
         "Keep the tab set stable — don't add/remove tabs based on content."
       ],
       "dont": [
+        "Don't use tabs for page-level navigation between routes — use links.",
+        "Don't use tabs for sequential steps — use a stepper or separate pages.",
         "Don't nest tabs inside tabs.",
         "Don't use tabs for more than ~6 options."
       ],
@@ -2921,14 +2954,6 @@
       "status": "beta",
       "category": "Layout",
       "description": "A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.",
-      "whenToUse": [
-        "A row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas."
-      ],
-      "whenNotToUse": [
-        "Content everyone must see — lay it out in a grid.",
-        "Auto-rotating banners — ayywi doesn't auto-play, on purpose.",
-        "Switching between views of one thing — use Tabs."
-      ],
       "classes": {
         "ayy-carousel": "Root (also on <ayy-carousel>). role=\"region\" aria-roledescription=\"carousel\" and an aria-label.",
         "ayy-carousel__track": "The scrolling, snapping row. Give it tabindex=\"0\" so keyboards can scroll it. Gap via --ayy-gap.",
@@ -2967,12 +2992,15 @@
         "Nothing moves on its own, and smooth scrolling turns off under prefers-reduced-motion."
       ],
       "do": [
+        "Use a carousel for a row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas.",
         "Let the last slide peek in, so it's clear there's more.",
         "Give images inside slides width and height so the strip doesn't jump."
       ],
       "dont": [
+        "Don't put content everyone must see in a carousel — lay it out in a grid.",
         "Don't hide essential content in later slides.",
-        "Don't auto-advance."
+        "Don't auto-advance or build rotating banners — ayywi doesn't auto-play, on purpose.",
+        "Don't use it to switch between views of one thing — use Tabs."
       ],
       "examples": [
         {
@@ -2996,14 +3024,6 @@
       "status": "beta",
       "category": "Layout",
       "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
-      "whenToUse": [
-        "Between the sections of a long page (fade).",
-        "Between groups in a footer, toolbar or card (plain or vertical)."
-      ],
-      "whenNotToUse": [
-        "Around every block — spacing usually separates better than lines.",
-        "Inside menus — use the menu's own separator."
-      ],
       "classes": {
         "ayy-separator": "Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).",
         "ayy-separator--vertical": "Vertical rule in a flex row; add aria-orientation=\"vertical\".",
@@ -3043,9 +3063,13 @@
         "Vertical separators need aria-orientation=\"vertical\" (the React component adds it)."
       ],
       "do": [
+        "Use a fading separator between the sections of a long page.",
+        "Use a plain or vertical separator between groups in a footer, toolbar or card.",
         "Give the separator room with the layout's gap or the sections' padding."
       ],
       "dont": [
+        "Don't put one around every block — spacing usually separates better than lines.",
+        "Don't use it inside menus — use the menu's own separator.",
         "Don't colour it; hairline keeps it quiet in every theme."
       ],
       "examples": [
@@ -3068,17 +3092,7 @@
       "slug": "dialog",
       "status": "stable",
       "category": "Overlays",
-      "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge.",
-      "whenToUse": [
-        "Confirming a destructive action.",
-        "Short focused tasks that must finish before continuing (rename, create).",
-        "Side modal: editing or inspecting a record without leaving the page, settings, filters, a mobile nav drawer."
-      ],
-      "whenNotToUse": [
-        "Long forms or multi-step flows — use a page.",
-        "Non-blocking messages — use an inline notice.",
-        "A panel people keep open while they work with the page — use a layout column, not a modal."
-      ],
+      "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.",
       "classes": {
         "ayy-dialog": "On the <dialog> element. Open with dialog.showModal().",
         "ayy-dialog--sm": "24rem wide.",
@@ -3086,6 +3100,7 @@
         "ayy-dialog--xl": "56rem wide.",
         "ayy-dialog--side-start": "Side modal on the inline-start edge (left in LTR, right in RTL): full height, slides in. Width from the size modifiers.",
         "ayy-dialog--side-end": "Side modal on the inline-end edge (right in LTR, left in RTL): full height, slides in. Width from the size modifiers.",
+        "ayy-dialog--side-bottom": "Bottom sheet: anchored to the bottom edge with a grab handle, slides up. Full width on phones, centred at the size modifier's width on wider screens; clears the home indicator (safe-area inset).",
         "ayy-dialog__header": "Title + description block.",
         "ayy-dialog__title": "Heading (h2). Reference it with aria-labelledby on the dialog.",
         "ayy-dialog__description": "Muted supporting text.",
@@ -3108,7 +3123,8 @@
           "values": [
             "center",
             "start",
-            "end"
+            "end",
+            "bottom"
           ],
           "default": "center",
           "component": "DialogContent"
@@ -3146,7 +3162,7 @@
             "renders": "<dialog>",
             "props": {
               "size": "\"sm\" | \"md\" | \"lg\" | \"xl\" — width",
-              "side": "\"center\" | \"start\" | \"end\" — start/end make a side modal on that inline edge",
+              "side": "\"center\" | \"start\" | \"end\" | \"bottom\" — start/end make a side modal on that inline edge, bottom a bottom sheet",
               "hideClose": "boolean — hide the corner close button",
               "closeLabel": "string — accessible name of the close button (translate it). Default \"Close\"",
               "closeOnBackdrop": "boolean — default true"
@@ -3180,12 +3196,19 @@
         "Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion."
       ],
       "do": [
+        "Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.",
+        "Use a dialog for short, focused tasks that must finish before continuing (rename, create).",
+        "Use a side modal to edit or inspect a record without leaving the page, and for settings, filters or a mobile nav drawer.",
         "Put the primary action last in the footer.",
-        "Use destructive variant for the confirm button of irreversible actions.",
+        "Use a bottom sheet on phones for a short list of actions or options on the thing just tapped (share, sort, quick settings): it sits under the thumb.",
         "In a side modal, put the form fields in the body and submit from the footer with <button type=\"submit\" form=\"form-id\">."
       ],
       "dont": [
+        "Don't use a dialog for long forms or multi-step flows — use a page.",
+        "Don't use a dialog for non-blocking messages — use an inline notice.",
+        "Don't use a modal for a panel people keep open while they work with the page — use a layout column.",
         "Don't open a dialog from inside another dialog.",
+        "Don't fill a bottom sheet with a long form — it stops being a quick choice; use a page or a side modal.",
         "Don't render DialogContent's children while closed — the React component already skips them for you."
       ],
       "examples": [
@@ -3206,6 +3229,12 @@
           "title": "Side modal",
           "html": "<!-- A side modal is the same <dialog> with ayy-dialog--side-end (or --side-start). Only the body scrolls.\n     The footer's submit button reaches the form with form=\"…\"; method=\"dialog\" closes the dialog on submit. -->\n<ayy-dialog>\n  <button type=\"button\" class=\"ayy-button ayy-button--outline\" data-ayy-open aria-haspopup=\"dialog\">Project settings</button>\n  <dialog class=\"ayy-dialog ayy-dialog--side-end\" aria-labelledby=\"project-settings-title-html\" aria-describedby=\"project-settings-desc-html\">\n    <div class=\"ayy-dialog__header\">\n      <h2 class=\"ayy-dialog__title\" id=\"project-settings-title-html\">Project settings</h2>\n      <p class=\"ayy-dialog__description\" id=\"project-settings-desc-html\">Marketing site. Changes apply to the next deployment.</p>\n    </div>\n    <div class=\"ayy-dialog__body\">\n      <form method=\"dialog\" id=\"project-settings-form-html\" class=\"ayy-stack\" style=\"--ayy-gap: 1.25rem\">\n        <div class=\"ayy-field\">\n          <label class=\"ayy-label\" for=\"settings-name-html\">Project name</label>\n          <input class=\"ayy-input\" id=\"settings-name-html\" name=\"name\" value=\"marketing-site\" required />\n        </div>\n        <div class=\"ayy-field\">\n          <label class=\"ayy-label\" for=\"settings-region-html\">Region</label>\n          <div class=\"ayy-select\">\n            <select class=\"ayy-select__control\" id=\"settings-region-html\" name=\"region\">\n              <option value=\"fra1\">Frankfurt (fra1)</option>\n              <option value=\"iad1\">Washington, D.C. (iad1)</option>\n              <option value=\"hnd1\">Tokyo (hnd1)</option>\n            </select>\n          </div>\n        </div>\n        <div class=\"ayy-field\">\n          <label class=\"ayy-label\" for=\"settings-build-html\">Build command</label>\n          <input class=\"ayy-input\" id=\"settings-build-html\" name=\"build\" value=\"pnpm build\" aria-describedby=\"settings-build-html-hint\" />\n          <p class=\"ayy-field__hint\" id=\"settings-build-html-hint\">Runs in the project root after install.</p>\n        </div>\n        <div class=\"ayy-field\">\n          <label class=\"ayy-label\" for=\"settings-output-html\">Output directory</label>\n          <input class=\"ayy-input\" id=\"settings-output-html\" name=\"output\" value=\"dist\" />\n        </div>\n        <div class=\"ayy-field ayy-field--inline\">\n          <input class=\"ayy-switch\" type=\"checkbox\" role=\"switch\" id=\"settings-autodeploy-html\" name=\"autodeploy\" checked />\n          <label class=\"ayy-label\" for=\"settings-autodeploy-html\">Deploy every push to main</label>\n        </div>\n        <div class=\"ayy-field ayy-field--inline\">\n          <input class=\"ayy-switch\" type=\"checkbox\" role=\"switch\" id=\"settings-previews-html\" name=\"previews\" checked />\n          <label class=\"ayy-label\" for=\"settings-previews-html\">Preview deployments for pull requests</label>\n        </div>\n      </form>\n    </div>\n    <div class=\"ayy-dialog__footer\">\n      <button type=\"button\" class=\"ayy-button ayy-button--secondary\" data-ayy-close>Cancel</button>\n      <button type=\"submit\" class=\"ayy-button\" form=\"project-settings-form-html\" value=\"save\">Save changes</button>\n    </div>\n    <button type=\"button\" class=\"ayy-dialog__close\" aria-label=\"Close\" data-ayy-close>\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n    </button>\n  </dialog>\n</ayy-dialog>",
           "react": "import { useState, type CSSProperties } from \"react\";\nimport {\n  Button,\n  Dialog,\n  DialogBody,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n  Field,\n  FieldHint,\n  Input,\n  Label,\n  Select,\n  Switch,\n  toast,\n} from \"ayywi/react\";\n\nexport default function Example() {\n  const [open, setOpen] = useState(false);\n\n  return (\n    <Dialog open={open} onOpenChange={setOpen}>\n      <DialogTrigger variant=\"outline\">Project settings</DialogTrigger>\n      {/* side=\"end\": a full-height panel on the inline-end edge. Only the body scrolls. */}\n      <DialogContent side=\"end\">\n        <DialogHeader>\n          <DialogTitle>Project settings</DialogTitle>\n          <DialogDescription>Marketing site. Changes apply to the next deployment.</DialogDescription>\n        </DialogHeader>\n        <DialogBody>\n          <form\n            id=\"project-settings-form\"\n            className=\"ayy-stack\"\n            style={{ \"--ayy-gap\": \"1.25rem\" } as CSSProperties}\n            onSubmit={(event) => {\n              event.preventDefault();\n              setOpen(false);\n              toast.success(\"Settings saved\");\n            }}\n          >\n            <Field>\n              <Label htmlFor=\"settings-name\">Project name</Label>\n              <Input id=\"settings-name\" name=\"name\" defaultValue=\"marketing-site\" required />\n            </Field>\n            <Field>\n              <Label htmlFor=\"settings-region\">Region</Label>\n              <Select id=\"settings-region\" name=\"region\" defaultValue=\"fra1\">\n                <option value=\"fra1\">Frankfurt (fra1)</option>\n                <option value=\"iad1\">Washington, D.C. (iad1)</option>\n                <option value=\"hnd1\">Tokyo (hnd1)</option>\n              </Select>\n            </Field>\n            <Field>\n              <Label htmlFor=\"settings-build\">Build command</Label>\n              <Input id=\"settings-build\" name=\"build\" defaultValue=\"pnpm build\" aria-describedby=\"settings-build-hint\" />\n              <FieldHint id=\"settings-build-hint\">Runs in the project root after install.</FieldHint>\n            </Field>\n            <Field>\n              <Label htmlFor=\"settings-output\">Output directory</Label>\n              <Input id=\"settings-output\" name=\"output\" defaultValue=\"dist\" />\n            </Field>\n            <Field inline>\n              <Switch id=\"settings-autodeploy\" name=\"autodeploy\" defaultChecked />\n              <Label htmlFor=\"settings-autodeploy\">Deploy every push to main</Label>\n            </Field>\n            <Field inline>\n              <Switch id=\"settings-previews\" name=\"previews\" defaultChecked />\n              <Label htmlFor=\"settings-previews\">Preview deployments for pull requests</Label>\n            </Field>\n          </form>\n        </DialogBody>\n        <DialogFooter>\n          <DialogClose>Cancel</DialogClose>\n          {/* A submit button outside the form reaches it through the form attribute. */}\n          <Button type=\"submit\" form=\"project-settings-form\">\n            Save changes\n          </Button>\n        </DialogFooter>\n      </DialogContent>\n    </Dialog>\n  );\n}"
+        },
+        {
+          "id": "sheet",
+          "title": "Bottom sheet",
+          "html": "<!-- A bottom sheet: the same <dialog>, anchored to the bottom edge. Each choice closes it and sets dialog.returnValue. -->\n<ayy-dialog>\n  <button type=\"button\" class=\"ayy-button ayy-button--secondary\" data-ayy-open aria-haspopup=\"dialog\">Sort projects</button>\n  <dialog class=\"ayy-dialog ayy-dialog--sm ayy-dialog--side-bottom\" aria-labelledby=\"sort-sheet-title\" aria-describedby=\"sort-sheet-desc\">\n    <div class=\"ayy-dialog__header\">\n      <h2 class=\"ayy-dialog__title\" id=\"sort-sheet-title\">Sort projects</h2>\n      <p class=\"ayy-dialog__description\" id=\"sort-sheet-desc\">Applies to the list on this page.</p>\n    </div>\n    <div class=\"ayy-dialog__footer\">\n      <button type=\"button\" class=\"ayy-button\" data-ayy-close=\"updated\">Last updated</button>\n      <button type=\"button\" class=\"ayy-button ayy-button--secondary\" data-ayy-close=\"name\">Name</button>\n      <button type=\"button\" class=\"ayy-button ayy-button--secondary\" data-ayy-close=\"created\">Date created</button>\n    </div>\n  </dialog>\n</ayy-dialog>",
+          "react": "import {\n  Dialog,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n  DialogClose,\n} from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Dialog>\n      <DialogTrigger variant=\"secondary\">Sort projects</DialogTrigger>\n      <DialogContent side=\"bottom\" size=\"sm\" hideClose>\n        <DialogHeader>\n          <DialogTitle>Sort projects</DialogTitle>\n          <DialogDescription>Applies to the list on this page.</DialogDescription>\n        </DialogHeader>\n        <DialogFooter>\n          <DialogClose variant=\"primary\">Last updated</DialogClose>\n          <DialogClose>Name</DialogClose>\n          <DialogClose>Date created</DialogClose>\n        </DialogFooter>\n      </DialogContent>\n    </Dialog>\n  );\n}"
         }
       ],
       "files": {
@@ -3222,14 +3251,6 @@
       "status": "stable",
       "category": "Overlays",
       "description": "Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.",
-      "whenToUse": [
-        "Small forms or details next to their trigger (share link, filters, quick edit)."
-      ],
-      "whenNotToUse": [
-        "A list of actions — use Dropdown menu.",
-        "Anything that must block the page — use Dialog.",
-        "Hints on hover — use Tooltip."
-      ],
       "classes": {
         "ayy-popover": "On the element with the popover attribute. Surface, padding, shadow, fade/scale transition."
       },
@@ -3301,10 +3322,13 @@
         "It's not a focus trap — use Dialog when the user must finish something first."
       ],
       "do": [
+        "Use a popover for small forms or details next to their trigger (share link, filters, quick edit).",
         "Keep content short; if it scrolls, it probably wants to be a Dialog or a page."
       ],
       "dont": [
-        "Don't open popovers on hover.",
+        "Don't use a popover for a list of actions — use Dropdown menu.",
+        "Don't use a popover for anything that must block the page — use Dialog.",
+        "Don't open popovers on hover — hover hints are a Tooltip.",
         "Don't nest popovers more than one level."
       ],
       "examples": [
@@ -3329,15 +3353,6 @@
       "status": "stable",
       "category": "Overlays",
       "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
-      "whenToUse": [
-        "Naming icon-only buttons visually (they still need aria-label).",
-        "Short clarifications: shortcuts, truncated values."
-      ],
-      "whenNotToUse": [
-        "Essential information — tooltips are invisible on touch devices.",
-        "Interactive content (links, buttons) — use a popover or dialog.",
-        "CSS-only (no JS) inside overflow:hidden containers — it can be clipped there; use the React component or <ayy-tooltip>."
-      ],
       "classes": {
         "ayy-tooltip": "Wrapper around the trigger. Shows the content on :hover and :focus-within.",
         "ayy-tooltip__content": "The bubble (role=\"tooltip\"). Placement via data-side=\"top|bottom|start|end\" (start/end follow text direction)."
@@ -3382,11 +3397,14 @@
         "Esc dismisses (WCAG 1.4.13); the bubble stays open while hovered."
       ],
       "do": [
+        "Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.",
         "Keep it under ~60 characters.",
-        "Use side=\"start\"/\"end\", not left/right, so RTL works."
+        "Use side=\"start\"/\"end\", not left/right, so RTL works.",
+        "Inside overflow:hidden containers, use the React component or <ayy-tooltip> — the CSS-only version can be clipped there."
       ],
       "dont": [
-        "Don't put the only copy of important info in a tooltip.",
+        "Don't put essential information in a tooltip — tooltips are invisible on touch devices.",
+        "Don't put interactive content (links, buttons) in a tooltip — use a popover or dialog.",
         "Don't wrap disabled buttons — they can't receive focus or hover events reliably."
       ],
       "examples": [
@@ -3411,13 +3429,6 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Inline message box with optional icon, title, description and actions.",
-      "whenToUse": [
-        "Page- or section-level messages that stay until resolved (billing issue, read-only mode, maintenance)."
-      ],
-      "whenNotToUse": [
-        "Confirmations that can disappear — use Toast.",
-        "Field errors — use FieldError next to the field."
-      ],
       "classes": {
         "ayy-alert": "Root. Neutral by default.",
         "ayy-alert--info": "Blue tint.",
@@ -3466,10 +3477,13 @@
         "The icon is decorative: aria-hidden=\"true\". The text must carry the meaning."
       ],
       "do": [
-        "Lead with what happened, then what to do about it."
+        "Use an alert for page- or section-level messages that stay until they're resolved: a billing issue, read-only mode, maintenance.",
+        "Lead with what happened, then say what to do about it."
       ],
       "dont": [
-        "Don't stack several alerts — combine them.",
+        "Don't use an alert for confirmations that can disappear — use Toast.",
+        "Don't use an alert for field errors — put a FieldError next to the field.",
+        "Don't stack several alerts — combine them into one.",
         "Don't use destructive for things that aren't errors."
       ],
       "examples": [
@@ -3493,15 +3507,6 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
-      "whenToUse": [
-        "Confirming something happened (Saved, Deployed, Copied).",
-        "Background results that don't need a decision, optionally with one Undo-style action."
-      ],
-      "whenNotToUse": [
-        "Errors the user must fix — show them inline next to the problem.",
-        "Anything needing a decision — use Dialog.",
-        "Long or important content — it disappears."
-      ],
       "classes": {
         "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position.",
         "ayy-toast": "One toast.",
@@ -3558,10 +3563,14 @@
         "Messages are set with textContent — never HTML."
       ],
       "do": [
+        "Use a toast to confirm something happened (Saved, Deployed, Copied) or to report a background result that needs no decision.",
         "Say what happened in 2–5 words: \"Project deleted\".",
-        "Offer Undo instead of a confirmation dialog for reversible actions."
+        "Offer one Undo-style action instead of a confirmation dialog for reversible actions."
       ],
       "dont": [
+        "Don't use a toast for errors the user must fix — show them inline next to the problem.",
+        "Don't use a toast for anything needing a decision — use Dialog.",
+        "Don't put long or important content in a toast — it disappears.",
         "Don't stack several toasts for one action — reuse an id to update it.",
         "Don't put links the user must follow in a toast."
       ],
@@ -3586,13 +3595,6 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
-      "whenToUse": [
-        "Sync, upload, install — anything with measurable progress.",
-        "Indeterminate: work of unknown length that takes more than ~1s."
-      ],
-      "whenNotToUse": [
-        "Quotas or meters that aren't 'progress' — still fine visually, but use role=\"meter\" instead of progressbar."
-      ],
       "classes": {
         "ayy-progress": "Track. Set --ayy-value (0–100) on it.",
         "ayy-progress__bar": "Fill (only child).",
@@ -3643,7 +3645,10 @@
         "Give it an accessible name: aria-label or aria-labelledby."
       ],
       "do": [
-        "Show the percentage or step as text nearby for anything longer than a few seconds."
+        "Use a determinate bar for sync, upload, install — anything with measurable progress.",
+        "Use indeterminate for work of unknown length that takes more than ~1s.",
+        "Show the percentage or step as text nearby for anything longer than a few seconds.",
+        "For quotas or meters that aren't progress, the look still works — set role=\"meter\" instead of progressbar."
       ],
       "dont": [
         "Don't animate a determinate bar backwards."
@@ -3669,13 +3674,6 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
-      "whenToUse": [
-        "Content that takes more than ~300ms and has a predictable layout (cards, lists, profile headers)."
-      ],
-      "whenNotToUse": [
-        "Unknown layouts or long jobs — use Progress.",
-        "Instant loads — skeletons that flash are worse than nothing."
-      ],
       "classes": {
         "ayy-skeleton": "Block placeholder. Set its size to match the content.",
         "ayy-skeleton--text": "Text line (0.75em tall).",
@@ -3708,9 +3706,12 @@
         "The shimmer stops under prefers-reduced-motion."
       ],
       "do": [
+        "Use a skeleton for content that takes more than ~300ms and has a predictable layout (cards, lists, profile headers).",
         "Match the real layout closely so nothing jumps when content arrives."
       ],
       "dont": [
+        "Don't use skeletons for unknown layouts or long jobs — use Progress.",
+        "Don't use skeletons for instant loads — skeletons that flash are worse than nothing.",
         "Don't show skeletons for errors or empty states."
       ],
       "examples": [
@@ -3734,15 +3735,6 @@
       "status": "stable",
       "category": "Data display",
       "description": "Small pill label for status, category or count. Optional pulsing status dot.",
-      "whenToUse": [
-        "Status of an item (Synced, Error, Beta).",
-        "Category or tag next to a title.",
-        "Live indicators (dot)."
-      ],
-      "whenNotToUse": [
-        "Anything clickable — use Button (ghost/outline, sm).",
-        "Long text — badges never wrap."
-      ],
       "classes": {
         "ayy-badge": "Root. Neutral by default.",
         "ayy-badge--muted": "Quieter neutral.",
@@ -3788,10 +3780,13 @@
         "The dot is aria-hidden; it's decorative."
       ],
       "do": [
+        "Use a badge for the status of an item (Synced, Error, Beta), a category or tag next to a title, or a live indicator (dot).",
         "Keep labels to one or two words.",
         "Use the status variants for status, accent spotlights for categories."
       ],
       "dont": [
+        "Don't make a badge clickable — use Button (ghost/outline, sm).",
+        "Don't put long text in a badge — badges never wrap.",
         "Don't stack more than three badges in a row.",
         "Don't put buttons inside badges."
       ],
@@ -3822,14 +3817,6 @@
       "status": "stable",
       "category": "Data display",
       "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
-      "whenToUse": [
-        "People and workspaces in lists, headers, comments.",
-        "Stacks of collaborators (AvatarGroup)."
-      ],
-      "whenNotToUse": [
-        "Decorative illustrations — use a plain <img>.",
-        "Icons — use Icon."
-      ],
       "classes": {
         "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
         "ayy-avatar--sm": "24px.",
@@ -3883,9 +3870,12 @@
         "A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
       ],
       "do": [
-        "Show at most 4–5 avatars in a group and a \"+3\" badge for the rest."
+        "Use avatars for people and workspaces in lists, headers and comments.",
+        "Use AvatarGroup for a stack of collaborators: show at most 4–5 and a \"+3\" badge for the rest."
       ],
       "dont": [
+        "Don't use an avatar for decorative illustrations — use a plain <img>.",
+        "Don't use an avatar for icons — use Icon.",
         "Don't rely on the picture alone to identify someone — show the name nearby."
       ],
       "examples": [
@@ -3909,15 +3899,6 @@
       "status": "stable",
       "category": "Data display",
       "description": "Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.",
-      "whenToUse": [
-        "Helping people recognise an action or item next to its text: buttons, menu items, list rows.",
-        "Compact status where a word would be too long, with an accessible label."
-      ],
-      "whenNotToUse": [
-        "People and workspaces — use Avatar.",
-        "Illustrations and logos — use an <img> or your own SVG.",
-        "Meaning that isn't obvious — write the word instead of (or next to) the icon."
-      ],
       "classes": {
         "ayy-icon": "On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.",
         "ayy-icon--sm": "16px (--ayy-size-icon-sm).",
@@ -3968,12 +3949,17 @@
         "Strokes use currentColor, so icons follow the theme and Windows High Contrast colours with no extra CSS."
       ],
       "do": [
+        "Use an icon next to its text to help people recognise an action or item: buttons, menu items, list rows.",
+        "Use an icon with an accessible label for compact status where a word would be too long.",
         "Import icons one by one from @hugeicons/core-free-icons; named imports tree-shake.",
         "Let the component size icons inside buttons, menu items and alerts; use size for icons on their own.",
         "Colour an icon through its text colour: .ayy-muted, or color: var(--ayy-color-success) on the <svg>.",
         "Mark icons that point along the reading direction (arrows, chevrons, send, undo) directional so they mirror in RTL. Leave the rest alone: a clock or a check mark reads the same both ways."
       ],
       "dont": [
+        "Don't use an icon for people and workspaces — use Avatar.",
+        "Don't use Icon for illustrations and logos — use an <img> or your own SVG.",
+        "Don't rely on an icon when its meaning isn't obvious — write the word instead of (or next to) it.",
         "Don't mix in another icon set. Hugeicons' 1.5px rounded stroke is part of the look.",
         "Don't keep a fixed colour (color, fill or stroke set to a hex value) on an SVG you paste in: a black icon disappears in the dark theme.",
         "Don't use colour as the only signal: pair a status icon with a label."
@@ -4011,13 +3997,6 @@
       "status": "beta",
       "category": "Data display",
       "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
-      "whenToUse": [
-        "The icon of a product, plugin, platform or service in a card or list row."
-      ],
-      "whenNotToUse": [
-        "People — use Avatar.",
-        "Icons inside buttons or text — use the bare SVG."
-      ],
       "classes": {
         "ayy-icon-tile": "Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.",
         "ayy-icon-tile--sm": "32px.",
@@ -4052,10 +4031,13 @@
         "Standing alone, give it role=\"img\" and an aria-label."
       ],
       "do": [
+        "Use an icon tile for the icon of a product, plugin, platform or service in a card or list row.",
         "Draw glyphs in currentColor so they take the accent; brand marks with their own colours can keep them.",
         "Use one accent per product and reuse it wherever that product appears."
       ],
       "dont": [
+        "Don't use it for people — use Avatar.",
+        "Don't use it for icons inside buttons or text — use the bare SVG.",
         "Don't put text or numbers in the tile."
       ],
       "examples": [
@@ -4079,14 +4061,6 @@
       "status": "beta",
       "category": "Data display",
       "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
-      "whenToUse": [
-        "Showing a result or reach at a glance: \"200k downloads\", \"+34% conversion\".",
-        "A row of key numbers in a case study or dashboard header."
-      ],
-      "whenNotToUse": [
-        "Tables of numbers — use Table.",
-        "Progress towards a goal — use Progress."
-      ],
       "classes": {
         "ayy-stat": "Root.",
         "ayy-stat--sm": "Smaller number (28px instead of 48px), for rows of several stats or inside cards.",
@@ -4124,10 +4098,13 @@
         "Keep the unit as text, not only an icon."
       ],
       "do": [
-        "Format the number before it gets here (4.2k, 87%).",
-        "Line several up with .ayy-grid or .ayy-cluster."
+        "Use a stat to show a result or reach at a glance: \"200k downloads\", \"+34% conversion\".",
+        "Line several up with .ayy-grid or .ayy-cluster for the key numbers in a case study or dashboard header.",
+        "Format the number before it gets here (4.2k, 87%)."
       ],
       "dont": [
+        "Don't use stats for tables of numbers — use Table.",
+        "Don't use a stat for progress towards a goal — use Progress.",
         "Don't colour the number to mean good or bad without saying so in words."
       ],
       "examples": [
@@ -4151,13 +4128,6 @@
       "status": "beta",
       "category": "Data display",
       "description": "Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.",
-      "whenToUse": [
-        "Facts about a thing: Role, Company, Years, Platform on a case study; plan details; file metadata."
-      ],
-      "whenNotToUse": [
-        "Many records with the same fields — use Table.",
-        "Editable settings — use Field with inputs."
-      ],
       "classes": {
         "ayy-data-list": "Root <dl>. Items stacked.",
         "ayy-data-list--row": "Items side by side, wrapping to fit (each at least --ayy-min, default 9rem).",
@@ -4197,10 +4167,13 @@
         "Links in values keep their focus ring; external ones should say so."
       ],
       "do": [
+        "Use a data list for facts about a thing: Role, Company, Years, Platform on a case study; plan details; file metadata.",
         "Keep labels to one or two words.",
         "Use the row form under a title, as the facts line of a case study."
       ],
       "dont": [
+        "Don't use it for many records with the same fields — use Table.",
+        "Don't use it for editable settings — use Field with inputs.",
         "Don't use it for prose; values should be short."
       ],
       "examples": [
@@ -4224,13 +4197,6 @@
       "status": "beta",
       "category": "Data display",
       "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
-      "whenToUse": [
-        "Showing product screens in a case study, landing page or portfolio card, so they read as product and not decoration."
-      ],
-      "whenNotToUse": [
-        "Photos and illustrations — they don't need a window.",
-        "Live, interactive UI inside an app."
-      ],
       "classes": {
         "ayy-frame": "Root: bordered, rounded, with the frame shadow.",
         "ayy-frame__bar": "Top bar with the three window dots.",
@@ -4255,10 +4221,13 @@
         "The dots are decoration (a pseudo-element)."
       ],
       "do": [
+        "Use a frame to show product screens in a case study, landing page or portfolio card, so they read as product and not decoration.",
         "Give images width and height so the frame keeps its size while loading.",
         "Blur real names and customer data in production screenshots, and say so in the caption."
       ],
       "dont": [
+        "Don't frame photos and illustrations — they don't need a window.",
+        "Don't frame live, interactive UI inside an app.",
         "Don't put text that matters inside the screenshot; write it next to the frame."
       ],
       "examples": [
@@ -4282,15 +4251,6 @@
       "status": "beta",
       "category": "Data display",
       "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
-      "whenToUse": [
-        "AI assistants and agents.",
-        "Support or feedback widgets.",
-        "A scripted \"say hi\" section on a marketing page that hands off to email or LinkedIn."
-      ],
-      "whenNotToUse": [
-        "Comments and threads on a document — use a list of cards.",
-        "Toast-style status messages — use Toast."
-      ],
       "classes": {
         "ayy-chat": "Root. role=\"log\" when messages arrive live, so they're announced.",
         "ayy-chat__message": "One message row: an optional avatar and its bubble.",
@@ -4341,10 +4301,14 @@
         "Quick replies are real buttons; after one is chosen, move focus to the next sensible place, not back to the top."
       ],
       "do": [
+        "Use chat for AI assistants and agents, and for support or feedback widgets.",
+        "On a marketing page, use it for a scripted \"say hi\" section that hands off to email or LinkedIn.",
         "Keep bubbles short; split long answers into several messages.",
         "Pair incoming messages with the sender's avatar the first time."
       ],
       "dont": [
+        "Don't use it for comments and threads on a document — use a list of cards.",
+        "Don't use it for toast-style status messages — use Toast.",
         "Don't auto-scroll the page while someone is reading above.",
         "Don't use colour alone to tell who's speaking; the side and avatar do it too."
       ],
@@ -4369,13 +4333,6 @@
       "status": "stable",
       "category": "Data display",
       "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
-      "whenToUse": [
-        "Comparing items across the same attributes (projects × status × builds)."
-      ],
-      "whenNotToUse": [
-        "Layout — never use tables for layout.",
-        "Lists with one attribute — use a list."
-      ],
       "classes": {
         "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
         "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
@@ -4438,10 +4395,13 @@
         "A <caption> or aria-label names the table for screen readers."
       ],
       "do": [
+        "Use a table to compare items across the same attributes (projects × status × builds).",
         "End-align numbers with numeric/ayy-table__num.",
         "Keep cell content short; truncate with a tooltip if needed."
       ],
       "dont": [
+        "Don't use tables for layout.",
+        "Don't use a table for lists with one attribute — use a list.",
         "Don't zebra-stripe; hairlines + hover are enough.",
         "Don't nest interactive controls in every cell — one action column is plenty."
       ],

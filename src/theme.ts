@@ -75,15 +75,6 @@ export function getDensity(): DensityMode {
 }
 
 /**
- * Apply a brand (its stylesheet, ayywi/brands/<name>.css, must be loaded). Pass null to remove.
- * Brands are usually fixed per app, so this isn't persisted.
- */
-export function setBrand(name: string | null, target: HTMLElement = document.documentElement): void {
-  if (name) target.setAttribute("data-brand", name);
-  else target.removeAttribute("data-brand");
-}
-
-/**
  * Inline this in <head> (before CSS paints) to apply a stored theme and density without a flash:
  * <script>{themeInitScript}</script>
  */

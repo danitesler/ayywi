@@ -34,18 +34,21 @@ export function Example({ example, renderer }: { example: ExampleEntry; renderer
           <div className="pv-stage__inner">{Component ? <Component /> : null}</div>
         )}
       </div>
-      <Tabs key={renderer} defaultValue={renderer}>
-        <TabsList aria-label={`${example.title} code`}>
-          <TabsTrigger value="react">React</TabsTrigger>
-          <TabsTrigger value="html">HTML · Vue · Svelte · any</TabsTrigger>
-        </TabsList>
-        <TabsContent value="react">
-          <CodeBlock code={example.reactSource} label="tsx" />
-        </TabsContent>
-        <TabsContent value="html">
-          <CodeBlock code={example.htmlSource} label="html" />
-        </TabsContent>
-      </Tabs>
+      <details className="pv-source">
+        <summary className="pv-source__toggle">Code</summary>
+        <Tabs key={renderer} defaultValue={renderer}>
+          <TabsList aria-label={`${example.title} code`}>
+            <TabsTrigger value="react">React</TabsTrigger>
+            <TabsTrigger value="html">HTML · Vue · Svelte · any</TabsTrigger>
+          </TabsList>
+          <TabsContent value="react">
+            <CodeBlock code={example.reactSource} label="tsx" />
+          </TabsContent>
+          <TabsContent value="html">
+            <CodeBlock code={example.htmlSource} label="html" />
+          </TabsContent>
+        </Tabs>
+      </details>
     </section>
   );
 }
