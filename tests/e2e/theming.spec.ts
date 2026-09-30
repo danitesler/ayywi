@@ -147,12 +147,17 @@ test.describe("forced colors (Windows High Contrast)", () => {
       });
     expect(await look(selected)).not.toBe(await look(other));
 
-    // The current app shell link is filled with the system highlight; the others stay transparent.
+    // The current app shell link is filled with the opaque system Highlight colour, not the translucent wash it has otherwise.
     await page.goto("/#/app-shell");
     const current = stage(page).locator('.ayy-app-shell__link[aria-current="page"]');
-    const plain = stage(page).locator(".ayy-app-shell__nav .ayy-app-shell__link:not([aria-current])").first();
-    const fill = (l: typeof current) => l.evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(await fill(current)).not.toBe(await fill(plain));
+    const highlight = await stage(page).evaluate((el) => {
+      const probe = Object.assign(document.createElement("span"), { style: "forced-color-adjust: none; background-color: Highlight" });
+      el.append(probe);
+      const color = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return color;
+    });
+    expect(await current.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(highlight);
 
     // Only one of the theme toggle's two stacked icons shows.
     await page.goto("/#/theme-toggle");
