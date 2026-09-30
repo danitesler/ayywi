@@ -29,6 +29,7 @@ export * from "./components/avatar/avatar";
 export * from "./components/icon/icon";
 export * from "./components/table/table";
 export * from "./components/navbar/navbar";
+export * from "./components/app-shell/app-shell";
 export * from "./components/breadcrumb/breadcrumb";
 export * from "./components/toc/toc";
 export * from "./components/section/section";

@@ -49,7 +49,7 @@ export const CATEGORIES: Record<string, string> = {
 };
 const ORDER = [
   "button", "menu", "theme-toggle",
-  "navbar", "breadcrumb", "toc",
+  "navbar", "app-shell", "breadcrumb", "toc",
   "field", "input", "textarea", "select", "checkbox", "radio", "switch",
   "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",

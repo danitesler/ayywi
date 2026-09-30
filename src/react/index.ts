@@ -83,6 +83,16 @@ export {
   NavbarActions,
   type NavbarLinkProps,
 } from "../components/navbar/navbar.react";
+export {
+  AppShell,
+  AppShellSidebar,
+  AppShellBrand,
+  AppShellNav,
+  AppShellLink,
+  AppShellFooter,
+  AppShellMain,
+  type AppShellLinkProps,
+} from "../components/app-shell/app-shell.react";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
 export {

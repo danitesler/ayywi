@@ -112,7 +112,7 @@ Icons take the text colour and are 1.25em by default. `size` (or `ayy-icon--sm|m
 | Category | Components |
 |---|---|
 | Actions | Button, Dropdown menu, Theme toggle |
-| Navigation | Navbar, Breadcrumb, Contents |
+| Navigation | Navbar, App shell, Breadcrumb, Contents |
 | Forms | Field, Input, Textarea, Select, Checkbox, Radio, Switch |
 | Layout | Section, Card, Tabs, Carousel, Separator |
 | Overlays | Dialog (centred or side modal), Popover, Tooltip |

@@ -16,7 +16,7 @@ const read = (p) => readFileSync(join(root, p), "utf8").trimEnd();
 /** Order within a category (categories themselves follow CATEGORIES). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
   "button", "menu", "theme-toggle",
-  "navbar", "breadcrumb", "toc",
+  "navbar", "app-shell", "breadcrumb", "toc",
   "field", "input", "textarea", "select", "checkbox", "radio", "switch",
   "section", "card", "tabs", "carousel", "separator",
   "dialog", "popover", "tooltip",

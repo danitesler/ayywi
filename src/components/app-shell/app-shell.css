@@ -1,0 +1,191 @@
+/* App shell: the frame of a signed-in app. A viewport-high grid of a sidebar and the main content; each scrolls on its own.
+   To embed it in a box of fixed height, set block-size: 100% on the shell. Below 48rem the sidebar stacks above the content and becomes a row that scrolls sideways. */
+.ayy-app-shell {
+  --_sidebar-w: 15rem;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--_sidebar-w) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  block-size: 100dvh;
+  background-color: var(--ayy-color-bg);
+  color: var(--ayy-color-text);
+}
+
+/* The padding keeps the links' focus rings (2px + 2px offset) inside the scroll container. */
+.ayy-app-shell__sidebar {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-4);
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: var(--ayy-space-3);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-inline-end: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-surface);
+}
+
+.ayy-app-shell__brand {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  min-inline-size: 0;
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-md);
+  color: inherit;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-semibold);
+  text-decoration: none;
+}
+
+.ayy-app-shell__brand:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-app-shell__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+}
+
+.ayy-app-shell__link {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  min-block-size: var(--ayy-size-control-lg);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-pill);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-control-text-lg);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+  text-decoration: none;
+  transition:
+    color var(--ayy-duration-base) ease,
+    background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-app-shell__link > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-app-shell__link:hover {
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+}
+
+/* The current page is more than a colour: a tint, a heavier weight and an accent bar at the inline start. */
+.ayy-app-shell__link[aria-current="page"] {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-app-shell__link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--ayy-space-1-5);
+  inline-size: 3px;
+  block-size: 1rem;
+  margin-block: auto;
+  border-radius: var(--ayy-radius-pill);
+  background-color: currentColor;
+}
+
+.ayy-app-shell__link:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-app-shell__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  margin-block-start: auto;
+}
+
+/* A scroll container with nothing focusable inside takes tabindex="0" so keyboards can scroll it; show where the focus is. */
+.ayy-app-shell__main {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: var(--ayy-space-6);
+  overflow: auto;
+}
+
+.ayy-app-shell__sidebar:focus-visible,
+.ayy-app-shell__main:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+/* On a phone the whole sidebar is one row that scrolls sideways (brand, links, footer in reading order), so nothing gets squeezed.
+   The vertical padding keeps focus rings from being clipped. */
+@media (max-width: 48rem) {
+  .ayy-app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .ayy-app-shell__sidebar {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--ayy-space-2);
+    padding-block: var(--ayy-space-2);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--ayy-color-hairline);
+  }
+
+  .ayy-app-shell__brand {
+    padding-inline: var(--ayy-space-2);
+  }
+
+  .ayy-app-shell__nav,
+  .ayy-app-shell__footer {
+    flex: none;
+    flex-direction: row;
+  }
+
+  .ayy-app-shell__footer {
+    margin-block-start: 0;
+    margin-inline-start: auto;
+  }
+
+  .ayy-app-shell__link {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  .ayy-app-shell__main {
+    padding: var(--ayy-space-4);
+  }
+}
+
+/* Forced colors: fills are erased, so the current link takes the system highlight and the hairline becomes a real border. */
+@media (forced-colors: active) {
+  .ayy-app-shell__sidebar {
+    border-color: CanvasText;
+  }
+  .ayy-app-shell__link[aria-current="page"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-app-shell__link[aria-current="page"]::before {
+    background-color: HighlightText;
+  }
+}

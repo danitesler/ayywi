@@ -66,6 +66,47 @@ test("carousel pages towards the inline end in RTL", async ({ page }) => {
   await expect.poll(() => track.evaluate((el) => el.scrollLeft)).toBeLessThan(-100);
 });
 
+test("app shell: sidebar and main scroll on their own, the sidebar follows the inline start and stacks on phones", async ({ page }) => {
+  for (const renderer of ["react", "html"] as const) {
+    await open(page, "app-shell", { renderer });
+    const shell = stage(page).locator(".ayy-app-shell");
+    const sidebar = shell.locator(".ayy-app-shell__sidebar");
+    const main = shell.locator(".ayy-app-shell__main");
+    const footer = shell.locator(".ayy-app-shell__footer");
+    const box = async (l: typeof shell) => (await l.boundingBox())!;
+
+    // Tall content scrolls inside main; the shell keeps its height and the sidebar stays put.
+    const shellHeight = (await box(shell)).height;
+    await main.evaluate((el) => el.append(Object.assign(document.createElement("div"), { style: "block-size: 1200px" })));
+    expect(await main.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
+    expect((await box(shell)).height).toBe(shellHeight);
+    expect((await box(sidebar)).height).toBe(shellHeight);
+    // The footer is pinned to the bottom of the sidebar.
+    expect((await box(sidebar)).y + (await box(sidebar)).height - ((await box(footer)).y + (await box(footer)).height)).toBeLessThan(16);
+
+    // The current link is marked by more than colour: weight, and an accent bar.
+    const current = shell.locator('.ayy-app-shell__link[aria-current="page"]');
+    const other = shell.locator(".ayy-app-shell__nav .ayy-app-shell__link:not([aria-current])").first();
+    const weight = (l: typeof current) => l.evaluate((el) => Number(getComputedStyle(el).fontWeight));
+    expect(await weight(current)).toBeGreaterThan(await weight(other));
+    expect(await current.evaluate((el) => getComputedStyle(el, "::before").content)).toBe('""');
+
+    // Sidebar at the inline start: left in LTR, right in RTL.
+    expect((await box(sidebar)).x).toBeLessThan((await box(main)).x);
+    await rtl(stage(page));
+    expect((await box(sidebar)).x).toBeGreaterThan((await box(main)).x);
+    await stage(page).evaluate((el) => el.removeAttribute("dir"));
+
+    // On a phone the sidebar stacks above main, and the nav becomes a row.
+    await page.setViewportSize({ width: 390, height: 800 });
+    expect((await box(sidebar)).y + (await box(sidebar)).height).toBeLessThanOrEqual((await box(main)).y + 1);
+    expect((await box(sidebar)).width).toBeCloseTo((await box(shell)).width, 0);
+    const links = await shell.locator(".ayy-app-shell__nav .ayy-app-shell__link").all();
+    expect((await box(links[0])).y).toBe((await box(links[1])).y);
+    await page.setViewportSize({ width: 1280, height: 720 });
+  }
+});
+
 test("accent text is darker on light themes than the raw accent", async ({ page }) => {
   const colors = async () =>
     stage(page, 1)
@@ -105,6 +146,13 @@ test.describe("forced colors (Windows High Contrast)", () => {
         return `${s.backgroundColor}|${s.color}|${s.borderBlockEndColor}|${s.outlineStyle}`;
       });
     expect(await look(selected)).not.toBe(await look(other));
+
+    // The current app shell link is filled with the system highlight; the others stay transparent.
+    await page.goto("/#/app-shell");
+    const current = stage(page).locator('.ayy-app-shell__link[aria-current="page"]');
+    const plain = stage(page).locator(".ayy-app-shell__nav .ayy-app-shell__link:not([aria-current])").first();
+    const fill = (l: typeof current) => l.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(await fill(current)).not.toBe(await fill(plain));
 
     // Only one of the theme toggle's two stacked icons shows.
     await page.goto("/#/theme-toggle");

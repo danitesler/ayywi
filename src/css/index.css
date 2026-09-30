@@ -26,6 +26,7 @@
 @import "../components/menu/menu.css" layer(ayywi.components);
 @import "../components/theme-toggle/theme-toggle.css" layer(ayywi.components);
 @import "../components/navbar/navbar.css" layer(ayywi.components);
+@import "../components/app-shell/app-shell.css" layer(ayywi.components);
 @import "../components/breadcrumb/breadcrumb.css" layer(ayywi.components);
 @import "../components/toc/toc.css" layer(ayywi.components);
 @import "../components/tooltip/tooltip.css" layer(ayywi.components);

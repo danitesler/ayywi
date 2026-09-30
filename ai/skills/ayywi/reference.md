@@ -40,6 +40,13 @@ Sticky site header on translucent glass: brand at the start, links and actions a
 - JS: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass constants.
 - A11y: Use <header> for the bar and <nav aria-label="Main"> for the links; one main nav per page. Mark the current page with aria-current="page", not only with colour. Put a .ayy-skip-link before the navbar so keyboard users can jump past it.
 
+## App shell (Navigation)
+The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently; on phones the sidebar stacks above the content as a single row that scrolls sideways.
+- Classes: `.ayy-app-shell` `.ayy-app-shell__sidebar` `.ayy-app-shell__brand` `.ayy-app-shell__nav` `.ayy-app-shell__link` `.ayy-app-shell__footer` `.ayy-app-shell__main`
+- React: `<AppShell>`, `<AppShellSidebar>`, `<AppShellBrand>`, `<AppShellNav aria-label>`, `<AppShellLink current>`, `<AppShellFooter>`, `<AppShellMain>`
+- JS: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass constants.
+- A11y: The sidebar is an <aside> (a complementary landmark) and the content is a <main>: one <main> per page, and no other element with that landmark. Keep one <nav aria-label="Main"> in the sidebar. Give a second nav (say, a settings menu) its own label. Mark the current page with aria-current="page". The link also gets a heavier weight and an accent bar, so colour is not the only cue; High Contrast mode fills it with the system highlight. Put a .ayy-skip-link before the shell, pointing at an id on <main>, so keyboard users can jump past the sidebar. Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex="0" so keyboard users can scroll it.
+
 ## Breadcrumb (Navigation)
 Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
 - Classes: `.ayy-breadcrumb` `.ayy-breadcrumb--pill` `.ayy-breadcrumb__list` `.ayy-breadcrumb__item` `.ayy-breadcrumb__link`

@@ -1,0 +1,57 @@
+{
+  "name": "App shell",
+  "slug": "app-shell",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently; on phones the sidebar stacks above the content as a single row that scrolls sideways.",
+  "whenToUse": [
+    "The outer layout of a signed-in app or dashboard: a persistent list of destinations next to the page content.",
+    "Anything with five or more top-level destinations that should stay one click away."
+  ],
+  "whenNotToUse": [
+    "A marketing site or a content page — use Navbar and Sections.",
+    "Switching views of one object inside a page — use Tabs.",
+    "A sidebar that opens and closes on demand — the shell has no toggle; put a menu in a side Dialog instead."
+  ],
+  "classes": {
+    "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. To embed the shell in a box with a fixed height, set block-size: 100% on it.",
+    "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport.",
+    "ayy-app-shell__brand": "Logo / product name link at the top of the sidebar.",
+    "ayy-app-shell__nav": "<nav> holding the links, stacked vertically (side by side on phones).",
+    "ayy-app-shell__link": "Destination link. aria-current=\"page\" marks the page you're on: it gets a tint, a heavier weight and an accent bar.",
+    "ayy-app-shell__footer": "Pinned to the bottom of the sidebar (the end of the row on phones): settings, account, help link. Keep it short.",
+    "ayy-app-shell__main": "The <main> content column. Scrolls on its own and has the page gutter."
+  },
+  "variants": {},
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass constants.",
+  "react": {
+    "import": "import { AppShell, AppShellSidebar, AppShellBrand, AppShellNav, AppShellLink, AppShellFooter, AppShellMain } from \"ayywi/react\";",
+    "components": {
+      "AppShell": { "renders": "<div class=\"ayy-app-shell\">" },
+      "AppShellSidebar": { "renders": "<aside class=\"ayy-app-shell__sidebar\">" },
+      "AppShellBrand": { "renders": "<a class=\"ayy-app-shell__brand\">" },
+      "AppShellNav": { "renders": "<nav class=\"ayy-app-shell__nav\">", "props": { "aria-label": "Defaults to \"Main\"." } },
+      "AppShellLink": { "renders": "<a class=\"ayy-app-shell__link\">", "props": { "current": "boolean — sets aria-current=\"page\"." } },
+      "AppShellFooter": { "renders": "<div class=\"ayy-app-shell__footer\">" },
+      "AppShellMain": { "renders": "<main class=\"ayy-app-shell__main\">" }
+    }
+  },
+  "a11y": [
+    "The sidebar is an <aside> (a complementary landmark) and the content is a <main>: one <main> per page, and no other element with that landmark.",
+    "Keep one <nav aria-label=\"Main\"> in the sidebar. Give a second nav (say, a settings menu) its own label.",
+    "Mark the current page with aria-current=\"page\". The link also gets a heavier weight and an accent bar, so colour is not the only cue; High Contrast mode fills it with the system highlight.",
+    "Put a .ayy-skip-link before the shell, pointing at an id on <main>, so keyboard users can jump past the sidebar.",
+    "Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex=\"0\" so keyboard users can scroll it."
+  ],
+  "do": [
+    "Keep to one line per link: an icon and a short label.",
+    "Put account and help links in the footer, not among the destinations.",
+    "Keep the footer to one or two compact items (settings, a user menu): on phones it joins the scrolling row."
+  ],
+  "dont": [
+    "Don't nest a second app shell, and don't put a Navbar above it: the sidebar is the site navigation.",
+    "Don't scroll the page body as well; the shell already fills the viewport.",
+    "Don't give the sidebar its own background colour; the surface token follows every theme."
+  ],
+  "examples": [{ "id": "basic", "title": "Sidebar with navigation" }]
+}
