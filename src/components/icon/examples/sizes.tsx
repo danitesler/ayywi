@@ -11,10 +11,10 @@ const SIZES = [
 
 export default function Example() {
   return (
-    <div className="ayy-stack" style={{ "--ayy-gap": "1.5rem" } as CSSProperties}>
-      <div className="ayy-cluster" style={{ "--ayy-gap": "2rem", alignItems: "end" } as CSSProperties}>
+    <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-6)" } as CSSProperties}>
+      <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-8)", alignItems: "end" } as CSSProperties}>
         {SIZES.map(([size, px]) => (
-          <span key={size} className="ayy-stack" style={{ "--ayy-gap": "0.5rem", alignItems: "center" } as CSSProperties}>
+          <span key={size} className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-2)", alignItems: "center" } as CSSProperties}>
             <Icon icon={Clock01Icon} size={size} />
             <span className="ayy-muted">
               {size} · {px}
@@ -26,7 +26,7 @@ export default function Example() {
       <p className="ayy-h4">
         <Icon icon={Clock01Icon} /> Build queue
       </p>
-      <p className="ayy-muted" style={{ margin: 0 }}>
+      <p className="ayy-muted">
         <Icon icon={Clock01Icon} /> Builds start within 2 minutes of a push.
       </p>
     </div>

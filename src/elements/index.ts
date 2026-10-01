@@ -5,6 +5,7 @@ import { trackSpotlight } from "../components/card/card";
 import { AyyCarouselElement } from "../components/carousel/carousel.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyMenuElement } from "../components/menu/menu.element";
+import { AyyNavbarElement } from "../components/navbar/navbar.element";
 import { AyyPopoverElement } from "../components/popover/popover.element";
 import { AyyTabsElement } from "../components/tabs/tabs.element";
 import { AyyThemeToggleElement } from "../components/theme-toggle/theme-toggle.element";
@@ -12,7 +13,7 @@ import { AyyTocElement } from "../components/toc/toc.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { define } from "../lib/element";
 
-export { AyyAppShellElement, AyyCarouselElement, AyyDialogElement, AyyMenuElement, AyyPopoverElement, AyyTabsElement, AyyThemeToggleElement, AyyTocElement, AyyTooltipElement };
+export { AyyAppShellElement, AyyCarouselElement, AyyDialogElement, AyyMenuElement, AyyNavbarElement, AyyPopoverElement, AyyTabsElement, AyyThemeToggleElement, AyyTocElement, AyyTooltipElement };
 
 let spotlightListening = false;
 
@@ -31,6 +32,7 @@ function onError(event: Event): void {
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
   define("ayy-app-shell", AyyAppShellElement);
+  define("ayy-navbar", AyyNavbarElement);
   define("ayy-dialog", AyyDialogElement);
   define("ayy-tooltip", AyyTooltipElement);
   define("ayy-popover", AyyPopoverElement);

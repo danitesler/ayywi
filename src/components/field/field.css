@@ -29,7 +29,7 @@
 
 .ayy-field:has(:disabled) .ayy-label,
 .ayy-label:has(> :disabled) {
-  opacity: 0.6;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 

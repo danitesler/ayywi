@@ -38,17 +38,17 @@ Never name a file with only a case difference from a sibling (`Dialog.tsx` next 
 4. **Helper** (`<slug>.ts`): export `<slug>Variants`/`Sizes` arrays, types, and `<slug>Class(options)` built with `cx`. Export it from `src/index.ts`.
 5. **React** (`<slug>.react.tsx`): `forwardRef`, spread native props, render exactly the markup from the HTML example, sensible native defaults (e.g. `type="button"`). No runtime dependencies. Export from `src/react/index.ts`.
 6. **Meta** (`<slug>.meta.json`): required keys `name slug status category description classes variants react a11y do dont examples`. `do` opens with what the component is for ("Use a toast to confirm…"); `dont` opens with what it isn't for and names the alternative ("Don't use a toast for errors the user must fix — show them inline"). `category` is one of `CATEGORIES` in `scripts/lib/contract.mjs` (Actions, Navigation, Forms, Layout, Overlays, Feedback, Data display); the preview sidebar, the manifest and the MCP server group by it. `classes` must list every class the CSS defines — and nothing else.
-7. **Examples**: at least one; every `examples[].id` needs both `.html` and `.tsx`. Use realistic content, not lorem ipsum. HTML examples must work with only `ayywi.css` + `elements.global.js`, and pass `ayywi lint` (check runs it). Icons are Hugeicons: `<Icon icon={…} />` in `.tsx`, and in `.html` the markup `iconSvg()` produces for the same icon.
+7. **Examples**: at least one; every `examples[].id` needs both `.html` and `.tsx`. Use realistic content, not lorem ipsum. HTML examples must work with only `ayywi.css` + `elements.global.js`, and pass `ayywi lint` (check runs it). Icons are Hugeicons: `<Icon icon={…} />` in `.tsx`, and in `.html` the markup `iconSvg()` produces for the same icon. Write the `.tsx` first and render it to HTML with react-dom/server so the two can't drift. Agents copy examples literally, so inline styles in them follow the rules too: `inline-size`/`max-inline-size` in rem, `--ayy-gap: var(--ayy-space-*)`, no px widths, no `margin: 0` fixes (layout helpers already reset child margins).
 8. **Behaviour** (only if needed): put the logic in `<slug>.ts` as a framework-free function (`connectPopover(trigger, content)` style, returns a cleanup). Use it from the React wrapper and from `<slug>.element.ts` (extend `ElementBase` from `src/lib/element.ts`, no shadow DOM, no rendered markup). Register it in `src/elements/index.ts`, document it in the meta's `element` block (tag, attributes, events). Floating parts use the Popover API + `src/lib/position.ts`.
-9. **Preview**: nothing to do — it discovers metas and examples automatically. Add the slug to `ORDER` (order within its category) in `scripts/build-manifest.mjs` and `preview/src/data.ts`.
+9. **Preview**: nothing to do — it discovers metas and examples automatically. Add the slug to `ORDER` (order within its category) in `scripts/lib/contract.mjs`; the manifest, llms files and preview all read it.
 10. **Tokens** (only if needed): edit `tokens/tokens.json`, never `src/css/tokens.css` or `src/tokens.ts` (generated). New colours go in `palette.*` first; components use semantic tokens only.
 11. **Tests**: interactive? Add a case to `tests/e2e/interactions.spec.ts` (both renderers). The page-render and axe tests pick new components up automatically.
 12. **Verify**:
     ```sh
     pnpm build && pnpm typecheck && pnpm check && pnpm test && pnpm test:e2e
-    pnpm preview     # look at it: Dark + Light, LTR + RTL, React + Plain HTML, each density
+    pnpm preview     # look at it in a dark and a light theme, each density, and a phone-width window; RTL via dir="rtl" on the stage
     ```
-13. Add a line to `CHANGELOG.md`.
+13. Add a line to `CHANGELOG.md`, and add the component to the README's Components table (and its count). `pnpm check` fails when they're out of date.
 
 ## Changing an existing component
 

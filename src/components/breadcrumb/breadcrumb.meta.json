@@ -23,7 +23,7 @@
         "props": {
           "items": "{ label: ReactNode; href?: string }[] — top level first; the last one is the current page.",
           "pill": "boolean",
-          "aria-label": "Defaults to \"Breadcrumb\"."
+          "aria-label": "Defaults to \"Breadcrumb\" (translate it)."
         }
       }
     }
@@ -39,7 +39,7 @@
   ],
   "dont": [
     "Don't add one to the home page or a single-level site.",
-    "Don't use it for steps in a process — that's a stepper, not a location.",
+    "Don't use it for steps in a process — use Steps; a breadcrumb is a location, not progress.",
     "Don't include the current page as a link.",
     "Don't use it as the only navigation."
   ],

@@ -30,7 +30,7 @@
     "The label dims automatically when the control inside the field is disabled."
   ],
   "do": [
-    "Wrap every labelled form control in a Field: Input, Textarea, Switch, native <select>.",
+    "Wrap every labelled form control in a Field: Input, Input group, Textarea, Select, Switch, Checkbox.",
     "Keep hints to one short sentence.",
     "Show errors after the user leaves the field or submits, not on every keystroke."
   ],

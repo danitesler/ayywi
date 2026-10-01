@@ -1,0 +1,143 @@
+/* List: rows of people, records, threads or settings. Each row is leading media (avatar, icon, icon tile), a content
+   column (title over description) and trailing meta or a control. A __link in the title makes the whole row clickable. */
+.ayy-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ayy-list__item {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  min-inline-size: 0;
+  padding-block: var(--ayy-space-3);
+  padding-inline: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-lg);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-snug);
+  transition: background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-list__item > :not(.ayy-list__content) {
+  flex: none;
+}
+
+.ayy-list__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+}
+
+.ayy-list__title {
+  margin: 0;
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-list__description {
+  margin: 0;
+  color: var(--ayy-color-muted);
+}
+
+/* Short trailing text: a time, a count, a size. */
+.ayy-list__meta {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Link: the title's <a> covers the row, so one tab stop opens it. Other controls in the row stay clickable. ---- */
+
+.ayy-list__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ayy-list__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.ayy-list__link:focus-visible {
+  outline: none;
+}
+
+.ayy-list__item:has(.ayy-list__link:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.ayy-list__item:has(.ayy-list__link) :is(a, button, input, select, textarea, label, summary, [tabindex]):not(.ayy-list__link) {
+  position: relative;
+  z-index: 1;
+}
+
+.ayy-list__item:has(.ayy-list__link):hover {
+  background-color: var(--ayy-color-wash);
+}
+
+/* The row you're on: the same tint and weight as the current link in the app shell. */
+.ayy-list__item:has(.ayy-list__link:is([aria-current="page"], [aria-current="true"])) {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-list__item:has(.ayy-list__link:is([aria-current="page"], [aria-current="true"])) .ayy-list__title {
+  font-weight: var(--ayy-weight-semibold);
+}
+
+/* ---- Divided: hairlines between flush rows, for settings and records inside a card. ---- */
+
+.ayy-list--divided {
+  gap: 0;
+}
+
+.ayy-list--divided > .ayy-list__item {
+  padding-inline: 0;
+  border-radius: 0;
+}
+
+.ayy-list--divided > .ayy-list__item + .ayy-list__item {
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+/* ---- Compact: tight rows without padding, for an icon checklist (plan perks, what's included, requirements). ---- */
+
+.ayy-list--compact {
+  gap: var(--ayy-space-2);
+}
+
+.ayy-list--compact > .ayy-list__item {
+  gap: var(--ayy-space-2);
+  padding: 0;
+}
+
+.ayy-list--compact > .ayy-list__item > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+@media (forced-colors: active) {
+  .ayy-list__item:has(.ayy-list__link:is([aria-current="page"], [aria-current="true"])) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-list__item:has(.ayy-list__link:is([aria-current="page"], [aria-current="true"])) :is(.ayy-list__title, .ayy-list__description, .ayy-list__meta) {
+    color: HighlightText;
+  }
+  .ayy-list--divided > .ayy-list__item + .ayy-list__item {
+    border-block-start-color: CanvasText;
+  }
+}

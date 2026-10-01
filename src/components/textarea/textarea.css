@@ -36,7 +36,7 @@
 }
 
 .ayy-textarea:disabled {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 
@@ -63,5 +63,8 @@
   }
   .ayy-textarea:focus-visible {
     outline-color: Highlight;
+  }
+  .ayy-textarea[aria-invalid="true"] {
+    border-style: dashed;
   }
 }

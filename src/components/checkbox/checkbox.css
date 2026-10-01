@@ -59,7 +59,7 @@
 }
 
 .ayy-checkbox:disabled {
-  opacity: 0.5;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 
@@ -85,5 +85,8 @@
   }
   .ayy-checkbox:disabled:checked {
     background-color: GrayText;
+  }
+  .ayy-checkbox[aria-invalid="true"] {
+    border-style: dashed;
   }
 }

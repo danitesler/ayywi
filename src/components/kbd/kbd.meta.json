@@ -1,0 +1,31 @@
+{
+  "name": "Kbd",
+  "slug": "kbd",
+  "status": "beta",
+  "category": "Data display",
+  "description": "A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.",
+  "classes": {
+    "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
+  },
+  "variants": {},
+  "js": "kbdClass constant.",
+  "react": {
+    "import": "import { Kbd } from \"ayywi/react\";",
+    "components": { "Kbd": { "renders": "<kbd class=\"ayy-kbd\">" } }
+  },
+  "a11y": [
+    "Use the <kbd> element: screen readers and search know it's a key.",
+    "Write modifier names out where symbols may not read well (\"Ctrl\" rather than \"^\"), or add aria-label=\"Command K\" to a <kbd>⌘K</kbd>.",
+    "A shortcut hint doesn't replace aria-keyshortcuts on the control it triggers."
+  ],
+  "do": [
+    "Use a kbd for keys people press: \"Press / to search\", shortcuts in a menu or tooltip, a hint in a search field (InputGroupAddon).",
+    "Use one kbd for a whole shortcut (⌘K), or one per key with a plus between them (Ctrl + Shift + P)."
+  ],
+  "dont": [
+    "Don't use a kbd for code or file names — use .ayy-mono or <code>.",
+    "Don't use it as a badge or a tag — use Badge.",
+    "Don't show shortcuts on touch-first screens, where there's no keyboard."
+  ],
+  "examples": [{ "id": "basic", "title": "Shortcuts in text" }]
+}

@@ -54,10 +54,15 @@
   cursor: pointer;
 }
 
-/* Items take focus with the arrow keys; the highlight is the focus indicator. */
+/* Items take focus with the arrow keys and show it with the highlight; keyboard focus adds the ring, as everywhere else. */
 .ayy-menu__item:is(:hover, :focus-visible, :focus) {
   outline: none;
   background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-menu__item:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
 }
 
 .ayy-menu__item > svg {
@@ -73,7 +78,7 @@
 }
 
 .ayy-menu__item:is(:disabled, [aria-disabled="true"]) {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 

@@ -7,11 +7,15 @@ const SUPPORTED = ["2025-06-18", "2025-03-26", "2024-11-05"];
 
 function componentMarkdown(c) {
   const list = (items) => (items ?? []).map((i) => `- ${i}`).join("\n");
+  const variants = Object.entries(c.variants ?? {}).map(
+    ([k, v]) => `${k}: ${(v.values ?? []).map((x) => JSON.stringify(x)).join(" | ")} (default ${JSON.stringify(v.default)}${v.component ? `, on <${v.component}>` : ""})`,
+  );
   const parts = [
     `# ${c.name}`,
-    `${c.category ? `Category: ${c.category}. ` : ""}${c.description}`,
+    `${c.category ? `Category: ${c.category}. ` : ""}Status: ${c.status}. ${c.description}`,
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
   ];
+  if (variants.length) parts.push(`Variants:\n${list(variants)}`);
   if (c.states) parts.push(`States:\n${list(Object.entries(c.states).map(([k, v]) => `${k} — ${v}`))}`);
   if (c.js) parts.push(`JS helpers (from "ayywi"): ${c.js}`);
   if (c.element)
@@ -85,7 +89,7 @@ export function createServer(contract = loadContract()) {
       },
     },
     get_tokens: {
-      description: "Design tokens (CSS custom properties) with their value in every theme (dark, light, dark-soft, light-gray). Optionally filter by group: color, accent, palette, space, radius, text, control, size, shadow, ease, duration, font, z.",
+      description: `Design tokens (CSS custom properties) with their value in every theme (${manifest.themes?.map?.((t) => t.name ?? t).join(", ") ?? "dark, light"}). Optionally filter by group: ${[...new Set(manifest.tokens.map((t) => t.name.split(".")[0]))].join(", ")}.`,
       inputSchema: { type: "object", properties: { group: { type: "string" } } },
       run: ({ group } = {}) =>
         manifest.tokens
@@ -97,7 +101,7 @@ export function createServer(contract = loadContract()) {
           .join("\n"),
     },
     get_rules: {
-      description: "The rules every ayywi UI must follow, plus conventions and global attributes (theme, density, dir).",
+      description: "The rules every ayywi UI must follow, plus conventions, global attributes (theme, density, dir), layout and typography utility classes, and the custom properties you may set (--ayy-gap, --ayy-spot…).",
       inputSchema: { type: "object", properties: {} },
       run: () =>
         [
@@ -109,10 +113,16 @@ export function createServer(contract = loadContract()) {
           "",
           "Attributes:",
           ...Object.entries(manifest.attributes ?? {}).map(([k, v]) => `- ${k}: ${v}`),
+          "",
+          "Utility classes (layout, type, page helpers):",
+          ...Object.entries(manifest.utilities ?? {}).map(([k, v]) => `- .${k}: ${v}`),
+          "",
+          "Custom properties you may set:",
+          ...Object.entries(manifest.publicCustomProperties ?? {}).map(([k, v]) => `- ${k}: ${v}`),
         ].join("\n"),
     },
     lint: {
-      description: "Check a code snippet against ayywi before writing it: unknown classes/tokens/variants, hardcoded colours, physical left/right, unlabeled icon buttons, icon sets other than Hugeicons.",
+      description: "Check a code snippet against ayywi before writing it: unknown classes, tokens, variants, elements and attribute values (data-theme…), reserved ayy- prefixes, hardcoded colours (also in inline styles), physical left/right CSS, :dir(), unlabeled icon buttons, <img> without width/height, icon sets other than Hugeicons.",
       inputSchema: {
         type: "object",
         properties: { code: { type: "string" }, filename: { type: "string", description: "Decides the parser, e.g. App.tsx, page.html, styles.css. Default snippet.tsx." } },

@@ -1,7 +1,9 @@
 import { Badge, Card } from "ayywi/react";
+import { CopyButton } from "../CodeBlock";
 import type { ComponentEntry } from "../data";
 import { Example } from "../Example";
 import type { Renderer } from "../settings";
+import { componentSpec } from "../spec";
 
 const TONES = {
   yes: "var(--ayy-color-success)",
@@ -40,6 +42,10 @@ export function ComponentPage({ component: c, renderer }: { component: Component
           ) : null}
         </div>
         <p className="ayy-lede">{c.description}</p>
+        <div className="ayy-cluster">
+          <CopyButton text={componentSpec(c)} label="Copy for AI" variant="outline" />
+          <span className="ayy-muted pv-note">Every class, prop, rule and example of {c.name}, as markdown for your agent or chat.</span>
+        </div>
       </header>
 
       {c.examples.map((ex) => (

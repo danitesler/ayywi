@@ -1,0 +1,49 @@
+{
+  "name": "Pagination",
+  "slug": "pagination",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.",
+  "classes": {
+    "ayy-pagination": "Root <nav aria-label=\"Pagination\">. A wrapping row.",
+    "ayy-pagination__link": "A page: <a href> when pages have URLs, <button> otherwise. aria-current=\"page\" marks the current one (outlined tint, heavier). aria-disabled=\"true\" (a link without href) or disabled dims an end you can't go past.",
+    "ayy-pagination__link--step": "Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.",
+    "ayy-pagination__ellipsis": "The \"…\" for skipped pages, aria-hidden."
+  },
+  "variants": {},
+  "js": "paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
+  "react": {
+    "import": "import { Pagination } from \"ayywi/react\";",
+    "components": {
+      "Pagination": {
+        "renders": "<nav class=\"ayy-pagination\"> with previous, pages from paginationRange() and next",
+        "props": {
+          "page": "The current page, 1-based.",
+          "count": "How many pages there are.",
+          "siblings": "Pages either side of the current one. Default 1.",
+          "href": "(page) => string — pages become links (?page=3).",
+          "onPageChange": "(page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.",
+          "labels": "{ nav?, previous?, next? } — text for translation. Defaults \"Pagination\", \"Previous\", \"Next\"."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "It's a <nav aria-label=\"Pagination\">: give a second one on the page a different label.",
+    "The current page has aria-current=\"page\"; it's outlined and bolder as well as tinted.",
+    "Previous and next say so in words; their arrows are decorative and mirror in right-to-left text.",
+    "An end you can't go past is aria-disabled (or disabled): screen readers hear it's unavailable.",
+    "After a page change in place, move focus to the top of the updated table or list, or announce the new range."
+  ],
+  "do": [
+    "Use pagination under a table or list that has more rows than fit, when people need to reach a specific page or share its URL.",
+    "Give pages URLs (href) when you can, so back and reload work.",
+    "Show the range next to it (\"41–60 of 1,280\") in muted text."
+  ],
+  "dont": [
+    "Don't use pagination for a feed people only scroll through — load more as they scroll, or add a Load more button.",
+    "Don't use it to step through a sign-up or checkout — use Steps.",
+    "Don't show it when everything fits on one page."
+  ],
+  "examples": [{ "id": "basic", "title": "Under a table" }]
+}

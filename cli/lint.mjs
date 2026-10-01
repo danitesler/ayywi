@@ -161,8 +161,35 @@ function readValue(text, i) {
 const OTHER_ICON_SETS =
   /^(?:lucide(?:-[\w-]+)?|@lucide\/[\w-]+|react-icons(?:\/[\w-]+)?|@heroicons\/[\w/-]+|@tabler\/icons(?:-[\w-]+)?|@phosphor-icons\/[\w-]+|phosphor-(?:react|vue|svelte)|@radix-ui\/react-icons|@mui\/icons-material(?:\/[\w-]+)?|(?:react|vue)-feather|feather-icons|@fortawesome\/[\w-]+|@iconify\/[\w-]+|@remixicon\/[\w-]+|remixicon|(?:react-)?bootstrap-icons|ionicons|@primer\/octicons(?:-react)?|@carbon\/icons(?:-[\w-]+)?|iconoir(?:-[\w-]+)?|@mdi\/[\w-]+|material-(?:icons|symbols)|@material-symbols\/[\w-]+)$/;
 
+// CSS named colours (not the system colours forced-colors blocks use, like CanvasText or Highlight).
+const NAMED_COLORS = new Set(
+  "aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen".split(" "),
+);
+// Properties whose value is (or includes) a colour.
+const COLOR_PROPERTY = /(?:^|[\s;{])((?:background|color|fill|stroke|outline|box-shadow|text-shadow|caret-color|accent-color|column-rule|text-decoration(?:-color)?|border(?:-(?:block|inline|top|bottom|left|right)(?:-(?:start|end))?)?(?:-color)?))\s*:\s*([^;}]*)/g;
+
 const stripCssComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "));
 const CLASS_TOKEN = /(?<![\w-])ayy-[a-z0-9]+(?:(?:-{1,2}|_{2})[a-z0-9]+)*/g;
+
+/** A JSX style object's body as CSS declarations, line for line: marginLeft: "4px", → margin-left: 4px; */
+function jsxStyleToCss(body) {
+  let out = "";
+  let depth = 0;
+  let quote = null;
+  for (const ch of body) {
+    if (quote) {
+      if (ch === quote) quote = null;
+      else out += ch;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") quote = ch;
+    else if (ch === "(" || ch === "[" || ch === "{") (depth++, (out += ch));
+    else if (ch === ")" || ch === "]" || ch === "}") (depth--, (out += ch));
+    else if (ch === "," && depth === 0) out += ";";
+    else out += ch;
+  }
+  return out.replace(/(^|[\s;{])([a-z][a-zA-Z]*)(\s*:)/g, (_, pre, key, colon) => `${pre}${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}${colon}`);
+}
 
 // ---------------------------------------------------------------- rules
 
@@ -181,9 +208,17 @@ export function cssRuleFindings(css) {
       if ((m = line.match(/#[0-9a-fA-F]{3,8}\b/)) && !/url\(/.test(line)) at("hardcoded-color", `hardcoded colour ${m[0]} — use a --ayy-color-* token`, m.index);
       if ((m = line.match(/\b(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\(/)))
         at("hardcoded-color", `hardcoded ${m[1]}() colour — use a token or color-mix() with a token`, m.index);
+      for (const d of line.matchAll(COLOR_PROPERTY)) {
+        // Drop var(...) references, url(...) and strings first: token names aren't colours.
+        const value = d[2].replace(/var\([^)]*\)|url\([^)]*\)|"[^"]*"|'[^']*'/g, " ");
+        const named = value.match(/(?<![\w-])[a-zA-Z]+(?![\w-])/g)?.find((word) => NAMED_COLORS.has(word.toLowerCase()));
+        if (named) at("hardcoded-color", `named colour "${named}" in ${d[1]} — use a --ayy-color-* token`, d.index + d[0].indexOf(d[2]));
+      }
       if (!raw[i].includes("ayy-allow-physical")) {
         if ((m = line.match(/(^|[\s;{])((?:margin|padding|border)-(?:left|right)(?:-\w+)?)\s*:/)))
           at("physical-property", `${m[2]} — use the inline-start/inline-end form so RTL works`, m.index);
+        if ((m = line.match(/(^|[\s;{])(border-(?:top|bottom)-(?:left|right)-radius)\s*:/)))
+          at("physical-property", `${m[2]} — use border-start-start-radius and friends so RTL works`, m.index);
         if ((m = line.match(/(^|[\s;{])(left|right)\s*:/)))
           at("physical-property", `${m[2]}: — use inset-inline-start/end`, m.index);
         if ((m = line.match(/text-align\s*:\s*(left|right)/))) at("physical-property", `text-align: ${m[1]} — use start/end`, m.index);
@@ -250,6 +285,7 @@ function lintMarkup(text, contract) {
   // Tokens anywhere (style attributes, CSS-in-JS)
   for (const m of text.matchAll(/var\((--ayy-[\w-]+)/g)) {
     if (contract.tokens.has(m[1]) || contract.hooks.has(m[1])) continue;
+    if (/^[${]/.test(text[m.index + m[0].length] ?? "")) continue; // built dynamically: var(--ayy-space-${n})
     const s = suggest(m[1], [...contract.tokens, ...contract.hooks]);
     push("unknown-token", `${m[1]} is not an ayywi token${s ? ` — did you mean ${s}?` : ""}`, m.index);
   }
@@ -335,6 +371,22 @@ function lintMarkup(text, contract) {
       `"${m[2]}" — ayywi's icon library is Hugeicons: <Icon icon={…} /> with icons from @hugeicons/core-free-icons (iconSvg() outside React)`,
       m.index + m[0].indexOf(m[2]),
     );
+  }
+
+  // Inline styles get the same colour and direction rules as stylesheets: style="…" (HTML, Vue, Svelte, Angular)…
+  for (const m of text.matchAll(/(?<![\w:.-])style\s*=\s*(["'])([^"']*)\1/g)) {
+    const start = m.index + m[0].indexOf(m[2]);
+    for (const f of cssRuleFindings(`{${m[2]}}`)) push(f.rule, `${f.message} (inline style)`, start + Math.max(0, f.column - 2));
+  }
+  // …and style={{ … }} objects (JSX): camelCase keys become CSS properties, quotes around values go.
+  for (const m of text.matchAll(/(?<![\w-])style\s*=\s*\{\{([\s\S]*?)\}\}/g)) {
+    const start = m.index + m[0].indexOf(m[1]);
+    const css = jsxStyleToCss(m[1]);
+    const lines = m[1].split("\n");
+    for (const f of cssRuleFindings(css)) {
+      const before = lines.slice(0, f.line - 1).reduce((n, l) => n + l.length + 1, 0);
+      push(f.rule, `${f.message} (inline style)`, start + before);
+    }
   }
 
   // <style> blocks inside templates

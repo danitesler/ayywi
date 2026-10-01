@@ -5,18 +5,20 @@ import { cardClass, trackSpotlight } from "./card";
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
   spotlight?: boolean;
+  /** The one to pick: the recommended plan, the option you chose. A border in the text colour. */
+  featured?: boolean;
   /** Spotlight colour. Any CSS colour or token, e.g. "var(--ayy-accent-product)". */
   spotColor?: string;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { interactive, spotlight, spotColor, className, style, onPointerMove, ...props },
+  { interactive, spotlight, featured, spotColor, className, style, onPointerMove, ...props },
   ref,
 ) {
   return (
     <div
       ref={ref}
-      className={cardClass({ interactive, spotlight, className })}
+      className={cardClass({ interactive, spotlight, featured, className })}
       style={spotColor ? ({ "--ayy-spot": spotColor, ...style } as CSSProperties) : style}
       onPointerMove={
         spotlight

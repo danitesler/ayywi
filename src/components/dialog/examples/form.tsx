@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   Button,
   Dialog,
@@ -25,7 +25,7 @@ export default function Example() {
         <DialogContent>
           <form
             className="ayy-stack"
-            style={{ gap: "1rem" }}
+            style={{ "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}
             onSubmit={(event) => {
               event.preventDefault();
               setName(String(new FormData(event.currentTarget).get("name") ?? ""));

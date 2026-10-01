@@ -1,0 +1,63 @@
+{
+  "name": "List",
+  "slug": "list",
+  "status": "beta",
+  "category": "Data display",
+  "description": "Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.",
+  "classes": {
+    "ayy-list": "Root <ul>. Rounded rows with a small gap between them.",
+    "ayy-list--divided": "Flush rows with hairlines between them: settings rows, records inside a card.",
+    "ayy-list--compact": "Tight rows without padding and a small icon: an icon checklist (plan perks, what's included, requirements). Rows here usually hold an Icon and plain text.",
+    "ayy-list__item": "The <li> row: a flex row of leading media, __content and trailing items, vertically centred. Everything but __content keeps its size.",
+    "ayy-list__content": "The column that holds __title and __description; it takes the free space and can shrink (add .ayy-truncate to cut long text).",
+    "ayy-list__title": "The row's main text, medium weight. Holds the __link when the row opens something.",
+    "ayy-list__description": "Supporting text under the title, muted.",
+    "ayy-list__meta": "Short trailing text: a time, a count, a size. Small, muted, tabular numbers.",
+    "ayy-list__link": "The <a> inside __title. Its ::after covers the row, so the whole row is one tab stop; other controls in the row stay clickable above it. The row gets a wash on hover, a ring on focus, and a stronger tint and heavier title with aria-current=\"page\" (or \"true\")."
+  },
+  "variants": {
+    "divided": { "values": [false, true], "default": false, "component": "List" },
+    "compact": { "values": [false, true], "default": false, "component": "List" }
+  },
+  "js": "listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.",
+  "react": {
+    "import": "import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from \"ayywi/react\";",
+    "components": {
+      "List": {
+        "renders": "<ul class=\"ayy-list\">",
+        "props": { "divided": "boolean — hairlines between flush rows.", "compact": "boolean — tight rows for an icon checklist." }
+      },
+      "ListItem": { "renders": "<li class=\"ayy-list__item\">" },
+      "ListContent": { "renders": "<div class=\"ayy-list__content\">" },
+      "ListTitle": {
+        "renders": "<p class=\"ayy-list__title\">, or <label> with htmlFor",
+        "props": { "htmlFor": "The id of the row's Switch or Checkbox: the title becomes its <label>." }
+      },
+      "ListDescription": { "renders": "<p class=\"ayy-list__description\">" },
+      "ListMeta": { "renders": "<span class=\"ayy-list__meta\">" },
+      "ListLink": { "renders": "<a class=\"ayy-list__link\">", "props": { "current": "boolean — sets aria-current=\"page\"." } }
+    }
+  },
+  "a11y": [
+    "It's a real list: screen readers announce how many rows there are.",
+    "One link per row, in the title, so a row is one tab stop with a meaningful name. Buttons and switches in the row are separate tab stops after it.",
+    "Mark the open row with aria-current=\"page\" (it's a page) or \"true\" (a selection in a list-detail view); it gets a tint and a heavier title, not just colour.",
+    "A switch or checkbox in a settings row needs its label: make the title a <label for> pointing at it.",
+    "Avatars and icons in the leading slot are decorative when the title names the row."
+  ],
+  "do": [
+    "Use a list for a feed of similar things people scan and open: conversations, notifications, files, members, search results.",
+    "Use List divided for settings: a title and description per row, the Switch or Button at the end.",
+    "Use List compact for a short checklist with an icon per row: plan perks, what's included, password rules.",
+    "Keep the same slots on every row: if one row has an avatar, they all do.",
+    "Put the time or count in ListMeta, and a status in a Badge at the end.",
+    "Cut long descriptions to one line with .ayy-truncate in inboxes and pickers."
+  ],
+  "dont": [
+    "Don't use a list for data people compare across columns — use a Table.",
+    "Don't use it for label/value pairs about one thing — use a Data list.",
+    "Don't use it for the site or app navigation — use the App shell or Navbar.",
+    "Don't put two links in a row's title, or wrap the whole <li> in an <a>."
+  ],
+  "examples": [{ "id": "inbox", "title": "Conversations" }, { "id": "settings", "title": "Settings rows" }]
+}

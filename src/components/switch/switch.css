@@ -68,7 +68,7 @@
 
 .ayy-switch:disabled,
 .ayy-switch[aria-disabled="true"] {
-  opacity: 0.5;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 

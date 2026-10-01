@@ -25,7 +25,8 @@
         "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons, plus the <div class=\"ayy-menu\" popover> listing System and every theme",
         "props": {
           "onValueChange": "(theme: ThemeMode) => void",
-          "aria-label": "Default \"Theme\"."
+          "aria-label": "Default \"Theme\" (translate it).",
+          "labels": "Menu item text per theme, for translation ({ system: \"Système\", dark: \"Sombre\" }). Defaults: System, Dark, Dark soft, Light, Light gray."
         }
       }
     }

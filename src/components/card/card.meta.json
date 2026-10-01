@@ -8,6 +8,7 @@
     "ayy-card": "Root surface.",
     "ayy-card--interactive": "Lifts on hover. Use when the whole card is clickable.",
     "ayy-card--spotlight": "Pointer-following glow + lit border. Colour via the --ayy-spot custom property.",
+    "ayy-card--featured": "The one to pick: the recommended plan in a pricing grid, or the option someone chose. A 2px border in the text colour (High Contrast: a highlight outline). One per group.",
     "ayy-card__header": "Top block (title + description).",
     "ayy-card__title": "Heading. Use an h2–h4 that fits your outline.",
     "ayy-card__description": "Muted supporting text.",
@@ -18,13 +19,22 @@
   },
   "variants": {
     "interactive": { "values": [true, false], "default": false },
-    "spotlight": { "values": [true, false], "default": false }
+    "spotlight": { "values": [true, false], "default": false },
+    "featured": { "values": [false, true], "default": false, "component": "Card" }
   },
-  "js": "cardClass({ interactive?, spotlight?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
+  "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
   "react": {
     "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"ayywi/react\";",
     "components": {
-      "Card": { "renders": "<div>", "props": { "interactive": "boolean", "spotlight": "boolean — tracks the pointer for you", "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"" } },
+      "Card": {
+        "renders": "<div>",
+        "props": {
+          "interactive": "boolean",
+          "spotlight": "boolean — tracks the pointer for you",
+          "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"",
+          "featured": "boolean — the recommended or chosen card (ayy-card--featured)."
+        }
+      },
       "CardHeader": { "renders": "<div>" },
       "CardTitle": { "renders": "<h3>" },
       "CardDescription": { "renders": "<p>" },
@@ -43,7 +53,8 @@
     "Use a card to group a unit of content: a project, a person, a plan, a stat.",
     "Add interactive for clickable tiles in a grid.",
     "Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.",
-    "Keep one level of cards; use hairline dividers inside."
+    "Keep one level of cards; use hairline dividers inside.",
+    "Mark the recommended plan in a pricing grid with featured (and a Badge that says why), not a coloured background."
   ],
   "dont": [
     "Don't wrap page sections in a card — use plain layout.",

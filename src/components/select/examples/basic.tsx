@@ -2,7 +2,7 @@ import { Field, Label, Select } from "ayywi/react";
 
 export default function Example() {
   return (
-    <div className="ayy-stack" style={{ width: "100%", maxWidth: 320 }}>
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 20rem)" }}>
       <Field>
         <Label htmlFor="region">Region</Label>
         <Select id="region" defaultValue="eu">

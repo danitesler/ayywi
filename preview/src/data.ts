@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { CATEGORIES, ORDER } from "../../scripts/lib/contract.mjs";
 
 export interface ComponentMeta {
   name: string;
@@ -35,25 +36,6 @@ const reactModules = import.meta.glob<ComponentType>("../../src/components/*/exa
 const reactSources = import.meta.glob<string>("../../src/components/*/examples/*.tsx", { eager: true, query: "?raw", import: "default" });
 const htmlSources = import.meta.glob<string>("../../src/components/*/examples/*.html", { eager: true, query: "?raw", import: "default" });
 
-// Keep in sync with CATEGORIES in scripts/lib/contract.mjs and ORDER in scripts/build-manifest.mjs. Unknown ones sort last.
-export const CATEGORIES: Record<string, string> = {
-  Actions: "Things people click to do something.",
-  Navigation: "Getting around a site and a page.",
-  Forms: "Inputs, choices and their labels.",
-  Layout: "Containers and ways to organise content.",
-  Overlays: "Content that floats above the page.",
-  Feedback: "Status, progress and messages.",
-  "Data display": "Values, people and records.",
-};
-const ORDER = [
-  "button", "menu", "theme-toggle",
-  "navbar", "app-shell", "bottom-nav", "breadcrumb", "toc",
-  "field", "input", "textarea", "select", "checkbox", "radio", "switch",
-  "section", "card", "tabs", "carousel", "separator",
-  "dialog", "popover", "tooltip",
-  "alert", "toast", "progress", "skeleton",
-  "badge", "avatar", "icon", "icon-tile", "stat", "data-list", "frame", "chat", "table",
-];
 const rank = (list: string[], x: string) => (list.includes(x) ? list.indexOf(x) : list.length);
 const CATEGORY_ORDER = Object.keys(CATEGORIES);
 

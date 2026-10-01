@@ -35,7 +35,7 @@ export default function Example() {
           <form
             id="project-settings-form"
             className="ayy-stack"
-            style={{ "--ayy-gap": "1.25rem" } as CSSProperties}
+            style={{ "--ayy-gap": "var(--ayy-space-5)" } as CSSProperties}
             onSubmit={(event) => {
               event.preventDefault();
               setOpen(false);

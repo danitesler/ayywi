@@ -57,8 +57,8 @@ function ColorsPage() {
   return (
     <article className="pv-page">
       <Header title="Colors">
-        Components use these named colours, never raw hex. They switch with the theme, so one design works in all of them. Switch the theme at the bottom of
-        the sidebar to see each set.
+        Components use these named colours, never raw hex. They switch with the theme, so one design works in all of them. Switch the theme from the palette menu
+        at the top of the sidebar to see each set.
       </Header>
 
       <h2 className="pv-h pv-h--section" id="colors-themes">
@@ -183,7 +183,7 @@ function SpacingPage() {
       </div>
 
       <h2 className="pv-h pv-h--section">Density</h2>
-      <p className="pv-note">The same controls at each density. Pick one for the whole site at the bottom of the sidebar.</p>
+      <p className="pv-note">The same controls at each density. Pick one for the whole site from the palette menu at the top of the sidebar.</p>
       <div className="pv-densities">
         {DENSITIES.map(([mode, text]) => (
           <div key={mode} className="pv-density" data-density={mode}>

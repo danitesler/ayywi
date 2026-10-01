@@ -1,4 +1,5 @@
-/* Site header: sticky, translucent, a hairline underneath. Brand at the start; the nav and everything after it at the end. */
+/* Site header: sticky, translucent, a hairline underneath. Brand at the start; the nav and everything after it at the end.
+   Below 48rem a navbar with a __toggle folds its links into a panel under the bar (behaviour: connectNavbar() or <ayy-navbar>). */
 .ayy-navbar {
   position: sticky;
   inset-block-start: 0;
@@ -44,7 +45,7 @@
 
 .ayy-navbar__brand:focus-visible {
   outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 4px;
+  outline-offset: 2px;
 }
 
 /* Scrolls sideways when the links don't fit (phones); the padding keeps focus rings from being clipped. */
@@ -79,6 +80,7 @@
 }
 
 .ayy-navbar__link:hover {
+  background-color: var(--ayy-color-wash);
   color: var(--ayy-color-text);
 }
 
@@ -108,17 +110,67 @@
   margin-inline-start: 0;
 }
 
+/* The phone menu button; hidden from 48rem, where the links fit in the bar. */
+.ayy-navbar__toggle {
+  display: none;
+}
+
+/* <ayy-navbar> only wires behaviour onto the navbar inside it; it adds no box of its own. */
+ayy-navbar {
+  display: contents;
+}
+
 @media (max-width: 64rem) {
   .ayy-navbar__inner {
     padding-inline: var(--ayy-space-4);
   }
 }
 
+/* Phones, with a __toggle: the toggle goes to the end, the actions sit before it, and the links drop into a panel under
+   the bar while the toggle has aria-expanded="true". */
+@media (max-width: 48rem) {
+  .ayy-navbar__toggle {
+    display: inline-flex;
+    order: 1;
+  }
+
+  .ayy-navbar:has(.ayy-navbar__toggle) .ayy-navbar__actions {
+    margin-inline-start: auto;
+  }
+
+  .ayy-navbar:has(.ayy-navbar__toggle) .ayy-navbar__nav {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ayy-space-1);
+    margin: 0;
+    padding: var(--ayy-space-3) var(--ayy-space-4) var(--ayy-space-4);
+    overflow: visible;
+    border-block-end: 1px solid var(--ayy-color-hairline);
+    background-color: var(--ayy-color-surface);
+    box-shadow: var(--ayy-shadow-overlay);
+  }
+
+  .ayy-navbar:has(.ayy-navbar__toggle[aria-expanded="true"]) .ayy-navbar__nav {
+    display: flex;
+  }
+
+  .ayy-navbar:has(.ayy-navbar__toggle) .ayy-navbar__link {
+    block-size: var(--ayy-size-control-lg);
+  }
+}
+
 @media (forced-colors: active) {
-  .ayy-navbar {
+  .ayy-navbar,
+  .ayy-navbar__nav {
     border-block-end-color: CanvasText;
   }
   .ayy-navbar__link[aria-current="page"] {
-    outline: 1px solid CanvasText;
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
   }
 }

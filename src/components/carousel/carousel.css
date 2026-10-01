@@ -39,8 +39,3 @@
   gap: var(--ayy-space-2);
   margin-block-start: var(--ayy-space-4);
 }
-
-/* Arrows point the way the strip moves, so they flip in right-to-left pages. */
-:where([dir="rtl"]) .ayy-carousel__controls svg {
-  transform: scaleX(-1);
-}

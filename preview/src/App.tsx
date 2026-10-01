@@ -4,7 +4,6 @@ import {
   AppShell,
   AppShellBar,
   AppShellBrand,
-  AppShellFooter,
   AppShellGroup,
   AppShellItem,
   AppShellLink,
@@ -59,9 +58,6 @@ const SECTIONS: NavSection[] = [
     })),
   })),
 ];
-
-/** Pinned to the bottom of the sidebar, outside the searchable sections. */
-const CHANGELOG_LINK: NavItem = { route: changelogPage.route, title: changelogPage.title, text: changelogPage.text };
 
 /** Every word must appear in the item, its section or its search text. */
 function search(query: string): NavSection[] {
@@ -191,25 +187,25 @@ export function App() {
               ayywi
             </AppShellBrand>
             <div className="pv-sidebar__actions">
-            {/* On phones the bar carries this menu. */}
-            <span className="pv-sidebar__appearance">
-              <AppearanceMenu theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Search"
-              aria-expanded={searchOpen || !!query}
-              aria-controls="pv-search"
-              aria-keyshortcuts="/ Control+K Meta+K"
-              onClick={() => {
-                if (searchOpen && !query) return setSearchOpen(false);
-                setSearchOpen(true);
-                requestAnimationFrame(() => searchRef.current?.focus());
-              }}
-            >
-              <Icon icon={Search01Icon} />
-            </Button>
+              {/* On phones the bar carries this menu. */}
+              <span className="pv-sidebar__appearance">
+                <AppearanceMenu theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Search"
+                aria-expanded={searchOpen || !!query}
+                aria-controls="pv-search"
+                aria-keyshortcuts="/ Control+K Meta+K"
+                onClick={() => {
+                  if (searchOpen && !query) return setSearchOpen(false);
+                  setSearchOpen(true);
+                  requestAnimationFrame(() => searchRef.current?.focus());
+                }}
+              >
+                <Icon icon={Search01Icon} />
+              </Button>
             </div>
           </div>
           <div className="pv-search" data-open={searchOpen || !!query} inert={!(searchOpen || query)}>
@@ -247,16 +243,6 @@ export function App() {
             <p className="pv-nav__empty">No matches for “{query}”.</p>
           )}
         </AppShellNav>
-        <AppShellFooter className="pv-footer">
-        <AppShellLink
-          href={`#/${CHANGELOG_LINK.route}`}
-          className="pv-nav__link pv-footer__link"
-          current={page === CHANGELOG_LINK.route}
-          aria-current={page === CHANGELOG_LINK.route ? "page" : undefined}
-        >
-          {CHANGELOG_LINK.title}
-        </AppShellLink>
-        </AppShellFooter>
       </AppShellSidebar>
 
       <div className="pv-main">

@@ -3,12 +3,12 @@
   "slug": "app-shell",
   "status": "beta",
   "category": "Navigation",
-  "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport. The two scroll independently. On phones the sidebar either stacks above the content as a single row that scrolls sideways, or — with a top bar — becomes a drawer that a menu button opens.",
+  "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.",
   "classes": {
-    "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it.",
-    "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport.",
+    "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.",
+    "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport. On phones it's hidden (bottom-nav layout) or a drawer, and keeps its full tree either way.",
     "ayy-app-shell__brand": "Logo / product name link at the top of the sidebar.",
-    "ayy-app-shell__nav": "<nav> holding the links, stacked vertically (side by side on phones).",
+    "ayy-app-shell__nav": "<nav> holding the links, stacked vertically (side by side in the phone row).",
     "ayy-app-shell__link": "Destination link. aria-current=\"page\" marks the page you're on: it gets a tint and a heavier weight.",
     "ayy-app-shell__group": "A headed section of the nav: a __group-label over a __list. Groups after the first get a hairline above them.",
     "ayy-app-shell__group-label": "The group's heading: a small uppercase <p>. Give it an id and point the list's aria-labelledby at it.",
@@ -18,129 +18,87 @@
     "ayy-app-shell__link--sub": "Modifier for a child link inside a __sublist: a smaller control and a lighter weight.",
     "ayy-app-shell__footer": "Pinned to the bottom of the sidebar (the end of the row on phones): settings, account, help link. Keep it short.",
     "ayy-app-shell__main": "The <main> content column. Scrolls on its own and has the page gutter.",
-    "ayy-app-shell__bar": "Phone top bar, first child of the shell: holds the __toggle, the brand and maybe a search button. Hidden from 48rem. Its presence switches the phone layout from the sideways row to a drawer: the sidebar keeps its full layout (groups, sub-lists, collapses) and slides in from the inline-start edge over a scrim.",
-    "ayy-app-shell__toggle": "The menu button in the __bar (combine with ayy-button ayy-button--ghost ayy-button--icon). Its aria-expanded is the drawer's state: \"true\" shows the drawer. connectAppShell() / <ayy-app-shell> / React AppShell manage it."
+    "ayy-app-shell__bar": "Phone top bar, first child of the shell, hidden from 48rem: the brand, then one or two actions (search, account), which sit at the inline end. Add a __toggle to it when the sidebar should open as a drawer. With a bar or a bottom nav the phone sidebar is off-screen; it slides in from the inline-start edge over a scrim while a toggle has aria-expanded=\"true\".",
+    "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it."
   },
   "variants": {},
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).",
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).",
   "react": {
-    "import": "import { AppShell, AppShellSidebar, AppShellBrand, AppShellNav, AppShellLink, AppShellFooter, AppShellMain, AppShellBar, AppShellToggle } from \"ayywi/react\";",
+    "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from \"ayywi/react\";",
     "components": {
       "AppShell": {
-        "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellBar"
+        "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\""
       },
-      "AppShellSidebar": {
-        "renders": "<aside class=\"ayy-app-shell__sidebar\">"
-      },
-      "AppShellBrand": {
-        "renders": "<a class=\"ayy-app-shell__brand\">"
-      },
-      "AppShellNav": {
-        "renders": "<nav class=\"ayy-app-shell__nav\">",
-        "props": {
-          "aria-label": "Defaults to \"Main\"."
-        }
-      },
+      "AppShellSidebar": { "renders": "<aside class=\"ayy-app-shell__sidebar\">" },
+      "AppShellBrand": { "renders": "<a class=\"ayy-app-shell__brand\">" },
+      "AppShellNav": { "renders": "<nav class=\"ayy-app-shell__nav\">", "props": { "aria-label": "Defaults to \"Main\" (translate it)." } },
       "AppShellLink": {
         "renders": "<a class=\"ayy-app-shell__link\">",
-        "props": {
-          "current": "boolean — sets aria-current=\"page\".",
-          "sub": "boolean — a child link (ayy-app-shell__link--sub)."
-        }
+        "props": { "current": "boolean — sets aria-current=\"page\".", "sub": "boolean — a child link (ayy-app-shell__link--sub)." }
       },
-      "AppShellGroup": {
-        "renders": "<div class=\"ayy-app-shell__group\"> with a label <p> and a <ul>",
-        "props": {
-          "label": "The heading. Names the list."
-        }
-      },
-      "AppShellItem": {
-        "renders": "<li>"
-      },
-      "AppShellSublist": {
-        "renders": "<ul class=\"ayy-app-shell__sublist\">",
-        "props": {
-          "aria-label": "Required. Names the list."
-        }
-      },
+      "AppShellGroup": { "renders": "<div class=\"ayy-app-shell__group\"> with a label <p> and a <ul>", "props": { "label": "The heading. Names the list." } },
+      "AppShellItem": { "renders": "<li>" },
+      "AppShellSublist": { "renders": "<ul class=\"ayy-app-shell__sublist\">", "props": { "aria-label": "Required. Names the list." } },
       "AppShellCollapse": {
         "renders": "<details class=\"ayy-app-shell__collapse\"> with a link-styled <summary> and a <ul>",
-        "props": {
-          "label": "The toggle row: an icon and a short label.",
-          "open": "Start open. Set it when the group holds the current page."
-        }
+        "props": { "label": "The toggle row: an icon and a short label.", "open": "Start open. Set it when the group holds the current page." }
       },
-      "AppShellFooter": {
-        "renders": "<div class=\"ayy-app-shell__footer\">"
-      },
-      "AppShellMain": {
-        "renders": "<main class=\"ayy-app-shell__main\">"
-      },
-      "AppShellBar": {
-        "renders": "<header class=\"ayy-app-shell__bar\">"
-      },
+      "AppShellFooter": { "renders": "<div class=\"ayy-app-shell__footer\">" },
+      "AppShellMain": { "renders": "<main class=\"ayy-app-shell__main\">" },
+      "AppShellBar": { "renders": "<header class=\"ayy-app-shell__bar\"> — first child; brand, then actions" },
       "AppShellToggle": {
         "renders": "<button class=\"ayy-button ayy-button--ghost ayy-button--icon ayy-app-shell__toggle\"> with a menu icon",
-        "props": {
-          "aria-label": "Defaults to \"Menu\" (translate it).",
-          "children": "Replaces the default menu icon."
-        }
+        "props": { "aria-label": "Defaults to \"Menu\" (translate it).", "children": "Replaces the default menu icon." }
       }
     }
   },
   "a11y": [
     "The sidebar is an <aside> (a complementary landmark) and the content is a <main>: one <main> per page, and no other element with that landmark.",
-    "Keep one <nav aria-label=\"Main\"> in the sidebar. Give a second nav (say, a settings menu) its own label.",
-    "Mark the current page with aria-current=\"page\". The link also gets a tint and a heavier weight, so colour is not the only cue; High Contrast mode fills it with the system highlight.",
+    "Keep one <nav aria-label=\"Main\"> in the sidebar. The bottom nav repeats its top destinations and only one of the two shows at a time, so it can use the same label. Give any other nav (a settings menu) its own label.",
+    "Mark the current page with aria-current=\"page\" in both the sidebar and the bottom nav. The link also gets a tint and a heavier weight, so colour is not the only cue; High Contrast mode fills it with the system highlight.",
     "Put a .ayy-skip-link before the shell, pointing at an id on <main>, so keyboard users can jump past the sidebar.",
-    "Group with a heading and a list: the <p> label names the <ul> through aria-labelledby, so a screen reader announces \"Foundations, list, 5 items\".",
+    "Group with a heading and a list: the <p> label names the <ul> through aria-labelledby, so a screen reader announces \"Workspace, list, 3 items\".",
     "A collapse is a native <details>: Enter and Space toggle it, and the open state is exposed for you. Don't add aria-expanded to the <summary>.",
     "Mark the current child with aria-current=\"page\" and open its collapse. A closed collapse that holds the current page is drawn bolder, so the location isn't hidden.",
     "Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex=\"0\" so keyboard users can scroll it.",
     "The drawer's toggle is a real <button> with aria-expanded and aria-controls pointing at the sidebar (set for you). Opening moves focus to the first link in the drawer and makes the rest of the shell inert; Esc closes it and returns focus to the toggle.",
-    "The closed drawer is visibility: hidden, so its links are out of the tab order and the accessibility tree until it opens."
+    "The phone sidebar (closed drawer) is visibility: hidden, and the bottom nav is display: none from 48rem, so hidden links are out of the tab order and the accessibility tree."
   ],
   "do": [
     "Use the app shell as the outer layout of a signed-in app or dashboard: a persistent list of destinations next to the page content.",
-    "Reach for it once there are five or more top-level destinations that should stay one click away.",
+    "Give every app the same frame: sidebar on wide screens, a Bottom nav on phones (a direct child after the main) with the same top destinations, icons and order, and a __bar with the brand and one or two actions.",
+    "With more than five destinations, put the four most used in the bottom nav and end it with a \"More\" tab (a BottomNavButton with the ayy-app-shell__toggle class) that opens the full sidebar as a drawer.",
+    "Use a __bar with a __toggle and no bottom nav when the nav is a long tree people browse (docs, settings with many sections): the drawer keeps groups, sub-lists and collapses.",
     "Group destinations under a heading once there are more than about six; one group can hold up to a dozen links.",
     "Use a collapse when a parent has children that are destinations in their own right and you'd otherwise scroll past them; keep the tree one level deep.",
     "Use a link followed by a __sublist when the parent is itself a page and its children are sections of it (Colors → Surfaces, Text…).",
     "Keep to one line per link: an icon and a short label.",
-    "Put account and help links in the footer, not among the destinations.",
-    "Keep the footer to one or two compact items (settings, a user menu): on phones it joins the scrolling row.",
-    "Add a __bar once phones need the nested nav (groups, sub-lists, collapses) or there are more than about five top-level links: the drawer keeps the whole tree.",
-    "For a phone app with three to five destinations, use a Bottom nav instead of the drawer, or alongside it for the most frequent ones."
+    "Put account and help links in the footer, not among the destinations. Keep it to one or two compact items.",
+    "Start each page in the main with a Page header (title, description, actions)."
   ],
   "dont": [
     "Don't use it for a marketing site or a content page — use Navbar and Sections.",
     "Don't use it to switch views of one object inside a page — use Tabs.",
+    "Don't put a Navbar above it or inside it: the sidebar (and on phones the bar and bottom nav) is the navigation.",
     "Don't nest deeper than one level, and don't put a collapse inside a collapse.",
-    "Don't rely on the phone row for nested items: it shows top-level links only. Headings, sub-lists and collapses are left out; add a __bar to get a drawer that keeps them.",
+    "Don't rely on the sideways row (no bar, no bottom nav) for a real app: it shows top-level links only and hides the rest off-screen. Use a bottom nav or a drawer.",
+    "Don't hide or show the sidebar and bottom nav with your own media queries; the shell switches them at 48rem.",
     "Don't make a collapse the only way to reach a page the user needs often.",
-    "Don't nest a second app shell, and don't put a Navbar above it: the sidebar is the site navigation.",
+    "Don't nest a second app shell.",
     "Don't scroll the page body as well; the shell already fills the viewport.",
     "Don't give the sidebar its own background colour; the surface token follows every theme.",
     "Don't keep the drawer open as a persistent panel on phones, and don't open it on page load."
   ],
   "examples": [
-    {
-      "id": "basic",
-      "title": "Sidebar with navigation"
-    },
-    {
-      "id": "grouped",
-      "title": "Groups, sub-sections and a collapse"
-    },
-    {
-      "id": "drawer",
-      "title": "Phone drawer"
-    }
+    { "id": "basic", "title": "Sidebar with navigation" },
+    { "id": "tabs", "title": "Tab bar on phones, with More" },
+    { "id": "grouped", "title": "Groups, sub-sections and a collapse" },
+    { "id": "drawer", "title": "Phone drawer" }
   ],
   "element": {
     "tag": "ayy-app-shell",
     "attributes": {},
     "events": {},
-    "children": "A <div class=\"ayy-app-shell\"> with a __bar holding a __toggle. The toggle opens and closes the sidebar drawer on phones; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a bar it does nothing."
+    "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing."
   }
 }

@@ -16,10 +16,10 @@
     "ayy-progress--indeterminate": "Looping animation; omit aria-valuenow."
   },
   "variants": {
-    "tone": { "values": ["default", "success", "warning", "destructive", "ai"], "default": "default" },
+    "variant": { "values": ["default", "success", "warning", "destructive", "ai"], "default": "default" },
     "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
-  "js": "progressClass({ tone?, size?, indeterminate?, className? }) → string",
+  "js": "progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)",
   "react": {
     "import": "import { Progress } from \"ayywi/react\";",
     "components": {
@@ -27,7 +27,8 @@
         "renders": "<div role=\"progressbar\">",
         "props": {
           "value": "number 0–100; omit/null → indeterminate",
-          "tone": "\"default\" | \"success\" | \"warning\" | \"destructive\" | \"ai\"",
+          "variant": "\"default\" | \"success\" | \"warning\" | \"destructive\" | \"ai\" — the same prop name as Alert and Badge",
+          "tone": "Deprecated alias of variant.",
           "size": "\"sm\" | \"md\" | \"lg\""
         }
       }
@@ -38,12 +39,15 @@
     "Give it an accessible name: aria-label or aria-labelledby."
   ],
   "do": [
-    "Use a determinate bar for sync, upload, install — anything with measurable progress.",
+    "Use a progress bar when you know how far along something is: an upload, an import, a quota, a goal.",
     "Use indeterminate for work of unknown length that takes more than ~1s.",
     "Show the percentage or step as text nearby for anything longer than a few seconds.",
     "For quotas or meters that aren't progress, the look still works — set role=\"meter\" instead of progressbar."
   ],
   "dont": [
+    "Don't use a progress bar for a short wait of unknown length on a small area — use a Spinner (or <Button loading>).",
+    "Don't use it for content that's loading — use Skeleton shapes.",
+    "Don't use it for the steps of a flow — use Steps.",
     "Don't animate a determinate bar backwards."
   ],
   "examples": [{ "id": "basic", "title": "Values, tones, indeterminate" }]

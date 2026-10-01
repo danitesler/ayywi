@@ -1,0 +1,46 @@
+{
+  "name": "Spinner",
+  "slug": "spinner",
+  "status": "beta",
+  "category": "Feedback",
+  "description": "An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.",
+  "classes": {
+    "ayy-spinner": "The ring, 1.25em (matches an icon beside text), in the current text colour. Spins; stops still under reduced motion.",
+    "ayy-spinner--sm": "16px (--ayy-size-icon-sm).",
+    "ayy-spinner--lg": "32px (--ayy-size-icon-xl), for a panel that's loading."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "Spinner" }
+  },
+  "js": "spinnerClass({ size?, className? }) → string. Buttons: add aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).",
+  "react": {
+    "import": "import { Spinner } from \"ayywi/react\";",
+    "components": {
+      "Spinner": {
+        "renders": "<span class=\"ayy-spinner\" role=\"status\" aria-label=\"Loading\">",
+        "props": {
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "label": "What's loading, for screen readers. Default \"Loading\" (translate it). \"\" makes it decorative (aria-hidden) when nearby text already says it."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "A spinner on its own is a role=\"status\" with an aria-label that says what's loading (\"Loading invoices\").",
+    "Inside a button, hide it (aria-hidden) and set aria-busy=\"true\" on the button; the button's text still names it.",
+    "Mark the region that's refreshing with aria-busy=\"true\" until the new content is in.",
+    "Under reduced motion it stops as a still ring; the label and aria-busy still say it's working."
+  ],
+  "do": [
+    "Use a spinner for waits under a few seconds on a small area: a button that's saving, a panel refreshing, a lazy menu.",
+    "Put it inside the button that started the work (<Button loading>), not somewhere else on the page.",
+    "Pair a large spinner with a line of text when the wait may be longer (\"Importing 2,400 contacts…\")."
+  ],
+  "dont": [
+    "Don't use a spinner for a page or list that's loading — use Skeleton shapes of the content.",
+    "Don't use it when you know how far along the work is — use Progress.",
+    "Don't show several spinners at once; load the region as one.",
+    "Don't disable a loading button; aria-busy keeps it focusable and <Button loading> ignores repeat clicks."
+  ],
+  "examples": [{ "id": "basic", "title": "Sizes and a loading button" }]
+}

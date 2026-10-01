@@ -3,16 +3,18 @@ import { Card, CardContent, CardHeader, Skeleton } from "ayywi/react";
 
 export default function Example() {
   return (
-    <Card style={{ width: 320 }} role="status" aria-busy="true" aria-label="Loading project">
-      <CardHeader style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-        <Skeleton shape="circle" />
-        <div className="ayy-stack" style={{ flex: 1, "--ayy-gap": "0.5rem" } as CSSProperties}>
-          <Skeleton shape="text" style={{ width: "60%" }} />
-          <Skeleton shape="text" style={{ width: "40%" }} />
+    <Card style={{ inlineSize: "20rem" }} role="status" aria-busy="true" aria-label="Loading project">
+      <CardHeader>
+        <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-3)", flexWrap: "nowrap" } as CSSProperties}>
+          <Skeleton shape="circle" />
+          <div className="ayy-stack" style={{ flex: 1, "--ayy-gap": "var(--ayy-space-2)" } as CSSProperties}>
+            <Skeleton shape="text" style={{ inlineSize: "60%" }} />
+            <Skeleton shape="text" style={{ inlineSize: "40%" }} />
+          </div>
         </div>
       </CardHeader>
       <CardContent>
-        <Skeleton style={{ height: 96 }} />
+        <Skeleton style={{ blockSize: "6rem" }} />
       </CardContent>
     </Card>
   );

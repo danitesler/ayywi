@@ -72,7 +72,7 @@ export function buildPlatforms(root, outDir) {
   };
   const key = (t) => t.name.replace(/\./g, "-");
   const scss = `// ${HEADER}
-// Prefer the CSS custom properties — they follow theme, density and brand at runtime.
+// Prefer the CSS custom properties — they follow theme and density at runtime.
 // The maps hold raw values for build-time maths: map.get($ayy-dark, "color-bg"). One map per theme: ${themeNames.map((n) => `$ayy-${n}`).join(", ")}.
 @use "sass:map";
 

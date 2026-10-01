@@ -1,0 +1,50 @@
+{
+  "name": "Empty state",
+  "slug": "empty-state",
+  "status": "beta",
+  "category": "Feedback",
+  "description": "What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.",
+  "classes": {
+    "ayy-empty-state": "Root. Centred column with generous block padding.",
+    "ayy-empty-state--bordered": "A dashed outline around the empty area (a board column, a drop target).",
+    "ayy-empty-state--compact": "Less padding: inside a card, a table body or a side panel.",
+    "ayy-empty-state__title": "What's empty, as a heading (\"No projects yet\").",
+    "ayy-empty-state__description": "One sentence: why it's empty, or what will appear here.",
+    "ayy-empty-state__actions": "The button that fixes it (primary), maybe a secondary link."
+  },
+  "variants": {
+    "bordered": { "values": [false, true], "default": false, "component": "EmptyState" },
+    "compact": { "values": [false, true], "default": false, "component": "EmptyState" }
+  },
+  "js": "emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.",
+  "react": {
+    "import": "import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from \"ayywi/react\";",
+    "components": {
+      "EmptyState": {
+        "renders": "<div class=\"ayy-empty-state\">",
+        "props": { "bordered": "boolean — dashed outline.", "compact": "boolean — less padding." }
+      },
+      "EmptyStateTitle": { "renders": "<h2 class=\"ayy-empty-state__title\">" },
+      "EmptyStateDescription": { "renders": "<p class=\"ayy-empty-state__description\">" },
+      "EmptyStateActions": { "renders": "<div class=\"ayy-empty-state__actions\">" }
+    }
+  },
+  "a11y": [
+    "The title is a real heading at the level that fits the page (h2 under the page's h1, h3 inside a card).",
+    "The icon tile is decorative: the title carries the meaning.",
+    "When results change because of a search or filter, put the empty state inside a role=\"status\" region (or announce the count) so screen reader users hear that nothing matched."
+  ],
+  "do": [
+    "Use an empty state wherever a list, table or page can have nothing in it: first run, a finished inbox, a search with no results.",
+    "Say what will be here and give the one action that fills it (Create project, Import contacts, Clear filters).",
+    "Use the compact version inside a Card or a Table's body; the full one when it's the whole page.",
+    "Match the icon to the thing that's missing, in an IconTile."
+  ],
+  "dont": [
+    "Don't use an empty state while data is loading — use Skeleton rows (or a Spinner for a small area).",
+    "Don't use it for errors — use an Alert with a retry action.",
+    "Don't leave a table with only headers and nothing under them.",
+    "Don't blame the user (\"You haven't…\"); say what's next."
+  ],
+  "examples": [{ "id": "basic", "title": "First run" }, { "id": "search", "title": "No results, compact" }]
+}

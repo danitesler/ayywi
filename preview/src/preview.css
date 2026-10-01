@@ -24,23 +24,6 @@
   background-color: var(--ayy-color-surface);
 }
 
-.pv-footer {
-  position: sticky;
-  inset-block-end: 0;
-  z-index: 1;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--ayy-space-2) var(--ayy-space-3);
-  padding-block: var(--ayy-space-3);
-  border-block-start: 1px solid var(--ayy-color-hairline);
-  background-color: var(--ayy-color-surface);
-}
-
-.pv-footer__link {
-  flex-basis: 100%;
-}
-
 .pv-releases {
   display: flex;
   flex-direction: column;
@@ -740,6 +723,28 @@
   max-inline-size: 60ch;
 }
 
+/* The numbered steps of Get started. */
+.pv-step {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  border-radius: 50%;
+  background-color: var(--ayy-color-text);
+  color: var(--ayy-color-bg);
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.pv-files {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+}
+
 .pv-facts {
   font-size: var(--ayy-text-sm);
   color: var(--ayy-color-muted);
@@ -1112,10 +1117,6 @@
   min-block-size: 100dvh;
 }
 
-.pv-app p {
-  margin: 0;
-}
-
 .pv-app--page {
   display: flex;
   flex-direction: column;
@@ -1126,107 +1127,31 @@
   flex: 1;
 }
 
-.pv-app-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--ayy-space-3);
-}
-
-.pv-app-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--ayy-space-2);
-}
-
-.pv-app-split {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: var(--ayy-space-4);
-  align-items: start;
-}
-
-.pv-app-center {
-  justify-content: center;
-}
-
-.pv-app-grow {
-  flex: 1;
-}
-
-/* Selects fill their field by default; in a toolbar they size to their text. */
-.pv-app-fit {
-  inline-size: auto;
-}
-
-.pv-app-hero .ayy-h1 {
-  max-inline-size: 16ch;
-  margin-inline: auto;
-}
-
-.pv-app-hero {
-  padding-block: var(--ayy-space-16) var(--ayy-space-10);
-}
-
-.pv-app-plan--popular {
-  border-color: var(--ayy-color-primary);
-}
-
-.pv-app-perks {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pv-app-perks li {
-  display: flex;
-  align-items: center;
-  gap: var(--ayy-space-2);
-}
-
-.pv-app-perks .ayy-icon {
-  color: var(--ayy-color-success);
-}
-
-.pv-app-footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-4);
-  padding-block: var(--ayy-space-10) var(--ayy-space-6);
-}
-
-/* Support inbox: list · thread · details. */
+/* Support inbox: list · thread · details, each scrolling on its own inside the shell's main. */
 .pv-app-inbox {
   display: grid;
-  grid-template-columns: 18rem minmax(0, 1fr) 17rem;
+  grid-template-columns: 20rem minmax(0, 1fr) 17rem;
   padding: 0;
+  overflow: hidden;
 }
 
 .pv-app-inbox > * {
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-4);
   min-block-size: 0;
   padding: var(--ayy-space-5);
+  overflow-y: auto;
 }
 
 .pv-app-inbox__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-4);
-  overflow-y: auto;
+  padding-inline: var(--ayy-space-3);
   border-inline-end: 1px solid var(--ayy-color-hairline);
 }
 
-.pv-app-inbox__thread {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-4);
-  overflow-y: auto;
+.pv-app-inbox__aside {
+  border-inline-start: 1px solid var(--ayy-color-hairline);
 }
 
 .pv-app-inbox__chat {
@@ -1234,92 +1159,10 @@
   inline-size: 100%;
 }
 
-.pv-app-inbox__aside {
-  overflow-y: auto;
-  border-inline-start: 1px solid var(--ayy-color-hairline);
-}
-
-.pv-app-threads {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pv-app-thread {
-  display: flex;
-  gap: var(--ayy-space-3);
-  padding: var(--ayy-space-3);
-  border-radius: var(--ayy-radius-lg);
-  color: inherit;
-  text-decoration: none;
-}
-
-.pv-app-thread:hover {
-  background-color: color-mix(in srgb, var(--ayy-color-text) 5%, transparent);
-}
-
-.pv-app-thread[aria-current="true"] {
-  background-color: var(--ayy-color-surface-raised);
-}
-
-.pv-app-thread:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: -2px;
-}
-
-.pv-app-thread__body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--ayy-space-1);
-  min-inline-size: 0;
-}
-
-.pv-app-thread__text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.pv-app-composer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-2);
-}
-
-/* Settings. */
-.pv-app-settings {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-6);
-  padding-block: var(--ayy-space-8) var(--ayy-space-12);
-}
-
-.pv-app-settings__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: var(--ayy-space-4);
-  align-items: start;
-}
-
-@media (forced-colors: active) {
-  .pv-app-thread[aria-current="true"] {
-    outline: 2px solid Highlight;
-  }
-}
-
-/* Tablet: the details column goes; two-column cards stack. */
+/* Tablet: the details pane goes. Phone: the inbox is the list; a thread would be its own screen. */
 @media (max-width: 64rem) {
-  .pv-app-split,
-  .pv-app-settings__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .pv-app-inbox {
-    grid-template-columns: 16rem minmax(0, 1fr);
+    grid-template-columns: 18rem minmax(0, 1fr);
   }
 
   .pv-app-inbox__aside {
@@ -1327,31 +1170,17 @@
   }
 }
 
-/* Phone: the thread is the whole screen; secondary links hide. */
 @media (max-width: 48rem) {
-  .pv-app-hide-sm,
-  .pv-app-inbox__list {
-    display: none;
-  }
-
   .pv-app-inbox {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .pv-app-inbox > * {
-    padding: var(--ayy-space-4);
+  .pv-app-inbox__thread {
+    display: none;
   }
 
-  .pv-app-hero {
-    padding-block: var(--ayy-space-10) var(--ayy-space-6);
-  }
-
-  /* A centred section goes start-aligned on phones; its buttons follow. */
-  .pv-app-center {
-    justify-content: flex-start;
-  }
-
-  .pv-app-hero .ayy-h1 {
-    margin-inline: 0;
+  .pv-app-inbox__list {
+    padding-inline: var(--ayy-space-2);
+    border-inline-end: 0;
   }
 }

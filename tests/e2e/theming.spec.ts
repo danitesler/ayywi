@@ -191,7 +191,7 @@ for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
-      await expect(page.locator("h1"), `/#/${route}`).toBeVisible();
+      await expect(page.locator(".pv-page h1").first(), `/#/${route}`).toBeVisible();
       const results = await new AxeBuilder({ page })
         .include(scope)
         .disableRules(["region"]) // examples are fragments, not full pages

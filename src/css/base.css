@@ -208,6 +208,38 @@
   gap: var(--ayy-gap, var(--ayy-space-2));
 }
 
+/* A row with its items pushed to both ends (a title and its meta, a label and a value); wraps when it runs out of room. */
+:where(.ayy-spread) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-gap, var(--ayy-space-2));
+}
+
+/* Main content and an aside (first child and last child) side by side; the aside drops below once the main would get
+   narrower than 60%. Aside width via --ayy-min (default 18rem), gap via --ayy-gap. No media query, so it adapts to
+   the space it's in (an app shell's main, a dialog). */
+:where(.ayy-split) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--ayy-gap, var(--ayy-space-4));
+}
+:where(.ayy-split > :first-child) {
+  flex: 999 1 0;
+  min-inline-size: min(100%, 60%);
+}
+:where(.ayy-split > :last-child) {
+  flex: 1 1 var(--ayy-min, 18rem);
+  min-inline-size: 0;
+}
+
+/* Layout children use the gap, not their own margins (a <p> or heading would otherwise add 1em). */
+:where(.ayy-stack, .ayy-cluster, .ayy-grid, .ayy-spread, .ayy-split) > :where(*) {
+  margin-block: 0;
+}
+
 /* Centred page width with a gutter (24px, 16px on tablets and phones). */
 :where(.ayy-container) {
   box-sizing: border-box;
@@ -241,6 +273,14 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* One line, cut with an ellipsis. Works on a flex child too. */
+:where(.ayy-truncate) {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Quiet monochrome scrollbars on any scroll container that opts in. */

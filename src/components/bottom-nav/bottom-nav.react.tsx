@@ -1,4 +1,4 @@
-import { forwardRef, type AnchorHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
+import { forwardRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { bottomNavClass, bottomNavLabelClass, bottomNavLinkClass } from "./bottom-nav";
 
@@ -26,5 +26,23 @@ export const BottomNavLink = forwardRef<HTMLAnchorElement, BottomNavLinkProps>(f
       {icon}
       <span className={bottomNavLabelClass}>{children}</span>
     </a>
+  );
+});
+
+export interface BottomNavButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** The icon, above the label. */
+  icon: ReactNode;
+}
+
+/** A tab that does something instead of going somewhere, e.g. "More" (add className="ayy-app-shell__toggle" to open the app shell's drawer). */
+export const BottomNavButton = forwardRef<HTMLButtonElement, BottomNavButtonProps>(function BottomNavButton(
+  { icon, className, children, ...props },
+  ref,
+) {
+  return (
+    <button ref={ref} type="button" className={cx(bottomNavLinkClass, className)} {...props}>
+      {icon}
+      <span className={bottomNavLabelClass}>{children}</span>
+    </button>
   );
 });

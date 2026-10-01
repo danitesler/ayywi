@@ -15,13 +15,15 @@
     "ayy-button--sm": "28px tall.",
     "ayy-button--lg": "40px tall.",
     "ayy-button--icon": "Square 32px, for a single icon.",
-    "ayy-button--icon-sm": "Square 28px, for a single icon."
+    "ayy-button--icon-sm": "Square 28px, for a single icon.",
+    "ayy-button--block": "Fills its container's width: a card footer, a phone form, a dialog's only action."
   },
   "variants": {
     "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"], "default": "primary" },
-    "size": { "values": ["sm", "md", "lg", "icon", "icon-sm"], "default": "md" }
+    "size": { "values": ["sm", "md", "lg", "icon", "icon-sm"], "default": "md" },
+    "block": { "values": [false, true], "default": false, "component": "Button" }
   },
-  "js": "buttonClass({ variant?, size?, className? }) → string",
+  "js": "buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
   "react": {
     "import": "import { Button } from \"ayywi/react\";",
     "components": {
@@ -31,6 +33,8 @@
           "variant": "\"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"destructive\" | \"link\" | \"ring\"",
           "size": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-sm\"",
           "type": "Defaults to \"button\" (not \"submit\").",
+          "block": "boolean — full width (ayy-button--block).",
+          "loading": "boolean — a Spinner before the label and aria-busy=\"true\"; clicks and form submits are ignored while it's set. Stays focusable.",
           "...rest": "All native <button> attributes."
         }
       }
@@ -39,7 +43,8 @@
   "a11y": [
     "Icon-only buttons need aria-label.",
     "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
-    "Visible focus ring on :focus-visible is built in — never remove it."
+    "Visible focus ring on :focus-visible is built in — never remove it.",
+    "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away."
   ],
   "do": [
     "Use a button for any action the user can take: submit, open, save, delete.",

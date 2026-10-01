@@ -3,7 +3,7 @@ import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from 
 
 export default function Example() {
   return (
-    <div className="ayy-stack" style={{ width: "100%", maxWidth: 520 }}>
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 32.5rem)" }}>
       <Alert>
         <Icon icon={InformationCircleIcon} />
         <AlertTitle>Read-only mode</AlertTitle>

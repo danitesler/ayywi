@@ -1,0 +1,38 @@
+/* Spinner: an indeterminate "working on it" ring in the text colour. 1.25em by default, so it matches an icon next to text.
+   Under reduced motion it stops as a still ring; the label still says what's happening. */
+.ayy-spinner {
+  box-sizing: border-box;
+  display: inline-block;
+  flex: none;
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  border: 2px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-block-start-color: currentColor;
+  border-radius: 50%;
+  vertical-align: -0.25em;
+  animation: ayy-spin var(--ayy-duration-slower) linear infinite;
+}
+
+.ayy-spinner--sm {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-spinner--lg {
+  inline-size: var(--ayy-size-icon-xl);
+  block-size: var(--ayy-size-icon-xl);
+  border-width: 3px;
+}
+
+@keyframes ayy-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-spinner {
+    border-color: GrayText;
+    border-block-start-color: CanvasText;
+  }
+}

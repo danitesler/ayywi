@@ -1,0 +1,9 @@
+export const footerClass = "ayy-footer";
+export const footerInnerClass = "ayy-footer__inner";
+export const footerBrandClass = "ayy-footer__brand";
+export const footerNavClass = "ayy-footer__nav";
+export const footerGroupClass = "ayy-footer__group";
+export const footerHeadingClass = "ayy-footer__heading";
+export const footerListClass = "ayy-footer__list";
+export const footerLinkClass = "ayy-footer__link";
+export const footerBottomClass = "ayy-footer__bottom";

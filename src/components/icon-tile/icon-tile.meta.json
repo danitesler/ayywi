@@ -37,7 +37,7 @@
   ],
   "dont": [
     "Don't use it for people — use Avatar.",
-    "Don't use it for icons inside buttons or text — use the bare SVG.",
+    "Don't use it for icons inside buttons or text — use a plain Icon.",
     "Don't put text or numbers in the tile."
   ],
   "examples": [{ "id": "sizes", "title": "Accents and sizes" }]

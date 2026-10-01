@@ -1,0 +1,147 @@
+/* Steps: where you are in a short flow (sign-up, checkout, import). An ordered list; the current step has
+   aria-current="step", the ones before it are drawn as done, the ones after as to do. Numbers come from a CSS counter. */
+/* A size container, so a narrow row (a card on a phone) can drop the labels it has no room for. It takes the full width. */
+.ayy-steps {
+  container-type: inline-size;
+  counter-reset: ayy-step;
+  display: flex;
+  inline-size: 100%;
+  gap: var(--ayy-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ayy-steps__item {
+  --_marker: var(--ayy-size-control-sm);
+  counter-increment: ayy-step;
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+}
+
+/* The number (or tick) in a circle. */
+.ayy-steps__item::before {
+  content: counter(ayy-step);
+  content: counter(ayy-step) / "";
+  box-sizing: border-box;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_marker);
+  block-size: var(--_marker);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: 50%;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The line to the next step fills the rest of the row. */
+.ayy-steps__item:not(:last-child)::after {
+  content: "";
+  flex: 1 1 var(--ayy-space-4);
+  min-inline-size: var(--ayy-space-4);
+  block-size: 1px;
+  background-color: var(--ayy-color-line-strong);
+}
+
+.ayy-steps__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Current: filled marker, full-strength label. */
+.ayy-steps__item[aria-current="step"] {
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-steps__item[aria-current="step"]::before {
+  border-color: var(--ayy-color-text);
+  background-color: var(--ayy-color-text);
+  color: var(--ayy-color-bg);
+}
+
+/* Done: every step before the current one gets a tick and a solid line. */
+.ayy-steps__item:has(~ [aria-current="step"]) {
+  color: var(--ayy-color-text-soft);
+}
+
+.ayy-steps__item:has(~ [aria-current="step"])::before {
+  content: "\2713";
+  content: "\2713" / "";
+  border-color: var(--ayy-color-text);
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-bold);
+}
+
+.ayy-steps__item:has(~ [aria-current="step"])::after {
+  background-color: var(--ayy-color-text);
+}
+
+/* A narrow row: only the current step keeps a visible label; the others keep theirs for screen readers. */
+@container (max-width: 36rem) {
+  .ayy-steps:not(.ayy-steps--vertical) > .ayy-steps__item[aria-current="step"] {
+    flex-grow: 3;
+  }
+
+  .ayy-steps:not(.ayy-steps--vertical) > .ayy-steps__item[aria-current="step"] > .ayy-steps__label {
+    white-space: normal;
+  }
+
+  .ayy-steps:not(.ayy-steps--vertical) > .ayy-steps__item:not([aria-current="step"]) > .ayy-steps__label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Vertical: a column with the lines between markers, for a side panel or a phone. */
+.ayy-steps--vertical {
+  flex-direction: column;
+  gap: 0;
+}
+
+.ayy-steps--vertical .ayy-steps__item {
+  display: grid;
+  grid-template-columns: var(--_marker) minmax(0, 1fr);
+  column-gap: var(--ayy-space-3);
+  flex: none;
+}
+
+.ayy-steps--vertical .ayy-steps__item:not(:last-child)::after {
+  grid-column: 1;
+  justify-self: center;
+  inline-size: 1px;
+  block-size: auto;
+  min-block-size: var(--ayy-space-6);
+  margin-block: var(--ayy-space-1);
+  min-inline-size: 0;
+}
+
+.ayy-steps--vertical .ayy-steps__label {
+  white-space: normal;
+}
+
+@media (forced-colors: active) {
+  .ayy-steps__item[aria-current="step"]::before {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-steps__item:not(:last-child)::after {
+    background-color: CanvasText;
+  }
+}

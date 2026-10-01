@@ -8,8 +8,8 @@ export const PUBLIC_HOOKS = {
   "--ayy-dot": "Badge status-dot colour override.",
   "--ayy-value": "Progress value, a unitless number 0–100.",
   "--ayy-progress-color": "Progress fill colour override.",
-  "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid and the carousel track.",
-  "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column.",
+  "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
+  "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
   "--ayy-slide": "Width of each carousel slide (default min(22rem, 85%)).",
 };
 
@@ -33,9 +33,12 @@ export const UTILITIES = {
   "ayy-prose": "Long-form reading (articles, case studies): 18px soft text at a readable measure; styles the headings, lists, links, quotes, code and images inside.",
   "ayy-container": "Centred page width (--ayy-size-container, 1400px) with a 24px gutter, 16px on tablets and phones.",
   "ayy-grid": "Responsive grid: as many columns of at least --ayy-min (16rem) as fit; gap via --ayy-gap (16px).",
-  "ayy-stack": "Vertical flex stack; gap via --ayy-gap (default 12px).",
+  "ayy-stack": "Vertical flex stack; gap via --ayy-gap (default 12px). Children lose their block margins (true of every layout helper), so a <p> or heading inside needs no margin reset.",
   "ayy-cluster": "Wrapping horizontal row; gap via --ayy-gap (default 8px).",
+  "ayy-spread": "Wrapping row with its items pushed to both ends: a title and its meta, a label and a value, a toolbar's filters and actions. Gap via --ayy-gap (default 8px).",
+  "ayy-split": "Main content (first child) and an aside (last child) side by side; the aside drops below once the main would be narrower than 60%. Aside width via --ayy-min (default 18rem). No media query, so it adapts to the box it's in.",
   "ayy-sr-only": "Visually hidden, still read by screen readers.",
+  "ayy-truncate": "One line, cut with an ellipsis (also inside a flex row).",
   "ayy-scroll": "Thin, quiet scrollbars on a scroll container.",
   "ayy-skip-link": "\"Skip to content\" link: hidden above the viewport until it gets keyboard focus. Make it the first thing in <body>.",
   "ayy-bg-grid": "Decorative ambient grid behind a hero or closing section, fading out towards the edges. Sets position: relative.",
@@ -54,6 +57,18 @@ export const CATEGORIES = {
   "Data display": "Values, people and records.",
 };
 
+/** Component order within a category (categories themselves follow CATEGORIES), for the manifest, llms files and preview.
+    Unlisted slugs sort last, alphabetically. */
+export const ORDER = [
+  "button", "menu", "theme-toggle",
+  "navbar", "app-shell", "bottom-nav", "footer", "breadcrumb", "pagination", "steps", "toc",
+  "field", "input", "input-group", "textarea", "select", "checkbox", "radio", "segmented-control", "switch",
+  "page-header", "section", "card", "tabs", "accordion", "carousel", "separator",
+  "dialog", "popover", "tooltip",
+  "alert", "toast", "progress", "spinner", "skeleton", "empty-state",
+  "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "data-list", "frame", "chat", "table",
+];
+
 /** Attributes ayywi reads on any element. */
 export const ATTRIBUTES = {
   "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft lowers the contrast (charcoal instead of black); light-gray puts white cards and panels on a grey page.",
@@ -64,19 +79,22 @@ export const ATTRIBUTES = {
 /** Rules every agent (and human) must follow. Rendered into llms-full.txt and ai/; enforced by `pnpm check` and `ayywi lint`. */
 export const RULES = [
   "Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.",
-  "Never hardcode colours (hex, rgb, hsl, named). Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
-  "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start. Never left/right/margin-left/padding-right, so RTL works.",
-  "Spacing, radius, font size, shadows and motion come from tokens (--ayy-space-*, --ayy-radius-*, --ayy-text-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
+  "Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
+  "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
+  "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
   "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
-  "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-invalid, open).",
+  "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
   "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
-  "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, buttons or page background per page.",
-  "Pages follow one anatomy: .ayy-skip-link, Navbar, then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the footer. One call to action per view: a ring (marketing) or primary (app) button; everything else outline or ghost.",
+  "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
+  "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
+  "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button. Never put a Navbar in an app.",
+  "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
+  "Don't write breakpoints for navigation or layout: App shell, Navbar and Pagination switch at 48rem on their own, and .ayy-grid and .ayy-split adapt to their container. If you truly need one, use 48rem (phone) or 64rem (tablet).",
   "Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.",
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
-  "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label.",
-  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>, <ayy-app-shell>).",
+  "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
+  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>).",
   "Run `npx ayywi lint` after UI changes and fix every error it reports.",
 ];

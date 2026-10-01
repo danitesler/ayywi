@@ -8,6 +8,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--ayy-space-1-5);
+  /* fit-content: a badge in a stack or a grid cell keeps its own width instead of stretching. */
+  inline-size: fit-content;
   max-inline-size: 100%;
   padding-block: var(--ayy-space-0-5);
   padding-inline: 0.625rem;

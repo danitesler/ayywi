@@ -35,7 +35,7 @@
 }
 
 .ayy-input:disabled {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 
@@ -74,5 +74,8 @@
   }
   .ayy-input:focus-visible {
     outline-color: Highlight;
+  }
+  .ayy-input[aria-invalid="true"] {
+    border-style: dashed;
   }
 }

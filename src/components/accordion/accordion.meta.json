@@ -1,0 +1,45 @@
+{
+  "name": "Accordion",
+  "slug": "accordion",
+  "status": "beta",
+  "category": "Layout",
+  "description": "Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.",
+  "classes": {
+    "ayy-accordion": "Root <div>: a column of items with hairlines above, between and below.",
+    "ayy-accordion__item": "A native <details>. Give every item in the accordion the same name attribute to allow only one open at a time. `open` expands it.",
+    "ayy-accordion__trigger": "The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.",
+    "ayy-accordion__content": "The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you."
+  },
+  "variants": {},
+  "js": "accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.",
+  "react": {
+    "import": "import { Accordion, AccordionItem } from \"ayywi/react\";",
+    "components": {
+      "Accordion": {
+        "renders": "<div class=\"ayy-accordion\">",
+        "props": { "single": "boolean — one item open at a time (a shared name on every <details>)." }
+      },
+      "AccordionItem": {
+        "renders": "<details class=\"ayy-accordion__item\"><summary class=\"ayy-accordion__trigger\">…<div class=\"ayy-accordion__content\">",
+        "props": { "label": "The always-visible row: the question or section name.", "open": "Start expanded." }
+      }
+    }
+  },
+  "a11y": [
+    "It's native <details>/<summary>: Enter and Space toggle it and the open state is announced. Don't add aria-expanded or a click handler.",
+    "Keep the summary text short and complete (a question), since it's the only part people see.",
+    "Find-in-page opens a closed item that contains the match."
+  ],
+  "do": [
+    "Use an accordion for FAQs and for long optional detail people pick from: pricing questions, shipping info, advanced settings.",
+    "Use single on FAQ lists so the page doesn't grow into a wall of text.",
+    "Open the first item when most people need it."
+  ],
+  "dont": [
+    "Don't hide content everyone needs behind it — show it.",
+    "Don't use it to switch between views of the same thing — use Tabs.",
+    "Don't use it for navigation — use the App shell's collapse inside a sidebar.",
+    "Don't nest an accordion inside another."
+  ],
+  "examples": [{ "id": "faq", "title": "FAQ" }]
+}

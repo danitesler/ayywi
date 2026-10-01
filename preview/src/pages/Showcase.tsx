@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft01Icon, ComputerIcon, LinkSquare01Icon, SmartPhone01Icon, Tablet01Icon } from "@hugeicons/core-free-icons";
 import { Badge, Button, buttonClass, Icon } from "ayywi/react";
+import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
 import { showcaseApps, type ShowcaseApp } from "../showcase/apps";
 import { themeOptions } from "../themes";
@@ -10,7 +11,7 @@ const ROUTE = "showcase";
 export const showcase = {
   route: ROUTE,
   title: "What you can build",
-  text: `examples showcase templates apps screens dashboard landing inbox settings desktop tablet mobile ${showcaseApps.map((a) => `${a.name} ${a.kind}`).join(" ")}`,
+  text: `examples showcase templates apps screens prompt dashboard landing inbox settings tracker desktop tablet mobile ${showcaseApps.map((a) => `${a.name} ${a.kind}`).join(" ")}`,
 };
 
 const DEVICES = {
@@ -68,7 +69,8 @@ function Gallery() {
         <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">What you can build</h1>
         <p className="ayy-lede">
-          Four screens made only from ayywi components, each in its own theme and density. Open one to see it on desktop, tablet and mobile.
+          Five screens made only from ayywi components, each in its own theme and density. The apps share one frame: a sidebar on wide
+          screens, a top bar and tabs on phones. Open one to see it on desktop, tablet and mobile, and copy the prompt that builds it.
         </p>
       </header>
       <ul className="pv-showcase">
@@ -152,6 +154,13 @@ function Detail({ app }: { app: ShowcaseApp }) {
           title={`${app.name} on ${d.label.toLowerCase()}`}
         />
       </div>
+
+      <h2 className="pv-h pv-h--section">Build it with AI</h2>
+      <p className="pv-note">
+        Paste this into your coding agent in a project that has ayywi set up (see Get started). It names the components, so the agent
+        doesn't have to guess.
+      </p>
+      <CodeBlock code={app.prompt} label="prompt" wrap />
 
       <h2 className="pv-h pv-h--section">Built with</h2>
       <nav className="pv-chips" aria-label={`Components in ${app.name}`}>

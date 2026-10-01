@@ -1,0 +1,42 @@
+{
+  "name": "Input group",
+  "slug": "input-group",
+  "status": "beta",
+  "category": "Forms",
+  "description": "An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.",
+  "classes": {
+    "ayy-input-group": "Root. Draws the field (border, fill, radius, height) and the focus ring while its .ayy-input is focused. The .ayy-input inside, a direct child, loses its own border and takes the free space. An <svg> child is sized as a small icon; a .ayy-button at either end sits flush with the edge.",
+    "ayy-input-group--sm": "Small height (--ayy-size-control-sm).",
+    "ayy-input-group--lg": "Large height (--ayy-size-control-lg).",
+    "ayy-input-group__addon": "Text beside the input: a prefix (https://), a suffix (USD, %) or a Kbd hint. Muted, one line."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "InputGroup" }
+  },
+  "js": "inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.",
+  "react": {
+    "import": "import { InputGroup, InputGroupAddon, Input } from \"ayywi/react\";",
+    "components": {
+      "InputGroup": { "renders": "<div class=\"ayy-input-group\">", "props": { "size": "\"sm\" | \"md\" | \"lg\"" } },
+      "InputGroupAddon": { "renders": "<span class=\"ayy-input-group__addon\">" }
+    }
+  },
+  "a11y": [
+    "The input still needs its own label (<label for>, or aria-label on a search field); the icon and addons don't name it.",
+    "Put units and prefixes in the label or in aria-describedby too (\"Price, in USD\"), since the addon text isn't part of the input's name.",
+    "An icon-only button in the group needs an aria-label (\"Clear search\", \"Show password\").",
+    "aria-invalid=\"true\" on the input tints the group's border, like a plain Input."
+  ],
+  "do": [
+    "Use an input group for a search field with a magnifier icon, a URL or price with a prefix or suffix, or an input with one inline action.",
+    "Keep the size of the group the same as the inputs around it (size on the group, not the input).",
+    "Use a Kbd in an addon to show the shortcut that focuses a search field."
+  ],
+  "dont": [
+    "Don't put a primary action (Save, Subscribe) inside the field — place a Button next to it.",
+    "Don't stack more than one addon on each side.",
+    "Don't use it to fake a select or a combobox — use Select.",
+    "Don't set a size on the Input inside; set it on the group."
+  ],
+  "examples": [{ "id": "search", "title": "Search with icon and shortcut" }, { "id": "addons", "title": "Prefix, suffix and a button" }]
+}

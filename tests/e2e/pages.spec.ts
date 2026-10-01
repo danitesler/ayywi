@@ -9,7 +9,7 @@ for (const renderer of ["react", "html"] as const) {
     const errors = await open(page, "", { renderer });
     for (const slug of slugs) {
       await page.goto(`/#/${slug}`);
-      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator(".pv-page__header h1")).toBeVisible();
       const stages = page.locator(".pv-stage");
       expect(await stages.count(), slug).toBeGreaterThan(0);
       for (const s of await stages.all()) {
@@ -81,10 +81,10 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
   await expect(nav.getByRole("link")).toHaveText(["Colors"]);
 
   await box.fill("forms"); // categories match
-  await expect(nav.getByRole("link")).toHaveCount(7);
+  await expect(nav.getByRole("link")).toHaveCount(9);
 
-  await box.fill("drawer"); // the side modal is a Dialog
-  await expect(nav.getByRole("link")).toHaveText(["Dialog"]);
+  await box.fill("drawer"); // the side modal is a Dialog; the app shell opens its sidebar as one
+  await expect(nav.getByRole("link")).toHaveText(["App shell", "Dialog"]);
 
   await box.fill("zzzz");
   await expect(nav).toContainText("No matches");
@@ -101,7 +101,7 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "section", "toc", "carousel", "chat", "data-list"]) {
+  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input-group", "segmented-control", "list", "empty-state", "accordion", "section", "toc", "carousel", "chat", "data-list"]) {
     await open(page, route);
     for (const dir of ["ltr", "rtl"]) {
       await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
@@ -130,6 +130,7 @@ const SHOWCASE = [
   { id: "landing", name: "Northwind", theme: "light", density: "comfortable" },
   { id: "inbox", name: "Relay", theme: "dark-soft", density: "comfortable" },
   { id: "settings", name: "Ledger", theme: "light-gray", density: "touch" },
+  { id: "tracker", name: "Orbit", theme: "light", density: "compact" },
 ];
 
 test("what you can build: cards open a device preview", async ({ page }) => {
@@ -161,5 +162,15 @@ test("each showcase app renders in its own theme and density, and fits a phone",
     await expect(page.locator("html")).toHaveAttribute("data-density", app.density);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, app.id).toBeLessThanOrEqual(0);
+    if (app.id === "landing") {
+      // A website: the navbar's links fold into a menu.
+      await expect(page.getByRole("button", { name: "Menu" })).toBeVisible();
+    } else {
+      // An app: the same frame everywhere — tabs at the bottom, no navbar, the sidebar tucked away.
+      await expect(page.locator(".ayy-bottom-nav"), app.id).toBeVisible();
+      await expect(page.locator(".ayy-app-shell__sidebar"), app.id).toBeHidden();
+      await expect(page.locator(".ayy-navbar"), app.id).toHaveCount(0);
+      await expect(page.locator(".ayy-page-header, .pv-app-inbox"), app.id).not.toHaveCount(0);
+    }
   }
 });

@@ -1,0 +1,110 @@
+/* Input group: an .ayy-input with things attached inside its box. A leading icon (search), a prefix or suffix (https://,
+   USD, a keyboard hint) or a trailing button (clear, copy, show password). The group draws the field; the input inside
+   loses its own border, and the focus ring moves to the group. */
+.ayy-input-group {
+  --_h: var(--ayy-size-control-md);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: var(--_h);
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-control-text-md);
+  cursor: text;
+  transition: border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-input-group:hover {
+  border-color: var(--ayy-color-line-hover);
+}
+
+.ayy-input-group > .ayy-input {
+  flex: 1;
+  min-inline-size: 0;
+  block-size: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: inherit;
+}
+
+.ayy-input-group > .ayy-input:focus-visible {
+  outline: none;
+}
+
+.ayy-input-group:has(> .ayy-input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.ayy-input-group:has(> .ayy-input[aria-invalid="true"]) {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+.ayy-input-group:has(> .ayy-input[aria-invalid="true"]:focus-visible) {
+  outline-color: var(--ayy-color-destructive);
+}
+
+.ayy-input-group:has(> .ayy-input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-input-group > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+/* Text or a keyboard hint beside the input. */
+.ayy-input-group__addon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  color: var(--ayy-color-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* A small button at either end sits flush with the group's edge. */
+.ayy-input-group > .ayy-button:first-child {
+  margin-inline-start: calc(var(--ayy-space-2) * -1);
+}
+
+.ayy-input-group > .ayy-button:last-child {
+  margin-inline-end: calc(var(--ayy-space-2) * -1);
+}
+
+.ayy-input-group--sm {
+  --_h: var(--ayy-size-control-sm);
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-input-group--lg {
+  --_h: var(--ayy-size-control-lg);
+  padding-inline: var(--ayy-space-4);
+  font-size: var(--ayy-control-text-lg);
+}
+
+@media (forced-colors: active) {
+  .ayy-input-group {
+    border-color: FieldText;
+  }
+  .ayy-input-group:has(> .ayy-input:focus-visible) {
+    outline-color: Highlight;
+  }
+  .ayy-input-group:has(> .ayy-input[aria-invalid="true"]) {
+    border-style: dashed;
+    border-width: 2px;
+  }
+}

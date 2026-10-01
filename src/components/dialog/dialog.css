@@ -244,7 +244,14 @@ dialog.ayy-dialog--side-bottom:not([open]) {
   padding-block-start: 0;
 }
 
-@media (min-width: 640px) {
+/* A bottom sheet spans a phone edge to edge, whatever its size modifier. */
+@media (max-width: 40rem) {
+  .ayy-dialog--side-bottom {
+    inline-size: 100vw;
+  }
+}
+
+@media (min-width: 40rem) {
   .ayy-dialog__footer {
     flex-direction: row;
     justify-content: flex-end;

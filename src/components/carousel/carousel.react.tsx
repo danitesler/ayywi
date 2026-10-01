@@ -1,7 +1,9 @@
 import { forwardRef, useEffect, useRef, type CSSProperties, type HTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
+import { ArrowLeft02Icon, ArrowRight02Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { buttonClass } from "../button/button";
+import { Icon } from "../icon/icon.react";
 import { carouselClass, carouselControlsClass, carouselSlideClass, carouselTrackClass, connectCarousel } from "./carousel";
 
 export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
@@ -9,19 +11,15 @@ export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
   label: string;
   /** Width of each slide (any CSS length). Default min(22rem, 85%). */
   slideWidth?: string;
-  /** Accessible names of the buttons. */
+  /** Accessible names of the buttons. Default "Previous" / "Next" (translate them). */
   previousLabel?: string;
   nextLabel?: string;
+  /** Each slide's name, with {index} and {count}. Default "{index} of {count}" (translate it). */
+  slideLabel?: string;
 }
 
-const Arrow = ({ back }: { back?: boolean }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d={back ? "M19 12H5M11 6l-6 6 6 6" : "M5 12h14M13 6l6 6-6 6"} />
-  </svg>
-);
-
 export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carousel(
-  { label, slideWidth, previousLabel = "Previous", nextLabel = "Next", className, style, children, ...props },
+  { label, slideWidth, previousLabel = "Previous", nextLabel = "Next", slideLabel, className, style, children, ...props },
   ref,
 ) {
   const local = useRef<HTMLDivElement>(null);
@@ -33,6 +31,7 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
       role="region"
       aria-roledescription="carousel"
       aria-label={label}
+      data-slide-label={slideLabel}
       style={slideWidth ? ({ "--ayy-slide": slideWidth, ...style } as CSSProperties) : style}
       {...props}
     >
@@ -41,10 +40,10 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
       </div>
       <div className={carouselControlsClass}>
         <button type="button" className={buttonClass({ variant: "outline", size: "icon" })} data-ayy-prev="" aria-label={previousLabel}>
-          <Arrow back />
+          <Icon icon={ArrowLeft02Icon} directional />
         </button>
         <button type="button" className={buttonClass({ variant: "outline", size: "icon" })} data-ayy-next="" aria-label={nextLabel}>
-          <Arrow />
+          <Icon icon={ArrowRight02Icon} directional />
         </button>
       </div>
     </div>

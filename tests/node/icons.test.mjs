@@ -4,6 +4,10 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import Cancel01Icon from "@hugeicons/core-free-icons/Cancel01Icon";
 import Menu01Icon from "@hugeicons/core-free-icons/Menu01Icon";
+import ArrowLeft01Icon from "@hugeicons/core-free-icons/ArrowLeft01Icon";
+import ArrowRight01Icon from "@hugeicons/core-free-icons/ArrowRight01Icon";
+import ArrowLeft02Icon from "@hugeicons/core-free-icons/ArrowLeft02Icon";
+import ArrowRight02Icon from "@hugeicons/core-free-icons/ArrowRight02Icon";
 import GitBranchIcon from "@hugeicons/core-free-icons/GitBranchIcon";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -57,4 +61,16 @@ test("ayywi's close buttons draw Hugeicons' Cancel01Icon (vendored copy matches 
 test("the app shell's menu button draws Hugeicons' Menu01Icon (vendored copy matches the package)", { skip }, async () => {
   const { appShellMenuIcon, iconSvg } = await import(dist("index.js"));
   assert.equal(appShellMenuIcon, iconSvg(Menu01Icon));
+});
+
+test("the navbar's menu button, pagination and carousel arrows draw the Hugeicons glyphs (vendored copies match the package)", { skip }, async () => {
+  const { navbarMenuIcon, iconSvg, Pagination, Carousel } = await import(dist("react.js"));
+  assert.equal(navbarMenuIcon, iconSvg(Menu01Icon));
+  const selfClose = (html) => html.replace(/<(\w+)([^>]*)><\/\1>/g, "<$1$2/>");
+  const pagination = selfClose(renderToStaticMarkup(createElement(Pagination, { page: 2, count: 3, href: (p) => `#${p}` })));
+  assert.ok(pagination.includes(iconSvg(ArrowLeft01Icon, { directional: true })), "previous arrow");
+  assert.ok(pagination.includes(iconSvg(ArrowRight01Icon, { directional: true })), "next arrow");
+  const carousel = selfClose(renderToStaticMarkup(createElement(Carousel, { label: "Quotes" })));
+  assert.ok(carousel.includes(iconSvg(ArrowLeft02Icon, { directional: true })), "carousel previous");
+  assert.ok(carousel.includes(iconSvg(ArrowRight02Icon, { directional: true })), "carousel next");
 });

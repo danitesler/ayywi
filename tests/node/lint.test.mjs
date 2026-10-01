@@ -72,3 +72,19 @@ const fa = require("react-icons/fa");`;
   assert.deepEqual(rules(`<Icon icon={Search01Icon} size="huge" />\n<DialogContent side="left" />`, "a.tsx"), ["unknown-variant", "unknown-variant"]);
   assert.deepEqual(rules(`<Icon icon={Search01Icon} size="lg" label="Search" />\n<DialogContent side="end" />`, "a.tsx"), []);
 });
+
+test("named colours and physical corners in CSS; system colours and masks are fine", () => {
+  assert.deepEqual(rules(`.x { color: tomato; border: 1px solid white; }`, "a.css"), ["hardcoded-color", "hardcoded-color"]);
+  assert.deepEqual(rules(`.x { border-top-left-radius: 4px; }`, "a.css"), ["physical-property"]);
+  const fine = `.x { color: var(--ayy-color-text); background: color-mix(in srgb, currentColor 8%, transparent); mask-image: linear-gradient(black 0 0); }
+@media (forced-colors: active) { .x { color: CanvasText; background-color: Highlight; } }`;
+  assert.deepEqual(rules(fine, "a.css"), []);
+});
+
+test("inline styles get the colour and direction rules: style=\"\" and style={{}}", () => {
+  assert.deepEqual(rules(`<div style="color: #ff0000; margin-left: 4px">x</div>`, "a.html"), ["hardcoded-color", "physical-property"]);
+  assert.deepEqual(rules(`<div style={{ marginLeft: 4, color: "red", textAlign: "left" }} />`, "a.tsx"), ["hardcoded-color", "physical-property", "physical-property"]);
+  const fine = `<div style="inline-size: 100%; --ayy-gap: var(--ayy-space-2)"></div>
+<div style={{ inlineSize: "100%", background: "color-mix(in srgb, var(--ayy-color-text) 5%, transparent)", "--ayy-gap": \`var(--ayy-space-\${n})\` }} />`;
+  assert.deepEqual(rules(fine, "a.tsx"), []);
+});

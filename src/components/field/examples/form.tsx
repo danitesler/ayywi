@@ -5,7 +5,7 @@ export default function Example() {
   return (
     <form
       className="ayy-stack"
-      style={{ width: "100%", maxWidth: 380, "--ayy-gap": "1rem" } as CSSProperties}
+      style={{ inlineSize: "min(100%, 23.75rem)", "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}
       onSubmit={(e) => e.preventDefault()}
     >
       <Field>

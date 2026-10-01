@@ -5,13 +5,11 @@ export default function Example() {
     <Popover>
       <PopoverTrigger variant="outline">Share</PopoverTrigger>
       <PopoverContent align="start" aria-labelledby="share-title">
-        <div className="ayy-stack" style={{ width: 260 }}>
-          <p id="share-title" style={{ margin: 0, fontWeight: 600 }}>
+        <div className="ayy-stack" style={{ inlineSize: "16.25rem" }}>
+          <p id="share-title" className="ayy-h6">
             Share this project
           </p>
-          <p className="ayy-muted" style={{ margin: 0 }}>
-            Anyone with the link can view.
-          </p>
+          <p className="ayy-muted">Anyone with the link can view.</p>
           <div className="ayy-cluster" style={{ flexWrap: "nowrap" }}>
             <Input size="sm" readOnly defaultValue="https://example.com/p/42" aria-label="Share link" />
             <Button size="sm">Copy</Button>

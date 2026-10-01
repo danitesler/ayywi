@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`, `<ayy-app-shell>`) for every other framework and plain HTML,
+- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`) for every other framework and plain HTML,
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -30,13 +30,15 @@ src/react/index.ts          "ayywi/react" entry
 src/elements/               "ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
 cli/                        shipped `ayywi` bin: lint.mjs, init.mjs, mcp.mjs (plain Node ESM, no deps)
 tailwind/                   Tailwind v3 preset + v4 @theme mapping
-scripts/                    build, generators, check; scripts/lib/contract.mjs holds RULES, PUBLIC_HOOKS, UTILITIES, ATTRIBUTES
+scripts/                    build, generators, check; scripts/lib/contract.mjs holds RULES, PUBLIC_HOOKS, UTILITIES, ATTRIBUTES,
+                            CATEGORIES and the component ORDER (the manifest, llms files and the preview all read them)
 tests/                      node/ (node:test) and e2e/ (Playwright + axe)
 evals/                      skill evals: tasks, runner, scorer
 manifest/components.json    generated — full machine-readable context
 llms.txt, llms-full.txt     generated
 ai/                         consumer kit (skill, AGENTS snippet, Cursor rule) — partly generated
-preview/                    Vite + React component browser (discovers components automatically)
+preview/                    Vite + React component browser (discovers components automatically), the showcase apps
+                            (preview/src/showcase/apps.tsx) and Get started; its build also hosts dist/ and llms files
 ```
 
 ## Commands
@@ -48,8 +50,8 @@ pnpm typecheck      # library + preview + every example file + tests
 pnpm check          # design rules, docs ↔ CSS ↔ props ↔ elements, generated files up to date, lints examples
 pnpm test           # node tests (linter, MCP, init, token exports, eval scorer) — needs a build
 pnpm test:e2e       # Playwright + axe against the built preview
-pnpm preview        # http://localhost:5173 — toggle theme, direction, React vs plain HTML
-pnpm preview:build  # static site in preview/dist
+pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme and density from the palette menu
+pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
 ```
 
 Run `pnpm build && pnpm typecheck && pnpm check && pnpm test` before every commit, and `pnpm test:e2e` for anything visual or interactive. All must pass.
@@ -81,9 +83,13 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - `light-dark()` only takes colours. To swap icons by scheme (Theme toggle), switch their `color` between `currentColor` and `transparent`, and set `forced-color-adjust: none` so High Contrast doesn't paint both.
 - Playwright's `toBeEnabled()` treats `aria-disabled="true"` as disabled. To check a button is still focusable, read `el.disabled`.
 - The preview routes on the URL hash, so in-page anchors in examples (`href="#section"`) are intercepted in `preview/src/Example.tsx` and scrolled to instead.
-- Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close buttons) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
+- Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close and menu buttons, pagination and carousel arrows, the theme toggle's sun and moon) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
 - Mirroring a glyph in RTL has no logical property. `.ayy-icon--directional` reads `--_ayy-dir`, which `icon.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
+- The App shell and Navbar switch their phone layouts at 48rem with media queries, so component examples in the preview only show them in a narrow window. The showcase apps load in an iframe at real device widths for that reason; e2e tests set the viewport.
+- One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.
+- Example HTML should match what the React example renders. Write the `.tsx` first and render it to markup (react-dom/server) rather than retyping it; only custom-element wrappers (`<ayy-app-shell>`, `<ayy-navbar>`…) and comments differ.
+- JSON under `src/components/` and `tokens/` is hand-formatted (short objects on one line). Edit it as text or keep the existing layout; a full `JSON.stringify` rewrite buries the real change in the diff.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning

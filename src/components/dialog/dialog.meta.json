@@ -16,7 +16,7 @@
     "ayy-dialog__title": "Heading (h2). Reference it with aria-labelledby on the dialog.",
     "ayy-dialog__description": "Muted supporting text.",
     "ayy-dialog__body": "Content that scrolls on its own, between the header and the footer. Fills the height of a side modal, so the footer sits at the bottom.",
-    "ayy-dialog__footer": "Actions. Stacked on mobile, right-aligned (end-aligned in RTL) from 640px.",
+    "ayy-dialog__footer": "Actions. Stacked on mobile, end-aligned (right in LTR, left in RTL) from 40rem.",
     "ayy-dialog__close": "Icon button in the top-end corner."
   },
   "variants": {
@@ -64,8 +64,8 @@
     "Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion."
   ],
   "do": [
-    "Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.",
     "Use a dialog for short, focused tasks that must finish before continuing (rename, create).",
+    "Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.",
     "Use a side modal to edit or inspect a record without leaving the page, and for settings, filters or a mobile nav drawer.",
     "Put the primary action last in the footer.",
     "Use a bottom sheet on phones for a short list of actions or options on the thing just tapped (share, sort, quick settings): it sits under the thumb.",
@@ -73,7 +73,7 @@
   ],
   "dont": [
     "Don't use a dialog for long forms or multi-step flows — use a page.",
-    "Don't use a dialog for non-blocking messages — use an inline notice.",
+    "Don't use a dialog for non-blocking messages — use an Alert on the page, or a Toast for a confirmation.",
     "Don't use a modal for a panel people keep open while they work with the page — use a layout column.",
     "Don't open a dialog from inside another dialog.",
     "Don't fill a bottom sheet with a long form — it stops being a quick choice; use a page or a side modal.",

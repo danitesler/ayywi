@@ -57,7 +57,7 @@
 
 .ayy-button:disabled,
 .ayy-button[aria-disabled="true"] {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
   pointer-events: none;
 }
 
@@ -65,6 +65,12 @@
   flex: none;
   inline-size: 1.25em;
   block-size: 1.25em;
+}
+
+/* Loading: aria-busy="true" with an .ayy-spinner first inside. It ignores the pointer until the work is done; keep the label
+   (or swap it for "Saving…") so the width barely moves. */
+.ayy-button[aria-busy="true"] {
+  pointer-events: none;
 }
 
 /* ---- Variants (primary is the base above) ---- */
@@ -193,6 +199,11 @@
 }
 .ayy-button--icon-sm {
   block-size: var(--ayy-size-control-sm);
+}
+
+/* Block: fills its container's width (a card footer, a phone form). */
+.ayy-button--block {
+  inline-size: 100%;
 }
 
 /* ---- Windows High Contrast / forced colors: fills are replaced by the system, so give every button an edge. ---- */

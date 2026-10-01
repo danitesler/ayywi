@@ -1,0 +1,42 @@
+{
+  "name": "Page header",
+  "slug": "page-header",
+  "status": "beta",
+  "category": "Layout",
+  "description": "The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.",
+  "classes": {
+    "ayy-page-header": "Root <header>. A two-column grid: everything stacks in the first column, __actions sits in the second and spans them. One column below 48rem, actions last. A Breadcrumb or .ayy-eyebrow can go first.",
+    "ayy-page-header__title": "The page's <h1>: heading font, 28px, semibold. Smaller than marketing headings on purpose — app screens are for work.",
+    "ayy-page-header__description": "One sentence under the title, muted, at reading width.",
+    "ayy-page-header__actions": "The page's buttons, at the inline end (under the title on phones). One primary at most; the rest outline or ghost."
+  },
+  "variants": {},
+  "js": "pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.",
+  "react": {
+    "import": "import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from \"ayywi/react\";",
+    "components": {
+      "PageHeader": { "renders": "<header class=\"ayy-page-header\">" },
+      "PageHeaderTitle": { "renders": "<h1 class=\"ayy-page-header__title\">" },
+      "PageHeaderDescription": { "renders": "<p class=\"ayy-page-header__description\">" },
+      "PageHeaderActions": { "renders": "<div class=\"ayy-page-header__actions\">" }
+    }
+  },
+  "a11y": [
+    "The title is the page's only <h1>; sections below it start at <h2>.",
+    "Keep the actions after the title in the source, so screen readers hear what the page is before what it can do.",
+    "A breadcrumb above the title is its own <nav aria-label=\"Breadcrumb\">."
+  ],
+  "do": [
+    "Use a page header at the top of every screen in the App shell's main: title, one line of description, the page's actions.",
+    "Put the one thing people come to the page to do in the actions as the primary button (New project, Invite); filters and exports are outline or ghost.",
+    "Add a Breadcrumb above the title once pages are more than one level deep.",
+    "Keep the description to one sentence that says what the page is for."
+  ],
+  "dont": [
+    "Don't use it on marketing pages — use a Section with a SectionHeader, or .ayy-display for a hero.",
+    "Don't put tabs, search or filters in it — put them in a toolbar row (.ayy-spread) under it.",
+    "Don't put more than three actions in it; move the rest into a DropdownMenu.",
+    "Don't add a second h1 elsewhere on the page."
+  ],
+  "examples": [{ "id": "basic", "title": "Title, description and actions" }]
+}

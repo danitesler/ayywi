@@ -43,7 +43,7 @@
   ],
   "dont": [
     "Don't use tabs for page-level navigation between routes — use links.",
-    "Don't use tabs for sequential steps — use a stepper or separate pages.",
+    "Don't use tabs for sequential steps — use Steps and separate pages. For a filter that changes one view (Today / Upcoming), use a Segmented control.",
     "Don't nest tabs inside tabs.",
     "Don't use tabs for more than ~6 options."
   ],

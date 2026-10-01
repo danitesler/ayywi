@@ -4,10 +4,11 @@ A small design system that works in any stack and is built for AI agents to use.
 
 Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by design tokens, so they work anywhere that outputs HTML. React gets typed components; other frameworks get a few custom elements for the interactive parts.
 
-- **Small:** zero runtime dependencies, ~12 kB of CSS gzipped for all 34 components.
+- **Small:** zero runtime dependencies, ~16 kB of CSS gzipped for all 47 components.
 - **Themes and density:** four themes and three sizes, each one attribute.
 - **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in.
-- **AI-ready:** one command sets up your coding agent to use it correctly (see [AI setup](#ai-setup)).
+- **AI-ready:** paste one prompt, or run one command, and your coding agent uses it correctly (see [AI setup](#ai-setup)).
+- **One frame per kind of product:** apps get a sidebar on wide screens and a bottom nav on phones; websites get a navbar that folds into a menu. Neither needs a media query of yours.
 
 ## See it
 
@@ -16,7 +17,7 @@ pnpm install
 pnpm preview    # http://localhost:5173
 ```
 
-Every component with copy-ready HTML and React, plus search (<kbd>/</kbd> or <kbd>⌘</kbd><kbd>K</kbd>) and toolbar switches for theme, density and React vs. HTML.
+Every component with copy-ready HTML and React (under each example's Code), a Copy for AI button per component, five full example apps at desktop, tablet and phone sizes, search (<kbd>/</kbd> or <kbd>⌘</kbd><kbd>K</kbd>), and a menu for theme and density. The built site (`pnpm preview:build`) also hosts `dist/ayywi.min.css`, `dist/elements.global.js` and `llms-full.txt`, so agents can use ayywi from it without installing anything.
 
 ## Install
 
@@ -24,12 +25,14 @@ Every component with copy-ready HTML and React, plus search (<kbd>/</kbd> or <kb
 npm i github:danitesler/ayywi    # private repo: needs GitHub access (SSH key, or a token in CI)
 ```
 
-Once it's on npm: `npm i ayywi`, or with no build step:
+No install at all: link the two files the preview site hosts (or copy them into your project):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ayywi@0.4/dist/ayywi.min.css">
-<script src="https://cdn.jsdelivr.net/npm/ayywi@0.4/dist/elements.global.js" defer></script>
+<link rel="stylesheet" href="https://<your-preview-site>/dist/ayywi.min.css">
+<script src="https://<your-preview-site>/dist/elements.global.js" defer></script>
 ```
+
+Once it's on npm: `npm i ayywi`, and the same two files from a CDN (pin the version you use): `https://cdn.jsdelivr.net/npm/ayywi@0.5/dist/ayywi.min.css`.
 
 ## Use it
 
@@ -81,25 +84,28 @@ Density is `compact` by default; phones and tablets get `touch` automatically. B
 | Category | Components |
 |---|---|
 | Actions | Button, Dropdown menu, Theme toggle |
-| Navigation | Navbar, App shell, Breadcrumb, Contents |
-| Forms | Field, Input, Textarea, Select, Checkbox, Radio, Switch |
-| Layout | Section, Card, Tabs, Carousel, Separator |
-| Overlays | Dialog (centred or side modal), Popover, Tooltip |
-| Feedback | Alert, Toast, Progress, Skeleton |
-| Data display | Badge, Avatar, Icon, Icon tile, Stat, Data list, Frame, Chat, Table |
+| Navigation | Navbar, App shell, Bottom nav, Footer, Breadcrumb, Pagination, Steps, Contents |
+| Forms | Field, Input, Input group, Textarea, Select, Checkbox, Radio, Segmented control, Switch |
+| Layout | Page header, Section, Card, Tabs, Accordion, Carousel, Separator |
+| Overlays | Dialog (centred, side modal or bottom sheet), Popover, Tooltip |
+| Feedback | Alert, Toast, Progress, Spinner, Skeleton, Empty state |
+| Data display | Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Data list, Frame, Chat, Table |
 
-There's also a site kit (containers, hero type, scroll reveal, reading progress) for marketing pages and portfolios. See it in the preview.
+Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) cover the glue between them, and a site kit (containers, hero type, scroll reveal, reading progress) covers marketing pages and portfolios.
 
 ## AI setup
 
-In the app that uses ayywi:
+The quickest way is the preview's Get started page: pick "Link files", "Install" or "Chat only" and copy the prompt into your agent. It points the agent at the files and the rules, and asks for a first screen.
+
+With the package installed, in the app that uses ayywi:
 
 ```sh
-npx ayywi init        # sets up your agent: skill, AGENTS.md section, Cursor rule, MCP server
-npx ayywi lint src    # checks the code for misuse
+npx ayywi init          # sets up your agent: skill, AGENTS.md section, Cursor rule, MCP server
+npx ayywi init --force  # later: refresh them after upgrading ayywi
+npx ayywi lint src      # checks the code for misuse
 ```
 
-After that the agent picks ayywi up on its own. Add `ayywi lint` to CI to catch mistakes whoever made them.
+After that the agent picks ayywi up on its own. Add `ayywi lint --max-warnings 0` to CI to catch mistakes whoever made them.
 
 ## Working on ayywi
 

@@ -1,0 +1,28 @@
+/* Keyboard key: a shortcut or a key to press, drawn as a small keycap. */
+.ayy-kbd {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 1.6em;
+  block-size: 1.6em;
+  padding-inline: 0.4em;
+  border: 1px solid var(--ayy-color-line-strong);
+  border-block-end-width: 2px;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text-soft);
+  font-family: var(--ayy-font-mono);
+  font-size: 0.75em;
+  font-weight: var(--ayy-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: 0.1em;
+}
+
+@media (forced-colors: active) {
+  .ayy-kbd {
+    border-color: CanvasText;
+  }
+}

@@ -1,19 +1,23 @@
 import { forwardRef, useEffect, useId, useRef, type ButtonHTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
+import { Moon02Icon, Sun03Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import type { ThemeMode } from "../../theme";
 import { buttonClass } from "../button/button";
+import { Icon } from "../icon/icon.react";
 import { menuClass, menuItemClass } from "../menu/menu";
 import { connectThemeToggle, themeToggleClass, themeToggleItemClass, themeToggleMoonClass, themeToggleOptions, themeToggleSunClass } from "./theme-toggle";
 
 export interface ThemeToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Called with the theme just applied ("system" clears the override). */
   onValueChange?: (theme: ThemeMode) => void;
+  /** Menu item text per theme, for translation, e.g. { system: "Système", dark: "Sombre" }. Defaults: System, Dark, Dark soft… */
+  labels?: Partial<Record<ThemeMode, string>>;
 }
 
 /** An outline icon button that opens a menu of every theme (and "system"), applies the choice and remembers it. */
 export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(function ThemeToggle(
-  { onValueChange, className, "aria-label": label = "Theme", ...props },
+  { onValueChange, labels, className, "aria-label": label = "Theme", ...props },
   ref,
 ) {
   const local = useRef<HTMLButtonElement>(null);
@@ -36,13 +40,8 @@ export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(funct
         popoverTarget={menuId}
         {...props}
       >
-        <svg className={themeToggleMoonClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />
-        </svg>
-        <svg className={themeToggleSunClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-        </svg>
+        <Icon icon={Moon02Icon} className={themeToggleMoonClass} />
+        <Icon icon={Sun03Icon} className={themeToggleSunClass} />
       </button>
       <div ref={menu} id={menuId} className={menuClass} popover="auto" role="menu" aria-label={label}>
         {themeToggleOptions.map(({ value, label: text }) => (
@@ -55,7 +54,7 @@ export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(funct
             className={menuItemClass({ className: themeToggleItemClass })}
             data-value={value}
           >
-            {text}
+            {labels?.[value] ?? text}
           </button>
         ))}
       </div>

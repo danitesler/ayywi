@@ -41,7 +41,7 @@
   ],
   "dont": [
     "Don't use tables for layout.",
-    "Don't use a table for lists with one attribute — use a list.",
+    "Don't use a table for rows with one attribute — use a List.",
     "Don't zebra-stripe; hairlines + hover are enough.",
     "Don't nest interactive controls in every cell — one action column is plenty."
   ],

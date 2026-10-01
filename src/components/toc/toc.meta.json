@@ -36,7 +36,7 @@
           "sticky": "boolean",
           "offset": "number — px below the top of the viewport at which a section becomes current.",
           "onValueChange": "(id: string) => void — the section being read changed.",
-          "aria-label": "Used when there's no title. Defaults to \"On this page\"."
+          "aria-label": "Used when there's no title. Defaults to \"On this page\" (translate it)."
         }
       }
     }

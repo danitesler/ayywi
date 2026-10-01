@@ -2,15 +2,13 @@ import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, Car
 
 export default function Example() {
   return (
-    <Card style={{ maxWidth: 360 }}>
+    <Card style={{ maxInlineSize: "22.5rem" }}>
       <CardHeader>
         <CardTitle>Weekly report</CardTitle>
         <CardDescription>A summary of activity across your workspace.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="ayy-muted" style={{ margin: 0 }}>
-          12 projects · updated 2 minutes ago
-        </p>
+        <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
       </CardContent>
       <CardFooter>
         <Button size="sm">Open report</Button>

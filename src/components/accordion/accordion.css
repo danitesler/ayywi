@@ -1,0 +1,80 @@
+/* Accordion: questions and answers, or sections that open one at a time. Native <details> in a stack with hairlines
+   between them; give every <details> the same name attribute and opening one closes the others. */
+.ayy-accordion {
+  display: flex;
+  flex-direction: column;
+  border-block: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-accordion__item + .ayy-accordion__item {
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-accordion__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  padding-block: var(--ayy-space-4);
+  border-radius: var(--ayy-radius-sm);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+  list-style: none;
+  cursor: pointer;
+  transition: color var(--ayy-duration-base) ease;
+}
+
+.ayy-accordion__trigger::-webkit-details-marker {
+  display: none;
+}
+
+/* The chevron at the inline end: points down closed, up open. */
+.ayy-accordion__trigger::after {
+  content: "";
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  margin-inline-start: auto;
+  border-inline-end: 1.5px solid currentColor;
+  border-block-end: 1.5px solid currentColor;
+  color: var(--ayy-color-muted);
+  transform: translateY(-0.125em) rotate(45deg);
+  transition: transform var(--ayy-duration-base) ease;
+}
+
+.ayy-accordion__item[open] > .ayy-accordion__trigger::after {
+  transform: translateY(0.125em) rotate(-135deg);
+}
+
+.ayy-accordion__trigger:hover::after {
+  color: var(--ayy-color-text);
+}
+
+.ayy-accordion__trigger:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-accordion__content {
+  padding-block-end: var(--ayy-space-4);
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+}
+
+.ayy-accordion__content > * {
+  margin-block: 0;
+}
+
+.ayy-accordion__content > * + * {
+  margin-block-start: var(--ayy-space-3);
+}
+
+@media (forced-colors: active) {
+  .ayy-accordion,
+  .ayy-accordion__item + .ayy-accordion__item {
+    border-color: CanvasText;
+  }
+}

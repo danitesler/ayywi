@@ -1,0 +1,48 @@
+{
+  "name": "Steps",
+  "slug": "steps",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current=\"step\" is the only state.",
+  "classes": {
+    "ayy-steps": "Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.",
+    "ayy-steps--vertical": "A column, with the lines running down between the markers: for a side panel or a phone.",
+    "ayy-steps__item": "A step <li>. aria-current=\"step\" marks the current one (filled marker, bold label); every step before it is drawn as done (tick, solid line); the ones after as to do.",
+    "ayy-steps__label": "The step's name, one line (cut with an ellipsis in the row)."
+  },
+  "variants": {
+    "vertical": { "values": [false, true], "default": false, "component": "Steps" }
+  },
+  "js": "stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.",
+  "react": {
+    "import": "import { Steps } from \"ayywi/react\";",
+    "components": {
+      "Steps": {
+        "renders": "<ol class=\"ayy-steps\"> of <li class=\"ayy-steps__item\">",
+        "props": {
+          "steps": "ReactNode[] — the step names, in order.",
+          "current": "Index of the current step (0-based).",
+          "vertical": "boolean — a column.",
+          "doneLabel": "Read before a finished step's name. Default \"Done: \" (translate it)."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "It's an ordered list with aria-current=\"step\" on the current item, so screen readers hear \"step 2 of 4, current\". Give the <ol> an aria-label (\"Checkout progress\").",
+    "Done steps say so in text, not only with a tick: put an .ayy-sr-only \"Done: \" before their label (React does it).",
+    "The markers are generated content with empty alt text, so numbers aren't read twice."
+  ],
+  "do": [
+    "Use steps above a multi-page form or wizard with three to five steps, so people know how much is left.",
+    "Name steps by what happens in them (Account, Team, Billing), in one or two words.",
+    "Use the vertical version beside a long form on wide screens, or when the row wouldn't fit a phone."
+  ],
+  "dont": [
+    "Don't use steps for page navigation or for switching views — use Tabs or links.",
+    "Don't use them for a single form — a Progress bar or nothing at all reads better.",
+    "Don't use them for pages of results — use Pagination.",
+    "Don't make more than about five; split the flow instead."
+  ],
+  "examples": [{ "id": "basic", "title": "Checkout, row and column" }]
+}

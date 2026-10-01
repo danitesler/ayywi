@@ -3,14 +3,14 @@ import { Badge, Card, CardDescription, CardHeader, CardTitle } from "ayywi/react
 export default function Example() {
   return (
     <>
-      <Card interactive spotlight spotColor="var(--ayy-accent-product)" style={{ width: 240 }}>
+      <Card interactive spotlight spotColor="var(--ayy-accent-product)" style={{ inlineSize: "15rem" }}>
         <CardHeader>
           <Badge variant="info">Product</Badge>
           <CardTitle>Roadmap</CardTitle>
           <CardDescription>Move your pointer over me.</CardDescription>
         </CardHeader>
       </Card>
-      <Card interactive spotlight spotColor="var(--ayy-accent-ai)" style={{ width: 240 }}>
+      <Card interactive spotlight spotColor="var(--ayy-accent-ai)" style={{ inlineSize: "15rem" }}>
         <CardHeader>
           <Badge variant="ai">AI</Badge>
           <CardTitle>Assistant</CardTitle>

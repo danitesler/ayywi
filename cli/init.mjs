@@ -5,6 +5,19 @@ import { fileURLToPath } from "node:url";
 
 const pkgRoot = fileURLToPath(new URL("..", import.meta.url));
 const MARKER = "<!-- ayywi:agents -->";
+const END_MARKER = "<!-- /ayywi:agents -->";
+
+/** Where the ayywi section sits in AGENTS.md: from the marker to the end marker, or (sections written before it existed)
+    to the next "## " heading after its own, or the end of the file. */
+function sectionRange(text) {
+  const start = text.indexOf(MARKER);
+  if (start < 0) return null;
+  const end = text.indexOf(END_MARKER, start);
+  if (end >= 0) return [start, end + END_MARKER.length];
+  const own = text.indexOf("\n## ", start);
+  const next = own < 0 ? -1 : text.indexOf("\n## ", own + 1);
+  return [start, next < 0 ? text.length : next + 1];
+}
 const MCP_SERVER = { command: "npx", args: ["ayywi", "mcp"] };
 
 function mergeMcp(cwd, name, key, log, dryRun) {
@@ -47,11 +60,17 @@ export function init({ cwd = process.cwd(), mcp = true, force = false, dryRun = 
 
   const agents = join(cwd, "AGENTS.md");
   const existing = existsSync(agents) ? readFileSync(agents, "utf8") : "";
-  if (existing.includes(MARKER)) {
-    log("keep  AGENTS.md (ayywi section already present)");
+  const section = `${MARKER}\n${readFileSync(join(pkgRoot, "ai/AGENTS.snippet.md"), "utf8").trimEnd()}\n${END_MARKER}\n`;
+  const range = sectionRange(existing);
+  if (range && !force) {
+    log("keep  AGENTS.md (ayywi section already present; --force to update it)");
+  } else if (range) {
+    // --force: replace only the ayywi section, so the rest of the file stays as the project wrote it.
+    const after = existing.slice(range[1]).replace(/^\n+/, "");
+    if (!dryRun) writeFileSync(agents, `${existing.slice(0, range[0])}${section}${after ? `\n${after}` : ""}`);
+    log("update AGENTS.md (ayywi section)");
   } else {
-    const snippet = readFileSync(join(pkgRoot, "ai/AGENTS.snippet.md"), "utf8");
-    if (!dryRun) writeFileSync(agents, `${existing}${existing && !existing.endsWith("\n\n") ? "\n\n" : ""}${MARKER}\n${snippet}`);
+    if (!dryRun) writeFileSync(agents, `${existing}${existing && !existing.endsWith("\n\n") ? (existing.endsWith("\n") ? "\n" : "\n\n") : ""}${section}`);
     log(`${existing ? "append" : "write"} AGENTS.md`);
   }
 

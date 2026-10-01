@@ -1,0 +1,61 @@
+/* Empty state: what a list, table or page shows when there's nothing in it yet (or a search found nothing).
+   An optional icon tile, a title, one sentence on why it's empty, and the action that fills it. */
+.ayy-empty-state {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  padding-block: var(--ayy-space-12);
+  padding-inline: var(--ayy-space-6);
+  color: var(--ayy-color-text);
+  text-align: center;
+}
+
+.ayy-empty-state > .ayy-icon-tile {
+  margin-block-end: var(--ayy-space-2);
+}
+
+.ayy-empty-state__title {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-lg);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
+  text-wrap: balance;
+}
+
+.ayy-empty-state__description {
+  max-inline-size: 42ch;
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+  text-wrap: pretty;
+}
+
+.ayy-empty-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-3);
+}
+
+/* Bordered: a dashed outline for an empty area that will hold content (a board column, an upload target). */
+.ayy-empty-state--bordered {
+  border: 1px dashed var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-card);
+}
+
+/* Compact: inside a card, a table cell or a sidebar panel. */
+.ayy-empty-state--compact {
+  padding-block: var(--ayy-space-6);
+  padding-inline: var(--ayy-space-4);
+}
+
+@media (forced-colors: active) {
+  .ayy-empty-state--bordered {
+    border-color: CanvasText;
+  }
+}

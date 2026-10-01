@@ -24,7 +24,10 @@
         "renders": "<div class=\"ayy-chat__message\"> with the avatar and a bubble around children",
         "props": { "direction": "\"in\" | \"out\"", "avatar": "ReactNode — e.g. an Avatar size sm." }
       },
-      "ChatTyping": { "renders": "A message whose bubble holds the typing dots", "props": { "label": "Screen-reader text. Default \"Typing\".", "avatar": "ReactNode" } },
+      "ChatTyping": {
+        "renders": "A message whose bubble holds the typing dots",
+        "props": { "label": "Screen-reader text. Default \"Typing\" (translate it).", "avatar": "ReactNode" }
+      },
       "ChatReplies": { "renders": "<div class=\"ayy-chat__replies\">" }
     }
   },
@@ -40,7 +43,7 @@
     "Pair incoming messages with the sender's avatar the first time."
   ],
   "dont": [
-    "Don't use it for comments and threads on a document — use a list of cards.",
+    "Don't use it for comments and threads on a document — use a List (or cards for long comments).",
     "Don't use it for toast-style status messages — use Toast.",
     "Don't auto-scroll the page while someone is reading above.",
     "Don't use colour alone to tell who's speaking; the side and avatar do it too."

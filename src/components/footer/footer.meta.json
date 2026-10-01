@@ -1,0 +1,50 @@
+{
+  "name": "Footer",
+  "slug": "footer",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.",
+  "classes": {
+    "ayy-footer": "Root <footer>, a hairline above it.",
+    "ayy-footer__inner": "Centred grid at page width (--ayy-size-container) with the page gutter: brand beside the link columns, one column below 64rem.",
+    "ayy-footer__brand": "Brand link (first <a>) and a short line (<p>) under it.",
+    "ayy-footer__nav": "<nav aria-label=\"Footer\">: link columns, as many as fit (9rem minimum).",
+    "ayy-footer__group": "One column: a __heading over a __list.",
+    "ayy-footer__heading": "The column heading, a small uppercase <p> that names the list (aria-labelledby).",
+    "ayy-footer__list": "The <ul> of links in a column.",
+    "ayy-footer__link": "A footer link: soft text, underline on hover, focus ring.",
+    "ayy-footer__bottom": "The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme toggle at the end."
+  },
+  "variants": {},
+  "js": "footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.",
+  "react": {
+    "import": "import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from \"ayywi/react\";",
+    "components": {
+      "Footer": { "renders": "<footer class=\"ayy-footer\"><div class=\"ayy-footer__inner\">" },
+      "FooterBrand": { "renders": "<div class=\"ayy-footer__brand\">" },
+      "FooterNav": { "renders": "<nav class=\"ayy-footer__nav\">", "props": { "aria-label": "Defaults to \"Footer\" (translate it)." } },
+      "FooterGroup": {
+        "renders": "<div class=\"ayy-footer__group\"> with a heading <p> and a <ul>",
+        "props": { "label": "The column heading. Names the list." }
+      },
+      "FooterLink": { "renders": "<li><a class=\"ayy-footer__link\">" },
+      "FooterBottom": { "renders": "<div class=\"ayy-footer__bottom\">" }
+    }
+  },
+  "a11y": [
+    "Use <footer> once per page, outside <main>: it's the contentinfo landmark.",
+    "The link columns are a <nav aria-label=\"Footer\">, distinct from the navbar's \"Main\".",
+    "Each column's heading names its list, so screen readers announce \"Product, list, 4 items\"."
+  ],
+  "do": [
+    "Use the footer at the end of every page of a website, after <main>.",
+    "Group links into two to four columns with one-word headings (Product, Company, Resources, Legal).",
+    "Put the copyright and legal links in FooterBottom, and a theme toggle there too if the navbar doesn't have one."
+  ],
+  "dont": [
+    "Don't use it inside the App shell — apps put account and help links in the sidebar's footer.",
+    "Don't repeat every navbar link; the footer is for everything else people look for at the end.",
+    "Don't put a call to action inside the footer grid — end the page with a closing Section instead."
+  ],
+  "examples": [{ "id": "site", "title": "Site footer" }]
+}

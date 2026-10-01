@@ -90,7 +90,8 @@
 }
 
 @media (forced-colors: active) {
-  .ayy-chat__bubble {
+  .ayy-chat__bubble,
+  .ayy-chat__message--out .ayy-chat__bubble {
     border-color: CanvasText;
   }
   .ayy-chat__typing > span {

@@ -21,7 +21,9 @@ export function connectCarousel(root: HTMLElement): () => void {
       if (!slide.hasAttribute("role")) slide.setAttribute("role", "group");
       if (!slide.hasAttribute("aria-roledescription")) slide.setAttribute("aria-roledescription", "slide");
       if (!slide.hasAttribute("aria-labelledby") && (!slide.hasAttribute("aria-label") || slide.dataset.ayyAutoLabel !== undefined)) {
-        slide.setAttribute("aria-label", `${i + 1} of ${list.length}`);
+        // data-slide-label on the carousel translates it: "{index} de {count}".
+        const template = root.dataset.slideLabel ?? "{index} of {count}";
+        slide.setAttribute("aria-label", template.replace("{index}", String(i + 1)).replace("{count}", String(list.length)));
         slide.dataset.ayyAutoLabel = "";
       }
     });

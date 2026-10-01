@@ -17,7 +17,8 @@
   border: 1px solid var(--ayy-color-line);
   border-radius: var(--ayy-radius-pill);
   background-color: var(--ayy-color-wash);
-  color: var(--ayy-color-muted);
+  /* text-soft, not muted: muted on the wash track drops under 4.5:1 on raised surfaces (pnpm check measures it). */
+  color: var(--ayy-color-text-soft);
   overflow-x: auto;
   scrollbar-width: none;
   user-select: none;
@@ -65,7 +66,7 @@
 }
 
 .ayy-tabs__tab:disabled {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 

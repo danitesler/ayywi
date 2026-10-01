@@ -52,8 +52,12 @@
 }
 
 .ayy-radio:disabled {
-  opacity: 0.5;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
+}
+
+.ayy-radio[aria-invalid="true"] {
+  border-color: var(--ayy-color-destructive);
 }
 
 /* ---- Group ---- */
@@ -96,5 +100,8 @@
   .ayy-radio:disabled {
     opacity: 1;
     border-color: GrayText;
+  }
+  .ayy-radio[aria-invalid="true"] {
+    border-style: dashed;
   }
 }

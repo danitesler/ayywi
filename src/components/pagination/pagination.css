@@ -1,0 +1,101 @@
+/* Pagination: previous, page numbers and next for a long list or table. Links (or buttons) in a <nav>; the current
+   page has aria-current="page". A disabled end is aria-disabled="true" (a link without href). */
+.ayy-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  margin: 0;
+}
+
+.ayy-pagination__link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  margin: 0;
+  padding-inline: var(--ayy-space-2);
+  border: 1px solid transparent;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+  color: var(--ayy-color-muted);
+  font-family: inherit;
+  font-size: var(--ayy-control-text-sm);
+  font-weight: var(--ayy-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--ayy-duration-base) ease,
+    background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-pagination__link > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-pagination__link:hover {
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+}
+
+.ayy-pagination__link[aria-current="page"] {
+  border-color: var(--ayy-color-line-strong);
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-pagination__link:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-pagination__link:is(:disabled, [aria-disabled="true"]) {
+  opacity: var(--ayy-opacity-disabled);
+  pointer-events: none;
+}
+
+.ayy-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ayy-size-control-sm);
+  color: var(--ayy-color-muted);
+  user-select: none;
+}
+
+/* Previous / next: an icon and a word. */
+.ayy-pagination__link--step {
+  padding-inline: var(--ayy-space-2) var(--ayy-space-3);
+}
+
+.ayy-pagination__link--step:last-child {
+  padding-inline: var(--ayy-space-3) var(--ayy-space-2);
+}
+
+/* On phones the numbers give way to previous / next and the current page. */
+@media (max-width: 48rem) {
+  .ayy-pagination__link:not([aria-current="page"], .ayy-pagination__link--step),
+  .ayy-pagination__ellipsis {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-pagination__link[aria-current="page"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-pagination__link:is(:disabled, [aria-disabled="true"]) {
+    color: GrayText;
+    opacity: 1;
+  }
+}

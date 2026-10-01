@@ -5,10 +5,10 @@
   "category": "Layout",
   "description": "A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.",
   "classes": {
-    "ayy-carousel": "Root (also on <ayy-carousel>). role=\"region\" aria-roledescription=\"carousel\" and an aria-label.",
+    "ayy-carousel": "Root (also on <ayy-carousel>). role=\"region\" aria-roledescription=\"carousel\" and an aria-label. data-slide-label=\"{index} de {count}\" translates the slides' names (default \"{index} of {count}\").",
     "ayy-carousel__track": "The scrolling, snapping row. Give it tabindex=\"0\" so keyboards can scroll it. Gap via --ayy-gap.",
     "ayy-carousel__slide": "Each slide: role=\"group\" aria-roledescription=\"slide\". Width via --ayy-slide (default min(22rem, 85%)).",
-    "ayy-carousel__controls": "Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows flip in RTL."
+    "ayy-carousel__controls": "Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows are directional Hugeicons (ayy-icon--directional), so they flip in RTL."
   },
   "variants": {},
   "js": "carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.",
@@ -28,7 +28,8 @@
         "props": {
           "label": "string (required) — accessible name, e.g. \"Team photos\".",
           "slideWidth": "CSS length for every slide. Default min(22rem, 85%).",
-          "previousLabel / nextLabel": "Button names. Default \"Previous\" / \"Next\"."
+          "previousLabel / nextLabel": "Button names. Default \"Previous\" / \"Next\" Defaults \"Previous\" / \"Next\" (translate them).",
+          "slideLabel": "Each slide's name, with {index} and {count}. Default \"{index} of {count}\" (translate it). HTML: data-slide-label on the carousel."
         }
       },
       "CarouselSlide": { "renders": "<div role=\"group\" aria-roledescription=\"slide\">" }

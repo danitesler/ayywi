@@ -1,0 +1,54 @@
+{
+  "name": "Segmented control",
+  "slug": "segmented-control",
+  "status": "beta",
+  "category": "Forms",
+  "description": "Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.",
+  "classes": {
+    "ayy-segmented-control": "Root, a role=\"radiogroup\" with an aria-label. The pill track.",
+    "ayy-segmented-control--sm": "Small height, for toolbars and card headers.",
+    "ayy-segmented-control--full": "Fills its container with equal segments.",
+    "ayy-segmented-control__option": "A <label> around a native <input type=\"radio\">, which stays in the page (focus, forms) but draws nothing. The checked one is filled; the focused one gets the ring."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md"], "default": "md", "component": "SegmentedControl" },
+    "full": { "values": [false, true], "default": false, "component": "SegmentedControl" }
+  },
+  "js": "segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.",
+  "react": {
+    "import": "import { SegmentedControl, SegmentedControlItem } from \"ayywi/react\";",
+    "components": {
+      "SegmentedControl": {
+        "renders": "<div role=\"radiogroup\" class=\"ayy-segmented-control\">",
+        "props": {
+          "value / defaultValue": "The selected option's value.",
+          "onValueChange": "(value: string) => void",
+          "name": "Shared radio name, for forms. Generated if omitted.",
+          "size": "\"sm\" | \"md\"",
+          "full": "boolean — equal segments across the container."
+        }
+      },
+      "SegmentedControlItem": {
+        "renders": "<label class=\"ayy-segmented-control__option\"><input type=\"radio\">…",
+        "props": { "value": "This option's value.", "disabled": "boolean", "inputProps": "Props for the native radio." }
+      }
+    }
+  },
+  "a11y": [
+    "It's a radio group: give the root an aria-label (\"Date range\"). Arrow keys move the choice, Tab leaves the group — the browser does it.",
+    "The checked segment is filled and bolder, not only coloured; High Contrast mode fills it with the system highlight.",
+    "An icon-only segment needs text for screen readers: an .ayy-sr-only span or aria-label on the input."
+  ],
+  "do": [
+    "Use a segmented control for two to five mutually exclusive options that apply at once: a date range above a chart, list vs grid, monthly vs yearly.",
+    "Keep labels short and parallel (7 days · 30 days · 90 days).",
+    "Use size sm in a toolbar or card header, and full on a phone when it's the main control of the screen."
+  ],
+  "dont": [
+    "Don't use it to show different panels of content — use Tabs.",
+    "Don't use it for more than five options or long labels — use Select or a Radio group.",
+    "Don't use it for an on/off setting — use Switch.",
+    "Don't use it for navigation between pages — use links."
+  ],
+  "examples": [{ "id": "basic", "title": "Date range and billing cycle" }]
+}

@@ -91,7 +91,7 @@
     "test": "node --test \"tests/node/*.test.mjs\"",
     "test:e2e": "playwright test",
     "preview": "vite --config preview/vite.config.ts",
-    "preview:build": "node scripts/build-tokens.mjs && node scripts/build-manifest.mjs && vite build --config preview/vite.config.ts",
+    "preview:build": "node scripts/build-tokens.mjs && node scripts/build-manifest.mjs && node scripts/build.mjs && vite build --config preview/vite.config.ts",
     "preview:serve": "vite preview --config preview/vite.config.ts",
     "prepare": "node scripts/build.mjs",
     "prepublishOnly": "node scripts/check.mjs"

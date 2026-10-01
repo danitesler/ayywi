@@ -3,18 +3,25 @@
 import { readFileSync } from "node:fs";
 import { formatFindings, lintPaths } from "./lint.mjs";
 
-const [command, ...rest] = process.argv.slice(2);
+const [command, ...raw] = process.argv.slice(2);
+// "--max-warnings 0" and "--max-warnings=0" both work.
+const rest = raw.flatMap((a, i) => (a === "--max-warnings" && raw[i + 1] !== undefined ? [] : raw[i - 1] === "--max-warnings" ? [`--max-warnings=${a}`] : [a]));
 const flags = new Set(rest.filter((a) => a.startsWith("--")));
 const args = rest.filter((a) => !a.startsWith("--"));
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
 
 const HELP = `ayywi ${version}
 
-  ayywi lint [paths…] [--json] [--max-warnings=N]
-      Check UI code against the ayywi contract: unknown classes, tokens, variants and element attributes,
-      hardcoded colours, physical left/right CSS, unlabeled icon buttons. Default path: current directory.
+  ayywi lint [paths…] [--json] [--max-warnings N]
+      Check UI code (HTML, JSX/TSX, Vue, Svelte, Angular, CSS…) against the ayywi contract. Rules:
+        unknown-class, unknown-token, unknown-variant, unknown-element, unknown-attribute-value (data-theme,
+        data-density, element attributes), reserved-prefix (your own .ayy-* classes), icon-button-label,
+        hardcoded-color (hex, rgb()…, named colours, also in style="" and style={{}}), dir-selector,
+        physical-property (left/right CSS), img-size (<img> without width/height), icon-library (a second icon set).
+      Default path: current directory. Exits 1 on errors, or on more than N warnings.
       Configure rules in ayywi.config.json: { "rules": { "physical-property": "off" }, "ignore": ["legacy/**"] }.
-      Silence a line with a comment containing ayywi-lint-disable-line (or -next-line).
+      Silence a line with a comment containing ayywi-lint-disable-line (or -next-line); a whole file with
+      ayywi-lint-disable-file in its first five lines.
 
   ayywi init [--no-mcp] [--force] [--dry-run]
       Set up this project for AI agents: .claude/skills/ayywi, .cursor/rules/ayywi.mdc, an ayywi section

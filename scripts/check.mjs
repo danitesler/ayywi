@@ -71,8 +71,18 @@ const indexCss = read("src/css/index.css");
 const reactIndex = read("src/react/index.ts");
 const jsIndex = read("src/index.ts");
 const elementsIndex = read("src/elements/index.ts");
+// Which component documents each class, so one component's CSS may place another's (the app shell hides its bottom nav on wide screens).
+const classOwner = new Map(Object.keys(UTILITIES).map((cls) => [cls, "base.css"]));
+for (const slug of readdirSync(join(root, "src/components"))) {
+  try {
+    const meta = JSON.parse(read(`src/components/${slug}/${slug}.meta.json`));
+    for (const cls of Object.keys(meta.classes ?? {})) classOwner.set(cls, slug);
+  } catch {
+    // Reported per component below.
+  }
+}
 const REQUIRED_META = ["name", "slug", "status", "category", "description", "classes", "variants", "react", "a11y", "do", "dont", "examples"];
-const STATEFUL = /:checked|\[aria-selected|\[aria-checked|:indeterminate|__bar\b/;
+const STATEFUL = /:checked|\[aria-selected|\[aria-checked|\[aria-current|\[aria-invalid|\[aria-pressed|\[aria-expanded|:indeterminate|__bar\b/;
 
 for (const slug of readdirSync(join(root, "src/components"))) {
   const dir = `src/components/${slug}`;
@@ -105,7 +115,7 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   if ("category" in meta && !(meta.category in CATEGORIES)) fail(files.meta, `category "${meta.category}" should be one of: ${Object.keys(CATEGORIES).join(", ")} (scripts/lib/contract.mjs)`);
 
   // CSS classes ↔ documented classes
-  const defined = selectorClasses(css);
+  const defined = new Set([...selectorClasses(css)].filter((cls) => (classOwner.get(cls) ?? slug) === slug));
   const documented = new Set(Object.keys(meta.classes ?? {}));
   for (const cls of defined) if (!documented.has(cls)) fail(files.meta, `class .${cls} exists in ${slug}.css but isn't documented in "classes"`);
   for (const cls of documented) if (!defined.has(cls)) fail(files.meta, `documents .${cls}, which ${slug}.css doesn't define`);
@@ -167,6 +177,25 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   if (!reactIndex.includes(`../components/${slug}/${slug}.react"`)) fail("src/react/index.ts", `doesn't export ${slug}.react`);
 }
 
+// ---- Rules name every custom element, so agents know it exists ----
+{
+  const { RULES } = await import("./lib/contract.mjs");
+  const elementsRule = RULES.find((r) => r.includes('"ayywi/elements"')) ?? "";
+  for (const m of elementsIndex.matchAll(/define\("(ayy-[\w-]+)"/g)) {
+    if (!elementsRule.includes(`<${m[1]}>`)) fail("scripts/lib/contract.mjs", `the RULES entry about "ayywi/elements" doesn't list <${m[1]}>`);
+  }
+}
+
+// ---- The README's component count and table match the components ----
+{
+  const readme = read("README.md");
+  const metas = readdirSync(join(root, "src/components")).map((slug) => JSON.parse(read(`src/components/${slug}/${slug}.meta.json`)));
+  const count = readme.match(/all (\d+) components/)?.[1];
+  if (Number(count) !== metas.length) fail("README.md", `says "all ${count ?? "?"} components"; there are ${metas.length}`);
+  const table = readme.split("## Components")[1]?.split("\n## ")[0] ?? "";
+  for (const m of metas) if (!new RegExp(`\\b${m.name}\\b`).test(table)) fail("README.md", `the Components table doesn't list ${m.name}`);
+}
+
 // ---- Base ----
 const base = read("src/css/base.css");
 lintCss("src/css/base.css", base);
@@ -197,6 +226,16 @@ try {
     for (const fg of TEXT_COLORS) for (const bg of SURFACES) need(fg, bg);
     for (const fg of TINTED) for (const bg of SURFACES) need(fg, bg, TINT);
     need("primary-fg", "primary");
+    // Text on a wash track (tabs list, segmented control): the wash is translucent, so composite it over each surface.
+    const wash = color("wash");
+    const washAlpha = wash.length === 9 ? parseInt(wash.slice(7), 16) / 255 : 1;
+    for (const fg of ["text", "text-soft"]) {
+      for (const bg of SURFACES) {
+        const behind = mix(wash.slice(0, 7), color(bg), washAlpha);
+        const ratio = contrast(color(fg), behind);
+        if (ratio < 4.5) fail(where, `color.${fg} on the wash over color.${bg} is ${ratio.toFixed(2)}:1 — text needs at least 4.5:1 (WCAG AA)`);
+      }
+    }
     // Accent text (.ayy-accent-text, section numbers, contents): raw on dark themes, mixed with the text colour on light ones.
     for (const accent of tokens.filter((t) => t.name.startsWith("accent."))) {
       const raw = resolve(accent.value);

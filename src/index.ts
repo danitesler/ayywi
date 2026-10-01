@@ -42,6 +42,17 @@ export * from "./components/stat/stat";
 export * from "./components/data-list/data-list";
 export * from "./components/frame/frame";
 export * from "./components/chat/chat";
+export * from "./components/page-header/page-header";
+export * from "./components/list/list";
+export * from "./components/empty-state/empty-state";
+export * from "./components/spinner/spinner";
+export * from "./components/kbd/kbd";
+export * from "./components/input-group/input-group";
+export * from "./components/segmented-control/segmented-control";
+export * from "./components/pagination/pagination";
+export * from "./components/accordion/accordion";
+export * from "./components/steps/steps";
+export * from "./components/footer/footer";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */
 export function cssVar(name: TokenName): string {

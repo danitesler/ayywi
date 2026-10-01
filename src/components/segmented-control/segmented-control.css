@@ -1,0 +1,123 @@
+/* Segmented control: pick one of two to five options (a range, a view, a plan). Native radios in pill segments, drawn
+   like the tabs list, so arrow keys, forms and name/value work as for any radio group. */
+.ayy-segmented-control {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--ayy-space-0-5);
+  /* fit-content: in a stack it keeps its own width instead of stretching (--full fills on purpose). */
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding: var(--ayy-space-0-5);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash);
+  /* text-soft, not muted: muted on the wash track drops under 4.5:1 on raised surfaces (pnpm check measures it). */
+  color: var(--ayy-color-text-soft);
+  vertical-align: middle;
+  /* Like the tabs list: too many options for the width scroll sideways instead of spilling out. */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ayy-segmented-control__option {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1-5);
+  padding-inline: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-pill);
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--ayy-duration-base) var(--ayy-ease-spring),
+    color var(--ayy-duration-base) ease;
+}
+
+/* The radio stays in the page (focus, forms, screen readers) but draws nothing; the segment shows its state. */
+.ayy-segmented-control__option > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.ayy-segmented-control__option > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-segmented-control__option:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-segmented-control__option:has(> input:checked) {
+  background-color: var(--ayy-color-text);
+  color: var(--ayy-color-bg);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent);
+}
+
+/* Inset, because the track scrolls (and clips) when the options don't fit. On the filled segment the ring takes the
+   page colour so it shows against the fill. */
+.ayy-segmented-control__option:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.ayy-segmented-control__option:has(> input:checked:focus-visible) {
+  outline-color: var(--ayy-color-bg);
+}
+
+.ayy-segmented-control__option:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-segmented-control--sm {
+  block-size: var(--ayy-size-control-sm);
+}
+
+.ayy-segmented-control--sm .ayy-segmented-control__option {
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-control-text-sm);
+}
+
+/* Full width: equal segments across the container (a phone toolbar, a card footer). */
+.ayy-segmented-control--full {
+  display: flex;
+  inline-size: 100%;
+}
+
+.ayy-segmented-control--full .ayy-segmented-control__option {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
+@media (forced-colors: active) {
+  .ayy-segmented-control {
+    border-color: CanvasText;
+  }
+  .ayy-segmented-control__option:has(> input:checked) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-segmented-control__option:has(> input:focus-visible) {
+    outline-color: CanvasText;
+  }
+  .ayy-segmented-control__option:has(> input:checked:focus-visible) {
+    outline-color: HighlightText;
+  }
+}

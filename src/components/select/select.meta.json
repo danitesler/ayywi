@@ -38,9 +38,9 @@
     "Put a sensible default first, or a disabled placeholder option."
   ],
   "dont": [
-    "Don't use a select for 2–5 options that should all be visible — use Radio.",
+    "Don't use a select for 2–5 options that should all be visible — use Radio, or a Segmented control when the choice changes a view.",
     "Don't use a select for actions — use a Dropdown menu.",
-    "Don't use a select to search thousands of options — build a combobox.",
+    "Don't use a select to search thousands of options — put a search Input group above a List of results instead.",
     "Don't use a select for yes/no — use a Switch or Checkbox."
   ],
   "examples": [{ "id": "basic", "title": "Sizes and states" }]

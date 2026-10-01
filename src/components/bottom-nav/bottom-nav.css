@@ -1,5 +1,6 @@
 /* Bottom nav: a phone app's tab bar. Three to five top-level destinations, icon over a short label, pinned to the bottom
-   of its scroll container (sticky) and clear of the home indicator. The current page is a pill behind the icon and a heavier label. */
+   of its scroll container (sticky) and clear of the home indicator. The current page is a pill behind the icon and a heavier label.
+   Inside an .ayy-app-shell it shows below 48rem only (app-shell.css places it). */
 .ayy-bottom-nav {
   position: sticky;
   inset-block-end: 0;
@@ -16,8 +17,14 @@
   color: var(--ayy-color-muted);
 }
 
+/* A <button> (a "More" tab that opens the app shell's drawer) looks like the links. */
 .ayy-bottom-nav__link {
   box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,12 +71,12 @@
   background-color: var(--ayy-color-wash);
 }
 
-.ayy-bottom-nav__link[aria-current="page"] {
+.ayy-bottom-nav__link:is([aria-current="page"], [aria-expanded="true"]) {
   color: var(--ayy-color-text);
   font-weight: var(--ayy-weight-semibold);
 }
 
-.ayy-bottom-nav__link[aria-current="page"] > svg {
+.ayy-bottom-nav__link:is([aria-current="page"], [aria-expanded="true"]) > svg {
   background-color: var(--ayy-color-wash-hover);
 }
 
@@ -82,7 +89,7 @@
   .ayy-bottom-nav {
     border-color: CanvasText;
   }
-  .ayy-bottom-nav__link[aria-current="page"] > svg {
+  .ayy-bottom-nav__link:is([aria-current="page"], [aria-expanded="true"]) > svg {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;

@@ -128,6 +128,7 @@
   --ayy-duration-base: 300ms;
   --ayy-duration-slow: 450ms;
   --ayy-duration-slower: 600ms;
+  --ayy-opacity-disabled: 0.4;
   --ayy-z-sticky: 20;
   --ayy-z-overlay: 50;
   --ayy-z-tooltip: 60;

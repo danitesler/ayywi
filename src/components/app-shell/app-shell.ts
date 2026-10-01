@@ -24,13 +24,16 @@ export const appShellMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);
 /** The drawer layout's breakpoint: below it, a shell with a __bar shows its sidebar as a drawer. */
 const DRAWER_QUERY = "(max-width: 48rem)";
 
+/** Where a drawer toggle may live: the phone bar, or the bottom nav (a "More" tab). */
+const TOGGLE_SELECTOR = `:scope > .${appShellBarClass} .${appShellToggleClass}, :scope > .ayy-bottom-nav .${appShellToggleClass}`;
+
 /**
- * Wires the phone drawer onto an `.ayy-app-shell` that has a `.ayy-app-shell__bar` with a `.ayy-app-shell__toggle` in it.
- * The toggle's aria-expanded is the state (the CSS reads it). Opening moves focus into the sidebar and makes the rest of the
- * shell inert; Esc, the scrim, a link in the sidebar or growing past the breakpoint close it. Returns a cleanup.
+ * Wires the phone drawer onto an `.ayy-app-shell` that has a `.ayy-app-shell__toggle` in its `.ayy-app-shell__bar` or its
+ * `.ayy-bottom-nav`. The toggle's aria-expanded is the state (the CSS reads it). Opening moves focus into the sidebar and makes
+ * the rest of the shell inert; Esc, the scrim, a link in the sidebar or growing past the breakpoint close it. Returns a cleanup.
  */
 export function connectAppShell(shell: HTMLElement): () => void {
-  const toggle = () => shell.querySelector<HTMLElement>(`:scope > .${appShellBarClass} .${appShellToggleClass}`);
+  const toggle = () => shell.querySelector<HTMLElement>(TOGGLE_SELECTOR);
   const sidebar = () => shell.querySelector<HTMLElement>(`:scope > .${appShellSidebarClass}`);
   const isOpen = () => toggle()?.getAttribute("aria-expanded") === "true";
   const media = typeof matchMedia === "function" ? matchMedia(DRAWER_QUERY) : null;
@@ -47,9 +50,9 @@ export function connectAppShell(shell: HTMLElement): () => void {
     const panel = sidebar();
     if (!button || !panel) return;
     button.setAttribute("aria-expanded", String(open));
-    // Everything but the bar (which holds the toggle) and the drawer goes inert while it's open.
+    // Everything but the drawer and the part that holds the toggle (the bar or the bottom nav) goes inert while it's open.
     for (const child of Array.from(shell.children)) {
-      if (child === panel || child.classList.contains(appShellBarClass)) continue;
+      if (child === panel || child.contains(button)) continue;
       if (open) child.setAttribute("inert", "");
       else child.removeAttribute("inert");
     }

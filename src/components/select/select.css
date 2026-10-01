@@ -64,16 +64,19 @@
 }
 
 .ayy-select__control:disabled {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }
 
 .ayy-select:has(> .ayy-select__control:disabled)::after {
-  opacity: 0.4;
+  opacity: var(--ayy-opacity-disabled);
 }
 
 .ayy-select__control[aria-invalid="true"] {
   border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+.ayy-select__control[aria-invalid="true"]:focus-visible {
+  outline-color: var(--ayy-color-destructive);
 }
 
 /* multiple / size > 1 render a list box: no fixed height, no chevron. */
@@ -102,6 +105,12 @@
 @media (forced-colors: active) {
   .ayy-select__control {
     border-color: FieldText;
+  }
+  .ayy-select__control:focus-visible {
+    outline-color: Highlight;
+  }
+  .ayy-select__control[aria-invalid="true"] {
+    border-style: dashed;
   }
   .ayy-select::after {
     color: FieldText;
