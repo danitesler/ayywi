@@ -1,4 +1,4 @@
-import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode, type SVGAttributes } from "react";
+import { forwardRef, useId, type CSSProperties, type HTMLAttributes, type ReactNode, type SVGAttributes } from "react";
 import { cx } from "../../lib/cx";
 import {
   barListClass,
@@ -24,6 +24,21 @@ export interface ChartSeries {
 
 const compact = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
 const formatCompact = (value: number) => compact.format(value);
+
+/** An SVG-safe id (useId's colons and guillemets don't survive url(#…)). */
+const svgId = (id: string) => `ayy-${id.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+
+/** The vertical fade an __area fills with: inside the series' <g>, so its stops take the series colour. */
+function Fade({ id }: { id: string }) {
+  return (
+    <defs>
+      <linearGradient id={id} className="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" />
+        <stop offset="1" />
+      </linearGradient>
+    </defs>
+  );
+}
 
 const vars = (values: Record<string, string | number | undefined>, style?: CSSProperties) => ({ ...values, ...style }) as CSSProperties;
 
@@ -183,17 +198,23 @@ export const LineChart = forwardRef<HTMLElement, LineChartProps>(function LineCh
   ref,
 ) {
   const scale = chartScale(series.flatMap((s) => s.values), { ticks: Math.max(2, ticks), min, max });
+  const uid = svgId(useId());
   const shown = shownLabels(labels.length, 5, true);
   return (
     <figure ref={ref} className={chartClass({ className })} style={vars({ "--ayy-chart-height": height }, style)} {...props}>
       <div className="ayy-chart__plot" aria-hidden="true">
         {ticks > 0 && <Ticks scale={scale} format={format} />}
         <svg className="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
-          {series.map((s) => {
+          {series.map((s, i) => {
             const path = chartPath(s.values, { min: scale.min, max: scale.max, smooth });
             return (
               <g key={s.name} className={chartSeriesClass({ compare: s.compare })} style={vars({ "--ayy-chart-color": s.color })}>
-                {area && !s.compare && <path className="ayy-chart__area" d={path.area} />}
+                {area && !s.compare && (
+                  <>
+                    <Fade id={`${uid}-${i}`} />
+                    <path className="ayy-chart__area" d={path.area} style={{ fill: `url(#${uid}-${i})` }} />
+                  </>
+                )}
                 <path className="ayy-chart__line" d={path.line} />
               </g>
             );
@@ -226,6 +247,7 @@ export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(function Spar
   { values, label, area, color, min, max, className, style, ...props },
   ref,
 ) {
+  const uid = svgId(useId());
   const low = min ?? Math.min(...values);
   const path = chartPath(values, { min: low, max: max ?? Math.max(...values), smooth: true });
   return (
@@ -239,7 +261,12 @@ export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(function Spar
       style={vars({ "--ayy-chart-color": color }, style as CSSProperties)}
       {...props}
     >
-      {area && <path className="ayy-chart__area" d={path.area} />}
+      {area && (
+        <>
+          <Fade id={uid} />
+          <path className="ayy-chart__area" d={path.area} style={{ fill: `url(#${uid})` }} />
+        </>
+      )}
       <path className="ayy-chart__line" d={path.line} />
     </svg>
   );

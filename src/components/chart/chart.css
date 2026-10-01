@@ -79,6 +79,8 @@
   border-start-start-radius: var(--ayy-radius-sm);
   border-start-end-radius: var(--ayy-radius-sm);
   background-color: var(--_c);
+  /* A gradient laid over the colour, so the bar fades toward its base and hover can still change the colour. */
+  background-image: linear-gradient(transparent, color-mix(in srgb, var(--ayy-color-surface) 55%, transparent));
   transition: block-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
 }
 
@@ -127,10 +129,12 @@
   gap: 1px;
 }
 
+/* Stacked parts stay solid: a fade per part would read as stripes. */
 .ayy-chart--stacked .ayy-chart__bar {
   flex: none;
   inline-size: 100%;
   border-radius: 0;
+  background-image: none;
 }
 
 .ayy-chart--stacked .ayy-chart__bar:last-child {
@@ -170,9 +174,19 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* A flat tint by default; with an __gradient in its series (React draws one), the area fades out toward the floor. */
 .ayy-chart__area {
   fill: color-mix(in srgb, var(--_c) 16%, transparent);
   stroke: none;
+}
+
+.ayy-chart__gradient > stop {
+  stop-color: var(--_c);
+  stop-opacity: 0.32;
+}
+
+.ayy-chart__gradient > stop:last-child {
+  stop-opacity: 0;
 }
 
 /* A comparison series (last period, a target): dashed and quiet, no fill. Two classes, so it beats the position colours. */
@@ -302,7 +316,12 @@
   inset-inline-start: 0;
   inline-size: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
   border-radius: var(--ayy-radius-sm);
-  background-color: color-mix(in srgb, var(--_c) 18%, transparent);
+  /* 18% at the start (pnpm check measures text on it), fading along the row. */
+  background-image: linear-gradient(
+    calc(90deg * var(--_ayy-dir, 1)),
+    color-mix(in srgb, var(--_c) 18%, transparent),
+    color-mix(in srgb, var(--_c) 6%, transparent)
+  );
   transition: inline-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
 }
 
@@ -337,6 +356,7 @@
   .ayy-chart__swatch {
     forced-color-adjust: none;
     background-color: CanvasText;
+    background-image: none;
   }
   .ayy-chart__bar:nth-child(even),
   .ayy-chart__legend-item:nth-child(even) .ayy-chart__swatch {
