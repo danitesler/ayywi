@@ -408,6 +408,137 @@ for (const renderer of ["react", "html"] as const) {
       const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest("a")?.textContent, [box.x + box.width / 2, box.y + 24]);
       expect(hit).toBe("Oktopost");
     });
+
+    test("charts: bars from --ayy-value, a data table for screen readers, lines mirror in RTL", async ({ page }) => {
+      await open(page, "chart", { renderer });
+      const bars = stage(page);
+      await expect(bars.locator(".ayy-chart__column")).toHaveCount(6);
+      await expect(bars.locator(".ayy-chart__bar")).toHaveCount(12);
+      await expect(bars.locator(".ayy-chart__plot")).toHaveAttribute("aria-hidden", "true");
+      await expect(bars.getByRole("table", { name: "Signups by device, April to September" })).toHaveCount(1);
+      // The tallest bar (Sep desktop, 2,690 on a 3K scale) ends up ~90% of the plot, once the bars have grown in.
+      const ratio = () =>
+        bars.locator(".ayy-chart__plot").evaluate((plot) => {
+          const tallest = Math.max(...Array.from(plot.querySelectorAll<HTMLElement>(".ayy-chart__bar"), (b) => b.offsetHeight));
+          return Math.round((tallest / (plot as HTMLElement).offsetHeight) * 100);
+        });
+      await expect.poll(ratio).toBe(90);
+      const line = stage(page, 1);
+      // The comparison series is quiet, not the next series colour.
+      const strokes = await line.locator(".ayy-chart__line").evaluateAll((paths) => paths.map((p) => getComputedStyle(p).stroke));
+      expect(strokes[0]).not.toBe(strokes[1]);
+      await rtl(line);
+      expect(await line.locator(".ayy-chart__svg").evaluate((svg) => getComputedStyle(svg).scale)).toBe("-1 1");
+    });
+
+    test("table: header buttons sort the rows, the header checkbox selects them all", async ({ page }) => {
+      await open(page, "table", { renderer });
+      const table = stage(page, 1).getByRole("table");
+      const firstAmount = () => table.locator("tbody tr").first().locator("td").nth(4);
+      const amount = table.getByRole("button", { name: "Amount" });
+      await amount.click();
+      const header = amount.locator("xpath=ancestor::th");
+      await expect(header).toHaveAttribute("aria-sort", "ascending");
+      await expect(firstAmount()).toHaveText("$420.00");
+      await expect(table.locator("th[aria-sort]")).toHaveCount(1);
+      await amount.click();
+      await expect(header).toHaveAttribute("aria-sort", "descending");
+      await expect(firstAmount()).toHaveText("$3,150.00");
+      const all = table.getByRole("checkbox", { name: "Select all invoices" });
+      await all.check();
+      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(4);
+      await table.getByRole("checkbox", { name: "Select INV-1044" }).uncheck();
+      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(3);
+      await expect(all).toHaveJSProperty("indeterminate", true);
+    });
+
+    test("chips are checkboxes and radios; checked ones draw a tick", async ({ page }) => {
+      await open(page, "chip", { renderer });
+      const status = stage(page).getByRole("group", { name: "Status" });
+      const pending = status.getByRole("checkbox", { name: /Pending/ });
+      await pending.focus();
+      await page.keyboard.press("Space");
+      await expect(pending).toBeChecked();
+      const tick = (name: RegExp) => status.locator(".ayy-chip", { hasText: name }).evaluate((el) => getComputedStyle(el, "::before").content);
+      expect(await tick(/Pending/)).toBe('""');
+      expect(await tick(/Closed/)).toBe("none");
+      const category = stage(page).getByRole("radiogroup", { name: "Category" });
+      await category.getByRole("radio", { name: "Tea" }).check();
+      await expect(category.getByRole("radio", { name: "All" })).not.toBeChecked();
+    });
+
+    test("combobox filters as you type, Enter picks, reopening lists everything", async ({ page }) => {
+      await open(page, "combobox", { renderer });
+      const input = stage(page).getByRole("combobox", { name: "Time zone" });
+      await expect(input).toHaveValue("Lisbon");
+      await input.fill("");
+      await input.pressSequentially("jap");
+      const listbox = page.getByRole("listbox");
+      await expect(listbox).toBeVisible();
+      await expect(input).toHaveAttribute("aria-expanded", "true");
+      await expect(listbox.getByRole("option")).toHaveCount(1);
+      await expect(listbox.getByRole("option", { name: /Tokyo/ })).toHaveAttribute("aria-selected", "true");
+      await page.keyboard.press("Enter");
+      await expect(input).toHaveValue("Tokyo");
+      await expect(listbox).toBeHidden();
+      await page.keyboard.press("ArrowDown");
+      await expect(listbox.getByRole("option")).toHaveCount(8);
+      await expect(listbox.getByRole("option", { name: /Tokyo/ })).toHaveAttribute("aria-selected", "true");
+      await page.keyboard.press("Escape");
+      await expect(listbox).toBeHidden();
+      await expect(stage(page).locator('input[type="hidden"][name="timezone"]')).toHaveValue("Asia/Tokyo");
+    });
+
+    test("number field steps with its buttons and stops at max; sliders fill to the thumb", async ({ page }) => {
+      await open(page, "number-field", { renderer });
+      const guests = stage(page).getByRole("spinbutton", { name: "Guests" });
+      const add = stage(page).getByRole("button", { name: "Add a guest" });
+      await add.click();
+      await expect(guests).toHaveValue("3");
+      for (let i = 0; i < 5; i++) await add.click();
+      await expect(guests).toHaveValue("8");
+      await expect(add).toHaveAttribute("aria-disabled", "true");
+      // aria-disabled, not disabled: still clickable and focusable, it just does nothing (Playwright waits on it unless forced).
+      await add.click({ force: true });
+      await expect(guests).toHaveValue("8");
+      await expect(add).toBeFocused();
+
+      await open(page, "slider", { renderer });
+      const size = stage(page).getByRole("slider", { name: "Class size" });
+      const fill = () => size.evaluate((el) => Number(getComputedStyle(el).getPropertyValue("--ayy-value")));
+      const before = await fill();
+      await size.focus();
+      await page.keyboard.press("End");
+      await expect(size).toHaveValue("30");
+      await expect.poll(fill).toBe(100);
+      expect(before).toBeLessThan(100);
+      const range = stage(page, 1);
+      const low = range.getByRole("slider", { name: "Minimum price" });
+      await low.focus();
+      await page.keyboard.press("End");
+      // The lower thumb stops at the upper one.
+      await expect(low).toHaveValue("64");
+    });
+
+    test("choice cards pick one plan; the drop zone marks a drag", async ({ page }) => {
+      await open(page, "choice-card", { renderer });
+      const plans = stage(page).getByRole("radiogroup", { name: "Plan" });
+      await plans.locator(".ayy-choice-card", { hasText: "Business" }).click();
+      await expect(plans.getByRole("radio", { name: /Business/ })).toBeChecked();
+      await expect(plans.getByRole("radio", { name: /Pro/ })).not.toBeChecked();
+
+      await open(page, "dropzone", { renderer });
+      const zone = stage(page).locator(".ayy-dropzone").first();
+      const transfer = await page.evaluateHandle(() => {
+        const dt = new DataTransfer();
+        dt.items.add(new File(["x"], "studio.png", { type: "image/png" }));
+        return dt;
+      });
+      await zone.locator("input").dispatchEvent("dragenter", { dataTransfer: transfer });
+      await expect(zone).toHaveAttribute("data-dragging", "");
+      await zone.locator("input").dispatchEvent("drop", { dataTransfer: transfer });
+      await expect(zone).not.toHaveAttribute("data-dragging");
+    });
   });
 }
 

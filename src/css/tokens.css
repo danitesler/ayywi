@@ -41,7 +41,9 @@
   --ayy-palette-violet-77: #b98cff;
   --ayy-palette-violet-84: #cbabff;
   --ayy-palette-emerald-52: #34d399;
+  --ayy-palette-pink-42: #be185d;
   --ayy-palette-pink-70: #f472b6;
+  --ayy-palette-orange-40: #c2410c;
   --ayy-palette-orange-65: #ff8a4c;
   --ayy-accent-research: var(--ayy-palette-amber-61);
   --ayy-accent-product: var(--ayy-palette-blue-68);
@@ -160,6 +162,12 @@
   --ayy-color-shadow: var(--ayy-palette-neutral-0);
   --ayy-color-glass: #000000bf;
   --ayy-color-overlay: #000000bf;
+  --ayy-chart-1: var(--ayy-palette-blue-68);
+  --ayy-chart-2: var(--ayy-palette-orange-65);
+  --ayy-chart-3: var(--ayy-palette-emerald-52);
+  --ayy-chart-4: var(--ayy-palette-violet-77);
+  --ayy-chart-5: var(--ayy-palette-amber-61);
+  --ayy-chart-6: var(--ayy-palette-pink-70);
 }
 
 /* Light via OS preference, unless a theme is forced */
@@ -186,6 +194,12 @@
     --ayy-color-shadow: #0000004d;
     --ayy-color-glass: #ffffffc7;
     --ayy-color-overlay: #0a0a0a73;
+    --ayy-chart-1: var(--ayy-palette-blue-48);
+    --ayy-chart-2: var(--ayy-palette-orange-40);
+    --ayy-chart-3: var(--ayy-palette-green-24);
+    --ayy-chart-4: var(--ayy-palette-violet-50);
+    --ayy-chart-5: var(--ayy-palette-amber-37);
+    --ayy-chart-6: var(--ayy-palette-pink-42);
   }
 }
 
@@ -213,6 +227,12 @@
   --ayy-color-shadow: #0000004d;
   --ayy-color-glass: #ffffffc7;
   --ayy-color-overlay: #0a0a0a73;
+  --ayy-chart-1: var(--ayy-palette-blue-48);
+  --ayy-chart-2: var(--ayy-palette-orange-40);
+  --ayy-chart-3: var(--ayy-palette-green-24);
+  --ayy-chart-4: var(--ayy-palette-violet-50);
+  --ayy-chart-5: var(--ayy-palette-amber-37);
+  --ayy-chart-6: var(--ayy-palette-pink-42);
 }
 
 /* dark-soft, built on dark. Dark with softer contrast: a charcoal background instead of black, and off-white text. Easier on the eyes for long reading; every text colour still meets WCAG AA. */
@@ -238,6 +258,12 @@
   --ayy-color-shadow: var(--ayy-palette-neutral-0);
   --ayy-color-glass: #1e1e1ec7;
   --ayy-color-overlay: #00000099;
+  --ayy-chart-1: var(--ayy-palette-blue-68);
+  --ayy-chart-2: var(--ayy-palette-orange-65);
+  --ayy-chart-3: var(--ayy-palette-emerald-52);
+  --ayy-chart-4: var(--ayy-palette-violet-77);
+  --ayy-chart-5: var(--ayy-palette-amber-61);
+  --ayy-chart-6: var(--ayy-palette-pink-70);
 }
 
 /* light-gray, built on light. Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA. */
@@ -263,6 +289,12 @@
   --ayy-color-shadow: #0000004d;
   --ayy-color-glass: #ebebebc7;
   --ayy-color-overlay: #0a0a0a73;
+  --ayy-chart-1: var(--ayy-palette-blue-48);
+  --ayy-chart-2: var(--ayy-palette-orange-40);
+  --ayy-chart-3: var(--ayy-palette-green-24);
+  --ayy-chart-4: var(--ayy-palette-violet-50);
+  --ayy-chart-5: var(--ayy-palette-amber-37);
+  --ayy-chart-6: var(--ayy-palette-pink-42);
 }
 
 /* Derived from the themed tokens above. Redeclared on every theme root so nested ones recompute. */

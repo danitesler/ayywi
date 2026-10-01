@@ -1,0 +1,59 @@
+{
+  "name": "File upload",
+  "slug": "dropzone",
+  "status": "beta",
+  "category": "Forms",
+  "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
+  "classes": {
+    "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by ayywi/elements or React).",
+    "ayy-dropzone--compact": "One line (icon, then text), for a form field or a composer.",
+    "ayy-dropzone__title": "Main line: \"Drop files here or browse\" (the word styled .ayy-link).",
+    "ayy-dropzone__hint": "What's accepted: types and size."
+  },
+  "variants": {
+    "compact": { "values": [false, true], "default": false, "component": "Dropzone" }
+  },
+  "states": {
+    "[data-dragging]": "Files are held over it: solid border in the text colour.",
+    "input:disabled": "Dimmed, not clickable.",
+    "input[aria-invalid=\"true\"]": "Rejected file: red border; say why in a FieldError."
+  },
+  "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).",
+  "react": {
+    "import": "import { Dropzone } from \"ayywi/react\";",
+    "components": {
+      "Dropzone": {
+        "renders": "<label class=\"ayy-dropzone\"><input type=\"file\"><svg><span class=\"ayy-dropzone__title\">…",
+        "props": {
+          "title": "ReactNode, default \"Drop files here or browse\"",
+          "hint": "ReactNode — types and size",
+          "icon": "ReactNode — replaces the upload icon; null for none",
+          "onFiles": "(files: File[]) => void — check types and sizes here: accept isn't enforced on a drop",
+          "compact": "boolean",
+          "className": "On the <label>; every other prop (accept, multiple, name, id, disabled…) goes to the input",
+          "style": "On the <label>"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "It's a native file input inside its label: Tab reaches it, Enter or Space opens the picker, and the title and hint are its name. A visible Label (htmlFor its id) names it in a form.",
+    "Dragging is an extra: everything works with the picker alone.",
+    "List the picked files in text, each with a remove button that names the file (\"Remove studio-front.jpg\"), and progress with a Progress bar that has a label."
+  ],
+  "do": [
+    "Use a file upload for attaching files to a record: photos, documents, a CSV to import. Say what's accepted in the hint.",
+    "Show each picked file below it in a List divided, with its size, a Progress bar while it uploads, and a remove button.",
+    "Use compact inside a form next to other fields, and the box when the upload is the main task of the screen.",
+    "Validate type and size when files arrive (onFiles), and show a FieldError with aria-invalid on the input when one is rejected."
+  ],
+  "dont": [
+    "Don't hide the file input or rebuild it from divs: the native input is what makes it keyboard and screen-reader friendly.",
+    "Don't use it for pasting a link — use an Input of type url.",
+    "Don't make dropping the only way: the zone must stay clickable."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Photos with upload progress" },
+    { "id": "compact", "title": "Compact, in a form" }
+  ]
+}

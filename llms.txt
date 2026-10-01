@@ -15,73 +15,82 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ## Components
 
+Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); the same sections are in llms-full.txt.
+
 ### Actions
 
-- [Button](llms-full.txt#button): Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
-- [Dropdown menu](llms-full.txt#dropdown-menu): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
-- [Theme toggle](llms-full.txt#theme-toggle): An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
+- [Button](llms/button.md): Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
+- [Dropdown menu](llms/menu.md): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
+- [Theme toggle](llms/theme-toggle.md): An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
 
 ### Navigation
 
-- [Navbar](llms-full.txt#navbar): Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.
-- [App shell](llms-full.txt#app-shell): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.
-- [Bottom nav](llms-full.txt#bottom-nav): A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.
-- [Footer](llms-full.txt#footer): The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
-- [Breadcrumb](llms-full.txt#breadcrumb): Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
-- [Pagination](llms-full.txt#pagination): Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.
-- [Steps](llms-full.txt#steps): Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state.
-- [Contents](llms-full.txt#contents): On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
+- [Navbar](llms/navbar.md): Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.
+- [App shell](llms/app-shell.md): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.
+- [Bottom nav](llms/bottom-nav.md): A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.
+- [Footer](llms/footer.md): The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
+- [Breadcrumb](llms/breadcrumb.md): Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
+- [Pagination](llms/pagination.md): Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.
+- [Steps](llms/steps.md): Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state.
+- [Contents](llms/toc.md): On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
 
 ### Forms
 
-- [Field](llms-full.txt#field): Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
-- [Input](llms-full.txt#input): Single-line text field. Works for every native input type (text, email, search, number, file…).
-- [Input group](llms-full.txt#input-group): An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.
-- [Textarea](llms-full.txt#textarea): Multi-line text field. Optional auto-grow and monospace modes.
-- [Select](llms-full.txt#select): Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
-- [Checkbox](llms-full.txt#checkbox): Native checkbox with a drawn box, check mark and indeterminate state.
-- [Radio](llms-full.txt#radio): Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
-- [Segmented control](llms-full.txt#segmented-control): Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.
-- [Switch](llms-full.txt#switch): On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
+- [Field](llms/field.md): Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
+- [Input](llms/input.md): Single-line text field. Works for every native input type (text, email, search, number, file…).
+- [Input group](llms/input-group.md): An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.
+- [Textarea](llms/textarea.md): Multi-line text field. Optional auto-grow and monospace modes.
+- [Select](llms/select.md): Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
+- [Combobox](llms/combobox.md): An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.
+- [Checkbox](llms/checkbox.md): Native checkbox with a drawn box, check mark and indeterminate state.
+- [Radio](llms/radio.md): Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
+- [Segmented control](llms/segmented-control.md): Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.
+- [Chip](llms/chip.md): Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.
+- [Choice card](llms/choice-card.md): A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.
+- [Slider](llms/slider.md): A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.
+- [Number field](llms/number-field.md): A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.
+- [File upload](llms/dropzone.md): A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.
+- [Switch](llms/switch.md): On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
 
 ### Layout
 
-- [Page header](llms-full.txt#page-header): The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.
-- [Section](llms-full.txt#section): A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.
-- [Card](llms-full.txt#card): Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
-- [Tabs](llms-full.txt#tabs): Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
-- [Accordion](llms-full.txt#accordion): Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.
-- [Carousel](llms-full.txt#carousel): A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
-- [Separator](llms-full.txt#separator): A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).
+- [Page header](llms/page-header.md): The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.
+- [Section](llms/section.md): A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.
+- [Card](llms/card.md): Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
+- [Tabs](llms/tabs.md): Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
+- [Accordion](llms/accordion.md): Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.
+- [Carousel](llms/carousel.md): A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
+- [Separator](llms/separator.md): A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).
 
 ### Overlays
 
-- [Dialog](llms-full.txt#dialog): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.
-- [Popover](llms-full.txt#popover): Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
-- [Tooltip](llms-full.txt#tooltip): Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
+- [Dialog](llms/dialog.md): Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.
+- [Popover](llms/popover.md): Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
+- [Tooltip](llms/tooltip.md): Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
 
 ### Feedback
 
-- [Alert](llms-full.txt#alert): Inline message box with optional icon, title, description and actions.
-- [Toast](llms-full.txt#toast): Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
-- [Progress](llms-full.txt#progress): Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
-- [Spinner](llms-full.txt#spinner): An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.
-- [Skeleton](llms-full.txt#skeleton): Placeholder shapes shown while content loads, with a subtle shimmer.
-- [Empty state](llms-full.txt#empty-state): What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.
+- [Alert](llms/alert.md): Inline message box with optional icon, title, description and actions.
+- [Toast](llms/toast.md): Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
+- [Progress](llms/progress.md): Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
+- [Spinner](llms/spinner.md): An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.
+- [Skeleton](llms/skeleton.md): Placeholder shapes shown while content loads, with a subtle shimmer.
+- [Empty state](llms/empty-state.md): What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.
 
 ### Data display
 
-- [Badge](llms-full.txt#badge): Small pill label for status, category or count. Optional pulsing status dot.
-- [Kbd](llms-full.txt#kbd): A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.
-- [Avatar](llms-full.txt#avatar): Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
-- [Icon](llms-full.txt#icon): Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
-- [Icon tile](llms-full.txt#icon-tile): An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.
-- [Stat](llms-full.txt#stat): A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
-- [List](llms-full.txt#list): Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.
-- [Data list](llms-full.txt#data-list): Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
-- [Frame](llms-full.txt#frame): A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.
-- [Chat](llms-full.txt#chat): A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
-- [Table](llms-full.txt#table): Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
+- [Badge](llms/badge.md): Small pill label for status, category or count. Optional pulsing status dot.
+- [Kbd](llms/kbd.md): A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.
+- [Avatar](llms/avatar.md): Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
+- [Icon](llms/icon.md): Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
+- [Icon tile](llms/icon-tile.md): An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.
+- [Stat](llms/stat.md): A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
+- [List](llms/list.md): Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.
+- [Data list](llms/data-list.md): Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
+- [Frame](llms/frame.md): A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.
+- [Chat](llms/chat.md): A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
+- [Table](llms/table.md): Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
+- [Chart](llms/chart.md): Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
 
 ## Optional
 

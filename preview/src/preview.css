@@ -1127,6 +1127,13 @@
   flex: 1;
 }
 
+/* Store: the product art's box. The tile and the grid come from ayywi. */
+.pv-app-product {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+}
+
 /* Support inbox: list · thread · details, each scrolling on its own inside the shell's main. */
 .pv-app-inbox {
   display: grid;
@@ -1214,36 +1221,6 @@
 }
 
 /* What are you building: cards that are radios. */
-.pv-picks {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
-  gap: var(--ayy-space-3);
-}
-
-.pv-pick {
-  gap: var(--ayy-space-1);
-  padding: var(--ayy-space-4);
-  cursor: pointer;
-}
-
-.pv-pick > .ayy-icon-tile {
-  margin-block-end: var(--ayy-space-2);
-}
-
-.pv-pick:has(input:focus-visible) {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
-.pv-pick__label {
-  font-weight: var(--ayy-weight-semibold);
-}
-
-.pv-pick__hint {
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
-}
-
 /* The fill-in sentence: inputs as wide as their words. */
 .pv-madlib {
   margin: 0;
@@ -1303,9 +1280,10 @@
   padding: var(--ayy-space-4);
 }
 
+/* Two a row on a phone, four on a wide screen. */
 .pv-fixes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(14rem, calc(50% - var(--ayy-space-2))), 1fr));
   gap: var(--ayy-space-3);
 }
 

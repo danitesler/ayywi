@@ -74,7 +74,23 @@ export {
   TableCaption,
   type TableProps,
   type TableCellProps,
+  type TableHeadProps,
+  type TableRowProps,
 } from "../components/table/table.react";
+export {
+  BarChart,
+  LineChart,
+  Sparkline,
+  BarList,
+  type BarChartProps,
+  type LineChartProps,
+  type LineChartSeries,
+  type ChartSeries,
+  type ChartBaseProps,
+  type SparklineProps,
+  type BarListProps,
+  type BarListItem,
+} from "../components/chart/chart.react";
 export {
   Navbar,
   NavbarBrand,
@@ -164,6 +180,21 @@ export {
   type SegmentedControlProps,
   type SegmentedControlItemProps,
 } from "../components/segmented-control/segmented-control.react";
+export {
+  Chip,
+  ChipButton,
+  ChipRemovable,
+  ChipGroup,
+  type ChipProps,
+  type ChipButtonProps,
+  type ChipRemovableProps,
+  type ChipGroupProps,
+} from "../components/chip/chip.react";
+export { ChoiceGroup, ChoiceCard, type ChoiceGroupProps, type ChoiceCardProps } from "../components/choice-card/choice-card.react";
+export { Slider, SliderRange, type SliderProps, type SliderRangeProps } from "../components/slider/slider.react";
+export { NumberField, type NumberFieldProps } from "../components/number-field/number-field.react";
+export { Combobox, type ComboboxProps, type ComboboxOption } from "../components/combobox/combobox.react";
+export { Dropzone, type DropzoneProps } from "../components/dropzone/dropzone.react";
 export { Pagination, type PaginationProps, type PaginationLabels } from "../components/pagination/pagination.react";
 export { Accordion, AccordionItem, type AccordionProps, type AccordionItemProps } from "../components/accordion/accordion.react";
 export { Steps, type StepsProps } from "../components/steps/steps.react";

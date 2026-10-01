@@ -1,0 +1,173 @@
+/* Choice cards: pick a plan, a delivery option, a time slot. A <label> card around a native radio or checkbox, so
+   the whole card is the hit area and forms, arrow keys and screen readers work as for any input. */
+
+/* Usually a <fieldset> (role="radiogroup" for radio cards) with a legend; a grid that adapts to its box. */
+.ayy-choice-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ayy-min, 12rem), 100%), 1fr));
+  gap: var(--ayy-space-3);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* One row that scrolls sideways (a day strip on a phone). The padding keeps focus rings inside the scrolling box. */
+.ayy-choice-group--scroll {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(var(--ayy-min, 12rem), 1fr);
+  margin: -3px;
+  padding: 3px;
+  overflow-x: auto;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+}
+
+.ayy-choice-group--scroll > .ayy-choice-card {
+  scroll-snap-align: start;
+}
+
+.ayy-choice-group__legend {
+  margin-block-end: var(--ayy-space-2);
+  padding: 0;
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-choice-card {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+  padding: var(--ayy-space-4);
+  /* Room for the radio or checkbox in the corner. */
+  padding-inline-end: calc(var(--ayy-space-4) + var(--ayy-size-check) + var(--ayy-space-2));
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-snug);
+  cursor: pointer;
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    box-shadow var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+/* The input shows which kind of choice it is (round: one, square: several) in the inline-end corner. */
+.ayy-choice-card > input {
+  position: absolute;
+  inset-block-start: var(--ayy-space-4);
+  inset-inline-end: var(--ayy-space-4);
+  margin: 0;
+}
+
+.ayy-choice-card > svg,
+.ayy-choice-card > .ayy-icon-tile {
+  margin-block-end: var(--ayy-space-2);
+}
+
+.ayy-choice-card > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-choice-card:hover {
+  border-color: var(--ayy-color-line-hover);
+}
+
+/* Chosen: like Card featured, a text-colour border with a 1px ring, so it reads as 2px without moving anything. */
+.ayy-choice-card:has(> input:checked) {
+  border-color: var(--ayy-color-text);
+  box-shadow: 0 0 0 1px var(--ayy-color-text);
+}
+
+.ayy-choice-card:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-choice-card:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-choice-card__title {
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-choice-card__description {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+}
+
+/* A price, a delivery date: pushed to the bottom so a row of cards lines them up. */
+.ayy-choice-card__meta {
+  margin-block-start: auto;
+  padding-block-start: var(--ayy-space-2);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--ayy-weight-semibold);
+}
+
+/* Compact: a time slot or a size. Centred, the input hidden; the chosen one fills like a checked segment. */
+.ayy-choice-card--compact {
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-block-size: var(--ayy-size-control-lg);
+  padding: var(--ayy-space-2) var(--ayy-space-3);
+  border-radius: var(--ayy-radius-control);
+  text-align: center;
+}
+
+.ayy-choice-card--compact > input {
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.ayy-choice-card--compact:has(> input:checked) {
+  border-color: var(--ayy-color-text);
+  background-color: var(--ayy-color-text);
+  color: var(--ayy-color-bg);
+}
+
+.ayy-choice-card--compact .ayy-choice-card__title {
+  white-space: nowrap;
+}
+
+.ayy-choice-card--compact:has(> input:checked) .ayy-choice-card__description {
+  color: inherit;
+}
+
+/* A slot that's gone: struck through as well as dimmed, so it doesn't rely on opacity alone. */
+.ayy-choice-card--compact:has(> input:disabled) .ayy-choice-card__title {
+  text-decoration: line-through;
+}
+
+.ayy-choice-group:has(> .ayy-choice-card--compact) {
+  --ayy-min: 6rem;
+  gap: var(--ayy-space-2);
+}
+
+@media (forced-colors: active) {
+  .ayy-choice-card {
+    border-color: CanvasText;
+  }
+  .ayy-choice-card:has(> input:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .ayy-choice-card--compact:has(> input:checked) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

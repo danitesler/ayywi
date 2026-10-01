@@ -18,6 +18,10 @@ import {
   Chat,
   ChatMessage,
   ChatTyping,
+  Chip,
+  ChipGroup,
+  ChoiceCard,
+  ChoiceGroup,
   Frame,
   Icon,
   IconTile,
@@ -31,7 +35,7 @@ import {
 } from "ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { components } from "../data";
-import { buildPrompt, FIXES, fixPrompt, request, site, STARTERS, TOOLS, type StarterId, type Tool } from "../prompts";
+import { buildPrompt, FIXES, fixPrompt, headTags, links, request, STARTERS, TOOLS, type Links, type StarterId, type Tool } from "../prompts";
 import { showcaseApps } from "../showcase/apps";
 import { themeOptions } from "../themes";
 import { ScaledFrame } from "./Showcase";
@@ -42,17 +46,16 @@ const ROUTE = "";
 
 type Setup = "files" | "package" | "chat";
 
-const SETUPS: Record<Setup, { label: string; note: string; prompt: (base: string) => string }> = {
+const SETUPS: Record<Setup, { label: string; note: string; prompt: (l: Links) => string }> = {
   files: {
     label: "Link files",
     note: "No install. The agent downloads the stylesheet and the script from this site and reads the rules from here too. Works in any project, with or without a build step.",
-    prompt: (base) => `Set up the ayywi design system in this project and build a first screen with it. Don't install any packages.
+    prompt: (l) => `Set up the ayywi design system in this project and build a first screen with it. Don't install any packages.
 
-1. Download these two files into the project (for example public/vendor/ayywi/) and load them once from the app's HTML entry: the stylesheet in <head>, the script with defer. With a bundler you can import the CSS instead.
-   ${base}dist/ayywi.min.css
-   ${base}dist/elements.global.js
-2. Before writing any UI, read ${base}llms-full.txt: the rules, the tokens, and every component with copy-ready HTML and React. Use only its classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No hardcoded colours, no made-up classes, no left/right CSS.
-3. Save the rules at ${base}ai/AGENTS.snippet.md into AGENTS.md (or CLAUDE.md, or .cursorrules) so later sessions follow them too.
+1. Load these once from the app's HTML entry, in <head>. They're pinned to one release, so a later one can't change your app; to own them, download them into the project (for example public/vendor/ayywi/, with the fonts/ folder next to fonts.css). With a bundler you can import the CSS instead.
+${headTags(l, "   ")}
+2. Before writing any UI, read ${l.docs}llms-full.txt: the rules, the tokens, and every component with copy-ready HTML and React (or ${l.docs}llms.txt and one page per component, ${l.docs}llms/<component>.md). Use only its classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No hardcoded colours, no made-up classes, no left/right CSS.
+3. Save the rules at ${l.docs}ai/AGENTS.snippet.md into AGENTS.md (or CLAUDE.md, or .cursorrules) so later sessions follow them too.
 4. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, Sections and a Footer. Include its empty, loading and error states.
 5. Tell me which files you changed and how to open the screen.`,
   },
@@ -70,11 +73,10 @@ const SETUPS: Record<Setup, { label: string; note: string; prompt: (base: string
   chat: {
     label: "Chat only",
     note: "For Claude, ChatGPT or Gemini in the browser: you get one HTML file that loads ayywi from this site. Good for a prototype or a quick mock.",
-    prompt: (base) => `You're helping me build UI with the ayywi design system. Read ${base}llms.txt, then the parts of ${base}llms-full.txt you need. If you can't open links, ask me to paste the component sections.
+    prompt: (l) => `You're helping me build UI with the ayywi design system. Read ${l.docs}llms.txt, then the page of each component you need (${l.docs}llms/<component>.md). If you can't open links, ask me to paste the component sections.
 
-Answer with one self-contained HTML file that loads
-  <link rel="stylesheet" href="${base}dist/ayywi.min.css">
-  <script src="${base}dist/elements.global.js" defer></script>
+Answer with one self-contained HTML file that has these in its <head>
+${headTags(l, "  ")}
 and uses only ayywi classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No other CSS framework, no hardcoded colours, no left/right CSS. Icons are inline Hugeicons SVGs with class="ayy-icon".
 
 My first screen: a pricing page with three plans (the middle one recommended), a monthly/yearly switch and an FAQ.`,
@@ -158,7 +160,7 @@ function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
   );
 }
 
-/** The five showcase apps, each with the prompt that builds it in the chosen tool. */
+/** The showcase apps, each with the prompt that builds it in the chosen tool. */
 function Examples({ tool }: { tool: Tool }) {
   return (
     <Carousel label="Example apps" slideWidth="min(20rem, 85%)" className="pv-examples">
@@ -294,18 +296,21 @@ function BuilderGuide({ tool, setTool }: { tool: Tool; setTool: (t: Tool) => voi
       <h2 className="pv-h pv-h--section" id="what">
         <span className="pv-step">1</span> What are you building?
       </h2>
-      <div className="pv-picks" role="radiogroup" aria-label="What are you building?">
+      <ChoiceGroup aria-label="What are you building?" name="pv-starter" value={starter} onValueChange={(v) => pick(v as StarterId)} min="min(16rem, calc(50% - var(--ayy-space-2)))">
         {STARTERS.map((s) => (
-          <label key={s.id} className={`ayy-card pv-pick${s.id === starter ? " ayy-card--featured" : ""}`}>
-            <input type="radio" name="pv-starter" className="ayy-sr-only" checked={s.id === starter} onChange={() => pick(s.id)} />
-            <IconTile size="sm">
-              <Icon icon={STARTER_ICONS[s.id]} />
-            </IconTile>
-            <span className="pv-pick__label">{s.label}</span>
-            <span className="pv-pick__hint">{s.hint}</span>
-          </label>
+          <ChoiceCard
+            key={s.id}
+            value={s.id}
+            title={s.label}
+            description={s.hint}
+            icon={
+              <IconTile size="sm">
+                <Icon icon={STARTER_ICONS[s.id]} />
+              </IconTile>
+            }
+          />
         ))}
-      </div>
+      </ChoiceGroup>
       <p className="pv-note">Now make it yours. Change the highlighted words:</p>
       <p className="pv-madlib">
         Build me a <Slot label="What you're building" value={what} onChange={setWhat} placeholder="booking app" /> for{" "}
@@ -332,13 +337,13 @@ function BuilderGuide({ tool, setTool }: { tool: Tool; setTool: (t: Tool) => voi
       <h2 className="pv-h pv-h--section" id="tool">
         <span className="pv-step">2</span> Copy it into your tool
       </h2>
-      <SegmentedControl aria-label="Your tool" value={tool} onValueChange={(v) => setTool(v as Tool)}>
+      <ChipGroup role="radiogroup" aria-label="Your tool">
         {(Object.keys(TOOLS) as Tool[]).map((key) => (
-          <SegmentedControlItem key={key} value={key}>
+          <Chip key={key} type="radio" name="pv-tool" value={key} checked={tool === key} onCheckedChange={(on) => on && setTool(key)}>
             {TOOLS[key].label}
-          </SegmentedControlItem>
+          </Chip>
         ))}
-      </SegmentedControl>
+      </ChipGroup>
       <div className="ayy-split pv-copy">
         <div className="ayy-stack">
           <p className="pv-copy__where">{TOOLS[tool].where}</p>
@@ -390,7 +395,7 @@ function BuilderGuide({ tool, setTool }: { tool: Tool; setTool: (t: Tool) => voi
 /** The guide for developers: install paths, use-case prompts, checks and the raw files. */
 function DeveloperGuide() {
   const [setup, setSetup] = useState<Setup>("files");
-  const base = site();
+  const l = links();
   const chosen = SETUPS[setup];
   const stable = components.filter((c) => c.status === "stable").length;
   const facts = [`${components.length} components (${stable} stable)`, `${Object.keys(tokens).length} tokens`, `${themes.length} themes`, "any framework", "0 runtime dependencies"];
@@ -408,14 +413,14 @@ function DeveloperGuide() {
         ))}
       </SegmentedControl>
       <p className="pv-note">{chosen.note}</p>
-      <CodeBlock code={chosen.prompt(base)} label="prompt" wrap />
+      <CodeBlock code={chosen.prompt(l)} label="prompt" wrap />
 
       <h2 className="pv-h pv-h--section" id="build">
         <span className="pv-step">2</span> Ask for a screen
       </h2>
       <p className="pv-note">
         After setup the agent knows the rules, so plain words work. These prompts name the components, so nothing is left to guess; the
-        first five are the screens in What you can build.
+        first seven are the screens in What you can build.
       </p>
       <Accordion single>
         {showcaseApps.map((app) => (

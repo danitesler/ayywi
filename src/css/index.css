@@ -17,9 +17,15 @@
 @import "../components/input-group/input-group.css" layer(ayywi.components);
 @import "../components/textarea/textarea.css" layer(ayywi.components);
 @import "../components/select/select.css" layer(ayywi.components);
+@import "../components/combobox/combobox.css" layer(ayywi.components);
 @import "../components/checkbox/checkbox.css" layer(ayywi.components);
 @import "../components/radio/radio.css" layer(ayywi.components);
 @import "../components/segmented-control/segmented-control.css" layer(ayywi.components);
+@import "../components/chip/chip.css" layer(ayywi.components);
+@import "../components/choice-card/choice-card.css" layer(ayywi.components);
+@import "../components/slider/slider.css" layer(ayywi.components);
+@import "../components/number-field/number-field.css" layer(ayywi.components);
+@import "../components/dropzone/dropzone.css" layer(ayywi.components);
 @import "../components/field/field.css" layer(ayywi.components);
 @import "../components/switch/switch.css" layer(ayywi.components);
 @import "../components/tabs/tabs.css" layer(ayywi.components);
@@ -54,3 +60,4 @@
 @import "../components/frame/frame.css" layer(ayywi.components);
 @import "../components/chat/chat.css" layer(ayywi.components);
 @import "../components/table/table.css" layer(ayywi.components);
+@import "../components/chart/chart.css" layer(ayywi.components);

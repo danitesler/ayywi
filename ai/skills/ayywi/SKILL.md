@@ -19,15 +19,16 @@ ayywi is a CSS class contract (`.ayy-*`) plus design tokens (`--ayy-*`), with ty
 | Project | Write |
 |---|---|
 | React / Next / Remix | `import { Button, Dialog, … } from "ayywi/react"` |
-| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>` from `"ayywi/elements"` for interactive parts; `toast()` from `"ayywi"` |
-| Plain HTML, Rails, Django, Laravel, Go, .NET, PHP | same markup + `dist/ayywi.min.css` and `dist/elements.global.js` (also gives `window.ayywi.toast`, `setTheme`…) |
-| Tailwind | keep ayywi components; use the preset utilities (`bg-surface`, `border-line`, `rounded-card`) for layout glue |
+| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>` from `"ayywi/elements"` for interactive parts; `toast()` from `"ayywi"` |
+| Plain HTML, Rails, Django, Laravel, Go, .NET, PHP | same markup + `dist/ayywi.min.css` and `dist/elements.global.js` (also gives `window.ayywi.toast`, `setTheme`, `chartColors`…); `dist/fonts.css` for the fonts and `dist/theme-init.js` first in `<head>` so a saved theme applies before the first paint |
+| Tailwind | keep ayywi components; map Tailwind's theme to ayywi (`ayywi/tailwind.css` for v4, `ayywi/tailwind-preset` for v3) and use its utilities (`bg-surface`, `border-line`, `rounded-card`, `bg-chart-1`) for layout glue, never Tailwind's own colour scale |
+| Already on shadcn/ui | load `ayywi/shadcn.css` after ayywi so leftover shadcn parts take ayywi's colours, radius and font; build new UI with ayywi and replace a shadcn component whenever you touch it |
 
 Check `package.json` and existing components before choosing. Match what's there.
 
 ## 3. Rules (the full list: the ayywi section of AGENTS.md, or `get_rules`)
 
-1. Reuse ayywi components and their variants before writing custom CSS. Never add a second UI kit.
+1. Reuse ayywi components and their variants before writing custom CSS. Never add a second UI kit (see "Already on shadcn/ui" above for one that's there).
 2. No hardcoded colours, in stylesheets or inline styles: `var(--ayy-color-*)`, the wash/line tokens, or `color-mix(in srgb, var(--ayy-color-text) N%, transparent)`.
 3. Logical properties only (`margin-inline-start`, `padding-inline`, `inset-inline-end`, `inline-size`, `text-align: start`). No `left`/`right`, no `:dir()`.
 4. Spacing, sizes, radius, type, shadow and motion from tokens. Lay out with `.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid` and `.ayy-split` (gap via `--ayy-gap`) instead of new flex CSS.
@@ -52,6 +53,11 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | KPIs | `.ayy-grid` of `Card` + `Stat` + a status `Badge` |
 | Main + side column | `.ayy-split` (the side column drops below when there's no room) |
 | Rows of things | `List` (threads, members, files; `ListLink` makes a row clickable, `current` marks the open one); `List divided` for settings rows with a `Switch`; `Table` + `Pagination` for records compared across columns |
+| Sorting and selecting rows | `TableHead sort onSort` (HTML: an `.ayy-table__sort` button in the `<th>`, `aria-sort` on it, `<ayy-table>` sorts); `compareValues()` sorts numbers like "$1,240" by value; a `select` checkbox column with `TableRow selected`, the count and bulk actions above the table |
+| Filters | a `.ayy-spread` toolbar: a search `InputGroup`, `Chip`s (checkbox, or `ChipButton` when it filters on click) with `count`s, the active ones as `ChipRemovable` with Clear all; `ChipGroup scroll` on phones. An `EmptyState` with "Clear filters" when nothing matches |
+| Charts | in a `Card` with the title and the key number: `LineChart` for a trend (last period as a `compare` series), `BarChart` for amounts by category or period (`stacked` for parts), `BarList` for a ranking, `Sparkline` next to a `Stat`. Series take `--ayy-chart-1`… in order. With a library: `var(--ayy-chart-N)` in SVG, `chartColors()` / `chartTheme()` for canvas |
+| Picking values | two to five words: `SegmentedControl`; options with a sentence or a price: `ChoiceGroup` of `ChoiceCard`s (`compact` for time slots, `scroll` for a day strip); many known values: `Combobox`; small counts: `NumberField`; a rough amount or a price range: `Slider` / `SliderRange`; dates and times: `Input type="date"` / `"time"` |
+| Uploads | `Dropzone` (`compact` in a form), then a `List divided` of the files with a `Progress` each and a remove button |
 | Facts about one thing | `DataList` |
 | Settings sections | `Tabs`, then a `Card` per group with a `CardFooter` for Save |
 | Multi-step flows | `Steps` above the form, one primary Continue per step |
@@ -71,6 +77,7 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Case-study page | `Breadcrumb pill`, `Frame` around screenshots, `DataList row`, `Toc sticky numbered` beside `.ayy-prose` sections |
 | Photo or quote strip | `Carousel` |
 | Sign-up | `InputGroup` (email, with an icon) and a submit `Button` |
+| Shop | category `Chip`s (radio) with counts, a `SliderRange` for price, a `Select` to sort; an `.ayy-grid` of product `Card`s; the cart in a `Dialog side="end"` with a `NumberField` per line, delivery `ChoiceCard`s and a `DataList row` of totals |
 | End of page | `Footer`: `FooterBrand`, `FooterNav` of `FooterGroup`s, `FooterBottom` for copyright and legal links |
 | Motion | `.ayy-reveal` on blocks, `.ayy-scroll-progress` at the top of long reads — CSS only |
 

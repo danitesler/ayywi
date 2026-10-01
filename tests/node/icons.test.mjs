@@ -9,6 +9,10 @@ import ArrowRight01Icon from "@hugeicons/core-free-icons/ArrowRight01Icon";
 import ArrowLeft02Icon from "@hugeicons/core-free-icons/ArrowLeft02Icon";
 import ArrowRight02Icon from "@hugeicons/core-free-icons/ArrowRight02Icon";
 import GitBranchIcon from "@hugeicons/core-free-icons/GitBranchIcon";
+import ArrowDown01Icon from "@hugeicons/core-free-icons/ArrowDown01Icon";
+import CloudUploadIcon from "@hugeicons/core-free-icons/CloudUploadIcon";
+import MinusSignIcon from "@hugeicons/core-free-icons/MinusSignIcon";
+import PlusSignIcon from "@hugeicons/core-free-icons/PlusSignIcon";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -73,4 +77,13 @@ test("the navbar's menu button, pagination and carousel arrows draw the Hugeicon
   const carousel = selfClose(renderToStaticMarkup(createElement(Carousel, { label: "Quotes" })));
   assert.ok(carousel.includes(iconSvg(ArrowLeft02Icon, { directional: true })), "carousel previous");
   assert.ok(carousel.includes(iconSvg(ArrowRight02Icon, { directional: true })), "carousel next");
+});
+
+test("the combobox chevron, number field steps, drop zone and chip remove draw the Hugeicons glyphs (vendored copies match the package)", { skip }, async () => {
+  const { comboboxChevronIcon, numberFieldMinusIcon, numberFieldPlusIcon, dropzoneIcon, chipRemoveIcon, iconSvg } = await import(dist("index.js"));
+  assert.equal(comboboxChevronIcon, iconSvg(ArrowDown01Icon));
+  assert.equal(numberFieldMinusIcon, iconSvg(MinusSignIcon));
+  assert.equal(numberFieldPlusIcon, iconSvg(PlusSignIcon));
+  assert.equal(dropzoneIcon, iconSvg(CloudUploadIcon));
+  assert.equal(chipRemoveIcon, iconSvg(Cancel01Icon));
 });

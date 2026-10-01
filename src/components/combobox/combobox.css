@@ -1,0 +1,115 @@
+/* Combobox: an input that filters a list as you type, for picking one of many known values (a city, a customer,
+   a time zone). The WAI-ARIA combobox pattern: the input keeps focus, the list is a popover listbox, and the
+   option under the arrow keys carries aria-selected. React Combobox or <ayy-combobox> wire it. */
+
+.ayy-combobox {
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+}
+
+/* Room for the chevron at the inline end. */
+.ayy-combobox > .ayy-input {
+  padding-inline-end: calc(var(--ayy-space-3) + var(--ayy-size-icon-sm) + var(--ayy-space-2));
+}
+
+.ayy-combobox > svg {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--ayy-space-3);
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  margin-block: auto;
+  color: var(--ayy-color-muted);
+  pointer-events: none;
+}
+
+.ayy-combobox__listbox {
+  box-sizing: border-box;
+  max-inline-size: min(28rem, calc(100vw - 1rem));
+  max-block-size: min(18rem, 50vh);
+  margin: 0;
+  padding: var(--ayy-space-1);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay);
+  list-style: none;
+  opacity: 1;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    overlay var(--ayy-duration-fast) allow-discrete,
+    display var(--ayy-duration-fast) allow-discrete;
+}
+
+.ayy-combobox__listbox:not(:popover-open) {
+  opacity: 0;
+}
+
+@starting-style {
+  .ayy-combobox__listbox:popover-open {
+    opacity: 0;
+  }
+}
+
+.ayy-combobox__option {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-block-size: var(--ayy-size-control-md);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-2) var(--ayy-space-3);
+  border-radius: var(--ayy-radius-lg);
+  font-size: var(--ayy-control-text-md);
+  cursor: pointer;
+}
+
+.ayy-combobox__option[hidden],
+.ayy-combobox__empty[hidden] {
+  display: none;
+}
+
+.ayy-combobox__option > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+/* The option the arrow keys are on (aria-selected, as in the ARIA combobox pattern) or the pointer is over. */
+.ayy-combobox__option:hover,
+.ayy-combobox__option[aria-selected="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-combobox__option[aria-disabled="true"] {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* Extra text at the end of an option: a country, a count, a shortcut. */
+.ayy-combobox__meta {
+  margin-inline-start: auto;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-combobox__empty {
+  padding: var(--ayy-space-2) var(--ayy-space-3);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-control-text-md);
+}
+
+@media (forced-colors: active) {
+  .ayy-combobox__listbox {
+    border-color: CanvasText;
+  }
+  .ayy-combobox__option[aria-selected="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

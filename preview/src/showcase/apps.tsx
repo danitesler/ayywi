@@ -1,6 +1,7 @@
-// Five screens built only from ayywi components, tokens and layout utilities. The pv-app-* classes in preview.css
-// only size the showcase frame and lay out the inbox's three panes; every colour, size and control comes from ayywi.
-// The three apps share one frame (AppFrame): the sidebar on wide screens, a top bar and a bottom nav on phones.
+// Seven screens built only from ayywi components, tokens and layout utilities. The pv-app-* classes in preview.css
+// only size the showcase frame, lay out the inbox's three panes and frame the store's product art; every colour, size
+// and control comes from ayywi. The apps share one frame (AppFrame): the sidebar on wide screens, a top bar and a
+// bottom nav on phones. The marketing site and the store are websites: a Navbar and a Footer.
 import { useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
 import {
   Add01Icon,
@@ -10,6 +11,7 @@ import {
   Calendar03Icon,
   ChartLineData01Icon,
   CheckmarkCircle02Icon,
+  Coffee02Icon,
   CreditCardIcon,
   DashboardSquare01Icon,
   Download01Icon,
@@ -32,14 +34,18 @@ import {
   SentIcon,
   Settings01Icon,
   Shield01Icon,
+  ShoppingBag01Icon,
   SmartPhone01Icon,
   SparklesIcon,
   Task01Icon,
+  Ticket01Icon,
+  UserCircleIcon,
   UserGroupIcon,
   UserMultipleIcon,
   Wallet01Icon,
+  Yoga01Icon,
 } from "@hugeicons/core-free-icons";
-import type { DensityMode, IconData, ThemeName } from "ayywi";
+import { toast, type DensityMode, type IconData, type ThemeName } from "ayywi";
 import {
   Accordion,
   AccordionItem,
@@ -63,6 +69,7 @@ import {
   BottomNav,
   BottomNavButton,
   BottomNavLink,
+  BarList,
   Breadcrumb,
   Button,
   buttonClass,
@@ -71,6 +78,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardMedia,
   CardTitle,
   Carousel,
   CarouselSlide,
@@ -78,9 +86,24 @@ import {
   ChatMessage,
   ChatReplies,
   ChatTyping,
+  Chip,
   Checkbox,
+  ChipButton,
+  ChipGroup,
+  ChoiceCard,
+  ChoiceGroup,
+  Combobox,
   DataList,
   DataListItem,
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Dropzone,
   EmptyState,
   EmptyStateActions,
   EmptyStateDescription,
@@ -100,6 +123,7 @@ import {
   InputGroupAddon,
   Kbd,
   Label,
+  LineChart,
   List,
   ListContent,
   ListDescription,
@@ -113,6 +137,7 @@ import {
   NavbarLink,
   NavbarNav,
   NavbarToggle,
+  NumberField,
   PageHeader,
   PageHeaderActions,
   PageHeaderDescription,
@@ -129,6 +154,8 @@ import {
   Select,
   Separator,
   Skeleton,
+  SliderRange,
+  Sparkline,
   Stat,
   Steps,
   Switch,
@@ -143,6 +170,9 @@ import {
   TabsList,
   TabsTrigger,
   Textarea,
+  compareValues,
+  nextSortDirection,
+  type SortDirection,
 } from "ayywi/react";
 
 const gap = (space: number) => ({ "--ayy-gap": `var(--ayy-space-${space})` }) as CSSProperties;
@@ -239,19 +269,37 @@ const account = (name: string) => (
 
 /* ---- 1. Analytics dashboard ---- */
 
+/* Thirty days of visitors, this period and the one before. Made up, but every number on the page is computed from them. */
+const DAYS = Array.from({ length: 30 }, (_, i) => `Sep ${i + 1}`);
+const daily = (base: number, i: number) => Math.round(base + 11 * i + 170 * Math.sin(i / 2.3) - (i % 7 === 5 || i % 7 === 6 ? 280 : 0));
+const VISITORS = DAYS.map((_, i) => daily(1560, i));
+const VISITORS_BEFORE = DAYS.map((_, i) => daily(1390, i));
+const total = (list: number[]) => list.reduce((a, b) => a + b, 0);
+const compactNumber = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
+const percentChange = (now: number, before: number) => `${now >= before ? "+" : "−"}${Math.abs((now / before - 1) * 100).toFixed(1)}%`;
+
 const KPIS = [
-  { label: "Visitors", value: "48.2k", change: "+12.4%", up: true },
-  { label: "Conversion rate", value: "3.8", unit: "%", change: "+0.6 pt", up: true },
-  { label: "Revenue", value: "$92.4k", change: "+8.1%", up: true },
-  { label: "Avg. session", value: "4m 12s", change: "−9s", up: false },
+  { label: "Visitors", value: compactNumber.format(total(VISITORS)), change: percentChange(total(VISITORS), total(VISITORS_BEFORE)), up: true, trend: VISITORS },
+  { label: "Conversion rate", value: "3.8", unit: "%", change: "+0.6 pt", up: true, trend: [3.1, 3.2, 3.2, 3.4, 3.3, 3.5, 3.6, 3.5, 3.7, 3.8] },
+  { label: "Revenue", value: "$92.4K", change: "+8.1%", up: true, trend: [71, 74, 73, 78, 80, 79, 84, 86, 89, 92.4] },
+  { label: "Avg. session", value: "4m 12s", change: "−9s", up: false, trend: [268, 266, 267, 262, 264, 259, 258, 255, 254, 252] },
 ];
 
+/** Where the visitors came from: the shares add up to the Visitors KPI. */
+const SOURCES = [
+  { label: "Search", share: 0.39 },
+  { label: "Direct", share: 0.26 },
+  { label: "Social", share: 0.16 },
+  { label: "Referral", share: 0.11 },
+  { label: "Email", share: 0.08 },
+].map((s) => ({ label: s.label, value: Math.round(total(VISITORS) * s.share) }));
+
 const PAGES = [
-  { path: "/pricing", views: "12,480", share: 26, status: "Trending", variant: "success" },
-  { path: "/blog/design-tokens", views: "9,214", share: 19, status: "New", variant: "info" },
-  { path: "/", views: "8,902", share: 18, status: "Steady", variant: "muted" },
-  { path: "/docs/install", views: "6,377", share: 13, status: "Steady", variant: "muted" },
-  { path: "/changelog", views: "2,105", share: 4, status: "Dropping", variant: "warning" },
+  { path: "/pricing", views: 12480, share: 26, status: "Trending", variant: "success" },
+  { path: "/blog/design-tokens", views: 9214, share: 19, status: "New", variant: "info" },
+  { path: "/", views: 8902, share: 18, status: "Steady", variant: "muted" },
+  { path: "/docs/install", views: 6377, share: 13, status: "Steady", variant: "muted" },
+  { path: "/changelog", views: 2105, share: 4, status: "Dropping", variant: "warning" },
 ] as const;
 
 const GOALS = [
@@ -262,6 +310,8 @@ const GOALS = [
 
 function DashboardApp() {
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<SortDirection>("descending");
+  const pages = [...PAGES].sort((a, b) => (sort === "ascending" ? 1 : -1) * compareValues(a.views, b.views));
   return (
     <AppFrame
       brand={{ name: "Pulse", icon: ChartLineData01Icon, href: "#overview" }}
@@ -312,14 +362,37 @@ function DashboardApp() {
               <CardContent>
                 <div className="ayy-stack" style={gap(2)}>
                   <Stat labelFirst size="sm" label={k.label} value={k.value} unit={k.unit} />
-                  <Badge variant={k.up ? "success" : "warning"} dot>
-                    {k.change}
-                  </Badge>
+                  <div className="ayy-spread">
+                    <Badge variant={k.up ? "success" : "warning"} dot>
+                      {k.change}
+                    </Badge>
+                    <Sparkline values={k.trend} area color={k.up ? undefined : "var(--ayy-color-warning)"} />
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
+        <Card>
+          <CardHeader>
+            <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+              <CardTitle>Visitors</CardTitle>
+              <span className="ayy-muted">September, against August</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <LineChart
+              label="Visitors per day in September, against the same days in August"
+              labels={DAYS}
+              height="11rem"
+              series={[
+                { name: "September", values: VISITORS },
+                { name: "August", values: VISITORS_BEFORE, compare: true },
+              ]}
+            />
+          </CardContent>
+        </Card>
 
         <div className="ayy-split" style={min("18rem")}>
           <Card>
@@ -333,12 +406,14 @@ function DashboardApp() {
                   <TableRow>
                     <TableHead>Page</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead numeric>Views</TableHead>
+                    <TableHead numeric sort={sort} onSort={() => setSort(nextSortDirection(sort))}>
+                      Views
+                    </TableHead>
                     <TableHead numeric>Share</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {PAGES.map((p) => (
+                  {pages.map((p) => (
                     <TableRow key={p.path}>
                       <TableCell>
                         <span className="ayy-mono">{p.path}</span>
@@ -346,7 +421,7 @@ function DashboardApp() {
                       <TableCell>
                         <Badge variant={p.variant}>{p.status}</Badge>
                       </TableCell>
-                      <TableCell numeric>{p.views}</TableCell>
+                      <TableCell numeric>{p.views.toLocaleString("en-US")}</TableCell>
                       <TableCell numeric>{p.share}%</TableCell>
                     </TableRow>
                   ))}
@@ -364,6 +439,17 @@ function DashboardApp() {
           </Card>
 
           <div className="ayy-stack" style={gap(4)}>
+            <Card>
+              <CardHeader>
+                <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                  <CardTitle>Traffic sources</CardTitle>
+                  <span className="ayy-muted">Visitors</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <BarList items={SOURCES} />
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Goals</CardTitle>
@@ -862,6 +948,25 @@ function SettingsApp() {
                       </Select>
                     </Field>
                     <Field>
+                      <Label htmlFor="lg-photo">Photo</Label>
+                      <div className="ayy-cluster" style={gap(3)}>
+                        <Avatar name="Dana Levi" />
+                        <Dropzone
+                          id="lg-photo"
+                          compact
+                          accept="image/png, image/jpeg"
+                          icon={null}
+                          title={
+                            <>
+                              Drop a photo or <span className="ayy-link">choose one</span>
+                            </>
+                          }
+                          hint="Square, at least 256 × 256"
+                          style={{ flex: 1 }}
+                        />
+                      </div>
+                    </Field>
+                    <Field>
                       <Label htmlFor="lg-bio">About</Label>
                       <Textarea id="lg-bio" rows={3} defaultValue="Keeps the books tidy and the invoices on time." />
                       <FieldHint>Shown on invoices you send.</FieldHint>
@@ -1019,7 +1124,11 @@ function TrackerApp() {
     setRetrying(true);
     window.setTimeout(() => setRetrying(false), 1500);
   };
-  const tasks = view === "today" ? TASKS.filter((t) => t.due === "Today") : view === "upcoming" ? [] : TASKS;
+  const [projects, setProjects] = useState<string[]>([]);
+  const inView = view === "today" ? TASKS.filter((t) => t.due === "Today") : view === "upcoming" ? [] : TASKS;
+  const tasks = projects.length ? inView.filter((t) => projects.includes(t.project)) : inView;
+  const toggleProject = (project: string) =>
+    setProjects((list) => (list.includes(project) ? list.filter((p) => p !== project) : [...list, project]));
   return (
     <AppFrame
       brand={{ name: "Orbit", icon: Rocket01Icon, href: "#tasks" }}
@@ -1086,6 +1195,18 @@ function TrackerApp() {
                 Press <Kbd>C</Kbd> to add a task
               </span>
             </div>
+            <ChipGroup aria-label="Projects" scroll>
+              {["Website", "Growth", "Product"].map((project) => (
+                <ChipButton
+                  key={project}
+                  pressed={projects.includes(project)}
+                  onPressedChange={() => toggleProject(project)}
+                  count={inView.filter((t) => t.project === project).length}
+                >
+                  {project}
+                </ChipButton>
+              ))}
+            </ChipGroup>
             <Card>
               <CardContent>
                 <div role="status">
@@ -1105,19 +1226,31 @@ function TrackerApp() {
                       ))}
                     </List>
                   ) : (
-                    <EmptyState compact>
-                      <IconTile size="sm">
-                        <Icon icon={Calendar03Icon} />
-                      </IconTile>
-                      <EmptyStateTitle>Nothing coming up</EmptyStateTitle>
-                      <EmptyStateDescription>Tasks with a due date after today show up here.</EmptyStateDescription>
-                      <EmptyStateActions>
-                        <Button size="sm" variant="outline">
-                          <Icon icon={Add01Icon} />
-                          Plan a task
-                        </Button>
-                      </EmptyStateActions>
-                    </EmptyState>
+                    inView.length ? (
+                      <EmptyState compact>
+                        <EmptyStateTitle>No tasks in {projects.join(" or ")}</EmptyStateTitle>
+                        <EmptyStateDescription>Nothing due in these projects for this view.</EmptyStateDescription>
+                        <EmptyStateActions>
+                          <Button size="sm" variant="outline" onClick={() => setProjects([])}>
+                            Show every project
+                          </Button>
+                        </EmptyStateActions>
+                      </EmptyState>
+                    ) : (
+                      <EmptyState compact>
+                        <IconTile size="sm">
+                          <Icon icon={Calendar03Icon} />
+                        </IconTile>
+                        <EmptyStateTitle>Nothing coming up</EmptyStateTitle>
+                        <EmptyStateDescription>Tasks with a due date after today show up here.</EmptyStateDescription>
+                        <EmptyStateActions>
+                          <Button size="sm" variant="outline">
+                            <Icon icon={Add01Icon} />
+                            Plan a task
+                          </Button>
+                        </EmptyStateActions>
+                      </EmptyState>
+                    )
                   )}
                 </div>
               </CardContent>
@@ -1162,6 +1295,449 @@ function TrackerApp() {
   );
 }
 
+/* ---- 6. Online store: filters, a product grid, a cart drawer ---- */
+
+const ROASTS = [
+  { id: "guji", name: "Ethiopia Guji", notes: "Blueberry, jasmine, honey", category: "single", roast: "Light", price: 18, spot: "var(--ayy-accent-ai)" },
+  { id: "huila", name: "Colombia Huila", notes: "Red apple, caramel, cocoa", category: "single", roast: "Medium", price: 16, spot: "var(--ayy-accent-marketing)" },
+  { id: "kiambu", name: "Kenya Kiambu", notes: "Blackcurrant, grapefruit", category: "single", roast: "Light", price: 21, spot: "var(--ayy-accent-brand)" },
+  { id: "house", name: "House blend", notes: "Milk chocolate, hazelnut", category: "blend", roast: "Medium", price: 13, spot: "var(--ayy-accent-research)" },
+  { id: "night", name: "Night shift", notes: "Dark chocolate, molasses", category: "blend", roast: "Dark", price: 14, spot: "var(--ayy-accent-product)" },
+  { id: "decaf", name: "Swiss water decaf", notes: "Cocoa, plum, brown sugar", category: "decaf", roast: "Medium", price: 15, spot: "var(--ayy-accent-system)" },
+];
+
+const SHOP_CATEGORIES = [
+  { value: "all", label: "All" },
+  { value: "single", label: "Single origin" },
+  { value: "blend", label: "Blends" },
+  { value: "decaf", label: "Decaf" },
+];
+
+const dollars = (n: number) => `$${n.toFixed(2)}`;
+
+function StoreApp() {
+  const [category, setCategory] = useState("all");
+  const [[low, high], setPrice] = useState<[number, number]>([10, 24]);
+  const [order, setOrder] = useState("popular");
+  const [cart, setCart] = useState<Record<string, number>>({ guji: 1, house: 2 });
+  const [cartOpen, setCartOpen] = useState(false);
+  const [delivery, setDelivery] = useState("standard");
+
+  const inCategory = (id: string) => (id === "all" ? ROASTS : ROASTS.filter((r) => r.category === id));
+  const shown = inCategory(category)
+    .filter((r) => r.price >= low && r.price <= high)
+    .sort((a, b) => (order === "price-low" ? a.price - b.price : order === "price-high" ? b.price - a.price : 0));
+  const count = Object.values(cart).reduce((a, b) => a + b, 0);
+  const subtotal = Object.entries(cart).reduce((sum, [id, qty]) => sum + (ROASTS.find((r) => r.id === id)?.price ?? 0) * qty, 0);
+  const shipping = delivery === "express" ? 9 : 0;
+  const add = (id: string) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+  const setQuantity = (id: string, qty: number) =>
+    setCart((c) => {
+      const next = { ...c };
+      if (qty > 0) next[id] = qty;
+      else delete next[id];
+      return next;
+    });
+  const reset = () => {
+    setCategory("all");
+    setPrice([10, 24]);
+  };
+
+  return (
+    <div className="pv-app pv-app--page">
+      <a className="ayy-skip-link" href="#em-main">
+        Skip to content
+      </a>
+      <Navbar>
+        <NavbarBrand href="#shop">
+          <Icon icon={Coffee02Icon} />
+          Ember
+        </NavbarBrand>
+        <NavbarNav>
+          <NavbarLink href="#shop" current>
+            Shop
+          </NavbarLink>
+          <NavbarLink href="#subscriptions">Subscriptions</NavbarLink>
+          <NavbarLink href="#guides">Brewing guides</NavbarLink>
+          <NavbarLink href="#farms">Our farms</NavbarLink>
+        </NavbarNav>
+        <NavbarActions>
+          <Button size="sm" variant="outline" onClick={() => setCartOpen(true)} aria-label={`Cart, ${count} items`}>
+            <Icon icon={ShoppingBag01Icon} />
+            Cart
+            <Badge>{count}</Badge>
+          </Button>
+        </NavbarActions>
+        <NavbarToggle />
+      </Navbar>
+
+      <main id="em-main">
+        <Section className="ayy-container" aria-labelledby="em-title">
+          <SectionHeader>
+            <p className="ayy-eyebrow">Roasted every Tuesday</p>
+            <h1 className="ayy-h2" id="em-title">
+              Coffee from farms we know by name
+            </h1>
+            <p className="ayy-lede">250 g bags, shipped the day after roasting. Standard delivery is free.</p>
+          </SectionHeader>
+
+          <div className="ayy-stack" style={gap(5)}>
+            <div className="ayy-spread" style={gap(4)}>
+              <ChipGroup role="radiogroup" aria-label="Kind of coffee" scroll>
+                {SHOP_CATEGORIES.map((c) => (
+                  <Chip
+                    key={c.value}
+                    type="radio"
+                    name="em-category"
+                    value={c.value}
+                    checked={category === c.value}
+                    onCheckedChange={(on) => on && setCategory(c.value)}
+                    count={inCategory(c.value).length}
+                  >
+                    {c.label}
+                  </Chip>
+                ))}
+              </ChipGroup>
+              <div className="ayy-cluster" style={gap(4)}>
+                <div className="ayy-stack" style={{ ...gap(1), inlineSize: "13rem" }}>
+                  <div className="ayy-spread">
+                    <span className="ayy-label" id="em-price">
+                      Price
+                    </span>
+                    <span className="ayy-muted">
+                      ${low} – ${high}
+                    </span>
+                  </div>
+                  <SliderRange
+                    aria-labelledby="em-price"
+                    min={10}
+                    max={24}
+                    value={[low, high]}
+                    onValueChange={setPrice}
+                    labels={["Lowest price", "Highest price"]}
+                  />
+                </div>
+                <div style={{ inlineSize: "12rem" }}>
+                  <Select size="sm" aria-label="Sort by" value={order} onChange={(e) => setOrder(e.target.value)}>
+                    <option value="popular">Most popular</option>
+                    <option value="price-low">Price, low to high</option>
+                    <option value="price-high">Price, high to low</option>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <div role="status">
+              {shown.length ? (
+                // At most 14rem a column, and never fewer than two: a phone shows two products a row.
+                <div className="ayy-grid" style={{ ...min("min(14rem, calc(50% - var(--ayy-space-2)))"), ...gap(4) }}>
+                  {shown.map((r) => (
+                    <Card key={r.id} style={{ "--ayy-spot": r.spot } as CSSProperties}>
+                      <CardMedia>
+                        <div className="ayy-bg-grid pv-app-product">
+                          <IconTile size="lg">
+                            <Icon icon={Coffee02Icon} />
+                          </IconTile>
+                        </div>
+                      </CardMedia>
+                      <CardHeader>
+                        <CardTitle>{r.name}</CardTitle>
+                        <CardDescription>
+                          {r.roast} roast · {r.notes}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardFooter>
+                        <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                          <span className="ayy-h6">${r.price}</span>
+                          <Button size="sm" variant="outline" onClick={() => add(r.id)} aria-label={`Add ${r.name} to the cart`}>
+                            <Icon icon={Add01Icon} />
+                            Add
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <EmptyState bordered>
+                  <IconTile>
+                    <Icon icon={Coffee02Icon} />
+                  </IconTile>
+                  <EmptyStateTitle>No coffee in that range</EmptyStateTitle>
+                  <EmptyStateDescription>Widen the price range or pick another kind.</EmptyStateDescription>
+                  <EmptyStateActions>
+                    <Button size="sm" variant="outline" onClick={reset}>
+                      Reset filters
+                    </Button>
+                  </EmptyStateActions>
+                </EmptyState>
+              )}
+            </div>
+          </div>
+        </Section>
+      </main>
+
+      <Dialog open={cartOpen} onOpenChange={setCartOpen}>
+        <DialogContent side="end">
+          <DialogHeader>
+            <DialogTitle>Your cart</DialogTitle>
+            <DialogDescription>{count ? `${count} bags, roasted next Tuesday.` : "Nothing in it yet."}</DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            {count ? (
+              <div className="ayy-stack" style={gap(5)}>
+                <List divided aria-label="Items">
+                  {Object.entries(cart).map(([id, qty]) => {
+                    const r = ROASTS.find((x) => x.id === id)!;
+                    return (
+                      <ListItem key={id} style={{ "--ayy-spot": r.spot } as CSSProperties}>
+                        <IconTile size="sm">
+                          <Icon icon={Coffee02Icon} />
+                        </IconTile>
+                        <ListContent>
+                          <ListTitle>{r.name}</ListTitle>
+                          <ListDescription>250 g · ${r.price}</ListDescription>
+                        </ListContent>
+                        <NumberField
+                          size="sm"
+                          min={0}
+                          max={10}
+                          value={qty}
+                          onValueChange={(n) => setQuantity(id, n)}
+                          aria-label={`Bags of ${r.name}`}
+                          decrementLabel={`One bag fewer of ${r.name}`}
+                          incrementLabel={`One more bag of ${r.name}`}
+                        />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+                <ChoiceGroup legend="Delivery" name="em-delivery" value={delivery} onValueChange={setDelivery} min="9rem">
+                  <ChoiceCard value="standard" title="Standard" description="3–5 days" meta="Free" />
+                  <ChoiceCard value="express" title="Express" description="Tomorrow" meta="$9.00" />
+                </ChoiceGroup>
+                <DataList row>
+                  <DataListItem label="Subtotal">{dollars(subtotal)}</DataListItem>
+                  <DataListItem label="Delivery">{shipping ? dollars(shipping) : "Free"}</DataListItem>
+                  <DataListItem label="Total">
+                    <strong>{dollars(subtotal + shipping)}</strong>
+                  </DataListItem>
+                </DataList>
+              </div>
+            ) : (
+              <EmptyState compact>
+                <EmptyStateTitle>Your cart is empty</EmptyStateTitle>
+                <EmptyStateDescription>Pick a coffee and it shows up here.</EmptyStateDescription>
+              </EmptyState>
+            )}
+          </DialogBody>
+          <DialogFooter>
+            <DialogClose>Keep shopping</DialogClose>
+            <Button
+              disabled={!count}
+              onClick={() => {
+                setCartOpen(false);
+                setCart({});
+                toast.success("Order placed. Your coffee ships Wednesday.");
+              }}
+            >
+              Check out
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Footer>
+        <FooterBrand>
+          <a href="#shop">
+            <Icon icon={Coffee02Icon} />
+            Ember
+          </a>
+          <p>Small-batch coffee from Lisbon.</p>
+        </FooterBrand>
+        <FooterNav>
+          <FooterGroup label="Shop">
+            <FooterLink href="#shop">Coffee</FooterLink>
+            <FooterLink href="#subscriptions">Subscriptions</FooterLink>
+          </FooterGroup>
+          <FooterGroup label="Help">
+            <FooterLink href="#shipping">Shipping</FooterLink>
+            <FooterLink href="#contact">Contact</FooterLink>
+          </FooterGroup>
+        </FooterNav>
+        <FooterBottom>
+          <p>© 2026 Ember Roasters</p>
+        </FooterBottom>
+      </Footer>
+    </div>
+  );
+}
+
+/* ---- 7. Booking app: a day strip, class cards, a booking summary ---- */
+
+const WEEK = [
+  { value: "mon", day: "Mon", date: 13 },
+  { value: "tue", day: "Tue", date: 14 },
+  { value: "wed", day: "Wed", date: 15 },
+  { value: "thu", day: "Thu", date: 16 },
+  { value: "fri", day: "Fri", date: 17 },
+  { value: "sat", day: "Sat", date: 18 },
+  { value: "sun", day: "Sun", date: 19 },
+];
+
+const CLASSES = [
+  { id: "c1", day: "tue", time: "07:00", name: "Sunrise vinyasa", style: "Vinyasa", teacher: "Ana Ruiz", length: 60, left: 6 },
+  { id: "c2", day: "tue", time: "12:15", name: "Lunchtime flow", style: "Vinyasa", teacher: "Leo Park", length: 45, left: 0 },
+  { id: "c3", day: "tue", time: "18:30", name: "Slow yin", style: "Yin", teacher: "Priya Nair", length: 75, left: 3 },
+  { id: "c4", day: "tue", time: "20:00", name: "Mat pilates", style: "Pilates", teacher: "Sam Okafor", length: 50, left: 9 },
+  { id: "c5", day: "wed", time: "07:00", name: "Sunrise vinyasa", style: "Vinyasa", teacher: "Ana Ruiz", length: 60, left: 8 },
+  { id: "c6", day: "wed", time: "19:00", name: "Restorative yin", style: "Yin", teacher: "Priya Nair", length: 60, left: 2 },
+  { id: "c7", day: "sat", time: "10:00", name: "Weekend flow", style: "Vinyasa", teacher: "Leo Park", length: 90, left: 12 },
+];
+
+const STUDIOS = [
+  { value: "principe-real", label: "Príncipe Real", meta: "Lisbon", keywords: "Lisboa" },
+  { value: "alfama", label: "Alfama", meta: "Lisbon", keywords: "Lisboa" },
+  { value: "cais-do-sodre", label: "Cais do Sodré", meta: "Lisbon", keywords: "Lisboa" },
+  { value: "foz", label: "Foz", meta: "Porto" },
+  { value: "baixa", label: "Baixa", meta: "Porto" },
+];
+
+function BookingApp() {
+  const [day, setDay] = useState("tue");
+  const [styles, setStyles] = useState<string[]>([]);
+  const [chosen, setChosen] = useState("c3");
+  const [spots, setSpots] = useState(1);
+  const onDay = CLASSES.filter((c) => c.day === day);
+  const shown = styles.length ? onDay.filter((c) => styles.includes(c.style)) : onDay;
+  const pick = CLASSES.find((c) => c.id === chosen && c.day === day);
+  const date = WEEK.find((d) => d.value === day)!;
+  const toggleStyle = (style: string) => setStyles((list) => (list.includes(style) ? list.filter((s) => s !== style) : [...list, style]));
+  return (
+    <AppFrame
+      brand={{ name: "Haven", icon: Yoga01Icon, href: "#schedule" }}
+      groups={[
+        {
+          label: "Studio",
+          items: [
+            { href: "#schedule", label: "Schedule", icon: Calendar03Icon },
+            { href: "#bookings", label: "My bookings", icon: Ticket01Icon },
+            { href: "#teachers", label: "Teachers", icon: UserGroupIcon },
+            { href: "#profile", label: "Profile", icon: UserCircleIcon },
+          ],
+        },
+      ]}
+      tabs={["#schedule", "#bookings", "#teachers", "#profile"]}
+      current="#schedule"
+      footer={account("Dana Levi")}
+    >
+      <div className="ayy-stack" style={gap(5)}>
+        <PageHeader>
+          <PageHeaderTitle>Book a class</PageHeaderTitle>
+          <PageHeaderDescription>October 13–19 · 6 classes left on your 10-class pass.</PageHeaderDescription>
+        </PageHeader>
+
+        <ChoiceGroup aria-label="Day" name="hv-day" value={day} onValueChange={setDay} min="6rem" scroll>
+          {WEEK.map((d) => {
+            const n = CLASSES.filter((c) => c.day === d.value).length;
+            return <ChoiceCard key={d.value} compact value={d.value} title={`${d.day} ${d.date}`} description={n ? `${n} ${n === 1 ? "class" : "classes"}` : "None"} />;
+          })}
+        </ChoiceGroup>
+
+        <div className="ayy-split" style={min("17rem")}>
+          <div className="ayy-stack" style={gap(3)}>
+            <ChipGroup aria-label="Style" scroll>
+              {["Vinyasa", "Yin", "Pilates"].map((style) => (
+                <ChipButton key={style} pressed={styles.includes(style)} onPressedChange={() => toggleStyle(style)} count={onDay.filter((c) => c.style === style).length}>
+                  {style}
+                </ChipButton>
+              ))}
+            </ChipGroup>
+            <div role="status">
+              {shown.length ? (
+                <ChoiceGroup aria-label={`Classes on ${date.day} ${date.date}`} name="hv-class" value={chosen} onValueChange={setChosen} min="100%">
+                  {shown.map((c) => (
+                    <ChoiceCard
+                      key={c.id}
+                      value={c.id}
+                      title={`${c.time} · ${c.name}`}
+                      description={`${c.teacher} · ${c.length} min · ${c.style}`}
+                      meta={c.left ? `${c.left} spots left` : "Full"}
+                      disabled={!c.left}
+                    />
+                  ))}
+                </ChoiceGroup>
+              ) : (
+                <EmptyState bordered compact>
+                  <IconTile size="sm">
+                    <Icon icon={Calendar03Icon} />
+                  </IconTile>
+                  <EmptyStateTitle>No classes {onDay.length ? "of that style" : "this day"}</EmptyStateTitle>
+                  <EmptyStateDescription>{onDay.length ? "Try another style, or every style." : "Pick another day this week."}</EmptyStateDescription>
+                  {onDay.length ? (
+                    <EmptyStateActions>
+                      <Button size="sm" variant="outline" onClick={() => setStyles([])}>
+                        Every style
+                      </Button>
+                    </EmptyStateActions>
+                  ) : null}
+                </EmptyState>
+              )}
+            </div>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Your booking</CardTitle>
+              <CardDescription>{pick ? `${date.day} ${date.date} October` : "Pick a class to book it."}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="ayy-stack" style={gap(4)}>
+                <Field>
+                  <Label htmlFor="hv-studio">Studio</Label>
+                  <Combobox id="hv-studio" options={STUDIOS} defaultValue="principe-real" placeholder="Search studios" />
+                </Field>
+                {pick ? (
+                  <DataList>
+                    <DataListItem label="Class">{pick.name}</DataListItem>
+                    <DataListItem label="Time">
+                      {pick.time}, {pick.length} min
+                    </DataListItem>
+                    <DataListItem label="Teacher">{pick.teacher}</DataListItem>
+                  </DataList>
+                ) : null}
+                <Field>
+                  <Label htmlFor="hv-spots">Spots</Label>
+                  <NumberField
+                    id="hv-spots"
+                    min={1}
+                    max={Math.min(2, pick?.left ?? 1)}
+                    value={spots}
+                    onValueChange={setSpots}
+                    decrementLabel="One spot fewer"
+                    incrementLabel="Bring a friend"
+                    aria-describedby="hv-spots-hint"
+                  />
+                  <FieldHint id="hv-spots-hint">You and up to one friend, from your pass.</FieldHint>
+                </Field>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button
+                block
+                disabled={!pick}
+                onClick={() => pick && toast.success(`Booked: ${pick.name}, ${date.day} ${date.date} at ${pick.time}`)}
+              >
+                Book {spots > 1 ? `${spots} spots` : "it"}
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    </AppFrame>
+  );
+}
+
 /* ---- Registry ---- */
 
 export interface ShowcaseApp {
@@ -1185,13 +1761,13 @@ export const showcaseApps: ShowcaseApp[] = [
     id: "dashboard",
     name: "Pulse",
     kind: "Analytics dashboard",
-    description: "KPIs, a paged top-pages table and goals. Dense and dark for people who live in it all day. Seven destinations, so phones get four tabs and More.",
+    description: "KPIs with sparklines, a visitors chart against last month, a sortable top-pages table, traffic sources and goals. Dense and dark for people who live in it all day. Seven destinations, so phones get four tabs and More.",
     theme: "dark",
     density: "compact",
-    uses: ["app-shell", "bottom-nav", "page-header", "segmented-control", "card", "stat", "badge", "table", "pagination", "progress", "alert", "button", "avatar", "icon"],
+    uses: ["app-shell", "bottom-nav", "page-header", "segmented-control", "card", "stat", "chart", "badge", "table", "pagination", "progress", "alert", "button", "avatar", "icon"],
     prompt: `Build an analytics dashboard with ayywi, in ${APP_FRAME}. Seven destinations in two sidebar groups (Workspace: Overview, Reports, Audiences, Projects; Account: Integrations, Billing, Settings), so the bottom nav shows the first four and a More tab that opens the sidebar as a drawer.
 
-The Overview page: a Page header with a date-range Segmented control (7d, 30d, 90d) and an outline Export button; four KPI cards (Stat + a success or warning Badge) in an .ayy-grid; then an .ayy-split with a Top pages table (compact, numeric columns, status badges, Pagination in the card footer) beside a Goals card of Progress bars and an info Alert.
+The Overview page: a Page header with a date-range Segmented control (7d, 30d, 90d) and an outline Export button; four KPI cards (Stat, a success or warning Badge and a Sparkline) in an .ayy-grid; a Visitors card with a LineChart of this month against last month (the comparison series dashed); then an .ayy-split with a Top pages table (compact, numeric columns, the Views column sortable, status badges, Pagination in the card footer) beside a Traffic sources card with a BarList, a Goals card of Progress bars and an info Alert.
 
 Dark theme, compact density. ayywi components and tokens only; run npx ayywi lint when you're done.`,
     Component: DashboardApp,
@@ -1245,15 +1821,47 @@ Light-gray theme, touch density. Run npx ayywi lint when you're done.`,
     id: "tracker",
     name: "Orbit",
     kind: "Project tracker",
-    description: "Onboarding steps, a task list with an empty state, an error with a retry that shows it's working, and skeletons while activity loads.",
+    description: "Onboarding steps, a task list filtered by project chips with an empty state for each case, an error with a retry that shows it's working, and skeletons while activity loads.",
     theme: "light",
     density: "compact",
-    uses: ["app-shell", "bottom-nav", "page-header", "steps", "segmented-control", "kbd", "list", "checkbox", "empty-state", "alert", "skeleton", "card", "button", "avatar"],
+    uses: ["app-shell", "bottom-nav", "page-header", "steps", "segmented-control", "chip", "kbd", "list", "checkbox", "empty-state", "alert", "skeleton", "card", "button", "avatar"],
     prompt: `Build a task tracker home screen with ayywi, in ${APP_FRAME} (My tasks, Projects, Calendar, Inbox in the tabs; Members and Settings behind More).
 
-A Page header with one primary "New task" button. An onboarding card with Steps (Create a project ✓, Invite your team — current, Connect GitHub) and two buttons. Then an .ayy-split: a Today/Upcoming/All Segmented control with a Kbd hint, and a card that holds either a divided List of tasks (a Checkbox labelled by the title, project and due date, the assignee's Avatar) or a compact Empty state when a view has nothing; beside it a destructive Alert "GitHub sync failed" whose Try again button shows loading, and an Activity card of Skeleton rows while it loads (aria-busy).
+A Page header with one primary "New task" button. An onboarding card with Steps (Create a project ✓, Invite your team — current, Connect GitHub) and two buttons. Then an .ayy-split: a Today/Upcoming/All Segmented control with a Kbd hint, project filter chips (ChipButton with counts, in a scrolling ChipGroup), and a card that holds either a divided List of tasks (a Checkbox labelled by the title, project and due date, the assignee's Avatar) or a compact Empty state when a view has nothing (another, with a "Show every project" button, when the chips filter everything out); beside it a destructive Alert "GitHub sync failed" whose Try again button shows loading, and an Activity card of Skeleton rows while it loads (aria-busy).
 
 Light theme, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx ayywi lint when you're done.`,
     Component: TrackerApp,
+  },
+  {
+    id: "store",
+    name: "Ember",
+    kind: "Online store",
+    description: "A coffee shop: category chips with counts, a price range and a sort, a product grid with an empty state, and a cart drawer with quantities, delivery options and the total.",
+    theme: "dark",
+    density: "comfortable",
+    uses: ["navbar", "section", "chip", "slider", "select", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "data-list", "footer", "button", "toast"],
+    prompt: `Build an online coffee store with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), a Section at .ayy-container width, and a Footer.
+
+The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Chips for the kind of coffee (with counts), a SliderRange for the price with the range in text, and a Select to sort; then an .ayy-grid of product Cards (CardMedia with an IconTile on .ayy-bg-grid in the product's --ayy-spot colour, the name, the roast and tasting notes, the price and an outline Add button), or an Empty state with Reset filters when nothing matches.
+
+The cart is a Dialog with side="end": a divided List of items with a small NumberField each, a Delivery ChoiceGroup (Standard free, Express $9), a Data list with the subtotal, delivery and total, and a footer with Keep shopping and one primary Check out that shows a toast.
+
+Dark theme. Run npx ayywi lint when you're done.`,
+    Component: StoreApp,
+  },
+  {
+    id: "booking",
+    name: "Haven",
+    kind: "Booking app",
+    description: "A yoga studio's schedule: a day strip of compact choice cards, style chips, classes as choice cards with spots left, and a booking card with a studio combobox and a spots stepper. Touch-sized for phones.",
+    theme: "light",
+    density: "touch",
+    uses: ["app-shell", "bottom-nav", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "data-list", "number-field", "field", "button", "toast"],
+    prompt: `Build a class booking app for a yoga studio with ayywi, in ${APP_FRAME} (Schedule, My bookings, Teachers, Profile).
+
+The Schedule page: a Page header (the week and the classes left on the pass); a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, a Data list of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
+
+Light theme, touch density. Run npx ayywi lint when you're done.`,
+    Component: BookingApp,
   },
 ];

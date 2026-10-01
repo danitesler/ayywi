@@ -4,7 +4,7 @@ import { build, transform } from "esbuild";
 import { execFileSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { gzipSync } from "node:zlib";
 import { buildPlatforms } from "./build-platforms.mjs";
 
@@ -62,6 +62,8 @@ writeFileSync(
   `/* ayywi brand fonts, self-hosted (works offline, no third-party requests). Import before ayywi.css. */\n${faces.join("\n\n")}\n`,
 );
 copyFileSync(src("css/fonts.css"), join(dist, "fonts-google.css"));
+// The shadcn/ui bridge: plain CSS on purpose (unlayered), so it outranks a project's own shadcn variables.
+copyFileSync(src("css/shadcn.css"), join(dist, "shadcn.css"));
 
 // ---- JS ----
 const shared = {
@@ -97,6 +99,12 @@ await build({
   minify: true,
   outfile: join(dist, "elements.global.js"),
 });
+
+// A saved theme and density before the first paint, for pages that can't inline themeInitScript: load it in <head>.
+{
+  const { themeInitScript } = await import(pathToFileURL(join(dist, "index.js")).href);
+  writeFileSync(join(dist, "theme-init.js"), `${themeInitScript}\n`);
+}
 
 // ---- Types ----
 execFileSync(join(root, "node_modules/.bin/tsc"), ["-p", "tsconfig.json", "--emitDeclarationOnly"], { cwd: root, stdio: "inherit" });

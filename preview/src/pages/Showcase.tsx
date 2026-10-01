@@ -69,8 +69,9 @@ function Gallery() {
         <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">What you can build</h1>
         <p className="ayy-lede">
-          Five screens made only from ayywi components, each in its own theme and density. The apps share one frame: a sidebar on wide
-          screens, a top bar and tabs on phones. Open one to see it on desktop, tablet and mobile, and copy the prompt that builds it.
+          Seven screens made only from ayywi components, each in its own theme and density. The apps share one frame: a sidebar on wide
+          screens, a top bar and tabs on phones; the two websites get a navbar that folds into a menu. Open one to see it on desktop,
+          tablet and mobile, and copy the prompt that builds it.
         </p>
       </header>
       <ul className="pv-showcase">

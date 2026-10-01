@@ -1,0 +1,131 @@
+/* A number with minus and plus buttons: quantities, guests, seats. The input is a native type="number" (typing,
+   arrow keys, min/max/step, forms); the buttons step it. React and ayywi/elements wire them, and mark the one that
+   can't go further with aria-disabled. */
+
+.ayy-number-field {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: stretch;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  block-size: var(--ayy-size-control-md);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  vertical-align: middle;
+  transition: border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-number-field:hover {
+  border-color: var(--ayy-color-line-hover);
+}
+
+/* Like Input: the ring replaces the border while you type. */
+.ayy-number-field:has(> .ayy-number-field__input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.ayy-number-field:has(> .ayy-number-field__input[aria-invalid="true"]) {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+.ayy-number-field__input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  inline-size: 3.5rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0 var(--ayy-space-1);
+  border: 0;
+  background: none;
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.ayy-number-field__input::-webkit-inner-spin-button,
+.ayy-number-field__input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.ayy-number-field__input:focus-visible {
+  outline: none;
+}
+
+.ayy-number-field__decrement,
+.ayy-number-field__increment {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: calc(var(--ayy-size-control-md) - 2px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--ayy-radius-control) - 1px);
+  background: none;
+  color: var(--ayy-color-text-soft);
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-number-field__decrement > svg,
+.ayy-number-field__increment > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-number-field__decrement:hover,
+.ayy-number-field__increment:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-number-field__decrement:focus-visible,
+.ayy-number-field__increment:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+/* At min or max: still focusable (aria-disabled, so focus isn't lost mid-click), dimmed and inert to clicks. */
+.ayy-number-field__decrement:is(:disabled, [aria-disabled="true"]),
+.ayy-number-field__increment:is(:disabled, [aria-disabled="true"]) {
+  background: none;
+  color: var(--ayy-color-text-soft);
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-number-field:has(> .ayy-number-field__input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+}
+
+.ayy-number-field--sm {
+  block-size: var(--ayy-size-control-sm);
+}
+
+.ayy-number-field--sm .ayy-number-field__input {
+  inline-size: 2.75rem;
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-number-field--sm :is(.ayy-number-field__decrement, .ayy-number-field__increment) {
+  inline-size: calc(var(--ayy-size-control-sm) - 2px);
+}
+
+@media (forced-colors: active) {
+  .ayy-number-field {
+    border-color: FieldText;
+  }
+  .ayy-number-field:has(> .ayy-number-field__input[aria-invalid="true"]) {
+    border-style: dashed;
+  }
+}

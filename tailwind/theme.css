@@ -50,6 +50,12 @@
   --color-accent-system: var(--ayy-accent-system);
   --color-accent-brand: var(--ayy-accent-brand);
   --color-accent-marketing: var(--ayy-accent-marketing);
+  --color-chart-1: var(--ayy-chart-1);
+  --color-chart-2: var(--ayy-chart-2);
+  --color-chart-3: var(--ayy-chart-3);
+  --color-chart-4: var(--ayy-chart-4);
+  --color-chart-5: var(--ayy-chart-5);
+  --color-chart-6: var(--ayy-chart-6);
 
   --font-sans: var(--ayy-font-body);
   --font-heading: var(--ayy-font-heading);

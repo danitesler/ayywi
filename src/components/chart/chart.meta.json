@@ -1,0 +1,122 @@
+{
+  "name": "Chart",
+  "slug": "chart",
+  "status": "beta",
+  "category": "Data display",
+  "description": "Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
+  "classes": {
+    "ayy-chart": "Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.",
+    "ayy-chart--stacked": "A column's bars sit on top of each other; each bar's --ayy-value is its share of the top of the scale.",
+    "ayy-chart--values": "Print every bar's data-value above it (otherwise only on hover).",
+    "ayy-chart__plot": "The drawing area (aria-hidden=\"true\"). Height from --ayy-chart-height (default 12rem). Holds ticks and either __bars or an __svg.",
+    "ayy-chart__tick": "A value line across the plot, its text the label in the gutter. --ayy-value places it: 0 is the floor, 100 the top. The gutter only appears when there are ticks.",
+    "ayy-chart__bars": "Row of columns filling the plot.",
+    "ayy-chart__column": "One label's bars, side by side (or stacked).",
+    "ayy-chart__bar": "A bar: --ayy-value is its height, data-value its text on hover. Its colour is chart-1, chart-2… by position in the column; --ayy-chart-color overrides.",
+    "ayy-chart__svg": "<svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> stretched over the plot, for lines and areas. Mirrors in RTL.",
+    "ayy-chart__series": "<g> around one series' area and line. Coloured chart-1, chart-2… in order; --ayy-chart-color overrides.",
+    "ayy-chart__series--compare": "A comparison series (last period, a target): dashed, quiet, no fill.",
+    "ayy-chart__line": "<path> of the line, 2px whatever the stretch (vector-effect: non-scaling-stroke).",
+    "ayy-chart__area": "<path> of the area under the line, a 16% tint of the series colour.",
+    "ayy-chart__labels": "The labels under the plot (aria-hidden=\"true\"), one per column; under a line they spread from the first point to the last.",
+    "ayy-chart__legend": "List of the series, when there's more than one (aria-hidden=\"true\" when a data table names them).",
+    "ayy-chart__legend-item": "A series name with its swatch, coloured in the same order as the series.",
+    "ayy-chart__legend-item--compare": "Legend entry for a comparison series: a dashed swatch.",
+    "ayy-chart__swatch": "The colour square in a legend item.",
+    "ayy-bar-list": "<ol> of ranked rows (top pages, sources) with the bar behind the text. Readable as it is.",
+    "ayy-bar-list__item": "A row; --ayy-value is the bar's length (100 = the largest).",
+    "ayy-bar-list__label": "The row's name (or a link), cut with an ellipsis.",
+    "ayy-bar-list__value": "The row's number, tabular digits.",
+    "ayy-sparkline": "A small <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> line with no axes, for a stat or a table cell. Uses __line and __area paths."
+  },
+  "variants": {
+    "stacked": { "values": [false, true], "default": false, "component": "BarChart" },
+    "showValues": { "values": [false, true], "default": false, "component": "BarChart" },
+    "area": { "values": [true, false], "default": true, "component": "LineChart" },
+    "smooth": { "values": [true, false], "default": true, "component": "LineChart" }
+  },
+  "js": "chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.",
+  "react": {
+    "import": "import { BarChart, LineChart, Sparkline, BarList } from \"ayywi/react\";",
+    "components": {
+      "BarChart": {
+        "renders": "<figure class=\"ayy-chart\"> with a plot of __column/__bar, labels, a legend and a visually hidden data table",
+        "props": {
+          "label": "string — what it shows (\"Signups per day\"); the data table's caption",
+          "labels": "string[] — one per column",
+          "series": "{ name, values: number[], color? }[]",
+          "stacked": "boolean",
+          "showValues": "boolean — print values above the bars",
+          "max": "number — top of the scale; rounded up from the data if omitted",
+          "ticks": "number of value lines, default 3; 0 for none",
+          "format": "(value: number) => string — ticks, hover values and the table; default compact (1.2K)",
+          "height": "CSS length, default 12rem",
+          "legend": "boolean — default: more than one series"
+        }
+      },
+      "LineChart": {
+        "renders": "<figure class=\"ayy-chart\"> with an __svg of __series paths, labels, a legend and a visually hidden data table",
+        "props": {
+          "label": "string — the data table's caption",
+          "labels": "string[] — one per point",
+          "series": "{ name, values: number[], color?, compare? }[] — compare draws a dashed comparison line",
+          "min": "number, default 0",
+          "max": "number",
+          "area": "boolean, default true",
+          "smooth": "boolean, default true (monotone: never overshoots a point)",
+          "ticks": "number, default 3",
+          "format": "(value: number) => string",
+          "height": "CSS length",
+          "legend": "boolean"
+        }
+      },
+      "Sparkline": {
+        "renders": "<svg class=\"ayy-sparkline\">",
+        "props": {
+          "values": "number[]",
+          "label": "string — makes it role=\"img\" with this name; without it the sparkline is aria-hidden",
+          "area": "boolean",
+          "color": "CSS colour, default chart-1",
+          "min": "number, default the smallest value",
+          "max": "number, default the largest value"
+        }
+      },
+      "BarList": {
+        "renders": "<ol class=\"ayy-bar-list\">",
+        "props": {
+          "items": "{ label: ReactNode, value: number, href? }[]",
+          "max": "number — value of a full bar, default the largest",
+          "format": "(value: number) => string, default grouped digits",
+          "color": "CSS colour, default chart-1"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "The drawing is aria-hidden. The numbers go in a table (React renders one with .ayy-sr-only; add a visible Table if people need to compare values), with a <caption> saying what the chart shows.",
+    "Don't rely on colour alone: a legend names the series in the same order, the comparison series is dashed, and a title or a Stat states the takeaway (\"Up 12% on last week\").",
+    "Series tokens keep 3:1 against every surface in every theme. In High Contrast bars and lines take system colours, alternating between CanvasText and Highlight.",
+    "A Sparkline with a label is an image with that name; give it the trend in words (\"Revenue, last 14 days, up 12%\")."
+  ],
+  "do": [
+    "Use a chart to show a trend or a comparison at a glance: signups per day, revenue against last month, traffic by source. Put it in a Card with the title and the key number (a Stat) above it.",
+    "Use a bar chart to compare amounts across a few categories or periods, a line chart for a trend over many points, a bar list for a ranking, a sparkline beside a number.",
+    "Colour series with the chart tokens in order (React does it). With a chart library, pass var(--ayy-chart-1)… (SVG) or chartColors() (canvas), and chartTheme() for its text, grid and tooltip.",
+    "Mark the previous period as a compare series instead of a second bright colour.",
+    "Keep the scale honest: bars start at 0; let chartScale() round the top."
+  ],
+  "dont": [
+    "Don't use a chart when the exact numbers matter more than the shape — use a Table or a Data list.",
+    "Don't use a pie or donut for parts of a whole — a Bar list or a stacked bar is easier to read.",
+    "Don't pick series colours from the status or accent tokens unless the colour means something (success for a goal line).",
+    "Don't draw more than six series; group the rest as Other.",
+    "Don't add a second chart library just for a simple bar or line — these cover dashboards. Reach for one (Recharts, Chart.js) for zoom, brushing or maps, themed with the tokens."
+  ],
+  "examples": [
+    { "id": "bars", "title": "Columns with two series" },
+    { "id": "line", "title": "Line against last period" },
+    { "id": "stacked", "title": "Stacked columns" },
+    { "id": "bar-list", "title": "Bar list: top pages" },
+    { "id": "sparkline", "title": "Sparklines in stats" }
+  ]
+}

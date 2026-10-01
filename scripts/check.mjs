@@ -196,9 +196,10 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   for (const m of metas) if (!new RegExp(`\\b${m.name}\\b`).test(table)) fail("README.md", `the Components table doesn't list ${m.name}`);
 }
 
-// ---- Base ----
+// ---- Base, and the shadcn/ui bridge (tokens only, like everything else) ----
 const base = read("src/css/base.css");
 lintCss("src/css/base.css", base);
+lintCss("src/css/shadcn.css", read("src/css/shadcn.css"));
 const baseClasses = selectorClasses(base);
 for (const cls of baseClasses) if (!(cls in UTILITIES)) fail("scripts/lib/contract.mjs", `utility .${cls} (base.css) isn't documented in UTILITIES`);
 for (const cls of Object.keys(UTILITIES)) if (!baseClasses.has(cls)) fail("scripts/lib/contract.mjs", `UTILITIES documents .${cls}, which base.css doesn't define`);
@@ -211,6 +212,8 @@ const TINTED = ["destructive", "success", "warning", "info", "ai-active"];
 const TINT = 0.15;
 // Share of the accent in accent text on light themes; keep in sync with .ayy-accent-text (color-mix … 45%).
 const ACCENT_TEXT_MIX = 0.45;
+// Bar list rows put text on this share of their series colour; keep in sync with .ayy-bar-list__item::before.
+const CHART_TINT = 0.18;
 try {
   const { tokens, byName, valueIn, resolve, themes } = loadTokens(root);
   for (const theme of themes) {
@@ -234,6 +237,16 @@ try {
         const behind = mix(wash.slice(0, 7), color(bg), washAlpha);
         const ratio = contrast(color(fg), behind);
         if (ratio < 4.5) fail(where, `color.${fg} on the wash over color.${bg} is ${ratio.toFixed(2)}:1 — text needs at least 4.5:1 (WCAG AA)`);
+      }
+    }
+    // Chart series are graphics (bars, lines, swatches): 3:1 against every surface (WCAG 1.4.11). Bar lists put text on a tint of them.
+    for (const series of tokens.filter((t) => t.name.startsWith("chart."))) {
+      const fg = valueIn(series, theme.name);
+      for (const bg of SURFACES) {
+        const ratio = contrast(fg, color(bg));
+        if (ratio < 3) fail(where, `${series.name} on color.${bg} is ${ratio.toFixed(2)}:1 — chart graphics need at least 3:1 (WCAG 1.4.11)`);
+        const text = contrast(color("text"), mix(fg, color(bg), CHART_TINT));
+        if (text < 4.5) fail(where, `color.text on a ${CHART_TINT * 100}% tint of ${series.name} over color.${bg} is ${text.toFixed(2)}:1 — bar list text needs 4.5:1`);
       }
     }
     // Accent text (.ayy-accent-text, section numbers, contents): raw on dark themes, mixed with the text colour on light ones.

@@ -206,7 +206,7 @@ for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
 
 test("axe: no serious violations in the showcase apps", async ({ page }) => {
   const failures: string[] = [];
-  for (const id of ["dashboard", "landing", "inbox", "settings"]) {
+  for (const id of ["dashboard", "landing", "inbox", "settings", "tracker", "store", "booking"]) {
     await page.goto(`/?app=${id}`);
     await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();

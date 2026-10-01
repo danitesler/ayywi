@@ -1,0 +1,21 @@
+<!-- Your script flips aria-pressed and removes chips; ayywi only draws the state. -->
+<div class="ayy-stack" style="inline-size: 100%">
+  <div class="ayy-spread">
+    <div class="ayy-input-group" style="inline-size: min(100%, 18rem)">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <input type="search" class="ayy-input" placeholder="Search tickets" aria-label="Search tickets"/>
+    </div>
+    <div role="group" class="ayy-chip-group ayy-chip-group--scroll" aria-label="Filters">
+      <button type="button" aria-pressed="true" class="ayy-chip">Assigned to me</button>
+      <button type="button" aria-pressed="true" class="ayy-chip">Urgent</button>
+      <button type="button" aria-pressed="false" class="ayy-chip">High</button>
+      <button type="button" aria-pressed="false" class="ayy-chip">Normal</button>
+    </div>
+  </div>
+  <div class="ayy-cluster">
+    <span class="ayy-muted">Filtered by</span>
+    <span class="ayy-chip ayy-chip--removable">Assignee: me<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: me"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+    <span class="ayy-chip ayy-chip--removable">Priority: Urgent<button type="button" class="ayy-chip__remove" aria-label="Remove Priority: Urgent"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+    <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Clear all</button>
+  </div>
+</div>

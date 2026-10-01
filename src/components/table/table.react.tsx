@@ -6,7 +6,7 @@ import {
   type ThHTMLAttributes,
 } from "react";
 import { cx } from "../../lib/cx";
-import { tableClass, tableNumClass, tableWrapClass } from "./table";
+import { tableClass, tableNumClass, tableSelectClass, tableSortClass, tableWrapClass, type SortDirection } from "./table";
 
 export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
   compact?: boolean;
@@ -39,24 +39,56 @@ export const TableFooter = forwardRef<HTMLTableSectionElement, HTMLAttributes<HT
   },
 );
 
-export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElement>>(function TableRow(props, ref) {
-  return <tr ref={ref} {...props} />;
+export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
+  /** A selected row (aria-selected="true"), e.g. when its checkbox is ticked. */
+  selected?: boolean;
+}
+
+export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow({ selected, ...props }, ref) {
+  return <tr ref={ref} aria-selected={selected} {...props} />;
 });
 
 export interface TableCellProps {
   /** End-align with tabular digits. */
   numeric?: boolean;
+  /** The narrow checkbox column for selecting rows. */
+  select?: boolean;
 }
 
-export const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLTableCellElement> & TableCellProps>(
-  function TableHead({ numeric, className, scope = "col", ...props }, ref) {
-    return <th ref={ref} scope={scope} className={cx(numeric && tableNumClass, className) || undefined} {...props} />;
-  },
-);
+export interface TableHeadProps extends ThHTMLAttributes<HTMLTableCellElement>, TableCellProps {
+  /** Makes the header a sort button. "none" for a sortable column that isn't the sorted one. */
+  sort?: SortDirection | "none";
+  /** Called when the sort button is clicked; flip the direction with nextSortDirection() and sort your rows. */
+  onSort?: () => void;
+}
+
+export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(
+  { numeric, select, sort, onSort, className, scope = "col", children, ...props },
+  ref,
+) {
+  const sortable = sort !== undefined || onSort !== undefined;
+  return (
+    <th
+      ref={ref}
+      scope={scope}
+      aria-sort={sort && sort !== "none" ? sort : undefined}
+      className={cx(numeric && tableNumClass, select && tableSelectClass, className) || undefined}
+      {...props}
+    >
+      {sortable ? (
+        <button type="button" className={tableSortClass} onClick={onSort}>
+          {children}
+        </button>
+      ) : (
+        children
+      )}
+    </th>
+  );
+});
 
 export const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCellElement> & TableCellProps>(
-  function TableCell({ numeric, className, ...props }, ref) {
-    return <td ref={ref} className={cx(numeric && tableNumClass, className) || undefined} {...props} />;
+  function TableCell({ numeric, select, className, ...props }, ref) {
+    return <td ref={ref} className={cx(numeric && tableNumClass, select && tableSelectClass, className) || undefined} {...props} />;
   },
 );
 

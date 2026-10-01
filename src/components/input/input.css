@@ -56,6 +56,26 @@
   font-weight: var(--ayy-weight-medium);
 }
 
+/* Dates and times use the browser's picker; color-scheme (set per theme) colours its popup, the icon is muted. */
+.ayy-input:is([type="date"], [type="time"], [type="datetime-local"], [type="month"], [type="week"]) {
+  font-variant-numeric: tabular-nums;
+}
+
+.ayy-input::-webkit-datetime-edit,
+.ayy-input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.ayy-input::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+.ayy-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
 .ayy-input--sm {
   block-size: var(--ayy-size-control-sm);
   padding-inline: var(--ayy-space-2);

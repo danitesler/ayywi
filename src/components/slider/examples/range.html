@@ -1,0 +1,11 @@
+<!-- ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->
+<div class="ayy-stack" style="inline-size: min(100%, 22rem)">
+  <div class="ayy-spread">
+    <span class="ayy-label" id="price-label">Price</span>
+    <span class="ayy-muted">$18 – $64</span>
+  </div>
+  <div role="group" class="ayy-slider-range" style="--ayy-from: 18; --ayy-to: 64" aria-labelledby="price-label">
+    <input type="range" class="ayy-slider" aria-label="Minimum price" min="0" max="100" step="2" name="price_min" value="18"/>
+    <input type="range" class="ayy-slider" aria-label="Maximum price" min="0" max="100" step="2" name="price_max" value="64"/>
+  </div>
+</div>

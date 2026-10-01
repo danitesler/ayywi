@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-theme-toggle>`) for every other framework and plain HTML,
+- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `ayywi/elements` (slider fills, number field steps, drop zones),
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -21,7 +21,8 @@ tokens/tokens.json          SOURCE OF TRUTH for tokens (DTCG-style; $value = dar
 tokens/themes/*.json        extra themes (dark-soft, light-gray): overrides of a base theme's colours, compiled into tokens.css
 src/css/tokens.css          generated
 src/tokens.ts               generated
-src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion
+src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion, --_ayy-dir
+src/css/shadcn.css          the shadcn/ui bridge (unlayered on purpose), copied to dist/shadcn.css
 src/css/index.css           declares the layers, imports tokens, base, every component into them
 src/components/<slug>/      one folder per component — see .claude/skills/ayywi-add-component/SKILL.md
 src/lib/                    cx, refs, position (floating placement), element (SSR-safe custom element base), icons (Hugeicons glyphs ayywi draws)
@@ -36,9 +37,12 @@ tests/                      node/ (node:test) and e2e/ (Playwright + axe)
 evals/                      skill evals: tasks, runner, scorer
 manifest/components.json    generated — full machine-readable context
 llms.txt, llms-full.txt     generated
+llms/<slug>.md              generated: one page per component
 ai/                         consumer kit (skill, AGENTS snippet, Cursor rule) — partly generated
 preview/                    Vite + React component browser (discovers components automatically), the showcase apps
-                            (preview/src/showcase/apps.tsx) and Get started; its build also hosts dist/ and llms files
+                            (preview/src/showcase/apps.tsx) and Get started (prompts in preview/src/prompts.ts); its build also
+                            hosts dist/, the llms files, the AI kit and the Tailwind files, and each release's runtime files
+                            under v/<release>/ (scripts/keep-versions.mjs carries the earlier ones over on every Pages deploy)
 ```
 
 ## Commands
@@ -66,7 +70,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 4. `ayy-` prefix on every class and keyframe; `--ayy-` on every public custom property; private ones are `--_x`.
 5. Visible focus ring on everything interactive. Labels, `aria-*` and keyboard support are part of "done". State shown by colour needs a `@media (forced-colors: active)` block.
 6. Zero runtime dependencies. Don't add Radix/CVA/etc. — native elements first (`<dialog>`, `role="switch"` checkbox…).
-7. Never edit generated files (`src/css/tokens.css`, `src/tokens.ts`, `manifest/`, `llms*.txt`, `ai/AGENTS.snippet.md`, `ai/cursor/ayywi.mdc`, `ai/skills/ayywi/reference.md`). Edit the source and run `pnpm generate`.
+7. Never edit generated files (`src/css/tokens.css`, `src/tokens.ts`, `manifest/`, `llms*.txt`, `llms/`, `ai/AGENTS.snippet.md`, `ai/cursor/ayywi.mdc`, `ai/skills/ayywi/reference.md`). Edit the source and run `pnpm generate`.
 8. Docs are code: a component's `*.meta.json` must describe exactly the classes its CSS defines. `pnpm check` fails otherwise.
 9. No file names that differ only by case (esbuild + macOS/Windows resolve them to the same file).
 
@@ -85,7 +89,11 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - The preview routes on the URL hash, so in-page anchors in examples (`href="#section"`) are intercepted in `preview/src/Example.tsx` and scrolled to instead.
 - Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close and menu buttons, pagination and carousel arrows, the theme toggle's sun and moon) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
-- Mirroring a glyph in RTL has no logical property. `.ayy-icon--directional` reads `--_ayy-dir`, which `icon.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
+- Mirroring a glyph or a chart line in RTL has no logical property. `.ayy-icon--directional`, `.ayy-chart__svg` and `.ayy-sparkline` read `--_ayy-dir`, which `base.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
+- A selector list with a pseudo-element the browser doesn't know (`::-moz-range-thumb` in Chromium) is dropped whole. Give each vendor pseudo-element its own rule.
+- Chromium can't fill a range track up to the thumb. `.ayy-slider` reads `--ayy-value`, which React and the page-wide `input` listener in `ayywi/elements` keep in step; HTML examples set the starting one inline.
+- The page-wide helpers in `ayywi/elements` (number field steps) listen on `document`. React's own handlers call `preventDefault()` so the step doesn't happen twice when both are loaded.
+- Get started's prompts link `v/<release>/dist/…` on the published site (a path whose files never change) and the public site's latest from localhost, never localhost itself. The Pages workflow sets `VITE_AYYWI_SITE` from `configure-pages`.
 - The App shell and Navbar switch their phone layouts at 48rem with media queries, so component examples in the preview only show them in a narrow window. The showcase apps load in an iframe at real device widths for that reason; e2e tests set the viewport.
 - One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.
 - Example HTML should match what the React example renders. Write the `.tsx` first and render it to markup (react-dom/server) rather than retyping it; only custom-element wrappers (`<ayy-app-shell>`, `<ayy-navbar>`…) and comments differ.

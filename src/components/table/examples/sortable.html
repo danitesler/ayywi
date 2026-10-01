@@ -1,0 +1,58 @@
+<!-- <ayy-table> sorts the rows and ticks the checkboxes; listen for ayy-sort and ayy-selection-change. -->
+<div class="ayy-stack" style="inline-size: 100%">
+  <div class="ayy-spread">
+    <span class="ayy-muted">1 selected</span>
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">Send reminder</button>
+  </div>
+  <ayy-table>
+    <div class="ayy-table-wrap">
+      <table class="ayy-table">
+        <caption class="ayy-sr-only">Invoices, sortable by customer, due date and amount</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="ayy-table__select"><input type="checkbox" class="ayy-checkbox" aria-label="Select all invoices"/></th>
+            <th scope="col">Invoice</th>
+            <th scope="col"><button type="button" class="ayy-table__sort">Customer</button></th>
+            <th scope="col" aria-sort="ascending"><button type="button" class="ayy-table__sort">Due</button></th>
+            <th scope="col" class="ayy-table__num"><button type="button" class="ayy-table__sort">Amount</button></th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr aria-selected="true">
+            <td class="ayy-table__select"><input type="checkbox" class="ayy-checkbox" aria-label="Select INV-1043" checked=""/></td>
+            <td class="ayy-mono">INV-1043</td>
+            <td>Acme Studio</td>
+            <td data-sort-value="2026-08-28"><time datetime="2026-08-28">Aug 28</time></td>
+            <td class="ayy-table__num" data-sort-value="860">$860.00</td>
+            <td><span class="ayy-badge ayy-badge--destructive">Overdue</span></td>
+          </tr>
+          <tr aria-selected="false">
+            <td class="ayy-table__select"><input type="checkbox" class="ayy-checkbox" aria-label="Select INV-1042"/></td>
+            <td class="ayy-mono">INV-1042</td>
+            <td>Northwind</td>
+            <td data-sort-value="2026-09-02"><time datetime="2026-09-02">Sep 2</time></td>
+            <td class="ayy-table__num" data-sort-value="1240">$1,240.00</td>
+            <td><span class="ayy-badge ayy-badge--success">Paid</span></td>
+          </tr>
+          <tr aria-selected="false">
+            <td class="ayy-table__select"><input type="checkbox" class="ayy-checkbox" aria-label="Select INV-1045"/></td>
+            <td class="ayy-mono">INV-1045</td>
+            <td>Brightside</td>
+            <td data-sort-value="2026-09-15"><time datetime="2026-09-15">Sep 15</time></td>
+            <td class="ayy-table__num" data-sort-value="420">$420.00</td>
+            <td><span class="ayy-badge ayy-badge--info">Sent</span></td>
+          </tr>
+          <tr aria-selected="false">
+            <td class="ayy-table__select"><input type="checkbox" class="ayy-checkbox" aria-label="Select INV-1044"/></td>
+            <td class="ayy-mono">INV-1044</td>
+            <td>Lumen Labs</td>
+            <td data-sort-value="2026-09-30"><time datetime="2026-09-30">Sep 30</time></td>
+            <td class="ayy-table__num" data-sort-value="3150">$3,150.00</td>
+            <td><span class="ayy-badge ayy-badge--muted">Draft</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ayy-table>
+</div>

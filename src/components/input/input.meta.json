@@ -32,6 +32,7 @@
   ],
   "do": [
     "Use an input for short free-text entry: names, URLs, search, API keys.",
+    "Use type=\"date\", \"time\" or \"datetime-local\" for dates and times: the browser's own picker, in the theme's colour scheme, with keyboard entry and the user's locale. Set min and max for bookable ranges.",
     "Match the input size to neighbouring buttons in a toolbar (sm with sm)."
   ],
   "dont": [
@@ -42,6 +43,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "Types & sizes" },
-    { "id": "invalid", "title": "Invalid" }
+    { "id": "invalid", "title": "Invalid" },
+    { "id": "date-time", "title": "Date and time" }
   ]
 }

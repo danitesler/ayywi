@@ -93,8 +93,13 @@ ${tokens.map((t) => `  "${key(t)}": ${scssValue(t, valueIn(t, theme))},`).join("
   writeFileSync(join(outDir, "ayywi.scss"), scss);
 
   // ---- Native: colours per theme + dimension scales ----
-  const colorTokens = tokens.filter((t) => t.type === "color" && (t.name.startsWith("color.") || t.name.startsWith("accent.")));
-  const colorName = (t) => (t.name.startsWith("accent.") ? `accent${camel("-" + t.name.split(".")[1])}` : camel(t.name.split(".")[1]));
+  const colorTokens = tokens.filter((t) => t.type === "color" && /^(color|accent|chart)\./.test(t.name));
+  const colorName = (t) => {
+    const [group, name] = t.name.split(".");
+    if (group === "accent") return `accent${camel("-" + name)}`;
+    if (group === "chart") return `chart${name}`;
+    return camel(name);
+  };
   // Fluid values (clamp(), vw) have no fixed size on native platforms, so they're left out.
   const group = (prefix, filter = () => true) =>
     tokens

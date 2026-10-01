@@ -6,7 +6,11 @@ export const PUBLIC_HOOKS = {
   "--ayy-mx": "Card spotlight pointer X in px (set by React Card or ayywi/elements).",
   "--ayy-my": "Card spotlight pointer Y in px (set by React Card or ayywi/elements).",
   "--ayy-dot": "Badge status-dot colour override.",
-  "--ayy-value": "Progress value, a unitless number 0–100.",
+  "--ayy-value": "A unitless number 0–100: the Progress value, a Slider's position, a chart bar's height or tick's position, a bar-list row's length.",
+  "--ayy-chart-color": "Colour of a chart bar, series, legend item, bar list or sparkline, instead of the next --ayy-chart-* token.",
+  "--ayy-chart-height": "Height of a chart's plot (default 12rem).",
+  "--ayy-from": "Start of a slider range's fill, 0–100 (kept in sync by React and ayywi/elements).",
+  "--ayy-to": "End of a slider range's fill, 0–100.",
   "--ayy-progress-color": "Progress fill colour override.",
   "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
   "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
@@ -62,11 +66,11 @@ export const CATEGORIES = {
 export const ORDER = [
   "button", "menu", "theme-toggle",
   "navbar", "app-shell", "bottom-nav", "footer", "breadcrumb", "pagination", "steps", "toc",
-  "field", "input", "input-group", "textarea", "select", "checkbox", "radio", "segmented-control", "switch",
+  "field", "input", "input-group", "textarea", "select", "combobox", "checkbox", "radio", "segmented-control", "chip", "choice-card", "slider", "number-field", "dropzone", "switch",
   "page-header", "section", "card", "tabs", "accordion", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "spinner", "skeleton", "empty-state",
-  "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "data-list", "frame", "chat", "table",
+  "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "data-list", "frame", "chat", "table", "chart",
 ];
 
 /** Attributes ayywi reads on any element. */
@@ -90,11 +94,13 @@ export const RULES = [
   "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
   "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button. Never put a Navbar in an app.",
   "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
+  "Data views use ayywi's own pieces: Chart (BarChart, LineChart), Bar list and Sparkline for charts, coloured from --ayy-chart-1… in order; filters as Chips (with counts) above the results and the active ones as removable chips; sortable Table columns with a .ayy-table__sort button and aria-sort on the <th>. With a chart library, colour it with var(--ayy-chart-N) (SVG) or chartColors() and chartTheme() (canvas); never its default palette.",
+  "Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Number field for small counts, a Slider for a rough amount, native type=\"date\"/\"time\" Inputs for dates, File upload for files.",
   "Don't write breakpoints for navigation or layout: App shell, Navbar and Pagination switch at 48rem on their own, and .ayy-grid and .ayy-split adapt to their container. If you truly need one, use 48rem (phone) or 64rem (tablet).",
   "Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.",
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>).",
+  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
   "Run `npx ayywi lint` after UI changes and fix every error it reports.",
 ];

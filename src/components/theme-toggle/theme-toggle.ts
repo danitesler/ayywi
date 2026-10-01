@@ -1,4 +1,4 @@
-import { setTheme, type ThemeMode } from "../../theme";
+import { getTheme, setTheme, type ThemeMode } from "../../theme";
 import { themeBase, themes } from "../../tokens";
 import { connectMenu } from "../menu/menu";
 
@@ -18,6 +18,8 @@ export const themeToggleOptions: readonly { value: ThemeMode; label: string }[] 
 export interface ThemeToggleOptions {
   /** Called with the theme just applied ("system" clears the override). */
   onChange?: (theme: ThemeMode) => void;
+  /** Apply the theme chosen on an earlier visit when <html> has none yet. Default true. */
+  restore?: boolean;
 }
 
 const isTheme = (value: string | null): value is ThemeMode =>
@@ -25,10 +27,16 @@ const isTheme = (value: string | null): value is ThemeMode =>
 
 /**
  * Makes `button` open `menu`, a list of `menuitemradio` items whose data-value is a theme name or "system".
- * Choosing one applies it to <html> and remembers it (setTheme); aria-checked follows the theme in force, including
- * changes made elsewhere. Framework-free; returns a cleanup.
+ * Choosing one applies it to <html> and remembers it (setTheme); on the next visit connecting the toggle applies it
+ * again (inline themeInitScript in <head>, or load dist/theme-init.js there, to apply it before the first paint).
+ * aria-checked follows the theme in force, including changes made elsewhere. Framework-free; returns a cleanup.
  */
 export function connectThemeToggle(button: HTMLElement, menu: HTMLElement, options: ThemeToggleOptions = {}): () => void {
+  const root = document.documentElement;
+  if ((options.restore ?? true) && !root.hasAttribute("data-theme")) {
+    const saved = getTheme();
+    if (saved !== "system") setTheme(saved, root, { persist: false });
+  }
   const items = () => Array.from(menu.querySelectorAll<HTMLElement>('[role="menuitemradio"][data-value]'));
   const current = (): ThemeMode => {
     const forced = document.documentElement.getAttribute("data-theme");

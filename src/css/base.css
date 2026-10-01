@@ -263,6 +263,12 @@
 
 /* ---- Utilities ---- */
 
+/* Reading direction as a number, for things logical properties can't flip (mirrored icons, chart lines): -1 under
+   dir="rtl". Custom properties inherit, so the nearest dir attribute wins, as with dir itself. (:dir() would be
+   simpler, but minifiers rewrite it into :lang() lists.) */
+:where([dir="rtl"]) { --_ayy-dir: -1; }
+:where([dir="ltr"]) { --_ayy-dir: 1; }
+
 :where(.ayy-sr-only) {
   position: absolute;
   width: 1px;

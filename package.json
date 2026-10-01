@@ -61,6 +61,8 @@
     "./css/*": "./dist/css/*",
     "./fonts.css": "./dist/fonts.css",
     "./fonts-google.css": "./dist/fonts-google.css",
+    "./shadcn.css": "./dist/shadcn.css",
+    "./theme-init.js": "./dist/theme-init.js",
     "./tokens.json": "./tokens/tokens.json",
     "./tokens/*": "./dist/tokens/*",
     "./tailwind-preset": "./tailwind/preset.cjs",
@@ -77,6 +79,7 @@
     "ai",
     "llms.txt",
     "llms-full.txt",
+    "llms",
     "README.md",
     "LICENSE"
   ],

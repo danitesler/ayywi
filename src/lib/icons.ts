@@ -1,4 +1,4 @@
-// Hugeicons glyphs that ayywi's own components draw (close and menu buttons, pagination and carousel arrows, the theme toggle). Copied from @hugeicons/core-free-icons
+// Hugeicons glyphs that ayywi's own components draw (close and menu buttons, pagination and carousel arrows, the theme toggle, the combobox chevron, number field steps, the dropzone). Copied from @hugeicons/core-free-icons
 // (MIT, © Hugeicons) so ayywi keeps zero runtime dependencies; tests/node/icons.test.mjs checks they still match.
 import type { IconData } from "../components/icon/icon";
 
@@ -37,4 +37,21 @@ export const Moon02Icon: IconData = [
 export const Sun03Icon: IconData = [
   ["path", { d: "M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z", stroke: "currentColor", strokeWidth: "1.5", key: "0" }],
   ["path", { d: "M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714", stroke: "currentColor", strokeLinecap: "round", strokeWidth: "1.5", key: "1" }],
+];
+
+export const ArrowDown01Icon: IconData = [
+  ["path", { d: "M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+];
+
+export const MinusSignIcon: IconData = [
+  ["path", { d: "M20 12L4 12", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+];
+
+export const PlusSignIcon: IconData = [
+  ["path", { d: "M12 4V20M20 12H4", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+];
+
+export const CloudUploadIcon: IconData = [
+  ["path", { d: "M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M12 13L12 21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
 ];

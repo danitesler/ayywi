@@ -72,7 +72,7 @@ test("example code is one click away", async ({ page }) => {
 test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByText("Online store").click();
+  await page.getByText("Online store", { exact: true }).click();
   await expect(page.getByRole("textbox", { name: "What you're building" })).toHaveValue("online store");
   await page.getByRole("textbox", { name: "Who it's for" }).fill("a bakery in Lisbon");
   await page.getByText("ChatGPT or Claude").click();
@@ -81,7 +81,26 @@ test("get started builds the prompt from the sentence and the tool", async ({ pa
   expect(copied).toMatch(/^Build me an online store for a bakery in Lisbon\./);
   expect(copied).toContain("one self-contained HTML file");
   expect(copied).toContain("dist/ayywi.min.css");
+  // The fonts and the saved theme come along, so the app looks like the examples from the first paint.
+  expect(copied).toContain("dist/fonts.css");
+  expect(copied).toContain("dist/theme-init.js");
+  expect(copied).toContain("llms/table.md");
   expect(copied).not.toMatch(/127\.0\.0\.1|localhost/);
+});
+
+test("the site hosts each release's runtime files under v/<release>/; prompts from a local preview use the public site", async ({ page, context, baseURL }) => {
+  // Served from a real host name (not localhost), the prompts point at this build's own v/<release>/ copies.
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await open(page, "");
+  await page.getByText("ChatGPT or Claude").click();
+  await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
+  const local = await page.evaluate(() => navigator.clipboard.readText());
+  expect(local).not.toContain("/v/");
+  const versions = await (await page.request.get(`${baseURL}/versions.json`)).json();
+  const css = await page.request.get(`${baseURL}/v/${versions.latest}/dist/ayywi.min.css`);
+  expect(css.ok()).toBe(true);
+  expect(await css.text()).toContain(".ayy-button");
+  for (const file of versions.versions[0].files) expect((await page.request.get(`${baseURL}/v/${versions.latest}/${file}`)).ok(), file).toBe(true);
 });
 
 test("search filters the sidebar and jumps to a result", async ({ page }) => {
@@ -100,7 +119,7 @@ test("search filters the sidebar and jumps to a result", async ({ page }) => {
   await expect(nav.getByRole("link")).toHaveText(["Colors"]);
 
   await box.fill("forms"); // categories match
-  await expect(nav.getByRole("link")).toHaveCount(9);
+  await expect(nav.getByRole("link")).toHaveCount(manifest.components.filter((c: { category: string }) => c.category === "Forms").length);
 
   await box.fill("drawer"); // the side modal is a Dialog; the app shell opens its sidebar as one
   await expect(nav.getByRole("link")).toHaveText(["App shell", "Dialog"]);
@@ -150,6 +169,8 @@ const SHOWCASE = [
   { id: "inbox", name: "Relay", theme: "dark-soft", density: "comfortable" },
   { id: "settings", name: "Ledger", theme: "light-gray", density: "touch" },
   { id: "tracker", name: "Orbit", theme: "light", density: "compact" },
+  { id: "store", name: "Ember", theme: "dark", density: "comfortable" },
+  { id: "booking", name: "Haven", theme: "light", density: "touch" },
 ];
 
 test("what you can build: cards open a device preview", async ({ page }) => {
@@ -181,7 +202,7 @@ test("each showcase app renders in its own theme and density, and fits a phone",
     await expect(page.locator("html")).toHaveAttribute("data-density", app.density);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, app.id).toBeLessThanOrEqual(0);
-    if (app.id === "landing") {
+    if (app.id === "landing" || app.id === "store") {
       // A website: the navbar's links fold into a menu.
       await expect(page.getByRole("button", { name: "Menu" })).toBeVisible();
     } else {

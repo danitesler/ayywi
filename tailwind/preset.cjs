@@ -51,6 +51,7 @@ module.exports = {
           brand: c("accent-brand"),
           marketing: c("accent-marketing"),
         },
+        chart: { 1: c("chart-1"), 2: c("chart-2"), 3: c("chart-3"), 4: c("chart-4"), 5: c("chart-5"), 6: c("chart-6") },
       },
       fontFamily: {
         sans: [v("font-body")],

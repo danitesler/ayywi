@@ -8,9 +8,9 @@
     "ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
     "ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
     "ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). ayywi/fonts-google.css loads them from Google instead.",
-    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectAppShell, connectCarousel, connectMenu, connectNavbar, connectPopover, connectThemeToggle, connectToc, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, cssVar(). Server-safe.",
+    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectAppShell, connectCarousel, connectCombobox, connectMenu, connectNavbar, connectPopover, connectTable, connectThemeToggle, connectToc, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, cssVar(). Server-safe.",
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity).",
+    "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-table>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, chartColors, chartTheme).",
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-soft.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
@@ -41,12 +41,14 @@
     "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
     "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button. Never put a Navbar in an app.",
     "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
+    "Data views use ayywi's own pieces: Chart (BarChart, LineChart), Bar list and Sparkline for charts, coloured from --ayy-chart-1… in order; filters as Chips (with counts) above the results and the active ones as removable chips; sortable Table columns with a .ayy-table__sort button and aria-sort on the <th>. With a chart library, colour it with var(--ayy-chart-N) (SVG) or chartColors() and chartTheme() (canvas); never its default palette.",
+    "Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Number field for small counts, a Slider for a rough amount, native type=\"date\"/\"time\" Inputs for dates, File upload for files.",
     "Don't write breakpoints for navigation or layout: App shell, Navbar and Pagination switch at 48rem on their own, and .ayy-grid and .ayy-split adapt to their container. If you truly need one, use 48rem (phone) or 64rem (tablet).",
     "Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.",
     "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
     "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
     "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-    "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-theme-toggle>).",
+    "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
     "Run `npx ayywi lint` after UI changes and fix every error it reports."
   ],
   "attributes": {
@@ -90,7 +92,11 @@
     "--ayy-mx": "Card spotlight pointer X in px (set by React Card or ayywi/elements).",
     "--ayy-my": "Card spotlight pointer Y in px (set by React Card or ayywi/elements).",
     "--ayy-dot": "Badge status-dot colour override.",
-    "--ayy-value": "Progress value, a unitless number 0–100.",
+    "--ayy-value": "A unitless number 0–100: the Progress value, a Slider's position, a chart bar's height or tick's position, a bar-list row's length.",
+    "--ayy-chart-color": "Colour of a chart bar, series, legend item, bar list or sparkline, instead of the next --ayy-chart-* token.",
+    "--ayy-chart-height": "Height of a chart's plot (default 12rem).",
+    "--ayy-from": "Start of a slider range's fill, 0–100 (kept in sync by React and ayywi/elements).",
+    "--ayy-to": "End of a slider range's fill, 0–100.",
     "--ayy-progress-color": "Progress fill colour override.",
     "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
     "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
@@ -363,10 +369,22 @@
       "value": "#34d399"
     },
     {
+      "name": "palette.pink.42",
+      "cssVar": "--ayy-palette-pink-42",
+      "type": "color",
+      "value": "#be185d"
+    },
+    {
       "name": "palette.pink.70",
       "cssVar": "--ayy-palette-pink-70",
       "type": "color",
       "value": "#f472b6"
+    },
+    {
+      "name": "palette.orange.40",
+      "cssVar": "--ayy-palette-orange-40",
+      "type": "color",
+      "value": "#c2410c"
     },
     {
       "name": "palette.orange.65",
@@ -739,6 +757,72 @@
       "cssVar": "--ayy-accent-marketing",
       "type": "color",
       "value": "#ff8a4c"
+    },
+    {
+      "name": "chart.1",
+      "cssVar": "--ayy-chart-1",
+      "type": "color",
+      "value": "#5b9dff",
+      "light": "#1d4ed8",
+      "themes": {
+        "dark-soft": "#5b9dff",
+        "light-gray": "#1d4ed8"
+      }
+    },
+    {
+      "name": "chart.2",
+      "cssVar": "--ayy-chart-2",
+      "type": "color",
+      "value": "#ff8a4c",
+      "light": "#c2410c",
+      "themes": {
+        "dark-soft": "#ff8a4c",
+        "light-gray": "#c2410c"
+      }
+    },
+    {
+      "name": "chart.3",
+      "cssVar": "--ayy-chart-3",
+      "type": "color",
+      "value": "#34d399",
+      "light": "#047857",
+      "themes": {
+        "dark-soft": "#34d399",
+        "light-gray": "#047857"
+      }
+    },
+    {
+      "name": "chart.4",
+      "cssVar": "--ayy-chart-4",
+      "type": "color",
+      "value": "#b98cff",
+      "light": "#6d28d9",
+      "themes": {
+        "dark-soft": "#b98cff",
+        "light-gray": "#6d28d9"
+      }
+    },
+    {
+      "name": "chart.5",
+      "cssVar": "--ayy-chart-5",
+      "type": "color",
+      "value": "#f5c542",
+      "light": "#b45309",
+      "themes": {
+        "dark-soft": "#f5c542",
+        "light-gray": "#b45309"
+      }
+    },
+    {
+      "name": "chart.6",
+      "cssVar": "--ayy-chart-6",
+      "type": "color",
+      "value": "#f472b6",
+      "light": "#be185d",
+      "themes": {
+        "dark-soft": "#f472b6",
+        "light-gray": "#be185d"
+      }
     },
     {
       "name": "font.heading",
@@ -1688,7 +1772,7 @@
         "ayy-theme-toggle__item": "On each ayy-menu__item (role=\"menuitemradio\", data-value = theme name or \"system\"). The one with aria-checked=\"true\" is bold and shows a check."
       },
       "variants": {},
-      "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange? }) → cleanup.",
+      "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).",
       "element": {
         "tag": "ayy-theme-toggle",
         "attributes": {},
@@ -1718,7 +1802,7 @@
       "do": [
         "Use it in a site or app header where readers pick a theme, including following the system.",
         "Put it next to the brand or before the call to action in the Navbar.",
-        "Add themeInitScript to <head> so the stored theme applies before first paint."
+        "Load dist/theme-init.js (or inline themeInitScript) first thing in <head>, so the stored theme applies before the first paint. The toggle restores it anyway when it connects, a moment later."
       ],
       "dont": [
         "Don't use it when there are only ever two themes and no \"system\" — a plain Button calling setTheme() is enough.",
@@ -2558,6 +2642,7 @@
       ],
       "do": [
         "Use an input for short free-text entry: names, URLs, search, API keys.",
+        "Use type=\"date\", \"time\" or \"datetime-local\" for dates and times: the browser's own picker, in the theme's colour scheme, with keyboard entry and the user's locale. Set min and max for bookable ranges.",
         "Match the input size to neighbouring buttons in a toolbar (sm with sm)."
       ],
       "dont": [
@@ -2578,6 +2663,12 @@
           "title": "Invalid",
           "html": "<div class=\"ayy-field\" style=\"inline-size: min(100%, 20rem)\">\n  <label class=\"ayy-label\" for=\"api-key-html\">API key</label>\n  <input class=\"ayy-input\" id=\"api-key-html\" value=\"sk-123\" aria-invalid=\"true\" aria-describedby=\"api-key-html-error\" />\n  <p class=\"ayy-field__error\" id=\"api-key-html-error\">Key looks too short.</p>\n</div>",
           "react": "import { Field, FieldError, Input, Label } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 20rem)\" }}>\n      <Label htmlFor=\"api-key\">API key</Label>\n      <Input id=\"api-key\" defaultValue=\"sk-123\" aria-invalid=\"true\" aria-describedby=\"api-key-error\" />\n      <FieldError id=\"api-key-error\">Key looks too short.</FieldError>\n    </Field>\n  );\n}"
+        },
+        {
+          "id": "date-time",
+          "title": "Date and time",
+          "html": "<div class=\"ayy-grid\" style=\"--ayy-min: 11rem; inline-size: min(100%, 28rem)\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"booking-date\">Date</label>\n    <input type=\"date\" class=\"ayy-input\" id=\"booking-date\" min=\"2026-10-01\" max=\"2026-12-31\" aria-describedby=\"booking-date-hint\" value=\"2026-10-14\"/>\n    <p class=\"ayy-field__hint\" id=\"booking-date-hint\">October to December.</p>\n  </div>\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"booking-time\">Time</label>\n    <input type=\"time\" class=\"ayy-input\" id=\"booking-time\" min=\"07:00\" max=\"21:00\" step=\"900\" value=\"18:30\"/>\n  </div>\n</div>",
+          "react": "import type { CSSProperties } from \"react\";\nimport { Field, FieldHint, Input, Label } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-grid\" style={{ \"--ayy-min\": \"11rem\", inlineSize: \"min(100%, 28rem)\" } as CSSProperties}>\n      <Field>\n        <Label htmlFor=\"booking-date\">Date</Label>\n        <Input id=\"booking-date\" type=\"date\" defaultValue=\"2026-10-14\" min=\"2026-10-01\" max=\"2026-12-31\" aria-describedby=\"booking-date-hint\" />\n        <FieldHint id=\"booking-date-hint\">October to December.</FieldHint>\n      </Field>\n      <Field>\n        <Label htmlFor=\"booking-time\">Time</Label>\n        <Input id=\"booking-time\" type=\"time\" defaultValue=\"18:30\" min=\"07:00\" max=\"21:00\" step={900} />\n      </Field>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -2652,7 +2743,7 @@
         {
           "id": "addons",
           "title": "Prefix, suffix and a button",
-          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 24rem); --ayy-gap: var(--ayy-space-4)\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"ig-site\">Website</label>\n    <div class=\"ayy-input-group\">\n      <span class=\"ayy-input-group__addon\">https://</span>\n      <input type=\"text\" class=\"ayy-input\" id=\"ig-site\" placeholder=\"northwind.app\" autoComplete=\"url\"/>\n    </div>\n  </div>\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"ig-price\">Price</label>\n    <div class=\"ayy-input-group\">\n      <input type=\"text\" class=\"ayy-input\" id=\"ig-price\" inputMode=\"decimal\" aria-describedby=\"ig-price-hint\" value=\"24.00\"/>\n      <span class=\"ayy-input-group__addon\">USD</span>\n    </div>\n    <p class=\"ayy-field__hint\" id=\"ig-price-hint\">Per editor, per month.</p>\n  </div>\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"ig-key\">API key</label>\n    <div class=\"ayy-input-group\">\n      <input type=\"password\" class=\"ayy-input ayy-mono\" id=\"ig-key\" readOnly=\"\" value=\"sk_live_8f2c1d\"/>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Show key\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M21.544 11.045C21.848 11.4713 22 11.6845 22 12C22 12.3155 21.848 12.5287 21.544 12.955C20.1779 14.8706 16.6892 19 12 19C7.31078 19 3.8221 14.8706 2.45604 12.955C2.15201 12.5287 2 12.3155 2 12C2 11.6845 2.15201 11.4713 2.45604 11.045C3.8221 9.12944 7.31078 5 12 5C16.6892 5 20.1779 9.12944 21.544 11.045Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path></svg></button>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Copy key\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </div>\n</div>",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 24rem); --ayy-gap: var(--ayy-space-4)\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"ig-site\">Website</label>\n    <div class=\"ayy-input-group\">\n      <span class=\"ayy-input-group__addon\">https://</span>\n      <input type=\"text\" class=\"ayy-input\" id=\"ig-site\" placeholder=\"northwind.app\" autocomplete=\"url\"/>\n    </div>\n  </div>\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"ig-price\">Price</label>\n    <div class=\"ayy-input-group\">\n      <input type=\"text\" class=\"ayy-input\" id=\"ig-price\" inputmode=\"decimal\" aria-describedby=\"ig-price-hint\" value=\"24.00\"/>\n      <span class=\"ayy-input-group__addon\">USD</span>\n    </div>\n    <p class=\"ayy-field__hint\" id=\"ig-price-hint\">Per editor, per month.</p>\n  </div>\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"ig-key\">API key</label>\n    <div class=\"ayy-input-group\">\n      <input type=\"password\" class=\"ayy-input ayy-mono\" id=\"ig-key\" readonly=\"\" value=\"sk_live_8f2c1d\"/>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Show key\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M21.544 11.045C21.848 11.4713 22 11.6845 22 12C22 12.3155 21.848 12.5287 21.544 12.955C20.1779 14.8706 16.6892 19 12 19C7.31078 19 3.8221 14.8706 2.45604 12.955C2.15201 12.5287 2 12.3155 2 12C2 11.6845 2.15201 11.4713 2.45604 11.045C3.8221 9.12944 7.31078 5 12 5C16.6892 5 20.1779 9.12944 21.544 11.045Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path></svg></button>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Copy key\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </div>\n</div>",
           "react": "import { Copy01Icon, ViewIcon } from \"@hugeicons/core-free-icons\";\nimport type { CSSProperties } from \"react\";\nimport { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 24rem)\", \"--ayy-gap\": \"var(--ayy-space-4)\" } as CSSProperties}>\n      <Field>\n        <Label htmlFor=\"ig-site\">Website</Label>\n        <InputGroup>\n          <InputGroupAddon>https://</InputGroupAddon>\n          <Input id=\"ig-site\" placeholder=\"northwind.app\" autoComplete=\"url\" />\n        </InputGroup>\n      </Field>\n      <Field>\n        <Label htmlFor=\"ig-price\">Price</Label>\n        <InputGroup>\n          <Input id=\"ig-price\" inputMode=\"decimal\" defaultValue=\"24.00\" aria-describedby=\"ig-price-hint\" />\n          <InputGroupAddon>USD</InputGroupAddon>\n        </InputGroup>\n        <FieldHint id=\"ig-price-hint\">Per editor, per month.</FieldHint>\n      </Field>\n      <Field>\n        <Label htmlFor=\"ig-key\">API key</Label>\n        <InputGroup>\n          <Input id=\"ig-key\" type=\"password\" defaultValue=\"sk_live_8f2c1d\" readOnly className=\"ayy-mono\" />\n          <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Show key\">\n            <Icon icon={ViewIcon} />\n          </Button>\n          <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Copy key\">\n            <Icon icon={Copy01Icon} />\n          </Button>\n        </InputGroup>\n      </Field>\n    </div>\n  );\n}"
         }
       ],
@@ -2802,6 +2893,95 @@
         "js": "src/components/select/select.ts",
         "react": "src/components/select/select.react.tsx",
         "meta": "src/components/select/select.meta.json"
+      }
+    },
+    {
+      "name": "Combobox",
+      "slug": "combobox",
+      "status": "beta",
+      "category": "Forms",
+      "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
+      "classes": {
+        "ayy-combobox": "Wrapper: the .ayy-input (role=\"combobox\"), a chevron <svg> and the listbox.",
+        "ayy-combobox__listbox": "The <ul role=\"listbox\" popover=\"manual\"> of options, placed under the input.",
+        "ayy-combobox__option": "An <li role=\"option\">. data-value is what it stands for, data-label what goes in the input, data-keywords more words that match. aria-selected=\"true\" on the one the arrow keys are on; aria-disabled for one you can't pick.",
+        "ayy-combobox__meta": "Extra text at the end of an option (a country, a count). Not put in the input.",
+        "ayy-combobox__empty": "The \"No matches\" line (role=\"none\"), shown when nothing matches."
+      },
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "component": "Combobox"
+        }
+      },
+      "states": {
+        "input[aria-expanded=\"true\"]": "The list is open.",
+        "option[aria-selected=\"true\"]": "The option the arrow keys are on.",
+        "option[hidden]": "Filtered out."
+      },
+      "js": "connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",
+      "element": {
+        "tag": "ayy-combobox",
+        "description": "Wraps an .ayy-combobox and wires typing, filtering, the arrow keys, Enter and Esc on its input and listbox.",
+        "attributes": {
+          "manual": "Don't filter: replace the options yourself as people type (a search API), then call refresh()."
+        },
+        "events": {
+          "ayy-select": "{ value, label, option } when an option is chosen — value is its data-value, else its label."
+        }
+      },
+      "react": {
+        "import": "import { Combobox } from \"ayywi/react\";",
+        "components": {
+          "Combobox": {
+            "renders": "<div class=\"ayy-combobox\"><input role=\"combobox\" class=\"ayy-input\"><svg><ul role=\"listbox\" class=\"ayy-combobox__listbox\">",
+            "props": {
+              "options": "({ value, label, meta?, icon?, keywords?, disabled? } | string)[]",
+              "value / defaultValue": "The chosen option's value.",
+              "onValueChange": "(value: string, option) => void",
+              "onInputChange": "(text: string) => void — every keystroke, e.g. to fetch options",
+              "filter": "boolean, default true; false when you fetch the options yourself",
+              "emptyText": "ReactNode, default \"No matches\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
+              "name": "string — a hidden input carries the chosen value in forms"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Focus stays in the input: Down opens the list and moves through it, Up goes back, Enter picks, Esc closes (and a second Esc clears), Alt+Down opens without moving. Screen readers follow aria-activedescendant.",
+        "Label the input with a <label for> its id; the chevron is decoration.",
+        "Typing highlights the first match, so Enter picks it; options that don't match are hidden, and \"No matches\" shows when none do."
+      ],
+      "do": [
+        "Use a combobox to pick one of many known values: more than ten or so, where people know what they're looking for (a city, a customer, a time zone).",
+        "Give options keywords for the other words people type (the country for a city, the email for a customer), and meta for what helps tell them apart.",
+        "For results from a server, set filter={false} (or manual on <ayy-combobox>) and replace the options on each keystroke."
+      ],
+      "dont": [
+        "Don't use a combobox for fewer than about ten options — use Select, or a Segmented control for two to five.",
+        "Don't use it for actions — use a Dropdown menu.",
+        "Don't use it for free text that may not be in the list — use an Input (a datalist can suggest)."
+      ],
+      "examples": [
+        {
+          "id": "basic",
+          "title": "Time zone",
+          "html": "<div class=\"ayy-field\" style=\"inline-size: min(100%, 20rem)\">\n  <label class=\"ayy-label\" for=\"timezone\">Time zone</label>\n  <ayy-combobox>\n    <div class=\"ayy-combobox\">\n      <input type=\"text\" role=\"combobox\" aria-autocomplete=\"list\" aria-expanded=\"false\" aria-controls=\"combobox-basic-1\" autocomplete=\"off\" class=\"ayy-input\" id=\"timezone\" placeholder=\"Search a city\" aria-describedby=\"timezone-hint\" value=\"Lisbon\"/>\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <ul id=\"combobox-basic-1\" class=\"ayy-combobox__listbox\" role=\"listbox\" popover=\"manual\">\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"Europe/Lisbon\" data-label=\"Lisbon\" data-keywords=\"Portugal\">Lisbon<span class=\"ayy-combobox__meta\">Portugal</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"Europe/London\" data-label=\"London\" data-keywords=\"United Kingdom\">London<span class=\"ayy-combobox__meta\">United Kingdom</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"Europe/Berlin\" data-label=\"Berlin\" data-keywords=\"Germany\">Berlin<span class=\"ayy-combobox__meta\">Germany</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"Asia/Jerusalem\" data-label=\"Jerusalem\" data-keywords=\"Israel\">Jerusalem<span class=\"ayy-combobox__meta\">Israel</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"Asia/Dubai\" data-label=\"Dubai\" data-keywords=\"United Arab Emirates\">Dubai<span class=\"ayy-combobox__meta\">United Arab Emirates</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"Asia/Tokyo\" data-label=\"Tokyo\" data-keywords=\"Japan\">Tokyo<span class=\"ayy-combobox__meta\">Japan</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"America/New_York\" data-label=\"New York\" data-keywords=\"United States\">New York<span class=\"ayy-combobox__meta\">United States</span></li>\n        <li role=\"option\" class=\"ayy-combobox__option\" data-value=\"America/Sao_Paulo\" data-label=\"São Paulo\" data-keywords=\"Brazil\">São Paulo<span class=\"ayy-combobox__meta\">Brazil</span></li>\n        <li class=\"ayy-combobox__empty\" role=\"none\" hidden=\"\">No matches</li>\n      </ul>\n      <input type=\"hidden\" name=\"timezone\" value=\"Europe/Lisbon\"/>\n    </div>\n  </ayy-combobox>\n  <p class=\"ayy-field__hint\" id=\"timezone-hint\">Type a city or a country.</p>\n</div>",
+          "react": "import { Combobox, Field, FieldHint, Label } from \"ayywi/react\";\n\nconst zones = [\n  { value: \"Europe/Lisbon\", label: \"Lisbon\", meta: \"Portugal\", keywords: \"Portugal\" },\n  { value: \"Europe/London\", label: \"London\", meta: \"United Kingdom\", keywords: \"United Kingdom\" },\n  { value: \"Europe/Berlin\", label: \"Berlin\", meta: \"Germany\", keywords: \"Germany\" },\n  { value: \"Asia/Jerusalem\", label: \"Jerusalem\", meta: \"Israel\", keywords: \"Israel\" },\n  { value: \"Asia/Dubai\", label: \"Dubai\", meta: \"United Arab Emirates\", keywords: \"United Arab Emirates\" },\n  { value: \"Asia/Tokyo\", label: \"Tokyo\", meta: \"Japan\", keywords: \"Japan\" },\n  { value: \"America/New_York\", label: \"New York\", meta: \"United States\", keywords: \"United States\" },\n  { value: \"America/Sao_Paulo\", label: \"São Paulo\", meta: \"Brazil\", keywords: \"Brazil\" },\n];\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 20rem)\" }}>\n      <Label htmlFor=\"timezone\">Time zone</Label>\n      <Combobox id=\"timezone\" name=\"timezone\" options={zones} defaultValue=\"Europe/Lisbon\" placeholder=\"Search a city\" aria-describedby=\"timezone-hint\" />\n      <FieldHint id=\"timezone-hint\">Type a city or a country.</FieldHint>\n    </Field>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/combobox/combobox.css",
+        "js": "src/components/combobox/combobox.ts",
+        "react": "src/components/combobox/combobox.react.tsx",
+        "meta": "src/components/combobox/combobox.meta.json",
+        "element": "src/components/combobox/combobox.element.ts"
       }
     },
     {
@@ -3025,6 +3205,483 @@
         "js": "src/components/segmented-control/segmented-control.ts",
         "react": "src/components/segmented-control/segmented-control.react.tsx",
         "meta": "src/components/segmented-control/segmented-control.meta.json"
+      }
+    },
+    {
+      "name": "Chip",
+      "slug": "chip",
+      "status": "beta",
+      "category": "Forms",
+      "description": "Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.",
+      "classes": {
+        "ayy-chip": "A <label> around a native <input type=\"checkbox\"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed=\"true\".",
+        "ayy-chip--removable": "An active filter: a <span> with its text and an __remove button. Not a control itself.",
+        "ayy-chip__count": "Number of results after the label, muted, tabular digits.",
+        "ayy-chip__remove": "The remove (×) button of a removable chip. Needs an aria-label (\"Remove Status: Open\").",
+        "ayy-chip-group": "Wrapping row of chips: role=\"group\" with an aria-label, or role=\"radiogroup\" for radio chips.",
+        "ayy-chip-group--scroll": "One line that scrolls sideways instead of wrapping (a phone toolbar)."
+      },
+      "variants": {
+        "type": {
+          "values": [
+            "checkbox",
+            "radio"
+          ],
+          "default": "checkbox",
+          "component": "Chip"
+        },
+        "scroll": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "ChipGroup"
+        }
+      },
+      "states": {
+        ".ayy-chip:has(> input:checked)": "On (checkbox or radio chips).",
+        ".ayy-chip[aria-pressed=\"true\"]": "On (button chips).",
+        ":disabled": "Dimmed, not clickable."
+      },
+      "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
+      "react": {
+        "import": "import { Chip, ChipButton, ChipRemovable, ChipGroup } from \"ayywi/react\";",
+        "components": {
+          "Chip": {
+            "renders": "<label class=\"ayy-chip\"><input type=\"checkbox\">…",
+            "props": {
+              "type": "\"checkbox\" (filters that combine) | \"radio\" (one choice; same name in the group)",
+              "checked / defaultChecked": "boolean",
+              "onCheckedChange": "(checked: boolean) => void",
+              "name": "string",
+              "value": "string",
+              "disabled": "boolean",
+              "count": "ReactNode — results for this filter",
+              "inputProps": "Props for the native input."
+            }
+          },
+          "ChipButton": {
+            "renders": "<button type=\"button\" class=\"ayy-chip\" aria-pressed>",
+            "props": {
+              "pressed": "boolean",
+              "onPressedChange": "(pressed: boolean) => void",
+              "count": "ReactNode"
+            }
+          },
+          "ChipRemovable": {
+            "renders": "<span class=\"ayy-chip ayy-chip--removable\">… <button class=\"ayy-chip__remove\">",
+            "props": {
+              "onRemove": "() => void",
+              "removeLabel": "string — default \"Remove \" + the text"
+            }
+          },
+          "ChipGroup": {
+            "renders": "<div role=\"group\" class=\"ayy-chip-group\">",
+            "props": {
+              "scroll": "boolean — one line that scrolls sideways"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Checkbox and radio chips are native inputs: Space toggles, radios in a group move with the arrow keys, and screen readers announce \"checked\". Button chips announce \"pressed\".",
+        "Give the group an aria-label naming what it filters (\"Status\"), and radio chips role=\"radiogroup\".",
+        "The on state is a border, a wash and a tick, not colour alone; High Contrast fills it with the system highlight.",
+        "Every remove button needs an aria-label with the filter it removes. After removing one, move focus to the next chip or the search field so it isn't lost."
+      ],
+      "do": [
+        "Use chips to filter a list, a table or a grid by a few known values (status, priority, category), with counts when they help.",
+        "Use checkbox chips when filters combine, radio chips for one category at a time, ChipButton when the app filters on every click without a form.",
+        "Show the filters in force as removable chips above the results, with a Clear all button.",
+        "Use ChipGroup scroll in a phone toolbar so the chips stay on one line."
+      ],
+      "dont": [
+        "Don't use chips for a status label that can't be clicked — use a Badge.",
+        "Don't use chips to switch views or date ranges — use a Segmented control; for navigation between pages use Tabs or links.",
+        "Don't show more than eight or so chips in a row — move the rest into a Popover with checkboxes (\"More filters\").",
+        "Don't make a removable chip's whole body the remove target; only the × removes it."
+      ],
+      "examples": [
+        {
+          "id": "filters",
+          "title": "Filters and one choice",
+          "html": "<div class=\"ayy-stack\">\n  <div role=\"group\" class=\"ayy-chip-group\" aria-label=\"Status\">\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status\" checked=\"\" value=\"open\"/>Open<span class=\"ayy-chip__count\">12</span></label>\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status\" value=\"pending\"/>Pending<span class=\"ayy-chip__count\">4</span></label>\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status\" value=\"closed\"/>Closed<span class=\"ayy-chip__count\">31</span></label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-chip-group\" aria-label=\"Category\">\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" checked=\"\" value=\"all\"/>All</label>\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" value=\"coffee\"/>Coffee</label>\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" value=\"tea\"/>Tea</label>\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" value=\"gear\"/>Brewing gear</label>\n  </div>\n</div>",
+          "react": "import { Chip, ChipGroup } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <ChipGroup aria-label=\"Status\">\n        <Chip name=\"status\" value=\"open\" defaultChecked count={12}>\n          Open\n        </Chip>\n        <Chip name=\"status\" value=\"pending\" count={4}>\n          Pending\n        </Chip>\n        <Chip name=\"status\" value=\"closed\" count={31}>\n          Closed\n        </Chip>\n      </ChipGroup>\n      <ChipGroup role=\"radiogroup\" aria-label=\"Category\">\n        <Chip type=\"radio\" name=\"category\" value=\"all\" defaultChecked>\n          All\n        </Chip>\n        <Chip type=\"radio\" name=\"category\" value=\"coffee\">\n          Coffee\n        </Chip>\n        <Chip type=\"radio\" name=\"category\" value=\"tea\">\n          Tea\n        </Chip>\n        <Chip type=\"radio\" name=\"category\" value=\"gear\">\n          Brewing gear\n        </Chip>\n      </ChipGroup>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "filter-bar",
+          "title": "Filter bar with active filters",
+          "html": "<!-- Your script flips aria-pressed and removes chips; ayywi only draws the state. -->\n<div class=\"ayy-stack\" style=\"inline-size: 100%\">\n  <div class=\"ayy-spread\">\n    <div class=\"ayy-input-group\" style=\"inline-size: min(100%, 18rem)\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" class=\"ayy-input\" placeholder=\"Search tickets\" aria-label=\"Search tickets\"/>\n    </div>\n    <div role=\"group\" class=\"ayy-chip-group ayy-chip-group--scroll\" aria-label=\"Filters\">\n      <button type=\"button\" aria-pressed=\"true\" class=\"ayy-chip\">Assigned to me</button>\n      <button type=\"button\" aria-pressed=\"true\" class=\"ayy-chip\">Urgent</button>\n      <button type=\"button\" aria-pressed=\"false\" class=\"ayy-chip\">High</button>\n      <button type=\"button\" aria-pressed=\"false\" class=\"ayy-chip\">Normal</button>\n    </div>\n  </div>\n  <div class=\"ayy-cluster\">\n    <span class=\"ayy-muted\">Filtered by</span>\n    <span class=\"ayy-chip ayy-chip--removable\">Assignee: me<button type=\"button\" class=\"ayy-chip__remove\" aria-label=\"Remove Assignee: me\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button></span>\n    <span class=\"ayy-chip ayy-chip--removable\">Priority: Urgent<button type=\"button\" class=\"ayy-chip__remove\" aria-label=\"Remove Priority: Urgent\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button></span>\n    <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--sm\">Clear all</button>\n  </div>\n</div>",
+          "react": "import { Search01Icon } from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from \"ayywi/react\";\n\nconst PRIORITIES = [\"Urgent\", \"High\", \"Normal\"];\n\nexport default function Example() {\n  const [mine, setMine] = useState(true);\n  const [priorities, setPriorities] = useState([\"Urgent\"]);\n  const toggle = (priority: string) =>\n    setPriorities((list) => (list.includes(priority) ? list.filter((p) => p !== priority) : [...list, priority]));\n  const active = priorities.length + (mine ? 1 : 0);\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"100%\" }}>\n      <div className=\"ayy-spread\">\n        <InputGroup style={{ inlineSize: \"min(100%, 18rem)\" }}>\n          <Icon icon={Search01Icon} />\n          <Input type=\"search\" placeholder=\"Search tickets\" aria-label=\"Search tickets\" />\n        </InputGroup>\n        <ChipGroup aria-label=\"Filters\" scroll>\n          <ChipButton pressed={mine} onPressedChange={setMine}>\n            Assigned to me\n          </ChipButton>\n          {PRIORITIES.map((priority) => (\n            <ChipButton key={priority} pressed={priorities.includes(priority)} onPressedChange={() => toggle(priority)}>\n              {priority}\n            </ChipButton>\n          ))}\n        </ChipGroup>\n      </div>\n      {active > 0 && (\n        <div className=\"ayy-cluster\">\n          <span className=\"ayy-muted\">Filtered by</span>\n          {mine && <ChipRemovable onRemove={() => setMine(false)}>Assignee: me</ChipRemovable>}\n          {priorities.map((priority) => (\n            <ChipRemovable key={priority} onRemove={() => toggle(priority)}>\n              {`Priority: ${priority}`}\n            </ChipRemovable>\n          ))}\n          <Button\n            variant=\"ghost\"\n            size=\"sm\"\n            onClick={() => {\n              setMine(false);\n              setPriorities([]);\n            }}\n          >\n            Clear all\n          </Button>\n        </div>\n      )}\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/chip/chip.css",
+        "js": "src/components/chip/chip.ts",
+        "react": "src/components/chip/chip.react.tsx",
+        "meta": "src/components/chip/chip.meta.json"
+      }
+    },
+    {
+      "name": "Choice card",
+      "slug": "choice-card",
+      "status": "beta",
+      "category": "Forms",
+      "description": "A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.",
+      "classes": {
+        "ayy-choice-group": "Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role=\"radiogroup\" for radio cards.",
+        "ayy-choice-group--scroll": "One row that scrolls sideways instead of wrapping: a day strip, sizes on a phone. Cards stay at least --ayy-min wide.",
+        "ayy-choice-group__legend": "The group's question, as the fieldset's <legend>.",
+        "ayy-choice-card": "A <label> card around a native <input class=\"ayy-radio\"> or ayy-checkbox, drawn in the inline-end corner. Chosen: a text-colour border, 2px.",
+        "ayy-choice-card--compact": "A time slot or a size: centred text, input hidden, filled when chosen; a disabled one is struck through.",
+        "ayy-choice-card__title": "The option's name.",
+        "ayy-choice-card__description": "One line about it, muted.",
+        "ayy-choice-card__meta": "A price or a date, at the bottom so a row of cards lines them up."
+      },
+      "variants": {
+        "compact": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "ChoiceCard"
+        },
+        "type": {
+          "values": [
+            "radio",
+            "checkbox"
+          ],
+          "default": "radio",
+          "component": "ChoiceGroup"
+        },
+        "scroll": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "ChoiceGroup"
+        }
+      },
+      "states": {
+        ".ayy-choice-card:has(> input:checked)": "Chosen.",
+        ".ayy-choice-card:has(> input:disabled)": "Not available."
+      },
+      "js": "choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.",
+      "react": {
+        "import": "import { ChoiceGroup, ChoiceCard } from \"ayywi/react\";",
+        "components": {
+          "ChoiceGroup": {
+            "renders": "<fieldset role=\"radiogroup\" class=\"ayy-choice-group\"><legend>…",
+            "props": {
+              "legend": "ReactNode — the question",
+              "type": "\"radio\" (one choice, kept by the group) | \"checkbox\" (cards that combine)",
+              "name": "Shared radio name. Generated if omitted.",
+              "value / defaultValue": "The chosen card's value.",
+              "onValueChange": "(value: string) => void",
+              "min": "CSS length — narrowest card",
+              "scroll": "boolean — one row that scrolls sideways",
+              "disabled": "boolean — every card"
+            }
+          },
+          "ChoiceCard": {
+            "renders": "<label class=\"ayy-choice-card\"><input class=\"ayy-radio\">…",
+            "props": {
+              "value": "string",
+              "title": "ReactNode",
+              "description": "ReactNode",
+              "meta": "ReactNode — price or date",
+              "icon": "ReactNode — an Icon or Icon tile above the title",
+              "compact": "boolean",
+              "type": "\"checkbox\" | \"radio\" — outside a radio ChoiceGroup",
+              "checked / defaultChecked": "boolean — outside a radio ChoiceGroup",
+              "onCheckedChange": "(checked: boolean) => void",
+              "disabled": "boolean",
+              "inputProps": "Props for the native input (name for checkbox cards)."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Each card is a native radio or checkbox labelled by the whole card: Space picks it, arrow keys move between radios, and the title, description and price are its name.",
+        "Group them in a <fieldset> with a <legend> (ChoiceGroup legend) so the question is announced with each option.",
+        "Chosen is a thicker border (and a filled card when compact), not colour alone; High Contrast outlines it with the system highlight.",
+        "A full slot stays in the group as disabled, struck through, so people see what isn't available."
+      ],
+      "do": [
+        "Use choice cards when each option needs more than a word: a plan with its price, a delivery option with its date, an add-on with what it costs.",
+        "Use compact cards for a grid of short options: time slots, sizes, seat counts. Say what's left in the description. A day strip is compact cards in a scroll group.",
+        "Mark the recommended plan with a Badge in its title; the chosen state is the border.",
+        "Use type checkbox for add-ons that combine, radio for one choice."
+      ],
+      "dont": [
+        "Don't use choice cards for a yes/no setting — use Switch; for two to five short words, use a Segmented control; for a long list, use Select.",
+        "Don't put links or buttons inside a card: the whole card is the label.",
+        "Don't use them to show plans you can't pick (a marketing pricing table) — use Cards with Card featured."
+      ],
+      "examples": [
+        {
+          "id": "plans",
+          "title": "Plans",
+          "html": "<fieldset role=\"radiogroup\" class=\"ayy-choice-group\" style=\"inline-size: 100%\">\n  <legend class=\"ayy-choice-group__legend\">Plan</legend>\n  <label class=\"ayy-choice-card\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan\" value=\"starter\"/><span class=\"ayy-choice-card__title\">Starter</span><span class=\"ayy-choice-card__description\">One project, community support</span><span class=\"ayy-choice-card__meta\">Free</span></label>\n  <label class=\"ayy-choice-card\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan\" checked=\"\" value=\"pro\"/><span class=\"ayy-choice-card__title\">Pro</span><span class=\"ayy-choice-card__description\">Unlimited projects, AI replies, priority support</span><span class=\"ayy-choice-card__meta\">$24 / editor / month</span></label>\n  <label class=\"ayy-choice-card\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan\" value=\"business\"/><span class=\"ayy-choice-card__title\">Business</span><span class=\"ayy-choice-card__description\">SSO, audit log, a success manager</span><span class=\"ayy-choice-card__meta\">$48 / editor / month</span></label>\n</fieldset>",
+          "react": "import { ChoiceCard, ChoiceGroup } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <ChoiceGroup legend=\"Plan\" name=\"plan\" defaultValue=\"pro\" style={{ inlineSize: \"100%\" }}>\n      <ChoiceCard value=\"starter\" title=\"Starter\" description=\"One project, community support\" meta=\"Free\" />\n      <ChoiceCard value=\"pro\" title=\"Pro\" description=\"Unlimited projects, AI replies, priority support\" meta=\"$24 / editor / month\" />\n      <ChoiceCard value=\"business\" title=\"Business\" description=\"SSO, audit log, a success manager\" meta=\"$48 / editor / month\" />\n    </ChoiceGroup>\n  );\n}"
+        },
+        {
+          "id": "slots",
+          "title": "Time slots",
+          "html": "<fieldset role=\"radiogroup\" class=\"ayy-choice-group\" style=\"inline-size: min(100%, 28rem)\">\n  <legend class=\"ayy-choice-group__legend\">Tuesday, October 14</legend>\n  <label class=\"ayy-choice-card ayy-choice-card--compact\"><input type=\"radio\" class=\"ayy-radio\" name=\"slot\" value=\"07:00\"/><span class=\"ayy-choice-card__title\">07:00</span><span class=\"ayy-choice-card__description\">6 spots left</span></label>\n  <label class=\"ayy-choice-card ayy-choice-card--compact\"><input type=\"radio\" class=\"ayy-radio\" name=\"slot\" value=\"08:30\"/><span class=\"ayy-choice-card__title\">08:30</span><span class=\"ayy-choice-card__description\">2 spots left</span></label>\n  <label class=\"ayy-choice-card ayy-choice-card--compact\"><input type=\"radio\" class=\"ayy-radio\" name=\"slot\" value=\"12:15\"/><span class=\"ayy-choice-card__title\">12:15</span><span class=\"ayy-choice-card__description\">9 spots left</span></label>\n  <label class=\"ayy-choice-card ayy-choice-card--compact\"><input type=\"radio\" class=\"ayy-radio\" disabled=\"\" name=\"slot\" value=\"17:30\"/><span class=\"ayy-choice-card__title\">17:30</span><span class=\"ayy-choice-card__description\">Full</span></label>\n  <label class=\"ayy-choice-card ayy-choice-card--compact\"><input type=\"radio\" class=\"ayy-radio\" name=\"slot\" checked=\"\" value=\"18:30\"/><span class=\"ayy-choice-card__title\">18:30</span><span class=\"ayy-choice-card__description\">3 spots left</span></label>\n  <label class=\"ayy-choice-card ayy-choice-card--compact\"><input type=\"radio\" class=\"ayy-radio\" name=\"slot\" value=\"20:00\"/><span class=\"ayy-choice-card__title\">20:00</span><span class=\"ayy-choice-card__description\">11 spots left</span></label>\n</fieldset>",
+          "react": "import { ChoiceCard, ChoiceGroup } from \"ayywi/react\";\n\nconst slots = [\n  { time: \"07:00\", left: 6 },\n  { time: \"08:30\", left: 2 },\n  { time: \"12:15\", left: 9 },\n  { time: \"17:30\", left: 0 },\n  { time: \"18:30\", left: 3 },\n  { time: \"20:00\", left: 11 },\n];\n\nexport default function Example() {\n  return (\n    <ChoiceGroup legend=\"Tuesday, October 14\" name=\"slot\" defaultValue=\"18:30\" style={{ inlineSize: \"min(100%, 28rem)\" }}>\n      {slots.map((slot) => (\n        <ChoiceCard\n          key={slot.time}\n          compact\n          value={slot.time}\n          title={slot.time}\n          description={slot.left ? `${slot.left} spots left` : \"Full\"}\n          disabled={!slot.left}\n        />\n      ))}\n    </ChoiceGroup>\n  );\n}"
+        },
+        {
+          "id": "add-ons",
+          "title": "Add-ons that combine",
+          "html": "<fieldset class=\"ayy-choice-group\" style=\"inline-size: 100%\">\n  <legend class=\"ayy-choice-group__legend\">Extras</legend>\n  <label class=\"ayy-choice-card\"><input type=\"checkbox\" class=\"ayy-checkbox\" name=\"extras\" value=\"gift\"/><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 11V15C4 18.2998 4 19.9497 5.02513 20.9749C6.05025 22 7.70017 22 11 22H13C16.2998 22 17.9497 22 18.9749 20.9749C20 19.9497 20 18.2998 20 15V11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 9C3 8.25231 3 7.87846 3.20096 7.6C3.33261 7.41758 3.52197 7.26609 3.75 7.16077C4.09808 7 4.56538 7 5.5 7H18.5C19.4346 7 19.9019 7 20.25 7.16077C20.478 7.26609 20.6674 7.41758 20.799 7.6C21 7.87846 21 8.25231 21 9C21 9.74769 21 10.1215 20.799 10.4C20.6674 10.5824 20.478 10.7339 20.25 10.8392C19.9019 11 19.4346 11 18.5 11H5.5C4.56538 11 4.09808 11 3.75 10.8392C3.52197 10.7339 3.33261 10.5824 3.20096 10.4C3 10.1215 3 9.74769 3 9Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M6 3.78571C6 2.79949 6.79949 2 7.78571 2H8.14286C10.2731 2 12 3.7269 12 5.85714V7H9.21429C7.43908 7 6 5.56091 6 3.78571Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M18 3.78571C18 2.79949 17.2005 2 16.2143 2H15.8571C13.7269 2 12 3.7269 12 5.85714V7H14.7857C16.5609 7 18 5.56091 18 3.78571Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12 11L12 22\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-choice-card__title\">Gift wrap</span><span class=\"ayy-choice-card__description\">Recycled paper and a handwritten card</span><span class=\"ayy-choice-card__meta\">+$4</span></label>\n  <label class=\"ayy-choice-card\"><input type=\"checkbox\" class=\"ayy-checkbox\" name=\"extras\" checked=\"\" value=\"express\"/><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M19.5 17.5C19.5 18.8807 18.3807 20 17 20C15.6193 20 14.5 18.8807 14.5 17.5C14.5 16.1193 15.6193 15 17 15C18.3807 15 19.5 16.1193 19.5 17.5Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M9.5 17.5C9.5 18.8807 8.38071 20 7 20C5.61929 20 4.5 18.8807 4.5 17.5C4.5 16.1193 5.61929 15 7 15C8.38071 15 9.5 16.1193 9.5 17.5Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M14.5 17.5H9.5M19.5 17.5H20.2632C20.4831 17.5 20.5931 17.5 20.6855 17.4885C21.3669 17.4036 21.9036 16.8669 21.9885 16.1855C22 16.0931 22 15.9831 22 15.7632V13C22 9.41015 19.0899 6.5 15.5 6.5M2 4H12C13.4142 4 14.1213 4 14.5607 4.43934C15 4.87868 15 5.58579 15 7V15.5M2 12.75V15C2 15.9346 2 16.4019 2.20096 16.75C2.33261 16.978 2.52197 17.1674 2.75 17.299C3.09808 17.5 3.56538 17.5 4.5 17.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M2 7H8M2 10H6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-choice-card__title\">Express delivery</span><span class=\"ayy-choice-card__description\">Tomorrow before noon</span><span class=\"ayy-choice-card__meta\">+$9</span></label>\n  <label class=\"ayy-choice-card\"><input type=\"checkbox\" class=\"ayy-checkbox\" name=\"extras\" value=\"plastic-free\"/><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.64584 15.7108C7.23279 14.8966 7 13.9755 7 13C7 9.78484 9.5 7.5 13 7C17.0817 6.4169 18.8333 4.16667 20 3C23.5 16 17 19 13 19C11.9071 19 10.8825 18.7078 10 18.1973\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 21C3.5 18 5.45791 16.1355 10 15C13.2167 14.1958 15.4634 12.1791 17 10.0549\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-choice-card__title\">Plastic-free packing</span><span class=\"ayy-choice-card__description\">Compostable bags and tape</span><span class=\"ayy-choice-card__meta\">Free</span></label>\n</fieldset>",
+          "react": "import { DeliveryTruck01Icon, GiftIcon, Leaf01Icon } from \"@hugeicons/core-free-icons\";\nimport { ChoiceCard, ChoiceGroup, Icon } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <ChoiceGroup legend=\"Extras\" type=\"checkbox\" style={{ inlineSize: \"100%\" }}>\n      <ChoiceCard\n        icon={<Icon icon={GiftIcon} />}\n        title=\"Gift wrap\"\n        description=\"Recycled paper and a handwritten card\"\n        meta=\"+$4\"\n        value=\"gift\"\n        inputProps={{ name: \"extras\" }}\n      />\n      <ChoiceCard\n        icon={<Icon icon={DeliveryTruck01Icon} />}\n        title=\"Express delivery\"\n        description=\"Tomorrow before noon\"\n        meta=\"+$9\"\n        value=\"express\"\n        inputProps={{ name: \"extras\" }}\n        defaultChecked\n      />\n      <ChoiceCard\n        icon={<Icon icon={Leaf01Icon} />}\n        title=\"Plastic-free packing\"\n        description=\"Compostable bags and tape\"\n        meta=\"Free\"\n        value=\"plastic-free\"\n        inputProps={{ name: \"extras\" }}\n      />\n    </ChoiceGroup>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/choice-card/choice-card.css",
+        "js": "src/components/choice-card/choice-card.ts",
+        "react": "src/components/choice-card/choice-card.react.tsx",
+        "meta": "src/components/choice-card/choice-card.meta.json"
+      }
+    },
+    {
+      "name": "Slider",
+      "slug": "slider",
+      "status": "beta",
+      "category": "Forms",
+      "description": "A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.",
+      "classes": {
+        "ayy-slider": "On <input type=\"range\">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and ayywi/elements keep it in sync, so in HTML set the starting one inline.",
+        "ayy-slider-range": "A role=\"group\" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing."
+      },
+      "variants": {},
+      "js": "sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.",
+      "react": {
+        "import": "import { Slider, SliderRange } from \"ayywi/react\";",
+        "components": {
+          "Slider": {
+            "renders": "<input type=\"range\" class=\"ayy-slider\">",
+            "props": {
+              "value / defaultValue": "number",
+              "onValueChange": "(value: number) => void",
+              "min": "number, default 0",
+              "max": "number, default 100",
+              "step": "number, default 1"
+            }
+          },
+          "SliderRange": {
+            "renders": "<div role=\"group\" class=\"ayy-slider-range\"> with two range inputs",
+            "props": {
+              "value / defaultValue": "[number, number]",
+              "onValueChange": "(value: [number, number]) => void",
+              "min": "number",
+              "max": "number",
+              "step": "number",
+              "labels": "[string, string] — the thumbs' names (\"Minimum price\", \"Maximum price\")",
+              "names": "[string, string] — form names",
+              "disabled": "boolean"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "It's a native range input: arrow keys step, Page Up/Down jump, Home/End go to the ends, and screen readers read the value. Give it a <label> (or aria-label); add aria-valuetext when the number needs a unit (\"12 people\").",
+        "Show the value in text next to the label (an <output>), so it doesn't depend on the thumb's position.",
+        "Each thumb of a range has its own name (\"Minimum price\", \"Maximum price\"); name the group with aria-labelledby.",
+        "The focus ring is on the thumb. In High Contrast the fill and the thumb take system colours."
+      ],
+      "do": [
+        "Use a slider for a value where roughly is fine and the range is small: a class size, a volume, a radius, a budget.",
+        "Use a range slider to filter by price or size between a min and a max.",
+        "Pick a step that matches what people choose (5, 10, 0.5), and print the value next to the label."
+      ],
+      "dont": [
+        "Don't use a slider when people need an exact number — use an Input (type number) or a Number field.",
+        "Don't use it for a choice between a few named options — use a Segmented control or Radio buttons.",
+        "Don't hide what min and max mean: label the ends or the value."
+      ],
+      "examples": [
+        {
+          "id": "basic",
+          "title": "With its value",
+          "html": "<!-- ayywi/elements keeps --ayy-value in step with the thumb; update the <output> text from the input event. -->\n<div class=\"ayy-field\" style=\"inline-size: min(100%, 22rem)\">\n  <div class=\"ayy-spread\">\n    <label class=\"ayy-label\" for=\"class-size\">Class size</label>\n    <output for=\"class-size\" class=\"ayy-muted\">12 people</output>\n  </div>\n  <input type=\"range\" class=\"ayy-slider\" min=\"4\" max=\"30\" step=\"1\" style=\"--ayy-value: 30.77\" id=\"class-size\" aria-describedby=\"class-size-hint\" value=\"12\"/>\n  <p class=\"ayy-field__hint\" id=\"class-size-hint\">Bookings close when the class is full.</p>\n</div>",
+          "react": "import { useState } from \"react\";\nimport { Field, FieldHint, Label, Slider } from \"ayywi/react\";\n\nexport default function Example() {\n  const [spots, setSpots] = useState(12);\n  return (\n    <Field style={{ inlineSize: \"min(100%, 22rem)\" }}>\n      <div className=\"ayy-spread\">\n        <Label htmlFor=\"class-size\">Class size</Label>\n        <output htmlFor=\"class-size\" className=\"ayy-muted\">\n          {spots} people\n        </output>\n      </div>\n      <Slider id=\"class-size\" min={4} max={30} value={spots} onValueChange={setSpots} aria-describedby=\"class-size-hint\" />\n      <FieldHint id=\"class-size-hint\">Bookings close when the class is full.</FieldHint>\n    </Field>\n  );\n}"
+        },
+        {
+          "id": "range",
+          "title": "Price range",
+          "html": "<!-- ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->\n<div class=\"ayy-stack\" style=\"inline-size: min(100%, 22rem)\">\n  <div class=\"ayy-spread\">\n    <span class=\"ayy-label\" id=\"price-label\">Price</span>\n    <span class=\"ayy-muted\">$18 – $64</span>\n  </div>\n  <div role=\"group\" class=\"ayy-slider-range\" style=\"--ayy-from: 18; --ayy-to: 64\" aria-labelledby=\"price-label\">\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Minimum price\" min=\"0\" max=\"100\" step=\"2\" name=\"price_min\" value=\"18\"/>\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Maximum price\" min=\"0\" max=\"100\" step=\"2\" name=\"price_max\" value=\"64\"/>\n  </div>\n</div>",
+          "react": "import { useState } from \"react\";\nimport { SliderRange } from \"ayywi/react\";\n\nexport default function Example() {\n  const [[low, high], setPrice] = useState<[number, number]>([18, 64]);\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 22rem)\" }}>\n      <div className=\"ayy-spread\">\n        <span className=\"ayy-label\" id=\"price-label\">\n          Price\n        </span>\n        <span className=\"ayy-muted\">\n          ${low} – ${high}\n        </span>\n      </div>\n      <SliderRange\n        aria-labelledby=\"price-label\"\n        min={0}\n        max={100}\n        step={2}\n        value={[low, high]}\n        onValueChange={setPrice}\n        labels={[\"Minimum price\", \"Maximum price\"]}\n        names={[\"price_min\", \"price_max\"]}\n      />\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/slider/slider.css",
+        "js": "src/components/slider/slider.ts",
+        "react": "src/components/slider/slider.react.tsx",
+        "meta": "src/components/slider/slider.meta.json"
+      }
+    },
+    {
+      "name": "Number field",
+      "slug": "number-field",
+      "status": "beta",
+      "category": "Forms",
+      "description": "A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.",
+      "classes": {
+        "ayy-number-field": "The bordered box around the buttons and the input. Draws the focus ring while you type.",
+        "ayy-number-field--sm": "Small height, for a cart line or a table cell.",
+        "ayy-number-field__input": "The <input type=\"number\">: centred tabular digits, no spinner arrows.",
+        "ayy-number-field__decrement": "The minus <button> before the input. Needs an aria-label. aria-disabled=\"true\" at min.",
+        "ayy-number-field__increment": "The plus <button> after the input. Needs an aria-label. aria-disabled=\"true\" at max."
+      },
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "md",
+          "component": "NumberField"
+        }
+      },
+      "states": {
+        "button[aria-disabled=\"true\"]": "Can't go further (at min or max). Stays focusable.",
+        "input[aria-invalid=\"true\"]": "Invalid value: red border."
+      },
+      "js": "numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.",
+      "react": {
+        "import": "import { NumberField } from \"ayywi/react\";",
+        "components": {
+          "NumberField": {
+            "renders": "<div class=\"ayy-number-field\"><button class=\"ayy-number-field__decrement\"><input type=\"number\"><button class=\"ayy-number-field__increment\">",
+            "props": {
+              "value / defaultValue": "number",
+              "onValueChange": "(value: number) => void",
+              "min": "number",
+              "max": "number",
+              "step": "number, default 1",
+              "size": "\"sm\" | \"md\"",
+              "decrementLabel": "string, default \"Decrease\" — say what changes (\"Remove a guest\")",
+              "incrementLabel": "string, default \"Increase\"",
+              "className": "On the outer box; every other prop goes to the input (id, name, aria-label…)",
+              "style": "On the outer box"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Label the input (a <label for> its id, or aria-label naming the item: \"Quantity of Ethiopia Guji, 250 g\"). The buttons need their own aria-labels.",
+        "At min or max the button gets aria-disabled instead of disabled, so focus stays on it while you click.",
+        "The input is a real number field: type a value, or use the arrow keys."
+      ],
+      "do": [
+        "Use a number field for small whole counts people adjust by one or two: items in a cart, guests, seats, nights.",
+        "Set min and max (min 1 for guests, 0 when zero removes the line) and say the limit in a hint.",
+        "Use size sm in a cart line or a table row."
+      ],
+      "dont": [
+        "Don't use it for large or exact numbers (a price, a phone number, a year) — use an Input; for a rough amount use a Slider.",
+        "Don't use it for a choice between a few named sizes — use a Segmented control or compact Choice cards."
+      ],
+      "examples": [
+        {
+          "id": "basic",
+          "title": "Guests and quantity",
+          "html": "<div class=\"ayy-stack\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"guests\">Guests</label>\n    <div class=\"ayy-number-field\">\n      <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Remove a guest\" aria-disabled=\"false\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"1\" max=\"8\" step=\"1\" id=\"guests\" aria-describedby=\"guests-hint\" name=\"guests\" value=\"2\"/>\n      <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Add a guest\" aria-disabled=\"false\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n    <p class=\"ayy-field__hint\" id=\"guests-hint\">Up to 8 per booking.</p>\n  </div>\n  <div class=\"ayy-number-field ayy-number-field--sm\">\n    <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Decrease\" aria-disabled=\"false\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"0\" max=\"20\" step=\"1\" aria-label=\"Quantity of Ethiopia Guji, 250 g\" value=\"1\"/>\n    <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Increase\" aria-disabled=\"false\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  </div>\n</div>",
+          "react": "import { Field, FieldHint, Label, NumberField } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Field>\n        <Label htmlFor=\"guests\">Guests</Label>\n        <NumberField\n          id=\"guests\"\n          name=\"guests\"\n          defaultValue={2}\n          min={1}\n          max={8}\n          decrementLabel=\"Remove a guest\"\n          incrementLabel=\"Add a guest\"\n          aria-describedby=\"guests-hint\"\n        />\n        <FieldHint id=\"guests-hint\">Up to 8 per booking.</FieldHint>\n      </Field>\n      <NumberField size=\"sm\" defaultValue={1} min={0} max={20} aria-label=\"Quantity of Ethiopia Guji, 250 g\" />\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/number-field/number-field.css",
+        "js": "src/components/number-field/number-field.ts",
+        "react": "src/components/number-field/number-field.react.tsx",
+        "meta": "src/components/number-field/number-field.meta.json"
+      }
+    },
+    {
+      "name": "File upload",
+      "slug": "dropzone",
+      "status": "beta",
+      "category": "Forms",
+      "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
+      "classes": {
+        "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by ayywi/elements or React).",
+        "ayy-dropzone--compact": "One line (icon, then text), for a form field or a composer.",
+        "ayy-dropzone__title": "Main line: \"Drop files here or browse\" (the word styled .ayy-link).",
+        "ayy-dropzone__hint": "What's accepted: types and size."
+      },
+      "variants": {
+        "compact": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "Dropzone"
+        }
+      },
+      "states": {
+        "[data-dragging]": "Files are held over it: solid border in the text colour.",
+        "input:disabled": "Dimmed, not clickable.",
+        "input[aria-invalid=\"true\"]": "Rejected file: red border; say why in a FieldError."
+      },
+      "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).",
+      "react": {
+        "import": "import { Dropzone } from \"ayywi/react\";",
+        "components": {
+          "Dropzone": {
+            "renders": "<label class=\"ayy-dropzone\"><input type=\"file\"><svg><span class=\"ayy-dropzone__title\">…",
+            "props": {
+              "title": "ReactNode, default \"Drop files here or browse\"",
+              "hint": "ReactNode — types and size",
+              "icon": "ReactNode — replaces the upload icon; null for none",
+              "onFiles": "(files: File[]) => void — check types and sizes here: accept isn't enforced on a drop",
+              "compact": "boolean",
+              "className": "On the <label>; every other prop (accept, multiple, name, id, disabled…) goes to the input",
+              "style": "On the <label>"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "It's a native file input inside its label: Tab reaches it, Enter or Space opens the picker, and the title and hint are its name. A visible Label (htmlFor its id) names it in a form.",
+        "Dragging is an extra: everything works with the picker alone.",
+        "List the picked files in text, each with a remove button that names the file (\"Remove studio-front.jpg\"), and progress with a Progress bar that has a label."
+      ],
+      "do": [
+        "Use a file upload for attaching files to a record: photos, documents, a CSV to import. Say what's accepted in the hint.",
+        "Show each picked file below it in a List divided, with its size, a Progress bar while it uploads, and a remove button.",
+        "Use compact inside a form next to other fields, and the box when the upload is the main task of the screen.",
+        "Validate type and size when files arrive (onFiles), and show a FieldError with aria-invalid on the input when one is rejected."
+      ],
+      "dont": [
+        "Don't hide the file input or rebuild it from divs: the native input is what makes it keyboard and screen-reader friendly.",
+        "Don't use it for pasting a link — use an Input of type url.",
+        "Don't make dropping the only way: the zone must stay clickable."
+      ],
+      "examples": [
+        {
+          "id": "basic",
+          "title": "Photos with upload progress",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 28rem)\">\n  <label class=\"ayy-dropzone\"><input type=\"file\" accept=\"image/png, image/jpeg\" multiple=\"\" name=\"photos\"/><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12 13L12 21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-dropzone__title\">Drop files here or <span class=\"ayy-link\">browse</span></span><span class=\"ayy-dropzone__hint\">PNG or JPG, up to 5 MB each</span></label>\n  <ul class=\"ayy-list ayy-list--divided\" aria-label=\"Uploads\">\n    <li class=\"ayy-list__item\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M5 21C9.37246 15.775 14.2741 8.88406 21.4975 13.5424\" stroke=\"currentColor\" stroke-width=\"1.5\"></path></svg>\n      <div class=\"ayy-list__content\">\n        <p class=\"ayy-list__title\">studio-front.jpg</p>\n        <p class=\"ayy-list__description\">2.4 MB</p>\n      </div>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Remove studio-front.jpg\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M9.5 16.5L9.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.5 16.5L14.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </li>\n    <li class=\"ayy-list__item\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M5 21C9.37246 15.775 14.2741 8.88406 21.4975 13.5424\" stroke=\"currentColor\" stroke-width=\"1.5\"></path></svg>\n      <div class=\"ayy-list__content\">\n        <p class=\"ayy-list__title\">class-schedule.png</p>\n        <p class=\"ayy-list__description\">860 KB · uploading, 64%</p>\n        <div role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"64\" class=\"ayy-progress ayy-progress--sm\" style=\"--ayy-value: 64\" aria-label=\"Uploading class-schedule.png\">\n          <div class=\"ayy-progress__bar\"></div>\n        </div>\n      </div>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Remove class-schedule.png\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M9.5 16.5L9.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.5 16.5L14.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </li>\n  </ul>\n</div>",
+          "react": "import { Delete02Icon, Image01Icon } from \"@hugeicons/core-free-icons\";\nimport { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from \"ayywi/react\";\n\nconst files = [\n  { name: \"studio-front.jpg\", size: \"2.4 MB\", progress: 100 },\n  { name: \"class-schedule.png\", size: \"860 KB\", progress: 64 },\n];\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 28rem)\" }}>\n      <Dropzone accept=\"image/png, image/jpeg\" multiple name=\"photos\" hint=\"PNG or JPG, up to 5 MB each\" />\n      <List divided aria-label=\"Uploads\">\n        {files.map((file) => (\n          <ListItem key={file.name}>\n            <Icon icon={Image01Icon} />\n            <ListContent>\n              <ListTitle>{file.name}</ListTitle>\n              <ListDescription>{file.progress < 100 ? `${file.size} · uploading, ${file.progress}%` : file.size}</ListDescription>\n              {file.progress < 100 && <Progress value={file.progress} size=\"sm\" aria-label={`Uploading ${file.name}`} />}\n            </ListContent>\n            <Button variant=\"ghost\" size=\"icon-sm\" aria-label={`Remove ${file.name}`}>\n              <Icon icon={Delete02Icon} />\n            </Button>\n          </ListItem>\n        ))}\n      </List>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "compact",
+          "title": "Compact, in a form",
+          "html": "<div class=\"ayy-field\" style=\"inline-size: min(100%, 24rem)\">\n  <label class=\"ayy-label\" for=\"cv\">CV</label>\n  <label class=\"ayy-dropzone ayy-dropzone--compact\"><input type=\"file\" id=\"cv\" accept=\".pdf\" aria-describedby=\"cv-hint\"/><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12 13L12 21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-dropzone__title\">Drop a PDF or <span class=\"ayy-link\">choose a file</span></span></label>\n  <p class=\"ayy-field__hint\" id=\"cv-hint\">One file, up to 10 MB.</p>\n</div>",
+          "react": "import { Field, FieldHint, Dropzone, Label } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <Label htmlFor=\"cv\">CV</Label>\n      <Dropzone\n        id=\"cv\"\n        compact\n        accept=\".pdf\"\n        title={\n          <>\n            Drop a PDF or <span className=\"ayy-link\">choose a file</span>\n          </>\n        }\n        aria-describedby=\"cv-hint\"\n      />\n      <FieldHint id=\"cv-hint\">One file, up to 10 MB.</FieldHint>\n    </Field>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/dropzone/dropzone.css",
+        "js": "src/components/dropzone/dropzone.ts",
+        "react": "src/components/dropzone/dropzone.react.tsx",
+        "meta": "src/components/dropzone/dropzone.meta.json"
       }
     },
     {
@@ -5238,7 +5895,9 @@
         "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
         "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
         "ayy-table--compact": "Tighter rows.",
-        "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits."
+        "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits.",
+        "ayy-table__sort": "A <button> inside a sortable <th>, with an arrow drawn after the text. aria-sort=\"ascending\" or \"descending\" on the <th> marks the sorted column; the others show both arrows, faint.",
+        "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box."
       },
       "variants": {
         "compact": {
@@ -5250,9 +5909,19 @@
         }
       },
       "states": {
-        "tr[aria-selected=\"true\"]": "Selected row highlight."
+        "tr[aria-selected=\"true\"]": "Selected row highlight.",
+        "th[aria-sort=\"ascending\" | \"descending\"]": "The sorted column: its header in the text colour and one arrow."
       },
-      "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass constants",
+      "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
+      "element": {
+        "tag": "ayy-table",
+        "description": "Wraps an .ayy-table (or its .ayy-table-wrap). Header .ayy-table__sort buttons set aria-sort and reorder the body rows by that column (a cell's data-sort-value wins over its text); .ayy-table__select checkboxes set aria-selected on their row, and a checkbox in the header's select cell selects all and shows some as indeterminate.",
+        "attributes": {},
+        "events": {
+          "ayy-sort": "{ column, key, direction } before the rows move — key is the <th>'s data-sort-key. Call preventDefault() to sort them yourself (on the server).",
+          "ayy-selection-change": "{ rows } — the selected <tr> elements."
+        }
+      },
       "react": {
         "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from \"ayywi/react\";",
         "components": {
@@ -5272,18 +5941,25 @@
             "renders": "<tfoot>"
           },
           "TableRow": {
-            "renders": "<tr>"
+            "renders": "<tr>",
+            "props": {
+              "selected": "boolean — aria-selected"
+            }
           },
           "TableHead": {
-            "renders": "<th scope=\"col\">",
+            "renders": "<th scope=\"col\">, with a <button class=\"ayy-table__sort\"> inside when sortable",
             "props": {
-              "numeric": "boolean"
+              "numeric": "boolean",
+              "select": "boolean — the checkbox column",
+              "sort": "\"ascending\" | \"descending\" | \"none\" — makes the header a sort button; \"none\" for a sortable column that isn't sorted",
+              "onSort": "() => void — flip with nextSortDirection() and sort your rows (compareValues helps)"
             }
           },
           "TableCell": {
             "renders": "<td>",
             "props": {
-              "numeric": "boolean"
+              "numeric": "boolean",
+              "select": "boolean — the checkbox column"
             }
           },
           "TableCaption": {
@@ -5293,12 +5969,17 @@
       },
       "a11y": [
         "Use real <th> header cells with scope (React sets scope=\"col\").",
-        "A <caption> or aria-label names the table for screen readers."
+        "A <caption> or aria-label names the table for screen readers.",
+        "Sorting is a button inside the header, so it's reachable by Tab and announced with the column's aria-sort. Only the sorted column carries aria-sort.",
+        "Every row checkbox needs an aria-label naming its row (\"Select INV-1042\"); the select-all box is indeterminate when some rows are selected."
       ],
       "do": [
         "Use a table to compare items across the same attributes (projects × status × builds).",
         "End-align numbers with numeric/ayy-table__num.",
-        "Keep cell content short; truncate with a tooltip if needed."
+        "Keep cell content short; truncate with a tooltip if needed.",
+        "Make the columns people scan sortable (names, dates, amounts), and start sorted by the most useful one. Put the real value in data-sort-value when the cell shows a formatted one (a date, a currency).",
+        "Add a checkbox column only when rows have bulk actions, and show the count and the actions above the table.",
+        "Filter a table with Chips and a search InputGroup above it; page a long one with Pagination below."
       ],
       "dont": [
         "Don't use tables for layout.",
@@ -5312,13 +5993,201 @@
           "title": "Basic",
           "html": "<div class=\"ayy-table-wrap\">\n  <table class=\"ayy-table\">\n    <caption>Deployments</caption>\n    <thead>\n      <tr>\n        <th scope=\"col\">Project</th>\n        <th scope=\"col\">Status</th>\n        <th scope=\"col\" class=\"ayy-table__num\">Builds</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>Marketing site</td>\n        <td><span class=\"ayy-badge ayy-badge--success\">Live</span></td>\n        <td class=\"ayy-table__num\">128</td>\n      </tr>\n      <tr>\n        <td>Mobile API</td>\n        <td><span class=\"ayy-badge ayy-badge--warning\">Building</span></td>\n        <td class=\"ayy-table__num\">42</td>\n      </tr>\n      <tr>\n        <td>Docs</td>\n        <td><span class=\"ayy-badge ayy-badge--destructive\">Failed</span></td>\n        <td class=\"ayy-table__num\">7</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
           "react": "import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from \"ayywi/react\";\n\nconst deployments = [\n  { project: \"Marketing site\", status: \"Live\", variant: \"success\", builds: 128 },\n  { project: \"Mobile API\", status: \"Building\", variant: \"warning\", builds: 42 },\n  { project: \"Docs\", status: \"Failed\", variant: \"destructive\", builds: 7 },\n] as const;\n\nexport default function Example() {\n  return (\n    <Table>\n      <TableCaption>Deployments</TableCaption>\n      <TableHeader>\n        <TableRow>\n          <TableHead>Project</TableHead>\n          <TableHead>Status</TableHead>\n          <TableHead numeric>Builds</TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        {deployments.map((d) => (\n          <TableRow key={d.project}>\n            <TableCell>{d.project}</TableCell>\n            <TableCell>\n              <Badge variant={d.variant}>{d.status}</Badge>\n            </TableCell>\n            <TableCell numeric>{d.builds}</TableCell>\n          </TableRow>\n        ))}\n      </TableBody>\n    </Table>\n  );\n}"
+        },
+        {
+          "id": "sortable",
+          "title": "Sortable columns and selectable rows",
+          "html": "<!-- <ayy-table> sorts the rows and ticks the checkboxes; listen for ayy-sort and ayy-selection-change. -->\n<div class=\"ayy-stack\" style=\"inline-size: 100%\">\n  <div class=\"ayy-spread\">\n    <span class=\"ayy-muted\">1 selected</span>\n    <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--sm\">Send reminder</button>\n  </div>\n  <ayy-table>\n    <div class=\"ayy-table-wrap\">\n      <table class=\"ayy-table\">\n        <caption class=\"ayy-sr-only\">Invoices, sortable by customer, due date and amount</caption>\n        <thead>\n          <tr>\n            <th scope=\"col\" class=\"ayy-table__select\"><input type=\"checkbox\" class=\"ayy-checkbox\" aria-label=\"Select all invoices\"/></th>\n            <th scope=\"col\">Invoice</th>\n            <th scope=\"col\"><button type=\"button\" class=\"ayy-table__sort\">Customer</button></th>\n            <th scope=\"col\" aria-sort=\"ascending\"><button type=\"button\" class=\"ayy-table__sort\">Due</button></th>\n            <th scope=\"col\" class=\"ayy-table__num\"><button type=\"button\" class=\"ayy-table__sort\">Amount</button></th>\n            <th scope=\"col\">Status</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr aria-selected=\"true\">\n            <td class=\"ayy-table__select\"><input type=\"checkbox\" class=\"ayy-checkbox\" aria-label=\"Select INV-1043\" checked=\"\"/></td>\n            <td class=\"ayy-mono\">INV-1043</td>\n            <td>Acme Studio</td>\n            <td data-sort-value=\"2026-08-28\"><time datetime=\"2026-08-28\">Aug 28</time></td>\n            <td class=\"ayy-table__num\" data-sort-value=\"860\">$860.00</td>\n            <td><span class=\"ayy-badge ayy-badge--destructive\">Overdue</span></td>\n          </tr>\n          <tr aria-selected=\"false\">\n            <td class=\"ayy-table__select\"><input type=\"checkbox\" class=\"ayy-checkbox\" aria-label=\"Select INV-1042\"/></td>\n            <td class=\"ayy-mono\">INV-1042</td>\n            <td>Northwind</td>\n            <td data-sort-value=\"2026-09-02\"><time datetime=\"2026-09-02\">Sep 2</time></td>\n            <td class=\"ayy-table__num\" data-sort-value=\"1240\">$1,240.00</td>\n            <td><span class=\"ayy-badge ayy-badge--success\">Paid</span></td>\n          </tr>\n          <tr aria-selected=\"false\">\n            <td class=\"ayy-table__select\"><input type=\"checkbox\" class=\"ayy-checkbox\" aria-label=\"Select INV-1045\"/></td>\n            <td class=\"ayy-mono\">INV-1045</td>\n            <td>Brightside</td>\n            <td data-sort-value=\"2026-09-15\"><time datetime=\"2026-09-15\">Sep 15</time></td>\n            <td class=\"ayy-table__num\" data-sort-value=\"420\">$420.00</td>\n            <td><span class=\"ayy-badge ayy-badge--info\">Sent</span></td>\n          </tr>\n          <tr aria-selected=\"false\">\n            <td class=\"ayy-table__select\"><input type=\"checkbox\" class=\"ayy-checkbox\" aria-label=\"Select INV-1044\"/></td>\n            <td class=\"ayy-mono\">INV-1044</td>\n            <td>Lumen Labs</td>\n            <td data-sort-value=\"2026-09-30\"><time datetime=\"2026-09-30\">Sep 30</time></td>\n            <td class=\"ayy-table__num\" data-sort-value=\"3150\">$3,150.00</td>\n            <td><span class=\"ayy-badge ayy-badge--muted\">Draft</span></td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n  </ayy-table>\n</div>",
+          "react": "import { useState } from \"react\";\nimport {\n  Badge,\n  Button,\n  Checkbox,\n  Table,\n  TableBody,\n  TableCaption,\n  TableCell,\n  TableHead,\n  TableHeader,\n  TableRow,\n  compareValues,\n  nextSortDirection,\n  type SortDirection,\n} from \"ayywi/react\";\n\nconst invoices = [\n  { id: \"INV-1042\", customer: \"Northwind\", status: \"Paid\", variant: \"success\", amount: 1240, due: \"2026-09-02\" },\n  { id: \"INV-1043\", customer: \"Acme Studio\", status: \"Overdue\", variant: \"destructive\", amount: 860, due: \"2026-08-28\" },\n  { id: \"INV-1044\", customer: \"Lumen Labs\", status: \"Draft\", variant: \"muted\", amount: 3150, due: \"2026-09-30\" },\n  { id: \"INV-1045\", customer: \"Brightside\", status: \"Sent\", variant: \"info\", amount: 420, due: \"2026-09-15\" },\n] as const;\n\ntype Key = \"customer\" | \"amount\" | \"due\";\n\nconst COLUMNS: { key: Key; label: string; numeric?: boolean }[] = [\n  { key: \"customer\", label: \"Customer\" },\n  { key: \"due\", label: \"Due\" },\n  { key: \"amount\", label: \"Amount\", numeric: true },\n];\n\nconst money = new Intl.NumberFormat(\"en-US\", { style: \"currency\", currency: \"USD\" });\n\nexport default function Example() {\n  const [sort, setSort] = useState<{ key: Key; direction: SortDirection }>({ key: \"due\", direction: \"ascending\" });\n  const [selected, setSelected] = useState<string[]>([\"INV-1043\"]);\n  const rows = [...invoices].sort((a, b) => (sort.direction === \"ascending\" ? 1 : -1) * compareValues(a[sort.key], b[sort.key]));\n  const all = selected.length === invoices.length;\n  const toggle = (id: string, on: boolean) => setSelected((list) => (on ? [...list, id] : list.filter((x) => x !== id)));\n\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"100%\" }}>\n      <div className=\"ayy-spread\">\n        <span className=\"ayy-muted\">{selected.length ? `${selected.length} selected` : `${invoices.length} invoices`}</span>\n        <Button size=\"sm\" variant=\"outline\" disabled={!selected.length}>\n          Send reminder\n        </Button>\n      </div>\n      <Table>\n        <TableCaption className=\"ayy-sr-only\">Invoices, sortable by customer, due date and amount</TableCaption>\n        <TableHeader>\n          <TableRow>\n            <TableHead select>\n              <Checkbox\n                aria-label=\"Select all invoices\"\n                checked={all}\n                indeterminate={selected.length > 0 && !all}\n                onCheckedChange={(on) => setSelected(on ? invoices.map((i) => i.id) : [])}\n              />\n            </TableHead>\n            <TableHead>Invoice</TableHead>\n            {COLUMNS.map((column) => (\n              <TableHead\n                key={column.key}\n                numeric={column.numeric}\n                sort={sort.key === column.key ? sort.direction : \"none\"}\n                onSort={() =>\n                  setSort({ key: column.key, direction: sort.key === column.key ? nextSortDirection(sort.direction) : \"ascending\" })\n                }\n              >\n                {column.label}\n              </TableHead>\n            ))}\n            <TableHead>Status</TableHead>\n          </TableRow>\n        </TableHeader>\n        <TableBody>\n          {rows.map((invoice) => (\n            <TableRow key={invoice.id} selected={selected.includes(invoice.id)}>\n              <TableCell select>\n                <Checkbox\n                  aria-label={`Select ${invoice.id}`}\n                  checked={selected.includes(invoice.id)}\n                  onCheckedChange={(on) => toggle(invoice.id, on)}\n                />\n              </TableCell>\n              <TableCell className=\"ayy-mono\">{invoice.id}</TableCell>\n              <TableCell>{invoice.customer}</TableCell>\n              <TableCell data-sort-value={invoice.due}>\n                <time dateTime={invoice.due}>{new Date(`${invoice.due}T12:00:00`).toLocaleDateString(\"en-US\", { month: \"short\", day: \"numeric\" })}</time>\n              </TableCell>\n              <TableCell numeric data-sort-value={invoice.amount}>\n                {money.format(invoice.amount)}\n              </TableCell>\n              <TableCell>\n                <Badge variant={invoice.variant}>{invoice.status}</Badge>\n              </TableCell>\n            </TableRow>\n          ))}\n        </TableBody>\n      </Table>\n    </div>\n  );\n}"
         }
       ],
       "files": {
         "css": "src/components/table/table.css",
         "js": "src/components/table/table.ts",
         "react": "src/components/table/table.react.tsx",
-        "meta": "src/components/table/table.meta.json"
+        "meta": "src/components/table/table.meta.json",
+        "element": "src/components/table/table.element.ts"
+      }
+    },
+    {
+      "name": "Chart",
+      "slug": "chart",
+      "status": "beta",
+      "category": "Data display",
+      "description": "Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
+      "classes": {
+        "ayy-chart": "Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.",
+        "ayy-chart--stacked": "A column's bars sit on top of each other; each bar's --ayy-value is its share of the top of the scale.",
+        "ayy-chart--values": "Print every bar's data-value above it (otherwise only on hover).",
+        "ayy-chart__plot": "The drawing area (aria-hidden=\"true\"). Height from --ayy-chart-height (default 12rem). Holds ticks and either __bars or an __svg.",
+        "ayy-chart__tick": "A value line across the plot, its text the label in the gutter. --ayy-value places it: 0 is the floor, 100 the top. The gutter only appears when there are ticks.",
+        "ayy-chart__bars": "Row of columns filling the plot.",
+        "ayy-chart__column": "One label's bars, side by side (or stacked).",
+        "ayy-chart__bar": "A bar: --ayy-value is its height, data-value its text on hover. Its colour is chart-1, chart-2… by position in the column; --ayy-chart-color overrides.",
+        "ayy-chart__svg": "<svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> stretched over the plot, for lines and areas. Mirrors in RTL.",
+        "ayy-chart__series": "<g> around one series' area and line. Coloured chart-1, chart-2… in order; --ayy-chart-color overrides.",
+        "ayy-chart__series--compare": "A comparison series (last period, a target): dashed, quiet, no fill.",
+        "ayy-chart__line": "<path> of the line, 2px whatever the stretch (vector-effect: non-scaling-stroke).",
+        "ayy-chart__area": "<path> of the area under the line, a 16% tint of the series colour.",
+        "ayy-chart__labels": "The labels under the plot (aria-hidden=\"true\"), one per column; under a line they spread from the first point to the last.",
+        "ayy-chart__legend": "List of the series, when there's more than one (aria-hidden=\"true\" when a data table names them).",
+        "ayy-chart__legend-item": "A series name with its swatch, coloured in the same order as the series.",
+        "ayy-chart__legend-item--compare": "Legend entry for a comparison series: a dashed swatch.",
+        "ayy-chart__swatch": "The colour square in a legend item.",
+        "ayy-bar-list": "<ol> of ranked rows (top pages, sources) with the bar behind the text. Readable as it is.",
+        "ayy-bar-list__item": "A row; --ayy-value is the bar's length (100 = the largest).",
+        "ayy-bar-list__label": "The row's name (or a link), cut with an ellipsis.",
+        "ayy-bar-list__value": "The row's number, tabular digits.",
+        "ayy-sparkline": "A small <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> line with no axes, for a stat or a table cell. Uses __line and __area paths."
+      },
+      "variants": {
+        "stacked": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "BarChart"
+        },
+        "showValues": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "BarChart"
+        },
+        "area": {
+          "values": [
+            true,
+            false
+          ],
+          "default": true,
+          "component": "LineChart"
+        },
+        "smooth": {
+          "values": [
+            true,
+            false
+          ],
+          "default": true,
+          "component": "LineChart"
+        }
+      },
+      "js": "chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.",
+      "react": {
+        "import": "import { BarChart, LineChart, Sparkline, BarList } from \"ayywi/react\";",
+        "components": {
+          "BarChart": {
+            "renders": "<figure class=\"ayy-chart\"> with a plot of __column/__bar, labels, a legend and a visually hidden data table",
+            "props": {
+              "label": "string — what it shows (\"Signups per day\"); the data table's caption",
+              "labels": "string[] — one per column",
+              "series": "{ name, values: number[], color? }[]",
+              "stacked": "boolean",
+              "showValues": "boolean — print values above the bars",
+              "max": "number — top of the scale; rounded up from the data if omitted",
+              "ticks": "number of value lines, default 3; 0 for none",
+              "format": "(value: number) => string — ticks, hover values and the table; default compact (1.2K)",
+              "height": "CSS length, default 12rem",
+              "legend": "boolean — default: more than one series"
+            }
+          },
+          "LineChart": {
+            "renders": "<figure class=\"ayy-chart\"> with an __svg of __series paths, labels, a legend and a visually hidden data table",
+            "props": {
+              "label": "string — the data table's caption",
+              "labels": "string[] — one per point",
+              "series": "{ name, values: number[], color?, compare? }[] — compare draws a dashed comparison line",
+              "min": "number, default 0",
+              "max": "number",
+              "area": "boolean, default true",
+              "smooth": "boolean, default true (monotone: never overshoots a point)",
+              "ticks": "number, default 3",
+              "format": "(value: number) => string",
+              "height": "CSS length",
+              "legend": "boolean"
+            }
+          },
+          "Sparkline": {
+            "renders": "<svg class=\"ayy-sparkline\">",
+            "props": {
+              "values": "number[]",
+              "label": "string — makes it role=\"img\" with this name; without it the sparkline is aria-hidden",
+              "area": "boolean",
+              "color": "CSS colour, default chart-1",
+              "min": "number, default the smallest value",
+              "max": "number, default the largest value"
+            }
+          },
+          "BarList": {
+            "renders": "<ol class=\"ayy-bar-list\">",
+            "props": {
+              "items": "{ label: ReactNode, value: number, href? }[]",
+              "max": "number — value of a full bar, default the largest",
+              "format": "(value: number) => string, default grouped digits",
+              "color": "CSS colour, default chart-1"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "The drawing is aria-hidden. The numbers go in a table (React renders one with .ayy-sr-only; add a visible Table if people need to compare values), with a <caption> saying what the chart shows.",
+        "Don't rely on colour alone: a legend names the series in the same order, the comparison series is dashed, and a title or a Stat states the takeaway (\"Up 12% on last week\").",
+        "Series tokens keep 3:1 against every surface in every theme. In High Contrast bars and lines take system colours, alternating between CanvasText and Highlight.",
+        "A Sparkline with a label is an image with that name; give it the trend in words (\"Revenue, last 14 days, up 12%\")."
+      ],
+      "do": [
+        "Use a chart to show a trend or a comparison at a glance: signups per day, revenue against last month, traffic by source. Put it in a Card with the title and the key number (a Stat) above it.",
+        "Use a bar chart to compare amounts across a few categories or periods, a line chart for a trend over many points, a bar list for a ranking, a sparkline beside a number.",
+        "Colour series with the chart tokens in order (React does it). With a chart library, pass var(--ayy-chart-1)… (SVG) or chartColors() (canvas), and chartTheme() for its text, grid and tooltip.",
+        "Mark the previous period as a compare series instead of a second bright colour.",
+        "Keep the scale honest: bars start at 0; let chartScale() round the top."
+      ],
+      "dont": [
+        "Don't use a chart when the exact numbers matter more than the shape — use a Table or a Data list.",
+        "Don't use a pie or donut for parts of a whole — a Bar list or a stacked bar is easier to read.",
+        "Don't pick series colours from the status or accent tokens unless the colour means something (success for a goal line).",
+        "Don't draw more than six series; group the rest as Other.",
+        "Don't add a second chart library just for a simple bar or line — these cover dashboards. Reach for one (Recharts, Chart.js) for zoom, brushing or maps, themed with the tokens."
+      ],
+      "examples": [
+        {
+          "id": "bars",
+          "title": "Columns with two series",
+          "html": "<div class=\"ayy-card\" style=\"inline-size: 100%; max-inline-size: 36rem\">\n  <div class=\"ayy-card__header\">\n    <h3 class=\"ayy-card__title\">Signups by device</h3>\n    <p class=\"ayy-card__description\">Last six months · 21.2K in total</p>\n  </div>\n  <div class=\"ayy-card__content\">\n    <figure class=\"ayy-chart\">\n      <div class=\"ayy-chart__plot\" aria-hidden=\"true\">\n        <span class=\"ayy-chart__tick\" style=\"--ayy-value: 0\">0</span>\n        <span class=\"ayy-chart__tick\" style=\"--ayy-value: 50\">1.5K</span>\n        <span class=\"ayy-chart__tick\" style=\"--ayy-value: 100\">3K</span>\n        <div class=\"ayy-chart__bars\">\n          <div class=\"ayy-chart__column\">\n            <span class=\"ayy-chart__bar\" data-value=\"1.8K\" style=\"--ayy-value: 61.3\"></span>\n            <span class=\"ayy-chart__bar\" data-value=\"920\" style=\"--ayy-value: 30.7\"></span>\n          </div>\n          <div class=\"ayy-chart__column\">\n            <span class=\"ayy-chart__bar\" data-value=\"2.1K\" style=\"--ayy-value: 70.7\"></span>\n            <span class=\"ayy-chart__bar\" data-value=\"1.2K\" style=\"--ayy-value: 39.3\"></span>\n          </div>\n          <div class=\"ayy-chart__column\">\n            <span class=\"ayy-chart__bar\" data-value=\"2K\" style=\"--ayy-value: 65.3\"></span>\n            <span class=\"ayy-chart__bar\" data-value=\"1.3K\" style=\"--ayy-value: 44.7\"></span>\n          </div>\n          <div class=\"ayy-chart__column\">\n            <span class=\"ayy-chart__bar\" data-value=\"2.4K\" style=\"--ayy-value: 80.3\"></span>\n            <span class=\"ayy-chart__bar\" data-value=\"1.2K\" style=\"--ayy-value: 40.3\"></span>\n          </div>\n          <div class=\"ayy-chart__column\">\n            <span class=\"ayy-chart__bar\" data-value=\"2.3K\" style=\"--ayy-value: 76\"></span>\n            <span class=\"ayy-chart__bar\" data-value=\"1.5K\" style=\"--ayy-value: 49.7\"></span>\n          </div>\n          <div class=\"ayy-chart__column\">\n            <span class=\"ayy-chart__bar\" data-value=\"2.7K\" style=\"--ayy-value: 89.7\"></span>\n            <span class=\"ayy-chart__bar\" data-value=\"1.7K\" style=\"--ayy-value: 57.7\"></span>\n          </div>\n        </div>\n      </div>\n      <div class=\"ayy-chart__labels\" aria-hidden=\"true\">\n        <span>Apr</span>\n        <span>May</span>\n        <span>Jun</span>\n        <span>Jul</span>\n        <span>Aug</span>\n        <span>Sep</span>\n      </div>\n      <ul class=\"ayy-chart__legend\" aria-hidden=\"true\">\n        <li class=\"ayy-chart__legend-item\"><span class=\"ayy-chart__swatch\"></span>Desktop</li>\n        <li class=\"ayy-chart__legend-item\"><span class=\"ayy-chart__swatch\"></span>Mobile</li>\n      </ul>\n      <table class=\"ayy-sr-only\">\n        <caption>Signups by device, April to September</caption>\n        <thead>\n          <tr>\n            <td></td>\n            <th scope=\"col\">Desktop</th>\n            <th scope=\"col\">Mobile</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr>\n            <th scope=\"row\">Apr</th>\n            <td>1.8K</td>\n            <td>920</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">May</th>\n            <td>2.1K</td>\n            <td>1.2K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Jun</th>\n            <td>2K</td>\n            <td>1.3K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Jul</th>\n            <td>2.4K</td>\n            <td>1.2K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Aug</th>\n            <td>2.3K</td>\n            <td>1.5K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep</th>\n            <td>2.7K</td>\n            <td>1.7K</td>\n          </tr>\n        </tbody>\n      </table>\n    </figure>\n  </div>\n</div>",
+          "react": "import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Card style={{ inlineSize: \"100%\", maxInlineSize: \"36rem\" }}>\n      <CardHeader>\n        <CardTitle>Signups by device</CardTitle>\n        <CardDescription>Last six months · 21.2K in total</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <BarChart\n          label=\"Signups by device, April to September\"\n          labels={[\"Apr\", \"May\", \"Jun\", \"Jul\", \"Aug\", \"Sep\"]}\n          series={[\n            { name: \"Desktop\", values: [1840, 2120, 1960, 2410, 2280, 2690] },\n            { name: \"Mobile\", values: [920, 1180, 1340, 1210, 1490, 1730] },\n          ]}\n        />\n      </CardContent>\n    </Card>\n  );\n}"
+        },
+        {
+          "id": "line",
+          "title": "Line against last period",
+          "html": "<div class=\"ayy-card\" style=\"inline-size: 100%; max-inline-size: 40rem\">\n  <div class=\"ayy-card__header\">\n    <div class=\"ayy-spread\">\n      <h3 class=\"ayy-card__title\">Revenue</h3>\n      <span class=\"ayy-badge ayy-badge--success\">+13% on last period</span>\n    </div>\n    <div class=\"ayy-stat ayy-stat--sm\">\n      <p class=\"ayy-stat__value\">$49.2K<span class=\"ayy-stat__unit\">last 14 days</span></p>\n    </div>\n  </div>\n  <div class=\"ayy-card__content\">\n    <figure class=\"ayy-chart\">\n      <div class=\"ayy-chart__plot\" aria-hidden=\"true\">\n        <span class=\"ayy-chart__tick\" style=\"--ayy-value: 0\">$0</span>\n        <span class=\"ayy-chart__tick\" style=\"--ayy-value: 50\">$2.5K</span>\n        <span class=\"ayy-chart__tick\" style=\"--ayy-value: 100\">$5K</span>\n        <svg class=\"ayy-chart__svg\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" focusable=\"false\"><g class=\"ayy-chart__series\"><path class=\"ayy-chart__area\" d=\"M0,42 C2.56,40.67 5.13,38 7.69,38 C10.26,38 12.82,39 15.38,39 C17.95,39 20.51,32 23.08,32 C25.64,32 28.21,34 30.77,34 C33.33,34 35.9,27 38.46,27 C41.03,27 43.59,36 46.15,36 C48.72,36 51.28,32 53.85,30 C56.41,28 58.97,24 61.54,24 C64.1,24 66.67,26 69.23,26 C71.79,26 74.36,21 76.92,21 C79.49,21 82.05,28 84.62,28 C87.18,28 89.74,18 92.31,18 C94.87,18 97.44,20 100,21 L100,100 L0,100 Z\"></path><path class=\"ayy-chart__line\" d=\"M0,42 C2.56,40.67 5.13,38 7.69,38 C10.26,38 12.82,39 15.38,39 C17.95,39 20.51,32 23.08,32 C25.64,32 28.21,34 30.77,34 C33.33,34 35.9,27 38.46,27 C41.03,27 43.59,36 46.15,36 C48.72,36 51.28,32 53.85,30 C56.41,28 58.97,24 61.54,24 C64.1,24 66.67,26 69.23,26 C71.79,26 74.36,21 76.92,21 C79.49,21 82.05,28 84.62,28 C87.18,28 89.74,18 92.31,18 C94.87,18 97.44,20 100,21\"></path></g><g class=\"ayy-chart__series ayy-chart__series--compare\"><path class=\"ayy-chart__line\" d=\"M0,46 C2.56,45 5.13,43.67 7.69,43 C10.26,42.33 12.82,42 15.38,42 C17.95,42 20.51,44 23.08,44 C25.64,44 28.21,38 30.77,38 C33.33,38 35.9,39.5 38.46,40 C41.03,40.5 43.59,41 46.15,41 C48.72,41 51.28,36 53.85,36 C56.41,36 58.97,37 61.54,37 C64.1,37 66.67,34 69.23,34 C71.79,34 74.36,35 76.92,35 C79.49,35 82.05,32 84.62,32 C87.18,32 89.74,33 92.31,33 C94.87,33 97.44,31 100,30\"></path></g></svg>\n      </div>\n      <div class=\"ayy-chart__labels\" aria-hidden=\"true\">\n        <span>Sep 1</span>\n        <span>Sep 4</span>\n        <span>Sep 8</span>\n        <span>Sep 11</span>\n        <span>Sep 14</span>\n      </div>\n      <ul class=\"ayy-chart__legend\" aria-hidden=\"true\">\n        <li class=\"ayy-chart__legend-item\"><span class=\"ayy-chart__swatch\"></span>This period</li>\n        <li class=\"ayy-chart__legend-item ayy-chart__legend-item--compare\"><span class=\"ayy-chart__swatch\"></span>Last period</li>\n      </ul>\n      <table class=\"ayy-sr-only\">\n        <caption>Daily revenue in dollars, this period and the one before</caption>\n        <thead>\n          <tr>\n            <td></td>\n            <th scope=\"col\">This period</th>\n            <th scope=\"col\">Last period</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr>\n            <th scope=\"row\">Sep 1</th>\n            <td>$2.9K</td>\n            <td>$2.7K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 2</th>\n            <td>$3.1K</td>\n            <td>$2.9K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 3</th>\n            <td>$3.1K</td>\n            <td>$2.9K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 4</th>\n            <td>$3.4K</td>\n            <td>$2.8K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 5</th>\n            <td>$3.3K</td>\n            <td>$3.1K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 6</th>\n            <td>$3.7K</td>\n            <td>$3K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 7</th>\n            <td>$3.2K</td>\n            <td>$3K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 8</th>\n            <td>$3.5K</td>\n            <td>$3.2K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 9</th>\n            <td>$3.8K</td>\n            <td>$3.2K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 10</th>\n            <td>$3.7K</td>\n            <td>$3.3K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 11</th>\n            <td>$4K</td>\n            <td>$3.3K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 12</th>\n            <td>$3.6K</td>\n            <td>$3.4K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 13</th>\n            <td>$4.1K</td>\n            <td>$3.4K</td>\n          </tr>\n          <tr>\n            <th scope=\"row\">Sep 14</th>\n            <td>$4K</td>\n            <td>$3.5K</td>\n          </tr>\n        </tbody>\n      </table>\n    </figure>\n  </div>\n</div>",
+          "react": "import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from \"ayywi/react\";\n\nconst dollars = new Intl.NumberFormat(\"en-US\", { style: \"currency\", currency: \"USD\", notation: \"compact\" });\nconst days = [\"Sep 1\", \"Sep 2\", \"Sep 3\", \"Sep 4\", \"Sep 5\", \"Sep 6\", \"Sep 7\", \"Sep 8\", \"Sep 9\", \"Sep 10\", \"Sep 11\", \"Sep 12\", \"Sep 13\", \"Sep 14\"];\n\nexport default function Example() {\n  return (\n    <Card style={{ inlineSize: \"100%\", maxInlineSize: \"40rem\" }}>\n      <CardHeader>\n        <div className=\"ayy-spread\">\n          <CardTitle>Revenue</CardTitle>\n          <Badge variant=\"success\">+13% on last period</Badge>\n        </div>\n        <Stat size=\"sm\" value=\"$49.2K\" unit=\"last 14 days\" />\n      </CardHeader>\n      <CardContent>\n        <LineChart\n          label=\"Daily revenue in dollars, this period and the one before\"\n          labels={days}\n          format={(value) => dollars.format(value)}\n          series={[\n            { name: \"This period\", values: [2900, 3100, 3050, 3400, 3300, 3650, 3200, 3500, 3800, 3700, 3950, 3600, 4100, 3950] },\n            { name: \"Last period\", compare: true, values: [2700, 2850, 2900, 2800, 3100, 3000, 2950, 3200, 3150, 3300, 3250, 3400, 3350, 3500] },\n          ]}\n        />\n      </CardContent>\n    </Card>\n  );\n}"
+        },
+        {
+          "id": "stacked",
+          "title": "Stacked columns",
+          "html": "<figure class=\"ayy-chart ayy-chart--stacked\" style=\"--ayy-chart-height: 10rem; inline-size: 100%; max-inline-size: 28rem\">\n  <div class=\"ayy-chart__plot\" aria-hidden=\"true\">\n    <div class=\"ayy-chart__bars\">\n      <div class=\"ayy-chart__column\">\n        <span class=\"ayy-chart__bar\" data-value=\"42\" style=\"--ayy-value: 42\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"28\" style=\"--ayy-value: 28\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"9\" style=\"--ayy-value: 9\"></span>\n      </div>\n      <div class=\"ayy-chart__column\">\n        <span class=\"ayy-chart__bar\" data-value=\"38\" style=\"--ayy-value: 38\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"34\" style=\"--ayy-value: 34\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"12\" style=\"--ayy-value: 12\"></span>\n      </div>\n      <div class=\"ayy-chart__column\">\n        <span class=\"ayy-chart__bar\" data-value=\"51\" style=\"--ayy-value: 51\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"30\" style=\"--ayy-value: 30\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"8\" style=\"--ayy-value: 8\"></span>\n      </div>\n      <div class=\"ayy-chart__column\">\n        <span class=\"ayy-chart__bar\" data-value=\"47\" style=\"--ayy-value: 47\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"41\" style=\"--ayy-value: 41\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"10\" style=\"--ayy-value: 10\"></span>\n      </div>\n      <div class=\"ayy-chart__column\">\n        <span class=\"ayy-chart__bar\" data-value=\"33\" style=\"--ayy-value: 33\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"26\" style=\"--ayy-value: 26\"></span>\n        <span class=\"ayy-chart__bar\" data-value=\"7\" style=\"--ayy-value: 7\"></span>\n      </div>\n    </div>\n  </div>\n  <div class=\"ayy-chart__labels\" aria-hidden=\"true\">\n    <span>Mon</span>\n    <span>Tue</span>\n    <span>Wed</span>\n    <span>Thu</span>\n    <span>Fri</span>\n  </div>\n  <ul class=\"ayy-chart__legend\" aria-hidden=\"true\">\n    <li class=\"ayy-chart__legend-item\"><span class=\"ayy-chart__swatch\"></span>Email</li>\n    <li class=\"ayy-chart__legend-item\"><span class=\"ayy-chart__swatch\"></span>Chat</li>\n    <li class=\"ayy-chart__legend-item\"><span class=\"ayy-chart__swatch\"></span>Phone</li>\n  </ul>\n  <table class=\"ayy-sr-only\">\n    <caption>Support tickets per weekday, by channel</caption>\n    <thead>\n      <tr>\n        <td></td>\n        <th scope=\"col\">Email</th>\n        <th scope=\"col\">Chat</th>\n        <th scope=\"col\">Phone</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <th scope=\"row\">Mon</th>\n        <td>42</td>\n        <td>28</td>\n        <td>9</td>\n      </tr>\n      <tr>\n        <th scope=\"row\">Tue</th>\n        <td>38</td>\n        <td>34</td>\n        <td>12</td>\n      </tr>\n      <tr>\n        <th scope=\"row\">Wed</th>\n        <td>51</td>\n        <td>30</td>\n        <td>8</td>\n      </tr>\n      <tr>\n        <th scope=\"row\">Thu</th>\n        <td>47</td>\n        <td>41</td>\n        <td>10</td>\n      </tr>\n      <tr>\n        <th scope=\"row\">Fri</th>\n        <td>33</td>\n        <td>26</td>\n        <td>7</td>\n      </tr>\n    </tbody>\n  </table>\n</figure>",
+          "react": "import { BarChart } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <BarChart\n      label=\"Support tickets per weekday, by channel\"\n      labels={[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\"]}\n      stacked\n      ticks={0}\n      height=\"10rem\"\n      style={{ inlineSize: \"100%\", maxInlineSize: \"28rem\" }}\n      series={[\n        { name: \"Email\", values: [42, 38, 51, 47, 33] },\n        { name: \"Chat\", values: [28, 34, 30, 41, 26] },\n        { name: \"Phone\", values: [9, 12, 8, 10, 7] },\n      ]}\n    />\n  );\n}"
+        },
+        {
+          "id": "bar-list",
+          "title": "Bar list: top pages",
+          "html": "<div class=\"ayy-card\" style=\"inline-size: 100%; max-inline-size: 26rem\">\n  <div class=\"ayy-card__header\">\n    <div class=\"ayy-spread\">\n      <h3 class=\"ayy-card__title\">Top pages</h3>\n      <span class=\"ayy-muted\">Views</span>\n    </div>\n  </div>\n  <div class=\"ayy-card__content\">\n    <ol class=\"ayy-bar-list\">\n      <li class=\"ayy-bar-list__item\" style=\"--ayy-value: 100\">\n        <span class=\"ayy-bar-list__label\"><a class=\"ayy-link\" href=\"#pricing\">/pricing</a></span>\n        <span class=\"ayy-bar-list__value\">8,210</span>\n      </li>\n      <li class=\"ayy-bar-list__item\" style=\"--ayy-value: 84.4\">\n        <span class=\"ayy-bar-list__label\"><a class=\"ayy-link\" href=\"#home\">/</a></span>\n        <span class=\"ayy-bar-list__value\">6,930</span>\n      </li>\n      <li class=\"ayy-bar-list__item\" style=\"--ayy-value: 50.2\">\n        <span class=\"ayy-bar-list__label\"><a class=\"ayy-link\" href=\"#launch-week\">/blog/launch-week</a></span>\n        <span class=\"ayy-bar-list__value\">4,120</span>\n      </li>\n      <li class=\"ayy-bar-list__item\" style=\"--ayy-value: 36.3\">\n        <span class=\"ayy-bar-list__label\"><a class=\"ayy-link\" href=\"#getting-started\">/docs/getting-started</a></span>\n        <span class=\"ayy-bar-list__value\">2,980</span>\n      </li>\n      <li class=\"ayy-bar-list__item\" style=\"--ayy-value: 14.7\">\n        <span class=\"ayy-bar-list__label\"><a class=\"ayy-link\" href=\"#changelog\">/changelog</a></span>\n        <span class=\"ayy-bar-list__value\">1,210</span>\n      </li>\n    </ol>\n  </div>\n</div>",
+          "react": "import { BarList, Card, CardContent, CardHeader, CardTitle } from \"ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Card style={{ inlineSize: \"100%\", maxInlineSize: \"26rem\" }}>\n      <CardHeader>\n        <div className=\"ayy-spread\">\n          <CardTitle>Top pages</CardTitle>\n          <span className=\"ayy-muted\">Views</span>\n        </div>\n      </CardHeader>\n      <CardContent>\n        <BarList\n          items={[\n            { label: \"/pricing\", value: 8210, href: \"#pricing\" },\n            { label: \"/\", value: 6930, href: \"#home\" },\n            { label: \"/blog/launch-week\", value: 4120, href: \"#launch-week\" },\n            { label: \"/docs/getting-started\", value: 2980, href: \"#getting-started\" },\n            { label: \"/changelog\", value: 1210, href: \"#changelog\" },\n          ]}\n        />\n      </CardContent>\n    </Card>\n  );\n}"
+        },
+        {
+          "id": "sparkline",
+          "title": "Sparklines in stats",
+          "html": "<div class=\"ayy-grid\" style=\"--ayy-min: 12rem; inline-size: 100%\">\n  <div class=\"ayy-card\">\n    <div class=\"ayy-card__content\">\n      <div class=\"ayy-spread\" style=\"align-items: end\">\n        <div class=\"ayy-stat ayy-stat--sm\">\n          <p class=\"ayy-stat__label\">Visitors</p>\n          <p class=\"ayy-stat__value\">12.8k</p>\n        </div>\n        <svg class=\"ayy-sparkline\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" focusable=\"false\" role=\"img\" aria-label=\"Visitors, last 10 days, up 9%\"><path class=\"ayy-chart__area\" d=\"M0,100 C3.7,93.06 7.41,79.17 11.11,79.17 C14.81,79.17 18.52,89.58 22.22,89.58 C25.93,89.58 29.63,58.33 33.33,58.33 C37.04,58.33 40.74,62.5 44.44,62.5 C48.15,62.5 51.85,37.5 55.56,37.5 C59.26,37.5 62.96,45.83 66.67,45.83 C70.37,45.83 74.07,26.03 77.78,20.83 C81.48,15.63 85.19,18.05 88.89,14.58 C92.59,11.12 96.3,4.86 100,0 L100,100 L0,100 Z\"></path><path class=\"ayy-chart__line\" d=\"M0,100 C3.7,93.06 7.41,79.17 11.11,79.17 C14.81,79.17 18.52,89.58 22.22,89.58 C25.93,89.58 29.63,58.33 33.33,58.33 C37.04,58.33 40.74,62.5 44.44,62.5 C48.15,62.5 51.85,37.5 55.56,37.5 C59.26,37.5 62.96,45.83 66.67,45.83 C70.37,45.83 74.07,26.03 77.78,20.83 C81.48,15.63 85.19,18.05 88.89,14.58 C92.59,11.12 96.3,4.86 100,0\"></path></svg>\n      </div>\n    </div>\n  </div>\n  <div class=\"ayy-card\">\n    <div class=\"ayy-card__content\">\n      <div class=\"ayy-spread\" style=\"align-items: end\">\n        <div class=\"ayy-stat ayy-stat--sm\">\n          <p class=\"ayy-stat__label\">Conversion</p>\n          <p class=\"ayy-stat__value\">3.4%</p>\n        </div>\n        <svg class=\"ayy-sparkline\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" focusable=\"false\" role=\"img\" aria-label=\"Conversion, last 10 days, up 0.3 points\"><path class=\"ayy-chart__area\" d=\"M0,100 C3.7,88.89 7.41,66.67 11.11,66.67 C14.81,66.67 18.52,100 22.22,100 C25.93,100 29.63,77.78 33.33,66.67 C37.04,55.56 40.74,33.33 44.44,33.33 C48.15,33.33 51.85,66.67 55.56,66.67 C59.26,66.67 62.96,44.44 66.67,33.33 C70.37,22.22 74.07,0 77.78,0 C81.48,0 85.19,33.33 88.89,33.33 C92.59,33.33 96.3,11.11 100,0 L100,100 L0,100 Z\"></path><path class=\"ayy-chart__line\" d=\"M0,100 C3.7,88.89 7.41,66.67 11.11,66.67 C14.81,66.67 18.52,100 22.22,100 C25.93,100 29.63,77.78 33.33,66.67 C37.04,55.56 40.74,33.33 44.44,33.33 C48.15,33.33 51.85,66.67 55.56,66.67 C59.26,66.67 62.96,44.44 66.67,33.33 C70.37,22.22 74.07,0 77.78,0 C81.48,0 85.19,33.33 88.89,33.33 C92.59,33.33 96.3,11.11 100,0\"></path></svg>\n      </div>\n    </div>\n  </div>\n  <div class=\"ayy-card\">\n    <div class=\"ayy-card__content\">\n      <div class=\"ayy-spread\" style=\"align-items: end\">\n        <div class=\"ayy-stat ayy-stat--sm\">\n          <p class=\"ayy-stat__label\">Churn</p>\n          <p class=\"ayy-stat__value\">1.9%</p>\n        </div>\n        <svg class=\"ayy-sparkline\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" focusable=\"false\" role=\"img\" aria-label=\"Churn, last 10 days, down 0.4 points\" style=\"--ayy-chart-color: var(--ayy-color-success)\"><path class=\"ayy-chart__area\" d=\"M0,0 C3.7,6.67 7.41,20 11.11,20 C14.81,20 18.52,20 22.22,20 C25.93,20 29.63,33.33 33.33,40 C37.04,46.67 40.74,60 44.44,60 C48.15,60 51.85,40 55.56,40 C59.26,40 62.96,80 66.67,80 C70.37,80 74.07,80 77.78,80 C81.48,80 85.19,100 88.89,100 C92.59,100 96.3,100 100,100 L100,100 L0,100 Z\"></path><path class=\"ayy-chart__line\" d=\"M0,0 C3.7,6.67 7.41,20 11.11,20 C14.81,20 18.52,20 22.22,20 C25.93,20 29.63,33.33 33.33,40 C37.04,46.67 40.74,60 44.44,60 C48.15,60 51.85,40 55.56,40 C59.26,40 62.96,80 66.67,80 C70.37,80 74.07,80 77.78,80 C81.48,80 85.19,100 88.89,100 C92.59,100 96.3,100 100,100\"></path></svg>\n      </div>\n    </div>\n  </div>\n</div>",
+          "react": "import type { CSSProperties } from \"react\";\nimport { Card, CardContent, Sparkline, Stat } from \"ayywi/react\";\n\nconst stats = [\n  { label: \"Visitors\", value: \"12.8k\", trend: \"up 9%\", values: [8, 9, 8.5, 10, 9.8, 11, 10.6, 11.8, 12.1, 12.8], color: undefined },\n  { label: \"Conversion\", value: \"3.4%\", trend: \"up 0.3 points\", values: [3.1, 3.2, 3.1, 3.2, 3.3, 3.2, 3.3, 3.4, 3.3, 3.4], color: undefined },\n  { label: \"Churn\", value: \"1.9%\", trend: \"down 0.4 points\", values: [2.4, 2.3, 2.3, 2.2, 2.1, 2.2, 2, 2, 1.9, 1.9], color: \"var(--ayy-color-success)\" },\n];\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-grid\" style={{ \"--ayy-min\": \"12rem\", inlineSize: \"100%\" } as CSSProperties}>\n      {stats.map((stat) => (\n        <Card key={stat.label}>\n          <CardContent>\n            <div className=\"ayy-spread\" style={{ alignItems: \"end\" } as CSSProperties}>\n              <Stat labelFirst size=\"sm\" label={stat.label} value={stat.value} />\n              <Sparkline\n                values={stat.values}\n                area\n                label={`${stat.label}, last 10 days, ${stat.trend}`}\n                color={stat.color}\n              />\n            </div>\n          </CardContent>\n        </Card>\n      ))}\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/chart/chart.css",
+        "js": "src/components/chart/chart.ts",
+        "react": "src/components/chart/chart.react.tsx",
+        "meta": "src/components/chart/chart.meta.json"
       }
     }
   ]

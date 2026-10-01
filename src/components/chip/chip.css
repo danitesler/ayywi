@@ -1,0 +1,183 @@
+/* Chips: filters you switch on and off, a choice among a few, and the active filters you remove. A <label> around a
+   native checkbox or radio (forms and keyboards work as for any input), or a <button aria-pressed> in an app that
+   filters as you click. State comes from :checked or aria-pressed. */
+
+.ayy-chip {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  /* fit-content: in a stack it keeps its own width instead of stretching. */
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  block-size: var(--ayy-size-control-sm);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-pill);
+  background-color: transparent;
+  color: var(--ayy-color-text-soft);
+  font: inherit;
+  font-size: var(--ayy-control-text-sm);
+  font-weight: var(--ayy-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    border-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+/* The input stays in the page (focus, forms, screen readers) but draws nothing; the chip shows its state. */
+.ayy-chip > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.ayy-chip > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-chip:hover {
+  border-color: var(--ayy-color-line-hover);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+}
+
+/* On: the text colour's border, a wash and a tick before the label — not colour alone. */
+.ayy-chip:has(> input:checked),
+.ayy-chip[aria-pressed="true"] {
+  border-color: var(--ayy-color-text);
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-chip:has(> input:checked)::before,
+.ayy-chip[aria-pressed="true"]::before {
+  content: "";
+  flex: none;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  margin-inline-start: calc(-1 * var(--ayy-space-0-5));
+  background-color: currentColor;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.ayy-chip:focus-visible,
+.ayy-chip:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-chip:disabled,
+.ayy-chip:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* How many results the filter has: after the label, muted. */
+.ayy-chip__count {
+  color: var(--ayy-color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ayy-chip:has(> input:checked) .ayy-chip__count,
+.ayy-chip[aria-pressed="true"] .ayy-chip__count {
+  color: var(--ayy-color-text-soft);
+}
+
+/* An active filter: a <span> with its text and a remove button. Not a control itself. */
+.ayy-chip--removable {
+  padding-inline-end: var(--ayy-space-1);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+  cursor: default;
+}
+
+.ayy-chip--removable:hover {
+  border-color: var(--ayy-color-line-strong);
+}
+
+.ayy-chip__remove {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-chip__remove > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-chip__remove:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-chip__remove:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 1px;
+}
+
+/* ---- A row of chips ---- */
+
+.ayy-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* One line that scrolls sideways (a phone toolbar). The padding keeps focus rings inside the scrolling box. */
+.ayy-chip-group--scroll {
+  flex-wrap: nowrap;
+  padding: 3px;
+  margin: -3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+@media (forced-colors: active) {
+  .ayy-chip {
+    border-color: CanvasText;
+  }
+  .ayy-chip:has(> input:checked),
+  .ayy-chip[aria-pressed="true"] {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-chip:has(> input:checked) .ayy-chip__count,
+  .ayy-chip[aria-pressed="true"] .ayy-chip__count {
+    color: HighlightText;
+  }
+}

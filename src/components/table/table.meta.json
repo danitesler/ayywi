@@ -8,15 +8,27 @@
     "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
     "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
     "ayy-table--compact": "Tighter rows.",
-    "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits."
+    "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits.",
+    "ayy-table__sort": "A <button> inside a sortable <th>, with an arrow drawn after the text. aria-sort=\"ascending\" or \"descending\" on the <th> marks the sorted column; the others show both arrows, faint.",
+    "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box."
   },
   "variants": {
     "compact": { "values": [true, false], "default": false }
   },
   "states": {
-    "tr[aria-selected=\"true\"]": "Selected row highlight."
+    "tr[aria-selected=\"true\"]": "Selected row highlight.",
+    "th[aria-sort=\"ascending\" | \"descending\"]": "The sorted column: its header in the text colour and one arrow."
   },
-  "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass constants",
+  "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
+  "element": {
+    "tag": "ayy-table",
+    "description": "Wraps an .ayy-table (or its .ayy-table-wrap). Header .ayy-table__sort buttons set aria-sort and reorder the body rows by that column (a cell's data-sort-value wins over its text); .ayy-table__select checkboxes set aria-selected on their row, and a checkbox in the header's select cell selects all and shows some as indeterminate.",
+    "attributes": {},
+    "events": {
+      "ayy-sort": "{ column, key, direction } before the rows move — key is the <th>'s data-sort-key. Call preventDefault() to sort them yourself (on the server).",
+      "ayy-selection-change": "{ rows } — the selected <tr> elements."
+    }
+  },
   "react": {
     "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from \"ayywi/react\";",
     "components": {
@@ -24,20 +36,33 @@
       "TableHeader": { "renders": "<thead>" },
       "TableBody": { "renders": "<tbody>" },
       "TableFooter": { "renders": "<tfoot>" },
-      "TableRow": { "renders": "<tr>" },
-      "TableHead": { "renders": "<th scope=\"col\">", "props": { "numeric": "boolean" } },
-      "TableCell": { "renders": "<td>", "props": { "numeric": "boolean" } },
+      "TableRow": { "renders": "<tr>", "props": { "selected": "boolean — aria-selected" } },
+      "TableHead": {
+        "renders": "<th scope=\"col\">, with a <button class=\"ayy-table__sort\"> inside when sortable",
+        "props": {
+          "numeric": "boolean",
+          "select": "boolean — the checkbox column",
+          "sort": "\"ascending\" | \"descending\" | \"none\" — makes the header a sort button; \"none\" for a sortable column that isn't sorted",
+          "onSort": "() => void — flip with nextSortDirection() and sort your rows (compareValues helps)"
+        }
+      },
+      "TableCell": { "renders": "<td>", "props": { "numeric": "boolean", "select": "boolean — the checkbox column" } },
       "TableCaption": { "renders": "<caption>" }
     }
   },
   "a11y": [
     "Use real <th> header cells with scope (React sets scope=\"col\").",
-    "A <caption> or aria-label names the table for screen readers."
+    "A <caption> or aria-label names the table for screen readers.",
+    "Sorting is a button inside the header, so it's reachable by Tab and announced with the column's aria-sort. Only the sorted column carries aria-sort.",
+    "Every row checkbox needs an aria-label naming its row (\"Select INV-1042\"); the select-all box is indeterminate when some rows are selected."
   ],
   "do": [
     "Use a table to compare items across the same attributes (projects × status × builds).",
     "End-align numbers with numeric/ayy-table__num.",
-    "Keep cell content short; truncate with a tooltip if needed."
+    "Keep cell content short; truncate with a tooltip if needed.",
+    "Make the columns people scan sortable (names, dates, amounts), and start sorted by the most useful one. Put the real value in data-sort-value when the cell shows a formatted one (a date, a currency).",
+    "Add a checkbox column only when rows have bulk actions, and show the count and the actions above the table.",
+    "Filter a table with Chips and a search InputGroup above it; page a long one with Pagination below."
   ],
   "dont": [
     "Don't use tables for layout.",
@@ -45,5 +70,8 @@
     "Don't zebra-stripe; hairlines + hover are enough.",
     "Don't nest interactive controls in every cell — one action column is plenty."
   ],
-  "examples": [{ "id": "basic", "title": "Basic" }]
+  "examples": [
+    { "id": "basic", "title": "Basic" },
+    { "id": "sortable", "title": "Sortable columns and selectable rows" }
+  ]
 }

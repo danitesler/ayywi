@@ -75,7 +75,80 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Sortable column: a button in the <th>; aria-sort on the <th> says which way (React TableHead sort, or <ayy-table>). */
+.ayy-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  margin: 0;
+  margin-inline: calc(-1 * var(--ayy-space-1));
+  padding: var(--ayy-space-1);
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: color var(--ayy-duration-fast) ease;
+}
+
+/* Both arrows when unsorted; the one that applies, at full strength, when sorted. */
+.ayy-table__sort::after {
+  content: "";
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.75rem;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 12'%3E%3Cpath d='M4 0l4 5H0zM0 7h8l-4 5z'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.45;
+}
+
+.ayy-table__sort:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-table__sort:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+.ayy-table th[aria-sort="ascending"],
+.ayy-table th[aria-sort="descending"] {
+  color: var(--ayy-color-text);
+}
+
+.ayy-table th[aria-sort="ascending"] .ayy-table__sort::after {
+  opacity: 1;
+  clip-path: inset(0 0 55% 0);
+}
+
+.ayy-table th[aria-sort="descending"] .ayy-table__sort::after {
+  opacity: 1;
+  clip-path: inset(55% 0 0 0);
+}
+
+/* In a number column the arrow goes before the text, so the digits stay on the end edge. */
+.ayy-table .ayy-table__num .ayy-table__sort {
+  flex-direction: row-reverse;
+}
+
+/* The checkbox column for selecting rows: as narrow as the box. Selected rows carry aria-selected="true". */
+.ayy-table .ayy-table__select {
+  inline-size: 1%;
+  padding-inline-end: 0;
+}
+
 @media (forced-colors: active) {
+  .ayy-table__sort::after {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+  .ayy-table th[aria-sort="ascending"] .ayy-table__sort,
+  .ayy-table th[aria-sort="descending"] .ayy-table__sort {
+    text-decoration: underline;
+  }
   .ayy-table tr[aria-selected="true"] {
     forced-color-adjust: none;
     background-color: Highlight;

@@ -1,0 +1,57 @@
+{
+  "name": "Number field",
+  "slug": "number-field",
+  "status": "beta",
+  "category": "Forms",
+  "description": "A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.",
+  "classes": {
+    "ayy-number-field": "The bordered box around the buttons and the input. Draws the focus ring while you type.",
+    "ayy-number-field--sm": "Small height, for a cart line or a table cell.",
+    "ayy-number-field__input": "The <input type=\"number\">: centred tabular digits, no spinner arrows.",
+    "ayy-number-field__decrement": "The minus <button> before the input. Needs an aria-label. aria-disabled=\"true\" at min.",
+    "ayy-number-field__increment": "The plus <button> after the input. Needs an aria-label. aria-disabled=\"true\" at max."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md"], "default": "md", "component": "NumberField" }
+  },
+  "states": {
+    "button[aria-disabled=\"true\"]": "Can't go further (at min or max). Stays focusable.",
+    "input[aria-invalid=\"true\"]": "Invalid value: red border."
+  },
+  "js": "numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.",
+  "react": {
+    "import": "import { NumberField } from \"ayywi/react\";",
+    "components": {
+      "NumberField": {
+        "renders": "<div class=\"ayy-number-field\"><button class=\"ayy-number-field__decrement\"><input type=\"number\"><button class=\"ayy-number-field__increment\">",
+        "props": {
+          "value / defaultValue": "number",
+          "onValueChange": "(value: number) => void",
+          "min": "number",
+          "max": "number",
+          "step": "number, default 1",
+          "size": "\"sm\" | \"md\"",
+          "decrementLabel": "string, default \"Decrease\" — say what changes (\"Remove a guest\")",
+          "incrementLabel": "string, default \"Increase\"",
+          "className": "On the outer box; every other prop goes to the input (id, name, aria-label…)",
+          "style": "On the outer box"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Label the input (a <label for> its id, or aria-label naming the item: \"Quantity of Ethiopia Guji, 250 g\"). The buttons need their own aria-labels.",
+    "At min or max the button gets aria-disabled instead of disabled, so focus stays on it while you click.",
+    "The input is a real number field: type a value, or use the arrow keys."
+  ],
+  "do": [
+    "Use a number field for small whole counts people adjust by one or two: items in a cart, guests, seats, nights.",
+    "Set min and max (min 1 for guests, 0 when zero removes the line) and say the limit in a hint.",
+    "Use size sm in a cart line or a table row."
+  ],
+  "dont": [
+    "Don't use it for large or exact numbers (a price, a phone number, a year) — use an Input; for a rough amount use a Slider.",
+    "Don't use it for a choice between a few named sizes — use a Segmented control or compact Choice cards."
+  ],
+  "examples": [{ "id": "basic", "title": "Guests and quantity" }]
+}

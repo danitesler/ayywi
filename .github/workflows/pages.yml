@@ -27,7 +27,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm check
+      # The site's real URL, so copied prompts link it (and keep-versions knows where the earlier releases are).
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: pnpm preview:build
+        env:
+          VITE_AYYWI_SITE: ${{ steps.pages.outputs.base_url }}/
+      # A deploy replaces the site: bring the earlier releases' files (v/<release>/) along.
+      - run: node scripts/keep-versions.mjs
+        env:
+          AYYWI_SITE: ${{ steps.pages.outputs.base_url }}/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: preview/dist

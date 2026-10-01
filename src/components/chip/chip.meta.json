@@ -1,0 +1,77 @@
+{
+  "name": "Chip",
+  "slug": "chip",
+  "status": "beta",
+  "category": "Forms",
+  "description": "Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.",
+  "classes": {
+    "ayy-chip": "A <label> around a native <input type=\"checkbox\"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed=\"true\".",
+    "ayy-chip--removable": "An active filter: a <span> with its text and an __remove button. Not a control itself.",
+    "ayy-chip__count": "Number of results after the label, muted, tabular digits.",
+    "ayy-chip__remove": "The remove (×) button of a removable chip. Needs an aria-label (\"Remove Status: Open\").",
+    "ayy-chip-group": "Wrapping row of chips: role=\"group\" with an aria-label, or role=\"radiogroup\" for radio chips.",
+    "ayy-chip-group--scroll": "One line that scrolls sideways instead of wrapping (a phone toolbar)."
+  },
+  "variants": {
+    "type": { "values": ["checkbox", "radio"], "default": "checkbox", "component": "Chip" },
+    "scroll": { "values": [false, true], "default": false, "component": "ChipGroup" }
+  },
+  "states": {
+    ".ayy-chip:has(> input:checked)": "On (checkbox or radio chips).",
+    ".ayy-chip[aria-pressed=\"true\"]": "On (button chips).",
+    ":disabled": "Dimmed, not clickable."
+  },
+  "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
+  "react": {
+    "import": "import { Chip, ChipButton, ChipRemovable, ChipGroup } from \"ayywi/react\";",
+    "components": {
+      "Chip": {
+        "renders": "<label class=\"ayy-chip\"><input type=\"checkbox\">…",
+        "props": {
+          "type": "\"checkbox\" (filters that combine) | \"radio\" (one choice; same name in the group)",
+          "checked / defaultChecked": "boolean",
+          "onCheckedChange": "(checked: boolean) => void",
+          "name": "string",
+          "value": "string",
+          "disabled": "boolean",
+          "count": "ReactNode — results for this filter",
+          "inputProps": "Props for the native input."
+        }
+      },
+      "ChipButton": {
+        "renders": "<button type=\"button\" class=\"ayy-chip\" aria-pressed>",
+        "props": { "pressed": "boolean", "onPressedChange": "(pressed: boolean) => void", "count": "ReactNode" }
+      },
+      "ChipRemovable": {
+        "renders": "<span class=\"ayy-chip ayy-chip--removable\">… <button class=\"ayy-chip__remove\">",
+        "props": { "onRemove": "() => void", "removeLabel": "string — default \"Remove \" + the text" }
+      },
+      "ChipGroup": {
+        "renders": "<div role=\"group\" class=\"ayy-chip-group\">",
+        "props": { "scroll": "boolean — one line that scrolls sideways" }
+      }
+    }
+  },
+  "a11y": [
+    "Checkbox and radio chips are native inputs: Space toggles, radios in a group move with the arrow keys, and screen readers announce \"checked\". Button chips announce \"pressed\".",
+    "Give the group an aria-label naming what it filters (\"Status\"), and radio chips role=\"radiogroup\".",
+    "The on state is a border, a wash and a tick, not colour alone; High Contrast fills it with the system highlight.",
+    "Every remove button needs an aria-label with the filter it removes. After removing one, move focus to the next chip or the search field so it isn't lost."
+  ],
+  "do": [
+    "Use chips to filter a list, a table or a grid by a few known values (status, priority, category), with counts when they help.",
+    "Use checkbox chips when filters combine, radio chips for one category at a time, ChipButton when the app filters on every click without a form.",
+    "Show the filters in force as removable chips above the results, with a Clear all button.",
+    "Use ChipGroup scroll in a phone toolbar so the chips stay on one line."
+  ],
+  "dont": [
+    "Don't use chips for a status label that can't be clicked — use a Badge.",
+    "Don't use chips to switch views or date ranges — use a Segmented control; for navigation between pages use Tabs or links.",
+    "Don't show more than eight or so chips in a row — move the rest into a Popover with checkboxes (\"More filters\").",
+    "Don't make a removable chip's whole body the remove target; only the × removes it."
+  ],
+  "examples": [
+    { "id": "filters", "title": "Filters and one choice" },
+    { "id": "filter-bar", "title": "Filter bar with active filters" }
+  ]
+}

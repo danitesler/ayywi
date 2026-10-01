@@ -11,7 +11,7 @@
     "ayy-theme-toggle__item": "On each ayy-menu__item (role=\"menuitemradio\", data-value = theme name or \"system\"). The one with aria-checked=\"true\" is bold and shows a check."
   },
   "variants": {},
-  "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange? }) → cleanup.",
+  "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).",
   "element": {
     "tag": "ayy-theme-toggle",
     "attributes": {},
@@ -39,7 +39,7 @@
   "do": [
     "Use it in a site or app header where readers pick a theme, including following the system.",
     "Put it next to the brand or before the call to action in the Navbar.",
-    "Add themeInitScript to <head> so the stored theme applies before first paint."
+    "Load dist/theme-init.js (or inline themeInitScript) first thing in <head>, so the stored theme applies before the first paint. The toggle restores it anyway when it connects, a moment later."
   ],
   "dont": [
     "Don't use it when there are only ever two themes and no \"system\" — a plain Button calling setTheme() is enough.",

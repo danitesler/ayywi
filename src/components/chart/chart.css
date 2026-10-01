@@ -1,0 +1,358 @@
+/* Charts drawn by CSS, so they need no library and work in any template: columns from --ayy-value (0–100, as in
+   Progress), lines and areas as SVG paths in a 0–100 box (chartPath() makes them), a ranked bar list, sparklines.
+   The drawing is decoration (aria-hidden); the numbers are a table, visually hidden or not. Series colours are the
+   chart tokens in order, so a chart library can match them. */
+
+.ayy-chart {
+  --_h: var(--ayy-chart-height, 12rem);
+  --_gap: var(--ayy-space-1-5);
+  display: grid;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-2xs);
+  line-height: var(--ayy-leading-none);
+}
+
+/* Room on the inline-start edge for tick labels, only when there are ticks. */
+.ayy-chart:has(.ayy-chart__tick) {
+  --_axis: 2.75rem;
+}
+
+.ayy-chart__plot {
+  position: relative;
+  block-size: var(--_h);
+  margin-inline-start: var(--_axis, 0);
+}
+
+/* A value line across the plot with its label in the gutter: --ayy-value places it (0 = the floor, 100 = the top). */
+.ayy-chart__tick {
+  position: absolute;
+  inset-inline: calc(-1 * var(--_axis, 0rem)) 0;
+  inset-block-end: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
+  display: grid;
+  grid-template-columns: var(--_axis, 0rem) 1fr;
+  align-items: center;
+  translate: 0 50%;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.ayy-chart__tick::after {
+  content: "";
+  grid-column: 2;
+  border-block-start: 1px solid var(--ayy-color-hairline);
+  margin-inline-start: var(--ayy-space-2);
+}
+
+/* ---- Columns ---- */
+
+.ayy-chart__bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--_gap);
+}
+
+.ayy-chart__column {
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  min-inline-size: 0;
+  block-size: 100%;
+}
+
+/* Series colour by position: the first bar of each column is chart-1, the second chart-2…; --ayy-chart-color overrides. */
+.ayy-chart__bar {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  position: relative;
+  flex: 1 1 0;
+  max-inline-size: 2.5rem;
+  min-block-size: 1px;
+  block-size: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
+  border-start-start-radius: var(--ayy-radius-sm);
+  border-start-end-radius: var(--ayy-radius-sm);
+  background-color: var(--_c);
+  transition: block-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+@starting-style {
+  .ayy-chart__bar {
+    block-size: 0;
+  }
+}
+
+.ayy-chart__bar:nth-child(2) { --_c: var(--ayy-chart-color, var(--ayy-chart-2)); }
+.ayy-chart__bar:nth-child(3) { --_c: var(--ayy-chart-color, var(--ayy-chart-3)); }
+.ayy-chart__bar:nth-child(4) { --_c: var(--ayy-chart-color, var(--ayy-chart-4)); }
+.ayy-chart__bar:nth-child(5) { --_c: var(--ayy-chart-color, var(--ayy-chart-5)); }
+.ayy-chart__bar:nth-child(6) { --_c: var(--ayy-chart-color, var(--ayy-chart-6)); }
+
+/* The bar's data-value above it: on hover, or always with --values. Centred by auto margins so RTL needs nothing. */
+.ayy-chart__bar[data-value]::after {
+  content: attr(data-value);
+  position: absolute;
+  inset-block-end: calc(100% + var(--ayy-space-1));
+  inset-inline: -4rem;
+  inline-size: max-content;
+  margin-inline: auto;
+  color: var(--ayy-color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--ayy-weight-medium);
+  opacity: 0;
+  transition: opacity var(--ayy-duration-fast) ease;
+  pointer-events: none;
+}
+
+.ayy-chart__column:hover .ayy-chart__bar[data-value]::after,
+.ayy-chart--values .ayy-chart__bar[data-value]::after {
+  opacity: 1;
+}
+
+.ayy-chart__column:hover .ayy-chart__bar {
+  background-color: color-mix(in srgb, var(--_c) 80%, var(--ayy-color-text));
+}
+
+/* Stacked: a column's bars sit on top of each other; each --ayy-value is that part's share of the top of the scale. */
+.ayy-chart--stacked .ayy-chart__column {
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1px;
+}
+
+.ayy-chart--stacked .ayy-chart__bar {
+  flex: none;
+  inline-size: 100%;
+  border-radius: 0;
+}
+
+.ayy-chart--stacked .ayy-chart__bar:last-child {
+  border-start-start-radius: var(--ayy-radius-sm);
+  border-start-end-radius: var(--ayy-radius-sm);
+}
+
+.ayy-chart--stacked .ayy-chart__bar[data-value]::after {
+  content: none;
+}
+
+/* ---- Lines and areas: SVG paths in a 0 0 100 100 viewBox, stretched to the plot ---- */
+
+.ayy-chart__svg {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  /* Time runs along the reading direction, like the columns and labels. */
+  scale: var(--_ayy-dir, 1) 1;
+}
+
+.ayy-chart__series:nth-of-type(2) { --_c: var(--ayy-chart-color, var(--ayy-chart-2)); }
+.ayy-chart__series:nth-of-type(3) { --_c: var(--ayy-chart-color, var(--ayy-chart-3)); }
+.ayy-chart__series:nth-of-type(4) { --_c: var(--ayy-chart-color, var(--ayy-chart-4)); }
+.ayy-chart__series:nth-of-type(5) { --_c: var(--ayy-chart-color, var(--ayy-chart-5)); }
+.ayy-chart__series:nth-of-type(6) { --_c: var(--ayy-chart-color, var(--ayy-chart-6)); }
+
+.ayy-chart__line {
+  fill: none;
+  stroke: var(--_c);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ayy-chart__area {
+  fill: color-mix(in srgb, var(--_c) 16%, transparent);
+  stroke: none;
+}
+
+/* A comparison series (last period, a target): dashed and quiet, no fill. Two classes, so it beats the position colours. */
+.ayy-chart__series.ayy-chart__series--compare {
+  --_c: var(--ayy-chart-color, var(--ayy-color-muted));
+}
+
+.ayy-chart__series--compare .ayy-chart__line {
+  stroke-dasharray: 4 4;
+}
+
+.ayy-chart__series--compare .ayy-chart__area {
+  display: none;
+}
+
+/* ---- Labels under the plot and the legend ---- */
+
+.ayy-chart__labels {
+  display: flex;
+  gap: var(--_gap);
+  margin: 0;
+  margin-inline-start: var(--_axis, 0);
+  padding: 0;
+  list-style: none;
+}
+
+.ayy-chart__labels > * {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Under a line the labels mark points from the first to the last, so they spread to both ends. */
+.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels {
+  justify-content: space-between;
+}
+
+.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels > * {
+  flex: 0 1 auto;
+}
+
+.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels > :first-child {
+  text-align: start;
+}
+
+.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels > :last-child {
+  text-align: end;
+}
+
+.ayy-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ayy-space-1-5) var(--ayy-space-4);
+  margin: 0;
+  margin-block-start: var(--ayy-space-1);
+  padding: 0;
+  list-style: none;
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-chart__legend-item {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+}
+
+.ayy-chart__legend-item:nth-child(2) { --_c: var(--ayy-chart-color, var(--ayy-chart-2)); }
+.ayy-chart__legend-item:nth-child(3) { --_c: var(--ayy-chart-color, var(--ayy-chart-3)); }
+.ayy-chart__legend-item:nth-child(4) { --_c: var(--ayy-chart-color, var(--ayy-chart-4)); }
+.ayy-chart__legend-item:nth-child(5) { --_c: var(--ayy-chart-color, var(--ayy-chart-5)); }
+.ayy-chart__legend-item:nth-child(6) { --_c: var(--ayy-chart-color, var(--ayy-chart-6)); }
+
+.ayy-chart__legend-item.ayy-chart__legend-item--compare {
+  --_c: var(--ayy-chart-color, var(--ayy-color-muted));
+}
+
+.ayy-chart__swatch {
+  flex: none;
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--_c);
+}
+
+.ayy-chart__legend-item--compare .ayy-chart__swatch {
+  block-size: 0;
+  border-block-start: 2px dashed var(--_c);
+  border-radius: 0;
+  background: none;
+}
+
+/* ---- Bar list: ranked rows (top pages, sources) with the bar behind the text ---- */
+
+.ayy-bar-list {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  display: grid;
+  gap: var(--ayy-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ayy-text-sm);
+}
+
+.ayy-bar-list__item {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+  min-block-size: var(--ayy-size-control-sm);
+  padding-inline: var(--ayy-space-2);
+  color: var(--ayy-color-text);
+}
+
+/* Text sits on an 18% tint of the series colour; pnpm check measures it in every theme. */
+.ayy-bar-list__item::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
+  border-radius: var(--ayy-radius-sm);
+  background-color: color-mix(in srgb, var(--_c) 18%, transparent);
+  transition: inline-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+.ayy-bar-list__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-bar-list__value {
+  flex: none;
+  color: var(--ayy-color-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Sparkline: a small line with no axes, for a stat or a table cell ---- */
+
+.ayy-sparkline {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  display: inline-block;
+  inline-size: 6rem;
+  block-size: 1.75rem;
+  overflow: visible;
+  vertical-align: middle;
+  scale: var(--_ayy-dir, 1) 1;
+}
+
+/* High Contrast drops author colours: bars, swatches and bar-list bars become system colours, lines CanvasText. */
+@media (forced-colors: active) {
+  .ayy-chart__bar,
+  .ayy-chart__swatch {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+  .ayy-chart__bar:nth-child(even),
+  .ayy-chart__legend-item:nth-child(even) .ayy-chart__swatch {
+    background-color: Highlight;
+  }
+  .ayy-chart__line {
+    stroke: CanvasText;
+  }
+  .ayy-chart__series:nth-of-type(even) .ayy-chart__line {
+    stroke: Highlight;
+  }
+  .ayy-chart__area {
+    fill: none;
+  }
+  .ayy-bar-list__item::before {
+    background: none;
+    border-block-end: 2px solid CanvasText;
+  }
+}

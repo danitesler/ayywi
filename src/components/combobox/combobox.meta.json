@@ -1,0 +1,67 @@
+{
+  "name": "Combobox",
+  "slug": "combobox",
+  "status": "beta",
+  "category": "Forms",
+  "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
+  "classes": {
+    "ayy-combobox": "Wrapper: the .ayy-input (role=\"combobox\"), a chevron <svg> and the listbox.",
+    "ayy-combobox__listbox": "The <ul role=\"listbox\" popover=\"manual\"> of options, placed under the input.",
+    "ayy-combobox__option": "An <li role=\"option\">. data-value is what it stands for, data-label what goes in the input, data-keywords more words that match. aria-selected=\"true\" on the one the arrow keys are on; aria-disabled for one you can't pick.",
+    "ayy-combobox__meta": "Extra text at the end of an option (a country, a count). Not put in the input.",
+    "ayy-combobox__empty": "The \"No matches\" line (role=\"none\"), shown when nothing matches."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "Combobox" }
+  },
+  "states": {
+    "input[aria-expanded=\"true\"]": "The list is open.",
+    "option[aria-selected=\"true\"]": "The option the arrow keys are on.",
+    "option[hidden]": "Filtered out."
+  },
+  "js": "connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",
+  "element": {
+    "tag": "ayy-combobox",
+    "description": "Wraps an .ayy-combobox and wires typing, filtering, the arrow keys, Enter and Esc on its input and listbox.",
+    "attributes": {
+      "manual": "Don't filter: replace the options yourself as people type (a search API), then call refresh()."
+    },
+    "events": {
+      "ayy-select": "{ value, label, option } when an option is chosen — value is its data-value, else its label."
+    }
+  },
+  "react": {
+    "import": "import { Combobox } from \"ayywi/react\";",
+    "components": {
+      "Combobox": {
+        "renders": "<div class=\"ayy-combobox\"><input role=\"combobox\" class=\"ayy-input\"><svg><ul role=\"listbox\" class=\"ayy-combobox__listbox\">",
+        "props": {
+          "options": "({ value, label, meta?, icon?, keywords?, disabled? } | string)[]",
+          "value / defaultValue": "The chosen option's value.",
+          "onValueChange": "(value: string, option) => void",
+          "onInputChange": "(text: string) => void — every keystroke, e.g. to fetch options",
+          "filter": "boolean, default true; false when you fetch the options yourself",
+          "emptyText": "ReactNode, default \"No matches\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "name": "string — a hidden input carries the chosen value in forms"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Focus stays in the input: Down opens the list and moves through it, Up goes back, Enter picks, Esc closes (and a second Esc clears), Alt+Down opens without moving. Screen readers follow aria-activedescendant.",
+    "Label the input with a <label for> its id; the chevron is decoration.",
+    "Typing highlights the first match, so Enter picks it; options that don't match are hidden, and \"No matches\" shows when none do."
+  ],
+  "do": [
+    "Use a combobox to pick one of many known values: more than ten or so, where people know what they're looking for (a city, a customer, a time zone).",
+    "Give options keywords for the other words people type (the country for a city, the email for a customer), and meta for what helps tell them apart.",
+    "For results from a server, set filter={false} (or manual on <ayy-combobox>) and replace the options on each keystroke."
+  ],
+  "dont": [
+    "Don't use a combobox for fewer than about ten options — use Select, or a Segmented control for two to five.",
+    "Don't use it for actions — use a Dropdown menu.",
+    "Don't use it for free text that may not be in the list — use an Input (a datalist can suggest)."
+  ],
+  "examples": [{ "id": "basic", "title": "Time zone" }]
+}

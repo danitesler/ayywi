@@ -1,0 +1,160 @@
+/* A native <input type="range">, so keyboard, forms and screen readers work as usual. Chromium and Safari can't fill
+   the track up to the thumb by themselves: --ayy-value (0–100) does it, kept in sync by React and ayywi/elements.
+   Firefox draws the fill natively. A range (min and max) is two of them in .ayy-slider-range. */
+
+.ayy-slider,
+.ayy-slider-range {
+  --_track: 0.375rem;
+  --_thumb: 1.125rem;
+  --_fill: var(--ayy-color-text);
+  --_rest: color-mix(in srgb, var(--ayy-color-text) 14%, transparent);
+}
+
+.ayy-slider {
+  --_v: clamp(0, var(--ayy-value, 0), 100);
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: var(--ayy-size-control-sm);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The fill ends under the thumb's centre: half a thumb in, then the value's share of the rest. Angle -90deg in RTL. */
+.ayy-slider::-webkit-slider-runnable-track {
+  block-size: var(--_track);
+  border-radius: var(--ayy-radius-pill);
+  background: linear-gradient(
+    calc(90deg * var(--_ayy-dir, 1)),
+    var(--_fill) calc(var(--_thumb) / 2 + (100% - var(--_thumb)) * var(--_v) / 100),
+    var(--_rest) 0
+  );
+}
+
+.ayy-slider::-moz-range-track {
+  block-size: var(--_track);
+  border-radius: var(--ayy-radius-pill);
+  background: var(--_rest);
+}
+
+.ayy-slider::-moz-range-progress {
+  block-size: var(--_track);
+  border-radius: var(--ayy-radius-pill);
+  background: var(--_fill);
+}
+
+.ayy-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  margin-block-start: calc((var(--_track) - var(--_thumb)) / 2);
+  border: 2px solid var(--_fill);
+  border-radius: 50%;
+  background: var(--ayy-color-bg);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent);
+  transition: scale var(--ayy-duration-fast) var(--ayy-ease-spring);
+}
+
+.ayy-slider::-moz-range-thumb {
+  box-sizing: border-box;
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  border: 2px solid var(--_fill);
+  border-radius: 50%;
+  background: var(--ayy-color-bg);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent);
+}
+
+.ayy-slider:hover::-webkit-slider-thumb {
+  scale: 1.1;
+}
+
+.ayy-slider:focus-visible {
+  outline: none;
+}
+
+/* The ring goes on the thumb, the part that moves. */
+.ayy-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px var(--ayy-color-bg), 0 0 0 4px var(--ayy-color-ring);
+}
+
+.ayy-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 2px var(--ayy-color-bg), 0 0 0 4px var(--ayy-color-ring);
+}
+
+.ayy-slider:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* ---- Range: two sliders over one track, filled between the thumbs from --ayy-from and --ayy-to (0–100) ---- */
+
+.ayy-slider-range {
+  --_from: clamp(0, var(--ayy-from, 0), 100);
+  --_to: clamp(0, var(--ayy-to, 100), 100);
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+  block-size: var(--ayy-size-control-sm);
+}
+
+.ayy-slider-range::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(50% - var(--_track) / 2);
+  block-size: var(--_track);
+  border-radius: var(--ayy-radius-pill);
+  background: linear-gradient(
+    calc(90deg * var(--_ayy-dir, 1)),
+    var(--_rest) calc(var(--_thumb) / 2 + (100% - var(--_thumb)) * var(--_from) / 100),
+    var(--_fill) 0 calc(var(--_thumb) / 2 + (100% - var(--_thumb)) * var(--_to) / 100),
+    var(--_rest) 0
+  );
+}
+
+.ayy-slider-range > .ayy-slider {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ayy-slider-range > .ayy-slider::-webkit-slider-runnable-track {
+  background: none;
+}
+
+.ayy-slider-range > .ayy-slider::-moz-range-track,
+.ayy-slider-range > .ayy-slider::-moz-range-progress {
+  background: none;
+}
+
+.ayy-slider-range > .ayy-slider::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+
+.ayy-slider-range > .ayy-slider::-moz-range-thumb {
+  pointer-events: auto;
+}
+
+@media (forced-colors: active) {
+  .ayy-slider,
+  .ayy-slider-range {
+    forced-color-adjust: none;
+    --_fill: Highlight;
+    --_rest: GrayText;
+  }
+  /* Separate rules: a list with a pseudo-element the browser doesn't know is dropped whole. */
+  .ayy-slider::-webkit-slider-thumb {
+    background: Canvas;
+  }
+  .ayy-slider::-moz-range-thumb {
+    background: Canvas;
+  }
+}

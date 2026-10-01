@@ -1,0 +1,110 @@
+/* File upload: a <label> around a native <input type="file"> that covers the whole zone, so a click opens the file
+   picker and a drop lands on the input — both without JavaScript. ayywi/elements (or React) adds data-dragging
+   while files are held over it. Show what was picked in a List below. */
+
+.ayy-dropzone {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+  min-block-size: 9rem;
+  padding: var(--ayy-space-6) var(--ayy-space-4);
+  border: 1px dashed var(--ayy-color-line-hover);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-snug);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+/* The input is the drop target and the click target; it draws nothing. */
+.ayy-dropzone > input[type="file"] {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.ayy-dropzone > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-lg);
+  block-size: var(--ayy-size-icon-lg);
+  margin-block-end: var(--ayy-space-2);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-dropzone:hover {
+  border-color: var(--ayy-color-text-soft);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+/* Files held over it: a solid border in the text colour, not only a tint. */
+.ayy-dropzone[data-dragging] {
+  border-style: solid;
+  border-color: var(--ayy-color-text);
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-dropzone:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-dropzone:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-dropzone:has(> input[aria-invalid="true"]) {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+.ayy-dropzone__title {
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-dropzone__hint {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+}
+
+/* One line, for a form field or a chat composer: icon, then the text. */
+.ayy-dropzone--compact {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: var(--ayy-space-3);
+  min-block-size: 0;
+  padding: var(--ayy-space-3) var(--ayy-space-4);
+  border-radius: var(--ayy-radius-control);
+  text-align: start;
+}
+
+.ayy-dropzone--compact > svg {
+  margin-block-end: 0;
+}
+
+@media (forced-colors: active) {
+  .ayy-dropzone {
+    border-color: CanvasText;
+  }
+  .ayy-dropzone[data-dragging] {
+    border-color: Highlight;
+  }
+  .ayy-dropzone:has(> input[aria-invalid="true"]) {
+    border-width: 2px;
+  }
+}

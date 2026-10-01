@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, RULES, UTILITIES } from "./lib/contract.mjs";
-import { finish, output } from "./lib/output.mjs";
+import { finish, output, remove } from "./lib/output.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -112,7 +112,8 @@ md.push(
 - Any framework / plain HTML: load \`ayywi/css\` and write the class names below.
 - React: \`import { Button } from "ayywi/react"\` plus the CSS.
 - Vue, Svelte, Angular, Solid, Lit: class names or helpers (\`import { buttonClass } from "ayywi"\`), and \`import "ayywi/elements"\` for interactive components (${elements.map((e) => `<${e}>`).join(", ")}).
-- Plain HTML: \`<link rel="stylesheet" href=".../dist/ayywi.min.css">\` + \`<script src=".../dist/elements.global.js" defer></script>\` (also gives window.ayywi: ${globals.join(", ")}).
+- Plain HTML: \`<link rel="stylesheet" href=".../dist/ayywi.min.css">\` + \`<script src=".../dist/elements.global.js" defer></script>\` (also gives window.ayywi: ${globals.join(", ")}). Add \`<link rel="stylesheet" href=".../dist/fonts.css">\` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and \`<script src=".../dist/theme-init.js"></script>\` in <head> so a saved theme applies before the first paint.
+- One component at a time: \`llms/<slug>.md\` (llms/button.md, llms/table.md…), listed in llms.txt.
 - Check your work: \`npx ayywi lint\`.`,
 );
 md.push(`## Rules\n\n${list(RULES)}`);
@@ -137,8 +138,9 @@ md.push(
 md.push(`## Public custom properties\n\n${list(Object.entries(PUBLIC_HOOKS).map(([k, v]) => `\`${k}\`: ${v}`))}`);
 md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => `\`.${k}\`: ${v}`))}`);
 md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
-for (const c of components) {
-  const part = [`## ${c.name}`, `Category: ${c.category}. ${c.description}`];
+/** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md. */
+function componentMarkdown(c, h = "##") {
+  const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
   if (c.states) part.push(`**States**\n${list(Object.entries(c.states).map(([k, v]) => `\`${k}\` — ${v}`))}`);
   if (c.js) part.push(`**JS (framework-free)**: ${c.js}`);
@@ -162,12 +164,23 @@ for (const c of components) {
   if (c.do?.length) part.push(`**Do**\n${list(c.do)}`);
   if (c.dont?.length) part.push(`**Don't**\n${list(c.dont)}`);
   for (const ex of c.examples) {
-    part.push(`### ${c.name} — ${ex.title}`);
+    part.push(`${h}# ${c.name} — ${ex.title}`);
     if (ex.html) part.push(`HTML (also Vue/Svelte/Angular templates, server templates):\n\n${fence("html", ex.html)}`);
     if (ex.react) part.push(`React:\n\n${fence("tsx", ex.react)}`);
   }
-  md.push(part.join("\n\n"));
+  return part.join("\n\n");
 }
+for (const c of components) md.push(componentMarkdown(c));
+
+// ---- llms/<slug>.md: one component per file, for tools that should fetch only what they use ----
+const componentPages = components.map((c) => [
+  c.slug,
+  `${componentMarkdown(c, "#")}
+
+---
+Part of ${pkg.name} ${pkg.version}: load \`dist/ayywi.min.css\` (and \`dist/elements.global.js\` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+`,
+]);
 
 // ---- llms.txt (index, llmstxt.org format) ----
 const index = `# ${pkg.name}
@@ -187,7 +200,9 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ## Components
 
-${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}](llms-full.txt#${c.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}): ${c.description}`).join("\n")}`).join("\n\n")}
+Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); the same sections are in llms-full.txt.
+
+${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}](llms/${c.slug}.md): ${c.description}`).join("\n")}`).join("\n\n")}
 
 ## Optional
 
@@ -255,4 +270,9 @@ output(join(root, "ai/skills/ayywi/reference.md"), `${cheat}\n`);
 output(join(root, "manifest/components.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 output(join(root, "llms-full.txt"), `${md.join("\n\n")}\n`);
 output(join(root, "llms.txt"), index);
+for (const [slug, page] of componentPages) output(join(root, "llms", `${slug}.md`), page);
+// A page for a component that's gone is stale too.
+for (const file of existsSync(join(root, "llms")) ? readdirSync(join(root, "llms")) : []) {
+  if (!componentPages.some(([slug]) => `${slug}.md` === file)) remove(join(root, "llms", file));
+}
 finish("manifest");

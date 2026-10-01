@@ -1,0 +1,48 @@
+/*
+ * ayywi ↔ shadcn/ui bridge. For projects that already use shadcn/ui (Lovable, v0, Bolt templates): load it after
+ * ayywi.css and the shadcn parts still in the app take ayywi's colours, radius and font, so they don't clash with
+ * the ayywi components that replace them. New UI should still use ayywi's classes.
+ *
+ * Written for shadcn/ui on Tailwind v4, whose variables hold whole colours. On Tailwind v3 the config wraps them in
+ * hsl(var(--…)): change those to var(--…) in tailwind.config. Dark mode follows ayywi's data-theme (setTheme), not
+ * the .dark class. Not in a cascade layer, and :root:root:root outranks the project's own :root and .dark blocks.
+ */
+:root:root:root {
+  --background: var(--ayy-color-bg);
+  --foreground: var(--ayy-color-text);
+  --card: var(--ayy-color-surface);
+  --card-foreground: var(--ayy-color-text);
+  --popover: var(--ayy-color-surface-raised);
+  --popover-foreground: var(--ayy-color-text);
+  --primary: var(--ayy-color-primary);
+  --primary-foreground: var(--ayy-color-primary-fg);
+  --secondary: var(--ayy-color-wash-hover);
+  --secondary-foreground: var(--ayy-color-text);
+  --muted: var(--ayy-color-wash);
+  --muted-foreground: var(--ayy-color-muted);
+  --accent: var(--ayy-color-wash-hover);
+  --accent-foreground: var(--ayy-color-text);
+  --destructive: var(--ayy-color-destructive);
+  --destructive-foreground: var(--ayy-color-bg);
+  --border: var(--ayy-color-line);
+  --input: var(--ayy-color-line-strong);
+  --ring: var(--ayy-color-ring);
+  --chart-1: var(--ayy-chart-1);
+  --chart-2: var(--ayy-chart-2);
+  --chart-3: var(--ayy-chart-3);
+  --chart-4: var(--ayy-chart-4);
+  --chart-5: var(--ayy-chart-5);
+  --sidebar: var(--ayy-color-surface);
+  --sidebar-foreground: var(--ayy-color-text);
+  --sidebar-primary: var(--ayy-color-primary);
+  --sidebar-primary-foreground: var(--ayy-color-primary-fg);
+  --sidebar-accent: var(--ayy-color-wash-hover);
+  --sidebar-accent-foreground: var(--ayy-color-text);
+  --sidebar-border: var(--ayy-color-line);
+  --sidebar-ring: var(--ayy-color-ring);
+  /* shadcn derives sm/md/lg/xl from this; ayywi's controls use 12px. */
+  --radius: var(--ayy-radius-control);
+  --font-sans: var(--ayy-font-body);
+  --font-heading: var(--ayy-font-heading);
+  --font-mono: var(--ayy-font-mono);
+}
