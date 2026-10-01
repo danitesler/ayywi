@@ -24,6 +24,10 @@ const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spac
 
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
+  // The page opens on the no-code guide; the developer guide lists every component.
+  await expect(page.getByRole("radio", { name: "I build with AI tools" })).toBeChecked();
+  await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
+  await page.getByText("I'm a developer").click();
   await expect(page.locator(".pv-chip")).toHaveCount(slugs.length);
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
     await page.goto(`/#/${route}`);
@@ -63,6 +67,21 @@ test("example code is one click away", async ({ page }) => {
   await expect(code).toBeHidden();
   await page.locator(".pv-source__toggle").first().click();
   await expect(code).toBeVisible();
+});
+
+test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await open(page, "");
+  await page.getByText("Online store").click();
+  await expect(page.getByRole("textbox", { name: "What you're building" })).toHaveValue("online store");
+  await page.getByRole("textbox", { name: "Who it's for" }).fill("a bakery in Lisbon");
+  await page.getByText("ChatGPT or Claude").click();
+  await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toMatch(/^Build me an online store for a bakery in Lisbon\./);
+  expect(copied).toContain("one self-contained HTML file");
+  expect(copied).toContain("dist/ayywi.min.css");
+  expect(copied).not.toMatch(/127\.0\.0\.1|localhost/);
 });
 
 test("search filters the sidebar and jumps to a result", async ({ page }) => {

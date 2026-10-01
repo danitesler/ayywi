@@ -20,9 +20,11 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
     errors = list;
     watched.set(page, list);
     page.on("pageerror", (e) => list.push(e.message));
-    // Failed third-party requests (fonts behind a proxy) are not ours; failed local ones are.
+    // Failed third-party requests (fonts behind a proxy) are not ours; failed local ones are. A load cancelled because the
+    // page moved on (the lazy example iframes on Get started) isn't a failure.
     page.on("requestfailed", (r) => {
-      if (new URL(r.url()).hostname === "127.0.0.1") list.push(`${r.url()}: ${r.failure()?.errorText}`);
+      const error = r.failure()?.errorText ?? "";
+      if (new URL(r.url()).hostname === "127.0.0.1" && error !== "net::ERR_ABORTED") list.push(`${r.url()}: ${error}`);
     });
     page.on("console", (m) => {
       if (m.type() === "error" && !m.text().startsWith("Failed to load resource")) list.push(m.text());

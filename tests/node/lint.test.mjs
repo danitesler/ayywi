@@ -88,3 +88,8 @@ test("inline styles get the colour and direction rules: style=\"\" and style={{}
 <div style={{ inlineSize: "100%", background: "color-mix(in srgb, var(--ayy-color-text) 5%, transparent)", "--ayy-gap": \`var(--ayy-space-\${n})\` }} />`;
   assert.deepEqual(rules(fine, "a.tsx"), []);
 });
+
+test("a wildcard token name in prose isn't an unknown token", () => {
+  assert.deepEqual(rules(`const tip = "No hardcoded colours: use var(--ayy-color-*).";`, "a.ts"), []);
+  assert.deepEqual(rules(`const tip = "use var(--ayy-colour-text)";`, "a.ts"), ["unknown-token"]);
+});

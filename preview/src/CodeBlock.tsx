@@ -19,11 +19,21 @@ export async function copyText(text: string): Promise<boolean> {
   }
 }
 
-export function CopyButton({ text, label = "Copy", variant = "ghost" }: { text: string; label?: string; variant?: "ghost" | "outline" }) {
+export function CopyButton({
+  text,
+  label = "Copy",
+  variant = "ghost",
+  size = "sm",
+}: {
+  text: string;
+  label?: string;
+  variant?: "ghost" | "outline" | "primary";
+  size?: "sm" | "md";
+}) {
   const [copied, setCopied] = useState(false);
   return (
     <Button
-      size="sm"
+      size={size}
       variant={variant}
       onClick={async () => {
         if (await copyText(text)) {

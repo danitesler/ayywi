@@ -26,7 +26,7 @@ const themeLabel = (app: ShowcaseApp) => themeOptions.find((t) => t.name === app
 const densityLabel = (app: ShowcaseApp) => app.density.charAt(0).toUpperCase() + app.density.slice(1);
 
 /** The app at a real device size, scaled down to fit its box. `maxHeight` caps tall devices so they fit the window. */
-function ScaledFrame({ app, width, height, maxHeight, lazy, title }: { app: ShowcaseApp; width: number; height: number; maxHeight?: number; lazy?: boolean; title?: string }) {
+export function ScaledFrame({ app, width, height, maxHeight, lazy, title }: { app: ShowcaseApp; width: number; height: number; maxHeight?: number; lazy?: boolean; title?: string }) {
   const box = useRef<HTMLDivElement>(null);
   const [available, setAvailable] = useState(width);
   useEffect(() => {

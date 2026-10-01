@@ -285,7 +285,7 @@ function lintMarkup(text, contract) {
   // Tokens anywhere (style attributes, CSS-in-JS)
   for (const m of text.matchAll(/var\((--ayy-[\w-]+)/g)) {
     if (contract.tokens.has(m[1]) || contract.hooks.has(m[1])) continue;
-    if (/^[${]/.test(text[m.index + m[0].length] ?? "")) continue; // built dynamically: var(--ayy-space-${n})
+    if (/^[${*]/.test(text[m.index + m[0].length] ?? "")) continue; // built dynamically (var(--ayy-space-${n})) or a wildcard in prose (--ayy-color-*)
     const s = suggest(m[1], [...contract.tokens, ...contract.hooks]);
     push("unknown-token", `${m[1]} is not an ayywi token${s ? ` — did you mean ${s}?` : ""}`, m.index);
   }

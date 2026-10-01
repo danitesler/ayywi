@@ -1,39 +1,44 @@
 import { useState } from "react";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import { themes, tokens } from "ayywi";
+import { ArrowRight01Icon, Calendar03Icon, ChartLineData01Icon, DashboardSquare01Icon, Message01Icon, Settings01Icon, ShoppingBag01Icon } from "@hugeicons/core-free-icons";
+import { themes, tokens, type DensityMode, type ThemeMode } from "ayywi";
 import {
   Accordion,
   AccordionItem,
-  Alert,
-  AlertDescription,
-  AlertTitle,
+  Avatar,
   Badge,
   Button,
   buttonClass,
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  Field,
+  Carousel,
+  CarouselSlide,
+  Chat,
+  ChatMessage,
+  ChatTyping,
+  Frame,
   Icon,
-  Input,
-  Label,
+  IconTile,
+  List,
+  ListContent,
+  ListDescription,
+  ListItem,
+  ListTitle,
   SegmentedControl,
   SegmentedControlItem,
-  Switch,
 } from "ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { components } from "../data";
+import { buildPrompt, FIXES, fixPrompt, request, site, STARTERS, TOOLS, type StarterId, type Tool } from "../prompts";
 import { showcaseApps } from "../showcase/apps";
+import { themeOptions } from "../themes";
+import { ScaledFrame } from "./Showcase";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
 import llmsIndex from "../../../llms.txt?raw";
 
 const ROUTE = "";
-
-/** Where this site lives, so prompts can point agents at the files it hosts (see HOSTED in preview/vite.config.ts). */
-const site = () => new URL(".", window.location.href).href;
 
 type Setup = "files" | "package" | "chat";
 
@@ -101,7 +106,7 @@ Lint the file (npx ayywi lint, or check it against the rules), fix what it repor
 ];
 
 const REVIEW = [
-  "Switch the theme and density from the palette menu (top of the sidebar here, or the top bar on a phone), then do the same in your app. Everything should still read well.",
+  "Switch the theme and density (the Theme menu at the top of the sidebar, or of the screen on a phone), then do the same in your app. Everything should still read well.",
   "Narrow the window below 48rem. An app should swap its sidebar for a bottom nav; a site's navbar links should fold into a menu.",
   "Tab through the page. Every button, link and field should show a focus ring.",
   "Look for one main button per view. Everything else should be quieter.",
@@ -112,37 +117,286 @@ const REVIEW = [
 export const getStarted = {
   route: ROUTE,
   title: "Get started",
-  text: "start begin home overview setup install copy paste prompt no install cdn files link ai agent claude cursor codex chatgpt mcp llms use cases lint review",
+  text: "start begin home overview setup install copy paste prompt no code vibe lovable bolt v0 replit cursor claude chatgpt no install cdn files link ai agent mcp llms use cases fix lint review before after",
 };
 
-export function GetStartedPage() {
-  const [setup, setSetup] = useState<Setup>("files");
-  const base = site();
-  const stable = components.filter((c) => c.status === "stable").length;
-  const facts = [
-    `${components.length} components (${stable} stable)`,
-    `${Object.keys(tokens).length} tokens`,
-    `${themes.length} themes`,
-    "any framework",
-    "0 runtime dependencies",
-  ];
-  const chosen = SETUPS[setup];
+export interface Appearance {
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
+  density: DensityMode;
+  setDensity: (density: DensityMode) => void;
+}
+
+const STARTER_ICONS: Record<StarterId, typeof DashboardSquare01Icon> = {
+  dashboard: ChartLineData01Icon,
+  landing: DashboardSquare01Icon,
+  booking: Calendar03Icon,
+  internal: Message01Icon,
+  store: ShoppingBag01Icon,
+  settings: Settings01Icon,
+};
+
+/** Change the theme and density of this whole page, right in the hero. */
+function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
+  const resolved = theme === "system" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : theme;
+  return (
+    <div className="pv-try">
+      <span className="ayy-muted">Try it on this page:</span>
+      <SegmentedControl size="sm" aria-label="Theme" value={resolved} onValueChange={(v) => setTheme(v as ThemeMode)}>
+        {themeOptions.map((t) => (
+          <SegmentedControlItem key={t.name} value={t.name}>
+            {t.label}
+          </SegmentedControlItem>
+        ))}
+      </SegmentedControl>
+      <SegmentedControl size="sm" aria-label="Density" value={density === "auto" ? "" : density} onValueChange={(v) => setDensity(v as DensityMode)}>
+        <SegmentedControlItem value="compact">Compact</SegmentedControlItem>
+        <SegmentedControlItem value="comfortable">Comfortable</SegmentedControlItem>
+        <SegmentedControlItem value="touch">Touch</SegmentedControlItem>
+      </SegmentedControl>
+    </div>
+  );
+}
+
+/** The five showcase apps, each with the prompt that builds it in the chosen tool. */
+function Examples({ tool }: { tool: Tool }) {
+  return (
+    <Carousel label="Example apps" slideWidth="min(20rem, 85%)" className="pv-examples">
+      {showcaseApps.map((app) => (
+        <CarouselSlide key={app.id}>
+          <Card className="pv-example-card">
+            <div className="pv-showcase__thumb" inert>
+              <ScaledFrame app={app} width={1280} height={800} lazy title={`${app.name}, ${app.kind}`} />
+            </div>
+            <CardHeader>
+              <CardTitle>
+                {app.name} <span className="ayy-muted">· {app.kind}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardFooter>
+              <CopyButton text={buildPrompt(app.prompt, tool)} label="Copy prompt to build this" variant="outline" />
+              <a className={buttonClass({ variant: "ghost", size: "sm" })} href={`#/showcase/${app.id}`}>
+                See it
+              </a>
+            </CardFooter>
+          </Card>
+        </CarouselSlide>
+      ))}
+    </Carousel>
+  );
+}
+
+/** An input inside the sentence, as wide as what's typed in it. */
+function Slot({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder: string }) {
+  return <input className="ayy-input pv-slot" aria-label={label} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
+}
+
+/** Where the prompt goes, drawn with ayywi: the tool's window with the request pasted in. */
+function PasteDemo({ tool, text }: { tool: Tool; text: string }) {
+  const host = { lovable: "lovable.dev", bolt: "bolt.new", v0: "v0.app", replit: "replit.com", cursor: "Cursor · Agent", "claude-code": "Terminal · claude", chat: "chatgpt.com · claude.ai" }[tool];
+  return (
+    <Frame title={host} className="pv-paste" aria-label={`The prompt pasted into ${TOOLS[tool].label}`}>
+      <Chat aria-label="Example conversation">
+        <ChatMessage direction="out">{text}</ChatMessage>
+        <ChatMessage avatar={<Avatar name="AI" size="sm" fallback="AI" />}>On it. Loading ayywi and building the first screens with its components.</ChatMessage>
+        <ChatTyping avatar={<Avatar name="AI" size="sm" fallback="AI" />} label="Building" />
+      </Chat>
+    </Frame>
+  );
+}
+
+const MEMBERS = [
+  { name: "Maya Chen", email: "maya@studio.co", role: "Owner" },
+  { name: "Ravi Shah", email: "ravi@studio.co", role: "Editor" },
+  { name: "Eli Stone", email: "eli@studio.co", role: "Viewer" },
+];
+
+/** The same screen as an AI tool writes it with no system, and with ayywi. */
+function BeforeAfter() {
+  return (
+    <div className="pv-compare">
+      <figure className="pv-compare__side">
+        <figcaption className="pv-compare__label">Without a design system</figcaption>
+        <div className="pv-before" aria-hidden="true">
+          <div className="pv-before__head">
+            <span className="pv-before__title">TEAM MEMBERS</span>
+            <span className="pv-before__btn pv-before__btn--a">+ Invite</span>
+          </div>
+          {MEMBERS.map((m, i) => (
+            <div key={m.name} className={`pv-before__row pv-before__row--${i}`}>
+              <span>{m.name}</span>
+              <span className={`pv-before__tag pv-before__tag--${i}`}>{m.role}</span>
+            </div>
+          ))}
+          <div className="pv-before__foot">
+            <span className="pv-before__btn pv-before__btn--b">Save changes</span>
+            <span className="pv-before__btn pv-before__btn--c">cancel</span>
+          </div>
+        </div>
+      </figure>
+      <figure className="pv-compare__side">
+        <figcaption className="pv-compare__label">With ayywi</figcaption>
+        <Card>
+          <CardHeader>
+            <div className="ayy-spread">
+              <CardTitle>Team members</CardTitle>
+              <Button size="sm" variant="outline">
+                Invite
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <List divided aria-label="Team members">
+              {MEMBERS.map((m) => (
+                <ListItem key={m.name}>
+                  <Avatar name={m.name} size="sm" />
+                  <ListContent>
+                    <ListTitle>{m.name}</ListTitle>
+                    <ListDescription>{m.email}</ListDescription>
+                  </ListContent>
+                  <Badge variant={m.role === "Owner" ? "default" : "muted"}>{m.role}</Badge>
+                </ListItem>
+              ))}
+            </List>
+          </CardContent>
+          <CardFooter>
+            <Button size="sm">Save changes</Button>
+            <Button size="sm" variant="ghost">
+              Cancel
+            </Button>
+          </CardFooter>
+        </Card>
+      </figure>
+    </div>
+  );
+}
+
+/** For people who build with Lovable, Bolt, v0, Cursor or a chat: three steps, no jargon. */
+function BuilderGuide({ tool, setTool }: { tool: Tool; setTool: (t: Tool) => void }) {
+  const [starter, setStarter] = useState<StarterId>("booking");
+  const first = STARTERS.find((s) => s.id === starter)!;
+  const [what, setWhat] = useState<string>(first.what);
+  const [who, setWho] = useState<string>(first.who);
+  const [needs, setNeeds] = useState<string>(first.needs);
+  const pick = (id: StarterId) => {
+    const s = STARTERS.find((x) => x.id === id)!;
+    setStarter(id);
+    setWhat(s.what);
+    setWho(s.who);
+    setNeeds(s.needs);
+  };
+  const ask = request(what, who, needs);
+  const prompt = buildPrompt(ask, tool);
+  const example = showcaseApps.find((a) => a.id === first.showcase);
 
   return (
-    <article className="pv-page pv-page--compact">
-      <header className="pv-hero">
-        <div className="pv-hero__main">
-          <p className="ayy-eyebrow">AI-first design system</p>
-          <h1 className="ayy-h1">Paste a prompt, get a UI that fits together</h1>
-          <p className="ayy-lede">
-            ayywi is a design system your coding agent already knows how to use. Copy one prompt into Claude Code, Cursor, Codex or a chat:
-            it loads ayywi, reads the rules and builds your screen from real components, in any framework, with dark mode, phones and RTL
-            handled.
-          </p>
-        </div>
-        <p className="pv-facts">{facts.join(" · ")}</p>
-      </header>
+    <>
+      <h2 className="pv-h pv-h--section" id="what">
+        <span className="pv-step">1</span> What are you building?
+      </h2>
+      <div className="pv-picks" role="radiogroup" aria-label="What are you building?">
+        {STARTERS.map((s) => (
+          <label key={s.id} className={`ayy-card pv-pick${s.id === starter ? " ayy-card--featured" : ""}`}>
+            <input type="radio" name="pv-starter" className="ayy-sr-only" checked={s.id === starter} onChange={() => pick(s.id)} />
+            <IconTile size="sm">
+              <Icon icon={STARTER_ICONS[s.id]} />
+            </IconTile>
+            <span className="pv-pick__label">{s.label}</span>
+            <span className="pv-pick__hint">{s.hint}</span>
+          </label>
+        ))}
+      </div>
+      <p className="pv-note">Now make it yours. Change the highlighted words:</p>
+      <p className="pv-madlib">
+        Build me a <Slot label="What you're building" value={what} onChange={setWhat} placeholder="booking app" /> for{" "}
+        <Slot label="Who it's for" value={who} onChange={setWho} placeholder="a yoga studio" />. It needs:
+        <textarea
+          className="ayy-textarea pv-slot pv-slot--long"
+          aria-label="What it needs"
+          rows={1}
+          value={needs}
+          placeholder="a schedule and a sign-up form"
+          onChange={(e) => setNeeds(e.target.value)}
+        />
+      </p>
+      {example ? (
+        <p className="pv-note">
+          Something like it:{" "}
+          <a className="ayy-link" href={`#/showcase/${example.id}`}>
+            {example.name}, {example.kind.toLowerCase()}
+          </a>
+          .
+        </p>
+      ) : null}
 
+      <h2 className="pv-h pv-h--section" id="tool">
+        <span className="pv-step">2</span> Copy it into your tool
+      </h2>
+      <SegmentedControl aria-label="Your tool" value={tool} onValueChange={(v) => setTool(v as Tool)}>
+        {(Object.keys(TOOLS) as Tool[]).map((key) => (
+          <SegmentedControlItem key={key} value={key}>
+            {TOOLS[key].label}
+          </SegmentedControlItem>
+        ))}
+      </SegmentedControl>
+      <div className="ayy-split pv-copy">
+        <div className="ayy-stack">
+          <p className="pv-copy__where">{TOOLS[tool].where}</p>
+          <div className="ayy-cluster">
+            <CopyButton text={prompt} label="Copy prompt" variant="primary" size="md" />
+            <span className="ayy-muted pv-note">Using something else? Pick the closest tool; the prompt works anywhere.</span>
+          </div>
+          <details className="pv-included">
+            <summary>What's in the prompt</summary>
+            <p className="pv-note">
+              Your sentence, then instructions for the AI: how to load ayywi in {TOOLS[tool].label}, the rules (one main button, phones
+              handled, empty and error states), and every ayywi class name. You don't need to read or change this part.
+            </p>
+            <CodeBlock code={prompt} label="prompt" wrap />
+          </details>
+        </div>
+        <PasteDemo tool={tool} text={ask} />
+      </div>
+
+      <h2 className="pv-h pv-h--section" id="fix">
+        <span className="pv-step">3</span> Fix anything that looks off
+      </h2>
+      <p className="pv-note">Paste one of these into the same chat whenever something doesn't look right.</p>
+      <div className="pv-fixes">
+        {FIXES.map((f) => (
+          <Card key={f.title} className="pv-fix">
+            <CardHeader>
+              <CardTitle>“{f.title}”</CardTitle>
+            </CardHeader>
+            <CardFooter>
+              <CopyButton text={fixPrompt(f.prompt)} label="Copy" variant="outline" />
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      <h2 className="pv-h pv-h--section" id="why">
+        Why it looks better
+      </h2>
+      <p className="pv-note">
+        The same screen, asked for in the same words. Without a system the AI invents a new style every time; with ayywi it reuses the same
+        buttons, spacing and colours on every screen.
+      </p>
+      <BeforeAfter />
+    </>
+  );
+}
+
+/** The guide for developers: install paths, use-case prompts, checks and the raw files. */
+function DeveloperGuide() {
+  const [setup, setSetup] = useState<Setup>("files");
+  const base = site();
+  const chosen = SETUPS[setup];
+  const stable = components.filter((c) => c.status === "stable").length;
+  const facts = [`${components.length} components (${stable} stable)`, `${Object.keys(tokens).length} tokens`, `${themes.length} themes`, "any framework", "0 runtime dependencies"];
+  return (
+    <>
+      <p className="pv-facts">{facts.join(" · ")}</p>
       <h2 className="pv-h pv-h--section" id="setup">
         <span className="pv-step">1</span> Pick how ayywi gets into your project
       </h2>
@@ -160,8 +414,8 @@ export function GetStartedPage() {
         <span className="pv-step">2</span> Ask for a screen
       </h2>
       <p className="pv-note">
-        After setup the agent knows the rules, so plain words work: “Add a dialog that asks before deleting a project.” These prompts name
-        the components, so nothing is left to guess. The first five are the screens in What you can build.
+        After setup the agent knows the rules, so plain words work. These prompts name the components, so nothing is left to guess; the
+        first five are the screens in What you can build.
       </p>
       <Accordion single>
         {showcaseApps.map((app) => (
@@ -193,11 +447,12 @@ export function GetStartedPage() {
       </ul>
 
       <h2 className="pv-h pv-h--section" id="context">
-        Hand the context over yourself
+        The raw context
       </h2>
       <p className="pv-note">
-        Everything the prompts point at is on this site, so you can paste it into any tool. Each component page also has a Copy for AI
-        button with its classes, props, rules and examples.
+        Everything the prompts point at is on this site, so you can paste it into any tool. Each component page has a Copy for AI button
+        with its classes, props, rules and examples. With the package installed, <code>npx ayywi mcp</code> serves the same over MCP and{" "}
+        <code>npx ayywi lint</code> checks the result.
       </p>
       <div className="pv-files">
         <CopyButton text={agentsSnippet} label="Copy the rules for AGENTS.md" variant="outline" />
@@ -219,53 +474,43 @@ export function GetStartedPage() {
           </a>
         ))}
       </nav>
+    </>
+  );
+}
 
-      <h2 className="pv-h pv-h--section">See it</h2>
-      <p className="pv-note">Real components. Switch the theme and density from the palette menu and they follow.</p>
-      <div className="pv-demo">
-        <Card>
-          <CardHeader>
-            <CardTitle>Invite a teammate</CardTitle>
-            <CardDescription>They will get an email with a link to join.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="ayy-stack">
-              <Field>
-                <Label htmlFor="intro-email">Email</Label>
-                <Input id="intro-email" type="email" placeholder="name@company.com" />
-              </Field>
-              <Field inline>
-                <Switch id="intro-admin" />
-                <Label htmlFor="intro-admin">Make them an admin</Label>
-              </Field>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button size="sm">Send invite</Button>
-            <Button size="sm" variant="ghost">
-              Cancel
-            </Button>
-          </CardFooter>
-        </Card>
-        <div className="ayy-stack">
-          <Alert variant="success">
-            <AlertTitle>Workspace synced</AlertTitle>
-            <AlertDescription>Everything is up to date.</AlertDescription>
-          </Alert>
-          <SegmentedControl aria-label="Sample range" defaultValue="30d">
-            <SegmentedControlItem value="7d">7 days</SegmentedControlItem>
-            <SegmentedControlItem value="30d">30 days</SegmentedControlItem>
-            <SegmentedControlItem value="90d">90 days</SegmentedControlItem>
-          </SegmentedControl>
-          <div className="ayy-cluster">
-            <Badge>Default</Badge>
-            <Badge variant="success" dot>
-              Synced
-            </Badge>
-            <Badge variant="ai">AI-first</Badge>
-          </div>
+type Door = "builder" | "developer";
+
+export function GetStartedPage(appearance: Appearance) {
+  const [door, setDoor] = useState<Door>("builder");
+  const [tool, setTool] = useState<Tool>("lovable");
+  return (
+    <article className="pv-page pv-page--compact">
+      <header className="pv-hero">
+        <div className="pv-hero__main">
+          <p className="ayy-eyebrow">ayywi · a design system for AI-built apps</p>
+          <h1 className="ayy-h1">Make your app look designed, in one paste</h1>
+          <p className="ayy-lede">
+            Pick what you're building, copy one prompt into Lovable, Bolt, v0, Cursor or ChatGPT, and get screens that match: the same
+            buttons, spacing and colours everywhere, with dark mode and phones handled.
+          </p>
         </div>
+        <TryIt {...appearance} />
+      </header>
+
+      <Examples tool={tool} />
+
+      <div className="pv-doors">
+        <SegmentedControl aria-label="How you build" value={door} onValueChange={(v) => setDoor(v as Door)}>
+          <SegmentedControlItem value="builder">I build with AI tools</SegmentedControlItem>
+          <SegmentedControlItem value="developer">I'm a developer</SegmentedControlItem>
+        </SegmentedControl>
+        <span className="ayy-muted pv-note">
+          {door === "builder" ? "No code needed. Three steps." : "Install paths, prompts for coding agents, MCP, lint and the raw files."}
+        </span>
       </div>
+
+      {door === "builder" ? <BuilderGuide tool={tool} setTool={setTool} /> : <DeveloperGuide />}
+
       <div>
         <a href="#/showcase" className={buttonClass({ variant: "outline" })}>
           What you can build

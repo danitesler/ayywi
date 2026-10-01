@@ -95,8 +95,9 @@ function AppearanceMenu({ theme, setTheme, density, setDensity }: { theme: Theme
   );
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger variant="ghost" size="icon" aria-label="Theme and density">
+      <DropdownMenuTrigger variant="ghost" size="sm">
         <Icon icon={PaintBoardIcon} />
+        Theme
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" aria-label="Theme and density">
         {group("Theme", theme, THEME_OPTIONS, setTheme)}
@@ -256,7 +257,7 @@ export function App() {
           ) : foundation ? (
             <foundation.Page key={foundation.route} />
           ) : (
-            <GetStartedPage />
+            <GetStartedPage theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
           )}
         </main>
       </div>

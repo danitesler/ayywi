@@ -50,7 +50,7 @@ pnpm typecheck      # library + preview + every example file + tests
 pnpm check          # design rules, docs ↔ CSS ↔ props ↔ elements, generated files up to date, lints examples
 pnpm test           # node tests (linter, MCP, init, token exports, eval scorer) — needs a build
 pnpm test:e2e       # Playwright + axe against the built preview
-pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme and density from the palette menu
+pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme and density from the Theme menu
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
 ```
 

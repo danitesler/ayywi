@@ -95,7 +95,7 @@ Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ay
 
 ## AI setup
 
-The quickest way is the preview's Get started page: pick "Link files", "Install" or "Chat only" and copy the prompt into your agent. It points the agent at the files and the rules, and asks for a first screen.
+The quickest way is the preview's Get started page. Builders pick what they're making, fill in one sentence, pick their tool (Lovable, Bolt, v0, Replit, Cursor, Claude Code, or a chat) and copy one prompt: it links the CSS and the elements script the site hosts, so nothing gets installed, and carries the rules and every class name. Fix-it prompts follow for when something looks off. Developers get the same three routes (link the files, install the package, a chat with no project) under "I'm a developer".
 
 With the package installed, in the app that uses ayywi:
 
