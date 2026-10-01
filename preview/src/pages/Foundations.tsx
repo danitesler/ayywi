@@ -65,7 +65,7 @@ function ColorsPage() {
         Themes
       </h2>
       <p className="pv-note">
-        Dark soft is charcoal instead of black, for easier reading. Light gray puts white cards on a grey page. All text passes WCAG AA contrast in every
+        Dark soft is a near-black theme: a very dark page, cards a step up, white text. Light gray puts white cards on a grey page. All text passes WCAG AA contrast in every
         theme.
       </p>
       <div className="pv-themes">

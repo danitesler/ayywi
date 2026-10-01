@@ -75,7 +75,7 @@ export const ORDER = [
 
 /** Attributes ayywi reads on any element. */
 export const ATTRIBUTES = {
-  "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft lowers the contrast (charcoal instead of black); light-gray puts white cards and panels on a grey page.",
+  "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.",
   "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
   dir: "\"rtl\" mirrors every component (logical properties throughout).",
 };

@@ -107,7 +107,7 @@ await build({
 }
 
 // ---- Types ----
-execFileSync(join(root, "node_modules/.bin/tsc"), ["-p", "tsconfig.json", "--emitDeclarationOnly"], { cwd: root, stdio: "inherit" });
+execFileSync(process.execPath, [join(root, "node_modules/typescript/bin/tsc"), "-p", "tsconfig.json", "--emitDeclarationOnly"], { cwd: root, stdio: "inherit" });
 
 // ---- Tokens for other platforms ----
 buildPlatforms(root, join(dist, "tokens"));

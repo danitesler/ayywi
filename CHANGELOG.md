@@ -82,6 +82,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - An icon rule in the AI kit, `llms-full.txt` and the MCP server.
 
 ### Changed
+- `dark-soft` is a near-black theme in the style of OpenCode instead of charcoal: a #0a0a0a page, #141414 cards (popovers a step up), white text, quiet grey descriptions and a subtler #262626 opaque border. Text, ring, primary and glow go from off-white to white; every text colour still meets WCAG AA.
 - `--_ayy-dir` (the reading direction as a number, for mirrored icons and chart lines) moved from icon.css to base.css. It's private; nothing to change.
 - `--ayy-value` is documented as the 0–100 hook it now is for Progress, Slider, chart bars and ticks, and bar-list rows.
 - The showcase apps use only ayywi: page headers, lists, split layouts, segmented controls and footers replace the preview's own `pv-app-*` layout classes, and Ledger moved from a Navbar to the App shell like the other apps.

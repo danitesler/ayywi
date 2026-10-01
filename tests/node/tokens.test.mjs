@@ -14,7 +14,7 @@ test("platform token files exist and agree", { skip: !existsSync(dist("tokens"))
     assert.deepEqual(Object.keys(other).sort(), Object.keys(dark).sort());
     assert.notEqual(JSON.stringify(other), JSON.stringify(dark));
   }
-  assert.equal(others[1].color.bg.$value, "#1e1e1e"); // dark-soft
+  assert.equal(others[1].color.bg.$value, "#0a0a0a"); // dark-soft
   assert.equal(others[2].color.bg.$value, "#ebebeb"); // light-gray
   assert.equal(others[2].color.surface.$value, "#ffffff");
   const swift = readFileSync(dist("tokens/Ayywi.swift"), "utf8");
@@ -31,7 +31,7 @@ test("SCSS tokens compile", { skip: !existsSync(dist("tokens")) && "run pnpm bui
   const { css } = sass.compileString(src, { loadPaths: [dist("tokens")] });
   assert.match(css, /color: var\(--ayy-color-text\)/);
   assert.match(css, /background: #000/);
-  assert.match(css, /background: #1e1e1e/);
+  assert.match(css, /background: #0a0a0a/);
 });
 
 test("themeInitScript applies every stored theme before paint", { skip: !existsSync(dist("index.js")) && "run pnpm build first" }, async () => {

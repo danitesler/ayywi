@@ -155,7 +155,7 @@ test.describe("forced colors (Windows High Contrast)", () => {
   });
 });
 
-test("dark-soft softens the contrast, light-gray greys the page under white cards", async ({ page }) => {
+test("dark-soft is the near-black theme, light-gray greys the page under white cards", async ({ page }) => {
   const read = () =>
     page.evaluate(() => {
       const s = getComputedStyle(document.body);
@@ -163,7 +163,7 @@ test("dark-soft softens the contrast, light-gray greys the page under white card
     });
   await open(page, "", { theme: "dark-soft" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark-soft");
-  expect(await read()).toEqual({ bg: "rgb(30, 30, 30)", text: "rgb(229, 229, 229)", scheme: "dark" });
+  expect(await read()).toEqual({ bg: "rgb(10, 10, 10)", text: "rgb(255, 255, 255)", scheme: "dark" });
   await open(page, "", { theme: "light-gray" });
   expect(await read()).toEqual({ bg: "rgb(235, 235, 235)", text: "rgb(10, 10, 10)", scheme: "light" });
   expect(await page.locator(".ayy-card").first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(255, 255, 255)");
@@ -175,7 +175,7 @@ test("a themed section inside another theme gets its own colours", async ({ page
   await open(page, "colors", { theme: "dark" });
   const bg = (name: string) => page.locator(`.pv-theme[data-theme="${name}"]`).evaluate((el) => getComputedStyle(el).backgroundColor);
   expect(await bg("light-gray")).toBe("rgb(235, 235, 235)");
-  expect(await bg("dark-soft")).toBe("rgb(30, 30, 30)");
+  expect(await bg("dark-soft")).toBe("rgb(10, 10, 10)");
   expect(await bg("light")).toBe("rgb(255, 255, 255)");
 });
 

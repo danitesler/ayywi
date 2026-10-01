@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight01Icon, Calendar03Icon, ChartLineData01Icon, DashboardSquare01Icon, Message01Icon, Settings01Icon, ShoppingBag01Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { themes, tokens, type DensityMode, type ThemeMode } from "ayywi";
 import {
   Accordion,
@@ -20,11 +20,9 @@ import {
   ChatTyping,
   Chip,
   ChipGroup,
-  ChoiceCard,
-  ChoiceGroup,
+  Combobox,
   Frame,
   Icon,
-  IconTile,
   List,
   ListContent,
   ListDescription,
@@ -32,6 +30,7 @@ import {
   ListTitle,
   SegmentedControl,
   SegmentedControlItem,
+  Select,
 } from "ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { components } from "../data";
@@ -129,14 +128,8 @@ export interface Appearance {
   setDensity: (density: DensityMode) => void;
 }
 
-const STARTER_ICONS: Record<StarterId, typeof DashboardSquare01Icon> = {
-  dashboard: ChartLineData01Icon,
-  landing: DashboardSquare01Icon,
-  booking: Calendar03Icon,
-  internal: Message01Icon,
-  store: ShoppingBag01Icon,
-  settings: Settings01Icon,
-};
+/** Audiences to suggest in the sentence; anything typed works too. */
+const WHO_OPTIONS = STARTERS.map((s) => ({ value: s.who, label: s.who, meta: s.label }));
 
 /** Change the theme and density of this whole page, right in the hero. */
 function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
@@ -186,11 +179,6 @@ function Examples({ tool }: { tool: Tool }) {
       ))}
     </Carousel>
   );
-}
-
-/** An input inside the sentence, as wide as what's typed in it. */
-function Slot({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder: string }) {
-  return <input className="ayy-input pv-slot" aria-label={label} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
 }
 
 /** Where the prompt goes, drawn with ayywi: the tool's window with the request pasted in. */
@@ -290,31 +278,34 @@ function BuilderGuide({ tool, setTool }: { tool: Tool; setTool: (t: Tool) => voi
   const ask = request(what, who, needs);
   const prompt = buildPrompt(ask, tool);
   const example = showcaseApps.find((a) => a.id === first.showcase);
+  const article = /^[aeiou]/i.test(what.trim()) ? "an" : "a";
 
   return (
     <>
       <h2 className="pv-h pv-h--section" id="what">
         <span className="pv-step">1</span> What are you building?
       </h2>
-      <ChoiceGroup aria-label="What are you building?" name="pv-starter" value={starter} onValueChange={(v) => pick(v as StarterId)} min="min(16rem, calc(50% - var(--ayy-space-2)))">
-        {STARTERS.map((s) => (
-          <ChoiceCard
-            key={s.id}
-            value={s.id}
-            title={s.label}
-            description={s.hint}
-            icon={
-              <IconTile size="sm">
-                <Icon icon={STARTER_ICONS[s.id]} />
-              </IconTile>
-            }
-          />
-        ))}
-      </ChoiceGroup>
-      <p className="pv-note">Now make it yours. Change the highlighted words:</p>
-      <p className="pv-madlib">
-        Build me a <Slot label="What you're building" value={what} onChange={setWhat} placeholder="booking app" /> for{" "}
-        <Slot label="Who it's for" value={who} onChange={setWho} placeholder="a yoga studio" />. It needs:
+      <div className="pv-madlib">
+        Build me {article}{" "}
+        <Select aria-label="What you're building" value={starter} onChange={(e) => pick(e.target.value as StarterId)}>
+          {STARTERS.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.what}
+            </option>
+          ))}
+        </Select>{" "}
+        for{" "}
+        <Combobox
+          aria-label="Who it's for"
+          key={starter}
+          options={WHO_OPTIONS}
+          defaultValue={who}
+          placeholder="a yoga studio"
+          onInputChange={setWho}
+          onValueChange={(v) => setWho(v)}
+          className="pv-slot"
+        />
+        . It needs:
         <textarea
           className="ayy-textarea pv-slot pv-slot--long"
           aria-label="What it needs"
@@ -323,7 +314,7 @@ function BuilderGuide({ tool, setTool }: { tool: Tool; setTool: (t: Tool) => voi
           placeholder="a schedule and a sign-up form"
           onChange={(e) => setNeeds(e.target.value)}
         />
-      </p>
+      </div>
       {example ? (
         <p className="pv-note">
           Something like it:{" "}
@@ -492,8 +483,8 @@ export function GetStartedPage(appearance: Appearance) {
     <article className="pv-page pv-page--compact">
       <header className="pv-hero">
         <div className="pv-hero__main">
-          <p className="ayy-eyebrow">ayywi · a design system for AI-built apps</p>
-          <h1 className="ayy-h1">Make your app look designed, in one paste</h1>
+          <h1 className="ayy-display">ayywi</h1>
+          <p className="pv-tagline">Make your app look designed, in one paste</p>
           <p className="ayy-lede">
             Pick what you're building, copy one prompt into Lovable, Bolt, v0, Cursor or ChatGPT, and get screens that match: the same
             buttons, spacing and colours everywhere, with dark mode and phones handled.

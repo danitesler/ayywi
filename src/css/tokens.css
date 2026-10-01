@@ -235,28 +235,28 @@
   --ayy-chart-6: var(--ayy-palette-pink-42);
 }
 
-/* dark-soft, built on dark. Dark with softer contrast: a charcoal background instead of black, and off-white text. Easier on the eyes for long reading; every text colour still meets WCAG AA. */
+/* dark-soft, built on dark. Near-black dark theme in the style of OpenCode: a #0a0a0a page, #141414 cards with a step up for popovers, white text and quiet grey descriptions. Every text colour still meets WCAG AA. */
 [data-theme="dark-soft"] {
   color-scheme: dark;
-  --ayy-color-bg: var(--ayy-palette-neutral-12);
-  --ayy-color-surface: var(--ayy-palette-neutral-15);
-  --ayy-color-surface-raised: var(--ayy-palette-neutral-18);
-  --ayy-color-text: var(--ayy-palette-neutral-90);
+  --ayy-color-bg: var(--ayy-palette-neutral-4);
+  --ayy-color-surface: var(--ayy-palette-neutral-8);
+  --ayy-color-surface-raised: var(--ayy-palette-neutral-12);
+  --ayy-color-text: var(--ayy-palette-neutral-100);
   --ayy-color-text-soft: var(--ayy-palette-neutral-73);
-  --ayy-color-muted: var(--ayy-palette-neutral-60);
-  --ayy-color-border: var(--ayy-palette-neutral-20);
-  --ayy-color-ring: var(--ayy-palette-neutral-90);
-  --ayy-color-primary: var(--ayy-palette-neutral-90);
-  --ayy-color-primary-fg: var(--ayy-palette-neutral-12);
+  --ayy-color-muted: var(--ayy-palette-neutral-58);
+  --ayy-color-border: var(--ayy-palette-neutral-15);
+  --ayy-color-ring: var(--ayy-palette-neutral-100);
+  --ayy-color-primary: var(--ayy-palette-neutral-100);
+  --ayy-color-primary-fg: var(--ayy-palette-neutral-4);
   --ayy-color-destructive: var(--ayy-palette-red-79);
   --ayy-color-success: var(--ayy-palette-green-51);
   --ayy-color-warning: var(--ayy-palette-amber-61);
   --ayy-color-info: var(--ayy-palette-blue-77);
   --ayy-color-ai: var(--ayy-palette-neutral-60);
   --ayy-color-ai-active: var(--ayy-palette-violet-84);
-  --ayy-color-glow: var(--ayy-palette-neutral-90);
+  --ayy-color-glow: var(--ayy-palette-neutral-100);
   --ayy-color-shadow: var(--ayy-palette-neutral-0);
-  --ayy-color-glass: #1e1e1ec7;
+  --ayy-color-glass: #141414c7;
   --ayy-color-overlay: #00000099;
   --ayy-chart-1: var(--ayy-palette-blue-68);
   --ayy-chart-2: var(--ayy-palette-orange-65);

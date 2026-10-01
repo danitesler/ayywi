@@ -80,7 +80,7 @@ import { Button, toast } from "ayywi/react";
 |---|---|
 | *(none)* | follows the OS, dark or light |
 | `dark` / `light` | the defaults |
-| `dark-soft` | charcoal and off-white, easier for long reading |
+| `dark-soft` | near-black page, cards a step up, white text |
 | `light-gray` | white cards on a grey page |
 
 Density is `compact` by default; phones and tablets get `touch` automatically. Both attributes work on any element, not just `<html>`. From JS, use `setTheme()` and `setDensity()`, and put `themeInitScript` (or `dist/theme-init.js`) in `<head>` to avoid a flash on load; the Theme toggle restores a saved choice by itself too.
