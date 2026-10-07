@@ -72,9 +72,9 @@ test("example code is one click away", async ({ page }) => {
 test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByText("Online store", { exact: true }).click();
-  await expect(page.getByRole("textbox", { name: "What you're building" })).toHaveValue("online store");
-  await page.getByRole("textbox", { name: "Who it's for" }).fill("a bakery in Lisbon");
+  await page.getByRole("combobox", { name: "What you're building" }).selectOption("store");
+  await expect(page.locator(".pv-madlib")).toContainText("Build me an");
+  await page.getByRole("combobox", { name: "Who it's for" }).fill("a bakery in Lisbon");
   await page.getByText("ChatGPT or Claude").click();
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
