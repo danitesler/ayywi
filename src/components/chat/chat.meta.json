@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
+  "aka": ["chat", "bubble", "message-bubble"],
   "classes": {
     "ayy-chat": "Root. role=\"log\" when messages arrive live, so they're announced.",
     "ayy-chat__message": "One message row: an optional avatar and its bubble.",

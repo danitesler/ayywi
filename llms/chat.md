@@ -1,6 +1,6 @@
 # Chat
 
-Category: Data display. A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
+Category: Data display. A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons. Also called: chat, bubble, message-bubble.
 
 **Classes**
 - `.ayy-chat` — Root. role="log" when messages arrive live, so they're announced.

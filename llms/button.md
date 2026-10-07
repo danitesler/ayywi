@@ -1,6 +1,6 @@
 # Button
 
-Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
+Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover. Also called: button, btn, icon-button, icon-btn, cta.
 
 **Classes**
 - `.ayy-button` — Root. Alone it is the primary button.

@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
+  "aka": ["combobox", "autocomplete", "typeahead", "suggest", "suggestions"],
   "classes": {
     "ayy-combobox": "Wrapper: the .ayy-input (role=\"combobox\"), a chevron <svg> and the listbox.",
     "ayy-combobox__listbox": "The <ul role=\"listbox\" popover=\"manual\"> of options, placed under the input.",

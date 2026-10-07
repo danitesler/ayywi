@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.",
+  "aka": ["data-list", "kv", "key-value", "definition-list"],
   "classes": {
     "ayy-data-list": "Root <dl>. Items stacked.",
     "ayy-data-list--row": "Items side by side, wrapping to fit (each at least --ayy-min, default 9rem).",

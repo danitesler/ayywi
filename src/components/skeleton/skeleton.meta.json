@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Feedback",
   "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
+  "aka": ["skeleton", "shimmer"],
   "classes": {
     "ayy-skeleton": "Block placeholder. Set its size to match the content.",
     "ayy-skeleton--text": "Text line (0.75em tall).",

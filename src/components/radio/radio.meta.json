@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Forms",
   "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
+  "aka": ["radio", "radio-group"],
   "classes": {
     "ayy-radio": "On <input type=\"radio\">. Size follows density. aria-invalid=\"true\" tints the ring destructive (dashed in High Contrast).",
     "ayy-radio-group": "On the <fieldset> holding the radios. Vertical stack.",

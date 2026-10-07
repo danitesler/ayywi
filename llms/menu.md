@@ -1,6 +1,6 @@
 # Dropdown menu
 
-Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
+Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab). Also called: menu, dropdown, dropdown-menu, context-menu, menu-item.
 
 **Classes**
 - `.ayy-menu` — On the element with popover and role="menu".

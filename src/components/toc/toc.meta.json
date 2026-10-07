@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Navigation",
   "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
+  "aka": ["toc", "table-of-contents"],
   "classes": {
     "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
     "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.",

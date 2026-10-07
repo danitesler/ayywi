@@ -140,7 +140,7 @@ md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => 
 md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
 /** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md. */
 function componentMarkdown(c, h = "##") {
-  const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}`];
+  const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}${c.aka?.length ? ` Also called: ${c.aka.join(", ")}.` : ""}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
   if (c.states) part.push(`**States**\n${list(Object.entries(c.states).map(([k, v]) => `\`${k}\` — ${v}`))}`);
   if (c.js) part.push(`**JS (framework-free)**: ${c.js}`);

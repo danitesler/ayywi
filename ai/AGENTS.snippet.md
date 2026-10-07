@@ -3,7 +3,7 @@
 
 This project's UI uses **ayywi** (`ayywi` on npm). Look up a component before using it — via the ayywi MCP server (`get_component`) if it's configured, else `node_modules/@danitesler/ayywi/manifest/components.json` (JSON) or `node_modules/@danitesler/ayywi/llms-full.txt` (markdown). Each entry lists classes, variants, React props, custom element, accessibility notes, do/don't and copy-ready examples. Run `npx ayywi lint` when you're done.
 
-1. Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.
+1. Use existing ayywi classes/components and their variants before writing any custom CSS. Never rebuild one under your own name (a .x-chip, .x-card, a <button> styled by hand) or restyle one: your class next to its ayy- class sets only layout (margin, size, position). If nothing fits, compose ayywi pieces. Never add a second UI kit.
 2. Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.
 3. Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.
 4. Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.

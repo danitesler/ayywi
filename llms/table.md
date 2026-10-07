@@ -1,6 +1,6 @@
 # Table
 
-Category: Data display. Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
+Category: Data display. Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table. Also called: table, data-table, datagrid.
 
 **Classes**
 - `.ayy-table-wrap` — Scroll container around the table (horizontal overflow).

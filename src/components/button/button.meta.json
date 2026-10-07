@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Actions",
   "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
+  "aka": ["button", "btn", "icon-button", "icon-btn", "cta"],
   "classes": {
     "ayy-button": "Root. Alone it is the primary button.",
     "ayy-button--secondary": "Quiet filled button for secondary actions.",

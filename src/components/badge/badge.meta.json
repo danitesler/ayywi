@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Data display",
   "description": "Small pill label for status, category or count. Optional pulsing status dot.",
+  "aka": ["badge", "pill", "status-pill", "count-badge"],
   "classes": {
     "ayy-badge": "Root. Neutral by default.",
     "ayy-badge--muted": "Quieter neutral.",

@@ -1,6 +1,6 @@
 # Card
 
-Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
+Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. Also called: card, panel-card.
 
 **Classes**
 - `.ayy-card` — Root surface.

@@ -1,6 +1,6 @@
 # Pagination
 
-Category: Navigation. Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.
+Category: Navigation. Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay. Also called: pagination, pager.
 
 **Classes**
 - `.ayy-pagination` — Root <nav aria-label="Pagination">. A wrapping row.

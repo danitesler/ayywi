@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
+  "aka": ["browser-frame", "window-frame", "mockup"],
   "classes": {
     "ayy-frame": "Root: bordered, rounded, with the frame shadow.",
     "ayy-frame__bar": "Top bar with the three window dots.",

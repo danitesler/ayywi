@@ -1,6 +1,6 @@
 # Popover
 
-Category: Overlays. Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
+Category: Overlays. Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close. Also called: popover, popup, flyout.
 
 **Classes**
 - `.ayy-popover` — On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.

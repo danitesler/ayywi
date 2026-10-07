@@ -78,7 +78,7 @@ export function createServer(contract = loadContract()) {
         const words = String(query).toLowerCase().split(/\s+/).filter(Boolean);
         const score = (text) => words.reduce((n, w) => n + (text.toLowerCase().includes(w) ? 1 : 0), 0);
         const hits = [
-          ...manifest.components.map((c) => [score(JSON.stringify([c.name, c.description, c.do, c.classes])), `component ${c.slug}: ${c.description}`]),
+          ...manifest.components.map((c) => [score(JSON.stringify([c.name, c.aka, c.description, c.do, c.classes])), `component ${c.slug}: ${c.description}`]),
           ...manifest.tokens.map((t) => [score(`${t.name} ${t.description ?? ""}`), `token ${t.cssVar}: ${t.description ?? t.value}`]),
           ...Object.entries(manifest.utilities ?? {}).map(([k, v]) => [score(`${k} ${v}`), `utility .${k}: ${v}`]),
         ]
@@ -122,7 +122,7 @@ export function createServer(contract = loadContract()) {
         ].join("\n"),
     },
     lint: {
-      description: "Check a code snippet against ayywi before writing it: unknown classes, tokens, variants, elements and attribute values (data-theme…), reserved ayy- prefixes, hardcoded colours (also in inline styles), physical left/right CSS, :dir(), unlabeled icon buttons, <img> without width/height, icon sets other than Hugeicons.",
+      description: "Check a code snippet against ayywi before writing it: unknown classes, tokens, variants, elements and attribute values (data-theme…), reserved ayy- prefixes, hardcoded colours (also in inline styles), physical left/right CSS, :dir(), unlabeled icon buttons, <img> without width/height, icon sets other than Hugeicons, and structure: classes named after an ayywi component (.x-chip), CSS that restyles one, native controls styled by hand.",
       inputSchema: {
         type: "object",
         properties: { code: { type: "string" }, filename: { type: "string", description: "Decides the parser, e.g. App.tsx, page.html, styles.css. Default snippet.tsx." } },

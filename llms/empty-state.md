@@ -1,6 +1,6 @@
 # Empty state
 
-Category: Feedback. What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.
+Category: Feedback. What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it. Also called: empty-state, empty, blank-slate, no-results.
 
 **Classes**
 - `.ayy-empty-state` — Root. Centred column with generous block padding.

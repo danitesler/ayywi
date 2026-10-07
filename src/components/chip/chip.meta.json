@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.",
+  "aka": ["chip", "tag", "token", "filter-chip"],
   "classes": {
     "ayy-chip": "A <label> around a native <input type=\"checkbox\"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed=\"true\".",
     "ayy-chip--removable": "An active filter: a <span> with its text and an __remove button. Not a control itself.",

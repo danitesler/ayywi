@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.",
+  "aka": ["number-field", "stepper", "spinbox", "quantity"],
   "classes": {
     "ayy-number-field": "The bordered box around the buttons and the input. Draws the focus ring while you type.",
     "ayy-number-field--sm": "Small height, for a cart line or a table cell.",

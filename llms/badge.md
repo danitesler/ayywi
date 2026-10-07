@@ -1,6 +1,6 @@
 # Badge
 
-Category: Data display. Small pill label for status, category or count. Optional pulsing status dot.
+Category: Data display. Small pill label for status, category or count. Optional pulsing status dot. Also called: badge, pill, status-pill, count-badge.
 
 **Classes**
 - `.ayy-badge` — Root. Neutral by default.

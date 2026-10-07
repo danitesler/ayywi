@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Feedback",
   "description": "An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.",
+  "aka": ["spinner", "loader", "throbber", "loading-ring"],
   "classes": {
     "ayy-spinner": "The ring, 1.25em (matches an icon beside text), in the current text colour. Spins; stops still under reduced motion.",
     "ayy-spinner--sm": "16px (--ayy-size-icon-sm).",

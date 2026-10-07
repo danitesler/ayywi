@@ -1,6 +1,6 @@
 # Kbd
 
-Category: Data display. A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.
+Category: Data display. A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields. Also called: kbd, keycap, hotkey, shortcut-key.
 
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.

@@ -1,6 +1,6 @@
 # Contents
 
-Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
+Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content. Also called: toc, table-of-contents.
 
 **Classes**
 - `.ayy-toc` — Root <nav>. Accent from --ayy-spot.

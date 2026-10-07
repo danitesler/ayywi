@@ -81,7 +81,8 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     // Reported per component below.
   }
 }
-const REQUIRED_META = ["name", "slug", "status", "category", "description", "classes", "variants", "react", "a11y", "do", "dont", "examples"];
+const REQUIRED_META = ["name", "slug", "status", "category", "description", "aka", "classes", "variants", "react", "a11y", "do", "dont", "examples"];
+const akaOwner = new Map(); // aka → slug
 const STATEFUL = /:checked|\[aria-selected|\[aria-checked|\[aria-current|\[aria-invalid|\[aria-pressed|\[aria-expanded|:indeterminate|__bar\b/;
 
 for (const slug of readdirSync(join(root, "src/components"))) {
@@ -112,6 +113,15 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   for (const key of REQUIRED_META) if (!(key in meta)) fail(files.meta, `missing "${key}"`);
   for (const key of ["whenToUse", "whenNotToUse"]) if (key in meta) fail(files.meta, `"${key}" is gone — fold it into "do" / "dont"`);
   if (meta.slug !== slug) fail(files.meta, `slug "${meta.slug}" should be "${slug}"`);
+  if ("aka" in meta) {
+    // Names apps give a hand-built copy: `ayywi lint` flags classes that end in one (rebuilt-component).
+    if (!Array.isArray(meta.aka) || !meta.aka.length) fail(files.meta, `"aka" should list the names a hand-built copy goes by ("chip", "tag", "token")`);
+    for (const a of meta.aka ?? []) {
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(a)) fail(files.meta, `aka "${a}" should be lower-case kebab-case, like a class name`);
+      if (akaOwner.has(a) && akaOwner.get(a) !== slug) fail(files.meta, `aka "${a}" is also ${akaOwner.get(a)}'s`);
+      akaOwner.set(a, slug);
+    }
+  }
   if ("category" in meta && !(meta.category in CATEGORIES)) fail(files.meta, `category "${meta.category}" should be one of: ${Object.keys(CATEGORIES).join(", ")} (scripts/lib/contract.mjs)`);
 
   // CSS classes ↔ documented classes

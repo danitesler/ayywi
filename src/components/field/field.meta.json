@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Forms",
   "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
+  "aka": ["field", "form-field", "form-row"],
   "classes": {
     "ayy-field": "Wrapper, vertical stack.",
     "ayy-field--inline": "Label and control side by side (Switch, checkbox).",

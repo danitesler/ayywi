@@ -1,6 +1,6 @@
 # Page header
 
-Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.
+Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones. Also called: page-header, page-title, view-header.
 
 **Classes**
 - `.ayy-page-header` — Root <header>. A two-column grid: everything stacks in the first column, __actions sits in the second and spans them. One column below 48rem, actions last. A Breadcrumb or .ayy-eyebrow can go first.

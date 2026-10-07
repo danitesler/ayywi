@@ -82,7 +82,7 @@ export const ATTRIBUTES = {
 
 /** Rules every agent (and human) must follow. Rendered into llms-full.txt and ai/; enforced by `pnpm check` and `ayywi lint`. */
 export const RULES = [
-  "Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.",
+  "Use existing ayywi classes/components and their variants before writing any custom CSS. Never rebuild one under your own name (a .x-chip, .x-card, a <button> styled by hand) or restyle one: your class next to its ayy- class sets only layout (margin, size, position). If nothing fits, compose ayywi pieces. Never add a second UI kit.",
   "Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
   "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
   "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",

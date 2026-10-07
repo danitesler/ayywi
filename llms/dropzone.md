@@ -1,6 +1,6 @@
 # File upload
 
-Category: Forms. A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.
+Category: Forms. A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress. Also called: dropzone, drop-zone, uploader, file-drop.
 
 **Classes**
 - `.ayy-dropzone` — The <label>: dashed border, centred icon and text. Its <input type="file"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).

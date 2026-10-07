@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Layout",
   "description": "Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.",
+  "aka": ["accordion", "collapsible", "disclosure", "expander"],
   "classes": {
     "ayy-accordion": "Root <div>: a column of items with hairlines above, between and below.",
     "ayy-accordion__item": "A native <details>. Give every item in the accordion the same name attribute to allow only one open at a time. `open` expands it.",

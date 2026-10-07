@@ -1,6 +1,6 @@
 # Spinner
 
-Category: Feedback. An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.
+Category: Feedback. An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading. Also called: spinner, loader, throbber, loading-ring.
 
 **Classes**
 - `.ayy-spinner` — The ring, 1.25em (matches an icon beside text), in the current text colour. Spins; stops still under reduced motion.

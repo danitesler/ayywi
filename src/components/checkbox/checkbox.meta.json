@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Forms",
   "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
+  "aka": ["checkbox", "check-box", "tickbox"],
   "classes": {
     "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density."
   },

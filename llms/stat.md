@@ -1,6 +1,6 @@
 # Stat
 
-Category: Data display. A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
+Category: Data display. A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results. Also called: stat, metric, kpi, stat-card.
 
 **Classes**
 - `.ayy-stat` — Root.

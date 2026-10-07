@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Navigation",
   "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.",
+  "aka": ["app-shell", "sidebar", "side-nav", "sidenav", "nav-item", "sidebar-item", "nav-list"],
   "classes": {
     "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.",
     "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport. On phones it's hidden (bottom-nav layout) or a drawer, and keeps its full tree either way.",

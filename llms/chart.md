@@ -1,6 +1,6 @@
 # Chart
 
-Category: Data display. Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
+Category: Data display. Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them. Also called: chart, bar-chart, line-chart, sparkline, graph.
 
 **Classes**
 - `.ayy-chart` — Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.

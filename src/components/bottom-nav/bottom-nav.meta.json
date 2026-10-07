@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Navigation",
   "description": "A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.",
+  "aka": ["bottom-nav", "tab-bar", "tabbar", "bottom-bar"],
   "classes": {
     "ayy-bottom-nav": "The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below. As a direct child of .ayy-app-shell it shows below 48rem only; from 48rem the sidebar carries the same links.",
     "ayy-bottom-nav__link": "A tab: icon over label. An <a> for a destination, or a <button> for a tab that acts (\"More\", which opens the app shell's drawer when it also has ayy-app-shell__toggle). aria-current=\"page\" (or aria-expanded=\"true\" on the button) draws a pill behind the icon and a heavier label.",

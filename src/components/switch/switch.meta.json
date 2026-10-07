@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Forms",
   "description": "On/off toggle for a setting that applies immediately. A native checkbox with role=\"switch\".",
+  "aka": ["switch", "toggle", "toggle-switch"],
   "classes": {
     "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before."
   },

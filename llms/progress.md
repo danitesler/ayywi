@@ -1,6 +1,6 @@
 # Progress
 
-Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
+Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate. Also called: progress, progress-bar, progressbar, meter.
 
 **Classes**
 - `.ayy-progress` — Track. Set --ayy-value (0–100) on it.

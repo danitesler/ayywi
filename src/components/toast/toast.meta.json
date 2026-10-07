@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Feedback",
   "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
+  "aka": ["toast", "snackbar", "notification"],
   "classes": {
     "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position.",
     "ayy-toast": "One toast.",

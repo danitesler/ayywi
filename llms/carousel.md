@@ -1,6 +1,6 @@
 # Carousel
 
-Category: Layout. A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
+Category: Layout. A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS. Also called: carousel, slideshow, gallery-strip.
 
 **Classes**
 - `.ayy-carousel` — Root (also on <ayy-carousel>). role="region" aria-roledescription="carousel" and an aria-label. data-slide-label="{index} de {count}" translates the slides' names (default "{index} of {count}").

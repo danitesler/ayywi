@@ -1,6 +1,6 @@
 # Combobox
 
-Category: Forms. An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.
+Category: Forms. An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input. Also called: combobox, autocomplete, typeahead, suggest, suggestions.
 
 **Classes**
 - `.ayy-combobox` — Wrapper: the .ayy-input (role="combobox"), a chevron <svg> and the listbox.

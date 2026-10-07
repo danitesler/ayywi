@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Feedback",
   "description": "Inline message box with optional icon, title, description and actions.",
+  "aka": ["alert", "banner", "callout", "notice", "admonition"],
   "classes": {
     "ayy-alert": "Root. Neutral by default.",
     "ayy-alert--info": "Blue tint.",

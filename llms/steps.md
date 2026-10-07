@@ -1,6 +1,6 @@
 # Steps
 
-Category: Navigation. Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state.
+Category: Navigation. Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state. Also called: steps, wizard-steps, progress-steps.
 
 **Classes**
 - `.ayy-steps` — Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.

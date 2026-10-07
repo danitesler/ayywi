@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Actions",
   "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
+  "aka": ["menu", "dropdown", "dropdown-menu", "context-menu", "menu-item"],
   "classes": {
     "ayy-menu": "On the element with popover and role=\"menu\".",
     "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",

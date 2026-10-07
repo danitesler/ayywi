@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
+  "aka": ["dropzone", "drop-zone", "uploader", "file-drop"],
   "classes": {
     "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).",
     "ayy-dropzone--compact": "One line (icon, then text), for a form field or a composer.",

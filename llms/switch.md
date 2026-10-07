@@ -1,6 +1,6 @@
 # Switch
 
-Category: Forms. On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
+Category: Forms. On/off toggle for a setting that applies immediately. A native checkbox with role="switch". Also called: switch, toggle, toggle-switch.
 
 **Classes**
 - `.ayy-switch` — On <input type="checkbox" role="switch"> (preferred) or <button role="switch" aria-checked>. Thumb is ::before.

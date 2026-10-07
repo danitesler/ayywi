@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.",
+  "aka": ["choice-card", "option-card", "plan-card"],
   "classes": {
     "ayy-choice-group": "Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role=\"radiogroup\" for radio cards.",
     "ayy-choice-group--scroll": "One row that scrolls sideways instead of wrapping: a day strip, sizes on a phone. Cards stay at least --ayy-min wide.",

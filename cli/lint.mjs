@@ -17,6 +17,9 @@ export const DEFAULT_RULES = {
   "dir-selector": "error",
   "physical-property": "warn",
   "img-size": "warn",
+  "rebuilt-component": "warn",
+  "component-override": "warn",
+  "bare-control": "warn",
 };
 
 const CSS_EXT = new Set([".css", ".scss", ".sass", ".less", ".pcss"]);
@@ -40,12 +43,16 @@ export function loadContract(path = manifestPath()) {
   const helperVariants = new Map(); // helper fn → { key: [values] }
   const elementAttrs = new Map(); // tag → { attr: [values] | null }
   const reactComponents = new Set();
+  const aka = new Map(); // "pill" → component name, from each meta's "aka"
+  const owners = new Map(); // React component, class helper or element tag → component name
 
   for (const u of Object.keys(manifest.utilities ?? {})) classes.set(u, "utilities");
   for (const c of manifest.components) {
     for (const cls of Object.keys(c.classes)) classes.set(cls, c.name);
     const reactNames = Object.keys(c.react?.components ?? {});
-    for (const n of reactNames) reactComponents.add(n);
+    for (const n of reactNames) (reactComponents.add(n), owners.set(n, c.name));
+    for (const a of c.aka ?? []) aka.set(a, c.name);
+    if (c.element?.tag) owners.set(c.element.tag, c.name);
     for (const [prop, def] of Object.entries(c.variants ?? {})) {
       if (!def.values?.every((v) => typeof v === "string")) continue;
       const comp = def.component ?? reactNames[0];
@@ -61,6 +68,7 @@ export function loadContract(path = manifestPath()) {
       }
       helperVariants.set(m[1], keys);
     }
+    for (const m of String(c.js ?? "").matchAll(/\b([a-z]\w*Class)\b/g)) if (!owners.has(m[1])) owners.set(m[1], c.name);
     if (c.element?.tag) {
       const attrs = {};
       for (const [a, desc] of Object.entries(c.element.attributes ?? {})) {
@@ -79,7 +87,7 @@ export function loadContract(path = manifestPath()) {
     const values = [...head.matchAll(/"([\w-]+)"/g)].map((m) => m[1]);
     if (values.length) globalAttrs.set(attr, values);
   }
-  return { manifest, classes, tokens, hooks, reactVariants, helperVariants, elementAttrs, reactComponents, globalAttrs };
+  return { manifest, classes, tokens, hooks, reactVariants, helperVariants, elementAttrs, reactComponents, globalAttrs, aka, owners };
 }
 
 // ---------------------------------------------------------------- helpers
@@ -229,8 +237,241 @@ export function cssRuleFindings(css) {
   return out;
 }
 
-function lintCss(css, contract, offset = { line: 0 }) {
-  const out = cssRuleFindings(css).map((f) => ({ ...f, line: f.line + offset.line }));
+// ---------------------------------------------------------------- structure
+// Whether app code rebuilds what ayywi already has: classes named after a component, rules that restyle one,
+// native controls styled by hand. Class names and markup are matched across every file linted together.
+
+/** Rules in comment-free CSS: { selector, decls: [[prop, value]], index (of the selector), at: ["@media …"] }. Nesting included. */
+function cssRules(css) {
+  const rules = [];
+  const stack = [];
+  let chunk = "";
+  let chunkStart = 0;
+  let quote = null;
+  const declsOf = (text) =>
+    text
+      .split(";")
+      .map((d) => d.match(/^\s*([\w-]+)\s*:([\s\S]*)$/))
+      .filter(Boolean)
+      .map((m) => [m[1].toLowerCase(), m[2].trim()]);
+  for (let i = 0; i < css.length; i++) {
+    const ch = css[i];
+    if (quote) {
+      if (ch === quote && css[i - 1] !== "\\") quote = null;
+      chunk += ch;
+      continue;
+    }
+    if (ch === '"' || ch === "'") quote = ch;
+    if (ch === "{") {
+      const prelude = chunk.trim();
+      const index = chunkStart + chunk.search(/\S|$/);
+      const parent = stack.findLast((f) => f.rule);
+      let selector = prelude;
+      if (!prelude.startsWith("@") && parent) {
+        selector = prelude
+          .split(",")
+          .map((s) => (s.includes("&") ? s.replaceAll("&", parent.selector) : `${parent.selector} ${s.trim()}`))
+          .join(", ");
+      }
+      stack.push({ rule: !prelude.startsWith("@"), prelude, selector, index, body: "" });
+    } else if (ch === "}") {
+      const frame = stack.pop();
+      if (frame?.rule) {
+        frame.body += chunk;
+        rules.push({ selector: frame.selector, decls: declsOf(frame.body), index: frame.index, at: stack.filter((f) => !f.rule).map((f) => f.prelude) });
+      }
+    } else if (ch === ";") {
+      const top = stack.at(-1);
+      if (top?.rule) top.body += `${chunk};`;
+    } else {
+      chunk += ch;
+      continue;
+    }
+    chunk = "";
+    chunkStart = i + 1;
+  }
+  return rules;
+}
+
+const withoutParens = (s) => {
+  let out = "";
+  let depth = 0;
+  for (const ch of s) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth = Math.max(0, depth - 1);
+    else if (!depth) out += ch;
+  }
+  return out;
+};
+/** Compound selectors of a selector list, parenthesised parts (:not(), :has()…) left out. */
+const compounds = (selector) => withoutParens(selector).split(/\s*[\s>+~,]\s*/).filter(Boolean);
+/** The compound each selector in a list styles (the last one). */
+const subjects = (selector) => withoutParens(selector).split(",").map((s) => s.trim().split(/\s*[\s>+~]\s*/).at(-1) ?? "");
+const classesIn = (compound) => [...compound.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)].map((m) => m[1]);
+
+// Words that end in an alias by accident.
+const NOT_ALIASES = new Set(["discard", "standard", "orange", "arrange", "strange", "exchange", "stage", "postcard", "wildcard", "scorecard"]);
+
+/** The ayywi component a class name says it is (".dooduu-chip", ".qa-spinner", ".hpill"), from the components' "aka" lists. */
+export function componentNamed(cls, contract) {
+  const block = cls.split(/__|--/)[0].toLowerCase();
+  if (/^(?:is|has|js|u)-/.test(block) || block.startsWith("ayy-")) return null;
+  const words = block.split(/[-_]/).filter(Boolean);
+  for (let k = 0; k < words.length; k++) {
+    const c = contract.aka.get(words.slice(k).join("-"));
+    if (c) return c;
+  }
+  const last = words.at(-1) ?? "";
+  if (NOT_ALIASES.has(last) || /[ai]ble$/.test(last)) return null;
+  for (const [alias, c] of contract.aka)
+    if (alias.length >= 4 && !alias.includes("-") && last.length > alias.length && last.length - alias.length <= 5 && last.endsWith(alias)) return c;
+  return null;
+}
+
+/** Owner component of an ayy- class, React component, element tag or class helper (null for utilities). */
+function ownerOf(name, contract) {
+  const owner = contract.classes.get(name) ?? contract.owners.get(name);
+  return owner && owner !== "utilities" ? owner : null;
+}
+
+/**
+ * Which ayywi components each app class is used together with: class="ayy-card qa-card", <Card className="qa-card">,
+ * className={chipClass({ className: "x" })}, or .ayy-card.qa-card in CSS. A class used that way extends the component.
+ * Adds to `into` (class → Set of component names).
+ */
+export function collectCoUse(text, file, contract, into = new Map()) {
+  const add = (cls, owner) => {
+    if (!into.has(cls)) into.set(cls, new Set());
+    into.get(cls).add(owner);
+  };
+  const ext = extname(file).toLowerCase();
+  const fromCss = (css) => {
+    for (const rule of cssRules(stripCssComments(css)))
+      for (const compound of compounds(rule.selector)) {
+        const cls = classesIn(compound);
+        const owners = cls.map((c) => ownerOf(c, contract)).filter(Boolean);
+        for (const c of cls) if (!c.startsWith("ayy-")) for (const o of owners) add(c, o);
+      }
+  };
+  if (CSS_EXT.has(ext)) fromCss(text);
+  else if (MARKUP_EXT.has(ext)) {
+    for (const { value, tag } of classAttributes(text)) {
+      const tokens = value.match(/[\w-]+/g) ?? [];
+      const owners = [tag, ...tokens].map((t) => ownerOf(t, contract)).filter(Boolean);
+      for (const t of tokens) if (!t.startsWith("ayy-")) for (const o of owners) add(t, o);
+    }
+    for (const m of text.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) fromCss(m[1]);
+  }
+  return into;
+}
+
+/** Every class attribute in markup: { value, index (of the value), tag, openTag }. */
+function classAttributes(text) {
+  const out = [];
+  for (const m of text.matchAll(/(?<![\w-])(?:class|className|:class|v-bind:class|class:list|\[class\]|\[ngClass\]|ngClass)\s*=\s*(?=["'`{[])/g)) {
+    const start = m.index + m[0].length;
+    const [value] = readValue(text, start);
+    const lt = text.lastIndexOf("<", m.index);
+    const tag = lt >= 0 ? (text.slice(lt).match(/^<([A-Za-z][\w.:-]*)/)?.[1] ?? "") : "";
+    const openTag = tag && tagEnd(text, lt) > m.index ? text.slice(lt, tagEnd(text, lt)) : "";
+    out.push({ value, expression: text[start] === "{" || text[start] === "[", index: start + 1, tag: openTag ? tag : "", openTag });
+  }
+  return out;
+}
+
+// Declarations that change how a component looks rather than where it sits.
+const VISUAL_PROPERTY =
+  /^(?:color|background(?:-color|-image)?|border(?:-(?:block|inline|top|bottom|left|right|start|end)(?:-(?:start|end))?)?(?:-(?:color|width|style|radius))?|border-(?:start|end)-(?:start|end)-radius|border-radius|outline(?:-color|-width|-style)?|box-shadow|padding(?:-[a-z-]+)?|font(?:-family|-size|-weight|-style)?|line-height|letter-spacing|text-transform|text-decoration(?:-[a-z]+)?|text-shadow|fill|stroke|accent-color|caret-color)$/;
+
+/** rebuilt-component and component-override findings for one stylesheet. */
+function structureFindings(css, contract, coUse) {
+  const out = [];
+  const pos = lineIndex(css);
+  const seen = new Set();
+  const slugOf = new Map(contract.manifest.components.map((c) => [c.name, c.slug]));
+  const lookUp = (name) => `get_component("${slugOf.get(name)}") or llms/${slugOf.get(name)}.md`;
+  for (const rule of cssRules(stripCssComments(css))) {
+    // A class named after a component that is never used together with it.
+    for (const m of rule.selector.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
+      const block = m[1].split(/__|--/)[0];
+      if (m[1].startsWith("ayy-") || seen.has(block)) continue;
+      seen.add(block);
+      const comp = componentNamed(m[1], contract);
+      if (!comp || coUse.get(m[1])?.has(comp) || coUse.get(block)?.has(comp)) continue;
+      out.push({
+        rule: "rebuilt-component",
+        message: `.${block} looks like a hand-built ${comp} — use ayywi's ${comp} (${lookUp(comp)}); to adjust one, add your class next to its ayy- class and keep it to layout`,
+        ...pos(rule.index + m.index),
+      });
+    }
+    // A rule that changes how an ayywi component looks.
+    if (rule.at.some((a) => /forced-colors/.test(a))) continue;
+    let target = null;
+    for (const subject of subjects(rule.selector)) {
+      for (const c of classesIn(subject)) {
+        target ??= c.startsWith("ayy-") ? ownerOf(c, contract) && { comp: ownerOf(c, contract), direct: true } : null;
+        if (!target && !c.startsWith("ayy-")) {
+          const comps = [...(coUse.get(c) ?? [])];
+          if (comps.length === 1) target = { comp: comps[0], direct: false };
+        }
+      }
+      if (target) break;
+    }
+    if (!target) continue;
+    const visual = rule.decls
+      .map(([p]) => p)
+      .filter((p) => VISUAL_PROPERTY.test(p) || (target.direct && p.startsWith("--_")))
+      .filter((p) => !(target.comp === "Icon" && /^(?:color|fill|stroke)$/.test(p))); // icons take a colour by design
+    if (!visual.length) continue;
+    out.push({
+      rule: "component-override",
+      message: `${rule.selector.replace(/\s+/g, " ").trim()} restyles ${target.comp} (${[...new Set(visual)].join(", ")}) — use its variants and sizes, a public custom property or a theme token instead (${lookUp(target.comp)}); app CSS on a component sets only layout: margin, size, position`,
+      ...pos(rule.index),
+    });
+  }
+  return out;
+}
+
+// Native controls and ARIA widgets ayywi styles: what to use instead.
+const CONTROL_OF_TAG = {
+  button: "Button", select: "Select", textarea: "Textarea", dialog: "Dialog", table: "Table", kbd: "Kbd",
+  progress: "Progress", meter: "Progress", details: "Accordion",
+};
+const CONTROL_OF_INPUT = {
+  checkbox: "Checkbox (or Switch, Chip)", radio: "Radio (or Segmented control, Choice card, Chip)", range: "Slider", number: "Number field",
+  file: "File upload", submit: "Button", button: "Button", reset: "Button",
+};
+const CONTROL_OF_ROLE = {
+  switch: "Switch", tablist: "Tabs or Segmented control", tab: "Tabs or Segmented control", menu: "Dropdown menu", menuitem: "Dropdown menu",
+  menuitemcheckbox: "Dropdown menu", menuitemradio: "Dropdown menu", tooltip: "Tooltip", dialog: "Dialog or Popover", alertdialog: "Dialog",
+  progressbar: "Progress", slider: "Slider", combobox: "Combobox", listbox: "Combobox or Select", radiogroup: "Radio or Segmented control",
+  checkbox: "Checkbox", radio: "Radio", spinbutton: "Number field",
+};
+
+/** bare-control findings: a native control or ARIA widget with the app's own classes and none of ayywi's. */
+function bareControlFindings(text, contract, push) {
+  for (const { value, expression, index, tag, openTag } of classAttributes(text)) {
+    if (!openTag || /\{\s*\.\.\./.test(openTag)) continue;
+    const role = openTag.match(/\srole=["']([\w-]+)["']/)?.[1];
+    let control = null;
+    if (role) control = CONTROL_OF_ROLE[role] ?? null;
+    else if (tag === "input") {
+      const type = openTag.match(/\stype=["']([\w-]+)["']/)?.[1] ?? "text";
+      control = type === "hidden" || type === "color" ? null : (CONTROL_OF_INPUT[type] ?? "Input");
+    } else control = CONTROL_OF_TAG[tag] ?? null;
+    if (control === "Button" && /\saria-pressed=/.test(openTag)) control = "Button, ChipButton or Segmented control";
+    else if (control === "Button") control = "Button (ghost or icon size for small actions; ListLink or CardLink when a whole row or card is clickable)";
+    if (!control) continue;
+    // Only literal class names count: a bare expression (className={cls}) can't be judged.
+    const literal = (expression ? [...value.matchAll(/(["'`])((?:(?!\1)[^\\]|\\.)*)\1/g)].map((m) => m[2]).join(" ") : value).replace(/\$\{[^}]*\}/g, " ");
+    const names = [...new Set(literal.match(/(?<![\w$-])[a-zA-Z_][\w-]*/g) ?? [])];
+    if (!names.length || /ayy-/.test(value) || [...value.matchAll(/\b(\w+)\s*\(/g)].some((m) => ownerOf(m[1], contract))) continue;
+    push("bare-control", `<${tag}${role ? ` role="${role}"` : ""} class="${names.join(" ")}"> is styled by hand — use ayywi's ${control}, adding your class next to its ayy- class for layout`, index);
+  }
+}
+
+function lintCss(css, contract, offset = { line: 0 }, coUse = new Map()) {
+  const out = [...cssRuleFindings(css), ...structureFindings(css, contract, coUse)].map((f) => ({ ...f, line: f.line + offset.line }));
   const pos = lineIndex(css);
   const clean = stripCssComments(css);
   for (const m of clean.matchAll(/var\((--ayy-[\w-]+)/g)) {
@@ -255,7 +496,7 @@ function lintCss(css, contract, offset = { line: 0 }) {
   return out;
 }
 
-function lintMarkup(text, contract) {
+function lintMarkup(text, contract, coUse = new Map()) {
   const out = [];
   const pos = lineIndex(text);
   const push = (rule, message, index) => out.push({ rule, message, ...pos(index) });
@@ -337,6 +578,8 @@ function lintMarkup(text, contract) {
     }
   }
 
+  bareControlFindings(text, contract, push);
+
   // Icon-only buttons need an accessible name
   for (const m of text.matchAll(/<(button|a|Button)(?=[\s/>])/g)) {
     const openTag = text.slice(m.index, tagEnd(text, m.index));
@@ -392,7 +635,7 @@ function lintMarkup(text, contract) {
   // <style> blocks inside templates
   for (const m of text.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) {
     const offsetLine = pos(m.index + m[0].indexOf(m[1])).line - 1;
-    out.push(...lintCss(m[1], contract, { line: offsetLine }));
+    out.push(...lintCss(m[1], contract, { line: offsetLine }, coUse));
   }
   return out;
 }
@@ -424,12 +667,15 @@ function applyDisables(findings, text) {
   });
 }
 
-/** Lint one file's text. `file` decides the parser by extension. */
-export function lintText(text, file, contract, config = { rules: DEFAULT_RULES }) {
+/**
+ * Lint one file's text. `file` decides the parser by extension. `coUse` (from collectCoUse over every file linted
+ * together) says which app classes extend an ayywi component; without it only this file is looked at.
+ */
+export function lintText(text, file, contract, config = { rules: DEFAULT_RULES }, coUse = collectCoUse(text, file, contract)) {
   const ext = extname(file).toLowerCase();
   let findings = [];
-  if (CSS_EXT.has(ext)) findings = lintCss(text, contract);
-  else if (MARKUP_EXT.has(ext)) findings = lintMarkup(text, contract);
+  if (CSS_EXT.has(ext)) findings = lintCss(text, contract, undefined, coUse);
+  else if (MARKUP_EXT.has(ext)) findings = lintMarkup(text, contract, coUse);
   return applyDisables(findings, text)
     .map((f) => ({ file, ...f, severity: config.rules[f.rule] ?? "error" }))
     .filter((f) => f.severity !== "off")
@@ -452,17 +698,17 @@ function* walk(path, cwd, config) {
 
 /** Lint files/directories. Returns { findings, files }. */
 export function lintPaths(paths, { cwd = process.cwd(), contract = loadContract(), config = loadConfig(cwd) } = {}) {
-  const findings = [];
-  let files = 0;
+  const texts = [];
   for (const p of paths.length ? paths : ["."]) {
     const abs = resolve(cwd, p);
     if (!existsSync(abs)) throw new Error(`No such file or directory: ${p}`);
-    for (const file of walk(abs, cwd, config)) {
-      files++;
-      findings.push(...lintText(readFileSync(file, "utf8"), relative(cwd, file) || file, contract, config));
-    }
+    for (const file of walk(abs, cwd, config)) texts.push([relative(cwd, file) || file, readFileSync(file, "utf8")]);
   }
-  return { findings, files };
+  // Classes are matched across files: a stylesheet's .qa-card is fine when some template writes class="ayy-card qa-card".
+  const coUse = new Map();
+  for (const [file, text] of texts) collectCoUse(text, file, contract, coUse);
+  const findings = texts.flatMap(([file, text]) => lintText(text, file, contract, config, coUse));
+  return { findings, files: texts.length };
 }
 
 export function formatFindings({ findings, files }) {
