@@ -1,0 +1,128 @@
+/* Shortcuts: the keys of a shortcut drawn as keycaps (.ayy-shortcut around .ayy-kbd), a button that records a new one
+   (.ayy-shortcut-recorder), and a list of what each shortcut does (.ayy-shortcut-list). */
+
+.ayy-shortcut {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.25em;
+  vertical-align: middle;
+  white-space: nowrap;
+  /* Keys read left to right in every language, as on the keyboard and in the OS's own menus. */
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.ayy-shortcut > .ayy-kbd {
+  vertical-align: baseline;
+}
+
+/* ---- Recorder: looks like a field; click, then press the keys. aria-pressed="true" while it listens. ---- */
+
+.ayy-shortcut-recorder {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 9rem;
+  block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  cursor: pointer;
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    box-shadow var(--ayy-duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .ayy-shortcut-recorder:hover {
+    border-color: var(--ayy-color-line-hover);
+  }
+}
+
+.ayy-shortcut-recorder:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* Listening: the ring colour's border and a slow pulse around it. */
+.ayy-shortcut-recorder[aria-pressed="true"] {
+  border-color: var(--ayy-color-ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ayy-color-ring) 25%, transparent);
+  animation: ayy-shortcut-listen 1.4s var(--ayy-ease-standard) infinite;
+}
+
+@keyframes ayy-shortcut-listen {
+  50% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--ayy-color-ring) 10%, transparent);
+  }
+}
+
+.ayy-shortcut-recorder:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-shortcut-recorder[aria-invalid="true"] {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+.ayy-shortcut-recorder__placeholder {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-control-text-sm);
+}
+
+/* ---- A list of shortcuts: what it does at the start, the keys at the end. A <dl> of __row <div>s. ---- */
+
+.ayy-shortcut-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.ayy-shortcut-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-4);
+  padding-block: var(--ayy-space-2);
+  font-size: var(--ayy-text-sm);
+}
+
+.ayy-shortcut-list__row + .ayy-shortcut-list__row {
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-shortcut-list__row > dt {
+  min-inline-size: 0;
+  color: var(--ayy-color-text-soft);
+}
+
+.ayy-shortcut-list__row > dd {
+  flex: none;
+  margin: 0;
+}
+
+@media (forced-colors: active) {
+  .ayy-shortcut-recorder {
+    border-color: CanvasText;
+  }
+  .ayy-shortcut-recorder[aria-pressed="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* <ayy-shortcut-recorder> only adds behaviour; it has no box of its own. */
+ayy-shortcut-recorder {
+  display: contents;
+}

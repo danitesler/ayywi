@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, drop zones),
+- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-calendar>`, `<ayy-toolbar>`, `<ayy-shortcut-recorder>`, `<ayy-command>`, `<ayy-tag-input>`, `<ayy-swipe>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, custom swatch colours, search bar clear buttons, shortcuts drawn for Apple devices, drop zones),
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -82,7 +82,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - `@import url(https://fonts…)` must be first in a stylesheet, so fonts live in the separate opt-in `fonts.css` / `fonts-google.css`.
 - A modal `<dialog>` makes everything outside it inert, top layer included. Anything that must stay clickable over a modal (the toaster) has to live inside it.
 - Measure floating elements with `offsetWidth/Height`, not `getBoundingClientRect()` — entry animations scale them.
-- Custom elements must not render markup or use shadow DOM: they only wire behaviour onto author HTML, and must be SSR-safe to import (`src/lib/element.ts`).
+- Custom elements must not use shadow DOM: they wire behaviour onto author HTML, and must be SSR-safe to import (`src/lib/element.ts`). The only markup they draw is content the author can't write ahead of time (a calendar's days for another month, a recorded shortcut's keys, a new tag's chip), built with the same classes React renders.
 - base.css's reduced-motion rule shortens durations, which scroll-driven animations (`animation-timeline`) ignore. Wrap them in `@media (prefers-reduced-motion: no-preference)` instead.
 - `light-dark()` only takes colours. To swap icons by scheme (Theme toggle), switch their `color` between `currentColor` and `transparent`, and set `forced-color-adjust: none` so High Contrast doesn't paint both.
 - Playwright's `toBeEnabled()` treats `aria-disabled="true"` as disabled. To check a button is still focusable, read `el.disabled`.

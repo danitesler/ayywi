@@ -1,0 +1,190 @@
+/* Top bar: a phone screen's header. A back button, the screen's title and one to three actions, sticky at the top of
+   its scroll container and clear of the notch. --center centres the title (iOS), --large puts a big title on its own
+   line under the buttons, and an optional __row underneath holds a search bar or a segmented control. */
+
+.ayy-top-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--ayy-z-sticky);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  min-block-size: calc(var(--ayy-size-control-lg) + 2 * var(--ayy-space-2));
+  padding-block: calc(var(--ayy-space-2) + env(safe-area-inset-top, 0px)) var(--ayy-space-2);
+  padding-inline: var(--ayy-space-2);
+  border-block-end: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-bg);
+  color: var(--ayy-color-text);
+}
+
+/* Back: a chevron that points the reading direction's way back, and optionally the previous screen's name. */
+.ayy-top-bar__back {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: var(--ayy-size-control-md);
+  max-inline-size: 40%;
+  block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding-inline: var(--ayy-space-1) var(--ayy-space-2);
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-text-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-top-bar__back > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-top-bar__back > :not(svg) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (hover: hover) {
+  .ayy-top-bar__back:hover {
+    background-color: var(--ayy-color-wash-hover);
+  }
+}
+
+.ayy-top-bar__back:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+/* The title and an optional subtitle under it. */
+.ayy-top-bar__heading {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-inline-size: 0;
+  padding-inline: var(--ayy-space-2);
+}
+
+.ayy-top-bar__title {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  margin: 0;
+  padding-inline: var(--ayy-space-2);
+  overflow: hidden;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-top-bar__heading > .ayy-top-bar__title {
+  flex: none;
+  padding-inline: 0;
+}
+
+.ayy-top-bar__subtitle {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-top-bar__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  margin-inline-start: auto;
+}
+
+/* A second line across the bar: a search bar, a segmented control, chips. */
+.ayy-top-bar__row {
+  box-sizing: border-box;
+  flex: 1 0 100%;
+  min-inline-size: 0;
+  padding-block-start: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-2);
+}
+
+/* Centred title between the back button and the actions, as on iOS. */
+.ayy-top-bar--center {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.ayy-top-bar--center > :is(.ayy-top-bar__title, .ayy-top-bar__heading) {
+  grid-column: 2;
+  max-inline-size: 60vw;
+  text-align: center;
+}
+
+.ayy-top-bar--center > .ayy-top-bar__back {
+  grid-column: 1;
+  justify-self: start;
+  max-inline-size: 100%;
+}
+
+.ayy-top-bar--center > .ayy-top-bar__actions {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.ayy-top-bar--center > .ayy-top-bar__row {
+  grid-column: 1 / -1;
+}
+
+/* Large title: the buttons on the first line, the title big on its own line under them (a list's first screen). */
+.ayy-top-bar--large > :is(.ayy-top-bar__title, .ayy-top-bar__heading) {
+  flex-basis: 100%;
+  order: 1;
+  padding-block: var(--ayy-space-1) var(--ayy-space-1);
+  white-space: normal;
+}
+
+.ayy-top-bar--large .ayy-top-bar__title {
+  font-size: var(--ayy-text-2xl);
+  font-weight: var(--ayy-weight-bold);
+  line-height: var(--ayy-leading-tight);
+}
+
+.ayy-top-bar--large > .ayy-top-bar__row {
+  order: 2;
+}
+
+/* No back button or actions on a large bar: keep the empty first line from showing. */
+.ayy-top-bar--large:not(:has(> .ayy-top-bar__back, > .ayy-top-bar__actions)) {
+  padding-block-start: calc(var(--ayy-space-4) + env(safe-area-inset-top, 0px));
+}
+
+/* In an app shell's main area (its first child): edge to edge over the main area's padding. */
+.ayy-app-shell__main > .ayy-top-bar:first-child {
+  margin-block: calc(-1 * var(--ayy-space-6)) var(--ayy-space-4);
+  margin-inline: calc(-1 * var(--ayy-space-6));
+}
+
+@media (max-width: 48rem) {
+  .ayy-app-shell__main > .ayy-top-bar:first-child {
+    margin-block-start: calc(-1 * var(--ayy-space-4));
+    margin-inline: calc(-1 * var(--ayy-space-4));
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-top-bar {
+    border-block-end-color: CanvasText;
+  }
+}

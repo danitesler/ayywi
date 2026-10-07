@@ -1,0 +1,102 @@
+/* Progress ring: a progress value as a circle (a timer, a goal, a habit's day). An SVG of two circles with
+   pathLength="100", so the fill is just a dash as long as --ayy-value. Starts at the top and runs clockwise in every
+   direction, like a clock. An optional label sits in the middle.
+   The fill colour follows --ayy-progress-color, like the bar's. */
+
+.ayy-progress-ring {
+  --_color: var(--ayy-progress-color, var(--ayy-color-text));
+  --_size: 2.5rem;
+  --_stroke: 3.5;
+  position: relative;
+  box-sizing: border-box;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  vertical-align: middle;
+}
+
+.ayy-progress-ring__svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+
+.ayy-progress-ring__track,
+.ayy-progress-ring__bar {
+  fill: none;
+  stroke-width: var(--_stroke);
+}
+
+.ayy-progress-ring__track {
+  stroke: color-mix(in srgb, var(--ayy-color-text) 10%, transparent);
+}
+
+.ayy-progress-ring__bar {
+  stroke: var(--_color);
+  stroke-dasharray: clamp(0, var(--ayy-value, 0), 100) 100;
+  stroke-linecap: round;
+  transition: stroke-dasharray var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+/* No sliver of a dot at 0. */
+.ayy-progress-ring[aria-valuenow="0"] .ayy-progress-ring__bar {
+  visibility: hidden;
+}
+
+/* The value, a time or an icon in the middle. */
+.ayy-progress-ring__label {
+  position: relative;
+  max-inline-size: 80%;
+  overflow: hidden;
+  color: var(--ayy-color-text);
+  font-size: calc(var(--_size) * 0.24);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--ayy-weight-semibold);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ayy-progress-ring__label > svg {
+  display: block;
+  inline-size: calc(var(--_size) * 0.4);
+  block-size: calc(var(--_size) * 0.4);
+}
+
+.ayy-progress-ring--sm { --_size: 1.25rem; --_stroke: 4.5; }
+.ayy-progress-ring--lg { --_size: 4rem; --_stroke: 3; }
+.ayy-progress-ring--xl { --_size: min(16rem, 70vw); --_stroke: 2; }
+.ayy-progress-ring--xl .ayy-progress-ring__label { font-size: calc(var(--_size) * 0.16); font-weight: var(--ayy-weight-medium); }
+
+.ayy-progress-ring--success { --_color: var(--ayy-color-success); }
+.ayy-progress-ring--warning { --_color: var(--ayy-color-warning); }
+.ayy-progress-ring--destructive { --_color: var(--ayy-color-destructive); }
+.ayy-progress-ring--ai { --_color: var(--ayy-color-ai-active); }
+
+/* Unknown duration: a quarter arc going round. Under reduced motion it stays still; say what's happening in a label. */
+.ayy-progress-ring--indeterminate .ayy-progress-ring__bar {
+  stroke-dasharray: 25 75;
+}
+
+.ayy-progress-ring--indeterminate .ayy-progress-ring__svg {
+  animation: ayy-progress-ring-spin calc(var(--ayy-duration-slower) * 2) linear infinite;
+}
+
+@keyframes ayy-progress-ring-spin {
+  from { transform: rotate(-90deg); }
+  to { transform: rotate(270deg); }
+}
+
+@media (forced-colors: active) {
+  .ayy-progress-ring__track {
+    stroke: GrayText;
+  }
+  .ayy-progress-ring__bar {
+    stroke: Highlight;
+  }
+}

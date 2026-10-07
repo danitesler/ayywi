@@ -1,0 +1,60 @@
+{
+  "name": "Floating action button",
+  "slug": "fab",
+  "status": "beta",
+  "category": "Actions",
+  "description": "The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.",
+  "classes": {
+    "ayy-fab": "A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
+    "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
+    "ayy-fab--secondary": "A raised surface with a border instead of the primary fill: less emphasis.",
+    "ayy-fab--sm": "Smaller (the control-lg size), for a second action stacked above the main one.",
+    "ayy-fab--inline": "Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page)."
+  },
+  "variants": {
+    "variant": { "values": ["primary", "secondary"], "default": "primary" },
+    "size": { "values": ["sm", "md"], "default": "md" },
+    "extended": { "values": [false, true], "default": false },
+    "inline": { "values": [false, true], "default": false }
+  },
+  "states": {
+    ".ayy-fab:active": "Pressed: shrinks a little.",
+    ".ayy-fab:disabled": "Dimmed, not clickable (a form that isn't ready)."
+  },
+  "js": "fabClass({ variant?, size?, extended?, inline?, className? }) → string; fabVariants, fabSizes.",
+  "react": {
+    "import": "import { Fab } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Fab": {
+        "renders": "<button type=\"button\" class=\"ayy-fab\">, or <a> with href",
+        "props": {
+          "variant": "\"primary\" | \"secondary\"",
+          "size": "\"sm\" | \"md\"",
+          "extended": "boolean — icon and a label; otherwise give it aria-label",
+          "inline": "boolean — not floating",
+          "href": "string — renders an <a>",
+          "type": "\"button\" | \"submit\" | \"reset\" — default \"button\""
+        }
+      }
+    }
+  },
+  "a11y": [
+    "An icon-only FAB needs an aria-label that says the action (\"New task\"), not the icon (\"Plus\").",
+    "Put it after the main content in the DOM so it comes after what it acts on in the tab order, not before the page.",
+    "It must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the FAB's height) so the last row can scroll clear of it."
+  ],
+  "do": [
+    "Use one FAB for the screen's main, constructive action: create, compose, scan, add.",
+    "Use extended when the action isn't obvious from an icon, or on the first screens of an app.",
+    "Hide it on screens where the main action is already on screen (a form's Save) or while a sheet is open."
+  ],
+  "dont": [
+    "Don't use more than one main FAB; stack a small secondary one at most.",
+    "Don't put destructive or minor actions (Delete, Share, Settings) in a FAB — use a Top bar action or a Menu.",
+    "Don't use it on desktop layouts where a toolbar button fits better."
+  ],
+  "examples": [
+    { "id": "variants", "title": "Icon, extended, secondary, small" },
+    { "id": "app", "title": "In an app shell, above the bottom nav" }
+  ]
+}

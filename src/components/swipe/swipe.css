@@ -1,0 +1,101 @@
+/* Swipe actions: a list row that slides sideways to show buttons under it, as in phone mail and task apps. Swiping
+   toward the inline end shows the __actions--start tray (Done), toward the inline start the --end tray (Snooze,
+   Delete). The row slides with inset-inline-start, so it follows the reading direction. Keyboards reach the buttons
+   with Tab: a tray with focus in it shows over the row. connectSwipe() or <ayy-swipe> wire the gesture. */
+
+.ayy-swipe {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.ayy-swipe__content {
+  position: relative;
+  z-index: 1;
+  inset-inline-start: var(--_x, 0px);
+  background-color: var(--ayy-swipe-bg, var(--ayy-color-bg));
+  transition: inset-inline-start var(--ayy-duration-base) var(--ayy-ease-out-expo);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Flush with the row's edges (a list item's own rounding would show the trays at its corners). */
+.ayy-swipe > .ayy-swipe__content {
+  border-radius: 0;
+}
+
+.ayy-swipe[data-dragging] > .ayy-swipe__content {
+  transition: none;
+}
+
+.ayy-swipe__actions {
+  position: absolute;
+  inset-block: 0;
+  display: flex;
+}
+
+.ayy-swipe__actions--start {
+  inset-inline-start: 0;
+}
+
+.ayy-swipe__actions--end {
+  inset-inline-end: 0;
+}
+
+/* Tabbing into a tray shows it over the row, so keyboard users see what they're on. */
+.ayy-swipe__actions:has(:focus-visible) {
+  z-index: 2;
+}
+
+.ayy-swipe__action {
+  --_c: var(--ayy-color-text);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 4.5rem;
+  margin: 0;
+  padding-inline: var(--ayy-space-3);
+  border: 0;
+  background-color: color-mix(in srgb, var(--_c) 15%, var(--ayy-color-surface));
+  color: var(--_c);
+  font: inherit;
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ayy-swipe__action > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-swipe__action:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.ayy-swipe__action--primary {
+  background-color: var(--ayy-color-primary);
+  color: var(--ayy-color-primary-fg);
+}
+
+.ayy-swipe__action--success { --_c: var(--ayy-color-success); }
+.ayy-swipe__action--warning { --_c: var(--ayy-color-warning); }
+.ayy-swipe__action--info { --_c: var(--ayy-color-info); }
+.ayy-swipe__action--destructive { --_c: var(--ayy-color-destructive); }
+
+@media (forced-colors: active) {
+  .ayy-swipe__action {
+    border-inline-start: 1px solid ButtonText;
+  }
+}
+
+/* <ayy-swipe> only adds behaviour; it has no box of its own. */
+ayy-swipe {
+  display: contents;
+}

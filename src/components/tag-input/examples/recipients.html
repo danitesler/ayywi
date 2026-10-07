@@ -1,0 +1,11 @@
+<!-- <ayy-tag-input> adds a chip on Enter or a comma and fires "ayy-change" with { values }. -->
+<div class="ayy-field" style="inline-size: min(100%, 28rem)">
+  <label class="ayy-label" for="share-with-html">Share with</label>
+  <ayy-tag-input max="5">
+    <div class="ayy-tag-input ayy-tag-input--lg">
+      <span class="ayy-chip ayy-chip--removable ayy-tag-input__tag" data-value="ada@example.com">ada@example.com<button type="button" class="ayy-chip__remove" aria-label="Remove ada@example.com"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span><span class="ayy-chip ayy-chip--removable ayy-tag-input__tag" data-value="grace@example.com">grace@example.com<button type="button" class="ayy-chip__remove" aria-label="Remove grace@example.com"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+      <input type="text" class="ayy-tag-input__input" autocomplete="off" enterkeyhint="enter" id="share-with-html" placeholder="Email addresses" inputmode="email" aria-describedby="share-with-hint-html" />
+    </div>
+  </ayy-tag-input>
+  <p class="ayy-field__hint" id="share-with-hint-html">Up to 5 people. Paste a list separated by commas.</p>
+</div>

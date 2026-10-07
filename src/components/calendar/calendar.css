@@ -1,0 +1,278 @@
+/* Calendar: one month of day buttons to pick a date, on its own or in a popover (the date picker). A header with the
+   month and two arrows, the weekday names, then six weeks so the height never jumps. The grid is one Tab stop: arrow
+   keys move the focused day. State comes from ARIA: aria-pressed is the picked day, aria-current="date" today,
+   aria-disabled a day outside min/max (still focusable, so the arrows can cross it). */
+
+.ayy-calendar {
+  --_day: var(--ayy-size-control-md);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-control-text-md);
+}
+
+.ayy-calendar__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  padding-inline-start: var(--ayy-space-2);
+  margin-block-end: var(--ayy-space-1);
+}
+
+.ayy-calendar__title {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-calendar__nav,
+.ayy-calendar__day {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-calendar__nav {
+  flex: none;
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  border-radius: var(--ayy-radius-md);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-calendar__nav > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-calendar__weekdays,
+.ayy-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, var(--_day));
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-calendar__weekdays {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-2xs);
+  font-weight: var(--ayy-weight-medium);
+  text-align: center;
+}
+
+.ayy-calendar__weekdays > * {
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.ayy-calendar__day {
+  inline-size: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--ayy-radius-pill);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+  .ayy-calendar__nav:hover,
+  .ayy-calendar__day:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-calendar__day:active {
+  transform: scale(0.94);
+}
+
+.ayy-calendar__nav:focus-visible,
+.ayy-calendar__day:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 1px;
+}
+
+/* Days of the months before and after. */
+.ayy-calendar__day[data-outside] {
+  color: var(--ayy-color-muted);
+}
+
+/* Today: a ring and a heavier number, not colour alone. */
+.ayy-calendar__day[aria-current="date"] {
+  box-shadow: inset 0 0 0 1px var(--ayy-color-line-hover);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-calendar__day[aria-pressed="true"],
+.ayy-calendar__day[aria-pressed="true"]:hover {
+  background-color: var(--ayy-color-primary);
+  color: var(--ayy-color-primary-fg);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-calendar__day[aria-disabled="true"] {
+  opacity: var(--ayy-opacity-disabled);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.ayy-calendar__day[aria-disabled="true"]:hover {
+  background: none;
+}
+
+/* Fills its container: a phone screen or a sheet. Days stretch up to twice their size. */
+.ayy-calendar--full {
+  inline-size: 100%;
+}
+
+.ayy-calendar--full .ayy-calendar__weekdays,
+.ayy-calendar--full .ayy-calendar__grid {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.ayy-calendar--full .ayy-calendar__day {
+  justify-self: center;
+  max-inline-size: calc(var(--_day) * 1.5);
+}
+
+/* Shortcuts above the month: Today, Tomorrow, Next week. Equal columns of icon over label, like dooduu's quick dates. */
+.ayy-calendar__presets {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--ayy-space-1);
+  margin-block-end: var(--ayy-space-2);
+}
+
+.ayy-calendar__preset {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+  min-block-size: var(--ayy-size-control-lg);
+  margin: 0;
+  padding: var(--ayy-space-1-5) var(--ayy-space-1);
+  border: 0;
+  border-radius: var(--ayy-radius-lg);
+  background: none;
+  color: var(--ayy-color-text-soft);
+  font: inherit;
+  font-size: var(--ayy-text-2xs);
+  line-height: var(--ayy-leading-snug);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-calendar__preset > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+@media (hover: hover) {
+  .ayy-calendar__preset:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-calendar__preset[aria-pressed="true"] {
+  background-color: var(--ayy-color-wash-hover);
+  box-shadow: inset 0 0 0 1px var(--ayy-color-line-strong);
+  color: var(--ayy-color-text);
+}
+
+.ayy-calendar__preset:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 1px;
+}
+
+/* Under the month: time, repeat, a Clear button. */
+.ayy-calendar__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-2);
+  padding-block-start: var(--ayy-space-3);
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+/* ---- Date picker: a field-like button that opens a calendar in a popover. Use with .ayy-input for the field look. ---- */
+
+.ayy-date-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  text-align: start;
+  cursor: pointer;
+}
+
+.ayy-date-picker > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-date-picker__value {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* No date yet: the placeholder text, muted like an input's. */
+.ayy-date-picker__value:empty::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--ayy-color-muted) 70%, transparent);
+}
+
+/* The calendar inside a popover sits on the popover's padding. */
+.ayy-popover:has(> .ayy-calendar, > ayy-calendar > .ayy-calendar) {
+  padding: var(--ayy-space-3);
+}
+
+@media (forced-colors: active) {
+  .ayy-calendar__day[aria-pressed="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-calendar__preset[aria-pressed="true"] {
+    outline: 2px solid Highlight;
+  }
+  .ayy-calendar__day[aria-current="date"] {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+  .ayy-calendar__day[aria-disabled="true"] {
+    color: GrayText;
+  }
+}
+
+/* <ayy-calendar> only adds behaviour; it has no box of its own. */
+ayy-calendar {
+  display: contents;
+}

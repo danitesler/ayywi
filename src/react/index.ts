@@ -60,6 +60,7 @@ export { Tooltip, type TooltipProps } from "../components/tooltip/tooltip.react"
 export { Toaster, type ToasterProps } from "../components/toast/toast.react";
 export { Alert, AlertTitle, AlertDescription, AlertActions, type AlertProps } from "../components/alert/alert.react";
 export { Progress, type ProgressProps } from "../components/progress/progress.react";
+export { ProgressRing, type ProgressRingProps } from "../components/progress-ring/progress-ring.react";
 export { Skeleton, type SkeletonProps } from "../components/skeleton/skeleton.react";
 export { Avatar, AvatarGroup, type AvatarProps } from "../components/avatar/avatar.react";
 export { Icon, type IconProps } from "../components/icon/icon.react";
@@ -207,3 +208,22 @@ export {
   FooterBottom,
   type FooterGroupProps,
 } from "../components/footer/footer.react";
+export { Calendar, DatePicker, type CalendarProps, type CalendarPreset, type DatePickerProps } from "../components/calendar/calendar.react";
+export { Swatch, SwatchButton, SwatchCustom, SwatchGroup, type SwatchProps, type SwatchButtonProps, type SwatchCustomProps, type SwatchGroupProps } from "../components/swatch/swatch.react";
+export { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, type ToolbarProps, type ToolbarButtonProps } from "../components/toolbar/toolbar.react";
+export {
+  Shortcut,
+  ShortcutRecorder,
+  ShortcutList,
+  ShortcutListItem,
+  type ShortcutProps,
+  type ShortcutRecorderProps,
+  type ShortcutListItemProps,
+} from "../components/shortcut/shortcut.react";
+export { Settings, SettingsRow, SettingsLink, type SettingsProps, type SettingsRowProps, type SettingsLinkProps } from "../components/settings/settings.react";
+export { Command, CommandDialog, CommandGroup, CommandItem, type CommandProps, type CommandDialogProps, type CommandGroupProps, type CommandItemProps } from "../components/command/command.react";
+export { TagInput, type TagInputProps } from "../components/tag-input/tag-input.react";
+export { Fab, type FabProps } from "../components/fab/fab.react";
+export { TopBar, type TopBarProps } from "../components/top-bar/top-bar.react";
+export { SearchBar, type SearchBarProps } from "../components/search-bar/search-bar.react";
+export { Swipe, SwipeAction, type SwipeProps, type SwipeActionProps } from "../components/swipe/swipe.react";

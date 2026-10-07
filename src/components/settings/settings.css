@@ -1,0 +1,182 @@
+/* Settings: preferences as rows, each a label (and a hint) at the start and its control at the end, grouped under a
+   heading. Grouped rows sit in a card with hairlines between them; --plain drops the card (inside a dialog or a
+   settings page that's already on a surface). A row can also be a link to a sub-page, with the current value and a
+   chevron, as phone settings are. */
+
+.ayy-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+}
+
+.ayy-settings + .ayy-settings {
+  margin-block-start: var(--ayy-space-6);
+}
+
+.ayy-settings__title {
+  margin: 0;
+  padding-inline: var(--ayy-space-1);
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-settings__description {
+  margin: 0;
+  padding-inline: var(--ayy-space-1);
+  max-inline-size: var(--ayy-size-measure);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+}
+
+.ayy-settings__list {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface);
+}
+
+.ayy-settings--plain .ayy-settings__list {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.ayy-settings__row {
+  --_pad: var(--ayy-space-4);
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-2) var(--ayy-space-4);
+  min-block-size: var(--ayy-size-control-lg);
+  padding-block: var(--ayy-space-3);
+  padding-inline: var(--_pad);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-settings--plain .ayy-settings__row {
+  --_pad: 0;
+}
+
+.ayy-settings__row + .ayy-settings__row {
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-settings__text {
+  display: flex;
+  flex: 1 1 10rem;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+}
+
+.ayy-settings__label {
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-settings__hint {
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  overflow-wrap: anywhere;
+}
+
+.ayy-settings__control {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  max-inline-size: 100%;
+}
+
+.ayy-settings__control > :is(.ayy-select, .ayy-input, .ayy-combobox, .ayy-date-picker) {
+  min-inline-size: 11rem;
+}
+
+/* The control under the text, full width: a textarea, a radio list, a long select. */
+.ayy-settings__row--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ayy-settings__row--stack .ayy-settings__text {
+  flex-basis: auto;
+}
+
+.ayy-settings__row--stack .ayy-settings__control {
+  flex: auto;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ---- A row that opens a sub-page or runs an action: an <a> or a <button> covering the row. ---- */
+
+.ayy-settings__link {
+  inline-size: 100%;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-settings__link > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+@media (hover: hover) {
+  .ayy-settings__link:hover {
+    background-color: var(--ayy-color-wash);
+  }
+}
+
+.ayy-settings__link:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.ayy-settings--plain .ayy-settings__link:focus-visible {
+  outline-offset: 2px;
+}
+
+/* The current value, muted, before the chevron. */
+.ayy-settings__value {
+  flex: none;
+  max-inline-size: 50%;
+  margin-inline-start: auto;
+  overflow: hidden;
+  color: var(--ayy-color-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-settings__link:has(.ayy-settings__value) {
+  flex-wrap: nowrap;
+  gap: var(--ayy-space-2);
+}
+
+/* Sign out, delete the account: red text, no chevron. */
+.ayy-settings__link--destructive,
+.ayy-settings__link--destructive .ayy-settings__label {
+  color: var(--ayy-color-destructive);
+}
