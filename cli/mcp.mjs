@@ -72,12 +72,14 @@ export function createServer(contract = loadContract()) {
       },
     },
     search: {
-      description: "Search components, tokens and utility classes by keyword (e.g. \"confirm\", \"status\", \"spacing\").",
+      description: "Search patterns, components, tokens and utility classes by keyword (e.g. \"settings\", \"confirm\", \"status\", \"spacing\").",
       inputSchema: { type: "object", properties: { query: { type: "string" } }, required: ["query"] },
       run: ({ query }) => {
         const words = String(query).toLowerCase().split(/\s+/).filter(Boolean);
         const score = (text) => words.reduce((n, w) => n + (text.toLowerCase().includes(w) ? 1 : 0), 0);
         const hits = [
+          // A pattern is the recipe for a whole screen, so it outranks the components it's built from.
+          ...(manifest.patterns ?? []).map((p) => [score(`${p.name} ${p.summary}`) * 2, `pattern ${p.slug}: ${p.summary} (get_rules has the recipe and specs)`]),
           ...manifest.components.map((c) => [score(JSON.stringify([c.name, c.description, c.do, c.classes])), `component ${c.slug}: ${c.description}`]),
           ...manifest.tokens.map((t) => [score(`${t.name} ${t.description ?? ""}`), `token ${t.cssVar}: ${t.description ?? t.value}`]),
           ...Object.entries(manifest.utilities ?? {}).map(([k, v]) => [score(`${k} ${v}`), `utility .${k}: ${v}`]),
@@ -101,13 +103,27 @@ export function createServer(contract = loadContract()) {
           .join("\n"),
     },
     get_rules: {
-      description: "The rules every ayywi UI must follow, plus conventions, global attributes (theme, density, dir), layout and typography utility classes, and the custom properties you may set (--ayy-gap, --ayy-spot…).",
+      description: "The rules every ayywi UI must follow, the patterns (whole screens such as Settings, with their recipe and specs), plus conventions, global attributes (theme, density, dir), layout and typography utility classes, and the custom properties you may set (--ayy-gap, --ayy-spot…).",
       inputSchema: { type: "object", properties: {} },
       run: () =>
         [
           "Rules:",
           ...manifest.rules.map((r, i) => `${i + 1}. ${r}`),
           "",
+          ...(manifest.patterns ?? []).flatMap((p) => [
+            `Pattern: ${p.name} — ${p.summary}`,
+            `Built from: ${p.components.join(", ")}. Example: get_component ${p.example.split("/")[0]} (example "${p.example.split("/")[1]}").`,
+            ...p.steps.map((x, i) => `${i + 1}. ${x}`),
+            "Phones:",
+            ...p.phone.map((x) => `- ${x}`),
+            "Specs (don't restyle):",
+            ...Object.entries(p.specs).map(([k, v]) => `- ${k}: ${v}`),
+            "Do:",
+            ...p.do.map((x) => `- ${x}`),
+            "Don't:",
+            ...p.dont.map((x) => `- ${x}`),
+            "",
+          ]),
           "Conventions:",
           ...Object.entries(manifest.conventions).map(([k, v]) => `- ${k}: ${v}`),
           "",

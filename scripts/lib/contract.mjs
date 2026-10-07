@@ -75,6 +75,56 @@ export const ORDER = [
   "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "data-list", "swipe", "frame", "chat", "table", "chart",
 ];
 
+/** Screens built from several components that every app should build the same way. Each is rendered into the manifest
+    ("patterns"), llms-full.txt, llms.txt and the MCP server's get_rules, so agents follow one recipe instead of inventing one.
+    `example` is "<component slug>/<example id>". `specs` are the measurements apps must not restyle. */
+export const PATTERNS = [
+  {
+    name: "Settings",
+    slug: "settings",
+    summary:
+      "Settings open full screen in the app's own frame, as Notion's and Cursor's do: the sidebar's destinations give way to a Back link, a Settings title and the settings sections, and the main shows one section. Never a dialog, never tabs inside a page.",
+    components: ["app-shell", "top-bar", "settings", "switch", "select", "segmented-control", "shortcut", "button", "dialog", "toast"],
+    example: "app-shell/settings",
+    steps: [
+      "Entry: a Settings link in the sidebar's AppShellFooter (an icon and \"Settings\"). On phones, the same link in the More drawer, or the account button in the AppShellBar. Desktop apps also open it on ⌘, (Ctrl+, elsewhere).",
+      "Open: render the same AppShell with settings (class ayy-app-shell--settings) in place of the app's. Its AppShellSidebar holds, in order: AppShellBack (href = the page settings were opened from, text \"Back to <app name>\"), AppShellTitle (\"Settings\"), and an AppShellNav aria-label=\"Settings\" of AppShellGroups (\"Account\": profile, preferences, notifications; \"Workspace\" or \"App\": the app's own areas; \"About\" last). No AppShellBar, no BottomNav, no brand.",
+      "Sections: each section is its own URL (/settings/notifications) and its AppShellLink has current (aria-current=\"page\"). On wide screens /settings opens the first section; on phones it shows the section list.",
+      "Section page: the main starts with a TopBar (title = the section's name, its <h1>; backHref = /settings, backLabel = \"Settings\"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.",
+      "Saving: switches, selects and segmented controls apply at once; confirm with a Toast only when the effect isn't visible. Free text (a name, a folder path) saves on blur or Enter. Anything that must be submitted together (a password change) is a Dialog opened from a SettingsLink.",
+      "Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.",
+      "Leave: AppShellBack, Esc (outside a text field or an open overlay; connectAppShell handles it), or the browser's back. Put focus back on the Settings link the user came from.",
+    ],
+    phone: [
+      "Below 48rem the settings shell is two screens, picked by aria-current: with no section current, the sidebar is the screen (AppShellBack at the top, a large \"Settings\" title, the sections as rows with chevrons); with one current, the section fills the screen and its TopBar's back returns to /settings.",
+      "Settings rows wrap the control under the label when there isn't room; never shrink a control below its size.",
+      "For a choice with more than five options on a phone, use a SettingsLink with the current value that opens a sub-page with a radio list, instead of a long Select.",
+      "Touch density (data-density=\"touch\") raises sidebar items and rows to 52px; nothing is sized by hand.",
+    ],
+    specs: {
+      "Sidebar item (.ayy-app-shell__link, in the app and in settings)":
+        "--ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-3, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current=\"page\"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-1 apart. Groups: an uppercase --ayy-text-2xs label, and a hairline plus --ayy-space-3 above every group after the first.",
+      "Settings group (.ayy-settings)":
+        "A <section> labelled by its <h2> (--ayy-text-md, semibold), an optional muted --ayy-text-sm description, then the rows in a card: a 1px --ayy-color-line border, --ayy-radius-card, --ayy-color-surface. Groups are --ayy-space-6 apart. .ayy-settings--plain (no card) only in a sheet or dialog that already has a surface.",
+      "Settings row (.ayy-settings__row)":
+        "At least --ayy-size-control-lg high, padding --ayy-space-3 block and --ayy-space-4 inline, --ayy-space-4 between the text and the control. Label --ayy-text-sm medium; hint --ayy-text-xs muted, one line. The control sits at the inline end. A 1px --ayy-color-hairline between rows only: none above the first or below the last.",
+      "Section header (.ayy-top-bar in the settings main)":
+        "Sticky, the page colour with a hairline under it; title --ayy-text-md semibold, lined up with the content column. One <h1> per section.",
+    },
+    do: [
+      "Use this pattern for every settings, preferences or account screen in an app, however few settings there are.",
+      "Name sections with one noun (General, Appearance, Notifications, Shortcuts, Data, About) and give each a Hugeicons icon in the sidebar.",
+      "Keep every setting's label short and put the why in its hint.",
+    ],
+    dont: [
+      "Don't put settings in a Dialog, a Popover or Tabs inside a page: they can't hold a growing list of sections, and they end up looking different in every app.",
+      "Don't keep the app's destinations, bar or bottom nav on screen while settings are open; the Back link is the way out.",
+      "Don't restyle sidebar items or settings rows (radius, padding, dividers) in app CSS: the specs above are the contract, and they follow density on their own.",
+      "Don't add a Save button for settings that apply at once.",
+    ],
+  },
+];
+
 /** Attributes ayywi reads on any element. */
 export const ATTRIBUTES = {
   "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.",
@@ -94,7 +144,7 @@ export const RULES = [
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
   "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
   "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
-  "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button; on phones a screen pushed from a list starts with a Top bar (back, title, actions) instead, and a screen's one main create action can be a Floating action button. Lists of rows on phones get Swipe actions for their two or three most common actions, which are also reachable elsewhere. Settings screens use Settings rows; desktop apps add a Command palette on ⌘K. Never put a Navbar in an app.",
+  "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button; on phones a screen pushed from a list starts with a Top bar (back, title, actions) instead, and a screen's one main create action can be a Floating action button. Lists of rows on phones get Swipe actions for their two or three most common actions, which are also reachable elsewhere. Settings open full screen in the App shell's settings mode (the Settings pattern: the sidebar swaps to Back, a Settings title and the sections; the main shows one section of Settings rows; on phones the section list and a section are two screens), never in a dialog; desktop apps add a Command palette on ⌘K. Never put a Navbar in an app.",
   "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
   "Data views use ayywi's own pieces: Chart (BarChart, LineChart), Bar list and Sparkline for charts, coloured from --ayy-chart-1… in order; filters as Chips (with counts) above the results and the active ones as removable chips; sortable Table columns with a .ayy-table__sort button and aria-sort on the <th>. With a chart library, colour it with var(--ayy-chart-N) (SVG) or chartColors() and chartTheme() (canvas); never its default palette.",
   "Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Number field for small counts, a Slider for a rough amount, a Calendar or DatePicker for a date near today (native type=\"date\" for a birth date, type=\"time\" for times), Swatches for a colour, a Tag input for free-text tags or recipients, a Search bar to filter a list, a Shortcut recorder for key bindings, File upload for files.",

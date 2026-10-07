@@ -47,6 +47,8 @@ test("MCP handshake and tools", async (t) => {
   assert.match(await call("get_component", { name: "DropdownMenu" }), /ayy-menu__item/);
   assert.match(await call("get_component", { name: "ayy-tabs" }), /ayy-value-change/);
   assert.match(await call("get_tokens", { group: "color" }), /--ayy-color-bg/);
+  assert.match(await call("search", { query: "settings" }), /^- pattern settings:/);
+  assert.match(await call("get_rules", {}), /Pattern: Settings[\s\S]*Back to <app name>[\s\S]*Settings row/);
   assert.match(await call("lint", { code: `<button class="ayy-buton">x</button>`, filename: "x.html" }), /unknown-class/);
 
   const bad = await s.request("tools/call", { name: "nope", arguments: {} });

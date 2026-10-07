@@ -1,6 +1,6 @@
 # App shell
 
-Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.
+Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens).
 
 **Classes**
 - `.ayy-app-shell` — Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.
@@ -17,15 +17,20 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - `.ayy-app-shell__footer` — Pinned to the bottom of the sidebar (the end of the row on phones): settings, account, help link. Keep it short.
 - `.ayy-app-shell__main` — The <main> content column. Scrolls on its own and has the page gutter.
 - `.ayy-app-shell__bar` — Phone top bar, first child of the shell, hidden from 48rem: the brand, then one or two actions (search, account), which sit at the inline end. Add a __toggle to it when the sidebar should open as a drawer. With a bar or a bottom nav the phone sidebar is off-screen; it slides in from the inline-start edge over a scrim while a toggle has aria-expanded="true".
+- `.ayy-app-shell--settings` — Settings mode, on the root. The sidebar holds an __back, an __title and a nav of settings sections (groups of links, one aria-current="page"); the main holds the open section, starting with a Top bar whose title names it and whose back button shows on phones only; the section's content sits in a column of --ayy-size-measure, centred. No __bar and no bottom nav. Below 48rem: with no section link current the sidebar is the whole screen (a large title and rows with chevrons) and the main is hidden; with one current, the main is the screen and the sidebar is hidden.
+- `.ayy-app-shell__back` — First in a settings sidebar: an <a href> back to the page settings were opened from (or a <button>), with a directional arrow icon and "Back to <app name>". In settings mode, Esc follows it.
+- `.ayy-app-shell__title` — A settings sidebar's heading, an <h2> "Settings" under the __back. Large on the phone's section list.
 - `.ayy-app-shell__toggle` — The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the "More" tab of the bottom nav (<button class="ayy-bottom-nav__link ayy-app-shell__toggle">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it.
 
-**JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).
+**JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and, on a settings shell, Esc to leave settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).
 
-**Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing.
+**Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On a settings shell, Esc follows the __back. Otherwise it does nothing.
 
 
-**React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
-- `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle".
+**React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
+- `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle". Props: `settings` boolean — settings mode (ayy-app-shell--settings): the sidebar holds AppShellBack, AppShellTitle and the sections; Esc leaves.
+- `<AppShellBack>` renders <a class="ayy-app-shell__back" href> with a directional arrow and the children in a <span>; a <button type="button"> without href. Props: `href` string — where leaving settings goes. Without it, pass onClick.; `children` "Back to <app name>" (translate it).
+- `<AppShellTitle>` renders <h2 class="ayy-app-shell__title">. Props: `children` "Settings".
 - `<AppShellSidebar>` renders <aside class="ayy-app-shell__sidebar">.
 - `<AppShellBrand>` renders <a class="ayy-app-shell__brand">.
 - `<AppShellNav>` renders <nav class="ayy-app-shell__nav">. Props: `aria-label` Defaults to "Main" (translate it).
@@ -49,6 +54,8 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - Mark the current child with aria-current="page" and open its collapse. A closed collapse that holds the current page is drawn bolder, so the location isn't hidden.
 - Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex="0" so keyboard users can scroll it.
 - The drawer's toggle is a real <button> with aria-expanded and aria-controls pointing at the sidebar (set for you). Opening moves focus to the first link in the drawer and makes the rest of the shell inert; Esc closes it and returns focus to the toggle.
+- Settings mode: give the sections' nav its own label ("Settings"), mark the open section with aria-current="page", and make the section's Top bar title the page's <h1> (the sidebar title is an <h2>). Opening settings or a section moves focus to the main's <h1> or the main, as any page change does.
+- Esc leaves a settings shell through its __back, except when focus is in a text field or an open menu, popover or dialog has it.
 - The phone sidebar (closed drawer) is visibility: hidden, and the bottom nav is display: none from 48rem, so hidden links are out of the tab order and the accessibility tree.
 
 **Do**
@@ -62,6 +69,8 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - Keep to one line per link: an icon and a short label.
 - Put account and help links in the footer, not among the destinations. Keep it to one or two compact items.
 - Start each page in the main with a Page header (title, description, actions).
+- Open settings from the sidebar footer's Settings link (on phones: the More drawer or the account button in the __bar) as a full screen: the same shell with settings, an __back to where the user was, a "Settings" title and the sections grouped (Account, Workspace / App). Each section is its own URL (/settings/notifications) and starts with a Top bar.
+- On wide screens open settings on the first section; on phones open the section list (no link current) and push a section from it.
 
 **Don't**
 - Don't use it for a marketing site or a content page — use Navbar and Sections.
@@ -72,6 +81,8 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - Don't hide or show the sidebar and bottom nav with your own media queries; the shell switches them at 48rem.
 - Don't make a collapse the only way to reach a page the user needs often.
 - Don't nest a second app shell.
+- Don't put settings in a Dialog or in Tabs inside a page; they are the settings shell. A Dialog is for one or two quick options next to what they change.
+- Don't keep the app's own destinations, its __bar or its bottom nav on screen in settings mode; the __back is the way out.
 - Don't scroll the page body as well; the shell already fills the viewport.
 - Don't give the sidebar its own background colour; the surface token follows every theme.
 - Don't keep the drawer open as a persistent panel on phones, and don't open it on page load.
@@ -652,6 +663,247 @@ export default function Example() {
             <h2 className="ayy-h3">Dashboard</h2>
             <p className="ayy-muted">What's moving across your projects this week.</p>
           </div>
+        </AppShellMain>
+      </AppShell>
+    </div>
+  );
+}
+```
+
+## App shell — Full-screen settings
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- Settings replace the app's own frame: the same shell, its sidebar swapped for a way back and the sections. Below 48rem the section list and the open section are two screens. The outer box only stands in for the browser window. -->
+<div style="inline-size: 100%; block-size: 34rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
+  <ayy-app-shell>
+    <div class="ayy-app-shell ayy-app-shell--settings" style="block-size: 100%">
+      <aside class="ayy-app-shell__sidebar">
+        <a class="ayy-app-shell__back" href="#inbox">
+          <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+          <span>Back to Northwind</span>
+        </a>
+        <h2 class="ayy-app-shell__title">Settings</h2>
+        <nav class="ayy-app-shell__nav" aria-label="Settings">
+          <div class="ayy-app-shell__group">
+            <p class="ayy-app-shell__group-label" id="settings-account-html">Account</p>
+            <ul class="ayy-app-shell__list" aria-labelledby="settings-account-html">
+              <li>
+                <a class="ayy-app-shell__link" href="#profile">
+                  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.4984 19.1511C17.3377 17.4018 15.2947 16.2009 12.9313 16.0569L11.9984 16C11.6652 16.0083 11.3547 16.0194 11.0617 16.0325C8.71722 16.1376 6.66598 17.3796 5.5 19.1511" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M14.9961 10C14.9961 11.6569 13.6529 13 11.9961 13C10.3392 13 8.99609 11.6569 8.99609 10C8.99609 8.34315 10.3392 7 11.9961 7C13.6529 7 14.9961 8.34315 14.9961 10Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                  Profile
+                </a>
+              </li>
+              <li>
+                <a class="ayy-app-shell__link" aria-current="page" href="#preferences">
+                  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C12.8417 22 14 22.1163 14 21C14 20.391 13.6832 19.9212 13.3686 19.4544C12.9082 18.7715 12.4523 18.0953 13 17C13.6667 15.6667 14.7778 15.6667 16.4815 15.6667C17.3334 15.6667 18.3334 15.6667 19.5 15.5C21.601 15.1999 22 13.9084 22 12Z" stroke="currentColor" stroke-width="1.5"/><circle cx="9.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"></circle><circle cx="16.5" cy="9.5" r="1.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M7.125 15H7M7.25 15C7.25 15.1381 7.13807 15.25 7 15.25C6.86193 15.25 6.75 15.1381 6.75 15C6.75 14.8619 6.86193 14.75 7 14.75C7.13807 14.75 7.25 14.8619 7.25 15Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                  Preferences
+                </a>
+              </li>
+              <li>
+                <a class="ayy-app-shell__link" href="#notifications">
+                  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 18.5011L18.349 7.93407C17.8603 4.80601 15.166 2.5 12 2.5C8.83398 2.5 6.13971 4.80601 5.65098 7.93407L4 18.5011" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M20 18.5C20 16.8431 16.4183 15.5 12 15.5C7.58172 15.5 4 16.8431 4 18.5C4 20.1569 7.58172 21.5 12 21.5C16.4183 21.5 20 20.1569 20 18.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18.5H11" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                  Notifications
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="ayy-app-shell__group">
+            <p class="ayy-app-shell__group-label" id="settings-workspace-html">Workspace</p>
+            <ul class="ayy-app-shell__list" aria-labelledby="settings-workspace-html">
+              <li>
+                <a class="ayy-app-shell__link" href="#members">
+                  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.4995 20.5C18.2663 17.5685 15.8417 15.2477 12.808 15.0521L11.9995 15C11.7107 15.0076 11.4416 15.0178 11.1877 15.0298C8.18075 15.1723 5.7304 17.5974 5.49951 20.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M15.2495 9.25C15.2495 11.0449 13.7944 12.5 11.9995 12.5C10.2046 12.5 8.74952 11.0449 8.74952 9.25C8.74952 7.45507 10.2046 6 11.9995 6C13.7944 6 15.2495 7.45507 15.2495 9.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M5.50249 8.5C5.17908 7.99485 4.99158 7.39432 4.99158 6.75C4.99158 4.95507 6.44665 3.5 8.24157 3.5C8.68752 3.5 9.1125 3.58982 9.49939 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M18.4963 8.5C18.8197 7.99485 19.0072 7.39432 19.0072 6.75C19.0072 4.95507 17.5521 3.5 15.7572 3.5C15.3113 3.5 14.8863 3.58982 14.4994 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M22.0007 17.9996C21.8208 15.7374 19.9995 13.5 17.9995 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M1.99927 17.9996C2.17923 15.7374 4.00049 13.5 6.00049 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                  Members
+                </a>
+              </li>
+              <li>
+                <a class="ayy-app-shell__link" href="#shortcuts">
+                  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 7H9.5C6.21252 7 4.56878 7 3.46243 7.90796C3.25989 8.07418 3.07418 8.25989 2.90796 8.46243C2 9.56878 2 11.2125 2 14.5C2 17.7875 2 19.4312 2.90796 20.5376C3.07418 20.7401 3.25989 20.9258 3.46243 21.092C4.56878 22 6.21252 22 9.5 22H14.5C17.7875 22 19.4312 22 20.5376 21.092C20.7401 20.9258 20.9258 20.7401 21.092 20.5376C22 19.4312 22 17.7875 22 14.5C22 11.2125 22 9.56878 21.092 8.46243C20.9258 8.25989 20.7401 8.07418 20.5376 7.90796C19.4312 7 17.7875 7 14.5 7Z" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/><path d="M12 7V5C12 4.44772 12.4477 4 13 4C13.5523 4 14 3.55228 14 3V2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7 12L8 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M11.5 12L12.5 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M16 12L17 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7 17L17 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                  Shortcuts
+                </a>
+              </li>
+              <li>
+                <a class="ayy-app-shell__link" href="#data">
+                  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.682 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M3 12H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M11 7.5L17 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7.125 7.5H7M7.25 7.5C7.25 7.63807 7.13807 7.75 7 7.75C6.86193 7.75 6.75 7.63807 6.75 7.5C6.75 7.36193 6.86193 7.25 7 7.25C7.13807 7.25 7.25 7.36193 7.25 7.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M11 16.5L17 16.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7.125 16.5H7M7.25 16.5C7.25 16.6381 7.13807 16.75 7 16.75C6.86193 16.75 6.75 16.6381 6.75 16.5C6.75 16.3619 6.86193 16.25 7 16.25C7.13807 16.25 7.25 16.3619 7.25 16.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                  Data and sync
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+      <main class="ayy-app-shell__main">
+        <header class="ayy-top-bar">
+          <a class="ayy-top-bar__back" href="#settings">
+            <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+            <span>Settings</span>
+          </a>
+          <h1 class="ayy-top-bar__title">Preferences</h1>
+        </header>
+        <section class="ayy-settings" aria-labelledby="pref-appearance-html">
+          <h2 id="pref-appearance-html" class="ayy-settings__title">Appearance</h2>
+          <div class="ayy-settings__list">
+            <div class="ayy-settings__row">
+              <div class="ayy-settings__text">
+                <label class="ayy-settings__label" for="pref-theme-html">Theme</label>
+              </div>
+              <div class="ayy-settings__control">
+                <div class="ayy-select">
+                  <select class="ayy-select__control" id="pref-theme-html">
+                    <option value="system" selected="">Match the system</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="ayy-settings__row">
+              <div class="ayy-settings__text">
+                <label class="ayy-settings__label" for="pref-touch-html">Larger controls</label>
+                <p class="ayy-settings__hint" id="pref-touch-hint-html">Taller rows and buttons, easier to tap.</p>
+              </div>
+              <div class="ayy-settings__control">
+                <input type="checkbox" role="switch" class="ayy-switch" id="pref-touch-html" aria-describedby="pref-touch-hint-html"/>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="ayy-settings" aria-labelledby="pref-general-html">
+          <h2 id="pref-general-html" class="ayy-settings__title">General</h2>
+          <div class="ayy-settings__list">
+            <div class="ayy-settings__row">
+              <div class="ayy-settings__text">
+                <label class="ayy-settings__label" for="pref-login-html">Open at login</label>
+                <p class="ayy-settings__hint" id="pref-login-hint-html">Start in the menu bar when you sign in.</p>
+              </div>
+              <div class="ayy-settings__control">
+                <input type="checkbox" role="switch" class="ayy-switch" id="pref-login-html" aria-describedby="pref-login-hint-html" checked=""/>
+              </div>
+            </div>
+            <div class="ayy-settings__row">
+              <div class="ayy-settings__text">
+                <label class="ayy-settings__label" for="pref-week-html">Week starts on</label>
+              </div>
+              <div class="ayy-settings__control">
+                <div class="ayy-select">
+                  <select class="ayy-select__control" id="pref-week-html">
+                    <option value="0">Sunday</option>
+                    <option value="1" selected="">Monday</option>
+                    <option value="6">Saturday</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </ayy-app-shell>
+</div>
+```
+
+React:
+
+```tsx
+import { Database01Icon, KeyboardIcon, Notification03Icon, PaintBoardIcon, UserCircleIcon, UserGroupIcon } from "@hugeicons/core-free-icons";
+import {
+  AppShell,
+  AppShellBack,
+  AppShellGroup,
+  AppShellItem,
+  AppShellLink,
+  AppShellMain,
+  AppShellNav,
+  AppShellSidebar,
+  AppShellTitle,
+  Icon,
+  Select,
+  Settings,
+  SettingsRow,
+  Switch,
+  TopBar,
+} from "@danitesler/ayywi/react";
+
+export default function Example() {
+  // Settings replace the app's own frame: same shell, the sidebar swapped for a way back and the sections. Below 48rem the
+  // section list and the open section are two screens. The box stands in for the browser window; drop it in your app.
+  return (
+    <div style={{ inlineSize: "100%", blockSize: "34rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
+      <AppShell settings style={{ blockSize: "100%" }}>
+        <AppShellSidebar>
+          <AppShellBack href="#inbox">Back to Northwind</AppShellBack>
+          <AppShellTitle>Settings</AppShellTitle>
+          <AppShellNav aria-label="Settings">
+            <AppShellGroup label="Account">
+              <AppShellItem>
+                <AppShellLink href="#profile">
+                  <Icon icon={UserCircleIcon} />
+                  Profile
+                </AppShellLink>
+              </AppShellItem>
+              <AppShellItem>
+                <AppShellLink href="#preferences" current>
+                  <Icon icon={PaintBoardIcon} />
+                  Preferences
+                </AppShellLink>
+              </AppShellItem>
+              <AppShellItem>
+                <AppShellLink href="#notifications">
+                  <Icon icon={Notification03Icon} />
+                  Notifications
+                </AppShellLink>
+              </AppShellItem>
+            </AppShellGroup>
+            <AppShellGroup label="Workspace">
+              <AppShellItem>
+                <AppShellLink href="#members">
+                  <Icon icon={UserGroupIcon} />
+                  Members
+                </AppShellLink>
+              </AppShellItem>
+              <AppShellItem>
+                <AppShellLink href="#shortcuts">
+                  <Icon icon={KeyboardIcon} />
+                  Shortcuts
+                </AppShellLink>
+              </AppShellItem>
+              <AppShellItem>
+                <AppShellLink href="#data">
+                  <Icon icon={Database01Icon} />
+                  Data and sync
+                </AppShellLink>
+              </AppShellItem>
+            </AppShellGroup>
+          </AppShellNav>
+        </AppShellSidebar>
+        <AppShellMain>
+          <TopBar backHref="#settings" backLabel="Settings" title="Preferences" />
+          <Settings title="Appearance">
+            <SettingsRow label="Theme" htmlFor="pref-theme">
+              <Select id="pref-theme" defaultValue="system">
+                <option value="system">Match the system</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </Select>
+            </SettingsRow>
+            <SettingsRow label="Larger controls" htmlFor="pref-touch" hint="Taller rows and buttons, easier to tap.">
+              <Switch id="pref-touch" aria-describedby="pref-touch-hint" />
+            </SettingsRow>
+          </Settings>
+          <Settings title="General">
+            <SettingsRow label="Open at login" htmlFor="pref-login" hint="Start in the menu bar when you sign in.">
+              <Switch id="pref-login" aria-describedby="pref-login-hint" defaultChecked />
+            </SettingsRow>
+            <SettingsRow label="Week starts on" htmlFor="pref-week">
+              <Select id="pref-week" defaultValue="1">
+                <option value="0">Sunday</option>
+                <option value="1">Monday</option>
+                <option value="6">Saturday</option>
+              </Select>
+            </SettingsRow>
+          </Settings>
         </AppShellMain>
       </AppShell>
     </div>

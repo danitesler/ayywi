@@ -1,10 +1,11 @@
 import { forwardRef, useEffect, useId, useRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type DetailsHTMLAttributes, type HTMLAttributes, type LiHTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
-import { Menu01Icon } from "../../lib/icons";
+import { ArrowLeft01Icon, Menu01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { buttonClass } from "../button/button";
 import { Icon } from "../icon/icon.react";
 import {
+  appShellBackClass,
   appShellBarClass,
   appShellBrandClass,
   appShellCollapseClass,
@@ -17,17 +18,62 @@ import {
   appShellListClass,
   appShellMainClass,
   appShellNavClass,
+  appShellSettingsClass,
   appShellSidebarClass,
   appShellSublistClass,
+  appShellTitleClass,
   appShellToggleClass,
   connectAppShell,
 } from "./app-shell";
 
+export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * Settings mode: the sidebar holds an AppShellBack, an AppShellTitle and the settings sections, and the main shows one
+   * section full screen. On phones the sections list and the open section are separate screens. Esc leaves settings.
+   */
+  settings?: boolean;
+}
+
 /** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. */
-export const AppShell = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function AppShell({ className, ...props }, ref) {
+export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell({ settings, className, ...props }, ref) {
   const own = useRef<HTMLDivElement>(null);
   useEffect(() => (own.current ? connectAppShell(own.current) : undefined), []);
-  return <div ref={mergeRefs(own, ref)} className={cx(appShellClass, className)} {...props} />;
+  return <div ref={mergeRefs(own, ref)} className={cx(appShellClass, settings && appShellSettingsClass, className)} {...props} />;
+});
+
+export interface AppShellBackProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Where leaving settings goes (the page the user opened settings from). Without it the back is a <button>: pass onClick. */
+  href?: string;
+}
+
+/** The way out of settings, first in the sidebar: an arrow and "Back to <app>". A link with href, else a button. */
+export const AppShellBack = forwardRef<HTMLAnchorElement & HTMLButtonElement, AppShellBackProps>(function AppShellBack(
+  { className, children, ...props },
+  ref,
+) {
+  const content = (
+    <>
+      <Icon icon={ArrowLeft01Icon} directional />
+      <span>{children}</span>
+    </>
+  );
+  if (props.href !== undefined) {
+    return (
+      <a ref={ref} className={cx(appShellBackClass, className)} {...props}>
+        {content}
+      </a>
+    );
+  }
+  return (
+    <button ref={ref} type="button" className={cx(appShellBackClass, className)} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}>
+      {content}
+    </button>
+  );
+});
+
+/** The settings sidebar's heading ("Settings"), under AppShellBack. An <h2>: each section's Top bar holds the page's <h1>. */
+export const AppShellTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(function AppShellTitle({ className, ...props }, ref) {
+  return <h2 ref={ref} className={cx(appShellTitleClass, className)} {...props} />;
 });
 
 /** The phone top bar (hidden from 48rem): an AppShellToggle, the brand, and maybe a search button. Put it first in the shell. */

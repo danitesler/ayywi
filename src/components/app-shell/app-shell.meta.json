@@ -3,7 +3,7 @@
   "slug": "app-shell",
   "status": "beta",
   "category": "Navigation",
-  "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.",
+  "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens).",
   "classes": {
     "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.",
     "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport. On phones it's hidden (bottom-nav layout) or a drawer, and keeps its full tree either way.",
@@ -19,16 +19,27 @@
     "ayy-app-shell__footer": "Pinned to the bottom of the sidebar (the end of the row on phones): settings, account, help link. Keep it short.",
     "ayy-app-shell__main": "The <main> content column. Scrolls on its own and has the page gutter.",
     "ayy-app-shell__bar": "Phone top bar, first child of the shell, hidden from 48rem: the brand, then one or two actions (search, account), which sit at the inline end. Add a __toggle to it when the sidebar should open as a drawer. With a bar or a bottom nav the phone sidebar is off-screen; it slides in from the inline-start edge over a scrim while a toggle has aria-expanded=\"true\".",
+    "ayy-app-shell--settings": "Settings mode, on the root. The sidebar holds an __back, an __title and a nav of settings sections (groups of links, one aria-current=\"page\"); the main holds the open section, starting with a Top bar whose title names it and whose back button shows on phones only; the section's content sits in a column of --ayy-size-measure, centred. No __bar and no bottom nav. Below 48rem: with no section link current the sidebar is the whole screen (a large title and rows with chevrons) and the main is hidden; with one current, the main is the screen and the sidebar is hidden.",
+    "ayy-app-shell__back": "First in a settings sidebar: an <a href> back to the page settings were opened from (or a <button>), with a directional arrow icon and \"Back to <app name>\". In settings mode, Esc follows it.",
+    "ayy-app-shell__title": "A settings sidebar's heading, an <h2> \"Settings\" under the __back. Large on the phone's section list.",
     "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it."
   },
-  "variants": {},
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).",
+  "variants": {
+    "settings": { "values": [false, true], "default": false, "component": "AppShell" }
+  },
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and, on a settings shell, Esc to leave settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
   "react": {
-    "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
+    "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "AppShell": {
-        "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\""
+        "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\"",
+        "props": { "settings": "boolean — settings mode (ayy-app-shell--settings): the sidebar holds AppShellBack, AppShellTitle and the sections; Esc leaves." }
       },
+      "AppShellBack": {
+        "renders": "<a class=\"ayy-app-shell__back\" href> with a directional arrow and the children in a <span>; a <button type=\"button\"> without href",
+        "props": { "href": "string — where leaving settings goes. Without it, pass onClick.", "children": "\"Back to <app name>\" (translate it)." }
+      },
+      "AppShellTitle": { "renders": "<h2 class=\"ayy-app-shell__title\">", "props": { "children": "\"Settings\"." } },
       "AppShellSidebar": { "renders": "<aside class=\"ayy-app-shell__sidebar\">" },
       "AppShellBrand": { "renders": "<a class=\"ayy-app-shell__brand\">" },
       "AppShellNav": { "renders": "<nav class=\"ayy-app-shell__nav\">", "props": { "aria-label": "Defaults to \"Main\" (translate it)." } },
@@ -62,6 +73,8 @@
     "Mark the current child with aria-current=\"page\" and open its collapse. A closed collapse that holds the current page is drawn bolder, so the location isn't hidden.",
     "Both columns are scroll containers. If a column can scroll but holds nothing focusable, give it tabindex=\"0\" so keyboard users can scroll it.",
     "The drawer's toggle is a real <button> with aria-expanded and aria-controls pointing at the sidebar (set for you). Opening moves focus to the first link in the drawer and makes the rest of the shell inert; Esc closes it and returns focus to the toggle.",
+    "Settings mode: give the sections' nav its own label (\"Settings\"), mark the open section with aria-current=\"page\", and make the section's Top bar title the page's <h1> (the sidebar title is an <h2>). Opening settings or a section moves focus to the main's <h1> or the main, as any page change does.",
+    "Esc leaves a settings shell through its __back, except when focus is in a text field or an open menu, popover or dialog has it.",
     "The phone sidebar (closed drawer) is visibility: hidden, and the bottom nav is display: none from 48rem, so hidden links are out of the tab order and the accessibility tree."
   ],
   "do": [
@@ -74,7 +87,9 @@
     "Use a link followed by a __sublist when the parent is itself a page and its children are sections of it (Colors → Surfaces, Text…).",
     "Keep to one line per link: an icon and a short label.",
     "Put account and help links in the footer, not among the destinations. Keep it to one or two compact items.",
-    "Start each page in the main with a Page header (title, description, actions)."
+    "Start each page in the main with a Page header (title, description, actions).",
+    "Open settings from the sidebar footer's Settings link (on phones: the More drawer or the account button in the __bar) as a full screen: the same shell with settings, an __back to where the user was, a \"Settings\" title and the sections grouped (Account, Workspace / App). Each section is its own URL (/settings/notifications) and starts with a Top bar.",
+    "On wide screens open settings on the first section; on phones open the section list (no link current) and push a section from it."
   ],
   "dont": [
     "Don't use it for a marketing site or a content page — use Navbar and Sections.",
@@ -85,6 +100,8 @@
     "Don't hide or show the sidebar and bottom nav with your own media queries; the shell switches them at 48rem.",
     "Don't make a collapse the only way to reach a page the user needs often.",
     "Don't nest a second app shell.",
+    "Don't put settings in a Dialog or in Tabs inside a page; they are the settings shell. A Dialog is for one or two quick options next to what they change.",
+    "Don't keep the app's own destinations, its __bar or its bottom nav on screen in settings mode; the __back is the way out.",
     "Don't scroll the page body as well; the shell already fills the viewport.",
     "Don't give the sidebar its own background colour; the surface token follows every theme.",
     "Don't keep the drawer open as a persistent panel on phones, and don't open it on page load."
@@ -93,12 +110,13 @@
     { "id": "basic", "title": "Sidebar with navigation" },
     { "id": "tabs", "title": "Tab bar on phones, with More" },
     { "id": "grouped", "title": "Groups, sub-sections and a collapse" },
-    { "id": "drawer", "title": "Phone drawer" }
+    { "id": "drawer", "title": "Phone drawer" },
+    { "id": "settings", "title": "Full-screen settings" }
   ],
   "element": {
     "tag": "ayy-app-shell",
     "attributes": {},
     "events": {},
-    "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing."
+    "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On a settings shell, Esc follows the __back. Otherwise it does nothing."
   }
 }

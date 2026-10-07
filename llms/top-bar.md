@@ -28,6 +28,7 @@ Category: Navigation. A phone screen's header: a back button, the screen's title
 - Use it at the top of every phone screen below the tab bar's first level, with a back button to where the user came from.
 - Use large on a tab's first screen (Inbox, Notes), plain on the screens pushed from it.
 - Put the screen's own search in the __row so it scrolls away with the bar or stays, as you choose.
+- Start each section of a settings shell (App shell in settings mode) with one: backHref to the section list, backLabel "Settings", the section's name as the title. Its back button shows on phones only, and on wide screens its title lines up with the section's column.
 
 **Don't**
 - Don't use it as a site's header on wide screens — that's the Navbar (or the App shell's sidebar).

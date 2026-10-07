@@ -170,14 +170,17 @@
   padding-block-start: calc(var(--ayy-space-4) + env(safe-area-inset-top, 0px));
 }
 
-/* In an app shell's main area (its first child): edge to edge over the main area's padding. */
+/* In an app shell's main area (its first child): edge to edge over the main area's padding. Sticking happens inside that
+   padding, so the bar sticks at minus the padding to stay at the very top. */
 .ayy-app-shell__main > .ayy-top-bar:first-child {
+  inset-block-start: calc(-1 * var(--ayy-space-6));
   margin-block: calc(-1 * var(--ayy-space-6)) var(--ayy-space-4);
   margin-inline: calc(-1 * var(--ayy-space-6));
 }
 
 @media (max-width: 48rem) {
   .ayy-app-shell__main > .ayy-top-bar:first-child {
+    inset-block-start: calc(-1 * var(--ayy-space-4));
     margin-block-start: calc(-1 * var(--ayy-space-4));
     margin-inline: calc(-1 * var(--ayy-space-4));
   }

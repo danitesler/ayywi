@@ -13,6 +13,12 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 - [ai/skills/ayywi/SKILL.md](ai/skills/ayywi/SKILL.md): how to build a page or an app with ayywi, step by step
 - MCP server: `npx ayywi mcp` (tools: list_components, get_component, search, get_tokens, get_rules, lint)
 
+## Patterns
+
+Screens every app builds the same way, from several components:
+
+- [Settings](llms/pattern-settings.md): Settings open full screen in the app's own frame, as Notion's and Cursor's do: the sidebar's destinations give way to a Back link, a Settings title and the settings sections, and the main shows one section. Never a dialog, never tabs inside a page.
+
 ## Components
 
 Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); the same sections are in llms-full.txt.
@@ -29,7 +35,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 ### Navigation
 
 - [Navbar](llms/navbar.md): Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.
-- [App shell](llms/app-shell.md): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.
+- [App shell](llms/app-shell.md): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens).
 - [Bottom nav](llms/bottom-nav.md): A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.
 - [Top bar](llms/top-bar.md): A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.
 - [Footer](llms/footer.md): The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
