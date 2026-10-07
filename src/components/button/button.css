@@ -127,7 +127,8 @@
   text-decoration: underline;
 }
 
-/* ---- Ring: the showcase call to action. A gradient ring that spins while hovered or focused. One per view. ---- */
+/* ---- Ring: the showcase call to action. A gradient ring that spins while hovered (with a mouse) or focused. One per
+   view. ---- */
 
 @property --_ring-angle {
   syntax: "<angle>";
@@ -165,8 +166,15 @@
   pointer-events: none;
 }
 
-.ayy-button--ring:is(:hover, :focus-visible)::before {
+.ayy-button--ring:focus-visible::before {
   animation: ayy-ring-spin calc(var(--ayy-duration-slower) * 2) linear infinite;
+}
+
+/* A tap leaves :hover on touch screens, so the ring would keep spinning after it. */
+@media (hover: hover) {
+  .ayy-button--ring:hover::before {
+    animation: ayy-ring-spin calc(var(--ayy-duration-slower) * 2) linear infinite;
+  }
 }
 
 @keyframes ayy-ring-spin {

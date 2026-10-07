@@ -8,9 +8,11 @@
   font-size: var(--ayy-text-sm);
 }
 
-/* Stays in view beside long content, below the navbar. Give it its own grid column or flex item. */
+/* Stays in view beside long content, below the navbar. Put it before the content in a wrapping flex row (it takes
+   11rem there) or give it its own grid column. On phones it becomes a strip of section links under the navbar. */
 .ayy-toc--sticky {
   position: sticky;
+  flex: 0 1 11rem;
   inset-block-start: calc(var(--ayy-size-header) + var(--ayy-space-8));
   align-self: start;
   max-block-size: calc(100vh - var(--ayy-size-header) - var(--ayy-space-16));
@@ -48,7 +50,8 @@
   align-items: baseline;
   gap: var(--ayy-space-3);
   margin-inline-start: -1px;
-  padding-block: var(--ayy-space-1-5);
+  /* At least a small control tall, so touch density gives a 40px target without changing the compact rail. */
+  padding-block: max(var(--ayy-space-1-5), (var(--ayy-size-control-sm) - 1lh) / 2);
   padding-inline: var(--ayy-space-4) var(--ayy-space-2);
   border-radius: var(--ayy-radius-sm);
   color: var(--ayy-color-muted);
@@ -102,6 +105,68 @@
 
 .ayy-toc__link[aria-current]:not([aria-current="false"]) .ayy-toc__number {
   color: light-dark(color-mix(in srgb, var(--_accent) 45%, var(--ayy-color-text)), var(--_accent));
+}
+
+/* Phones: the sticky rail turns into one scrolling row of top-level sections under the navbar, the current one
+   underlined (connectToc scrolls it into view). Sub-sections are left out; their parent lights up while you read them. */
+@media (max-width: 48rem) {
+  .ayy-toc--sticky {
+    z-index: 1;
+    flex-basis: 100%;
+    inset-block-start: var(--ayy-size-header);
+    max-block-size: none;
+    overflow: visible;
+    border-block-end: 1px solid var(--ayy-color-hairline);
+    background-color: var(--ayy-color-bg);
+  }
+
+  .ayy-toc--sticky .ayy-toc__title {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .ayy-toc--sticky .ayy-toc__list {
+    flex-direction: row;
+    gap: var(--ayy-space-1);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border-inline-start: 0;
+    scrollbar-width: none;
+  }
+
+  .ayy-toc--sticky .ayy-toc__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ayy-toc--sticky .ayy-toc__list .ayy-toc__list {
+    display: none;
+  }
+
+  .ayy-toc--sticky .ayy-toc__link {
+    flex: none;
+    gap: var(--ayy-space-2);
+    margin-inline-start: 0;
+    padding-inline: var(--ayy-space-3);
+    white-space: nowrap;
+  }
+
+  .ayy-toc--sticky .ayy-toc__link::before {
+    inset-block: auto 0;
+    inset-inline: var(--ayy-space-3);
+    inline-size: auto;
+    block-size: 2px;
+    transform: scaleX(0);
+  }
+
+  /* Reading a sub-section: its parent, the link that's shown, takes the bar. */
+  .ayy-toc--sticky li:has(.ayy-toc__link[aria-current]:not([aria-current="false"])) > .ayy-toc__link::before {
+    transform: scaleX(1);
+  }
 }
 
 @media (forced-colors: active) {

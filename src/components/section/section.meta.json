@@ -5,7 +5,7 @@
   "category": "Layout",
   "description": "A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.",
   "classes": {
-    "ayy-section": "Root <section>. 96px block padding (80px on phones, 128px on wide screens). Add ayy-container for page width.",
+    "ayy-section": "Root <section>. 96px block padding (48px on phones, 128px on wide screens). Add ayy-container for page width.",
     "ayy-section--center": "Header centred over the content; start-aligned again on phones.",
     "ayy-section__header": "Eyebrow, title and description, capped at a readable width.",
     "ayy-section__eyebrow": "Small uppercase label above the title.",

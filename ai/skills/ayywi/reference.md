@@ -90,7 +90,7 @@ On-page table of contents with a scrollspy: a rail of section links where the on
 - React: `<Toc items title numbered sticky offset onValueChange aria-label>`
 - Element: `<ayy-toc offset>`, events `ayy-value-change`
 - JS: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
-- A11y: It's a <nav> with a name (the title via aria-labelledby, or aria-label="On this page"), so it shows up in landmark lists. The current section is aria-current="location", announced by screen readers, not only drawn as a colour bar. Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header.
+- A11y: It's a <nav> with a name (the title via aria-labelledby, or aria-label="On this page"), so it shows up in landmark lists. The current section is aria-current="location", announced by screen readers, not only drawn as a colour bar. Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header. Links grow to a 40px target at touch density. On phones the visible title is hidden but still names the nav.
 
 ## Field (Forms)
 Form field wrapper: Label + control + hint or error, stacked with consistent spacing.

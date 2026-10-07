@@ -36,7 +36,7 @@
     "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
     "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
     "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
-    "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
+    "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state. Movement on :hover (lifts, zooms, spins) goes inside @media (hover: hover), because a tap leaves :hover stuck on touch screens.",
     "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
     "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
     "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button. Never put a Navbar in an app.",
@@ -1521,7 +1521,7 @@
         "ayy-button--ghost": "No border or fill until hover. Toolbars, icon buttons.",
         "ayy-button--destructive": "Tinted red. Irreversible actions.",
         "ayy-button--link": "Looks like a text link.",
-        "ayy-button--ring": "Showcase call to action: quiet fill inside a gradient ring that spins on hover and focus. For marketing and portfolio pages; one per view.",
+        "ayy-button--ring": "Showcase call to action: quiet fill inside a gradient ring that spins on keyboard focus and mouse hover (not after a tap). For marketing and portfolio pages; one per view.",
         "ayy-button--sm": "28px tall.",
         "ayy-button--lg": "40px tall.",
         "ayy-button--icon": "Square 32px, for a single icon.",
@@ -2252,9 +2252,9 @@
       "classes": {
         "ayy-breadcrumb": "Root <nav aria-label=\"Breadcrumb\">.",
         "ayy-breadcrumb--pill": "Bordered, blurred capsule that stays readable over hero images and grids.",
-        "ayy-breadcrumb__list": "The <ol>.",
+        "ayy-breadcrumb__list": "The <ol>. Wraps on wide screens; one line on phones, ancestors cut with an ellipsis first.",
         "ayy-breadcrumb__item": "Each <li>. A slash separates items; screen readers skip it.",
-        "ayy-breadcrumb__link": "Link to an ancestor page. The last item is a <span aria-current=\"page\"> instead."
+        "ayy-breadcrumb__link": "Link to an ancestor page; its target is a small control tall (40px at touch density) without changing the line. The last item is a <span aria-current=\"page\"> instead."
       },
       "variants": {
         "pill": {
@@ -2447,7 +2447,7 @@
       "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
       "classes": {
         "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
-        "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.",
+        "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky row of top-level section links under the navbar, the current one underlined and scrolled into view.",
         "ayy-toc__title": "Small uppercase heading (\"Contents\"). Point the nav's aria-labelledby at it.",
         "ayy-toc__list": "<ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.",
         "ayy-toc__link": "Section link (href=\"#id\"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.",
@@ -2493,13 +2493,14 @@
       "a11y": [
         "It's a <nav> with a name (the title via aria-labelledby, or aria-label=\"On this page\"), so it shows up in landmark lists.",
         "The current section is aria-current=\"location\", announced by screen readers, not only drawn as a colour bar.",
-        "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header."
+        "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header.",
+        "Links grow to a 40px target at touch density. On phones the visible title is hidden but still names the nav."
       ],
       "do": [
         "Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.",
         "List sections in page order; the scrollspy assumes it.",
         "Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.",
-        "On narrow screens, move it above the content or into a Popover instead of a side column."
+        "Make the page layout put it above the content on phones (a wrapping flex row does, as in the example); --sticky then turns it into a strip of section links."
       ],
       "dont": [
         "Don't add one to short pages with two or three sections.",
@@ -2511,8 +2512,8 @@
         {
           "id": "sticky",
           "title": "Numbered, beside the content",
-          "html": "<!-- <ayy-toc> (@danitesler/ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->\n<div style=\"display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)\">\n  <nav class=\"ayy-toc ayy-toc--sticky\" aria-labelledby=\"toc-title\">\n    <ayy-toc>\n      <p class=\"ayy-toc__title\" id=\"toc-title\">Contents</p>\n      <ol class=\"ayy-toc__list\">\n        <li><a class=\"ayy-toc__link\" href=\"#toc-overview\"><span class=\"ayy-toc__number\">01</span>Overview</a></li>\n        <li>\n          <a class=\"ayy-toc__link\" href=\"#toc-system\"><span class=\"ayy-toc__number\">02</span>Design system</a>\n          <ol class=\"ayy-toc__list\">\n            <li><a class=\"ayy-toc__link\" href=\"#toc-tokens\">Tokens</a></li>\n          </ol>\n        </li>\n        <li><a class=\"ayy-toc__link\" href=\"#toc-impact\"><span class=\"ayy-toc__number\">03</span>Impact</a></li>\n      </ol>\n    </ayy-toc>\n  </nav>\n  <div class=\"ayy-stack\" style=\"--ayy-gap: var(--ayy-space-10)\">\n    <section id=\"toc-overview\"><h3 class=\"ayy-h4\">Overview</h3><p class=\"ayy-muted\">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p></section>\n    <section id=\"toc-system\"><h3 class=\"ayy-h4\">Design system</h3><p class=\"ayy-muted\">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p></section>\n    <section id=\"toc-tokens\"><h3 class=\"ayy-h4\">Tokens</h3><p class=\"ayy-muted\">Colour, type and spacing became tokens first, so the redesign could ship on them.</p></section>\n    <section id=\"toc-impact\"><h3 class=\"ayy-h4\">Impact</h3><p class=\"ayy-muted\">The board redesign, the editor rebuild and the AI features all shipped on shared components.</p></section>\n  </div>\n</div>",
-          "react": "import type { CSSProperties } from \"react\";\nimport { Toc } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div\n      style={{ display: \"grid\", gridTemplateColumns: \"minmax(0, 11rem) minmax(0, 1fr)\", gap: \"var(--ayy-space-8)\", inlineSize: \"100%\", \"--ayy-spot\": \"var(--ayy-accent-product)\" } as CSSProperties}\n    >\n      <Toc\n        sticky\n        numbered\n        title=\"Contents\"\n        items={[\n          { id: \"toc-overview\", label: \"Overview\" },\n          { id: \"toc-system\", label: \"Design system\", children: [{ id: \"toc-tokens\", label: \"Tokens\" }] },\n          { id: \"toc-impact\", label: \"Impact\" },\n        ]}\n      />\n      <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-10)\" } as CSSProperties}>\n        <section id=\"toc-overview\">\n          <h3 className=\"ayy-h4\">Overview</h3>\n          <p className=\"ayy-muted\">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p>\n        </section>\n        <section id=\"toc-system\">\n          <h3 className=\"ayy-h4\">Design system</h3>\n          <p className=\"ayy-muted\">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p>\n        </section>\n        <section id=\"toc-tokens\">\n          <h3 className=\"ayy-h4\">Tokens</h3>\n          <p className=\"ayy-muted\">Colour, type and spacing became tokens first, so the redesign could ship on them.</p>\n        </section>\n        <section id=\"toc-impact\">\n          <h3 className=\"ayy-h4\">Impact</h3>\n          <p className=\"ayy-muted\">The board redesign, the editor rebuild and the AI features all shipped on shared components.</p>\n        </section>\n      </div>\n    </div>\n  );\n}"
+          "html": "<!-- <ayy-toc> (@danitesler/ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->\n<div style=\"display: flex; flex-wrap: wrap; gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)\">\n  <nav class=\"ayy-toc ayy-toc--sticky\" aria-labelledby=\"toc-title\">\n    <ayy-toc>\n      <p class=\"ayy-toc__title\" id=\"toc-title\">Contents</p>\n      <ol class=\"ayy-toc__list\">\n        <li><a class=\"ayy-toc__link\" href=\"#toc-overview\"><span class=\"ayy-toc__number\">01</span>Overview</a></li>\n        <li>\n          <a class=\"ayy-toc__link\" href=\"#toc-system\"><span class=\"ayy-toc__number\">02</span>Design system</a>\n          <ol class=\"ayy-toc__list\">\n            <li><a class=\"ayy-toc__link\" href=\"#toc-tokens\">Tokens</a></li>\n          </ol>\n        </li>\n        <li><a class=\"ayy-toc__link\" href=\"#toc-impact\"><span class=\"ayy-toc__number\">03</span>Impact</a></li>\n      </ol>\n    </ayy-toc>\n  </nav>\n  <div class=\"ayy-stack\" style=\"flex: 1 1 20rem; min-inline-size: 0; --ayy-gap: var(--ayy-space-10)\">\n    <section id=\"toc-overview\"><h3 class=\"ayy-h4\">Overview</h3><p class=\"ayy-muted\">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p></section>\n    <section id=\"toc-system\"><h3 class=\"ayy-h4\">Design system</h3><p class=\"ayy-muted\">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p></section>\n    <section id=\"toc-tokens\"><h3 class=\"ayy-h4\">Tokens</h3><p class=\"ayy-muted\">Colour, type and spacing became tokens first, so the redesign could ship on them.</p></section>\n    <section id=\"toc-impact\"><h3 class=\"ayy-h4\">Impact</h3><p class=\"ayy-muted\">The board redesign, the editor rebuild and the AI features all shipped on shared components.</p></section>\n  </div>\n</div>",
+          "react": "import type { CSSProperties } from \"react\";\nimport { Toc } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div\n      style={{ display: \"flex\", flexWrap: \"wrap\", gap: \"var(--ayy-space-8)\", inlineSize: \"100%\", \"--ayy-spot\": \"var(--ayy-accent-product)\" } as CSSProperties}\n    >\n      <Toc\n        sticky\n        numbered\n        title=\"Contents\"\n        items={[\n          { id: \"toc-overview\", label: \"Overview\" },\n          { id: \"toc-system\", label: \"Design system\", children: [{ id: \"toc-tokens\", label: \"Tokens\" }] },\n          { id: \"toc-impact\", label: \"Impact\" },\n        ]}\n      />\n      <div className=\"ayy-stack\" style={{ flex: \"1 1 20rem\", minInlineSize: 0, \"--ayy-gap\": \"var(--ayy-space-10)\" } as CSSProperties}>\n        <section id=\"toc-overview\">\n          <h3 className=\"ayy-h4\">Overview</h3>\n          <p className=\"ayy-muted\">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p>\n        </section>\n        <section id=\"toc-system\">\n          <h3 className=\"ayy-h4\">Design system</h3>\n          <p className=\"ayy-muted\">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p>\n        </section>\n        <section id=\"toc-tokens\">\n          <h3 className=\"ayy-h4\">Tokens</h3>\n          <p className=\"ayy-muted\">Colour, type and spacing became tokens first, so the redesign could ship on them.</p>\n        </section>\n        <section id=\"toc-impact\">\n          <h3 className=\"ayy-h4\">Impact</h3>\n          <p className=\"ayy-muted\">The board redesign, the editor rebuild and the AI features all shipped on shared components.</p>\n        </section>\n      </div>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -3811,7 +3812,7 @@
       "category": "Layout",
       "description": "A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.",
       "classes": {
-        "ayy-section": "Root <section>. 96px block padding (80px on phones, 128px on wide screens). Add ayy-container for page width.",
+        "ayy-section": "Root <section>. 96px block padding (48px on phones, 128px on wide screens). Add ayy-container for page width.",
         "ayy-section--center": "Header centred over the content; start-aligned again on phones.",
         "ayy-section__header": "Eyebrow, title and description, capped at a readable width.",
         "ayy-section__eyebrow": "Small uppercase label above the title.",
@@ -3900,7 +3901,7 @@
       "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
       "classes": {
         "ayy-card": "Root surface.",
-        "ayy-card--interactive": "Lifts on hover. Use when the whole card is clickable.",
+        "ayy-card--interactive": "Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.",
         "ayy-card--spotlight": "Pointer-following glow + lit border. Colour via the --ayy-spot custom property.",
         "ayy-card--featured": "The one to pick: the recommended plan in a pricing grid, or the option someone chose. A 2px border in the text colour (High Contrast: a highlight outline). One per group.",
         "ayy-card__header": "Top block (title + description).",
@@ -3908,7 +3909,7 @@
         "ayy-card__description": "Muted supporting text.",
         "ayy-card__content": "Body.",
         "ayy-card__footer": "Actions row, pinned to the bottom.",
-        "ayy-card__media": "Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly on an interactive card's hover.",
+        "ayy-card__media": "Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly when an interactive card is hovered with a mouse.",
         "ayy-card__link": "Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable."
       },
       "variants": {

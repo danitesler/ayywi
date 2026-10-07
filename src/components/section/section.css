@@ -78,7 +78,10 @@
 
 @media (max-width: 48rem) {
   .ayy-section {
-    padding-block: var(--ayy-space-20);
+    padding-block: var(--ayy-space-12);
+  }
+  .ayy-section__header {
+    margin-block-end: var(--ayy-space-8);
   }
   .ayy-section--center .ayy-section__header {
     align-items: flex-start;

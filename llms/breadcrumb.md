@@ -5,9 +5,9 @@ Category: Navigation. Trail from the top level down to the current page (Home / 
 **Classes**
 - `.ayy-breadcrumb` — Root <nav aria-label="Breadcrumb">.
 - `.ayy-breadcrumb--pill` — Bordered, blurred capsule that stays readable over hero images and grids.
-- `.ayy-breadcrumb__list` — The <ol>.
+- `.ayy-breadcrumb__list` — The <ol>. Wraps on wide screens; one line on phones, ancestors cut with an ellipsis first.
 - `.ayy-breadcrumb__item` — Each <li>. A slash separates items; screen readers skip it.
-- `.ayy-breadcrumb__link` — Link to an ancestor page. The last item is a <span aria-current="page"> instead.
+- `.ayy-breadcrumb__link` — Link to an ancestor page; its target is a small control tall (40px at touch density) without changing the line. The last item is a <span aria-current="page"> instead.
 
 **JS (framework-free)**: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
 

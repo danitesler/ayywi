@@ -6,7 +6,7 @@
   "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
   "classes": {
     "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
-    "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.",
+    "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky row of top-level section links under the navbar, the current one underlined and scrolled into view.",
     "ayy-toc__title": "Small uppercase heading (\"Contents\"). Point the nav's aria-labelledby at it.",
     "ayy-toc__list": "<ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.",
     "ayy-toc__link": "Section link (href=\"#id\"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.",
@@ -44,13 +44,14 @@
   "a11y": [
     "It's a <nav> with a name (the title via aria-labelledby, or aria-label=\"On this page\"), so it shows up in landmark lists.",
     "The current section is aria-current=\"location\", announced by screen readers, not only drawn as a colour bar.",
-    "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header."
+    "Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header.",
+    "Links grow to a 40px target at touch density. On phones the visible title is hidden but still names the nav."
   ],
   "do": [
     "Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.",
     "List sections in page order; the scrollspy assumes it.",
     "Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.",
-    "On narrow screens, move it above the content or into a Popover instead of a side column."
+    "Make the page layout put it above the content on phones (a wrapping flex row does, as in the example); --sticky then turns it into a strip of section links."
   ],
   "dont": [
     "Don't add one to short pages with two or three sections.",
