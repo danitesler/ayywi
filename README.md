@@ -22,8 +22,18 @@ Every component with copy-ready HTML and React (under each example's Code), a Co
 ## Install
 
 ```sh
-npm i github:danitesler/ayywi    # private repo: needs GitHub access (SSH key, or a token in CI)
+npm i @danitesler/ayywi        # or: pnpm add @danitesler/ayywi / yarn add @danitesler/ayywi
 ```
+
+Published on npm as [`@danitesler/ayywi`](https://www.npmjs.com/package/@danitesler/ayywi). The `ayywi` command (`init`, `lint`, `mcp`) comes with it, so `npx ayywi …` works inside a project that has it installed. To run it once without installing: `npx @danitesler/ayywi init`.
+
+Then load the CSS once at the root of your app (and `@danitesler/ayywi/elements` if you use the custom elements outside React; see [Use it](#use-it) for each framework):
+
+```ts
+import "@danitesler/ayywi/css";
+```
+
+Icons are optional: add `@hugeicons/core-free-icons` if you use the `Icon` component. React 18.2+ is an optional peer, needed only for `@danitesler/ayywi/react`.
 
 No install at all: link the files the preview site hosts (or copy them into your project, with the `fonts/` folder next to `fonts.css`). Use a release's `v/<release>/dist/` path (Get started's prompts do, and `versions.json` lists them): those files never change, so a later release can't restyle your app. `dist/` without a release is always the latest.
 
@@ -36,7 +46,7 @@ No install at all: link the files the preview site hosts (or copy them into your
 
 `theme-init.js` applies a theme saved by the Theme toggle before the first paint, `fonts.css` loads Sora and Unbounded; both are optional.
 
-Once it's on npm: `npm i ayywi`, and the same two files from a CDN (pin the version you use): `https://cdn.jsdelivr.net/npm/ayywi@0.5/dist/ayywi.min.css`.
+The same two files from a CDN (pin the version you use): `https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.1/dist/ayywi.min.css`.
 
 ## Use it
 
@@ -50,24 +60,24 @@ Once it's on npm: `npm i ayywi`, and the same two files from a CDN (pin the vers
 **React:**
 
 ```tsx
-import "ayywi/css";
-import { Button, toast } from "ayywi/react";
+import "@danitesler/ayywi/css";
+import { Button, toast } from "@danitesler/ayywi/react";
 
 <Button variant="outline" onClick={() => toast("Saved")}>Save</Button>
 ```
 
-**Vue, Svelte, Angular, Solid…:** import `ayywi/css` and `ayywi/elements` once, then use the same markup as plain HTML. Vue needs `isCustomElement: (tag) => tag.startsWith("ayy-")`; Angular needs `CUSTOM_ELEMENTS_SCHEMA`.
+**Vue, Svelte, Angular, Solid…:** import `@danitesler/ayywi/css` and `@danitesler/ayywi/elements` once, then use the same markup as plain HTML. Vue needs `isCustomElement: (tag) => tag.startsWith("ayy-")`; Angular needs `CUSTOM_ELEMENTS_SCHEMA`.
 
-**Tailwind:** alongside `ayywi/css`, v4 `@import "ayywi/tailwind.css"`; v3 `presets: [require("ayywi/tailwind-preset")]`. Utilities then use ayywi's colours (`bg-surface`, `text-muted`, `bg-chart-1`).
+**Tailwind:** alongside `@danitesler/ayywi/css`, v4 `@import "@danitesler/ayywi/tailwind.css"`; v3 `presets: [require("@danitesler/ayywi/tailwind-preset")]`. Utilities then use ayywi's colours (`bg-surface`, `text-muted`, `bg-chart-1`).
 
-**A project already on shadcn/ui** (Lovable, v0 and Bolt templates): load `ayywi/shadcn.css` after ayywi and the shadcn components still there take ayywi's colours, radius and font while you replace them.
+**A project already on shadcn/ui** (Lovable, v0 and Bolt templates): load `@danitesler/ayywi/shadcn.css` after ayywi and the shadcn components still there take ayywi's colours, radius and font while you replace them.
 
 **Other platforms:** `pnpm build` writes SCSS, SwiftUI, Compose and JSON tokens to `dist/tokens/`.
 
 ### Good to know
 
-- **Your CSS wins.** ayywi's CSS sits in cascade layers, so a global reset like `button { background: none }` overrides it too. Put your reset in a layer, or use `ayywi/ayywi.unlayered.css` (also the one to use with Tailwind v3).
-- **Fonts are opt-in:** `ayywi/fonts.css` (self-hosted) or `ayywi/fonts-google.css`. Without either you get system fonts.
+- **Your CSS wins.** ayywi's CSS sits in cascade layers, so a global reset like `button { background: none }` overrides it too. Put your reset in a layer, or use `@danitesler/ayywi/ayywi.unlayered.css` (also the one to use with Tailwind v3).
+- **Fonts are opt-in:** `@danitesler/ayywi/fonts.css` (self-hosted) or `@danitesler/ayywi/fonts-google.css`. Without either you get system fonts.
 - **Icons** are [Hugeicons](https://hugeicons.com). Install `@hugeicons/core-free-icons` next to ayywi, then `<Icon icon={Search01Icon} />` in React or `iconSvg(Search01Icon)` elsewhere.
 
 ## Theme and density
@@ -101,7 +111,7 @@ Load the file after ayywi's CSS and name the brand where it applies:
 <html data-brand="acme">
 ```
 
-From JS, `createBrand()` returns the same thing as data, `brandCss()` the stylesheet, and `setBrand({ name, color })` generates and applies one at runtime (a user-picked accent, say). `setBrand("violet")` with `ayywi/brands/violet.css` loaded applies a ready-made one. Agents get the same generator as the MCP tool `create_brand`. For native apps and Figma, `--tokens <dir>` writes the brand as DTCG JSON per theme, to layer over `ayywi/tokens/<theme>.json`.
+From JS, `createBrand()` returns the same thing as data, `brandCss()` the stylesheet, and `setBrand({ name, color })` generates and applies one at runtime (a user-picked accent, say). `setBrand("violet")` with `@danitesler/ayywi/brands/violet.css` loaded applies a ready-made one. Agents get the same generator as the MCP tool `create_brand`. For native apps and Figma, `--tokens <dir>` writes the brand as DTCG JSON per theme, to layer over `@danitesler/ayywi/tokens/<theme>.json`.
 
 ## Components
 
@@ -140,7 +150,7 @@ pnpm test:e2e                                             # for visual or intera
 
 Conventions and repo layout are in [AGENTS.md](AGENTS.md). Changes go in [CHANGELOG.md](CHANGELOG.md); renaming or removing a class, token or prop is a breaking change.
 
-**Publishing:** the preview deploys to GitHub Pages from `main` (enable Settings → Pages → *GitHub Actions*; private repos need a paid plan), or build it with `pnpm preview:build` and host `preview/dist` anywhere. Publish the package with `npm publish`, or to GitHub Packages as `@danitesler/ayywi` to keep it private.
+**Publishing:** the preview deploys to GitHub Pages from `main` (enable Settings → Pages → *GitHub Actions*; private repos need a paid plan), or build it with `pnpm preview:build` and host `preview/dist` anywhere. Publish the package with `npm publish` (it is scoped, `publishConfig.access` is `public`; `prepublishOnly` runs `pnpm check`). Bump `version` in package.json and add the release to CHANGELOG.md first.
 
 ## License
 

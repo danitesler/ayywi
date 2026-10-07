@@ -48,7 +48,7 @@ export async function brand(args, options) {
   if (options.tokens) {
     mkdirSync(options.tokens, { recursive: true });
     for (const theme of themes) writeFileSync(join(options.tokens, `${theme}.json`), `${JSON.stringify(brandTokens(b, theme), null, 2)}\n`);
-    console.error(`Wrote ${themes.map((t) => `${t}.json`).join(", ")} to ${options.tokens}: DTCG overrides to layer over ayywi/tokens/<theme>.json.`);
+    console.error(`Wrote ${themes.map((t) => `${t}.json`).join(", ")} to ${options.tokens}: DTCG overrides to layer over @danitesler/ayywi/tokens/<theme>.json.`);
   }
   if (options.out) {
     if (existsSync(options.out) && !options.force) throw new Error(`${options.out} exists; pass --force to replace it`);

@@ -1,4 +1,4 @@
-import { Input } from "ayywi/react";
+import { Input } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

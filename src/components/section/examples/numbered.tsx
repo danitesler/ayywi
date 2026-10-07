@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "ayywi/react";
+import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

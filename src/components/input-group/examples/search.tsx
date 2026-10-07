@@ -1,5 +1,5 @@
 import { Search01Icon } from "@hugeicons/core-free-icons";
-import { Icon, Input, InputGroup, InputGroupAddon, Kbd } from "ayywi/react";
+import { Icon, Input, InputGroup, InputGroupAddon, Kbd } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

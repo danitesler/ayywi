@@ -1,4 +1,4 @@
-import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "ayywi/react";
+import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const dani = <Avatar size="sm" name="Dani" fallback="DT" />;

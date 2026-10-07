@@ -24,7 +24,7 @@
   },
   "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
   "react": {
-    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"ayywi/react\";",
+    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"@danitesler/ayywi/react\";",
     "components": {
       "Card": {
         "renders": "<div>",

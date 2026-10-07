@@ -13,8 +13,8 @@ import {
   Button,
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
   Icon,
-} from "ayywi/react";
-import { brandPresets, type BrandInput, type DensityMode, type ThemeMode } from "ayywi";
+} from "@danitesler/ayywi/react";
+import { brandPresets, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import { brandPage, BrandPage } from "./pages/Brand";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
 import { componentGroups, components } from "./data";

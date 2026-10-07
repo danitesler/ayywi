@@ -1,4 +1,4 @@
-import { Avatar, Badge, List, ListContent, ListDescription, ListItem, ListLink, ListMeta, ListTitle } from "ayywi/react";
+import { Avatar, Badge, List, ListContent, ListDescription, ListItem, ListLink, ListMeta, ListTitle } from "@danitesler/ayywi/react";
 
 const THREADS = [
   { name: "Jonah Weiss", text: "The export button spins forever on large reports.", time: "2m", status: "Urgent", variant: "destructive", current: true },

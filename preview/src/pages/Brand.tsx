@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BRAND_SHAPES, BRAND_STEPS, brandCss, brandPresets, createBrand, type Brand, type BrandInput, type BrandShape } from "ayywi";
+import { BRAND_SHAPES, BRAND_STEPS, brandCss, brandPresets, createBrand, type Brand, type BrandInput, type BrandShape } from "@danitesler/ayywi";
 import {
   Alert,
   AlertDescription,
@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
 import { themeOptions } from "../themes";
 
@@ -222,7 +222,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
             Use it
           </h2>
           <p className="pv-note">
-            Run the command (or call createBrand() and brandCss() from "ayywi"), load the CSS after ayywi's and put data-brand="{brand.name}" on &lt;html&gt;. For a
+            Run the command (or call createBrand() and brandCss() from "@danitesler/ayywi"), load the CSS after ayywi's and put data-brand="{brand.name}" on &lt;html&gt;. For a
             colour people pick at runtime, setBrand({"{"} name, color {"}"}) does both.
           </p>
           <CodeBlock label="Command" code={cli} wrap />

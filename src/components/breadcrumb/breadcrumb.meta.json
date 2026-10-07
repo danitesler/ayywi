@@ -16,7 +16,7 @@
   },
   "js": "breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
   "react": {
-    "import": "import { Breadcrumb } from \"ayywi/react\";",
+    "import": "import { Breadcrumb } from \"@danitesler/ayywi/react\";",
     "components": {
       "Breadcrumb": {
         "renders": "<nav aria-label=\"Breadcrumb\"><ol>…",

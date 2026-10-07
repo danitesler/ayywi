@@ -10,7 +10,7 @@ Category: Layout. Questions and answers, or sections people open one at a time: 
 
 **JS (framework-free)**: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
 
-**React** — `import { Accordion, AccordionItem } from "ayywi/react";`
+**React** — `import { Accordion, AccordionItem } from "@danitesler/ayywi/react";`
 - `<Accordion>` renders <div class="ayy-accordion">. Props: `single` boolean — one item open at a time (a shared name on every <details>).
 - `<AccordionItem>` renders <details class="ayy-accordion__item"><summary class="ayy-accordion__trigger">…<div class="ayy-accordion__content">. Props: `label` The always-visible row: the question or section name.; `open` Start expanded.
 
@@ -61,7 +61,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Accordion, AccordionItem } from "ayywi/react";
+import { Accordion, AccordionItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -82,4 +82,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

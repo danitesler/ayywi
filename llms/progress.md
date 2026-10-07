@@ -15,7 +15,7 @@ Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or inde
 
 **JS (framework-free)**: progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)
 
-**React** — `import { Progress } from "ayywi/react";`
+**React** — `import { Progress } from "@danitesler/ayywi/react";`
 - `<Progress>` renders <div role="progressbar">. Props: `value` number 0–100; omit/null → indeterminate; `variant` "default" | "success" | "warning" | "destructive" | "ai" — the same prop name as Alert and Badge; `tone` Deprecated alias of variant.; `size` "sm" | "md" | "lg"
 
 **Accessibility**
@@ -58,7 +58,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Progress } from "ayywi/react";
+import { Progress } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -73,4 +73,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

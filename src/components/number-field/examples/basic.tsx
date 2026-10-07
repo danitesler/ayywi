@@ -1,4 +1,4 @@
-import { Field, FieldHint, Label, NumberField } from "ayywi/react";
+import { Field, FieldHint, Label, NumberField } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

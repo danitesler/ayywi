@@ -13,9 +13,9 @@ Category: Forms. A native number input between minus and plus buttons, for small
 - `button[aria-disabled="true"]` — Can't go further (at min or max). Stays focusable.
 - `input[aria-invalid="true"]` — Invalid value: red border.
 
-**JS (framework-free)**: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.
+**JS (framework-free)**: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. @danitesler/ayywi/elements runs both for every .ayy-number-field on the page.
 
-**React** — `import { NumberField } from "ayywi/react";`
+**React** — `import { NumberField } from "@danitesler/ayywi/react";`
 - `<NumberField>` renders <div class="ayy-number-field"><button class="ayy-number-field__decrement"><input type="number"><button class="ayy-number-field__increment">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number; `max` number; `step` number, default 1; `size` "sm" | "md"; `decrementLabel` string, default "Decrease" — say what changes ("Remove a guest"); `incrementLabel` string, default "Increase"; `className` On the outer box; every other prop goes to the input (id, name, aria-label…); `style` On the outer box
 
 **Accessibility**
@@ -58,7 +58,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, FieldHint, Label, NumberField } from "ayywi/react";
+import { Field, FieldHint, Label, NumberField } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -84,4 +84,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

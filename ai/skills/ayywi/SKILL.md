@@ -11,18 +11,18 @@ ayywi is a CSS class contract (`.ayy-*`) plus design tokens (`--ayy-*`), with ty
 
 - If the `ayywi` MCP server is connected, use it: `list_components` or `search` to find the piece, `get_component` for its spec and copy-ready examples, `get_tokens`, `get_rules` (rules, utilities, custom properties), and `lint` to check what you wrote.
 - Quick lookup: [reference.md](reference.md) — every component's classes, React props and a11y in one screen.
-- Full detail for a component you're about to use: its entry in `node_modules/ayywi/manifest/components.json`, or its section of `node_modules/ayywi/llms-full.txt` (the ayywi preview site hosts the same `llms-full.txt` when the package isn't installed). Start from an example rather than from scratch.
+- Full detail for a component you're about to use: its entry in `node_modules/@danitesler/ayywi/manifest/components.json`, or its section of `node_modules/@danitesler/ayywi/llms-full.txt` (the ayywi preview site hosts the same `llms-full.txt` when the package isn't installed). Start from an example rather than from scratch.
 - Tokens: the `tokens` array in the same manifest (name, css var, values per theme, purpose).
 
 ## 2. Pick the integration style the project already uses
 
 | Project | Write |
 |---|---|
-| React / Next / Remix | `import { Button, Dialog, … } from "ayywi/react"` |
-| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>` from `"ayywi/elements"` for interactive parts; `toast()` from `"ayywi"` |
+| React / Next / Remix | `import { Button, Dialog, … } from "@danitesler/ayywi/react"` |
+| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"@danitesler/ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>` from `"@danitesler/ayywi/elements"` for interactive parts; `toast()` from `"@danitesler/ayywi"` |
 | Plain HTML, Rails, Django, Laravel, Go, .NET, PHP | same markup + `dist/ayywi.min.css` and `dist/elements.global.js` (also gives `window.ayywi.toast`, `setTheme`, `chartColors`…); `dist/fonts.css` for the fonts and `dist/theme-init.js` first in `<head>` so a saved theme applies before the first paint |
-| Tailwind | keep ayywi components; map Tailwind's theme to ayywi (`ayywi/tailwind.css` for v4, `ayywi/tailwind-preset` for v3) and use its utilities (`bg-surface`, `border-line`, `rounded-card`, `bg-chart-1`) for layout glue, never Tailwind's own colour scale |
-| Already on shadcn/ui | load `ayywi/shadcn.css` after ayywi so leftover shadcn parts take ayywi's colours, radius and font; build new UI with ayywi and replace a shadcn component whenever you touch it |
+| Tailwind | keep ayywi components; map Tailwind's theme to ayywi (`@danitesler/ayywi/tailwind.css` for v4, `@danitesler/ayywi/tailwind-preset` for v3) and use its utilities (`bg-surface`, `border-line`, `rounded-card`, `bg-chart-1`) for layout glue, never Tailwind's own colour scale |
+| Already on shadcn/ui | load `@danitesler/ayywi/shadcn.css` after ayywi so leftover shadcn parts take ayywi's colours, radius and font; build new UI with ayywi and replace a shadcn component whenever you touch it |
 
 Check `package.json` and existing components before choosing. Match what's there.
 

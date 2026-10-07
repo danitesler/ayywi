@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "ayywi/react";
+import { Button } from "@danitesler/ayywi/react";
 
 export async function copyText(text: string): Promise<boolean> {
   try {

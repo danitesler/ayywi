@@ -1,5 +1,5 @@
 /* File upload: a <label> around a native <input type="file"> that covers the whole zone, so a click opens the file
-   picker and a drop lands on the input — both without JavaScript. ayywi/elements (or React) adds data-dragging
+   picker and a drop lands on the input — both without JavaScript. @danitesler/ayywi/elements (or React) adds data-dragging
    while files are held over it. Show what was picked in a List below. */
 
 .ayy-dropzone {

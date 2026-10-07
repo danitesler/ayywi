@@ -78,7 +78,7 @@ const libEntries = { index: src("index.ts"), elements: src("elements/index.ts") 
 const reactEntry = { react: src("react/index.ts") };
 const useClient = { js: '"use client";' };
 
-// One ESM graph with shared chunks, so stateful modules (toast) exist once whether imported from "ayywi" or "ayywi/react".
+// One ESM graph with shared chunks, so stateful modules (toast) exist once whether imported from "@danitesler/ayywi" or "@danitesler/ayywi/react".
 await build({
   ...shared,
   entryPoints: { ...libEntries, ...reactEntry },

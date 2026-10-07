@@ -3,7 +3,7 @@ import { cx } from "../../lib/cx";
 export interface CardClassOptions {
   /** Lift + shadow on hover. Use when the whole card is clickable. */
   interactive?: boolean;
-  /** Pointer-following glow. Needs pointer tracking (React Card does it; else ayywi/elements). */
+  /** Pointer-following glow. Needs pointer tracking (React Card does it; else @danitesler/ayywi/elements). */
   spotlight?: boolean;
   /** The one to pick: the recommended plan, the option you chose. A border in the text colour. */
   featured?: boolean;

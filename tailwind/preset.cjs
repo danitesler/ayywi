@@ -3,10 +3,10 @@
  * `border-line`, `rounded-card`, `shadow-lift`, `ease-spring`… follow the active theme automatically.
  *
  *   // tailwind.config.js
- *   module.exports = { presets: [require("ayywi/tailwind-preset")], content: [...] };
+ *   module.exports = { presets: [require("@danitesler/ayywi/tailwind-preset")], content: [...] };
  *
  * You still need the ayywi CSS (at least tokens.css) loaded for the variables to exist.
- * Tailwind v4? Use `@import "ayywi/tailwind.css";` instead.
+ * Tailwind v4? Use `@import "@danitesler/ayywi/tailwind.css";` instead.
  */
 
 const v = (name) => `var(--ayy-${name})`;

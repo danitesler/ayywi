@@ -16,11 +16,11 @@ Category: Data display. Data table with quiet hairlines, uppercase headers and h
 
 **JS (framework-free)**: tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → "ascending" | "descending"; compareValues(a, b) sorts numbers (also "$1,240", "12 GB") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).
 
-**Custom element** `<ayy-table>` (ayywi/elements) — 
+**Custom element** `<ayy-table>` (@danitesler/ayywi/elements) — 
 - event `ayy-sort`: { column, key, direction } before the rows move — key is the <th>'s data-sort-key. Call preventDefault() to sort them yourself (on the server).
 - event `ayy-selection-change`: { rows } — the selected <tr> elements.
 
-**React** — `import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from "ayywi/react";`
+**React** — `import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from "@danitesler/ayywi/react";`
 - `<Table>` renders <div class="ayy-table-wrap"><table>. Props: `compact` boolean
 - `<TableHeader>` renders <thead>.
 - `<TableBody>` renders <tbody>.
@@ -89,7 +89,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "ayywi/react";
+import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@danitesler/ayywi/react";
 
 const deployments = [
   { project: "Marketing site", status: "Live", variant: "success", builds: 128 },
@@ -207,7 +207,7 @@ import {
   compareValues,
   nextSortDirection,
   type SortDirection,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 const invoices = [
   { id: "INV-1042", customer: "Northwind", status: "Paid", variant: "success", amount: 1240, due: "2026-09-02" },
@@ -300,4 +300,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

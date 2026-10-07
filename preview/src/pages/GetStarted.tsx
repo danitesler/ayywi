@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import { themes, tokens, type DensityMode, type ThemeMode } from "ayywi";
+import { themes, tokens, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import {
   Accordion,
   AccordionItem,
@@ -31,7 +31,7 @@ import {
   SegmentedControl,
   SegmentedControlItem,
   Select,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { components } from "../data";
 import { buildPrompt, FIXES, fixPrompt, headTags, links, request, STARTERS, TOOLS, type Links, type StarterId, type Tool } from "../prompts";
@@ -63,8 +63,8 @@ ${headTags(l, "   ")}
     note: "Adds a skill, a rule file, an AGENTS.md section and an MCP server, so the agent looks components up instead of guessing, and it can run the linter.",
     prompt: () => `Set up the ayywi design system in this project and build a first screen with it.
 
-1. Install it with npm i github:danitesler/ayywi (it becomes npm i ayywi once it's on npm), then run npx ayywi init. That adds the ayywi skill, a rule file, an AGENTS.md section and an MCP server with get_component, search and lint tools.
-2. Load it once at the app entry. React: import "ayywi/css" and use components from "ayywi/react". Vue, Svelte, Angular or plain HTML: import "ayywi/css" and "ayywi/elements" and write the same markup.
+1. Install it with npm i @danitesler/ayywi, then run npx ayywi init. That adds the ayywi skill, a rule file, an AGENTS.md section and an MCP server with get_component, search and lint tools.
+2. Load it once at the app entry. React: import "@danitesler/ayywi/css" and use components from "@danitesler/ayywi/react". Vue, Svelte, Angular or plain HTML: import "@danitesler/ayywi/css" and "@danitesler/ayywi/elements" and write the same markup.
 3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
 4. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, Sections and a Footer. Include its empty, loading and error states.
 5. Run npx ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,

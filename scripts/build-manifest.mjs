@@ -64,18 +64,18 @@ const manifest = {
   version: pkg.version,
   description: pkg.description,
   entrypoints: {
-    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.brand — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
-    "ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
-    "ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
-    "ayywi/brands/<name>.css": `Ready-made brands (${brands.map((b) => b.name).join(", ") || "none"}), applied with data-brand="<name>" or setBrand("<name>"). Make your own with \`npx ayywi brand\`.`,
-    "ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). ayywi/fonts-google.css loads them from Google instead.",
+    "@danitesler/ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.brand — any unlayered app CSS wins. @danitesler/ayywi/ayywi.min.css is the minified file.",
+    "@danitesler/ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
+    "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
+    "@danitesler/ayywi/brands/<name>.css": `Ready-made brands (${brands.map((b) => b.name).join(", ") || "none"}), applied with data-brand="<name>" or setBrand("<name>"). Make your own with \`npx ayywi brand\`.`,
+    "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
     ayywi: `Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (${controllers.join(", ")}), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.`,
-    "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (${globals.join(", ")}).`,
-    "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
-    "ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
-    "ayywi/tailwind-preset": "Tailwind v3 preset.",
-    "ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
+    "@danitesler/ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
+    "@danitesler/ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (${globals.join(", ")}).`,
+    "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
+    "@danitesler/ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
+    "@danitesler/ayywi/tailwind-preset": "Tailwind v3 preset.",
+    "@danitesler/ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
     "npx ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio).",
   },
   conventions: {
@@ -112,9 +112,9 @@ md.push(
 
 ## How to use it
 
-- Any framework / plain HTML: load \`ayywi/css\` and write the class names below.
-- React: \`import { Button } from "ayywi/react"\` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (\`import { buttonClass } from "ayywi"\`), and \`import "ayywi/elements"\` for interactive components (${elements.map((e) => `<${e}>`).join(", ")}).
+- Any framework / plain HTML: load \`@danitesler/ayywi/css\` and write the class names below.
+- React: \`import { Button } from "@danitesler/ayywi/react"\` plus the CSS.
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (\`import { buttonClass } from "@danitesler/ayywi"\`), and \`import "@danitesler/ayywi/elements"\` for interactive components (${elements.map((e) => `<${e}>`).join(", ")}).
 - Plain HTML: \`<link rel="stylesheet" href=".../dist/ayywi.min.css">\` + \`<script src=".../dist/elements.global.js" defer></script>\` (also gives window.ayywi: ${globals.join(", ")}). Add \`<link rel="stylesheet" href=".../dist/fonts.css">\` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and \`<script src=".../dist/theme-init.js"></script>\` in <head> so a saved theme applies before the first paint.
 - One component at a time: \`llms/<slug>.md\` (llms/button.md, llms/table.md…), listed in llms.txt.
 - Check your work: \`npx ayywi lint\`.`,
@@ -139,7 +139,7 @@ md.push(
   )}`,
 );
 if (brands.length) {
-  md.push(`## Brands\n\nShipped as \`ayywi/brands/<name>.css\`; make your own with \`npx ayywi brand <#seed> --name <name>\`.\n\n${list(brands.map((b) => `\`${b.name}\` — ${b.input.description ?? ""} Made from: \`${JSON.stringify(Object.fromEntries(Object.entries(b.input).filter(([k]) => k !== "description")))}\``))}`);
+  md.push(`## Brands\n\nShipped as \`@danitesler/ayywi/brands/<name>.css\`; make your own with \`npx ayywi brand <#seed> --name <name>\`.\n\n${list(brands.map((b) => `\`${b.name}\` — ${b.input.description ?? ""} Made from: \`${JSON.stringify(Object.fromEntries(Object.entries(b.input).filter(([k]) => k !== "description")))}\``))}`);
 }
 md.push(`## Public custom properties\n\n${list(Object.entries(PUBLIC_HOOKS).map(([k, v]) => `\`${k}\`: ${v}`))}`);
 md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => `\`.${k}\`: ${v}`))}`);
@@ -152,7 +152,7 @@ function componentMarkdown(c, h = "##") {
   if (c.js) part.push(`**JS (framework-free)**: ${c.js}`);
   if (c.element) {
     part.push(
-      `**Custom element** \`<${c.element.tag}>\` (ayywi/elements) — ${c.element.children ?? ""}\n${list([
+      `**Custom element** \`<${c.element.tag}>\` (@danitesler/ayywi/elements) — ${c.element.children ?? ""}\n${list([
         ...Object.entries(c.element.attributes ?? {}).map(([k, v]) => `attribute \`${k}\`: ${v}`),
         ...Object.entries(c.element.events ?? {}).map(([k, v]) => `event \`${k}\`: ${v}`),
       ])}`,
@@ -219,7 +219,7 @@ ${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}
 // ---- ai/ consumer kit (generated parts) ----
 const GENERATED = "<!-- GENERATED by scripts/build-manifest.mjs — edit scripts/lib/contract.mjs or component meta instead. -->";
 const numbered = RULES.map((r, i) => `${i + 1}. ${r}`).join("\n");
-const lookup = `Look up a component before using it — via the ayywi MCP server (\`get_component\`) if it's configured, else \`node_modules/ayywi/manifest/components.json\` (JSON) or \`node_modules/ayywi/llms-full.txt\` (markdown). Each entry lists classes, variants, React props, custom element, accessibility notes, do/don't and copy-ready examples. Run \`npx ayywi lint\` when you're done.`;
+const lookup = `Look up a component before using it — via the ayywi MCP server (\`get_component\`) if it's configured, else \`node_modules/@danitesler/ayywi/manifest/components.json\` (JSON) or \`node_modules/@danitesler/ayywi/llms-full.txt\` (markdown). Each entry lists classes, variants, React props, custom element, accessibility notes, do/don't and copy-ready examples. Run \`npx ayywi lint\` when you're done.`;
 
 const snippet = `${GENERATED}
 ## UI: ayywi design system
@@ -248,7 +248,7 @@ const cheat = [
   `${GENERATED}
 # ayywi component cheat sheet
 
-CSS: \`import "ayywi/css"\` (or \`<link href=".../dist/ayywi.min.css">\`). React: \`import { … } from "ayywi/react"\`. Other frameworks: class names, helpers from \`"ayywi"\`, and \`import "ayywi/elements"\` for ${elements.map((e) => `\`<${e}>\``).join(", ")}.
+CSS: \`import "@danitesler/ayywi/css"\` (or \`<link href=".../dist/ayywi.min.css">\`). React: \`import { … } from "@danitesler/ayywi/react"\`. Other frameworks: class names, helpers from \`"@danitesler/ayywi"\`, and \`import "@danitesler/ayywi/elements"\` for ${elements.map((e) => `\`<${e}>\``).join(", ")}.
 
 Global attributes: ${Object.keys(ATTRIBUTES).map((a) => `\`${a}\``).join(", ")} (theme, density, brand, direction — on any element).
 

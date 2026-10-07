@@ -22,7 +22,7 @@
     "children": "One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you."
   },
   "react": {
-    "import": "import { Tooltip } from \"ayywi/react\";",
+    "import": "import { Tooltip } from \"@danitesler/ayywi/react\";",
     "components": {
       "Tooltip": {
         "renders": "<span class=\"ayy-tooltip\"> + child + <span role=\"tooltip\">",

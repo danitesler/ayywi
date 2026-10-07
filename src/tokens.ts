@@ -69,7 +69,7 @@ export const tokens = {
   "color.muted": { cssVar: "--ayy-color-muted", type: "color", value: "#939393", light: "#6b6b6b", themes: {"dark-soft":"#939393","light-gray":"#636363"}, category: "Text", description: "Captions, placeholders, de-emphasised labels." },
   "color.border": { cssVar: "--ayy-color-border", type: "color", value: "#262626", light: "#dadada", themes: {"dark-soft":"#262626","light-gray":"#dadada"}, category: "Lines", description: "Opaque border, for places where a mixed line can't be used." },
   "color.ring": { cssVar: "--ayy-color-ring", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Focus ring." },
-  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Primary action fill. Monochrome by design; a brand (setBrand(), ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour." },
+  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Primary action fill. Monochrome by design; a brand (setBrand(), @danitesler/ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour." },
   "color.primary-fg": { cssVar: "--ayy-color-primary-fg", type: "color", value: "#000000", light: "#ffffff", themes: {"dark-soft":"#0a0a0a","light-gray":"#ffffff"}, category: "Interactive", description: "Text on primary." },
   "color.destructive": { cssVar: "--ayy-color-destructive", type: "color", value: "#f87171", light: "#b91c1c", themes: {"dark-soft":"#fb9696","light-gray":"#991b1b"}, category: "Status", description: "Errors and destructive actions." },
   "color.success": { cssVar: "--ayy-color-success", type: "color", value: "#35d07f", light: "#065f46", themes: {"dark-soft":"#35d07f","light-gray":"#065f46"}, category: "Status", description: "Positive status." },
@@ -217,5 +217,5 @@ export type BrandName = (typeof brands)[number];
 
 /** What each shipped brand is made from: pass one to createBrand() or setBrand() to apply it without its stylesheet. */
 export const brandPresets = {
-  "violet": {"name":"violet","color":"#7c3aed","radius":{"button":"10px","card":"20px"},"description":"Example brand: violet buttons, checks and focus rings, softer button and card corners. Load ayywi/brands/violet.css and set data-brand=\"violet\" on any element (or setBrand(\"violet\"))."},
+  "violet": {"name":"violet","color":"#7c3aed","radius":{"button":"10px","card":"20px"},"description":"Example brand: violet buttons, checks and focus rings, softer button and card corners. Load @danitesler/ayywi/brands/violet.css and set data-brand=\"violet\" on any element (or setBrand(\"violet\"))."},
 } as const;

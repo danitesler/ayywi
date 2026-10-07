@@ -1,5 +1,5 @@
 import { useLayoutEffect, type MouseEvent } from "react";
-import { setDensity, setTheme } from "ayywi";
+import { setDensity, setTheme } from "@danitesler/ayywi";
 import { showcaseApps } from "./apps";
 
 /** One showcase app on its own page (?app=<id>), loaded in the device preview's iframe so media queries see the device width. */

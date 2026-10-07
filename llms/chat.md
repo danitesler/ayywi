@@ -12,7 +12,7 @@ Category: Data display. A conversation: incoming bubbles at the start edge, the 
 
 **JS (framework-free)**: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
 
-**React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "ayywi/react";`
+**React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "@danitesler/ayywi/react";`
 - `<Chat>` renders <div role="log" class="ayy-chat">.
 - `<ChatMessage>` renders <div class="ayy-chat__message"> with the avatar and a bubble around children. Props: `direction` "in" | "out"; `avatar` ReactNode — e.g. an Avatar size sm.
 - `<ChatTyping>` renders A message whose bubble holds the typing dots. Props: `label` Screen-reader text. Default "Typing" (translate it).; `avatar` ReactNode
@@ -62,7 +62,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "ayywi/react";
+import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const dani = <Avatar size="sm" name="Dani" fallback="DT" />;
@@ -85,4 +85,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

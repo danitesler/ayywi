@@ -18,7 +18,7 @@ Category: Forms. A card-sized radio or checkbox for choices that need a sentence
 
 **JS (framework-free)**: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
 
-**React** — `import { ChoiceGroup, ChoiceCard } from "ayywi/react";`
+**React** — `import { ChoiceGroup, ChoiceCard } from "@danitesler/ayywi/react";`
 - `<ChoiceGroup>` renders <fieldset role="radiogroup" class="ayy-choice-group"><legend>…. Props: `legend` ReactNode — the question; `type` "radio" (one choice, kept by the group) | "checkbox" (cards that combine); `name` Shared radio name. Generated if omitted.; `value / defaultValue` The chosen card's value.; `onValueChange` (value: string) => void; `min` CSS length — narrowest card; `scroll` boolean — one row that scrolls sideways; `disabled` boolean — every card
 - `<ChoiceCard>` renders <label class="ayy-choice-card"><input class="ayy-radio">…. Props: `value` string; `title` ReactNode; `description` ReactNode; `meta` ReactNode — price or date; `icon` ReactNode — an Icon or Icon tile above the title; `compact` boolean; `type` "checkbox" | "radio" — outside a radio ChoiceGroup; `checked / defaultChecked` boolean — outside a radio ChoiceGroup; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `inputProps` Props for the native input (name for checkbox cards).
 
@@ -55,7 +55,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { ChoiceCard, ChoiceGroup } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -87,7 +87,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { ChoiceCard, ChoiceGroup } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
 
 const slots = [
   { time: "07:00", left: 6 },
@@ -133,7 +133,7 @@ React:
 
 ```tsx
 import { DeliveryTruck01Icon, GiftIcon, Leaf01Icon } from "@hugeicons/core-free-icons";
-import { ChoiceCard, ChoiceGroup, Icon } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -169,4 +169,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

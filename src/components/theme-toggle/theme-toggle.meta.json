@@ -19,7 +19,7 @@
     "children": "The icon <button> and a [popover] menu whose items are role=\"menuitemradio\" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere."
   },
   "react": {
-    "import": "import { ThemeToggle } from \"ayywi/react\";",
+    "import": "import { ThemeToggle } from \"@danitesler/ayywi/react\";",
     "components": {
       "ThemeToggle": {
         "renders": "<button class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\"> with both icons, plus the <div class=\"ayy-menu\" popover> listing System and every theme",

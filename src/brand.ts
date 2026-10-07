@@ -317,7 +317,7 @@ export type DtcgTree = { [key: string]: DtcgToken | DtcgTree };
 
 /**
  * The tokens a brand overrides in one theme, as plain DTCG with concrete values: layer it over that theme's export
- * (ayywi/tokens/<theme>.json) for iOS, Android, Figma or Style Dictionary. Radii that point at ayywi's scale are resolved.
+ * (@danitesler/ayywi/tokens/<theme>.json) for iOS, Android, Figma or Style Dictionary. Radii that point at ayywi's scale are resolved.
  */
 export function brandTokens(brand: Brand | BrandInput, theme: ThemeName): DtcgTree {
   const b = "scale" in brand ? brand : createBrand(brand);
@@ -340,7 +340,7 @@ export function brandTokens(brand: Brand | BrandInput, theme: ThemeName): DtcgTr
 
 /**
  * Apply a brand to `target` (default <html>) and everything inside it. Pass:
- * - a name, when its stylesheet is loaded (ayywi/brands/<name>.css, or your own brandCss() output);
+ * - a name, when its stylesheet is loaded (@danitesler/ayywi/brands/<name>.css, or your own brandCss() output);
  * - a BrandInput or Brand, to generate it and add its stylesheet to the page now (replacing an earlier one of the same name);
  * - null to go back to ayywi's monochrome default.
  * Brands are usually fixed per app, so the choice isn't persisted. Returns the generated brand, if any.

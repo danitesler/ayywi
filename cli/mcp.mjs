@@ -21,10 +21,10 @@ function componentMarkdown(c) {
   ];
   if (variants.length) parts.push(`Variants:\n${list(variants)}`);
   if (c.states) parts.push(`States:\n${list(Object.entries(c.states).map(([k, v]) => `${k} — ${v}`))}`);
-  if (c.js) parts.push(`JS helpers (from "ayywi"): ${c.js}`);
+  if (c.js) parts.push(`JS helpers (from "@danitesler/ayywi"): ${c.js}`);
   if (c.element)
     parts.push(
-      `Custom element <${c.element.tag}> (import "ayywi/elements"): ${c.element.children ?? ""}\nAttributes:\n${list(
+      `Custom element <${c.element.tag}> (import "@danitesler/ayywi/elements"): ${c.element.children ?? ""}\nAttributes:\n${list(
         Object.entries(c.element.attributes ?? {}).map(([k, v]) => `${k}: ${v}`),
       )}\nEvents:\n${list(Object.entries(c.element.events ?? {}).map(([k, v]) => `${k}: ${v}`))}`,
     );
@@ -142,7 +142,7 @@ export function createServer(contract = loadContract()) {
         required: ["color"],
       },
       run: ({ color, radius, ...options }) => {
-        if (!brandLib) throw new Error("create_brand needs the built package (dist/). Run the build, or use createBrand() from \"ayywi\".");
+        if (!brandLib) throw new Error("create_brand needs the built package (dist/). Run the build, or use createBrand() from \"@danitesler/ayywi\".");
         const input = brandInput([String(color)], options);
         if (radius) input.radius = radius;
         const b = brandLib.createBrand(input);

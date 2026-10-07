@@ -1,4 +1,4 @@
-import { Button, Tooltip } from "ayywi/react";
+import { Button, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

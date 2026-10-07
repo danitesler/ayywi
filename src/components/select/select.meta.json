@@ -20,7 +20,7 @@
   },
   "js": "selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>",
   "react": {
-    "import": "import { Select } from \"ayywi/react\";",
+    "import": "import { Select } from \"@danitesler/ayywi/react\";",
     "components": {
       "Select": {
         "renders": "<div class=\"ayy-select\"><select class=\"ayy-select__control\">",

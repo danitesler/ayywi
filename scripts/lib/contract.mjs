@@ -3,13 +3,13 @@
 /** Custom properties consumers may set. Everything else starting with --ayy- must be a token. */
 export const PUBLIC_HOOKS = {
   "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.",
-  "--ayy-mx": "Card spotlight pointer X in px (set by React Card or ayywi/elements).",
-  "--ayy-my": "Card spotlight pointer Y in px (set by React Card or ayywi/elements).",
+  "--ayy-mx": "Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).",
+  "--ayy-my": "Card spotlight pointer Y in px (set by React Card or @danitesler/ayywi/elements).",
   "--ayy-dot": "Badge status-dot colour override.",
   "--ayy-value": "A unitless number 0–100: the Progress value, a Slider's position, a chart bar's height or tick's position, a bar-list row's length.",
   "--ayy-chart-color": "Colour of a chart bar, series, legend item, bar list or sparkline, instead of the next --ayy-chart-* token.",
   "--ayy-chart-height": "Height of a chart's plot (default 12rem).",
-  "--ayy-from": "Start of a slider range's fill, 0–100 (kept in sync by React and ayywi/elements).",
+  "--ayy-from": "Start of a slider range's fill, 0–100 (kept in sync by React and @danitesler/ayywi/elements).",
   "--ayy-to": "End of a slider range's fill, 0–100.",
   "--ayy-progress-color": "Progress fill colour override.",
   "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
@@ -77,7 +77,7 @@ export const ORDER = [
 export const ATTRIBUTES = {
   "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.",
   "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
-  "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
+  "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
   dir: "\"rtl\" mirrors every component (logical properties throughout).",
 };
 
@@ -88,7 +88,7 @@ export const RULES = [
   "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
   "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
   "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
-  "Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from \"ayywi\", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.",
+  "Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from \"@danitesler/ayywi\", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.",
   "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
   "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
@@ -103,6 +103,6 @@ export const RULES = [
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
+  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
   "Run `npx ayywi lint` after UI changes and fix every error it reports.",
 ];

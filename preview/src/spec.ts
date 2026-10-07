@@ -10,8 +10,8 @@ export function componentSpec(c: ComponentEntry): string {
   ];
   const variants = Object.entries(c.variants ?? {});
   if (variants.length) parts.push(`Variants:\n${list(variants.map(([k, v]) => `${k}: ${v.values.map((x) => JSON.stringify(x)).join(" | ")} (default ${JSON.stringify(v.default)})`))}`);
-  if (c.js) parts.push(`JS helpers (from "ayywi"): ${c.js}`);
-  if (c.element) parts.push(`Custom element: <${c.element.tag}> (import "ayywi/elements", or load dist/elements.global.js).`);
+  if (c.js) parts.push(`JS helpers (from "@danitesler/ayywi"): ${c.js}`);
+  if (c.element) parts.push(`Custom element: <${c.element.tag}> (import "@danitesler/ayywi/elements", or load dist/elements.global.js).`);
   parts.push(
     `React (${c.react.import}):\n${list(
       Object.entries(c.react.components).map(

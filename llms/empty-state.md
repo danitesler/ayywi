@@ -12,7 +12,7 @@ Category: Feedback. What a list, table or page shows when there's nothing in it 
 
 **JS (framework-free)**: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
 
-**React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "ayywi/react";`
+**React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "@danitesler/ayywi/react";`
 - `<EmptyState>` renders <div class="ayy-empty-state">. Props: `bordered` boolean — dashed outline.; `compact` boolean — less padding.
 - `<EmptyStateTitle>` renders <h2 class="ayy-empty-state__title">.
 - `<EmptyStateDescription>` renders <p class="ayy-empty-state__description">.
@@ -55,7 +55,7 @@ React:
 
 ```tsx
 import { Add01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
-import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "ayywi/react";
+import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -96,7 +96,7 @@ React:
 
 ```tsx
 import { Search01Icon } from "@hugeicons/core-free-icons";
-import { Button, Card, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "ayywi/react";
+import { Button, Card, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -119,4 +119,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

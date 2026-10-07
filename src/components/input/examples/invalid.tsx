@@ -1,4 +1,4 @@
-import { Field, FieldError, Input, Label } from "ayywi/react";
+import { Field, FieldError, Input, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

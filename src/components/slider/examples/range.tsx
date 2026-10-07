@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SliderRange } from "ayywi/react";
+import { SliderRange } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [[low, high], setPrice] = useState<[number, number]>([18, 64]);

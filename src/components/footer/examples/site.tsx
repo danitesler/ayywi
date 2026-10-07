@@ -1,5 +1,5 @@
 import { Layers01Icon } from "@hugeicons/core-free-icons";
-import { Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon } from "ayywi/react";
+import { Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

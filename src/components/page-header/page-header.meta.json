@@ -13,7 +13,7 @@
   "variants": {},
   "js": "pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.",
   "react": {
-    "import": "import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from \"ayywi/react\";",
+    "import": "import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from \"@danitesler/ayywi/react\";",
     "components": {
       "PageHeader": { "renders": "<header class=\"ayy-page-header\">" },
       "PageHeaderTitle": { "renders": "<h1 class=\"ayy-page-header__title\">" },

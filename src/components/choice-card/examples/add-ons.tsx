@@ -1,5 +1,5 @@
 import { DeliveryTruck01Icon, GiftIcon, Leaf01Icon } from "@hugeicons/core-free-icons";
-import { ChoiceCard, ChoiceGroup, Icon } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

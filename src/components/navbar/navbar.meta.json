@@ -16,7 +16,7 @@
   "variants": {},
   "js": "navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).",
   "react": {
-    "import": "import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from \"ayywi/react\";",
+    "import": "import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from \"@danitesler/ayywi/react\";",
     "components": {
       "Navbar": { "renders": "<header class=\"ayy-navbar\"><div class=\"ayy-navbar__inner\">; wires the phone menu when it holds a NavbarToggle" },
       "NavbarBrand": { "renders": "<a>" },

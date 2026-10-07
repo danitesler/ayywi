@@ -1,4 +1,4 @@
-import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

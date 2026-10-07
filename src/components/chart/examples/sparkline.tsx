@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Card, CardContent, Sparkline, Stat } from "ayywi/react";
+import { Card, CardContent, Sparkline, Stat } from "@danitesler/ayywi/react";
 
 const stats = [
   { label: "Visitors", value: "12.8k", trend: "up 9%", values: [8, 9, 8.5, 10, 9.8, 11, 10.6, 11.8, 12.1, 12.8], color: undefined },

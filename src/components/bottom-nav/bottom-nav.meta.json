@@ -12,7 +12,7 @@
   "variants": {},
   "js": "bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.",
   "react": {
-    "import": "import { BottomNav, BottomNavLink, BottomNavButton } from \"ayywi/react\";",
+    "import": "import { BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "BottomNav": { "renders": "<nav class=\"ayy-bottom-nav\">", "props": { "aria-label": "Defaults to \"Main\" (translate it)." } },
       "BottomNavLink": {

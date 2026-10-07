@@ -75,7 +75,7 @@ test("brandCss: layered for [data-brand], repeated on nested themes, unlayered o
   assert.match(root, /^:root,$/m);
 });
 
-test("ayywi/brands/violet.css ships, so setBrand(\"violet\") apps keep working", { skip: !existsSync(dist("brands")) && "run pnpm build first" }, async () => {
+test("brands/violet.css ships, so setBrand(\"violet\") apps keep working", { skip: !existsSync(dist("brands")) && "run pnpm build first" }, async () => {
   const { brands, brandPresets, brandCss } = await import(dist("index.js"));
   assert.ok(brands.includes("violet"));
   const css = readFileSync(dist("brands/violet.css"), "utf8");

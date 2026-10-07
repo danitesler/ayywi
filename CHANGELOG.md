@@ -4,6 +4,19 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Added
+- Brands are back, generated from one seed colour instead of written by hand. `createBrand({ name, color, font?, shape?, radius? })` makes an 11-step scale in the seed's hue (evenly spaced in OKLCH lightness, the seed itself at its nearest step) and picks `primary`, `primary-fg` and `ring` for dark and for light themes: the step nearest the seed that keeps 4.5:1 text on primary and 3:1 for the fill and focus ring against every surface in every theme. `brandCss()` writes it for `[data-brand="<name>"]` in the `ayywi.brand` layer (`light-dark()` serves both schemes and nested themed sections); `setBrand()` still takes a name and now also takes a brand to generate and add to the page. Fonts get ayywi's fallbacks (system fonts for body text); `shape` (`pill`, `round`, `soft`, `sharp`) or exact `radius` sets `--ayy-radius-control`, `-card` and `-button`. This brings back everything 0.0.1 removed, with the pre-release API: `data-brand`, `setBrand("violet")`, `@danitesler/ayywi/brands/violet.css`, `brands`, `BrandName`, the `ayywi.brand` layer and `tokens/brands/*.json`, so apps built on the pre-release `setBrand()` only need the package name changed. Violet is now generated from `#7c3aed`, so its dark-theme primary is a slightly deeper violet (`#9a73ff`, was `#b98cff`).
+- Brand tooling: `npx ayywi brand <#seed> --name acme [--shape soft] [--body "Inter"] [--out acme.css]` prints the stylesheet and a contrast report; the MCP server has a `create_brand` tool; `brandScale()`, `contrastRatio()`, `brandPresets` (what each shipped brand is made from) and `BRAND_STEPS` / `BRAND_SHAPES` are exported; `window.ayywi` gains `setBrand`, `createBrand` and `brandCss`. For iOS, Android, Figma and Style Dictionary, `brandTokens(brand, theme)` gives a brand's overrides as plain DTCG; shipped brands are in `@danitesler/ayywi/tokens/brands/<name>/<theme>.json` and `ayywi brand --tokens <dir>` writes them for your own. `pnpm check` runs every brand in `tokens/brands/` through `createBrand()`.
+- Tokens `--ayy-brand-50` … `--ayy-brand-950`: the brand's scale for illustrations and brand moments, grey until a brand applies.
+- Global attribute `data-brand` is documented with `data-theme` and `data-density`, and a rule tells agents to generate brands rather than pick colours.
+
+### Changed
+- Tabs, segmented controls, chips, badges and pagination links follow `--ayy-radius-button`, as its description always said, so a brand's shape reaches them too. With ayywi's own pill radius nothing changes; if you overrode `--ayy-radius-button`, they now follow it.
+
+## 0.0.1 — 2026-10-07
+
+First release, as `@danitesler/ayywi` on npm. Everything below it is pre-release history under the old internal numbers.
+
 ### Fixed
 - Dropdown menu items (and theme toggle items) showed keyboard focus only as a faint wash; they get the focus ring now.
 - Unselected tabs were muted text on the wash track: under 4.5:1 on raised surfaces in dark-soft and on light-gray's page. They're text-soft now (so are unselected segments), and `pnpm check` measures text on the wash in every theme.
@@ -16,14 +29,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - The manifest listed three of the eight controllers and three of the seven `window.ayywi` helpers; both lists are read from the source now.
 - The dialog footer's breakpoint was the only one in px (640px); it's 40rem.
 
-### Changed
-- Brands are generated from one seed colour instead of written by hand. `createBrand({ name, color, font?, shape?, radius? })` makes an 11-step scale in the seed's hue (evenly spaced in OKLCH lightness, the seed itself at its nearest step) and picks `primary`, `primary-fg` and `ring` for dark and for light themes: the step nearest the seed that keeps 4.5:1 text on primary and 3:1 for the fill and focus ring against every surface in every theme. `brandCss()` writes it for `[data-brand="<name>"]` in the `ayywi.brand` layer (`light-dark()` serves both schemes and nested themed sections); `setBrand()` still takes a name and now also takes a brand to generate and add to the page. Fonts get ayywi's fallbacks (system fonts for body text); `shape` (`pill`, `round`, `soft`, `sharp`) or exact `radius` sets `--ayy-radius-control`, `-card` and `-button`. Nothing that used brands in 0.4.0 needs to change: `data-brand`, `setBrand("violet")`, `ayywi/brands/violet.css`, `brands`, `BrandName` and `tokens/brands/*.json` all still work. Violet is now generated from `#7c3aed`, so its dark-theme primary is a slightly deeper violet (`#9a73ff`, was `#b98cff`).
-- Tabs, segmented controls, chips, badges and pagination links follow `--ayy-radius-button`, as its description always said, so a brand's shape reaches them too. With ayywi's own pill radius nothing changes; if you overrode `--ayy-radius-button`, they now follow it.
+### Removed
+- **Breaking:** brands. `data-brand`, `setBrand()`, the `brands` / `BrandName` exports, `ayywi/brands/*.css`, the `ayywi.brand` cascade layer, `tokens/brands/*.json` and the violet brand are gone. Migration: override semantic tokens (`--ayy-color-primary`, `--ayy-color-ring`…) in your own CSS instead. The preview's Brand picker is gone too, and `pnpm check` tests text contrast per theme only.
 
 ### Added
-- Brand tooling: `npx ayywi brand <#seed> --name acme [--shape soft] [--body "Inter"] [--out acme.css]` prints the stylesheet and a contrast report; the MCP server has a `create_brand` tool; `brandScale()`, `contrastRatio()`, `brandPresets` (what each shipped brand is made from) and `BRAND_STEPS` / `BRAND_SHAPES` are exported; `window.ayywi` gains `setBrand`, `createBrand` and `brandCss`. For iOS, Android, Figma and Style Dictionary, `brandTokens(brand, theme)` gives a brand's overrides as plain DTCG; shipped brands are in `ayywi/tokens/brands/<name>/<theme>.json` and `ayywi brand --tokens <dir>` writes them for your own. `pnpm check` runs every brand in `tokens/brands/` through `createBrand()`.
-- Tokens `--ayy-brand-50` … `--ayy-brand-950`: the brand's scale for illustrations and brand moments, grey until a brand applies.
-- Global attribute `data-brand` is documented with `data-theme` and `data-density`, and a rule tells agents to generate brands rather than pick colours.
 - 18 components, 54 in total:
   - **Chart** (Data display): charts drawn by CSS, no library. Columns (`ayy-chart__bars` of `__column`s of `__bar`s, grouped or `--stacked`, values on hover or `--values`), lines and areas (`__svg` of `__series` with `__line` and `__area` paths in a 0–100 box, `__series--compare` dashed and quiet), value lines (`__tick`), `__labels`, a `__legend` with `__swatch`es, a ranked `ayy-bar-list` and a small `ayy-sparkline`. Bars and ticks take `--ayy-value` (0–100), colour comes from the new chart tokens in order (`--ayy-chart-color` overrides), lines mirror in RTL, High Contrast gets system colours. `chartScale()` rounds the top of the scale, `chartPath()` makes the paths (straight or monotone), `chartColors()` and `chartTheme()` hand the resolved colours to canvas libraries. React `BarChart`, `LineChart`, `Sparkline`, `BarList`, each with a data table for screen readers.
   - **Chip** (Forms): filters and choices as pills. `ayy-chip` on a label around a native checkbox or radio, or a `<button aria-pressed>`; on is a border, a wash and a tick; `__count`; `--removable` with an `__remove` button for the filters in force; `ayy-chip-group` (`--scroll` for one line). React `Chip`, `ChipButton`, `ChipRemovable`, `ChipGroup`.
@@ -103,7 +112,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - Examples use Hugeicons: button, alert, dialog, and the dropdown menu, which now shows icons on its items.
 - The preview shows what people choosing and briefing components need; the reference stays with the AI tools (manifest, MCP server, `llms-full.txt`). Component pages drop the CSS class, React API and accessibility tables and the import line, and example code sits behind a Code toggle. Foundations show swatches and visual scales instead of token/value tables; the palette, stacking, durations and fixed sizes are gone. The overview drops the architecture cards and the per-framework code tabs. The sidebar no longer lists page sections; `#/colors/status` style links still scroll to them.
 
-## 0.4.0 — 2026-09-29
+## Pre-release-4 — 2026-09-29 (internal 0.4.0)
 
 Everything needed to build a website (danitesler.com was the test case: its header, hero, portfolio grid, project cards, case studies and "say hi" chat), not only app screens. No breaking changes.
 
@@ -131,7 +140,7 @@ Everything needed to build a website (danitesler.com was the test case: its head
 ### Fixed
 - Platform token exports skip fluid values (`clamp()`) instead of writing invalid Swift and Kotlin.
 
-## 0.3.0 — 2026-09-28
+## Pre-release-3 — 2026-09-28 (internal 0.3.0)
 
 ### Added
 - Two more themes:
@@ -157,7 +166,7 @@ Everything needed to build a website (danitesler.com was the test case: its head
 ### Fixed
 - The Swift token export declared `switch` without backticks, which isn't valid Swift.
 
-## 0.2.0 — 2026-09-28
+## Pre-release-2 — 2026-09-28 (internal 0.2.0)
 
 ayywi now lives in its own repository: https://github.com/danitesler/ayywi.
 
@@ -190,7 +199,7 @@ ayywi now lives in its own repository: https://github.com/danitesler/ayywi.
 - Floating elements measured while their entry animation scaled them, drifting a few pixels in RTL.
 - A failed avatar image showed the browser's broken-image icon over the initials.
 
-## 0.1.0 — 2026-09-28
+## Pre-release-1 — 2026-09-28 (internal 0.1.0)
 
 First release.
 

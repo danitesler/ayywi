@@ -1,4 +1,4 @@
-import { Textarea } from "ayywi/react";
+import { Textarea } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

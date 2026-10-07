@@ -1,9 +1,10 @@
 {
-  "name": "ayywi",
-  "version": "0.4.0",
+  "name": "@danitesler/ayywi",
+  "version": "0.0.1",
   "description": "Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.",
   "type": "module",
   "license": "MIT",
+  "author": "Dani Tesler <danylpo.com@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/danitesler/ayywi.git"
@@ -25,13 +26,16 @@
     "icons",
     "hugeicons"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": [
     "*.css",
     "./dist/elements.*",
     "./src/elements/*"
   ],
   "bin": {
-    "ayywi": "./cli/index.mjs"
+    "ayywi": "cli/index.mjs"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

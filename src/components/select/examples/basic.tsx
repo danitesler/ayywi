@@ -1,4 +1,4 @@
-import { Field, Label, Select } from "ayywi/react";
+import { Field, Label, Select } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

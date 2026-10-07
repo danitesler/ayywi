@@ -1,4 +1,4 @@
-import { Badge, Card, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

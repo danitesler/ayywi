@@ -1,8 +1,8 @@
 /*
  * ayywi for Tailwind CSS v4. After `@import "tailwindcss";`:
  *
- *   @import "ayywi/css";            (or just "ayywi/tokens.css" if you only want the tokens)
- *   @import "ayywi/tailwind.css";
+ *   @import "@danitesler/ayywi/css";            (or just "@danitesler/ayywi/tokens.css" if you only want the tokens)
+ *   @import "@danitesler/ayywi/tailwind.css";
  *
  * `inline` makes utilities reference the --ayy-* variables directly, so they follow data-theme switches.
  */

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Steps } from "ayywi/react";
+import { Steps } from "@danitesler/ayywi/react";
 
 const STEPS = ["Cart", "Shipping", "Payment", "Review"];
 

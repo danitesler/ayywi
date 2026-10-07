@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { Badge, Icon } from "ayywi/react";
+import { Badge, Icon } from "@danitesler/ayywi/react";
 import changelog from "../../../CHANGELOG.md?raw";
 
 const ROUTE = "changelog";

@@ -1,5 +1,5 @@
 /* A native <input type="range">, so keyboard, forms and screen readers work as usual. Chromium and Safari can't fill
-   the track up to the thumb by themselves: --ayy-value (0–100) does it, kept in sync by React and ayywi/elements.
+   the track up to the thumb by themselves: --ayy-value (0–100) does it, kept in sync by React and @danitesler/ayywi/elements.
    Firefox draws the fill natively. A range (min and max) is two of them in .ayy-slider-range. */
 
 .ayy-slider,

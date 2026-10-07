@@ -12,7 +12,7 @@ export function sliderPercent(input: Pick<HTMLInputElement, "min" | "max" | "val
 
 /**
  * Bring a slider's fill up to date: --ayy-value on an .ayy-slider, and --ayy-from / --ayy-to on its .ayy-slider-range,
- * where the two thumbs can't cross (the one being dragged stops at the other). ayywi/elements calls it on every
+ * where the two thumbs can't cross (the one being dragged stops at the other). @danitesler/ayywi/elements calls it on every
  * input event; call it yourself after setting a value from code.
  */
 export function syncSlider(input: HTMLInputElement): void {

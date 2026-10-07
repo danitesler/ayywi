@@ -11,7 +11,7 @@ Category: Forms. Form field wrapper: Label + control + hint or error, stacked wi
 
 **JS (framework-free)**: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
 
-**React** — `import { Field, Label, FieldHint, FieldError } from "ayywi/react";`
+**React** — `import { Field, Label, FieldHint, FieldError } from "@danitesler/ayywi/react";`
 - `<Field>` renders <div>. Props: `inline` boolean
 - `<Label>` renders <label>. Props: `htmlFor` id of the control
 - `<FieldHint>` renders <p>.
@@ -61,7 +61,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "ayywi/react";
+import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -93,4 +93,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
