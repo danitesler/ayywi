@@ -4,26 +4,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
-### Fixed
-- Phones: the sticky Contents squeezed into an 11rem side column or stacked as a long list. Below 48rem it's now a sticky row of section links under the navbar, the current one underlined and scrolled into view. Put it before the content in a wrapping flex row (the example does); it takes 11rem there on wide screens.
-- Contents and Breadcrumb links were 19–31px tall targets. They're a small control tall now (40px at touch density) without moving the compact layout.
-- A long Breadcrumb wrapped onto several lines on phones. It stays on one line there, cutting ancestors with an ellipsis before the current page.
-- Sections kept 80px of block padding on phones (160px between two). It's 48px there, with a smaller gap under the header.
-- A tap on a touch screen left interactive cards lifted, their media zoomed and the ring button spinning. Those effects only run with a real hover now (`@media (hover: hover)`); the ring still spins on keyboard focus. The motion rule says so for app CSS too.
 ### Added
 - Every component documents its states and sizes, the same way. `states` in each meta lists default, hover, pressed, focus, disabled, selected, error and loading (plus its own, such as open, indeterminate, dragging or sorted): how to reach each (`when`) and what it looks like (`looks`), or why it doesn't apply and what to use instead (`none`). `sizes` gives each size variant's measurements (`scale`), what `data-density` changes and how it takes space. Both are in `manifest/components.json` (with the state list as `states`), `llms-full.txt`, `llms/<slug>.md`, the cheat sheet and the MCP server's `get_component`, and a new rule tells agents not to style a state a component doesn't have. `pnpm check` fails when a state is missing, malformed, or called "doesn't apply" while the component's CSS styles it, and when `sizes.scale` doesn't match the `size` variant.
-
-### Changed
-- **Breaking** for tools that read `manifest/components.json`: a component's `states` was a map of selector → sentence on 14 components; it's now on all of them, keyed by state name, each `{ when, looks }` or `{ none }`.
-### Added
 - Brands are back, generated from one seed colour instead of written by hand. `createBrand({ name, color, font?, shape?, radius? })` makes an 11-step scale in the seed's hue (evenly spaced in OKLCH lightness, the seed itself at its nearest step) and picks `primary`, `primary-fg` and `ring` for dark and for light themes: the step nearest the seed that keeps 4.5:1 text on primary and 3:1 for the fill and focus ring against every surface in every theme. `brandCss()` writes it for `[data-brand="<name>"]` in the `ayywi.brand` layer (`light-dark()` serves both schemes and nested themed sections); `setBrand()` still takes a name and now also takes a brand to generate and add to the page. Fonts get ayywi's fallbacks (system fonts for body text); `shape` (`pill`, `round`, `soft`, `sharp`) or exact `radius` sets `--ayy-radius-control`, `-card` and `-button`. This brings back everything 0.0.1 removed, with the pre-release API: `data-brand`, `setBrand("violet")`, `@danitesler/ayywi/brands/violet.css`, `brands`, `BrandName`, the `ayywi.brand` layer and `tokens/brands/*.json`, so apps built on the pre-release `setBrand()` only need the package name changed. Violet is now generated from `#7c3aed`, so its dark-theme primary is a slightly deeper violet (`#9a73ff`, was `#b98cff`).
 - Brand tooling: `npx ayywi brand <#seed> --name acme [--shape soft] [--body "Inter"] [--out acme.css]` prints the stylesheet and a contrast report; the MCP server has a `create_brand` tool; `brandScale()`, `contrastRatio()`, `brandPresets` (what each shipped brand is made from) and `BRAND_STEPS` / `BRAND_SHAPES` are exported; `window.ayywi` gains `setBrand`, `createBrand` and `brandCss`. For iOS, Android, Figma and Style Dictionary, `brandTokens(brand, theme)` gives a brand's overrides as plain DTCG; shipped brands are in `@danitesler/ayywi/tokens/brands/<name>/<theme>.json` and `ayywi brand --tokens <dir>` writes them for your own. `pnpm check` runs every brand in `tokens/brands/` through `createBrand()`.
 - Tokens `--ayy-brand-50` … `--ayy-brand-950`: the brand's scale for illustrations and brand moments, grey until a brand applies.
 - Global attribute `data-brand` is documented with `data-theme` and `data-density`, and a rule tells agents to generate brands rather than pick colours.
-
-### Changed
-- Tabs, segmented controls, chips, badges and pagination links follow `--ayy-radius-button`, as its description always said, so a brand's shape reaches them too. With ayywi's own pill radius nothing changes; if you overrode `--ayy-radius-button`, they now follow it.
-### Added
 - **Settings pattern**: settings open full screen in the app's own frame, as in Notion and Cursor. `ayy-app-shell--settings` (React `AppShell settings`) swaps the sidebar for an `ayy-app-shell__back` link ("Back to <app>", React `AppShellBack`), an `ayy-app-shell__title` (`AppShellTitle`) and the settings sections, and centres one section in the main under a Top bar whose back button shows on phones only. Below 48rem it's two screens: the section list when no section is current, the section when one is. Esc leaves settings (outside text fields and open overlays). `appShellSettingsClass`, `appShellBackClass`, `appShellTitleClass`, `appShellBackIcon`.
 - **Patterns** in the contract (`PATTERNS` in `scripts/lib/contract.mjs`): whole-screen recipes with phone behaviour and the measurements apps must not restyle, rendered into `manifest.patterns`, llms-full.txt, llms.txt, `llms/pattern-<slug>.md`, the AGENTS snippet and the MCP server (`get_rules`, and `search` ranks them first). The first is Settings, which also fixes one spec for sidebar items and settings rows. `pnpm check` verifies each pattern's components and example exist.
 - 12 components that Teyykit and Dooduu each had to build for themselves, plus the phone basics, 66 in total:
@@ -39,7 +25,6 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - **Settings** (Forms): preference rows (label and hint at the start, the control at the end, wrapping under on phones) grouped under a heading in a card; `--plain` without the card, `__row--stack`, and `__link` rows that open a sub-page with the current value and a chevron (`--destructive` for Sign out). React `Settings`, `SettingsRow`, `SettingsLink`.
   - **Progress ring** (Feedback): progress as a ring from `--ayy-value`, clockwise from the top in every direction, with an optional label in the middle; `--sm` to `--xl`, the Progress colours, `--indeterminate`. React `ProgressRing`.
   - **Swipe actions** (Data display): a list row that slides to show action trays at either end (`__actions--start`, `__actions--end`, `__action` with status tints), with touch, pen or mouse, following the reading direction; keyboard focus shows a tray over the row. `connectSwipe()`, `<ayy-swipe>`, React `Swipe`, `SwipeAction`; `--ayy-swipe-bg` sets the row's background.
-### Added
 - `ayywi lint` checks structure, not only values. Three new rules, warnings by default:
   - `rebuilt-component`: an app class named after an ayywi component (`.app-chip`, `.sidebar`, `.qa-spinner`, `.hpill`) that is never used together with it.
   - `component-override`: CSS that changes how a component looks (colour, background, border, radius, padding, type) on an `ayy-` class or on an app class used with one. Layout (margin, size, position), theme tokens and High Contrast blocks are fine.
@@ -48,7 +33,17 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - Every component meta has `aka`: the names a hand-built copy goes by (Chip: chip, tag, token, filter-chip). The linter reads them, the MCP `search` tool finds components by them, and the llms pages list them. `pnpm check` requires them and keeps each one to a single component.
 
 ### Changed
+- **Breaking** for tools that read `manifest/components.json`: a component's `states` was a map of selector → sentence on 14 components; it's now on all of them, keyed by state name, each `{ when, looks }` or `{ none }`.
+- Tabs, segmented controls, chips, badges and pagination links follow `--ayy-radius-button`, as its description always said, so a brand's shape reaches them too. With ayywi's own pill radius nothing changes; if you overrode `--ayy-radius-button`, they now follow it.
 - Rule 1 now says it outright: don't rebuild a component under your own name or restyle one; your class next to its `ayy-` class sets only layout.
+- Aliases that now name their own component moved to it: `top-bar`, `topbar` and `app-bar` from Navbar to Top bar; `search`, `search-bar`, `search-box`, `searchbox` and `search-field` from Input group to Search bar; `setting`, `settings-row` and `setting-row` from List to Settings. `ayywi lint` points hand-built copies at the new components.
+
+### Fixed
+- Phones: the sticky Contents squeezed into an 11rem side column or stacked as a long list. Below 48rem it's now a sticky row of section links under the navbar, the current one underlined and scrolled into view. Put it before the content in a wrapping flex row (the example does); it takes 11rem there on wide screens.
+- Contents and Breadcrumb links were 19–31px tall targets. They're a small control tall now (40px at touch density) without moving the compact layout.
+- A long Breadcrumb wrapped onto several lines on phones. It stays on one line there, cutting ancestors with an ellipsis before the current page.
+- Sections kept 80px of block padding on phones (160px between two). It's 48px there, with a smaller gap under the header.
+- A tap on a touch screen left interactive cards lifted, their media zoomed and the ring button spinning. Those effects only run with a real hover now (`@media (hover: hover)`); the ring still spins on keyboard focus. The motion rule says so for app CSS too.
 
 ## 0.0.1 — 2026-10-07
 
