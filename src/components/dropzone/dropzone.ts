@@ -19,7 +19,7 @@ export function dragHasFiles(event: DragEvent): boolean {
 
 /**
  * Set data-dragging on .ayy-dropzone elements while files are held over them. Delegated from `root`, so zones added
- * later work too; ayywi/elements calls it for the document. Returns a cleanup.
+ * later work too; @danitesler/ayywi/elements calls it for the document. Returns a cleanup.
  */
 export function trackDropzones(root: Document | HTMLElement = document): () => void {
   const zoneOf = (target: EventTarget | null) => (target instanceof Element ? target.closest<HTMLElement>(".ayy-dropzone") : null);

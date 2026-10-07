@@ -1,5 +1,5 @@
 import { GridViewIcon, ListViewIcon } from "@hugeicons/core-free-icons";
-import { Icon, SegmentedControl, SegmentedControlItem } from "ayywi/react";
+import { Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

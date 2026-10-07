@@ -45,7 +45,7 @@ import {
   Wallet01Icon,
   Yoga01Icon,
 } from "@hugeicons/core-free-icons";
-import { toast, type DensityMode, type IconData, type ThemeName } from "ayywi";
+import { toast, type DensityMode, type IconData, type ThemeName } from "@danitesler/ayywi";
 import {
   Accordion,
   AccordionItem,
@@ -173,7 +173,7 @@ import {
   compareValues,
   nextSortDirection,
   type SortDirection,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 const gap = (space: number) => ({ "--ayy-gap": `var(--ayy-space-${space})` }) as CSSProperties;
 const min = (size: string) => ({ "--ayy-min": size }) as CSSProperties;

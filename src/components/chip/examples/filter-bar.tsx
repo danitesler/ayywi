@@ -1,6 +1,6 @@
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from "ayywi/react";
+import { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from "@danitesler/ayywi/react";
 
 const PRIORITIES = ["Urgent", "High", "Normal"];
 

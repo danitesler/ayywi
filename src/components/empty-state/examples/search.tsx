@@ -1,5 +1,5 @@
 import { Search01Icon } from "@hugeicons/core-free-icons";
-import { Button, Card, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "ayywi/react";
+import { Button, Card, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

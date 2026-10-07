@@ -14,14 +14,14 @@ Category: Data display. Round (or square) picture of a person or workspace, with
 
 **JS (framework-free)**: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 
-**React** — `import { Avatar, AvatarGroup } from "ayywi/react";`
+**React** — `import { Avatar, AvatarGroup } from "@danitesler/ayywi/react";`
 - `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "sm" | "md" | "lg" | "xl"; `shape` "circle" | "square"
 - `<AvatarGroup>` renders <div role="group">.
 
 **Accessibility**
 - The name goes on the root (aria-label); the <img> has alt="" and the initials are aria-hidden, so it's announced once.
 - Give an AvatarGroup an aria-label like "5 collaborators".
-- A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
+- A failed image is hidden by React or @danitesler/ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
 
 **Do**
 - Use avatars for people and workspaces in lists, headers and comments.
@@ -46,7 +46,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
 </span>
 <span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Leo Park"><span class="ayy-avatar__fallback" aria-hidden="true">LP</span></span>
-<!-- The image fails; ayywi/elements hides it so the initials show through. -->
+<!-- The image fails; @danitesler/ayywi/elements hides it so the initials show through. -->
 <span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Broken Image">
   <span class="ayy-avatar__fallback" aria-hidden="true">BI</span>
   <img class="ayy-avatar__image" alt="" src="/missing.png" />
@@ -64,7 +64,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Avatar, AvatarGroup, Badge } from "ayywi/react";
+import { Avatar, AvatarGroup, Badge } from "@danitesler/ayywi/react";
 
 const photo =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>";
@@ -90,4 +90,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

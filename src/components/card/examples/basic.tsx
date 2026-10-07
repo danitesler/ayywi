@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "ayywi/react";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

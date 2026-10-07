@@ -18,7 +18,7 @@
   },
   "js": "inputClass({ size?, className? }) → string",
   "react": {
-    "import": "import { Input } from \"ayywi/react\";",
+    "import": "import { Input } from \"@danitesler/ayywi/react\";",
     "components": {
       "Input": {
         "renders": "<input>",

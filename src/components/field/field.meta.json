@@ -16,7 +16,7 @@
   },
   "js": "fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants",
   "react": {
-    "import": "import { Field, Label, FieldHint, FieldError } from \"ayywi/react\";",
+    "import": "import { Field, Label, FieldHint, FieldError } from \"@danitesler/ayywi/react\";",
     "components": {
       "Field": { "renders": "<div>", "props": { "inline": "boolean" } },
       "Label": { "renders": "<label>", "props": { "htmlFor": "id of the control" } },

@@ -21,7 +21,7 @@
     "children": "A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled=\"true\" at the ends. Slides without a label are named \"2 of 6\"."
   },
   "react": {
-    "import": "import { Carousel, CarouselSlide } from \"ayywi/react\";",
+    "import": "import { Carousel, CarouselSlide } from \"@danitesler/ayywi/react\";",
     "components": {
       "Carousel": {
         "renders": "<div class=\"ayy-carousel\" role=\"region\"> with the track and the two buttons",

@@ -1,4 +1,4 @@
-import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from "ayywi/react";
+import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from "@danitesler/ayywi/react";
 
 const dollars = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact" });
 const days = ["Sep 1", "Sep 2", "Sep 3", "Sep 4", "Sep 5", "Sep 6", "Sep 7", "Sep 8", "Sep 9", "Sep 10", "Sep 11", "Sep 12", "Sep 13", "Sep 14"];

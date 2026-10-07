@@ -19,7 +19,7 @@
   },
   "js": "radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string",
   "react": {
-    "import": "import { RadioGroup, Radio } from \"ayywi/react\";",
+    "import": "import { RadioGroup, Radio } from \"@danitesler/ayywi/react\";",
     "components": {
       "RadioGroup": {
         "renders": "<fieldset> (+ <legend>)",

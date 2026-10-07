@@ -1,4 +1,4 @@
-import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "ayywi/react";
+import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "@danitesler/ayywi/react";
 
 const features = [
   { title: "Identity", text: "One four-point star wherever a feature is powered by AI." },

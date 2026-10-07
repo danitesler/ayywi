@@ -10,7 +10,7 @@ Category: Forms. Pick one of two to five options that change what you see or wha
 
 **JS (framework-free)**: segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.
 
-**React** — `import { SegmentedControl, SegmentedControlItem } from "ayywi/react";`
+**React** — `import { SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";`
 - `<SegmentedControl>` renders <div role="radiogroup" class="ayy-segmented-control">. Props: `value / defaultValue` The selected option's value.; `onValueChange` (value: string) => void; `name` Shared radio name, for forms. Generated if omitted.; `size` "sm" | "md"; `full` boolean — equal segments across the container.
 - `<SegmentedControlItem>` renders <label class="ayy-segmented-control__option"><input type="radio">…. Props: `value` This option's value.; `disabled` boolean; `inputProps` Props for the native radio.
 
@@ -56,7 +56,7 @@ React:
 
 ```tsx
 import { GridViewIcon, ListViewIcon } from "@hugeicons/core-free-icons";
-import { Icon, SegmentedControl, SegmentedControlItem } from "ayywi/react";
+import { Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -86,4 +86,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -15,9 +15,9 @@
     "noEmit": true,
     "types": ["vite/client"],
     "paths": {
-      "ayywi": ["../src/index.ts"],
-      "ayywi/react": ["../src/react/index.ts"],
-      "ayywi/elements": ["../src/elements/index.ts"]
+      "@danitesler/ayywi": ["../src/index.ts"],
+      "@danitesler/ayywi/react": ["../src/react/index.ts"],
+      "@danitesler/ayywi/elements": ["../src/elements/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts", "../src"]

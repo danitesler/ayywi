@@ -11,7 +11,7 @@ Category: Data display. A headline number in the heading font, with a muted unit
 
 **JS (framework-free)**: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
 
-**React** — `import { Stat } from "ayywi/react";`
+**React** — `import { Stat } from "@danitesler/ayywi/react";`
 - `<Stat>` renders <div class="ayy-stat">. Props: `value` ReactNode (required) — the formatted number.; `unit` ReactNode; `label` ReactNode; `labelFirst` boolean — label above the number.; `size` "md" | "sm"
 
 **Accessibility**
@@ -53,7 +53,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Stat } from "ayywi/react";
+import { Stat } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -67,4 +67,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

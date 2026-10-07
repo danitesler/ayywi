@@ -14,7 +14,7 @@
   },
   "js": "skeletonClass({ shape?, className? }) → string",
   "react": {
-    "import": "import { Skeleton } from \"ayywi/react\";",
+    "import": "import { Skeleton } from \"@danitesler/ayywi/react\";",
     "components": {
       "Skeleton": { "renders": "<div aria-hidden=\"true\">", "props": { "shape": "\"block\" | \"text\" | \"circle\"" } }
     }

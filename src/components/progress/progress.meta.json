@@ -21,7 +21,7 @@
   },
   "js": "progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)",
   "react": {
-    "import": "import { Progress } from \"ayywi/react\";",
+    "import": "import { Progress } from \"@danitesler/ayywi/react\";",
     "components": {
       "Progress": {
         "renders": "<div role=\"progressbar\">",

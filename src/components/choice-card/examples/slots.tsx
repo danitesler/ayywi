@@ -1,4 +1,4 @@
-import { ChoiceCard, ChoiceGroup } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
 
 const slots = [
   { time: "07:00", left: 6 },

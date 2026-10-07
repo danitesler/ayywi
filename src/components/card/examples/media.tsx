@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "ayywi/react";
+import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "@danitesler/ayywi/react";
 
 function Cover({ children }: { children: ReactNode }) {
   return (

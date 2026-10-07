@@ -1,4 +1,4 @@
-import { Field, FieldHint, Dropzone, Label } from "ayywi/react";
+import { Field, FieldHint, Dropzone, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

@@ -1,5 +1,5 @@
 import { Layers01Icon } from "@hugeicons/core-free-icons";
-import { buttonClass, Icon, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav, NavbarToggle } from "ayywi/react";
+import { buttonClass, Icon, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav, NavbarToggle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Below 48rem the links fold into a panel under the bar; the menu button at the end opens it.

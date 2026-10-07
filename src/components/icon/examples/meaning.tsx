@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { CancelCircleIcon, CheckmarkCircle02Icon, GitBranchIcon } from "@hugeicons/core-free-icons";
-import { Icon, List, ListItem } from "ayywi/react";
+import { Icon, List, ListItem } from "@danitesler/ayywi/react";
 
 // Decorative icons are aria-hidden. An icon that carries the meaning on its own gets a label.
 export default function Example() {

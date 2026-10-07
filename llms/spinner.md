@@ -9,7 +9,7 @@ Category: Feedback. An indeterminate loading ring in the text colour, sized like
 
 **JS (framework-free)**: spinnerClass({ size?, className? }) → string. Buttons: add aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).
 
-**React** — `import { Spinner } from "ayywi/react";`
+**React** — `import { Spinner } from "@danitesler/ayywi/react";`
 - `<Spinner>` renders <span class="ayy-spinner" role="status" aria-label="Loading">. Props: `size` "sm" | "md" | "lg"; `label` What's loading, for screen readers. Default "Loading" (translate it). "" makes it decorative (aria-hidden) when nearby text already says it.
 
 **Accessibility**
@@ -51,7 +51,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Button, Spinner } from "ayywi/react";
+import { Button, Spinner } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -73,4 +73,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

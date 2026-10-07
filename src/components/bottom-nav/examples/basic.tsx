@@ -1,5 +1,5 @@
 import { DashboardSquare01Icon, Folder01Icon, Notification03Icon, UserIcon } from "@hugeicons/core-free-icons";
-import { BottomNav, BottomNavLink, Icon } from "ayywi/react";
+import { BottomNav, BottomNavLink, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   // A phone-sized screen. The nav is sticky, so it stays at the bottom of whatever scrolls: the page, or a box like this one.

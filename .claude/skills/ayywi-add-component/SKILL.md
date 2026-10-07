@@ -17,7 +17,7 @@ src/components/<slug>/
   <slug>.element.ts       optional: <ayy-slug> custom element, only if the component needs JS behaviour
   <slug>.meta.json        AI-facing documentation (schema: copy any existing meta)
   examples/<id>.html      copy-ready HTML
-  examples/<id>.tsx       copy-ready React (`export default function Example()`, imports from "ayywi/react")
+  examples/<id>.tsx       copy-ready React (`export default function Example()`, imports from "@danitesler/ayywi/react")
 ```
 
 Never name a file with only a case difference from a sibling (`Dialog.tsx` next to `dialog.ts`): macOS/Windows and esbuild treat them as the same file.

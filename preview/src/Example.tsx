@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 import { CodeBlock } from "./CodeBlock";
 import type { ExampleEntry } from "./data";
 import type { Renderer } from "./settings";

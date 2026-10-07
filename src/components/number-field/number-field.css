@@ -1,5 +1,5 @@
 /* A number with minus and plus buttons: quantities, guests, seats. The input is a native type="number" (typing,
-   arrow keys, min/max/step, forms); the buttons step it. React and ayywi/elements wire them, and mark the one that
+   arrow keys, min/max/step, forms); the buttons step it. React and @danitesler/ayywi/elements wire them, and mark the one that
    can't go further with aria-disabled. */
 
 .ayy-number-field {

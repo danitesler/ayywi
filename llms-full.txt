@@ -1,4 +1,4 @@
-# ayywi 0.4.0 — full context for LLMs
+# @danitesler/ayywi 0.0.1 — full context for LLMs
 
 > Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.
 
@@ -6,9 +6,9 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 ## How to use it
 
-- Any framework / plain HTML: load `ayywi/css` and write the class names below.
-- React: `import { Button } from "ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "ayywi"`), and `import "ayywi/elements"` for interactive components (<ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-table>).
+- Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
+- React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-table>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - One component at a time: `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt.
 - Check your work: `npx ayywi lint`.
@@ -34,7 +34,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).
 - Run `npx ayywi lint` after UI changes and fix every error it reports.
 
 ## Conventions
@@ -241,13 +241,13 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 ## Public custom properties
 
 - `--ayy-spot`: The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.
-- `--ayy-mx`: Card spotlight pointer X in px (set by React Card or ayywi/elements).
-- `--ayy-my`: Card spotlight pointer Y in px (set by React Card or ayywi/elements).
+- `--ayy-mx`: Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).
+- `--ayy-my`: Card spotlight pointer Y in px (set by React Card or @danitesler/ayywi/elements).
 - `--ayy-dot`: Badge status-dot colour override.
 - `--ayy-value`: A unitless number 0–100: the Progress value, a Slider's position, a chart bar's height or tick's position, a bar-list row's length.
 - `--ayy-chart-color`: Colour of a chart bar, series, legend item, bar list or sparkline, instead of the next --ayy-chart-* token.
 - `--ayy-chart-height`: Height of a chart's plot (default 12rem).
-- `--ayy-from`: Start of a slider range's fill, 0–100 (kept in sync by React and ayywi/elements).
+- `--ayy-from`: Start of a slider range's fill, 0–100 (kept in sync by React and @danitesler/ayywi/elements).
 - `--ayy-to`: End of a slider range's fill, 0–100.
 - `--ayy-progress-color`: Progress fill colour override.
 - `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.
@@ -316,7 +316,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 
 **JS (framework-free)**: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 
-**React** — `import { Button } from "ayywi/react";`
+**React** — `import { Button } from "@danitesler/ayywi/react";`
 - `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
 
 **Accessibility**
@@ -355,7 +355,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button } from "ayywi/react";
+import { Button } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -388,7 +388,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button } from "ayywi/react";
+import { Button } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -429,7 +429,7 @@ React:
 
 ```tsx
 import { PlusSignIcon, UserAdd01Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "ayywi/react";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -465,7 +465,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { buttonClass } from "ayywi/react";
+import { buttonClass } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -494,7 +494,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { buttonClass } from "ayywi/react";
+import { buttonClass } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -528,14 +528,14 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 
 **JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
 
-**Custom element** `<ayy-menu>` (ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
+**Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: start | center | end
 - attribute `open`: Two-way open state
 - event `ayy-select`: { value: string, item: HTMLElement } — value is the item's data-value, else its text
 - event `ayy-open-change`: { open: boolean }
 
-**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "ayywi/react";`
+**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@danitesler/ayywi/react";`
 - `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…
 - `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"
@@ -564,7 +564,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-menu> (ayywi/elements) adds placement and the menu keyboard model, and fires "ayy-select" with the item's data-value. -->
+<!-- <ayy-menu> (@danitesler/ayywi/elements) adds placement and the menu keyboard model, and fires "ayy-select" with the item's data-value. -->
 <ayy-menu>
   <button type="button" class="ayy-button ayy-button--outline" popovertarget="project-menu-html" aria-haspopup="menu">Project actions</button>
   <div class="ayy-menu" id="project-menu-html" popover role="menu">
@@ -603,7 +603,7 @@ import {
   DropdownMenuTrigger,
   Icon,
   toast,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -646,10 +646,10 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 
 **JS (framework-free)**: themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).
 
-**Custom element** `<ayy-theme-toggle>` (ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
+**Custom element** `<ayy-theme-toggle>` (@danitesler/ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
 - event `ayy-value-change`: { value: string } — the theme just applied ("system" clears the override)
 
-**React** — `import { ThemeToggle } from "ayywi/react";`
+**React** — `import { ThemeToggle } from "@danitesler/ayywi/react";`
 - `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark soft, Light, Light gray.
 
 **Accessibility**
@@ -672,7 +672,7 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-theme-toggle> (ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or "system". -->
+<!-- <ayy-theme-toggle> (@danitesler/ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or "system". -->
 <ayy-theme-toggle>
   <button type="button" class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle" aria-label="Theme" aria-haspopup="menu" popovertarget="theme-menu-html">
     <svg class="ayy-icon ayy-theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
@@ -691,7 +691,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { ThemeToggle } from "ayywi/react";
+import { ThemeToggle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return <ThemeToggle />;
@@ -713,10 +713,10 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 
 **JS (framework-free)**: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).
 
-**Custom element** `<ayy-navbar>` (ayywi/elements) — A <header class="ayy-navbar"> with a __toggle. The toggle opens and closes the links as a panel under the bar on phones; Esc, a click outside, a link in the panel or widening past 48rem close it. Without a toggle it does nothing.
+**Custom element** `<ayy-navbar>` (@danitesler/ayywi/elements) — A <header class="ayy-navbar"> with a __toggle. The toggle opens and closes the links as a panel under the bar on phones; Esc, a click outside, a link in the panel or widening past 48rem close it. Without a toggle it does nothing.
 
 
-**React** — `import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from "ayywi/react";`
+**React** — `import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from "@danitesler/ayywi/react";`
 - `<Navbar>` renders <header class="ayy-navbar"><div class="ayy-navbar__inner">; wires the phone menu when it holds a NavbarToggle.
 - `<NavbarBrand>` renders <a>.
 - `<NavbarNav>` renders <nav>. Props: `aria-label` Defaults to "Main" (translate it).
@@ -770,7 +770,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "ayywi/react";
+import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -802,8 +802,8 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Below 48rem the links fold into a panel under the bar; the menu button at the end opens it. <ayy-navbar> (ayywi/elements) wires it;
-     without it, call connectNavbar(header) from "ayywi". -->
+<!-- Below 48rem the links fold into a panel under the bar; the menu button at the end opens it. <ayy-navbar> (@danitesler/ayywi/elements) wires it;
+     without it, call connectNavbar(header) from "@danitesler/ayywi". -->
 <div style="inline-size: 100%">
   <ayy-navbar>
     <header class="ayy-navbar">
@@ -827,7 +827,7 @@ React:
 
 ```tsx
 import { Layers01Icon } from "@hugeicons/core-free-icons";
-import { buttonClass, Icon, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav, NavbarToggle } from "ayywi/react";
+import { buttonClass, Icon, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav, NavbarToggle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Below 48rem the links fold into a panel under the bar; the menu button at the end opens it.
@@ -881,10 +881,10 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 
 **JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).
 
-**Custom element** `<ayy-app-shell>` (ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing.
+**Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing.
 
 
-**React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from "ayywi/react";`
+**React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
 - `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle".
 - `<AppShellSidebar>` renders <aside class="ayy-app-shell__sidebar">.
 - `<AppShellBrand>` renders <a class="ayy-app-shell__brand">.
@@ -1009,7 +1009,7 @@ import {
   AppShellSidebar,
   Icon,
   Stat,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.
@@ -1067,7 +1067,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
 <!-- Below 48rem the sidebar hides: the bar keeps the brand and search, the bottom nav holds the top destinations, and "More" opens the whole
-     sidebar as a drawer. <ayy-app-shell> (ayywi/elements) wires it. The shell is 100dvh high; the outer box only stands in for the browser window. -->
+     sidebar as a drawer. <ayy-app-shell> (@danitesler/ayywi/elements) wires it. The shell is 100dvh high; the outer box only stands in for the browser window. -->
 <div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
   <ayy-app-shell>
     <div class="ayy-app-shell" style="block-size: 100%">
@@ -1132,7 +1132,7 @@ import {
   BottomNavLink,
   Button,
   Icon,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Wide screens get the sidebar. Below 48rem it hides: the bar keeps the brand and search, the bottom nav holds the
@@ -1287,7 +1287,7 @@ import {
   AppShellNav,
   AppShellSidebar,
   AppShellSublist,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.
@@ -1360,8 +1360,8 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer. <ayy-app-shell> (ayywi/elements) wires it;
-     without it, call connectAppShell(shell) from "ayywi". The shell is 100dvh high; the outer box only stands in for the browser window. -->
+<!-- Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer. <ayy-app-shell> (@danitesler/ayywi/elements) wires it;
+     without it, call connectAppShell(shell) from "@danitesler/ayywi". The shell is 100dvh high; the outer box only stands in for the browser window. -->
 <div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
   <ayy-app-shell>
     <div class="ayy-app-shell" style="block-size: 100%">
@@ -1456,7 +1456,7 @@ import {
   AppShellSidebar,
   AppShellToggle,
   Icon,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer.
@@ -1530,7 +1530,7 @@ Category: Navigation. A phone app's tab bar: three to five top-level destination
 
 **JS (framework-free)**: bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.
 
-**React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "ayywi/react";`
+**React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
 - `<BottomNav>` renders <nav class="ayy-bottom-nav">. Props: `aria-label` Defaults to "Main" (translate it).
 - `<BottomNavLink>` renders <a class="ayy-bottom-nav__link"> with the icon and a <span class="ayy-bottom-nav__label">. Props: `icon` ReactNode — the icon above the label (an <Icon>).; `current` boolean — sets aria-current="page".
 - `<BottomNavButton>` renders <button type="button" class="ayy-bottom-nav__link"> with the icon and a label <span>. Props: `icon` ReactNode — the icon above the label.
@@ -1605,7 +1605,7 @@ React:
 
 ```tsx
 import { DashboardSquare01Icon, Folder01Icon, Notification03Icon, UserIcon } from "@hugeicons/core-free-icons";
-import { BottomNav, BottomNavLink, Icon } from "ayywi/react";
+import { BottomNav, BottomNavLink, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   // A phone-sized screen. The nav is sticky, so it stays at the bottom of whatever scrolls: the page, or a box like this one.
@@ -1651,7 +1651,7 @@ Category: Navigation. The site footer at the end of every website page: brand an
 
 **JS (framework-free)**: footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.
 
-**React** — `import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from "ayywi/react";`
+**React** — `import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from "@danitesler/ayywi/react";`
 - `<Footer>` renders <footer class="ayy-footer"><div class="ayy-footer__inner">.
 - `<FooterBrand>` renders <div class="ayy-footer__brand">.
 - `<FooterNav>` renders <nav class="ayy-footer__nav">. Props: `aria-label` Defaults to "Footer" (translate it).
@@ -1728,7 +1728,7 @@ React:
 
 ```tsx
 import { Layers01Icon } from "@hugeicons/core-free-icons";
-import { Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon } from "ayywi/react";
+import { Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -1788,7 +1788,7 @@ Category: Navigation. Trail from the top level down to the current page (Home / 
 
 **JS (framework-free)**: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
 
-**React** — `import { Breadcrumb } from "ayywi/react";`
+**React** — `import { Breadcrumb } from "@danitesler/ayywi/react";`
 - `<Breadcrumb>` renders <nav aria-label="Breadcrumb"><ol>…. Props: `items` { label: ReactNode; href?: string }[] — top level first; the last one is the current page.; `pill` boolean; `aria-label` Defaults to "Breadcrumb" (translate it).
 
 **Accessibility**
@@ -1829,7 +1829,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Breadcrumb } from "ayywi/react";
+import { Breadcrumb } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -1859,7 +1859,7 @@ Category: Navigation. Previous, page numbers with gaps, and next, for a long tab
 
 **JS (framework-free)**: paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
 
-**React** — `import { Pagination } from "ayywi/react";`
+**React** — `import { Pagination } from "@danitesler/ayywi/react";`
 - `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `labels` { nav?, previous?, next? } — text for translation. Defaults "Pagination", "Previous", "Next".
 
 **Accessibility**
@@ -1903,7 +1903,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Pagination } from "ayywi/react";
+import { Pagination } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -1927,7 +1927,7 @@ Category: Navigation. Where you are in a short flow (sign-up, checkout, import):
 
 **JS (framework-free)**: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
 
-**React** — `import { Steps } from "ayywi/react";`
+**React** — `import { Steps } from "@danitesler/ayywi/react";`
 - `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
 
 **Accessibility**
@@ -1970,7 +1970,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Steps } from "ayywi/react";
+import { Steps } from "@danitesler/ayywi/react";
 
 const STEPS = ["Cart", "Shipping", "Payment", "Review"];
 
@@ -1998,11 +1998,11 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 
 **JS (framework-free)**: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
 
-**Custom element** `<ayy-toc>` (ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
+**Custom element** `<ayy-toc>` (@danitesler/ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
 - attribute `offset`: Distance in px below the top of the viewport at which a section becomes current. Default: the page's scroll-padding-top (the navbar sets it) + 24.
 - event `ayy-value-change`: { value: string } — id of the section now being read ("" above the first)
 
-**React** — `import { Toc } from "ayywi/react";`
+**React** — `import { Toc } from "@danitesler/ayywi/react";`
 - `<Toc>` renders <nav class="ayy-toc">. Props: `items` { id: string; label: ReactNode; children?: TocItem[] }[] — ids of sections on the page, in page order.; `title` ReactNode — visible heading; also becomes the nav's accessible name.; `numbered` boolean — number top-level items 01, 02…; `sticky` boolean; `offset` number — px below the top of the viewport at which a section becomes current.; `onValueChange` (id: string) => void — the section being read changed.; `aria-label` Used when there's no title. Defaults to "On this page" (translate it).
 
 **Accessibility**
@@ -2027,7 +2027,7 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-toc> (ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->
+<!-- <ayy-toc> (@danitesler/ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->
 <div style="display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)">
   <nav class="ayy-toc ayy-toc--sticky" aria-labelledby="toc-title">
     <ayy-toc>
@@ -2057,7 +2057,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Toc } from "ayywi/react";
+import { Toc } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2110,7 +2110,7 @@ Category: Forms. Form field wrapper: Label + control + hint or error, stacked wi
 
 **JS (framework-free)**: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
 
-**React** — `import { Field, Label, FieldHint, FieldError } from "ayywi/react";`
+**React** — `import { Field, Label, FieldHint, FieldError } from "@danitesler/ayywi/react";`
 - `<Field>` renders <div>. Props: `inline` boolean
 - `<Label>` renders <label>. Props: `htmlFor` id of the control
 - `<FieldHint>` renders <p>.
@@ -2160,7 +2160,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "ayywi/react";
+import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2206,7 +2206,7 @@ Category: Forms. Single-line text field. Works for every native input type (text
 
 **JS (framework-free)**: inputClass({ size?, className? }) → string
 
-**React** — `import { Input } from "ayywi/react";`
+**React** — `import { Input } from "@danitesler/ayywi/react";`
 - `<Input>` renders <input>. Props: `size` "sm" | "md" | "lg" (visual size; native size attr not exposed); `...rest` All native <input> attributes.
 
 **Accessibility**
@@ -2240,7 +2240,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Input } from "ayywi/react";
+import { Input } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2269,7 +2269,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, FieldError, Input, Label } from "ayywi/react";
+import { Field, FieldError, Input, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2304,7 +2304,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Field, FieldHint, Input, Label } from "ayywi/react";
+import { Field, FieldHint, Input, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2335,7 +2335,7 @@ Category: Forms. An input with things attached inside its box: a leading icon, a
 
 **JS (framework-free)**: inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.
 
-**React** — `import { InputGroup, InputGroupAddon, Input } from "ayywi/react";`
+**React** — `import { InputGroup, InputGroupAddon, Input } from "@danitesler/ayywi/react";`
 - `<InputGroup>` renders <div class="ayy-input-group">. Props: `size` "sm" | "md" | "lg"
 - `<InputGroupAddon>` renders <span class="ayy-input-group__addon">.
 
@@ -2378,7 +2378,7 @@ React:
 
 ```tsx
 import { Search01Icon } from "@hugeicons/core-free-icons";
-import { Icon, Input, InputGroup, InputGroupAddon, Kbd } from "ayywi/react";
+import { Icon, Input, InputGroup, InputGroupAddon, Kbd } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2436,7 +2436,7 @@ React:
 ```tsx
 import { Copy01Icon, ViewIcon } from "@hugeicons/core-free-icons";
 import type { CSSProperties } from "react";
-import { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from "ayywi/react";
+import { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2488,7 +2488,7 @@ Category: Forms. Multi-line text field. Optional auto-grow and monospace modes.
 
 **JS (framework-free)**: textareaClass({ autosize?, mono?, className? }) → string
 
-**React** — `import { Textarea } from "ayywi/react";`
+**React** — `import { Textarea } from "@danitesler/ayywi/react";`
 - `<Textarea>` renders <textarea>. Props: `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
 
 **Accessibility**
@@ -2519,7 +2519,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Textarea } from "ayywi/react";
+import { Textarea } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2549,7 +2549,7 @@ Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling 
 
 **JS (framework-free)**: selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>
 
-**React** — `import { Select } from "ayywi/react";`
+**React** — `import { Select } from "@danitesler/ayywi/react";`
 - `<Select>` renders <div class="ayy-select"><select class="ayy-select__control">. Props: `size` "sm" | "md" | "lg"; `wrapperProps` Props for the wrapper <div>; `...rest` All native <select> attributes; className goes to the <select>.
 
 **Accessibility**
@@ -2599,7 +2599,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, Label, Select } from "ayywi/react";
+import { Field, Label, Select } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2642,11 +2642,11 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 
 **JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
 
-**Custom element** `<ayy-combobox>` (ayywi/elements) — 
+**Custom element** `<ayy-combobox>` (@danitesler/ayywi/elements) — 
 - attribute `manual`: Don't filter: replace the options yourself as people type (a search API), then call refresh().
 - event `ayy-select`: { value, label, option } when an option is chosen — value is its data-value, else its label.
 
-**React** — `import { Combobox } from "ayywi/react";`
+**React** — `import { Combobox } from "@danitesler/ayywi/react";`
 - `<Combobox>` renders <div class="ayy-combobox"><input role="combobox" class="ayy-input"><svg><ul role="listbox" class="ayy-combobox__listbox">. Props: `options` ({ value, label, meta?, icon?, keywords?, disabled? } | string)[]; `value / defaultValue` The chosen option's value.; `onValueChange` (value: string, option) => void; `onInputChange` (text: string) => void — every keystroke, e.g. to fetch options; `filter` boolean, default true; false when you fetch the options yourself; `emptyText` ReactNode, default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input carries the chosen value in forms
 
 **Accessibility**
@@ -2696,7 +2696,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Combobox, Field, FieldHint, Label } from "ayywi/react";
+import { Combobox, Field, FieldHint, Label } from "@danitesler/ayywi/react";
 
 const zones = [
   { value: "Europe/Lisbon", label: "Lisbon", meta: "Portugal", keywords: "Portugal" },
@@ -2735,7 +2735,7 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 
 **JS (framework-free)**: checkboxClass constant
 
-**React** — `import { Checkbox } from "ayywi/react";`
+**React** — `import { Checkbox } from "@danitesler/ayywi/react";`
 - `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
 
 **Accessibility**
@@ -2770,7 +2770,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Checkbox } from "ayywi/react";
+import { Checkbox } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2812,7 +2812,7 @@ Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset wi
 
 **JS (framework-free)**: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
 
-**React** — `import { RadioGroup, Radio } from "ayywi/react";`
+**React** — `import { RadioGroup, Radio } from "@danitesler/ayywi/react";`
 - `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"
 - `<Radio>` renders <input type="radio">. Props: `value` string (required); `...rest` All native <input> attributes.
 
@@ -2851,7 +2851,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Radio, RadioGroup } from "ayywi/react";
+import { Radio, RadioGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2892,7 +2892,7 @@ Category: Forms. Pick one of two to five options that change what you see or wha
 
 **JS (framework-free)**: segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.
 
-**React** — `import { SegmentedControl, SegmentedControlItem } from "ayywi/react";`
+**React** — `import { SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";`
 - `<SegmentedControl>` renders <div role="radiogroup" class="ayy-segmented-control">. Props: `value / defaultValue` The selected option's value.; `onValueChange` (value: string) => void; `name` Shared radio name, for forms. Generated if omitted.; `size` "sm" | "md"; `full` boolean — equal segments across the container.
 - `<SegmentedControlItem>` renders <label class="ayy-segmented-control__option"><input type="radio">…. Props: `value` This option's value.; `disabled` boolean; `inputProps` Props for the native radio.
 
@@ -2938,7 +2938,7 @@ React:
 
 ```tsx
 import { GridViewIcon, ListViewIcon } from "@hugeicons/core-free-icons";
-import { Icon, SegmentedControl, SegmentedControlItem } from "ayywi/react";
+import { Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -2986,7 +2986,7 @@ Category: Forms. Pill-shaped filters and choices: a label around a native checkb
 
 **JS (framework-free)**: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
 
-**React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "ayywi/react";`
+**React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "@danitesler/ayywi/react";`
 - `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
 - `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode
 - `<ChipRemovable>` renders <span class="ayy-chip ayy-chip--removable">… <button class="ayy-chip__remove">. Props: `onRemove` () => void; `removeLabel` string — default "Remove " + the text
@@ -3033,7 +3033,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Chip, ChipGroup } from "ayywi/react";
+import { Chip, ChipGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3101,7 +3101,7 @@ React:
 ```tsx
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from "ayywi/react";
+import { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from "@danitesler/ayywi/react";
 
 const PRIORITIES = ["Urgent", "High", "Normal"];
 
@@ -3175,7 +3175,7 @@ Category: Forms. A card-sized radio or checkbox for choices that need a sentence
 
 **JS (framework-free)**: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
 
-**React** — `import { ChoiceGroup, ChoiceCard } from "ayywi/react";`
+**React** — `import { ChoiceGroup, ChoiceCard } from "@danitesler/ayywi/react";`
 - `<ChoiceGroup>` renders <fieldset role="radiogroup" class="ayy-choice-group"><legend>…. Props: `legend` ReactNode — the question; `type` "radio" (one choice, kept by the group) | "checkbox" (cards that combine); `name` Shared radio name. Generated if omitted.; `value / defaultValue` The chosen card's value.; `onValueChange` (value: string) => void; `min` CSS length — narrowest card; `scroll` boolean — one row that scrolls sideways; `disabled` boolean — every card
 - `<ChoiceCard>` renders <label class="ayy-choice-card"><input class="ayy-radio">…. Props: `value` string; `title` ReactNode; `description` ReactNode; `meta` ReactNode — price or date; `icon` ReactNode — an Icon or Icon tile above the title; `compact` boolean; `type` "checkbox" | "radio" — outside a radio ChoiceGroup; `checked / defaultChecked` boolean — outside a radio ChoiceGroup; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `inputProps` Props for the native input (name for checkbox cards).
 
@@ -3212,7 +3212,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { ChoiceCard, ChoiceGroup } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3244,7 +3244,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { ChoiceCard, ChoiceGroup } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
 
 const slots = [
   { time: "07:00", left: 6 },
@@ -3290,7 +3290,7 @@ React:
 
 ```tsx
 import { DeliveryTruck01Icon, GiftIcon, Leaf01Icon } from "@hugeicons/core-free-icons";
-import { ChoiceCard, ChoiceGroup, Icon } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3330,12 +3330,12 @@ export default function Example() {
 Category: Forms. A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.
 
 **Classes**
-- `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and ayywi/elements keep it in sync, so in HTML set the starting one inline.
-- `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing.
+- `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.
+- `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing.
 
-**JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
+**JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
 
-**React** — `import { Slider, SliderRange } from "ayywi/react";`
+**React** — `import { Slider, SliderRange } from "@danitesler/ayywi/react";`
 - `<Slider>` renders <input type="range" class="ayy-slider">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
 - `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean
 
@@ -3360,7 +3360,7 @@ Category: Forms. A native range input with a filled track and a round thumb, and
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- ayywi/elements keeps --ayy-value in step with the thumb; update the <output> text from the input event. -->
+<!-- @danitesler/ayywi/elements keeps --ayy-value in step with the thumb; update the <output> text from the input event. -->
 <div class="ayy-field" style="inline-size: min(100%, 22rem)">
   <div class="ayy-spread">
     <label class="ayy-label" for="class-size">Class size</label>
@@ -3375,7 +3375,7 @@ React:
 
 ```tsx
 import { useState } from "react";
-import { Field, FieldHint, Label, Slider } from "ayywi/react";
+import { Field, FieldHint, Label, Slider } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [spots, setSpots] = useState(12);
@@ -3399,7 +3399,7 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->
+<!-- @danitesler/ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->
 <div class="ayy-stack" style="inline-size: min(100%, 22rem)">
   <div class="ayy-spread">
     <span class="ayy-label" id="price-label">Price</span>
@@ -3416,7 +3416,7 @@ React:
 
 ```tsx
 import { useState } from "react";
-import { SliderRange } from "ayywi/react";
+import { SliderRange } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [[low, high], setPrice] = useState<[number, number]>([18, 64]);
@@ -3460,9 +3460,9 @@ Category: Forms. A native number input between minus and plus buttons, for small
 - `button[aria-disabled="true"]` — Can't go further (at min or max). Stays focusable.
 - `input[aria-invalid="true"]` — Invalid value: red border.
 
-**JS (framework-free)**: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.
+**JS (framework-free)**: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. @danitesler/ayywi/elements runs both for every .ayy-number-field on the page.
 
-**React** — `import { NumberField } from "ayywi/react";`
+**React** — `import { NumberField } from "@danitesler/ayywi/react";`
 - `<NumberField>` renders <div class="ayy-number-field"><button class="ayy-number-field__decrement"><input type="number"><button class="ayy-number-field__increment">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number; `max` number; `step` number, default 1; `size` "sm" | "md"; `decrementLabel` string, default "Decrease" — say what changes ("Remove a guest"); `incrementLabel` string, default "Increase"; `className` On the outer box; every other prop goes to the input (id, name, aria-label…); `style` On the outer box
 
 **Accessibility**
@@ -3505,7 +3505,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, FieldHint, Label, NumberField } from "ayywi/react";
+import { Field, FieldHint, Label, NumberField } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3535,7 +3535,7 @@ export default function Example() {
 Category: Forms. A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.
 
 **Classes**
-- `.ayy-dropzone` — The <label>: dashed border, centred icon and text. Its <input type="file"> covers it and draws nothing. data-dragging while files are held over it (set by ayywi/elements or React).
+- `.ayy-dropzone` — The <label>: dashed border, centred icon and text. Its <input type="file"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).
 - `.ayy-dropzone--compact` — One line (icon, then text), for a form field or a composer.
 - `.ayy-dropzone__title` — Main line: "Drop files here or browse" (the word styled .ayy-link).
 - `.ayy-dropzone__hint` — What's accepted: types and size.
@@ -3545,9 +3545,9 @@ Category: Forms. A drop zone that is also a file picker: a label around a native
 - `input:disabled` — Dimmed, not clickable.
 - `input[aria-invalid="true"]` — Rejected file: red border; say why in a FieldError.
 
-**JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).
+**JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).
 
-**React** — `import { Dropzone } from "ayywi/react";`
+**React** — `import { Dropzone } from "@danitesler/ayywi/react";`
 - `<Dropzone>` renders <label class="ayy-dropzone"><input type="file"><svg><span class="ayy-dropzone__title">…. Props: `title` ReactNode, default "Drop files here or browse"; `hint` ReactNode — types and size; `icon` ReactNode — replaces the upload icon; null for none; `onFiles` (files: File[]) => void — check types and sizes here: accept isn't enforced on a drop; `compact` boolean; `className` On the <label>; every other prop (accept, multiple, name, id, disabled…) goes to the input; `style` On the <label>
 
 **Accessibility**
@@ -3601,7 +3601,7 @@ React:
 
 ```tsx
 import { Delete02Icon, Image01Icon } from "@hugeicons/core-free-icons";
-import { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from "ayywi/react";
+import { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from "@danitesler/ayywi/react";
 
 const files = [
   { name: "studio-front.jpg", size: "2.4 MB", progress: 100 },
@@ -3647,7 +3647,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, FieldHint, Dropzone, Label } from "ayywi/react";
+import { Field, FieldHint, Dropzone, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3683,7 +3683,7 @@ Category: Forms. On/off toggle for a setting that applies immediately. A native 
 
 **JS (framework-free)**: switchClass constant
 
-**React** — `import { Switch } from "ayywi/react";`
+**React** — `import { Switch } from "@danitesler/ayywi/react";`
 - `<Switch>` renders <input type="checkbox" role="switch">. Props: `checked / defaultChecked` Controlled / uncontrolled, same as a checkbox.; `onCheckedChange` (checked: boolean) => void; `...rest` All native <input> attributes (name, value, disabled, required…).
 
 **Accessibility**
@@ -3724,7 +3724,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, Label, Switch } from "ayywi/react";
+import { Field, Label, Switch } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3758,7 +3758,7 @@ Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, t
 
 **JS (framework-free)**: pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.
 
-**React** — `import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from "ayywi/react";`
+**React** — `import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from "@danitesler/ayywi/react";`
 - `<PageHeader>` renders <header class="ayy-page-header">.
 - `<PageHeaderTitle>` renders <h1 class="ayy-page-header__title">.
 - `<PageHeaderDescription>` renders <p class="ayy-page-header__description">.
@@ -3808,7 +3808,7 @@ React:
 
 ```tsx
 import { Add01Icon, Download01Icon } from "@hugeicons/core-free-icons";
-import { Breadcrumb, Button, Icon, PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderTitle } from "ayywi/react";
+import { Breadcrumb, Button, Icon, PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3848,7 +3848,7 @@ Category: Layout. A band of a page with generous vertical rhythm and a header: o
 
 **JS (framework-free)**: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
 
-**React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "ayywi/react";`
+**React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "@danitesler/ayywi/react";`
 - `<Section>` renders <section>. Props: `center` boolean
 - `<SectionHeader>` renders <header>.
 - `<SectionEyebrow>` renders <p>. Props: `number` ReactNode — shown before the label, e.g. "01".
@@ -3893,7 +3893,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Card, CardHeader, CardTitle, Section, SectionDescription, SectionHeader, SectionTitle } from "ayywi/react";
+import { Card, CardHeader, CardTitle, Section, SectionDescription, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3937,7 +3937,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "ayywi/react";
+import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -3976,7 +3976,7 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 
 **JS (framework-free)**: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
 
-**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "ayywi/react";`
+**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "@danitesler/ayywi/react";`
 - `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
@@ -4027,7 +4027,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "ayywi/react";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4055,7 +4055,7 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Pointer tracking comes from ayywi/elements (or call trackSpotlight on pointermove yourself). -->
+<!-- Pointer tracking comes from @danitesler/ayywi/elements (or call trackSpotlight on pointermove yourself). -->
 <div class="ayy-card ayy-card--interactive ayy-card--spotlight" style="inline-size: 15rem; --ayy-spot: var(--ayy-accent-product)">
   <div class="ayy-card__header">
     <span class="ayy-badge ayy-badge--info">Product</span>
@@ -4075,7 +4075,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge, Card, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4145,7 +4145,7 @@ React:
 
 ```tsx
 import type { CSSProperties, ReactNode } from "react";
-import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "ayywi/react";
+import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "@danitesler/ayywi/react";
 
 function Cover({ children }: { children: ReactNode }) {
   return (
@@ -4210,12 +4210,12 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 
 **JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
 
-**Custom element** `<ayy-tabs>` (ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
+**Custom element** `<ayy-tabs>` (@danitesler/ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
 - attribute `value`: The selected tab's data-value (or index). Two-way.
 - attribute `class`: Put ayy-tabs on it for block layout.
 - event `ayy-value-change`: { value: string } — the user picked a tab
 
-**React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "ayywi/react";`
+**React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@danitesler/ayywi/react";`
 - `<Tabs>` renders <div>. Props: `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
 - `<TabsList>` renders <div role="tablist">. Props: `aria-label` Recommended.
 - `<TabsTrigger>` renders <button role="tab">. Props: `value` string (required)
@@ -4242,7 +4242,7 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-tabs> (ayywi/elements) wires ids, clicks and arrow keys. The initial aria-selected / hidden avoid a flash before it loads.
+<!-- <ayy-tabs> (@danitesler/ayywi/elements) wires ids, clicks and arrow keys. The initial aria-selected / hidden avoid a flash before it loads.
      Vue/Svelte/Angular: bind `value` and listen for `ayy-value-change`. -->
 <ayy-tabs class="ayy-tabs" value="overview">
   <div class="ayy-tabs__list" role="tablist" aria-label="Project settings">
@@ -4267,7 +4267,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4321,7 +4321,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4363,7 +4363,7 @@ Category: Layout. Questions and answers, or sections people open one at a time: 
 
 **JS (framework-free)**: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
 
-**React** — `import { Accordion, AccordionItem } from "ayywi/react";`
+**React** — `import { Accordion, AccordionItem } from "@danitesler/ayywi/react";`
 - `<Accordion>` renders <div class="ayy-accordion">. Props: `single` boolean — one item open at a time (a shared name on every <details>).
 - `<AccordionItem>` renders <details class="ayy-accordion__item"><summary class="ayy-accordion__trigger">…<div class="ayy-accordion__content">. Props: `label` The always-visible row: the question or section name.; `open` Start expanded.
 
@@ -4414,7 +4414,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Accordion, AccordionItem } from "ayywi/react";
+import { Accordion, AccordionItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4446,10 +4446,10 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 
 **JS (framework-free)**: carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.
 
-**Custom element** `<ayy-carousel>` (ayywi/elements) — A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled="true" at the ends. Slides without a label are named "2 of 6".
+**Custom element** `<ayy-carousel>` (@danitesler/ayywi/elements) — A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled="true" at the ends. Slides without a label are named "2 of 6".
 - attribute `class`: Put ayy-carousel on it for block layout.
 
-**React** — `import { Carousel, CarouselSlide } from "ayywi/react";`
+**React** — `import { Carousel, CarouselSlide } from "@danitesler/ayywi/react";`
 - `<Carousel>` renders <div class="ayy-carousel" role="region"> with the track and the two buttons. Props: `label` string (required) — accessible name, e.g. "Team photos".; `slideWidth` CSS length for every slide. Default min(22rem, 85%).; `previousLabel / nextLabel` Button names. Default "Previous" / "Next" Defaults "Previous" / "Next" (translate them).; `slideLabel` Each slide's name, with {index} and {count}. Default "{index} of {count}" (translate it). HTML: data-slide-label on the carousel.
 - `<CarouselSlide>` renders <div role="group" aria-roledescription="slide">.
 
@@ -4474,7 +4474,7 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-carousel> (ayywi/elements) wires the buttons. Swipe, scroll or focus the strip and use the arrow keys. -->
+<!-- <ayy-carousel> (@danitesler/ayywi/elements) wires the buttons. Swipe, scroll or focus the strip and use the arrow keys. -->
 <ayy-carousel class="ayy-carousel" role="region" aria-roledescription="carousel" aria-label="AI assistant features" style="inline-size: 100%; --ayy-slide: 15rem">
   <div class="ayy-carousel__track" tabindex="0">
     <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Identity</h3><p class="ayy-card__description">One four-point star wherever a feature is powered by AI.</p></div></div></div>
@@ -4497,7 +4497,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "ayywi/react";
+import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "@danitesler/ayywi/react";
 
 const features = [
   { title: "Identity", text: "One four-point star wherever a feature is powered by AI." },
@@ -4536,7 +4536,7 @@ Category: Layout. A hairline between blocks: full, fading out at both ends (betw
 
 **JS (framework-free)**: separatorClass({ orientation?, fade?, className? }) → string
 
-**React** — `import { Separator } from "ayywi/react";`
+**React** — `import { Separator } from "@danitesler/ayywi/react";`
 - `<Separator>` renders <hr>. Props: `orientation` "horizontal" | "vertical" — vertical also sets aria-orientation.; `fade` boolean
 
 **Accessibility**
@@ -4575,7 +4575,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Separator } from "ayywi/react";
+import { Separator } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4615,12 +4615,12 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 
 **JS (framework-free)**: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
 
-**Custom element** `<ayy-dialog>` (ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog"> (centred or side). Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.
+**Custom element** `<ayy-dialog>` (@danitesler/ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog"> (centred or side). Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.
 - attribute `open`: Two-way open state
 - attribute `persistent`: Backdrop clicks don't close it (Esc still does)
 - event `ayy-open-change`: { open: boolean, returnValue?: string }
 
-**React** — `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from "ayywi/react";`
+**React** — `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from "@danitesler/ayywi/react";`
 - `<Dialog>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<DialogTrigger>` renders Button. Props: `...ButtonProps` variant, size…
 - `<DialogContent>` renders <dialog>. Props: `size` "sm" | "md" | "lg" | "xl" — width; `side` "center" | "start" | "end" | "bottom" — start/end make a side modal on that inline edge, bottom a bottom sheet; `hideClose` boolean — hide the corner close button; `closeLabel` string — accessible name of the close button (translate it). Default "Close"; `closeOnBackdrop` boolean — default true
@@ -4659,7 +4659,7 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-dialog> (ayywi/elements): [data-ayy-open] opens, [data-ayy-close] closes, backdrop click closes.
+<!-- <ayy-dialog> (@danitesler/ayywi/elements): [data-ayy-open] opens, [data-ayy-close] closes, backdrop click closes.
      Without it, call dialog.showModal() / dialog.close() yourself. -->
 <ayy-dialog>
   <button type="button" class="ayy-button ayy-button--destructive" data-ayy-open aria-haspopup="dialog">Delete project</button>
@@ -4691,7 +4691,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -4756,7 +4756,7 @@ import {
   Field,
   Input,
   Label,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -4879,7 +4879,7 @@ import {
   Select,
   Switch,
   toast,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -4982,7 +4982,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5016,13 +5016,13 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 
 **JS (framework-free)**: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
 
-**Custom element** `<ayy-popover>` (ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
+**Custom element** `<ayy-popover>` (@danitesler/ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: center | start | end
 - attribute `open`: Two-way open state
 - event `ayy-open-change`: { open: boolean }
 
-**React** — `import { Popover, PopoverTrigger, PopoverContent } from "ayywi/react";`
+**React** — `import { Popover, PopoverTrigger, PopoverContent } from "@danitesler/ayywi/react";`
 - `<Popover>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<PopoverTrigger>` renders Button. Props: `...ButtonProps` variant, size…
 - `<PopoverContent>` renders <div popover role="dialog">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "center" | "start" | "end"
@@ -5047,7 +5047,7 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (ayywi/elements) places it next to the trigger. -->
+<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (@danitesler/ayywi/elements) places it next to the trigger. -->
 <ayy-popover align="start">
   <button type="button" class="ayy-button ayy-button--outline" popovertarget="share-popover-html" aria-haspopup="dialog">Share</button>
   <div class="ayy-popover" id="share-popover-html" popover role="dialog" aria-labelledby="share-title-html">
@@ -5066,7 +5066,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "ayywi/react";
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5099,11 +5099,11 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 
 **JS (framework-free)**: tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).
 
-**Custom element** `<ayy-tooltip>` (ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.
+**Custom element** `<ayy-tooltip>` (@danitesler/ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.
 - attribute `side`: top | bottom | start | end
 - attribute `class`: Put ayy-tooltip on it.
 
-**React** — `import { Tooltip } from "ayywi/react";`
+**React** — `import { Tooltip } from "@danitesler/ayywi/react";`
 - `<Tooltip>` renders <span class="ayy-tooltip"> + child + <span role="tooltip">. Props: `content` ReactNode (required) — the hint; `side` "top" | "bottom" | "start" | "end"; `children` One focusable element; aria-describedby is added for you
 
 **Accessibility**
@@ -5127,7 +5127,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Works with CSS alone. <ayy-tooltip> (ayywi/elements) adds ids, Esc-to-dismiss and edge-aware placement. -->
+<!-- Works with CSS alone. <ayy-tooltip> (@danitesler/ayywi/elements) adds ids, Esc-to-dismiss and edge-aware placement. -->
 <ayy-tooltip class="ayy-tooltip">
   <button type="button" class="ayy-button ayy-button--outline">Top</button>
   <span class="ayy-tooltip__content" role="tooltip">Save changes (⌘S)</span>
@@ -5149,7 +5149,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Tooltip } from "ayywi/react";
+import { Button, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5187,7 +5187,7 @@ Category: Feedback. Inline message box with optional icon, title, description an
 
 **JS (framework-free)**: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
 
-**React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "ayywi/react";`
+**React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "@danitesler/ayywi/react";`
 - `<Alert>` renders <div>. Props: `variant` "default" | "info" | "success" | "warning" | "destructive"
 - `<AlertTitle>` renders <p>.
 - `<AlertDescription>` renders <p>.
@@ -5238,7 +5238,7 @@ React:
 
 ```tsx
 import { Alert02Icon, InformationCircleIcon } from "@hugeicons/core-free-icons";
-import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "ayywi/react";
+import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5286,7 +5286,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 
 **JS (framework-free)**: toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })
 
-**React** — `import { toast, Toaster } from "ayywi/react";`
+**React** — `import { toast, Toaster } from "@danitesler/ayywi/react";`
 - `<Toaster>` renders nothing — configures the shared region. Props: `position` "bottom-end" | "bottom-start" | "bottom-center" | "top-end" | "top-start" | "top-center"; `label` string — region name (translate); `closeLabel` string — close button name (translate)
 
 **Accessibility**
@@ -5311,7 +5311,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "ayywi". -->
+<!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "@danitesler/ayywi". -->
 <button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Changes saved')">Default</button>
 <button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.success('Deployed', { description: 'Marketing site is live.' })">Success</button>
 <button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Project archived', { action: { label: 'Undo', onClick: () => ayywi.toast.info('Project restored') } })">With action</button>
@@ -5321,7 +5321,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, toast } from "ayywi/react";
+import { Button, toast } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5367,7 +5367,7 @@ Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or inde
 
 **JS (framework-free)**: progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)
 
-**React** — `import { Progress } from "ayywi/react";`
+**React** — `import { Progress } from "@danitesler/ayywi/react";`
 - `<Progress>` renders <div role="progressbar">. Props: `value` number 0–100; omit/null → indeterminate; `variant` "default" | "success" | "warning" | "destructive" | "ai" — the same prop name as Alert and Badge; `tone` Deprecated alias of variant.; `size` "sm" | "md" | "lg"
 
 **Accessibility**
@@ -5410,7 +5410,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Progress } from "ayywi/react";
+import { Progress } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5435,7 +5435,7 @@ Category: Feedback. An indeterminate loading ring in the text colour, sized like
 
 **JS (framework-free)**: spinnerClass({ size?, className? }) → string. Buttons: add aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).
 
-**React** — `import { Spinner } from "ayywi/react";`
+**React** — `import { Spinner } from "@danitesler/ayywi/react";`
 - `<Spinner>` renders <span class="ayy-spinner" role="status" aria-label="Loading">. Props: `size` "sm" | "md" | "lg"; `label` What's loading, for screen readers. Default "Loading" (translate it). "" makes it decorative (aria-hidden) when nearby text already says it.
 
 **Accessibility**
@@ -5477,7 +5477,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Button, Spinner } from "ayywi/react";
+import { Button, Spinner } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5509,7 +5509,7 @@ Category: Feedback. Placeholder shapes shown while content loads, with a subtle 
 
 **JS (framework-free)**: skeletonClass({ shape?, className? }) → string
 
-**React** — `import { Skeleton } from "ayywi/react";`
+**React** — `import { Skeleton } from "@danitesler/ayywi/react";`
 - `<Skeleton>` renders <div aria-hidden="true">. Props: `shape` "block" | "text" | "circle"
 
 **Accessibility**
@@ -5550,7 +5550,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Card, CardContent, CardHeader, Skeleton } from "ayywi/react";
+import { Card, CardContent, CardHeader, Skeleton } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5586,7 +5586,7 @@ Category: Feedback. What a list, table or page shows when there's nothing in it 
 
 **JS (framework-free)**: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
 
-**React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "ayywi/react";`
+**React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "@danitesler/ayywi/react";`
 - `<EmptyState>` renders <div class="ayy-empty-state">. Props: `bordered` boolean — dashed outline.; `compact` boolean — less padding.
 - `<EmptyStateTitle>` renders <h2 class="ayy-empty-state__title">.
 - `<EmptyStateDescription>` renders <p class="ayy-empty-state__description">.
@@ -5629,7 +5629,7 @@ React:
 
 ```tsx
 import { Add01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
-import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "ayywi/react";
+import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5670,7 +5670,7 @@ React:
 
 ```tsx
 import { Search01Icon } from "@hugeicons/core-free-icons";
-import { Button, Card, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "ayywi/react";
+import { Button, Card, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5710,7 +5710,7 @@ Category: Data display. Small pill label for status, category or count. Optional
 
 **JS (framework-free)**: badgeClass({ variant?, className? }) → string
 
-**React** — `import { Badge } from "ayywi/react";`
+**React** — `import { Badge } from "@danitesler/ayywi/react";`
 - `<Badge>` renders <span>. Props: `variant` "default" | "muted" | "outline" | "success" | "warning" | "destructive" | "info" | "ai"; `dot` boolean | "pulse" | "static" — leading status dot
 
 **Accessibility**
@@ -5746,7 +5746,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge } from "ayywi/react";
+import { Badge } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5779,7 +5779,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Badge } from "ayywi/react";
+import { Badge } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5808,7 +5808,7 @@ Category: Data display. A keyboard key or shortcut drawn as a small keycap: in h
 
 **JS (framework-free)**: kbdClass constant.
 
-**React** — `import { Kbd } from "ayywi/react";`
+**React** — `import { Kbd } from "@danitesler/ayywi/react";`
 - `<Kbd>` renders <kbd class="ayy-kbd">.
 
 **Accessibility**
@@ -5839,7 +5839,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Kbd } from "ayywi/react";
+import { Kbd } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -5871,14 +5871,14 @@ Category: Data display. Round (or square) picture of a person or workspace, with
 
 **JS (framework-free)**: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 
-**React** — `import { Avatar, AvatarGroup } from "ayywi/react";`
+**React** — `import { Avatar, AvatarGroup } from "@danitesler/ayywi/react";`
 - `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "sm" | "md" | "lg" | "xl"; `shape` "circle" | "square"
 - `<AvatarGroup>` renders <div role="group">.
 
 **Accessibility**
 - The name goes on the root (aria-label); the <img> has alt="" and the initials are aria-hidden, so it's announced once.
 - Give an AvatarGroup an aria-label like "5 collaborators".
-- A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
+- A failed image is hidden by React or @danitesler/ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
 
 **Do**
 - Use avatars for people and workspaces in lists, headers and comments.
@@ -5903,7 +5903,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
 </span>
 <span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Leo Park"><span class="ayy-avatar__fallback" aria-hidden="true">LP</span></span>
-<!-- The image fails; ayywi/elements hides it so the initials show through. -->
+<!-- The image fails; @danitesler/ayywi/elements hides it so the initials show through. -->
 <span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Broken Image">
   <span class="ayy-avatar__fallback" aria-hidden="true">BI</span>
   <img class="ayy-avatar__image" alt="" src="/missing.png" />
@@ -5921,7 +5921,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Avatar, AvatarGroup, Badge } from "ayywi/react";
+import { Avatar, AvatarGroup, Badge } from "@danitesler/ayywi/react";
 
 const photo =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>";
@@ -5960,7 +5960,7 @@ Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,
 
 **JS (framework-free)**: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
 
-**React** — `import { Icon } from "ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`
+**React** — `import { Icon } from "@danitesler/ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`
 - `<Icon>` renders <svg class="ayy-icon">. Props: `icon` IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package; `size` "auto" | "sm" | "md" | "lg" | "xl" — auto follows the text; the rest are 16/20/24/32px; `directional` boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction; `label` string — accessible name; without it the icon is decorative (aria-hidden); `strokeWidth` number — stroke width on the 24px grid (Hugeicons default 1.5)
 
 **Accessibility**
@@ -6020,7 +6020,7 @@ React:
 ```tsx
 import type { CSSProperties } from "react";
 import { Clock01Icon } from "@hugeicons/core-free-icons";
-import { Icon } from "ayywi/react";
+import { Icon } from "@danitesler/ayywi/react";
 
 const SIZES = [
   ["sm", "16px"],
@@ -6079,7 +6079,7 @@ React:
 ```tsx
 import type { CSSProperties } from "react";
 import { CancelCircleIcon, CheckmarkCircle02Icon, GitBranchIcon } from "@hugeicons/core-free-icons";
-import { Icon, List, ListItem } from "ayywi/react";
+import { Icon, List, ListItem } from "@danitesler/ayywi/react";
 
 // Decorative icons are aria-hidden. An icon that carries the meaning on its own gets a label.
 export default function Example() {
@@ -6138,7 +6138,7 @@ React:
 
 ```tsx
 import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "ayywi/react";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 // directional mirrors an icon in right-to-left text. The same buttons, then inside dir="rtl":
 export default function Example() {
@@ -6180,7 +6180,7 @@ Category: Data display. An app-icon squircle lit from below by the content's acc
 
 **JS (framework-free)**: iconTileClass({ size?, className? }) → string
 
-**React** — `import { IconTile } from "ayywi/react";`
+**React** — `import { IconTile } from "@danitesler/ayywi/react";`
 - `<IconTile>` renders <span class="ayy-icon-tile">. Props: `size` "sm" | "md" | "lg"; `spotColor` CSS colour for the glow and glyph, e.g. "var(--ayy-accent-system)". Else inherits --ayy-spot.; `aria-label` Makes the tile an image with this name; without it the tile is aria-hidden.
 
 **Accessibility**
@@ -6216,7 +6216,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { IconTile } from "ayywi/react";
+import { IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -6261,7 +6261,7 @@ Category: Data display. A headline number in the heading font, with a muted unit
 
 **JS (framework-free)**: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
 
-**React** — `import { Stat } from "ayywi/react";`
+**React** — `import { Stat } from "@danitesler/ayywi/react";`
 - `<Stat>` renders <div class="ayy-stat">. Props: `value` ReactNode (required) — the formatted number.; `unit` ReactNode; `label` ReactNode; `labelFirst` boolean — label above the number.; `size` "md" | "sm"
 
 **Accessibility**
@@ -6303,7 +6303,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Stat } from "ayywi/react";
+import { Stat } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -6333,7 +6333,7 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 
 **JS (framework-free)**: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
 
-**React** — `import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from "ayywi/react";`
+**React** — `import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from "@danitesler/ayywi/react";`
 - `<List>` renders <ul class="ayy-list">. Props: `divided` boolean — hairlines between flush rows.; `compact` boolean — tight rows for an icon checklist.
 - `<ListItem>` renders <li class="ayy-list__item">.
 - `<ListContent>` renders <div class="ayy-list__content">.
@@ -6404,7 +6404,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Avatar, Badge, List, ListContent, ListDescription, ListItem, ListLink, ListMeta, ListTitle } from "ayywi/react";
+import { Avatar, Badge, List, ListContent, ListDescription, ListItem, ListLink, ListMeta, ListTitle } from "@danitesler/ayywi/react";
 
 const THREADS = [
   { name: "Jonah Weiss", text: "The export button spins forever on large reports.", time: "2m", status: "Urgent", variant: "destructive", current: true },
@@ -6478,7 +6478,7 @@ React:
 
 ```tsx
 import { Mail01Icon, Notification01Icon, SmartPhone01Icon } from "@hugeicons/core-free-icons";
-import { Card, CardContent, Icon, IconTile, List, ListContent, ListDescription, ListItem, ListTitle, Switch } from "ayywi/react";
+import { Card, CardContent, Icon, IconTile, List, ListContent, ListDescription, ListItem, ListTitle, Switch } from "@danitesler/ayywi/react";
 
 const ROWS = [
   { id: "email", icon: Mail01Icon, title: "Email", text: "A summary of new invoices and payments, once a day.", on: true },
@@ -6523,7 +6523,7 @@ Category: Data display. Label / value pairs on a description list: small upperca
 
 **JS (framework-free)**: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
 
-**React** — `import { DataList, DataListItem } from "ayywi/react";`
+**React** — `import { DataList, DataListItem } from "@danitesler/ayywi/react";`
 - `<DataList>` renders <dl>. Props: `row` boolean
 - `<DataListItem>` renders <div><dt>label</dt><dd>children</dd></div>. Props: `label` ReactNode (required)
 
@@ -6569,7 +6569,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { DataList, DataListItem } from "ayywi/react";
+import { DataList, DataListItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -6599,7 +6599,7 @@ Category: Data display. A browser window around a screenshot, video or coded moc
 
 **JS (framework-free)**: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
 
-**React** — `import { Frame } from "ayywi/react";`
+**React** — `import { Frame } from "@danitesler/ayywi/react";`
 - `<Frame>` renders <div class="ayy-frame"> with the bar and body. Props: `title` ReactNode — text in the address bar.
 
 **Accessibility**
@@ -6641,7 +6641,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Frame } from "ayywi/react";
+import { Frame } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -6675,7 +6675,7 @@ Category: Data display. A conversation: incoming bubbles at the start edge, the 
 
 **JS (framework-free)**: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
 
-**React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "ayywi/react";`
+**React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "@danitesler/ayywi/react";`
 - `<Chat>` renders <div role="log" class="ayy-chat">.
 - `<ChatMessage>` renders <div class="ayy-chat__message"> with the avatar and a bubble around children. Props: `direction` "in" | "out"; `avatar` ReactNode — e.g. an Avatar size sm.
 - `<ChatTyping>` renders A message whose bubble holds the typing dots. Props: `label` Screen-reader text. Default "Typing" (translate it).; `avatar` ReactNode
@@ -6725,7 +6725,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "ayywi/react";
+import { Avatar, Button, Chat, ChatMessage, ChatReplies, ChatTyping } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const dani = <Avatar size="sm" name="Dani" fallback="DT" />;
@@ -6765,11 +6765,11 @@ Category: Data display. Data table with quiet hairlines, uppercase headers and h
 
 **JS (framework-free)**: tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → "ascending" | "descending"; compareValues(a, b) sorts numbers (also "$1,240", "12 GB") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).
 
-**Custom element** `<ayy-table>` (ayywi/elements) — 
+**Custom element** `<ayy-table>` (@danitesler/ayywi/elements) — 
 - event `ayy-sort`: { column, key, direction } before the rows move — key is the <th>'s data-sort-key. Call preventDefault() to sort them yourself (on the server).
 - event `ayy-selection-change`: { rows } — the selected <tr> elements.
 
-**React** — `import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from "ayywi/react";`
+**React** — `import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from "@danitesler/ayywi/react";`
 - `<Table>` renders <div class="ayy-table-wrap"><table>. Props: `compact` boolean
 - `<TableHeader>` renders <thead>.
 - `<TableBody>` renders <tbody>.
@@ -6838,7 +6838,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "ayywi/react";
+import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@danitesler/ayywi/react";
 
 const deployments = [
   { project: "Marketing site", status: "Live", variant: "success", builds: 128 },
@@ -6956,7 +6956,7 @@ import {
   compareValues,
   nextSortDirection,
   type SortDirection,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 const invoices = [
   { id: "INV-1042", customer: "Northwind", status: "Paid", variant: "success", amount: 1240, due: "2026-09-02" },
@@ -7080,7 +7080,7 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 
 **JS (framework-free)**: chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.
 
-**React** — `import { BarChart, LineChart, Sparkline, BarList } from "ayywi/react";`
+**React** — `import { BarChart, LineChart, Sparkline, BarList } from "@danitesler/ayywi/react";`
 - `<BarChart>` renders <figure class="ayy-chart"> with a plot of __column/__bar, labels, a legend and a visually hidden data table. Props: `label` string — what it shows ("Signups per day"); the data table's caption; `labels` string[] — one per column; `series` { name, values: number[], color? }[]; `stacked` boolean; `showValues` boolean — print values above the bars; `max` number — top of the scale; rounded up from the data if omitted; `ticks` number of value lines, default 3; 0 for none; `format` (value: number) => string — ticks, hover values and the table; default compact (1.2K); `height` CSS length, default 12rem; `legend` boolean — default: more than one series
 - `<LineChart>` renders <figure class="ayy-chart"> with an __svg of __series paths, labels, a legend and a visually hidden data table. Props: `label` string — the data table's caption; `labels` string[] — one per point; `series` { name, values: number[], color?, compare? }[] — compare draws a dashed comparison line; `min` number, default 0; `max` number; `area` boolean, default true; `smooth` boolean, default true (monotone: never overshoots a point); `ticks` number, default 3; `format` (value: number) => string; `height` CSS length; `legend` boolean
 - `<Sparkline>` renders <svg class="ayy-sparkline">. Props: `values` number[]; `label` string — makes it role="img" with this name; without it the sparkline is aria-hidden; `area` boolean; `color` CSS colour, default chart-1; `min` number, default the smallest value; `max` number, default the largest value
@@ -7211,7 +7211,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -7359,7 +7359,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from "ayywi/react";
+import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from "@danitesler/ayywi/react";
 
 const dollars = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact" });
 const days = ["Sep 1", "Sep 2", "Sep 3", "Sep 4", "Sep 5", "Sep 6", "Sep 7", "Sep 8", "Sep 9", "Sep 10", "Sep 11", "Sep 12", "Sep 13", "Sep 14"];
@@ -7486,7 +7486,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { BarChart } from "ayywi/react";
+import { BarChart } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -7549,7 +7549,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { BarList, Card, CardContent, CardHeader, CardTitle } from "ayywi/react";
+import { BarList, Card, CardContent, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -7622,7 +7622,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Card, CardContent, Sparkline, Stat } from "ayywi/react";
+import { Card, CardContent, Sparkline, Stat } from "@danitesler/ayywi/react";
 
 const stats = [
   { label: "Visitors", value: "12.8k", trend: "up 9%", values: [8, 9, 8.5, 10, 9.8, 11, 10.6, 11.8, 12.1, 12.8], color: undefined },

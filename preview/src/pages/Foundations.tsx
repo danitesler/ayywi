@@ -1,5 +1,5 @@
 import { useEffect, useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
-import { tokens, type TokenDefinition } from "ayywi";
+import { tokens, type TokenDefinition } from "@danitesler/ayywi";
 import { themeOptions } from "../themes";
 
 type Entry = [string, TokenDefinition];

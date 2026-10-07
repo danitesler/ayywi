@@ -13,7 +13,7 @@
   "variants": {},
   "js": "frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.",
   "react": {
-    "import": "import { Frame } from \"ayywi/react\";",
+    "import": "import { Frame } from \"@danitesler/ayywi/react\";",
     "components": {
       "Frame": { "renders": "<div class=\"ayy-frame\"> with the bar and body", "props": { "title": "ReactNode — text in the address bar." } }
     }

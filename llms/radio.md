@@ -14,7 +14,7 @@ Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset wi
 
 **JS (framework-free)**: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
 
-**React** — `import { RadioGroup, Radio } from "ayywi/react";`
+**React** — `import { RadioGroup, Radio } from "@danitesler/ayywi/react";`
 - `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"
 - `<Radio>` renders <input type="radio">. Props: `value` string (required); `...rest` All native <input> attributes.
 
@@ -53,7 +53,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Radio, RadioGroup } from "ayywi/react";
+import { Radio, RadioGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -83,4 +83,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

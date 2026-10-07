@@ -12,7 +12,7 @@ import {
   AppShellSidebar,
   AppShellToggle,
   Icon,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer.

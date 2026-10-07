@@ -14,7 +14,7 @@
   },
   "js": "switchClass constant",
   "react": {
-    "import": "import { Switch } from \"ayywi/react\";",
+    "import": "import { Switch } from \"@danitesler/ayywi/react\";",
     "components": {
       "Switch": {
         "renders": "<input type=\"checkbox\" role=\"switch\">",

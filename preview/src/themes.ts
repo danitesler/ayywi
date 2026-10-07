@@ -1,4 +1,4 @@
-import { themeBase, themes, type ThemeName, type TokenDefinition } from "ayywi";
+import { themeBase, themes, type ThemeName, type TokenDefinition } from "@danitesler/ayywi";
 
 /** Themes in display order: each base theme followed by its variants. */
 export const themeOptions: { name: ThemeName; label: string; base: "dark" | "light" }[] = [...themes]

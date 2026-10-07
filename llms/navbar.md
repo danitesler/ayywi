@@ -13,10 +13,10 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 
 **JS (framework-free)**: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).
 
-**Custom element** `<ayy-navbar>` (ayywi/elements) — A <header class="ayy-navbar"> with a __toggle. The toggle opens and closes the links as a panel under the bar on phones; Esc, a click outside, a link in the panel or widening past 48rem close it. Without a toggle it does nothing.
+**Custom element** `<ayy-navbar>` (@danitesler/ayywi/elements) — A <header class="ayy-navbar"> with a __toggle. The toggle opens and closes the links as a panel under the bar on phones; Esc, a click outside, a link in the panel or widening past 48rem close it. Without a toggle it does nothing.
 
 
-**React** — `import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from "ayywi/react";`
+**React** — `import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from "@danitesler/ayywi/react";`
 - `<Navbar>` renders <header class="ayy-navbar"><div class="ayy-navbar__inner">; wires the phone menu when it holds a NavbarToggle.
 - `<NavbarBrand>` renders <a>.
 - `<NavbarNav>` renders <nav>. Props: `aria-label` Defaults to "Main" (translate it).
@@ -70,7 +70,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "ayywi/react";
+import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -102,8 +102,8 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Below 48rem the links fold into a panel under the bar; the menu button at the end opens it. <ayy-navbar> (ayywi/elements) wires it;
-     without it, call connectNavbar(header) from "ayywi". -->
+<!-- Below 48rem the links fold into a panel under the bar; the menu button at the end opens it. <ayy-navbar> (@danitesler/ayywi/elements) wires it;
+     without it, call connectNavbar(header) from "@danitesler/ayywi". -->
 <div style="inline-size: 100%">
   <ayy-navbar>
     <header class="ayy-navbar">
@@ -127,7 +127,7 @@ React:
 
 ```tsx
 import { Layers01Icon } from "@hugeicons/core-free-icons";
-import { buttonClass, Icon, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav, NavbarToggle } from "ayywi/react";
+import { buttonClass, Icon, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav, NavbarToggle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Below 48rem the links fold into a panel under the bar; the menu button at the end opens it.
@@ -159,4 +159,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

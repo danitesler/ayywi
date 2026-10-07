@@ -1,4 +1,4 @@
-import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "ayywi/react";
+import { Badge, Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@danitesler/ayywi/react";
 
 const deployments = [
   { project: "Marketing site", status: "Live", variant: "success", builds: 128 },

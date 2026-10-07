@@ -21,10 +21,10 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 
 **JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).
 
-**Custom element** `<ayy-app-shell>` (ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing.
+**Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing.
 
 
-**React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from "ayywi/react";`
+**React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
 - `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle".
 - `<AppShellSidebar>` renders <aside class="ayy-app-shell__sidebar">.
 - `<AppShellBrand>` renders <a class="ayy-app-shell__brand">.
@@ -149,7 +149,7 @@ import {
   AppShellSidebar,
   Icon,
   Stat,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.
@@ -207,7 +207,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
 <!-- Below 48rem the sidebar hides: the bar keeps the brand and search, the bottom nav holds the top destinations, and "More" opens the whole
-     sidebar as a drawer. <ayy-app-shell> (ayywi/elements) wires it. The shell is 100dvh high; the outer box only stands in for the browser window. -->
+     sidebar as a drawer. <ayy-app-shell> (@danitesler/ayywi/elements) wires it. The shell is 100dvh high; the outer box only stands in for the browser window. -->
 <div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
   <ayy-app-shell>
     <div class="ayy-app-shell" style="block-size: 100%">
@@ -272,7 +272,7 @@ import {
   BottomNavLink,
   Button,
   Icon,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Wide screens get the sidebar. Below 48rem it hides: the bar keeps the brand and search, the bottom nav holds the
@@ -427,7 +427,7 @@ import {
   AppShellNav,
   AppShellSidebar,
   AppShellSublist,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.
@@ -500,8 +500,8 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer. <ayy-app-shell> (ayywi/elements) wires it;
-     without it, call connectAppShell(shell) from "ayywi". The shell is 100dvh high; the outer box only stands in for the browser window. -->
+<!-- Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer. <ayy-app-shell> (@danitesler/ayywi/elements) wires it;
+     without it, call connectAppShell(shell) from "@danitesler/ayywi". The shell is 100dvh high; the outer box only stands in for the browser window. -->
 <div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
   <ayy-app-shell>
     <div class="ayy-app-shell" style="block-size: 100%">
@@ -596,7 +596,7 @@ import {
   AppShellSidebar,
   AppShellToggle,
   Icon,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Narrow the window below 48rem: the bar appears and the menu button opens the sidebar as a drawer.
@@ -660,4 +660,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

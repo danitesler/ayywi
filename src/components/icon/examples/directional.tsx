@@ -1,5 +1,5 @@
 import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "ayywi/react";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 // directional mirrors an icon in right-to-left text. The same buttons, then inside dir="rtl":
 export default function Example() {

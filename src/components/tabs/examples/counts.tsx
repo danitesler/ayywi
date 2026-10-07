@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

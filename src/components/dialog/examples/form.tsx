@@ -10,7 +10,7 @@ import {
   Field,
   Input,
   Label,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [open, setOpen] = useState(false);

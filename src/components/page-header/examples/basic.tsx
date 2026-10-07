@@ -1,5 +1,5 @@
 import { Add01Icon, Download01Icon } from "@hugeicons/core-free-icons";
-import { Breadcrumb, Button, Icon, PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderTitle } from "ayywi/react";
+import { Breadcrumb, Button, Icon, PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
