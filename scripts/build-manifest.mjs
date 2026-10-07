@@ -73,7 +73,7 @@ const manifest = {
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
     "ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (${globals.join(", ")}).`,
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
-    "ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
+    "ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
     "ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
     "npx ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio).",

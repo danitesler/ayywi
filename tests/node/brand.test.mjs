@@ -86,6 +86,22 @@ test("ayywi/brands/violet.css ships, so setBrand(\"violet\") apps keep working",
   assert.match(tokens, /\[data-brand\],/, "derived tokens (the glow shadow) recompute under a brand");
 });
 
+test("brand tokens for other platforms: concrete DTCG per theme, shipped for violet", { skip: !existsSync(dist("tokens/brands")) && "run pnpm build first" }, async () => {
+  const { brandTokens, createBrand, themes } = await import(dist("index.js"));
+  const b = createBrand({ name: "acme", color: "#facc15", shape: "soft", font: { body: "Inter" } });
+  const light = brandTokens(b, "light-gray");
+  assert.equal(light.color.primary.$value, b.light.primary);
+  assert.equal(brandTokens(b, "dark-soft").color.primary.$value, b.dark.primary);
+  assert.equal(light.radius.button.$value, "8px", "radius references resolve to values");
+  assert.match(light.font.body.$value, /^Inter, system-ui/);
+  assert.equal(light.brand["950"].$type, "color");
+  for (const theme of themes) {
+    const shipped = JSON.parse(readFileSync(dist(`tokens/brands/violet/${theme}.json`), "utf8"));
+    assert.equal(shipped.radius.button.$value, "10px");
+    assert.match(shipped.color.ring.$value, /^#[0-9a-f]{6}$/);
+  }
+});
+
 test("ayywi brand CLI prints CSS and the report, and fails on bad input", { skip }, () => {
   const out = execFileSync(process.execPath, [cli, "brand", "0ea5e9", "--name=sky", "--shape", "round"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
   assert.match(out, /\[data-brand="sky"\]/);

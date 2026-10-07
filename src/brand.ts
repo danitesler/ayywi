@@ -308,6 +308,36 @@ export function brandCss(brand: Brand | BrandInput, options: BrandCssOptions = {
   return `${head}\n@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;\n\n@layer ayywi.brand {\n${rule.replace(/^/gm, "  ")}\n}\n`;
 }
 
+/** A design token in DTCG form (the format Style Dictionary, Figma plugins and Tokens Studio read). */
+export interface DtcgToken {
+  $type: string;
+  $value: string;
+}
+export type DtcgTree = { [key: string]: DtcgToken | DtcgTree };
+
+/**
+ * The tokens a brand overrides in one theme, as plain DTCG with concrete values: layer it over that theme's export
+ * (ayywi/tokens/<theme>.json) for iOS, Android, Figma or Style Dictionary. Radii that point at ayywi's scale are resolved.
+ */
+export function brandTokens(brand: Brand | BrandInput, theme: ThemeName): DtcgTree {
+  const b = "scale" in brand ? brand : createBrand(brand);
+  const picks = b[themeBase[theme]];
+  const color = (value: string): DtcgToken => ({ $type: "color", $value: value });
+  const radius = (value: string): DtcgToken => {
+    const ref = /^var\(--ayy-radius-([\w-]+)\)$/.exec(value);
+    const t = ref ? (tokens as Record<string, { value: unknown }>)[`radius.${ref[1]}`] : undefined;
+    return { $type: "dimension", $value: t ? String(t.value) : value };
+  };
+  const tree: DtcgTree = {
+    brand: Object.fromEntries(BRAND_STEPS.map((s) => [String(s), color(b.scale[s])])),
+    color: { primary: color(picks.primary), "primary-fg": color(picks.primaryFg), ring: color(picks.ring), glow: color(picks.primary) },
+    radius: { control: radius(b.radius.control), card: radius(b.radius.card), button: radius(b.radius.button) },
+  };
+  const fonts = (["heading", "body", "mono"] as const).filter((k) => b.font[k]);
+  if (fonts.length) tree.font = Object.fromEntries(fonts.map((k) => [k, { $type: "fontFamily", $value: b.font[k] as string }]));
+  return tree;
+}
+
 /**
  * Apply a brand to `target` (default <html>) and everything inside it. Pass:
  * - a name, when its stylesheet is loaded (ayywi/brands/<name>.css, or your own brandCss() output);

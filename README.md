@@ -101,7 +101,7 @@ Load the file after ayywi's CSS and name the brand where it applies:
 <html data-brand="acme">
 ```
 
-From JS, `createBrand()` returns the same thing as data, `brandCss()` the stylesheet, and `setBrand({ name, color })` generates and applies one at runtime (a user-picked accent, say). `setBrand("violet")` with `ayywi/brands/violet.css` loaded applies a ready-made one. Agents get the same generator as the MCP tool `create_brand`.
+From JS, `createBrand()` returns the same thing as data, `brandCss()` the stylesheet, and `setBrand({ name, color })` generates and applies one at runtime (a user-picked accent, say). `setBrand("violet")` with `ayywi/brands/violet.css` loaded applies a ready-made one. Agents get the same generator as the MCP tool `create_brand`. For native apps and Figma, `--tokens <dir>` writes the brand as DTCG JSON per theme, to layer over `ayywi/tokens/<theme>.json`.
 
 ## Components
 

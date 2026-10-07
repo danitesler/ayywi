@@ -108,8 +108,13 @@ await build({
 
 // ---- Brands: tokens/brands/<name>.json → brands/<name>.css, generated (and contrast-checked) by createBrand() ----
 {
-  const { brandCss, brandPresets } = await import(pathToFileURL(join(dist, "index.js")).href);
-  for (const [name, input] of Object.entries(brandPresets)) writeFileSync(join(dist, `brands/${name}.css`), brandCss(input));
+  const { brandCss, brandPresets, brandTokens, themes } = await import(pathToFileURL(join(dist, "index.js")).href);
+  for (const [name, input] of Object.entries(brandPresets)) {
+    writeFileSync(join(dist, `brands/${name}.css`), brandCss(input));
+    // The same brand for other platforms: per-theme DTCG overrides next to the theme exports (tokens/<theme>.json).
+    mkdirSync(join(dist, `tokens/brands/${name}`), { recursive: true });
+    for (const theme of themes) writeFileSync(join(dist, `tokens/brands/${name}/${theme}.json`), `${JSON.stringify(brandTokens(input, theme), null, 2)}\n`);
+  }
 }
 
 // ---- Types ----
