@@ -15,6 +15,14 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 - **Breaking** for tools that read `manifest/components.json`: a component's `states` was a map of selector → sentence on 14 components; it's now on all of them, keyed by state name, each `{ when, looks }` or `{ none }`.
+### Added
+- Brands are back, generated from one seed colour instead of written by hand. `createBrand({ name, color, font?, shape?, radius? })` makes an 11-step scale in the seed's hue (evenly spaced in OKLCH lightness, the seed itself at its nearest step) and picks `primary`, `primary-fg` and `ring` for dark and for light themes: the step nearest the seed that keeps 4.5:1 text on primary and 3:1 for the fill and focus ring against every surface in every theme. `brandCss()` writes it for `[data-brand="<name>"]` in the `ayywi.brand` layer (`light-dark()` serves both schemes and nested themed sections); `setBrand()` still takes a name and now also takes a brand to generate and add to the page. Fonts get ayywi's fallbacks (system fonts for body text); `shape` (`pill`, `round`, `soft`, `sharp`) or exact `radius` sets `--ayy-radius-control`, `-card` and `-button`. This brings back everything 0.0.1 removed, with the pre-release API: `data-brand`, `setBrand("violet")`, `@danitesler/ayywi/brands/violet.css`, `brands`, `BrandName`, the `ayywi.brand` layer and `tokens/brands/*.json`, so apps built on the pre-release `setBrand()` only need the package name changed. Violet is now generated from `#7c3aed`, so its dark-theme primary is a slightly deeper violet (`#9a73ff`, was `#b98cff`).
+- Brand tooling: `npx ayywi brand <#seed> --name acme [--shape soft] [--body "Inter"] [--out acme.css]` prints the stylesheet and a contrast report; the MCP server has a `create_brand` tool; `brandScale()`, `contrastRatio()`, `brandPresets` (what each shipped brand is made from) and `BRAND_STEPS` / `BRAND_SHAPES` are exported; `window.ayywi` gains `setBrand`, `createBrand` and `brandCss`. For iOS, Android, Figma and Style Dictionary, `brandTokens(brand, theme)` gives a brand's overrides as plain DTCG; shipped brands are in `@danitesler/ayywi/tokens/brands/<name>/<theme>.json` and `ayywi brand --tokens <dir>` writes them for your own. `pnpm check` runs every brand in `tokens/brands/` through `createBrand()`.
+- Tokens `--ayy-brand-50` … `--ayy-brand-950`: the brand's scale for illustrations and brand moments, grey until a brand applies.
+- Global attribute `data-brand` is documented with `data-theme` and `data-density`, and a rule tells agents to generate brands rather than pick colours.
+
+### Changed
+- Tabs, segmented controls, chips, badges and pagination links follow `--ayy-radius-button`, as its description always said, so a brand's shape reaches them too. With ayywi's own pill radius nothing changes; if you overrode `--ayy-radius-button`, they now follow it.
 
 ## 0.0.1 — 2026-10-07
 

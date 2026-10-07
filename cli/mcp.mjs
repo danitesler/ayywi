@@ -1,7 +1,11 @@
 // ayywi mcp — a Model Context Protocol server over stdio (newline-delimited JSON-RPC 2.0), no dependencies.
 // Lets agents fetch exactly the component, tokens or rules they need, and lint a snippet before writing it.
 import { createInterface } from "node:readline";
+import { brandInput, brandReport } from "./brand.mjs";
 import { loadContract, lintText } from "./lint.mjs";
+
+// createBrand() lives in the built package; without a build the create_brand tool says so.
+const brandLib = await import(new URL("../dist/index.js", import.meta.url).href).catch(() => null);
 
 const SUPPORTED = ["2025-06-18", "2025-03-26", "2024-11-05"];
 
@@ -127,6 +131,30 @@ export function createServer(contract = loadContract()) {
           ...Object.entries(manifest.publicCustomProperties ?? {}).map(([k, v]) => `- ${k}: ${v}`),
         ].join("\n"),
     },
+    create_brand: {
+      description:
+        "Make a brand from one seed colour (plus optional fonts and corner shape) instead of picking colours by hand. Returns the CSS to load after ayywi's (it sets --ayy-brand-50…950, primary, primary-fg, ring, radius and font tokens for [data-brand=\"<name>\"]) and a report: which scale step each theme uses and every contrast check (4.5:1 text, 3:1 fill and focus ring, in every theme).",
+      inputSchema: {
+        type: "object",
+        properties: {
+          color: { type: "string", description: "The seed, #rrggbb." },
+          name: { type: "string", description: "kebab-case brand name, the data-brand value. Default \"brand\"." },
+          shape: { type: "string", enum: ["pill", "round", "soft", "sharp"], description: "Corners: pill is ayywi's own (default); round, soft and sharp are progressively squarer." },
+          heading: { type: "string", description: "Heading font family." },
+          body: { type: "string", description: "Body font family (system fonts are appended)." },
+          mono: { type: "string", description: "Monospace font family." },
+          radius: { type: "object", properties: { control: { type: "string" }, card: { type: "string" }, button: { type: "string" } }, description: "Exact radii (px, rem or em), over the shape's." },
+        },
+        required: ["color"],
+      },
+      run: ({ color, radius, ...options }) => {
+        if (!brandLib) throw new Error("create_brand needs the built package (dist/). Run the build, or use createBrand() from \"@danitesler/ayywi\".");
+        const input = brandInput([String(color)], options);
+        if (radius) input.radius = radius;
+        const b = brandLib.createBrand(input);
+        return `${brandReport(b)}\n\nApply: load this CSS after ayywi's, then set data-brand="${b.name}" on <html> (or call setBrand("${b.name}")).\n\n\`\`\`css\n${brandLib.brandCss(b)}\`\`\``;
+      },
+    },
     lint: {
       description: "Check a code snippet against ayywi before writing it: unknown classes, tokens, variants, elements and attribute values (data-theme…), reserved ayy- prefixes, hardcoded colours (also in inline styles), physical left/right CSS, :dir(), unlabeled icon buttons, <img> without width/height, icon sets other than Hugeicons.",
       inputSchema: {
@@ -155,7 +183,7 @@ export function createServer(contract = loadContract()) {
           protocolVersion: SUPPORTED.includes(requested) ? requested : SUPPORTED[0],
           capabilities: { tools: {} },
           serverInfo: { name: "ayywi", version: manifest.version },
-          instructions: "ayywi design system. Call list_components or search first, then get_component before writing UI, and lint your snippet.",
+          instructions: "ayywi design system. Call list_components or search first, then get_component before writing UI, and lint your snippet. To brand a product, call create_brand with its colour rather than choosing colours.",
         });
       }
       case "ping":

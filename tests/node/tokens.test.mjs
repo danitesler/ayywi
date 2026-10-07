@@ -48,7 +48,7 @@ test("themeInitScript applies every stored theme before paint", { skip: !existsS
 test("CSS bundles: layered and unlayered, React build marked use client", { skip: !existsSync(dist("ayywi.css")) && "run pnpm build first" }, () => {
   const layered = readFileSync(dist("ayywi.css"), "utf8");
   const unlayered = readFileSync(dist("ayywi.unlayered.css"), "utf8");
-  assert.match(layered, /@layer ayywi\.tokens, ayywi\.base, ayywi\.components;/);
+  assert.match(layered, /@layer ayywi\.tokens, ayywi\.base, ayywi\.components, ayywi\.brand;/);
   assert.doesNotMatch(unlayered, /@layer/);
   assert.match(readFileSync(dist("react.js"), "utf8"), /^"use client";/);
   assert.match(readFileSync(dist("react.cjs"), "utf8"), /^"use client";/);

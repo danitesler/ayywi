@@ -1,11 +1,11 @@
-// tokens/tokens.json (+ tokens/themes/*.json) → src/css/tokens.css, src/tokens.ts
+// tokens/tokens.json (+ tokens/themes/*.json, tokens/brands/*.json) → src/css/tokens.css, src/tokens.ts
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkMode, finish, output } from "./lib/output.mjs";
 import { DENSITIES, loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const { tokens, resolve, toCss, rawIn, valueIn, themes } = loadTokens(root);
+const { tokens, resolve, toCss, rawIn, valueIn, themes, brands } = loadTokens(root);
 const extraThemes = themes.filter((t) => t.name !== t.base);
 
 const decl = (t, v) => `  ${t.cssVar}: ${v};`;
@@ -62,9 +62,10 @@ ${themed.map((t) => decl(t, toCss(rawIn(t, theme.name), t.type))).join("\n")}
 `,
   )
   .join("")}
-/* Derived from the themed tokens above. Redeclared on every theme root so nested ones recompute. */
+/* Derived from the themed tokens above. Redeclared on every theme and brand root so nested ones recompute. */
 :root,
 [data-theme],
+[data-brand],
 .dark,
 .light {
 ${derived.map((t) => decl(t, t.css)).join("\n")}
@@ -131,12 +132,21 @@ export type ThemeName = (typeof themes)[number];
 
 /** The base colour scheme of each theme. */
 export const themeBase = ${JSON.stringify(Object.fromEntries(themes.map((t) => [t.name, t.base])))} as const satisfies Record<ThemeName, "dark" | "light">;
+
+/** Brands shipped as ayywi/brands/<name>.css (from tokens/brands/). */
+export const brands = ${JSON.stringify(brands.map((b) => b.name))} as const;
+export type BrandName = (typeof brands)[number];
+
+/** What each shipped brand is made from: pass one to createBrand() or setBrand() to apply it without its stylesheet. */
+export const brandPresets = {
+${brands.map((b) => `  ${JSON.stringify(b.name)}: ${JSON.stringify(b.input)},`).join("\n")}
+} as const;
 `;
 
 output(join(root, "src/tokens.ts"), ts);
 finish("tokens");
 if (!checkMode) {
   console.log(
-    `tokens: ${tokens.length} (${staticTokens.length} static, ${themed.length} themed, ${derived.length} derived, ${dense.length} density-aware); themes: ${themes.map((t) => t.name).join(", ")}`,
+    `tokens: ${tokens.length} (${staticTokens.length} static, ${themed.length} themed, ${derived.length} derived, ${dense.length} density-aware); themes: ${themes.map((t) => t.name).join(", ")}; brands: ${brands.map((b) => b.name).join(", ") || "none"}`,
   );
 }

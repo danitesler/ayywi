@@ -54,7 +54,8 @@ export function CodeBlock({ code, label, wrap }: { code: string; label?: string;
         <span className="ayy-eyebrow">{label}</span>
         <CopyButton text={code} />
       </div>
-      <pre className={`pv-code__pre ayy-scroll${wrap ? " pv-code__pre--wrap" : ""}`} dir="ltr">
+      {/* Focusable so keyboard users can scroll long code (axe: scrollable-region-focusable). */}
+      <pre className={`pv-code__pre ayy-scroll${wrap ? " pv-code__pre--wrap" : ""}`} dir="ltr" tabIndex={0} aria-label={label ? `${label} code` : "Code"}>
         <code>{code}</code>
       </pre>
     </div>

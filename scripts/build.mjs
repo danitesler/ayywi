@@ -1,4 +1,4 @@
-// Builds dist/: layered + unlayered CSS, per-file CSS, fonts, JS (ESM, CJS, <script>), .d.ts,
+// Builds dist/: layered + unlayered CSS, per-file CSS, brands, fonts, JS (ESM, CJS, <script>), .d.ts,
 // and token exports for other platforms. Prints gzip sizes.
 import { build, transform } from "esbuild";
 import { execFileSync } from "node:child_process";
@@ -11,10 +11,10 @@ import { buildPlatforms } from "./build-platforms.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const src = (p) => join(root, "src", p);
-const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components;";
+const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;";
 
 rmSync(dist, { recursive: true, force: true });
-for (const dir of ["css", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
+for (const dir of ["css", "brands", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
 
 // ---- CSS: layered (default) ----
 const indexCss = src("css/index.css");
@@ -104,6 +104,17 @@ await build({
 {
   const { themeInitScript } = await import(pathToFileURL(join(dist, "index.js")).href);
   writeFileSync(join(dist, "theme-init.js"), `${themeInitScript}\n`);
+}
+
+// ---- Brands: tokens/brands/<name>.json → brands/<name>.css, generated (and contrast-checked) by createBrand() ----
+{
+  const { brandCss, brandPresets, brandTokens, themes } = await import(pathToFileURL(join(dist, "index.js")).href);
+  for (const [name, input] of Object.entries(brandPresets)) {
+    writeFileSync(join(dist, `brands/${name}.css`), brandCss(input));
+    // The same brand for other platforms: per-theme DTCG overrides next to the theme exports (tokens/<theme>.json).
+    mkdirSync(join(dist, `tokens/brands/${name}`), { recursive: true });
+    for (const theme of themes) writeFileSync(join(dist, `tokens/brands/${name}/${theme}.json`), `${JSON.stringify(brandTokens(input, theme), null, 2)}\n`);
+  }
 }
 
 // ---- Types ----

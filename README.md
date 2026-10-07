@@ -95,6 +95,24 @@ import { Button, toast } from "@danitesler/ayywi/react";
 
 Density is `compact` by default; phones and tablets get `touch` automatically. Both attributes work on any element, not just `<html>`. From JS, use `setTheme()` and `setDensity()`, and put `themeInitScript` (or `dist/theme-init.js`) in `<head>` to avoid a flash on load; the Theme toggle restores a saved choice by itself too.
 
+## Brands
+
+ayywi is monochrome until you give it a brand: one colour, and optionally fonts and a corner shape.
+
+```sh
+npx ayywi brand "#0ea5e9" --name acme --shape soft --body "Inter" --out acme.css
+```
+
+That writes `acme.css` and prints a report. From the seed it makes an 11-step scale (`--ayy-brand-50` … `--ayy-brand-950`, with your exact colour at its nearest step), then picks `primary`, `primary-fg` and `ring` for dark and for light themes: the step nearest your colour that keeps text on the button at 4.5:1 and the fill and focus ring at 3:1 against every surface, in every theme. If your colour can't do that on light backgrounds (a yellow, say), the report says which darker step it used instead. Fonts get ayywi's fallbacks, system fonts included. `--shape` is `pill` (ayywi's own), `round`, `soft` or `sharp`; `--radius-button`, `--radius-card` and `--radius-control` set exact values.
+
+Load the file after ayywi's CSS and name the brand where it applies:
+
+```html
+<html data-brand="acme">
+```
+
+From JS, `createBrand()` returns the same thing as data, `brandCss()` the stylesheet, and `setBrand({ name, color })` generates and applies one at runtime (a user-picked accent, say). `setBrand("violet")` with `@danitesler/ayywi/brands/violet.css` loaded applies a ready-made one. Agents get the same generator as the MCP tool `create_brand`. For native apps and Figma, `--tokens <dir>` writes the brand as DTCG JSON per theme, to layer over `@danitesler/ayywi/tokens/<theme>.json`.
+
 ## Components
 
 | Category | Components |

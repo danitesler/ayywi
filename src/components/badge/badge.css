@@ -14,7 +14,7 @@
   padding-block: var(--ayy-space-0-5);
   padding-inline: 0.625rem;
   border: 1px solid var(--_line);
-  border-radius: var(--ayy-radius-pill);
+  border-radius: var(--ayy-radius-button);
   background-color: var(--_bg);
   color: var(--_fg);
   font-size: var(--ayy-text-2xs);

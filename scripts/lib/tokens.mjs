@@ -129,5 +129,14 @@ export function loadTokens(root) {
     return resolve(rawIn(t, theme));
   }
 
-  return { tokens, byName, resolve, toCss, rawIn, valueIn, themes };
+  // ---- Brands (tokens/brands/*.json): inputs for createBrand() in src/brand.ts, which does the colour work.
+  const brands = readDir(root, "brands").map(({ file, name, source }) => {
+    if (source.name !== name) throw new Error(`${file}: "name" must be "${name}", the file's name`);
+    if (typeof source.color !== "string") throw new Error(`${file}: "color" (the seed, #rrggbb) is required`);
+    const input = Object.fromEntries(Object.entries(source).filter(([k]) => !k.startsWith("$")));
+    if (source.$description) input.description = source.$description;
+    return { file, name, input };
+  });
+
+  return { tokens, byName, resolve, toCss, rawIn, valueIn, themes, brands };
 }

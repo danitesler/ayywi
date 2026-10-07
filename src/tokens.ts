@@ -69,7 +69,7 @@ export const tokens = {
   "color.muted": { cssVar: "--ayy-color-muted", type: "color", value: "#939393", light: "#6b6b6b", themes: {"dark-soft":"#939393","light-gray":"#636363"}, category: "Text", description: "Captions, placeholders, de-emphasised labels." },
   "color.border": { cssVar: "--ayy-color-border", type: "color", value: "#262626", light: "#dadada", themes: {"dark-soft":"#262626","light-gray":"#dadada"}, category: "Lines", description: "Opaque border, for places where a mixed line can't be used." },
   "color.ring": { cssVar: "--ayy-color-ring", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Focus ring." },
-  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Primary action fill. Monochrome by design; override it (with primary-fg and ring) to give a product its own colour." },
+  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Primary action fill. Monochrome by design; a brand (setBrand(), @danitesler/ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour." },
   "color.primary-fg": { cssVar: "--ayy-color-primary-fg", type: "color", value: "#000000", light: "#ffffff", themes: {"dark-soft":"#0a0a0a","light-gray":"#ffffff"}, category: "Interactive", description: "Text on primary." },
   "color.destructive": { cssVar: "--ayy-color-destructive", type: "color", value: "#f87171", light: "#b91c1c", themes: {"dark-soft":"#fb9696","light-gray":"#991b1b"}, category: "Status", description: "Errors and destructive actions." },
   "color.success": { cssVar: "--ayy-color-success", type: "color", value: "#35d07f", light: "#065f46", themes: {"dark-soft":"#35d07f","light-gray":"#065f46"}, category: "Status", description: "Positive status." },
@@ -100,6 +100,17 @@ export const tokens = {
   "chart.4": { cssVar: "--ayy-chart-4", type: "color", value: "#b98cff", light: "#6d28d9", themes: {"dark-soft":"#b98cff","light-gray":"#6d28d9"} },
   "chart.5": { cssVar: "--ayy-chart-5", type: "color", value: "#f5c542", light: "#b45309", themes: {"dark-soft":"#f5c542","light-gray":"#b45309"} },
   "chart.6": { cssVar: "--ayy-chart-6", type: "color", value: "#f472b6", light: "#be185d", themes: {"dark-soft":"#f472b6","light-gray":"#be185d"} },
+  "brand.50": { cssVar: "--ayy-brand-50", type: "color", value: "#f7f7f8" },
+  "brand.100": { cssVar: "--ayy-brand-100", type: "color", value: "#ebebeb" },
+  "brand.200": { cssVar: "--ayy-brand-200", type: "color", value: "#dadada" },
+  "brand.300": { cssVar: "--ayy-brand-300", type: "color", value: "#bbbbbb" },
+  "brand.400": { cssVar: "--ayy-brand-400", type: "color", value: "#939393" },
+  "brand.500": { cssVar: "--ayy-brand-500", type: "color", value: "#6b6b6b" },
+  "brand.600": { cssVar: "--ayy-brand-600", type: "color", value: "#636363" },
+  "brand.700": { cssVar: "--ayy-brand-700", type: "color", value: "#474747" },
+  "brand.800": { cssVar: "--ayy-brand-800", type: "color", value: "#333333" },
+  "brand.900": { cssVar: "--ayy-brand-900", type: "color", value: "#1e1e1e" },
+  "brand.950": { cssVar: "--ayy-brand-950", type: "color", value: "#141414" },
   "font.heading": { cssVar: "--ayy-font-heading", type: "fontFamily", value: ["Unbounded","Arial Black","system-ui","-apple-system","Segoe UI","Roboto","Noto Sans","sans-serif"], description: "Headings and big numbers. Unbounded covers Latin and Cyrillic; other scripts fall through to the system font." },
   "font.body": { cssVar: "--ayy-font-body", type: "fontFamily", value: ["Sora","system-ui","-apple-system","Segoe UI","Roboto","Noto Sans","Helvetica Neue","Arial","sans-serif"], description: "Body and UI text. Always ends in system fonts so CJK, Arabic, Cyrillic, Devanagari etc. render natively." },
   "font.signature": { cssVar: "--ayy-font-signature", type: "fontFamily", value: ["Caveat","Segoe Script","cursive"], description: "Handwritten accent. Decorative only." },
@@ -170,7 +181,7 @@ export const tokens = {
   "radius.pill": { cssVar: "--ayy-radius-pill", type: "dimension", value: "999px" },
   "radius.control": { cssVar: "--ayy-radius-control", type: "dimension", value: "12px", description: "Inputs, selects, textareas, tooltips, menus." },
   "radius.card": { cssVar: "--ayy-radius-card", type: "dimension", value: "16px", description: "Cards, dialogs, popovers." },
-  "radius.button": { cssVar: "--ayy-radius-button", type: "dimension", value: "999px", description: "Buttons, tabs, badges." },
+  "radius.button": { cssVar: "--ayy-radius-button", type: "dimension", value: "999px", description: "Buttons, tabs, segmented controls, chips, badges, pagination links. A brand's shape sets it with control and card." },
   "shadow.rest": { cssVar: "--ayy-shadow-rest", type: "shadow", value: "inset 0 1px 0 #ffffff0f", light: "inset 0 1px 0 #0a0a0a0f", description: "Inset top highlight. Cards at rest." },
   "shadow.lift": { cssVar: "--ayy-shadow-lift", type: "shadow", value: "0 16px 36px #00000066", light: "0 16px 36px #0000001f", description: "Hovered / lifted cards." },
   "shadow.overlay": { cssVar: "--ayy-shadow-overlay", type: "shadow", value: "0 24px 60px #00000080", light: "0 24px 60px #00000026", description: "Dialogs, menus, popovers, tooltips, toasts." },
@@ -199,3 +210,12 @@ export type ThemeName = (typeof themes)[number];
 
 /** The base colour scheme of each theme. */
 export const themeBase = {"dark":"dark","light":"light","dark-soft":"dark","light-gray":"light"} as const satisfies Record<ThemeName, "dark" | "light">;
+
+/** Brands shipped as ayywi/brands/<name>.css (from tokens/brands/). */
+export const brands = ["violet"] as const;
+export type BrandName = (typeof brands)[number];
+
+/** What each shipped brand is made from: pass one to createBrand() or setBrand() to apply it without its stylesheet. */
+export const brandPresets = {
+  "violet": {"name":"violet","color":"#7c3aed","radius":{"button":"10px","card":"20px"},"description":"Example brand: violet buttons, checks and focus rings, softer button and card corners. Load @danitesler/ayywi/brands/violet.css and set data-brand=\"violet\" on any element (or setBrand(\"violet\"))."},
+} as const;

@@ -3,7 +3,7 @@
 
 CSS: `import "@danitesler/ayywi/css"` (or `<link href=".../dist/ayywi.min.css">`). React: `import { … } from "@danitesler/ayywi/react"`. Other frameworks: class names, helpers from `"@danitesler/ayywi"`, and `import "@danitesler/ayywi/elements"` for `<ayy-menu>`, `<ayy-theme-toggle>`, `<ayy-navbar>`, `<ayy-app-shell>`, `<ayy-toc>`, `<ayy-combobox>`, `<ayy-tabs>`, `<ayy-carousel>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-tooltip>`, `<ayy-table>`.
 
-Global attributes: `data-theme`, `data-density`, `dir` (theme, density, direction — on any element).
+Global attributes: `data-theme`, `data-density`, `data-brand`, `dir` (theme, density, brand, direction — on any element).
 
 Utilities: `.ayy-h1`, `.ayy-h2`, `.ayy-h3`, `.ayy-h4`, `.ayy-h5`, `.ayy-h6`, `.ayy-lede`, `.ayy-muted`, `.ayy-eyebrow`, `.ayy-signature`, `.ayy-mono`, `.ayy-display`, `.ayy-text-outline`, `.ayy-accent-text`, `.ayy-link`, `.ayy-prose`, `.ayy-container`, `.ayy-grid`, `.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-split`, `.ayy-sr-only`, `.ayy-truncate`, `.ayy-scroll`, `.ayy-skip-link`, `.ayy-bg-grid`, `.ayy-scroll-progress`, `.ayy-reveal`.
 
