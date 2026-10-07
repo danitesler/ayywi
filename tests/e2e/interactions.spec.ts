@@ -380,6 +380,48 @@ for (const renderer of ["react", "html"] as const) {
       await expect(page).toHaveURL(/#\/toc$/); // in-page links don't change the preview route
     });
 
+    test("contents is a strip of top-level links on phones, keeping the current one in view", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 });
+      await open(page, "toc", { renderer, density: "touch" });
+      const nav = stage(page).getByRole("navigation", { name: "Contents" }); // the hidden title still names it
+      const links = nav.locator(".ayy-toc__link:visible");
+      const tops = await links.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+      expect(new Set(tops).size).toBe(1);
+      await expect(nav.getByRole("link", { name: "Tokens" })).toBeHidden();
+      expect(await nav.evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
+      expect((await links.first().boundingBox())!.height).toBeGreaterThanOrEqual(39.5);
+
+      // Narrow the strip so it scrolls, then read the last section: its link scrolls into view.
+      const strip = nav.locator(".ayy-toc__list").first();
+      await strip.evaluate((el) => (el.style.maxInlineSize = "8rem"));
+      await page.locator(".pv-page").evaluate((el) => (el.style.paddingBlockEnd = "100vh"));
+      await page.evaluate(() => {
+        const target = document.getElementById("toc-impact")!;
+        window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 8);
+      });
+      const impact = nav.getByRole("link", { name: /Impact/ });
+      await expect(impact).toHaveAttribute("aria-current", "location");
+      await expect
+        .poll(async () => {
+          const [a, s] = await Promise.all([impact.boundingBox(), strip.boundingBox()]);
+          return a!.x >= s!.x - 1 && a!.x + a!.width <= s!.x + s!.width + 1;
+        })
+        .toBe(true);
+      await page.setViewportSize({ width: 1280, height: 720 });
+    });
+
+    test("breadcrumb links are touch-sized and the trail stays on one line on phones", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 });
+      await open(page, "breadcrumb", { renderer, density: "touch" });
+      const list = stage(page).locator(".ayy-breadcrumb__list").first();
+      await list.evaluate((el) => (el.style.maxInlineSize = "12rem"));
+      const items = list.locator(".ayy-breadcrumb__item");
+      const tops = await items.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+      expect(new Set(tops).size).toBe(1);
+      expect((await list.locator(".ayy-breadcrumb__link").first().boundingBox())!.height).toBeGreaterThanOrEqual(39.5);
+      await page.setViewportSize({ width: 1280, height: 720 });
+    });
+
     test("theme toggle lists every theme, applies the choice and remembers it", async ({ page }) => {
       await open(page, "theme-toggle", { renderer, theme: "dark" });
       const toggle = stage(page).getByRole("button", { name: "Theme" });

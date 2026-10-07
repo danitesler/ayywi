@@ -59,8 +59,21 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
     const id = index >= 0 ? hashOf(links[index]) : "";
     if (id !== current) {
       current = id;
+      if (index >= 0) reveal(links[index]);
       options.onChange?.(id);
     }
+  };
+
+  // On phones the sticky contents is one scrolling row: keep the current section's top-level link in view. Rects, not
+  // scrollLeft, so it works the same in right-to-left pages.
+  const reveal = (link: HTMLAnchorElement) => {
+    const strip = root.querySelector<HTMLElement>(".ayy-toc__list");
+    if (!strip || strip.scrollWidth <= strip.clientWidth) return;
+    const item = Array.from(strip.children).find((li) => li.contains(link));
+    const shown = item?.querySelector<HTMLElement>("a.ayy-toc__link") ?? link;
+    const a = shown.getBoundingClientRect();
+    const s = strip.getBoundingClientRect();
+    strip.scrollBy({ left: a.left + a.width / 2 - (s.left + s.width / 2) });
   };
 
   const schedule = () => {

@@ -4,7 +4,7 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 
 **Classes**
 - `.ayy-card` — Root surface.
-- `.ayy-card--interactive` — Lifts on hover. Use when the whole card is clickable.
+- `.ayy-card--interactive` — Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.
 - `.ayy-card--spotlight` — Pointer-following glow + lit border. Colour via the --ayy-spot custom property.
 - `.ayy-card--featured` — The one to pick: the recommended plan in a pricing grid, or the option someone chose. A 2px border in the text colour (High Contrast: a highlight outline). One per group.
 - `.ayy-card__header` — Top block (title + description).
@@ -12,7 +12,7 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - `.ayy-card__description` — Muted supporting text.
 - `.ayy-card__content` — Body.
 - `.ayy-card__footer` — Actions row, pinned to the bottom.
-- `.ayy-card__media` — Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly on an interactive card's hover.
+- `.ayy-card__media` — Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly when an interactive card is hovered with a mouse.
 - `.ayy-card__link` — Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable.
 
 **JS (framework-free)**: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my

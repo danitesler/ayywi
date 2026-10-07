@@ -19,10 +19,13 @@
   border-color: var(--ayy-color-line-hover);
 }
 
-/* Lifts on hover. Use when the whole card is clickable. */
-.ayy-card--interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--ayy-shadow-lift), var(--ayy-shadow-rest);
+/* Lifts on hover. Use when the whole card is clickable. Only where there's a real hover: on touch screens a tap would
+   leave it lifted. */
+@media (hover: hover) {
+  .ayy-card--interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ayy-shadow-lift), var(--ayy-shadow-rest);
+  }
 }
 
 /* Featured: the recommended plan or the option you picked. Monochrome like the rest of the frame: a border (and a
@@ -80,7 +83,7 @@
 }
 
 /* ---- Media: a cover image, screenshot or video edge to edge. Rounds the corners it touches; zooms a little when an
-   interactive card is hovered. ---- */
+   interactive card is hovered (with a mouse). ---- */
 
 .ayy-card__media {
   overflow: hidden;
@@ -104,8 +107,10 @@
   transition: transform var(--ayy-duration-slower) var(--ayy-ease-out-expo);
 }
 
-.ayy-card--interactive:hover .ayy-card__media > :is(img, video, picture, svg) {
-  transform: scale(1.03);
+@media (hover: hover) {
+  .ayy-card--interactive:hover .ayy-card__media > :is(img, video, picture, svg) {
+    transform: scale(1.03);
+  }
 }
 
 /* ---- Link: the title's <a> covers the whole card, so one tab stop opens it. Other controls stay clickable above. ---- */

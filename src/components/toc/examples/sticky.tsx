@@ -4,7 +4,7 @@ import { Toc } from "ayywi/react";
 export default function Example() {
   return (
     <div
-      style={{ display: "grid", gridTemplateColumns: "minmax(0, 11rem) minmax(0, 1fr)", gap: "var(--ayy-space-8)", inlineSize: "100%", "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties}
+      style={{ display: "flex", flexWrap: "wrap", gap: "var(--ayy-space-8)", inlineSize: "100%", "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties}
     >
       <Toc
         sticky
@@ -16,7 +16,7 @@ export default function Example() {
           { id: "toc-impact", label: "Impact" },
         ]}
       />
-      <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-10)" } as CSSProperties}>
+      <div className="ayy-stack" style={{ flex: "1 1 20rem", minInlineSize: 0, "--ayy-gap": "var(--ayy-space-10)" } as CSSProperties}>
         <section id="toc-overview">
           <h3 className="ayy-h4">Overview</h3>
           <p className="ayy-muted">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p>

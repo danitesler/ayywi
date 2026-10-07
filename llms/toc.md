@@ -4,7 +4,7 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 
 **Classes**
 - `.ayy-toc` — Root <nav>. Accent from --ayy-spot.
-- `.ayy-toc--sticky` — Stays in view below the navbar, scrolling on its own if it's taller than the screen. Give it its own grid column.
+- `.ayy-toc--sticky` — Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky row of top-level section links under the navbar, the current one underlined and scrolled into view.
 - `.ayy-toc__title` — Small uppercase heading ("Contents"). Point the nav's aria-labelledby at it.
 - `.ayy-toc__list` — <ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.
 - `.ayy-toc__link` — Section link (href="#id"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.
@@ -23,12 +23,13 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - It's a <nav> with a name (the title via aria-labelledby, or aria-label="On this page"), so it shows up in landmark lists.
 - The current section is aria-current="location", announced by screen readers, not only drawn as a colour bar.
 - Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header.
+- Links grow to a 40px target at touch density. On phones the visible title is hidden but still names the nav.
 
 **Do**
 - Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.
 - List sections in page order; the scrollspy assumes it.
 - Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.
-- On narrow screens, move it above the content or into a Popover instead of a side column.
+- Make the page layout put it above the content on phones (a wrapping flex row does, as in the example); --sticky then turns it into a strip of section links.
 
 **Don't**
 - Don't add one to short pages with two or three sections.
@@ -42,7 +43,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
 <!-- <ayy-toc> (ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->
-<div style="display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)">
+<div style="display: flex; flex-wrap: wrap; gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)">
   <nav class="ayy-toc ayy-toc--sticky" aria-labelledby="toc-title">
     <ayy-toc>
       <p class="ayy-toc__title" id="toc-title">Contents</p>
@@ -58,7 +59,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       </ol>
     </ayy-toc>
   </nav>
-  <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-10)">
+  <div class="ayy-stack" style="flex: 1 1 20rem; min-inline-size: 0; --ayy-gap: var(--ayy-space-10)">
     <section id="toc-overview"><h3 class="ayy-h4">Overview</h3><p class="ayy-muted">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p></section>
     <section id="toc-system"><h3 class="ayy-h4">Design system</h3><p class="ayy-muted">Navigation, cards and colour had drifted from screen to screen, and every new feature risked drifting further.</p></section>
     <section id="toc-tokens"><h3 class="ayy-h4">Tokens</h3><p class="ayy-muted">Colour, type and spacing became tokens first, so the redesign could ship on them.</p></section>
@@ -76,7 +77,7 @@ import { Toc } from "ayywi/react";
 export default function Example() {
   return (
     <div
-      style={{ display: "grid", gridTemplateColumns: "minmax(0, 11rem) minmax(0, 1fr)", gap: "var(--ayy-space-8)", inlineSize: "100%", "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties}
+      style={{ display: "flex", flexWrap: "wrap", gap: "var(--ayy-space-8)", inlineSize: "100%", "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties}
     >
       <Toc
         sticky
@@ -88,7 +89,7 @@ export default function Example() {
           { id: "toc-impact", label: "Impact" },
         ]}
       />
-      <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-10)" } as CSSProperties}>
+      <div className="ayy-stack" style={{ flex: "1 1 20rem", minInlineSize: 0, "--ayy-gap": "var(--ayy-space-10)" } as CSSProperties}>
         <section id="toc-overview">
           <h3 className="ayy-h4">Overview</h3>
           <p className="ayy-muted">Marketing teams plan, publish and measure social content in one app. The board lets colleagues share it with their own networks.</p>

@@ -5,6 +5,11 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ## Unreleased
 
 ### Fixed
+- Phones: the sticky Contents squeezed into an 11rem side column or stacked as a long list. Below 48rem it's now a sticky row of section links under the navbar, the current one underlined and scrolled into view. Put it before the content in a wrapping flex row (the example does); it takes 11rem there on wide screens.
+- Contents and Breadcrumb links were 19–31px tall targets. They're a small control tall now (40px at touch density) without moving the compact layout.
+- A long Breadcrumb wrapped onto several lines on phones. It stays on one line there, cutting ancestors with an ellipsis before the current page.
+- Sections kept 80px of block padding on phones (160px between two). It's 48px there, with a smaller gap under the header.
+- A tap on a touch screen left interactive cards lifted, their media zoomed and the ring button spinning. Those effects only run with a real hover now (`@media (hover: hover)`); the ring still spins on keyboard focus. The motion rule says so for app CSS too.
 - Dropdown menu items (and theme toggle items) showed keyboard focus only as a faint wash; they get the focus ring now.
 - Unselected tabs were muted text on the wash track: under 4.5:1 on raised surfaces in dark-soft and on light-gray's page. They're text-soft now (so are unselected segments), and `pnpm check` measures text on the wash in every theme.
 - Outgoing chat bubbles had no edge in High Contrast.

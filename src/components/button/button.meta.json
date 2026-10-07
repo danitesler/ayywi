@@ -11,7 +11,7 @@
     "ayy-button--ghost": "No border or fill until hover. Toolbars, icon buttons.",
     "ayy-button--destructive": "Tinted red. Irreversible actions.",
     "ayy-button--link": "Looks like a text link.",
-    "ayy-button--ring": "Showcase call to action: quiet fill inside a gradient ring that spins on hover and focus. For marketing and portfolio pages; one per view.",
+    "ayy-button--ring": "Showcase call to action: quiet fill inside a gradient ring that spins on keyboard focus and mouse hover (not after a tap). For marketing and portfolio pages; one per view.",
     "ayy-button--sm": "28px tall.",
     "ayy-button--lg": "40px tall.",
     "ayy-button--icon": "Square 32px, for a single icon.",
