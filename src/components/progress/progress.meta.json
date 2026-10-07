@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Feedback",
   "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
+  "aka": ["progress", "progress-bar", "progressbar", "meter"],
   "classes": {
     "ayy-progress": "Track. Set --ayy-value (0–100) on it.",
     "ayy-progress__bar": "Fill (only child).",

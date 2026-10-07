@@ -1,6 +1,6 @@
 # Swatch
 
-Category: Forms. Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a "no colour" and an "any colour" (native colour input) swatch. The picked one gets a ring and a tick.
+Category: Forms. Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a "no colour" and an "any colour" (native colour input) swatch. The picked one gets a ring and a tick. Also called: swatch, swatches, color-swatch, color-dot, colour-dot, color-picker, colour-picker.
 
 **Classes**
 - `.ayy-swatch` — One colour: a <label> around a native radio (which stays in the page but draws nothing), or a <button aria-pressed>. Set --ayy-swatch on it to the colour, a token: var(--ayy-chart-1…6), var(--ayy-accent-*), var(--ayy-color-destructive). The radio (or the button) needs an aria-label naming the colour.

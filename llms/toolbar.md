@@ -1,6 +1,6 @@
 # Toolbar
 
-Category: Actions. A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role="toolbar" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.
+Category: Actions. A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role="toolbar" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling. Also called: toolbar, tool-bar, tool-rail, toolrail, tool-button, tool-btn, format-bar.
 
 **Classes**
 - `.ayy-toolbar` — Root, role="toolbar" with an aria-label ("Annotate"). A row of items with a small gap.

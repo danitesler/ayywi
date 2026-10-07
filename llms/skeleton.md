@@ -1,6 +1,6 @@
 # Skeleton
 
-Category: Feedback. Placeholder shapes shown while content loads, with a subtle shimmer.
+Category: Feedback. Placeholder shapes shown while content loads, with a subtle shimmer. Also called: skeleton, shimmer.
 
 **Classes**
 - `.ayy-skeleton` — Block placeholder. Set its size to match the content.

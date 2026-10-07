@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Navigation",
   "description": "The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.",
+  "aka": ["footer", "site-footer"],
   "classes": {
     "ayy-footer": "Root <footer>, a hairline above it.",
     "ayy-footer__inner": "Centred grid at page width (--ayy-size-container) with the page gutter: brand beside the link columns, one column below 64rem.",

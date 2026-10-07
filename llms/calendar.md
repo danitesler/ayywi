@@ -1,6 +1,6 @@
 # Calendar
 
-Category: Forms. A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.
+Category: Forms. A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button. Also called: calendar, date-picker, datepicker, date-input, day-picker, month-grid, mini-calendar.
 
 **Classes**
 - `.ayy-calendar` — Root: a column of the header, weekdays and grid, as wide as seven days (its content). Day size follows data-density.

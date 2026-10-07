@@ -1,6 +1,6 @@
 # Select
 
-Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
+Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour. Also called: select, native-select.
 
 **Classes**
 - `.ayy-select` — Wrapper element. Draws the chevron and sets the height.

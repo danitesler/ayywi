@@ -1,6 +1,6 @@
 # Settings
 
-Category: Forms. Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are.
+Category: Forms. Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are. Also called: settings, setting, settings-row, setting-row, settings-list, preferences, pref-row.
 
 **Classes**
 - `.ayy-settings` — A group: <section aria-labelledby> holding a title, an optional description and the list. Groups after each other get space between them.

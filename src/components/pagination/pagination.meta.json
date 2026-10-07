@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Navigation",
   "description": "Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.",
+  "aka": ["pagination", "pager"],
   "classes": {
     "ayy-pagination": "Root <nav aria-label=\"Pagination\">. A wrapping row.",
     "ayy-pagination__link": "A page: <a href> when pages have URLs, <button> otherwise. aria-current=\"page\" marks the current one (outlined tint, heavier). aria-disabled=\"true\" (a link without href) or disabled dims an end you can't go past.",

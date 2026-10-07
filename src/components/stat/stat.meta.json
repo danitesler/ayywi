@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
+  "aka": ["stat", "metric", "kpi", "stat-card"],
   "classes": {
     "ayy-stat": "Root.",
     "ayy-stat--sm": "Smaller number (28px instead of 48px), for rows of several stats or inside cards.",

@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Overlays",
   "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
+  "aka": ["tooltip", "tip"],
   "classes": {
     "ayy-tooltip": "Wrapper around the trigger. Shows the content on :hover and :focus-within.",
     "ayy-tooltip__content": "The bubble (role=\"tooltip\"). Placement via data-side=\"top|bottom|start|end\" (start/end follow text direction)."

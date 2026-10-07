@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Forms",
   "description": "Single-line text field. Works for every native input type (text, email, search, number, file…).",
+  "aka": ["input", "text-field", "textbox", "text-input"],
   "classes": {
     "ayy-input": "Root, on the <input> itself.",
     "ayy-input--sm": "28px tall.",

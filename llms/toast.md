@@ -1,6 +1,6 @@
 # Toast
 
-Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
+Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused. Also called: toast, snackbar, notification.
 
 **Classes**
 - `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position.

@@ -1,6 +1,6 @@
 # Accordion
 
-Category: Layout. Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.
+Category: Layout. Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others. Also called: accordion, collapsible, disclosure, expander.
 
 **Classes**
 - `.ayy-accordion` — Root <div>: a column of items with hairlines above, between and below.

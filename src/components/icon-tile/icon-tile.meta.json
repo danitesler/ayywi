@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
+  "aka": ["icon-tile", "app-icon"],
   "classes": {
     "ayy-icon-tile": "Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.",
     "ayy-icon-tile--sm": "32px.",

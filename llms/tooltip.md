@@ -1,6 +1,6 @@
 # Tooltip
 
-Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
+Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges. Also called: tooltip, tip.
 
 **Classes**
 - `.ayy-tooltip` — Wrapper around the trigger. Shows the content on :hover and :focus-within.

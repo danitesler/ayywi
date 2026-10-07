@@ -1,6 +1,6 @@
 # Theme toggle
 
-Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
+Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
 
 **Classes**
 - `.ayy-theme-toggle` — On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.

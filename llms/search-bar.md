@@ -1,6 +1,6 @@
 # Search bar
 
-Category: Forms. A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role="search"> around an <input type="search">, so phones show a Search key. The clear button only shows while there's text.
+Category: Forms. A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role="search"> around an <input type="search">, so phones show a Search key. The clear button only shows while there's text. Also called: search-bar, searchbar, search, search-box, searchbox, search-field.
 
 **Classes**
 - `.ayy-search-bar` — Root: a <form role="search"> holding the field and an optional Cancel.

@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.",
+  "aka": ["segmented-control", "segmented", "segment", "seg", "toggle-group"],
   "classes": {
     "ayy-segmented-control": "Root, a role=\"radiogroup\" with an aria-label. The pill track.",
     "ayy-segmented-control--sm": "Small height, for toolbars and card headers.",

@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Layout",
   "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
+  "aka": ["card", "panel-card"],
   "classes": {
     "ayy-card": "Root surface.",
     "ayy-card--interactive": "Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.",

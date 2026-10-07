@@ -1,6 +1,6 @@
 # Number field
 
-Category: Forms. A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.
+Category: Forms. A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input. Also called: number-field, stepper, spinbox, quantity.
 
 **Classes**
 - `.ayy-number-field` — The bordered box around the buttons and the input. Draws the focus ring while you type.

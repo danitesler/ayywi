@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Actions",
   "description": "A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role=\"toolbar\" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.",
+  "aka": ["toolbar", "tool-bar", "tool-rail", "toolrail", "tool-button", "tool-btn", "format-bar"],
   "classes": {
     "ayy-toolbar": "Root, role=\"toolbar\" with an aria-label (\"Annotate\"). A row of items with a small gap.",
     "ayy-toolbar--vertical": "A column (a side rail). Add aria-orientation=\"vertical\" so the up and down arrows move.",

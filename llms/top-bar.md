@@ -1,6 +1,6 @@
 # Top bar
 
-Category: Navigation. A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.
+Category: Navigation. A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control. Also called: top-bar, topbar, app-bar, appbar, screen-header, header-bar.
 
 **Classes**
 - `.ayy-top-bar` — A <header>: sticky at the top of its scroll container, the page colour with a hairline under it. As the first child of an .ayy-app-shell__main it runs edge to edge over the main area's padding.

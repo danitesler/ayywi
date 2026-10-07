@@ -1,6 +1,6 @@
 # Progress ring
 
-Category: Feedback. Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle.
+Category: Feedback. Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle. Also called: progress-ring, circular-progress, progress-circle, radial-progress, ring-progress, timer-ring.
 
 **Classes**
 - `.ayy-progress-ring` — Root: role="progressbar" with aria-valuenow/min/max, an accessible name and --ayy-value (0–100). Clockwise from the top in every direction, like a clock. 2.5rem.

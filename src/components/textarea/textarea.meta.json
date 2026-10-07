@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Forms",
   "description": "Multi-line text field. Optional auto-grow and monospace modes.",
+  "aka": ["textarea", "text-area"],
   "classes": {
     "ayy-textarea": "Root, on the <textarea>.",
     "ayy-textarea--autosize": "Grows with content (CSS field-sizing). Falls back to fixed height.",

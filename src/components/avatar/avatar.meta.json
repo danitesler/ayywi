@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Data display",
   "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
+  "aka": ["avatar", "profile-pic", "user-pic"],
   "classes": {
     "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
     "ayy-avatar--sm": "24px.",

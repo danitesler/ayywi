@@ -1,6 +1,6 @@
 # Avatar
 
-Category: Data display. Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
+Category: Data display. Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load. Also called: avatar, profile-pic, user-pic.
 
 **Classes**
 - `.ayy-avatar` — Root (role="img" + aria-label). 32px circle.

@@ -1,6 +1,6 @@
 # Tag input
 
-Category: Forms. A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox.
+Category: Forms. A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox. Also called: tag-input, tags-input, token-input, chip-input, tag-field, tag-editor.
 
 **Classes**
 - `.ayy-tag-input` — Root: looks like an .ayy-input, holds the chips then the input, and grows to more lines as needed. Clicking its empty space focuses the input. With suggestions add ayy-combobox and put an .ayy-combobox__listbox inside.

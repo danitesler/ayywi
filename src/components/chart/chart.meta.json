@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
+  "aka": ["chart", "bar-chart", "line-chart", "sparkline", "graph"],
   "classes": {
     "ayy-chart": "Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.",
     "ayy-chart--stacked": "A column's bars sit on top of each other; each bar's --ayy-value is its share of the top of the scale.",

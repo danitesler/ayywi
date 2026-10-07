@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Feedback",
   "description": "What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.",
+  "aka": ["empty-state", "empty", "blank-slate", "no-results"],
   "classes": {
     "ayy-empty-state": "Root. Centred column with generous block padding.",
     "ayy-empty-state--bordered": "A dashed outline around the empty area (a board column, a drop target).",

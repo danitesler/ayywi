@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.",
+  "aka": ["swipe", "swipe-row", "swipeable", "swipe-actions", "slide-actions"],
   "classes": {
     "ayy-swipe": "The row: clips its content and holds the trays. Vertical drags still scroll the page (touch-action: pan-y).",
     "ayy-swipe__content": "What slides: the row's own content (often with .ayy-list__item). Opaque, with --ayy-swipe-bg (default the page colour) so the trays stay hidden under it.",

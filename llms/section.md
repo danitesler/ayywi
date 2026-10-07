@@ -1,6 +1,6 @@
 # Section
 
-Category: Layout. A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.
+Category: Layout. A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description. Also called: page-section.
 
 **Classes**
 - `.ayy-section` — Root <section>. 96px block padding (48px on phones, 128px on wide screens). Add ayy-container for page width.

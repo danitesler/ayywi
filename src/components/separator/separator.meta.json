@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Layout",
   "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
+  "aka": ["separator", "divider", "sep", "hr"],
   "classes": {
     "ayy-separator": "Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).",
     "ayy-separator--vertical": "Vertical rule in a flex row; add aria-orientation=\"vertical\".",

@@ -1,6 +1,6 @@
 # Alert
 
-Category: Feedback. Inline message box with optional icon, title, description and actions.
+Category: Feedback. Inline message box with optional icon, title, description and actions. Also called: alert, banner, callout, notice, admonition.
 
 **Classes**
 - `.ayy-alert` — Root. Neutral by default.

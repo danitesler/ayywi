@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Layout",
   "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
+  "aka": ["tabs", "tab", "tab-list", "tablist"],
   "classes": {
     "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
     "ayy-tabs__list": "role=\"tablist\" pill container.",

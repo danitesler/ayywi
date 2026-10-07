@@ -1,6 +1,6 @@
 # Textarea
 
-Category: Forms. Multi-line text field. Optional auto-grow and monospace modes.
+Category: Forms. Multi-line text field. Optional auto-grow and monospace modes. Also called: textarea, text-area.
 
 **Classes**
 - `.ayy-textarea` — Root, on the <textarea>.

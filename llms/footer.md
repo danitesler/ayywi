@@ -1,6 +1,6 @@
 # Footer
 
-Category: Navigation. The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
+Category: Navigation. The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar. Also called: footer, site-footer.
 
 **Classes**
 - `.ayy-footer` — Root <footer>, a hairline above it.

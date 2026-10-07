@@ -39,6 +39,16 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - **Settings** (Forms): preference rows (label and hint at the start, the control at the end, wrapping under on phones) grouped under a heading in a card; `--plain` without the card, `__row--stack`, and `__link` rows that open a sub-page with the current value and a chevron (`--destructive` for Sign out). React `Settings`, `SettingsRow`, `SettingsLink`.
   - **Progress ring** (Feedback): progress as a ring from `--ayy-value`, clockwise from the top in every direction, with an optional label in the middle; `--sm` to `--xl`, the Progress colours, `--indeterminate`. React `ProgressRing`.
   - **Swipe actions** (Data display): a list row that slides to show action trays at either end (`__actions--start`, `__actions--end`, `__action` with status tints), with touch, pen or mouse, following the reading direction; keyboard focus shows a tray over the row. `connectSwipe()`, `<ayy-swipe>`, React `Swipe`, `SwipeAction`; `--ayy-swipe-bg` sets the row's background.
+### Added
+- `ayywi lint` checks structure, not only values. Three new rules, warnings by default:
+  - `rebuilt-component`: an app class named after an ayywi component (`.app-chip`, `.sidebar`, `.qa-spinner`, `.hpill`) that is never used together with it.
+  - `component-override`: CSS that changes how a component looks (colour, background, border, radius, padding, type) on an `ayy-` class or on an app class used with one. Layout (margin, size, position), theme tokens and High Contrast blocks are fine.
+  - `bare-control`: a `<button>`, `<input>`, `<select>`, `<kbd>`, `role="tab"`… carrying the app's own classes and none of ayywi's.
+  Class names are matched across every file linted in one run, so `class="ayy-card qa-card"` in a template makes `.qa-card` an extension, not a copy.
+- Every component meta has `aka`: the names a hand-built copy goes by (Chip: chip, tag, token, filter-chip). The linter reads them, the MCP `search` tool finds components by them, and the llms pages list them. `pnpm check` requires them and keeps each one to a single component.
+
+### Changed
+- Rule 1 now says it outright: don't rebuild a component under your own name or restyle one; your class next to its `ayy-` class sets only layout.
 
 ## 0.0.1 — 2026-10-07
 

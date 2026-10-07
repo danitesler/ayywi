@@ -172,7 +172,7 @@ const sizeLines = (c) => [
 ];
 /** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md. */
 function componentMarkdown(c, h = "##") {
-  const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}`];
+  const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}${c.aka?.length ? ` Also called: ${c.aka.join(", ")}.` : ""}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
   part.push(`**States**\n${list(stateLines(c))}`);
   part.push(`**Sizes**\n${list(sizeLines(c))}`);

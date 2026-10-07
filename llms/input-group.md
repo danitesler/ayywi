@@ -1,6 +1,6 @@
 # Input group
 
-Category: Forms. An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.
+Category: Forms. An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring. Also called: input-group, input-addon, input-adornment.
 
 **Classes**
 - `.ayy-input-group` — Root. Draws the field (border, fill, radius, height) and the focus ring while its .ayy-input is focused. The .ayy-input inside, a direct child, loses its own border and takes the free space. An <svg> child is sized as a small icon; a .ayy-button at either end sits flush with the edge.

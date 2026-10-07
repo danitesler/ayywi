@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Data display",
   "description": "A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.",
+  "aka": ["kbd", "keycap", "hotkey", "shortcut-key"],
   "classes": {
     "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
   },

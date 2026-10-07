@@ -4,6 +4,7 @@
   "status": "stable",
   "category": "Data display",
   "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
+  "aka": ["table", "data-table", "datagrid"],
   "classes": {
     "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
     "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",

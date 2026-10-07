@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Navigation",
   "description": "Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.",
+  "aka": ["navbar", "site-header", "nav-bar", "header-nav"],
   "classes": {
     "ayy-navbar": "Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.",
     "ayy-navbar__inner": "Centred row at page width (--ayy-size-container) with the page gutter.",

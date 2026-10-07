@@ -1,6 +1,6 @@
 # Floating action button
 
-Category: Actions. The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.
+Category: Actions. The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones. Also called: fab, floating-action, floating-button, float-button.
 
 **Classes**
 - `.ayy-fab` — A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.

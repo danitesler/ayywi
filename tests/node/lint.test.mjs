@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { loadContract, lintText } from "../../cli/lint.mjs";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { DEFAULT_RULES, collectCoUse, componentNamed, lintPaths, loadContract, lintText } from "../../cli/lint.mjs";
 
 const contract = loadContract();
 const rules = (text, file) => lintText(text, file, contract).map((f) => f.rule);
@@ -92,4 +95,65 @@ test("inline styles get the colour and direction rules: style=\"\" and style={{}
 test("a wildcard token name in prose isn't an unknown token", () => {
   assert.deepEqual(rules(`const tip = "No hardcoded colours: use var(--ayy-color-*).";`, "a.ts"), []);
   assert.deepEqual(rules(`const tip = "use var(--ayy-colour-text)";`, "a.ts"), ["unknown-token"]);
+});
+
+test("structure: a class named after a component, unless it's used with that component", () => {
+  const css = `.app-chip { display: inline-flex; }\n.app-chip--on { border-color: var(--ayy-color-text); }\n.hpill { padding: 0; }\n.selectable { cursor: default; }`;
+  const findings = lintText(css, "a.css", contract).filter((f) => f.rule === "rebuilt-component");
+  assert.deepEqual(findings.map((f) => f.line), [1, 3], "one finding per class block; -able words aren't tables");
+  assert.match(findings[0].message, /Chip/);
+  assert.match(findings[1].message, /Badge/);
+  // Used next to the component's class (in markup linted with it, or in CSS) it extends the component instead.
+  const tsx = `<span className="ayy-chip app-chip">x</span>`;
+  const coUse = collectCoUse(tsx, "a.tsx", contract);
+  assert.deepEqual(lintText(`.app-chip { margin: 0; }`, "a.css", contract, undefined, coUse).map((f) => f.rule), []);
+  assert.deepEqual(rules(`.ayy-card.qa-card { margin: 0; } .qa-card { display: grid; }`, "a.css"), []);
+  assert.deepEqual(rules(`<Card className="qa-card" />`, "a.tsx"), []);
+});
+
+test("structure: CSS that restyles a component, beyond layout", () => {
+  const css = `.x .ayy-button { padding-inline: 4px; border-radius: 0; }
+.x .ayy-button { margin-inline-start: auto; inline-size: 100%; --ayy-color-primary: var(--ayy-color-info); }
+@media (forced-colors: active) { .x .ayy-button { border-color: CanvasText; } }`;
+  const findings = lintText(css, "a.css", contract);
+  assert.deepEqual(findings.map((f) => [f.rule, f.line]), [["component-override", 1]]);
+  assert.match(findings[0].message, /Button \(padding-inline, border-radius\)/);
+  // An app class used with a component is held to the same rule.
+  const tsx = `<Button className="row-more">…</Button><style>.row-more { color: var(--ayy-color-muted); }</style>`;
+  assert.deepEqual(rules(tsx, "a.tsx"), ["component-override"]);
+  // Icons take a colour by design.
+  assert.deepEqual(rules(`<Icon className="nav-icon" icon={X} /><style>.nav-icon { color: var(--ayy-color-muted); }</style>`, "a.tsx"), []);
+});
+
+test("structure: native controls and ARIA widgets styled by hand", () => {
+  const tsx = `<button className="row-add">Add</button>
+<button className={cx("tool", on && "tool--on")} aria-pressed={on}>Pen</button>
+<input type="checkbox" className="done-box" />
+<div role="tablist" className="views"></div>
+<kbd className="key">K</kbd>`;
+  const findings = lintText(tsx, "a.tsx", contract).filter((f) => f.rule === "bare-control");
+  assert.deepEqual(findings.map((f) => f.line), [1, 2, 3, 4, 5]);
+  assert.match(findings[1].message, /ChipButton or Segmented control/);
+  assert.match(findings[2].message, /Checkbox/);
+  assert.match(findings[3].message, /Tabs/);
+  const fine = `<button className="ayy-button row-add">Add</button>
+<button className={buttonClass({ variant: "ghost", className: "row-add" })}>Add</button>
+<button className={classes}>Add</button>
+<button {...props} className="x">Add</button>
+<button>Add</button>
+<input type="hidden" className="x" />
+<Button className="row-add">Add</Button>`;
+  assert.deepEqual(rules(fine, "a.tsx"), []);
+});
+
+test("structure: lintPaths matches classes across files", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ayywi-lint-"));
+  writeFileSync(join(dir, "app.css"), ".qa-card { margin-block: 0; }\n.app-kbd { font-size: 0.8em; }\n");
+  writeFileSync(join(dir, "App.tsx"), `export const A = () => <Card className="qa-card" />;\n`);
+  const { findings } = lintPaths(["."], { cwd: dir, contract, config: { rules: DEFAULT_RULES, ignore: [] } });
+  assert.deepEqual(findings.map((f) => [f.file, f.rule, f.line]), [["app.css", "rebuilt-component", 2]]);
+});
+
+test("every alias names its component", () => {
+  for (const [alias, name] of contract.aka) assert.equal(componentNamed(`app-${alias}`, contract), name, alias);
 });

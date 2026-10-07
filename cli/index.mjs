@@ -18,6 +18,10 @@ const HELP = `ayywi ${version}
         data-density, element attributes), reserved-prefix (your own .ayy-* classes), icon-button-label,
         hardcoded-color (hex, rgb()…, named colours, also in style="" and style={{}}), dir-selector,
         physical-property (left/right CSS), img-size (<img> without width/height), icon-library (a second icon set).
+      Structure (warnings): rebuilt-component (a class named after an ayywi component, like .x-chip or .sidebar,
+        never used with it), component-override (CSS that changes how a component looks, beyond layout),
+        bare-control (a <button>, <input>, role="tab"… with your classes and none of ayywi's). Class names are
+        matched across every file linted together, so lint the whole UI in one run.
       Default path: current directory. Exits 1 on errors, or on more than N warnings.
       Configure rules in ayywi.config.json: { "rules": { "physical-property": "off" }, "ignore": ["legacy/**"] }.
       Silence a line with a comment containing ayywi-lint-disable-line (or -next-line); a whole file with

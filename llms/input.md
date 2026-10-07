@@ -1,6 +1,6 @@
 # Input
 
-Category: Forms. Single-line text field. Works for every native input type (text, email, search, number, file…).
+Category: Forms. Single-line text field. Works for every native input type (text, email, search, number, file…). Also called: input, text-field, textbox, text-input.
 
 **Classes**
 - `.ayy-input` — Root, on the <input> itself.

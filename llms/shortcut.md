@@ -1,6 +1,6 @@
 # Shortcut
 
-Category: Forms. Keyboard shortcuts written once as "Mod+Shift+K" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet.
+Category: Forms. Keyboard shortcuts written once as "Mod+Shift+K" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet. Also called: shortcut, shortcuts, shortcut-list, shortcut-recorder, hotkey-recorder, key-recorder, keybinding, keybind.
 
 **Classes**
 - `.ayy-shortcut` — A shortcut's keys: a row of .ayy-kbd keycaps (aria-hidden) after an .ayy-sr-only label in words. data-keys holds the shortcut ("Mod+Shift+K") so @danitesler/ayywi/elements redraws it for Apple devices. Always left to right, as in the OS menus, RTL included.

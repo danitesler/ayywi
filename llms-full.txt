@@ -15,7 +15,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 ## Rules
 
-- Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.
+- Use existing ayywi classes/components and their variants before writing any custom CSS. Never rebuild one under your own name (a .x-chip, .x-card, a <button> styled by hand) or restyle one: your class next to its ayy- class sets only layout (margin, size, position). If nothing fits, compose ayywi pieces. Never add a second UI kit.
 - Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.
 - Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.
 - Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
@@ -363,7 +363,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx ayywi 
 
 ## Button
 
-Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
+Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover. Also called: button, btn, icon-button, icon-btn, cta.
 
 **Classes**
 - `.ayy-button` — Root. Alone it is the primary button.
@@ -596,7 +596,7 @@ export default function Example() {
 
 ## Toolbar
 
-Category: Actions. A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role="toolbar" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.
+Category: Actions. A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role="toolbar" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling. Also called: toolbar, tool-bar, tool-rail, toolrail, tool-button, tool-btn, format-bar.
 
 **Classes**
 - `.ayy-toolbar` — Root, role="toolbar" with an aria-label ("Annotate"). A row of items with a small gap.
@@ -842,7 +842,7 @@ export default function Example() {
 
 ## Dropdown menu
 
-Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
+Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab). Also called: menu, dropdown, dropdown-menu, context-menu, menu-item.
 
 **Classes**
 - `.ayy-menu` — On the element with popover and role="menu".
@@ -977,7 +977,7 @@ export default function Example() {
 
 ## Command palette
 
-Category: Actions. A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count.
+Category: Actions. A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count. Also called: command, command-palette, cmdk, command-menu, quick-switcher, quick-open.
 
 **Classes**
 - `.ayy-command` — Root: a card with the search field, the list and an optional footer. On a <div> inline, or with ayy-dialog on a <dialog> for the ⌘K palette (top-aligned, no padding).
@@ -1199,7 +1199,7 @@ export default function Example() {
 
 ## Floating action button
 
-Category: Actions. The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.
+Category: Actions. The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones. Also called: fab, floating-action, floating-button, float-button.
 
 **Classes**
 - `.ayy-fab` — A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.
@@ -1383,7 +1383,7 @@ export default function Example() {
 
 ## Theme toggle
 
-Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
+Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
 
 **Classes**
 - `.ayy-theme-toggle` — On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.
@@ -1462,7 +1462,7 @@ export default function Example() {
 
 ## Navbar
 
-Category: Navigation. Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.
+Category: Navigation. Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar. Also called: navbar, site-header, nav-bar, header-nav.
 
 **Classes**
 - `.ayy-navbar` — Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.
@@ -1637,7 +1637,7 @@ export default function Example() {
 
 ## App shell
 
-Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens).
+Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens). Also called: app-shell, sidebar, side-nav, sidenav, nav-item, sidebar-item, nav-list.
 
 **Classes**
 - `.ayy-app-shell` — Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.
@@ -2565,7 +2565,7 @@ export default function Example() {
 
 ## Bottom nav
 
-Category: Navigation. A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.
+Category: Navigation. A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones. Also called: bottom-nav, tab-bar, tabbar, bottom-bar.
 
 **Classes**
 - `.ayy-bottom-nav` — The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below. As a direct child of .ayy-app-shell it shows below 48rem only; from 48rem the sidebar carries the same links.
@@ -2694,7 +2694,7 @@ export default function Example() {
 
 ## Top bar
 
-Category: Navigation. A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.
+Category: Navigation. A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control. Also called: top-bar, topbar, app-bar, appbar, screen-header, header-bar.
 
 **Classes**
 - `.ayy-top-bar` — A <header>: sticky at the top of its scroll container, the page colour with a hairline under it. As the first child of an .ayy-app-shell__main it runs edge to edge over the main area's padding.
@@ -2898,7 +2898,7 @@ export default function Example() {
 
 ## Footer
 
-Category: Navigation. The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
+Category: Navigation. The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar. Also called: footer, site-footer.
 
 **Classes**
 - `.ayy-footer` — Root <footer>, a hairline above it.
@@ -3053,7 +3053,7 @@ export default function Example() {
 
 ## Breadcrumb
 
-Category: Navigation. Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
+Category: Navigation. Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes. Also called: breadcrumb, breadcrumbs, crumbs.
 
 **Classes**
 - `.ayy-breadcrumb` — Root <nav aria-label="Breadcrumb">.
@@ -3139,7 +3139,7 @@ export default function Example() {
 
 ## Pagination
 
-Category: Navigation. Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.
+Category: Navigation. Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay. Also called: pagination, pager.
 
 **Classes**
 - `.ayy-pagination` — Root <nav aria-label="Pagination">. A wrapping row.
@@ -3221,7 +3221,7 @@ export default function Example() {
 
 ## Steps
 
-Category: Navigation. Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state.
+Category: Navigation. Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state. Also called: steps, wizard-steps, progress-steps.
 
 **Classes**
 - `.ayy-steps` — Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.
@@ -3304,7 +3304,7 @@ export default function Example() {
 
 ## Contents
 
-Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
+Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content. Also called: toc, table-of-contents.
 
 **Classes**
 - `.ayy-toc` — Root <nav>. Accent from --ayy-spot.
@@ -3432,7 +3432,7 @@ export default function Example() {
 
 ## Field
 
-Category: Forms. Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
+Category: Forms. Form field wrapper: Label + control + hint or error, stacked with consistent spacing. Also called: field, form-field, form-row.
 
 **Classes**
 - `.ayy-field` — Wrapper, vertical stack.
@@ -3540,7 +3540,7 @@ export default function Example() {
 
 ## Input
 
-Category: Forms. Single-line text field. Works for every native input type (text, email, search, number, file…).
+Category: Forms. Single-line text field. Works for every native input type (text, email, search, number, file…). Also called: input, text-field, textbox, text-input.
 
 **Classes**
 - `.ayy-input` — Root, on the <input> itself.
@@ -3685,7 +3685,7 @@ export default function Example() {
 
 ## Input group
 
-Category: Forms. An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.
+Category: Forms. An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring. Also called: input-group, input-addon, input-adornment.
 
 **Classes**
 - `.ayy-input-group` — Root. Draws the field (border, fill, radius, height) and the focus ring while its .ayy-input is focused. The .ayy-input inside, a direct child, loses its own border and takes the free space. An <svg> child is sized as a small icon; a .ayy-button at either end sits flush with the edge.
@@ -3852,7 +3852,7 @@ export default function Example() {
 
 ## Search bar
 
-Category: Forms. A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role="search"> around an <input type="search">, so phones show a Search key. The clear button only shows while there's text.
+Category: Forms. A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role="search"> around an <input type="search">, so phones show a Search key. The clear button only shows while there's text. Also called: search-bar, searchbar, search, search-box, searchbox, search-field.
 
 **Classes**
 - `.ayy-search-bar` — Root: a <form role="search"> holding the field and an optional Cancel.
@@ -3973,7 +3973,7 @@ export default function Example() {
 
 ## Textarea
 
-Category: Forms. Multi-line text field. Optional auto-grow and monospace modes.
+Category: Forms. Multi-line text field. Optional auto-grow and monospace modes. Also called: textarea, text-area.
 
 **Classes**
 - `.ayy-textarea` — Root, on the <textarea>.
@@ -4042,7 +4042,7 @@ export default function Example() {
 
 ## Select
 
-Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
+Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour. Also called: select, native-select.
 
 **Classes**
 - `.ayy-select` — Wrapper element. Draws the chevron and sets the height.
@@ -4147,7 +4147,7 @@ export default function Example() {
 
 ## Combobox
 
-Category: Forms. An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.
+Category: Forms. An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input. Also called: combobox, autocomplete, typeahead, suggest, suggestions.
 
 **Classes**
 - `.ayy-combobox` — Wrapper: the .ayy-input (role="combobox"), a chevron <svg> and the listbox.
@@ -4257,7 +4257,7 @@ export default function Example() {
 
 ## Tag input
 
-Category: Forms. A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox.
+Category: Forms. A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox. Also called: tag-input, tags-input, token-input, chip-input, tag-field, tag-editor.
 
 **Classes**
 - `.ayy-tag-input` — Root: looks like an .ayy-input, holds the chips then the input, and grows to more lines as needed. Clicking its empty space focuses the input. With suggestions add ayy-combobox and put an .ayy-combobox__listbox inside.
@@ -4406,7 +4406,7 @@ export default function Example() {
 
 ## Calendar
 
-Category: Forms. A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.
+Category: Forms. A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button. Also called: calendar, date-picker, datepicker, date-input, day-picker, month-grid, mini-calendar.
 
 **Classes**
 - `.ayy-calendar` — Root: a column of the header, weekdays and grid, as wide as seven days (its content). Day size follows data-density.
@@ -4584,7 +4584,7 @@ export default function Example() {
 
 ## Checkbox
 
-Category: Forms. Native checkbox with a drawn box, check mark and indeterminate state.
+Category: Forms. Native checkbox with a drawn box, check mark and indeterminate state. Also called: checkbox, check-box, tickbox.
 
 **Classes**
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
@@ -4669,7 +4669,7 @@ export default function Example() {
 
 ## Radio
 
-Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
+Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset with a legend. Also called: radio, radio-group.
 
 **Classes**
 - `.ayy-radio` — On <input type="radio">. Size follows density. aria-invalid="true" tints the ring destructive (dashed in High Contrast).
@@ -4763,7 +4763,7 @@ export default function Example() {
 
 ## Segmented control
 
-Category: Forms. Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.
+Category: Forms. Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list. Also called: segmented-control, segmented, segment, seg, toggle-group.
 
 **Classes**
 - `.ayy-segmented-control` — Root, a role="radiogroup" with an aria-label. The pill track.
@@ -4866,7 +4866,7 @@ export default function Example() {
 
 ## Chip
 
-Category: Forms. Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.
+Category: Forms. Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick. Also called: chip, tag, token, filter-chip.
 
 **Classes**
 - `.ayy-chip` — A <label> around a native <input type="checkbox"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed="true".
@@ -5063,7 +5063,7 @@ export default function Example() {
 
 ## Swatch
 
-Category: Forms. Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a "no colour" and an "any colour" (native colour input) swatch. The picked one gets a ring and a tick.
+Category: Forms. Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a "no colour" and an "any colour" (native colour input) swatch. The picked one gets a ring and a tick. Also called: swatch, swatches, color-swatch, color-dot, colour-dot, color-picker, colour-picker.
 
 **Classes**
 - `.ayy-swatch` — One colour: a <label> around a native radio (which stays in the page but draws nothing), or a <button aria-pressed>. Set --ayy-swatch on it to the colour, a token: var(--ayy-chart-1…6), var(--ayy-accent-*), var(--ayy-color-destructive). The radio (or the button) needs an aria-label naming the colour.
@@ -5210,7 +5210,7 @@ export default function Example() {
 
 ## Choice card
 
-Category: Forms. A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.
+Category: Forms. A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input. Also called: choice-card, option-card, plan-card.
 
 **Classes**
 - `.ayy-choice-group` — Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role="radiogroup" for radio cards.
@@ -5390,7 +5390,7 @@ export default function Example() {
 
 ## Slider
 
-Category: Forms. A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.
+Category: Forms. A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input. Also called: slider, range, range-input.
 
 **Classes**
 - `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.
@@ -5524,7 +5524,7 @@ export default function Example() {
 
 ## Number field
 
-Category: Forms. A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.
+Category: Forms. A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input. Also called: number-field, stepper, spinbox, quantity.
 
 **Classes**
 - `.ayy-number-field` — The bordered box around the buttons and the input. Draws the focus ring while you type.
@@ -5621,7 +5621,7 @@ export default function Example() {
 
 ## File upload
 
-Category: Forms. A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.
+Category: Forms. A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress. Also called: dropzone, drop-zone, uploader, file-drop.
 
 **Classes**
 - `.ayy-dropzone` — The <label>: dashed border, centred icon and text. Its <input type="file"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).
@@ -5771,7 +5771,7 @@ export default function Example() {
 
 ## Switch
 
-Category: Forms. On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
+Category: Forms. On/off toggle for a setting that applies immediately. A native checkbox with role="switch". Also called: switch, toggle, toggle-switch.
 
 **Classes**
 - `.ayy-switch` — On <input type="checkbox" role="switch"> (preferred) or <button role="switch" aria-checked>. Thumb is ::before.
@@ -5857,7 +5857,7 @@ export default function Example() {
 
 ## Shortcut
 
-Category: Forms. Keyboard shortcuts written once as "Mod+Shift+K" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet.
+Category: Forms. Keyboard shortcuts written once as "Mod+Shift+K" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet. Also called: shortcut, shortcuts, shortcut-list, shortcut-recorder, hotkey-recorder, key-recorder, keybinding, keybind.
 
 **Classes**
 - `.ayy-shortcut` — A shortcut's keys: a row of .ayy-kbd keycaps (aria-hidden) after an .ayy-sr-only label in words. data-keys holds the shortcut ("Mod+Shift+K") so @danitesler/ayywi/elements redraws it for Apple devices. Always left to right, as in the OS menus, RTL included.
@@ -6073,7 +6073,7 @@ export default function Example() {
 
 ## Settings
 
-Category: Forms. Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are.
+Category: Forms. Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are. Also called: settings, setting, settings-row, setting-row, settings-list, preferences, pref-row.
 
 **Classes**
 - `.ayy-settings` — A group: <section aria-labelledby> holding a title, an optional description and the list. Groups after each other get space between them.
@@ -6312,7 +6312,7 @@ export default function Example() {
 
 ## Page header
 
-Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.
+Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones. Also called: page-header, page-title, view-header.
 
 **Classes**
 - `.ayy-page-header` — Root <header>. A two-column grid: everything stacks in the first column, __actions sits in the second and spans them. One column below 48rem, actions last. A Breadcrumb or .ayy-eyebrow can go first.
@@ -6413,7 +6413,7 @@ export default function Example() {
 
 ## Section
 
-Category: Layout. A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.
+Category: Layout. A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description. Also called: page-section.
 
 **Classes**
 - `.ayy-section` — Root <section>. 96px block padding (48px on phones, 128px on wide screens). Add ayy-container for page width.
@@ -6551,7 +6551,7 @@ export default function Example() {
 
 ## Card
 
-Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
+Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. Also called: card, panel-card.
 
 **Classes**
 - `.ayy-card` — Root surface.
@@ -6805,7 +6805,7 @@ export default function Example() {
 
 ## Tabs
 
-Category: Layout. Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
+Category: Layout. Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support. Also called: tabs, tab, tab-list, tablist.
 
 **Classes**
 - `.ayy-tabs` — Wrapper (block). Also put it on <ayy-tabs>.
@@ -6973,7 +6973,7 @@ export default function Example() {
 
 ## Accordion
 
-Category: Layout. Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.
+Category: Layout. Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others. Also called: accordion, collapsible, disclosure, expander.
 
 **Classes**
 - `.ayy-accordion` — Root <div>: a column of items with hairlines above, between and below.
@@ -7071,7 +7071,7 @@ export default function Example() {
 
 ## Carousel
 
-Category: Layout. A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
+Category: Layout. A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS. Also called: carousel, slideshow, gallery-strip.
 
 **Classes**
 - `.ayy-carousel` — Root (also on <ayy-carousel>). role="region" aria-roledescription="carousel" and an aria-label. data-slide-label="{index} de {count}" translates the slides' names (default "{index} of {count}").
@@ -7176,7 +7176,7 @@ export default function Example() {
 
 ## Separator
 
-Category: Layout. A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).
+Category: Layout. A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items). Also called: separator, divider, sep, hr.
 
 **Classes**
 - `.ayy-separator` — Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).
@@ -7259,7 +7259,7 @@ export default function Example() {
 
 ## Dialog
 
-Category: Overlays. Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.
+Category: Overlays. Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones. Also called: dialog, modal, sheet, bottom-sheet, drawer, lightbox.
 
 **Classes**
 - `.ayy-dialog` — On the <dialog> element. Open with dialog.showModal().
@@ -7688,7 +7688,7 @@ export default function Example() {
 
 ## Popover
 
-Category: Overlays. Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
+Category: Overlays. Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close. Also called: popover, popup, flyout.
 
 **Classes**
 - `.ayy-popover` — On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.
@@ -7785,7 +7785,7 @@ export default function Example() {
 
 ## Tooltip
 
-Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
+Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges. Also called: tooltip, tip.
 
 **Classes**
 - `.ayy-tooltip` — Wrapper around the trigger. Shows the content on :hover and :focus-within.
@@ -7882,7 +7882,7 @@ export default function Example() {
 
 ## Alert
 
-Category: Feedback. Inline message box with optional icon, title, description and actions.
+Category: Feedback. Inline message box with optional icon, title, description and actions. Also called: alert, banner, callout, notice, admonition.
 
 **Classes**
 - `.ayy-alert` — Root. Neutral by default.
@@ -7993,7 +7993,7 @@ export default function Example() {
 
 ## Toast
 
-Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
+Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused. Also called: toast, snackbar, notification.
 
 **Classes**
 - `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position.
@@ -8090,7 +8090,7 @@ export default function Example() {
 
 ## Progress
 
-Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
+Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate. Also called: progress, progress-bar, progressbar, meter.
 
 **Classes**
 - `.ayy-progress` — Track. Set --ayy-value (0–100) on it.
@@ -8181,7 +8181,7 @@ export default function Example() {
 
 ## Progress ring
 
-Category: Feedback. Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle.
+Category: Feedback. Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle. Also called: progress-ring, circular-progress, progress-circle, radial-progress, ring-progress, timer-ring.
 
 **Classes**
 - `.ayy-progress-ring` — Root: role="progressbar" with aria-valuenow/min/max, an accessible name and --ayy-value (0–100). Clockwise from the top in every direction, like a clock. 2.5rem.
@@ -8294,7 +8294,7 @@ export default function Example() {
 
 ## Spinner
 
-Category: Feedback. An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.
+Category: Feedback. An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading. Also called: spinner, loader, throbber, loading-ring.
 
 **Classes**
 - `.ayy-spinner` — The ring, 1.25em (matches an icon beside text), in the current text colour. Spins; stops still under reduced motion.
@@ -8385,7 +8385,7 @@ export default function Example() {
 
 ## Skeleton
 
-Category: Feedback. Placeholder shapes shown while content loads, with a subtle shimmer.
+Category: Feedback. Placeholder shapes shown while content loads, with a subtle shimmer. Also called: skeleton, shimmer.
 
 **Classes**
 - `.ayy-skeleton` — Block placeholder. Set its size to match the content.
@@ -8473,7 +8473,7 @@ export default function Example() {
 
 ## Empty state
 
-Category: Feedback. What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.
+Category: Feedback. What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it. Also called: empty-state, empty, blank-slate, no-results.
 
 **Classes**
 - `.ayy-empty-state` — Root. Centred column with generous block padding.
@@ -8607,7 +8607,7 @@ export default function Example() {
 
 ## Badge
 
-Category: Data display. Small pill label for status, category or count. Optional pulsing status dot.
+Category: Data display. Small pill label for status, category or count. Optional pulsing status dot. Also called: badge, pill, status-pill, count-badge.
 
 **Classes**
 - `.ayy-badge` — Root. Neutral by default.
@@ -8728,7 +8728,7 @@ export default function Example() {
 
 ## Kbd
 
-Category: Data display. A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.
+Category: Data display. A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields. Also called: kbd, keycap, hotkey, shortcut-key.
 
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
@@ -8798,7 +8798,7 @@ export default function Example() {
 
 ## Avatar
 
-Category: Data display. Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
+Category: Data display. Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load. Also called: avatar, profile-pic, user-pic.
 
 **Classes**
 - `.ayy-avatar` — Root (role="img" + aria-label). 32px circle.
@@ -8907,7 +8907,7 @@ export default function Example() {
 
 ## Icon
 
-Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
+Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one. Also called: svg-icon.
 
 **Classes**
 - `.ayy-icon` — On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.
@@ -9149,7 +9149,7 @@ export default function Example() {
 
 ## Icon tile
 
-Category: Data display. An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.
+Category: Data display. An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services. Also called: icon-tile, app-icon.
 
 **Classes**
 - `.ayy-icon-tile` — Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.
@@ -9245,7 +9245,7 @@ export default function Example() {
 
 ## Stat
 
-Category: Data display. A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
+Category: Data display. A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results. Also called: stat, metric, kpi, stat-card.
 
 **Classes**
 - `.ayy-stat` — Root.
@@ -9329,7 +9329,7 @@ export default function Example() {
 
 ## List
 
-Category: Data display. Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.
+Category: Data display. Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable. Also called: list-item, list-row.
 
 **Classes**
 - `.ayy-list` — Root <ul>. Rounded rows with a small gap between them.
@@ -9537,7 +9537,7 @@ export default function Example() {
 
 ## Data list
 
-Category: Data display. Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
+Category: Data display. Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row. Also called: data-list, kv, key-value, definition-list.
 
 **Classes**
 - `.ayy-data-list` — Root <dl>. Items stacked.
@@ -9628,7 +9628,7 @@ export default function Example() {
 
 ## Swipe actions
 
-Category: Data display. A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.
+Category: Data display. A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab. Also called: swipe, swipe-row, swipeable, swipe-actions, slide-actions.
 
 **Classes**
 - `.ayy-swipe` — The row: clips its content and holds the trays. Vertical drags still scroll the page (touch-action: pan-y).
@@ -9799,7 +9799,7 @@ export default function Example() {
 
 ## Frame
 
-Category: Data display. A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.
+Category: Data display. A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow. Also called: browser-frame, window-frame, mockup.
 
 **Classes**
 - `.ayy-frame` — Root: bordered, rounded, with the frame shadow.
@@ -9887,7 +9887,7 @@ export default function Example() {
 
 ## Chat
 
-Category: Data display. A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
+Category: Data display. A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons. Also called: chat, bubble, message-bubble.
 
 **Classes**
 - `.ayy-chat` — Root. role="log" when messages arrive live, so they're announced.
@@ -9987,7 +9987,7 @@ export default function Example() {
 
 ## Table
 
-Category: Data display. Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
+Category: Data display. Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table. Also called: table, data-table, datagrid.
 
 **Classes**
 - `.ayy-table-wrap` — Scroll container around the table (horizontal overflow).
@@ -10299,7 +10299,7 @@ export default function Example() {
 
 ## Chart
 
-Category: Data display. Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
+Category: Data display. Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them. Also called: chart, bar-chart, line-chart, sparkline, graph.
 
 **Classes**
 - `.ayy-chart` — Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.

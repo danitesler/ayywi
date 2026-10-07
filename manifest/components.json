@@ -31,7 +31,7 @@
     "icons": "Hugeicons is the icon library: install @hugeicons/core-free-icons (an optional peer; ayywi renders its data, so there's still no runtime dependency). React: <Icon icon={Search01Icon} />. Elsewhere: iconSvg(Search01Icon), or the SVG pasted from hugeicons.com with class=\"ayy-icon\" and no fixed colour attributes. Icons use currentColor and 1.25em (the text size); size sm/md/lg/xl is 16/20/24/32px (--ayy-size-icon-*)."
   },
   "rules": [
-    "Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.",
+    "Use existing ayywi classes/components and their variants before writing any custom CSS. Never rebuild one under your own name (a .x-chip, .x-card, a <button> styled by hand) or restyle one: your class next to its ayy- class sets only layout (margin, size, position). If nothing fits, compose ayywi pieces. Never add a second UI kit.",
     "Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
     "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
     "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
@@ -1664,6 +1664,13 @@
       "status": "stable",
       "category": "Actions",
       "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
+      "aka": [
+        "button",
+        "btn",
+        "icon-button",
+        "icon-btn",
+        "cta"
+      ],
       "classes": {
         "ayy-button": "Root. Alone it is the primary button.",
         "ayy-button--secondary": "Quiet filled button for secondary actions.",
@@ -1833,6 +1840,15 @@
       "status": "beta",
       "category": "Actions",
       "description": "A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role=\"toolbar\" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.",
+      "aka": [
+        "toolbar",
+        "tool-bar",
+        "tool-rail",
+        "toolrail",
+        "tool-button",
+        "tool-btn",
+        "format-bar"
+      ],
       "classes": {
         "ayy-toolbar": "Root, role=\"toolbar\" with an aria-label (\"Annotate\"). A row of items with a small gap.",
         "ayy-toolbar--vertical": "A column (a side rail). Add aria-orientation=\"vertical\" so the up and down arrows move.",
@@ -2013,6 +2029,13 @@
       "status": "stable",
       "category": "Actions",
       "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
+      "aka": [
+        "menu",
+        "dropdown",
+        "dropdown-menu",
+        "context-menu",
+        "menu-item"
+      ],
       "classes": {
         "ayy-menu": "On the element with popover and role=\"menu\".",
         "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",
@@ -2170,6 +2193,14 @@
       "status": "beta",
       "category": "Actions",
       "description": "A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count.",
+      "aka": [
+        "command",
+        "command-palette",
+        "cmdk",
+        "command-menu",
+        "quick-switcher",
+        "quick-open"
+      ],
       "classes": {
         "ayy-command": "Root: a card with the search field, the list and an optional footer. On a <div> inline, or with ayy-dialog on a <dialog> for the ⌘K palette (top-aligned, no padding).",
         "ayy-command__search": "The row with the magnifier icon and the input, over a hairline. A ring under it while the input has keyboard focus.",
@@ -2327,6 +2358,12 @@
       "status": "beta",
       "category": "Actions",
       "description": "The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.",
+      "aka": [
+        "fab",
+        "floating-action",
+        "floating-button",
+        "float-button"
+      ],
       "classes": {
         "ayy-fab": "A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
         "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
@@ -2461,6 +2498,12 @@
       "status": "beta",
       "category": "Actions",
       "description": "An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.",
+      "aka": [
+        "theme-toggle",
+        "theme-switch",
+        "theme-switcher",
+        "theme-picker"
+      ],
       "classes": {
         "ayy-theme-toggle": "On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.",
         "ayy-theme-toggle__moon": "Icon shown in dark themes.",
@@ -2565,6 +2608,12 @@
       "status": "beta",
       "category": "Navigation",
       "description": "Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.",
+      "aka": [
+        "navbar",
+        "site-header",
+        "nav-bar",
+        "header-nav"
+      ],
       "classes": {
         "ayy-navbar": "Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.",
         "ayy-navbar__inner": "Centred row at page width (--ayy-size-container) with the page gutter.",
@@ -2701,6 +2750,15 @@
       "status": "beta",
       "category": "Navigation",
       "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens).",
+      "aka": [
+        "app-shell",
+        "sidebar",
+        "side-nav",
+        "sidenav",
+        "nav-item",
+        "sidebar-item",
+        "nav-list"
+      ],
       "classes": {
         "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.",
         "ayy-app-shell__sidebar": "The <aside>: surface background, hairline on its inline-end edge, brand at the top, nav below, footer pinned to the bottom. Scrolls vertically when its content is taller than the viewport. On phones it's hidden (bottom-nav layout) or a drawer, and keeps its full tree either way.",
@@ -2945,6 +3003,12 @@
       "status": "beta",
       "category": "Navigation",
       "description": "A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.",
+      "aka": [
+        "bottom-nav",
+        "tab-bar",
+        "tabbar",
+        "bottom-bar"
+      ],
       "classes": {
         "ayy-bottom-nav": "The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below. As a direct child of .ayy-app-shell it shows below 48rem only; from 48rem the sidebar carries the same links.",
         "ayy-bottom-nav__link": "A tab: icon over label. An <a> for a destination, or a <button> for a tab that acts (\"More\", which opens the app shell's drawer when it also has ayy-app-shell__toggle). aria-current=\"page\" (or aria-expanded=\"true\" on the button) draws a pill behind the icon and a heavier label.",
@@ -3052,6 +3116,14 @@
       "status": "beta",
       "category": "Navigation",
       "description": "A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.",
+      "aka": [
+        "top-bar",
+        "topbar",
+        "app-bar",
+        "appbar",
+        "screen-header",
+        "header-bar"
+      ],
       "classes": {
         "ayy-top-bar": "A <header>: sticky at the top of its scroll container, the page colour with a hairline under it. As the first child of an .ayy-app-shell__main it runs edge to edge over the main area's padding.",
         "ayy-top-bar--center": "The title centred between the back button and the actions.",
@@ -3181,6 +3253,10 @@
       "status": "beta",
       "category": "Navigation",
       "description": "The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.",
+      "aka": [
+        "footer",
+        "site-footer"
+      ],
       "classes": {
         "ayy-footer": "Root <footer>, a hairline above it.",
         "ayy-footer__inner": "Centred grid at page width (--ayy-size-container) with the page gutter: brand beside the link columns, one column below 64rem.",
@@ -3291,6 +3367,11 @@
       "status": "beta",
       "category": "Navigation",
       "description": "Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.",
+      "aka": [
+        "breadcrumb",
+        "breadcrumbs",
+        "crumbs"
+      ],
       "classes": {
         "ayy-breadcrumb": "Root <nav aria-label=\"Breadcrumb\">.",
         "ayy-breadcrumb--pill": "Bordered, blurred capsule that stays readable over hero images and grids.",
@@ -3390,6 +3471,10 @@
       "status": "beta",
       "category": "Navigation",
       "description": "Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.",
+      "aka": [
+        "pagination",
+        "pager"
+      ],
       "classes": {
         "ayy-pagination": "Root <nav aria-label=\"Pagination\">. A wrapping row.",
         "ayy-pagination__link": "A page: <a href> when pages have URLs, <button> otherwise. aria-current=\"page\" marks the current one (outlined tint, heavier). aria-disabled=\"true\" (a link without href) or disabled dims an end you can't go past.",
@@ -3486,6 +3571,11 @@
       "status": "beta",
       "category": "Navigation",
       "description": "Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current=\"step\" is the only state.",
+      "aka": [
+        "steps",
+        "wizard-steps",
+        "progress-steps"
+      ],
       "classes": {
         "ayy-steps": "Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.",
         "ayy-steps--vertical": "A column, with the lines running down between the markers: for a side panel or a phone.",
@@ -3585,6 +3675,10 @@
       "status": "beta",
       "category": "Navigation",
       "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
+      "aka": [
+        "toc",
+        "table-of-contents"
+      ],
       "classes": {
         "ayy-toc": "Root <nav>. Accent from --ayy-spot.",
         "ayy-toc--sticky": "Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky row of top-level section links under the navbar, the current one underlined and scrolled into view.",
@@ -3703,6 +3797,11 @@
       "status": "stable",
       "category": "Forms",
       "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
+      "aka": [
+        "field",
+        "form-field",
+        "form-row"
+      ],
       "classes": {
         "ayy-field": "Wrapper, vertical stack.",
         "ayy-field--inline": "Label and control side by side (Switch, checkbox).",
@@ -3810,6 +3909,12 @@
       "status": "stable",
       "category": "Forms",
       "description": "Single-line text field. Works for every native input type (text, email, search, number, file…).",
+      "aka": [
+        "input",
+        "text-field",
+        "textbox",
+        "text-input"
+      ],
       "classes": {
         "ayy-input": "Root, on the <input> itself.",
         "ayy-input--sm": "28px tall.",
@@ -3925,6 +4030,11 @@
       "status": "beta",
       "category": "Forms",
       "description": "An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.",
+      "aka": [
+        "input-group",
+        "input-addon",
+        "input-adornment"
+      ],
       "classes": {
         "ayy-input-group": "Root. Draws the field (border, fill, radius, height) and the focus ring while its .ayy-input is focused. The .ayy-input inside, a direct child, loses its own border and takes the free space. An <svg> child is sized as a small icon; a .ayy-button at either end sits flush with the edge.",
         "ayy-input-group--sm": "Small height (--ayy-size-control-sm).",
@@ -4040,6 +4150,14 @@
       "status": "beta",
       "category": "Forms",
       "description": "A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role=\"search\"> around an <input type=\"search\">, so phones show a Search key. The clear button only shows while there's text.",
+      "aka": [
+        "search-bar",
+        "searchbar",
+        "search",
+        "search-box",
+        "searchbox",
+        "search-field"
+      ],
       "classes": {
         "ayy-search-bar": "Root: a <form role=\"search\"> holding the field and an optional Cancel.",
         "ayy-search-bar--lg": "Taller field and text, for a search screen.",
@@ -4160,6 +4278,10 @@
       "status": "stable",
       "category": "Forms",
       "description": "Multi-line text field. Optional auto-grow and monospace modes.",
+      "aka": [
+        "textarea",
+        "text-area"
+      ],
       "classes": {
         "ayy-textarea": "Root, on the <textarea>.",
         "ayy-textarea--autosize": "Grows with content (CSS field-sizing). Falls back to fixed height.",
@@ -4261,6 +4383,10 @@
       "status": "stable",
       "category": "Forms",
       "description": "Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.",
+      "aka": [
+        "select",
+        "native-select"
+      ],
       "classes": {
         "ayy-select": "Wrapper element. Draws the chevron and sets the height.",
         "ayy-select__control": "On the <select> inside the wrapper.",
@@ -4369,6 +4495,13 @@
       "status": "beta",
       "category": "Forms",
       "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
+      "aka": [
+        "combobox",
+        "autocomplete",
+        "typeahead",
+        "suggest",
+        "suggestions"
+      ],
       "classes": {
         "ayy-combobox": "Wrapper: the .ayy-input (role=\"combobox\"), a chevron <svg> and the listbox.",
         "ayy-combobox__listbox": "The <ul role=\"listbox\" popover=\"manual\"> of options, placed under the input.",
@@ -4501,6 +4634,14 @@
       "status": "beta",
       "category": "Forms",
       "description": "A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox.",
+      "aka": [
+        "tag-input",
+        "tags-input",
+        "token-input",
+        "chip-input",
+        "tag-field",
+        "tag-editor"
+      ],
       "classes": {
         "ayy-tag-input": "Root: looks like an .ayy-input, holds the chips then the input, and grows to more lines as needed. Clicking its empty space focuses the input. With suggestions add ayy-combobox and put an .ayy-combobox__listbox inside.",
         "ayy-tag-input__tag": "A tag, on an .ayy-chip.ayy-chip--removable <span data-value> with its .ayy-chip__remove button (aria-label \"Remove design\").",
@@ -4640,6 +4781,15 @@
       "status": "beta",
       "category": "Forms",
       "description": "A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.",
+      "aka": [
+        "calendar",
+        "date-picker",
+        "datepicker",
+        "date-input",
+        "day-picker",
+        "month-grid",
+        "mini-calendar"
+      ],
       "classes": {
         "ayy-calendar": "Root: a column of the header, weekdays and grid, as wide as seven days (its content). Day size follows data-density.",
         "ayy-calendar--full": "Fills its container's width (a phone screen, a bottom sheet); days grow up to 1.5× their size.",
@@ -4824,6 +4974,11 @@
       "status": "stable",
       "category": "Forms",
       "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
+      "aka": [
+        "checkbox",
+        "check-box",
+        "tickbox"
+      ],
       "classes": {
         "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density."
       },
@@ -4918,6 +5073,10 @@
       "status": "stable",
       "category": "Forms",
       "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
+      "aka": [
+        "radio",
+        "radio-group"
+      ],
       "classes": {
         "ayy-radio": "On <input type=\"radio\">. Size follows density. aria-invalid=\"true\" tints the ring destructive (dashed in High Contrast).",
         "ayy-radio-group": "On the <fieldset> holding the radios. Vertical stack.",
@@ -5026,6 +5185,13 @@
       "status": "beta",
       "category": "Forms",
       "description": "Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.",
+      "aka": [
+        "segmented-control",
+        "segmented",
+        "segment",
+        "seg",
+        "toggle-group"
+      ],
       "classes": {
         "ayy-segmented-control": "Root, a role=\"radiogroup\" with an aria-label. The pill track.",
         "ayy-segmented-control--sm": "Small height, for toolbars and card headers.",
@@ -5149,6 +5315,12 @@
       "status": "beta",
       "category": "Forms",
       "description": "Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.",
+      "aka": [
+        "chip",
+        "tag",
+        "token",
+        "filter-chip"
+      ],
       "classes": {
         "ayy-chip": "A <label> around a native <input type=\"checkbox\"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed=\"true\".",
         "ayy-chip--removable": "An active filter: a <span> with its text and an __remove button. Not a control itself.",
@@ -5294,6 +5466,15 @@
       "status": "beta",
       "category": "Forms",
       "description": "Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a \"no colour\" and an \"any colour\" (native colour input) swatch. The picked one gets a ring and a tick.",
+      "aka": [
+        "swatch",
+        "swatches",
+        "color-swatch",
+        "color-dot",
+        "colour-dot",
+        "color-picker",
+        "colour-picker"
+      ],
       "classes": {
         "ayy-swatch": "One colour: a <label> around a native radio (which stays in the page but draws nothing), or a <button aria-pressed>. Set --ayy-swatch on it to the colour, a token: var(--ayy-chart-1…6), var(--ayy-accent-*), var(--ayy-color-destructive). The radio (or the button) needs an aria-label naming the colour.",
         "ayy-swatch--sm": "Smaller dot, for toolbars.",
@@ -5458,6 +5639,11 @@
       "status": "beta",
       "category": "Forms",
       "description": "A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.",
+      "aka": [
+        "choice-card",
+        "option-card",
+        "plan-card"
+      ],
       "classes": {
         "ayy-choice-group": "Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role=\"radiogroup\" for radio cards.",
         "ayy-choice-group--scroll": "One row that scrolls sideways instead of wrapping: a day strip, sizes on a phone. Cards stay at least --ayy-min wide.",
@@ -5614,6 +5800,11 @@
       "status": "beta",
       "category": "Forms",
       "description": "A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.",
+      "aka": [
+        "slider",
+        "range",
+        "range-input"
+      ],
       "classes": {
         "ayy-slider": "On <input type=\"range\">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.",
         "ayy-slider-range": "A role=\"group\" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing."
@@ -5724,6 +5915,12 @@
       "status": "beta",
       "category": "Forms",
       "description": "A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.",
+      "aka": [
+        "number-field",
+        "stepper",
+        "spinbox",
+        "quantity"
+      ],
       "classes": {
         "ayy-number-field": "The bordered box around the buttons and the input. Draws the focus ring while you type.",
         "ayy-number-field--sm": "Small height, for a cart line or a table cell.",
@@ -5835,6 +6032,12 @@
       "status": "beta",
       "category": "Forms",
       "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
+      "aka": [
+        "dropzone",
+        "drop-zone",
+        "uploader",
+        "file-drop"
+      ],
       "classes": {
         "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).",
         "ayy-dropzone--compact": "One line (icon, then text), for a form field or a composer.",
@@ -5950,6 +6153,11 @@
       "status": "stable",
       "category": "Forms",
       "description": "On/off toggle for a setting that applies immediately. A native checkbox with role=\"switch\".",
+      "aka": [
+        "switch",
+        "toggle",
+        "toggle-switch"
+      ],
       "classes": {
         "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before."
       },
@@ -6037,6 +6245,16 @@
       "status": "beta",
       "category": "Forms",
       "description": "Keyboard shortcuts written once as \"Mod+Shift+K\" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet.",
+      "aka": [
+        "shortcut",
+        "shortcuts",
+        "shortcut-list",
+        "shortcut-recorder",
+        "hotkey-recorder",
+        "key-recorder",
+        "keybinding",
+        "keybind"
+      ],
       "classes": {
         "ayy-shortcut": "A shortcut's keys: a row of .ayy-kbd keycaps (aria-hidden) after an .ayy-sr-only label in words. data-keys holds the shortcut (\"Mod+Shift+K\") so @danitesler/ayywi/elements redraws it for Apple devices. Always left to right, as in the OS menus, RTL included.",
         "ayy-shortcut-recorder": "A <button> that records a shortcut: shows the current keys or a placeholder, aria-pressed=\"true\" while listening (a pulsing ring). aria-label names the action and the keys.",
@@ -6173,6 +6391,15 @@
       "status": "beta",
       "category": "Forms",
       "description": "Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are.",
+      "aka": [
+        "settings",
+        "setting",
+        "settings-row",
+        "setting-row",
+        "settings-list",
+        "preferences",
+        "pref-row"
+      ],
       "classes": {
         "ayy-settings": "A group: <section aria-labelledby> holding a title, an optional description and the list. Groups after each other get space between them.",
         "ayy-settings--plain": "No card around the rows (inside a dialog, a sheet, or a page already on a surface); rows lose their inline padding.",
@@ -6335,6 +6562,11 @@
       "status": "beta",
       "category": "Layout",
       "description": "The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.",
+      "aka": [
+        "page-header",
+        "page-title",
+        "view-header"
+      ],
       "classes": {
         "ayy-page-header": "Root <header>. A two-column grid: everything stacks in the first column, __actions sits in the second and spans them. One column below 48rem, actions last. A Breadcrumb or .ayy-eyebrow can go first.",
         "ayy-page-header__title": "The page's <h1>: heading font, 28px, semibold. Smaller than marketing headings on purpose — app screens are for work.",
@@ -6428,6 +6660,9 @@
       "status": "beta",
       "category": "Layout",
       "description": "A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.",
+      "aka": [
+        "page-section"
+      ],
       "classes": {
         "ayy-section": "Root <section>. 96px block padding (48px on phones, 128px on wide screens). Add ayy-container for page width.",
         "ayy-section--center": "Header centred over the content; start-aligned again on phones.",
@@ -6546,6 +6781,10 @@
       "status": "stable",
       "category": "Layout",
       "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
+      "aka": [
+        "card",
+        "panel-card"
+      ],
       "classes": {
         "ayy-card": "Root surface.",
         "ayy-card--interactive": "Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.",
@@ -6709,6 +6948,12 @@
       "status": "stable",
       "category": "Layout",
       "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
+      "aka": [
+        "tabs",
+        "tab",
+        "tab-list",
+        "tablist"
+      ],
       "classes": {
         "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
         "ayy-tabs__list": "role=\"tablist\" pill container.",
@@ -6838,6 +7083,12 @@
       "status": "beta",
       "category": "Layout",
       "description": "Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.",
+      "aka": [
+        "accordion",
+        "collapsible",
+        "disclosure",
+        "expander"
+      ],
       "classes": {
         "ayy-accordion": "Root <div>: a column of items with hairlines above, between and below.",
         "ayy-accordion__item": "A native <details>. Give every item in the accordion the same name attribute to allow only one open at a time. `open` expands it.",
@@ -6937,6 +7188,11 @@
       "status": "beta",
       "category": "Layout",
       "description": "A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.",
+      "aka": [
+        "carousel",
+        "slideshow",
+        "gallery-strip"
+      ],
       "classes": {
         "ayy-carousel": "Root (also on <ayy-carousel>). role=\"region\" aria-roledescription=\"carousel\" and an aria-label. data-slide-label=\"{index} de {count}\" translates the slides' names (default \"{index} of {count}\").",
         "ayy-carousel__track": "The scrolling, snapping row. Give it tabindex=\"0\" so keyboards can scroll it. Gap via --ayy-gap.",
@@ -7042,6 +7298,12 @@
       "status": "beta",
       "category": "Layout",
       "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
+      "aka": [
+        "separator",
+        "divider",
+        "sep",
+        "hr"
+      ],
       "classes": {
         "ayy-separator": "Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).",
         "ayy-separator--vertical": "Vertical rule in a flex row; add aria-orientation=\"vertical\".",
@@ -7141,6 +7403,14 @@
       "status": "stable",
       "category": "Overlays",
       "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.",
+      "aka": [
+        "dialog",
+        "modal",
+        "sheet",
+        "bottom-sheet",
+        "drawer",
+        "lightbox"
+      ],
       "classes": {
         "ayy-dialog": "On the <dialog> element. Open with dialog.showModal().",
         "ayy-dialog--sm": "24rem wide.",
@@ -7341,6 +7611,11 @@
       "status": "stable",
       "category": "Overlays",
       "description": "Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.",
+      "aka": [
+        "popover",
+        "popup",
+        "flyout"
+      ],
       "classes": {
         "ayy-popover": "On the element with the popover attribute. Surface, padding, shadow, fade/scale transition."
       },
@@ -7474,6 +7749,10 @@
       "status": "stable",
       "category": "Overlays",
       "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
+      "aka": [
+        "tooltip",
+        "tip"
+      ],
       "classes": {
         "ayy-tooltip": "Wrapper around the trigger. Shows the content on :hover and :focus-within.",
         "ayy-tooltip__content": "The bubble (role=\"tooltip\"). Placement via data-side=\"top|bottom|start|end\" (start/end follow text direction)."
@@ -7586,6 +7865,13 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Inline message box with optional icon, title, description and actions.",
+      "aka": [
+        "alert",
+        "banner",
+        "callout",
+        "notice",
+        "admonition"
+      ],
       "classes": {
         "ayy-alert": "Root. Neutral by default.",
         "ayy-alert--info": "Blue tint.",
@@ -7695,6 +7981,11 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
+      "aka": [
+        "toast",
+        "snackbar",
+        "notification"
+      ],
       "classes": {
         "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position.",
         "ayy-toast": "One toast.",
@@ -7820,6 +8111,12 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
+      "aka": [
+        "progress",
+        "progress-bar",
+        "progressbar",
+        "meter"
+      ],
       "classes": {
         "ayy-progress": "Track. Set --ayy-value (0–100) on it.",
         "ayy-progress__bar": "Fill (only child).",
@@ -7940,6 +8237,14 @@
       "status": "beta",
       "category": "Feedback",
       "description": "Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle.",
+      "aka": [
+        "progress-ring",
+        "circular-progress",
+        "progress-circle",
+        "radial-progress",
+        "ring-progress",
+        "timer-ring"
+      ],
       "classes": {
         "ayy-progress-ring": "Root: role=\"progressbar\" with aria-valuenow/min/max, an accessible name and --ayy-value (0–100). Clockwise from the top in every direction, like a clock. 2.5rem.",
         "ayy-progress-ring__svg": "First child: <svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"> holding the track and the bar circles (cx=18 cy=18 r=16 pathLength=100). progressRingSvg is the markup.",
@@ -8068,6 +8373,12 @@
       "status": "beta",
       "category": "Feedback",
       "description": "An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.",
+      "aka": [
+        "spinner",
+        "loader",
+        "throbber",
+        "loading-ring"
+      ],
       "classes": {
         "ayy-spinner": "The ring, 1.25em (matches an icon beside text), in the current text colour. Spins; stops still under reduced motion.",
         "ayy-spinner--sm": "16px (--ayy-size-icon-sm).",
@@ -8171,6 +8482,10 @@
       "status": "stable",
       "category": "Feedback",
       "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
+      "aka": [
+        "skeleton",
+        "shimmer"
+      ],
       "classes": {
         "ayy-skeleton": "Block placeholder. Set its size to match the content.",
         "ayy-skeleton--text": "Text line (0.75em tall).",
@@ -8263,6 +8578,12 @@
       "status": "beta",
       "category": "Feedback",
       "description": "What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.",
+      "aka": [
+        "empty-state",
+        "empty",
+        "blank-slate",
+        "no-results"
+      ],
       "classes": {
         "ayy-empty-state": "Root. Centred column with generous block padding.",
         "ayy-empty-state--bordered": "A dashed outline around the empty area (a board column, a drop target).",
@@ -8385,6 +8706,12 @@
       "status": "stable",
       "category": "Data display",
       "description": "Small pill label for status, category or count. Optional pulsing status dot.",
+      "aka": [
+        "badge",
+        "pill",
+        "status-pill",
+        "count-badge"
+      ],
       "classes": {
         "ayy-badge": "Root. Neutral by default.",
         "ayy-badge--muted": "Quieter neutral.",
@@ -8498,6 +8825,12 @@
       "status": "beta",
       "category": "Data display",
       "description": "A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.",
+      "aka": [
+        "kbd",
+        "keycap",
+        "hotkey",
+        "shortcut-key"
+      ],
       "classes": {
         "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
       },
@@ -8576,6 +8909,11 @@
       "status": "stable",
       "category": "Data display",
       "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
+      "aka": [
+        "avatar",
+        "profile-pic",
+        "user-pic"
+      ],
       "classes": {
         "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
         "ayy-avatar--sm": "24px.",
@@ -8695,6 +9033,9 @@
       "status": "stable",
       "category": "Data display",
       "description": "Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.",
+      "aka": [
+        "svg-icon"
+      ],
       "classes": {
         "ayy-icon": "On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.",
         "ayy-icon--sm": "16px (--ayy-size-icon-sm).",
@@ -8830,6 +9171,10 @@
       "status": "beta",
       "category": "Data display",
       "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
+      "aka": [
+        "icon-tile",
+        "app-icon"
+      ],
       "classes": {
         "ayy-icon-tile": "Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.",
         "ayy-icon-tile--sm": "32px.",
@@ -8929,6 +9274,12 @@
       "status": "beta",
       "category": "Data display",
       "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
+      "aka": [
+        "stat",
+        "metric",
+        "kpi",
+        "stat-card"
+      ],
       "classes": {
         "ayy-stat": "Root.",
         "ayy-stat--sm": "Smaller number (28px instead of 48px), for rows of several stats or inside cards.",
@@ -9030,6 +9381,10 @@
       "status": "beta",
       "category": "Data display",
       "description": "Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.",
+      "aka": [
+        "list-item",
+        "list-row"
+      ],
       "classes": {
         "ayy-list": "Root <ul>. Rounded rows with a small gap between them.",
         "ayy-list--divided": "Flush rows with hairlines between them: settings rows, records inside a card.",
@@ -9177,6 +9532,12 @@
       "status": "beta",
       "category": "Data display",
       "description": "Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.",
+      "aka": [
+        "data-list",
+        "kv",
+        "key-value",
+        "definition-list"
+      ],
       "classes": {
         "ayy-data-list": "Root <dl>. Items stacked.",
         "ayy-data-list--row": "Items side by side, wrapping to fit (each at least --ayy-min, default 9rem).",
@@ -9276,6 +9637,13 @@
       "status": "beta",
       "category": "Data display",
       "description": "A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.",
+      "aka": [
+        "swipe",
+        "swipe-row",
+        "swipeable",
+        "swipe-actions",
+        "slide-actions"
+      ],
       "classes": {
         "ayy-swipe": "The row: clips its content and holds the trays. Vertical drags still scroll the page (touch-action: pan-y).",
         "ayy-swipe__content": "What slides: the row's own content (often with .ayy-list__item). Opaque, with --ayy-swipe-bg (default the page colour) so the trays stay hidden under it.",
@@ -9410,6 +9778,11 @@
       "status": "beta",
       "category": "Data display",
       "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
+      "aka": [
+        "browser-frame",
+        "window-frame",
+        "mockup"
+      ],
       "classes": {
         "ayy-frame": "Root: bordered, rounded, with the frame shadow.",
         "ayy-frame__bar": "Top bar with the three window dots.",
@@ -9494,6 +9867,11 @@
       "status": "beta",
       "category": "Data display",
       "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
+      "aka": [
+        "chat",
+        "bubble",
+        "message-bubble"
+      ],
       "classes": {
         "ayy-chat": "Root. role=\"log\" when messages arrive live, so they're announced.",
         "ayy-chat__message": "One message row: an optional avatar and its bubble.",
@@ -9607,6 +9985,11 @@
       "status": "stable",
       "category": "Data display",
       "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
+      "aka": [
+        "table",
+        "data-table",
+        "datagrid"
+      ],
       "classes": {
         "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
         "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
@@ -9764,6 +10147,13 @@
       "status": "beta",
       "category": "Data display",
       "description": "Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
+      "aka": [
+        "chart",
+        "bar-chart",
+        "line-chart",
+        "sparkline",
+        "graph"
+      ],
       "classes": {
         "ayy-chart": "Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.",
         "ayy-chart--stacked": "A column's bars sit on top of each other; each bar's --ayy-value is its share of the top of the scale.",

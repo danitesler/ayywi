@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are.",
+  "aka": ["settings", "setting", "settings-row", "setting-row", "settings-list", "preferences", "pref-row"],
   "classes": {
     "ayy-settings": "A group: <section aria-labelledby> holding a title, an optional description and the list. Groups after each other get space between them.",
     "ayy-settings--plain": "No card around the rows (inside a dialog, a sheet, or a page already on a surface); rows lose their inline padding.",

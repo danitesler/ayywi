@@ -1,6 +1,6 @@
 # Data list
 
-Category: Data display. Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
+Category: Data display. Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row. Also called: data-list, kv, key-value, definition-list.
 
 **Classes**
 - `.ayy-data-list` — Root <dl>. Items stacked.

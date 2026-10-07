@@ -4,6 +4,7 @@
   "status": "beta",
   "category": "Forms",
   "description": "A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.",
+  "aka": ["calendar", "date-picker", "datepicker", "date-input", "day-picker", "month-grid", "mini-calendar"],
   "classes": {
     "ayy-calendar": "Root: a column of the header, weekdays and grid, as wide as seven days (its content). Day size follows data-density.",
     "ayy-calendar--full": "Fills its container's width (a phone screen, a bottom sheet); days grow up to 1.5× their size.",

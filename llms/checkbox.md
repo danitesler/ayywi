@@ -1,6 +1,6 @@
 # Checkbox
 
-Category: Forms. Native checkbox with a drawn box, check mark and indeterminate state.
+Category: Forms. Native checkbox with a drawn box, check mark and indeterminate state. Also called: checkbox, check-box, tickbox.
 
 **Classes**
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
