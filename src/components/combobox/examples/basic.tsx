@@ -1,4 +1,4 @@
-import { Combobox, Field, FieldHint, Label } from "ayywi/react";
+import { Combobox, Field, FieldHint, Label } from "@danitesler/ayywi/react";
 
 const zones = [
   { value: "Europe/Lisbon", label: "Lisbon", meta: "Portugal", keywords: "Portugal" },

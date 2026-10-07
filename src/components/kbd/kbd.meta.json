@@ -10,7 +10,7 @@
   "variants": {},
   "js": "kbdClass constant.",
   "react": {
-    "import": "import { Kbd } from \"ayywi/react\";",
+    "import": "import { Kbd } from \"@danitesler/ayywi/react\";",
     "components": { "Kbd": { "renders": "<kbd class=\"ayy-kbd\">" } }
   },
   "a11y": [

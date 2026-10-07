@@ -10,13 +10,13 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 
 **JS (framework-free)**: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
 
-**Custom element** `<ayy-popover>` (ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
+**Custom element** `<ayy-popover>` (@danitesler/ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: center | start | end
 - attribute `open`: Two-way open state
 - event `ayy-open-change`: { open: boolean }
 
-**React** — `import { Popover, PopoverTrigger, PopoverContent } from "ayywi/react";`
+**React** — `import { Popover, PopoverTrigger, PopoverContent } from "@danitesler/ayywi/react";`
 - `<Popover>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<PopoverTrigger>` renders Button. Props: `...ButtonProps` variant, size…
 - `<PopoverContent>` renders <div popover role="dialog">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "center" | "start" | "end"
@@ -41,7 +41,7 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (ayywi/elements) places it next to the trigger. -->
+<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (@danitesler/ayywi/elements) places it next to the trigger. -->
 <ayy-popover align="start">
   <button type="button" class="ayy-button ayy-button--outline" popovertarget="share-popover-html" aria-haspopup="dialog">Share</button>
   <div class="ayy-popover" id="share-popover-html" popover role="dialog" aria-labelledby="share-title-html">
@@ -60,7 +60,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "ayywi/react";
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -84,4 +84,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

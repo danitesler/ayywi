@@ -1,4 +1,4 @@
-import { BarChart } from "ayywi/react";
+import { BarChart } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

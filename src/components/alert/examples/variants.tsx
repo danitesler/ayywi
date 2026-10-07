@@ -1,5 +1,5 @@
 import { Alert02Icon, InformationCircleIcon } from "@hugeicons/core-free-icons";
-import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "ayywi/react";
+import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

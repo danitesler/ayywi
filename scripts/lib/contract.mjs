@@ -3,13 +3,13 @@
 /** Custom properties consumers may set. Everything else starting with --ayy- must be a token. */
 export const PUBLIC_HOOKS = {
   "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.",
-  "--ayy-mx": "Card spotlight pointer X in px (set by React Card or ayywi/elements).",
-  "--ayy-my": "Card spotlight pointer Y in px (set by React Card or ayywi/elements).",
+  "--ayy-mx": "Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).",
+  "--ayy-my": "Card spotlight pointer Y in px (set by React Card or @danitesler/ayywi/elements).",
   "--ayy-dot": "Badge status-dot colour override.",
   "--ayy-value": "A unitless number 0–100: the Progress value, a Slider's position, a chart bar's height or tick's position, a bar-list row's length.",
   "--ayy-chart-color": "Colour of a chart bar, series, legend item, bar list or sparkline, instead of the next --ayy-chart-* token.",
   "--ayy-chart-height": "Height of a chart's plot (default 12rem).",
-  "--ayy-from": "Start of a slider range's fill, 0–100 (kept in sync by React and ayywi/elements).",
+  "--ayy-from": "Start of a slider range's fill, 0–100 (kept in sync by React and @danitesler/ayywi/elements).",
   "--ayy-to": "End of a slider range's fill, 0–100.",
   "--ayy-progress-color": "Progress fill colour override.",
   "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
@@ -101,6 +101,6 @@ export const RULES = [
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-  "In React import from \"ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
+  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
   "Run `npx ayywi lint` after UI changes and fix every error it reports.",
 ];

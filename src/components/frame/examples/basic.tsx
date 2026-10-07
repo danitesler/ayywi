@@ -1,4 +1,4 @@
-import { Frame } from "ayywi/react";
+import { Frame } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

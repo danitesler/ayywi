@@ -1,4 +1,4 @@
-import { DataList, DataListItem } from "ayywi/react";
+import { DataList, DataListItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

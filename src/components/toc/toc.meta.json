@@ -25,7 +25,7 @@
     "children": "Goes inside <nav class=\"ayy-toc\"> and wraps the title and list. Every .ayy-toc__link with href=\"#id\" is spied; aria-current=\"location\" is set and removed for you."
   },
   "react": {
-    "import": "import { Toc } from \"ayywi/react\";",
+    "import": "import { Toc } from \"@danitesler/ayywi/react\";",
     "components": {
       "Toc": {
         "renders": "<nav class=\"ayy-toc\">",

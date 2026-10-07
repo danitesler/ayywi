@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getDensity, getTheme, setDensity, setTheme, type DensityMode, type ThemeMode } from "ayywi";
+import { getDensity, getTheme, setDensity, setTheme, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 
 export type Renderer = "react" | "html";
 

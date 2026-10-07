@@ -10,7 +10,7 @@ Category: Navigation. Previous, page numbers with gaps, and next, for a long tab
 
 **JS (framework-free)**: paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
 
-**React** — `import { Pagination } from "ayywi/react";`
+**React** — `import { Pagination } from "@danitesler/ayywi/react";`
 - `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `labels` { nav?, previous?, next? } — text for translation. Defaults "Pagination", "Previous", "Next".
 
 **Accessibility**
@@ -54,7 +54,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Pagination } from "ayywi/react";
+import { Pagination } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -67,4 +67,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

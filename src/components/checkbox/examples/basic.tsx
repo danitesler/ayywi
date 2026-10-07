@@ -1,4 +1,4 @@
-import { Checkbox } from "ayywi/react";
+import { Checkbox } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

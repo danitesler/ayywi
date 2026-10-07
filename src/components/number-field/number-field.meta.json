@@ -18,9 +18,9 @@
     "button[aria-disabled=\"true\"]": "Can't go further (at min or max). Stays focusable.",
     "input[aria-invalid=\"true\"]": "Invalid value: red border."
   },
-  "js": "numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.",
+  "js": "numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. @danitesler/ayywi/elements runs both for every .ayy-number-field on the page.",
   "react": {
-    "import": "import { NumberField } from \"ayywi/react\";",
+    "import": "import { NumberField } from \"@danitesler/ayywi/react\";",
     "components": {
       "NumberField": {
         "renders": "<div class=\"ayy-number-field\"><button class=\"ayy-number-field__decrement\"><input type=\"number\"><button class=\"ayy-number-field__increment\">",

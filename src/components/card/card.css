@@ -142,7 +142,7 @@
   z-index: 2;
 }
 
-/* ---- Spotlight: a soft glow + lit border that follows the pointer. Needs --ayy-mx/--ayy-my (set by React Card or ayywi/elements). ---- */
+/* ---- Spotlight: a soft glow + lit border that follows the pointer. Needs --ayy-mx/--ayy-my (set by React Card or @danitesler/ayywi/elements). ---- */
 
 .ayy-card--spotlight::before,
 .ayy-card--spotlight::after {

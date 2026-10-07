@@ -13,7 +13,7 @@
   "variants": {},
   "js": "paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
   "react": {
-    "import": "import { Pagination } from \"ayywi/react\";",
+    "import": "import { Pagination } from \"@danitesler/ayywi/react\";",
     "components": {
       "Pagination": {
         "renders": "<nav class=\"ayy-pagination\"> with previous, pages from paginationRange() and next",

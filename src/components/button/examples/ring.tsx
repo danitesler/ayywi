@@ -1,4 +1,4 @@
-import { buttonClass } from "ayywi/react";
+import { buttonClass } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

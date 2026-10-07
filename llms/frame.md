@@ -10,7 +10,7 @@ Category: Data display. A browser window around a screenshot, video or coded moc
 
 **JS (framework-free)**: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
 
-**React** — `import { Frame } from "ayywi/react";`
+**React** — `import { Frame } from "@danitesler/ayywi/react";`
 - `<Frame>` renders <div class="ayy-frame"> with the bar and body. Props: `title` ReactNode — text in the address bar.
 
 **Accessibility**
@@ -52,7 +52,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Frame } from "ayywi/react";
+import { Frame } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -73,4 +73,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

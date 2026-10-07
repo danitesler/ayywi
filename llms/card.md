@@ -17,7 +17,7 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 
 **JS (framework-free)**: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
 
-**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "ayywi/react";`
+**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "@danitesler/ayywi/react";`
 - `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
@@ -68,7 +68,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "ayywi/react";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -96,7 +96,7 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Pointer tracking comes from ayywi/elements (or call trackSpotlight on pointermove yourself). -->
+<!-- Pointer tracking comes from @danitesler/ayywi/elements (or call trackSpotlight on pointermove yourself). -->
 <div class="ayy-card ayy-card--interactive ayy-card--spotlight" style="inline-size: 15rem; --ayy-spot: var(--ayy-accent-product)">
   <div class="ayy-card__header">
     <span class="ayy-badge ayy-badge--info">Product</span>
@@ -116,7 +116,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge, Card, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -186,7 +186,7 @@ React:
 
 ```tsx
 import type { CSSProperties, ReactNode } from "react";
-import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "ayywi/react";
+import { Badge, Card, CardDescription, CardHeader, CardLink, CardMedia, CardTitle } from "@danitesler/ayywi/react";
 
 function Cover({ children }: { children: ReactNode }) {
   return (
@@ -239,4 +239,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

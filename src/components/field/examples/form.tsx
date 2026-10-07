@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "ayywi/react";
+import { Button, Field, FieldHint, Input, Label, Switch, Textarea } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

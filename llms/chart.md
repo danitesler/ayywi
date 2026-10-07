@@ -30,7 +30,7 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 
 **JS (framework-free)**: chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.
 
-**React** — `import { BarChart, LineChart, Sparkline, BarList } from "ayywi/react";`
+**React** — `import { BarChart, LineChart, Sparkline, BarList } from "@danitesler/ayywi/react";`
 - `<BarChart>` renders <figure class="ayy-chart"> with a plot of __column/__bar, labels, a legend and a visually hidden data table. Props: `label` string — what it shows ("Signups per day"); the data table's caption; `labels` string[] — one per column; `series` { name, values: number[], color? }[]; `stacked` boolean; `showValues` boolean — print values above the bars; `max` number — top of the scale; rounded up from the data if omitted; `ticks` number of value lines, default 3; 0 for none; `format` (value: number) => string — ticks, hover values and the table; default compact (1.2K); `height` CSS length, default 12rem; `legend` boolean — default: more than one series
 - `<LineChart>` renders <figure class="ayy-chart"> with an __svg of __series paths, labels, a legend and a visually hidden data table. Props: `label` string — the data table's caption; `labels` string[] — one per point; `series` { name, values: number[], color?, compare? }[] — compare draws a dashed comparison line; `min` number, default 0; `max` number; `area` boolean, default true; `smooth` boolean, default true (monotone: never overshoots a point); `ticks` number, default 3; `format` (value: number) => string; `height` CSS length; `legend` boolean
 - `<Sparkline>` renders <svg class="ayy-sparkline">. Props: `values` number[]; `label` string — makes it role="img" with this name; without it the sparkline is aria-hidden; `area` boolean; `color` CSS colour, default chart-1; `min` number, default the smallest value; `max` number, default the largest value
@@ -161,7 +161,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from "ayywi/react";
+import { BarChart, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -309,7 +309,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from "ayywi/react";
+import { Badge, Card, CardContent, CardHeader, CardTitle, LineChart, Stat } from "@danitesler/ayywi/react";
 
 const dollars = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact" });
 const days = ["Sep 1", "Sep 2", "Sep 3", "Sep 4", "Sep 5", "Sep 6", "Sep 7", "Sep 8", "Sep 9", "Sep 10", "Sep 11", "Sep 12", "Sep 13", "Sep 14"];
@@ -436,7 +436,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { BarChart } from "ayywi/react";
+import { BarChart } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -499,7 +499,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { BarList, Card, CardContent, CardHeader, CardTitle } from "ayywi/react";
+import { BarList, Card, CardContent, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -572,7 +572,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Card, CardContent, Sparkline, Stat } from "ayywi/react";
+import { Card, CardContent, Sparkline, Stat } from "@danitesler/ayywi/react";
 
 const stats = [
   { label: "Visitors", value: "12.8k", trend: "up 9%", values: [8, 9, 8.5, 10, 9.8, 11, 10.6, 11.8, 12.1, 12.8], color: undefined },
@@ -604,4 +604,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -20,7 +20,7 @@
   },
   "js": "avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants",
   "react": {
-    "import": "import { Avatar, AvatarGroup } from \"ayywi/react\";",
+    "import": "import { Avatar, AvatarGroup } from \"@danitesler/ayywi/react\";",
     "components": {
       "Avatar": {
         "renders": "<span role=\"img\">",
@@ -38,7 +38,7 @@
   "a11y": [
     "The name goes on the root (aria-label); the <img> has alt=\"\" and the initials are aria-hidden, so it's announced once.",
     "Give an AvatarGroup an aria-label like \"5 collaborators\".",
-    "A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
+    "A failed image is hidden by React or @danitesler/ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
   ],
   "do": [
     "Use avatars for people and workspaces in lists, headers and comments.",

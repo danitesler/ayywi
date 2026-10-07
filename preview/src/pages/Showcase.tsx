@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft01Icon, ComputerIcon, LinkSquare01Icon, SmartPhone01Icon, Tablet01Icon } from "@hugeicons/core-free-icons";
-import { Badge, Button, buttonClass, Icon } from "ayywi/react";
+import { Badge, Button, buttonClass, Icon } from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
 import { showcaseApps, type ShowcaseApp } from "../showcase/apps";

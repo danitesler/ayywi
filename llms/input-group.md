@@ -10,7 +10,7 @@ Category: Forms. An input with things attached inside its box: a leading icon, a
 
 **JS (framework-free)**: inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.
 
-**React** — `import { InputGroup, InputGroupAddon, Input } from "ayywi/react";`
+**React** — `import { InputGroup, InputGroupAddon, Input } from "@danitesler/ayywi/react";`
 - `<InputGroup>` renders <div class="ayy-input-group">. Props: `size` "sm" | "md" | "lg"
 - `<InputGroupAddon>` renders <span class="ayy-input-group__addon">.
 
@@ -53,7 +53,7 @@ React:
 
 ```tsx
 import { Search01Icon } from "@hugeicons/core-free-icons";
-import { Icon, Input, InputGroup, InputGroupAddon, Kbd } from "ayywi/react";
+import { Icon, Input, InputGroup, InputGroupAddon, Kbd } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -111,7 +111,7 @@ React:
 ```tsx
 import { Copy01Icon, ViewIcon } from "@hugeicons/core-free-icons";
 import type { CSSProperties } from "react";
-import { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from "ayywi/react";
+import { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -149,4 +149,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

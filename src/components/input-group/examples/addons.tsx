@@ -1,6 +1,6 @@
 import { Copy01Icon, ViewIcon } from "@hugeicons/core-free-icons";
 import type { CSSProperties } from "react";
-import { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from "ayywi/react";
+import { Button, Field, FieldHint, Icon, Input, InputGroup, InputGroupAddon, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

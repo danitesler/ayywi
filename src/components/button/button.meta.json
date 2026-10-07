@@ -25,7 +25,7 @@
   },
   "js": "buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
   "react": {
-    "import": "import { Button } from \"ayywi/react\";",
+    "import": "import { Button } from \"@danitesler/ayywi/react\";",
     "components": {
       "Button": {
         "renders": "<button>",

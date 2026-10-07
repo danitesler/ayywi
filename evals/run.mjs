@@ -33,9 +33,9 @@ if (!existsSync(join(root, "dist"))) {
   process.exit(2);
 }
 
-/** Lay the package out in node_modules like `npm i ayywi` would, including the `ayywi` bin for npx. */
+/** Lay the package out in node_modules like `npm i @danitesler/ayywi` would, including the `ayywi` bin for npx. */
 function install(dir) {
-  const target = join(dir, "node_modules/ayywi");
+  const target = join(dir, "node_modules/@danitesler/ayywi");
   for (const f of [...pkg.files, "package.json"]) {
     if (existsSync(join(root, f))) cpSync(join(root, f), join(target, f), { recursive: true });
   }

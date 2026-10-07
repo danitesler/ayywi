@@ -13,7 +13,7 @@ import {
   compareValues,
   nextSortDirection,
   type SortDirection,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 const invoices = [
   { id: "INV-1042", customer: "Northwind", status: "Paid", variant: "success", amount: 1240, due: "2026-09-02" },

@@ -16,7 +16,7 @@
   },
   "js": "checkboxClass constant",
   "react": {
-    "import": "import { Checkbox } from \"ayywi/react\";",
+    "import": "import { Checkbox } from \"@danitesler/ayywi/react\";",
     "components": {
       "Checkbox": {
         "renders": "<input type=\"checkbox\">",

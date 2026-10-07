@@ -47,7 +47,7 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
     onValueChange?.(next);
   };
   const stepBy = (direction: 1 | -1) => (event: MouseEvent<HTMLButtonElement>) => {
-    // ayywi/elements steps .ayy-number-field buttons too; this one is React's.
+    // @danitesler/ayywi/elements steps .ayy-number-field buttons too; this one is React's.
     event.preventDefault();
     const el = input.current;
     if (!el || event.currentTarget.getAttribute("aria-disabled") === "true") return;

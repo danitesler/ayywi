@@ -1,4 +1,4 @@
-import { Badge, Card } from "ayywi/react";
+import { Badge, Card } from "@danitesler/ayywi/react";
 import { CopyButton } from "../CodeBlock";
 import type { ComponentEntry } from "../data";
 import { Example } from "../Example";

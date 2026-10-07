@@ -15,7 +15,7 @@ Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling 
 
 **JS (framework-free)**: selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>
 
-**React** — `import { Select } from "ayywi/react";`
+**React** — `import { Select } from "@danitesler/ayywi/react";`
 - `<Select>` renders <div class="ayy-select"><select class="ayy-select__control">. Props: `size` "sm" | "md" | "lg"; `wrapperProps` Props for the wrapper <div>; `...rest` All native <select> attributes; className goes to the <select>.
 
 **Accessibility**
@@ -65,7 +65,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, Label, Select } from "ayywi/react";
+import { Field, Label, Select } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -91,4 +91,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -1,4 +1,4 @@
-import { ChoiceCard, ChoiceGroup } from "ayywi/react";
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

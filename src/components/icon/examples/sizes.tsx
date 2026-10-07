@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { Clock01Icon } from "@hugeicons/core-free-icons";
-import { Icon } from "ayywi/react";
+import { Icon } from "@danitesler/ayywi/react";
 
 const SIZES = [
   ["sm", "16px"],

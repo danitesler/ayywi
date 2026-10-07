@@ -17,7 +17,7 @@
   },
   "js": "chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.",
   "react": {
-    "import": "import { Chat, ChatMessage, ChatTyping, ChatReplies } from \"ayywi/react\";",
+    "import": "import { Chat, ChatMessage, ChatTyping, ChatReplies } from \"@danitesler/ayywi/react\";",
     "components": {
       "Chat": { "renders": "<div role=\"log\" class=\"ayy-chat\">" },
       "ChatMessage": {

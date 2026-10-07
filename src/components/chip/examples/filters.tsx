@@ -1,4 +1,4 @@
-import { Chip, ChipGroup } from "ayywi/react";
+import { Chip, ChipGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

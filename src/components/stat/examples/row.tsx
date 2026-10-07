@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Stat } from "ayywi/react";
+import { Stat } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

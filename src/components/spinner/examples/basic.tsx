@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Button, Spinner } from "ayywi/react";
+import { Button, Spinner } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

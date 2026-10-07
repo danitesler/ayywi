@@ -18,7 +18,7 @@
   },
   "js": "iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from \"@hugeicons/core-free-icons\". Plain HTML: paste the SVG with class=\"ayy-icon\".",
   "react": {
-    "import": "import { Icon } from \"ayywi/react\"; import { Search01Icon } from \"@hugeicons/core-free-icons\";",
+    "import": "import { Icon } from \"@danitesler/ayywi/react\"; import { Search01Icon } from \"@hugeicons/core-free-icons\";",
     "components": {
       "Icon": {
         "renders": "<svg class=\"ayy-icon\">",

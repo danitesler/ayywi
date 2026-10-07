@@ -1,4 +1,4 @@
-import { Progress } from "ayywi/react";
+import { Progress } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

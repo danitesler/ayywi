@@ -10,7 +10,7 @@ import {
   AppShellSidebar,
   Icon,
   Stat,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.

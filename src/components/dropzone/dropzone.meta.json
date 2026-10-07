@@ -5,7 +5,7 @@
   "category": "Forms",
   "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
   "classes": {
-    "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by ayywi/elements or React).",
+    "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).",
     "ayy-dropzone--compact": "One line (icon, then text), for a form field or a composer.",
     "ayy-dropzone__title": "Main line: \"Drop files here or browse\" (the word styled .ayy-link).",
     "ayy-dropzone__hint": "What's accepted: types and size."
@@ -18,9 +18,9 @@
     "input:disabled": "Dimmed, not clickable.",
     "input[aria-invalid=\"true\"]": "Rejected file: red border; say why in a FieldError."
   },
-  "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).",
+  "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).",
   "react": {
-    "import": "import { Dropzone } from \"ayywi/react\";",
+    "import": "import { Dropzone } from \"@danitesler/ayywi/react\";",
     "components": {
       "Dropzone": {
         "renders": "<label class=\"ayy-dropzone\"><input type=\"file\"><svg><span class=\"ayy-dropzone__title\">…",

@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { chartColors, chartTheme, setDensity, setTheme, toast } from "ayywi";
-import "ayywi/elements";
+import { chartColors, chartTheme, setDensity, setTheme, toast } from "@danitesler/ayywi";
+import "@danitesler/ayywi/elements";
 import "../../src/css/index.css";
 import "./preview.css";
 

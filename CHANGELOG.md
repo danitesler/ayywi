@@ -10,6 +10,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - A long Breadcrumb wrapped onto several lines on phones. It stays on one line there, cutting ancestors with an ellipsis before the current page.
 - Sections kept 80px of block padding on phones (160px between two). It's 48px there, with a smaller gap under the header.
 - A tap on a touch screen left interactive cards lifted, their media zoomed and the ring button spinning. Those effects only run with a real hover now (`@media (hover: hover)`); the ring still spins on keyboard focus. The motion rule says so for app CSS too.
+
+## 0.0.1 — 2026-10-07
+
+First release, as `@danitesler/ayywi` on npm. Everything below it is pre-release history under the old internal numbers.
+
+### Fixed
 - Dropdown menu items (and theme toggle items) showed keyboard focus only as a faint wash; they get the focus ring now.
 - Unselected tabs were muted text on the wash track: under 4.5:1 on raised surfaces in dark-soft and on light-gray's page. They're text-soft now (so are unselected segments), and `pnpm check` measures text on the wash in every theme.
 - Outgoing chat bubbles had no edge in High Contrast.
@@ -104,7 +110,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - Examples use Hugeicons: button, alert, dialog, and the dropdown menu, which now shows icons on its items.
 - The preview shows what people choosing and briefing components need; the reference stays with the AI tools (manifest, MCP server, `llms-full.txt`). Component pages drop the CSS class, React API and accessibility tables and the import line, and example code sits behind a Code toggle. Foundations show swatches and visual scales instead of token/value tables; the palette, stacking, durations and fixed sizes are gone. The overview drops the architecture cards and the per-framework code tabs. The sidebar no longer lists page sections; `#/colors/status` style links still scroll to them.
 
-## 0.4.0 — 2026-09-29
+## Pre-release-4 — 2026-09-29 (internal 0.4.0)
 
 Everything needed to build a website (danitesler.com was the test case: its header, hero, portfolio grid, project cards, case studies and "say hi" chat), not only app screens. No breaking changes.
 
@@ -132,7 +138,7 @@ Everything needed to build a website (danitesler.com was the test case: its head
 ### Fixed
 - Platform token exports skip fluid values (`clamp()`) instead of writing invalid Swift and Kotlin.
 
-## 0.3.0 — 2026-09-28
+## Pre-release-3 — 2026-09-28 (internal 0.3.0)
 
 ### Added
 - Two more themes:
@@ -158,7 +164,7 @@ Everything needed to build a website (danitesler.com was the test case: its head
 ### Fixed
 - The Swift token export declared `switch` without backticks, which isn't valid Swift.
 
-## 0.2.0 — 2026-09-28
+## Pre-release-2 — 2026-09-28 (internal 0.2.0)
 
 ayywi now lives in its own repository: https://github.com/danitesler/ayywi.
 
@@ -191,7 +197,7 @@ ayywi now lives in its own repository: https://github.com/danitesler/ayywi.
 - Floating elements measured while their entry animation scaled them, drifting a few pixels in RTL.
 - A failed avatar image showed the browser's broken-image icon over the initials.
 
-## 0.1.0 — 2026-09-28
+## Pre-release-1 — 2026-09-28 (internal 0.1.0)
 
 First release.
 

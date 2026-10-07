@@ -15,7 +15,7 @@
   },
   "js": "stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.",
   "react": {
-    "import": "import { Steps } from \"ayywi/react\";",
+    "import": "import { Steps } from \"@danitesler/ayywi/react\";",
     "components": {
       "Steps": {
         "renders": "<ol class=\"ayy-steps\"> of <li class=\"ayy-steps__item\">",

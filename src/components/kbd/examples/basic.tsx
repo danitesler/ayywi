@@ -1,4 +1,4 @@
-import { Kbd } from "ayywi/react";
+import { Kbd } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

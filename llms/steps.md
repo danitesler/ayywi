@@ -10,7 +10,7 @@ Category: Navigation. Where you are in a short flow (sign-up, checkout, import):
 
 **JS (framework-free)**: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
 
-**React** — `import { Steps } from "ayywi/react";`
+**React** — `import { Steps } from "@danitesler/ayywi/react";`
 - `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
 
 **Accessibility**
@@ -53,7 +53,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Steps } from "ayywi/react";
+import { Steps } from "@danitesler/ayywi/react";
 
 const STEPS = ["Cart", "Shipping", "Payment", "Review"];
 
@@ -68,4 +68,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -25,7 +25,7 @@
   },
   "js": "choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.",
   "react": {
-    "import": "import { ChoiceGroup, ChoiceCard } from \"ayywi/react\";",
+    "import": "import { ChoiceGroup, ChoiceCard } from \"@danitesler/ayywi/react\";",
     "components": {
       "ChoiceGroup": {
         "renders": "<fieldset role=\"radiogroup\" class=\"ayy-choice-group\"><legend>…",
