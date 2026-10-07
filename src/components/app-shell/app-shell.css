@@ -217,7 +217,8 @@ ayy-app-shell {
    - a .ayy-bottom-nav (recommended for apps): the tab bar sits at the bottom, the sidebar hides, and an optional __bar
      carries the brand and actions. A __toggle in the bar or the bottom nav ("More") opens the sidebar as a drawer.
    - a __bar only: the sidebar is a drawer that the bar's __toggle opens.
-   - neither: the sidebar becomes one row that scrolls sideways (brand, links, footer in reading order). ---- */
+   - neither: the sidebar becomes one row that scrolls sideways (brand, links, footer in reading order).
+   A settings shell (--settings) has its own phone layout instead: see the settings section. ---- */
 
 /* Wide screens: the bottom nav is the phone's navigation; the sidebar has the same links. */
 .ayy-app-shell > .ayy-bottom-nav {
@@ -242,7 +243,7 @@ ayy-app-shell {
 
   /* ---- Row: no bar and no bottom nav. The vertical padding keeps focus rings from being clipped. ---- */
 
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) > .ayy-app-shell__sidebar {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) > .ayy-app-shell__sidebar {
     flex: none;
     flex-direction: row;
     align-items: center;
@@ -255,36 +256,36 @@ ayy-app-shell {
     border-block-end: 1px solid var(--ayy-color-hairline);
   }
 
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__brand {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__brand {
     padding-inline: var(--ayy-space-2);
   }
 
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__nav,
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__nav,
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
     flex: none;
     flex-direction: row;
   }
 
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
     margin-block-start: 0;
     margin-inline-start: auto;
   }
 
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__link {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__link {
     flex: none;
     white-space: nowrap;
   }
 
   /* The row shows top-level links only: headings, sub-lists and collapses are left out. */
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group,
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list,
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list > li {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group,
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list,
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list > li {
     display: contents;
   }
 
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group-label,
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__sublist,
-  .ayy-app-shell:not(:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__collapse {
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group-label,
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__sublist,
+  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__collapse {
     display: none;
   }
 
@@ -356,6 +357,135 @@ ayy-app-shell {
   .ayy-app-shell:has(> :is(.ayy-app-shell__bar, .ayy-bottom-nav) .ayy-app-shell__toggle[aria-expanded="true"])::after {
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+/* ---- Settings: the same shell, swapped. Opening settings replaces the app's sidebar with a __back link ("Back to
+   Dooduu"), a __title and a nav of settings sections, and the main shows one section full screen; there is no dialog.
+   On phones it becomes a stack: with no section current the sidebar is the screen (a list of sections), and with one
+   current the main is, its Top bar's back button leading to the list. The bar and the bottom nav don't belong here. ---- */
+
+.ayy-app-shell__back {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-2) var(--ayy-space-3);
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+  color: var(--ayy-color-muted);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-snug);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--ayy-duration-base) ease,
+    background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-app-shell__back > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+@media (hover: hover) {
+  .ayy-app-shell__back:hover {
+    background-color: var(--ayy-color-wash);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-app-shell__back:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* "Settings", over the sections. */
+.ayy-app-shell__title {
+  margin: 0;
+  padding-inline: var(--ayy-space-3);
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-lg);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-tight);
+}
+
+.ayy-app-shell--settings > .ayy-app-shell__sidebar {
+  gap: var(--ayy-space-3);
+}
+
+/* A section reads at a comfortable width in the middle of the main area. */
+.ayy-app-shell--settings > .ayy-app-shell__main > :not(.ayy-top-bar) {
+  max-inline-size: var(--ayy-size-measure);
+  margin-inline: auto;
+}
+
+/* The section's Top bar names it, its title lined up with the column under it. Its back button is for phones only. */
+.ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child {
+  padding-inline: max(var(--ayy-space-5), calc((100% - var(--ayy-size-measure)) / 2 + var(--ayy-space-5)));
+}
+
+.ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar > .ayy-top-bar__back {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .ayy-app-shell--settings > .ayy-app-shell__sidebar {
+    flex: 1 1 auto;
+    gap: var(--ayy-space-4);
+    padding-block-start: calc(var(--ayy-space-3) + env(safe-area-inset-top, 0px));
+    padding-block-end: calc(var(--ayy-space-3) + env(safe-area-inset-bottom, 0px));
+    border-inline-end: 0;
+    background-color: var(--ayy-color-bg);
+  }
+
+  /* The list of sections is the screen's title, large, like a phone's first settings screen. */
+  .ayy-app-shell--settings .ayy-app-shell__title {
+    font-size: var(--ayy-text-2xl);
+    font-weight: var(--ayy-weight-bold);
+  }
+
+  /* Each section is a row with a chevron at the end: it opens a screen. */
+  .ayy-app-shell--settings .ayy-app-shell__nav .ayy-app-shell__link::after {
+    content: "";
+    flex: none;
+    box-sizing: border-box;
+    inline-size: 0.5em;
+    block-size: 0.5em;
+    margin-inline-start: auto;
+    border-block-end: 1.5px solid currentColor;
+    border-inline-end: 1.5px solid currentColor;
+    color: var(--ayy-color-muted);
+    transform: rotate(calc(var(--_ayy-dir, 1) * -45deg));
+  }
+
+  /* A section is open: it fills the screen. None is: the list of sections does. */
+  .ayy-app-shell--settings:has(> .ayy-app-shell__sidebar .ayy-app-shell__link[aria-current="page"]) > .ayy-app-shell__sidebar,
+  .ayy-app-shell--settings:not(:has(> .ayy-app-shell__sidebar .ayy-app-shell__link[aria-current="page"])) > .ayy-app-shell__main {
+    display: none;
+  }
+
+  .ayy-app-shell--settings > .ayy-app-shell__main {
+    padding-block-end: calc(var(--ayy-space-4) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child {
+    padding-inline: var(--ayy-space-2);
+  }
+
+  .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar > .ayy-top-bar__back {
+    display: inline-flex;
   }
 }
 

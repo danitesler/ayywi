@@ -6,3 +6,16 @@ export declare const ORDER: string[];
 export declare const ATTRIBUTES: Record<string, string>;
 export declare const RULES: string[];
 export declare const STATES: Record<string, string>;
+export interface Pattern {
+  name: string;
+  slug: string;
+  summary: string;
+  components: string[];
+  example: string;
+  steps: string[];
+  phone: string[];
+  specs: Record<string, string>;
+  do: string[];
+  dont: string[];
+}
+export declare const PATTERNS: Pattern[];

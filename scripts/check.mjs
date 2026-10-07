@@ -229,6 +229,21 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
 }
 
+// ---- Patterns are built from components that exist and point at an example that does ----
+{
+  const { PATTERNS } = await import("./lib/contract.mjs");
+  const slugs = new Set(readdirSync(join(root, "src/components")));
+  for (const p of PATTERNS) {
+    for (const key of ["name", "slug", "summary", "components", "example", "steps", "phone", "specs", "do", "dont"]) {
+      if (p[key] === undefined) fail("scripts/lib/contract.mjs", `pattern "${p.slug ?? p.name}" has no ${key}`);
+    }
+    for (const c of p.components ?? []) if (!slugs.has(c)) fail("scripts/lib/contract.mjs", `pattern "${p.slug}" is built from "${c}", which isn't a component`);
+    const [slug, id] = String(p.example).split("/");
+    const meta = slugs.has(slug) ? JSON.parse(read(`src/components/${slug}/${slug}.meta.json`)) : null;
+    if (!meta?.examples?.some((e) => e.id === id)) fail("scripts/lib/contract.mjs", `pattern "${p.slug}" points at example "${p.example}", which doesn't exist`);
+  }
+}
+
 // ---- The README's component count and table match the components ----
 {
   const readme = read("README.md");

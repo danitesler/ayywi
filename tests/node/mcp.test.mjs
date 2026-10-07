@@ -55,6 +55,8 @@ test("MCP handshake and tools", async (t) => {
   assert.match(brand, /\[data-brand="sky"\]/);
   assert.match(brand, /--ayy-radius-button: var\(--ayy-radius-lg\)/);
   assert.doesNotMatch(brand, /✗/);
+  assert.match(await call("search", { query: "settings" }), /^- pattern settings:/);
+  assert.match(await call("get_rules", {}), /Pattern: Settings[\s\S]*Back to <app name>[\s\S]*Settings row/);
   assert.match(await call("lint", { code: `<button class="ayy-buton">x</button>`, filename: "x.html" }), /unknown-class/);
 
   const bad = await s.request("tools/call", { name: "nope", arguments: {} });

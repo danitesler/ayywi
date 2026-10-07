@@ -163,8 +163,8 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("ArrowRight");
       await expect(radios.nth(2)).toBeChecked();
       await expect(radios.nth(1)).not.toBeChecked();
-      // The checked segment is filled: its label's background differs from an unchecked one. The fill transitions in from
-      // transparent, so poll rather than read it on the frame the key landed.
+      // The checked segment is filled: its label's background differs from an unchecked one. The fill fades in, and its
+      // first frame is still transparent, so wait for it rather than reading it once.
       const bg = (i: number) => group.locator(".ayy-segmented-control__option").nth(i).evaluate((el) => getComputedStyle(el).backgroundColor);
       const unchecked = await bg(0);
       await expect.poll(() => bg(2)).not.toBe(unchecked);

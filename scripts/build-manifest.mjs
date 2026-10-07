@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, RULES, STATES, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, ORDER, PATTERNS, PUBLIC_HOOKS, RULES, STATES, UTILITIES } from "./lib/contract.mjs";
 import { finish, output, remove } from "./lib/output.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
@@ -91,6 +91,7 @@ const manifest = {
     icons: "Hugeicons is the icon library: install @hugeicons/core-free-icons (an optional peer; ayywi renders its data, so there's still no runtime dependency). React: <Icon icon={Search01Icon} />. Elsewhere: iconSvg(Search01Icon), or the SVG pasted from hugeicons.com with class=\"ayy-icon\" and no fixed colour attributes. Icons use currentColor and 1.25em (the text size); size sm/md/lg/xl is 16/20/24/32px (--ayy-size-icon-*).",
   },
   rules: RULES,
+  patterns: PATTERNS,
   attributes: ATTRIBUTES,
   themes: themes.map((t) => ({ name: t.name, base: t.base, description: t.description })),
   categories: CATEGORIES,
@@ -121,6 +122,22 @@ md.push(
 - Check your work: \`npx ayywi lint\`.`,
 );
 md.push(`## Rules\n\n${list(RULES)}`);
+/** A pattern's section: what it is, the steps, phones, the specs, do/don't and where its example lives. */
+function patternMarkdown(p, h = "###") {
+  const [slug, id] = p.example.split("/");
+  const owner = components.find((c) => c.slug === slug);
+  return [
+    `${h} ${p.name}`,
+    p.summary,
+    `Built from: ${p.components.map((s) => components.find((c) => c.slug === s)?.name ?? s).join(", ")}. Example: ${owner?.name ?? slug} → "${owner?.examples.find((e) => e.id === id)?.title ?? id}" (\`get_component ${slug}\`, llms/${slug}.md).`,
+    `**How**\n${p.steps.map((x, i) => `${i + 1}. ${x}`).join("\n")}`,
+    `**Phones**\n${list(p.phone)}`,
+    `**Specs** (don't restyle these)\n${list(Object.entries(p.specs).map(([k, v]) => `**${k}**: ${v}`))}`,
+    `**Do**\n${list(p.do)}`,
+    `**Don't**\n${list(p.dont)}`,
+  ].join("\n\n");
+}
+md.push(`## Patterns\n\nScreens made of several components that every app builds the same way. Follow them instead of composing your own.\n\n${PATTERNS.map((p) => patternMarkdown(p)).join("\n\n")}`);
 md.push(`## Conventions\n\n${list(Object.entries(manifest.conventions).map(([k, v]) => `**${k}**: ${v}`))}`);
 md.push(`## Global attributes\n\n${list(Object.entries(ATTRIBUTES).map(([k, v]) => `\`${k}\`: ${v}`))}`);
 md.push(
@@ -198,6 +215,15 @@ Part of ${pkg.name} ${pkg.version}: load \`dist/ayywi.min.css\` (and \`dist/elem
 `,
 ]);
 
+const patternPages = PATTERNS.map((p) => [
+  `pattern-${p.slug}`,
+  `${patternMarkdown(p, "#")}
+
+---
+A pattern of ${pkg.name} ${pkg.version}. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).
+`,
+]);
+
 // ---- llms.txt (index, llmstxt.org format) ----
 const index = `# ${pkg.name}
 
@@ -213,6 +239,12 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 - [ai/AGENTS.snippet.md](ai/AGENTS.snippet.md): rules to paste into a consuming project's AGENTS.md (or run \`npx ayywi init\`)
 - [ai/skills/ayywi/SKILL.md](ai/skills/ayywi/SKILL.md): how to build a page or an app with ayywi, step by step
 - MCP server: \`npx ayywi mcp\` (tools: list_components, get_component, search, get_tokens, get_rules, create_brand, lint)
+
+## Patterns
+
+Screens every app builds the same way, from several components:
+
+${PATTERNS.map((p) => `- [${p.name}](llms/pattern-${p.slug}.md): ${p.summary}`).join("\n")}
 
 ## Components
 
@@ -237,6 +269,8 @@ const snippet = `${GENERATED}
 This project's UI uses **ayywi** (\`ayywi\` on npm). ${lookup}
 
 ${numbered}
+
+Patterns (follow them, don't compose your own): ${PATTERNS.map((p) => `${p.name} — ${p.summary}`).join(" ")} Full recipe and specs: \`get_rules\` or llms-full.txt → Patterns.
 
 Components — ${byCategory.map(([cat, list]) => `${cat}: ${list.map((c) => c.name).join(", ")}`).join("; ")}. If something is missing, compose it from these and the tokens — don't pull in another UI kit.
 `;
@@ -290,9 +324,10 @@ output(join(root, "ai/skills/ayywi/reference.md"), `${cheat}\n`);
 output(join(root, "manifest/components.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 output(join(root, "llms-full.txt"), `${md.join("\n\n")}\n`);
 output(join(root, "llms.txt"), index);
-for (const [slug, page] of componentPages) output(join(root, "llms", `${slug}.md`), page);
-// A page for a component that's gone is stale too.
+const pages = [...componentPages, ...patternPages];
+for (const [slug, page] of pages) output(join(root, "llms", `${slug}.md`), page);
+// A page for a component or pattern that's gone is stale too.
 for (const file of existsSync(join(root, "llms")) ? readdirSync(join(root, "llms")) : []) {
-  if (!componentPages.some(([slug]) => `${slug}.md` === file)) remove(join(root, "llms", file));
+  if (!pages.some(([slug]) => `${slug}.md` === file)) remove(join(root, "llms", file));
 }
 finish("manifest");

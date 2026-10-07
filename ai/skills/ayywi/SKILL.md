@@ -9,6 +9,7 @@ ayywi is a CSS class contract (`.ayy-*`) plus design tokens (`--ayy-*`), with ty
 
 ## 1. Load the right context first
 
+- Building a whole screen that has a pattern (settings)? Follow the pattern first: `get_rules` lists each one's recipe, phone behaviour and specs (llms-full.txt → Patterns without MCP).
 - If the `ayywi` MCP server is connected, use it: `list_components` or `search` to find the piece, `get_component` for its spec and copy-ready examples, `get_tokens`, `get_rules` (rules, utilities, custom properties), and `lint` to check what you wrote.
 - Quick lookup: [reference.md](reference.md) — every component's classes, React props and a11y in one screen.
 - Full detail for a component you're about to use: its entry in `node_modules/@danitesler/ayywi/manifest/components.json`, or its section of `node_modules/@danitesler/ayywi/llms-full.txt` (the ayywi preview site hosts the same `llms-full.txt` when the package isn't installed). Start from an example rather than from scratch.
@@ -59,7 +60,7 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Picking values | two to five words: `SegmentedControl`; options with a sentence or a price: `ChoiceGroup` of `ChoiceCard`s (`compact` for time slots, `scroll` for a day strip); many known values: `Combobox`; small counts: `NumberField`; a rough amount or a price range: `Slider` / `SliderRange`; dates and times: `Input type="date"` / `"time"` |
 | Uploads | `Dropzone` (`compact` in a form), then a `List divided` of the files with a `Progress` each and a remove button |
 | Facts about one thing | `DataList` |
-| Settings sections | `Tabs`, then a `Card` per group with a `CardFooter` for Save |
+| Settings | Full screen, never a dialog or tabs: `AppShell settings` with `AppShellBack` ("Back to <app>"), `AppShellTitle` and an `AppShellNav aria-label="Settings"` of groups; each section is its own URL, starting with a `TopBar` (back to the list, shown on phones only) and `Settings` groups of `SettingsRow` / `SettingsLink`. On phones the section list and a section are two screens. Recipe and specs: the Settings pattern (`get_rules`, llms-full.txt → Patterns) |
 | Multi-step flows | `Steps` above the form, one primary Continue per step |
 
 ## 5. Websites, landing pages and portfolios

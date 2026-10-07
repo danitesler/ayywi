@@ -48,7 +48,7 @@ Category: Forms. Preferences as rows: a label and a one-line hint at the start, 
 - Controls wrap under the label on narrow screens instead of shrinking below a usable size.
 
 **Do**
-- Use it for any settings or preferences screen: group related rows under short headings (General, Notifications, Shortcuts).
+- Use it for any settings or preferences screen: group related rows under short headings (General, Notifications, Shortcuts). The screen itself is the App shell in settings mode (the Settings pattern): a sidebar of sections and one section's groups in the main.
 - Keep labels short and put the why in the hint ("Show a badge with the number of tasks due today").
 - Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.
 - On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.
@@ -59,6 +59,7 @@ Category: Forms. Preferences as rows: a label and a one-line hint at the start, 
 - Don't put two controls in one row; split the setting.
 - Don't use a checkbox for a setting that applies at once — that's what a Switch says.
 - Don't nest a card inside the list; use another group.
+- Don't open settings in a Dialog or switch sections with Tabs; use the App shell's settings mode. --plain is for a sheet with a couple of quick options.
 
 ## Settings — Preferences with switches and selects
 
