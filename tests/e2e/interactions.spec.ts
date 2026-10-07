@@ -163,9 +163,11 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("ArrowRight");
       await expect(radios.nth(2)).toBeChecked();
       await expect(radios.nth(1)).not.toBeChecked();
-      // The checked segment is filled: its label's background differs from an unchecked one.
+      // The checked segment is filled: its label's background differs from an unchecked one. The fill transitions in from
+      // transparent, so poll rather than read it on the frame the key landed.
       const bg = (i: number) => group.locator(".ayy-segmented-control__option").nth(i).evaluate((el) => getComputedStyle(el).backgroundColor);
-      expect(await bg(2)).not.toBe(await bg(0));
+      const unchecked = await bg(0);
+      await expect.poll(() => bg(2)).not.toBe(unchecked);
     });
 
     test("a loading button says so and stays focusable", async ({ page }) => {
