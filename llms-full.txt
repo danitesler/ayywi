@@ -9,7 +9,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Any framework / plain HTML: load `ayywi/css` and write the class names below.
 - React: `import { Button } from "ayywi/react"` plus the CSS.
 - Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "ayywi"`), and `import "ayywi/elements"` for interactive components (<ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-table>).
-- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
+- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - One component at a time: `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt.
 - Check your work: `npx ayywi lint`.
 
@@ -20,6 +20,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.
 - Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
 - Theme with data-theme="dark|light|dark-soft|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.
+- Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from "ayywi", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
 - Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.
@@ -44,6 +45,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - **state**: State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.
 - **theming**: No attribute = follow OS (dark or light). data-theme="dark" | "light" | "dark-soft" | "light-gray" forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".
 - **density**: Controls default to compact (touch on touch-first devices). data-density="compact" | "comfortable" | "touch" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.
+- **branding**: A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand="<name>"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.
 - **direction**: All layout uses logical properties; set dir="rtl" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.
 - **elements**: Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith("ayy-"); Angular: CUSTOM_ELEMENTS_SCHEMA.
 - **highContrast**: Every stateful component has a forced-colors (Windows High Contrast) style using system colours.
@@ -53,6 +55,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - `data-theme`: "dark" | "light" | "dark-soft" | "light-gray" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.
 - `data-density`: "compact" | "comfortable" | "touch" — control sizes for this subtree. None = compact, or touch on touch-first devices.
+- `data-brand`: A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.
 - `dir`: "rtl" mirrors every component (logical properties throughout).
 
 ## Tokens
@@ -110,7 +113,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | color.muted | `--ayy-color-muted` | #939393 | #6b6b6b | Captions, placeholders, de-emphasised labels. |
 | color.border | `--ayy-color-border` | #262626 | #dadada | Opaque border, for places where a mixed line can't be used. |
 | color.ring | `--ayy-color-ring` | #ffffff | #0a0a0a | Focus ring. |
-| color.primary | `--ayy-color-primary` | #ffffff | #0a0a0a | Primary action fill. Monochrome by design; override it (with primary-fg and ring) to give a product its own colour. |
+| color.primary | `--ayy-color-primary` | #ffffff | #0a0a0a | Primary action fill. Monochrome by design; a brand (setBrand(), ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour. |
 | color.primary-fg | `--ayy-color-primary-fg` | #000000 | #ffffff | Text on primary. |
 | color.destructive | `--ayy-color-destructive` | #f87171 | #b91c1c | Errors and destructive actions. |
 | color.success | `--ayy-color-success` | #35d07f | #065f46 | Positive status. |
@@ -141,6 +144,17 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | chart.4 | `--ayy-chart-4` | #b98cff | #6d28d9 |  |
 | chart.5 | `--ayy-chart-5` | #f5c542 | #b45309 |  |
 | chart.6 | `--ayy-chart-6` | #f472b6 | #be185d |  |
+| brand.50 | `--ayy-brand-50` | #f7f7f8 |  |  |
+| brand.100 | `--ayy-brand-100` | #ebebeb |  |  |
+| brand.200 | `--ayy-brand-200` | #dadada |  |  |
+| brand.300 | `--ayy-brand-300` | #bbbbbb |  |  |
+| brand.400 | `--ayy-brand-400` | #939393 |  |  |
+| brand.500 | `--ayy-brand-500` | #6b6b6b |  |  |
+| brand.600 | `--ayy-brand-600` | #636363 |  |  |
+| brand.700 | `--ayy-brand-700` | #474747 |  |  |
+| brand.800 | `--ayy-brand-800` | #333333 |  |  |
+| brand.900 | `--ayy-brand-900` | #1e1e1e |  |  |
+| brand.950 | `--ayy-brand-950` | #141414 |  |  |
 | font.heading | `--ayy-font-heading` | Unbounded, Arial Black, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, sans-serif |  | Headings and big numbers. Unbounded covers Latin and Cyrillic; other scripts fall through to the system font. |
 | font.body | `--ayy-font-body` | Sora, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Helvetica Neue, Arial, sans-serif |  | Body and UI text. Always ends in system fonts so CJK, Arabic, Cyrillic, Devanagari etc. render natively. |
 | font.signature | `--ayy-font-signature` | Caveat, Segoe Script, cursive |  | Handwritten accent. Decorative only. |
@@ -211,7 +225,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 | radius.pill | `--ayy-radius-pill` | 999px |  |  |
 | radius.control | `--ayy-radius-control` | 12px |  | Inputs, selects, textareas, tooltips, menus. |
 | radius.card | `--ayy-radius-card` | 16px |  | Cards, dialogs, popovers. |
-| radius.button | `--ayy-radius-button` | 999px |  | Buttons, tabs, badges. |
+| radius.button | `--ayy-radius-button` | 999px |  | Buttons, tabs, segmented controls, chips, badges, pagination links. A brand's shape sets it with control and card. |
 | shadow.rest | `--ayy-shadow-rest` | inset 0 1px 0 #ffffff0f | inset 0 1px 0 #0a0a0a0f | Inset top highlight. Cards at rest. |
 | shadow.lift | `--ayy-shadow-lift` | 0 16px 36px #00000066 | 0 16px 36px #0000001f | Hovered / lifted cards. |
 | shadow.overlay | `--ayy-shadow-overlay` | 0 24px 60px #00000080 | 0 24px 60px #00000026 | Dialogs, menus, popovers, tooltips, toasts. |
@@ -237,6 +251,12 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - `light` — White background, near-black text.
 - `dark-soft` (built on dark) — Near-black dark theme in the style of OpenCode: a #0a0a0a page, #141414 cards with a step up for popovers, white text and quiet grey descriptions. Every text colour still meets WCAG AA. Overrides of dark: `--ayy-color-bg` #0a0a0a, `--ayy-color-surface` #141414, `--ayy-color-surface-raised` #1e1e1e, `--ayy-color-text` #ffffff, `--ayy-color-muted` #939393, `--ayy-color-border` #262626, `--ayy-color-ring` #ffffff, `--ayy-color-primary` #ffffff, `--ayy-color-primary-fg` #0a0a0a, `--ayy-color-destructive` #fb9696, `--ayy-color-info` #8ab9ff, `--ayy-color-ai-active` #cbabff, `--ayy-color-glow` #ffffff, `--ayy-color-glass` #141414c7, `--ayy-color-overlay` #00000099.
 - `light-gray` (built on light) — Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA. Overrides of light: `--ayy-color-bg` #ebebeb, `--ayy-color-surface` #ffffff, `--ayy-color-muted` #636363, `--ayy-color-destructive` #991b1b, `--ayy-color-info` #1e40af, `--ayy-color-ai` #636363, `--ayy-color-glass` #ebebebc7.
+
+## Brands
+
+Shipped as `ayywi/brands/<name>.css`; make your own with `npx ayywi brand <#seed> --name <name>`.
+
+- `violet` — Example brand: violet buttons, checks and focus rings, softer button and card corners. Load ayywi/brands/violet.css and set data-brand="violet" on any element (or setBrand("violet")). Made from: `{"name":"violet","color":"#7c3aed","radius":{"button":"10px","card":"20px"}}`
 
 ## Public custom properties
 

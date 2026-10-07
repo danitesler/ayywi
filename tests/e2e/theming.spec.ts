@@ -179,6 +179,24 @@ test("a themed section inside another theme gets its own colours", async ({ page
   expect(await bg("light")).toBe("rgb(255, 255, 255)");
 });
 
+test("a generated brand colours buttons in every theme, nested themes included, and null undoes it", async ({ page }) => {
+  await open(page, "colors", { theme: "dark" });
+  const primary = (sel: string) => page.locator(sel).first().evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
+  const before = await primary(".pv-theme[data-theme=\"light\"]");
+  await page.goto("/#/brand");
+  await page.getByLabel("Seed colour", { exact: true }).fill("#dc2626");
+  await page.getByRole("button", { name: "Use across the preview" }).click();
+  await page.goto("/#/colors");
+  await expect(page.locator("html")).toHaveAttribute("data-brand", "acme");
+  const button = page.locator(".pv-theme[data-theme=\"light\"] .ayy-button").first();
+  await expect(button).toHaveCSS("background-color", "rgb(220, 38, 38)");
+  await expect(page.locator(".pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
+  expect(await primary(".pv-theme[data-theme=\"light\"]")).not.toBe(before);
+  await page.goto("/#/brand");
+  await page.getByRole("button", { name: "Back to mono" }).click();
+  await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+});
+
 for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
   test(`axe: no serious violations on any page (${theme})`, async ({ page }) => {
     test.setTimeout(180_000);
@@ -187,7 +205,7 @@ for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
       ...slugs.map((slug: string): [string, string] => [slug, ".pv-stage"]),
-      ...["", "get-started", "showcase", "showcase/inbox", "colors", "typography", "spacing", "elevation", "motion"].map((r): [string, string] => [r, ".pv-shell"]),
+      ...["", "get-started", "showcase", "showcase/inbox", "colors", "typography", "spacing", "elevation", "motion", "brand"].map((r): [string, string] => [r, ".pv-shell"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);

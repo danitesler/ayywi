@@ -263,6 +263,22 @@ try {
   fail("tokens/", e.message);
 }
 
+// ---- Brands (tokens/brands/*.json): createBrand() accepts each, and every contrast pair passes in every theme ----
+try {
+  const { build } = await import("esbuild");
+  const { outputFiles } = await build({ entryPoints: [join(root, "src/brand.ts")], bundle: true, format: "esm", platform: "neutral", write: false, logLevel: "silent" });
+  const { createBrand } = await import(`data:text/javascript;base64,${Buffer.from(outputFiles[0].text).toString("base64")}`);
+  for (const { file, input } of loadTokens(root).brands) {
+    try {
+      for (const c of createBrand(input).checks.filter((x) => !x.pass)) fail(file, `${c.pair} in ${c.theme} is ${c.ratio}:1 — needs ${c.min}:1`);
+    } catch (e) {
+      fail(file, e.message);
+    }
+  }
+} catch (e) {
+  fail("src/brand.ts", e.message);
+}
+
 // ---- Generated files are current ----
 let generatedOk = true;
 for (const script of ["scripts/build-tokens.mjs", "scripts/build-manifest.mjs"]) {

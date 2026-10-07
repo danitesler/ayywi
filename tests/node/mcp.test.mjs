@@ -40,13 +40,17 @@ test("MCP handshake and tools", async (t) => {
 
   const list = await s.request("tools/list");
   const names = list.result.tools.map((tool) => tool.name).sort();
-  assert.deepEqual(names, ["get_component", "get_rules", "get_tokens", "lint", "list_components", "search"]);
+  assert.deepEqual(names, ["create_brand", "get_component", "get_rules", "get_tokens", "lint", "list_components", "search"]);
 
   const call = (name, args) => s.request("tools/call", { name, arguments: args }).then((r) => r.result.content[0].text);
   assert.match(await call("list_components", {}), /Dropdown menu|menu/i);
   assert.match(await call("get_component", { name: "DropdownMenu" }), /ayy-menu__item/);
   assert.match(await call("get_component", { name: "ayy-tabs" }), /ayy-value-change/);
   assert.match(await call("get_tokens", { group: "color" }), /--ayy-color-bg/);
+  const brand = await call("create_brand", { color: "#0ea5e9", name: "sky", shape: "soft" });
+  assert.match(brand, /\[data-brand="sky"\]/);
+  assert.match(brand, /--ayy-radius-button: var\(--ayy-radius-lg\)/);
+  assert.doesNotMatch(brand, /✗/);
   assert.match(await call("lint", { code: `<button class="ayy-buton">x</button>`, filename: "x.html" }), /unknown-class/);
 
   const bad = await s.request("tools/call", { name: "nope", arguments: {} });

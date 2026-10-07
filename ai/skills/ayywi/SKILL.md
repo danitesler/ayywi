@@ -83,6 +83,10 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 
 Colour comes from the content: set `--ayy-spot` to an `--ayy-accent-*` token on the card, section or `<main>` — never tint the chrome.
 
+### Branding a product
+
+Never pick brand colours, hover shades or text-on-brand colours yourself. Run `npx ayywi brand "<#seed>" --name <name> [--shape pill|round|soft|sharp] [--body "<font>"] --out <name>.css` (or the MCP `create_brand` tool), load the CSS after ayywi's and put `data-brand="<name>"` on `<html>`. It sets `primary`, `primary-fg`, `ring`, the corners, the fonts and an `--ayy-brand-50…950` scale, with contrast checked in every theme. Buttons, checks, switches and focus rings follow; navigation and page backgrounds stay neutral. For a colour the user picks at runtime, call `setBrand({ name, color })`. Load brand fonts yourself (`@font-face` or a font service).
+
 ## 6. Every screen has four states
 
 | State | Use |

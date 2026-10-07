@@ -56,6 +56,17 @@
   --color-chart-4: var(--ayy-chart-4);
   --color-chart-5: var(--ayy-chart-5);
   --color-chart-6: var(--ayy-chart-6);
+  --color-brand-50: var(--ayy-brand-50);
+  --color-brand-100: var(--ayy-brand-100);
+  --color-brand-200: var(--ayy-brand-200);
+  --color-brand-300: var(--ayy-brand-300);
+  --color-brand-400: var(--ayy-brand-400);
+  --color-brand-500: var(--ayy-brand-500);
+  --color-brand-600: var(--ayy-brand-600);
+  --color-brand-700: var(--ayy-brand-700);
+  --color-brand-800: var(--ayy-brand-800);
+  --color-brand-900: var(--ayy-brand-900);
+  --color-brand-950: var(--ayy-brand-950);
 
   --font-sans: var(--ayy-font-body);
   --font-heading: var(--ayy-font-heading);

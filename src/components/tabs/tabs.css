@@ -15,7 +15,7 @@
   block-size: var(--ayy-size-control-md);
   padding: 3px;
   border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-pill);
+  border-radius: var(--ayy-radius-button);
   background-color: var(--ayy-color-wash);
   /* text-soft, not muted: muted on the wash track drops under 4.5:1 on raised surfaces (pnpm check measures it). */
   color: var(--ayy-color-text-soft);
@@ -36,7 +36,7 @@
   padding-block: 0;
   padding-inline: var(--ayy-space-3);
   border: 0;
-  border-radius: var(--ayy-radius-pill);
+  border-radius: max(0px, calc(var(--ayy-radius-button) - 3px));
   background: transparent;
   color: inherit;
   font-family: inherit;

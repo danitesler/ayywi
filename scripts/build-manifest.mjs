@@ -8,7 +8,7 @@ import { loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const { tokens, resolve, valueIn, themes } = loadTokens(root);
+const { tokens, resolve, valueIn, themes, brands } = loadTokens(root);
 const extraThemes = themes.filter((t) => t.name !== t.base);
 
 const read = (p) => readFileSync(join(root, p), "utf8").trimEnd();
@@ -64,18 +64,19 @@ const manifest = {
   version: pkg.version,
   description: pkg.description,
   entrypoints: {
-    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
+    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.brand — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
     "ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
     "ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
+    "ayywi/brands/<name>.css": `Ready-made brands (${brands.map((b) => b.name).join(", ") || "none"}), applied with data-brand="<name>" or setBrand("<name>"). Make your own with \`npx ayywi brand\`.`,
     "ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). ayywi/fonts-google.css loads them from Google instead.",
-    ayywi: `Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (${controllers.join(", ")}), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, cssVar(). Server-safe.`,
+    ayywi: `Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (${controllers.join(", ")}), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.`,
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
     "ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (${globals.join(", ")}).`,
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
     "ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
-    "npx ayywi": "CLI: `lint` (checks app code against this manifest), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio).",
+    "npx ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio).",
   },
   conventions: {
     classPrefix: "ayy-",
@@ -83,6 +84,7 @@ const manifest = {
     state: "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
     theming: `No attribute = follow OS (dark or light). data-theme=${themes.map((t) => `"${t.name}"`).join(" | ")} forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".`,
     density: "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
+    branding: "A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand=\"<name>\"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.",
     direction: "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.",
     elements: "Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith(\"ayy-\"); Angular: CUSTOM_ELEMENTS_SCHEMA.",
     highContrast: "Every stateful component has a forced-colors (Windows High Contrast) style using system colours.",
@@ -94,6 +96,7 @@ const manifest = {
   categories: CATEGORIES,
   publicCustomProperties: PUBLIC_HOOKS,
   utilities: UTILITIES,
+  brands: brands.map((b) => ({ name: b.name, description: b.input.description, input: b.input })),
   tokens: manifestTokens,
   components,
 };
@@ -135,6 +138,9 @@ md.push(
     }),
   )}`,
 );
+if (brands.length) {
+  md.push(`## Brands\n\nShipped as \`ayywi/brands/<name>.css\`; make your own with \`npx ayywi brand <#seed> --name <name>\`.\n\n${list(brands.map((b) => `\`${b.name}\` — ${b.input.description ?? ""} Made from: \`${JSON.stringify(Object.fromEntries(Object.entries(b.input).filter(([k]) => k !== "description")))}\``))}`);
+}
 md.push(`## Public custom properties\n\n${list(Object.entries(PUBLIC_HOOKS).map(([k, v]) => `\`${k}\`: ${v}`))}`);
 md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => `\`.${k}\`: ${v}`))}`);
 md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
@@ -187,7 +193,7 @@ const index = `# ${pkg.name}
 
 > ${pkg.description}
 
-Dark-first, monochrome frame with colour coming from content. Tokens are CSS custom properties prefixed --ayy-, classes are prefixed ayy-. Works in any framework; React components and custom elements render the same markup. Themes, density and RTL are attributes on any element.
+Dark-first, monochrome frame with colour coming from content. Tokens are CSS custom properties prefixed --ayy-, classes are prefixed ayy-. Works in any framework; React components and custom elements render the same markup. Themes, density, brands and RTL are attributes on any element.
 
 ## Start here
 
@@ -196,7 +202,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 - [README.md](README.md): install and usage per framework
 - [ai/AGENTS.snippet.md](ai/AGENTS.snippet.md): rules to paste into a consuming project's AGENTS.md (or run \`npx ayywi init\`)
 - [ai/skills/ayywi/SKILL.md](ai/skills/ayywi/SKILL.md): how to build a page or an app with ayywi, step by step
-- MCP server: \`npx ayywi mcp\` (tools: list_components, get_component, search, get_tokens, get_rules, lint)
+- MCP server: \`npx ayywi mcp\` (tools: list_components, get_component, search, get_tokens, get_rules, create_brand, lint)
 
 ## Components
 
@@ -244,7 +250,7 @@ const cheat = [
 
 CSS: \`import "ayywi/css"\` (or \`<link href=".../dist/ayywi.min.css">\`). React: \`import { … } from "ayywi/react"\`. Other frameworks: class names, helpers from \`"ayywi"\`, and \`import "ayywi/elements"\` for ${elements.map((e) => `\`<${e}>\``).join(", ")}.
 
-Global attributes: ${Object.keys(ATTRIBUTES).map((a) => `\`${a}\``).join(", ")} (theme, density, direction — on any element).
+Global attributes: ${Object.keys(ATTRIBUTES).map((a) => `\`${a}\``).join(", ")} (theme, density, brand, direction — on any element).
 
 Utilities: ${Object.keys(UTILITIES).map((u) => `\`.${u}\``).join(", ")}.
 

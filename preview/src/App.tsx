@@ -14,7 +14,8 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
   Icon,
 } from "ayywi/react";
-import type { DensityMode, ThemeMode } from "ayywi";
+import { brandPresets, type BrandInput, type DensityMode, type ThemeMode } from "ayywi";
+import { brandPage, BrandPage } from "./pages/Brand";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
 import { componentGroups, components } from "./data";
 import { ComponentPage } from "./pages/ComponentPage";
@@ -47,7 +48,10 @@ const SECTIONS: NavSection[] = [
   },
   {
     title: "Foundations",
-    items: foundations.map((f) => ({ route: f.route, title: f.title, text: foundationText(f) })),
+    items: [
+      ...foundations.map((f) => ({ route: f.route, title: f.title, text: foundationText(f) })),
+      { route: brandPage.route, title: brandPage.title, text: brandPage.text },
+    ],
   },
   ...componentGroups.map((g) => ({
     title: g.category,
@@ -80,8 +84,21 @@ const DENSITY_OPTIONS: [DensityMode, string][] = [
 
 const THEME_OPTIONS: [ThemeMode, string][] = [["system", "System"], ...themeOptions.map((t): [ThemeMode, string] => [t.name, t.label])];
 
-/** One menu for theme and density, so the sidebar footer stays just navigation. */
-function AppearanceMenu({ theme, setTheme, density, setDensity }: { theme: ThemeMode; setTheme: (v: ThemeMode) => void; density: DensityMode; setDensity: (v: DensityMode) => void }) {
+interface AppearanceProps {
+  theme: ThemeMode;
+  setTheme: (v: ThemeMode) => void;
+  density: DensityMode;
+  setDensity: (v: DensityMode) => void;
+  brand: BrandInput | null;
+  setBrand: (v: BrandInput | null) => void;
+}
+
+/** One menu for theme, density and brand, so the sidebar footer stays just navigation. */
+function AppearanceMenu({ theme, setTheme, density, setDensity, brand, setBrand }: AppearanceProps) {
+  // Mono, the shipped brands, and the one made on the Brand page if it's in use.
+  const brandOptions: [string, string][] = [["", "Mono"], ...Object.keys(brandPresets).map((n): [string, string] => [n, n.charAt(0).toUpperCase() + n.slice(1)])];
+  if (brand && !(brand.name in brandPresets)) brandOptions.push([brand.name, `${brand.name} (Brand page)`]);
+  const pickBrand = (name: string) => setBrand(name === "" ? null : name in brandPresets ? brandPresets[name as keyof typeof brandPresets] : brand);
   const group = <T extends string>(label: string, value: T, options: [T, string][], onChange: (v: T) => void) => (
     <div role="group" aria-label={label}>
       <DropdownMenuLabel>{label}</DropdownMenuLabel>
@@ -99,10 +116,12 @@ function AppearanceMenu({ theme, setTheme, density, setDensity }: { theme: Theme
         <Icon icon={PaintBoardIcon} />
         Theme
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" aria-label="Theme and density">
+      <DropdownMenuContent align="end" aria-label="Theme, density and brand">
         {group("Theme", theme, THEME_OPTIONS, setTheme)}
         <DropdownMenuSeparator />
         {group("Density", density, DENSITY_OPTIONS, setDensity)}
+        <DropdownMenuSeparator />
+        {group("Brand", brand?.name ?? "", brandOptions, pickBrand)}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -112,7 +131,8 @@ export function App() {
   const raw = useHashRoute();
   const route = raw === "tokens" ? "colors" : raw === "get-started" ? "" : raw; // old links
   const [page, part] = route.split("/");
-  const { theme, setTheme, density, setDensity, renderer } = useSettings();
+  const { theme, setTheme, density, setDensity, brand, setBrand, renderer } = useSettings();
+  const appearance = { theme, setTheme, density, setDensity, brand, setBrand };
   const component = components.find((c) => c.slug === route);
   const foundation = foundations.find((f) => f.route === page);
 
@@ -177,7 +197,7 @@ export function App() {
           ayywi
         </AppShellBrand>
         <div className="pv-topbar__actions">
-          <AppearanceMenu theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+          <AppearanceMenu {...appearance} />
         </div>
       </AppShellBar>
       <AppShellSidebar className="pv-sidebar ayy-scroll">
@@ -190,7 +210,7 @@ export function App() {
             <div className="pv-sidebar__actions">
               {/* On phones the bar carries this menu. */}
               <span className="pv-sidebar__appearance">
-                <AppearanceMenu theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+                <AppearanceMenu {...appearance} />
               </span>
               <Button
                 variant="ghost"
@@ -254,6 +274,8 @@ export function App() {
             <ShowcasePage id={part} />
           ) : page === changelogPage.route ? (
             <ChangelogPage />
+          ) : page === brandPage.route ? (
+            <BrandPage current={brand} onUse={setBrand} />
           ) : foundation ? (
             <foundation.Page key={foundation.route} />
           ) : (

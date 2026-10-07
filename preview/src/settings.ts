@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getDensity, getTheme, setDensity, setTheme, type DensityMode, type ThemeMode } from "ayywi";
+import { getDensity, getTheme, setBrand, setDensity, setTheme, type BrandInput, type DensityMode, type ThemeMode } from "ayywi";
 
 export type Renderer = "react" | "html";
 
@@ -33,6 +33,17 @@ function usePersisted<T extends string>(key: string, allowed: readonly T[], fall
   return [value, set] as const;
 }
 
+const BRAND_KEY = "ayy-preview-brand";
+
+function loadBrand(): BrandInput | null {
+  try {
+    const v = JSON.parse(localStorage.getItem(BRAND_KEY) ?? "null");
+    return v && typeof v.name === "string" && typeof v.color === "string" ? v : null;
+  } catch {
+    return null;
+  }
+}
+
 export function useSettings() {
   const [theme, setThemeState] = useState<ThemeMode>(() => getTheme());
   const [density, setDensityState] = useState<DensityMode>(() => getDensity());
@@ -41,7 +52,21 @@ export function useSettings() {
   useEffect(() => setTheme(theme), [theme]);
   useEffect(() => setDensity(density), [density]);
 
-  return { theme, setTheme: setThemeState, density, setDensity: setDensityState, renderer, setRenderer };
+  // The preview's brand: generated in the page, so any colour works without a stylesheet.
+  const [brand, setBrandState] = useState<BrandInput | null>(loadBrand);
+  useEffect(() => {
+    try {
+      setBrand(brand);
+    } catch {
+      setBrand(null);
+    }
+  }, [brand]);
+  const chooseBrand = useCallback((next: BrandInput | null) => {
+    setBrandState(next);
+    save(BRAND_KEY, JSON.stringify(next));
+  }, []);
+
+  return { theme, setTheme: setThemeState, density, setDensity: setDensityState, brand, setBrand: chooseBrand, renderer, setRenderer };
 }
 
 export function useHashRoute(): string {

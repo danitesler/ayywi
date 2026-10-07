@@ -1,0 +1,6 @@
+{
+  "$description": "Example brand: violet buttons, checks and focus rings, softer button and card corners. Load ayywi/brands/violet.css and set data-brand=\"violet\" on any element (or setBrand(\"violet\")).",
+  "name": "violet",
+  "color": "#7c3aed",
+  "radius": { "button": "10px", "card": "20px" }
+}

@@ -1,8 +1,9 @@
 /*
  * ayywi — full bundle, in cascade layers so any unlayered CSS in your app wins without specificity fights.
- * Order: tokens → base → components. (dist/ayywi.unlayered.css is the same without layers.)
+ * Order: tokens → base → components → brand (ayywi/brands/*.css and setBrand() fill the last one).
+ * dist/ayywi.unlayered.css is the same without layers.
  */
-@layer ayywi.tokens, ayywi.base, ayywi.components;
+@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;
 
 @import "./tokens.css" layer(ayywi.tokens);
 @import "./base.css" layer(ayywi.base);

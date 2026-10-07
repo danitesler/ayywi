@@ -4,18 +4,19 @@
   "version": "0.4.0",
   "description": "Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.",
   "entrypoints": {
-    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
+    "ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.brand — any unlayered app CSS wins. ayywi/ayywi.min.css is the minified file.",
     "ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
     "ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
+    "ayywi/brands/<name>.css": "Ready-made brands (violet), applied with data-brand=\"<name>\" or setBrand(\"<name>\"). Make your own with `npx ayywi brand`.",
     "ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). ayywi/fonts-google.css loads them from Google instead.",
-    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectAppShell, connectCarousel, connectCombobox, connectMenu, connectNavbar, connectPopover, connectTable, connectThemeToggle, connectToc, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, cssVar(). Server-safe.",
+    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectAppShell, connectCarousel, connectCombobox, connectMenu, connectNavbar, connectPopover, connectTable, connectThemeToggle, connectToc, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
     "ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-table>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, chartColors, chartTheme).",
+    "ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-menu>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-table>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, chartColors, chartTheme).",
     "ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-soft.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "ayywi/tailwind-preset": "Tailwind v3 preset.",
     "ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
-    "npx ayywi": "CLI: `lint` (checks app code against this manifest), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
+    "npx ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
   },
   "conventions": {
     "classPrefix": "ayy-",
@@ -23,6 +24,7 @@
     "state": "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
     "theming": "No attribute = follow OS (dark or light). data-theme=\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" forces a theme on any element and its subtree (.dark/.light classes work too). See \"themes\" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says \"dark\" or \"light\".",
     "density": "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
+    "branding": "A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand=\"<name>\"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.",
     "direction": "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.",
     "elements": "Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith(\"ayy-\"); Angular: CUSTOM_ELEMENTS_SCHEMA.",
     "highContrast": "Every stateful component has a forced-colors (Windows High Contrast) style using system colours.",
@@ -34,6 +36,7 @@
     "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
     "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
     "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
+    "Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from \"ayywi\", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.",
     "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
     "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
     "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
@@ -54,6 +57,7 @@
   "attributes": {
     "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.",
     "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
+    "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
     "dir": "\"rtl\" mirrors every component (logical properties throughout)."
   },
   "themes": [
@@ -133,6 +137,21 @@
     "ayy-scroll-progress": "Reading-progress bar fixed to the top of the viewport, in --ayy-spot. Put an empty aria-hidden <div> with it at the start of <body>. CSS scroll timelines only; hidden where unsupported.",
     "ayy-reveal": "Fades and lifts the element in as it scrolls into view. CSS only; off under reduced motion."
   },
+  "brands": [
+    {
+      "name": "violet",
+      "description": "Example brand: violet buttons, checks and focus rings, softer button and card corners. Load ayywi/brands/violet.css and set data-brand=\"violet\" on any element (or setBrand(\"violet\")).",
+      "input": {
+        "name": "violet",
+        "color": "#7c3aed",
+        "radius": {
+          "button": "10px",
+          "card": "20px"
+        },
+        "description": "Example brand: violet buttons, checks and focus rings, softer button and card corners. Load ayywi/brands/violet.css and set data-brand=\"violet\" on any element (or setBrand(\"violet\"))."
+      }
+    }
+  ],
   "tokens": [
     {
       "name": "palette.neutral.0",
@@ -507,7 +526,7 @@
         "light-gray": "#0a0a0a"
       },
       "category": "Interactive",
-      "description": "Primary action fill. Monochrome by design; override it (with primary-fg and ring) to give a product its own colour."
+      "description": "Primary action fill. Monochrome by design; a brand (setBrand(), ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour."
     },
     {
       "name": "color.primary-fg",
@@ -823,6 +842,72 @@
         "dark-soft": "#f472b6",
         "light-gray": "#be185d"
       }
+    },
+    {
+      "name": "brand.50",
+      "cssVar": "--ayy-brand-50",
+      "type": "color",
+      "value": "#f7f7f8"
+    },
+    {
+      "name": "brand.100",
+      "cssVar": "--ayy-brand-100",
+      "type": "color",
+      "value": "#ebebeb"
+    },
+    {
+      "name": "brand.200",
+      "cssVar": "--ayy-brand-200",
+      "type": "color",
+      "value": "#dadada"
+    },
+    {
+      "name": "brand.300",
+      "cssVar": "--ayy-brand-300",
+      "type": "color",
+      "value": "#bbbbbb"
+    },
+    {
+      "name": "brand.400",
+      "cssVar": "--ayy-brand-400",
+      "type": "color",
+      "value": "#939393"
+    },
+    {
+      "name": "brand.500",
+      "cssVar": "--ayy-brand-500",
+      "type": "color",
+      "value": "#6b6b6b"
+    },
+    {
+      "name": "brand.600",
+      "cssVar": "--ayy-brand-600",
+      "type": "color",
+      "value": "#636363"
+    },
+    {
+      "name": "brand.700",
+      "cssVar": "--ayy-brand-700",
+      "type": "color",
+      "value": "#474747"
+    },
+    {
+      "name": "brand.800",
+      "cssVar": "--ayy-brand-800",
+      "type": "color",
+      "value": "#333333"
+    },
+    {
+      "name": "brand.900",
+      "cssVar": "--ayy-brand-900",
+      "type": "color",
+      "value": "#1e1e1e"
+    },
+    {
+      "name": "brand.950",
+      "cssVar": "--ayy-brand-950",
+      "type": "color",
+      "value": "#141414"
     },
     {
       "name": "font.heading",
@@ -1357,7 +1442,7 @@
       "cssVar": "--ayy-radius-button",
       "type": "dimension",
       "value": "999px",
-      "description": "Buttons, tabs, badges."
+      "description": "Buttons, tabs, segmented controls, chips, badges, pagination links. A brand's shape sets it with control and card."
     },
     {
       "name": "shadow.rest",

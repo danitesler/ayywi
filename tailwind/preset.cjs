@@ -51,6 +51,7 @@ module.exports = {
           brand: c("accent-brand"),
           marketing: c("accent-marketing"),
         },
+        brand: Object.fromEntries([50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((s) => [s, c(`brand-${s}`)])),
         chart: { 1: c("chart-1"), 2: c("chart-2"), 3: c("chart-3"), 4: c("chart-4"), 5: c("chart-5"), 6: c("chart-6") },
       },
       fontFamily: {

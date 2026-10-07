@@ -19,7 +19,7 @@
   margin: 0;
   padding-inline: var(--ayy-space-2);
   border: 1px solid transparent;
-  border-radius: var(--ayy-radius-pill);
+  border-radius: var(--ayy-radius-button);
   background: none;
   color: var(--ayy-color-muted);
   font-family: inherit;
