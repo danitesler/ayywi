@@ -30,11 +30,11 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 
 **JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
 
-**Custom element** `<ayy-combobox>` (ayywi/elements) — 
+**Custom element** `<ayy-combobox>` (@danitesler/ayywi/elements) — 
 - attribute `manual`: Don't filter: replace the options yourself as people type (a search API), then call refresh().
 - event `ayy-select`: { value, label, option } when an option is chosen — value is its data-value, else its label.
 
-**React** — `import { Combobox } from "ayywi/react";`
+**React** — `import { Combobox } from "@danitesler/ayywi/react";`
 - `<Combobox>` renders <div class="ayy-combobox"><input role="combobox" class="ayy-input"><svg><ul role="listbox" class="ayy-combobox__listbox">. Props: `options` ({ value, label, meta?, icon?, keywords?, disabled? } | string)[]; `value / defaultValue` The chosen option's value.; `onValueChange` (value: string, option) => void; `onInputChange` (text: string) => void — every keystroke, e.g. to fetch options; `filter` boolean, default true; false when you fetch the options yourself; `emptyText` ReactNode, default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input carries the chosen value in forms
 
 **Accessibility**
@@ -84,7 +84,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Combobox, Field, FieldHint, Label } from "ayywi/react";
+import { Combobox, Field, FieldHint, Label } from "@danitesler/ayywi/react";
 
 const zones = [
   { value: "Europe/Lisbon", label: "Lisbon", meta: "Portugal", keywords: "Portugal" },
@@ -109,4 +109,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

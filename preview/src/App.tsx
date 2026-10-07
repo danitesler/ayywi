@@ -13,8 +13,8 @@ import {
   Button,
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
   Icon,
-} from "ayywi/react";
-import type { DensityMode, ThemeMode } from "ayywi";
+} from "@danitesler/ayywi/react";
+import type { DensityMode, ThemeMode } from "@danitesler/ayywi";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
 import { componentGroups, components } from "./data";
 import { ComponentPage } from "./pages/ComponentPage";

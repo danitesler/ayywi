@@ -1,5 +1,5 @@
 import { PlusSignIcon, UserAdd01Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "ayywi/react";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

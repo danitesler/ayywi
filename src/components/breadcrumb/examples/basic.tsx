@@ -1,4 +1,4 @@
-import { Breadcrumb } from "ayywi/react";
+import { Breadcrumb } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

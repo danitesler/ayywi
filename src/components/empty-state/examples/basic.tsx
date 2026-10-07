@@ -1,5 +1,5 @@
 import { Add01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
-import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "ayywi/react";
+import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

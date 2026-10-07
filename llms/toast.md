@@ -31,7 +31,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 
 **JS (framework-free)**: toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })
 
-**React** — `import { toast, Toaster } from "ayywi/react";`
+**React** — `import { toast, Toaster } from "@danitesler/ayywi/react";`
 - `<Toaster>` renders nothing — configures the shared region. Props: `position` "bottom-end" | "bottom-start" | "bottom-center" | "top-end" | "top-start" | "top-center"; `label` string — region name (translate); `closeLabel` string — close button name (translate)
 
 **Accessibility**
@@ -56,7 +56,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "ayywi". -->
+<!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "@danitesler/ayywi". -->
 <button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Changes saved')">Default</button>
 <button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.success('Deployed', { description: 'Marketing site is live.' })">Success</button>
 <button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Project archived', { action: { label: 'Undo', onClick: () => ayywi.toast.info('Project restored') } })">With action</button>
@@ -66,7 +66,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, toast } from "ayywi/react";
+import { Button, toast } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -96,4 +96,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

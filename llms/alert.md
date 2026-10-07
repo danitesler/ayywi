@@ -28,7 +28,7 @@ Category: Feedback. Inline message box with optional icon, title, description an
 
 **JS (framework-free)**: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
 
-**React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "ayywi/react";`
+**React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "@danitesler/ayywi/react";`
 - `<Alert>` renders <div>. Props: `variant` "default" | "info" | "success" | "warning" | "destructive"
 - `<AlertTitle>` renders <p>.
 - `<AlertDescription>` renders <p>.
@@ -79,7 +79,7 @@ React:
 
 ```tsx
 import { Alert02Icon, InformationCircleIcon } from "@hugeicons/core-free-icons";
-import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "ayywi/react";
+import { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -110,4 +110,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

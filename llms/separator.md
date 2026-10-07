@@ -23,7 +23,7 @@ Category: Layout. A hairline between blocks: full, fading out at both ends (betw
 
 **JS (framework-free)**: separatorClass({ orientation?, fade?, className? }) → string
 
-**React** — `import { Separator } from "ayywi/react";`
+**React** — `import { Separator } from "@danitesler/ayywi/react";`
 - `<Separator>` renders <hr>. Props: `orientation` "horizontal" | "vertical" — vertical also sets aria-orientation.; `fade` boolean
 
 **Accessibility**
@@ -62,7 +62,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Separator } from "ayywi/react";
+import { Separator } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -82,4 +82,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

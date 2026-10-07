@@ -25,7 +25,7 @@
     "focus": { "none": "Not focusable." },
     "disabled": { "none": "An avatar isn't a control; wrap it in a Button or link to make it one." },
     "selected": { "none": "An avatar isn't a control; wrap it in a Button or link to make it one." },
-    "error": { "when": "a broken image (React and ayywi/elements set hidden on it)", "looks": "The initials show; with CSS alone the broken-image icon is covered by a plain disc." },
+    "error": { "when": "a broken image (React and @danitesler/ayywi/elements set hidden on it)", "looks": "The initials show; with CSS alone the broken-image icon is covered by a plain disc." },
     "loading": { "none": "Initials show until the image loads; use a circle Skeleton only when the name isn't known yet." }
   },
   "sizes": {
@@ -40,7 +40,7 @@
   },
   "js": "avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants",
   "react": {
-    "import": "import { Avatar, AvatarGroup } from \"ayywi/react\";",
+    "import": "import { Avatar, AvatarGroup } from \"@danitesler/ayywi/react\";",
     "components": {
       "Avatar": {
         "renders": "<span role=\"img\">",
@@ -58,7 +58,7 @@
   "a11y": [
     "The name goes on the root (aria-label); the <img> has alt=\"\" and the initials are aria-hidden, so it's announced once.",
     "Give an AvatarGroup an aria-label like \"5 collaborators\".",
-    "A failed image is hidden by React or ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
+    "A failed image is hidden by React or @danitesler/ayywi/elements so the initials show. With CSS alone it renders as a plain disc."
   ],
   "do": [
     "Use avatars for people and workspaces in lists, headers and comments.",

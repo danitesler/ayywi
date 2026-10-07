@@ -1,4 +1,4 @@
-// "ayywi/elements": custom elements for the interactive components, for any framework or plain HTML.
+// "@danitesler/ayywi/elements": custom elements for the interactive components, for any framework or plain HTML.
 // Importing registers them (idempotent, no-op during SSR) and starts the card spotlight listener.
 import { AyyAppShellElement } from "../components/app-shell/app-shell.element";
 import { trackSpotlight } from "../components/card/card";

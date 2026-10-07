@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

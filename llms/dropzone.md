@@ -3,7 +3,7 @@
 Category: Forms. A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.
 
 **Classes**
-- `.ayy-dropzone` — The <label>: dashed border, centred icon and text. Its <input type="file"> covers it and draws nothing. data-dragging while files are held over it (set by ayywi/elements or React).
+- `.ayy-dropzone` — The <label>: dashed border, centred icon and text. Its <input type="file"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).
 - `.ayy-dropzone--compact` — One line (icon, then text), for a form field or a composer.
 - `.ayy-dropzone__title` — Main line: "Drop files here or browse" (the word styled .ayy-link).
 - `.ayy-dropzone__hint` — What's accepted: types and size.
@@ -17,15 +17,15 @@ Category: Forms. A drop zone that is also a file picker: a label around a native
 - `selected` — doesn't apply: Picked files show in a List below the zone, not on it.
 - `error` (`:has(> input[aria-invalid="true"])`) — Border 60% destructive; pair with a FieldError (wrong type, too big).
 - `loading` — doesn't apply: Show upload progress per file in the List below (a Progress in each row).
-- `dragging` (`[data-dragging] (set by React or ayywi/elements)`) — Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint.
+- `dragging` (`[data-dragging] (set by React or @danitesler/ayywi/elements)`) — Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint.
 
 **Sizes**
 - Density — Padding and text are fixed; doesn't follow data-density.
 - Width — Fills its container. compact is one line (icon then text) for a form field or a chat composer.
 
-**JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).
+**JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).
 
-**React** — `import { Dropzone } from "ayywi/react";`
+**React** — `import { Dropzone } from "@danitesler/ayywi/react";`
 - `<Dropzone>` renders <label class="ayy-dropzone"><input type="file"><svg><span class="ayy-dropzone__title">…. Props: `title` ReactNode, default "Drop files here or browse"; `hint` ReactNode — types and size; `icon` ReactNode — replaces the upload icon; null for none; `onFiles` (files: File[]) => void — check types and sizes here: accept isn't enforced on a drop; `compact` boolean; `className` On the <label>; every other prop (accept, multiple, name, id, disabled…) goes to the input; `style` On the <label>
 
 **Accessibility**
@@ -79,7 +79,7 @@ React:
 
 ```tsx
 import { Delete02Icon, Image01Icon } from "@hugeicons/core-free-icons";
-import { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from "ayywi/react";
+import { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from "@danitesler/ayywi/react";
 
 const files = [
   { name: "studio-front.jpg", size: "2.4 MB", progress: 100 },
@@ -125,7 +125,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, FieldHint, Dropzone, Label } from "ayywi/react";
+import { Field, FieldHint, Dropzone, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -149,4 +149,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

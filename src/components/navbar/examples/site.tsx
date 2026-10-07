@@ -1,4 +1,4 @@
-import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "ayywi/react";
+import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

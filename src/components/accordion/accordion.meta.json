@@ -28,7 +28,7 @@
   },
   "js": "accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.",
   "react": {
-    "import": "import { Accordion, AccordionItem } from \"ayywi/react\";",
+    "import": "import { Accordion, AccordionItem } from \"@danitesler/ayywi/react\";",
     "components": {
       "Accordion": {
         "renders": "<div class=\"ayy-accordion\">",

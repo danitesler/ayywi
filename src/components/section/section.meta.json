@@ -32,7 +32,7 @@
   },
   "js": "sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.",
   "react": {
-    "import": "import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from \"ayywi/react\";",
+    "import": "import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from \"@danitesler/ayywi/react\";",
     "components": {
       "Section": { "renders": "<section>", "props": { "center": "boolean" } },
       "SectionHeader": { "renders": "<header>" },

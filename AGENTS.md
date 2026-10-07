@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `ayywi/elements` (slider fills, number field steps, drop zones),
+- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, drop zones),
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -26,9 +26,9 @@ src/css/shadcn.css          the shadcn/ui bridge (unlayered on purpose), copied 
 src/css/index.css           declares the layers, imports tokens, base, every component into them
 src/components/<slug>/      one folder per component — see .claude/skills/ayywi-add-component/SKILL.md
 src/lib/                    cx, refs, position (floating placement), element (SSR-safe custom element base), icons (Hugeicons glyphs ayywi draws)
-src/index.ts                "ayywi" entry: tokens, helpers, toast, theme/density — no React
-src/react/index.ts          "ayywi/react" entry
-src/elements/               "ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
+src/index.ts                "@danitesler/ayywi" entry: tokens, helpers, toast, theme/density — no React
+src/react/index.ts          "@danitesler/ayywi/react" entry
+src/elements/               "@danitesler/ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
 cli/                        shipped `ayywi` bin: lint.mjs, init.mjs, mcp.mjs (plain Node ESM, no deps)
 tailwind/                   Tailwind v3 preset + v4 @theme mapping
 scripts/                    build, generators, check; scripts/lib/contract.mjs holds RULES, PUBLIC_HOOKS, UTILITIES, ATTRIBUTES,
@@ -91,8 +91,8 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
 - Mirroring a glyph or a chart line in RTL has no logical property. `.ayy-icon--directional`, `.ayy-chart__svg` and `.ayy-sparkline` read `--_ayy-dir`, which `base.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
 - A selector list with a pseudo-element the browser doesn't know (`::-moz-range-thumb` in Chromium) is dropped whole. Give each vendor pseudo-element its own rule.
-- Chromium can't fill a range track up to the thumb. `.ayy-slider` reads `--ayy-value`, which React and the page-wide `input` listener in `ayywi/elements` keep in step; HTML examples set the starting one inline.
-- The page-wide helpers in `ayywi/elements` (number field steps) listen on `document`. React's own handlers call `preventDefault()` so the step doesn't happen twice when both are loaded.
+- Chromium can't fill a range track up to the thumb. `.ayy-slider` reads `--ayy-value`, which React and the page-wide `input` listener in `@danitesler/ayywi/elements` keep in step; HTML examples set the starting one inline.
+- The page-wide helpers in `@danitesler/ayywi/elements` (number field steps) listen on `document`. React's own handlers call `preventDefault()` so the step doesn't happen twice when both are loaded.
 - Get started's prompts link `v/<release>/dist/…` on the published site (a path whose files never change) and the public site's latest from localhost, never localhost itself. The Pages workflow sets `VITE_AYYWI_SITE` from `configure-pages`.
 - The App shell and Navbar switch their phone layouts at 48rem with media queries, so component examples in the preview only show them in a narrow window. The showcase apps load in an iframe at real device widths for that reason; e2e tests set the viewport.
 - One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.

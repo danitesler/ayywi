@@ -24,10 +24,10 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 
 **JS (framework-free)**: carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.
 
-**Custom element** `<ayy-carousel>` (ayywi/elements) — A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled="true" at the ends. Slides without a label are named "2 of 6".
+**Custom element** `<ayy-carousel>` (@danitesler/ayywi/elements) — A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled="true" at the ends. Slides without a label are named "2 of 6".
 - attribute `class`: Put ayy-carousel on it for block layout.
 
-**React** — `import { Carousel, CarouselSlide } from "ayywi/react";`
+**React** — `import { Carousel, CarouselSlide } from "@danitesler/ayywi/react";`
 - `<Carousel>` renders <div class="ayy-carousel" role="region"> with the track and the two buttons. Props: `label` string (required) — accessible name, e.g. "Team photos".; `slideWidth` CSS length for every slide. Default min(22rem, 85%).; `previousLabel / nextLabel` Button names. Default "Previous" / "Next" Defaults "Previous" / "Next" (translate them).; `slideLabel` Each slide's name, with {index} and {count}. Default "{index} of {count}" (translate it). HTML: data-slide-label on the carousel.
 - `<CarouselSlide>` renders <div role="group" aria-roledescription="slide">.
 
@@ -52,7 +52,7 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-carousel> (ayywi/elements) wires the buttons. Swipe, scroll or focus the strip and use the arrow keys. -->
+<!-- <ayy-carousel> (@danitesler/ayywi/elements) wires the buttons. Swipe, scroll or focus the strip and use the arrow keys. -->
 <ayy-carousel class="ayy-carousel" role="region" aria-roledescription="carousel" aria-label="AI assistant features" style="inline-size: 100%; --ayy-slide: 15rem">
   <div class="ayy-carousel__track" tabindex="0">
     <div class="ayy-carousel__slide"><div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Identity</h3><p class="ayy-card__description">One four-point star wherever a feature is powered by AI.</p></div></div></div>
@@ -75,7 +75,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "ayywi/react";
+import { Card, CardDescription, CardHeader, CardTitle, Carousel, CarouselSlide } from "@danitesler/ayywi/react";
 
 const features = [
   { title: "Identity", text: "One four-point star wherever a feature is powered by AI." },
@@ -104,4 +104,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

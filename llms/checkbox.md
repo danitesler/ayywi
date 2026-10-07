@@ -22,7 +22,7 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 
 **JS (framework-free)**: checkboxClass constant
 
-**React** — `import { Checkbox } from "ayywi/react";`
+**React** — `import { Checkbox } from "@danitesler/ayywi/react";`
 - `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
 
 **Accessibility**
@@ -57,7 +57,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Checkbox } from "ayywi/react";
+import { Checkbox } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -84,4 +84,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

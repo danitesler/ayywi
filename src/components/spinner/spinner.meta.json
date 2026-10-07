@@ -33,7 +33,7 @@
   },
   "js": "spinnerClass({ size?, className? }) → string. Buttons: add aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).",
   "react": {
-    "import": "import { Spinner } from \"ayywi/react\";",
+    "import": "import { Spinner } from \"@danitesler/ayywi/react\";",
     "components": {
       "Spinner": {
         "renders": "<span class=\"ayy-spinner\" role=\"status\" aria-label=\"Loading\">",

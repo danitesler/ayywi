@@ -5,7 +5,7 @@
   "category": "Forms",
   "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
   "classes": {
-    "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by ayywi/elements or React).",
+    "ayy-dropzone": "The <label>: dashed border, centred icon and text. Its <input type=\"file\"> covers it and draws nothing. data-dragging while files are held over it (set by @danitesler/ayywi/elements or React).",
     "ayy-dropzone--compact": "One line (icon, then text), for a form field or a composer.",
     "ayy-dropzone__title": "Main line: \"Drop files here or browse\" (the word styled .ayy-link).",
     "ayy-dropzone__hint": "What's accepted: types and size."
@@ -22,15 +22,15 @@
     "selected": { "none": "Picked files show in a List below the zone, not on it." },
     "error": { "when": ":has(> input[aria-invalid=\"true\"])", "looks": "Border 60% destructive; pair with a FieldError (wrong type, too big)." },
     "loading": { "none": "Show upload progress per file in the List below (a Progress in each row)." },
-    "dragging": { "when": "[data-dragging] (set by React or ayywi/elements)", "looks": "Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint." }
+    "dragging": { "when": "[data-dragging] (set by React or @danitesler/ayywi/elements)", "looks": "Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint." }
   },
   "sizes": {
     "density": "Padding and text are fixed; doesn't follow data-density.",
     "width": "Fills its container. compact is one line (icon then text) for a form field or a chat composer."
   },
-  "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).",
+  "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).",
   "react": {
-    "import": "import { Dropzone } from \"ayywi/react\";",
+    "import": "import { Dropzone } from \"@danitesler/ayywi/react\";",
     "components": {
       "Dropzone": {
         "renders": "<label class=\"ayy-dropzone\"><input type=\"file\"><svg><span class=\"ayy-dropzone__title\">…",

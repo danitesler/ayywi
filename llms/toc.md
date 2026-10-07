@@ -26,11 +26,11 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 
 **JS (framework-free)**: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
 
-**Custom element** `<ayy-toc>` (ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
+**Custom element** `<ayy-toc>` (@danitesler/ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
 - attribute `offset`: Distance in px below the top of the viewport at which a section becomes current. Default: the page's scroll-padding-top (the navbar sets it) + 24.
 - event `ayy-value-change`: { value: string } — id of the section now being read ("" above the first)
 
-**React** — `import { Toc } from "ayywi/react";`
+**React** — `import { Toc } from "@danitesler/ayywi/react";`
 - `<Toc>` renders <nav class="ayy-toc">. Props: `items` { id: string; label: ReactNode; children?: TocItem[] }[] — ids of sections on the page, in page order.; `title` ReactNode — visible heading; also becomes the nav's accessible name.; `numbered` boolean — number top-level items 01, 02…; `sticky` boolean; `offset` number — px below the top of the viewport at which a section becomes current.; `onValueChange` (id: string) => void — the section being read changed.; `aria-label` Used when there's no title. Defaults to "On this page" (translate it).
 
 **Accessibility**
@@ -55,7 +55,7 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-toc> (ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->
+<!-- <ayy-toc> (@danitesler/ayywi/elements) marks the section you're reading. Scroll the page to see the bar move. -->
 <div style="display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)">
   <nav class="ayy-toc ayy-toc--sticky" aria-labelledby="toc-title">
     <ayy-toc>
@@ -85,7 +85,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Toc } from "ayywi/react";
+import { Toc } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -126,4 +126,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

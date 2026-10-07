@@ -32,7 +32,7 @@
   },
   "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
   "react": {
-    "import": "import { Chip, ChipButton, ChipRemovable, ChipGroup } from \"ayywi/react\";",
+    "import": "import { Chip, ChipButton, ChipRemovable, ChipGroup } from \"@danitesler/ayywi/react\";",
     "components": {
       "Chip": {
         "renders": "<label class=\"ayy-chip\"><input type=\"checkbox\">…",

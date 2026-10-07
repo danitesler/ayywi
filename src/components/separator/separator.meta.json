@@ -29,7 +29,7 @@
   },
   "js": "separatorClass({ orientation?, fade?, className? }) → string",
   "react": {
-    "import": "import { Separator } from \"ayywi/react\";",
+    "import": "import { Separator } from \"@danitesler/ayywi/react\";",
     "components": {
       "Separator": {
         "renders": "<hr>",

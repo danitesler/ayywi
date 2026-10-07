@@ -46,7 +46,7 @@
     "children": "A trigger <button> and a [popover] element with role=\"menu\" containing .ayy-menu__item buttons."
   },
   "react": {
-    "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from \"ayywi/react\";",
+    "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from \"@danitesler/ayywi/react\";",
     "components": {
       "DropdownMenu": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
       "DropdownMenuTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },

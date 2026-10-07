@@ -1,4 +1,4 @@
-import { Button, toast } from "ayywi/react";
+import { Button, toast } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

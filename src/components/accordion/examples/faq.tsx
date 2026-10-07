@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem } from "ayywi/react";
+import { Accordion, AccordionItem } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

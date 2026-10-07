@@ -34,7 +34,7 @@
   },
   "js": "segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.",
   "react": {
-    "import": "import { SegmentedControl, SegmentedControlItem } from \"ayywi/react\";",
+    "import": "import { SegmentedControl, SegmentedControlItem } from \"@danitesler/ayywi/react\";",
     "components": {
       "SegmentedControl": {
         "renders": "<div role=\"radiogroup\" class=\"ayy-segmented-control\">",

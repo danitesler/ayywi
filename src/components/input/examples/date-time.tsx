@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Field, FieldHint, Input, Label } from "ayywi/react";
+import { Field, FieldHint, Input, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

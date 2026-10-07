@@ -32,7 +32,7 @@
   },
   "js": "footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.",
   "react": {
-    "import": "import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from \"ayywi/react\";",
+    "import": "import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from \"@danitesler/ayywi/react\";",
     "components": {
       "Footer": { "renders": "<footer class=\"ayy-footer\"><div class=\"ayy-footer__inner\">" },
       "FooterBrand": { "renders": "<div class=\"ayy-footer__brand\">" },

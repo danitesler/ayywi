@@ -5,8 +5,8 @@
   "category": "Forms",
   "description": "A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.",
   "classes": {
-    "ayy-slider": "On <input type=\"range\">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and ayywi/elements keep it in sync, so in HTML set the starting one inline.",
-    "ayy-slider-range": "A role=\"group\" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing."
+    "ayy-slider": "On <input type=\"range\">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.",
+    "ayy-slider-range": "A role=\"group\" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing."
   },
   "variants": {},
   "states": {
@@ -23,9 +23,9 @@
     "density": "The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.",
     "width": "Fills its container. A range (two thumbs) is .ayy-slider-range."
   },
-  "js": "sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.",
+  "js": "sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.",
   "react": {
-    "import": "import { Slider, SliderRange } from \"ayywi/react\";",
+    "import": "import { Slider, SliderRange } from \"@danitesler/ayywi/react\";",
     "components": {
       "Slider": {
         "renders": "<input type=\"range\" class=\"ayy-slider\">",

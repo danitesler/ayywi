@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Field, FieldHint, Label, Slider } from "ayywi/react";
+import { Field, FieldHint, Label, Slider } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [spots, setSpots] = useState(12);

@@ -34,7 +34,7 @@
   },
   "js": "inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.",
   "react": {
-    "import": "import { InputGroup, InputGroupAddon, Input } from \"ayywi/react\";",
+    "import": "import { InputGroup, InputGroupAddon, Input } from \"@danitesler/ayywi/react\";",
     "components": {
       "InputGroup": { "renders": "<div class=\"ayy-input-group\">", "props": { "size": "\"sm\" | \"md\" | \"lg\"" } },
       "InputGroupAddon": { "renders": "<span class=\"ayy-input-group__addon\">" }

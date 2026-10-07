@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Badge } from "ayywi/react";
+import { Avatar, AvatarGroup, Badge } from "@danitesler/ayywi/react";
 
 const photo =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>";

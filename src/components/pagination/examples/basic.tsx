@@ -1,4 +1,4 @@
-import { Pagination } from "ayywi/react";
+import { Pagination } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

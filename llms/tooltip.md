@@ -23,11 +23,11 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 
 **JS (framework-free)**: tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).
 
-**Custom element** `<ayy-tooltip>` (ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.
+**Custom element** `<ayy-tooltip>` (@danitesler/ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.
 - attribute `side`: top | bottom | start | end
 - attribute `class`: Put ayy-tooltip on it.
 
-**React** — `import { Tooltip } from "ayywi/react";`
+**React** — `import { Tooltip } from "@danitesler/ayywi/react";`
 - `<Tooltip>` renders <span class="ayy-tooltip"> + child + <span role="tooltip">. Props: `content` ReactNode (required) — the hint; `side` "top" | "bottom" | "start" | "end"; `children` One focusable element; aria-describedby is added for you
 
 **Accessibility**
@@ -51,7 +51,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Works with CSS alone. <ayy-tooltip> (ayywi/elements) adds ids, Esc-to-dismiss and edge-aware placement. -->
+<!-- Works with CSS alone. <ayy-tooltip> (@danitesler/ayywi/elements) adds ids, Esc-to-dismiss and edge-aware placement. -->
 <ayy-tooltip class="ayy-tooltip">
   <button type="button" class="ayy-button ayy-button--outline">Top</button>
   <span class="ayy-tooltip__content" role="tooltip">Save changes (⌘S)</span>
@@ -73,7 +73,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Tooltip } from "ayywi/react";
+import { Button, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -96,4 +96,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

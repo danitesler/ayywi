@@ -52,7 +52,7 @@
   },
   "js": "chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.",
   "react": {
-    "import": "import { BarChart, LineChart, Sparkline, BarList } from \"ayywi/react\";",
+    "import": "import { BarChart, LineChart, Sparkline, BarList } from \"@danitesler/ayywi/react\";",
     "components": {
       "BarChart": {
         "renders": "<figure class=\"ayy-chart\"> with a plot of __column/__bar, labels, a legend and a visually hidden data table",

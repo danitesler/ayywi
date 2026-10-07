@@ -23,10 +23,10 @@ function componentMarkdown(c) {
     const scale = Object.entries(c.sizes.scale ?? {}).map(([k, v]) => `${k} — ${v}`);
     parts.push(`Sizes:\n${list([...scale, `density — ${c.sizes.density}`, `width — ${c.sizes.width}`])}`);
   }
-  if (c.js) parts.push(`JS helpers (from "ayywi"): ${c.js}`);
+  if (c.js) parts.push(`JS helpers (from "@danitesler/ayywi"): ${c.js}`);
   if (c.element)
     parts.push(
-      `Custom element <${c.element.tag}> (import "ayywi/elements"): ${c.element.children ?? ""}\nAttributes:\n${list(
+      `Custom element <${c.element.tag}> (import "@danitesler/ayywi/elements"): ${c.element.children ?? ""}\nAttributes:\n${list(
         Object.entries(c.element.attributes ?? {}).map(([k, v]) => `${k}: ${v}`),
       )}\nEvents:\n${list(Object.entries(c.element.events ?? {}).map(([k, v]) => `${k}: ${v}`))}`,
     );

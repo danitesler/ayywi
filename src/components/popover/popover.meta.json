@@ -38,7 +38,7 @@
     "children": "A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute."
   },
   "react": {
-    "import": "import { Popover, PopoverTrigger, PopoverContent } from \"ayywi/react\";",
+    "import": "import { Popover, PopoverTrigger, PopoverContent } from \"@danitesler/ayywi/react\";",
     "components": {
       "Popover": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
       "PopoverTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },

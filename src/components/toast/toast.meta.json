@@ -37,7 +37,7 @@
   },
   "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })",
   "react": {
-    "import": "import { toast, Toaster } from \"ayywi/react\";",
+    "import": "import { toast, Toaster } from \"@danitesler/ayywi/react\";",
     "components": {
       "Toaster": {
         "renders": "nothing — configures the shared region",

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Card, CardContent, CardHeader, Skeleton } from "ayywi/react";
+import { Card, CardContent, CardHeader, Skeleton } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

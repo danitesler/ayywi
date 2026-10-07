@@ -23,7 +23,7 @@ Category: Navigation. A phone app's tab bar: three to five top-level destination
 
 **JS (framework-free)**: bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.
 
-**React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "ayywi/react";`
+**React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
 - `<BottomNav>` renders <nav class="ayy-bottom-nav">. Props: `aria-label` Defaults to "Main" (translate it).
 - `<BottomNavLink>` renders <a class="ayy-bottom-nav__link"> with the icon and a <span class="ayy-bottom-nav__label">. Props: `icon` ReactNode — the icon above the label (an <Icon>).; `current` boolean — sets aria-current="page".
 - `<BottomNavButton>` renders <button type="button" class="ayy-bottom-nav__link"> with the icon and a label <span>. Props: `icon` ReactNode — the icon above the label.
@@ -98,7 +98,7 @@ React:
 
 ```tsx
 import { DashboardSquare01Icon, Folder01Icon, Notification03Icon, UserIcon } from "@hugeicons/core-free-icons";
-import { BottomNav, BottomNavLink, Icon } from "ayywi/react";
+import { BottomNav, BottomNavLink, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   // A phone-sized screen. The nav is sticky, so it stays at the bottom of whatever scrolls: the page, or a box like this one.
@@ -128,4 +128,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

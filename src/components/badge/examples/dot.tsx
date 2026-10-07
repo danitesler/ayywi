@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Badge } from "ayywi/react";
+import { Badge } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

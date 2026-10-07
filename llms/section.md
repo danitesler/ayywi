@@ -27,7 +27,7 @@ Category: Layout. A band of a page with generous vertical rhythm and a header: o
 
 **JS (framework-free)**: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
 
-**React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "ayywi/react";`
+**React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "@danitesler/ayywi/react";`
 - `<Section>` renders <section>. Props: `center` boolean
 - `<SectionHeader>` renders <header>.
 - `<SectionEyebrow>` renders <p>. Props: `number` ReactNode — shown before the label, e.g. "01".
@@ -72,7 +72,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Card, CardHeader, CardTitle, Section, SectionDescription, SectionHeader, SectionTitle } from "ayywi/react";
+import { Card, CardHeader, CardTitle, Section, SectionDescription, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -116,7 +116,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "ayywi/react";
+import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -137,4 +137,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

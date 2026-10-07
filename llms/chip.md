@@ -26,7 +26,7 @@ Category: Forms. Pill-shaped filters and choices: a label around a native checkb
 
 **JS (framework-free)**: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
 
-**React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "ayywi/react";`
+**React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "@danitesler/ayywi/react";`
 - `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
 - `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode
 - `<ChipRemovable>` renders <span class="ayy-chip ayy-chip--removable">… <button class="ayy-chip__remove">. Props: `onRemove` () => void; `removeLabel` string — default "Remove " + the text
@@ -73,7 +73,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Chip, ChipGroup } from "ayywi/react";
+import { Chip, ChipGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -141,7 +141,7 @@ React:
 ```tsx
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from "ayywi/react";
+import { Button, ChipButton, ChipGroup, ChipRemovable, Icon, Input, InputGroup } from "@danitesler/ayywi/react";
 
 const PRIORITIES = ["Urgent", "High", "Normal"];
 
@@ -196,4 +196,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

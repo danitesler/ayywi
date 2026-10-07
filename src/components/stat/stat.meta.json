@@ -34,7 +34,7 @@
   },
   "js": "statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.",
   "react": {
-    "import": "import { Stat } from \"ayywi/react\";",
+    "import": "import { Stat } from \"@danitesler/ayywi/react\";",
     "components": {
       "Stat": {
         "renders": "<div class=\"ayy-stat\">",

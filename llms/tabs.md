@@ -25,12 +25,12 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 
 **JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
 
-**Custom element** `<ayy-tabs>` (ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
+**Custom element** `<ayy-tabs>` (@danitesler/ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
 - attribute `value`: The selected tab's data-value (or index). Two-way.
 - attribute `class`: Put ayy-tabs on it for block layout.
 - event `ayy-value-change`: { value: string } — the user picked a tab
 
-**React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "ayywi/react";`
+**React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@danitesler/ayywi/react";`
 - `<Tabs>` renders <div>. Props: `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
 - `<TabsList>` renders <div role="tablist">. Props: `aria-label` Recommended.
 - `<TabsTrigger>` renders <button role="tab">. Props: `value` string (required)
@@ -57,7 +57,7 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-tabs> (ayywi/elements) wires ids, clicks and arrow keys. The initial aria-selected / hidden avoid a flash before it loads.
+<!-- <ayy-tabs> (@danitesler/ayywi/elements) wires ids, clicks and arrow keys. The initial aria-selected / hidden avoid a flash before it loads.
      Vue/Svelte/Angular: bind `value` and listen for `ayy-value-change`. -->
 <ayy-tabs class="ayy-tabs" value="overview">
   <div class="ayy-tabs__list" role="tablist" aria-label="Project settings">
@@ -82,7 +82,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -136,7 +136,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "ayywi/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -167,4 +167,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

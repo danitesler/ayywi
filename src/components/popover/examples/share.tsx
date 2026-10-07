@@ -1,4 +1,4 @@
-import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "ayywi/react";
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

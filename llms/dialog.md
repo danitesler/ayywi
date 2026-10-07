@@ -38,12 +38,12 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 
 **JS (framework-free)**: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
 
-**Custom element** `<ayy-dialog>` (ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog"> (centred or side). Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.
+**Custom element** `<ayy-dialog>` (@danitesler/ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog"> (centred or side). Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.
 - attribute `open`: Two-way open state
 - attribute `persistent`: Backdrop clicks don't close it (Esc still does)
 - event `ayy-open-change`: { open: boolean, returnValue?: string }
 
-**React** — `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from "ayywi/react";`
+**React** — `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from "@danitesler/ayywi/react";`
 - `<Dialog>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<DialogTrigger>` renders Button. Props: `...ButtonProps` variant, size…
 - `<DialogContent>` renders <dialog>. Props: `size` "sm" | "md" | "lg" | "xl" — width; `side` "center" | "start" | "end" | "bottom" — start/end make a side modal on that inline edge, bottom a bottom sheet; `hideClose` boolean — hide the corner close button; `closeLabel` string — accessible name of the close button (translate it). Default "Close"; `closeOnBackdrop` boolean — default true
@@ -82,7 +82,7 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-dialog> (ayywi/elements): [data-ayy-open] opens, [data-ayy-close] closes, backdrop click closes.
+<!-- <ayy-dialog> (@danitesler/ayywi/elements): [data-ayy-open] opens, [data-ayy-close] closes, backdrop click closes.
      Without it, call dialog.showModal() / dialog.close() yourself. -->
 <ayy-dialog>
   <button type="button" class="ayy-button ayy-button--destructive" data-ayy-open aria-haspopup="dialog">Delete project</button>
@@ -114,7 +114,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -179,7 +179,7 @@ import {
   Field,
   Input,
   Label,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -302,7 +302,7 @@ import {
   Select,
   Switch,
   toast,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -405,7 +405,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -428,4 +428,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

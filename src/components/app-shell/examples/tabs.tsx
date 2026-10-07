@@ -15,7 +15,7 @@ import {
   BottomNavLink,
   Button,
   Icon,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   // Wide screens get the sidebar. Below 48rem it hides: the bar keeps the brand and search, the bottom nav holds the

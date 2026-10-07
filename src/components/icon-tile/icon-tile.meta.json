@@ -33,7 +33,7 @@
   },
   "js": "iconTileClass({ size?, className? }) → string",
   "react": {
-    "import": "import { IconTile } from \"ayywi/react\";",
+    "import": "import { IconTile } from \"@danitesler/ayywi/react\";",
     "components": {
       "IconTile": {
         "renders": "<span class=\"ayy-icon-tile\">",

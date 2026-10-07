@@ -1,5 +1,5 @@
 /*
- * Avatar: initials underneath, image on top. If the image fails, React and ayywi/elements hide it so the
+ * Avatar: initials underneath, image on top. If the image fails, React and @danitesler/ayywi/elements hide it so the
  * initials show; with CSS alone a failed image becomes a plain disc instead of the browser's broken-image icon.
  * The accessible name lives on the root (role="img" + aria-label).
  */

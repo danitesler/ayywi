@@ -1,5 +1,5 @@
 import { Delete02Icon, Image01Icon } from "@hugeicons/core-free-icons";
-import { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from "ayywi/react";
+import { Button, Dropzone, Icon, List, ListContent, ListDescription, ListItem, ListTitle, Progress } from "@danitesler/ayywi/react";
 
 const files = [
   { name: "studio-front.jpg", size: "2.4 MB", progress: 100 },

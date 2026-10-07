@@ -25,10 +25,10 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 
 **JS (framework-free)**: themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).
 
-**Custom element** `<ayy-theme-toggle>` (ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
+**Custom element** `<ayy-theme-toggle>` (@danitesler/ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
 - event `ayy-value-change`: { value: string } — the theme just applied ("system" clears the override)
 
-**React** — `import { ThemeToggle } from "ayywi/react";`
+**React** — `import { ThemeToggle } from "@danitesler/ayywi/react";`
 - `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark soft, Light, Light gray.
 
 **Accessibility**
@@ -51,7 +51,7 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-theme-toggle> (ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or "system". -->
+<!-- <ayy-theme-toggle> (@danitesler/ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or "system". -->
 <ayy-theme-toggle>
   <button type="button" class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle" aria-label="Theme" aria-haspopup="menu" popovertarget="theme-menu-html">
     <svg class="ayy-icon ayy-theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
@@ -70,7 +70,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { ThemeToggle } from "ayywi/react";
+import { ThemeToggle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return <ThemeToggle />;
@@ -78,4 +78,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

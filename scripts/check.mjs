@@ -223,9 +223,9 @@ for (const slug of readdirSync(join(root, "src/components"))) {
 // ---- Rules name every custom element, so agents know it exists ----
 {
   const { RULES } = await import("./lib/contract.mjs");
-  const elementsRule = RULES.find((r) => r.includes('"ayywi/elements"')) ?? "";
+  const elementsRule = RULES.find((r) => r.includes('"@danitesler/ayywi/elements"')) ?? "";
   for (const m of elementsIndex.matchAll(/define\("(ayy-[\w-]+)"/g)) {
-    if (!elementsRule.includes(`<${m[1]}>`)) fail("scripts/lib/contract.mjs", `the RULES entry about "ayywi/elements" doesn't list <${m[1]}>`);
+    if (!elementsRule.includes(`<${m[1]}>`)) fail("scripts/lib/contract.mjs", `the RULES entry about "@danitesler/ayywi/elements" doesn't list <${m[1]}>`);
   }
 }
 

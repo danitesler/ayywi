@@ -1,4 +1,4 @@
-import { IconTile } from "ayywi/react";
+import { IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

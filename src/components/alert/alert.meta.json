@@ -33,7 +33,7 @@
   },
   "js": "alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
   "react": {
-    "import": "import { Alert, AlertTitle, AlertDescription, AlertActions } from \"ayywi/react\";",
+    "import": "import { Alert, AlertTitle, AlertDescription, AlertActions } from \"@danitesler/ayywi/react\";",
     "components": {
       "Alert": { "renders": "<div>", "props": { "variant": "\"default\" | \"info\" | \"success\" | \"warning\" | \"destructive\"" } },
       "AlertTitle": { "renders": "<p>" },

@@ -29,7 +29,7 @@ Category: Navigation. The site footer at the end of every website page: brand an
 
 **JS (framework-free)**: footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.
 
-**React** — `import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from "ayywi/react";`
+**React** — `import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from "@danitesler/ayywi/react";`
 - `<Footer>` renders <footer class="ayy-footer"><div class="ayy-footer__inner">.
 - `<FooterBrand>` renders <div class="ayy-footer__brand">.
 - `<FooterNav>` renders <nav class="ayy-footer__nav">. Props: `aria-label` Defaults to "Footer" (translate it).
@@ -106,7 +106,7 @@ React:
 
 ```tsx
 import { Layers01Icon } from "@hugeicons/core-free-icons";
-import { Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon } from "ayywi/react";
+import { Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -154,4 +154,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

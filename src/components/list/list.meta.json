@@ -35,7 +35,7 @@
   },
   "js": "listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.",
   "react": {
-    "import": "import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from \"ayywi/react\";",
+    "import": "import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from \"@danitesler/ayywi/react\";",
     "components": {
       "List": {
         "renders": "<ul class=\"ayy-list\">",

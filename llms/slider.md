@@ -3,8 +3,8 @@
 Category: Forms. A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.
 
 **Classes**
-- `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and ayywi/elements keep it in sync, so in HTML set the starting one inline.
-- `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing.
+- `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.
+- `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing.
 
 **States**
 - `default` — A 6px pill track in a 14% text tint, filled in the text colour up to an 18px page-coloured thumb with a text-colour rim.
@@ -20,9 +20,9 @@ Category: Forms. A native range input with a filled track and a round thumb, and
 - Density — The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.
 - Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
 
-**JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
+**JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
 
-**React** — `import { Slider, SliderRange } from "ayywi/react";`
+**React** — `import { Slider, SliderRange } from "@danitesler/ayywi/react";`
 - `<Slider>` renders <input type="range" class="ayy-slider">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
 - `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean
 
@@ -47,7 +47,7 @@ Category: Forms. A native range input with a filled track and a round thumb, and
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- ayywi/elements keeps --ayy-value in step with the thumb; update the <output> text from the input event. -->
+<!-- @danitesler/ayywi/elements keeps --ayy-value in step with the thumb; update the <output> text from the input event. -->
 <div class="ayy-field" style="inline-size: min(100%, 22rem)">
   <div class="ayy-spread">
     <label class="ayy-label" for="class-size">Class size</label>
@@ -62,7 +62,7 @@ React:
 
 ```tsx
 import { useState } from "react";
-import { Field, FieldHint, Label, Slider } from "ayywi/react";
+import { Field, FieldHint, Label, Slider } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [spots, setSpots] = useState(12);
@@ -86,7 +86,7 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->
+<!-- @danitesler/ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->
 <div class="ayy-stack" style="inline-size: min(100%, 22rem)">
   <div class="ayy-spread">
     <span class="ayy-label" id="price-label">Price</span>
@@ -103,7 +103,7 @@ React:
 
 ```tsx
 import { useState } from "react";
-import { SliderRange } from "ayywi/react";
+import { SliderRange } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [[low, high], setPrice] = useState<[number, number]>([18, 64]);
@@ -133,4 +133,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

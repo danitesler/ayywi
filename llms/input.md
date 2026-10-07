@@ -26,7 +26,7 @@ Category: Forms. Single-line text field. Works for every native input type (text
 
 **JS (framework-free)**: inputClass({ size?, className? }) → string
 
-**React** — `import { Input } from "ayywi/react";`
+**React** — `import { Input } from "@danitesler/ayywi/react";`
 - `<Input>` renders <input>. Props: `size` "sm" | "md" | "lg" (visual size; native size attr not exposed); `...rest` All native <input> attributes.
 
 **Accessibility**
@@ -60,7 +60,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Input } from "ayywi/react";
+import { Input } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -89,7 +89,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Field, FieldError, Input, Label } from "ayywi/react";
+import { Field, FieldError, Input, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -124,7 +124,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Field, FieldHint, Input, Label } from "ayywi/react";
+import { Field, FieldHint, Input, Label } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -144,4 +144,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -1,5 +1,5 @@
 import { Mail01Icon, Notification01Icon, SmartPhone01Icon } from "@hugeicons/core-free-icons";
-import { Card, CardContent, Icon, IconTile, List, ListContent, ListDescription, ListItem, ListTitle, Switch } from "ayywi/react";
+import { Card, CardContent, Icon, IconTile, List, ListContent, ListDescription, ListItem, ListTitle, Switch } from "@danitesler/ayywi/react";
 
 const ROWS = [
   { id: "email", icon: Mail01Icon, title: "Email", text: "A summary of new invoices and payments, once a day.", on: true },

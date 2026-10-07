@@ -31,7 +31,7 @@ Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,
 
 **JS (framework-free)**: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
 
-**React** — `import { Icon } from "ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`
+**React** — `import { Icon } from "@danitesler/ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`
 - `<Icon>` renders <svg class="ayy-icon">. Props: `icon` IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package; `size` "auto" | "sm" | "md" | "lg" | "xl" — auto follows the text; the rest are 16/20/24/32px; `directional` boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction; `label` string — accessible name; without it the icon is decorative (aria-hidden); `strokeWidth` number — stroke width on the 24px grid (Hugeicons default 1.5)
 
 **Accessibility**
@@ -91,7 +91,7 @@ React:
 ```tsx
 import type { CSSProperties } from "react";
 import { Clock01Icon } from "@hugeicons/core-free-icons";
-import { Icon } from "ayywi/react";
+import { Icon } from "@danitesler/ayywi/react";
 
 const SIZES = [
   ["sm", "16px"],
@@ -150,7 +150,7 @@ React:
 ```tsx
 import type { CSSProperties } from "react";
 import { CancelCircleIcon, CheckmarkCircle02Icon, GitBranchIcon } from "@hugeicons/core-free-icons";
-import { Icon, List, ListItem } from "ayywi/react";
+import { Icon, List, ListItem } from "@danitesler/ayywi/react";
 
 // Decorative icons are aria-hidden. An icon that carries the meaning on its own gets a label.
 export default function Example() {
@@ -209,7 +209,7 @@ React:
 
 ```tsx
 import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "ayywi/react";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 // directional mirrors an icon in right-to-left text. The same buttons, then inside dir="rtl":
 export default function Example() {
@@ -241,4 +241,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

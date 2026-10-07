@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from "ayywi/react";
+import { Radio, RadioGroup } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (

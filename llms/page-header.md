@@ -24,7 +24,7 @@ Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, t
 
 **JS (framework-free)**: pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.
 
-**React** — `import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from "ayywi/react";`
+**React** — `import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from "@danitesler/ayywi/react";`
 - `<PageHeader>` renders <header class="ayy-page-header">.
 - `<PageHeaderTitle>` renders <h1 class="ayy-page-header__title">.
 - `<PageHeaderDescription>` renders <p class="ayy-page-header__description">.
@@ -74,7 +74,7 @@ React:
 
 ```tsx
 import { Add01Icon, Download01Icon } from "@hugeicons/core-free-icons";
-import { Breadcrumb, Button, Icon, PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderTitle } from "ayywi/react";
+import { Breadcrumb, Button, Icon, PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderTitle } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -100,4 +100,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -32,7 +32,7 @@
   },
   "js": "emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.",
   "react": {
-    "import": "import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from \"ayywi/react\";",
+    "import": "import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from \"@danitesler/ayywi/react\";",
     "components": {
       "EmptyState": {
         "renders": "<div class=\"ayy-empty-state\">",

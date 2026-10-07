@@ -111,9 +111,9 @@ export default defineConfig({
   define: { __AYYWI_RELEASE__: JSON.stringify(release) },
   resolve: {
     alias: [
-      { find: /^ayywi\/react$/, replacement: here("../src/react/index.ts") },
-      { find: /^ayywi\/elements$/, replacement: here("../src/elements/index.ts") },
-      { find: /^ayywi$/, replacement: here("../src/index.ts") },
+      { find: /^@danitesler\/ayywi\/react$/, replacement: here("../src/react/index.ts") },
+      { find: /^@danitesler\/ayywi\/elements$/, replacement: here("../src/elements/index.ts") },
+      { find: /^@danitesler\/ayywi$/, replacement: here("../src/index.ts") },
     ],
   },
   server: { fs: { allow: [here("..")] } },

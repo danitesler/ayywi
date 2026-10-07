@@ -41,7 +41,7 @@
     }
   },
   "react": {
-    "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from \"ayywi/react\";",
+    "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from \"@danitesler/ayywi/react\";",
     "components": {
       "Table": { "renders": "<div class=\"ayy-table-wrap\"><table>", "props": { "compact": "boolean" } },
       "TableHeader": { "renders": "<thead>" },

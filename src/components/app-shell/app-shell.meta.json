@@ -39,7 +39,7 @@
   },
   "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).",
   "react": {
-    "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from \"ayywi/react\";",
+    "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "AppShell": {
         "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\""

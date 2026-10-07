@@ -55,7 +55,7 @@
     "children": "A trigger with data-ayy-open and a <dialog class=\"ayy-dialog\"> (centred or side). Inside the dialog, data-ayy-close=\"value\" closes it and sets dialog.returnValue."
   },
   "react": {
-    "import": "import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from \"ayywi/react\";",
+    "import": "import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from \"@danitesler/ayywi/react\";",
     "components": {
       "Dialog": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
       "DialogTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },

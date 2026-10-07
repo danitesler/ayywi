@@ -47,7 +47,7 @@
     }
   },
   "react": {
-    "import": "import { Combobox } from \"ayywi/react\";",
+    "import": "import { Combobox } from \"@danitesler/ayywi/react\";",
     "components": {
       "Combobox": {
         "renders": "<div class=\"ayy-combobox\"><input role=\"combobox\" class=\"ayy-input\"><svg><ul role=\"listbox\" class=\"ayy-combobox__listbox\">",

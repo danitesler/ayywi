@@ -26,7 +26,7 @@ Category: Data display. An app-icon squircle lit from below by the content's acc
 
 **JS (framework-free)**: iconTileClass({ size?, className? }) → string
 
-**React** — `import { IconTile } from "ayywi/react";`
+**React** — `import { IconTile } from "@danitesler/ayywi/react";`
 - `<IconTile>` renders <span class="ayy-icon-tile">. Props: `size` "sm" | "md" | "lg"; `spotColor` CSS colour for the glow and glyph, e.g. "var(--ayy-accent-system)". Else inherits --ayy-spot.; `aria-label` Makes the tile an image with this name; without it the tile is aria-hidden.
 
 **Accessibility**
@@ -62,7 +62,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { IconTile } from "ayywi/react";
+import { IconTile } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -95,4 +95,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

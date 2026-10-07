@@ -37,7 +37,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 
 **JS (framework-free)**: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 
-**React** — `import { Button } from "ayywi/react";`
+**React** — `import { Button } from "@danitesler/ayywi/react";`
 - `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
 
 **Accessibility**
@@ -76,7 +76,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button } from "ayywi/react";
+import { Button } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -109,7 +109,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button } from "ayywi/react";
+import { Button } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -150,7 +150,7 @@ React:
 
 ```tsx
 import { PlusSignIcon, UserAdd01Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "ayywi/react";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -186,7 +186,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { buttonClass } from "ayywi/react";
+import { buttonClass } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -215,7 +215,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { buttonClass } from "ayywi/react";
+import { buttonClass } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -232,4 +232,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

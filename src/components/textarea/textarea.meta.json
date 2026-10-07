@@ -29,7 +29,7 @@
   },
   "js": "textareaClass({ autosize?, mono?, className? }) → string",
   "react": {
-    "import": "import { Textarea } from \"ayywi/react\";",
+    "import": "import { Textarea } from \"@danitesler/ayywi/react\";",
     "components": {
       "Textarea": { "renders": "<textarea>", "props": { "autosize": "boolean", "mono": "boolean", "...rest": "All native <textarea> attributes." } }
     }

@@ -27,14 +27,14 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 
 **JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
 
-**Custom element** `<ayy-menu>` (ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
+**Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: start | center | end
 - attribute `open`: Two-way open state
 - event `ayy-select`: { value: string, item: HTMLElement } — value is the item's data-value, else its text
 - event `ayy-open-change`: { open: boolean }
 
-**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "ayywi/react";`
+**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@danitesler/ayywi/react";`
 - `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…
 - `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"
@@ -63,7 +63,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- <ayy-menu> (ayywi/elements) adds placement and the menu keyboard model, and fires "ayy-select" with the item's data-value. -->
+<!-- <ayy-menu> (@danitesler/ayywi/elements) adds placement and the menu keyboard model, and fires "ayy-select" with the item's data-value. -->
 <ayy-menu>
   <button type="button" class="ayy-button ayy-button--outline" popovertarget="project-menu-html" aria-haspopup="menu">Project actions</button>
   <div class="ayy-menu" id="project-menu-html" popover role="menu">
@@ -102,7 +102,7 @@ import {
   DropdownMenuTrigger,
   Icon,
   toast,
-} from "ayywi/react";
+} from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -134,4 +134,4 @@ export default function Example() {
 ```
 
 ---
-Part of ayywi 0.4.0: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

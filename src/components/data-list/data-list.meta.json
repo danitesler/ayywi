@@ -30,7 +30,7 @@
   },
   "js": "dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.",
   "react": {
-    "import": "import { DataList, DataListItem } from \"ayywi/react\";",
+    "import": "import { DataList, DataListItem } from \"@danitesler/ayywi/react\";",
     "components": {
       "DataList": { "renders": "<dl>", "props": { "row": "boolean" } },
       "DataListItem": { "renders": "<div><dt>label</dt><dd>children</dd></div>", "props": { "label": "ReactNode (required)" } }
