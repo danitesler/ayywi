@@ -13,8 +13,18 @@ Category: Forms. A card-sized radio or checkbox for choices that need a sentence
 - `.ayy-choice-card__meta` — A price or a date, at the bottom so a row of cards lines them up.
 
 **States**
-- `.ayy-choice-card:has(> input:checked)` — Chosen.
-- `.ayy-choice-card:has(> input:disabled)` — Not available.
+- `default` — Surface card with a line border and card radius; the radio or checkbox sits in the inline-end corner. Compact: centred label, input hidden.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: No pressed look; it picks on release.
+- `focus` (`:has(> input:focus-visible)`) — 2px ring around the whole card, 2px offset.
+- `disabled` (`:has(> input:disabled)`) — --ayy-opacity-disabled, not-allowed cursor; a compact slot's title is struck through too.
+- `selected` (`:has(> input:checked)`) — Text-colour border plus a 1px ring (reads as 2px without moving anything). Compact fills with the text colour, label in the page colour. Forced colours: Highlight outline or fill.
+- `error` (`aria-invalid="true" on the inputs, with a FieldError under the group`) — The inputs draw their red borders (Radio, Checkbox); compact cards show only the FieldError.
+- `loading` — doesn't apply: Load the options before showing them; use Skeletons in the cards' shape meanwhile.
+
+**Sizes**
+- Density — Card padding is fixed; the corner input follows --ayy-size-check. Compact cards are at least the lg control height.
+- Width — The group is a grid of columns at least --ayy-min wide (12rem, 6rem for compact) that fills its box; scroll makes one sideways row.
 
 **JS (framework-free)**: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
 

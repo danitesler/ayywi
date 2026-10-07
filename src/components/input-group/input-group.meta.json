@@ -13,6 +13,25 @@
   "variants": {
     "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "InputGroup" }
   },
+  "states": {
+    "default": { "looks": "Looks like an Input: wash fill, line-strong border; icons and addons are muted, the input inside loses its own border." },
+    "hover": { "when": ":hover", "looks": "Border turns line-hover." },
+    "pressed": { "none": "Like Input; a trailing Button keeps its own pressed look." },
+    "focus": { "when": ".ayy-input-group:has(> .ayy-input:focus-visible)", "looks": "The ring moves from the input to the whole group (2px, -1px offset); the border goes transparent." },
+    "disabled": { "when": ".ayy-input-group:has(> .ayy-input:disabled)", "looks": "The whole group dims to --ayy-opacity-disabled with a not-allowed cursor." },
+    "selected": { "none": "Not a choice control." },
+    "error": { "when": ".ayy-input-group:has(> .ayy-input[aria-invalid=\"true\"])", "looks": "Group border 60% destructive, destructive focus ring. Forced colours: dashed 2px border." },
+    "loading": { "none": "No built-in loading look; put a small Spinner in .ayy-input-group__addon while a value is checked." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding.",
+      "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+      "lg": "Control lg height (40px compact, 48 comfortable, 52 touch)."
+    },
+    "density": "Height and text follow data-density; leading icons stay 16px.",
+    "width": "Fills its container like an Input."
+  },
   "js": "inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.",
   "react": {
     "import": "import { InputGroup, InputGroupAddon, Input } from \"ayywi/react\";",

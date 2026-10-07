@@ -5,3 +5,4 @@ export declare const CATEGORIES: Record<string, string>;
 export declare const ORDER: string[];
 export declare const ATTRIBUTES: Record<string, string>;
 export declare const RULES: string[];
+export declare const STATES: Record<string, string>;

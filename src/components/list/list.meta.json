@@ -19,6 +19,20 @@
     "divided": { "values": [false, true], "default": false, "component": "List" },
     "compact": { "values": [false, true], "default": false, "component": "List" }
   },
+  "states": {
+    "default": { "looks": "Rows of leading media, a medium-weight title over a muted description, and muted xs meta, with 12px padding and lg radius. divided: flush rows between hairlines; compact: tight icon rows." },
+    "hover": { "when": ".ayy-list__item:has(.ayy-list__link):hover", "looks": "A row with a __link gets a wash fill. Rows without one don't react." },
+    "pressed": { "none": "No pressed look." },
+    "focus": { "when": ".ayy-list__item:has(.ayy-list__link:focus-visible)", "looks": "The ring goes around the whole row, inset by 2px." },
+    "disabled": { "none": "Rows aren't disabled; leave the link out of a row that can't open, and disable controls inside it." },
+    "selected": { "when": ".ayy-list__item:has(.ayy-list__link[aria-current=\"page\" | \"true\"])", "looks": "The row you're on: wash-hover fill and a semibold title, as the App shell's current link. Forced colours: Highlight. For multi-select rows put a Checkbox in the row." },
+    "error": { "none": "No error look; show a failed load as an Alert in place of the list." },
+    "loading": { "none": "No loading look; show Skeleton rows (circle plus two text lines) with aria-busy on the list." }
+  },
+  "sizes": {
+    "density": "Padding and sm text are fixed; controls in rows follow data-density.",
+    "width": "Fills its container; titles and descriptions wrap, meta stays on one line."
+  },
   "js": "listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.",
   "react": {
     "import": "import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from \"ayywi/react\";",

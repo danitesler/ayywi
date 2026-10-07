@@ -15,6 +15,20 @@
   "variants": {
     "direction": { "values": ["in", "out"], "default": "in", "component": "ChatMessage" }
   },
+  "states": {
+    "default": { "looks": "Incoming: raised surface bubbles with a hairline at the inline start. out (the reader's): primary fill and primary-fg text at the inline end. Bubbles are at most 85% wide." },
+    "hover": { "none": "Bubbles are static; quick replies are Buttons." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "none": "No error look; say a message failed in text under it with a retry Button." },
+    "loading": { "when": ".ayy-chat__typing inside a bubble", "looks": "Three dots bouncing in turn while a reply is written." }
+  },
+  "sizes": {
+    "density": "sm text; doesn't follow data-density.",
+    "width": "Fills its container; bubbles wrap and break long words."
+  },
   "js": "chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.",
   "react": {
     "import": "import { Chat, ChatMessage, ChatTyping, ChatReplies } from \"ayywi/react\";",

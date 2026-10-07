@@ -16,6 +16,20 @@
   "variants": {
     "center": { "values": [true, false], "default": false }
   },
+  "states": {
+    "default": { "looks": "Block padding of --ayy-space-24 (20 on phones, 32 from 90rem); an optional header with eyebrow, accent number, a bold fluid title and a muted lg description." },
+    "hover": { "none": "Static." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "No loading state." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "Full width; combine with .ayy-container to centre it. The header stops at --ayy-size-measure; center centres it (back to the start on phones). The title scales from 2xl to 4xl with the viewport."
+  },
   "js": "sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.",
   "react": {
     "import": "import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from \"ayywi/react\";",

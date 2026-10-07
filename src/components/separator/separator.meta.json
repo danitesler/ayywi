@@ -13,6 +13,20 @@
     "orientation": { "values": ["horizontal", "vertical"], "default": "horizontal" },
     "fade": { "values": [true, false], "default": false }
   },
+  "states": {
+    "default": { "looks": "A 1px hairline across its container (vertical: down the row)." },
+    "hover": { "none": "Decorative." },
+    "pressed": { "none": "Decorative." },
+    "focus": { "none": "Decorative." },
+    "disabled": { "none": "Decorative." },
+    "selected": { "none": "Decorative." },
+    "error": { "none": "Decorative." },
+    "loading": { "none": "Decorative." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "Horizontal fills the width; vertical stretches to the row's height (at least 1em). fade fades both ends."
+  },
   "js": "separatorClass({ orientation?, fade?, className? }) → string",
   "react": {
     "import": "import { Separator } from \"ayywi/react\";",

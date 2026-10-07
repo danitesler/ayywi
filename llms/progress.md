@@ -13,6 +13,23 @@ Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or inde
 - `.ayy-progress--ai` — Purple fill.
 - `.ayy-progress--indeterminate` — Looping animation; omit aria-valuenow.
 
+**States**
+- `default` — A 6px pill track in a 10% text tint, filled in the text colour from the inline start to --ayy-value %.
+- `hover` — doesn't apply: Not interactive.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive; at 0 it's an empty track.
+- `selected` — doesn't apply: The value is the state (--ayy-value, aria-valuenow).
+- `error` (`destructive (ayy-progress--destructive)`) — Red fill: a failed upload or an over-limit quota. Say why in text next to it.
+- `loading` (`.ayy-progress--indeterminate without aria-valuenow`) — A 40% bar slides along the track, unknown duration (RTL reverses it).
+
+**Sizes**
+- `sm` — 4px track.
+- `md` (default) — 6px track.
+- `lg` — 10px track.
+- Density — Doesn't follow data-density.
+- Width — Fills its container.
+
 **JS (framework-free)**: progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)
 
 **React** — `import { Progress } from "ayywi/react";`

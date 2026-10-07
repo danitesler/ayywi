@@ -17,9 +17,18 @@
     "scroll": { "values": [false, true], "default": false, "component": "ChipGroup" }
   },
   "states": {
-    ".ayy-chip:has(> input:checked)": "On (checkbox or radio chips).",
-    ".ayy-chip[aria-pressed=\"true\"]": "On (button chips).",
-    ":disabled": "Dimmed, not clickable."
+    "default": { "looks": "Pill with a line-strong border, transparent fill, text-soft label at the sm control height." },
+    "hover": { "when": ":hover", "looks": "Wash fill, line-hover border, full text colour. A removable chip keeps its border; its × gets a wash-hover circle." },
+    "pressed": { "none": "No pressed look; it toggles on release." },
+    "focus": { "when": ":focus-visible, :has(> input:focus-visible); .ayy-chip__remove:focus-visible", "looks": "2px ring, 2px offset (1px on the remove button)." },
+    "disabled": { "when": ":disabled, :has(> input:disabled)", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "when": ":has(> input:checked) or [aria-pressed=\"true\"]", "looks": "Text-colour border, wash-hover fill and a tick before the label (not colour alone); the count turns text-soft. Forced colours: Highlight fill." },
+    "error": { "none": "Chips are filters and choices; show validation on the group with a FieldError." },
+    "loading": { "none": "Filtering shows its loading in the results (Skeleton), not on the chip." }
+  },
+  "sizes": {
+    "density": "Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.",
+    "width": "Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars)."
   },
   "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
   "react": {

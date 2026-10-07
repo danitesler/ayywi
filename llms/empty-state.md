@@ -10,6 +10,20 @@ Category: Feedback. What a list, table or page shows when there's nothing in it 
 - `.ayy-empty-state__description` — One sentence: why it's empty, or what will appear here.
 - `.ayy-empty-state__actions` — The button that fixes it (primary), maybe a secondary link.
 
+**States**
+- `default` — Centred: an optional Icon tile, an lg heading-font title, a muted sm sentence (at most 42ch) and the action that fills it.
+- `hover` — doesn't apply: Static; its action Buttons have their own states.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; its actions are.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: A failed load isn't empty: show an Alert with a retry instead.
+- `loading` — doesn't apply: While loading show Skeletons, never an empty state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content.
+
 **JS (framework-free)**: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
 
 **React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "ayywi/react";`

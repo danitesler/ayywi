@@ -10,6 +10,25 @@ Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,
 - `.ayy-icon--xl` — 32px (--ayy-size-icon-xl).
 - `.ayy-icon--directional` — Mirrors the icon in right-to-left text (the nearest dir attribute decides). For icons that point along the reading direction: arrows, chevrons, send, undo.
 
+**States**
+- `default` — A Hugeicons SVG stroked in currentColor, aligned to the text's capitals.
+- `hover` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `pressed` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `selected` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `error` — doesn't apply: No error state; colour the text around it.
+- `loading` — doesn't apply: Use a Spinner.
+
+**Sizes**
+- `auto` (default) — 1.25em: follows the text size.
+- `sm` — 16px (--ayy-size-icon-sm).
+- `md` — 20px.
+- `lg` — 24px.
+- `xl` — 32px.
+- Density — Doesn't follow data-density; inside buttons, menu items and alerts the component sets the size.
+- Width — Square. directional mirrors it in RTL.
+
 **JS (framework-free)**: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
 
 **React** — `import { Icon } from "ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`

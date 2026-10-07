@@ -14,6 +14,20 @@ Category: Data display. Small pill label for status, category or count. Optional
 - `.ayy-badge__dot` — Leading status dot (first child). Pulses. Colour follows the variant, or set --ayy-dot.
 - `.ayy-badge__dot--static` — Dot without the pulse.
 
+**States**
+- `default` — A 2xs pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static.
+- `hover` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `pressed` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `selected` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `error` (`destructive (ayy-badge--destructive)`) — Red text on a 10% red tint: a failed run, an overdue invoice. Pair the colour with a word.
+- `loading` — doesn't apply: No loading look; a pulsing __dot shows a live state, not progress.
+
+**Sizes**
+- Density — Fixed 2xs text; doesn't follow data-density.
+- Width — Hugs its text, never wraps.
+
 **JS (framework-free)**: badgeClass({ variant?, className? }) → string
 
 **React** — `import { Badge } from "ayywi/react";`

@@ -22,6 +22,20 @@
     "spotlight": { "values": [true, false], "default": false },
     "featured": { "values": [false, true], "default": false, "component": "Card" }
   },
+  "states": {
+    "default": { "looks": "Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5." },
+    "hover": { "when": ":hover", "looks": "Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer." },
+    "pressed": { "none": "No pressed look, even when interactive." },
+    "focus": { "when": ".ayy-card__link:focus-visible", "looks": "The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus." },
+    "disabled": { "none": "Cards aren't disabled; dim nothing. For an unavailable option use a Choice card with a disabled input." },
+    "selected": { "when": "featured (ayy-card--featured)", "looks": "Text-colour border plus a 1px ring, so it reads as 2px without moving. For a picked option use a Choice card instead. Forced colours: Highlight outline." },
+    "error": { "none": "Put an Alert inside the card's content." },
+    "loading": { "none": "No loading look; show Skeletons in the card's content shape (aria-busy on the region)." }
+  },
+  "sizes": {
+    "density": "Padding and text don't follow data-density.",
+    "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card."
+  },
   "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
   "react": {
     "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"ayywi/react\";",

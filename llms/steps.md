@@ -8,6 +8,20 @@ Category: Navigation. Where you are in a short flow (sign-up, checkout, import):
 - `.ayy-steps__item` — A step <li>. aria-current="step" marks the current one (filled marker, bold label); every step before it is drawn as done (tick, solid line); the ones after as to do.
 - `.ayy-steps__label` — The step's name, one line (cut with an ellipsis in the row).
 
+**States**
+- `default` — To do: a muted number in a line-strong circle with a line to the next step.
+- `hover` — doesn't apply: Steps are status, not links.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Steps after the current one already read as to do.
+- `selected` (`[aria-current="step"]`) — Current: marker filled with the text colour, semibold label. Steps before it are done: a tick in a text-colour circle and a solid line. Forced colours: Highlight marker.
+- `error` — doesn't apply: No error look; put the problem in the step's content (Alert, FieldError).
+- `loading` — doesn't apply: No loading look.
+
+**Sizes**
+- Density — Markers are the sm control height (28px compact, 32 comfortable, 40 touch).
+- Width — Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone.
+
 **JS (framework-free)**: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
 
 **React** — `import { Steps } from "ayywi/react";`

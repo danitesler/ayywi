@@ -46,6 +46,10 @@ test("MCP handshake and tools", async (t) => {
   assert.match(await call("list_components", {}), /Dropdown menu|menu/i);
   assert.match(await call("get_component", { name: "DropdownMenu" }), /ayy-menu__item/);
   assert.match(await call("get_component", { name: "ayy-tabs" }), /ayy-value-change/);
+  const button = await call("get_component", { name: "Button" });
+  for (const state of ["default", "hover", "pressed", "focus", "disabled", "selected", "error", "loading"]) assert.match(button, new RegExp(`^- ${state}\\b`, "m"));
+  assert.match(button, /^- selected — doesn't apply: /m);
+  assert.match(button, /Sizes:\n- sm — /);
   assert.match(await call("get_tokens", { group: "color" }), /--ayy-color-bg/);
   assert.match(await call("lint", { code: `<button class="ayy-buton">x</button>`, filename: "x.html" }), /unknown-class/);
 

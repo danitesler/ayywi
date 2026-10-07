@@ -13,6 +13,20 @@
   "variants": {
     "vertical": { "values": [false, true], "default": false, "component": "Steps" }
   },
+  "states": {
+    "default": { "looks": "To do: a muted number in a line-strong circle with a line to the next step." },
+    "hover": { "none": "Steps are status, not links." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Steps after the current one already read as to do." },
+    "selected": { "when": "[aria-current=\"step\"]", "looks": "Current: marker filled with the text colour, semibold label. Steps before it are done: a tick in a text-colour circle and a solid line. Forced colours: Highlight marker." },
+    "error": { "none": "No error look; put the problem in the step's content (Alert, FieldError)." },
+    "loading": { "none": "No loading look." }
+  },
+  "sizes": {
+    "density": "Markers are the sm control height (28px compact, 32 comfortable, 40 touch).",
+    "width": "Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone."
+  },
   "js": "stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.",
   "react": {
     "import": "import { Steps } from \"ayywi/react\";",

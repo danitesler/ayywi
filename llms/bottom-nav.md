@@ -7,6 +7,20 @@ Category: Navigation. A phone app's tab bar: three to five top-level destination
 - `.ayy-bottom-nav__link` — A tab: icon over label. An <a> for a destination, or a <button> for a tab that acts ("More", which opens the app shell's drawer when it also has ayy-app-shell__toggle). aria-current="page" (or aria-expanded="true" on the button) draws a pill behind the icon and a heavier label.
 - `.ayy-bottom-nav__label` — The tab's text, one line, cut with an ellipsis if it's too long.
 
+**States**
+- `default` — Surface bar pinned to the bottom with a hairline on top; each tab is a muted icon over a 2xs label.
+- `hover` (`.ayy-bottom-nav__link:hover`) — Label turns text colour; a wash pill appears behind the icon.
+- `pressed` — doesn't apply: No pressed look (touch highlight is off); the page change is the feedback.
+- `focus` (`.ayy-bottom-nav__link:focus-visible`) — 2px ring inset by 2px.
+- `disabled` — doesn't apply: Tabs are never disabled; show the screen and explain inside it.
+- `selected` (`[aria-current="page"], or [aria-expanded="true"] on a More button`) — Text colour, semibold label and a wash-hover pill behind the icon. Forced colours: Highlight pill.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Each tab is at least the lg control height (40px compact, 48 comfortable, 52 touch); icons 20px; the bar adds the safe-area inset at the bottom.
+- Width — Full width, tabs share it equally (three to five). Inside an App shell it shows below 48rem only.
+
 **JS (framework-free)**: bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.
 
 **React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "ayywi/react";`

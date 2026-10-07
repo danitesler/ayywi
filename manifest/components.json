@@ -35,6 +35,7 @@
     "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
     "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
     "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
+    "Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.",
     "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
     "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.",
     "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
@@ -86,6 +87,16 @@
     "Overlays": "Content that floats above the page.",
     "Feedback": "Status, progress and messages.",
     "Data display": "Values, people and records."
+  },
+  "states": {
+    "default": "At rest: nothing hovered, focused or set.",
+    "hover": "The pointer is over it. Touch screens have no hover, so never put information only there.",
+    "pressed": "While it's held down (:active).",
+    "focus": "It has keyboard focus (:focus-visible): the 2px --ayy-color-ring outline.",
+    "disabled": "It can't be used: disabled on native controls, aria-disabled=\"true\" on links and on buttons that must keep focus.",
+    "selected": "On, checked, current or chosen: :checked, aria-selected, aria-current, aria-pressed=\"true\", aria-checked.",
+    "error": "Its value is invalid or its action failed: aria-invalid=\"true\" with a FieldError, or a destructive variant.",
+    "loading": "Waiting on work: aria-busy=\"true\" with a Spinner, a Skeleton, or an indeterminate Progress."
   },
   "publicCustomProperties": {
     "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.",
@@ -1560,6 +1571,48 @@
           "component": "Button"
         }
       },
+      "states": {
+        "default": {
+          "looks": "Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins."
+        },
+        "pressed": {
+          "when": ":active",
+          "looks": "Drops back to its resting position while held; colours stay as on hover."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "2px --ayy-color-ring outline, 2px offset. Ring also spins its border."
+        },
+        "disabled": {
+          "when": ":disabled on <button>, aria-disabled=\"true\" on <a>",
+          "looks": "--ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText border and label."
+        },
+        "selected": {
+          "none": "Not a toggle. For on/off use a Chip button (aria-pressed), for one of a few a Segmented control, for a setting a Switch."
+        },
+        "error": {
+          "none": "Errors belong to the form: a FieldError under the field, or an Alert for a failed action."
+        },
+        "loading": {
+          "when": "aria-busy=\"true\" with an aria-hidden .ayy-spinner as the first child (React: loading)",
+          "looks": "Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or \"Saving…\") so the width barely moves."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), sm padding and text.",
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+          "lg": "Control lg height (40px compact, 48 comfortable, 52 touch), more padding, larger text.",
+          "icon": "Square at the md height, for one icon (needs aria-label).",
+          "icon-sm": "Square at the sm height."
+        },
+        "density": "Height, inline padding and label size follow data-density (the heights above).",
+        "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action."
+      },
       "js": "buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
       "react": {
         "import": "import { Button } from \"ayywi/react\";",
@@ -1671,8 +1724,41 @@
         }
       },
       "states": {
-        ":popover-open": "Open.",
-        "disabled / aria-disabled=\"true\"": "Item skipped by the keyboard and dimmed."
+        "default": {
+          "looks": "Raised surface panel with a line-strong border and the overlay shadow; items are transparent rows with muted icons."
+        },
+        "hover": {
+          "when": ".ayy-menu__item:hover",
+          "looks": "Item gets the wash-hover background."
+        },
+        "pressed": {
+          "none": "Items have no pressed look: activating one runs it and closes the menu."
+        },
+        "focus": {
+          "when": ".ayy-menu__item:focus (arrow keys) / :focus-visible",
+          "looks": "Focused item gets the wash-hover background; keyboard focus adds a 2px ring inset by 2px. Forced colours: Highlight fill."
+        },
+        "disabled": {
+          "when": ".ayy-menu__item:disabled or [aria-disabled=\"true\"]",
+          "looks": "Item dims to --ayy-opacity-disabled with a not-allowed cursor; arrow keys skip it."
+        },
+        "selected": {
+          "none": "Menu items run commands and show no checked look (Theme toggle adds a check to its own items). For a choice that stays, use Select, Radio or a Segmented control."
+        },
+        "error": {
+          "none": "A menu has no error state; report a failed command with a toast."
+        },
+        "loading": {
+          "none": "Build the items before opening; if they load, put the trigger Button in loading until they're ready."
+        },
+        "open": {
+          "when": ":popover-open",
+          "looks": "Fades in and scales up from 97%; fades out when it closes."
+        }
+      },
+      "sizes": {
+        "density": "Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.",
+        "width": "At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item."
       },
       "js": "menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })",
       "element": {
@@ -1772,6 +1858,44 @@
         "ayy-theme-toggle__item": "On each ayy-menu__item (role=\"menuitemradio\", data-value = theme name or \"system\"). The one with aria-checked=\"true\" is bold and shows a check."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "An outline icon Button showing the moon in dark themes and the sun in light ones (picked by CSS before any JS runs)."
+        },
+        "hover": {
+          "when": "Button :hover",
+          "looks": "Button outline's hover: wash fill, stronger border, 2px lift."
+        },
+        "pressed": {
+          "when": "Button :active",
+          "looks": "As Button: drops back while held."
+        },
+        "focus": {
+          "when": "Button :focus-visible; menu items :focus-visible",
+          "looks": "Button's 2px ring; items as in Menu."
+        },
+        "disabled": {
+          "none": "Always available: the theme can always change."
+        },
+        "selected": {
+          "when": ".ayy-theme-toggle__item[aria-checked=\"true\"]",
+          "looks": "The theme in force is semibold with a check mark at the inline end."
+        },
+        "error": {
+          "none": "Nothing to fail: switching is local."
+        },
+        "loading": {
+          "none": "Switching is instant."
+        },
+        "open": {
+          "when": "the menu's :popover-open",
+          "looks": "As Menu."
+        }
+      },
+      "sizes": {
+        "density": "The button is Button icon (md control height, follows density); items follow Menu.",
+        "width": "Square button; the menu as Menu."
+      },
       "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).",
       "element": {
         "tag": "ayy-theme-toggle",
@@ -1841,6 +1965,43 @@
         "ayy-navbar__toggle": "The phone menu button, last in the inner row (combine with ayy-button ayy-button--ghost ayy-button--icon and a menu icon). Hidden from 48rem. Its aria-expanded is the menu's state; connectNavbar() / <ayy-navbar> / React Navbar manage it."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "Sticky glass bar (--ayy-color-glass, 16px blur) with a hairline underneath; links are muted pills."
+        },
+        "hover": {
+          "when": ".ayy-navbar__link:hover",
+          "looks": "Link gets a wash fill and the text colour."
+        },
+        "pressed": {
+          "none": "Links have no pressed look."
+        },
+        "focus": {
+          "when": ".ayy-navbar__link:focus-visible, .ayy-navbar__brand:focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "none": "A navbar link is never disabled: leave out a page the user can't open."
+        },
+        "selected": {
+          "when": ".ayy-navbar__link[aria-current=\"page\"]",
+          "looks": "Current page: wash-hover fill, text colour. Forced colours: Highlight."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state; the bar is static."
+        },
+        "open": {
+          "when": ".ayy-navbar__toggle[aria-expanded=\"true\"] (below 48rem)",
+          "looks": "The links drop into a surface panel under the bar with the overlay shadow; links grow to the lg control height."
+        }
+      },
+      "sizes": {
+        "density": "The bar is --ayy-size-header (4.5rem) tall at every density; links are the md control height (32px compact, 40 comfortable, 44 touch), lg in the phone panel.",
+        "width": "Full width; content centred at --ayy-size-container with a 24px gutter (16px below 64rem). Below 48rem, with a __toggle, the links fold into a panel."
+      },
       "js": "navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).",
       "react": {
         "import": "import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from \"ayywi/react\";",
@@ -1948,6 +2109,43 @@
         "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills."
+        },
+        "hover": {
+          "when": ".ayy-app-shell__link:hover",
+          "looks": "Link gets a wash fill and the text colour."
+        },
+        "pressed": {
+          "none": "Links have no pressed look."
+        },
+        "focus": {
+          "when": "links, brand, sidebar and main :focus-visible",
+          "looks": "Links and brand: 2px ring, 2px offset. A focused scroll area (sidebar or main with tabindex=\"0\") gets the ring inset."
+        },
+        "disabled": {
+          "none": "Sidebar links are never disabled: leave out pages the user can't open."
+        },
+        "selected": {
+          "when": ".ayy-app-shell__link[aria-current=\"page\"]",
+          "looks": "Current page: wash-hover fill, text colour, semibold (not colour alone). A closed collapse holding it shows its summary in text colour and semibold. Forced colours: Highlight."
+        },
+        "error": {
+          "none": "Errors belong in the main content (Alert)."
+        },
+        "loading": {
+          "none": "The frame renders at once; show Skeletons in the main area while a screen loads."
+        },
+        "open": {
+          "when": "__toggle[aria-expanded=\"true\"] (below 48rem, with a __bar or a Bottom nav); <details open> for a collapse",
+          "looks": "Phone: the sidebar slides in from the inline-start edge as a drawer (at most 18rem) over a scrim, with the overlay shadow. A collapse's chevron turns up."
+        }
+      },
+      "sizes": {
+        "density": "Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.",
+        "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
+      },
       "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).",
       "react": {
         "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, BottomNav, BottomNavLink, BottomNavButton } from \"ayywi/react\";",
@@ -2103,6 +2301,39 @@
         "ayy-bottom-nav__label": "The tab's text, one line, cut with an ellipsis if it's too long."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "Surface bar pinned to the bottom with a hairline on top; each tab is a muted icon over a 2xs label."
+        },
+        "hover": {
+          "when": ".ayy-bottom-nav__link:hover",
+          "looks": "Label turns text colour; a wash pill appears behind the icon."
+        },
+        "pressed": {
+          "none": "No pressed look (touch highlight is off); the page change is the feedback."
+        },
+        "focus": {
+          "when": ".ayy-bottom-nav__link:focus-visible",
+          "looks": "2px ring inset by 2px."
+        },
+        "disabled": {
+          "none": "Tabs are never disabled; show the screen and explain inside it."
+        },
+        "selected": {
+          "when": "[aria-current=\"page\"], or [aria-expanded=\"true\"] on a More button",
+          "looks": "Text colour, semibold label and a wash-hover pill behind the icon. Forced colours: Highlight pill."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "density": "Each tab is at least the lg control height (40px compact, 48 comfortable, 52 touch); icons 20px; the bar adds the safe-area inset at the bottom.",
+        "width": "Full width, tabs share it equally (three to five). Inside an App shell it shows below 48rem only."
+      },
       "js": "bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.",
       "react": {
         "import": "import { BottomNav, BottomNavLink, BottomNavButton } from \"ayywi/react\";",
@@ -2183,6 +2414,38 @@
         "ayy-footer__bottom": "The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme toggle at the end."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A hairline on top, brand and a muted line, columns of text-soft links under muted eyebrow headings, then a legal row."
+        },
+        "hover": {
+          "when": ".ayy-footer__link:hover",
+          "looks": "Link turns text colour with a line-hover underline."
+        },
+        "pressed": {
+          "none": "Links have no pressed look."
+        },
+        "focus": {
+          "when": ".ayy-footer__link:focus-visible, brand link :focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "none": "No disabled links; leave them out."
+        },
+        "selected": {
+          "none": "No current-page look; the navbar shows where you are."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Full width; content centred at --ayy-size-container. Brand beside the columns; one column below 64rem."
+      },
       "js": "footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.",
       "react": {
         "import": "import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from \"ayywi/react\";",
@@ -2265,6 +2528,39 @@
           "default": false
         }
       },
+      "states": {
+        "default": {
+          "looks": "Muted sm links separated by line-hover slashes; the last item (the current page) in text colour."
+        },
+        "hover": {
+          "when": ".ayy-breadcrumb__link:hover",
+          "looks": "Link turns text colour."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-breadcrumb__link:focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "none": "Every ancestor is a link; the current page is plain text, not a disabled link."
+        },
+        "selected": {
+          "when": "[aria-current=\"page\"] on the last item",
+          "looks": "Text colour, cut with an ellipsis when long. Forced colours: underlined."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "density": "sm text at every density.",
+        "width": "Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes."
+      },
       "js": "breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
       "react": {
         "import": "import { Breadcrumb } from \"ayywi/react\";",
@@ -2322,6 +2618,40 @@
         "ayy-pagination__ellipsis": "The \"…\" for skipped pages, aria-hidden."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "Muted pill links at the sm control height, in tabular figures; previous and next carry an arrow and a word."
+        },
+        "hover": {
+          "when": ".ayy-pagination__link:hover",
+          "looks": "Wash fill, text colour."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-pagination__link:focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "when": ":disabled or [aria-disabled=\"true\"] (a link without href at the first or last page)",
+          "looks": "--ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText."
+        },
+        "selected": {
+          "when": "[aria-current=\"page\"]",
+          "looks": "Line-strong border, wash-hover fill, text colour, semibold. Forced colours: Highlight."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "Show the loading in the list or table it pages (Skeleton rows), not here."
+        }
+      },
+      "sizes": {
+        "density": "Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.",
+        "width": "Hugs its links and wraps. Below 48rem only previous, the current page and next show."
+      },
       "js": "paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
       "react": {
         "import": "import { Pagination } from \"ayywi/react\";",
@@ -2393,6 +2723,37 @@
           "component": "Steps"
         }
       },
+      "states": {
+        "default": {
+          "looks": "To do: a muted number in a line-strong circle with a line to the next step."
+        },
+        "hover": {
+          "none": "Steps are status, not links."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Steps after the current one already read as to do."
+        },
+        "selected": {
+          "when": "[aria-current=\"step\"]",
+          "looks": "Current: marker filled with the text colour, semibold label. Steps before it are done: a tick in a text-colour circle and a solid line. Forced colours: Highlight marker."
+        },
+        "error": {
+          "none": "No error look; put the problem in the step's content (Alert, FieldError)."
+        },
+        "loading": {
+          "none": "No loading look."
+        }
+      },
+      "sizes": {
+        "density": "Markers are the sm control height (28px compact, 32 comfortable, 40 touch).",
+        "width": "Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone."
+      },
       "js": "stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.",
       "react": {
         "import": "import { Steps } from \"ayywi/react\";",
@@ -2461,6 +2822,39 @@
           ],
           "default": false
         }
+      },
+      "states": {
+        "default": {
+          "looks": "A hairline rail with muted sm links; nested links indent and get smaller."
+        },
+        "hover": {
+          "when": ".ayy-toc__link:hover",
+          "looks": "Link turns text colour."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-toc__link:focus-visible",
+          "looks": "2px ring inset by 2px."
+        },
+        "disabled": {
+          "none": "No disabled links."
+        },
+        "selected": {
+          "when": ".ayy-toc__link[aria-current] (not \"false\"), kept in sync by <ayy-toc> or connectToc",
+          "looks": "Section being read: text colour and a 2px --ayy-spot bar on the rail; its number takes the accent; a parent of it turns text colour too. Forced colours: underline and Highlight bar."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its column. sticky stays in view under the navbar and scrolls on its own when taller than the viewport."
       },
       "js": "tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.",
       "element": {
@@ -2545,6 +2939,38 @@
           "default": false
         }
       },
+      "states": {
+        "default": {
+          "looks": "Label (control md text, medium weight, text colour) above the control; hint below in muted control sm text."
+        },
+        "hover": {
+          "none": "The control inside shows hover."
+        },
+        "pressed": {
+          "none": "The control inside handles presses."
+        },
+        "focus": {
+          "none": "The control inside shows the focus ring."
+        },
+        "disabled": {
+          "when": ".ayy-field:has(:disabled), .ayy-label:has(> :disabled)",
+          "looks": "Label dims to --ayy-opacity-disabled with a not-allowed cursor; the control dims itself."
+        },
+        "selected": {
+          "none": "Selection belongs to the control (Checkbox, Radio, Switch)."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on the control plus .ayy-field__error, linked with aria-describedby (React: Field error)",
+          "looks": "Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border."
+        },
+        "loading": {
+          "none": "Fields don't load; show a Skeleton for the whole form while its data loads."
+        }
+      },
+      "sizes": {
+        "density": "Label text follows control md, hint and error control sm, so they grow with data-density.",
+        "width": "Fills its column; the control inside stretches to it. inline puts the control and label side by side (checkboxes, switches)."
+      },
       "js": "fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants",
       "react": {
         "import": "import { Field, Label, FieldHint, FieldError } from \"ayywi/react\";",
@@ -2620,8 +3046,43 @@
         }
       },
       "states": {
-        "aria-invalid=\"true\"": "Red border and focus ring. Pair with a Field error message.",
-        "disabled": "Dimmed, not-allowed cursor."
+        "default": {
+          "looks": "Wash fill, 1px line-strong border, control radius; placeholder in muted at 70%."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns line-hover."
+        },
+        "pressed": {
+          "none": "Text fields have no pressed look; the caret shows where you are."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "2px ring drawn just inside the edge (-1px offset); the border goes transparent."
+        },
+        "disabled": {
+          "when": ":disabled",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "none": "Not a choice control."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" (with a FieldError)",
+          "looks": "Border 60% destructive; the focus ring turns destructive. Forced colours: dashed border."
+        },
+        "loading": {
+          "none": "No loading look. While a value is checked (a username), use an Input group with a small Spinner as its addon."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.",
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+          "lg": "Control lg height (40px compact, 48 comfortable, 52 touch), more padding, lg text."
+        },
+        "density": "Height and text size follow data-density; touch keeps md text at 16px so iOS doesn't zoom.",
+        "width": "Fills its container (inline-size 100%); set a max-inline-size in rem for short values."
       },
       "js": "inputClass({ size?, className? }) → string",
       "react": {
@@ -2700,6 +3161,45 @@
           "default": "md",
           "component": "InputGroup"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Looks like an Input: wash fill, line-strong border; icons and addons are muted, the input inside loses its own border."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns line-hover."
+        },
+        "pressed": {
+          "none": "Like Input; a trailing Button keeps its own pressed look."
+        },
+        "focus": {
+          "when": ".ayy-input-group:has(> .ayy-input:focus-visible)",
+          "looks": "The ring moves from the input to the whole group (2px, -1px offset); the border goes transparent."
+        },
+        "disabled": {
+          "when": ".ayy-input-group:has(> .ayy-input:disabled)",
+          "looks": "The whole group dims to --ayy-opacity-disabled with a not-allowed cursor."
+        },
+        "selected": {
+          "none": "Not a choice control."
+        },
+        "error": {
+          "when": ".ayy-input-group:has(> .ayy-input[aria-invalid=\"true\"])",
+          "looks": "Group border 60% destructive, destructive focus ring. Forced colours: dashed 2px border."
+        },
+        "loading": {
+          "none": "No built-in loading look; put a small Spinner in .ayy-input-group__addon while a value is checked."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding.",
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+          "lg": "Control lg height (40px compact, 48 comfortable, 52 touch)."
+        },
+        "density": "Height and text follow data-density; leading icons stay 16px.",
+        "width": "Fills its container like an Input."
       },
       "js": "inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.",
       "react": {
@@ -2782,8 +3282,38 @@
         }
       },
       "states": {
-        "aria-invalid=\"true\"": "Red border and focus ring.",
-        "disabled": "Dimmed."
+        "default": {
+          "looks": "Like Input: wash fill, line-strong border; at least 5rem tall, resizable vertically."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns line-hover."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "2px ring just inside the edge; the border goes transparent."
+        },
+        "disabled": {
+          "when": ":disabled",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "none": "Not a choice control."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" (with a FieldError)",
+          "looks": "Border 60% destructive, destructive focus ring. Forced colours: dashed border."
+        },
+        "loading": {
+          "none": "No loading look; disable it and show a Spinner in the submit Button while the text is sent."
+        }
+      },
+      "sizes": {
+        "density": "Text follows control md; the minimum height (5rem) and padding don't change.",
+        "width": "Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls)."
       },
       "js": "textareaClass({ autosize?, mono?, className? }) → string",
       "react": {
@@ -2848,9 +3378,47 @@
         }
       },
       "states": {
-        "aria-invalid=\"true\"": "Red border (on the <select>).",
-        "disabled": "Dimmed, chevron too.",
-        "multiple": "Renders as a list box: auto height, no chevron."
+        "default": {
+          "looks": "Native <select> with a wash fill, line-strong border and a muted chevron at the inline end; the options popup is the OS one."
+        },
+        "hover": {
+          "when": ".ayy-select__control:hover",
+          "looks": "Border turns line-hover."
+        },
+        "pressed": {
+          "none": "Pressing opens the OS picker, which draws its own state."
+        },
+        "focus": {
+          "when": ".ayy-select__control:focus-visible",
+          "looks": "2px ring just inside the edge; the border goes transparent."
+        },
+        "disabled": {
+          "when": ".ayy-select__control:disabled",
+          "looks": "Control and chevron dim to --ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "none": "The chosen option shows as the control's text; the OS marks it in the popup."
+        },
+        "error": {
+          "when": ".ayy-select__control[aria-invalid=\"true\"]",
+          "looks": "Border 60% destructive, destructive focus ring. Forced colours: dashed border."
+        },
+        "loading": {
+          "none": "No loading look; disable it with a \"Loading…\" option until the options arrive, or use a Skeleton for the form."
+        },
+        "multiple": {
+          "when": "multiple, or size > 1",
+          "looks": "Renders a list box: no fixed height, no chevron."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), sm text.",
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+          "lg": "Control lg height (40px compact, 48 comfortable, 52 touch), lg text."
+        },
+        "density": "Height and text follow data-density.",
+        "width": "Fills its container; long option text is cut with an ellipsis."
       },
       "js": "selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>",
       "react": {
@@ -2920,9 +3488,52 @@
         }
       },
       "states": {
-        "input[aria-expanded=\"true\"]": "The list is open.",
-        "option[aria-selected=\"true\"]": "The option the arrow keys are on.",
-        "option[hidden]": "Filtered out."
+        "default": {
+          "looks": "An Input with a muted chevron at the inline end; the list is a raised popover with the overlay shadow."
+        },
+        "hover": {
+          "when": ".ayy-combobox__option:hover",
+          "looks": "Option gets the wash-hover background (the input hovers like Input)."
+        },
+        "pressed": {
+          "none": "Options have no pressed look: clicking picks one and closes the list."
+        },
+        "focus": {
+          "when": "the input's :focus-visible",
+          "looks": "Input's ring. Focus stays in the input while the arrow keys move through options (see selected)."
+        },
+        "disabled": {
+          "when": ".ayy-combobox__option[aria-disabled=\"true\"]; disabled on the input",
+          "looks": "Option dims to --ayy-opacity-disabled with a not-allowed cursor; a disabled input dims like Input."
+        },
+        "selected": {
+          "when": ".ayy-combobox__option[aria-selected=\"true\"]",
+          "looks": "The option under the arrow keys gets the wash-hover background. Forced colours: Highlight fill."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on the input",
+          "looks": "Input's red border and ring."
+        },
+        "loading": {
+          "none": "No loading look; while results load, show .ayy-combobox__empty with \"Searching…\"."
+        },
+        "open": {
+          "when": "input[aria-expanded=\"true\"], listbox :popover-open",
+          "looks": "The list fades in under the input, at most 18rem (or half the viewport) tall, then scrolls."
+        },
+        "empty": {
+          "when": ".ayy-combobox__empty shown",
+          "looks": "Muted \"No results\" row when every option is filtered out."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "The input at Input sm.",
+          "md": "The input at Input md.",
+          "lg": "The input at Input lg."
+        },
+        "density": "Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.",
+        "width": "Fills its container; the list is at most 28rem wide."
       },
       "js": "connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",
       "element": {
@@ -2995,10 +3606,43 @@
       },
       "variants": {},
       "states": {
-        ":checked": "Checked.",
-        ":indeterminate": "Mixed — set input.indeterminate = true (React: indeterminate prop).",
-        "aria-invalid=\"true\"": "Red border.",
-        "disabled": "Dimmed."
+        "default": {
+          "looks": "A box --ayy-size-check square with a line-hover border on a wash fill."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns text-soft."
+        },
+        "pressed": {
+          "none": "No pressed look; it toggles on release."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "when": ":disabled",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border (and fill when checked)."
+        },
+        "selected": {
+          "when": ":checked",
+          "looks": "Primary fill and border with a primary-fg tick that springs in."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\"",
+          "looks": "Destructive border. Forced colours: dashed."
+        },
+        "loading": {
+          "none": "Toggles are instant; if saving fails, revert it and say so in a toast."
+        },
+        "indeterminate": {
+          "when": ":indeterminate (el.indeterminate = true; React: indeterminate)",
+          "looks": "Primary fill with a bar instead of the tick: some of a group selected."
+        }
+      },
+      "sizes": {
+        "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.",
+        "width": "Fixed square."
       },
       "js": "checkboxClass constant",
       "react": {
@@ -3067,8 +3711,39 @@
         }
       },
       "states": {
-        ":checked": "Selected.",
-        "disabled": "Dimmed."
+        "default": {
+          "looks": "A circle --ayy-size-check wide with a line-hover border on a wash fill."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns text-soft."
+        },
+        "pressed": {
+          "none": "No pressed look; it picks on release."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "2px ring, 2px offset. Arrow keys move the choice within the group."
+        },
+        "disabled": {
+          "when": ":disabled",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border."
+        },
+        "selected": {
+          "when": ":checked",
+          "looks": "Primary fill and border with a primary-fg dot that springs in."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on each radio of the group",
+          "looks": "Destructive border. Forced colours: dashed."
+        },
+        "loading": {
+          "none": "Choosing is instant."
+        }
+      },
+      "sizes": {
+        "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+        "width": "Fixed circle. The group stacks (vertical) or wraps in a row (horizontal)."
       },
       "js": "radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string",
       "react": {
@@ -3151,6 +3826,44 @@
           "default": false,
           "component": "SegmentedControl"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "A pill track (wash fill, line border); options in text-soft, medium weight."
+        },
+        "hover": {
+          "when": ".ayy-segmented-control__option:hover",
+          "looks": "Option text turns full text colour."
+        },
+        "pressed": {
+          "none": "No pressed look; it picks on release."
+        },
+        "focus": {
+          "when": ".ayy-segmented-control__option:has(> input:focus-visible)",
+          "looks": "2px ring inset by 2px; on the chosen segment the ring takes the page colour so it shows on the fill."
+        },
+        "disabled": {
+          "when": ".ayy-segmented-control__option:has(> input:disabled)",
+          "looks": "Option dims to --ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "when": ".ayy-segmented-control__option:has(> input:checked)",
+          "looks": "Filled with the text colour, label in the page colour, small shadow. Forced colours: Highlight fill."
+        },
+        "error": {
+          "none": "One option is always chosen, so there's nothing to be invalid."
+        },
+        "loading": {
+          "none": "Switching is instant; show loading in the content it controls (a Skeleton)."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.",
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch)."
+        },
+        "density": "Height and text follow data-density.",
+        "width": "Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments."
       },
       "js": "segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.",
       "react": {
@@ -3240,9 +3953,38 @@
         }
       },
       "states": {
-        ".ayy-chip:has(> input:checked)": "On (checkbox or radio chips).",
-        ".ayy-chip[aria-pressed=\"true\"]": "On (button chips).",
-        ":disabled": "Dimmed, not clickable."
+        "default": {
+          "looks": "Pill with a line-strong border, transparent fill, text-soft label at the sm control height."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Wash fill, line-hover border, full text colour. A removable chip keeps its border; its × gets a wash-hover circle."
+        },
+        "pressed": {
+          "none": "No pressed look; it toggles on release."
+        },
+        "focus": {
+          "when": ":focus-visible, :has(> input:focus-visible); .ayy-chip__remove:focus-visible",
+          "looks": "2px ring, 2px offset (1px on the remove button)."
+        },
+        "disabled": {
+          "when": ":disabled, :has(> input:disabled)",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "when": ":has(> input:checked) or [aria-pressed=\"true\"]",
+          "looks": "Text-colour border, wash-hover fill and a tick before the label (not colour alone); the count turns text-soft. Forced colours: Highlight fill."
+        },
+        "error": {
+          "none": "Chips are filters and choices; show validation on the group with a FieldError."
+        },
+        "loading": {
+          "none": "Filtering shows its loading in the results (Skeleton), not on the chip."
+        }
+      },
+      "sizes": {
+        "density": "Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.",
+        "width": "Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars)."
       },
       "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
       "react": {
@@ -3366,8 +4108,39 @@
         }
       },
       "states": {
-        ".ayy-choice-card:has(> input:checked)": "Chosen.",
-        ".ayy-choice-card:has(> input:disabled)": "Not available."
+        "default": {
+          "looks": "Surface card with a line border and card radius; the radio or checkbox sits in the inline-end corner. Compact: centred label, input hidden."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns line-hover."
+        },
+        "pressed": {
+          "none": "No pressed look; it picks on release."
+        },
+        "focus": {
+          "when": ":has(> input:focus-visible)",
+          "looks": "2px ring around the whole card, 2px offset."
+        },
+        "disabled": {
+          "when": ":has(> input:disabled)",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor; a compact slot's title is struck through too."
+        },
+        "selected": {
+          "when": ":has(> input:checked)",
+          "looks": "Text-colour border plus a 1px ring (reads as 2px without moving anything). Compact fills with the text colour, label in the page colour. Forced colours: Highlight outline or fill."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on the inputs, with a FieldError under the group",
+          "looks": "The inputs draw their red borders (Radio, Checkbox); compact cards show only the FieldError."
+        },
+        "loading": {
+          "none": "Load the options before showing them; use Skeletons in the cards' shape meanwhile."
+        }
+      },
+      "sizes": {
+        "density": "Card padding is fixed; the corner input follows --ayy-size-check. Compact cards are at least the lg control height.",
+        "width": "The group is a grid of columns at least --ayy-min wide (12rem, 6rem for compact) that fills its box; scroll makes one sideways row."
       },
       "js": "choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.",
       "react": {
@@ -3459,6 +4232,39 @@
         "ayy-slider-range": "A role=\"group\" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A 6px pill track in a 14% text tint, filled in the text colour up to an 18px page-coloured thumb with a text-colour rim."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Thumb grows 10%."
+        },
+        "pressed": {
+          "none": "No separate pressed look; the thumb follows the pointer while dragged."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "Ring around the thumb (page-colour gap, then 2px ring), not the track."
+        },
+        "disabled": {
+          "when": ":disabled",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "none": "The value is the state: the fill reaches it (--ayy-value 0–100)."
+        },
+        "error": {
+          "none": "A slider can't hold an invalid value; its min, max and step bound it."
+        },
+        "loading": {
+          "none": "No loading look."
+        }
+      },
+      "sizes": {
+        "density": "The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.",
+        "width": "Fills its container. A range (two thumbs) is .ayy-slider-range."
+      },
       "js": "sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.",
       "react": {
         "import": "import { Slider, SliderRange } from \"ayywi/react\";",
@@ -3549,8 +4355,42 @@
         }
       },
       "states": {
-        "button[aria-disabled=\"true\"]": "Can't go further (at min or max). Stays focusable.",
-        "input[aria-invalid=\"true\"]": "Invalid value: red border."
+        "default": {
+          "looks": "One box like an Input (wash fill, line-strong border): minus, the number centred in tabular figures, plus."
+        },
+        "hover": {
+          "when": ":hover; the step buttons' :hover",
+          "looks": "Box border turns line-hover; a step button gets a wash-hover fill and text colour."
+        },
+        "pressed": {
+          "none": "Step buttons have no pressed look; each press steps once."
+        },
+        "focus": {
+          "when": ":has(> input:focus-visible); step buttons :focus-visible",
+          "looks": "Typing: the ring replaces the box border (as Input). A focused step button gets a 2px ring inset by 2px."
+        },
+        "disabled": {
+          "when": "step button [aria-disabled=\"true\"] at min or max; disabled on the input",
+          "looks": "A step button that can't go further dims and ignores clicks but keeps focus. A disabled input dims the whole field."
+        },
+        "selected": {
+          "none": "Not a choice control."
+        },
+        "error": {
+          "when": ":has(> input[aria-invalid=\"true\"])",
+          "looks": "Border 60% destructive. Forced colours: dashed."
+        },
+        "loading": {
+          "none": "Stepping is instant."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.",
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide."
+        },
+        "density": "Height, step-button width and text follow data-density.",
+        "width": "Hugs its content (step buttons plus the number box)."
       },
       "js": "numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.",
       "react": {
@@ -3625,9 +4465,42 @@
         }
       },
       "states": {
-        "[data-dragging]": "Files are held over it: solid border in the text colour.",
-        "input:disabled": "Dimmed, not clickable.",
-        "input[aria-invalid=\"true\"]": "Rejected file: red border; say why in a FieldError."
+        "default": {
+          "looks": "Wash-filled zone with a dashed line-hover border and card radius; a muted icon, a title and a hint, centred, at least 9rem tall."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns text-soft, fill wash-hover."
+        },
+        "pressed": {
+          "none": "Clicking opens the file picker; no pressed look."
+        },
+        "focus": {
+          "when": ":has(> input:focus-visible)",
+          "looks": "2px ring around the zone, 2px offset."
+        },
+        "disabled": {
+          "when": ":has(> input:disabled)",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "none": "Picked files show in a List below the zone, not on it."
+        },
+        "error": {
+          "when": ":has(> input[aria-invalid=\"true\"])",
+          "looks": "Border 60% destructive; pair with a FieldError (wrong type, too big)."
+        },
+        "loading": {
+          "none": "Show upload progress per file in the List below (a Progress in each row)."
+        },
+        "dragging": {
+          "when": "[data-dragging] (set by React or ayywi/elements)",
+          "looks": "Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint."
+        }
+      },
+      "sizes": {
+        "density": "Padding and text are fixed; doesn't follow data-density.",
+        "width": "Fills its container. compact is one line (icon then text) for a form field or a chat composer."
       },
       "js": "dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).",
       "react": {
@@ -3695,8 +4568,38 @@
       },
       "variants": {},
       "states": {
-        ":checked / aria-checked=\"true\"": "On.",
-        "disabled": "Dimmed, not-allowed."
+        "default": {
+          "looks": "Off: a pill (wash-hover fill, line-strong border) with a muted thumb at the inline start."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns line-hover."
+        },
+        "pressed": {
+          "none": "No pressed look; it flips on release."
+        },
+        "focus": {
+          "when": ":focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "when": ":disabled or [aria-disabled=\"true\"]",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText."
+        },
+        "selected": {
+          "when": ":checked or [aria-checked=\"true\"]",
+          "looks": "On: text-colour track, page-colour thumb slid to the inline end (mirrors in RTL). Forced colours: Highlight."
+        },
+        "error": {
+          "none": "A switch is always valid; it applies at once. If saving the setting fails, flip it back and say so in a toast."
+        },
+        "loading": {
+          "none": "Settings switch instantly; don't put a spinner on a switch."
+        }
+      },
+      "sizes": {
+        "density": "--ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.",
+        "width": "Fixed. Put it in an inline Field with its label."
       },
       "js": "switchClass constant",
       "react": {
@@ -3754,6 +4657,36 @@
         "ayy-page-header__actions": "The page's buttons, at the inline end (under the title on phones). One primary at most; the rest outline or ghost."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "An h1 (2xl heading font, semibold) with a muted md description under it, actions at the inline end."
+        },
+        "hover": {
+          "none": "Static text; the buttons in __actions have their own states."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable; its buttons are."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "Show a failed load under it in an Alert."
+        },
+        "loading": {
+          "none": "Render the title at once; put Skeletons below it for the content."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its container; the description stops at --ayy-size-measure. Below 48rem the actions drop under the description, aligned to the start."
+      },
       "js": "pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.",
       "react": {
         "import": "import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from \"ayywi/react\";",
@@ -3827,6 +4760,36 @@
           ],
           "default": false
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Block padding of --ayy-space-24 (20 on phones, 32 from 90rem); an optional header with eyebrow, accent number, a bold fluid title and a muted lg description."
+        },
+        "hover": {
+          "none": "Static."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Full width; combine with .ayy-container to centre it. The header stops at --ayy-size-measure; center centres it (back to the start on phones). The title scales from 2xl to 4xl with the viewport."
       },
       "js": "sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.",
       "react": {
@@ -3935,6 +4898,39 @@
           "component": "Card"
         }
       },
+      "states": {
+        "default": {
+          "looks": "Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5."
+        },
+        "hover": {
+          "when": ":hover",
+          "looks": "Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer."
+        },
+        "pressed": {
+          "none": "No pressed look, even when interactive."
+        },
+        "focus": {
+          "when": ".ayy-card__link:focus-visible",
+          "looks": "The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus."
+        },
+        "disabled": {
+          "none": "Cards aren't disabled; dim nothing. For an unavailable option use a Choice card with a disabled input."
+        },
+        "selected": {
+          "when": "featured (ayy-card--featured)",
+          "looks": "Text-colour border plus a 1px ring, so it reads as 2px without moving. For a picked option use a Choice card instead. Forced colours: Highlight outline."
+        },
+        "error": {
+          "none": "Put an Alert inside the card's content."
+        },
+        "loading": {
+          "none": "No loading look; show Skeletons in the card's content shape (aria-busy on the region)."
+        }
+      },
+      "sizes": {
+        "density": "Padding and text don't follow data-density.",
+        "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card."
+      },
       "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
       "react": {
         "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"ayywi/react\";",
@@ -4036,6 +5032,40 @@
         "ayy-tabs__count": "Small count after a tab's label (items in a filter). Inverts with the selected tab."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A pill track (wash fill, line border) with text-soft tab labels."
+        },
+        "hover": {
+          "when": ".ayy-tabs__tab:hover",
+          "looks": "Tab label turns full text colour."
+        },
+        "pressed": {
+          "none": "No pressed look; it selects on click."
+        },
+        "focus": {
+          "when": ".ayy-tabs__tab:focus-visible; .ayy-tabs__panel:focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "when": ".ayy-tabs__tab:disabled",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor; arrow keys skip it. Forced colours: GrayText."
+        },
+        "selected": {
+          "when": ".ayy-tabs__tab[aria-selected=\"true\"]",
+          "looks": "Filled with the text colour, label in the page colour, small shadow; its count gets a 15% page-colour tint. Forced colours: Highlight."
+        },
+        "error": {
+          "none": "No error look; show it in the panel."
+        },
+        "loading": {
+          "none": "Show loading in the panel (Skeleton), not on the tab."
+        }
+      },
+      "sizes": {
+        "density": "The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.",
+        "width": "The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container."
+      },
       "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
       "element": {
         "tag": "ayy-tabs",
@@ -4130,6 +5160,42 @@
         "ayy-accordion__content": "The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "Items stacked between hairlines; each trigger is md text, medium weight, with a muted chevron pointing down."
+        },
+        "hover": {
+          "when": ".ayy-accordion__trigger:hover",
+          "looks": "Chevron turns text colour."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-accordion__trigger:focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "none": "Native <details> can't be disabled; leave out an item that can't open."
+        },
+        "selected": {
+          "none": "Open is the only state (see open)."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        },
+        "open": {
+          "when": "[open] on the <details>",
+          "looks": "Chevron points up and the content shows in text-soft sm text. With the same name on each item, opening one closes the others."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its container."
+      },
       "js": "accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.",
       "react": {
         "import": "import { Accordion, AccordionItem } from \"ayywi/react\";",
@@ -4193,6 +5259,40 @@
         "ayy-carousel__controls": "Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows are directional Hugeicons (ayy-icon--directional), so they flip in RTL."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A track of slides that scrolls and snaps; previous and next Buttons centred below."
+        },
+        "hover": {
+          "when": "the controls' Button :hover",
+          "looks": "As Button."
+        },
+        "pressed": {
+          "when": "the controls' Button :active",
+          "looks": "As Button."
+        },
+        "focus": {
+          "when": ".ayy-carousel__track:focus-visible; the controls' Buttons",
+          "looks": "The track gets a 2px ring, 2px offset (arrow keys then scroll it); buttons as Button."
+        },
+        "disabled": {
+          "when": "[aria-disabled=\"true\"] on previous/next at either end (set by <ayy-carousel> or React)",
+          "looks": "The Button's disabled look; it stays focusable and does nothing."
+        },
+        "selected": {
+          "none": "No current-slide look; the slides' position is the state."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "Show Skeleton slides while the content loads."
+        }
+      },
+      "sizes": {
+        "density": "The track doesn't follow data-density; the control Buttons do.",
+        "width": "Fills its container; each slide is --ayy-slide wide (default min(22rem, 85%)) and as tall as the tallest."
+      },
       "js": "carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.",
       "element": {
         "tag": "ayy-carousel",
@@ -4278,6 +5378,36 @@
           "default": false
         }
       },
+      "states": {
+        "default": {
+          "looks": "A 1px hairline across its container (vertical: down the row)."
+        },
+        "hover": {
+          "none": "Decorative."
+        },
+        "pressed": {
+          "none": "Decorative."
+        },
+        "focus": {
+          "none": "Decorative."
+        },
+        "disabled": {
+          "none": "Decorative."
+        },
+        "selected": {
+          "none": "Decorative."
+        },
+        "error": {
+          "none": "Decorative."
+        },
+        "loading": {
+          "none": "Decorative."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Horizontal fills the width; vertical stretches to the row's height (at least 1em). fade fades both ends."
+      },
       "js": "separatorClass({ orientation?, fade?, className? }) → string",
       "react": {
         "import": "import { Separator } from \"ayywi/react\";",
@@ -4362,6 +5492,48 @@
           "default": "center",
           "component": "DialogContent"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Closed: not rendered. Open (see open): surface panel, line-strong border, card radius, overlay shadow, over a blurred --ayy-color-overlay backdrop."
+        },
+        "hover": {
+          "when": ".ayy-dialog__close:hover",
+          "looks": "Close button gets a wash-hover circle and the text colour."
+        },
+        "pressed": {
+          "none": "The panel has no pressed look; its buttons have Button's."
+        },
+        "focus": {
+          "when": ".ayy-dialog__close:focus-visible; .ayy-dialog__body:focus-visible (scrolling body with tabindex=\"0\")",
+          "looks": "Close: 2px ring, 2px offset. Body: ring inset by 2px."
+        },
+        "disabled": {
+          "none": "A dialog isn't disabled; disable the buttons inside it."
+        },
+        "selected": {
+          "none": "No selected state."
+        },
+        "error": {
+          "none": "Show errors inside the body: a FieldError per field, an Alert for a failed save. Keep the dialog open."
+        },
+        "loading": {
+          "none": "No loading look; put the primary Button in loading while it saves, Skeletons in the body while it loads."
+        },
+        "open": {
+          "when": "[open] via showModal() (React open; <ayy-dialog>)",
+          "looks": "Fades and scales in (centred); side-start / side-end slide in from that edge (RTL-aware); side-bottom slides up as a sheet with a grab handle. The page behind is inert and stops scrolling."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "24rem wide.",
+          "md": "32rem wide.",
+          "lg": "42rem wide.",
+          "xl": "56rem wide."
+        },
+        "density": "Padding is fixed (--ayy-space-6); its controls follow data-density.",
+        "width": "The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem."
       },
       "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
       "element": {
@@ -4509,7 +5681,38 @@
         }
       },
       "states": {
-        ":popover-open": "Open."
+        "default": {
+          "looks": "Closed: hidden. Open: raised surface, line-strong border, control radius, overlay shadow, sm text."
+        },
+        "hover": {
+          "none": "The panel has no hover look; the trigger is a Button with its own."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "none": "The panel itself doesn't take a ring; focus moves to the controls inside."
+        },
+        "disabled": {
+          "none": "Disable the trigger instead."
+        },
+        "selected": {
+          "none": "No selected state."
+        },
+        "error": {
+          "none": "Show errors inside it (FieldError)."
+        },
+        "loading": {
+          "none": "Put a Spinner or Skeleton inside while its content loads."
+        },
+        "open": {
+          "when": ":popover-open",
+          "looks": "Fades in and scales up from 97% next to its trigger (React Popover, <ayy-popover>); light-dismisses on Esc or a click outside."
+        }
+      },
+      "sizes": {
+        "density": "Padding is fixed; its controls follow data-density.",
+        "width": "As wide as its content, at most 22rem (or the viewport minus 1rem)."
       },
       "js": "popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }",
       "element": {
@@ -4601,6 +5804,42 @@
           "default": "top"
         }
       },
+      "states": {
+        "default": {
+          "looks": "Hidden. The bubble is a raised surface with a line-strong border and 2xs text."
+        },
+        "hover": {
+          "when": ".ayy-tooltip:hover",
+          "looks": "The bubble fades and slides in after 200ms."
+        },
+        "pressed": {
+          "none": "No pressed look; the trigger keeps its own."
+        },
+        "focus": {
+          "when": ".ayy-tooltip:focus-within",
+          "looks": "The bubble shows at once (no delay) while the trigger has focus."
+        },
+        "disabled": {
+          "none": "A disabled button gets no focus and shows no tooltip; explain why it's disabled in visible text instead."
+        },
+        "selected": {
+          "none": "No selected state."
+        },
+        "error": {
+          "none": "Never put errors in a tooltip; use a FieldError."
+        },
+        "loading": {
+          "none": "No loading state."
+        },
+        "dismissed": {
+          "when": "[data-dismissed] (Esc, set by React Tooltip or <ayy-tooltip>)",
+          "looks": "Stays hidden until the pointer and focus leave."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "As wide as its text, at most 16rem, then wraps."
+      },
       "js": "tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).",
       "element": {
         "tag": "ayy-tooltip",
@@ -4683,6 +5922,37 @@
           ],
           "default": "default"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Wash fill, line-strong border, control radius; semibold title, text-soft description. info, success, warning and destructive tint the icon, an 8% fill and a 35% border in their colour."
+        },
+        "hover": {
+          "none": "Static; its action Buttons have their own states."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable; its actions are."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "when": "destructive (ayy-alert--destructive), role=\"alert\" when it appears after an action",
+          "looks": "Red icon, 8% red fill and 35% red border. Add a Try again action for a failed load or save."
+        },
+        "loading": {
+          "none": "Not a loading indicator; use a Spinner, Progress or Skeleton."
+        }
+      },
+      "sizes": {
+        "density": "Padding and sm text are fixed.",
+        "width": "Fills its container."
       },
       "js": "alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
       "react": {
@@ -4776,6 +6046,43 @@
           "component": "Toaster"
         }
       },
+      "states": {
+        "default": {
+          "looks": "Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start."
+        },
+        "hover": {
+          "when": ".ayy-toast__close:hover",
+          "looks": "Close button gets a wash-hover circle and the text colour."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-toast__close:focus-visible",
+          "looks": "2px ring, 2px offset."
+        },
+        "disabled": {
+          "none": "Not disabled."
+        },
+        "selected": {
+          "none": "No selected state."
+        },
+        "error": {
+          "when": "toast({ variant: \"destructive\" })",
+          "looks": "Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError)."
+        },
+        "loading": {
+          "none": "A toast confirms; for a long task show Progress where the work happens."
+        },
+        "leaving": {
+          "when": "[data-leaving] (set by toast())",
+          "looks": "Fades and shrinks out. Only the 4 newest show; older ones wait."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "min(22rem, viewport minus 2rem), stacked in the corner given by position."
+      },
       "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })",
       "react": {
         "import": "import { toast, Toaster } from \"ayywi/react\";",
@@ -4859,6 +6166,43 @@
           "default": "md"
         }
       },
+      "states": {
+        "default": {
+          "looks": "A 6px pill track in a 10% text tint, filled in the text colour from the inline start to --ayy-value %."
+        },
+        "hover": {
+          "none": "Not interactive."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Not interactive; at 0 it's an empty track."
+        },
+        "selected": {
+          "none": "The value is the state (--ayy-value, aria-valuenow)."
+        },
+        "error": {
+          "when": "destructive (ayy-progress--destructive)",
+          "looks": "Red fill: a failed upload or an over-limit quota. Say why in text next to it."
+        },
+        "loading": {
+          "when": ".ayy-progress--indeterminate without aria-valuenow",
+          "looks": "A 40% bar slides along the track, unknown duration (RTL reverses it)."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "4px track.",
+          "md": "6px track.",
+          "lg": "10px track."
+        },
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its container."
+      },
       "js": "progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)",
       "react": {
         "import": "import { Progress } from \"ayywi/react\";",
@@ -4927,6 +6271,42 @@
           "component": "Spinner"
         }
       },
+      "states": {
+        "default": {
+          "looks": "Loading is its only look: a ring in currentColor (20% track, solid top) turning once a slow duration; under reduced motion it stops as a still ring."
+        },
+        "hover": {
+          "none": "Not interactive."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "Replace it with an Alert or FieldError when the work fails."
+        },
+        "loading": {
+          "when": "always (it is the loading state); give it role=\"status\" and a label, or aria-hidden inside a busy Button",
+          "looks": "Spins."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "16px (--ayy-size-icon-sm).",
+          "md": "1.25em, matching an icon beside text.",
+          "lg": "32px (--ayy-size-icon-xl), 3px ring."
+        },
+        "density": "Doesn't follow data-density; md follows the font size around it.",
+        "width": "Square."
+      },
       "js": "spinnerClass({ size?, className? }) → string. Buttons: add aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).",
       "react": {
         "import": "import { Spinner } from \"ayywi/react\";",
@@ -4992,6 +6372,37 @@
           ],
           "default": "block"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Loading is its only look: a wash-hover block with a quiet shimmer that stops under reduced motion."
+        },
+        "hover": {
+          "none": "Not interactive."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "Replace Skeletons with an Alert and a retry when loading fails."
+        },
+        "loading": {
+          "when": "always; set aria-busy=\"true\" on the region it fills and aria-hidden on the skeletons",
+          "looks": "Shimmers. Forced colours: a dashed outline instead."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Size it like the content it stands in for. block fills the width at 1rem tall; text is 0.75em tall; circle is 2.5rem (an avatar)."
       },
       "js": "skeletonClass({ shape?, className? }) → string",
       "react": {
@@ -5064,6 +6475,36 @@
           "default": false,
           "component": "EmptyState"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Centred: an optional Icon tile, an lg heading-font title, a muted sm sentence (at most 42ch) and the action that fills it."
+        },
+        "hover": {
+          "none": "Static; its action Buttons have their own states."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable; its actions are."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "A failed load isn't empty: show an Alert with a retry instead."
+        },
+        "loading": {
+          "none": "While loading show Skeletons, never an empty state."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content."
       },
       "js": "emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.",
       "react": {
@@ -5158,6 +6599,37 @@
           "default": "default"
         }
       },
+      "states": {
+        "default": {
+          "looks": "A 2xs pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static."
+        },
+        "hover": {
+          "none": "A badge is a label, not a control. For a removable filter use a Chip."
+        },
+        "pressed": {
+          "none": "A badge is a label, not a control. For a removable filter use a Chip."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "A badge is a label, not a control. For a removable filter use a Chip."
+        },
+        "selected": {
+          "none": "A badge is a label, not a control. For a removable filter use a Chip."
+        },
+        "error": {
+          "when": "destructive (ayy-badge--destructive)",
+          "looks": "Red text on a 10% red tint: a failed run, an overdue invoice. Pair the colour with a word."
+        },
+        "loading": {
+          "none": "No loading look; a pulsing __dot shows a live state, not progress."
+        }
+      },
+      "sizes": {
+        "density": "Fixed 2xs text; doesn't follow data-density.",
+        "width": "Hugs its text, never wraps."
+      },
       "js": "badgeClass({ variant?, className? }) → string",
       "react": {
         "import": "import { Badge } from \"ayywi/react\";",
@@ -5217,6 +6689,36 @@
         "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A small keycap: wash fill, line-strong border with a 2px bottom edge, mono text-soft at 0.75em."
+        },
+        "hover": {
+          "none": "A key label, not a control."
+        },
+        "pressed": {
+          "none": "A key label, not a control."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "A key label, not a control."
+        },
+        "selected": {
+          "none": "A key label, not a control."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "density": "Scales with the text around it (1.6em tall); doesn't follow data-density.",
+        "width": "At least 1.6em wide, grows with the key name."
+      },
       "js": "kbdClass constant.",
       "react": {
         "import": "import { Kbd } from \"ayywi/react\";",
@@ -5288,6 +6790,43 @@
           ],
           "default": "circle"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "A disc in wash-hover with text-soft semibold initials under the image. square uses a rounded square."
+        },
+        "hover": {
+          "none": "An avatar isn't a control; wrap it in a Button or link to make it one."
+        },
+        "pressed": {
+          "none": "An avatar isn't a control; wrap it in a Button or link to make it one."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "An avatar isn't a control; wrap it in a Button or link to make it one."
+        },
+        "selected": {
+          "none": "An avatar isn't a control; wrap it in a Button or link to make it one."
+        },
+        "error": {
+          "when": "a broken image (React and ayywi/elements set hidden on it)",
+          "looks": "The initials show; with CSS alone the broken-image icon is covered by a plain disc."
+        },
+        "loading": {
+          "none": "Initials show until the image loads; use a circle Skeleton only when the name isn't known yet."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "1.5rem (24px).",
+          "md": "2rem (32px).",
+          "lg": "2.5rem (40px).",
+          "xl": "3.5rem (56px)."
+        },
+        "density": "Doesn't follow data-density. Initials are 38% of the size.",
+        "width": "Square. A group overlaps them by 20% with a page-colour ring."
       },
       "js": "avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants",
       "react": {
@@ -5369,6 +6908,43 @@
           ],
           "default": false
         }
+      },
+      "states": {
+        "default": {
+          "looks": "A Hugeicons SVG stroked in currentColor, aligned to the text's capitals."
+        },
+        "hover": {
+          "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button."
+        },
+        "pressed": {
+          "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button."
+        },
+        "selected": {
+          "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button."
+        },
+        "error": {
+          "none": "No error state; colour the text around it."
+        },
+        "loading": {
+          "none": "Use a Spinner."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "auto": "1.25em: follows the text size.",
+          "sm": "16px (--ayy-size-icon-sm).",
+          "md": "20px.",
+          "lg": "24px.",
+          "xl": "32px."
+        },
+        "density": "Doesn't follow data-density; inside buttons, menu items and alerts the component sets the size.",
+        "width": "Square. directional mirrors it in RTL."
       },
       "js": "iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from \"@hugeicons/core-free-icons\". Plain HTML: paste the SVG with class=\"ayy-icon\".",
       "react": {
@@ -5456,6 +7032,41 @@
           "default": "md"
         }
       },
+      "states": {
+        "default": {
+          "looks": "A dark squircle lit from below by --ayy-spot, with the glyph in that accent and a 1px line inset."
+        },
+        "hover": {
+          "none": "Decorative."
+        },
+        "pressed": {
+          "none": "Decorative."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Decorative."
+        },
+        "selected": {
+          "none": "Decorative."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "No loading state."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "32px, lg radius.",
+          "md": "48px, xl radius.",
+          "lg": "64px, 2xl radius."
+        },
+        "density": "Doesn't follow data-density.",
+        "width": "Square; the glyph is 55% of it."
+      },
       "js": "iconTileClass({ size?, className? }) → string",
       "react": {
         "import": "import { IconTile } from \"ayywi/react\";",
@@ -5520,6 +7131,40 @@
           ],
           "default": "md"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "A bold 4xl heading-font number in tabular figures, a muted sm unit beside it and a muted sm label."
+        },
+        "hover": {
+          "none": "Static."
+        },
+        "pressed": {
+          "none": "Static."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Static."
+        },
+        "selected": {
+          "none": "Static."
+        },
+        "error": {
+          "none": "No error state; show \"—\" and an Alert when the number couldn't load."
+        },
+        "loading": {
+          "none": "Show a text Skeleton the width of the number while it loads."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "md": "Value at 4xl (3rem).",
+          "sm": "Value at 2xl (1.75rem), for cards and dense dashboards."
+        },
+        "density": "Doesn't follow data-density.",
+        "width": "Hugs its content; the value wraps its unit below when narrow."
       },
       "js": "statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.",
       "react": {
@@ -5600,6 +7245,39 @@
           "default": false,
           "component": "List"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Rows of leading media, a medium-weight title over a muted description, and muted xs meta, with 12px padding and lg radius. divided: flush rows between hairlines; compact: tight icon rows."
+        },
+        "hover": {
+          "when": ".ayy-list__item:has(.ayy-list__link):hover",
+          "looks": "A row with a __link gets a wash fill. Rows without one don't react."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-list__item:has(.ayy-list__link:focus-visible)",
+          "looks": "The ring goes around the whole row, inset by 2px."
+        },
+        "disabled": {
+          "none": "Rows aren't disabled; leave the link out of a row that can't open, and disable controls inside it."
+        },
+        "selected": {
+          "when": ".ayy-list__item:has(.ayy-list__link[aria-current=\"page\" | \"true\"])",
+          "looks": "The row you're on: wash-hover fill and a semibold title, as the App shell's current link. Forced colours: Highlight. For multi-select rows put a Checkbox in the row."
+        },
+        "error": {
+          "none": "No error look; show a failed load as an Alert in place of the list."
+        },
+        "loading": {
+          "none": "No loading look; show Skeleton rows (circle plus two text lines) with aria-busy on the list."
+        }
+      },
+      "sizes": {
+        "density": "Padding and sm text are fixed; controls in rows follow data-density.",
+        "width": "Fills its container; titles and descriptions wrap, meta stays on one line."
       },
       "js": "listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.",
       "react": {
@@ -5702,6 +7380,36 @@
           "default": false
         }
       },
+      "states": {
+        "default": {
+          "looks": "Stacked pairs: a muted 2xs uppercase label over an md value. row puts the pairs side by side."
+        },
+        "hover": {
+          "none": "Static."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "No error state; show \"—\" for a missing value."
+        },
+        "loading": {
+          "none": "Use a text Skeleton in each value while it loads."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its container. row is a grid of columns at least --ayy-min (9rem) wide; values break anywhere rather than overflow."
+      },
       "js": "dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.",
       "react": {
         "import": "import { DataList, DataListItem } from \"ayywi/react\";",
@@ -5762,6 +7470,36 @@
         "ayy-frame__body": "Holds the <img>, <video>, <picture> or <svg>, edge to edge."
       },
       "variants": {},
+      "states": {
+        "default": {
+          "looks": "A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted 2xs address."
+        },
+        "hover": {
+          "none": "Decorative."
+        },
+        "pressed": {
+          "none": "Decorative."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Decorative."
+        },
+        "selected": {
+          "none": "Decorative."
+        },
+        "error": {
+          "none": "No error state."
+        },
+        "loading": {
+          "none": "Give the image width and height so nothing jumps; no loading look."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density.",
+        "width": "Fills its container; the media inside scales to its width."
+      },
       "js": "frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.",
       "react": {
         "import": "import { Frame } from \"ayywi/react\";",
@@ -5826,6 +7564,37 @@
           "default": "in",
           "component": "ChatMessage"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Incoming: raised surface bubbles with a hairline at the inline start. out (the reader's): primary fill and primary-fg text at the inline end. Bubbles are at most 85% wide."
+        },
+        "hover": {
+          "none": "Bubbles are static; quick replies are Buttons."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "Not interactive."
+        },
+        "error": {
+          "none": "No error look; say a message failed in text under it with a retry Button."
+        },
+        "loading": {
+          "when": ".ayy-chat__typing inside a bubble",
+          "looks": "Three dots bouncing in turn while a reply is written."
+        }
+      },
+      "sizes": {
+        "density": "sm text; doesn't follow data-density.",
+        "width": "Fills its container; bubbles wrap and break long words."
       },
       "js": "chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.",
       "react": {
@@ -5909,8 +7678,41 @@
         }
       },
       "states": {
-        "tr[aria-selected=\"true\"]": "Selected row highlight.",
-        "th[aria-sort=\"ascending\" | \"descending\"]": "The sorted column: its header in the text colour and one arrow."
+        "default": {
+          "looks": "Collapsed table, xs text; header row on a wash fill with muted 2xs uppercase labels; hairlines between rows."
+        },
+        "hover": {
+          "when": "tbody tr:hover; .ayy-table__sort:hover",
+          "looks": "Row gets a wash fill; a sort button's label turns text colour."
+        },
+        "pressed": {
+          "none": "No pressed look."
+        },
+        "focus": {
+          "when": ".ayy-table__sort:focus-visible",
+          "looks": "2px ring on the sort button."
+        },
+        "disabled": {
+          "none": "Rows aren't disabled; disable the controls in them."
+        },
+        "selected": {
+          "when": "tr[aria-selected=\"true\"] (with a Checkbox in .ayy-table__select)",
+          "looks": "Wash-hover row fill. Forced colours: Highlight."
+        },
+        "error": {
+          "none": "Show a failed load as an Alert with a retry instead of the rows."
+        },
+        "loading": {
+          "none": "No loading look; render Skeleton rows in the column layout with aria-busy on the table."
+        },
+        "sorted": {
+          "when": "th[aria-sort=\"ascending\" | \"descending\"]",
+          "looks": "Header label turns text colour and only the arrow that applies shows, at full strength. Forced colours: underlined."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density. Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter.",
+        "width": "Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit."
       },
       "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
       "element": {
@@ -6074,6 +7876,37 @@
           "default": true,
           "component": "LineChart"
         }
+      },
+      "states": {
+        "default": {
+          "looks": "Bars, lines or areas in --ayy-chart-1… in order, muted 2xs labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table."
+        },
+        "hover": {
+          "when": ".ayy-chart__column:hover",
+          "looks": "Its bars mix 20% toward the text colour and show their data-value above them."
+        },
+        "pressed": {
+          "none": "Not interactive."
+        },
+        "focus": {
+          "none": "Not focusable; the data table carries the numbers."
+        },
+        "disabled": {
+          "none": "Not interactive."
+        },
+        "selected": {
+          "none": "No selected bar or series."
+        },
+        "error": {
+          "none": "No error look; show an Alert in its place."
+        },
+        "loading": {
+          "none": "Use a block Skeleton of the chart's height while data loads; bars grow from 0 when they appear."
+        }
+      },
+      "sizes": {
+        "density": "Doesn't follow data-density. The plot is --ayy-chart-height (12rem) tall; bar-list rows are at least the sm control height; a sparkline is 6rem × 1.75rem.",
+        "width": "Fills its container; columns share the width (bars at most 2.5rem wide)."
       },
       "js": "chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.",
       "react": {

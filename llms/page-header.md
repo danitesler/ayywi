@@ -8,6 +8,20 @@ Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, t
 - `.ayy-page-header__description` — One sentence under the title, muted, at reading width.
 - `.ayy-page-header__actions` — The page's buttons, at the inline end (under the title on phones). One primary at most; the rest outline or ghost.
 
+**States**
+- `default` — An h1 (2xl heading font, semibold) with a muted md description under it, actions at the inline end.
+- `hover` — doesn't apply: Static text; the buttons in __actions have their own states.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; its buttons are.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: Show a failed load under it in an Alert.
+- `loading` — doesn't apply: Render the title at once; put Skeletons below it for the content.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container; the description stops at --ayy-size-measure. Below 48rem the actions drop under the description, aligned to the start.
+
 **JS (framework-free)**: pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.
 
 **React** — `import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from "ayywi/react";`

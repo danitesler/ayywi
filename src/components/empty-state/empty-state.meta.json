@@ -16,6 +16,20 @@
     "bordered": { "values": [false, true], "default": false, "component": "EmptyState" },
     "compact": { "values": [false, true], "default": false, "component": "EmptyState" }
   },
+  "states": {
+    "default": { "looks": "Centred: an optional Icon tile, an lg heading-font title, a muted sm sentence (at most 42ch) and the action that fills it." },
+    "hover": { "none": "Static; its action Buttons have their own states." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable; its actions are." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "none": "A failed load isn't empty: show an Alert with a retry instead." },
+    "loading": { "none": "While loading show Skeletons, never an empty state." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content."
+  },
   "js": "emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.",
   "react": {
     "import": "import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from \"ayywi/react\";",

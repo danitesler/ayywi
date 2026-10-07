@@ -14,6 +14,21 @@
     "ayy-navbar__toggle": "The phone menu button, last in the inner row (combine with ayy-button ayy-button--ghost ayy-button--icon and a menu icon). Hidden from 48rem. Its aria-expanded is the menu's state; connectNavbar() / <ayy-navbar> / React Navbar manage it."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "Sticky glass bar (--ayy-color-glass, 16px blur) with a hairline underneath; links are muted pills." },
+    "hover": { "when": ".ayy-navbar__link:hover", "looks": "Link gets a wash fill and the text colour." },
+    "pressed": { "none": "Links have no pressed look." },
+    "focus": { "when": ".ayy-navbar__link:focus-visible, .ayy-navbar__brand:focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "none": "A navbar link is never disabled: leave out a page the user can't open." },
+    "selected": { "when": ".ayy-navbar__link[aria-current=\"page\"]", "looks": "Current page: wash-hover fill, text colour. Forced colours: Highlight." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "No loading state; the bar is static." },
+    "open": { "when": ".ayy-navbar__toggle[aria-expanded=\"true\"] (below 48rem)", "looks": "The links drop into a surface panel under the bar with the overlay shadow; links grow to the lg control height." }
+  },
+  "sizes": {
+    "density": "The bar is --ayy-size-header (4.5rem) tall at every density; links are the md control height (32px compact, 40 comfortable, 44 touch), lg in the phone panel.",
+    "width": "Full width; content centred at --ayy-size-container with a 24px gutter (16px below 64rem). Below 48rem, with a __toggle, the links fold into a panel."
+  },
   "js": "navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).",
   "react": {
     "import": "import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarToggle } from \"ayywi/react\";",

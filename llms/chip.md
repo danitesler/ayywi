@@ -11,9 +11,18 @@ Category: Forms. Pill-shaped filters and choices: a label around a native checkb
 - `.ayy-chip-group--scroll` — One line that scrolls sideways instead of wrapping (a phone toolbar).
 
 **States**
-- `.ayy-chip:has(> input:checked)` — On (checkbox or radio chips).
-- `.ayy-chip[aria-pressed="true"]` — On (button chips).
-- `:disabled` — Dimmed, not clickable.
+- `default` — Pill with a line-strong border, transparent fill, text-soft label at the sm control height.
+- `hover` (`:hover`) — Wash fill, line-hover border, full text colour. A removable chip keeps its border; its × gets a wash-hover circle.
+- `pressed` — doesn't apply: No pressed look; it toggles on release.
+- `focus` (`:focus-visible, :has(> input:focus-visible); .ayy-chip__remove:focus-visible`) — 2px ring, 2px offset (1px on the remove button).
+- `disabled` (`:disabled, :has(> input:disabled)`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` (`:has(> input:checked) or [aria-pressed="true"]`) — Text-colour border, wash-hover fill and a tick before the label (not colour alone); the count turns text-soft. Forced colours: Highlight fill.
+- `error` — doesn't apply: Chips are filters and choices; show validation on the group with a FieldError.
+- `loading` — doesn't apply: Filtering shows its loading in the results (Skeleton), not on the chip.
+
+**Sizes**
+- Density — Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.
+- Width — Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars).
 
 **JS (framework-free)**: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
 

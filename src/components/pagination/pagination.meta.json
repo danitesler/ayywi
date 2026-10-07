@@ -11,6 +11,20 @@
     "ayy-pagination__ellipsis": "The \"…\" for skipped pages, aria-hidden."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "Muted pill links at the sm control height, in tabular figures; previous and next carry an arrow and a word." },
+    "hover": { "when": ".ayy-pagination__link:hover", "looks": "Wash fill, text colour." },
+    "pressed": { "none": "No pressed look." },
+    "focus": { "when": ".ayy-pagination__link:focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ":disabled or [aria-disabled=\"true\"] (a link without href at the first or last page)", "looks": "--ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText." },
+    "selected": { "when": "[aria-current=\"page\"]", "looks": "Line-strong border, wash-hover fill, text colour, semibold. Forced colours: Highlight." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "Show the loading in the list or table it pages (Skeleton rows), not here." }
+  },
+  "sizes": {
+    "density": "Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.",
+    "width": "Hugs its links and wraps. Below 48rem only previous, the current page and next show."
+  },
   "js": "paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
   "react": {
     "import": "import { Pagination } from \"ayywi/react\";",

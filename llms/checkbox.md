@@ -6,10 +6,19 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
 
 **States**
-- `:checked` — Checked.
-- `:indeterminate` — Mixed — set input.indeterminate = true (React: indeterminate prop).
-- `aria-invalid="true"` — Red border.
-- `disabled` — Dimmed.
+- `default` — A box --ayy-size-check square with a line-hover border on a wash fill.
+- `hover` (`:hover`) — Border turns text-soft.
+- `pressed` — doesn't apply: No pressed look; it toggles on release.
+- `focus` (`:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border (and fill when checked).
+- `selected` (`:checked`) — Primary fill and border with a primary-fg tick that springs in.
+- `error` (`aria-invalid="true"`) — Destructive border. Forced colours: dashed.
+- `loading` — doesn't apply: Toggles are instant; if saving fails, revert it and say so in a toast.
+- `indeterminate` (`:indeterminate (el.indeterminate = true; React: indeterminate)`) — Primary fill with a bar instead of the tick: some of a group selected.
+
+**Sizes**
+- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.
+- Width — Fixed square.
 
 **JS (framework-free)**: checkboxClass constant
 

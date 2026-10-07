@@ -6,6 +6,20 @@ Category: Forms. A native range input with a filled track and a round thumb, and
 - `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and ayywi/elements keep it in sync, so in HTML set the starting one inline.
 - `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing.
 
+**States**
+- `default` — A 6px pill track in a 14% text tint, filled in the text colour up to an 18px page-coloured thumb with a text-colour rim.
+- `hover` (`:hover`) — Thumb grows 10%.
+- `pressed` — doesn't apply: No separate pressed look; the thumb follows the pointer while dragged.
+- `focus` (`:focus-visible`) — Ring around the thumb (page-colour gap, then 2px ring), not the track.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: The value is the state: the fill reaches it (--ayy-value 0–100).
+- `error` — doesn't apply: A slider can't hold an invalid value; its min, max and step bound it.
+- `loading` — doesn't apply: No loading look.
+
+**Sizes**
+- Density — The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.
+- Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
+
 **JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
 
 **React** — `import { Slider, SliderRange } from "ayywi/react";`

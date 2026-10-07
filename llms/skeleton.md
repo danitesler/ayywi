@@ -7,6 +7,20 @@ Category: Feedback. Placeholder shapes shown while content loads, with a subtle 
 - `.ayy-skeleton--text` — Text line (0.75em tall).
 - `.ayy-skeleton--circle` — Circle (avatars, icons).
 
+**States**
+- `default` — Loading is its only look: a wash-hover block with a quiet shimmer that stops under reduced motion.
+- `hover` — doesn't apply: Not interactive.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: Replace Skeletons with an Alert and a retry when loading fails.
+- `loading` (`always; set aria-busy="true" on the region it fills and aria-hidden on the skeletons`) — Shimmers. Forced colours: a dashed outline instead.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Size it like the content it stands in for. block fills the width at 1rem tall; text is 0.75em tall; circle is 2.5rem (an avatar).
+
 **JS (framework-free)**: skeletonClass({ shape?, className? }) → string
 
 **React** — `import { Skeleton } from "ayywi/react";`

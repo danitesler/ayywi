@@ -14,6 +14,24 @@
     "size": { "values": ["sm", "md"], "default": "md", "component": "SegmentedControl" },
     "full": { "values": [false, true], "default": false, "component": "SegmentedControl" }
   },
+  "states": {
+    "default": { "looks": "A pill track (wash fill, line border); options in text-soft, medium weight." },
+    "hover": { "when": ".ayy-segmented-control__option:hover", "looks": "Option text turns full text colour." },
+    "pressed": { "none": "No pressed look; it picks on release." },
+    "focus": { "when": ".ayy-segmented-control__option:has(> input:focus-visible)", "looks": "2px ring inset by 2px; on the chosen segment the ring takes the page colour so it shows on the fill." },
+    "disabled": { "when": ".ayy-segmented-control__option:has(> input:disabled)", "looks": "Option dims to --ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "when": ".ayy-segmented-control__option:has(> input:checked)", "looks": "Filled with the text colour, label in the page colour, small shadow. Forced colours: Highlight fill." },
+    "error": { "none": "One option is always chosen, so there's nothing to be invalid." },
+    "loading": { "none": "Switching is instant; show loading in the content it controls (a Skeleton)." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.",
+      "md": "Control md height (32px compact, 40 comfortable, 44 touch)."
+    },
+    "density": "Height and text follow data-density.",
+    "width": "Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments."
+  },
   "js": "segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.",
   "react": {
     "import": "import { SegmentedControl, SegmentedControlItem } from \"ayywi/react\";",

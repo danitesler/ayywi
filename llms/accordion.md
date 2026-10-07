@@ -8,6 +8,21 @@ Category: Layout. Questions and answers, or sections people open one at a time: 
 - `.ayy-accordion__trigger` — The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.
 - `.ayy-accordion__content` — The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you.
 
+**States**
+- `default` — Items stacked between hairlines; each trigger is md text, medium weight, with a muted chevron pointing down.
+- `hover` (`.ayy-accordion__trigger:hover`) — Chevron turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-accordion__trigger:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: Native <details> can't be disabled; leave out an item that can't open.
+- `selected` — doesn't apply: Open is the only state (see open).
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+- `open` (`[open] on the <details>`) — Chevron points up and the content shows in text-soft sm text. With the same name on each item, opening one closes the others.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container.
+
 **JS (framework-free)**: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
 
 **React** — `import { Accordion, AccordionItem } from "ayywi/react";`

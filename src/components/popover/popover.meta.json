@@ -12,7 +12,19 @@
     "align": { "values": ["center", "start", "end"], "default": "center", "component": "PopoverContent" }
   },
   "states": {
-    ":popover-open": "Open."
+    "default": { "looks": "Closed: hidden. Open: raised surface, line-strong border, control radius, overlay shadow, sm text." },
+    "hover": { "none": "The panel has no hover look; the trigger is a Button with its own." },
+    "pressed": { "none": "No pressed look." },
+    "focus": { "none": "The panel itself doesn't take a ring; focus moves to the controls inside." },
+    "disabled": { "none": "Disable the trigger instead." },
+    "selected": { "none": "No selected state." },
+    "error": { "none": "Show errors inside it (FieldError)." },
+    "loading": { "none": "Put a Spinner or Skeleton inside while its content loads." },
+    "open": { "when": ":popover-open", "looks": "Fades in and scales up from 97% next to its trigger (React Popover, <ayy-popover>); light-dismisses on Esc or a click outside." }
+  },
+  "sizes": {
+    "density": "Padding is fixed; its controls follow data-density.",
+    "width": "As wide as its content, at most 22rem (or the viewport minus 1rem)."
   },
   "js": "popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }",
   "element": {

@@ -10,6 +10,20 @@ Category: Data display. A conversation: incoming bubbles at the start edge, the 
 - `.ayy-chat__typing` — Three pulsing dots inside a bubble while a reply is written. Give it role="img" and an aria-label.
 - `.ayy-chat__replies` — Quick replies under the conversation: small outline buttons, at the end edge.
 
+**States**
+- `default` — Incoming: raised surface bubbles with a hairline at the inline start. out (the reader's): primary fill and primary-fg text at the inline end. Bubbles are at most 85% wide.
+- `hover` — doesn't apply: Bubbles are static; quick replies are Buttons.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: No error look; say a message failed in text under it with a retry Button.
+- `loading` (`.ayy-chat__typing inside a bubble`) — Three dots bouncing in turn while a reply is written.
+
+**Sizes**
+- Density — sm text; doesn't follow data-density.
+- Width — Fills its container; bubbles wrap and break long words.
+
 **JS (framework-free)**: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
 
 **React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "ayywi/react";`

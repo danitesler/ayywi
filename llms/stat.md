@@ -9,6 +9,22 @@ Category: Data display. A headline number in the heading font, with a muted unit
 - `.ayy-stat__unit` — Muted word after the number, inside the value.
 - `.ayy-stat__label` — Short context, above or below the value.
 
+**States**
+- `default` — A bold 4xl heading-font number in tabular figures, a muted sm unit beside it and a muted sm label.
+- `hover` — doesn't apply: Static.
+- `pressed` — doesn't apply: Static.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Static.
+- `selected` — doesn't apply: Static.
+- `error` — doesn't apply: No error state; show "—" and an Alert when the number couldn't load.
+- `loading` — doesn't apply: Show a text Skeleton the width of the number while it loads.
+
+**Sizes**
+- `md` (default) — Value at 4xl (3rem).
+- `sm` — Value at 2xl (1.75rem), for cards and dense dashboards.
+- Density — Doesn't follow data-density.
+- Width — Hugs its content; the value wraps its unit below when narrow.
+
 **JS (framework-free)**: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
 
 **React** — `import { Stat } from "ayywi/react";`

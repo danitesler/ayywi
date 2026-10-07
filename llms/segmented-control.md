@@ -8,6 +8,22 @@ Category: Forms. Pick one of two to five options that change what you see or wha
 - `.ayy-segmented-control--full` — Fills its container with equal segments.
 - `.ayy-segmented-control__option` — A <label> around a native <input type="radio">, which stays in the page (focus, forms) but draws nothing. The checked one is filled; the focused one gets the ring.
 
+**States**
+- `default` — A pill track (wash fill, line border); options in text-soft, medium weight.
+- `hover` (`.ayy-segmented-control__option:hover`) — Option text turns full text colour.
+- `pressed` — doesn't apply: No pressed look; it picks on release.
+- `focus` (`.ayy-segmented-control__option:has(> input:focus-visible)`) — 2px ring inset by 2px; on the chosen segment the ring takes the page colour so it shows on the fill.
+- `disabled` (`.ayy-segmented-control__option:has(> input:disabled)`) — Option dims to --ayy-opacity-disabled, not-allowed cursor.
+- `selected` (`.ayy-segmented-control__option:has(> input:checked)`) — Filled with the text colour, label in the page colour, small shadow. Forced colours: Highlight fill.
+- `error` — doesn't apply: One option is always chosen, so there's nothing to be invalid.
+- `loading` — doesn't apply: Switching is instant; show loading in the content it controls (a Skeleton).
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- Density — Height and text follow data-density.
+- Width — Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments.
+
 **JS (framework-free)**: segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.
 
 **React** — `import { SegmentedControl, SegmentedControlItem } from "ayywi/react";`

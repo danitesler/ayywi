@@ -10,8 +10,20 @@ Category: Forms. A native number input between minus and plus buttons, for small
 - `.ayy-number-field__increment` — The plus <button> after the input. Needs an aria-label. aria-disabled="true" at max.
 
 **States**
-- `button[aria-disabled="true"]` — Can't go further (at min or max). Stays focusable.
-- `input[aria-invalid="true"]` — Invalid value: red border.
+- `default` — One box like an Input (wash fill, line-strong border): minus, the number centred in tabular figures, plus.
+- `hover` (`:hover; the step buttons' :hover`) — Box border turns line-hover; a step button gets a wash-hover fill and text colour.
+- `pressed` — doesn't apply: Step buttons have no pressed look; each press steps once.
+- `focus` (`:has(> input:focus-visible); step buttons :focus-visible`) — Typing: the ring replaces the box border (as Input). A focused step button gets a 2px ring inset by 2px.
+- `disabled` (`step button [aria-disabled="true"] at min or max; disabled on the input`) — A step button that can't go further dims and ignores clicks but keeps focus. A disabled input dims the whole field.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`:has(> input[aria-invalid="true"])`) — Border 60% destructive. Forced colours: dashed.
+- `loading` — doesn't apply: Stepping is instant.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide.
+- Density — Height, step-button width and text follow data-density.
+- Width — Hugs its content (step buttons plus the number box).
 
 **JS (framework-free)**: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.
 

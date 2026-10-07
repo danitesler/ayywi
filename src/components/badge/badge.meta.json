@@ -19,6 +19,20 @@
   "variants": {
     "variant": { "values": ["default", "muted", "outline", "success", "warning", "destructive", "info", "ai"], "default": "default" }
   },
+  "states": {
+    "default": { "looks": "A 2xs pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static." },
+    "hover": { "none": "A badge is a label, not a control. For a removable filter use a Chip." },
+    "pressed": { "none": "A badge is a label, not a control. For a removable filter use a Chip." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "A badge is a label, not a control. For a removable filter use a Chip." },
+    "selected": { "none": "A badge is a label, not a control. For a removable filter use a Chip." },
+    "error": { "when": "destructive (ayy-badge--destructive)", "looks": "Red text on a 10% red tint: a failed run, an overdue invoice. Pair the colour with a word." },
+    "loading": { "none": "No loading look; a pulsing __dot shows a live state, not progress." }
+  },
+  "sizes": {
+    "density": "Fixed 2xs text; doesn't follow data-density.",
+    "width": "Hugs its text, never wraps."
+  },
   "js": "badgeClass({ variant?, className? }) → string",
   "react": {
     "import": "import { Badge } from \"ayywi/react\";",

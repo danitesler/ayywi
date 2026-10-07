@@ -17,6 +17,20 @@
   "variants": {
     "variant": { "values": ["default", "info", "success", "warning", "destructive"], "default": "default" }
   },
+  "states": {
+    "default": { "looks": "Wash fill, line-strong border, control radius; semibold title, text-soft description. info, success, warning and destructive tint the icon, an 8% fill and a 35% border in their colour." },
+    "hover": { "none": "Static; its action Buttons have their own states." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable; its actions are." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "when": "destructive (ayy-alert--destructive), role=\"alert\" when it appears after an action", "looks": "Red icon, 8% red fill and 35% red border. Add a Try again action for a failed load or save." },
+    "loading": { "none": "Not a loading indicator; use a Spinner, Progress or Skeleton." }
+  },
+  "sizes": {
+    "density": "Padding and sm text are fixed.",
+    "width": "Fills its container."
+  },
   "js": "alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
   "react": {
     "import": "import { Alert, AlertTitle, AlertDescription, AlertActions } from \"ayywi/react\";",

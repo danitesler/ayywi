@@ -12,6 +12,24 @@ Category: Data display. Round (or square) picture of a person or workspace, with
 - `.ayy-avatar__image` — The <img alt="">. Covers the initials when it loads.
 - `.ayy-avatar-group` — Overlapping stack of avatars.
 
+**States**
+- `default` — A disc in wash-hover with text-soft semibold initials under the image. square uses a rounded square.
+- `hover` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `pressed` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `selected` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `error` (`a broken image (React and ayywi/elements set hidden on it)`) — The initials show; with CSS alone the broken-image icon is covered by a plain disc.
+- `loading` — doesn't apply: Initials show until the image loads; use a circle Skeleton only when the name isn't known yet.
+
+**Sizes**
+- `sm` — 1.5rem (24px).
+- `md` (default) — 2rem (32px).
+- `lg` — 2.5rem (40px).
+- `xl` — 3.5rem (56px).
+- Density — Doesn't follow data-density. Initials are 38% of the size.
+- Width — Square. A group overlaps them by 20% with a page-colour ring.
+
 **JS (framework-free)**: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 
 **React** — `import { Avatar, AvatarGroup } from "ayywi/react";`

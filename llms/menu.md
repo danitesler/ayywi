@@ -11,8 +11,19 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `.ayy-menu__separator` — Divider (role="separator").
 
 **States**
-- `:popover-open` — Open.
-- `disabled / aria-disabled="true"` — Item skipped by the keyboard and dimmed.
+- `default` — Raised surface panel with a line-strong border and the overlay shadow; items are transparent rows with muted icons.
+- `hover` (`.ayy-menu__item:hover`) — Item gets the wash-hover background.
+- `pressed` — doesn't apply: Items have no pressed look: activating one runs it and closes the menu.
+- `focus` (`.ayy-menu__item:focus (arrow keys) / :focus-visible`) — Focused item gets the wash-hover background; keyboard focus adds a 2px ring inset by 2px. Forced colours: Highlight fill.
+- `disabled` (`.ayy-menu__item:disabled or [aria-disabled="true"]`) — Item dims to --ayy-opacity-disabled with a not-allowed cursor; arrow keys skip it.
+- `selected` — doesn't apply: Menu items run commands and show no checked look (Theme toggle adds a check to its own items). For a choice that stays, use Select, Radio or a Segmented control.
+- `error` — doesn't apply: A menu has no error state; report a failed command with a toast.
+- `loading` — doesn't apply: Build the items before opening; if they load, put the trigger Button in loading until they're ready.
+- `open` (`:popover-open`) — Fades in and scales up from 97%; fades out when it closes.
+
+**Sizes**
+- Density — Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.
+- Width — At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item.
 
 **JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
 

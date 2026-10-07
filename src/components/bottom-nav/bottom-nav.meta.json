@@ -10,6 +10,20 @@
     "ayy-bottom-nav__label": "The tab's text, one line, cut with an ellipsis if it's too long."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "Surface bar pinned to the bottom with a hairline on top; each tab is a muted icon over a 2xs label." },
+    "hover": { "when": ".ayy-bottom-nav__link:hover", "looks": "Label turns text colour; a wash pill appears behind the icon." },
+    "pressed": { "none": "No pressed look (touch highlight is off); the page change is the feedback." },
+    "focus": { "when": ".ayy-bottom-nav__link:focus-visible", "looks": "2px ring inset by 2px." },
+    "disabled": { "none": "Tabs are never disabled; show the screen and explain inside it." },
+    "selected": { "when": "[aria-current=\"page\"], or [aria-expanded=\"true\"] on a More button", "looks": "Text colour, semibold label and a wash-hover pill behind the icon. Forced colours: Highlight pill." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "No loading state." }
+  },
+  "sizes": {
+    "density": "Each tab is at least the lg control height (40px compact, 48 comfortable, 52 touch); icons 20px; the bar adds the safe-area inset at the bottom.",
+    "width": "Full width, tabs share it equally (three to five). Inside an App shell it shows below 48rem only."
+  },
   "js": "bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.",
   "react": {
     "import": "import { BottomNav, BottomNavLink, BottomNavButton } from \"ayywi/react\";",

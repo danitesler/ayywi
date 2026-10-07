@@ -7,6 +7,23 @@ Category: Data display. An app-icon squircle lit from below by the content's acc
 - `.ayy-icon-tile--sm` — 32px.
 - `.ayy-icon-tile--lg` — 64px.
 
+**States**
+- `default` — A dark squircle lit from below by --ayy-spot, with the glyph in that accent and a 1px line inset.
+- `hover` — doesn't apply: Decorative.
+- `pressed` — doesn't apply: Decorative.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Decorative.
+- `selected` — doesn't apply: Decorative.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- `sm` — 32px, lg radius.
+- `md` (default) — 48px, xl radius.
+- `lg` — 64px, 2xl radius.
+- Density — Doesn't follow data-density.
+- Width — Square; the glyph is 55% of it.
+
 **JS (framework-free)**: iconTileClass({ size?, className? }) → string
 
 **React** — `import { IconTile } from "ayywi/react";`

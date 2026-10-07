@@ -11,6 +11,20 @@
     "ayy-frame__body": "Holds the <img>, <video>, <picture> or <svg>, edge to edge."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted 2xs address." },
+    "hover": { "none": "Decorative." },
+    "pressed": { "none": "Decorative." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Decorative." },
+    "selected": { "none": "Decorative." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "Give the image width and height so nothing jumps; no loading look." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "Fills its container; the media inside scales to its width."
+  },
   "js": "frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.",
   "react": {
     "import": "import { Frame } from \"ayywi/react\";",

@@ -14,8 +14,18 @@
     "mono": { "values": [true, false], "default": false }
   },
   "states": {
-    "aria-invalid=\"true\"": "Red border and focus ring.",
-    "disabled": "Dimmed."
+    "default": { "looks": "Like Input: wash fill, line-strong border; at least 5rem tall, resizable vertically." },
+    "hover": { "when": ":hover", "looks": "Border turns line-hover." },
+    "pressed": { "none": "No pressed look." },
+    "focus": { "when": ":focus-visible", "looks": "2px ring just inside the edge; the border goes transparent." },
+    "disabled": { "when": ":disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "none": "Not a choice control." },
+    "error": { "when": "aria-invalid=\"true\" (with a FieldError)", "looks": "Border 60% destructive, destructive focus ring. Forced colours: dashed border." },
+    "loading": { "none": "No loading look; disable it and show a Spinner in the submit Button while the text is sent." }
+  },
+  "sizes": {
+    "density": "Text follows control md; the minimum height (5rem) and padding don't change.",
+    "width": "Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls)."
   },
   "js": "textareaClass({ autosize?, mono?, className? }) → string",
   "react": {

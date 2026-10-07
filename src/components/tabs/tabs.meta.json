@@ -12,6 +12,20 @@
     "ayy-tabs__count": "Small count after a tab's label (items in a filter). Inverts with the selected tab."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "A pill track (wash fill, line border) with text-soft tab labels." },
+    "hover": { "when": ".ayy-tabs__tab:hover", "looks": "Tab label turns full text colour." },
+    "pressed": { "none": "No pressed look; it selects on click." },
+    "focus": { "when": ".ayy-tabs__tab:focus-visible; .ayy-tabs__panel:focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ".ayy-tabs__tab:disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor; arrow keys skip it. Forced colours: GrayText." },
+    "selected": { "when": ".ayy-tabs__tab[aria-selected=\"true\"]", "looks": "Filled with the text colour, label in the page colour, small shadow; its count gets a 15% page-colour tint. Forced colours: Highlight." },
+    "error": { "none": "No error look; show it in the panel." },
+    "loading": { "none": "Show loading in the panel (Skeleton), not on the tab." }
+  },
+  "sizes": {
+    "density": "The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.",
+    "width": "The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container."
+  },
   "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
   "element": {
     "tag": "ayy-tabs",

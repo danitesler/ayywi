@@ -7,6 +7,23 @@ Category: Feedback. An indeterminate loading ring in the text colour, sized like
 - `.ayy-spinner--sm` — 16px (--ayy-size-icon-sm).
 - `.ayy-spinner--lg` — 32px (--ayy-size-icon-xl), for a panel that's loading.
 
+**States**
+- `default` — Loading is its only look: a ring in currentColor (20% track, solid top) turning once a slow duration; under reduced motion it stops as a still ring.
+- `hover` — doesn't apply: Not interactive.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: Replace it with an Alert or FieldError when the work fails.
+- `loading` (`always (it is the loading state); give it role="status" and a label, or aria-hidden inside a busy Button`) — Spins.
+
+**Sizes**
+- `sm` — 16px (--ayy-size-icon-sm).
+- `md` (default) — 1.25em, matching an icon beside text.
+- `lg` — 32px (--ayy-size-icon-xl), 3px ring.
+- Density — Doesn't follow data-density; md follows the font size around it.
+- Width — Square.
+
 **JS (framework-free)**: spinnerClass({ size?, className? }) → string. Buttons: add aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).
 
 **React** — `import { Spinner } from "ayywi/react";`

@@ -9,8 +9,18 @@ Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset wi
 - `.ayy-radio-group__legend` — The group's <legend>.
 
 **States**
-- `:checked` — Selected.
-- `disabled` — Dimmed.
+- `default` — A circle --ayy-size-check wide with a line-hover border on a wash fill.
+- `hover` (`:hover`) — Border turns text-soft.
+- `pressed` — doesn't apply: No pressed look; it picks on release.
+- `focus` (`:focus-visible`) — 2px ring, 2px offset. Arrow keys move the choice within the group.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border.
+- `selected` (`:checked`) — Primary fill and border with a primary-fg dot that springs in.
+- `error` (`aria-invalid="true" on each radio of the group`) — Destructive border. Forced colours: dashed.
+- `loading` — doesn't apply: Choosing is instant.
+
+**Sizes**
+- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- Width — Fixed circle. The group stacks (vertical) or wraps in a row (horizontal).
 
 **JS (framework-free)**: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
 

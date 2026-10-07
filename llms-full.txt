@@ -21,6 +21,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
 - Theme with data-theme="dark|light|dark-soft|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).
+- Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
 - Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state.
 - The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.
@@ -314,6 +315,25 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `.ayy-button--icon-sm` — Square 28px, for a single icon.
 - `.ayy-button--block` — Fills its container's width: a card footer, a phone form, a dialog's only action.
 
+**States**
+- `default` — Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring.
+- `hover` (`:hover`) — Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins.
+- `pressed` (`:active`) — Drops back to its resting position while held; colours stay as on hover.
+- `focus` (`:focus-visible`) — 2px --ayy-color-ring outline, 2px offset. Ring also spins its border.
+- `disabled` (`:disabled on <button>, aria-disabled="true" on <a>`) — --ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText border and label.
+- `selected` — doesn't apply: Not a toggle. For on/off use a Chip button (aria-pressed), for one of a few a Segmented control, for a setting a Switch.
+- `error` — doesn't apply: Errors belong to the form: a FieldError under the field, or an Alert for a failed action.
+- `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), sm padding and text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), more padding, larger text.
+- `icon` — Square at the md height, for one icon (needs aria-label).
+- `icon-sm` — Square at the sm height.
+- Density — Height, inline padding and label size follow data-density (the heights above).
+- Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
+
 **JS (framework-free)**: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 
 **React** — `import { Button } from "ayywi/react";`
@@ -523,8 +543,19 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `.ayy-menu__separator` — Divider (role="separator").
 
 **States**
-- `:popover-open` — Open.
-- `disabled / aria-disabled="true"` — Item skipped by the keyboard and dimmed.
+- `default` — Raised surface panel with a line-strong border and the overlay shadow; items are transparent rows with muted icons.
+- `hover` (`.ayy-menu__item:hover`) — Item gets the wash-hover background.
+- `pressed` — doesn't apply: Items have no pressed look: activating one runs it and closes the menu.
+- `focus` (`.ayy-menu__item:focus (arrow keys) / :focus-visible`) — Focused item gets the wash-hover background; keyboard focus adds a 2px ring inset by 2px. Forced colours: Highlight fill.
+- `disabled` (`.ayy-menu__item:disabled or [aria-disabled="true"]`) — Item dims to --ayy-opacity-disabled with a not-allowed cursor; arrow keys skip it.
+- `selected` — doesn't apply: Menu items run commands and show no checked look (Theme toggle adds a check to its own items). For a choice that stays, use Select, Radio or a Segmented control.
+- `error` — doesn't apply: A menu has no error state; report a failed command with a toast.
+- `loading` — doesn't apply: Build the items before opening; if they load, put the trigger Button in loading until they're ready.
+- `open` (`:popover-open`) — Fades in and scales up from 97%; fades out when it closes.
+
+**Sizes**
+- Density — Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.
+- Width — At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item.
 
 **JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
 
@@ -644,6 +675,21 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 - `.ayy-theme-toggle__sun` — Icon shown in light themes.
 - `.ayy-theme-toggle__item` — On each ayy-menu__item (role="menuitemradio", data-value = theme name or "system"). The one with aria-checked="true" is bold and shows a check.
 
+**States**
+- `default` — An outline icon Button showing the moon in dark themes and the sun in light ones (picked by CSS before any JS runs).
+- `hover` (`Button :hover`) — Button outline's hover: wash fill, stronger border, 2px lift.
+- `pressed` (`Button :active`) — As Button: drops back while held.
+- `focus` (`Button :focus-visible; menu items :focus-visible`) — Button's 2px ring; items as in Menu.
+- `disabled` — doesn't apply: Always available: the theme can always change.
+- `selected` (`.ayy-theme-toggle__item[aria-checked="true"]`) — The theme in force is semibold with a check mark at the inline end.
+- `error` — doesn't apply: Nothing to fail: switching is local.
+- `loading` — doesn't apply: Switching is instant.
+- `open` (`the menu's :popover-open`) — As Menu.
+
+**Sizes**
+- Density — The button is Button icon (md control height, follows density); items follow Menu.
+- Width — Square button; the menu as Menu.
+
 **JS (framework-free)**: themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).
 
 **Custom element** `<ayy-theme-toggle>` (ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
@@ -710,6 +756,21 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 - `.ayy-navbar__link` — Top-level link. Hover adds a wash; aria-current="page" marks the page you're on with a stronger tint (High Contrast: the system highlight).
 - `.ayy-navbar__actions` — Group of buttons (theme toggle, call to action). Next to the brand, or at the end after the nav. Stays in the bar on phones, so keep it to one or two items.
 - `.ayy-navbar__toggle` — The phone menu button, last in the inner row (combine with ayy-button ayy-button--ghost ayy-button--icon and a menu icon). Hidden from 48rem. Its aria-expanded is the menu's state; connectNavbar() / <ayy-navbar> / React Navbar manage it.
+
+**States**
+- `default` — Sticky glass bar (--ayy-color-glass, 16px blur) with a hairline underneath; links are muted pills.
+- `hover` (`.ayy-navbar__link:hover`) — Link gets a wash fill and the text colour.
+- `pressed` — doesn't apply: Links have no pressed look.
+- `focus` (`.ayy-navbar__link:focus-visible, .ayy-navbar__brand:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: A navbar link is never disabled: leave out a page the user can't open.
+- `selected` (`.ayy-navbar__link[aria-current="page"]`) — Current page: wash-hover fill, text colour. Forced colours: Highlight.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state; the bar is static.
+- `open` (`.ayy-navbar__toggle[aria-expanded="true"] (below 48rem)`) — The links drop into a surface panel under the bar with the overlay shadow; links grow to the lg control height.
+
+**Sizes**
+- Density — The bar is --ayy-size-header (4.5rem) tall at every density; links are the md control height (32px compact, 40 comfortable, 44 touch), lg in the phone panel.
+- Width — Full width; content centred at --ayy-size-container with a 24px gutter (16px below 64rem). Below 48rem, with a __toggle, the links fold into a panel.
 
 **JS (framework-free)**: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).
 
@@ -878,6 +939,21 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - `.ayy-app-shell__main` — The <main> content column. Scrolls on its own and has the page gutter.
 - `.ayy-app-shell__bar` — Phone top bar, first child of the shell, hidden from 48rem: the brand, then one or two actions (search, account), which sit at the inline end. Add a __toggle to it when the sidebar should open as a drawer. With a bar or a bottom nav the phone sidebar is off-screen; it slides in from the inline-start edge over a scrim while a toggle has aria-expanded="true".
 - `.ayy-app-shell__toggle` — The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the "More" tab of the bottom nav (<button class="ayy-bottom-nav__link ayy-app-shell__toggle">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it.
+
+**States**
+- `default` — A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills.
+- `hover` (`.ayy-app-shell__link:hover`) — Link gets a wash fill and the text colour.
+- `pressed` — doesn't apply: Links have no pressed look.
+- `focus` (`links, brand, sidebar and main :focus-visible`) — Links and brand: 2px ring, 2px offset. A focused scroll area (sidebar or main with tabindex="0") gets the ring inset.
+- `disabled` — doesn't apply: Sidebar links are never disabled: leave out pages the user can't open.
+- `selected` (`.ayy-app-shell__link[aria-current="page"]`) — Current page: wash-hover fill, text colour, semibold (not colour alone). A closed collapse holding it shows its summary in text colour and semibold. Forced colours: Highlight.
+- `error` — doesn't apply: Errors belong in the main content (Alert).
+- `loading` — doesn't apply: The frame renders at once; show Skeletons in the main area while a screen loads.
+- `open` (`__toggle[aria-expanded="true"] (below 48rem, with a __bar or a Bottom nav); <details open> for a collapse`) — Phone: the sidebar slides in from the inline-start edge as a drawer (at most 18rem) over a scrim, with the overlay shadow. A collapse's chevron turns up.
+
+**Sizes**
+- Density — Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.
+- Width — Fills the viewport (100dvh) or its box (block-size: 100%). Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither.
 
 **JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).
 
@@ -1528,6 +1604,20 @@ Category: Navigation. A phone app's tab bar: three to five top-level destination
 - `.ayy-bottom-nav__link` — A tab: icon over label. An <a> for a destination, or a <button> for a tab that acts ("More", which opens the app shell's drawer when it also has ayy-app-shell__toggle). aria-current="page" (or aria-expanded="true" on the button) draws a pill behind the icon and a heavier label.
 - `.ayy-bottom-nav__label` — The tab's text, one line, cut with an ellipsis if it's too long.
 
+**States**
+- `default` — Surface bar pinned to the bottom with a hairline on top; each tab is a muted icon over a 2xs label.
+- `hover` (`.ayy-bottom-nav__link:hover`) — Label turns text colour; a wash pill appears behind the icon.
+- `pressed` — doesn't apply: No pressed look (touch highlight is off); the page change is the feedback.
+- `focus` (`.ayy-bottom-nav__link:focus-visible`) — 2px ring inset by 2px.
+- `disabled` — doesn't apply: Tabs are never disabled; show the screen and explain inside it.
+- `selected` (`[aria-current="page"], or [aria-expanded="true"] on a More button`) — Text colour, semibold label and a wash-hover pill behind the icon. Forced colours: Highlight pill.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Each tab is at least the lg control height (40px compact, 48 comfortable, 52 touch); icons 20px; the bar adds the safe-area inset at the bottom.
+- Width — Full width, tabs share it equally (three to five). Inside an App shell it shows below 48rem only.
+
 **JS (framework-free)**: bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.
 
 **React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "ayywi/react";`
@@ -1648,6 +1738,20 @@ Category: Navigation. The site footer at the end of every website page: brand an
 - `.ayy-footer__list` — The <ul> of links in a column.
 - `.ayy-footer__link` — A footer link: soft text, underline on hover, focus ring.
 - `.ayy-footer__bottom` — The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme toggle at the end.
+
+**States**
+- `default` — A hairline on top, brand and a muted line, columns of text-soft links under muted eyebrow headings, then a legal row.
+- `hover` (`.ayy-footer__link:hover`) — Link turns text colour with a line-hover underline.
+- `pressed` — doesn't apply: Links have no pressed look.
+- `focus` (`.ayy-footer__link:focus-visible, brand link :focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: No disabled links; leave them out.
+- `selected` — doesn't apply: No current-page look; the navbar shows where you are.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Full width; content centred at --ayy-size-container. Brand beside the columns; one column below 64rem.
 
 **JS (framework-free)**: footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.
 
@@ -1786,6 +1890,20 @@ Category: Navigation. Trail from the top level down to the current page (Home / 
 - `.ayy-breadcrumb__item` — Each <li>. A slash separates items; screen readers skip it.
 - `.ayy-breadcrumb__link` — Link to an ancestor page. The last item is a <span aria-current="page"> instead.
 
+**States**
+- `default` — Muted sm links separated by line-hover slashes; the last item (the current page) in text colour.
+- `hover` (`.ayy-breadcrumb__link:hover`) — Link turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-breadcrumb__link:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: Every ancestor is a link; the current page is plain text, not a disabled link.
+- `selected` (`[aria-current="page"] on the last item`) — Text colour, cut with an ellipsis when long. Forced colours: underlined.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — sm text at every density.
+- Width — Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes.
+
 **JS (framework-free)**: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
 
 **React** — `import { Breadcrumb } from "ayywi/react";`
@@ -1857,6 +1975,20 @@ Category: Navigation. Previous, page numbers with gaps, and next, for a long tab
 - `.ayy-pagination__link--step` — Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.
 - `.ayy-pagination__ellipsis` — The "…" for skipped pages, aria-hidden.
 
+**States**
+- `default` — Muted pill links at the sm control height, in tabular figures; previous and next carry an arrow and a word.
+- `hover` (`.ayy-pagination__link:hover`) — Wash fill, text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-pagination__link:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`:disabled or [aria-disabled="true"] (a link without href at the first or last page)`) — --ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText.
+- `selected` (`[aria-current="page"]`) — Line-strong border, wash-hover fill, text colour, semibold. Forced colours: Highlight.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: Show the loading in the list or table it pages (Skeleton rows), not here.
+
+**Sizes**
+- Density — Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.
+- Width — Hugs its links and wraps. Below 48rem only previous, the current page and next show.
+
 **JS (framework-free)**: paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
 
 **React** — `import { Pagination } from "ayywi/react";`
@@ -1924,6 +2056,20 @@ Category: Navigation. Where you are in a short flow (sign-up, checkout, import):
 - `.ayy-steps--vertical` — A column, with the lines running down between the markers: for a side panel or a phone.
 - `.ayy-steps__item` — A step <li>. aria-current="step" marks the current one (filled marker, bold label); every step before it is drawn as done (tick, solid line); the ones after as to do.
 - `.ayy-steps__label` — The step's name, one line (cut with an ellipsis in the row).
+
+**States**
+- `default` — To do: a muted number in a line-strong circle with a line to the next step.
+- `hover` — doesn't apply: Steps are status, not links.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Steps after the current one already read as to do.
+- `selected` (`[aria-current="step"]`) — Current: marker filled with the text colour, semibold label. Steps before it are done: a tick in a text-colour circle and a solid line. Forced colours: Highlight marker.
+- `error` — doesn't apply: No error look; put the problem in the step's content (Alert, FieldError).
+- `loading` — doesn't apply: No loading look.
+
+**Sizes**
+- Density — Markers are the sm control height (28px compact, 32 comfortable, 40 touch).
+- Width — Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone.
 
 **JS (framework-free)**: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
 
@@ -1995,6 +2141,20 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - `.ayy-toc__list` — <ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.
 - `.ayy-toc__link` — Section link (href="#id"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.
 - `.ayy-toc__number` — Optional section number (01, 02…) before the label, in the accent while current.
+
+**States**
+- `default` — A hairline rail with muted sm links; nested links indent and get smaller.
+- `hover` (`.ayy-toc__link:hover`) — Link turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-toc__link:focus-visible`) — 2px ring inset by 2px.
+- `disabled` — doesn't apply: No disabled links.
+- `selected` (`.ayy-toc__link[aria-current] (not "false"), kept in sync by <ayy-toc> or connectToc`) — Section being read: text colour and a 2px --ayy-spot bar on the rail; its number takes the accent; a parent of it turns text colour too. Forced colours: underline and Highlight bar.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its column. sticky stays in view under the navbar and scrolls on its own when taller than the viewport.
 
 **JS (framework-free)**: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
 
@@ -2108,6 +2268,20 @@ Category: Forms. Form field wrapper: Label + control + hint or error, stacked wi
 - `.ayy-field__hint` — Muted helper text under the control.
 - `.ayy-field__error` — Error text under the control.
 
+**States**
+- `default` — Label (control md text, medium weight, text colour) above the control; hint below in muted control sm text.
+- `hover` — doesn't apply: The control inside shows hover.
+- `pressed` — doesn't apply: The control inside handles presses.
+- `focus` — doesn't apply: The control inside shows the focus ring.
+- `disabled` (`.ayy-field:has(:disabled), .ayy-label:has(> :disabled)`) — Label dims to --ayy-opacity-disabled with a not-allowed cursor; the control dims itself.
+- `selected` — doesn't apply: Selection belongs to the control (Checkbox, Radio, Switch).
+- `error` (`aria-invalid="true" on the control plus .ayy-field__error, linked with aria-describedby (React: Field error)`) — Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border.
+- `loading` — doesn't apply: Fields don't load; show a Skeleton for the whole form while its data loads.
+
+**Sizes**
+- Density — Label text follows control md, hint and error control sm, so they grow with data-density.
+- Width — Fills its column; the control inside stretches to it. inline puts the control and label side by side (checkboxes, switches).
+
 **JS (framework-free)**: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
 
 **React** — `import { Field, Label, FieldHint, FieldError } from "ayywi/react";`
@@ -2201,8 +2375,21 @@ Category: Forms. Single-line text field. Works for every native input type (text
 - `.ayy-input--lg` — 40px tall.
 
 **States**
-- `aria-invalid="true"` — Red border and focus ring. Pair with a Field error message.
-- `disabled` — Dimmed, not-allowed cursor.
+- `default` — Wash fill, 1px line-strong border, control radius; placeholder in muted at 70%.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: Text fields have no pressed look; the caret shows where you are.
+- `focus` (`:focus-visible`) — 2px ring drawn just inside the edge (-1px offset); the border goes transparent.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`aria-invalid="true" (with a FieldError)`) — Border 60% destructive; the focus ring turns destructive. Forced colours: dashed border.
+- `loading` — doesn't apply: No loading look. While a value is checked (a username), use an Input group with a small Spinner as its addon.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), more padding, lg text.
+- Density — Height and text size follow data-density; touch keeps md text at 16px so iOS doesn't zoom.
+- Width — Fills its container (inline-size 100%); set a max-inline-size in rem for short values.
 
 **JS (framework-free)**: inputClass({ size?, className? }) → string
 
@@ -2332,6 +2519,23 @@ Category: Forms. An input with things attached inside its box: a leading icon, a
 - `.ayy-input-group--sm` — Small height (--ayy-size-control-sm).
 - `.ayy-input-group--lg` — Large height (--ayy-size-control-lg).
 - `.ayy-input-group__addon` — Text beside the input: a prefix (https://), a suffix (USD, %) or a Kbd hint. Muted, one line.
+
+**States**
+- `default` — Looks like an Input: wash fill, line-strong border; icons and addons are muted, the input inside loses its own border.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: Like Input; a trailing Button keeps its own pressed look.
+- `focus` (`.ayy-input-group:has(> .ayy-input:focus-visible)`) — The ring moves from the input to the whole group (2px, -1px offset); the border goes transparent.
+- `disabled` (`.ayy-input-group:has(> .ayy-input:disabled)`) — The whole group dims to --ayy-opacity-disabled with a not-allowed cursor.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`.ayy-input-group:has(> .ayy-input[aria-invalid="true"])`) — Group border 60% destructive, destructive focus ring. Forced colours: dashed 2px border.
+- `loading` — doesn't apply: No built-in loading look; put a small Spinner in .ayy-input-group__addon while a value is checked.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch).
+- Density — Height and text follow data-density; leading icons stay 16px.
+- Width — Fills its container like an Input.
 
 **JS (framework-free)**: inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.
 
@@ -2483,8 +2687,18 @@ Category: Forms. Multi-line text field. Optional auto-grow and monospace modes.
 - `.ayy-textarea--mono` — Monospace font.
 
 **States**
-- `aria-invalid="true"` — Red border and focus ring.
-- `disabled` — Dimmed.
+- `default` — Like Input: wash fill, line-strong border; at least 5rem tall, resizable vertically.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`:focus-visible`) — 2px ring just inside the edge; the border goes transparent.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`aria-invalid="true" (with a FieldError)`) — Border 60% destructive, destructive focus ring. Forced colours: dashed border.
+- `loading` — doesn't apply: No loading look; disable it and show a Spinner in the submit Button while the text is sent.
+
+**Sizes**
+- Density — Text follows control md; the minimum height (5rem) and padding don't change.
+- Width — Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls).
 
 **JS (framework-free)**: textareaClass({ autosize?, mono?, className? }) → string
 
@@ -2543,9 +2757,22 @@ Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling 
 - `.ayy-select--lg` — Large.
 
 **States**
-- `aria-invalid="true"` — Red border (on the <select>).
-- `disabled` — Dimmed, chevron too.
-- `multiple` — Renders as a list box: auto height, no chevron.
+- `default` — Native <select> with a wash fill, line-strong border and a muted chevron at the inline end; the options popup is the OS one.
+- `hover` (`.ayy-select__control:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: Pressing opens the OS picker, which draws its own state.
+- `focus` (`.ayy-select__control:focus-visible`) — 2px ring just inside the edge; the border goes transparent.
+- `disabled` (`.ayy-select__control:disabled`) — Control and chevron dim to --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: The chosen option shows as the control's text; the OS marks it in the popup.
+- `error` (`.ayy-select__control[aria-invalid="true"]`) — Border 60% destructive, destructive focus ring. Forced colours: dashed border.
+- `loading` — doesn't apply: No loading look; disable it with a "Loading…" option until the options arrive, or use a Skeleton for the form.
+- `multiple` (`multiple, or size > 1`) — Renders a list box: no fixed height, no chevron.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), sm text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), lg text.
+- Density — Height and text follow data-density.
+- Width — Fills its container; long option text is cut with an ellipsis.
 
 **JS (framework-free)**: selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>
 
@@ -2636,9 +2863,23 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 - `.ayy-combobox__empty` — The "No matches" line (role="none"), shown when nothing matches.
 
 **States**
-- `input[aria-expanded="true"]` — The list is open.
-- `option[aria-selected="true"]` — The option the arrow keys are on.
-- `option[hidden]` — Filtered out.
+- `default` — An Input with a muted chevron at the inline end; the list is a raised popover with the overlay shadow.
+- `hover` (`.ayy-combobox__option:hover`) — Option gets the wash-hover background (the input hovers like Input).
+- `pressed` — doesn't apply: Options have no pressed look: clicking picks one and closes the list.
+- `focus` (`the input's :focus-visible`) — Input's ring. Focus stays in the input while the arrow keys move through options (see selected).
+- `disabled` (`.ayy-combobox__option[aria-disabled="true"]; disabled on the input`) — Option dims to --ayy-opacity-disabled with a not-allowed cursor; a disabled input dims like Input.
+- `selected` (`.ayy-combobox__option[aria-selected="true"]`) — The option under the arrow keys gets the wash-hover background. Forced colours: Highlight fill.
+- `error` (`aria-invalid="true" on the input`) — Input's red border and ring.
+- `loading` — doesn't apply: No loading look; while results load, show .ayy-combobox__empty with "Searching…".
+- `open` (`input[aria-expanded="true"], listbox :popover-open`) — The list fades in under the input, at most 18rem (or half the viewport) tall, then scrolls.
+- `empty` (`.ayy-combobox__empty shown`) — Muted "No results" row when every option is filtered out.
+
+**Sizes**
+- `sm` — The input at Input sm.
+- `md` (default) — The input at Input md.
+- `lg` — The input at Input lg.
+- Density — Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.
+- Width — Fills its container; the list is at most 28rem wide.
 
 **JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
 
@@ -2728,10 +2969,19 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
 
 **States**
-- `:checked` — Checked.
-- `:indeterminate` — Mixed — set input.indeterminate = true (React: indeterminate prop).
-- `aria-invalid="true"` — Red border.
-- `disabled` — Dimmed.
+- `default` — A box --ayy-size-check square with a line-hover border on a wash fill.
+- `hover` (`:hover`) — Border turns text-soft.
+- `pressed` — doesn't apply: No pressed look; it toggles on release.
+- `focus` (`:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border (and fill when checked).
+- `selected` (`:checked`) — Primary fill and border with a primary-fg tick that springs in.
+- `error` (`aria-invalid="true"`) — Destructive border. Forced colours: dashed.
+- `loading` — doesn't apply: Toggles are instant; if saving fails, revert it and say so in a toast.
+- `indeterminate` (`:indeterminate (el.indeterminate = true; React: indeterminate)`) — Primary fill with a bar instead of the tick: some of a group selected.
+
+**Sizes**
+- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.
+- Width — Fixed square.
 
 **JS (framework-free)**: checkboxClass constant
 
@@ -2807,8 +3057,18 @@ Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset wi
 - `.ayy-radio-group__legend` — The group's <legend>.
 
 **States**
-- `:checked` — Selected.
-- `disabled` — Dimmed.
+- `default` — A circle --ayy-size-check wide with a line-hover border on a wash fill.
+- `hover` (`:hover`) — Border turns text-soft.
+- `pressed` — doesn't apply: No pressed look; it picks on release.
+- `focus` (`:focus-visible`) — 2px ring, 2px offset. Arrow keys move the choice within the group.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border.
+- `selected` (`:checked`) — Primary fill and border with a primary-fg dot that springs in.
+- `error` (`aria-invalid="true" on each radio of the group`) — Destructive border. Forced colours: dashed.
+- `loading` — doesn't apply: Choosing is instant.
+
+**Sizes**
+- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- Width — Fixed circle. The group stacks (vertical) or wraps in a row (horizontal).
 
 **JS (framework-free)**: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
 
@@ -2889,6 +3149,22 @@ Category: Forms. Pick one of two to five options that change what you see or wha
 - `.ayy-segmented-control--sm` — Small height, for toolbars and card headers.
 - `.ayy-segmented-control--full` — Fills its container with equal segments.
 - `.ayy-segmented-control__option` — A <label> around a native <input type="radio">, which stays in the page (focus, forms) but draws nothing. The checked one is filled; the focused one gets the ring.
+
+**States**
+- `default` — A pill track (wash fill, line border); options in text-soft, medium weight.
+- `hover` (`.ayy-segmented-control__option:hover`) — Option text turns full text colour.
+- `pressed` — doesn't apply: No pressed look; it picks on release.
+- `focus` (`.ayy-segmented-control__option:has(> input:focus-visible)`) — 2px ring inset by 2px; on the chosen segment the ring takes the page colour so it shows on the fill.
+- `disabled` (`.ayy-segmented-control__option:has(> input:disabled)`) — Option dims to --ayy-opacity-disabled, not-allowed cursor.
+- `selected` (`.ayy-segmented-control__option:has(> input:checked)`) — Filled with the text colour, label in the page colour, small shadow. Forced colours: Highlight fill.
+- `error` — doesn't apply: One option is always chosen, so there's nothing to be invalid.
+- `loading` — doesn't apply: Switching is instant; show loading in the content it controls (a Skeleton).
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- Density — Height and text follow data-density.
+- Width — Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments.
 
 **JS (framework-free)**: segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.
 
@@ -2980,9 +3256,18 @@ Category: Forms. Pill-shaped filters and choices: a label around a native checkb
 - `.ayy-chip-group--scroll` — One line that scrolls sideways instead of wrapping (a phone toolbar).
 
 **States**
-- `.ayy-chip:has(> input:checked)` — On (checkbox or radio chips).
-- `.ayy-chip[aria-pressed="true"]` — On (button chips).
-- `:disabled` — Dimmed, not clickable.
+- `default` — Pill with a line-strong border, transparent fill, text-soft label at the sm control height.
+- `hover` (`:hover`) — Wash fill, line-hover border, full text colour. A removable chip keeps its border; its × gets a wash-hover circle.
+- `pressed` — doesn't apply: No pressed look; it toggles on release.
+- `focus` (`:focus-visible, :has(> input:focus-visible); .ayy-chip__remove:focus-visible`) — 2px ring, 2px offset (1px on the remove button).
+- `disabled` (`:disabled, :has(> input:disabled)`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` (`:has(> input:checked) or [aria-pressed="true"]`) — Text-colour border, wash-hover fill and a tick before the label (not colour alone); the count turns text-soft. Forced colours: Highlight fill.
+- `error` — doesn't apply: Chips are filters and choices; show validation on the group with a FieldError.
+- `loading` — doesn't apply: Filtering shows its loading in the results (Skeleton), not on the chip.
+
+**Sizes**
+- Density — Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.
+- Width — Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars).
 
 **JS (framework-free)**: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
 
@@ -3170,8 +3455,18 @@ Category: Forms. A card-sized radio or checkbox for choices that need a sentence
 - `.ayy-choice-card__meta` — A price or a date, at the bottom so a row of cards lines them up.
 
 **States**
-- `.ayy-choice-card:has(> input:checked)` — Chosen.
-- `.ayy-choice-card:has(> input:disabled)` — Not available.
+- `default` — Surface card with a line border and card radius; the radio or checkbox sits in the inline-end corner. Compact: centred label, input hidden.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: No pressed look; it picks on release.
+- `focus` (`:has(> input:focus-visible)`) — 2px ring around the whole card, 2px offset.
+- `disabled` (`:has(> input:disabled)`) — --ayy-opacity-disabled, not-allowed cursor; a compact slot's title is struck through too.
+- `selected` (`:has(> input:checked)`) — Text-colour border plus a 1px ring (reads as 2px without moving anything). Compact fills with the text colour, label in the page colour. Forced colours: Highlight outline or fill.
+- `error` (`aria-invalid="true" on the inputs, with a FieldError under the group`) — The inputs draw their red borders (Radio, Checkbox); compact cards show only the FieldError.
+- `loading` — doesn't apply: Load the options before showing them; use Skeletons in the cards' shape meanwhile.
+
+**Sizes**
+- Density — Card padding is fixed; the corner input follows --ayy-size-check. Compact cards are at least the lg control height.
+- Width — The group is a grid of columns at least --ayy-min wide (12rem, 6rem for compact) that fills its box; scroll makes one sideways row.
 
 **JS (framework-free)**: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
 
@@ -3333,6 +3628,20 @@ Category: Forms. A native range input with a filled track and a round thumb, and
 - `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and ayywi/elements keep it in sync, so in HTML set the starting one inline.
 - `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). ayywi/elements keeps them in sync and stops the thumbs crossing.
 
+**States**
+- `default` — A 6px pill track in a 14% text tint, filled in the text colour up to an 18px page-coloured thumb with a text-colour rim.
+- `hover` (`:hover`) — Thumb grows 10%.
+- `pressed` — doesn't apply: No separate pressed look; the thumb follows the pointer while dragged.
+- `focus` (`:focus-visible`) — Ring around the thumb (page-colour gap, then 2px ring), not the track.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: The value is the state: the fill reaches it (--ayy-value 0–100).
+- `error` — doesn't apply: A slider can't hold an invalid value; its min, max and step bound it.
+- `loading` — doesn't apply: No loading look.
+
+**Sizes**
+- Density — The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.
+- Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
+
 **JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
 
 **React** — `import { Slider, SliderRange } from "ayywi/react";`
@@ -3457,8 +3766,20 @@ Category: Forms. A native number input between minus and plus buttons, for small
 - `.ayy-number-field__increment` — The plus <button> after the input. Needs an aria-label. aria-disabled="true" at max.
 
 **States**
-- `button[aria-disabled="true"]` — Can't go further (at min or max). Stays focusable.
-- `input[aria-invalid="true"]` — Invalid value: red border.
+- `default` — One box like an Input (wash fill, line-strong border): minus, the number centred in tabular figures, plus.
+- `hover` (`:hover; the step buttons' :hover`) — Box border turns line-hover; a step button gets a wash-hover fill and text colour.
+- `pressed` — doesn't apply: Step buttons have no pressed look; each press steps once.
+- `focus` (`:has(> input:focus-visible); step buttons :focus-visible`) — Typing: the ring replaces the box border (as Input). A focused step button gets a 2px ring inset by 2px.
+- `disabled` (`step button [aria-disabled="true"] at min or max; disabled on the input`) — A step button that can't go further dims and ignores clicks but keeps focus. A disabled input dims the whole field.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`:has(> input[aria-invalid="true"])`) — Border 60% destructive. Forced colours: dashed.
+- `loading` — doesn't apply: Stepping is instant.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide.
+- Density — Height, step-button width and text follow data-density.
+- Width — Hugs its content (step buttons plus the number box).
 
 **JS (framework-free)**: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. ayywi/elements runs both for every .ayy-number-field on the page.
 
@@ -3541,9 +3862,19 @@ Category: Forms. A drop zone that is also a file picker: a label around a native
 - `.ayy-dropzone__hint` — What's accepted: types and size.
 
 **States**
-- `[data-dragging]` — Files are held over it: solid border in the text colour.
-- `input:disabled` — Dimmed, not clickable.
-- `input[aria-invalid="true"]` — Rejected file: red border; say why in a FieldError.
+- `default` — Wash-filled zone with a dashed line-hover border and card radius; a muted icon, a title and a hint, centred, at least 9rem tall.
+- `hover` (`:hover`) — Border turns text-soft, fill wash-hover.
+- `pressed` — doesn't apply: Clicking opens the file picker; no pressed look.
+- `focus` (`:has(> input:focus-visible)`) — 2px ring around the zone, 2px offset.
+- `disabled` (`:has(> input:disabled)`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: Picked files show in a List below the zone, not on it.
+- `error` (`:has(> input[aria-invalid="true"])`) — Border 60% destructive; pair with a FieldError (wrong type, too big).
+- `loading` — doesn't apply: Show upload progress per file in the List below (a Progress in each row).
+- `dragging` (`[data-dragging] (set by React or ayywi/elements)`) — Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint.
+
+**Sizes**
+- Density — Padding and text are fixed; doesn't follow data-density.
+- Width — Fills its container. compact is one line (icon then text) for a form field or a chat composer.
 
 **JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (ayywi/elements runs it for the document); dragHasFiles(event).
 
@@ -3678,8 +4009,18 @@ Category: Forms. On/off toggle for a setting that applies immediately. A native 
 - `.ayy-switch` — On <input type="checkbox" role="switch"> (preferred) or <button role="switch" aria-checked>. Thumb is ::before.
 
 **States**
-- `:checked / aria-checked="true"` — On.
-- `disabled` — Dimmed, not-allowed.
+- `default` — Off: a pill (wash-hover fill, line-strong border) with a muted thumb at the inline start.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: No pressed look; it flips on release.
+- `focus` (`:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`:disabled or [aria-disabled="true"]`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText.
+- `selected` (`:checked or [aria-checked="true"]`) — On: text-colour track, page-colour thumb slid to the inline end (mirrors in RTL). Forced colours: Highlight.
+- `error` — doesn't apply: A switch is always valid; it applies at once. If saving the setting fails, flip it back and say so in a toast.
+- `loading` — doesn't apply: Settings switch instantly; don't put a spinner on a switch.
+
+**Sizes**
+- Density — --ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.
+- Width — Fixed. Put it in an inline Field with its label.
 
 **JS (framework-free)**: switchClass constant
 
@@ -3755,6 +4096,20 @@ Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, t
 - `.ayy-page-header__title` — The page's <h1>: heading font, 28px, semibold. Smaller than marketing headings on purpose — app screens are for work.
 - `.ayy-page-header__description` — One sentence under the title, muted, at reading width.
 - `.ayy-page-header__actions` — The page's buttons, at the inline end (under the title on phones). One primary at most; the rest outline or ghost.
+
+**States**
+- `default` — An h1 (2xl heading font, semibold) with a muted md description under it, actions at the inline end.
+- `hover` — doesn't apply: Static text; the buttons in __actions have their own states.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; its buttons are.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: Show a failed load under it in an Alert.
+- `loading` — doesn't apply: Render the title at once; put Skeletons below it for the content.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container; the description stops at --ayy-size-measure. Below 48rem the actions drop under the description, aligned to the start.
 
 **JS (framework-free)**: pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.
 
@@ -3845,6 +4200,20 @@ Category: Layout. A band of a page with generous vertical rhythm and a header: o
 - `.ayy-section__number` — Section number inside the eyebrow ("01"), followed by a short rule, in the accent (--ayy-spot).
 - `.ayy-section__title` — The section's <h2>. Fluid, 28px on phones to 48px.
 - `.ayy-section__description` — One or two sentences under the title, muted.
+
+**States**
+- `default` — Block padding of --ayy-space-24 (20 on phones, 32 from 90rem); an optional header with eyebrow, accent number, a bold fluid title and a muted lg description.
+- `hover` — doesn't apply: Static.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Full width; combine with .ayy-container to centre it. The header stops at --ayy-size-measure; center centres it (back to the start on phones). The title scales from 2xl to 4xl with the viewport.
 
 **JS (framework-free)**: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
 
@@ -3973,6 +4342,20 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - `.ayy-card__footer` — Actions row, pinned to the bottom.
 - `.ayy-card__media` — Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly on an interactive card's hover.
 - `.ayy-card__link` — Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable.
+
+**States**
+- `default` — Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5.
+- `hover` (`:hover`) — Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer.
+- `pressed` — doesn't apply: No pressed look, even when interactive.
+- `focus` (`.ayy-card__link:focus-visible`) — The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus.
+- `disabled` — doesn't apply: Cards aren't disabled; dim nothing. For an unavailable option use a Choice card with a disabled input.
+- `selected` (`featured (ayy-card--featured)`) — Text-colour border plus a 1px ring, so it reads as 2px without moving. For a picked option use a Choice card instead. Forced colours: Highlight outline.
+- `error` — doesn't apply: Put an Alert inside the card's content.
+- `loading` — doesn't apply: No loading look; show Skeletons in the card's content shape (aria-busy on the region).
+
+**Sizes**
+- Density — Padding and text don't follow data-density.
+- Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card.
 
 **JS (framework-free)**: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
 
@@ -4208,6 +4591,20 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 - `.ayy-tabs__panel` — role="tabpanel". Hide inactive panels with the hidden attribute.
 - `.ayy-tabs__count` — Small count after a tab's label (items in a filter). Inverts with the selected tab.
 
+**States**
+- `default` — A pill track (wash fill, line border) with text-soft tab labels.
+- `hover` (`.ayy-tabs__tab:hover`) — Tab label turns full text colour.
+- `pressed` — doesn't apply: No pressed look; it selects on click.
+- `focus` (`.ayy-tabs__tab:focus-visible; .ayy-tabs__panel:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`.ayy-tabs__tab:disabled`) — --ayy-opacity-disabled, not-allowed cursor; arrow keys skip it. Forced colours: GrayText.
+- `selected` (`.ayy-tabs__tab[aria-selected="true"]`) — Filled with the text colour, label in the page colour, small shadow; its count gets a 15% page-colour tint. Forced colours: Highlight.
+- `error` — doesn't apply: No error look; show it in the panel.
+- `loading` — doesn't apply: Show loading in the panel (Skeleton), not on the tab.
+
+**Sizes**
+- Density — The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.
+- Width — The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container.
+
 **JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
 
 **Custom element** `<ayy-tabs>` (ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
@@ -4361,6 +4758,21 @@ Category: Layout. Questions and answers, or sections people open one at a time: 
 - `.ayy-accordion__trigger` — The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.
 - `.ayy-accordion__content` — The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you.
 
+**States**
+- `default` — Items stacked between hairlines; each trigger is md text, medium weight, with a muted chevron pointing down.
+- `hover` (`.ayy-accordion__trigger:hover`) — Chevron turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-accordion__trigger:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: Native <details> can't be disabled; leave out an item that can't open.
+- `selected` — doesn't apply: Open is the only state (see open).
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+- `open` (`[open] on the <details>`) — Chevron points up and the content shows in text-soft sm text. With the same name on each item, opening one closes the others.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container.
+
 **JS (framework-free)**: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
 
 **React** — `import { Accordion, AccordionItem } from "ayywi/react";`
@@ -4443,6 +4855,20 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 - `.ayy-carousel__track` — The scrolling, snapping row. Give it tabindex="0" so keyboards can scroll it. Gap via --ayy-gap.
 - `.ayy-carousel__slide` — Each slide: role="group" aria-roledescription="slide". Width via --ayy-slide (default min(22rem, 85%)).
 - `.ayy-carousel__controls` — Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows are directional Hugeicons (ayy-icon--directional), so they flip in RTL.
+
+**States**
+- `default` — A track of slides that scrolls and snaps; previous and next Buttons centred below.
+- `hover` (`the controls' Button :hover`) — As Button.
+- `pressed` (`the controls' Button :active`) — As Button.
+- `focus` (`.ayy-carousel__track:focus-visible; the controls' Buttons`) — The track gets a 2px ring, 2px offset (arrow keys then scroll it); buttons as Button.
+- `disabled` (`[aria-disabled="true"] on previous/next at either end (set by <ayy-carousel> or React)`) — The Button's disabled look; it stays focusable and does nothing.
+- `selected` — doesn't apply: No current-slide look; the slides' position is the state.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: Show Skeleton slides while the content loads.
+
+**Sizes**
+- Density — The track doesn't follow data-density; the control Buttons do.
+- Width — Fills its container; each slide is --ayy-slide wide (default min(22rem, 85%)) and as tall as the tallest.
 
 **JS (framework-free)**: carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.
 
@@ -4534,6 +4960,20 @@ Category: Layout. A hairline between blocks: full, fading out at both ends (betw
 - `.ayy-separator--vertical` — Vertical rule in a flex row; add aria-orientation="vertical".
 - `.ayy-separator--fade` — Fades to transparent at both ends.
 
+**States**
+- `default` — A 1px hairline across its container (vertical: down the row).
+- `hover` — doesn't apply: Decorative.
+- `pressed` — doesn't apply: Decorative.
+- `focus` — doesn't apply: Decorative.
+- `disabled` — doesn't apply: Decorative.
+- `selected` — doesn't apply: Decorative.
+- `error` — doesn't apply: Decorative.
+- `loading` — doesn't apply: Decorative.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Horizontal fills the width; vertical stretches to the row's height (at least 1em). fade fades both ends.
+
 **JS (framework-free)**: separatorClass({ orientation?, fade?, className? }) → string
 
 **React** — `import { Separator } from "ayywi/react";`
@@ -4612,6 +5052,25 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 - `.ayy-dialog__body` — Content that scrolls on its own, between the header and the footer. Fills the height of a side modal, so the footer sits at the bottom.
 - `.ayy-dialog__footer` — Actions. Stacked on mobile, end-aligned (right in LTR, left in RTL) from 40rem.
 - `.ayy-dialog__close` — Icon button in the top-end corner.
+
+**States**
+- `default` — Closed: not rendered. Open (see open): surface panel, line-strong border, card radius, overlay shadow, over a blurred --ayy-color-overlay backdrop.
+- `hover` (`.ayy-dialog__close:hover`) — Close button gets a wash-hover circle and the text colour.
+- `pressed` — doesn't apply: The panel has no pressed look; its buttons have Button's.
+- `focus` (`.ayy-dialog__close:focus-visible; .ayy-dialog__body:focus-visible (scrolling body with tabindex="0")`) — Close: 2px ring, 2px offset. Body: ring inset by 2px.
+- `disabled` — doesn't apply: A dialog isn't disabled; disable the buttons inside it.
+- `selected` — doesn't apply: No selected state.
+- `error` — doesn't apply: Show errors inside the body: a FieldError per field, an Alert for a failed save. Keep the dialog open.
+- `loading` — doesn't apply: No loading look; put the primary Button in loading while it saves, Skeletons in the body while it loads.
+- `open` (`[open] via showModal() (React open; <ayy-dialog>)`) — Fades and scales in (centred); side-start / side-end slide in from that edge (RTL-aware); side-bottom slides up as a sheet with a grab handle. The page behind is inert and stops scrolling.
+
+**Sizes**
+- `sm` — 24rem wide.
+- `md` (default) — 32rem wide.
+- `lg` — 42rem wide.
+- `xl` — 56rem wide.
+- Density — Padding is fixed (--ayy-space-6); its controls follow data-density.
+- Width — The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem.
 
 **JS (framework-free)**: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
 
@@ -5012,7 +5471,19 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 - `.ayy-popover` — On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.
 
 **States**
-- `:popover-open` — Open.
+- `default` — Closed: hidden. Open: raised surface, line-strong border, control radius, overlay shadow, sm text.
+- `hover` — doesn't apply: The panel has no hover look; the trigger is a Button with its own.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` — doesn't apply: The panel itself doesn't take a ring; focus moves to the controls inside.
+- `disabled` — doesn't apply: Disable the trigger instead.
+- `selected` — doesn't apply: No selected state.
+- `error` — doesn't apply: Show errors inside it (FieldError).
+- `loading` — doesn't apply: Put a Spinner or Skeleton inside while its content loads.
+- `open` (`:popover-open`) — Fades in and scales up from 97% next to its trigger (React Popover, <ayy-popover>); light-dismisses on Esc or a click outside.
+
+**Sizes**
+- Density — Padding is fixed; its controls follow data-density.
+- Width — As wide as its content, at most 22rem (or the viewport minus 1rem).
 
 **JS (framework-free)**: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
 
@@ -5096,6 +5567,21 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 **Classes**
 - `.ayy-tooltip` — Wrapper around the trigger. Shows the content on :hover and :focus-within.
 - `.ayy-tooltip__content` — The bubble (role="tooltip"). Placement via data-side="top|bottom|start|end" (start/end follow text direction).
+
+**States**
+- `default` — Hidden. The bubble is a raised surface with a line-strong border and 2xs text.
+- `hover` (`.ayy-tooltip:hover`) — The bubble fades and slides in after 200ms.
+- `pressed` — doesn't apply: No pressed look; the trigger keeps its own.
+- `focus` (`.ayy-tooltip:focus-within`) — The bubble shows at once (no delay) while the trigger has focus.
+- `disabled` — doesn't apply: A disabled button gets no focus and shows no tooltip; explain why it's disabled in visible text instead.
+- `selected` — doesn't apply: No selected state.
+- `error` — doesn't apply: Never put errors in a tooltip; use a FieldError.
+- `loading` — doesn't apply: No loading state.
+- `dismissed` (`[data-dismissed] (Esc, set by React Tooltip or <ayy-tooltip>)`) — Stays hidden until the pointer and focus leave.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — As wide as its text, at most 16rem, then wraps.
 
 **JS (framework-free)**: tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).
 
@@ -5184,6 +5670,20 @@ Category: Feedback. Inline message box with optional icon, title, description an
 - `.ayy-alert__title` — Bold first line.
 - `.ayy-alert__description` — Supporting text.
 - `.ayy-alert__actions` — Row of buttons.
+
+**States**
+- `default` — Wash fill, line-strong border, control radius; semibold title, text-soft description. info, success, warning and destructive tint the icon, an 8% fill and a 35% border in their colour.
+- `hover` — doesn't apply: Static; its action Buttons have their own states.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; its actions are.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` (`destructive (ayy-alert--destructive), role="alert" when it appears after an action`) — Red icon, 8% red fill and 35% red border. Add a Try again action for a failed load or save.
+- `loading` — doesn't apply: Not a loading indicator; use a Spinner, Progress or Skeleton.
+
+**Sizes**
+- Density — Padding and sm text are fixed.
+- Width — Fills its container.
 
 **JS (framework-free)**: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
 
@@ -5284,6 +5784,21 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 - `.ayy-toast__actions` — Action button row.
 - `.ayy-toast__close` — Close button.
 
+**States**
+- `default` — Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start.
+- `hover` (`.ayy-toast__close:hover`) — Close button gets a wash-hover circle and the text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-toast__close:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: Not disabled.
+- `selected` — doesn't apply: No selected state.
+- `error` (`toast({ variant: "destructive" })`) — Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError).
+- `loading` — doesn't apply: A toast confirms; for a long task show Progress where the work happens.
+- `leaving` (`[data-leaving] (set by toast())`) — Fades and shrinks out. Only the 4 newest show; older ones wait.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — min(22rem, viewport minus 2rem), stacked in the corner given by position.
+
 **JS (framework-free)**: toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })
 
 **React** — `import { toast, Toaster } from "ayywi/react";`
@@ -5365,6 +5880,23 @@ Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or inde
 - `.ayy-progress--ai` — Purple fill.
 - `.ayy-progress--indeterminate` — Looping animation; omit aria-valuenow.
 
+**States**
+- `default` — A 6px pill track in a 10% text tint, filled in the text colour from the inline start to --ayy-value %.
+- `hover` — doesn't apply: Not interactive.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive; at 0 it's an empty track.
+- `selected` — doesn't apply: The value is the state (--ayy-value, aria-valuenow).
+- `error` (`destructive (ayy-progress--destructive)`) — Red fill: a failed upload or an over-limit quota. Say why in text next to it.
+- `loading` (`.ayy-progress--indeterminate without aria-valuenow`) — A 40% bar slides along the track, unknown duration (RTL reverses it).
+
+**Sizes**
+- `sm` — 4px track.
+- `md` (default) — 6px track.
+- `lg` — 10px track.
+- Density — Doesn't follow data-density.
+- Width — Fills its container.
+
 **JS (framework-free)**: progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)
 
 **React** — `import { Progress } from "ayywi/react";`
@@ -5432,6 +5964,23 @@ Category: Feedback. An indeterminate loading ring in the text colour, sized like
 - `.ayy-spinner` — The ring, 1.25em (matches an icon beside text), in the current text colour. Spins; stops still under reduced motion.
 - `.ayy-spinner--sm` — 16px (--ayy-size-icon-sm).
 - `.ayy-spinner--lg` — 32px (--ayy-size-icon-xl), for a panel that's loading.
+
+**States**
+- `default` — Loading is its only look: a ring in currentColor (20% track, solid top) turning once a slow duration; under reduced motion it stops as a still ring.
+- `hover` — doesn't apply: Not interactive.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: Replace it with an Alert or FieldError when the work fails.
+- `loading` (`always (it is the loading state); give it role="status" and a label, or aria-hidden inside a busy Button`) — Spins.
+
+**Sizes**
+- `sm` — 16px (--ayy-size-icon-sm).
+- `md` (default) — 1.25em, matching an icon beside text.
+- `lg` — 32px (--ayy-size-icon-xl), 3px ring.
+- Density — Doesn't follow data-density; md follows the font size around it.
+- Width — Square.
 
 **JS (framework-free)**: spinnerClass({ size?, className? }) → string. Buttons: add aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).
 
@@ -5506,6 +6055,20 @@ Category: Feedback. Placeholder shapes shown while content loads, with a subtle 
 - `.ayy-skeleton` — Block placeholder. Set its size to match the content.
 - `.ayy-skeleton--text` — Text line (0.75em tall).
 - `.ayy-skeleton--circle` — Circle (avatars, icons).
+
+**States**
+- `default` — Loading is its only look: a wash-hover block with a quiet shimmer that stops under reduced motion.
+- `hover` — doesn't apply: Not interactive.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: Replace Skeletons with an Alert and a retry when loading fails.
+- `loading` (`always; set aria-busy="true" on the region it fills and aria-hidden on the skeletons`) — Shimmers. Forced colours: a dashed outline instead.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Size it like the content it stands in for. block fills the width at 1rem tall; text is 0.75em tall; circle is 2.5rem (an avatar).
 
 **JS (framework-free)**: skeletonClass({ shape?, className? }) → string
 
@@ -5583,6 +6146,20 @@ Category: Feedback. What a list, table or page shows when there's nothing in it 
 - `.ayy-empty-state__title` — What's empty, as a heading ("No projects yet").
 - `.ayy-empty-state__description` — One sentence: why it's empty, or what will appear here.
 - `.ayy-empty-state__actions` — The button that fixes it (primary), maybe a secondary link.
+
+**States**
+- `default` — Centred: an optional Icon tile, an lg heading-font title, a muted sm sentence (at most 42ch) and the action that fills it.
+- `hover` — doesn't apply: Static; its action Buttons have their own states.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; its actions are.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: A failed load isn't empty: show an Alert with a retry instead.
+- `loading` — doesn't apply: While loading show Skeletons, never an empty state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content.
 
 **JS (framework-free)**: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
 
@@ -5708,6 +6285,20 @@ Category: Data display. Small pill label for status, category or count. Optional
 - `.ayy-badge__dot` — Leading status dot (first child). Pulses. Colour follows the variant, or set --ayy-dot.
 - `.ayy-badge__dot--static` — Dot without the pulse.
 
+**States**
+- `default` — A 2xs pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static.
+- `hover` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `pressed` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `selected` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
+- `error` (`destructive (ayy-badge--destructive)`) — Red text on a 10% red tint: a failed run, an overdue invoice. Pair the colour with a word.
+- `loading` — doesn't apply: No loading look; a pulsing __dot shows a live state, not progress.
+
+**Sizes**
+- Density — Fixed 2xs text; doesn't follow data-density.
+- Width — Hugs its text, never wraps.
+
 **JS (framework-free)**: badgeClass({ variant?, className? }) → string
 
 **React** — `import { Badge } from "ayywi/react";`
@@ -5806,6 +6397,20 @@ Category: Data display. A keyboard key or shortcut drawn as a small keycap: in h
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
 
+**States**
+- `default` — A small keycap: wash fill, line-strong border with a 2px bottom edge, mono text-soft at 0.75em.
+- `hover` — doesn't apply: A key label, not a control.
+- `pressed` — doesn't apply: A key label, not a control.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: A key label, not a control.
+- `selected` — doesn't apply: A key label, not a control.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Scales with the text around it (1.6em tall); doesn't follow data-density.
+- Width — At least 1.6em wide, grows with the key name.
+
 **JS (framework-free)**: kbdClass constant.
 
 **React** — `import { Kbd } from "ayywi/react";`
@@ -5868,6 +6473,24 @@ Category: Data display. Round (or square) picture of a person or workspace, with
 - `.ayy-avatar__fallback` — Initials, underneath the image.
 - `.ayy-avatar__image` — The <img alt="">. Covers the initials when it loads.
 - `.ayy-avatar-group` — Overlapping stack of avatars.
+
+**States**
+- `default` — A disc in wash-hover with text-soft semibold initials under the image. square uses a rounded square.
+- `hover` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `pressed` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `selected` — doesn't apply: An avatar isn't a control; wrap it in a Button or link to make it one.
+- `error` (`a broken image (React and ayywi/elements set hidden on it)`) — The initials show; with CSS alone the broken-image icon is covered by a plain disc.
+- `loading` — doesn't apply: Initials show until the image loads; use a circle Skeleton only when the name isn't known yet.
+
+**Sizes**
+- `sm` — 1.5rem (24px).
+- `md` (default) — 2rem (32px).
+- `lg` — 2.5rem (40px).
+- `xl` — 3.5rem (56px).
+- Density — Doesn't follow data-density. Initials are 38% of the size.
+- Width — Square. A group overlaps them by 20% with a page-colour ring.
 
 **JS (framework-free)**: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 
@@ -5957,6 +6580,25 @@ Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,
 - `.ayy-icon--lg` — 24px, Hugeicons' native grid (--ayy-size-icon-lg).
 - `.ayy-icon--xl` — 32px (--ayy-size-icon-xl).
 - `.ayy-icon--directional` — Mirrors the icon in right-to-left text (the nearest dir attribute decides). For icons that point along the reading direction: arrows, chevrons, send, undo.
+
+**States**
+- `default` — A Hugeicons SVG stroked in currentColor, aligned to the text's capitals.
+- `hover` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `pressed` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `selected` — doesn't apply: Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button.
+- `error` — doesn't apply: No error state; colour the text around it.
+- `loading` — doesn't apply: Use a Spinner.
+
+**Sizes**
+- `auto` (default) — 1.25em: follows the text size.
+- `sm` — 16px (--ayy-size-icon-sm).
+- `md` — 20px.
+- `lg` — 24px.
+- `xl` — 32px.
+- Density — Doesn't follow data-density; inside buttons, menu items and alerts the component sets the size.
+- Width — Square. directional mirrors it in RTL.
 
 **JS (framework-free)**: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
 
@@ -6178,6 +6820,23 @@ Category: Data display. An app-icon squircle lit from below by the content's acc
 - `.ayy-icon-tile--sm` — 32px.
 - `.ayy-icon-tile--lg` — 64px.
 
+**States**
+- `default` — A dark squircle lit from below by --ayy-spot, with the glyph in that accent and a 1px line inset.
+- `hover` — doesn't apply: Decorative.
+- `pressed` — doesn't apply: Decorative.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Decorative.
+- `selected` — doesn't apply: Decorative.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- `sm` — 32px, lg radius.
+- `md` (default) — 48px, xl radius.
+- `lg` — 64px, 2xl radius.
+- Density — Doesn't follow data-density.
+- Width — Square; the glyph is 55% of it.
+
 **JS (framework-free)**: iconTileClass({ size?, className? }) → string
 
 **React** — `import { IconTile } from "ayywi/react";`
@@ -6259,6 +6918,22 @@ Category: Data display. A headline number in the heading font, with a muted unit
 - `.ayy-stat__unit` — Muted word after the number, inside the value.
 - `.ayy-stat__label` — Short context, above or below the value.
 
+**States**
+- `default` — A bold 4xl heading-font number in tabular figures, a muted sm unit beside it and a muted sm label.
+- `hover` — doesn't apply: Static.
+- `pressed` — doesn't apply: Static.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Static.
+- `selected` — doesn't apply: Static.
+- `error` — doesn't apply: No error state; show "—" and an Alert when the number couldn't load.
+- `loading` — doesn't apply: Show a text Skeleton the width of the number while it loads.
+
+**Sizes**
+- `md` (default) — Value at 4xl (3rem).
+- `sm` — Value at 2xl (1.75rem), for cards and dense dashboards.
+- Density — Doesn't follow data-density.
+- Width — Hugs its content; the value wraps its unit below when narrow.
+
 **JS (framework-free)**: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
 
 **React** — `import { Stat } from "ayywi/react";`
@@ -6330,6 +7005,20 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 - `.ayy-list__description` — Supporting text under the title, muted.
 - `.ayy-list__meta` — Short trailing text: a time, a count, a size. Small, muted, tabular numbers.
 - `.ayy-list__link` — The <a> inside __title. Its ::after covers the row, so the whole row is one tab stop; other controls in the row stay clickable above it. The row gets a wash on hover, a ring on focus, and a stronger tint and heavier title with aria-current="page" (or "true").
+
+**States**
+- `default` — Rows of leading media, a medium-weight title over a muted description, and muted xs meta, with 12px padding and lg radius. divided: flush rows between hairlines; compact: tight icon rows.
+- `hover` (`.ayy-list__item:has(.ayy-list__link):hover`) — A row with a __link gets a wash fill. Rows without one don't react.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-list__item:has(.ayy-list__link:focus-visible)`) — The ring goes around the whole row, inset by 2px.
+- `disabled` — doesn't apply: Rows aren't disabled; leave the link out of a row that can't open, and disable controls inside it.
+- `selected` (`.ayy-list__item:has(.ayy-list__link[aria-current="page" | "true"])`) — The row you're on: wash-hover fill and a semibold title, as the App shell's current link. Forced colours: Highlight. For multi-select rows put a Checkbox in the row.
+- `error` — doesn't apply: No error look; show a failed load as an Alert in place of the list.
+- `loading` — doesn't apply: No loading look; show Skeleton rows (circle plus two text lines) with aria-busy on the list.
+
+**Sizes**
+- Density — Padding and sm text are fixed; controls in rows follow data-density.
+- Width — Fills its container; titles and descriptions wrap, meta stays on one line.
 
 **JS (framework-free)**: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
 
@@ -6521,6 +7210,20 @@ Category: Data display. Label / value pairs on a description list: small upperca
 - `.ayy-data-list__label` — The <dt>: small uppercase muted label.
 - `.ayy-data-list__value` — The <dd>: the value, in body text.
 
+**States**
+- `default` — Stacked pairs: a muted 2xs uppercase label over an md value. row puts the pairs side by side.
+- `hover` — doesn't apply: Static.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: No error state; show "—" for a missing value.
+- `loading` — doesn't apply: Use a text Skeleton in each value while it loads.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container. row is a grid of columns at least --ayy-min (9rem) wide; values break anywhere rather than overflow.
+
 **JS (framework-free)**: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
 
 **React** — `import { DataList, DataListItem } from "ayywi/react";`
@@ -6597,6 +7300,20 @@ Category: Data display. A browser window around a screenshot, video or coded moc
 - `.ayy-frame__title` — Optional address or page name in the bar, centred.
 - `.ayy-frame__body` — Holds the <img>, <video>, <picture> or <svg>, edge to edge.
 
+**States**
+- `default` — A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted 2xs address.
+- `hover` — doesn't apply: Decorative.
+- `pressed` — doesn't apply: Decorative.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Decorative.
+- `selected` — doesn't apply: Decorative.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: Give the image width and height so nothing jumps; no loading look.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container; the media inside scales to its width.
+
 **JS (framework-free)**: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
 
 **React** — `import { Frame } from "ayywi/react";`
@@ -6672,6 +7389,20 @@ Category: Data display. A conversation: incoming bubbles at the start edge, the 
 - `.ayy-chat__bubble` — The bubble. The corner by the avatar is squared off.
 - `.ayy-chat__typing` — Three pulsing dots inside a bubble while a reply is written. Give it role="img" and an aria-label.
 - `.ayy-chat__replies` — Quick replies under the conversation: small outline buttons, at the end edge.
+
+**States**
+- `default` — Incoming: raised surface bubbles with a hairline at the inline start. out (the reader's): primary fill and primary-fg text at the inline end. Bubbles are at most 85% wide.
+- `hover` — doesn't apply: Bubbles are static; quick replies are Buttons.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: No error look; say a message failed in text under it with a retry Button.
+- `loading` (`.ayy-chat__typing inside a bubble`) — Three dots bouncing in turn while a reply is written.
+
+**Sizes**
+- Density — sm text; doesn't follow data-density.
+- Width — Fills its container; bubbles wrap and break long words.
 
 **JS (framework-free)**: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
 
@@ -6760,8 +7491,19 @@ Category: Data display. Data table with quiet hairlines, uppercase headers and h
 - `.ayy-table__select` — On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box.
 
 **States**
-- `tr[aria-selected="true"]` — Selected row highlight.
-- `th[aria-sort="ascending" | "descending"]` — The sorted column: its header in the text colour and one arrow.
+- `default` — Collapsed table, xs text; header row on a wash fill with muted 2xs uppercase labels; hairlines between rows.
+- `hover` (`tbody tr:hover; .ayy-table__sort:hover`) — Row gets a wash fill; a sort button's label turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-table__sort:focus-visible`) — 2px ring on the sort button.
+- `disabled` — doesn't apply: Rows aren't disabled; disable the controls in them.
+- `selected` (`tr[aria-selected="true"] (with a Checkbox in .ayy-table__select)`) — Wash-hover row fill. Forced colours: Highlight.
+- `error` — doesn't apply: Show a failed load as an Alert with a retry instead of the rows.
+- `loading` — doesn't apply: No loading look; render Skeleton rows in the column layout with aria-busy on the table.
+- `sorted` (`th[aria-sort="ascending" | "descending"]`) — Header label turns text colour and only the arrow that applies shows, at full strength. Forced colours: underlined.
+
+**Sizes**
+- Density — Doesn't follow data-density. Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter.
+- Width — Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit.
 
 **JS (framework-free)**: tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → "ascending" | "descending"; compareValues(a, b) sorts numbers (also "$1,240", "12 GB") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).
 
@@ -7077,6 +7819,20 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 - `.ayy-bar-list__label` — The row's name (or a link), cut with an ellipsis.
 - `.ayy-bar-list__value` — The row's number, tabular digits.
 - `.ayy-sparkline` — A small <svg viewBox="0 0 100 100" preserveAspectRatio="none"> line with no axes, for a stat or a table cell. Uses __line and __area paths.
+
+**States**
+- `default` — Bars, lines or areas in --ayy-chart-1… in order, muted 2xs labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table.
+- `hover` (`.ayy-chart__column:hover`) — Its bars mix 20% toward the text colour and show their data-value above them.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; the data table carries the numbers.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: No selected bar or series.
+- `error` — doesn't apply: No error look; show an Alert in its place.
+- `loading` — doesn't apply: Use a block Skeleton of the chart's height while data loads; bars grow from 0 when they appear.
+
+**Sizes**
+- Density — Doesn't follow data-density. The plot is --ayy-chart-height (12rem) tall; bar-list rows are at least the sm control height; a sparkline is 6rem × 1.75rem.
+- Width — Fills its container; columns share the width (bars at most 2.5rem wide).
 
 **JS (framework-free)**: chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.
 

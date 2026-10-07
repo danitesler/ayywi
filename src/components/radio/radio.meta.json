@@ -14,8 +14,18 @@
     "orientation": { "values": ["vertical", "horizontal"], "default": "vertical" }
   },
   "states": {
-    ":checked": "Selected.",
-    "disabled": "Dimmed."
+    "default": { "looks": "A circle --ayy-size-check wide with a line-hover border on a wash fill." },
+    "hover": { "when": ":hover", "looks": "Border turns text-soft." },
+    "pressed": { "none": "No pressed look; it picks on release." },
+    "focus": { "when": ":focus-visible", "looks": "2px ring, 2px offset. Arrow keys move the choice within the group." },
+    "disabled": { "when": ":disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border." },
+    "selected": { "when": ":checked", "looks": "Primary fill and border with a primary-fg dot that springs in." },
+    "error": { "when": "aria-invalid=\"true\" on each radio of the group", "looks": "Destructive border. Forced colours: dashed." },
+    "loading": { "none": "Choosing is instant." }
+  },
+  "sizes": {
+    "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+    "width": "Fixed circle. The group stacks (vertical) or wraps in a row (horizontal)."
   },
   "js": "radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string",
   "react": {

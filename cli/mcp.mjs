@@ -16,7 +16,13 @@ function componentMarkdown(c) {
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
   ];
   if (variants.length) parts.push(`Variants:\n${list(variants)}`);
-  if (c.states) parts.push(`States:\n${list(Object.entries(c.states).map(([k, v]) => `${k} — ${v}`))}`);
+  if (c.states) {
+    parts.push(`States:\n${list(Object.entries(c.states).map(([k, s]) => (s.none ? `${k} — doesn't apply: ${s.none}` : `${k}${s.when ? ` (${s.when})` : ""} — ${s.looks}`)))}`);
+  }
+  if (c.sizes) {
+    const scale = Object.entries(c.sizes.scale ?? {}).map(([k, v]) => `${k} — ${v}`);
+    parts.push(`Sizes:\n${list([...scale, `density — ${c.sizes.density}`, `width — ${c.sizes.width}`])}`);
+  }
   if (c.js) parts.push(`JS helpers (from "ayywi"): ${c.js}`);
   if (c.element)
     parts.push(
@@ -63,7 +69,7 @@ export function createServer(contract = loadContract()) {
       },
     },
     get_component: {
-      description: "Full spec of one component: classes, variants, states, React props, custom element, a11y, do/don't, copy-ready HTML + React examples.",
+      description: "Full spec of one component: classes, variants, states (default, hover, pressed, focus, disabled, selected, error, loading…), sizes, React props, custom element, a11y, do/don't, copy-ready HTML + React examples.",
       inputSchema: { type: "object", properties: { name: { type: "string", description: "e.g. button, Dialog, DropdownMenu, ayy-tabs" } }, required: ["name"] },
       run: ({ name }) => {
         const c = find(name);

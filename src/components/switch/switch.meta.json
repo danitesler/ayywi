@@ -9,8 +9,18 @@
   },
   "variants": {},
   "states": {
-    ":checked / aria-checked=\"true\"": "On.",
-    "disabled": "Dimmed, not-allowed."
+    "default": { "looks": "Off: a pill (wash-hover fill, line-strong border) with a muted thumb at the inline start." },
+    "hover": { "when": ":hover", "looks": "Border turns line-hover." },
+    "pressed": { "none": "No pressed look; it flips on release." },
+    "focus": { "when": ":focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ":disabled or [aria-disabled=\"true\"]", "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText." },
+    "selected": { "when": ":checked or [aria-checked=\"true\"]", "looks": "On: text-colour track, page-colour thumb slid to the inline end (mirrors in RTL). Forced colours: Highlight." },
+    "error": { "none": "A switch is always valid; it applies at once. If saving the setting fails, flip it back and say so in a toast." },
+    "loading": { "none": "Settings switch instantly; don't put a spinner on a switch." }
+  },
+  "sizes": {
+    "density": "--ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.",
+    "width": "Fixed. Put it in an inline Field with its label."
   },
   "js": "switchClass constant",
   "react": {

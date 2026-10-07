@@ -11,6 +11,20 @@
     "ayy-carousel__controls": "Row of the previous/next buttons (outline icon buttons with data-ayy-prev / data-ayy-next). Their arrows are directional Hugeicons (ayy-icon--directional), so they flip in RTL."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "A track of slides that scrolls and snaps; previous and next Buttons centred below." },
+    "hover": { "when": "the controls' Button :hover", "looks": "As Button." },
+    "pressed": { "when": "the controls' Button :active", "looks": "As Button." },
+    "focus": { "when": ".ayy-carousel__track:focus-visible; the controls' Buttons", "looks": "The track gets a 2px ring, 2px offset (arrow keys then scroll it); buttons as Button." },
+    "disabled": { "when": "[aria-disabled=\"true\"] on previous/next at either end (set by <ayy-carousel> or React)", "looks": "The Button's disabled look; it stays focusable and does nothing." },
+    "selected": { "none": "No current-slide look; the slides' position is the state." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "Show Skeleton slides while the content loads." }
+  },
+  "sizes": {
+    "density": "The track doesn't follow data-density; the control Buttons do.",
+    "width": "Fills its container; each slide is --ayy-slide wide (default min(22rem, 85%)) and as tall as the tallest."
+  },
   "js": "carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.",
   "element": {
     "tag": "ayy-carousel",

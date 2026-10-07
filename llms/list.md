@@ -13,6 +13,20 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 - `.ayy-list__meta` — Short trailing text: a time, a count, a size. Small, muted, tabular numbers.
 - `.ayy-list__link` — The <a> inside __title. Its ::after covers the row, so the whole row is one tab stop; other controls in the row stay clickable above it. The row gets a wash on hover, a ring on focus, and a stronger tint and heavier title with aria-current="page" (or "true").
 
+**States**
+- `default` — Rows of leading media, a medium-weight title over a muted description, and muted xs meta, with 12px padding and lg radius. divided: flush rows between hairlines; compact: tight icon rows.
+- `hover` (`.ayy-list__item:has(.ayy-list__link):hover`) — A row with a __link gets a wash fill. Rows without one don't react.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-list__item:has(.ayy-list__link:focus-visible)`) — The ring goes around the whole row, inset by 2px.
+- `disabled` — doesn't apply: Rows aren't disabled; leave the link out of a row that can't open, and disable controls inside it.
+- `selected` (`.ayy-list__item:has(.ayy-list__link[aria-current="page" | "true"])`) — The row you're on: wash-hover fill and a semibold title, as the App shell's current link. Forced colours: Highlight. For multi-select rows put a Checkbox in the row.
+- `error` — doesn't apply: No error look; show a failed load as an Alert in place of the list.
+- `loading` — doesn't apply: No loading look; show Skeleton rows (circle plus two text lines) with aria-busy on the list.
+
+**Sizes**
+- Density — Padding and sm text are fixed; controls in rows follow data-density.
+- Width — Fills its container; titles and descriptions wrap, meta stays on one line.
+
 **JS (framework-free)**: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
 
 **React** — `import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from "ayywi/react";`
