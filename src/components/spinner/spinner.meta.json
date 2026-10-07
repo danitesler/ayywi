@@ -12,6 +12,25 @@
   "variants": {
     "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "Spinner" }
   },
+  "states": {
+    "default": { "looks": "Loading is its only look: a ring in currentColor (20% track, solid top) turning once a slow duration; under reduced motion it stops as a still ring." },
+    "hover": { "none": "Not interactive." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "none": "Replace it with an Alert or FieldError when the work fails." },
+    "loading": { "when": "always (it is the loading state); give it role=\"status\" and a label, or aria-hidden inside a busy Button", "looks": "Spins." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "16px (--ayy-size-icon-sm).",
+      "md": "1.25em, matching an icon beside text.",
+      "lg": "32px (--ayy-size-icon-xl), 3px ring."
+    },
+    "density": "Doesn't follow data-density; md follows the font size around it.",
+    "width": "Square."
+  },
   "js": "spinnerClass({ size?, className? }) → string. Buttons: add aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).",
   "react": {
     "import": "import { Spinner } from \"@danitesler/ayywi/react\";",

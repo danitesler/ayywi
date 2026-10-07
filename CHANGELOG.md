@@ -10,6 +10,11 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - A long Breadcrumb wrapped onto several lines on phones. It stays on one line there, cutting ancestors with an ellipsis before the current page.
 - Sections kept 80px of block padding on phones (160px between two). It's 48px there, with a smaller gap under the header.
 - A tap on a touch screen left interactive cards lifted, their media zoomed and the ring button spinning. Those effects only run with a real hover now (`@media (hover: hover)`); the ring still spins on keyboard focus. The motion rule says so for app CSS too.
+### Added
+- Every component documents its states and sizes, the same way. `states` in each meta lists default, hover, pressed, focus, disabled, selected, error and loading (plus its own, such as open, indeterminate, dragging or sorted): how to reach each (`when`) and what it looks like (`looks`), or why it doesn't apply and what to use instead (`none`). `sizes` gives each size variant's measurements (`scale`), what `data-density` changes and how it takes space. Both are in `manifest/components.json` (with the state list as `states`), `llms-full.txt`, `llms/<slug>.md`, the cheat sheet and the MCP server's `get_component`, and a new rule tells agents not to style a state a component doesn't have. `pnpm check` fails when a state is missing, malformed, or called "doesn't apply" while the component's CSS styles it, and when `sizes.scale` doesn't match the `size` variant.
+
+### Changed
+- **Breaking** for tools that read `manifest/components.json`: a component's `states` was a map of selector → sentence on 14 components; it's now on all of them, keyed by state name, each `{ when, looks }` or `{ none }`.
 
 ## 0.0.1 — 2026-10-07
 

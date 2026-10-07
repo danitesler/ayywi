@@ -14,6 +14,24 @@
   "variants": {
     "size": { "values": ["md", "sm"], "default": "md" }
   },
+  "states": {
+    "default": { "looks": "A bold 4xl heading-font number in tabular figures, a muted sm unit beside it and a muted sm label." },
+    "hover": { "none": "Static." },
+    "pressed": { "none": "Static." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Static." },
+    "selected": { "none": "Static." },
+    "error": { "none": "No error state; show \"—\" and an Alert when the number couldn't load." },
+    "loading": { "none": "Show a text Skeleton the width of the number while it loads." }
+  },
+  "sizes": {
+    "scale": {
+      "md": "Value at 4xl (3rem).",
+      "sm": "Value at 2xl (1.75rem), for cards and dense dashboards."
+    },
+    "density": "Doesn't follow data-density.",
+    "width": "Hugs its content; the value wraps its unit below when narrow."
+  },
   "js": "statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.",
   "react": {
     "import": "import { Stat } from \"@danitesler/ayywi/react\";",

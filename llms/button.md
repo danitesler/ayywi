@@ -16,6 +16,25 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `.ayy-button--icon-sm` — Square 28px, for a single icon.
 - `.ayy-button--block` — Fills its container's width: a card footer, a phone form, a dialog's only action.
 
+**States**
+- `default` — Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring.
+- `hover` (`:hover`) — Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins.
+- `pressed` (`:active`) — Drops back to its resting position while held; colours stay as on hover.
+- `focus` (`:focus-visible`) — 2px --ayy-color-ring outline, 2px offset. Ring also spins its border.
+- `disabled` (`:disabled on <button>, aria-disabled="true" on <a>`) — --ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText border and label.
+- `selected` — doesn't apply: Not a toggle. For on/off use a Chip button (aria-pressed), for one of a few a Segmented control, for a setting a Switch.
+- `error` — doesn't apply: Errors belong to the form: a FieldError under the field, or an Alert for a failed action.
+- `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), sm padding and text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), more padding, larger text.
+- `icon` — Square at the md height, for one icon (needs aria-label).
+- `icon-sm` — Square at the sm height.
+- Density — Height, inline padding and label size follow data-density (the heights above).
+- Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
+
 **JS (framework-free)**: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 
 **React** — `import { Button } from "@danitesler/ayywi/react";`

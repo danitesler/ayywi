@@ -19,6 +19,21 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - `.ayy-app-shell__bar` — Phone top bar, first child of the shell, hidden from 48rem: the brand, then one or two actions (search, account), which sit at the inline end. Add a __toggle to it when the sidebar should open as a drawer. With a bar or a bottom nav the phone sidebar is off-screen; it slides in from the inline-start edge over a scrim while a toggle has aria-expanded="true".
 - `.ayy-app-shell__toggle` — The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the "More" tab of the bottom nav (<button class="ayy-bottom-nav__link ayy-app-shell__toggle">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it.
 
+**States**
+- `default` — A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills.
+- `hover` (`.ayy-app-shell__link:hover`) — Link gets a wash fill and the text colour.
+- `pressed` — doesn't apply: Links have no pressed look.
+- `focus` (`links, brand, sidebar and main :focus-visible`) — Links and brand: 2px ring, 2px offset. A focused scroll area (sidebar or main with tabindex="0") gets the ring inset.
+- `disabled` — doesn't apply: Sidebar links are never disabled: leave out pages the user can't open.
+- `selected` (`.ayy-app-shell__link[aria-current="page"]`) — Current page: wash-hover fill, text colour, semibold (not colour alone). A closed collapse holding it shows its summary in text colour and semibold. Forced colours: Highlight.
+- `error` — doesn't apply: Errors belong in the main content (Alert).
+- `loading` — doesn't apply: The frame renders at once; show Skeletons in the main area while a screen loads.
+- `open` (`__toggle[aria-expanded="true"] (below 48rem, with a __bar or a Bottom nav); <details open> for a collapse`) — Phone: the sidebar slides in from the inline-start edge as a drawer (at most 18rem) over a scrim, with the overlay shadow. A collapse's chevron turns up.
+
+**Sizes**
+- Density — Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.
+- Width — Fills the viewport (100dvh) or its box (block-size: 100%). Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither.
+
 **JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).
 
 **Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. Without a toggle it does nothing.

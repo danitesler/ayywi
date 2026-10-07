@@ -7,6 +7,20 @@ Category: Layout. A hairline between blocks: full, fading out at both ends (betw
 - `.ayy-separator--vertical` — Vertical rule in a flex row; add aria-orientation="vertical".
 - `.ayy-separator--fade` — Fades to transparent at both ends.
 
+**States**
+- `default` — A 1px hairline across its container (vertical: down the row).
+- `hover` — doesn't apply: Decorative.
+- `pressed` — doesn't apply: Decorative.
+- `focus` — doesn't apply: Decorative.
+- `disabled` — doesn't apply: Decorative.
+- `selected` — doesn't apply: Decorative.
+- `error` — doesn't apply: Decorative.
+- `loading` — doesn't apply: Decorative.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Horizontal fills the width; vertical stretches to the row's height (at least 1em). fade fades both ends.
+
 **JS (framework-free)**: separatorClass({ orientation?, fade?, className? }) → string
 
 **React** — `import { Separator } from "@danitesler/ayywi/react";`

@@ -14,6 +14,20 @@
   "variants": {
     "inline": { "values": [true, false], "default": false }
   },
+  "states": {
+    "default": { "looks": "Label (control md text, medium weight, text colour) above the control; hint below in muted control sm text." },
+    "hover": { "none": "The control inside shows hover." },
+    "pressed": { "none": "The control inside handles presses." },
+    "focus": { "none": "The control inside shows the focus ring." },
+    "disabled": { "when": ".ayy-field:has(:disabled), .ayy-label:has(> :disabled)", "looks": "Label dims to --ayy-opacity-disabled with a not-allowed cursor; the control dims itself." },
+    "selected": { "none": "Selection belongs to the control (Checkbox, Radio, Switch)." },
+    "error": { "when": "aria-invalid=\"true\" on the control plus .ayy-field__error, linked with aria-describedby (React: Field error)", "looks": "Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border." },
+    "loading": { "none": "Fields don't load; show a Skeleton for the whole form while its data loads." }
+  },
+  "sizes": {
+    "density": "Label text follows control md, hint and error control sm, so they grow with data-density.",
+    "width": "Fills its column; the control inside stretches to it. inline puts the control and label side by side (checkboxes, switches)."
+  },
   "js": "fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants",
   "react": {
     "import": "import { Field, Label, FieldHint, FieldError } from \"@danitesler/ayywi/react\";",

@@ -11,6 +11,21 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 - `.ayy-navbar__actions` — Group of buttons (theme toggle, call to action). Next to the brand, or at the end after the nav. Stays in the bar on phones, so keep it to one or two items.
 - `.ayy-navbar__toggle` — The phone menu button, last in the inner row (combine with ayy-button ayy-button--ghost ayy-button--icon and a menu icon). Hidden from 48rem. Its aria-expanded is the menu's state; connectNavbar() / <ayy-navbar> / React Navbar manage it.
 
+**States**
+- `default` — Sticky glass bar (--ayy-color-glass, 16px blur) with a hairline underneath; links are muted pills.
+- `hover` (`.ayy-navbar__link:hover`) — Link gets a wash fill and the text colour.
+- `pressed` — doesn't apply: Links have no pressed look.
+- `focus` (`.ayy-navbar__link:focus-visible, .ayy-navbar__brand:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: A navbar link is never disabled: leave out a page the user can't open.
+- `selected` (`.ayy-navbar__link[aria-current="page"]`) — Current page: wash-hover fill, text colour. Forced colours: Highlight.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state; the bar is static.
+- `open` (`.ayy-navbar__toggle[aria-expanded="true"] (below 48rem)`) — The links drop into a surface panel under the bar with the overlay shadow; links grow to the lg control height.
+
+**Sizes**
+- Density — The bar is --ayy-size-header (4.5rem) tall at every density; links are the md control height (32px compact, 40 comfortable, 44 touch), lg in the phone panel.
+- Width — Full width; content centred at --ayy-size-container with a 24px gutter (16px below 64rem). Below 48rem, with a __toggle, the links fold into a panel.
+
 **JS (framework-free)**: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).
 
 **Custom element** `<ayy-navbar>` (@danitesler/ayywi/elements) — A <header class="ayy-navbar"> with a __toggle. The toggle opens and closes the links as a panel under the bar on phones; Esc, a click outside, a link in the panel or widening past 48rem close it. Without a toggle it does nothing.

@@ -18,6 +18,26 @@
     "size": { "values": ["sm", "md", "lg", "xl"], "default": "md" },
     "shape": { "values": ["circle", "square"], "default": "circle" }
   },
+  "states": {
+    "default": { "looks": "A disc in wash-hover with text-soft semibold initials under the image. square uses a rounded square." },
+    "hover": { "none": "An avatar isn't a control; wrap it in a Button or link to make it one." },
+    "pressed": { "none": "An avatar isn't a control; wrap it in a Button or link to make it one." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "An avatar isn't a control; wrap it in a Button or link to make it one." },
+    "selected": { "none": "An avatar isn't a control; wrap it in a Button or link to make it one." },
+    "error": { "when": "a broken image (React and @danitesler/ayywi/elements set hidden on it)", "looks": "The initials show; with CSS alone the broken-image icon is covered by a plain disc." },
+    "loading": { "none": "Initials show until the image loads; use a circle Skeleton only when the name isn't known yet." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "1.5rem (24px).",
+      "md": "2rem (32px).",
+      "lg": "2.5rem (40px).",
+      "xl": "3.5rem (56px)."
+    },
+    "density": "Doesn't follow data-density. Initials are 38% of the size.",
+    "width": "Square. A group overlaps them by 20% with a page-colour ring."
+  },
   "js": "avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants",
   "react": {
     "import": "import { Avatar, AvatarGroup } from \"@danitesler/ayywi/react\";",

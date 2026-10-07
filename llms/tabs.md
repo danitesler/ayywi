@@ -9,6 +9,20 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 - `.ayy-tabs__panel` — role="tabpanel". Hide inactive panels with the hidden attribute.
 - `.ayy-tabs__count` — Small count after a tab's label (items in a filter). Inverts with the selected tab.
 
+**States**
+- `default` — A pill track (wash fill, line border) with text-soft tab labels.
+- `hover` (`.ayy-tabs__tab:hover`) — Tab label turns full text colour.
+- `pressed` — doesn't apply: No pressed look; it selects on click.
+- `focus` (`.ayy-tabs__tab:focus-visible; .ayy-tabs__panel:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`.ayy-tabs__tab:disabled`) — --ayy-opacity-disabled, not-allowed cursor; arrow keys skip it. Forced colours: GrayText.
+- `selected` (`.ayy-tabs__tab[aria-selected="true"]`) — Filled with the text colour, label in the page colour, small shadow; its count gets a 15% page-colour tint. Forced colours: Highlight.
+- `error` — doesn't apply: No error look; show it in the panel.
+- `loading` — doesn't apply: Show loading in the panel (Skeleton), not on the tab.
+
+**Sizes**
+- Density — The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.
+- Width — The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container.
+
 **JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
 
 **Custom element** `<ayy-tabs>` (@danitesler/ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.

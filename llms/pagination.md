@@ -8,6 +8,20 @@ Category: Navigation. Previous, page numbers with gaps, and next, for a long tab
 - `.ayy-pagination__link--step` — Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.
 - `.ayy-pagination__ellipsis` — The "…" for skipped pages, aria-hidden.
 
+**States**
+- `default` — Muted pill links at the sm control height, in tabular figures; previous and next carry an arrow and a word.
+- `hover` (`.ayy-pagination__link:hover`) — Wash fill, text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-pagination__link:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`:disabled or [aria-disabled="true"] (a link without href at the first or last page)`) — --ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText.
+- `selected` (`[aria-current="page"]`) — Line-strong border, wash-hover fill, text colour, semibold. Forced colours: Highlight.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: Show the loading in the list or table it pages (Skeleton rows), not here.
+
+**Sizes**
+- Density — Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.
+- Width — Hugs its links and wraps. Below 48rem only previous, the current page and next show.
+
 **JS (framework-free)**: paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
 
 **React** — `import { Pagination } from "@danitesler/ayywi/react";`

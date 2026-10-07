@@ -9,7 +9,8 @@ export interface ComponentMeta {
   description: string;
   classes: Record<string, string>;
   variants: Record<string, { values: (string | boolean)[]; default: string | boolean }>;
-  states?: Record<string, string>;
+  states: Record<string, { when?: string; looks?: string; none?: string }>;
+  sizes: { scale?: Record<string, string>; density: string; width: string };
   js?: string;
   react: { import: string; components: Record<string, { renders: string; props?: Record<string, string> }> };
   element?: { tag: string };

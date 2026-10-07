@@ -5,6 +5,20 @@ Category: Data display. A keyboard key or shortcut drawn as a small keycap: in h
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
 
+**States**
+- `default` — A small keycap: wash fill, line-strong border with a 2px bottom edge, mono text-soft at 0.75em.
+- `hover` — doesn't apply: A key label, not a control.
+- `pressed` — doesn't apply: A key label, not a control.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: A key label, not a control.
+- `selected` — doesn't apply: A key label, not a control.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Scales with the text around it (1.6em tall); doesn't follow data-density.
+- Width — At least 1.6em wide, grows with the key name.
+
 **JS (framework-free)**: kbdClass constant.
 
 **React** — `import { Kbd } from "@danitesler/ayywi/react";`

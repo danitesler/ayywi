@@ -10,9 +10,23 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 - `.ayy-combobox__empty` — The "No matches" line (role="none"), shown when nothing matches.
 
 **States**
-- `input[aria-expanded="true"]` — The list is open.
-- `option[aria-selected="true"]` — The option the arrow keys are on.
-- `option[hidden]` — Filtered out.
+- `default` — An Input with a muted chevron at the inline end; the list is a raised popover with the overlay shadow.
+- `hover` (`.ayy-combobox__option:hover`) — Option gets the wash-hover background (the input hovers like Input).
+- `pressed` — doesn't apply: Options have no pressed look: clicking picks one and closes the list.
+- `focus` (`the input's :focus-visible`) — Input's ring. Focus stays in the input while the arrow keys move through options (see selected).
+- `disabled` (`.ayy-combobox__option[aria-disabled="true"]; disabled on the input`) — Option dims to --ayy-opacity-disabled with a not-allowed cursor; a disabled input dims like Input.
+- `selected` (`.ayy-combobox__option[aria-selected="true"]`) — The option under the arrow keys gets the wash-hover background. Forced colours: Highlight fill.
+- `error` (`aria-invalid="true" on the input`) — Input's red border and ring.
+- `loading` — doesn't apply: No loading look; while results load, show .ayy-combobox__empty with "Searching…".
+- `open` (`input[aria-expanded="true"], listbox :popover-open`) — The list fades in under the input, at most 18rem (or half the viewport) tall, then scrolls.
+- `empty` (`.ayy-combobox__empty shown`) — Muted "No results" row when every option is filtered out.
+
+**Sizes**
+- `sm` — The input at Input sm.
+- `md` (default) — The input at Input md.
+- `lg` — The input at Input lg.
+- Density — Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.
+- Width — Fills its container; the list is at most 28rem wide.
 
 **JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
 

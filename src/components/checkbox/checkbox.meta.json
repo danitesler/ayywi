@@ -9,10 +9,19 @@
   },
   "variants": {},
   "states": {
-    ":checked": "Checked.",
-    ":indeterminate": "Mixed — set input.indeterminate = true (React: indeterminate prop).",
-    "aria-invalid=\"true\"": "Red border.",
-    "disabled": "Dimmed."
+    "default": { "looks": "A box --ayy-size-check square with a line-hover border on a wash fill." },
+    "hover": { "when": ":hover", "looks": "Border turns text-soft." },
+    "pressed": { "none": "No pressed look; it toggles on release." },
+    "focus": { "when": ":focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ":disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border (and fill when checked)." },
+    "selected": { "when": ":checked", "looks": "Primary fill and border with a primary-fg tick that springs in." },
+    "error": { "when": "aria-invalid=\"true\"", "looks": "Destructive border. Forced colours: dashed." },
+    "loading": { "none": "Toggles are instant; if saving fails, revert it and say so in a toast." },
+    "indeterminate": { "when": ":indeterminate (el.indeterminate = true; React: indeterminate)", "looks": "Primary fill with a bar instead of the tick: some of a group selected." }
+  },
+  "sizes": {
+    "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.",
+    "width": "Fixed square."
   },
   "js": "checkboxClass constant",
   "react": {

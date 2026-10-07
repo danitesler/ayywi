@@ -11,6 +11,21 @@
     "ayy-theme-toggle__item": "On each ayy-menu__item (role=\"menuitemradio\", data-value = theme name or \"system\"). The one with aria-checked=\"true\" is bold and shows a check."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "An outline icon Button showing the moon in dark themes and the sun in light ones (picked by CSS before any JS runs)." },
+    "hover": { "when": "Button :hover", "looks": "Button outline's hover: wash fill, stronger border, 2px lift." },
+    "pressed": { "when": "Button :active", "looks": "As Button: drops back while held." },
+    "focus": { "when": "Button :focus-visible; menu items :focus-visible", "looks": "Button's 2px ring; items as in Menu." },
+    "disabled": { "none": "Always available: the theme can always change." },
+    "selected": { "when": ".ayy-theme-toggle__item[aria-checked=\"true\"]", "looks": "The theme in force is semibold with a check mark at the inline end." },
+    "error": { "none": "Nothing to fail: switching is local." },
+    "loading": { "none": "Switching is instant." },
+    "open": { "when": "the menu's :popover-open", "looks": "As Menu." }
+  },
+  "sizes": {
+    "density": "The button is Button icon (md control height, follows density); items follow Menu.",
+    "width": "Square button; the menu as Menu."
+  },
   "js": "themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).",
   "element": {
     "tag": "ayy-theme-toggle",

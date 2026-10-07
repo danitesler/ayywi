@@ -13,6 +13,20 @@ Category: Navigation. The site footer at the end of every website page: brand an
 - `.ayy-footer__link` — A footer link: soft text, underline on hover, focus ring.
 - `.ayy-footer__bottom` — The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme toggle at the end.
 
+**States**
+- `default` — A hairline on top, brand and a muted line, columns of text-soft links under muted eyebrow headings, then a legal row.
+- `hover` (`.ayy-footer__link:hover`) — Link turns text colour with a line-hover underline.
+- `pressed` — doesn't apply: Links have no pressed look.
+- `focus` (`.ayy-footer__link:focus-visible, brand link :focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: No disabled links; leave them out.
+- `selected` — doesn't apply: No current-page look; the navbar shows where you are.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Full width; content centred at --ayy-size-container. Brand beside the columns; one column below 64rem.
+
 **JS (framework-free)**: footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.
 
 **React** — `import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from "@danitesler/ayywi/react";`

@@ -5,7 +5,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cssRuleFindings, lintPaths, loadContract } from "../cli/lint.mjs";
-import { ATTRIBUTES, CATEGORIES, PUBLIC_HOOKS, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
 import { contrast, mix } from "./lib/contrast.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
@@ -81,7 +81,17 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     // Reported per component below.
   }
 }
-const REQUIRED_META = ["name", "slug", "status", "category", "description", "classes", "variants", "react", "a11y", "do", "dont", "examples"];
+const REQUIRED_META = ["name", "slug", "status", "category", "description", "classes", "variants", "states", "sizes", "react", "a11y", "do", "dont", "examples"];
+// CSS that styles a state, so a component can't call that state "none".
+const STATE_CSS = {
+  hover: /:hover\b/,
+  pressed: /:active\b/,
+  focus: /:focus(-visible|-within)?\b/,
+  disabled: /:disabled\b|\[aria-disabled/,
+  selected: /:checked\b|\[aria-(selected|current|pressed|checked)\b/,
+  error: /\[aria-invalid\b/,
+  loading: /\[aria-busy\b/,
+};
 const STATEFUL = /:checked|\[aria-selected|\[aria-checked|\[aria-current|\[aria-invalid|\[aria-pressed|\[aria-expanded|:indeterminate|__bar\b/;
 
 for (const slug of readdirSync(join(root, "src/components"))) {
@@ -113,6 +123,39 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   for (const key of ["whenToUse", "whenNotToUse"]) if (key in meta) fail(files.meta, `"${key}" is gone — fold it into "do" / "dont"`);
   if (meta.slug !== slug) fail(files.meta, `slug "${meta.slug}" should be "${slug}"`);
   if ("category" in meta && !(meta.category in CATEGORIES)) fail(files.meta, `category "${meta.category}" should be one of: ${Object.keys(CATEGORIES).join(", ")} (scripts/lib/contract.mjs)`);
+
+  // States: every one in STATES, each either { when, looks } or { none }; a state the CSS styles can't be "none".
+  if (meta.states) {
+    const shown = stripComments(css);
+    for (const name of Object.keys(STATES)) {
+      if (!(name in meta.states)) fail(files.meta, `states: missing "${name}" — describe it as { "when", "looks" }, or { "none": "why, and what to use instead" }`);
+    }
+    for (const [name, s] of Object.entries(meta.states)) {
+      const keys = Object.keys(s ?? {}).sort().join();
+      const core = name in STATES;
+      const ok = keys === "looks,when" ? typeof s.when === "string" && typeof s.looks === "string" : keys === "none" ? core && name !== "default" && typeof s.none === "string" : name === "default" && keys === "looks";
+      if (!ok) {
+        const want = name === "default" ? '{ "looks" }' : core ? '{ "when", "looks" } or { "none" }' : '{ "when", "looks" } (extra states can\'t be "none"; leave them out)';
+        fail(files.meta, `states.${name} should be ${want}`);
+      } else if (s.none && STATE_CSS[name]?.test(shown)) {
+        fail(files.meta, `states.${name} says it doesn't apply, but ${slug}.css styles it (${shown.match(STATE_CSS[name])[0]}) — document it as { "when", "looks" }`);
+      }
+    }
+  }
+
+  // Sizes: density and width always; a scale entry per size variant value, and none without one.
+  if (meta.sizes) {
+    for (const key of ["density", "width"]) if (typeof meta.sizes[key] !== "string") fail(files.meta, `sizes.${key} should say how it sizes (a string)`);
+    for (const key of Object.keys(meta.sizes)) if (!["scale", "density", "width"].includes(key)) fail(files.meta, `sizes.${key} isn't a sizes field (scale, density, width)`);
+    const values = (meta.variants?.size?.values ?? []).map(String);
+    const scale = Object.keys(meta.sizes.scale ?? {});
+    if (values.length && !meta.sizes.scale) fail(files.meta, `sizes.scale is missing: describe each size (${values.join(", ")})`);
+    if (!values.length && meta.sizes.scale) fail(files.meta, "sizes.scale needs a \"size\" variant to describe");
+    if (meta.sizes.scale) {
+      for (const v of values) if (!scale.includes(v)) fail(files.meta, `sizes.scale doesn't describe size "${v}"`);
+      for (const v of scale) if (!values.includes(v)) fail(files.meta, `sizes.scale describes "${v}", which isn't a value of variants.size`);
+    }
+  }
 
   // CSS classes ↔ documented classes
   const defined = new Set([...selectorClasses(css)].filter((cls) => (classOwner.get(cls) ?? slug) === slug));

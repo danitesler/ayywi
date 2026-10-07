@@ -9,9 +9,19 @@ Category: Forms. A drop zone that is also a file picker: a label around a native
 - `.ayy-dropzone__hint` — What's accepted: types and size.
 
 **States**
-- `[data-dragging]` — Files are held over it: solid border in the text colour.
-- `input:disabled` — Dimmed, not clickable.
-- `input[aria-invalid="true"]` — Rejected file: red border; say why in a FieldError.
+- `default` — Wash-filled zone with a dashed line-hover border and card radius; a muted icon, a title and a hint, centred, at least 9rem tall.
+- `hover` (`:hover`) — Border turns text-soft, fill wash-hover.
+- `pressed` — doesn't apply: Clicking opens the file picker; no pressed look.
+- `focus` (`:has(> input:focus-visible)`) — 2px ring around the zone, 2px offset.
+- `disabled` (`:has(> input:disabled)`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: Picked files show in a List below the zone, not on it.
+- `error` (`:has(> input[aria-invalid="true"])`) — Border 60% destructive; pair with a FieldError (wrong type, too big).
+- `loading` — doesn't apply: Show upload progress per file in the List below (a Progress in each row).
+- `dragging` (`[data-dragging] (set by React or @danitesler/ayywi/elements)`) — Files held over it: solid text-colour border, wash-hover fill, text colour. Not only a tint.
+
+**Sizes**
+- Density — Padding and text are fixed; doesn't follow data-density.
+- Width — Fills its container. compact is one line (icon then text) for a form field or a chat composer.
 
 **JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).
 

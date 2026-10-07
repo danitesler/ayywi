@@ -15,9 +15,25 @@
     "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "Combobox" }
   },
   "states": {
-    "input[aria-expanded=\"true\"]": "The list is open.",
-    "option[aria-selected=\"true\"]": "The option the arrow keys are on.",
-    "option[hidden]": "Filtered out."
+    "default": { "looks": "An Input with a muted chevron at the inline end; the list is a raised popover with the overlay shadow." },
+    "hover": { "when": ".ayy-combobox__option:hover", "looks": "Option gets the wash-hover background (the input hovers like Input)." },
+    "pressed": { "none": "Options have no pressed look: clicking picks one and closes the list." },
+    "focus": { "when": "the input's :focus-visible", "looks": "Input's ring. Focus stays in the input while the arrow keys move through options (see selected)." },
+    "disabled": { "when": ".ayy-combobox__option[aria-disabled=\"true\"]; disabled on the input", "looks": "Option dims to --ayy-opacity-disabled with a not-allowed cursor; a disabled input dims like Input." },
+    "selected": { "when": ".ayy-combobox__option[aria-selected=\"true\"]", "looks": "The option under the arrow keys gets the wash-hover background. Forced colours: Highlight fill." },
+    "error": { "when": "aria-invalid=\"true\" on the input", "looks": "Input's red border and ring." },
+    "loading": { "none": "No loading look; while results load, show .ayy-combobox__empty with \"Searching…\"." },
+    "open": { "when": "input[aria-expanded=\"true\"], listbox :popover-open", "looks": "The list fades in under the input, at most 18rem (or half the viewport) tall, then scrolls." },
+    "empty": { "when": ".ayy-combobox__empty shown", "looks": "Muted \"No results\" row when every option is filtered out." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "The input at Input sm.",
+      "md": "The input at Input md.",
+      "lg": "The input at Input lg."
+    },
+    "density": "Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.",
+    "width": "Fills its container; the list is at most 28rem wide."
   },
   "js": "connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",
   "element": {

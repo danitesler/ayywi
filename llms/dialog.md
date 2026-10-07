@@ -17,6 +17,25 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 - `.ayy-dialog__footer` — Actions. Stacked on mobile, end-aligned (right in LTR, left in RTL) from 40rem.
 - `.ayy-dialog__close` — Icon button in the top-end corner.
 
+**States**
+- `default` — Closed: not rendered. Open (see open): surface panel, line-strong border, card radius, overlay shadow, over a blurred --ayy-color-overlay backdrop.
+- `hover` (`.ayy-dialog__close:hover`) — Close button gets a wash-hover circle and the text colour.
+- `pressed` — doesn't apply: The panel has no pressed look; its buttons have Button's.
+- `focus` (`.ayy-dialog__close:focus-visible; .ayy-dialog__body:focus-visible (scrolling body with tabindex="0")`) — Close: 2px ring, 2px offset. Body: ring inset by 2px.
+- `disabled` — doesn't apply: A dialog isn't disabled; disable the buttons inside it.
+- `selected` — doesn't apply: No selected state.
+- `error` — doesn't apply: Show errors inside the body: a FieldError per field, an Alert for a failed save. Keep the dialog open.
+- `loading` — doesn't apply: No loading look; put the primary Button in loading while it saves, Skeletons in the body while it loads.
+- `open` (`[open] via showModal() (React open; <ayy-dialog>)`) — Fades and scales in (centred); side-start / side-end slide in from that edge (RTL-aware); side-bottom slides up as a sheet with a grab handle. The page behind is inert and stops scrolling.
+
+**Sizes**
+- `sm` — 24rem wide.
+- `md` (default) — 32rem wide.
+- `lg` — 42rem wide.
+- `xl` — 56rem wide.
+- Density — Padding is fixed (--ayy-space-6); its controls follow data-density.
+- Width — The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem.
+
 **JS (framework-free)**: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
 
 **Custom element** `<ayy-dialog>` (@danitesler/ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog"> (centred or side). Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.

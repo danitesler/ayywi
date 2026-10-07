@@ -9,6 +9,20 @@ Category: Navigation. Trail from the top level down to the current page (Home / 
 - `.ayy-breadcrumb__item` — Each <li>. A slash separates items; screen readers skip it.
 - `.ayy-breadcrumb__link` — Link to an ancestor page; its target is a small control tall (40px at touch density) without changing the line. The last item is a <span aria-current="page"> instead.
 
+**States**
+- `default` — Muted sm links separated by line-hover slashes; the last item (the current page) in text colour.
+- `hover` (`.ayy-breadcrumb__link:hover`) — Link turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-breadcrumb__link:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: Every ancestor is a link; the current page is plain text, not a disabled link.
+- `selected` (`[aria-current="page"] on the last item`) — Text colour, cut with an ellipsis when long. Forced colours: underlined.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — sm text at every density.
+- Width — Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes.
+
 **JS (framework-free)**: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
 
 **React** — `import { Breadcrumb } from "@danitesler/ayywi/react";`

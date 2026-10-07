@@ -19,6 +19,25 @@
     "variant": { "values": ["default", "success", "warning", "destructive", "ai"], "default": "default" },
     "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
+  "states": {
+    "default": { "looks": "A 6px pill track in a 10% text tint, filled in the text colour from the inline start to --ayy-value %." },
+    "hover": { "none": "Not interactive." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Not interactive; at 0 it's an empty track." },
+    "selected": { "none": "The value is the state (--ayy-value, aria-valuenow)." },
+    "error": { "when": "destructive (ayy-progress--destructive)", "looks": "Red fill: a failed upload or an over-limit quota. Say why in text next to it." },
+    "loading": { "when": ".ayy-progress--indeterminate without aria-valuenow", "looks": "A 40% bar slides along the track, unknown duration (RTL reverses it)." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "4px track.",
+      "md": "6px track.",
+      "lg": "10px track."
+    },
+    "density": "Doesn't follow data-density.",
+    "width": "Fills its container."
+  },
   "js": "progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)",
   "react": {
     "import": "import { Progress } from \"@danitesler/ayywi/react\";",

@@ -11,6 +11,21 @@
   "variants": {
     "side": { "values": ["top", "bottom", "start", "end"], "default": "top" }
   },
+  "states": {
+    "default": { "looks": "Hidden. The bubble is a raised surface with a line-strong border and 2xs text." },
+    "hover": { "when": ".ayy-tooltip:hover", "looks": "The bubble fades and slides in after 200ms." },
+    "pressed": { "none": "No pressed look; the trigger keeps its own." },
+    "focus": { "when": ".ayy-tooltip:focus-within", "looks": "The bubble shows at once (no delay) while the trigger has focus." },
+    "disabled": { "none": "A disabled button gets no focus and shows no tooltip; explain why it's disabled in visible text instead." },
+    "selected": { "none": "No selected state." },
+    "error": { "none": "Never put errors in a tooltip; use a FieldError." },
+    "loading": { "none": "No loading state." },
+    "dismissed": { "when": "[data-dismissed] (Esc, set by React Tooltip or <ayy-tooltip>)", "looks": "Stays hidden until the pointer and focus leave." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "As wide as its text, at most 16rem, then wraps."
+  },
   "js": "tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).",
   "element": {
     "tag": "ayy-tooltip",

@@ -20,6 +20,21 @@
     "variant": { "values": ["default", "success", "warning", "destructive", "info"], "default": "default" },
     "position": { "values": ["bottom-end", "bottom-start", "bottom-center", "top-end", "top-start", "top-center"], "default": "bottom-end", "component": "Toaster" }
   },
+  "states": {
+    "default": { "looks": "Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start." },
+    "hover": { "when": ".ayy-toast__close:hover", "looks": "Close button gets a wash-hover circle and the text colour." },
+    "pressed": { "none": "No pressed look." },
+    "focus": { "when": ".ayy-toast__close:focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "none": "Not disabled." },
+    "selected": { "none": "No selected state." },
+    "error": { "when": "toast({ variant: \"destructive\" })", "looks": "Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError)." },
+    "loading": { "none": "A toast confirms; for a long task show Progress where the work happens." },
+    "leaving": { "when": "[data-leaving] (set by toast())", "looks": "Fades and shrinks out. Only the 4 newest show; older ones wait." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "min(22rem, viewport minus 2rem), stacked in the corner given by position."
+  },
   "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })",
   "react": {
     "import": "import { toast, Toaster } from \"@danitesler/ayywi/react\";",

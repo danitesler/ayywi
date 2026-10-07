@@ -14,6 +14,20 @@
   "variants": {
     "row": { "values": [true, false], "default": false }
   },
+  "states": {
+    "default": { "looks": "Stacked pairs: a muted 2xs uppercase label over an md value. row puts the pairs side by side." },
+    "hover": { "none": "Static." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "none": "No error state; show \"—\" for a missing value." },
+    "loading": { "none": "Use a text Skeleton in each value while it loads." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "Fills its container. row is a grid of columns at least --ayy-min (9rem) wide; values break anywhere rather than overflow."
+  },
   "js": "dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.",
   "react": {
     "import": "import { DataList, DataListItem } from \"@danitesler/ayywi/react\";",

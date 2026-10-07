@@ -9,9 +9,22 @@ Category: Forms. Styled native <select>. Keeps the OS picker, keyboard handling 
 - `.ayy-select--lg` — Large.
 
 **States**
-- `aria-invalid="true"` — Red border (on the <select>).
-- `disabled` — Dimmed, chevron too.
-- `multiple` — Renders as a list box: auto height, no chevron.
+- `default` — Native <select> with a wash fill, line-strong border and a muted chevron at the inline end; the options popup is the OS one.
+- `hover` (`.ayy-select__control:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: Pressing opens the OS picker, which draws its own state.
+- `focus` (`.ayy-select__control:focus-visible`) — 2px ring just inside the edge; the border goes transparent.
+- `disabled` (`.ayy-select__control:disabled`) — Control and chevron dim to --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: The chosen option shows as the control's text; the OS marks it in the popup.
+- `error` (`.ayy-select__control[aria-invalid="true"]`) — Border 60% destructive, destructive focus ring. Forced colours: dashed border.
+- `loading` — doesn't apply: No loading look; disable it with a "Loading…" option until the options arrive, or use a Skeleton for the form.
+- `multiple` (`multiple, or size > 1`) — Renders a list box: no fixed height, no chevron.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), sm text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), lg text.
+- Density — Height and text follow data-density.
+- Width — Fills its container; long option text is cut with an ellipsis.
 
 **JS (framework-free)**: selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>
 

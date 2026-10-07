@@ -14,6 +14,21 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 - `.ayy-toast__actions` — Action button row.
 - `.ayy-toast__close` — Close button.
 
+**States**
+- `default` — Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start.
+- `hover` (`.ayy-toast__close:hover`) — Close button gets a wash-hover circle and the text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-toast__close:focus-visible`) — 2px ring, 2px offset.
+- `disabled` — doesn't apply: Not disabled.
+- `selected` — doesn't apply: No selected state.
+- `error` (`toast({ variant: "destructive" })`) — Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError).
+- `loading` — doesn't apply: A toast confirms; for a long task show Progress where the work happens.
+- `leaving` (`[data-leaving] (set by toast())`) — Fades and shrinks out. Only the 4 newest show; older ones wait.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — min(22rem, viewport minus 2rem), stacked in the corner given by position.
+
 **JS (framework-free)**: toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })
 
 **React** — `import { toast, Toaster } from "@danitesler/ayywi/react";`

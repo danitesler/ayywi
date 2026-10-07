@@ -9,6 +9,20 @@ Category: Data display. Label / value pairs on a description list: small upperca
 - `.ayy-data-list__label` — The <dt>: small uppercase muted label.
 - `.ayy-data-list__value` — The <dd>: the value, in body text.
 
+**States**
+- `default` — Stacked pairs: a muted 2xs uppercase label over an md value. row puts the pairs side by side.
+- `hover` — doesn't apply: Static.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: No error state; show "—" for a missing value.
+- `loading` — doesn't apply: Use a text Skeleton in each value while it loads.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container. row is a grid of columns at least --ayy-min (9rem) wide; values break anywhere rather than overflow.
+
 **JS (framework-free)**: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
 
 **React** — `import { DataList, DataListItem } from "@danitesler/ayywi/react";`

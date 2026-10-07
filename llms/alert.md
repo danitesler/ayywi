@@ -12,6 +12,20 @@ Category: Feedback. Inline message box with optional icon, title, description an
 - `.ayy-alert__description` — Supporting text.
 - `.ayy-alert__actions` — Row of buttons.
 
+**States**
+- `default` — Wash fill, line-strong border, control radius; semibold title, text-soft description. info, success, warning and destructive tint the icon, an 8% fill and a 35% border in their colour.
+- `hover` — doesn't apply: Static; its action Buttons have their own states.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; its actions are.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` (`destructive (ayy-alert--destructive), role="alert" when it appears after an action`) — Red icon, 8% red fill and 35% red border. Add a Try again action for a failed load or save.
+- `loading` — doesn't apply: Not a loading indicator; use a Spinner, Progress or Skeleton.
+
+**Sizes**
+- Density — Padding and sm text are fixed.
+- Width — Fills its container.
+
 **JS (framework-free)**: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
 
 **React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "@danitesler/ayywi/react";`

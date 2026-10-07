@@ -8,6 +8,20 @@ Category: Data display. A browser window around a screenshot, video or coded moc
 - `.ayy-frame__title` — Optional address or page name in the bar, centred.
 - `.ayy-frame__body` — Holds the <img>, <video>, <picture> or <svg>, edge to edge.
 
+**States**
+- `default` — A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted 2xs address.
+- `hover` — doesn't apply: Decorative.
+- `pressed` — doesn't apply: Decorative.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Decorative.
+- `selected` — doesn't apply: Decorative.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: Give the image width and height so nothing jumps; no loading look.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its container; the media inside scales to its width.
+
 **JS (framework-free)**: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
 
 **React** — `import { Frame } from "@danitesler/ayywi/react";`

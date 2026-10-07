@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, RULES, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, RULES, STATES, UTILITIES } from "./lib/contract.mjs";
 import { finish, output, remove } from "./lib/output.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
@@ -92,6 +92,7 @@ const manifest = {
   attributes: ATTRIBUTES,
   themes: themes.map((t) => ({ name: t.name, base: t.base, description: t.description })),
   categories: CATEGORIES,
+  states: STATES,
   publicCustomProperties: PUBLIC_HOOKS,
   utilities: UTILITIES,
   tokens: manifestTokens,
@@ -138,11 +139,20 @@ md.push(
 md.push(`## Public custom properties\n\n${list(Object.entries(PUBLIC_HOOKS).map(([k, v]) => `\`${k}\`: ${v}`))}`);
 md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => `\`.${k}\`: ${v}`))}`);
 md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
+/** One line per state: how to get it and what it looks like, or why it doesn't apply. Shared with the MCP server's wording. */
+const stateLines = (c) =>
+  Object.entries(c.states).map(([k, s]) => (s.none ? `\`${k}\` — doesn't apply: ${s.none}` : `\`${k}\`${s.when ? ` (\`${s.when}\`)` : ""} — ${s.looks}`));
+const sizeLines = (c) => [
+  ...Object.entries(c.sizes.scale ?? {}).map(([k, v]) => `\`${k}\`${k === String(c.variants.size?.default) ? " (default)" : ""} — ${v}`),
+  `Density — ${c.sizes.density}`,
+  `Width — ${c.sizes.width}`,
+];
 /** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md. */
 function componentMarkdown(c, h = "##") {
   const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
-  if (c.states) part.push(`**States**\n${list(Object.entries(c.states).map(([k, v]) => `\`${k}\` — ${v}`))}`);
+  part.push(`**States**\n${list(stateLines(c))}`);
+  part.push(`**Sizes**\n${list(sizeLines(c))}`);
   if (c.js) part.push(`**JS (framework-free)**: ${c.js}`);
   if (c.element) {
     part.push(
@@ -248,13 +258,17 @@ Global attributes: ${Object.keys(ATTRIBUTES).map((a) => `\`${a}\``).join(", ")} 
 
 Utilities: ${Object.keys(UTILITIES).map((u) => `\`.${u}\``).join(", ")}.
 
-Public custom properties: ${Object.keys(PUBLIC_HOOKS).map((h) => `\`${h}\``).join(", ")}.`,
+Public custom properties: ${Object.keys(PUBLIC_HOOKS).map((h) => `\`${h}\``).join(", ")}.
+
+States lists the ones a component has besides default; what each looks like, how to reach it, and what to use where one doesn't apply are in llms/<slug>.md or get_component.`,
   ...components.map((c) => {
     const react = Object.entries(c.react.components)
       .map(([name, def]) => `\`<${name}${def.props ? ` ${Object.keys(def.props).filter((p) => !p.startsWith("...")).join(" ")}` : ""}>\``)
       .join(", ");
     const lines = [`## ${c.name} (${c.category})`, c.description, `- Classes: ${Object.keys(c.classes).map((k) => `\`.${k}\``).join(" ")}`];
-    if (c.states) lines.push(`- States: ${Object.keys(c.states).map((s) => `\`${s}\``).join(", ")}`);
+    const states = Object.entries(c.states).filter(([k, s]) => !s.none && k !== "default").map(([k]) => k);
+    lines.push(`- States: ${states.length ? states.join(", ") : "none, it's static"}`);
+    if (c.sizes.scale) lines.push(`- Sizes: ${Object.keys(c.sizes.scale).map((k) => `\`${k}\``).join(" ")}`);
     lines.push(`- React: ${react}`);
     if (c.element) lines.push(`- Element: \`<${c.element.tag}${Object.keys(c.element.attributes ?? {}).filter((a) => a !== "class").map((a) => ` ${a}`).join("")}>\`${Object.keys(c.element.events ?? {}).length ? `, events ${Object.keys(c.element.events).map((e) => `\`${e}\``).join(", ")}` : ""}`);
     if (c.js) lines.push(`- JS: ${c.js}`);

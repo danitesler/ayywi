@@ -9,9 +9,13 @@ Utilities: `.ayy-h1`, `.ayy-h2`, `.ayy-h3`, `.ayy-h4`, `.ayy-h5`, `.ayy-h6`, `.a
 
 Public custom properties: `--ayy-spot`, `--ayy-mx`, `--ayy-my`, `--ayy-dot`, `--ayy-value`, `--ayy-chart-color`, `--ayy-chart-height`, `--ayy-from`, `--ayy-to`, `--ayy-progress-color`, `--ayy-gap`, `--ayy-min`, `--ayy-slide`.
 
+States lists the ones a component has besides default; what each looks like, how to reach it, and what to use where one doesn't apply are in llms/<slug>.md or get_component.
+
 ## Button (Actions)
 Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
 - Classes: `.ayy-button` `.ayy-button--secondary` `.ayy-button--outline` `.ayy-button--ghost` `.ayy-button--destructive` `.ayy-button--link` `.ayy-button--ring` `.ayy-button--sm` `.ayy-button--lg` `.ayy-button--icon` `.ayy-button--icon-sm` `.ayy-button--block`
+- States: hover, pressed, focus, disabled, loading
+- Sizes: `sm` `md` `lg` `icon` `icon-sm`
 - React: `<Button variant size type block loading>`
 - JS: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 - A11y: Icon-only buttons need aria-label. Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both). Visible focus ring on :focus-visible is built in — never remove it. While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
@@ -19,7 +23,7 @@ Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
 ## Dropdown menu (Actions)
 List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
 - Classes: `.ayy-menu` `.ayy-menu__item` `.ayy-menu__item--destructive` `.ayy-menu__shortcut` `.ayy-menu__label` `.ayy-menu__separator`
-- States: `:popover-open`, `disabled / aria-disabled="true"`
+- States: hover, focus, disabled, open
 - React: `<DropdownMenu open / defaultOpen onOpenChange>`, `<DropdownMenuTrigger >`, `<DropdownMenuContent side align>`, `<DropdownMenuItem onSelect destructive shortcut>`, `<DropdownMenuLabel>`, `<DropdownMenuSeparator>`
 - Element: `<ayy-menu side align open>`, events `ayy-select`, `ayy-open-change`
 - JS: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
@@ -28,6 +32,7 @@ List of actions that opens from a button. Native popover + WAI-ARIA menu keyboar
 ## Theme toggle (Actions)
 An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
 - Classes: `.ayy-theme-toggle` `.ayy-theme-toggle__moon` `.ayy-theme-toggle__sun` `.ayy-theme-toggle__item`
+- States: hover, pressed, focus, selected, open
 - React: `<ThemeToggle onValueChange aria-label labels>`
 - Element: `<ayy-theme-toggle>`, events `ayy-value-change`
 - JS: themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).
@@ -36,6 +41,7 @@ An icon button that opens a menu of every theme (System, Dark, Dark soft, Light,
 ## Navbar (Navigation)
 Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.
 - Classes: `.ayy-navbar` `.ayy-navbar__inner` `.ayy-navbar__brand` `.ayy-navbar__nav` `.ayy-navbar__link` `.ayy-navbar__actions` `.ayy-navbar__toggle`
+- States: hover, focus, selected, open
 - React: `<Navbar>`, `<NavbarBrand>`, `<NavbarNav aria-label>`, `<NavbarLink current>`, `<NavbarActions>`, `<NavbarToggle aria-label children>`
 - Element: `<ayy-navbar>`
 - JS: navbarClass, navbarInnerClass, navbarBrandClass, navbarNavClass, navbarLinkClass, navbarActionsClass, navbarToggleClass constants; connectNavbar(header) wires the phone menu and returns a cleanup; navbarMenuIcon (the Hugeicons menu icon as SVG markup).
@@ -44,6 +50,7 @@ Sticky site header on translucent glass: brand at the start, links and actions a
 ## App shell (Navigation)
 The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways.
 - Classes: `.ayy-app-shell` `.ayy-app-shell__sidebar` `.ayy-app-shell__brand` `.ayy-app-shell__nav` `.ayy-app-shell__link` `.ayy-app-shell__group` `.ayy-app-shell__group-label` `.ayy-app-shell__list` `.ayy-app-shell__sublist` `.ayy-app-shell__collapse` `.ayy-app-shell__link--sub` `.ayy-app-shell__footer` `.ayy-app-shell__main` `.ayy-app-shell__bar` `.ayy-app-shell__toggle`
+- States: hover, focus, selected, open
 - React: `<AppShell>`, `<AppShellSidebar>`, `<AppShellBrand>`, `<AppShellNav aria-label>`, `<AppShellLink current sub>`, `<AppShellGroup label>`, `<AppShellItem>`, `<AppShellSublist aria-label>`, `<AppShellCollapse label open>`, `<AppShellFooter>`, `<AppShellMain>`, `<AppShellBar>`, `<AppShellToggle aria-label children>`
 - Element: `<ayy-app-shell>`
 - JS: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup).
@@ -52,6 +59,7 @@ The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside
 ## Bottom nav (Navigation)
 A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.
 - Classes: `.ayy-bottom-nav` `.ayy-bottom-nav__link` `.ayy-bottom-nav__label`
+- States: hover, focus, selected
 - React: `<BottomNav aria-label>`, `<BottomNavLink icon current>`, `<BottomNavButton icon>`
 - JS: bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.
 - A11y: It's a <nav>: give it an aria-label ("Main" by default in React). Inside an App shell only one of it and the sidebar shows at a time, so they can share the label. Mark the current page with aria-current="page". It also gets a pill and a heavier weight, so colour isn't the only cue; High Contrast mode fills the pill with the system highlight. Every tab keeps a visible text label. Icon-only tabs are guesswork. A "More" tab is a <button> with aria-expanded (set for you when it's an app shell toggle), not a link to "#". Each tab is at least the large control height, so it's a comfortable touch target at every density. Outside an App shell, content above it needs bottom padding (or to end before it) so the last line isn't hidden behind the bar.
@@ -59,6 +67,7 @@ A phone app's tab bar: three to five top-level destinations, each an icon over a
 ## Footer (Navigation)
 The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
 - Classes: `.ayy-footer` `.ayy-footer__inner` `.ayy-footer__brand` `.ayy-footer__nav` `.ayy-footer__group` `.ayy-footer__heading` `.ayy-footer__list` `.ayy-footer__link` `.ayy-footer__bottom`
+- States: hover, focus
 - React: `<Footer>`, `<FooterBrand>`, `<FooterNav aria-label>`, `<FooterGroup label>`, `<FooterLink>`, `<FooterBottom>`
 - JS: footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.
 - A11y: Use <footer> once per page, outside <main>: it's the contentinfo landmark. The link columns are a <nav aria-label="Footer">, distinct from the navbar's "Main". Each column's heading names its list, so screen readers announce "Product, list, 4 items".
@@ -66,6 +75,7 @@ The site footer at the end of every website page: brand and a line about the pro
 ## Breadcrumb (Navigation)
 Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.
 - Classes: `.ayy-breadcrumb` `.ayy-breadcrumb--pill` `.ayy-breadcrumb__list` `.ayy-breadcrumb__item` `.ayy-breadcrumb__link`
+- States: hover, focus, selected
 - React: `<Breadcrumb items pill aria-label>`
 - JS: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
 - A11y: Wrap it in <nav aria-label="Breadcrumb"> and use an <ol>, so it's announced as an ordered path. The current page is plain text with aria-current="page", not a link to itself.
@@ -73,6 +83,7 @@ Trail from the top level down to the current page (Home / Case studies / Oktopos
 ## Pagination (Navigation)
 Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.
 - Classes: `.ayy-pagination` `.ayy-pagination__link` `.ayy-pagination__link--step` `.ayy-pagination__ellipsis`
+- States: hover, focus, disabled, selected
 - React: `<Pagination page count siblings href onPageChange labels>`
 - JS: paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
 - A11y: It's a <nav aria-label="Pagination">: give a second one on the page a different label. The current page has aria-current="page"; it's outlined and bolder as well as tinted. Previous and next say so in words; their arrows are decorative and mirror in right-to-left text. An end you can't go past is aria-disabled (or disabled): screen readers hear it's unavailable. After a page change in place, move focus to the top of the updated table or list, or announce the new range.
@@ -80,6 +91,7 @@ Previous, page numbers with gaps, and next, for a long table or list. On phones 
 ## Steps (Navigation)
 Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state.
 - Classes: `.ayy-steps` `.ayy-steps--vertical` `.ayy-steps__item` `.ayy-steps__label`
+- States: selected
 - React: `<Steps steps current vertical doneLabel>`
 - JS: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
 - A11y: It's an ordered list with aria-current="step" on the current item, so screen readers hear "step 2 of 4, current". Give the <ol> an aria-label ("Checkout progress"). Done steps say so in text, not only with a tick: put an .ayy-sr-only "Done: " before their label (React does it). The markers are generated content with empty alt text, so numbers aren't read twice.
@@ -87,6 +99,7 @@ Where you are in a short flow (sign-up, checkout, import): numbered steps with t
 ## Contents (Navigation)
 On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
 - Classes: `.ayy-toc` `.ayy-toc--sticky` `.ayy-toc__title` `.ayy-toc__list` `.ayy-toc__link` `.ayy-toc__number`
+- States: hover, focus, selected
 - React: `<Toc items title numbered sticky offset onValueChange aria-label>`
 - Element: `<ayy-toc offset>`, events `ayy-value-change`
 - JS: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
@@ -95,6 +108,7 @@ On-page table of contents with a scrollspy: a rail of section links where the on
 ## Field (Forms)
 Form field wrapper: Label + control + hint or error, stacked with consistent spacing.
 - Classes: `.ayy-field` `.ayy-field--inline` `.ayy-label` `.ayy-field__hint` `.ayy-field__error`
+- States: disabled, error
 - React: `<Field inline>`, `<Label htmlFor>`, `<FieldHint>`, `<FieldError>`
 - JS: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
 - A11y: Label htmlFor/for must match the control id. Link hint/error to the control with aria-describedby; set aria-invalid="true" on the control when there's an error. The label dims automatically when the control inside the field is disabled.
@@ -102,7 +116,8 @@ Form field wrapper: Label + control + hint or error, stacked with consistent spa
 ## Input (Forms)
 Single-line text field. Works for every native input type (text, email, search, number, file…).
 - Classes: `.ayy-input` `.ayy-input--sm` `.ayy-input--lg`
-- States: `aria-invalid="true"`, `disabled`
+- States: hover, focus, disabled, error
+- Sizes: `sm` `md` `lg`
 - React: `<Input size>`
 - JS: inputClass({ size?, className? }) → string
 - A11y: Every input needs a label: wrap in a Field with a Label (for/id), or aria-label for search boxes. Errors: aria-invalid="true" + aria-describedby pointing at the error text.
@@ -110,6 +125,8 @@ Single-line text field. Works for every native input type (text, email, search, 
 ## Input group (Forms)
 An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.
 - Classes: `.ayy-input-group` `.ayy-input-group--sm` `.ayy-input-group--lg` `.ayy-input-group__addon`
+- States: hover, focus, disabled, error
+- Sizes: `sm` `md` `lg`
 - React: `<InputGroup size>`, `<InputGroupAddon>`
 - JS: inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.
 - A11y: The input still needs its own label (<label for>, or aria-label on a search field); the icon and addons don't name it. Put units and prefixes in the label or in aria-describedby too ("Price, in USD"), since the addon text isn't part of the input's name. An icon-only button in the group needs an aria-label ("Clear search", "Show password"). aria-invalid="true" on the input tints the group's border, like a plain Input.
@@ -117,7 +134,7 @@ An input with things attached inside its box: a leading icon, a prefix or suffix
 ## Textarea (Forms)
 Multi-line text field. Optional auto-grow and monospace modes.
 - Classes: `.ayy-textarea` `.ayy-textarea--autosize` `.ayy-textarea--mono`
-- States: `aria-invalid="true"`, `disabled`
+- States: hover, focus, disabled, error
 - React: `<Textarea autosize mono>`
 - JS: textareaClass({ autosize?, mono?, className? }) → string
 - A11y: Label it (Field + Label), same as Input.
@@ -125,7 +142,8 @@ Multi-line text field. Optional auto-grow and monospace modes.
 ## Select (Forms)
 Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
 - Classes: `.ayy-select` `.ayy-select__control` `.ayy-select--sm` `.ayy-select--lg`
-- States: `aria-invalid="true"`, `disabled`, `multiple`
+- States: hover, focus, disabled, error, multiple
+- Sizes: `sm` `md` `lg`
 - React: `<Select size wrapperProps>`
 - JS: selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>
 - A11y: Label it like any input (Field + Label with for/id). The native picker is fully accessible and mobile-friendly — don't replace it without a strong reason.
@@ -133,7 +151,8 @@ Styled native <select>. Keeps the OS picker, keyboard handling and form behaviou
 ## Combobox (Forms)
 An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.
 - Classes: `.ayy-combobox` `.ayy-combobox__listbox` `.ayy-combobox__option` `.ayy-combobox__meta` `.ayy-combobox__empty`
-- States: `input[aria-expanded="true"]`, `option[aria-selected="true"]`, `option[hidden]`
+- States: hover, focus, disabled, selected, error, open, empty
+- Sizes: `sm` `md` `lg`
 - React: `<Combobox options value / defaultValue onValueChange onInputChange filter emptyText size name>`
 - Element: `<ayy-combobox manual>`, events `ayy-select`
 - JS: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
@@ -142,7 +161,7 @@ An input that filters a list as you type and picks one option: a city, a custome
 ## Checkbox (Forms)
 Native checkbox with a drawn box, check mark and indeterminate state.
 - Classes: `.ayy-checkbox`
-- States: `:checked`, `:indeterminate`, `aria-invalid="true"`, `disabled`
+- States: hover, focus, disabled, selected, error, indeterminate
 - React: `<Checkbox indeterminate onCheckedChange checked / defaultChecked>`
 - JS: checkboxClass constant
 - A11y: Wrap it in a <label class="ayy-label"> with the text, or pair with <label for>. Indeterminate is announced as "mixed" automatically. Group related checkboxes in a <fieldset> with a <legend>.
@@ -150,7 +169,7 @@ Native checkbox with a drawn box, check mark and indeterminate state.
 ## Radio (Forms)
 Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
 - Classes: `.ayy-radio` `.ayy-radio-group` `.ayy-radio-group--horizontal` `.ayy-radio-group__legend`
-- States: `:checked`, `disabled`
+- States: hover, focus, disabled, selected, error
 - React: `<RadioGroup label name value / defaultValue onValueChange orientation>`, `<Radio value>`
 - JS: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
 - A11y: Arrow keys move between radios in a group natively — no JS needed. Always give the group a legend (label prop) and each radio a wrapping <label class="ayy-label">.
@@ -158,6 +177,8 @@ Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
 ## Segmented control (Forms)
 Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.
 - Classes: `.ayy-segmented-control` `.ayy-segmented-control--sm` `.ayy-segmented-control--full` `.ayy-segmented-control__option`
+- States: hover, focus, disabled, selected
+- Sizes: `sm` `md`
 - React: `<SegmentedControl value / defaultValue onValueChange name size full>`, `<SegmentedControlItem value disabled inputProps>`
 - JS: segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.
 - A11y: It's a radio group: give the root an aria-label ("Date range"). Arrow keys move the choice, Tab leaves the group — the browser does it. The checked segment is filled and bolder, not only coloured; High Contrast mode fills it with the system highlight. An icon-only segment needs text for screen readers: an .ayy-sr-only span or aria-label on the input.
@@ -165,7 +186,7 @@ Pick one of two to five options that change what you see or what you get: a date
 ## Chip (Forms)
 Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.
 - Classes: `.ayy-chip` `.ayy-chip--removable` `.ayy-chip__count` `.ayy-chip__remove` `.ayy-chip-group` `.ayy-chip-group--scroll`
-- States: `.ayy-chip:has(> input:checked)`, `.ayy-chip[aria-pressed="true"]`, `:disabled`
+- States: hover, focus, disabled, selected
 - React: `<Chip type checked / defaultChecked onCheckedChange name value disabled count inputProps>`, `<ChipButton pressed onPressedChange count>`, `<ChipRemovable onRemove removeLabel>`, `<ChipGroup scroll>`
 - JS: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
 - A11y: Checkbox and radio chips are native inputs: Space toggles, radios in a group move with the arrow keys, and screen readers announce "checked". Button chips announce "pressed". Give the group an aria-label naming what it filters ("Status"), and radio chips role="radiogroup". The on state is a border, a wash and a tick, not colour alone; High Contrast fills it with the system highlight. Every remove button needs an aria-label with the filter it removes. After removing one, move focus to the next chip or the search field so it isn't lost.
@@ -173,7 +194,7 @@ Pill-shaped filters and choices: a label around a native checkbox or radio, a to
 ## Choice card (Forms)
 A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.
 - Classes: `.ayy-choice-group` `.ayy-choice-group--scroll` `.ayy-choice-group__legend` `.ayy-choice-card` `.ayy-choice-card--compact` `.ayy-choice-card__title` `.ayy-choice-card__description` `.ayy-choice-card__meta`
-- States: `.ayy-choice-card:has(> input:checked)`, `.ayy-choice-card:has(> input:disabled)`
+- States: hover, focus, disabled, selected, error
 - React: `<ChoiceGroup legend type name value / defaultValue onValueChange min scroll disabled>`, `<ChoiceCard value title description meta icon compact type checked / defaultChecked onCheckedChange disabled inputProps>`
 - JS: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
 - A11y: Each card is a native radio or checkbox labelled by the whole card: Space picks it, arrow keys move between radios, and the title, description and price are its name. Group them in a <fieldset> with a <legend> (ChoiceGroup legend) so the question is announced with each option. Chosen is a thicker border (and a filled card when compact), not colour alone; High Contrast outlines it with the system highlight. A full slot stays in the group as disabled, struck through, so people see what isn't available.
@@ -181,6 +202,7 @@ A card-sized radio or checkbox for choices that need a sentence or a price: plan
 ## Slider (Forms)
 A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.
 - Classes: `.ayy-slider` `.ayy-slider-range`
+- States: hover, focus, disabled
 - React: `<Slider value / defaultValue onValueChange min max step>`, `<SliderRange value / defaultValue onValueChange min max step labels names disabled>`
 - JS: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
 - A11y: It's a native range input: arrow keys step, Page Up/Down jump, Home/End go to the ends, and screen readers read the value. Give it a <label> (or aria-label); add aria-valuetext when the number needs a unit ("12 people"). Show the value in text next to the label (an <output>), so it doesn't depend on the thumb's position. Each thumb of a range has its own name ("Minimum price", "Maximum price"); name the group with aria-labelledby. The focus ring is on the thumb. In High Contrast the fill and the thumb take system colours.
@@ -188,7 +210,8 @@ A native range input with a filled track and a round thumb, and a two-thumb rang
 ## Number field (Forms)
 A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.
 - Classes: `.ayy-number-field` `.ayy-number-field--sm` `.ayy-number-field__input` `.ayy-number-field__decrement` `.ayy-number-field__increment`
-- States: `button[aria-disabled="true"]`, `input[aria-invalid="true"]`
+- States: hover, focus, disabled, error
+- Sizes: `sm` `md`
 - React: `<NumberField value / defaultValue onValueChange min max step size decrementLabel incrementLabel className style>`
 - JS: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. @danitesler/ayywi/elements runs both for every .ayy-number-field on the page.
 - A11y: Label the input (a <label for> its id, or aria-label naming the item: "Quantity of Ethiopia Guji, 250 g"). The buttons need their own aria-labels. At min or max the button gets aria-disabled instead of disabled, so focus stays on it while you click. The input is a real number field: type a value, or use the arrow keys.
@@ -196,7 +219,7 @@ A native number input between minus and plus buttons, for small counts: quantiti
 ## File upload (Forms)
 A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.
 - Classes: `.ayy-dropzone` `.ayy-dropzone--compact` `.ayy-dropzone__title` `.ayy-dropzone__hint`
-- States: `[data-dragging]`, `input:disabled`, `input[aria-invalid="true"]`
+- States: hover, focus, disabled, error, dragging
 - React: `<Dropzone title hint icon onFiles compact className style>`
 - JS: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).
 - A11y: It's a native file input inside its label: Tab reaches it, Enter or Space opens the picker, and the title and hint are its name. A visible Label (htmlFor its id) names it in a form. Dragging is an extra: everything works with the picker alone. List the picked files in text, each with a remove button that names the file ("Remove studio-front.jpg"), and progress with a Progress bar that has a label.
@@ -204,7 +227,7 @@ A drop zone that is also a file picker: a label around a native file input that 
 ## Switch (Forms)
 On/off toggle for a setting that applies immediately. A native checkbox with role="switch".
 - Classes: `.ayy-switch`
-- States: `:checked / aria-checked="true"`, `disabled`
+- States: hover, focus, disabled, selected
 - React: `<Switch checked / defaultChecked onCheckedChange>`
 - JS: switchClass constant
 - A11y: Always pair with a <label for> (Field inline) or aria-label. Space toggles it; that's native checkbox behaviour. The thumb direction flips automatically in RTL.
@@ -212,6 +235,7 @@ On/off toggle for a setting that applies immediately. A native checkbox with rol
 ## Page header (Layout)
 The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.
 - Classes: `.ayy-page-header` `.ayy-page-header__title` `.ayy-page-header__description` `.ayy-page-header__actions`
+- States: none, it's static
 - React: `<PageHeader>`, `<PageHeaderTitle>`, `<PageHeaderDescription>`, `<PageHeaderActions>`
 - JS: pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.
 - A11y: The title is the page's only <h1>; sections below it start at <h2>. Keep the actions after the title in the source, so screen readers hear what the page is before what it can do. A breadcrumb above the title is its own <nav aria-label="Breadcrumb">.
@@ -219,6 +243,7 @@ The top of an app screen: an optional breadcrumb or eyebrow, the page title (the
 ## Section (Layout)
 A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description.
 - Classes: `.ayy-section` `.ayy-section--center` `.ayy-section__header` `.ayy-section__eyebrow` `.ayy-section__number` `.ayy-section__title` `.ayy-section__description`
+- States: none, it's static
 - React: `<Section center>`, `<SectionHeader>`, `<SectionEyebrow number>`, `<SectionTitle>`, `<SectionDescription>`
 - JS: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
 - A11y: Name the section with its title: aria-labelledby on the <section> pointing at the title's id makes it a landmark. Keep the heading order: page title h1, section titles h2.
@@ -226,6 +251,7 @@ A band of a page with generous vertical rhythm and a header: optional eyebrow (w
 ## Card (Layout)
 Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
 - Classes: `.ayy-card` `.ayy-card--interactive` `.ayy-card--spotlight` `.ayy-card--featured` `.ayy-card__header` `.ayy-card__title` `.ayy-card__description` `.ayy-card__content` `.ayy-card__footer` `.ayy-card__media` `.ayy-card__link`
+- States: hover, focus, selected
 - React: `<Card interactive spotlight spotColor featured>`, `<CardHeader>`, `<CardTitle>`, `<CardDescription>`, `<CardContent>`, `<CardFooter>`, `<CardMedia children>`, `<CardLink >`
 - JS: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
 - A11y: If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card. Media images are content: give them alt text, or alt="" when the title already says it all. Spotlight layers are pseudo-elements, invisible to assistive tech.
@@ -233,6 +259,7 @@ Surface that groups related content. Flat at rest with an inset top highlight; o
 ## Tabs (Layout)
 Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
 - Classes: `.ayy-tabs` `.ayy-tabs__list` `.ayy-tabs__tab` `.ayy-tabs__panel` `.ayy-tabs__count`
+- States: hover, focus, disabled, selected
 - React: `<Tabs value / defaultValue onValueChange>`, `<TabsList aria-label>`, `<TabsTrigger value>`, `<TabsContent value keepMounted>`
 - Element: `<ayy-tabs value>`, events `ayy-value-change`
 - JS: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
@@ -241,6 +268,7 @@ Segmented pill tabs switching between panels of related content. Full WAI-ARIA t
 ## Accordion (Layout)
 Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.
 - Classes: `.ayy-accordion` `.ayy-accordion__item` `.ayy-accordion__trigger` `.ayy-accordion__content`
+- States: hover, focus, open
 - React: `<Accordion single>`, `<AccordionItem label open>`
 - JS: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
 - A11y: It's native <details>/<summary>: Enter and Space toggle it and the open state is announced. Don't add aria-expanded or a click handler. Keep the summary text short and complete (a question), since it's the only part people see. Find-in-page opens a closed item that contains the match.
@@ -248,6 +276,7 @@ Questions and answers, or sections people open one at a time: native <details> i
 ## Carousel (Layout)
 A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
 - Classes: `.ayy-carousel` `.ayy-carousel__track` `.ayy-carousel__slide` `.ayy-carousel__controls`
+- States: hover, pressed, focus, disabled
 - React: `<Carousel label slideWidth previousLabel / nextLabel slideLabel>`, `<CarouselSlide>`
 - Element: `<ayy-carousel>`
 - JS: carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.
@@ -256,6 +285,7 @@ A strip of slides that scrolls sideways and snaps, with previous/next buttons th
 ## Separator (Layout)
 A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).
 - Classes: `.ayy-separator` `.ayy-separator--vertical` `.ayy-separator--fade`
+- States: none, it's static
 - React: `<Separator orientation fade>`
 - JS: separatorClass({ orientation?, fade?, className? }) → string
 - A11y: <hr> is a separator to screen readers. If the line is purely decorative, use role="presentation" or a CSS border instead. Vertical separators need aria-orientation="vertical" (the React component adds it).
@@ -263,6 +293,8 @@ A hairline between blocks: full, fading out at both ends (between page sections)
 ## Dialog (Overlays)
 Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.
 - Classes: `.ayy-dialog` `.ayy-dialog--sm` `.ayy-dialog--lg` `.ayy-dialog--xl` `.ayy-dialog--side-start` `.ayy-dialog--side-end` `.ayy-dialog--side-bottom` `.ayy-dialog__header` `.ayy-dialog__title` `.ayy-dialog__description` `.ayy-dialog__body` `.ayy-dialog__footer` `.ayy-dialog__close`
+- States: hover, focus, open
+- Sizes: `sm` `md` `lg` `xl`
 - React: `<Dialog open / defaultOpen onOpenChange>`, `<DialogTrigger >`, `<DialogContent size side hideClose closeLabel closeOnBackdrop>`, `<DialogHeader>`, `<DialogTitle>`, `<DialogDescription>`, `<DialogBody>`, `<DialogFooter>`, `<DialogClose>`
 - Element: `<ayy-dialog open persistent>`, events `ayy-open-change`
 - JS: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
@@ -271,7 +303,7 @@ Modal dialog built on the native <dialog> element: top layer, inert background, 
 ## Popover (Overlays)
 Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.
 - Classes: `.ayy-popover`
-- States: `:popover-open`
+- States: open
 - React: `<Popover open / defaultOpen onOpenChange>`, `<PopoverTrigger >`, `<PopoverContent side align>`
 - Element: `<ayy-popover side align open>`, events `ayy-open-change`
 - JS: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
@@ -280,6 +312,7 @@ Non-modal floating panel anchored to a button. Built on the native popover attri
 ## Tooltip (Overlays)
 Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.
 - Classes: `.ayy-tooltip` `.ayy-tooltip__content`
+- States: hover, focus, dismissed
 - React: `<Tooltip content side children>`
 - Element: `<ayy-tooltip side>`
 - JS: tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).
@@ -288,6 +321,7 @@ Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip 
 ## Alert (Feedback)
 Inline message box with optional icon, title, description and actions.
 - Classes: `.ayy-alert` `.ayy-alert--info` `.ayy-alert--success` `.ayy-alert--warning` `.ayy-alert--destructive` `.ayy-alert__title` `.ayy-alert__description` `.ayy-alert__actions`
+- States: error
 - React: `<Alert variant>`, `<AlertTitle>`, `<AlertDescription>`, `<AlertActions>`
 - JS: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
 - A11y: Static alerts need no role. If it appears in response to an action, add role="alert" (urgent) or role="status" (polite). The icon is decorative: aria-hidden="true". The text must carry the meaning.
@@ -295,6 +329,7 @@ Inline message box with optional icon, title, description and actions.
 ## Toast (Feedback)
 Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.
 - Classes: `.ayy-toaster` `.ayy-toast` `.ayy-toast--success` `.ayy-toast--warning` `.ayy-toast--destructive` `.ayy-toast--info` `.ayy-toast__title` `.ayy-toast__description` `.ayy-toast__actions` `.ayy-toast__close`
+- States: hover, focus, error, leaving
 - React: `<Toaster position label closeLabel>`
 - JS: toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })
 - A11y: The region is aria-live="polite"; destructive toasts use role="alert". Timers pause while a toast is hovered or focused, so there's time to read it and reach its action. Messages are set with textContent — never HTML.
@@ -302,6 +337,8 @@ Short, temporary notification. One framework-free toast() function renders into 
 ## Progress (Feedback)
 Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
 - Classes: `.ayy-progress` `.ayy-progress__bar` `.ayy-progress--sm` `.ayy-progress--lg` `.ayy-progress--success` `.ayy-progress--warning` `.ayy-progress--destructive` `.ayy-progress--ai` `.ayy-progress--indeterminate`
+- States: error, loading
+- Sizes: `sm` `md` `lg`
 - React: `<Progress value variant tone size>`
 - JS: progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)
 - A11y: role="progressbar" with aria-valuenow/min/max (React sets them). Give it an accessible name: aria-label or aria-labelledby.
@@ -309,6 +346,8 @@ Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.
 ## Spinner (Feedback)
 An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.
 - Classes: `.ayy-spinner` `.ayy-spinner--sm` `.ayy-spinner--lg`
+- States: loading
+- Sizes: `sm` `md` `lg`
 - React: `<Spinner size label>`
 - JS: spinnerClass({ size?, className? }) → string. Buttons: add aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).
 - A11y: A spinner on its own is a role="status" with an aria-label that says what's loading ("Loading invoices"). Inside a button, hide it (aria-hidden) and set aria-busy="true" on the button; the button's text still names it. Mark the region that's refreshing with aria-busy="true" until the new content is in. Under reduced motion it stops as a still ring; the label and aria-busy still say it's working.
@@ -316,6 +355,7 @@ An indeterminate loading ring in the text colour, sized like an icon. For short 
 ## Skeleton (Feedback)
 Placeholder shapes shown while content loads, with a subtle shimmer.
 - Classes: `.ayy-skeleton` `.ayy-skeleton--text` `.ayy-skeleton--circle`
+- States: loading
 - React: `<Skeleton shape>`
 - JS: skeletonClass({ shape?, className? }) → string
 - A11y: Skeletons are aria-hidden. Put aria-busy="true" on the container while loading, and remove it when content arrives. To name the loading region, give it role="status" and an aria-label — aria-label on a plain div is ignored. The shimmer stops under prefers-reduced-motion.
@@ -323,6 +363,7 @@ Placeholder shapes shown while content loads, with a subtle shimmer.
 ## Empty state (Feedback)
 What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.
 - Classes: `.ayy-empty-state` `.ayy-empty-state--bordered` `.ayy-empty-state--compact` `.ayy-empty-state__title` `.ayy-empty-state__description` `.ayy-empty-state__actions`
+- States: none, it's static
 - React: `<EmptyState bordered compact>`, `<EmptyStateTitle>`, `<EmptyStateDescription>`, `<EmptyStateActions>`
 - JS: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
 - A11y: The title is a real heading at the level that fits the page (h2 under the page's h1, h3 inside a card). The icon tile is decorative: the title carries the meaning. When results change because of a search or filter, put the empty state inside a role="status" region (or announce the count) so screen reader users hear that nothing matched.
@@ -330,6 +371,7 @@ What a list, table or page shows when there's nothing in it yet, or nothing matc
 ## Badge (Data display)
 Small pill label for status, category or count. Optional pulsing status dot.
 - Classes: `.ayy-badge` `.ayy-badge--muted` `.ayy-badge--outline` `.ayy-badge--success` `.ayy-badge--warning` `.ayy-badge--destructive` `.ayy-badge--info` `.ayy-badge--ai` `.ayy-badge__dot` `.ayy-badge__dot--static`
+- States: error
 - React: `<Badge variant dot>`
 - JS: badgeClass({ variant?, className? }) → string
 - A11y: Colour is never the only signal — the label text must say the status. The dot is aria-hidden; it's decorative.
@@ -337,6 +379,7 @@ Small pill label for status, category or count. Optional pulsing status dot.
 ## Kbd (Data display)
 A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.
 - Classes: `.ayy-kbd`
+- States: none, it's static
 - React: `<Kbd>`
 - JS: kbdClass constant.
 - A11y: Use the <kbd> element: screen readers and search know it's a key. Write modifier names out where symbols may not read well ("Ctrl" rather than "^"), or add aria-label="Command K" to a <kbd>⌘K</kbd>. A shortcut hint doesn't replace aria-keyshortcuts on the control it triggers.
@@ -344,6 +387,8 @@ A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltip
 ## Avatar (Data display)
 Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.
 - Classes: `.ayy-avatar` `.ayy-avatar--sm` `.ayy-avatar--lg` `.ayy-avatar--xl` `.ayy-avatar--square` `.ayy-avatar__fallback` `.ayy-avatar__image` `.ayy-avatar-group`
+- States: error
+- Sizes: `sm` `md` `lg` `xl`
 - React: `<Avatar name src fallback size shape>`, `<AvatarGroup>`
 - JS: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 - A11y: The name goes on the root (aria-label); the <img> has alt="" and the initials are aria-hidden, so it's announced once. Give an AvatarGroup an aria-label like "5 collaborators". A failed image is hidden by React or @danitesler/ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
@@ -351,6 +396,8 @@ Round (or square) picture of a person or workspace, with initials that show when
 ## Icon (Data display)
 Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.
 - Classes: `.ayy-icon` `.ayy-icon--sm` `.ayy-icon--md` `.ayy-icon--lg` `.ayy-icon--xl` `.ayy-icon--directional`
+- States: none, it's static
+- Sizes: `auto` `sm` `md` `lg` `xl`
 - React: `<Icon icon size directional label strokeWidth>`
 - JS: iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from "@hugeicons/core-free-icons". Plain HTML: paste the SVG with class="ayy-icon".
 - A11y: Icons are decorative by default (aria-hidden): the text next to them carries the meaning. When the icon is the only thing saying something (a status, a verified mark), give it a label: <Icon label="Deployed">, or role="img" + aria-label on the <svg>. Icon-only buttons: aria-label goes on the button, the icon stays decorative. Strokes use currentColor, so icons follow the theme and Windows High Contrast colours with no extra CSS.
@@ -358,6 +405,8 @@ Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded
 ## Icon tile (Data display)
 An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.
 - Classes: `.ayy-icon-tile` `.ayy-icon-tile--sm` `.ayy-icon-tile--lg`
+- States: none, it's static
+- Sizes: `sm` `md` `lg`
 - React: `<IconTile size spotColor aria-label>`
 - JS: iconTileClass({ size?, className? }) → string
 - A11y: Usually decorative next to the product's name: aria-hidden="true" (React does this unless you pass aria-label). Standing alone, give it role="img" and an aria-label.
@@ -365,6 +414,8 @@ An app-icon squircle lit from below by the content's accent, with an SVG glyph i
 ## Stat (Data display)
 A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
 - Classes: `.ayy-stat` `.ayy-stat--sm` `.ayy-stat__value` `.ayy-stat__unit` `.ayy-stat__label`
+- States: none, it's static
+- Sizes: `md` `sm`
 - React: `<Stat value unit label labelFirst size>`
 - JS: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
 - A11y: Write abbreviations the way they should be read, or add the full number: <span aria-hidden="true">200k</span><span class="ayy-sr-only">200,000</span>. Keep the unit as text, not only an icon.
@@ -372,6 +423,7 @@ A headline number in the heading font, with a muted unit beside it and a short l
 ## List (Data display)
 Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.
 - Classes: `.ayy-list` `.ayy-list--divided` `.ayy-list--compact` `.ayy-list__item` `.ayy-list__content` `.ayy-list__title` `.ayy-list__description` `.ayy-list__meta` `.ayy-list__link`
+- States: hover, focus, selected
 - React: `<List divided compact>`, `<ListItem>`, `<ListContent>`, `<ListTitle htmlFor>`, `<ListDescription>`, `<ListMeta>`, `<ListLink current>`
 - JS: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
 - A11y: It's a real list: screen readers announce how many rows there are. One link per row, in the title, so a row is one tab stop with a meaningful name. Buttons and switches in the row are separate tab stops after it. Mark the open row with aria-current="page" (it's a page) or "true" (a selection in a list-detail view); it gets a tint and a heavier title, not just colour. A switch or checkbox in a settings row needs its label: make the title a <label for> pointing at it. Avatars and icons in the leading slot are decorative when the title names the row.
@@ -379,6 +431,7 @@ Rows of people, records, threads or settings: leading media (avatar, icon, icon 
 ## Data list (Data display)
 Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
 - Classes: `.ayy-data-list` `.ayy-data-list--row` `.ayy-data-list__item` `.ayy-data-list__label` `.ayy-data-list__value`
+- States: none, it's static
 - React: `<DataList row>`, `<DataListItem label>`
 - JS: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
 - A11y: A real <dl>/<dt>/<dd>, so screen readers announce each value with its term. Links in values keep their focus ring; external ones should say so.
@@ -386,6 +439,7 @@ Label / value pairs on a description list: small uppercase labels over their val
 ## Frame (Data display)
 A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.
 - Classes: `.ayy-frame` `.ayy-frame__bar` `.ayy-frame__title` `.ayy-frame__body`
+- States: none, it's static
 - React: `<Frame title>`
 - JS: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
 - A11y: The screenshot is the content: give the <img> alt text that says what it shows, or wrap the frame in a <figure> with a <figcaption>. The dots are decoration (a pseudo-element).
@@ -393,6 +447,7 @@ A browser window around a screenshot, video or coded mock-up: a bar with three d
 ## Chat (Data display)
 A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
 - Classes: `.ayy-chat` `.ayy-chat__message` `.ayy-chat__message--out` `.ayy-chat__bubble` `.ayy-chat__typing` `.ayy-chat__replies`
+- States: loading
 - React: `<Chat>`, `<ChatMessage direction avatar>`, `<ChatTyping label avatar>`, `<ChatReplies>`
 - JS: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
 - A11y: Use role="log" on the conversation when messages arrive while the reader watches; they're announced politely, in order. The typing dots are an image with a name ("Dani is typing"); remove the element when the message lands. Quick replies are real buttons; after one is chosen, move focus to the next sensible place, not back to the top.
@@ -400,7 +455,7 @@ A conversation: incoming bubbles at the start edge, the reader's own inverted at
 ## Table (Data display)
 Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
 - Classes: `.ayy-table-wrap` `.ayy-table` `.ayy-table--compact` `.ayy-table__num` `.ayy-table__sort` `.ayy-table__select`
-- States: `tr[aria-selected="true"]`, `th[aria-sort="ascending" | "descending"]`
+- States: hover, focus, selected, sorted
 - React: `<Table compact>`, `<TableHeader>`, `<TableBody>`, `<TableFooter>`, `<TableRow selected>`, `<TableHead numeric select sort onSort>`, `<TableCell numeric select>`, `<TableCaption>`
 - Element: `<ayy-table>`, events `ayy-sort`, `ayy-selection-change`
 - JS: tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → "ascending" | "descending"; compareValues(a, b) sorts numbers (also "$1,240", "12 GB") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).
@@ -409,6 +464,7 @@ Data table with quiet hairlines, uppercase headers and hover rows. Styles plain 
 ## Chart (Data display)
 Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
 - Classes: `.ayy-chart` `.ayy-chart--stacked` `.ayy-chart--values` `.ayy-chart__plot` `.ayy-chart__tick` `.ayy-chart__bars` `.ayy-chart__column` `.ayy-chart__bar` `.ayy-chart__svg` `.ayy-chart__series` `.ayy-chart__series--compare` `.ayy-chart__line` `.ayy-chart__area` `.ayy-chart__gradient` `.ayy-chart__labels` `.ayy-chart__legend` `.ayy-chart__legend-item` `.ayy-chart__legend-item--compare` `.ayy-chart__swatch` `.ayy-bar-list` `.ayy-bar-list__item` `.ayy-bar-list__label` `.ayy-bar-list__value` `.ayy-sparkline`
+- States: hover
 - React: `<BarChart label labels series stacked showValues max ticks format height legend>`, `<LineChart label labels series min max area smooth ticks format height legend>`, `<Sparkline values label area color min max>`, `<BarList items max format color>`
 - JS: chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.
 - A11y: The drawing is aria-hidden. The numbers go in a table (React renders one with .ayy-sr-only; add a visible Table if people need to compare values), with a <caption> saying what the chart shows. Don't rely on colour alone: a legend names the series in the same order, the comparison series is dashed, and a title or a Stat states the takeaway ("Up 12% on last week"). Series tokens keep 3:1 against every surface in every theme. In High Contrast bars and lines take system colours, alternating between CanvasText and Highlight. A Sparkline with a label is an image with that name; give it the trend in words ("Revenue, last 14 days, up 12%").

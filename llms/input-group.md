@@ -8,6 +8,23 @@ Category: Forms. An input with things attached inside its box: a leading icon, a
 - `.ayy-input-group--lg` — Large height (--ayy-size-control-lg).
 - `.ayy-input-group__addon` — Text beside the input: a prefix (https://), a suffix (USD, %) or a Kbd hint. Muted, one line.
 
+**States**
+- `default` — Looks like an Input: wash fill, line-strong border; icons and addons are muted, the input inside loses its own border.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: Like Input; a trailing Button keeps its own pressed look.
+- `focus` (`.ayy-input-group:has(> .ayy-input:focus-visible)`) — The ring moves from the input to the whole group (2px, -1px offset); the border goes transparent.
+- `disabled` (`.ayy-input-group:has(> .ayy-input:disabled)`) — The whole group dims to --ayy-opacity-disabled with a not-allowed cursor.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`.ayy-input-group:has(> .ayy-input[aria-invalid="true"])`) — Group border 60% destructive, destructive focus ring. Forced colours: dashed 2px border.
+- `loading` — doesn't apply: No built-in loading look; put a small Spinner in .ayy-input-group__addon while a value is checked.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch).
+- Density — Height and text follow data-density; leading icons stay 16px.
+- Width — Fills its container like an Input.
+
 **JS (framework-free)**: inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.
 
 **React** — `import { InputGroup, InputGroupAddon, Input } from "@danitesler/ayywi/react";`

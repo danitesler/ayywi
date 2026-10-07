@@ -14,6 +14,20 @@
   "variants": {
     "pill": { "values": [true, false], "default": false }
   },
+  "states": {
+    "default": { "looks": "Muted sm links separated by line-hover slashes; the last item (the current page) in text colour." },
+    "hover": { "when": ".ayy-breadcrumb__link:hover", "looks": "Link turns text colour." },
+    "pressed": { "none": "No pressed look." },
+    "focus": { "when": ".ayy-breadcrumb__link:focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "none": "Every ancestor is a link; the current page is plain text, not a disabled link." },
+    "selected": { "when": "[aria-current=\"page\"] on the last item", "looks": "Text colour, cut with an ellipsis when long. Forced colours: underlined." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "No loading state." }
+  },
+  "sizes": {
+    "density": "sm text at every density.",
+    "width": "Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes."
+  },
   "js": "breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
   "react": {
     "import": "import { Breadcrumb } from \"@danitesler/ayywi/react\";",

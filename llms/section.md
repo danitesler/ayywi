@@ -11,6 +11,20 @@ Category: Layout. A band of a page with generous vertical rhythm and a header: o
 - `.ayy-section__title` — The section's <h2>. Fluid, 28px on phones to 48px.
 - `.ayy-section__description` — One or two sentences under the title, muted.
 
+**States**
+- `default` — Block padding of --ayy-space-24 (20 on phones, 32 from 90rem); an optional header with eyebrow, accent number, a bold fluid title and a muted lg description.
+- `hover` — doesn't apply: Static.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: Not interactive.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Full width; combine with .ayy-container to centre it. The header stops at --ayy-size-measure; center centres it (back to the start on phones). The title scales from 2xl to 4xl with the viewport.
+
 **JS (framework-free)**: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
 
 **React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "@danitesler/ayywi/react";`

@@ -6,8 +6,18 @@ Category: Forms. On/off toggle for a setting that applies immediately. A native 
 - `.ayy-switch` — On <input type="checkbox" role="switch"> (preferred) or <button role="switch" aria-checked>. Thumb is ::before.
 
 **States**
-- `:checked / aria-checked="true"` — On.
-- `disabled` — Dimmed, not-allowed.
+- `default` — Off: a pill (wash-hover fill, line-strong border) with a muted thumb at the inline start.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: No pressed look; it flips on release.
+- `focus` (`:focus-visible`) — 2px ring, 2px offset.
+- `disabled` (`:disabled or [aria-disabled="true"]`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText.
+- `selected` (`:checked or [aria-checked="true"]`) — On: text-colour track, page-colour thumb slid to the inline end (mirrors in RTL). Forced colours: Highlight.
+- `error` — doesn't apply: A switch is always valid; it applies at once. If saving the setting fails, flip it back and say so in a toast.
+- `loading` — doesn't apply: Settings switch instantly; don't put a spinner on a switch.
+
+**Sizes**
+- Density — --ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.
+- Width — Fixed. Put it in an inline Field with its label.
 
 **JS (framework-free)**: switchClass constant
 

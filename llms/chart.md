@@ -28,6 +28,20 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 - `.ayy-bar-list__value` — The row's number, tabular digits.
 - `.ayy-sparkline` — A small <svg viewBox="0 0 100 100" preserveAspectRatio="none"> line with no axes, for a stat or a table cell. Uses __line and __area paths.
 
+**States**
+- `default` — Bars, lines or areas in --ayy-chart-1… in order, muted 2xs labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table.
+- `hover` (`.ayy-chart__column:hover`) — Its bars mix 20% toward the text colour and show their data-value above them.
+- `pressed` — doesn't apply: Not interactive.
+- `focus` — doesn't apply: Not focusable; the data table carries the numbers.
+- `disabled` — doesn't apply: Not interactive.
+- `selected` — doesn't apply: No selected bar or series.
+- `error` — doesn't apply: No error look; show an Alert in its place.
+- `loading` — doesn't apply: Use a block Skeleton of the chart's height while data loads; bars grow from 0 when they appear.
+
+**Sizes**
+- Density — Doesn't follow data-density. The plot is --ayy-chart-height (12rem) tall; bar-list rows are at least the sm control height; a sparkline is 6rem × 1.75rem.
+- Width — Fills its container; columns share the width (bars at most 2.5rem wide).
+
 **JS (framework-free)**: chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.
 
 **React** — `import { BarChart, LineChart, Sparkline, BarList } from "@danitesler/ayywi/react";`

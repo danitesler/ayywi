@@ -23,6 +23,27 @@
     "size": { "values": ["sm", "md", "lg", "xl"], "default": "md", "component": "DialogContent" },
     "side": { "values": ["center", "start", "end", "bottom"], "default": "center", "component": "DialogContent" }
   },
+  "states": {
+    "default": { "looks": "Closed: not rendered. Open (see open): surface panel, line-strong border, card radius, overlay shadow, over a blurred --ayy-color-overlay backdrop." },
+    "hover": { "when": ".ayy-dialog__close:hover", "looks": "Close button gets a wash-hover circle and the text colour." },
+    "pressed": { "none": "The panel has no pressed look; its buttons have Button's." },
+    "focus": { "when": ".ayy-dialog__close:focus-visible; .ayy-dialog__body:focus-visible (scrolling body with tabindex=\"0\")", "looks": "Close: 2px ring, 2px offset. Body: ring inset by 2px." },
+    "disabled": { "none": "A dialog isn't disabled; disable the buttons inside it." },
+    "selected": { "none": "No selected state." },
+    "error": { "none": "Show errors inside the body: a FieldError per field, an Alert for a failed save. Keep the dialog open." },
+    "loading": { "none": "No loading look; put the primary Button in loading while it saves, Skeletons in the body while it loads." },
+    "open": { "when": "[open] via showModal() (React open; <ayy-dialog>)", "looks": "Fades and scales in (centred); side-start / side-end slide in from that edge (RTL-aware); side-bottom slides up as a sheet with a grab handle. The page behind is inert and stops scrolling." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "24rem wide.",
+      "md": "32rem wide.",
+      "lg": "42rem wide.",
+      "xl": "56rem wide."
+    },
+    "density": "Padding is fixed (--ayy-space-6); its controls follow data-density.",
+    "width": "The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem."
+  },
   "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
   "element": {
     "tag": "ayy-dialog",

@@ -11,6 +11,20 @@
     "ayy-page-header__actions": "The page's buttons, at the inline end (under the title on phones). One primary at most; the rest outline or ghost."
   },
   "variants": {},
+  "states": {
+    "default": { "looks": "An h1 (2xl heading font, semibold) with a muted md description under it, actions at the inline end." },
+    "hover": { "none": "Static text; the buttons in __actions have their own states." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable; its buttons are." },
+    "disabled": { "none": "Not interactive." },
+    "selected": { "none": "Not interactive." },
+    "error": { "none": "Show a failed load under it in an Alert." },
+    "loading": { "none": "Render the title at once; put Skeletons below it for the content." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "Fills its container; the description stops at --ayy-size-measure. Below 48rem the actions drop under the description, aligned to the start."
+  },
   "js": "pageHeaderClass, pageHeaderTitleClass, pageHeaderDescriptionClass, pageHeaderActionsClass constants.",
   "react": {
     "import": "import { PageHeader, PageHeaderTitle, PageHeaderDescription, PageHeaderActions } from \"@danitesler/ayywi/react\";",

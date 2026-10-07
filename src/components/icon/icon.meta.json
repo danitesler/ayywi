@@ -16,6 +16,27 @@
     "size": { "values": ["auto", "sm", "md", "lg", "xl"], "default": "auto" },
     "directional": { "values": [true, false], "default": false }
   },
+  "states": {
+    "default": { "looks": "A Hugeicons SVG stroked in currentColor, aligned to the text's capitals." },
+    "hover": { "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button." },
+    "pressed": { "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button." },
+    "selected": { "none": "Icons are decorative (aria-hidden) or labelled images, never controls; put one in a Button." },
+    "error": { "none": "No error state; colour the text around it." },
+    "loading": { "none": "Use a Spinner." }
+  },
+  "sizes": {
+    "scale": {
+      "auto": "1.25em: follows the text size.",
+      "sm": "16px (--ayy-size-icon-sm).",
+      "md": "20px.",
+      "lg": "24px.",
+      "xl": "32px."
+    },
+    "density": "Doesn't follow data-density; inside buttons, menu items and alerts the component sets the size.",
+    "width": "Square. directional mirrors it in RTL."
+  },
   "js": "iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from \"@hugeicons/core-free-icons\". Plain HTML: paste the SVG with class=\"ayy-icon\".",
   "react": {
     "import": "import { Icon } from \"@danitesler/ayywi/react\"; import { Search01Icon } from \"@hugeicons/core-free-icons\";",

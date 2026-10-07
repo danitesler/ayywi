@@ -15,6 +15,20 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - `.ayy-card__media` — Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly when an interactive card is hovered with a mouse.
 - `.ayy-card__link` — Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable.
 
+**States**
+- `default` — Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5.
+- `hover` (`:hover`) — Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer.
+- `pressed` — doesn't apply: No pressed look, even when interactive.
+- `focus` (`.ayy-card__link:focus-visible`) — The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus.
+- `disabled` — doesn't apply: Cards aren't disabled; dim nothing. For an unavailable option use a Choice card with a disabled input.
+- `selected` (`featured (ayy-card--featured)`) — Text-colour border plus a 1px ring, so it reads as 2px without moving. For a picked option use a Choice card instead. Forced colours: Highlight outline.
+- `error` — doesn't apply: Put an Alert inside the card's content.
+- `loading` — doesn't apply: No loading look; show Skeletons in the card's content shape (aria-busy on the region).
+
+**Sizes**
+- Density — Padding and text don't follow data-density.
+- Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card.
+
 **JS (framework-free)**: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
 
 **React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "@danitesler/ayywi/react";`

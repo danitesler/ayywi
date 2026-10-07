@@ -9,6 +9,20 @@ Category: Forms. Form field wrapper: Label + control + hint or error, stacked wi
 - `.ayy-field__hint` — Muted helper text under the control.
 - `.ayy-field__error` — Error text under the control.
 
+**States**
+- `default` — Label (control md text, medium weight, text colour) above the control; hint below in muted control sm text.
+- `hover` — doesn't apply: The control inside shows hover.
+- `pressed` — doesn't apply: The control inside handles presses.
+- `focus` — doesn't apply: The control inside shows the focus ring.
+- `disabled` (`.ayy-field:has(:disabled), .ayy-label:has(> :disabled)`) — Label dims to --ayy-opacity-disabled with a not-allowed cursor; the control dims itself.
+- `selected` — doesn't apply: Selection belongs to the control (Checkbox, Radio, Switch).
+- `error` (`aria-invalid="true" on the control plus .ayy-field__error, linked with aria-describedby (React: Field error)`) — Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border.
+- `loading` — doesn't apply: Fields don't load; show a Skeleton for the whole form while its data loads.
+
+**Sizes**
+- Density — Label text follows control md, hint and error control sm, so they grow with data-density.
+- Width — Fills its column; the control inside stretches to it. inline puts the control and label side by side (checkboxes, switches).
+
 **JS (framework-free)**: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
 
 **React** — `import { Field, Label, FieldHint, FieldError } from "@danitesler/ayywi/react";`

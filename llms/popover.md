@@ -6,7 +6,19 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 - `.ayy-popover` — On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.
 
 **States**
-- `:popover-open` — Open.
+- `default` — Closed: hidden. Open: raised surface, line-strong border, control radius, overlay shadow, sm text.
+- `hover` — doesn't apply: The panel has no hover look; the trigger is a Button with its own.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` — doesn't apply: The panel itself doesn't take a ring; focus moves to the controls inside.
+- `disabled` — doesn't apply: Disable the trigger instead.
+- `selected` — doesn't apply: No selected state.
+- `error` — doesn't apply: Show errors inside it (FieldError).
+- `loading` — doesn't apply: Put a Spinner or Skeleton inside while its content loads.
+- `open` (`:popover-open`) — Fades in and scales up from 97% next to its trigger (React Popover, <ayy-popover>); light-dismisses on Esc or a click outside.
+
+**Sizes**
+- Density — Padding is fixed; its controls follow data-density.
+- Width — As wide as its content, at most 22rem (or the viewport minus 1rem).
 
 **JS (framework-free)**: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
 

@@ -80,6 +80,20 @@ export const ATTRIBUTES = {
   dir: "\"rtl\" mirrors every component (logical properties throughout).",
 };
 
+/** The states every component's meta.json documents, in this order. Each is { when, looks } (how you get it, what it
+    looks like) or { none } (why it doesn't apply and what to use instead); default has only looks. A component may add
+    its own after these (open, indeterminate, sorted…), always as { when, looks }. `pnpm check` enforces it. */
+export const STATES = {
+  default: "At rest: nothing hovered, focused or set.",
+  hover: "The pointer is over it. Touch screens have no hover, so never put information only there.",
+  pressed: "While it's held down (:active).",
+  focus: "It has keyboard focus (:focus-visible): the 2px --ayy-color-ring outline.",
+  disabled: "It can't be used: disabled on native controls, aria-disabled=\"true\" on links and on buttons that must keep focus.",
+  selected: "On, checked, current or chosen: :checked, aria-selected, aria-current, aria-pressed=\"true\", aria-checked.",
+  error: "Its value is invalid or its action failed: aria-invalid=\"true\" with a FieldError, or a destructive variant.",
+  loading: "Waiting on work: aria-busy=\"true\" with a Spinner, a Skeleton, or an indeterminate Progress.",
+};
+
 /** Rules every agent (and human) must follow. Rendered into llms-full.txt and ai/; enforced by `pnpm check` and `ayywi lint`. */
 export const RULES = [
   "Use existing ayywi classes/components and their variants before writing any custom CSS. Never add a second UI kit.",
@@ -88,6 +102,7 @@ export const RULES = [
   "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
   "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
   "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
+  "Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.",
   "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state. Movement on :hover (lifts, zooms, spins) goes inside @media (hover: hover), because a tap leaves :hover stuck on touch screens.",
   "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",

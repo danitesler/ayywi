@@ -14,9 +14,24 @@
     "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
   "states": {
-    "aria-invalid=\"true\"": "Red border (on the <select>).",
-    "disabled": "Dimmed, chevron too.",
-    "multiple": "Renders as a list box: auto height, no chevron."
+    "default": { "looks": "Native <select> with a wash fill, line-strong border and a muted chevron at the inline end; the options popup is the OS one." },
+    "hover": { "when": ".ayy-select__control:hover", "looks": "Border turns line-hover." },
+    "pressed": { "none": "Pressing opens the OS picker, which draws its own state." },
+    "focus": { "when": ".ayy-select__control:focus-visible", "looks": "2px ring just inside the edge; the border goes transparent." },
+    "disabled": { "when": ".ayy-select__control:disabled", "looks": "Control and chevron dim to --ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "none": "The chosen option shows as the control's text; the OS marks it in the popup." },
+    "error": { "when": ".ayy-select__control[aria-invalid=\"true\"]", "looks": "Border 60% destructive, destructive focus ring. Forced colours: dashed border." },
+    "loading": { "none": "No loading look; disable it with a \"Loading…\" option until the options arrive, or use a Skeleton for the form." },
+    "multiple": { "when": "multiple, or size > 1", "looks": "Renders a list box: no fixed height, no chevron." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), sm text.",
+      "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+      "lg": "Control lg height (40px compact, 48 comfortable, 52 touch), lg text."
+    },
+    "density": "Height and text follow data-density.",
+    "width": "Fills its container; long option text is cut with an ellipsis."
   },
   "js": "selectClass({ size?, className? }) → string for the wrapper; selectControlClass constant for the <select>",
   "react": {

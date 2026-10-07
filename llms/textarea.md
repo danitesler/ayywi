@@ -8,8 +8,18 @@ Category: Forms. Multi-line text field. Optional auto-grow and monospace modes.
 - `.ayy-textarea--mono` — Monospace font.
 
 **States**
-- `aria-invalid="true"` — Red border and focus ring.
-- `disabled` — Dimmed.
+- `default` — Like Input: wash fill, line-strong border; at least 5rem tall, resizable vertically.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`:focus-visible`) — 2px ring just inside the edge; the border goes transparent.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`aria-invalid="true" (with a FieldError)`) — Border 60% destructive, destructive focus ring. Forced colours: dashed border.
+- `loading` — doesn't apply: No loading look; disable it and show a Spinner in the submit Button while the text is sent.
+
+**Sizes**
+- Density — Text follows control md; the minimum height (5rem) and padding don't change.
+- Width — Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls).
 
 **JS (framework-free)**: textareaClass({ autosize?, mono?, className? }) → string
 

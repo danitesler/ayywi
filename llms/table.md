@@ -11,8 +11,19 @@ Category: Data display. Data table with quiet hairlines, uppercase headers and h
 - `.ayy-table__select` — On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box.
 
 **States**
-- `tr[aria-selected="true"]` — Selected row highlight.
-- `th[aria-sort="ascending" | "descending"]` — The sorted column: its header in the text colour and one arrow.
+- `default` — Collapsed table, xs text; header row on a wash fill with muted 2xs uppercase labels; hairlines between rows.
+- `hover` (`tbody tr:hover; .ayy-table__sort:hover`) — Row gets a wash fill; a sort button's label turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-table__sort:focus-visible`) — 2px ring on the sort button.
+- `disabled` — doesn't apply: Rows aren't disabled; disable the controls in them.
+- `selected` (`tr[aria-selected="true"] (with a Checkbox in .ayy-table__select)`) — Wash-hover row fill. Forced colours: Highlight.
+- `error` — doesn't apply: Show a failed load as an Alert with a retry instead of the rows.
+- `loading` — doesn't apply: No loading look; render Skeleton rows in the column layout with aria-busy on the table.
+- `sorted` (`th[aria-sort="ascending" | "descending"]`) — Header label turns text colour and only the arrow that applies shows, at full strength. Forced colours: underlined.
+
+**Sizes**
+- Density — Doesn't follow data-density. Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter.
+- Width — Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit.
 
 **JS (framework-free)**: tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → "ascending" | "descending"; compareValues(a, b) sorts numbers (also "$1,240", "12 GB") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).
 

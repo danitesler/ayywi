@@ -8,8 +8,21 @@ Category: Forms. Single-line text field. Works for every native input type (text
 - `.ayy-input--lg` — 40px tall.
 
 **States**
-- `aria-invalid="true"` — Red border and focus ring. Pair with a Field error message.
-- `disabled` — Dimmed, not-allowed cursor.
+- `default` — Wash fill, 1px line-strong border, control radius; placeholder in muted at 70%.
+- `hover` (`:hover`) — Border turns line-hover.
+- `pressed` — doesn't apply: Text fields have no pressed look; the caret shows where you are.
+- `focus` (`:focus-visible`) — 2px ring drawn just inside the edge (-1px offset); the border goes transparent.
+- `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor.
+- `selected` — doesn't apply: Not a choice control.
+- `error` (`aria-invalid="true" (with a FieldError)`) — Border 60% destructive; the focus ring turns destructive. Forced colours: dashed border.
+- `loading` — doesn't apply: No loading look. While a value is checked (a username), use an Input group with a small Spinner as its addon.
+
+**Sizes**
+- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.
+- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), more padding, lg text.
+- Density — Height and text size follow data-density; touch keeps md text at 16px so iOS doesn't zoom.
+- Width — Fills its container (inline-size 100%); set a max-inline-size in rem for short values.
 
 **JS (framework-free)**: inputClass({ size?, className? }) → string
 

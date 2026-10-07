@@ -71,7 +71,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 5. Visible focus ring on everything interactive. Labels, `aria-*` and keyboard support are part of "done". State shown by colour needs a `@media (forced-colors: active)` block.
 6. Zero runtime dependencies. Don't add Radix/CVA/etc. — native elements first (`<dialog>`, `role="switch"` checkbox…).
 7. Never edit generated files (`src/css/tokens.css`, `src/tokens.ts`, `manifest/`, `llms*.txt`, `llms/`, `ai/AGENTS.snippet.md`, `ai/cursor/ayywi.mdc`, `ai/skills/ayywi/reference.md`). Edit the source and run `pnpm generate`.
-8. Docs are code: a component's `*.meta.json` must describe exactly the classes its CSS defines. `pnpm check` fails otherwise.
+8. Docs are code: a component's `*.meta.json` must describe exactly the classes its CSS defines, every state in `STATES` (`scripts/lib/contract.mjs`) and its sizes. `pnpm check` fails otherwise.
 9. No file names that differ only by case (esbuild + macOS/Windows resolve them to the same file).
 
 ## Gotchas learned the hard way

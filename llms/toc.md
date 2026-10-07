@@ -10,6 +10,20 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - `.ayy-toc__link` — Section link (href="#id"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.
 - `.ayy-toc__number` — Optional section number (01, 02…) before the label, in the accent while current.
 
+**States**
+- `default` — A hairline rail with muted sm links; nested links indent and get smaller.
+- `hover` (`.ayy-toc__link:hover`) — Link turns text colour.
+- `pressed` — doesn't apply: No pressed look.
+- `focus` (`.ayy-toc__link:focus-visible`) — 2px ring inset by 2px.
+- `disabled` — doesn't apply: No disabled links.
+- `selected` (`.ayy-toc__link[aria-current] (not "false"), kept in sync by <ayy-toc> or connectToc`) — Section being read: text colour and a 2px --ayy-spot bar on the rail; its number takes the accent; a parent of it turns text colour too. Forced colours: underline and Highlight bar.
+- `error` — doesn't apply: No error state.
+- `loading` — doesn't apply: No loading state.
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — Fills its column. sticky stays in view under the navbar and scrolls on its own when taller than the viewport.
+
 **JS (framework-free)**: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
 
 **Custom element** `<ayy-toc>` (@danitesler/ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.

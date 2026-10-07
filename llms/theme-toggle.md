@@ -8,6 +8,21 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 - `.ayy-theme-toggle__sun` — Icon shown in light themes.
 - `.ayy-theme-toggle__item` — On each ayy-menu__item (role="menuitemradio", data-value = theme name or "system"). The one with aria-checked="true" is bold and shows a check.
 
+**States**
+- `default` — An outline icon Button showing the moon in dark themes and the sun in light ones (picked by CSS before any JS runs).
+- `hover` (`Button :hover`) — Button outline's hover: wash fill, stronger border, 2px lift.
+- `pressed` (`Button :active`) — As Button: drops back while held.
+- `focus` (`Button :focus-visible; menu items :focus-visible`) — Button's 2px ring; items as in Menu.
+- `disabled` — doesn't apply: Always available: the theme can always change.
+- `selected` (`.ayy-theme-toggle__item[aria-checked="true"]`) — The theme in force is semibold with a check mark at the inline end.
+- `error` — doesn't apply: Nothing to fail: switching is local.
+- `loading` — doesn't apply: Switching is instant.
+- `open` (`the menu's :popover-open`) — As Menu.
+
+**Sizes**
+- Density — The button is Button icon (md control height, follows density); items follow Menu.
+- Width — Square button; the menu as Menu.
+
 **JS (framework-free)**: themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).
 
 **Custom element** `<ayy-theme-toggle>` (@danitesler/ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
