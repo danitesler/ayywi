@@ -1,0 +1,118 @@
+/* Floating action button: the one main action of a phone screen (New task, Compose), a round button floating at the
+   bottom inline-end corner above the content. --extended adds a label. On its own it's fixed to the viewport, clear of
+   the home indicator; as a direct child of an .ayy-app-shell it sits in the shell's corner, above the bottom nav. */
+
+.ayy-fab {
+  --_size: calc(var(--ayy-size-control-lg) + var(--ayy-space-3));
+  --_bg: var(--ayy-color-primary);
+  --_fg: var(--ayy-color-primary-fg);
+  position: fixed;
+  inset-block-end: calc(var(--ayy-space-4) + env(safe-area-inset-bottom, 0px));
+  inset-inline-end: var(--ayy-space-4);
+  z-index: var(--ayy-z-sticky);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-2);
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--_bg);
+  color: var(--_fg);
+  box-shadow: var(--ayy-shadow-lift);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--ayy-duration-fast) var(--ayy-ease-standard),
+    box-shadow var(--ayy-duration-base) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-fab > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+@media (hover: hover) {
+  .ayy-fab:hover {
+    background-color: color-mix(in srgb, var(--_bg) 88%, var(--_fg));
+  }
+}
+
+.ayy-fab:active {
+  transform: scale(0.94);
+}
+
+.ayy-fab:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 3px;
+}
+
+.ayy-fab:disabled,
+.ayy-fab[aria-disabled="true"] {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* Icon and label: a wider pill. */
+.ayy-fab--extended {
+  inline-size: auto;
+  padding-inline: var(--ayy-space-5) var(--ayy-space-6);
+}
+
+/* Less emphasis: a raised surface with a border, for a second action or a screen whose main action isn't creating. */
+.ayy-fab--secondary {
+  --_bg: var(--ayy-color-surface-raised);
+  --_fg: var(--ayy-color-text);
+  border-color: var(--ayy-color-line-strong);
+}
+
+/* Small: a second, lesser action stacked above the main one, or a dense screen. */
+.ayy-fab--sm {
+  --_size: var(--ayy-size-control-lg);
+}
+
+/* Not floating: in a toolbar, a card or an empty state, placed by its container. */
+.ayy-fab--inline {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+}
+
+/* ---- In an app shell: a direct child of .ayy-app-shell, after __main and before the bottom nav ---- */
+
+/* Wide screens: the shell's bottom corner. */
+.ayy-app-shell > .ayy-fab {
+  position: absolute;
+  inset-block-end: var(--ayy-space-6);
+  inset-inline-end: var(--ayy-space-6);
+}
+
+/* Phones: in the shell's column, between the content and the bottom nav. Negative margins cancel its height, so it
+   floats over the content's corner without taking room from it, and the bottom nav pushes it up. */
+@media (max-width: 48rem) {
+  .ayy-app-shell > .ayy-fab {
+    position: relative;
+    inset: auto;
+    flex: none;
+    align-self: flex-end;
+    margin-block: calc(-1 * (var(--_size) + var(--ayy-space-4))) var(--ayy-space-4);
+    margin-inline-end: var(--ayy-space-4);
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-fab {
+    border-color: ButtonText;
+  }
+}

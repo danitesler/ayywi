@@ -1,0 +1,156 @@
+/* Swatches: pick a colour from a few. Each is a round dot in --ayy-swatch (set it to a token: --ayy-chart-1…6, an
+   --ayy-accent-*, or the app's own colour variable). A <label> around a native radio (forms, arrow keys), or a
+   <button aria-pressed> in a toolbar that recolours as you click. The picked one gets a ring and a tick, not colour alone. */
+
+.ayy-swatch {
+  --_size: calc(var(--ayy-size-control-sm) * 0.75);
+  position: relative;
+  box-sizing: border-box;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-swatch, var(--ayy-color-muted));
+  /* A hairline so light colours show on light surfaces and dark ones on dark. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 18%, transparent);
+  color: var(--ayy-color-bg);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    box-shadow var(--ayy-duration-fast) ease,
+    transform var(--ayy-duration-fast) var(--ayy-ease-spring);
+}
+
+/* A bigger hit area than the dot on touch screens: the label reaches out to a control's height. */
+.ayy-swatch::after {
+  content: "";
+  position: absolute;
+  inset: calc((var(--_size) - var(--ayy-size-control-sm)) / 2);
+  border-radius: inherit;
+}
+
+.ayy-swatch > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+@media (hover: hover) {
+  .ayy-swatch:hover {
+    transform: scale(1.1);
+  }
+}
+
+/* Picked: a gap in the surface colour, then a ring in the text colour, and a tick on the dot. */
+.ayy-swatch:has(> input:checked),
+.ayy-swatch[aria-pressed="true"] {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 18%, transparent),
+    0 0 0 2px var(--ayy-color-surface-raised),
+    0 0 0 4px var(--ayy-color-text);
+}
+
+.ayy-swatch:has(> input:checked)::before,
+.ayy-swatch[aria-pressed="true"]::before {
+  content: "";
+  inline-size: 45%;
+  block-size: 45%;
+  background-color: currentColor;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+/* The tick is drawn in the page colour; on a light swatch in a dark theme that would vanish, so it gets a halo. */
+.ayy-swatch:has(> input:checked)::before,
+.ayy-swatch[aria-pressed="true"]::before {
+  filter: drop-shadow(0 0 1px color-mix(in srgb, var(--ayy-color-text) 70%, transparent));
+}
+
+.ayy-swatch:focus-visible,
+.ayy-swatch:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 5px;
+}
+
+.ayy-swatch:disabled,
+.ayy-swatch:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-swatch--sm { --_size: calc(var(--ayy-size-control-sm) * 0.6); }
+.ayy-swatch--lg { --_size: var(--ayy-size-control-sm); }
+
+/* "No colour": the surface with a diagonal stroke. */
+.ayy-swatch--none {
+  background-color: var(--ayy-color-surface);
+  background-image: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    var(--ayy-color-destructive) calc(50% - 1px),
+    var(--ayy-color-destructive) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+  color: var(--ayy-color-text);
+}
+
+/* Any colour: a native <input type="color"> inside, drawn as a rainbow ring around the current colour. */
+.ayy-swatch--custom {
+  background-image: conic-gradient(var(--ayy-chart-1), var(--ayy-chart-2), var(--ayy-chart-3), var(--ayy-chart-4), var(--ayy-chart-5), var(--ayy-chart-6), var(--ayy-chart-1));
+  background-color: transparent;
+}
+
+.ayy-swatch--custom::before {
+  content: "";
+  inline-size: 55%;
+  block-size: 55%;
+  border-radius: inherit;
+  background-color: var(--ayy-swatch, var(--ayy-color-surface));
+  box-shadow: 0 0 0 2px var(--ayy-color-surface-raised);
+}
+
+/* ---- A row of swatches ---- */
+
+.ayy-swatch-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+  /* Room for the picked ring and the focus ring. */
+  padding: var(--ayy-space-1-5);
+  border: 0;
+}
+
+/* On a pill track, like a toolbar's colour row. */
+.ayy-swatch-group--track {
+  display: inline-flex;
+  gap: var(--ayy-space-1-5);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash);
+}
+
+@media (forced-colors: active) {
+  .ayy-swatch {
+    forced-color-adjust: none;
+    border: 1px solid CanvasText;
+  }
+  .ayy-swatch:has(> input:checked),
+  .ayy-swatch[aria-pressed="true"] {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+  .ayy-swatch:has(> input:checked)::before,
+  .ayy-swatch[aria-pressed="true"]::before {
+    background-color: CanvasText;
+  }
+}

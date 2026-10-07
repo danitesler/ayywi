@@ -1,0 +1,195 @@
+/* Command palette: a search field over a list of actions and places, grouped, filtered as you type and run with
+   Enter. Inline (.ayy-command, in a page or a popover) or as a dialog (.ayy-dialog.ayy-command) opened with ⌘K.
+   The input is a combobox that keeps focus; the item under the arrow keys carries aria-selected. */
+
+.ayy-command {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-block-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+}
+
+/* As a dialog: near the top, so the list grows downwards without the field jumping. */
+.ayy-dialog.ayy-command {
+  --_w: 36rem;
+  gap: 0;
+  /* .ayy-command's own size would win over the dialog's: restate it. */
+  inline-size: min(var(--_w), calc(100vw - 2rem));
+  max-block-size: calc(100dvh - min(12dvh, 6rem) - 1rem);
+  margin-block: min(12dvh, 6rem) auto;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--ayy-color-surface-raised);
+}
+
+.ayy-command__search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-4);
+  border-block-end: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-command__search > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-command__input {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: var(--ayy-size-control-lg);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-text-md);
+}
+
+.ayy-command__input::placeholder {
+  color: color-mix(in srgb, var(--ayy-color-muted) 70%, transparent);
+}
+
+.ayy-command__input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* The field is where focus lives: a ring under it while it has keyboard focus. */
+.ayy-command__search:has(> .ayy-command__input:focus-visible) {
+  box-shadow: inset 0 -2px 0 var(--ayy-color-ring);
+}
+
+.ayy-command__list {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  max-block-size: min(24rem, 60dvh);
+  padding: var(--ayy-space-1-5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: var(--ayy-space-1-5);
+}
+
+.ayy-dialog.ayy-command .ayy-command__list {
+  max-block-size: min(24rem, 100dvh - 12rem);
+}
+
+/* A line between groups; groups hidden by the filter don't count. */
+.ayy-command__group:not([hidden]) ~ .ayy-command__group:not([hidden]) {
+  margin-block-start: var(--ayy-space-1-5);
+  padding-block-start: var(--ayy-space-1-5);
+  border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-command__label {
+  padding-block: var(--ayy-space-1-5) var(--ayy-space-1);
+  padding-inline: var(--ayy-space-2);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-command__item {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-block-size: var(--ayy-size-control-md);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-2);
+  border-radius: var(--ayy-radius-lg);
+  font-size: var(--ayy-control-text-md);
+  cursor: pointer;
+  scroll-margin-block: var(--ayy-space-1-5);
+}
+
+.ayy-command__item > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+/* The item the arrow keys or the pointer are on: Enter runs it. */
+.ayy-command__item[aria-selected="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-command__item[aria-selected="true"] > svg {
+  color: var(--ayy-color-text);
+}
+
+.ayy-command__item[aria-disabled="true"] {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-command__item[hidden],
+.ayy-command__group[hidden],
+.ayy-command__empty[hidden] {
+  display: none;
+}
+
+/* At the item's end: a shortcut, a list name, a count. */
+.ayy-command__meta {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  margin-inline-start: auto;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-command__empty {
+  padding: var(--ayy-space-6) var(--ayy-space-4);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  text-align: center;
+}
+
+/* Key hints under the list: ↑↓ to move, ↵ to run, esc to close. */
+.ayy-command__footer {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-1) var(--ayy-space-4);
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-4);
+  border-block-start: 1px solid var(--ayy-color-hairline);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+}
+
+@media (forced-colors: active) {
+  .ayy-command__search:has(> .ayy-command__input:focus-visible) {
+    box-shadow: none;
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .ayy-command__item[aria-selected="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-command__item[aria-selected="true"] > svg {
+    color: HighlightText;
+  }
+}
+
+/* <ayy-command> only adds behaviour; it has no box of its own. */
+ayy-command {
+  display: contents;
+}

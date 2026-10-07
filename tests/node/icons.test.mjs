@@ -13,6 +13,8 @@ import ArrowDown01Icon from "@hugeicons/core-free-icons/ArrowDown01Icon";
 import CloudUploadIcon from "@hugeicons/core-free-icons/CloudUploadIcon";
 import MinusSignIcon from "@hugeicons/core-free-icons/MinusSignIcon";
 import PlusSignIcon from "@hugeicons/core-free-icons/PlusSignIcon";
+import Calendar03Icon from "@hugeicons/core-free-icons/Calendar03Icon";
+import Search01Icon from "@hugeicons/core-free-icons/Search01Icon";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -86,4 +88,17 @@ test("the combobox chevron, number field steps, drop zone and chip remove draw t
   assert.equal(numberFieldPlusIcon, iconSvg(PlusSignIcon));
   assert.equal(dropzoneIcon, iconSvg(CloudUploadIcon));
   assert.equal(chipRemoveIcon, iconSvg(Cancel01Icon));
+});
+
+test("the calendar, date picker, settings, top bar, command palette, search bar and tag input draw the Hugeicons glyphs (vendored copies match the package)", { skip }, async () => {
+  const m = await import(dist("index.js"));
+  assert.equal(m.calendarPreviousIcon, m.iconSvg(ArrowLeft01Icon, { directional: true }));
+  assert.equal(m.calendarNextIcon, m.iconSvg(ArrowRight01Icon, { directional: true }));
+  assert.equal(m.datePickerIcon, m.iconSvg(Calendar03Icon));
+  assert.equal(m.settingsChevronIcon, m.iconSvg(ArrowRight01Icon, { directional: true }));
+  assert.equal(m.topBarBackIcon, m.iconSvg(ArrowLeft01Icon, { directional: true }));
+  assert.equal(m.commandSearchIcon, m.iconSvg(Search01Icon));
+  assert.equal(m.searchBarIcon, m.iconSvg(Search01Icon));
+  assert.equal(m.searchBarClearIcon, m.iconSvg(Cancel01Icon));
+  assert.equal(m.tagRemoveIcon, m.iconSvg(Cancel01Icon));
 });

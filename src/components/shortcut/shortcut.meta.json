@@ -1,0 +1,98 @@
+{
+  "name": "Shortcut",
+  "slug": "shortcut",
+  "status": "beta",
+  "category": "Forms",
+  "description": "Keyboard shortcuts written once as \"Mod+Shift+K\" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet.",
+  "classes": {
+    "ayy-shortcut": "A shortcut's keys: a row of .ayy-kbd keycaps (aria-hidden) after an .ayy-sr-only label in words. data-keys holds the shortcut (\"Mod+Shift+K\") so @danitesler/ayywi/elements redraws it for Apple devices. Always left to right, as in the OS menus, RTL included.",
+    "ayy-shortcut-recorder": "A <button> that records a shortcut: shows the current keys or a placeholder, aria-pressed=\"true\" while listening (a pulsing ring). aria-label names the action and the keys.",
+    "ayy-shortcut-recorder__placeholder": "The muted text inside the recorder while no shortcut is set, or while listening (\"Press keys…\").",
+    "ayy-shortcut-list": "A <dl> of shortcuts: what each does, then its keys.",
+    "ayy-shortcut-list__row": "One <div> in the list holding a <dt> (the action) and a <dd> (an .ayy-shortcut, or typed text like \"#tag\")."
+  },
+  "variants": {},
+  "states": {
+    "default": { "looks": "Keycaps (.ayy-kbd) left to right in every language; the recorder is a wash field with a line-strong border showing the keys or a muted placeholder." },
+    "hover": { "when": ".ayy-shortcut-recorder:hover (devices that hover)", "looks": "The recorder's border turns line-hover." },
+    "pressed": { "none": "No pressed look; a click starts listening (see selected)." },
+    "focus": { "when": ".ayy-shortcut-recorder:focus-visible", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ".ayy-shortcut-recorder:disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor: managed, or the platform doesn't allow it." },
+    "selected": { "when": ".ayy-shortcut-recorder[aria-pressed=\"true\"]", "looks": "Listening for keys: a ring-colour border with a slow pulse around it, and \"Press keys…\". Esc cancels, Backspace clears. Forced colours: Highlight outline." },
+    "error": { "when": ".ayy-shortcut-recorder[aria-invalid=\"true\"]", "looks": "A destructive border. Say what it clashes with in a hint." },
+    "loading": { "none": "Recording is instant; no loading look." }
+  },
+  "sizes": {
+    "density": "The recorder is the md control height (32px compact, 40 comfortable, 44 touch); keycaps follow the text around them.",
+    "width": "Keycaps hug their keys. The recorder is at least 9rem; the list fills its container."
+  },
+  "js": "Shortcuts are strings like \"Mod+Shift+K\" (Mod = ⌘ on Apple devices, Ctrl elsewhere; also Ctrl, Alt, Shift, Meta). shortcutFromEvent(event, { bare? }) → the shortcut a keydown makes, or null for modifiers alone; matchShortcut(event, \"Mod+K\") → boolean, for your own handlers; shortcutKeys(s) → [\"⌘\", \"K\"]; shortcutLabel(s) → \"Command K\"; shortcutHtml(s) → markup; syncShortcuts(root?) redraws static .ayy-shortcut[data-keys] for Apple devices (@danitesler/ayywi/elements does it on load); isApplePlatform(); keyFromCode(code). connectShortcutRecorder(button, { value?, label?, bare?, onChange?, onRecordingChange? }) → { setValue, destroy }. shortcutClass, shortcutRecorderClass().",
+  "element": {
+    "tag": "ayy-shortcut-recorder",
+    "description": "Wraps a button.ayy-shortcut-recorder and makes it record: click, press the keys, and the button shows them. Esc or Tab cancels, Backspace or Delete clears, leaving the button stops listening.",
+    "attributes": {
+      "value": "The shortcut, \"Mod+Shift+2\". Updated when one is recorded; removed when cleared.",
+      "label": "What the shortcut does (\"Capture area\"); names the button \"Capture area: Ctrl Shift 2\".",
+      "bare": "Allow a key without modifiers (a single letter, as in an app's own single-key shortcuts)."
+    },
+    "events": {
+      "ayy-change": "{ value } — the new shortcut, or null when cleared.",
+      "ayy-recording": "{ recording } — true when it starts listening, false when it stops. Pause your own shortcuts meanwhile."
+    }
+  },
+  "react": {
+    "import": "import { Shortcut, ShortcutRecorder, ShortcutList, ShortcutListItem } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Shortcut": {
+        "renders": "<span class=\"ayy-shortcut\" data-keys> <span class=\"ayy-sr-only\">Ctrl K</span> <kbd class=\"ayy-kbd\" aria-hidden=\"true\">…",
+        "props": {
+          "keys": "string — \"Mod+Shift+K\""
+        }
+      },
+      "ShortcutRecorder": {
+        "renders": "<button type=\"button\" class=\"ayy-shortcut-recorder\" aria-pressed aria-label> with a Shortcut or the placeholder",
+        "props": {
+          "value": "string | null — the shortcut",
+          "onValueChange": "(value: string | null) => void — null when cleared",
+          "label": "string — what the shortcut does; names the button",
+          "onRecordingChange": "(recording: boolean) => void — pause your own shortcuts meanwhile",
+          "bare": "boolean — allow a key without modifiers",
+          "placeholder": "ReactNode — shown while none is set. Default \"Record shortcut\"",
+          "recordingText": "string — shown while listening. Default \"Press keys…\""
+        }
+      },
+      "ShortcutList": {
+        "renders": "<dl class=\"ayy-shortcut-list\">"
+      },
+      "ShortcutListItem": {
+        "renders": "<div class=\"ayy-shortcut-list__row\"><dt>{label}</dt><dd><Shortcut/> or children</dd></div>",
+        "props": {
+          "label": "ReactNode — what it does",
+          "keys": "string — the shortcut; or pass children instead (typed text, two shortcuts)"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Keycaps are aria-hidden and a visually hidden label says the keys in words (\"Command Shift K\"), so screen readers don't read \"place of interest sign\".",
+    "The recorder is a toggle button: aria-pressed=\"true\" while listening, and its aria-label says the action, the keys and how to cancel (\"Capture area: Press keys, or Escape to cancel\").",
+    "While it listens it takes every key, Tab included (Tab cancels and moves on), so it can never trap focus.",
+    "Pause the app's own shortcuts while recording (onRecordingChange / ayy-recording), or pressing one would run it.",
+    "A clash is shown with aria-invalid on the recorder and a hint saying which action already uses it; the border is not the only cue."
+  ],
+  "do": [
+    "Store shortcuts as \"Mod+…\" strings and show them with Shortcut, so Mac and Windows users each see their own keys.",
+    "Put recorders in Settings rows: the action as the label, the recorder as the control.",
+    "Check a new shortcut against the others and set aria-invalid with a hint when it clashes.",
+    "Use ShortcutList for a keyboard help sheet (in a Dialog on \"?\")."
+  ],
+  "dont": [
+    "Don't hard-code \"⌘\" or \"Ctrl\" in your copy; use Shortcut.",
+    "Don't allow bare keys for global shortcuts; they'd fire while typing.",
+    "Don't show a shortcut as a tooltip only; put it next to the menu item or in a help list too."
+  ],
+  "examples": [
+    { "id": "recorder", "title": "Recorders in settings" },
+    { "id": "help", "title": "Keyboard shortcuts sheet" }
+  ]
+}

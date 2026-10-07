@@ -1,0 +1,51 @@
+<!-- <ayy-shortcut-recorder> records on click and fires "ayy-change" with { value }; check for clashes there and set aria-invalid. -->
+<div style="inline-size: 100%; max-inline-size: 32rem">
+  <section class="ayy-settings" aria-labelledby="sc-recorder-1-html">
+    <h2 id="sc-recorder-1-html" class="ayy-settings__title">Shortcuts</h2>
+    <p class="ayy-settings__description">Work in every app. Press Backspace while recording to clear one.</p>
+    <div class="ayy-settings__list">
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="sc-area-html">Capture area</label>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-shortcut-recorder value="Mod+Shift+2" label="Capture area">
+            <button type="button" aria-pressed="false" aria-label="Capture area: Ctrl Shift 2" class="ayy-shortcut-recorder" id="sc-area-html"><span class="ayy-shortcut" data-keys="Mod+Shift+2"><span class="ayy-sr-only">Ctrl Shift 2</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">Shift</kbd><kbd class="ayy-kbd" aria-hidden="true">2</kbd></span></button>
+          </ayy-shortcut-recorder>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="sc-window-html">Capture window</label>
+          <p class="ayy-settings__hint ayy-field__error" id="sc-window-hint-html" role="alert">Another action uses these keys.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-shortcut-recorder value="Mod+Shift+3" label="Capture window">
+            <button type="button" aria-pressed="false" aria-label="Capture window: Ctrl Shift 3" class="ayy-shortcut-recorder" id="sc-window-html" aria-invalid="true" aria-describedby="sc-window-hint-html"><span class="ayy-shortcut" data-keys="Mod+Shift+3"><span class="ayy-sr-only">Ctrl Shift 3</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">Shift</kbd><kbd class="ayy-kbd" aria-hidden="true">3</kbd></span></button>
+          </ayy-shortcut-recorder>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="sc-screen-html">Capture screen</label>
+          <p class="ayy-settings__hint ayy-field__error" id="sc-screen-hint-html" role="alert">Another action uses these keys.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-shortcut-recorder value="Mod+Shift+3" label="Capture screen">
+            <button type="button" aria-pressed="false" aria-label="Capture screen: Ctrl Shift 3" class="ayy-shortcut-recorder" id="sc-screen-html" aria-invalid="true" aria-describedby="sc-screen-hint-html"><span class="ayy-shortcut" data-keys="Mod+Shift+3"><span class="ayy-sr-only">Ctrl Shift 3</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">Shift</kbd><kbd class="ayy-kbd" aria-hidden="true">3</kbd></span></button>
+          </ayy-shortcut-recorder>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="sc-record-html">Record screen</label>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-shortcut-recorder label="Record screen">
+            <button type="button" aria-pressed="false" aria-label="Record screen: not set" class="ayy-shortcut-recorder" id="sc-record-html"><span class="ayy-shortcut-recorder__placeholder">Record shortcut</span></button>
+          </ayy-shortcut-recorder>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

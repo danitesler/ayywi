@@ -1,0 +1,172 @@
+/* Toolbar: a row (or a column, a "rail") of tools and actions for one surface: an editor, a canvas, a selection.
+   role="toolbar" makes it one Tab stop; the arrow keys move between its buttons (React and <ayy-toolbar>). Tools that
+   stay on are aria-pressed; tools that open a menu are aria-expanded. Groups are split by separators. */
+
+.ayy-toolbar {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.ayy-toolbar--vertical {
+  flex-direction: column;
+  align-items: stretch;
+  inline-size: fit-content;
+}
+
+/* Floats over a canvas or a photo: a raised pill with a shadow. */
+.ayy-toolbar--floating {
+  padding: var(--ayy-space-1);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface-raised);
+  box-shadow: var(--ayy-shadow-overlay);
+}
+
+/* Too many tools for a phone: one line that scrolls sideways (padding keeps focus rings inside the scroller). */
+.ayy-toolbar--scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ayy-toolbar--scroll:not(.ayy-toolbar--floating) {
+  padding: 3px;
+  margin: -3px;
+}
+
+.ayy-toolbar__group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-toolbar--vertical .ayy-toolbar__group {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ayy-toolbar__separator {
+  flex: none;
+  align-self: stretch;
+  inline-size: 1px;
+  margin-block: var(--ayy-space-1);
+  margin-inline: var(--ayy-space-1);
+  background-color: var(--ayy-color-line);
+}
+
+.ayy-toolbar--vertical .ayy-toolbar__separator {
+  inline-size: auto;
+  block-size: 1px;
+  margin-block: var(--ayy-space-1);
+  margin-inline: var(--ayy-space-1);
+}
+
+/* Pushes everything after it to the far end (actions after tools). */
+.ayy-toolbar__spacer {
+  flex: 1 1 0;
+  min-inline-size: var(--ayy-space-2);
+}
+
+/* A tool: a square icon button, or icon and text when it has a label. Sized by density. */
+.ayy-toolbar__button {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1-5);
+  min-inline-size: var(--ayy-size-control-md);
+  block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-2);
+  border: 0;
+  border-radius: var(--ayy-radius-md);
+  background: none;
+  color: var(--ayy-color-text-soft);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-toolbar__button:has(> svg:only-child) {
+  padding-inline: 0;
+}
+
+.ayy-toolbar__button > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-toolbar--vertical .ayy-toolbar__button {
+  justify-content: flex-start;
+}
+
+.ayy-toolbar--vertical .ayy-toolbar__button:has(> svg:only-child) {
+  justify-content: center;
+}
+
+@media (hover: hover) {
+  .ayy-toolbar__button:hover:not(:disabled) {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-toolbar__button:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 1px;
+}
+
+/* On: the current tool, a toggled format. A filled tile in the text colour's wash and the full text colour. */
+.ayy-toolbar__button[aria-pressed="true"],
+.ayy-toolbar__button[aria-expanded="true"] {
+  background-color: var(--ayy-color-wash-hover);
+  box-shadow: inset 0 0 0 1px var(--ayy-color-line-strong);
+  color: var(--ayy-color-text);
+}
+
+.ayy-toolbar__button:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-toolbar--sm .ayy-toolbar__button {
+  min-inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-toolbar--sm .ayy-toolbar__button > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+@media (forced-colors: active) {
+  .ayy-toolbar__button[aria-pressed="true"],
+  .ayy-toolbar__button[aria-expanded="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-toolbar__separator {
+    background-color: CanvasText;
+  }
+}
+
+/* <ayy-toolbar> only adds behaviour; it has no box of its own. */
+ayy-toolbar {
+  display: contents;
+}

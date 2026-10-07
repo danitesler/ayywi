@@ -1,0 +1,122 @@
+{
+  "name": "Calendar",
+  "slug": "calendar",
+  "status": "beta",
+  "category": "Forms",
+  "description": "A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.",
+  "classes": {
+    "ayy-calendar": "Root: a column of the header, weekdays and grid, as wide as seven days (its content). Day size follows data-density.",
+    "ayy-calendar--full": "Fills its container's width (a phone screen, a bottom sheet); days grow up to 1.5× their size.",
+    "ayy-calendar__presets": "Row of quick dates above the month, in equal columns. role=\"group\" with an aria-label (\"Quick dates\").",
+    "ayy-calendar__preset": "A quick date: <button data-date> with an icon over a short label. data-date is an ISO day or \"+N\" days from today (\"+0\", \"+1\", \"+7\"). aria-pressed=\"true\" when it's the picked day.",
+    "ayy-calendar__header": "The month's title, then the two arrows at the inline end.",
+    "ayy-calendar__title": "\"October 2026\", with aria-live=\"polite\" so a month change is announced.",
+    "ayy-calendar__nav": "Previous / next month button, with an aria-label and a directional arrow icon (so it points the right way in RTL).",
+    "ayy-calendar__weekdays": "Short weekday names over the columns, aria-hidden (each day button's label names its weekday).",
+    "ayy-calendar__grid": "The 42 day buttons, role=\"group\" labelled by the month. One Tab stop: the picked day, else today, else the 1st has tabindex=\"0\".",
+    "ayy-calendar__day": "<button data-date=\"2026-10-07\" aria-label=\"Wednesday, 7 October 2026\">7</button>. aria-pressed=\"true\" picked, aria-current=\"date\" today, aria-disabled=\"true\" outside min/max, data-outside for the neighbouring months' days.",
+    "ayy-calendar__footer": "Under the month, after a hairline: a time input, Clear, Done.",
+    "ayy-date-picker": "The trigger, on a <button class=\"ayy-input\">: a calendar icon and the date, styled like a field. Opens a popover with the calendar.",
+    "ayy-date-picker__value": "The date text inside the trigger. Empty shows its data-placeholder, muted."
+  },
+  "variants": {
+    "full": { "values": [false, true], "default": false, "component": "Calendar" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "DatePicker" }
+  },
+  "states": {
+    "default": { "looks": "A month title with two arrow buttons, muted weekday names, then six weeks of round day buttons; days of the months around it are muted." },
+    "hover": { "when": ".ayy-calendar__day:hover, __nav:hover, __preset:hover (devices that hover)", "looks": "Wash-hover background, full text colour." },
+    "pressed": { "when": ".ayy-calendar__day:active", "looks": "The day shrinks to 94%." },
+    "focus": { "when": ":focus-visible on a day, an arrow or a preset", "looks": "2px ring, 1px offset. The grid is one Tab stop: arrow keys move the focused day." },
+    "disabled": { "when": ".ayy-calendar__day[aria-disabled=\"true\"] (before min, after max)", "looks": "Dimmed and crossed out, not-allowed cursor; still focusable so the arrows can cross it. Forced colours: GrayText." },
+    "selected": { "when": ".ayy-calendar__day[aria-pressed=\"true\"]; .ayy-calendar__preset[aria-pressed=\"true\"]", "looks": "The picked day is filled with the primary colour and semibold; the matching preset gets a wash and a line-strong ring. Forced colours: Highlight." },
+    "error": { "none": "A calendar can't hold an invalid date: days outside min/max are disabled. For a required date, put aria-invalid on the DatePicker's button and a FieldError under it." },
+    "loading": { "none": "No loading look. If available days load from a server, show a Skeleton the size of the calendar until they arrive." },
+    "today": { "when": ".ayy-calendar__day[aria-current=\"date\"]", "looks": "A 1px ring and a semibold number, not colour alone. Forced colours: CanvasText outline." },
+    "outside": { "when": ".ayy-calendar__day[data-outside]", "looks": "A day of the month before or after: muted text." },
+    "empty": { "when": ".ayy-date-picker__value:empty", "looks": "No date yet: the DatePicker shows its data-placeholder, muted like an input's." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "DatePicker's button at Input sm.",
+      "md": "DatePicker's button at Input md.",
+      "lg": "DatePicker's button at Input lg."
+    },
+    "density": "Day cells are the md control height (32px compact, 40 comfortable, 44 touch), so the month grows from 7 × 32px to 7 × 44px; arrows are the sm height.",
+    "width": "Fits the seven days. full (ayy-calendar--full) fills its container, days up to 1.5× their size: a phone screen or a sheet."
+  },
+  "js": "calendarMonth({ month, value?, today?, min?, max?, weekStart? }) → the 42 days to draw; calendarLabels(locale?) → { month, day, weekdays }; calendarKeyTarget(key, from, { weekStart?, rtl?, shift? }) → the day a key moves to; connectCalendar(root, { value?, min?, max?, weekStart?, locale?, onSelect? }) → { setValue, update, focus, destroy } draws and wires a month on plain markup. Date helpers on ISO days: addDays, addMonths, startOfMonth, startOfWeek, todayIso, parseIsoDate, toIsoDate, formatDate, localeWeekStart, resolveCalendarDate. calendarPreviousIcon, calendarNextIcon, datePickerIcon (SVG markup).",
+  "element": {
+    "tag": "ayy-calendar",
+    "description": "Wraps an .ayy-calendar: draws the month into its header, weekdays and grid (any month already in the HTML is replaced) and wires the arrows, the keyboard and the presets. In an <ayy-popover> whose trigger holds an .ayy-date-picker__value, it writes the date there and closes the popover when a day is picked.",
+    "attributes": {
+      "value": "The picked day, ISO (\"2026-10-09\"). Updated when a day is picked.",
+      "min": "Earliest pickable day, ISO.",
+      "max": "Latest pickable day, ISO.",
+      "week-start": "First column, 0 = Sunday … 6 = Saturday. Default: the locale's.",
+      "locale": "Language of the month and day names. Default: the browser's.",
+      "name": "Form name: a hidden input inside carries the picked day."
+    },
+    "events": {
+      "ayy-select": "{ value } when a day is picked, value an ISO day."
+    }
+  },
+  "react": {
+    "import": "import { Calendar, DatePicker } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Calendar": {
+        "renders": "<div class=\"ayy-calendar\">…<div class=\"ayy-calendar__grid\" role=\"group\">",
+        "props": {
+          "value / defaultValue": "string | null — the picked ISO day",
+          "onValueChange": "(date: string) => void",
+          "min / max": "string — ISO days; outside them days are crossed out",
+          "today": "string — override today (tests, another time zone)",
+          "weekStart": "0–6, 0 = Sunday. Default: the locale's",
+          "locale": "string — month and day names. Default: the browser's",
+          "full": "boolean — fill the container's width",
+          "previousLabel / nextLabel": "string — the arrows' accessible names. Default \"Previous month\" / \"Next month\"",
+          "presets": "{ label, date, icon? }[] — quick dates; date is ISO or \"+N\" days from today",
+          "presetsLabel": "string — the presets group's name. Default \"Quick dates\"",
+          "footer": "ReactNode — under the month (a time input, Clear)"
+        }
+      },
+      "DatePicker": {
+        "renders": "<button class=\"ayy-input ayy-date-picker\" aria-haspopup=\"dialog\"> + <div class=\"ayy-popover\" popover> with a Calendar",
+        "props": {
+          "value / defaultValue": "string | null — the ISO day",
+          "onValueChange": "(date: string) => void — the popover closes after it",
+          "placeholder": "string — shown while empty. Default \"Pick a date\"",
+          "format": "(date: string) => string — the trigger's text. Default \"7 Oct 2026\" in the locale",
+          "min / max / today / weekStart / locale": "As on Calendar",
+          "size": "\"sm\" | \"md\" | \"lg\" — like Input",
+          "name": "string — a hidden input carries the ISO day",
+          "presets / footer": "As on Calendar"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "The grid is one Tab stop. Arrow keys move a day (mirrored in RTL) or a week, PageUp/PageDown a month (Shift: a year), Home/End to the week's ends; Enter or Space picks. Moving past the month's edge turns the page.",
+    "Every day button is named in full by its aria-label (\"Wednesday, 7 October 2026\"); aria-pressed says it's picked, aria-current=\"date\" that it's today. The weekday row is aria-hidden.",
+    "Days outside min/max are aria-disabled, not disabled, so the arrows can cross them; they can't be picked. The title is aria-live, so a month change is announced.",
+    "DatePicker's trigger is named by its <Label htmlFor>; the date is its description. Opening it moves focus to the picked day; Esc or a pick returns focus to the trigger.",
+    "The picked day is a fill, today a ring and a heavier number; High Contrast fills the picked day with the system highlight."
+  ],
+  "do": [
+    "Use a Calendar when the date is the main choice of a screen or panel: a due date with Today / Tomorrow / Next week presets, a booking, a habit's history.",
+    "Use DatePicker for a date field in a form: it shows the date like an input and opens the month on demand.",
+    "Set min (and max) instead of letting people pick days that can't work; say why in a FieldHint (\"Arrivals from 3 pm\").",
+    "Put a time input, Repeat or Clear in the footer rather than beside the calendar.",
+    "Use full in a bottom sheet or on a phone screen so the days are big enough to tap."
+  ],
+  "dont": [
+    "Don't use a calendar for a birth date or any date far from today — a native <Input type=\"date\"> (or three Selects) is faster to type.",
+    "Don't use it for a time alone — use <Input type=\"time\">, or Choice cards (compact) for a few time slots.",
+    "Don't colour days by meaning (busy, free) without a second cue; put events in a list next to it.",
+    "Don't hide the arrows to fix the month; set min and max instead."
+  ],
+  "examples": [
+    { "id": "due-date", "title": "Due date with presets and a time" },
+    { "id": "date-picker", "title": "Date picker in a form" }
+  ]
+}

@@ -1,0 +1,20 @@
+<!-- <ayy-tag-input> adds a chip on Enter or a comma and fires "ayy-change" with { values }. -->
+<div class="ayy-field" style="inline-size: min(100%, 24rem)">
+  <label class="ayy-label" for="task-tags-html">Tags</label>
+  <ayy-tag-input name="tags">
+    <div class="ayy-tag-input ayy-combobox">
+      <span class="ayy-chip ayy-chip--removable ayy-tag-input__tag" data-value="design">design<button type="button" class="ayy-chip__remove" aria-label="Remove design"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span><span class="ayy-chip ayy-chip--removable ayy-tag-input__tag" data-value="q4">q4<button type="button" class="ayy-chip__remove" aria-label="Remove q4"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+      <input type="text" class="ayy-tag-input__input" autocomplete="off" enterkeyhint="enter" aria-controls="tag-tags-1-html" id="task-tags-html" placeholder="Add a tag" aria-describedby="task-tags-hint-html" />
+      <ul id="tag-tags-1-html" class="ayy-combobox__listbox" role="listbox" popover="manual">
+        <li role="option" class="ayy-combobox__option" data-value="design" aria-disabled="true">design</li>
+        <li role="option" class="ayy-combobox__option" data-value="research">research</li>
+        <li role="option" class="ayy-combobox__option" data-value="writing">writing</li>
+        <li role="option" class="ayy-combobox__option" data-value="q4" aria-disabled="true">q4</li>
+        <li role="option" class="ayy-combobox__option" data-value="urgent">urgent</li>
+        <li role="option" class="ayy-combobox__option" data-value="waiting">waiting</li>
+        <li class="ayy-combobox__empty" role="none" hidden="">Press Enter to add it</li>
+      </ul>
+    </div>
+  </ayy-tag-input>
+  <p class="ayy-field__hint" id="task-tags-hint-html">Press Enter or type a comma after each tag.</p>
+</div>

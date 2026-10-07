@@ -4,7 +4,7 @@ A small design system that works in any stack and is built for AI agents to use.
 
 Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by design tokens, so they work anywhere that outputs HTML. React gets typed components; other frameworks get a few custom elements for the interactive parts.
 
-- **Small:** zero runtime dependencies, ~16 kB of CSS gzipped for all 54 components.
+- **Small:** zero runtime dependencies, ~24 kB of CSS gzipped for all 66 components.
 - **Themes and density:** four themes and three sizes, each one attribute.
 - **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in.
 - **AI-ready:** paste one prompt, or run one command, and your coding agent uses it correctly (see [AI setup](#ai-setup)).
@@ -117,13 +117,13 @@ From JS, `createBrand()` returns the same thing as data, `brandCss()` the styles
 
 | Category | Components |
 |---|---|
-| Actions | Button, Dropdown menu, Theme toggle |
-| Navigation | Navbar, App shell, Bottom nav, Footer, Breadcrumb, Pagination, Steps, Contents |
-| Forms | Field, Input, Input group, Textarea, Select, Combobox, Checkbox, Radio, Segmented control, Chip, Choice card, Slider, Number field, File upload, Switch |
+| Actions | Button, Toolbar, Dropdown menu, Command palette, Floating action button, Theme toggle |
+| Navigation | Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Contents |
+| Forms | Field, Input, Input group, Search bar, Textarea, Select, Combobox, Tag input, Calendar (and date picker), Checkbox, Radio, Segmented control, Chip, Swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut (keys and recorder), Settings |
 | Layout | Page header, Section, Card, Tabs, Accordion, Carousel, Separator |
 | Overlays | Dialog (centred, side modal or bottom sheet), Popover, Tooltip |
-| Feedback | Alert, Toast, Progress, Spinner, Skeleton, Empty state |
-| Data display | Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Data list, Frame, Chat, Table, Chart |
+| Feedback | Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state |
+| Data display | Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Data list, Swipe actions, Frame, Chat, Table, Chart |
 
 Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) cover the glue between them, and a site kit (containers, hero type, scroll reveal, reading progress) covers marketing pages and portfolios.
 

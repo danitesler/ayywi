@@ -1,0 +1,120 @@
+/* Tag input: a field that turns what you type into chips. Enter or a comma adds one, Backspace in the empty field
+   removes the last, each chip's × removes it. Looks like an .ayy-input that grows to as many lines as it needs. With
+   suggestions it's also an .ayy-combobox: a listbox of known tags opens under it. */
+
+.ayy-tag-input {
+  --_pad: var(--ayy-space-1);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--ayy-size-control-md);
+  padding: var(--_pad);
+  padding-inline-start: var(--ayy-space-1-5);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-control-text-md);
+  cursor: text;
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .ayy-tag-input:hover {
+    border-color: var(--ayy-color-line-hover);
+  }
+}
+
+/* The whole field shows the ring while its input has keyboard focus (a chip's × has its own). */
+.ayy-tag-input:has(> .ayy-tag-input__input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.ayy-tag-input:has(> .ayy-tag-input__input[aria-invalid="true"]) {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+.ayy-tag-input:has(> .ayy-tag-input__input[aria-invalid="true"]:focus-visible) {
+  outline-color: var(--ayy-color-destructive);
+}
+
+.ayy-tag-input:has(> .ayy-tag-input__input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* A chip: an .ayy-chip--removable, a little shorter so a row of them fits the field's height. */
+.ayy-tag-input__tag {
+  min-block-size: calc(var(--ayy-size-control-md) - 2 * var(--_pad) - 2px);
+  max-inline-size: 100%;
+  overflow: hidden;
+  padding-block: 0;
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-tag-input__input {
+  flex: 1 0 6rem;
+  min-inline-size: 0;
+  block-size: calc(var(--ayy-size-control-md) - 2 * var(--_pad) - 2px);
+  margin: 0;
+  padding: 0;
+  padding-inline: var(--ayy-space-1-5);
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.ayy-tag-input__input::placeholder {
+  color: color-mix(in srgb, var(--ayy-color-muted) 70%, transparent);
+  opacity: 1;
+}
+
+.ayy-tag-input__input:disabled {
+  cursor: not-allowed;
+}
+
+.ayy-tag-input--sm {
+  min-block-size: var(--ayy-size-control-sm);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-tag-input--sm > .ayy-tag-input__input,
+.ayy-tag-input--sm > .ayy-tag-input__tag {
+  block-size: auto;
+  min-block-size: calc(var(--ayy-size-control-sm) - 2 * var(--_pad) - 2px);
+}
+
+.ayy-tag-input--lg {
+  --_pad: var(--ayy-space-1-5);
+  min-block-size: var(--ayy-size-control-lg);
+  font-size: var(--ayy-control-text-lg);
+}
+
+.ayy-tag-input--lg > .ayy-tag-input__input,
+.ayy-tag-input--lg > .ayy-tag-input__tag {
+  min-block-size: calc(var(--ayy-size-control-lg) - 2 * var(--_pad) - 2px);
+}
+
+@media (forced-colors: active) {
+  .ayy-tag-input {
+    border-color: CanvasText;
+  }
+  .ayy-tag-input:has(> .ayy-tag-input__input:focus-visible) {
+    outline-color: Highlight;
+  }
+}
+
+/* <ayy-tag-input> only adds behaviour; it has no box of its own. */
+ayy-tag-input {
+  display: contents;
+}

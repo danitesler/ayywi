@@ -1,0 +1,77 @@
+{
+  "name": "Search bar",
+  "slug": "search-bar",
+  "status": "beta",
+  "category": "Forms",
+  "description": "A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role=\"search\"> around an <input type=\"search\">, so phones show a Search key. The clear button only shows while there's text.",
+  "classes": {
+    "ayy-search-bar": "Root: a <form role=\"search\"> holding the field and an optional Cancel.",
+    "ayy-search-bar--lg": "Taller field and text, for a search screen.",
+    "ayy-search-bar__field": "The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.",
+    "ayy-search-bar__input": "<input type=\"search\" enterkeyhint=\"search\" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.",
+    "ayy-search-bar__clear": "A button after the input with an × and aria-label=\"Clear search\". Hidden while the field is empty; @danitesler/ayywi/elements empties the field on click and fires input.",
+    "ayy-search-bar__cancel": "A text button after the field that ends the search (\"Cancel\")."
+  },
+  "variants": {
+    "size": { "values": ["md", "lg"], "default": "md" }
+  },
+  "states": {
+    "default": { "looks": "A pill-shaped wash-hover field with a muted magnifier and placeholder; the clear button and Cancel only show when there's something to clear or cancel." },
+    "hover": { "when": ".ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)", "looks": "The clear button gets a wash; Cancel's text softens." },
+    "pressed": { "none": "No pressed look; the clear button empties the field and Cancel ends the search at once." },
+    "focus": { "when": ".ayy-search-bar__field:has(> .ayy-search-bar__input:focus-visible); :focus-visible on the buttons", "looks": "A 2px ring around the pill; the clear and Cancel buttons get their own ring." },
+    "disabled": { "none": "Don't disable search: an empty list still takes a query. Hide the bar if search doesn't apply to the screen." },
+    "selected": { "none": "Nothing to select. Results are a list under it." },
+    "error": { "none": "Any text is a valid query. When nothing matches, show an Empty state under it." },
+    "loading": { "none": "No loading look in the field. Show a Skeleton or Spinner where the results appear." },
+    "typing": { "when": ".ayy-search-bar__input:not(:placeholder-shown)", "looks": "The clear button shows at the inline end (the input needs a placeholder for this)." }
+  },
+  "sizes": {
+    "scale": {
+      "md": "The md control height (32px compact, 40 comfortable, 44 touch).",
+      "lg": "The lg control height (40px compact, 48 comfortable, 52 touch), larger text: the top of a phone list."
+    },
+    "density": "The field height follows data-density (the heights above).",
+    "width": "The field fills its row; Cancel takes its own width after it."
+  },
+  "js": "searchBarClass({ size?, className? }) → string; clearSearchBar(button) empties the field a clear button belongs to, fires input and focuses it (@danitesler/ayywi/elements does it for every clear button); searchBarIcon, searchBarClearIcon (SVG markup).",
+  "react": {
+    "import": "import { SearchBar } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "SearchBar": {
+        "renders": "<form role=\"search\" class=\"ayy-search-bar\"><div class=\"ayy-search-bar__field\">… <input type=\"search\" class=\"ayy-search-bar__input\"> …</div></form>; other props go on the input",
+        "props": {
+          "value / defaultValue": "string",
+          "onValueChange": "(value: string) => void — every keystroke, and \"\" when cleared",
+          "onSearch": "(value: string) => void — Enter / the Search key",
+          "onCancel": "() => void — shows a Cancel button that runs it",
+          "label": "string — the input's name. Default \"Search\"",
+          "clearLabel": "string — default \"Clear search\"",
+          "cancelText": "string — default \"Cancel\"",
+          "size": "\"md\" | \"lg\"",
+          "formProps": "FormHTMLAttributes — props for the <form>"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "role=\"search\" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches (\"Search tasks\").",
+    "The clear button is a real button named \"Clear search\"; clearing puts focus back in the field.",
+    "Esc in a type=\"search\" input clears it in most browsers; Cancel is for leaving the search, not clearing it.",
+    "Results that update as you type should say how many there are in a polite live region."
+  ],
+  "do": [
+    "Use it at the top of a phone list or a search screen; filter as people type (onValueChange) or on Enter (onSearch).",
+    "Say what it searches in the placeholder and the label (\"Search notes\").",
+    "Put it in a Top bar's second row on a list's first screen."
+  ],
+  "dont": [
+    "Don't use it as a form field for a value — use an Input or a Combobox.",
+    "Don't use it for a whole-app ⌘K search on desktop — that's the Command palette.",
+    "Don't remove the placeholder: the clear button relies on it."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Empty and with text" },
+    { "id": "cancel", "title": "Large, with Cancel" }
+  ]
+}

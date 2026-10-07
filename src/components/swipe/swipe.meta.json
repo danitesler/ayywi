@@ -1,0 +1,86 @@
+{
+  "name": "Swipe actions",
+  "slug": "swipe",
+  "status": "beta",
+  "category": "Data display",
+  "description": "A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.",
+  "classes": {
+    "ayy-swipe": "The row: clips its content and holds the trays. Vertical drags still scroll the page (touch-action: pan-y).",
+    "ayy-swipe__content": "What slides: the row's own content (often with .ayy-list__item). Opaque, with --ayy-swipe-bg (default the page colour) so the trays stay hidden under it.",
+    "ayy-swipe__actions": "A tray of buttons under the row, after the content in the DOM. Shows over the row while it holds keyboard focus.",
+    "ayy-swipe__actions--start": "At the inline start: revealed by swiping toward the inline end (right in English). One positive action (Done, Read).",
+    "ayy-swipe__actions--end": "At the inline end: revealed by swiping toward the inline start. Up to three (Pin, Snooze, Delete), the destructive one last.",
+    "ayy-swipe__action": "A <button> filling the tray's height: an icon over a short label, on a tint of its colour.",
+    "ayy-swipe__action--primary": "Solid primary fill.",
+    "ayy-swipe__action--success": "Green tint (Done).",
+    "ayy-swipe__action--warning": "Amber tint (Snooze).",
+    "ayy-swipe__action--info": "Blue tint (Move, Label).",
+    "ayy-swipe__action--destructive": "Red tint (Delete)."
+  },
+  "variants": {
+    "variant": { "values": ["default", "primary", "success", "warning", "info", "destructive"], "default": "default", "component": "SwipeAction" }
+  },
+  "states": {
+    "default": { "looks": "The row as it is; its trays are hidden underneath until it slides." },
+    "hover": { "none": "No hover look; swiping works with a mouse too, and Tab reaches the buttons." },
+    "pressed": { "none": "No pressed look on the actions; they run at once." },
+    "focus": { "when": ".ayy-swipe__action:focus-visible; .ayy-swipe__actions:has(:focus-visible)", "looks": "Tabbing into a tray shows it over the row, and the action gets a ring inside its edge." },
+    "disabled": { "none": "Don't offer an action that can't run; leave it out of the tray." },
+    "selected": { "none": "Rows select through the list they're in (aria-selected on the item), not through the swipe." },
+    "error": { "none": "If an action fails, close the tray and say so in a toast." },
+    "loading": { "none": "Actions run at once (optimistic); undo through the toast." },
+    "open": { "when": "[data-open=\"start\"] or [data-open=\"end\"], set by the script", "looks": "The row has slid to show the start tray (swiped toward the inline end) or the end tray." },
+    "dragging": { "when": "[data-dragging]", "looks": "The row follows the finger with no transition." }
+  },
+  "sizes": {
+    "density": "Actions are at least 4.5rem wide and as tall as the row; the row keeps its own density.",
+    "width": "Fills the list's width, like the row it wraps."
+  },
+  "js": "connectSwipe(row, { onOpenChange? }) → { open(side), close(), destroy() } wires the gesture on plain markup: drag past half a tray to keep it open; a tap on the row, a tap elsewhere, Esc or an action closes it. swipeActionClass({ variant? }); swipeActionVariants.",
+  "element": {
+    "tag": "ayy-swipe",
+    "description": "Wraps an .ayy-swipe row and wires the gesture. Methods: open(\"start\" | \"end\"), close().",
+    "attributes": {},
+    "events": {
+      "ayy-open-change": "{ side } — \"start\", \"end\" or null when the row closes."
+    }
+  },
+  "react": {
+    "import": "import { Swipe, SwipeAction } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Swipe": {
+        "renders": "<div class=\"ayy-swipe\"><div class=\"ayy-swipe__content\">{children}</div> trays…</div>",
+        "props": {
+          "startActions": "ReactNode — SwipeActions revealed by swiping toward the inline end",
+          "endActions": "ReactNode — SwipeActions revealed by swiping toward the inline start",
+          "onOpenChange": "(side: \"start\" | \"end\" | null) => void",
+          "contentProps": "HTMLAttributes — props for the sliding content (className=\"ayy-list__item\")"
+        }
+      },
+      "SwipeAction": {
+        "renders": "<button type=\"button\" class=\"ayy-swipe__action\">",
+        "props": {
+          "variant": "\"default\" | \"primary\" | \"success\" | \"warning\" | \"info\" | \"destructive\"",
+          "icon": "ReactNode — an Icon above the label"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Swiping is a shortcut, never the only way: offer the same actions in the row's page or a Menu, since many people can't or don't swipe.",
+    "The actions are real buttons after the content in the tab order; a tray with focus shows over the row, and Esc closes an open row.",
+    "Labels stay visible under the icons, so the tint isn't the only cue.",
+    "Undo destructive actions (a Toast with Undo) rather than asking for confirmation in the middle of a gesture."
+  ],
+  "do": [
+    "Use it on phone lists for the two or three things people do to rows most: Done, Snooze, Delete.",
+    "Put the positive action at the start and the destructive one last at the end, as mail apps do.",
+    "Set --ayy-swipe-bg to the surface the list sits on (a card) so the row hides its trays."
+  ],
+  "dont": [
+    "Don't use it on desktop-first layouts; show the actions on hover or in a Menu there.",
+    "Don't put more than three actions in a tray.",
+    "Don't hide an action only here."
+  ],
+  "examples": [{ "id": "tasks", "title": "Task rows: Done, Pin, Snooze, Delete" }]
+}

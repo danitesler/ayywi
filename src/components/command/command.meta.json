@@ -1,0 +1,115 @@
+{
+  "name": "Command palette",
+  "slug": "command",
+  "status": "beta",
+  "category": "Actions",
+  "description": "A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count.",
+  "classes": {
+    "ayy-command": "Root: a card with the search field, the list and an optional footer. On a <div> inline, or with ayy-dialog on a <dialog> for the ⌘K palette (top-aligned, no padding).",
+    "ayy-command__search": "The row with the magnifier icon and the input, over a hairline. A ring under it while the input has keyboard focus.",
+    "ayy-command__input": "<input type=\"search\" role=\"combobox\" aria-expanded=\"true\" aria-controls=\"<list id>\" aria-autocomplete=\"list\" aria-label>. Keeps focus; aria-activedescendant points at the highlighted item.",
+    "ayy-command__list": "role=\"listbox\" with an id and aria-label; scrolls when long.",
+    "ayy-command__group": "role=\"group\" aria-labelledby its label. Hidden when none of its items match.",
+    "ayy-command__label": "A group's name (\"Go to\"), muted, role=\"presentation\" with an id.",
+    "ayy-command__item": "role=\"option\" with an id: an icon, the text, then a __meta. aria-selected=\"true\" on the highlighted one; data-value is what it runs, data-keywords more words that find it.",
+    "ayy-command__meta": "At an item's end: a .ayy-shortcut, a list name or a count, muted.",
+    "ayy-command__empty": "\"No results\", shown only when nothing matches (hidden otherwise).",
+    "ayy-command__footer": "Under the list after a hairline: key hints (↑↓ to move, ↵ to run) or a link."
+  },
+  "variants": {},
+  "states": {
+    "default": { "looks": "A raised card: a search field with a magnifier over a hairline, then labelled groups of items with an icon, a label and muted meta at the end." },
+    "hover": { "none": "Items have no separate hover look: moving the pointer over an item selects it (see selected), so the pointer and the arrow keys never show two items at once." },
+    "pressed": { "none": "No pressed look: clicking or Enter runs the item and usually closes the palette." },
+    "focus": { "when": ".ayy-command__search:has(> .ayy-command__input:focus-visible)", "looks": "A 2px ring under the field. Focus stays in the input while the arrow keys move the selection. Forced colours: Highlight outline." },
+    "disabled": { "when": ".ayy-command__item[aria-disabled=\"true\"]", "looks": "Dimmed to --ayy-opacity-disabled with a not-allowed cursor; the arrow keys skip it." },
+    "selected": { "when": ".ayy-command__item[aria-selected=\"true\"]", "looks": "The item under the arrow keys or the pointer gets the wash-hover background and a full-colour icon. Forced colours: Highlight fill." },
+    "error": { "none": "Nothing to validate. If running an item fails, close the palette and say so in a toast." },
+    "loading": { "none": "No loading look. While results load, show .ayy-command__empty with \"Searching…\"." },
+    "empty": { "when": ".ayy-command__empty shown", "looks": "A muted, centred \"No results\" line when the filter hides every item." },
+    "filtered": { "when": ".ayy-command__item[hidden], .ayy-command__group[hidden]", "looks": "Items that don't match the typed text are hidden, and so is a group with none left." }
+  },
+  "sizes": {
+    "density": "Items are the md control height (32px compact, 40 comfortable, 44 touch); the field is the lg height.",
+    "width": "Inline it fills its container. As a dialog (ayy-dialog ayy-command) it's 36rem wide, at most the viewport less 2rem, near the top of the screen; the list scrolls past 24rem."
+  },
+  "js": "connectCommand(root, { onSelect?, filter? }) → { refresh, reset, destroy } wires filtering, the arrows, Enter and the pointer on plain markup; Enter clicks the highlighted item. commandMatches(text, query) is the matching rule (every typed word starts a word, or one word anywhere); commandItemText(item). commandClass, commandInputClass, commandListClass, commandItemClass, commandSearchIcon (SVG markup).",
+  "element": {
+    "tag": "ayy-command",
+    "description": "Wraps an .ayy-command (a div, or a <dialog class=\"ayy-dialog ayy-command\"> plus the buttons that open it, marked [data-ayy-open]) and wires it. A dialog palette opens with the shortcut, closes after an item runs, on Esc (the first Esc clears the field) or on the backdrop, and is empty each time it opens. Methods: show(), refresh().",
+    "attributes": {
+      "shortcut": "Opens and closes the dialog palette from anywhere. Default \"Mod+K\" (⌘K, Ctrl+K); \"\" for none.",
+      "manual": "Don't filter: you change the items yourself on \"input\" (a search API), then call refresh()."
+    },
+    "events": {
+      "ayy-select": "{ value, item } when an item runs: its data-value and the element."
+    }
+  },
+  "react": {
+    "import": "import { Command, CommandDialog, CommandGroup, CommandItem } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Command": {
+        "renders": "<div class=\"ayy-command\"> search field, <div role=\"listbox\" class=\"ayy-command__list\">{children}</div>, footer",
+        "props": {
+          "label": "string — the field's and list's accessible name. Default \"Search commands\"",
+          "placeholder": "string — default \"Type a command or search…\"",
+          "emptyText": "ReactNode — when nothing matches. Default \"No results\"",
+          "footer": "ReactNode — key hints under the list",
+          "filter": "boolean — filter by the typed text. Default true",
+          "onSearchChange": "(text: string) => void — every keystroke (fetch results here with filter={false})",
+          "onRun": "(value?: string) => void — after an item runs, with its value",
+          "inputProps": "InputHTMLAttributes — more props for the <input>"
+        }
+      },
+      "CommandDialog": {
+        "renders": "<dialog class=\"ayy-dialog ayy-command\" aria-label> with the same parts; closes when an item runs",
+        "props": {
+          "open / defaultOpen / onOpenChange": "Like Dialog",
+          "shortcut": "string | null — toggles it from anywhere. Default \"Mod+K\"",
+          "label / placeholder / emptyText / footer / filter / onSearchChange / onRun / inputProps": "As on Command",
+          "className": "string — on the <dialog>"
+        }
+      },
+      "CommandGroup": {
+        "renders": "<div class=\"ayy-command__group\" role=\"group\"> with an .ayy-command__label",
+        "props": {
+          "heading": "ReactNode — the group's name"
+        }
+      },
+      "CommandItem": {
+        "renders": "<div class=\"ayy-command__item\" role=\"option\" data-value data-keywords>",
+        "props": {
+          "onSelect": "() => void — runs on Enter or a click",
+          "value": "string — passed to onRun",
+          "keywords": "string — more words that find it",
+          "icon": "ReactNode — an Icon before the text",
+          "shortcut": "string — its shortcut at the end (\"Mod+N\")",
+          "meta": "ReactNode — other text at the end: a count, a list name",
+          "disabled": "boolean — dimmed, skipped by the arrows"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "The WAI-ARIA combobox pattern with a listbox that is always shown: focus stays in the input, aria-activedescendant names the highlighted item, and the first match is highlighted as you type.",
+    "Up/Down move (wrapping), PageUp/PageDown move five, Enter runs the highlighted item, Esc clears the field and a second Esc closes the dialog.",
+    "Groups are role=\"group\" named by their heading, so screen readers say \"Go to\" when the highlight enters one.",
+    "Shortcuts in items are read as words (\"Command N\"); icons are hidden.",
+    "The dialog palette is a modal <dialog> named by aria-label; focus goes to the input when it opens and back to the trigger when it closes."
+  ],
+  "do": [
+    "Offer one in any app with more than a handful of screens or actions, on ⌘K / Ctrl+K, and show the shortcut on a Search button so people find it.",
+    "Group items by what they do (Create, Go to, Appearance) and keep labels verb-first (\"New task\", \"Switch theme\").",
+    "Add keywords for the words people might type instead (\"preferences\" for Settings).",
+    "Show each item's own shortcut at its end so the palette teaches them."
+  ],
+  "dont": [
+    "Don't make it the only way to reach something; it's a shortcut, not navigation.",
+    "Don't put form controls inside items; an item runs one thing.",
+    "Don't use it to pick a value for a field — that's a Combobox."
+  ],
+  "examples": [
+    { "id": "palette", "title": "Inline palette with groups and shortcuts" },
+    { "id": "dialog", "title": "⌘K dialog" }
+  ]
+}

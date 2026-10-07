@@ -1,0 +1,77 @@
+{
+  "name": "Progress ring",
+  "slug": "progress-ring",
+  "status": "beta",
+  "category": "Feedback",
+  "description": "Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle.",
+  "classes": {
+    "ayy-progress-ring": "Root: role=\"progressbar\" with aria-valuenow/min/max, an accessible name and --ayy-value (0–100). Clockwise from the top in every direction, like a clock. 2.5rem.",
+    "ayy-progress-ring__svg": "First child: <svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"> holding the track and the bar circles (cx=18 cy=18 r=16 pathLength=100). progressRingSvg is the markup.",
+    "ayy-progress-ring__track": "The full circle behind the fill.",
+    "ayy-progress-ring__bar": "The fill: a round-capped arc as long as --ayy-value. Hidden at aria-valuenow=\"0\".",
+    "ayy-progress-ring__label": "Optional, in the middle: the value (\"3/5\"), a time, or an Icon. Scales with the ring; leave it out at sm.",
+    "ayy-progress-ring--sm": "1.25rem, next to a line of text.",
+    "ayy-progress-ring--lg": "4rem.",
+    "ayy-progress-ring--xl": "Up to 16rem (70% of a phone's width): a timer.",
+    "ayy-progress-ring--success": "Green fill.",
+    "ayy-progress-ring--warning": "Amber fill.",
+    "ayy-progress-ring--destructive": "Red fill.",
+    "ayy-progress-ring--ai": "Purple fill.",
+    "ayy-progress-ring--indeterminate": "A quarter arc going round (still under reduced motion); omit aria-valuenow and --ayy-value."
+  },
+  "variants": {
+    "variant": { "values": ["default", "success", "warning", "destructive", "ai"], "default": "default" },
+    "size": { "values": ["sm", "md", "lg", "xl"], "default": "md" }
+  },
+  "states": {
+    "default": { "looks": "A 10% text-colour track and a round-capped arc in the text colour, starting at the top and running clockwise to --ayy-value." },
+    "hover": { "none": "Not interactive. Wrap it in a button if it starts or pauses something." },
+    "pressed": { "none": "Not interactive." },
+    "focus": { "none": "Not focusable; it's a progressbar that screen readers read. Put focus on the control next to it." },
+    "disabled": { "none": "Not interactive. A paused timer stays at its value; say \"Paused\" in the label." },
+    "selected": { "none": "Not selectable." },
+    "error": { "when": "variant destructive", "looks": "The arc turns the destructive colour. Say what failed next to it, not only with colour." },
+    "loading": { "when": "indeterminate (ayy-progress-ring--indeterminate), no aria-valuenow", "looks": "A quarter arc spins; under reduced motion it stays still, so say what's happening in a label." },
+    "empty": { "when": "aria-valuenow=\"0\"", "looks": "Only the track shows: no dot of arc at 0." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "20px, a thicker stroke: next to a file name or in a list row.",
+      "md": "40px: a goal or a habit's day.",
+      "lg": "64px: a card's main figure.",
+      "xl": "min(16rem, 70vw), a thin stroke and a lighter label: a focus timer's whole screen."
+    },
+    "density": "Doesn't change with data-density; pick a size.",
+    "width": "Square at its size; the label in the middle scales with it."
+  },
+  "js": "progressRingClass({ variant?, size?, indeterminate?, className? }) → string; progressRingSvg (the SVG markup to put first inside the ring); progressRingSizes. The fill colour can be overridden with --ayy-progress-color, as on Progress.",
+  "react": {
+    "import": "import { ProgressRing } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "ProgressRing": {
+        "renders": "<div role=\"progressbar\" class=\"ayy-progress-ring\"><svg class=\"ayy-progress-ring__svg\">…</svg><span class=\"ayy-progress-ring__label\">{children}</span></div>",
+        "props": {
+          "value": "number 0–100; omit/null → indeterminate",
+          "variant": "\"default\" | \"success\" | \"warning\" | \"destructive\" | \"ai\" — as on Progress",
+          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\""
+        }
+      }
+    }
+  },
+  "a11y": [
+    "role=\"progressbar\" with aria-valuenow/min/max (React sets them). Give it a name with aria-label or aria-labelledby.",
+    "What the label in the middle says isn't read (a progressbar's content is presentational): put it in the name too (\"Habit: 3 of 5 days this week\").",
+    "The fill is drawn with the system highlight in High Contrast, the track in GrayText."
+  ],
+  "do": [
+    "Use a ring where a circle means something or a bar has no room: a timer, a daily goal, a habit's week, a file's upload in a list row.",
+    "Put the number or time in the middle at md and up; next to the ring at sm.",
+    "Use success when a goal is reached, with a tick in the middle."
+  ],
+  "dont": [
+    "Don't use a ring for a long task's progress across a page — a Progress bar reads more precisely.",
+    "Don't use an indeterminate ring where a Spinner fits (a button, a small area).",
+    "Don't nest rings for several values; use a Chart."
+  ],
+  "examples": [{ "id": "ring", "title": "A timer, a goal, inline" }]
+}

@@ -1,0 +1,96 @@
+{
+  "name": "Toolbar",
+  "slug": "toolbar",
+  "status": "beta",
+  "category": "Actions",
+  "description": "A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role=\"toolbar\" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.",
+  "classes": {
+    "ayy-toolbar": "Root, role=\"toolbar\" with an aria-label (\"Annotate\"). A row of items with a small gap.",
+    "ayy-toolbar--vertical": "A column (a side rail). Add aria-orientation=\"vertical\" so the up and down arrows move.",
+    "ayy-toolbar--floating": "A raised pill with a border and a shadow, floating over a canvas, a photo or a text selection.",
+    "ayy-toolbar--scroll": "One line that scrolls sideways when the tools don't fit (phones).",
+    "ayy-toolbar--sm": "Smaller buttons and icons (--ayy-size-control-sm), for a floating bar over text.",
+    "ayy-toolbar__group": "Tools that belong together: role=\"group\", with an aria-label when it has a name. With data-exclusive, <ayy-toolbar> keeps one of its aria-pressed buttons on (the current tool).",
+    "ayy-toolbar__separator": "A hairline between groups: role=\"separator\". Horizontal in a vertical toolbar.",
+    "ayy-toolbar__spacer": "Takes the free space, pushing what follows to the far end (actions after tools). aria-hidden.",
+    "ayy-toolbar__button": "A tool: <button type=\"button\">. Square with only an icon (then it needs an aria-label), wider with an icon and a short label. Height follows data-density. aria-pressed for a tool that stays on, aria-expanded while its menu is open."
+  },
+  "variants": {
+    "vertical": { "values": [false, true], "default": false, "component": "Toolbar" },
+    "floating": { "values": [false, true], "default": false, "component": "Toolbar" },
+    "scroll": { "values": [false, true], "default": false, "component": "Toolbar" },
+    "size": { "values": ["sm", "md"], "default": "md", "component": "Toolbar" }
+  },
+  "states": {
+    "default": { "looks": "A row of square icon buttons in the soft text colour, split into groups by separators; floating puts them on a raised pill with the overlay shadow." },
+    "hover": { "when": ".ayy-toolbar__button:hover:not(:disabled) (devices that hover)", "looks": "Wash-hover background, full text colour." },
+    "pressed": { "none": "No pressed look; a tool that stays on is selected (aria-pressed)." },
+    "focus": { "when": ".ayy-toolbar__button:focus-visible", "looks": "2px ring, 1px offset. The toolbar is one Tab stop; arrow keys move between buttons." },
+    "disabled": { "when": ".ayy-toolbar__button:disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor; the arrow keys skip it (Redo with nothing to redo)." },
+    "selected": { "when": ".ayy-toolbar__button[aria-pressed=\"true\"]", "looks": "The current tool or an applied format: a wash tile with a line-strong hairline and the full text colour. Forced colours: Highlight fill." },
+    "error": { "none": "Tools don't fail visibly; say so in a toast if an action can't run." },
+    "loading": { "none": "Tools act at once. A long export shows a Spinner in its own dialog or a toast." },
+    "open": { "when": ".ayy-toolbar__button[aria-expanded=\"true\"]", "looks": "Its menu or popover is open: drawn like selected." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Buttons at the sm control height (28px compact, 32 comfortable, 40 touch), 16px icons.",
+      "md": "Buttons at the md control height (32px compact, 40 comfortable, 44 touch), 20px icons."
+    },
+    "density": "Button size follows data-density (above).",
+    "width": "Hugs its buttons. vertical makes a column; scroll keeps one line that scrolls sideways on phones; a spacer pushes later items to the far end."
+  },
+  "js": "toolbarClass({ vertical?, floating?, scroll?, size?, className? }) → string; toolbarButtonClass, toolbarGroupClass, toolbarSeparatorClass, toolbarSpacerClass constants; connectToolbar(el) → { refresh, destroy } wires the keyboard pattern on plain markup.",
+  "element": {
+    "tag": "ayy-toolbar",
+    "description": "Wraps an .ayy-toolbar and wires the keyboard pattern (one Tab stop, arrow keys, Home/End). Clicking a button with aria-pressed toggles it; inside a data-exclusive group it becomes the only pressed one.",
+    "attributes": {},
+    "events": {
+      "ayy-press": "{ button, pressed } before a button's aria-pressed changes; preventDefault() keeps the old state."
+    }
+  },
+  "react": {
+    "import": "import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Toolbar": {
+        "renders": "<div role=\"toolbar\" class=\"ayy-toolbar\">",
+        "props": {
+          "vertical": "boolean — a column; sets aria-orientation=\"vertical\"",
+          "floating": "boolean — a raised pill with a shadow",
+          "scroll": "boolean — one line that scrolls sideways",
+          "size": "\"sm\" | \"md\""
+        }
+      },
+      "ToolbarButton": {
+        "renders": "<button type=\"button\" class=\"ayy-toolbar__button\">",
+        "props": { "pressed": "boolean — aria-pressed, for tools that stay on; omit for one-off actions" }
+      },
+      "ToolbarGroup": { "renders": "<div role=\"group\" class=\"ayy-toolbar__group\">", "props": {} },
+      "ToolbarSeparator": { "renders": "<div role=\"separator\" class=\"ayy-toolbar__separator\">", "props": {} },
+      "ToolbarSpacer": { "renders": "<div aria-hidden=\"true\" class=\"ayy-toolbar__spacer\">", "props": {} }
+    }
+  },
+  "a11y": [
+    "role=\"toolbar\" with an aria-label. Tab reaches it once (the last tool used, else the pressed one, else the first); Left/Right (Up/Down when vertical) move between tools, mirrored in RTL; Home/End jump to the ends. Disabled tools are skipped.",
+    "Every icon-only tool needs an aria-label (\"Rectangle\"), and the name shouldn't change with its state — aria-pressed says whether it's on.",
+    "Text fields and radio groups (swatches, a segmented control) inside keep their own arrow keys; the radio group is one stop.",
+    "On is a wash tile with a hairline, not colour alone; High Contrast fills it with the system highlight."
+  ],
+  "do": [
+    "Use a toolbar for the tools of one surface: an image or canvas editor, a text selection, a media viewer, a table's bulk actions.",
+    "Put the tools that switch modes in a group where one is pressed (the current tool), then separators, then one-off actions (Undo, Redo), then a ToolbarSpacer and the labelled actions (Copy, Save).",
+    "Use vertical for a side rail on wide screens and scroll on phones; floating over a canvas or next to a selection.",
+    "Put a Swatch group (size sm, track) in it for colours, and a DropdownMenu trigger (a ToolbarButton) for overflow."
+  ],
+  "dont": [
+    "Don't use a toolbar for page navigation — use Tabs, the App shell or a Bottom nav — or for a page's one or two actions — use Buttons in a Page header.",
+    "Don't wrap a toolbar onto several lines; scroll it, or move rare tools into a menu.",
+    "Don't make every tool icon-only when there's room: the main action reads better with a label (\"Copy\").",
+    "Don't give toolbar buttons title tooltips on touch screens; the aria-label is the name."
+  ],
+  "examples": [
+    { "id": "editor", "title": "Editor tools, undo and a labelled action" },
+    { "id": "formatting", "title": "Floating formatting bar" },
+    { "id": "rail", "title": "Vertical rail" }
+  ]
+}

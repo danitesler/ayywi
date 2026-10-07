@@ -1,0 +1,77 @@
+{
+  "name": "Top bar",
+  "slug": "top-bar",
+  "status": "beta",
+  "category": "Navigation",
+  "description": "A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.",
+  "classes": {
+    "ayy-top-bar": "A <header>: sticky at the top of its scroll container, the page colour with a hairline under it. As the first child of an .ayy-app-shell__main it runs edge to edge over the main area's padding.",
+    "ayy-top-bar--center": "The title centred between the back button and the actions.",
+    "ayy-top-bar--large": "The buttons on the first line, a big title on its own line under them.",
+    "ayy-top-bar__back": "An <a href> or <button> with a directional chevron (.ayy-icon--directional) and optionally the previous screen's name in a <span>. Chevron only: aria-label=\"Back\".",
+    "ayy-top-bar__title": "The screen's name, an <h1>; cut with an ellipsis when long.",
+    "ayy-top-bar__heading": "Wraps the __title and a __subtitle when there is one.",
+    "ayy-top-bar__subtitle": "A muted line under the title (\"8 items\", \"Edited 2 min ago\").",
+    "ayy-top-bar__actions": "One to three icon buttons (.ayy-button--ghost.ayy-button--icon, each with an aria-label) or a short text button (Save), at the end.",
+    "ayy-top-bar__row": "A second line across the bar: a Search bar, a Segmented control, Chips."
+  },
+  "variants": {
+    "center": { "values": [false, true], "default": false },
+    "large": { "values": [false, true], "default": false }
+  },
+  "states": {
+    "default": { "looks": "A sticky bar in the page colour with a hairline under it: a back chevron, a semibold one-line title, and actions at the inline end, clear of the notch." },
+    "hover": { "when": ".ayy-top-bar__back:hover (devices that hover)", "looks": "The back button gets a wash-hover pill; action buttons keep their own hover." },
+    "pressed": { "none": "No pressed look of its own; the back button navigates at once." },
+    "focus": { "when": ".ayy-top-bar__back:focus-visible", "looks": "2px ring around the back pill; action buttons keep their own ring." },
+    "disabled": { "none": "Hide the back button on a screen with nowhere to go back to, rather than disabling it." },
+    "selected": { "none": "Not selectable. Put a Segmented control in __row to switch views." },
+    "error": { "none": "No error look. Show an Alert at the top of the content." },
+    "loading": { "none": "No loading look. Show a Skeleton or a Progress bar in the content under it." }
+  },
+  "sizes": {
+    "density": "At least the lg control height plus 16px; the back button is the md control height (32px compact, 40 comfortable, 44 touch).",
+    "width": "Full width of its scroll container (edge to edge as the first child of an App shell's main). large wraps the title onto its own line."
+  },
+  "js": "topBarClass({ center?, large?, className? }) → string; topBarBackIcon (the back chevron's SVG markup, mirrored in RTL).",
+  "react": {
+    "import": "import { TopBar } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "TopBar": {
+        "renders": "<header class=\"ayy-top-bar\"> back + <h1 class=\"ayy-top-bar__title\"> + actions; children go in a __row",
+        "props": {
+          "title": "ReactNode — the screen's name (an <h1>)",
+          "subtitle": "ReactNode — a line under it",
+          "backHref": "string — the back button is a link there",
+          "onBack": "() => void — the back button is a <button> running this",
+          "backLabel": "string — the previous screen's name after the chevron",
+          "backAriaLabel": "string — the chevron's name when there's no backLabel. Default \"Back\"",
+          "actions": "ReactNode — icon buttons at the end",
+          "center": "boolean — centre the title",
+          "large": "boolean — a big title under the buttons"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "The title is the page's <h1>, so a screen reader user knows where they landed after navigating.",
+    "A chevron-only back button is named \"Back\" (translate it); with a visible name (\"Lists\") the text names it.",
+    "Icon buttons in __actions each need an aria-label. Keep to three; put the rest in a Menu behind a More button.",
+    "The chevron is directional, so it points right in RTL, where \"back\" is."
+  ],
+  "do": [
+    "Use it at the top of every phone screen below the tab bar's first level, with a back button to where the user came from.",
+    "Use large on a tab's first screen (Inbox, Notes), plain on the screens pushed from it.",
+    "Put the screen's own search in the __row so it scrolls away with the bar or stays, as you choose."
+  ],
+  "dont": [
+    "Don't use it as a site's header on wide screens — that's the Navbar (or the App shell's sidebar).",
+    "Don't put the brand or navigation links in it; it names the screen.",
+    "Don't add more than three actions."
+  ],
+  "examples": [
+    { "id": "detail", "title": "Back, title with subtitle, actions" },
+    { "id": "large", "title": "Large title with a search bar" },
+    { "id": "center", "title": "Centred title" }
+  ]
+}

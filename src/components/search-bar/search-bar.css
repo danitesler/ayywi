@@ -1,0 +1,152 @@
+/* Search bar: a rounded search field with a magnifier and a clear button, and optionally a Cancel button after it,
+   as at the top of a phone list. A <form role="search">; the clear button only shows while there's text (it needs the
+   input's placeholder to tell). @danitesler/ayywi/elements clears the field when it's clicked; React does it itself. */
+
+.ayy-search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+}
+
+.ayy-search-bar__field {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-space-3) var(--ayy-space-1);
+  border: 1px solid transparent;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  cursor: text;
+  transition: border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-search-bar__field > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-search-bar__field:has(> .ayy-search-bar__input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -1px;
+}
+
+.ayy-search-bar__input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  appearance: none;
+}
+
+.ayy-search-bar__input::placeholder {
+  color: var(--ayy-color-muted);
+  opacity: 1;
+}
+
+/* The browser's own clear button; ours replaces it. */
+.ayy-search-bar__input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.ayy-search-bar__input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.ayy-search-bar__clear {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: calc(var(--ayy-size-control-md) - var(--ayy-space-2));
+  block-size: calc(var(--ayy-size-control-md) - var(--ayy-space-2));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ayy-search-bar__clear > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+@media (hover: hover) {
+  .ayy-search-bar__clear:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-search-bar__clear:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+/* Nothing typed: no clear button. */
+.ayy-search-bar__input:placeholder-shown ~ .ayy-search-bar__clear,
+.ayy-search-bar__clear[hidden] {
+  display: none;
+}
+
+/* Cancel: a text button that ends the search (closes it, leaves the screen). */
+.ayy-search-bar__cancel {
+  flex: none;
+  margin: 0;
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-1);
+  border: 0;
+  border-radius: var(--ayy-radius-md);
+  background: none;
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .ayy-search-bar__cancel:hover {
+    color: var(--ayy-color-text-soft);
+  }
+}
+
+.ayy-search-bar__cancel:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-search-bar--lg .ayy-search-bar__field {
+  block-size: var(--ayy-size-control-lg);
+  padding-inline-start: var(--ayy-space-4);
+}
+
+.ayy-search-bar--lg .ayy-search-bar__input {
+  font-size: var(--ayy-control-text-lg);
+}
+
+@media (forced-colors: active) {
+  .ayy-search-bar__field {
+    border-color: CanvasText;
+  }
+}

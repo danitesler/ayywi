@@ -1,0 +1,22 @@
+<!-- <ayy-popover> places the calendar under the trigger; <ayy-calendar> draws the month, writes the picked day into the
+     trigger's .ayy-date-picker__value and the hidden input (name), and closes the popover. -->
+<div class="ayy-field" style="inline-size: min(100%, 16rem)">
+  <label class="ayy-label" for="check-in-html">Check-in</label>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-input ayy-date-picker" id="check-in-html" popovertarget="check-in-calendar-html" aria-haspopup="dialog" aria-describedby="check-in-value-html check-in-hint-html"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span id="check-in-value-html" class="ayy-date-picker__value" data-placeholder="Pick a day"></span></button>
+    <div class="ayy-popover" id="check-in-calendar-html" popover role="dialog" aria-label="Pick a day">
+      <ayy-calendar min="2026-10-07" name="check-in">
+        <div class="ayy-calendar">
+          <div class="ayy-calendar__header">
+            <span class="ayy-calendar__title" aria-live="polite"></span>
+            <button type="button" class="ayy-calendar__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+            <button type="button" class="ayy-calendar__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+          </div>
+          <div class="ayy-calendar__weekdays" aria-hidden="true"></div>
+          <div class="ayy-calendar__grid"></div>
+        </div>
+      </ayy-calendar>
+    </div>
+  </ayy-popover>
+  <p class="ayy-field__hint" id="check-in-hint-html">Arrivals from 3 pm.</p>
+</div>
