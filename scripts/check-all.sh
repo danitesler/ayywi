@@ -22,10 +22,12 @@ step() {
   echo "━━ $name"
   if "$@"; then echo "✓ $name"; else echo "✗ $name"; failed+=("$name"); fi
 }
-# Playwright reuses whatever already answers on its port, which would test another app.
+# Playwright reuses whatever already answers on its port, which would test another app: use our own
+# (E2E_PORT, default 4184) and refuse to start if something holds it.
 e2e() {
-  if (exec 3<>/dev/tcp/127.0.0.1/4173) 2>/dev/null; then
-    echo "port 4173 is already in use: stop that server first, or Playwright tests it instead"
+  export E2E_PORT="${E2E_PORT:-4184}"
+  if (exec 3<>/dev/tcp/127.0.0.1/"$E2E_PORT") 2>/dev/null; then
+    echo "port $E2E_PORT is already in use: stop that server or set E2E_PORT"
     return 1
   fi
   pnpm exec playwright test
