@@ -54,11 +54,14 @@ pnpm typecheck      # library + preview + every example file + tests
 pnpm check          # design rules, docs ↔ CSS ↔ props ↔ elements, generated files up to date, lints examples
 pnpm test           # node tests (linter, MCP, init, token exports, eval scorer) — needs a build
 pnpm test:e2e       # Playwright + axe against the built preview
+scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
 pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme and density from the Theme menu
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
 ```
 
 Run `pnpm build && pnpm typecheck && pnpm check && pnpm test` before every commit, and `pnpm test:e2e` for anything visual or interactive. All must pass.
+
+`scripts/check-all.sh` runs all of them plus the preview build and e2e (`--quick` skips those two); run it before merging or publishing. **There is no hosted CI. Never add GitHub Actions workflows** (or any other `.github/` automation); every check runs locally.
 
 ## Rules
 

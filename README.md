@@ -146,7 +146,10 @@ After that the agent picks ayywi up on its own. Run `ayywi lint --max-warnings 0
 ```sh
 pnpm build && pnpm typecheck && pnpm check && pnpm test   # before every commit
 pnpm test:e2e                                             # for visual or interactive changes
+scripts/check-all.sh                                      # every check, locally (--quick skips the preview build and e2e)
 ```
+
+There is no hosted CI: `scripts/check-all.sh` is the gate before merging or publishing. Don't add GitHub Actions workflows.
 
 Conventions and repo layout are in [AGENTS.md](AGENTS.md). Changes go in [CHANGELOG.md](CHANGELOG.md); renaming or removing a class, token or prop is a breaking change.
 

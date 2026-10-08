@@ -102,7 +102,8 @@
     "preview:build": "node scripts/build-tokens.mjs && node scripts/build-manifest.mjs && node scripts/build.mjs && vite build --config preview/vite.config.ts",
     "preview:serve": "vite preview --config preview/vite.config.ts",
     "prepare": "node scripts/build.mjs",
-    "prepublishOnly": "node scripts/check.mjs"
+    "prepublishOnly": "node scripts/check.mjs",
+    "check:all": "bash scripts/check-all.sh"
   },
   "packageManager": "pnpm@10.33.0",
   "peerDependencies": {
