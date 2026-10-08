@@ -11,7 +11,7 @@ import { connectThemeToggle, themeToggleClass, themeToggleItemClass, themeToggle
 export interface ThemeToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Called with the theme just applied ("system" clears the override). */
   onValueChange?: (theme: ThemeMode) => void;
-  /** Menu item text per theme, for translation, e.g. { system: "Système", dark: "Sombre" }. Defaults: System, Dark, Dark soft… */
+  /** Menu item text per theme, for translation, e.g. { system: "Système", dark: "Sombre" }. Defaults: System, Dark, Dark contrast… */
   labels?: Partial<Record<ThemeMode, string>>;
 }
 

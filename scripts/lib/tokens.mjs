@@ -5,7 +5,7 @@ export const PREFIX = "ayy";
 export const DENSITIES = ["compact", "comfortable", "touch"];
 /** The two base themes. Every other theme (tokens/themes/*.json) builds on one of them. */
 export const BASE_THEMES = [
-  { name: "dark", base: "dark", description: "The default: black background, white text." },
+  { name: "dark", base: "dark", description: "The default: near-black background, white text." },
   { name: "light", base: "light", description: "White background, near-black text." },
 ];
 const REF = /^\{([^}]+)\}$/;
@@ -124,7 +124,7 @@ export function loadTokens(root) {
     return theme === "light" && t.light !== undefined ? t.light : t.value;
   }
 
-  /** Concrete value of a token in a theme ("dark", "light", "dark-soft"…). */
+  /** Concrete value of a token in a theme ("dark", "light", "dark-contrast"…). */
   function valueIn(t, theme) {
     return resolve(rawIn(t, theme));
   }

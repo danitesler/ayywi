@@ -58,7 +58,7 @@ The one main action of a phone screen (New task, Compose, Scan), as a round butt
 - A11y: An icon-only FAB needs an aria-label that says the action ("New task"), not the icon ("Plus"). Put it after the main content in the DOM so it comes after what it acts on in the tab order, not before the page. It must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the FAB's height) so the last row can scroll clear of it.
 
 ## Theme toggle (Actions)
-An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
+An icon button that opens a menu of every theme (System, Dark, Dark contrast, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
 - Classes: `.ayy-theme-toggle` `.ayy-theme-toggle__moon` `.ayy-theme-toggle__sun` `.ayy-theme-toggle__item`
 - States: hover, pressed, focus, selected, open
 - React: `<ThemeToggle onValueChange aria-label labels>`
@@ -169,10 +169,10 @@ An input with things attached inside its box: a leading icon, a prefix or suffix
 
 ## Search bar (Forms)
 A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role="search"> around an <input type="search">, so phones show a Search key. The clear button only shows while there's text.
-- Classes: `.ayy-search-bar` `.ayy-search-bar--lg` `.ayy-search-bar__field` `.ayy-search-bar__input` `.ayy-search-bar__clear` `.ayy-search-bar__cancel`
+- Classes: `.ayy-search-bar` `.ayy-search-bar--lg` `.ayy-search-bar__field` `.ayy-search-bar__input` `.ayy-search-bar__clear` `.ayy-search-bar__shortcut` `.ayy-search-bar__cancel`
 - States: hover, focus, typing
 - Sizes: `md` `lg`
-- React: `<SearchBar value / defaultValue onValueChange onSearch onCancel label clearLabel cancelText size formProps>`
+- React: `<SearchBar value / defaultValue onValueChange onSearch onCancel label clearLabel cancelText size shortcut formProps>`
 - JS: searchBarClass({ size?, className? }) → string; clearSearchBar(button) empties the field a clear button belongs to, fires input and focuses it (@danitesler/ayywi/elements does it for every clear button); searchBarIcon, searchBarClearIcon (SVG markup).
 - A11y: role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks"). The clear button is a real button named "Clear search"; clearing puts focus back in the field. Esc in a type="search" input clears it in most browsers; Cancel is for leaving the search, not clearing it. Results that update as you type should say how many there are in a polite live region.
 

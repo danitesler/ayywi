@@ -50,8 +50,13 @@ Never name a file with only a case difference from a sibling (`Dialog.tsx` next 
     pnpm build && pnpm typecheck && pnpm check && pnpm test && pnpm test:e2e
     pnpm preview     # look at it in a dark and a light theme, each density, and a phone-width window; RTL via dir="rtl" on the stage
     ```
-13. Add a line to `CHANGELOG.md`, and add the component to the README's Components table (and its count). `pnpm check` fails when they're out of date.
+13. Add an entry to `CHANGELOG.md` under `## Unreleased` following the changelog rules in `AGENTS.md` (component link on row 1, 1-line summary on row 2 indented):
+    ```markdown
+    - **[Component](#/slug)**
+      New component — <1-line summary>.
+    ```
+    Add the component to the README's Components table (and its count). `pnpm check` fails when they're out of date.
 
 ## Changing an existing component
 
-Same checklist, plus: a renamed/removed class or prop is a breaking change — note it under a "Breaking" heading in CHANGELOG.md with the migration.
+Same checklist, plus: record changes in `CHANGELOG.md` following the split row before/after rule (`- **[Component](#/slug)**\n  <was X> → <now Y>`). A renamed/removed class, token or prop is a breaking change — note `(**Breaking**)` in the title and include the migration.

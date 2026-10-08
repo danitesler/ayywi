@@ -107,7 +107,7 @@ const RULES = `Rules:
 const CLASSES = components.map((c) => `- ${c.name}: ${Object.keys(c.classes).join(" ")}`).join("\n");
 
 /** The whole prompt: the person's request, then how to build it in their tool. */
-export function buildPrompt(request: string, tool: Tool, l = links()): string {
+export function buildPrompt(request: string, tool: Tool = "lovable", l = links()): string {
   return `${request.trim()}
 
 ---

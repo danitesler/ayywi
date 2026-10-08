@@ -1,6 +1,6 @@
 # Theme toggle
 
-Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
+Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark contrast, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
 
 **Classes**
 - `.ayy-theme-toggle` — On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.
@@ -29,7 +29,7 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 - event `ayy-value-change`: { value: string } — the theme just applied ("system" clears the override)
 
 **React** — `import { ThemeToggle } from "@danitesler/ayywi/react";`
-- `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark soft, Light, Light gray.
+- `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark contrast, Light, Light gray.
 
 **Accessibility**
 - A menu button: aria-haspopup="menu" with the fixed name "Theme". Arrow keys move through the items, Esc closes and returns focus.
@@ -60,7 +60,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-menu" id="theme-menu-html" popover role="menu" aria-label="Theme">
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="true" data-value="system">System</button>
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark">Dark</button>
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark-soft">Dark soft</button>
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark-contrast">Dark contrast</button>
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light">Light</button>
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light-gray">Light gray</button>
   </div>

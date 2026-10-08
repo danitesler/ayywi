@@ -25,9 +25,9 @@ const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spac
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
   // The page opens on the no-code guide; the developer guide lists every component.
-  await expect(page.getByRole("radio", { name: "I build with AI tools" })).toBeChecked();
+  await expect(page.getByRole("radio", { name: "AI Builders" })).toBeChecked();
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
-  await page.getByText("I'm a developer").click();
+  await page.getByText("No-Build / CDN").click();
   await expect(page.locator(".pv-chip")).toHaveCount(slugs.length);
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
     await page.goto(`/#/${route}`);
@@ -72,14 +72,13 @@ test("example code is one click away", async ({ page }) => {
 test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByRole("combobox", { name: "What you're building" }).selectOption("store");
+  await page.getByRole("button", { name: "What you're building" }).click();
+  await page.getByRole("menuitemradio", { name: "online store" }).click();
   await expect(page.locator(".pv-madlib")).toContainText("Build me an");
   await page.getByRole("combobox", { name: "Who it's for" }).fill("a bakery in Lisbon");
-  await page.getByText("ChatGPT or Claude").click();
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toMatch(/^Build me an online store for a bakery in Lisbon\./);
-  expect(copied).toContain("one self-contained HTML file");
   expect(copied).toContain("dist/ayywi.min.css");
   // The fonts and the saved theme come along, so the app looks like the examples from the first paint.
   expect(copied).toContain("dist/fonts.css");
@@ -92,7 +91,7 @@ test("the site hosts each release's runtime files under v/<release>/; prompts fr
   // Served from a real host name (not localhost), the prompts point at this build's own v/<release>/ copies.
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByText("ChatGPT or Claude").click();
+  await page.getByText("Web Chat").click();
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const local = await page.evaluate(() => navigator.clipboard.readText());
   expect(local).not.toContain("/v/");
@@ -103,38 +102,33 @@ test("the site hosts each release's runtime files under v/<release>/; prompts fr
   for (const file of versions.versions[0].files) expect((await page.request.get(`${baseURL}/v/${versions.latest}/${file}`)).ok(), file).toBe(true);
 });
 
-test("search filters the sidebar and jumps to a result", async ({ page }) => {
+test("search bar opens command palette, filters results and jumps to a page", async ({ page }) => {
   await open(page, "");
-  const nav = page.getByRole("navigation", { name: "Design system" });
-  const box = page.getByRole("searchbox", { name: "Search components and foundations" });
+  const dialog = page.locator(".ayy-dialog.ayy-command");
+  const box = dialog.getByRole("combobox", { name: "Search components and foundations" });
 
-  await page.locator("body").press("/");
+  // Mod+E opens command palette
+  await page.keyboard.press(process.platform === "darwin" ? "Meta+e" : "Control+e");
+  await expect(dialog).toBeVisible();
   await expect(box).toBeFocused();
 
-  await box.fill("ayy-menu__item"); // class names match
-  await expect(nav.getByRole("link")).toHaveText(["Dropdown menu"]);
-  await expect(page.getByRole("status")).toHaveText("1 result");
+  await box.fill("ayy-menu__item"); // class names match via keywords
+  await expect(dialog.getByRole("option", { name: /Dropdown menu/ })).toBeVisible();
 
-  await box.fill("surface-raised"); // token names match
-  await expect(nav.getByRole("link")).toHaveText(["Colors"]);
-
-  await box.fill("forms"); // categories match
-  await expect(nav.getByRole("link")).toHaveCount(manifest.components.filter((c: { category: string }) => c.category === "Forms").length);
-
-  await box.fill("drawer"); // the side modal is a Dialog; the app shell opens its sidebar as one
-  await expect(nav.getByRole("link")).toHaveText(["App shell", "Dialog"]);
-
-  await box.fill("zzzz");
-  await expect(nav).toContainText("No matches");
+  await box.fill("surface-raised"); // token names match via keywords
+  await expect(dialog.getByRole("option", { name: /Colors/ })).toBeVisible();
 
   await box.fill("dialog");
   await box.press("Enter");
   await expect(page).toHaveURL(/#\/dialog$/);
+  await expect(dialog).toBeHidden();
   await expect(page.getByRole("heading", { level: 1, name: "Dialog" })).toBeVisible();
 
-  await box.press("Escape");
-  await expect(box).toHaveValue("");
-  await expect(nav.getByRole("link", { name: "Button", exact: true })).toBeVisible();
+  // Clicking search bar in sidebar opens command palette
+  await page.locator(".pv-sidebar__top .ayy-search-bar").click();
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
 });
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
@@ -166,7 +160,7 @@ test("on a phone the preview's sidebar is a drawer opened from the top bar", asy
 const SHOWCASE = [
   { id: "dashboard", name: "Pulse", theme: "dark", density: "compact" },
   { id: "landing", name: "Northwind", theme: "light", density: "comfortable" },
-  { id: "inbox", name: "Relay", theme: "dark-soft", density: "comfortable" },
+  { id: "inbox", name: "Relay", theme: "dark-contrast", density: "comfortable" },
   { id: "settings", name: "Ledger", theme: "light-gray", density: "touch" },
   { id: "tracker", name: "Orbit", theme: "light", density: "compact" },
   { id: "store", name: "Ember", theme: "dark", density: "comfortable" },

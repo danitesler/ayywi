@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { PaintBoardIcon, Search01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
+import { useEffect, useState } from "react";
+import { PaintBoardIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import {
   AppShell,
   AppShellBar,
@@ -10,9 +10,13 @@ import {
   AppShellNav,
   AppShellSidebar,
   AppShellToggle,
-  Button,
+  CommandDialog,
+  CommandGroup,
+  CommandItem,
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
   Icon,
+  Kbd,
+  SearchBar,
 } from "@danitesler/ayywi/react";
 import { brandPresets, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import { brandPage, BrandPage } from "./pages/Brand";
@@ -62,17 +66,6 @@ const SECTIONS: NavSection[] = [
     })),
   })),
 ];
-
-/** Every word must appear in the item, its section or its search text. */
-function search(query: string): NavSection[] {
-  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-  if (!words.length) return SECTIONS;
-  const matches = (section: NavSection, item: NavItem) => {
-    const haystack = `${section.title} ${item.title} ${item.text}`.toLowerCase();
-    return words.every((w) => haystack.includes(w));
-  };
-  return SECTIONS.map((s) => ({ ...s, items: s.items.filter((item) => matches(s, item)) })).filter((s) => s.items.length > 0);
-}
 
 
 const DENSITY_OPTIONS: [DensityMode, string][] = [
@@ -141,43 +134,7 @@ export function App() {
     if (part) document.getElementById(`${page}-${part}`)?.scrollIntoView({ block: "start" });
   }, [page, part]);
 
-  const [query, setQuery] = useState("");
-  const sections = useMemo(() => search(query), [query]);
-  const results = sections.flatMap((s) => s.items);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const navRef = useRef<HTMLElement>(null);
-
-  // "/" or Ctrl/⌘K jumps to search from anywhere.
-  useEffect(() => {
-    const onKey = (event: globalThis.KeyboardEvent) => {
-      const typing = (event.target as Element | null)?.closest?.("input, textarea, select, [contenteditable='true']");
-      if ((event.key === "/" && !typing) || (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey))) {
-        event.preventDefault();
-        setSearchOpen(true);
-        requestAnimationFrame(() => {
-          searchRef.current?.focus();
-          searchRef.current?.select();
-        });
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, []);
-
-  const onSearchKey = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && results.length) {
-      const q = query.trim().toLowerCase();
-      const best = results.find((r) => r.title.toLowerCase().startsWith(q)) ?? results[0];
-      window.location.hash = `#/${best.route}`;
-    } else if (event.key === "Escape") {
-      if (query) setQuery("");
-      else setSearchOpen(false);
-    } else if (event.key === "ArrowDown") {
-      event.preventDefault();
-      navRef.current?.querySelector<HTMLElement>("a")?.focus();
-    }
-  };
+  const [commandOpen, setCommandOpen] = useState(false);
 
   const link = (item: NavItem) => {
     const current = page === item.route;
@@ -212,57 +169,37 @@ export function App() {
               <span className="pv-sidebar__appearance">
                 <AppearanceMenu {...appearance} />
               </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Search"
-                aria-expanded={searchOpen || !!query}
-                aria-controls="pv-search"
-                aria-keyshortcuts="/ Control+K Meta+K"
-                onClick={() => {
-                  if (searchOpen && !query) return setSearchOpen(false);
-                  setSearchOpen(true);
-                  requestAnimationFrame(() => searchRef.current?.focus());
-                }}
-              >
-                <Icon icon={Search01Icon} />
-              </Button>
             </div>
           </div>
-          <div className="pv-search" data-open={searchOpen || !!query} inert={!(searchOpen || query)}>
-            <div className="pv-search__inner" id="pv-search" role="search">
-              <input
-                ref={searchRef}
-                className="ayy-input pv-search__input"
-                type="search"
-                placeholder="Search"
-                aria-label="Search components and foundations"
-                aria-controls="pv-nav"
-                autoComplete="off"
-                spellCheck={false}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={onSearchKey}
-                onBlur={() => !query && setSearchOpen(false)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search"
+            label="Search components and foundations"
+            shortcut="Mod+E"
+            readOnly
+            onClick={() => setCommandOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setCommandOpen(true);
+              }
+            }}
+            formProps={{
+              role: "button",
+              tabIndex: 0,
+              "aria-haspopup": "dialog",
+              "aria-expanded": commandOpen,
+              onClick: () => setCommandOpen(true),
+            }}
+          />
         </div>
-        <p className="ayy-sr-only" role="status">
-          {query ? `${results.length} result${results.length === 1 ? "" : "s"}` : ""}
-        </p>
-        <AppShellNav id="pv-nav" ref={navRef} className="pv-nav" aria-label="Design system">
-          {sections.length ? (
-            sections.map((s) => (
-              <AppShellGroup key={s.title} label={s.title}>
-                {s.items.map((item) => (
-                  <AppShellItem key={item.route || "overview"}>{link(item)}</AppShellItem>
-                ))}
-              </AppShellGroup>
-            ))
-          ) : (
-            <p className="pv-nav__empty">No matches for “{query}”.</p>
-          )}
+        <AppShellNav id="pv-nav" className="pv-nav" aria-label="Design system">
+          {SECTIONS.map((s) => (
+            <AppShellGroup key={s.title} label={s.title}>
+              {s.items.map((item) => (
+                <AppShellItem key={item.route || "overview"}>{link(item)}</AppShellItem>
+              ))}
+            </AppShellGroup>
+          ))}
         </AppShellNav>
       </AppShellSidebar>
 
@@ -283,6 +220,48 @@ export function App() {
           )}
         </main>
       </div>
+
+      <CommandDialog
+        open={commandOpen}
+        onOpenChange={setCommandOpen}
+        shortcut="Mod+E"
+        label="Search components and foundations"
+        placeholder="Search components and foundations…"
+        onRun={(route) => {
+          if (route) {
+            window.location.hash = `#/${route}`;
+            setCommandOpen(false);
+          }
+        }}
+        footer={
+          <>
+            <span>
+              <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move
+            </span>
+            <span>
+              <Kbd>↵</Kbd> to select
+            </span>
+            <span>
+              <Kbd>esc</Kbd> to close
+            </span>
+          </>
+        }
+      >
+        {SECTIONS.map((section) => (
+          <CommandGroup key={section.title} heading={section.title}>
+            {section.items.map((item) => (
+              <CommandItem
+                key={item.route}
+                value={item.route}
+                keywords={item.text}
+                meta={section.title}
+              >
+                {item.title}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        ))}
+      </CommandDialog>
     </AppShell>
   );
 }

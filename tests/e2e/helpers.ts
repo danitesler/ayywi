@@ -2,7 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 export interface Settings {
   renderer?: "react" | "html";
-  theme?: "dark" | "light" | "dark-soft" | "light-gray";
+  theme?: "dark" | "light" | "dark-contrast" | "light-gray";
   density?: "compact" | "comfortable" | "touch";
 }
 

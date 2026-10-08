@@ -19,7 +19,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.
 - Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.
 - Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
-- Theme with data-theme="dark|light|dark-soft|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.
+- Theme with data-theme="dark|light|dark-contrast|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.
 - Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from "@danitesler/ayywi", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).
 - Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.
@@ -86,7 +86,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 - **classPrefix**: ayy-
 - **naming**: BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class="ayy-button ayy-button--outline ayy-button--sm".
 - **state**: State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.
-- **theming**: No attribute = follow OS (dark or light). data-theme="dark" | "light" | "dark-soft" | "light-gray" forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".
+- **theming**: No attribute = follow OS (dark or light). data-theme="dark" | "light" | "dark-contrast" | "light-gray" forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".
 - **density**: Controls default to compact (touch on touch-first devices). data-density="compact" | "comfortable" | "touch" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.
 - **branding**: A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand="<name>"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.
 - **direction**: All layout uses logical properties; set dir="rtl" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.
@@ -96,7 +96,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 
 ## Global attributes
 
-- `data-theme`: "dark" | "light" | "dark-soft" | "light-gray" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.
+- `data-theme`: "dark" | "light" | "dark-contrast" | "light-gray" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-contrast is a pure-black theme (a #000000 page, #0a0a0a cards, white text); light-gray puts white cards and panels on a grey page.
 - `data-density`: "compact" | "comfortable" | "touch" — control sizes for this subtree. None = compact, or touch on touch-first devices.
 - `data-brand`: A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.
 - `dir`: "rtl" mirrors every component (logical properties throughout).
@@ -148,26 +148,26 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 | palette.pink.70 | `--ayy-palette-pink-70` | #f472b6 |  |  |
 | palette.orange.40 | `--ayy-palette-orange-40` | #c2410c |  |  |
 | palette.orange.65 | `--ayy-palette-orange-65` | #ff8a4c |  |  |
-| color.bg | `--ayy-color-bg` | #000000 | #ffffff | Page background. |
-| color.surface | `--ayy-color-surface` | #0a0a0a | #f7f7f8 | Cards, panels, inputs sit on this. |
-| color.surface-raised | `--ayy-color-surface-raised` | #141414 | #ffffff | Popovers, menus, tooltips, toasts. |
+| color.bg | `--ayy-color-bg` | #0a0a0a | #ffffff | Page background. |
+| color.surface | `--ayy-color-surface` | #141414 | #f7f7f8 | Cards, panels, inputs sit on this. |
+| color.surface-raised | `--ayy-color-surface-raised` | #1e1e1e | #ffffff | Popovers, menus, tooltips, toasts. |
 | color.text | `--ayy-color-text` | #ffffff | #0a0a0a | Primary text. Also the base every line/wash is mixed from. |
 | color.text-soft | `--ayy-color-text-soft` | #bbbbbb | #474747 | Secondary text that still needs to read comfortably. |
 | color.muted | `--ayy-color-muted` | #939393 | #6b6b6b | Captions, placeholders, de-emphasised labels. |
 | color.border | `--ayy-color-border` | #262626 | #dadada | Opaque border, for places where a mixed line can't be used. |
 | color.ring | `--ayy-color-ring` | #ffffff | #0a0a0a | Focus ring. |
 | color.primary | `--ayy-color-primary` | #ffffff | #0a0a0a | Primary action fill. Monochrome by design; a brand (setBrand(), @danitesler/ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour. |
-| color.primary-fg | `--ayy-color-primary-fg` | #000000 | #ffffff | Text on primary. |
-| color.destructive | `--ayy-color-destructive` | #f87171 | #b91c1c | Errors and destructive actions. |
+| color.primary-fg | `--ayy-color-primary-fg` | #0a0a0a | #ffffff | Text on primary. |
+| color.destructive | `--ayy-color-destructive` | #fb9696 | #b91c1c | Errors and destructive actions. |
 | color.success | `--ayy-color-success` | #35d07f | #065f46 | Positive status. |
 | color.warning | `--ayy-color-warning` | #f5c542 | #92400e | Caution status. |
-| color.info | `--ayy-color-info` | #5b9dff | #1d4ed8 | Informational status. |
+| color.info | `--ayy-color-info` | #8ab9ff | #1d4ed8 | Informational status. |
 | color.ai | `--ayy-color-ai` | #9a9a9a | #6b6b6b | AI features at rest. |
-| color.ai-active | `--ayy-color-ai-active` | #b98cff | #6d28d9 | AI features while active / generating. |
+| color.ai-active | `--ayy-color-ai-active` | #cbabff | #6d28d9 | AI features while active / generating. |
 | color.glow | `--ayy-color-glow` | #ffffff | #00000073 | Glow source colour (mixed down, never used raw). |
 | color.shadow | `--ayy-color-shadow` | #000000 | #0000004d | Shadow source colour (mixed down, never used raw). |
-| color.glass | `--ayy-color-glass` | #000000bf | #ffffffc7 | Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter. |
-| color.overlay | `--ayy-color-overlay` | #000000bf | #0a0a0a73 | Modal backdrop. |
+| color.glass | `--ayy-color-glass` | #141414c7 | #ffffffc7 | Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter. |
+| color.overlay | `--ayy-color-overlay` | #00000099 | #0a0a0a73 | Modal backdrop. |
 | color.wash | `--ayy-color-wash` | #ffffff0a | #0a0a0a0a | 4% text mix. Resting fill for subtle controls (badges, tab lists, secondary buttons). |
 | color.highlight | `--ayy-color-highlight` | #ffffff0f | #0a0a0a0f | 6% text mix. Inset top highlight on cards and dialogs. |
 | color.wash-hover | `--ayy-color-wash-hover` | #ffffff14 | #0a0a0a14 | 8% text mix. Hover fill. |
@@ -290,9 +290,9 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 
 ## Themes
 
-- `dark` — The default: black background, white text.
+- `dark` — The default: near-black background, white text.
 - `light` — White background, near-black text.
-- `dark-soft` (built on dark) — Near-black dark theme in the style of OpenCode: a #0a0a0a page, #141414 cards with a step up for popovers, white text and quiet grey descriptions. Every text colour still meets WCAG AA. Overrides of dark: `--ayy-color-bg` #0a0a0a, `--ayy-color-surface` #141414, `--ayy-color-surface-raised` #1e1e1e, `--ayy-color-text` #ffffff, `--ayy-color-muted` #939393, `--ayy-color-border` #262626, `--ayy-color-ring` #ffffff, `--ayy-color-primary` #ffffff, `--ayy-color-primary-fg` #0a0a0a, `--ayy-color-destructive` #fb9696, `--ayy-color-info` #8ab9ff, `--ayy-color-ai-active` #cbabff, `--ayy-color-glow` #ffffff, `--ayy-color-glass` #141414c7, `--ayy-color-overlay` #00000099.
+- `dark-contrast` (built on dark) — Pure black dark theme with higher contrast: a #000000 page, #0a0a0a cards with a step up for popovers, white text and crisp highlights. Every text colour still meets WCAG AA. Overrides of dark: `--ayy-color-bg` #000000, `--ayy-color-surface` #0a0a0a, `--ayy-color-surface-raised` #141414, `--ayy-color-text` #ffffff, `--ayy-color-muted` #939393, `--ayy-color-border` #262626, `--ayy-color-ring` #ffffff, `--ayy-color-primary` #ffffff, `--ayy-color-primary-fg` #000000, `--ayy-color-destructive` #f87171, `--ayy-color-info` #5b9dff, `--ayy-color-ai-active` #b98cff, `--ayy-color-glow` #ffffff, `--ayy-color-glass` #000000bf, `--ayy-color-overlay` #000000bf.
 - `light-gray` (built on light) — Light on a grey page: white cards, panels and popovers stand out from a #ebebeb background, and text stays at full strength. More separation between surfaces than the all-white theme; every text colour still meets WCAG AA. Overrides of light: `--ayy-color-bg` #ebebeb, `--ayy-color-surface` #ffffff, `--ayy-color-muted` #636363, `--ayy-color-destructive` #991b1b, `--ayy-color-info` #1e40af, `--ayy-color-ai` #636363, `--ayy-color-glass` #ebebebc7.
 
 ## Brands
@@ -1154,6 +1154,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       </div>
       <div class="ayy-command__empty" role="presentation" hidden="">No results</div>
     </div>
+    <div class="ayy-command__footer"><span><kbd class="ayy-kbd">↑</kbd> <kbd class="ayy-kbd">↓</kbd> to move</span><span><kbd class="ayy-kbd">↵</kbd> to run</span><span><kbd class="ayy-kbd">esc</kbd> to close</span></div>
   </dialog>
 </ayy-command>
 ```
@@ -1163,7 +1164,7 @@ React:
 ```tsx
 import { Add01Icon, InboxIcon, Search01Icon, Settings01Icon, Sun03Icon } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Button, CommandDialog, CommandGroup, CommandItem, Icon, Shortcut } from "@danitesler/ayywi/react";
+import { Button, CommandDialog, CommandGroup, CommandItem, Icon, Kbd, Shortcut } from "@danitesler/ayywi/react";
 
 export default function Example() {
   const [open, setOpen] = useState(false);
@@ -1174,7 +1175,24 @@ export default function Example() {
         Search
         <Shortcut keys="Mod+K" />
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen} placeholder="Search or jump to…">
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        placeholder="Search or jump to…"
+        footer={
+          <>
+            <span>
+              <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move
+            </span>
+            <span>
+              <Kbd>↵</Kbd> to run
+            </span>
+            <span>
+              <Kbd>esc</Kbd> to close
+            </span>
+          </>
+        }
+      >
         <CommandGroup heading="Go to">
           <CommandItem value="today" icon={<Icon icon={Sun03Icon} />}>
             Today
@@ -1383,7 +1401,7 @@ export default function Example() {
 
 ## Theme toggle
 
-Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
+Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark contrast, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
 
 **Classes**
 - `.ayy-theme-toggle` — On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.
@@ -1412,7 +1430,7 @@ Category: Actions. An icon button that opens a menu of every theme (System, Dark
 - event `ayy-value-change`: { value: string } — the theme just applied ("system" clears the override)
 
 **React** — `import { ThemeToggle } from "@danitesler/ayywi/react";`
-- `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark soft, Light, Light gray.
+- `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark contrast, Light, Light gray.
 
 **Accessibility**
 - A menu button: aria-haspopup="menu" with the fixed name "Theme". Arrow keys move through the items, Esc closes and returns focus.
@@ -1443,7 +1461,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-menu" id="theme-menu-html" popover role="menu" aria-label="Theme">
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="true" data-value="system">System</button>
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark">Dark</button>
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark-soft">Dark soft</button>
+    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark-contrast">Dark contrast</button>
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light">Light</button>
     <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light-gray">Light gray</button>
   </div>
@@ -3860,6 +3878,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, and
 - `.ayy-search-bar__field` — The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.
 - `.ayy-search-bar__input` — <input type="search" enterkeyhint="search" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.
 - `.ayy-search-bar__clear` — A button after the input with an × and aria-label="Clear search". Hidden while the field is empty; @danitesler/ayywi/elements empties the field on click and fires input.
+- `.ayy-search-bar__shortcut` — Keyboard shortcut hint shown at the end of the field (e.g. ⌘K). Hides while typing.
 - `.ayy-search-bar__cancel` — A text button after the field that ends the search ("Cancel").
 
 **States**
@@ -3882,7 +3901,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, and
 **JS (framework-free)**: searchBarClass({ size?, className? }) → string; clearSearchBar(button) empties the field a clear button belongs to, fires input and focuses it (@danitesler/ayywi/elements does it for every clear button); searchBarIcon, searchBarClearIcon (SVG markup).
 
 **React** — `import { SearchBar } from "@danitesler/ayywi/react";`
-- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "md" | "lg"; `formProps` FormHTMLAttributes — props for the <form>
+- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "md" | "lg"; `shortcut` string — keyboard shortcut hint (e.g. "Mod+K"); hidden while typing; `formProps` FormHTMLAttributes — props for the <form>
 
 **Accessibility**
 - role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks").

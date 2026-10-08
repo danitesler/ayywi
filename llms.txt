@@ -30,7 +30,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Dropdown menu](llms/menu.md): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).
 - [Command palette](llms/command.md): A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count.
 - [Floating action button](llms/fab.md): The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.
-- [Theme toggle](llms/theme-toggle.md): An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
+- [Theme toggle](llms/theme-toggle.md): An icon button that opens a menu of every theme (System, Dark, Dark contrast, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.
 
 ### Navigation
 

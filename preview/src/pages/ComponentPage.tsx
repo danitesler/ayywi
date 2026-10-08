@@ -1,9 +1,7 @@
-import { Badge, Card } from "@danitesler/ayywi/react";
-import { CopyButton } from "../CodeBlock";
+import { Card } from "@danitesler/ayywi/react";
 import type { ComponentEntry } from "../data";
 import { Example } from "../Example";
 import type { Renderer } from "../settings";
-import { componentSpec } from "../spec";
 
 const TONES = {
   yes: "var(--ayy-color-success)",
@@ -33,19 +31,8 @@ export function ComponentPage({ component: c, renderer }: { component: Component
     <article className="pv-page">
       <header className="pv-page__header">
         <p className="ayy-eyebrow">{c.category}</p>
-        <div className="pv-title-row">
-          <h1 className="ayy-h2">{c.name}</h1>
-          {c.status !== "stable" ? (
-            <Badge variant="warning" dot="static">
-              {c.status}
-            </Badge>
-          ) : null}
-        </div>
+        <h1 className="ayy-h2">{c.name}</h1>
         <p className="ayy-lede">{c.description}</p>
-        <div className="ayy-cluster">
-          <CopyButton text={componentSpec(c)} label="Copy for AI" variant="outline" />
-          <span className="ayy-muted pv-note">Every class, prop, rule and example of {c.name}, as markdown for your agent or chat.</span>
-        </div>
       </header>
 
       {c.examples.map((ex) => (

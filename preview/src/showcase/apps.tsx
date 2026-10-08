@@ -45,6 +45,13 @@ import {
   Wallet01Icon,
   Yoga01Icon,
 } from "@hugeicons/core-free-icons";
+import bookingScreenshot from "./screenshots/booking.png";
+import dashboardScreenshot from "./screenshots/dashboard.png";
+import inboxScreenshot from "./screenshots/inbox.png";
+import landingScreenshot from "./screenshots/landing.png";
+import settingsScreenshot from "./screenshots/settings.png";
+import storeScreenshot from "./screenshots/store.png";
+import trackerScreenshot from "./screenshots/tracker.png";
 import { toast, type DensityMode, type IconData, type ThemeName } from "@danitesler/ayywi";
 import {
   Accordion,
@@ -1751,6 +1758,7 @@ export interface ShowcaseApp {
   uses: string[];
   /** A prompt that builds a screen like this with ayywi, for "Build it with AI". */
   prompt: string;
+  screenshot: string;
   Component: ComponentType;
 }
 
@@ -1770,6 +1778,7 @@ export const showcaseApps: ShowcaseApp[] = [
 The Overview page: a Page header with a date-range Segmented control (7d, 30d, 90d) and an outline Export button; four KPI cards (Stat, a success or warning Badge and a Sparkline) in an .ayy-grid; a Visitors card with a LineChart of this month against last month (the comparison series dashed); then an .ayy-split with a Top pages table (compact, numeric columns, the Views column sortable, status badges, Pagination in the card footer) beside a Traffic sources card with a BarList, a Goals card of Progress bars and an info Alert.
 
 Dark theme, compact density. ayywi components and tokens only; run npx ayywi lint when you're done.`,
+    screenshot: dashboardScreenshot,
     Component: DashboardApp,
   },
   {
@@ -1785,6 +1794,7 @@ Dark theme, compact density. ayywi components and tokens only; run npx ayywi lin
 Sections: a centred hero (AI badge, h1, lede, a ring and an outline button, .ayy-bg-grid behind it); three feature cards with IconTiles in different accents; pricing with a Monthly/Yearly Segmented control and three plan cards (the middle one featured with a "Most popular" badge, perks in a compact List); a Carousel of customer quotes; an FAQ Accordion (single); a closing section with an email InputGroup and a submit button.
 
 Light theme. One ring call to action per view; everything else outline or ghost. Run npx ayywi lint when you're done.`,
+    screenshot: landingScreenshot,
     Component: LandingApp,
   },
   {
@@ -1792,14 +1802,15 @@ Light theme. One ring call to action per view; everything else outline or ghost.
     name: "Relay",
     kind: "Support inbox",
     description: "Conversations, a thread with AI-suggested replies, and customer details, in three panes on wide screens. On a phone it's the list, with tabs below.",
-    theme: "dark-soft",
+    theme: "dark-contrast",
     density: "comfortable",
     uses: ["app-shell", "bottom-nav", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "data-list", "alert", "separator"],
     prompt: `Build a support inbox with ayywi, in ${APP_FRAME} (Inbox, Mentions, Sent, Customers).
 
 The main area has three panes: a conversation List (avatar, name as a ListLink, a truncated preview, a status Badge, the time in ListMeta, the open one marked current) under a search InputGroup with a Kbd "/" hint; the thread (a Chat with incoming and outgoing messages, a typing indicator and suggested replies, then a reply form with a Textarea, an attach icon button and Send); and a customer panel (Avatar, a Data list, a warning Alert for the SLA). The panes collapse to the list on phones.
 
-Dark-soft theme. ayywi components and tokens only; run npx ayywi lint when you're done.`,
+Dark-contrast theme. ayywi components and tokens only; run npx ayywi lint when you're done.`,
+    screenshot: inboxScreenshot,
     Component: InboxApp,
   },
   {
@@ -1815,6 +1826,7 @@ Dark-soft theme. ayywi components and tokens only; run npx ayywi lint when you'r
 A Page header with a Breadcrumb (Settings › Profile), then Tabs: Profile (an .ayy-split of a form card — name, email, role Select, About Textarea with a hint, a Save button that shows loading while it saves — beside a Plan card with a full-width Segmented control, a usage Progress and a checkbox); Notifications (a divided List of rows with an IconTile, a title that labels the row's Switch, and a description); Billing (a row Data list, an invoices Table with Pagination, and a compact Empty state for "No backup card"). A destructive Alert for deleting the workspace at the end.
 
 Light-gray theme, touch density. Run npx ayywi lint when you're done.`,
+    screenshot: settingsScreenshot,
     Component: SettingsApp,
   },
   {
@@ -1830,6 +1842,7 @@ Light-gray theme, touch density. Run npx ayywi lint when you're done.`,
 A Page header with one primary "New task" button. An onboarding card with Steps (Create a project ✓, Invite your team — current, Connect GitHub) and two buttons. Then an .ayy-split: a Today/Upcoming/All Segmented control with a Kbd hint, project filter chips (ChipButton with counts, in a scrolling ChipGroup), and a card that holds either a divided List of tasks (a Checkbox labelled by the title, project and due date, the assignee's Avatar) or a compact Empty state when a view has nothing (another, with a "Show every project" button, when the chips filter everything out); beside it a destructive Alert "GitHub sync failed" whose Try again button shows loading, and an Activity card of Skeleton rows while it loads (aria-busy).
 
 Light theme, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx ayywi lint when you're done.`,
+    screenshot: trackerScreenshot,
     Component: TrackerApp,
   },
   {
@@ -1847,6 +1860,7 @@ The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Ch
 The cart is a Dialog with side="end": a divided List of items with a small NumberField each, a Delivery ChoiceGroup (Standard free, Express $9), a Data list with the subtotal, delivery and total, and a footer with Keep shopping and one primary Check out that shows a toast.
 
 Dark theme. Run npx ayywi lint when you're done.`,
+    screenshot: storeScreenshot,
     Component: StoreApp,
   },
   {
@@ -1862,6 +1876,7 @@ Dark theme. Run npx ayywi lint when you're done.`,
 The Schedule page: a Page header (the week and the classes left on the pass); a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, a Data list of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
 
 Light theme, touch density. Run npx ayywi lint when you're done.`,
+    screenshot: bookingScreenshot,
     Component: BookingApp,
   },
 ];

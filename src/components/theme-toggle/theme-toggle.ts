@@ -7,7 +7,7 @@ export const themeToggleMoonClass = "ayy-theme-toggle__moon";
 export const themeToggleSunClass = "ayy-theme-toggle__sun";
 export const themeToggleItemClass = "ayy-theme-toggle__item";
 
-/** "System" first, then each base theme followed by its variants (dark, dark soft, light, light gray), with display labels. */
+/** "System" first, then each base theme followed by its variants (dark, dark contrast, light, light gray), with display labels. */
 export const themeToggleOptions: readonly { value: ThemeMode; label: string }[] = [
   { value: "system", label: "System" },
   ...[...themes]

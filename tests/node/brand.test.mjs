@@ -91,7 +91,7 @@ test("brand tokens for other platforms: concrete DTCG per theme, shipped for vio
   const b = createBrand({ name: "acme", color: "#facc15", shape: "soft", font: { body: "Inter" } });
   const light = brandTokens(b, "light-gray");
   assert.equal(light.color.primary.$value, b.light.primary);
-  assert.equal(brandTokens(b, "dark-soft").color.primary.$value, b.dark.primary);
+  assert.equal(brandTokens(b, "dark-contrast").color.primary.$value, b.dark.primary);
   assert.equal(light.radius.button.$value, "8px", "radius references resolve to values");
   assert.match(light.font.body.$value, /^Inter, system-ui/);
   assert.equal(light.brand["950"].$type, "color");

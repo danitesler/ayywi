@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft01Icon, ComputerIcon, LinkSquare01Icon, SmartPhone01Icon, Tablet01Icon } from "@hugeicons/core-free-icons";
-import { Badge, Button, buttonClass, Icon } from "@danitesler/ayywi/react";
+import { Badge, Button, buttonClass, Card, CardLink, CardMedia, Icon } from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
 import { showcaseApps, type ShowcaseApp } from "../showcase/apps";
@@ -77,21 +77,23 @@ function Gallery() {
       <ul className="pv-showcase">
         {showcaseApps.map((app) => (
           <li key={app.id}>
-            <a className="pv-showcase__card" href={`#/${ROUTE}/${app.id}`} aria-describedby={`sc-${app.id}-desc`}>
-              <div className="pv-showcase__thumb" inert>
-                <ScaledFrame app={app} width={DEVICES.desktop.width} height={DEVICES.desktop.height} lazy />
-              </div>
-              <span className="pv-showcase__body">
-                <span className="pv-showcase__title">
-                  <span className="pv-showcase__name">{app.name}</span>
+            <Card interactive spotlight className="pv-showcase__card" aria-describedby={`sc-${app.id}-desc`}>
+              <CardMedia className="pv-showcase__thumb">
+                <img src={app.screenshot} alt={`${app.name}, ${app.kind}`} loading="lazy" width={1280} height={800} />
+              </CardMedia>
+              <div className="pv-showcase__body">
+                <div className="pv-showcase__title">
+                  <h2 className="pv-showcase__name">
+                    <CardLink href={`#/${ROUTE}/${app.id}`}>{app.name}</CardLink>
+                  </h2>
                   <span className="ayy-muted">{app.kind}</span>
-                </span>
-                <span className="pv-showcase__desc" id={`sc-${app.id}-desc`}>
+                </div>
+                <p className="pv-showcase__desc" id={`sc-${app.id}-desc`}>
                   {app.description}
-                </span>
+                </p>
                 <Modes app={app} />
-              </span>
-            </a>
+              </div>
+            </Card>
           </li>
         ))}
       </ul>

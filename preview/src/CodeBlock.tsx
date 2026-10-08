@@ -47,12 +47,12 @@ export function CopyButton({
   );
 }
 
-export function CodeBlock({ code, label, wrap }: { code: string; label?: string; wrap?: boolean }) {
+export function CodeBlock({ code, label, wrap, copyLabel = "Copy" }: { code: string; label?: string; wrap?: boolean; copyLabel?: string }) {
   return (
     <div className="pv-code">
       <div className="pv-code__bar">
         <span className="ayy-eyebrow">{label}</span>
-        <CopyButton text={code} />
+        <CopyButton text={code} label={copyLabel} />
       </div>
       {/* Focusable so keyboard users can scroll long code (axe: scrollable-region-focusable). */}
       <pre className={`pv-code__pre ayy-scroll${wrap ? " pv-code__pre--wrap" : ""}`} dir="ltr" tabIndex={0} aria-label={label ? `${label} code` : "Code"}>

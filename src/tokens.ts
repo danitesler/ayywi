@@ -8,7 +8,7 @@ export interface TokenDefinition {
   readonly value: string | number | readonly (string | number)[];
   /** Light-theme value, for themed tokens. */
   readonly light?: string;
-  /** Values in the other themes (dark-soft, light-gray…), for themed tokens. */
+  /** Values in the other themes (dark-contrast, light-gray…), for themed tokens. */
   readonly themes?: Readonly<Record<string, string>>;
   /** Grouping for docs, e.g. "Surfaces", "Text", "Status" (colour tokens). */
   readonly category?: string;
@@ -61,26 +61,26 @@ export const tokens = {
   "palette.pink.70": { cssVar: "--ayy-palette-pink-70", type: "color", value: "#f472b6" },
   "palette.orange.40": { cssVar: "--ayy-palette-orange-40", type: "color", value: "#c2410c" },
   "palette.orange.65": { cssVar: "--ayy-palette-orange-65", type: "color", value: "#ff8a4c" },
-  "color.bg": { cssVar: "--ayy-color-bg", type: "color", value: "#000000", light: "#ffffff", themes: {"dark-soft":"#0a0a0a","light-gray":"#ebebeb"}, category: "Surfaces", description: "Page background." },
-  "color.surface": { cssVar: "--ayy-color-surface", type: "color", value: "#0a0a0a", light: "#f7f7f8", themes: {"dark-soft":"#141414","light-gray":"#ffffff"}, category: "Surfaces", description: "Cards, panels, inputs sit on this." },
-  "color.surface-raised": { cssVar: "--ayy-color-surface-raised", type: "color", value: "#141414", light: "#ffffff", themes: {"dark-soft":"#1e1e1e","light-gray":"#ffffff"}, category: "Surfaces", description: "Popovers, menus, tooltips, toasts." },
-  "color.text": { cssVar: "--ayy-color-text", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Text", description: "Primary text. Also the base every line/wash is mixed from." },
-  "color.text-soft": { cssVar: "--ayy-color-text-soft", type: "color", value: "#bbbbbb", light: "#474747", themes: {"dark-soft":"#bbbbbb","light-gray":"#474747"}, category: "Text", description: "Secondary text that still needs to read comfortably." },
-  "color.muted": { cssVar: "--ayy-color-muted", type: "color", value: "#939393", light: "#6b6b6b", themes: {"dark-soft":"#939393","light-gray":"#636363"}, category: "Text", description: "Captions, placeholders, de-emphasised labels." },
-  "color.border": { cssVar: "--ayy-color-border", type: "color", value: "#262626", light: "#dadada", themes: {"dark-soft":"#262626","light-gray":"#dadada"}, category: "Lines", description: "Opaque border, for places where a mixed line can't be used." },
-  "color.ring": { cssVar: "--ayy-color-ring", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Focus ring." },
-  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-soft":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Primary action fill. Monochrome by design; a brand (setBrand(), @danitesler/ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour." },
-  "color.primary-fg": { cssVar: "--ayy-color-primary-fg", type: "color", value: "#000000", light: "#ffffff", themes: {"dark-soft":"#0a0a0a","light-gray":"#ffffff"}, category: "Interactive", description: "Text on primary." },
-  "color.destructive": { cssVar: "--ayy-color-destructive", type: "color", value: "#f87171", light: "#b91c1c", themes: {"dark-soft":"#fb9696","light-gray":"#991b1b"}, category: "Status", description: "Errors and destructive actions." },
-  "color.success": { cssVar: "--ayy-color-success", type: "color", value: "#35d07f", light: "#065f46", themes: {"dark-soft":"#35d07f","light-gray":"#065f46"}, category: "Status", description: "Positive status." },
-  "color.warning": { cssVar: "--ayy-color-warning", type: "color", value: "#f5c542", light: "#92400e", themes: {"dark-soft":"#f5c542","light-gray":"#92400e"}, category: "Status", description: "Caution status." },
-  "color.info": { cssVar: "--ayy-color-info", type: "color", value: "#5b9dff", light: "#1d4ed8", themes: {"dark-soft":"#8ab9ff","light-gray":"#1e40af"}, category: "Status", description: "Informational status." },
-  "color.ai": { cssVar: "--ayy-color-ai", type: "color", value: "#9a9a9a", light: "#6b6b6b", themes: {"dark-soft":"#9a9a9a","light-gray":"#636363"}, category: "AI", description: "AI features at rest." },
-  "color.ai-active": { cssVar: "--ayy-color-ai-active", type: "color", value: "#b98cff", light: "#6d28d9", themes: {"dark-soft":"#cbabff","light-gray":"#6d28d9"}, category: "AI", description: "AI features while active / generating." },
-  "color.glow": { cssVar: "--ayy-color-glow", type: "color", value: "#ffffff", light: "#00000073", themes: {"dark-soft":"#ffffff","light-gray":"#00000073"}, category: "Effects", description: "Glow source colour (mixed down, never used raw)." },
-  "color.shadow": { cssVar: "--ayy-color-shadow", type: "color", value: "#000000", light: "#0000004d", themes: {"dark-soft":"#000000","light-gray":"#0000004d"}, category: "Effects", description: "Shadow source colour (mixed down, never used raw)." },
-  "color.glass": { cssVar: "--ayy-color-glass", type: "color", value: "#000000bf", light: "#ffffffc7", themes: {"dark-soft":"#141414c7","light-gray":"#ebebebc7"}, category: "Surfaces", description: "Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter." },
-  "color.overlay": { cssVar: "--ayy-color-overlay", type: "color", value: "#000000bf", light: "#0a0a0a73", themes: {"dark-soft":"#00000099","light-gray":"#0a0a0a73"}, category: "Surfaces", description: "Modal backdrop." },
+  "color.bg": { cssVar: "--ayy-color-bg", type: "color", value: "#0a0a0a", light: "#ffffff", themes: {"dark-contrast":"#000000","light-gray":"#ebebeb"}, category: "Surfaces", description: "Page background." },
+  "color.surface": { cssVar: "--ayy-color-surface", type: "color", value: "#141414", light: "#f7f7f8", themes: {"dark-contrast":"#0a0a0a","light-gray":"#ffffff"}, category: "Surfaces", description: "Cards, panels, inputs sit on this." },
+  "color.surface-raised": { cssVar: "--ayy-color-surface-raised", type: "color", value: "#1e1e1e", light: "#ffffff", themes: {"dark-contrast":"#141414","light-gray":"#ffffff"}, category: "Surfaces", description: "Popovers, menus, tooltips, toasts." },
+  "color.text": { cssVar: "--ayy-color-text", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-contrast":"#ffffff","light-gray":"#0a0a0a"}, category: "Text", description: "Primary text. Also the base every line/wash is mixed from." },
+  "color.text-soft": { cssVar: "--ayy-color-text-soft", type: "color", value: "#bbbbbb", light: "#474747", themes: {"dark-contrast":"#bbbbbb","light-gray":"#474747"}, category: "Text", description: "Secondary text that still needs to read comfortably." },
+  "color.muted": { cssVar: "--ayy-color-muted", type: "color", value: "#939393", light: "#6b6b6b", themes: {"dark-contrast":"#939393","light-gray":"#636363"}, category: "Text", description: "Captions, placeholders, de-emphasised labels." },
+  "color.border": { cssVar: "--ayy-color-border", type: "color", value: "#262626", light: "#dadada", themes: {"dark-contrast":"#262626","light-gray":"#dadada"}, category: "Lines", description: "Opaque border, for places where a mixed line can't be used." },
+  "color.ring": { cssVar: "--ayy-color-ring", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-contrast":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Focus ring." },
+  "color.primary": { cssVar: "--ayy-color-primary", type: "color", value: "#ffffff", light: "#0a0a0a", themes: {"dark-contrast":"#ffffff","light-gray":"#0a0a0a"}, category: "Interactive", description: "Primary action fill. Monochrome by design; a brand (setBrand(), @danitesler/ayywi/brands/<name>.css) sets it, with primary-fg and ring, from its seed colour." },
+  "color.primary-fg": { cssVar: "--ayy-color-primary-fg", type: "color", value: "#0a0a0a", light: "#ffffff", themes: {"dark-contrast":"#000000","light-gray":"#ffffff"}, category: "Interactive", description: "Text on primary." },
+  "color.destructive": { cssVar: "--ayy-color-destructive", type: "color", value: "#fb9696", light: "#b91c1c", themes: {"dark-contrast":"#f87171","light-gray":"#991b1b"}, category: "Status", description: "Errors and destructive actions." },
+  "color.success": { cssVar: "--ayy-color-success", type: "color", value: "#35d07f", light: "#065f46", themes: {"dark-contrast":"#35d07f","light-gray":"#065f46"}, category: "Status", description: "Positive status." },
+  "color.warning": { cssVar: "--ayy-color-warning", type: "color", value: "#f5c542", light: "#92400e", themes: {"dark-contrast":"#f5c542","light-gray":"#92400e"}, category: "Status", description: "Caution status." },
+  "color.info": { cssVar: "--ayy-color-info", type: "color", value: "#8ab9ff", light: "#1d4ed8", themes: {"dark-contrast":"#5b9dff","light-gray":"#1e40af"}, category: "Status", description: "Informational status." },
+  "color.ai": { cssVar: "--ayy-color-ai", type: "color", value: "#9a9a9a", light: "#6b6b6b", themes: {"dark-contrast":"#9a9a9a","light-gray":"#636363"}, category: "AI", description: "AI features at rest." },
+  "color.ai-active": { cssVar: "--ayy-color-ai-active", type: "color", value: "#cbabff", light: "#6d28d9", themes: {"dark-contrast":"#b98cff","light-gray":"#6d28d9"}, category: "AI", description: "AI features while active / generating." },
+  "color.glow": { cssVar: "--ayy-color-glow", type: "color", value: "#ffffff", light: "#00000073", themes: {"dark-contrast":"#ffffff","light-gray":"#00000073"}, category: "Effects", description: "Glow source colour (mixed down, never used raw)." },
+  "color.shadow": { cssVar: "--ayy-color-shadow", type: "color", value: "#000000", light: "#0000004d", themes: {"dark-contrast":"#000000","light-gray":"#0000004d"}, category: "Effects", description: "Shadow source colour (mixed down, never used raw)." },
+  "color.glass": { cssVar: "--ayy-color-glass", type: "color", value: "#141414c7", light: "#ffffffc7", themes: {"dark-contrast":"#000000bf","light-gray":"#ebebebc7"}, category: "Surfaces", description: "Translucent chrome (sticky headers, sidebars). Pair with backdrop-filter." },
+  "color.overlay": { cssVar: "--ayy-color-overlay", type: "color", value: "#00000099", light: "#0a0a0a73", themes: {"dark-contrast":"#000000bf","light-gray":"#0a0a0a73"}, category: "Surfaces", description: "Modal backdrop." },
   "color.wash": { cssVar: "--ayy-color-wash", type: "color", value: "#ffffff0a", light: "#0a0a0a0a", category: "Interactive", description: "4% text mix. Resting fill for subtle controls (badges, tab lists, secondary buttons)." },
   "color.highlight": { cssVar: "--ayy-color-highlight", type: "color", value: "#ffffff0f", light: "#0a0a0a0f", category: "Interactive", description: "6% text mix. Inset top highlight on cards and dialogs." },
   "color.wash-hover": { cssVar: "--ayy-color-wash-hover", type: "color", value: "#ffffff14", light: "#0a0a0a14", category: "Interactive", description: "8% text mix. Hover fill." },
@@ -94,12 +94,12 @@ export const tokens = {
   "accent.system": { cssVar: "--ayy-accent-system", type: "color", value: "#34d399" },
   "accent.brand": { cssVar: "--ayy-accent-brand", type: "color", value: "#f472b6" },
   "accent.marketing": { cssVar: "--ayy-accent-marketing", type: "color", value: "#ff8a4c" },
-  "chart.1": { cssVar: "--ayy-chart-1", type: "color", value: "#5b9dff", light: "#1d4ed8", themes: {"dark-soft":"#5b9dff","light-gray":"#1d4ed8"} },
-  "chart.2": { cssVar: "--ayy-chart-2", type: "color", value: "#ff8a4c", light: "#c2410c", themes: {"dark-soft":"#ff8a4c","light-gray":"#c2410c"} },
-  "chart.3": { cssVar: "--ayy-chart-3", type: "color", value: "#34d399", light: "#047857", themes: {"dark-soft":"#34d399","light-gray":"#047857"} },
-  "chart.4": { cssVar: "--ayy-chart-4", type: "color", value: "#b98cff", light: "#6d28d9", themes: {"dark-soft":"#b98cff","light-gray":"#6d28d9"} },
-  "chart.5": { cssVar: "--ayy-chart-5", type: "color", value: "#f5c542", light: "#b45309", themes: {"dark-soft":"#f5c542","light-gray":"#b45309"} },
-  "chart.6": { cssVar: "--ayy-chart-6", type: "color", value: "#f472b6", light: "#be185d", themes: {"dark-soft":"#f472b6","light-gray":"#be185d"} },
+  "chart.1": { cssVar: "--ayy-chart-1", type: "color", value: "#5b9dff", light: "#1d4ed8", themes: {"dark-contrast":"#5b9dff","light-gray":"#1d4ed8"} },
+  "chart.2": { cssVar: "--ayy-chart-2", type: "color", value: "#ff8a4c", light: "#c2410c", themes: {"dark-contrast":"#ff8a4c","light-gray":"#c2410c"} },
+  "chart.3": { cssVar: "--ayy-chart-3", type: "color", value: "#34d399", light: "#047857", themes: {"dark-contrast":"#34d399","light-gray":"#047857"} },
+  "chart.4": { cssVar: "--ayy-chart-4", type: "color", value: "#b98cff", light: "#6d28d9", themes: {"dark-contrast":"#b98cff","light-gray":"#6d28d9"} },
+  "chart.5": { cssVar: "--ayy-chart-5", type: "color", value: "#f5c542", light: "#b45309", themes: {"dark-contrast":"#f5c542","light-gray":"#b45309"} },
+  "chart.6": { cssVar: "--ayy-chart-6", type: "color", value: "#f472b6", light: "#be185d", themes: {"dark-contrast":"#f472b6","light-gray":"#be185d"} },
   "brand.50": { cssVar: "--ayy-brand-50", type: "color", value: "#f7f7f8" },
   "brand.100": { cssVar: "--ayy-brand-100", type: "color", value: "#ebebeb" },
   "brand.200": { cssVar: "--ayy-brand-200", type: "color", value: "#dadada" },
@@ -205,11 +205,11 @@ export const tokens = {
 export type TokenName = keyof typeof tokens;
 
 /** Themes for data-theme / setTheme(). Each extra theme builds on "dark" or "light" and starts with its name. */
-export const themes = ["dark","light","dark-soft","light-gray"] as const;
+export const themes = ["dark","light","dark-contrast","light-gray"] as const;
 export type ThemeName = (typeof themes)[number];
 
 /** The base colour scheme of each theme. */
-export const themeBase = {"dark":"dark","light":"light","dark-soft":"dark","light-gray":"light"} as const satisfies Record<ThemeName, "dark" | "light">;
+export const themeBase = {"dark":"dark","light":"light","dark-contrast":"dark","light-gray":"light"} as const satisfies Record<ThemeName, "dark" | "light">;
 
 /** Brands shipped as ayywi/brands/<name>.css (from tokens/brands/). */
 export const brands = ["violet"] as const;

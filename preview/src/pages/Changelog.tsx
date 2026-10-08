@@ -11,13 +11,13 @@ export const changelogPage = {
   text: "changelog releases versions history breaking changes added changed removed",
 };
 
-/** `code`, **bold** and [links](url) inside one line of the changelog. */
+/** `code`, **bold** and [links](url) inside one line of the changelog. Supports nesting (e.g. bold links). */
 function inline(text: string): ReactNode[] {
-  return text.split(/(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g).map((part, i) => {
+  return text.split(/(`[^`]+`|\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*)/g).filter(Boolean).map((part, i) => {
     if (part.startsWith("`")) return <code key={i} className="pv-inline-code">{part.slice(1, -1)}</code>;
-    if (part.startsWith("**")) return <strong key={i}>{part.slice(2, -2)}</strong>;
     const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
-    if (link) return <a key={i} className="ayy-link" href={link[2]}>{link[1]}</a>;
+    if (link) return <a key={i} className="ayy-link" href={link[2]}>{inline(link[1])}</a>;
+    if (part.startsWith("**")) return <strong key={i}>{inline(part.slice(2, -2))}</strong>;
     return <Fragment key={i}>{part}</Fragment>;
   });
 }
@@ -36,7 +36,7 @@ function parse(source: string): Release[] {
     if (!release) continue;
     if (line.startsWith("### ")) release.groups.push({ title: line.slice(4).trim(), items: [] });
     else if (line.startsWith("- ")) release.groups[release.groups.length - 1]?.items.push(line.slice(2));
-    else if (line.startsWith("  - ")) {
+    else if (line.startsWith("  ")) {
       const items = release.groups[release.groups.length - 1]?.items;
       if (items?.length) items[items.length - 1] += `\n${line.trim()}`;
     } else if (line.trim() && !line.startsWith("#") && !release.groups.length) release.intro.push(line.trim());
@@ -79,17 +79,37 @@ export function ChangelogPage() {
                       <Badge variant={GROUP_TONE[group.title] as "success" | "info" | "destructive" | "warning" | undefined}>{group.title}</Badge>
                     </h3>
                     <ul className="pv-changelog__list">
-                      {group.items.map((item) => {
-                        const [main, ...subs] = item.split("\n");
+                      {group.items.map((item, itemIndex) => {
+                        let title = "";
+                        let desc = "";
+                        const lines = item.split("\n");
+                        if (lines.length > 1) {
+                          title = lines[0];
+                          desc = lines.slice(1).join("\n");
+                        } else if (item.includes("**: ")) {
+                          const idx = item.indexOf("**: ");
+                          title = item.slice(0, idx + 2);
+                          desc = item.slice(idx + 4);
+                        } else {
+                          title = item;
+                        }
+
+                        const descLines = desc ? desc.split("\n") : [];
+                        const isBulletList = descLines.length > 0 && descLines.every((l) => l.trim().startsWith("- "));
+
                         return (
-                          <li key={item}>
-                            {inline(main)}
-                            {subs.length ? (
-                              <ul>
-                                {subs.map((l) => (
-                                  <li key={l}>{inline(l.replace(/^- /, ""))}</li>
-                                ))}
-                              </ul>
+                          <li key={itemIndex} className="pv-changelog__item">
+                            <div className="pv-changelog__title">{inline(title)}</div>
+                            {desc ? (
+                              isBulletList ? (
+                                <ul>
+                                  {descLines.map((l, i) => (
+                                    <li key={i}>{inline(l.replace(/^- /, ""))}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <div className="pv-changelog__desc">{inline(desc)}</div>
+                              )
                             ) : null}
                           </li>
                         );

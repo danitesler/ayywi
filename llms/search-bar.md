@@ -8,6 +8,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, and
 - `.ayy-search-bar__field` — The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.
 - `.ayy-search-bar__input` — <input type="search" enterkeyhint="search" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.
 - `.ayy-search-bar__clear` — A button after the input with an × and aria-label="Clear search". Hidden while the field is empty; @danitesler/ayywi/elements empties the field on click and fires input.
+- `.ayy-search-bar__shortcut` — Keyboard shortcut hint shown at the end of the field (e.g. ⌘K). Hides while typing.
 - `.ayy-search-bar__cancel` — A text button after the field that ends the search ("Cancel").
 
 **States**
@@ -30,7 +31,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, and
 **JS (framework-free)**: searchBarClass({ size?, className? }) → string; clearSearchBar(button) empties the field a clear button belongs to, fires input and focuses it (@danitesler/ayywi/elements does it for every clear button); searchBarIcon, searchBarClearIcon (SVG markup).
 
 **React** — `import { SearchBar } from "@danitesler/ayywi/react";`
-- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "md" | "lg"; `formProps` FormHTMLAttributes — props for the <form>
+- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "md" | "lg"; `shortcut` string — keyboard shortcut hint (e.g. "Mod+K"); hidden while typing; `formProps` FormHTMLAttributes — props for the <form>
 
 **Accessibility**
 - role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks").

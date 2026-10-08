@@ -155,27 +155,27 @@ test.describe("forced colors (Windows High Contrast)", () => {
   });
 });
 
-test("dark-soft is the near-black theme, light-gray greys the page under white cards", async ({ page }) => {
+test("dark is the near-black theme, dark-contrast is pure black, light-gray greys the page under white cards", async ({ page }) => {
   const read = () =>
     page.evaluate(() => {
       const s = getComputedStyle(document.body);
       return { bg: s.backgroundColor, text: s.color, scheme: getComputedStyle(document.documentElement).colorScheme };
     });
-  await open(page, "", { theme: "dark-soft" });
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark-soft");
+  await open(page, "", { theme: "dark" });
   expect(await read()).toEqual({ bg: "rgb(10, 10, 10)", text: "rgb(255, 255, 255)", scheme: "dark" });
+  await open(page, "", { theme: "dark-contrast" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark-contrast");
+  expect(await read()).toEqual({ bg: "rgb(0, 0, 0)", text: "rgb(255, 255, 255)", scheme: "dark" });
   await open(page, "", { theme: "light-gray" });
   expect(await read()).toEqual({ bg: "rgb(235, 235, 235)", text: "rgb(10, 10, 10)", scheme: "light" });
   expect(await page.locator(".ayy-card").first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(255, 255, 255)");
-  await open(page, "", { theme: "dark" });
-  expect(await read()).toEqual({ bg: "rgb(0, 0, 0)", text: "rgb(255, 255, 255)", scheme: "dark" });
 });
 
 test("a themed section inside another theme gets its own colours", async ({ page }) => {
   await open(page, "colors", { theme: "dark" });
   const bg = (name: string) => page.locator(`.pv-theme[data-theme="${name}"]`).evaluate((el) => getComputedStyle(el).backgroundColor);
   expect(await bg("light-gray")).toBe("rgb(235, 235, 235)");
-  expect(await bg("dark-soft")).toBe("rgb(10, 10, 10)");
+  expect(await bg("dark-contrast")).toBe("rgb(0, 0, 0)");
   expect(await bg("light")).toBe("rgb(255, 255, 255)");
 });
 
@@ -197,7 +197,7 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
 });
 
-for (const theme of ["dark", "light", "dark-soft", "light-gray"] as const) {
+for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
   test(`axe: no serious violations on any page (${theme})`, async ({ page }) => {
     test.setTimeout(180_000);
     await open(page, "", { theme });

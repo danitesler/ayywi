@@ -13,7 +13,7 @@
     "@danitesler/ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
     "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-menu>, <ayy-command>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tag-input>, <ayy-calendar>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, chartColors, chartTheme).",
     "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
-    "@danitesler/ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-soft.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
+    "@danitesler/ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-contrast.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "@danitesler/ayywi/tailwind-preset": "Tailwind v3 preset.",
     "@danitesler/ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
     "npx ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
@@ -22,7 +22,7 @@
     "classPrefix": "ayy-",
     "naming": "BEM: .ayy-block, .ayy-block__element, .ayy-block--modifier. Modifiers combine: class=\"ayy-button ayy-button--outline ayy-button--sm\".",
     "state": "State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.",
-    "theming": "No attribute = follow OS (dark or light). data-theme=\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" forces a theme on any element and its subtree (.dark/.light classes work too). See \"themes\" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says \"dark\" or \"light\".",
+    "theming": "No attribute = follow OS (dark or light). data-theme=\"dark\" | \"light\" | \"dark-contrast\" | \"light-gray\" forces a theme on any element and its subtree (.dark/.light classes work too). See \"themes\" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says \"dark\" or \"light\".",
     "density": "Controls default to compact (touch on touch-first devices). data-density=\"compact\" | \"comfortable\" | \"touch\" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.",
     "branding": "A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand=\"<name>\"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.",
     "direction": "All layout uses logical properties; set dir=\"rtl\" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.",
@@ -35,7 +35,7 @@
     "Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
     "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
     "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
-    "Theme with data-theme=\"dark|light|dark-soft|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
+    "Theme with data-theme=\"dark|light|dark-contrast|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
     "Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from \"@danitesler/ayywi\", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.",
     "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
     "Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.",
@@ -108,7 +108,7 @@
     }
   ],
   "attributes": {
-    "data-theme": "\"dark\" | \"light\" | \"dark-soft\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-soft is a near-black theme (a #0a0a0a page, #141414 cards, white text); light-gray puts white cards and panels on a grey page.",
+    "data-theme": "\"dark\" | \"light\" | \"dark-contrast\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-contrast is a pure-black theme (a #000000 page, #0a0a0a cards, white text); light-gray puts white cards and panels on a grey page.",
     "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
     "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
     "dir": "\"rtl\" mirrors every component (logical properties throughout)."
@@ -117,7 +117,7 @@
     {
       "name": "dark",
       "base": "dark",
-      "description": "The default: black background, white text."
+      "description": "The default: near-black background, white text."
     },
     {
       "name": "light",
@@ -125,9 +125,9 @@
       "description": "White background, near-black text."
     },
     {
-      "name": "dark-soft",
+      "name": "dark-contrast",
       "base": "dark",
-      "description": "Near-black dark theme in the style of OpenCode: a #0a0a0a page, #141414 cards with a step up for popovers, white text and quiet grey descriptions. Every text colour still meets WCAG AA."
+      "description": "Pure black dark theme with higher contrast: a #000000 page, #0a0a0a cards with a step up for popovers, white text and crisp highlights. Every text colour still meets WCAG AA."
     },
     {
       "name": "light-gray",
@@ -480,10 +480,10 @@
       "name": "color.bg",
       "cssVar": "--ayy-color-bg",
       "type": "color",
-      "value": "#000000",
+      "value": "#0a0a0a",
       "light": "#ffffff",
       "themes": {
-        "dark-soft": "#0a0a0a",
+        "dark-contrast": "#000000",
         "light-gray": "#ebebeb"
       },
       "category": "Surfaces",
@@ -493,10 +493,10 @@
       "name": "color.surface",
       "cssVar": "--ayy-color-surface",
       "type": "color",
-      "value": "#0a0a0a",
+      "value": "#141414",
       "light": "#f7f7f8",
       "themes": {
-        "dark-soft": "#141414",
+        "dark-contrast": "#0a0a0a",
         "light-gray": "#ffffff"
       },
       "category": "Surfaces",
@@ -506,10 +506,10 @@
       "name": "color.surface-raised",
       "cssVar": "--ayy-color-surface-raised",
       "type": "color",
-      "value": "#141414",
+      "value": "#1e1e1e",
       "light": "#ffffff",
       "themes": {
-        "dark-soft": "#1e1e1e",
+        "dark-contrast": "#141414",
         "light-gray": "#ffffff"
       },
       "category": "Surfaces",
@@ -522,7 +522,7 @@
       "value": "#ffffff",
       "light": "#0a0a0a",
       "themes": {
-        "dark-soft": "#ffffff",
+        "dark-contrast": "#ffffff",
         "light-gray": "#0a0a0a"
       },
       "category": "Text",
@@ -535,7 +535,7 @@
       "value": "#bbbbbb",
       "light": "#474747",
       "themes": {
-        "dark-soft": "#bbbbbb",
+        "dark-contrast": "#bbbbbb",
         "light-gray": "#474747"
       },
       "category": "Text",
@@ -548,7 +548,7 @@
       "value": "#939393",
       "light": "#6b6b6b",
       "themes": {
-        "dark-soft": "#939393",
+        "dark-contrast": "#939393",
         "light-gray": "#636363"
       },
       "category": "Text",
@@ -561,7 +561,7 @@
       "value": "#262626",
       "light": "#dadada",
       "themes": {
-        "dark-soft": "#262626",
+        "dark-contrast": "#262626",
         "light-gray": "#dadada"
       },
       "category": "Lines",
@@ -574,7 +574,7 @@
       "value": "#ffffff",
       "light": "#0a0a0a",
       "themes": {
-        "dark-soft": "#ffffff",
+        "dark-contrast": "#ffffff",
         "light-gray": "#0a0a0a"
       },
       "category": "Interactive",
@@ -587,7 +587,7 @@
       "value": "#ffffff",
       "light": "#0a0a0a",
       "themes": {
-        "dark-soft": "#ffffff",
+        "dark-contrast": "#ffffff",
         "light-gray": "#0a0a0a"
       },
       "category": "Interactive",
@@ -597,10 +597,10 @@
       "name": "color.primary-fg",
       "cssVar": "--ayy-color-primary-fg",
       "type": "color",
-      "value": "#000000",
+      "value": "#0a0a0a",
       "light": "#ffffff",
       "themes": {
-        "dark-soft": "#0a0a0a",
+        "dark-contrast": "#000000",
         "light-gray": "#ffffff"
       },
       "category": "Interactive",
@@ -610,10 +610,10 @@
       "name": "color.destructive",
       "cssVar": "--ayy-color-destructive",
       "type": "color",
-      "value": "#f87171",
+      "value": "#fb9696",
       "light": "#b91c1c",
       "themes": {
-        "dark-soft": "#fb9696",
+        "dark-contrast": "#f87171",
         "light-gray": "#991b1b"
       },
       "category": "Status",
@@ -626,7 +626,7 @@
       "value": "#35d07f",
       "light": "#065f46",
       "themes": {
-        "dark-soft": "#35d07f",
+        "dark-contrast": "#35d07f",
         "light-gray": "#065f46"
       },
       "category": "Status",
@@ -639,7 +639,7 @@
       "value": "#f5c542",
       "light": "#92400e",
       "themes": {
-        "dark-soft": "#f5c542",
+        "dark-contrast": "#f5c542",
         "light-gray": "#92400e"
       },
       "category": "Status",
@@ -649,10 +649,10 @@
       "name": "color.info",
       "cssVar": "--ayy-color-info",
       "type": "color",
-      "value": "#5b9dff",
+      "value": "#8ab9ff",
       "light": "#1d4ed8",
       "themes": {
-        "dark-soft": "#8ab9ff",
+        "dark-contrast": "#5b9dff",
         "light-gray": "#1e40af"
       },
       "category": "Status",
@@ -665,7 +665,7 @@
       "value": "#9a9a9a",
       "light": "#6b6b6b",
       "themes": {
-        "dark-soft": "#9a9a9a",
+        "dark-contrast": "#9a9a9a",
         "light-gray": "#636363"
       },
       "category": "AI",
@@ -675,10 +675,10 @@
       "name": "color.ai-active",
       "cssVar": "--ayy-color-ai-active",
       "type": "color",
-      "value": "#b98cff",
+      "value": "#cbabff",
       "light": "#6d28d9",
       "themes": {
-        "dark-soft": "#cbabff",
+        "dark-contrast": "#b98cff",
         "light-gray": "#6d28d9"
       },
       "category": "AI",
@@ -691,7 +691,7 @@
       "value": "#ffffff",
       "light": "#00000073",
       "themes": {
-        "dark-soft": "#ffffff",
+        "dark-contrast": "#ffffff",
         "light-gray": "#00000073"
       },
       "category": "Effects",
@@ -704,7 +704,7 @@
       "value": "#000000",
       "light": "#0000004d",
       "themes": {
-        "dark-soft": "#000000",
+        "dark-contrast": "#000000",
         "light-gray": "#0000004d"
       },
       "category": "Effects",
@@ -714,10 +714,10 @@
       "name": "color.glass",
       "cssVar": "--ayy-color-glass",
       "type": "color",
-      "value": "#000000bf",
+      "value": "#141414c7",
       "light": "#ffffffc7",
       "themes": {
-        "dark-soft": "#141414c7",
+        "dark-contrast": "#000000bf",
         "light-gray": "#ebebebc7"
       },
       "category": "Surfaces",
@@ -727,10 +727,10 @@
       "name": "color.overlay",
       "cssVar": "--ayy-color-overlay",
       "type": "color",
-      "value": "#000000bf",
+      "value": "#00000099",
       "light": "#0a0a0a73",
       "themes": {
-        "dark-soft": "#00000099",
+        "dark-contrast": "#000000bf",
         "light-gray": "#0a0a0a73"
       },
       "category": "Surfaces",
@@ -849,7 +849,7 @@
       "value": "#5b9dff",
       "light": "#1d4ed8",
       "themes": {
-        "dark-soft": "#5b9dff",
+        "dark-contrast": "#5b9dff",
         "light-gray": "#1d4ed8"
       }
     },
@@ -860,7 +860,7 @@
       "value": "#ff8a4c",
       "light": "#c2410c",
       "themes": {
-        "dark-soft": "#ff8a4c",
+        "dark-contrast": "#ff8a4c",
         "light-gray": "#c2410c"
       }
     },
@@ -871,7 +871,7 @@
       "value": "#34d399",
       "light": "#047857",
       "themes": {
-        "dark-soft": "#34d399",
+        "dark-contrast": "#34d399",
         "light-gray": "#047857"
       }
     },
@@ -882,7 +882,7 @@
       "value": "#b98cff",
       "light": "#6d28d9",
       "themes": {
-        "dark-soft": "#b98cff",
+        "dark-contrast": "#b98cff",
         "light-gray": "#6d28d9"
       }
     },
@@ -893,7 +893,7 @@
       "value": "#f5c542",
       "light": "#b45309",
       "themes": {
-        "dark-soft": "#f5c542",
+        "dark-contrast": "#f5c542",
         "light-gray": "#b45309"
       }
     },
@@ -904,7 +904,7 @@
       "value": "#f472b6",
       "light": "#be185d",
       "themes": {
-        "dark-soft": "#f472b6",
+        "dark-contrast": "#f472b6",
         "light-gray": "#be185d"
       }
     },
@@ -2340,8 +2340,8 @@
         {
           "id": "dialog",
           "title": "⌘K dialog",
-          "html": "<!-- <ayy-command> opens its dialog from [data-ayy-open] or with ⌘K / Ctrl+K, and fires \"ayy-select\" with { value }. -->\n<ayy-command shortcut=\"Mod+K\">\n  <button type=\"button\" class=\"ayy-button ayy-button--outline\" aria-haspopup=\"dialog\" data-ayy-open=\"\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Search<span class=\"ayy-shortcut\" data-keys=\"Mod+K\"><span class=\"ayy-sr-only\">Ctrl K</span><kbd class=\"ayy-kbd\" aria-hidden=\"true\">Ctrl</kbd><kbd class=\"ayy-kbd\" aria-hidden=\"true\">K</kbd></span></button>\n  <dialog class=\"ayy-dialog ayy-command\" aria-label=\"Search commands\">\n    <div class=\"ayy-command__search\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" class=\"ayy-command__input\" role=\"combobox\" aria-expanded=\"true\" aria-controls=\"cmd-dialog-1-html\" aria-autocomplete=\"list\" aria-label=\"Search commands\" placeholder=\"Search or jump to…\" autoComplete=\"off\" spellCheck=\"false\" />\n    </div>\n    <div id=\"cmd-dialog-1-html\" class=\"ayy-command__list\" role=\"listbox\" aria-label=\"Search commands\">\n      <div class=\"ayy-command__group\" role=\"group\" aria-labelledby=\"cmd-dialog-2-html\">\n        <div id=\"cmd-dialog-2-html\" class=\"ayy-command__label\" role=\"presentation\">Go to</div>\n        <div id=\"cmd-dialog-3-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"today\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>Today</div>\n        <div id=\"cmd-dialog-4-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"inbox\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M21.5 13.5H16.5743C15.7322 13.5 15.0706 14.2036 14.6995 14.9472C14.2963 15.7551 13.4889 16.5 12 16.5C10.5111 16.5 9.70373 15.7551 9.30054 14.9472C8.92942 14.2036 8.26777 13.5 7.42566 13.5H2.5\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Inbox<span class=\"ayy-command__meta\">12</span></div>\n        <div id=\"cmd-dialog-5-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"settings\" data-keywords=\"preferences\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M21.3175 7.14139L20.8239 6.28479C20.4506 5.63696 20.264 5.31305 19.9464 5.18388C19.6288 5.05472 19.2696 5.15664 18.5513 5.36048L17.3311 5.70418C16.8725 5.80994 16.3913 5.74994 15.9726 5.53479L15.6357 5.34042C15.2766 5.11043 15.0004 4.77133 14.8475 4.37274L14.5136 3.37536C14.294 2.71534 14.1842 2.38533 13.9228 2.19657C13.6615 2.00781 13.3143 2.00781 12.6199 2.00781H11.5051C10.8108 2.00781 10.4636 2.00781 10.2022 2.19657C9.94085 2.38533 9.83106 2.71534 9.61149 3.37536L9.27753 4.37274C9.12465 4.77133 8.84845 5.11043 8.48937 5.34042L8.15249 5.53479C7.73374 5.74994 7.25259 5.80994 6.79398 5.70418L5.57375 5.36048C4.85541 5.15664 4.49625 5.05472 4.17867 5.18388C3.86109 5.31305 3.67445 5.63696 3.30115 6.28479L2.80757 7.14139C2.45766 7.74864 2.2827 8.05227 2.31666 8.37549C2.35061 8.69871 2.58483 8.95918 3.05326 9.48012L4.0843 10.6328C4.3363 10.9518 4.51521 11.5078 4.51521 12.0077C4.51521 12.5078 4.33636 13.0636 4.08433 13.3827L3.05326 14.5354C2.58483 15.0564 2.35062 15.3168 2.31666 15.6401C2.2827 15.9633 2.45766 16.2669 2.80757 16.8741L3.30114 17.7307C3.67443 18.3785 3.86109 18.7025 4.17867 18.8316C4.49625 18.9608 4.85542 18.8589 5.57377 18.655L6.79394 18.3113C7.25263 18.2055 7.73387 18.2656 8.15267 18.4808L8.4895 18.6752C8.84851 18.9052 9.12464 19.2442 9.2775 19.6428L9.61149 20.6403C9.83106 21.3003 9.94085 21.6303 10.2022 21.8191C10.4636 22.0078 10.8108 22.0078 11.5051 22.0078H12.6199C13.3143 22.0078 13.6615 22.0078 13.9228 21.8191C14.1842 21.6303 14.294 21.3003 14.5136 20.6403L14.8476 19.6428C15.0004 19.2442 15.2765 18.9052 15.6356 18.6752L15.9724 18.4808C16.3912 18.2656 16.8724 18.2055 17.3311 18.3113L18.5513 18.655C19.2696 18.8589 19.6288 18.9608 19.9464 18.8316C20.264 18.7025 20.4506 18.3785 20.8239 17.7307L21.3175 16.8741C21.6674 16.2669 21.8423 15.9633 21.8084 15.6401C21.7744 15.3168 21.5402 15.0564 21.0718 14.5354L20.0407 13.3827C19.7887 13.0636 19.6098 12.5078 19.6098 12.0077C19.6098 11.5078 19.7888 10.9518 20.0407 10.6328L21.0718 9.48012C21.5402 8.95918 21.7744 8.69871 21.8084 8.37549C21.8423 8.05227 21.6674 7.74864 21.3175 7.14139Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M15.5195 12C15.5195 13.933 13.9525 15.5 12.0195 15.5C10.0865 15.5 8.51953 13.933 8.51953 12C8.51953 10.067 10.0865 8.5 12.0195 8.5C13.9525 8.5 15.5195 10.067 15.5195 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path></svg>Settings<span class=\"ayy-command__meta\"><span class=\"ayy-shortcut\" data-keys=\"Mod+,\"><span class=\"ayy-sr-only\">Ctrl ,</span><kbd class=\"ayy-kbd\" aria-hidden=\"true\">Ctrl</kbd><kbd class=\"ayy-kbd\" aria-hidden=\"true\">,</kbd></span></span></div>\n      </div>\n      <div class=\"ayy-command__group\" role=\"group\" aria-labelledby=\"cmd-dialog-6-html\">\n        <div id=\"cmd-dialog-6-html\" class=\"ayy-command__label\" role=\"presentation\">Create</div>\n        <div id=\"cmd-dialog-7-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"new-task\" data-keywords=\"add todo\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>New task<span class=\"ayy-command__meta\"><span class=\"ayy-shortcut\" data-keys=\"Mod+N\"><span class=\"ayy-sr-only\">Ctrl N</span><kbd class=\"ayy-kbd\" aria-hidden=\"true\">Ctrl</kbd><kbd class=\"ayy-kbd\" aria-hidden=\"true\">N</kbd></span></span></div>\n      </div>\n      <div class=\"ayy-command__empty\" role=\"presentation\" hidden=\"\">No results</div>\n    </div>\n  </dialog>\n</ayy-command>",
-          "react": "import { Add01Icon, InboxIcon, Search01Icon, Settings01Icon, Sun03Icon } from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport { Button, CommandDialog, CommandGroup, CommandItem, Icon, Shortcut } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [open, setOpen] = useState(false);\n  return (\n    <>\n      <Button variant=\"outline\" aria-haspopup=\"dialog\" onClick={() => setOpen(true)}>\n        <Icon icon={Search01Icon} />\n        Search\n        <Shortcut keys=\"Mod+K\" />\n      </Button>\n      <CommandDialog open={open} onOpenChange={setOpen} placeholder=\"Search or jump to…\">\n        <CommandGroup heading=\"Go to\">\n          <CommandItem value=\"today\" icon={<Icon icon={Sun03Icon} />}>\n            Today\n          </CommandItem>\n          <CommandItem value=\"inbox\" icon={<Icon icon={InboxIcon} />} meta=\"12\">\n            Inbox\n          </CommandItem>\n          <CommandItem value=\"settings\" keywords=\"preferences\" icon={<Icon icon={Settings01Icon} />} shortcut=\"Mod+,\">\n            Settings\n          </CommandItem>\n        </CommandGroup>\n        <CommandGroup heading=\"Create\">\n          <CommandItem value=\"new-task\" keywords=\"add todo\" icon={<Icon icon={Add01Icon} />} shortcut=\"Mod+N\">\n            New task\n          </CommandItem>\n        </CommandGroup>\n      </CommandDialog>\n    </>\n  );\n}"
+          "html": "<!-- <ayy-command> opens its dialog from [data-ayy-open] or with ⌘K / Ctrl+K, and fires \"ayy-select\" with { value }. -->\n<ayy-command shortcut=\"Mod+K\">\n  <button type=\"button\" class=\"ayy-button ayy-button--outline\" aria-haspopup=\"dialog\" data-ayy-open=\"\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Search<span class=\"ayy-shortcut\" data-keys=\"Mod+K\"><span class=\"ayy-sr-only\">Ctrl K</span><kbd class=\"ayy-kbd\" aria-hidden=\"true\">Ctrl</kbd><kbd class=\"ayy-kbd\" aria-hidden=\"true\">K</kbd></span></button>\n  <dialog class=\"ayy-dialog ayy-command\" aria-label=\"Search commands\">\n    <div class=\"ayy-command__search\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" class=\"ayy-command__input\" role=\"combobox\" aria-expanded=\"true\" aria-controls=\"cmd-dialog-1-html\" aria-autocomplete=\"list\" aria-label=\"Search commands\" placeholder=\"Search or jump to…\" autoComplete=\"off\" spellCheck=\"false\" />\n    </div>\n    <div id=\"cmd-dialog-1-html\" class=\"ayy-command__list\" role=\"listbox\" aria-label=\"Search commands\">\n      <div class=\"ayy-command__group\" role=\"group\" aria-labelledby=\"cmd-dialog-2-html\">\n        <div id=\"cmd-dialog-2-html\" class=\"ayy-command__label\" role=\"presentation\">Go to</div>\n        <div id=\"cmd-dialog-3-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"today\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>Today</div>\n        <div id=\"cmd-dialog-4-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"inbox\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M21.5 13.5H16.5743C15.7322 13.5 15.0706 14.2036 14.6995 14.9472C14.2963 15.7551 13.4889 16.5 12 16.5C10.5111 16.5 9.70373 15.7551 9.30054 14.9472C8.92942 14.2036 8.26777 13.5 7.42566 13.5H2.5\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Inbox<span class=\"ayy-command__meta\">12</span></div>\n        <div id=\"cmd-dialog-5-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"settings\" data-keywords=\"preferences\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M21.3175 7.14139L20.8239 6.28479C20.4506 5.63696 20.264 5.31305 19.9464 5.18388C19.6288 5.05472 19.2696 5.15664 18.5513 5.36048L17.3311 5.70418C16.8725 5.80994 16.3913 5.74994 15.9726 5.53479L15.6357 5.34042C15.2766 5.11043 15.0004 4.77133 14.8475 4.37274L14.5136 3.37536C14.294 2.71534 14.1842 2.38533 13.9228 2.19657C13.6615 2.00781 13.3143 2.00781 12.6199 2.00781H11.5051C10.8108 2.00781 10.4636 2.00781 10.2022 2.19657C9.94085 2.38533 9.83106 2.71534 9.61149 3.37536L9.27753 4.37274C9.12465 4.77133 8.84845 5.11043 8.48937 5.34042L8.15249 5.53479C7.73374 5.74994 7.25259 5.80994 6.79398 5.70418L5.57375 5.36048C4.85541 5.15664 4.49625 5.05472 4.17867 5.18388C3.86109 5.31305 3.67445 5.63696 3.30115 6.28479L2.80757 7.14139C2.45766 7.74864 2.2827 8.05227 2.31666 8.37549C2.35061 8.69871 2.58483 8.95918 3.05326 9.48012L4.0843 10.6328C4.3363 10.9518 4.51521 11.5078 4.51521 12.0077C4.51521 12.5078 4.33636 13.0636 4.08433 13.3827L3.05326 14.5354C2.58483 15.0564 2.35062 15.3168 2.31666 15.6401C2.2827 15.9633 2.45766 16.2669 2.80757 16.8741L3.30114 17.7307C3.67443 18.3785 3.86109 18.7025 4.17867 18.8316C4.49625 18.9608 4.85542 18.8589 5.57377 18.655L6.79394 18.3113C7.25263 18.2055 7.73387 18.2656 8.15267 18.4808L8.4895 18.6752C8.84851 18.9052 9.12464 19.2442 9.2775 19.6428L9.61149 20.6403C9.83106 21.3003 9.94085 21.6303 10.2022 21.8191C10.4636 22.0078 10.8108 22.0078 11.5051 22.0078H12.6199C13.3143 22.0078 13.6615 22.0078 13.9228 21.8191C14.1842 21.6303 14.294 21.3003 14.5136 20.6403L14.8476 19.6428C15.0004 19.2442 15.2765 18.9052 15.6356 18.6752L15.9724 18.4808C16.3912 18.2656 16.8724 18.2055 17.3311 18.3113L18.5513 18.655C19.2696 18.8589 19.6288 18.9608 19.9464 18.8316C20.264 18.7025 20.4506 18.3785 20.8239 17.7307L21.3175 16.8741C21.6674 16.2669 21.8423 15.9633 21.8084 15.6401C21.7744 15.3168 21.5402 15.0564 21.0718 14.5354L20.0407 13.3827C19.7887 13.0636 19.6098 12.5078 19.6098 12.0077C19.6098 11.5078 19.7888 10.9518 20.0407 10.6328L21.0718 9.48012C21.5402 8.95918 21.7744 8.69871 21.8084 8.37549C21.8423 8.05227 21.6674 7.74864 21.3175 7.14139Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M15.5195 12C15.5195 13.933 13.9525 15.5 12.0195 15.5C10.0865 15.5 8.51953 13.933 8.51953 12C8.51953 10.067 10.0865 8.5 12.0195 8.5C13.9525 8.5 15.5195 10.067 15.5195 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path></svg>Settings<span class=\"ayy-command__meta\"><span class=\"ayy-shortcut\" data-keys=\"Mod+,\"><span class=\"ayy-sr-only\">Ctrl ,</span><kbd class=\"ayy-kbd\" aria-hidden=\"true\">Ctrl</kbd><kbd class=\"ayy-kbd\" aria-hidden=\"true\">,</kbd></span></span></div>\n      </div>\n      <div class=\"ayy-command__group\" role=\"group\" aria-labelledby=\"cmd-dialog-6-html\">\n        <div id=\"cmd-dialog-6-html\" class=\"ayy-command__label\" role=\"presentation\">Create</div>\n        <div id=\"cmd-dialog-7-html\" class=\"ayy-command__item\" role=\"option\" data-value=\"new-task\" data-keywords=\"add todo\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>New task<span class=\"ayy-command__meta\"><span class=\"ayy-shortcut\" data-keys=\"Mod+N\"><span class=\"ayy-sr-only\">Ctrl N</span><kbd class=\"ayy-kbd\" aria-hidden=\"true\">Ctrl</kbd><kbd class=\"ayy-kbd\" aria-hidden=\"true\">N</kbd></span></span></div>\n      </div>\n      <div class=\"ayy-command__empty\" role=\"presentation\" hidden=\"\">No results</div>\n    </div>\n    <div class=\"ayy-command__footer\"><span><kbd class=\"ayy-kbd\">↑</kbd> <kbd class=\"ayy-kbd\">↓</kbd> to move</span><span><kbd class=\"ayy-kbd\">↵</kbd> to run</span><span><kbd class=\"ayy-kbd\">esc</kbd> to close</span></div>\n  </dialog>\n</ayy-command>",
+          "react": "import { Add01Icon, InboxIcon, Search01Icon, Settings01Icon, Sun03Icon } from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport { Button, CommandDialog, CommandGroup, CommandItem, Icon, Kbd, Shortcut } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [open, setOpen] = useState(false);\n  return (\n    <>\n      <Button variant=\"outline\" aria-haspopup=\"dialog\" onClick={() => setOpen(true)}>\n        <Icon icon={Search01Icon} />\n        Search\n        <Shortcut keys=\"Mod+K\" />\n      </Button>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        placeholder=\"Search or jump to…\"\n        footer={\n          <>\n            <span>\n              <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move\n            </span>\n            <span>\n              <Kbd>↵</Kbd> to run\n            </span>\n            <span>\n              <Kbd>esc</Kbd> to close\n            </span>\n          </>\n        }\n      >\n        <CommandGroup heading=\"Go to\">\n          <CommandItem value=\"today\" icon={<Icon icon={Sun03Icon} />}>\n            Today\n          </CommandItem>\n          <CommandItem value=\"inbox\" icon={<Icon icon={InboxIcon} />} meta=\"12\">\n            Inbox\n          </CommandItem>\n          <CommandItem value=\"settings\" keywords=\"preferences\" icon={<Icon icon={Settings01Icon} />} shortcut=\"Mod+,\">\n            Settings\n          </CommandItem>\n        </CommandGroup>\n        <CommandGroup heading=\"Create\">\n          <CommandItem value=\"new-task\" keywords=\"add todo\" icon={<Icon icon={Add01Icon} />} shortcut=\"Mod+N\">\n            New task\n          </CommandItem>\n        </CommandGroup>\n      </CommandDialog>\n    </>\n  );\n}"
         }
       ],
       "files": {
@@ -2497,7 +2497,7 @@
       "slug": "theme-toggle",
       "status": "beta",
       "category": "Actions",
-      "description": "An icon button that opens a menu of every theme (System, Dark, Dark soft, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.",
+      "description": "An icon button that opens a menu of every theme (System, Dark, Dark contrast, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint.",
       "aka": [
         "theme-toggle",
         "theme-switch",
@@ -2566,7 +2566,7 @@
             "props": {
               "onValueChange": "(theme: ThemeMode) => void",
               "aria-label": "Default \"Theme\" (translate it).",
-              "labels": "Menu item text per theme, for translation ({ system: \"Système\", dark: \"Sombre\" }). Defaults: System, Dark, Dark soft, Light, Light gray."
+              "labels": "Menu item text per theme, for translation ({ system: \"Système\", dark: \"Sombre\" }). Defaults: System, Dark, Dark contrast, Light, Light gray."
             }
           }
         }
@@ -2590,7 +2590,7 @@
         {
           "id": "basic",
           "title": "Theme menu",
-          "html": "<!-- <ayy-theme-toggle> (@danitesler/ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or \"system\". -->\n<ayy-theme-toggle>\n  <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\" aria-label=\"Theme\" aria-haspopup=\"menu\" popovertarget=\"theme-menu-html\">\n    <svg class=\"ayy-icon ayy-theme-toggle__moon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n    <svg class=\"ayy-icon ayy-theme-toggle__sun\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n  </button>\n  <div class=\"ayy-menu\" id=\"theme-menu-html\" popover role=\"menu\" aria-label=\"Theme\">\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"true\" data-value=\"system\">System</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"dark\">Dark</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"dark-soft\">Dark soft</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"light\">Light</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"light-gray\">Light gray</button>\n  </div>\n</ayy-theme-toggle>",
+          "html": "<!-- <ayy-theme-toggle> (@danitesler/ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or \"system\". -->\n<ayy-theme-toggle>\n  <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle\" aria-label=\"Theme\" aria-haspopup=\"menu\" popovertarget=\"theme-menu-html\">\n    <svg class=\"ayy-icon ayy-theme-toggle__moon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n    <svg class=\"ayy-icon ayy-theme-toggle__sun\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>\n  </button>\n  <div class=\"ayy-menu\" id=\"theme-menu-html\" popover role=\"menu\" aria-label=\"Theme\">\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"true\" data-value=\"system\">System</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"dark\">Dark</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"dark-contrast\">Dark contrast</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"light\">Light</button>\n    <button type=\"button\" class=\"ayy-menu__item ayy-theme-toggle__item\" role=\"menuitemradio\" aria-checked=\"false\" data-value=\"light-gray\">Light gray</button>\n  </div>\n</ayy-theme-toggle>",
           "react": "import { ThemeToggle } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return <ThemeToggle />;\n}"
         }
       ],
@@ -4164,6 +4164,7 @@
         "ayy-search-bar__field": "The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.",
         "ayy-search-bar__input": "<input type=\"search\" enterkeyhint=\"search\" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.",
         "ayy-search-bar__clear": "A button after the input with an × and aria-label=\"Clear search\". Hidden while the field is empty; @danitesler/ayywi/elements empties the field on click and fires input.",
+        "ayy-search-bar__shortcut": "Keyboard shortcut hint shown at the end of the field (e.g. ⌘K). Hides while typing.",
         "ayy-search-bar__cancel": "A text button after the field that ends the search (\"Cancel\")."
       },
       "variants": {
@@ -4230,6 +4231,7 @@
               "clearLabel": "string — default \"Clear search\"",
               "cancelText": "string — default \"Cancel\"",
               "size": "\"md\" | \"lg\"",
+              "shortcut": "string — keyboard shortcut hint (e.g. \"Mod+K\"); hidden while typing",
               "formProps": "FormHTMLAttributes — props for the <form>"
             }
           }

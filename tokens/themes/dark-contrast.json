@@ -1,0 +1,21 @@
+{
+  "$description": "Pure black dark theme with higher contrast: a #000000 page, #0a0a0a cards with a step up for popovers, white text and crisp highlights. Every text colour still meets WCAG AA.",
+  "$extensions": { "ayywi": { "base": "dark" } },
+  "color": {
+    "bg": { "$type": "color", "$value": "{palette.neutral.0}" },
+    "surface": { "$type": "color", "$value": "{palette.neutral.4}" },
+    "surface-raised": { "$type": "color", "$value": "{palette.neutral.8}" },
+    "text": { "$type": "color", "$value": "{palette.neutral.100}" },
+    "muted": { "$type": "color", "$value": "{palette.neutral.58}" },
+    "border": { "$type": "color", "$value": "{palette.neutral.15}" },
+    "ring": { "$type": "color", "$value": "{palette.neutral.100}" },
+    "primary": { "$type": "color", "$value": "{palette.neutral.100}" },
+    "primary-fg": { "$type": "color", "$value": "{palette.neutral.0}" },
+    "destructive": { "$type": "color", "$value": "{palette.red.71}" },
+    "info": { "$type": "color", "$value": "{palette.blue.68}" },
+    "ai-active": { "$type": "color", "$value": "{palette.violet.77}" },
+    "glow": { "$type": "color", "$value": "{palette.neutral.100}" },
+    "glass": { "$type": "color", "$value": "#000000bf" },
+    "overlay": { "$type": "color", "$value": "#000000bf" }
+  }
+}

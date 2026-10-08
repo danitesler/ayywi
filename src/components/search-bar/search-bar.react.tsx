@@ -2,6 +2,7 @@ import { forwardRef, useRef, useState, type FormHTMLAttributes, type InputHTMLAt
 import { Cancel01Icon, Search01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { Icon } from "../icon/icon.react";
+import { Shortcut } from "../shortcut/shortcut.react";
 import { searchBarClass } from "./search-bar";
 
 export interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "size" | "onChange" | "onSubmit"> {
@@ -20,6 +21,8 @@ export interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   /** The Cancel button's text. Default "Cancel". */
   cancelText?: string;
   size?: "md" | "lg";
+  /** Keyboard shortcut hint shown at the end of the field (e.g. "Mod+E"). Hides while typing. */
+  shortcut?: string;
   /** Props for the <form role="search">. */
   formProps?: FormHTMLAttributes<HTMLFormElement>;
 }
@@ -36,6 +39,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(function S
     clearLabel = "Clear search",
     cancelText = "Cancel",
     size,
+    shortcut,
     placeholder = "Search",
     formProps,
     className,
@@ -74,6 +78,11 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(function S
           onChange={(event) => set(event.currentTarget.value)}
           {...props}
         />
+        {shortcut && (
+          <span className="ayy-search-bar__shortcut" hidden={!!text}>
+            <Shortcut keys={shortcut} />
+          </span>
+        )}
         <button
           type="button"
           className="ayy-search-bar__clear"

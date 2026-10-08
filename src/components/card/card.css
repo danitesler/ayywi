@@ -60,8 +60,11 @@
 }
 
 .ayy-card__content {
-  padding-inline: var(--ayy-space-5);
-  padding-block-end: var(--ayy-space-5);
+  padding: var(--ayy-space-5);
+}
+
+.ayy-card__header + .ayy-card__content {
+  padding-block-start: 0;
 }
 
 /* Text straight inside the content (a <p>, a list) doesn't add its own margin above or below. */

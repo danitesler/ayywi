@@ -33,7 +33,7 @@ Check `package.json` and existing components before choosing. Match what's there
 2. No hardcoded colours, in stylesheets or inline styles: `var(--ayy-color-*)`, the wash/line tokens, or `color-mix(in srgb, var(--ayy-color-text) N%, transparent)`.
 3. Logical properties only (`margin-inline-start`, `padding-inline`, `inset-inline-end`, `inline-size`, `text-align: start`). No `left`/`right`, no `:dir()`.
 4. Spacing, sizes, radius, type, shadow and motion from tokens. Lay out with `.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid` and `.ayy-split` (gap via `--ayy-gap`) instead of new flex CSS.
-5. No per-theme colour code. Tokens switch with `data-theme` (`dark`, `light`, `dark-soft`, `light-gray`) or the OS preference. Same for `data-density` — don't hand-size controls.
+5. No per-theme colour code. Tokens switch with `data-theme` (`dark`, `light`, `dark-contrast`, `light-gray`) or the OS preference. Same for `data-density` — don't hand-size controls.
 6. Don't write breakpoints for navigation: App shell, Navbar and Pagination switch at 48rem on their own; `.ayy-grid` and `.ayy-split` adapt to their container.
 7. Accessibility is part of the component: labels for every control, `aria-label` on icon-only buttons, never remove focus rings, one `<h1>` per page.
 8. State goes in native/ARIA attributes (`disabled`, `checked`, `aria-selected`, `aria-current`, `aria-invalid`, `aria-busy`, `open`) — the CSS reads them.
@@ -106,5 +106,5 @@ Compose it from existing components, utilities and tokens in the app's own code.
 
 - Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every error. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size and other icon sets.
 - Look at the screen below 48rem: an app shows its bottom nav, a site's navbar folds into a menu, nothing scrolls sideways.
-- If the app has a theme switch, check dark and light (and dark-soft, light-gray). If it supports RTL, check with `dir="rtl"`.
+- If the app has a theme switch, check dark and light (and dark-contrast, light-gray). If it supports RTL, check with `dir="rtl"`.
 - Interactive pieces work by keyboard: Tab to reach, Enter/Space to activate, Esc closes dialogs, menus and drawers, arrows move between tabs and segments.

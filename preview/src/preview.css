@@ -99,12 +99,26 @@
 .pv-changelog__list {
   display: flex;
   flex-direction: column;
-  gap: var(--ayy-space-3);
+  gap: var(--ayy-space-4);
   margin: 0;
   padding-inline-start: var(--ayy-space-5);
   font-size: var(--ayy-text-sm);
   line-height: 1.65;
-  max-inline-size: 72ch;
+}
+
+.pv-changelog__item {
+  display: list-item;
+}
+
+.pv-changelog__title {
+  font-weight: var(--ayy-weight-semibold);
+  color: var(--ayy-color-text);
+}
+
+.pv-changelog__desc {
+  margin-block-start: 2px;
+  color: var(--ayy-color-text-soft);
+  line-height: var(--ayy-leading-normal);
 }
 
 .pv-changelog__list ul {
@@ -153,44 +167,10 @@
   display: contents;
 }
 
-.pv-sidebar__head .pv-brand {
-  margin-block-end: 0;
-}
-
-.pv-search {
-  display: grid;
-  grid-template-rows: 0fr;
-  opacity: 0;
-  transition:
-    grid-template-rows var(--ayy-duration-base) var(--ayy-ease-out-expo),
-    opacity var(--ayy-duration-fast) var(--ayy-ease-standard);
-}
-
-.pv-search[data-open="true"] {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
-/* Room for the focus ring, which the clipped row would otherwise cut off. */
-.pv-search__inner {
-  min-block-size: 0;
-  overflow: hidden;
-  padding: 3px;
-  margin: -3px;
-}
-
-.pv-search[data-open="true"] .pv-search__inner {
-  margin-block-end: calc(var(--ayy-space-3) - 3px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pv-search {
-    transition: none;
-  }
-}
-
-.pv-search__input {
-  inline-size: 100%;
+.pv-sidebar__top .ayy-search-bar,
+.pv-sidebar__top .ayy-search-bar__field,
+.pv-sidebar__top .ayy-search-bar__input {
+  cursor: pointer;
 }
 
 .pv-nav {
@@ -273,12 +253,6 @@
   margin: 0;
 }
 
-.pv-title-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--ayy-space-3);
-}
 
 .pv-h {
   margin: 0 0 var(--ayy-space-2);
@@ -701,6 +675,22 @@
   gap: var(--ayy-space-6);
 }
 
+.pv-page--compact .pv-code {
+  max-block-size: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pv-page--compact .pv-code__bar {
+  flex: none;
+}
+
+.pv-page--compact .pv-code__pre {
+  flex: 1;
+  min-block-size: 0;
+  max-block-size: 400px;
+}
+
 .pv-page--compact .pv-h--section {
   margin-block-start: var(--ayy-space-10);
   display: flex;
@@ -1007,28 +997,7 @@
 }
 
 .pv-showcase__card {
-  display: flex;
-  flex-direction: column;
   block-size: 100%;
-  overflow: hidden;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-surface);
-  color: inherit;
-  text-decoration: none;
-  transition:
-    border-color var(--ayy-duration-fast) var(--ayy-ease-standard),
-    transform var(--ayy-duration-base) var(--ayy-ease-standard);
-}
-
-.pv-showcase__card:hover {
-  border-color: var(--ayy-color-line-hover);
-  transform: translateY(-2px);
-}
-
-.pv-showcase__card:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
 }
 
 .pv-showcase__thumb {
@@ -1051,12 +1020,14 @@
 }
 
 .pv-showcase__name {
+  margin: 0;
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-lg);
   font-weight: var(--ayy-weight-medium);
 }
 
 .pv-showcase__desc {
+  margin: 0;
   color: var(--ayy-color-muted);
   line-height: 1.5;
 }
@@ -1224,7 +1195,7 @@
 }
 
 .pv-example-card {
-  overflow: hidden;
+  block-size: 100%;
 }
 
 .pv-doors {
@@ -1235,6 +1206,46 @@
   margin-block-start: var(--ayy-space-8);
   padding-block-start: var(--ayy-space-6);
   border-block-start: 1px solid var(--ayy-color-hairline);
+}
+
+.pv-intro {
+  display: grid;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-4);
+}
+
+.pv-intro__when {
+  margin: 0;
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-intro__title {
+  margin: var(--ayy-space-2) 0 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  font-weight: 600;
+}
+
+.pv-intro__list {
+  display: grid;
+  gap: var(--ayy-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-sm);
+}
+
+.pv-intro__list li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ayy-space-2);
+}
+
+.pv-intro__check {
+  flex: none;
+  color: var(--ayy-color-primary);
+  translate: 0 0.2em;
 }
 
 /* The fill-in sentence: dropdowns and inputs as wide as their words. */
@@ -1285,6 +1296,44 @@
   line-height: 1.5;
 }
 
+.pv-madlib .pv-slot--trigger.ayy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: auto;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-2);
+  border: 1px dashed var(--ayy-color-line-hover);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-weight: inherit;
+  line-height: 1.5;
+  vertical-align: baseline;
+  transform: none;
+}
+
+.pv-madlib .pv-slot--trigger.ayy-button:hover {
+  transform: none;
+  border-color: var(--ayy-color-line-strong);
+  background-color: var(--ayy-color-wash-active);
+  box-shadow: none;
+}
+
+.pv-madlib .pv-slot--trigger.ayy-button:active {
+  transform: none;
+}
+
+.pv-madlib .pv-slot__chevron {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
 /* The slot padding would cover the combobox chevron: keep its room. */
 .pv-madlib .ayy-combobox > .ayy-input {
   padding-inline-end: calc(var(--ayy-space-2) + var(--ayy-size-icon-sm) + var(--ayy-space-2));
@@ -1315,6 +1364,54 @@
   margin-block-end: var(--ayy-space-3);
 }
 
+.pv-supported {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2) var(--ayy-space-3);
+  margin-block-start: var(--ayy-space-5);
+  margin-block-end: var(--ayy-space-3);
+  font-size: var(--ayy-text-sm);
+}
+
+.pv-supported__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  font-weight: var(--ayy-weight-medium);
+  color: var(--ayy-color-text);
+}
+
+.pv-supported__check {
+  color: var(--ayy-color-primary);
+}
+
+.pv-supported__divider {
+  color: var(--ayy-color-muted);
+}
+
+.pv-supported__icons {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+}
+
+.pv-supported__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ayy-color-text-soft);
+  transition: color var(--ayy-duration-fast) var(--ayy-ease);
+}
+
+.pv-supported__icon:hover {
+  color: var(--ayy-color-text);
+}
+
+.pv-supported__more {
+  color: var(--ayy-color-muted);
+}
+
 .pv-paste {
   inline-size: 100%;
 }
@@ -1323,143 +1420,7 @@
   padding: var(--ayy-space-4);
 }
 
-/* Two a row on a phone, four on a wide screen. */
-.pv-fixes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(14rem, calc(50% - var(--ayy-space-2))), 1fr));
-  gap: var(--ayy-space-3);
-}
 
-.pv-fix .ayy-card__footer {
-  margin-block-start: auto;
-}
-
-/* Before / after. */
-.pv-compare {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-  gap: var(--ayy-space-5);
-  align-items: start;
-}
-
-.pv-compare__side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-3);
-  margin: 0;
-}
-
-.pv-compare__label {
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-eyebrow);
-  text-transform: uppercase;
-}
-
-/* What an AI tool writes with no system: each piece styled on its own. Deliberately inconsistent, still tokens. */
-.pv-before {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: var(--ayy-space-3) var(--ayy-space-6) var(--ayy-space-2) var(--ayy-space-3);
-  border: 2px solid color-mix(in srgb, var(--ayy-color-text) 22%, transparent);
-  border-radius: 3px;
-  background-color: color-mix(in srgb, var(--ayy-color-text) 4%, var(--ayy-color-bg));
-  color: var(--ayy-color-text);
-}
-
-.pv-before__head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-block-end: 14px;
-}
-
-.pv-before__title {
-  font-family: var(--ayy-font-mono);
-  font-size: var(--ayy-text-xs);
-  font-weight: var(--ayy-weight-bold);
-  letter-spacing: 0.2em;
-}
-
-.pv-before__btn {
-  display: inline-block;
-}
-
-.pv-before__btn--a {
-  padding: 1px 15px;
-  border: 1px solid var(--ayy-accent-product);
-  border-radius: var(--ayy-radius-pill);
-  font-size: var(--ayy-text-lg);
-}
-
-.pv-before__btn--b {
-  padding: 9px 5px;
-  background-color: color-mix(in srgb, var(--ayy-accent-ai) 30%, transparent);
-  font-size: var(--ayy-text-2xs);
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.pv-before__btn--c {
-  color: var(--ayy-color-text-soft);
-  font-size: var(--ayy-text-md);
-  font-style: italic;
-  text-decoration: underline;
-}
-
-.pv-before__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.pv-before__row--0 {
-  padding: 10px 4px;
-  font-size: var(--ayy-text-md);
-}
-
-.pv-before__row--1 {
-  padding: 4px 12px;
-  border-radius: var(--ayy-radius-xl);
-  background-color: color-mix(in srgb, var(--ayy-color-text) 9%, transparent);
-  font-size: var(--ayy-text-xs);
-}
-
-.pv-before__row--2 {
-  padding: 14px 0 6px;
-  border-block-start: 1px dashed color-mix(in srgb, var(--ayy-color-text) 35%, transparent);
-  font-family: var(--ayy-font-heading);
-  font-weight: var(--ayy-weight-semibold);
-}
-
-.pv-before__tag--0 {
-  padding: 0 4px;
-  border: 1px solid var(--ayy-accent-marketing);
-  border-radius: 2px;
-  font-size: var(--ayy-text-2xs);
-}
-
-.pv-before__tag--1 {
-  padding: 4px 10px;
-  border-radius: var(--ayy-radius-pill);
-  background-color: color-mix(in srgb, var(--ayy-accent-system) 30%, transparent);
-  font-size: var(--ayy-text-md);
-}
-
-.pv-before__tag--2 {
-  font-size: var(--ayy-text-xs);
-  font-weight: var(--ayy-weight-bold);
-  text-transform: uppercase;
-}
-
-.pv-before__foot {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-block-start: 22px;
-}
 
 /* The long slot gets its own line and grows with what's typed. */
 .pv-slot.pv-slot--long {

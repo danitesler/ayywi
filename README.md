@@ -17,7 +17,7 @@ pnpm install
 pnpm preview    # http://localhost:5173
 ```
 
-Every component with copy-ready HTML and React (under each example's Code), a Copy for AI button per component, seven full example apps (dashboard, marketing site, inbox, settings, tracker, store, booking) at desktop, tablet and phone sizes, search (<kbd>/</kbd> or <kbd>⌘</kbd><kbd>K</kbd>), and a menu for theme and density. The built site (`pnpm preview:build`) also hosts `dist/ayywi.min.css`, `dist/elements.global.js`, the fonts, `llms-full.txt` and a page per component (`llms/<slug>.md`), so agents can use ayywi from it without installing anything; each build publishes its runtime files under `v/<release>/` too, and the prompts link those, so a later release can't restyle an app.
+Every component with copy-ready HTML and React (under each example's Code), seven full example apps (dashboard, marketing site, inbox, settings, tracker, store, booking) at desktop, tablet and phone sizes, search (<kbd>/</kbd> or <kbd>⌘</kbd><kbd>K</kbd>), and a menu for theme and density. The built site (`pnpm preview:build`) also hosts `dist/ayywi.min.css`, `dist/elements.global.js`, the fonts, `llms-full.txt` and a page per component (`llms/<slug>.md`), so agents can use ayywi from it without installing anything; each build publishes its runtime files under `v/<release>/` too, and the prompts link those, so a later release can't restyle an app.
 
 ## Install
 
@@ -83,14 +83,14 @@ import { Button, toast } from "@danitesler/ayywi/react";
 ## Theme and density
 
 ```html
-<html data-theme="dark-soft" data-density="comfortable">
+<html data-theme="dark-contrast" data-density="comfortable">
 ```
 
 | Theme | Looks like |
 |---|---|
 | *(none)* | follows the OS, dark or light |
 | `dark` / `light` | the defaults |
-| `dark-soft` | near-black page, cards a step up, white text |
+| `dark-contrast` | pure-black page, high contrast cards |
 | `light-gray` | white cards on a grey page |
 
 Density is `compact` by default; phones and tablets get `touch` automatically. Both attributes work on any element, not just `<html>`. From JS, use `setTheme()` and `setDensity()`, and put `themeInitScript` (or `dist/theme-init.js`) in `<head>` to avoid a flash on load; the Theme toggle restores a saved choice by itself too.
@@ -129,7 +129,7 @@ Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ay
 
 ## AI setup
 
-The quickest way is the preview's Get started page. Builders pick what they're making, fill in one sentence, pick their tool (Lovable, Bolt, v0, Replit, Cursor, Claude Code, or a chat) and copy one prompt: it links the CSS and the elements script the site hosts, so nothing gets installed, and carries the rules and every class name. Fix-it prompts follow for when something looks off. Developers get the same three routes (link the files, install the package, a chat with no project) under "I'm a developer".
+The quickest way is the preview's Get started page. Builders pick what they're making, fill in one sentence, and copy one prompt that works across Lovable, Bolt, v0, Cursor, Replit, Claude, ChatGPT and more: it links the CSS and the elements script the site hosts, so nothing gets installed, and carries the rules and every class name. Fix-it prompts follow for when something looks off. Developers get dedicated tabs to link the files, install the package, or run in a chat with no project.
 
 With the package installed, in the app that uses ayywi:
 
@@ -139,7 +139,7 @@ npx ayywi init --force  # later: refresh them after upgrading ayywi
 npx ayywi lint src      # checks the code for misuse
 ```
 
-After that the agent picks ayywi up on its own. Add `ayywi lint --max-warnings 0` to CI to catch mistakes whoever made them.
+After that the agent picks ayywi up on its own. Run `ayywi lint --max-warnings 0` in your build to catch mistakes whoever made them.
 
 ## Working on ayywi
 
@@ -150,7 +150,7 @@ pnpm test:e2e                                             # for visual or intera
 
 Conventions and repo layout are in [AGENTS.md](AGENTS.md). Changes go in [CHANGELOG.md](CHANGELOG.md); renaming or removing a class, token or prop is a breaking change.
 
-**Publishing:** the preview deploys to GitHub Pages from `main` (enable Settings → Pages → *GitHub Actions*; private repos need a paid plan), or build it with `pnpm preview:build` and host `preview/dist` anywhere. Publish the package with `npm publish` (it is scoped, `publishConfig.access` is `public`; `prepublishOnly` runs `pnpm check`). Bump `version` in package.json and add the release to CHANGELOG.md first.
+**Publishing:** build the preview with `pnpm preview:build` and host `preview/dist` anywhere. Publish the package with `npm publish` (it is scoped, `publishConfig.access` is `public`; `prepublishOnly` runs `pnpm check`). Bump `version` in package.json and add the release to CHANGELOG.md first.
 
 ## License
 

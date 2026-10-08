@@ -18,7 +18,7 @@ Zero runtime dependencies. React is an optional peer.
 ```
 tokens/tokens.json          SOURCE OF TRUTH for tokens (DTCG-style; $value = dark, $extensions.ayywi.light = light,
                             $extensions.ayywi.density = comfortable/touch). palette.* = primitives, the rest = semantic
-tokens/themes/*.json        extra themes (dark-soft, light-gray): overrides of a base theme's colours, compiled into tokens.css
+tokens/themes/*.json        extra themes (dark-contrast, light-gray): overrides of a base theme's colours, compiled into tokens.css
 src/css/tokens.css          generated
 src/tokens.ts               generated
 src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion, --_ayy-dir
@@ -42,7 +42,7 @@ ai/                         consumer kit (skill, AGENTS snippet, Cursor rule) �
 preview/                    Vite + React component browser (discovers components automatically), the showcase apps
                             (preview/src/showcase/apps.tsx) and Get started (prompts in preview/src/prompts.ts); its build also
                             hosts dist/, the llms files, the AI kit and the Tailwind files, and each release's runtime files
-                            under v/<release>/ (scripts/keep-versions.mjs carries the earlier ones over on every Pages deploy)
+                            under v/<release>/ (scripts/keep-versions.mjs carries the earlier ones over on every deploy)
 ```
 
 ## Commands
@@ -93,13 +93,31 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - A selector list with a pseudo-element the browser doesn't know (`::-moz-range-thumb` in Chromium) is dropped whole. Give each vendor pseudo-element its own rule.
 - Chromium can't fill a range track up to the thumb. `.ayy-slider` reads `--ayy-value`, which React and the page-wide `input` listener in `@danitesler/ayywi/elements` keep in step; HTML examples set the starting one inline.
 - The page-wide helpers in `@danitesler/ayywi/elements` (number field steps) listen on `document`. React's own handlers call `preventDefault()` so the step doesn't happen twice when both are loaded.
-- Get started's prompts link `v/<release>/dist/…` on the published site (a path whose files never change) and the public site's latest from localhost, never localhost itself. The Pages workflow sets `VITE_AYYWI_SITE` from `configure-pages`.
+- Get started's prompts link `v/<release>/dist/…` on the published site (a path whose files never change) and the public site's latest from localhost, never localhost itself. Set `VITE_AYYWI_SITE` when building for another host.
 - The App shell and Navbar switch their phone layouts at 48rem with media queries, so component examples in the preview only show them in a narrow window. The showcase apps load in an iframe at real device widths for that reason; e2e tests set the viewport.
 - One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.
 - Example HTML should match what the React example renders. Write the `.tsx` first and render it to markup (react-dom/server) rather than retyping it; only custom-element wrappers (`<ayy-app-shell>`, `<ayy-navbar>`…) and comments differ.
 - JSON under `src/components/` and `tokens/` is hand-formatted (short objects on one line). Edit it as text or keep the existing layout; a full `JSON.stringify` rewrite buries the real change in the diff.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
-## Versioning
+## Versioning and changelog rules
 
-Semver. Renaming/removing a class, token or prop is **breaking**. Record every change in `CHANGELOG.md`.
+Semver: renaming or removing a class, token or prop is **breaking**.
+
+Record every change in `CHANGELOG.md` under the active release heading (`## Unreleased` or the version being prepared). Every changelog item must be short, specific, and easy for anyone on a cross-functional team to understand:
+- **Link actual components**: Bold and link the component to its preview route (`**[Button](#/button)**`, `**[Dialog](#/dialog)**`…). For non-component areas, bold the area name (`**Tokens**`, `**Brand System**`, `**Linter**`).
+- **Separate rows for title and description**: The title goes on the first bullet line, and the description goes on the next line indented with two spaces.
+- **Before → After**: Clearly state what it was before and what it is now (`<was X> → <now Y>`).
+- **No fluff or internal math**: Keep it to one short sentence without deep implementation mechanics, AST details, or math formulas.
+- **Categorize correctly**: Group under `### Added`, `### Changed`, `### Fixed`, or `### Removed`. Breaking changes note `(**Breaking**)` in the title.
+
+Entry format:
+- Added:
+  - **[Component](#/slug)**
+    New component — <concise 1-line summary>.
+- Changed / Fixed:
+  - **[Component](#/slug)**
+    <was X> → <now Y>.
+- Removed:
+  - **[Component](#/slug)** (**Breaking**)
+    <was X> removed → <now use Y>.

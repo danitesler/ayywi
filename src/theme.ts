@@ -1,6 +1,6 @@
 import { themeBase, themes, type ThemeName } from "./tokens";
 
-/** A theme name ("dark", "light", "dark-soft", "light-gray"), or "system" to follow the OS. */
+/** A theme name ("dark", "light", "dark-contrast", "light-gray"), or "system" to follow the OS. */
 export type ThemeMode = ThemeName | "system";
 /** The theme an element actually renders in. */
 export type ResolvedTheme = ThemeName;
@@ -54,7 +54,7 @@ export function getResolvedTheme(el: Element = document.documentElement): Resolv
   return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 }
 
-/** "light" or "dark": the scheme `el` renders in (dark-soft counts as dark). */
+/** "light" or "dark": the scheme `el` renders in (dark-contrast counts as dark). */
 export function getColorScheme(el: Element = document.documentElement): ColorScheme {
   return themeBase[getResolvedTheme(el)];
 }

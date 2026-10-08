@@ -11,6 +11,7 @@
     "ayy-search-bar__field": "The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.",
     "ayy-search-bar__input": "<input type=\"search\" enterkeyhint=\"search\" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.",
     "ayy-search-bar__clear": "A button after the input with an × and aria-label=\"Clear search\". Hidden while the field is empty; @danitesler/ayywi/elements empties the field on click and fires input.",
+    "ayy-search-bar__shortcut": "Keyboard shortcut hint shown at the end of the field (e.g. ⌘K). Hides while typing.",
     "ayy-search-bar__cancel": "A text button after the field that ends the search (\"Cancel\")."
   },
   "variants": {
@@ -50,6 +51,7 @@
           "clearLabel": "string — default \"Clear search\"",
           "cancelText": "string — default \"Cancel\"",
           "size": "\"md\" | \"lg\"",
+          "shortcut": "string — keyboard shortcut hint (e.g. \"Mod+K\"); hidden while typing",
           "formProps": "FormHTMLAttributes — props for the <form>"
         }
       }

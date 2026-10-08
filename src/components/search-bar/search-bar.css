@@ -108,6 +108,20 @@
   display: none;
 }
 
+/* Keyboard shortcut preview: shown at the inline end while the field is empty. */
+.ayy-search-bar__shortcut {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  margin-inline-end: var(--ayy-space-1);
+  pointer-events: none;
+}
+
+.ayy-search-bar__input:not(:placeholder-shown) ~ .ayy-search-bar__shortcut,
+.ayy-search-bar__shortcut[hidden] {
+  display: none;
+}
+
 /* Cancel: a text button that ends the search (closes it, leaves the screen). */
 .ayy-search-bar__cancel {
   flex: none;
