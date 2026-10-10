@@ -44,6 +44,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Added global `data-brand` attribute to apply generated brand styles across components.
 - **[App Shell](#/app-shell)**
   Standard shell layout only → added `ayy-app-shell--settings` full-screen settings pattern with phone drill-down navigation.
+- **[App Shell](#/app-shell)**
+  Added collapsible sidebar for wide screens with an icon rail collapsed state, toggle button wiring, and an optional hover preview overlay.
 - **Patterns**
   Added full-screen design patterns contract (`PATTERNS`) to standardize common screen recipes and mobile behaviors.
 - **Linter**
@@ -54,6 +56,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Added `aka` aliases to component schemas to detect duplicate custom implementations.
 
 ### Changed
+- **Documentation**
+  Developer-centric install instructions → rethought for PMs, designers, and AI builders around single-prompt setup and MCP.
+- **Get Started**
+  Static tool icons and manual install focus → interactive tool picker with tailored prompts, MCP configuration, and follow-up fix prompts.
+- **Preview**
+  Selecting an item in the search palette only updated the route → now automatically scrolls the left sidebar navigation to center the selected item.
 - **Get Started**
   Tabs "I build with AI tools", "Link files", "Install", "Chat only" with a one-line note → "AI Builders", "No-Build / CDN", "NPM & CLI", "Web Chat", each with a use-case line and a checklist of what the copied prompt includes.
 - **Get Started**

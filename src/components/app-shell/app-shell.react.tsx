@@ -10,9 +10,11 @@ import {
   appShellBrandClass,
   appShellCollapseClass,
   appShellClass,
+  appShellCollapsedClass,
   appShellFooterClass,
   appShellGroupClass,
   appShellGroupLabelClass,
+  appShellHoverPreviewClass,
   appShellLinkClass,
   appShellLinkSubClass,
   appShellListClass,
@@ -32,13 +34,40 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
    * section full screen. On phones the sections list and the open section are separate screens. Esc leaves settings.
    */
   settings?: boolean;
+  /**
+   * Collapsed mode: reduces the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).
+   */
+  collapsed?: boolean;
+  /**
+   * Hover preview mode: when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview).
+   */
+  hoverPreview?: boolean;
+  /**
+   * Called when the sidebar is collapsed or expanded via a toggle button.
+   */
+  onCollapseChange?: (collapsed: boolean) => void;
 }
 
-/** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. */
-export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell({ settings, className, ...props }, ref) {
+/** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. Wide screens support collapsing to an icon rail and hover preview. */
+export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
+  { settings, collapsed, hoverPreview, onCollapseChange, className, ...props },
+  ref,
+) {
   const own = useRef<HTMLDivElement>(null);
-  useEffect(() => (own.current ? connectAppShell(own.current) : undefined), []);
-  return <div ref={mergeRefs(own, ref)} className={cx(appShellClass, settings && appShellSettingsClass, className)} {...props} />;
+  useEffect(() => (own.current ? connectAppShell(own.current, { onCollapseChange }) : undefined), [onCollapseChange]);
+  return (
+    <div
+      ref={mergeRefs(own, ref)}
+      className={cx(
+        appShellClass,
+        settings && appShellSettingsClass,
+        collapsed && appShellCollapsedClass,
+        hoverPreview && appShellHoverPreviewClass,
+        className,
+      )}
+      {...props}
+    />
+  );
 });
 
 export interface AppShellBackProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

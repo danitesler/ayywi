@@ -23,7 +23,7 @@ import {
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { components } from "../data";
-import { buildPrompt, headTags, links, request, STARTERS, type Links, type StarterId, type Tool } from "../prompts";
+import { buildPrompt, FIXES, fixPrompt, headTags, links, request, STARTERS, TOOLS, type Links, type StarterId, type Tool } from "../prompts";
 import { showcaseApps } from "../showcase/apps";
 import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
@@ -42,12 +42,12 @@ interface TabIntro {
 
 const BUILDER_INTRO: TabIntro = {
   label: "AI Builders",
-  when: "For Lovable, Bolt, v0, Replit or Cursor. Describe what you want, paste one prompt, no code or setup needed.",
+  when: "For Lovable, Bolt, v0, Cursor, Claude Code or ChatGPT. Describe what you want, pick your tool, and paste one prompt.",
   includes: [
-    "Your request, filled in from the sentence above",
-    "Which stylesheet and script to load",
+    "Your request, customized from the sentence above",
+    "Tailored setup instructions for your chosen AI tool",
     "The design rules: ayywi classes and tokens only, no hardcoded colours",
-    "Every component class, so nothing gets made up",
+    "Every component class and responsive layout rules",
   ],
 };
 
@@ -71,21 +71,21 @@ ${headTags(l, "   ")}
 5. Tell me which files you changed and how to open the screen.`,
   },
   package: {
-    label: "NPM & CLI",
-    when: "For a project with a build step (React, Next.js, Vite, Vue, Svelte). Installs the package so the agent can look components up and lint its own work.",
+    label: "Agent & MCP",
+    when: "For Cursor, Claude Code, Windsurf, or existing codebases: tell your agent to set up ayywi and connect the MCP server.",
     includes: [
-      "npm i @danitesler/ayywi and npx ayywi init",
-      "A skill, a rule file and an AGENTS.md section",
+      "npx -y @danitesler/ayywi init (or npx @danitesler/ayywi mcp)",
+      "A skill, Cursor rules and an AGENTS.md guide",
       "An MCP server with get_component, search and lint tools",
-      "Import steps for React, or for Vue, Svelte, Angular and plain HTML",
+      "Automatic responsive shell and complete UI states",
       "A final npx ayywi lint pass",
     ],
     prompt: () => `Set up the ayywi design system in this project and build a first screen with it.
 
-1. Install it with npm i @danitesler/ayywi, then run npx ayywi init. That adds the ayywi skill, a rule file, an AGENTS.md section and an MCP server with get_component, search and lint tools.
-2. Load it once at the app entry. React: import "@danitesler/ayywi/css" and use components from "@danitesler/ayywi/react". Vue, Svelte, Angular or plain HTML: import "@danitesler/ayywi/css" and "@danitesler/ayywi/elements" and write the same markup.
+1. Run npx -y @danitesler/ayywi init. That configures the ayywi agent skill, Cursor rules, AGENTS.md instructions, and the MCP server (with get_component, search, get_tokens, get_rules, create_brand and lint tools).
+2. Load ayywi once at the app entry: import "@danitesler/ayywi/css" (React: use "@danitesler/ayywi/react"; other frameworks: import "@danitesler/ayywi/elements" and use <ayy-*> elements).
 3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
-4. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, Sections and a Footer. Include its empty, loading and error states.
+4. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, Sections and Footer. Include empty, loading and error states.
 5. Run npx ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
   },
   chat: {
@@ -206,8 +206,9 @@ function Examples({ tool }: { tool: Tool }) {
   );
 }
 
-const TOOL_LOGOS = [
+const TOOL_LOGOS: { id: Tool; name: string; svg: React.ReactNode }[] = [
   {
+    id: "lovable",
     name: "Lovable",
     svg: (
       <svg className="ayy-icon" viewBox="0 0 122 122" aria-hidden="true">
@@ -219,6 +220,7 @@ const TOOL_LOGOS = [
     ),
   },
   {
+    id: "bolt",
     name: "Bolt",
     svg: (
       <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -230,6 +232,7 @@ const TOOL_LOGOS = [
     ),
   },
   {
+    id: "v0",
     name: "v0",
     svg: (
       <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -241,6 +244,7 @@ const TOOL_LOGOS = [
     ),
   },
   {
+    id: "cursor",
     name: "Cursor",
     svg: (
       <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -252,6 +256,12 @@ const TOOL_LOGOS = [
     ),
   },
   {
+    id: "claude-code",
+    name: "Claude Code",
+    svg: <Icon icon={ClaudeIcon} aria-hidden />,
+  },
+  {
+    id: "replit",
     name: "Replit",
     svg: (
       <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -263,14 +273,24 @@ const TOOL_LOGOS = [
     ),
   },
   {
-    name: "Claude",
-    svg: <Icon icon={ClaudeIcon} aria-hidden />,
-  },
-  {
+    id: "chat",
     name: "ChatGPT",
     svg: <Icon icon={ChatGptIcon} aria-hidden />,
   },
 ];
+
+const MCP_CONFIG = JSON.stringify(
+  {
+    mcpServers: {
+      ayywi: {
+        command: "npx",
+        args: ["-y", "@danitesler/ayywi", "mcp"],
+      },
+    },
+  },
+  null,
+  2,
+);
 
 /** Who a tab is for and what its copied prompt contains. */
 function TabSummary({ intro }: { intro: TabIntro }) {
@@ -290,8 +310,13 @@ function TabSummary({ intro }: { intro: TabIntro }) {
   );
 }
 
+interface BuilderGuideProps {
+  tool: Tool;
+  onToolChange: (tool: Tool) => void;
+}
+
 /** For people who build with Lovable, Bolt, v0, Cursor or a chat: copy one prompt, no code. */
-function BuilderGuide() {
+function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
   const [starter, setStarter] = useState<StarterId>("booking");
   const first = STARTERS.find((s) => s.id === starter)!;
   const [what, setWhat] = useState<string>(first.what);
@@ -305,7 +330,7 @@ function BuilderGuide() {
     setNeeds(s.needs);
   };
   const ask = request(what, who, needs);
-  const prompt = buildPrompt(ask);
+  const prompt = buildPrompt(ask, tool);
   const example = showcaseApps.find((a) => a.id === first.showcase);
   const article = /^[aeiou]/i.test(what.trim()) ? "an" : "a";
 
@@ -370,20 +395,57 @@ function BuilderGuide() {
       <div className="pv-supported">
         <span className="pv-supported__badge">
           <Icon icon={Tick02Icon} className="pv-supported__check" />
-          <span>Supported</span>
+          <span>Pick your AI tool:</span>
         </span>
-        <span className="pv-supported__divider">·</span>
-        <div className="pv-supported__icons" aria-label="Supported tools">
-          {TOOL_LOGOS.map((tool) => (
-            <span key={tool.name} className="pv-supported__icon" title={tool.name} aria-label={tool.name}>
-              {tool.svg}
-            </span>
+        <div className="pv-supported__icons" role="radiogroup" aria-label="AI tools">
+          {TOOL_LOGOS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="radio"
+              aria-checked={tool === t.id}
+              className="pv-tool-btn"
+              onClick={() => onToolChange(t.id)}
+            >
+              <span className="pv-supported__icon">{t.svg}</span>
+              <span>{t.name}</span>
+            </button>
           ))}
         </div>
-        <span className="pv-supported__more">and more</span>
       </div>
 
+      <p className="pv-note pv-tool-note">
+        {TOOLS[tool].where}
+      </p>
+
       <CodeBlock code={prompt} label="prompt" copyLabel="Copy prompt" wrap />
+
+      <div className="pv-mcp-box">
+        <div className="pv-mcp-box__header">
+          <div>
+            <strong>Or connect via MCP</strong>
+            <span className="ayy-muted"> · Cursor, Claude Code, Windsurf</span>
+          </div>
+          <CopyButton text={MCP_CONFIG} label="Copy MCP config" variant="outline" />
+        </div>
+        <p className="pv-note">
+          Give your agent native tools: <code>get_component</code>, <code>search</code>, <code>get_tokens</code>, <code>create_brand</code>, and real-time <code>lint</code> without pasting full prompts.
+        </p>
+      </div>
+
+      <h2 className="pv-h pv-h--section" id="refine">
+        Refine with follow-up prompts
+      </h2>
+      <p className="pv-note">
+        When something looks off, don't write custom CSS. Paste one of these into your chat to guide the agent:
+      </p>
+      <Accordion single>
+        {FIXES.map((fix) => (
+          <AccordionItem key={fix.title} label={fix.title}>
+            <CodeBlock code={fixPrompt(fix.prompt)} label="prompt" copyLabel="Copy prompt" wrap />
+          </AccordionItem>
+        ))}
+      </Accordion>
     </>
   );
 }
@@ -445,6 +507,7 @@ function DeveloperGuide({ setup }: { setup: Setup }) {
       <div className="pv-files">
         <CopyButton text={agentsSnippet} label="Copy the rules for AGENTS.md" variant="outline" />
         <CopyButton text={llmsIndex} label="Copy llms.txt (index)" variant="outline" />
+        <CopyButton text={MCP_CONFIG} label="Copy MCP config" variant="outline" />
         {(["llms-full.txt", "dist/ayywi.min.css", "dist/elements.global.js", "manifest/components.json"] as const).map((path) => (
           <a key={path} className={buttonClass({ variant: "ghost", size: "sm" })} href={path} target="_blank" rel="noreferrer">
             {path}
@@ -470,6 +533,7 @@ type Tab = "builder" | Setup;
 
 export function GetStartedPage(appearance: Appearance) {
   const [tab, setTab] = useState<Tab>("builder");
+  const [tool, setTool] = useState<Tool>("lovable");
   return (
     <article className="pv-page pv-page--compact">
       <header className="pv-hero">
@@ -484,7 +548,7 @@ export function GetStartedPage(appearance: Appearance) {
         <TryIt {...appearance} />
       </header>
 
-      <Examples tool="lovable" />
+      <Examples tool={tool} />
 
       <div className="pv-doors">
         <SegmentedControl aria-label="How you build" value={tab} onValueChange={(v) => setTab(v as Tab)}>
@@ -497,7 +561,7 @@ export function GetStartedPage(appearance: Appearance) {
 
       <TabSummary intro={tab === "builder" ? BUILDER_INTRO : SETUPS[tab]} />
 
-      {tab === "builder" ? <BuilderGuide /> : <DeveloperGuide setup={tab} />}
+      {tab === "builder" ? <BuilderGuide tool={tool} onToolChange={setTool} /> : <DeveloperGuide setup={tab} />}
 
       <div>
         <a href="#/showcase" className={buttonClass({ variant: "outline" })}>

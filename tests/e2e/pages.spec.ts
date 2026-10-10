@@ -27,6 +27,8 @@ test("overview and foundation pages render", async ({ page }) => {
   // The page opens on the no-code guide; the developer guide lists every component.
   await expect(page.getByRole("radio", { name: "AI Builders" })).toBeChecked();
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
+  await page.getByRole("radio", { name: "Cursor" }).click();
+  await expect(page.getByText(".cursor/rules/ayywi.mdc")).toBeVisible();
   await page.getByText("No-Build / CDN").click();
   await expect(page.locator(".pv-chip")).toHaveCount(slugs.length);
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
@@ -108,7 +110,8 @@ test("search bar opens command palette, filters results and jumps to a page", as
   const box = dialog.getByRole("combobox", { name: "Search components and foundations" });
 
   // Mod+E opens command palette
-  await page.keyboard.press(process.platform === "darwin" ? "Meta+e" : "Control+e");
+  const isMac = await page.evaluate(() => /mac|iphone|ipad|ipod/i.test(navigator.userAgent));
+  await page.keyboard.press(isMac ? "Meta+e" : "Control+e");
   await expect(dialog).toBeVisible();
   await expect(box).toBeFocused();
 
@@ -119,12 +122,41 @@ test("search bar opens command palette, filters results and jumps to a page", as
   await expect(dialog.getByRole("option", { name: /Colors/ })).toBeVisible();
 
   await box.fill("dialog");
-  await box.press("Enter");
+  await dialog.getByRole("option", { name: /^Dialog/ }).click();
   await expect(page).toHaveURL(/#\/dialog$/);
   await expect(dialog).toBeHidden();
   await expect(page.getByRole("heading", { level: 1, name: "Dialog" })).toBeVisible();
 
+  // Sidebar automatically scrolled to Dialog
+  const sidebar = page.locator(".pv-sidebar");
+  const dialogLink = page.locator('#pv-nav [data-route="dialog"]');
+  await expect(dialogLink).toHaveAttribute("aria-current", "page");
+  await expect(async () => {
+    const linkBox = (await dialogLink.boundingBox())!;
+    const sidebarBox = (await sidebar.boundingBox())!;
+    expect(linkBox.y).toBeGreaterThanOrEqual(sidebarBox.y);
+    expect(linkBox.y + linkBox.height).toBeLessThanOrEqual(sidebarBox.y + sidebarBox.height);
+  }).toPass();
+
   // Clicking search bar in sidebar opens command palette
+  await page.locator(".pv-sidebar__top .ayy-search-bar").click();
+  await expect(dialog).toBeVisible();
+  await box.fill("tooltip");
+  await dialog.getByRole("option", { name: /^Tooltip/ }).click();
+  await expect(page).toHaveURL(/#\/tooltip$/);
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole("heading", { level: 1, name: "Tooltip" })).toBeVisible();
+
+  const tooltipLink = page.locator('#pv-nav [data-route="tooltip"]');
+  await expect(tooltipLink).toHaveAttribute("aria-current", "page");
+  await expect(async () => {
+    const linkBox = (await tooltipLink.boundingBox())!;
+    const sidebarBox = (await sidebar.boundingBox())!;
+    expect(linkBox.y).toBeGreaterThanOrEqual(sidebarBox.y);
+    expect(linkBox.y + linkBox.height).toBeLessThanOrEqual(sidebarBox.y + sidebarBox.height);
+  }).toPass();
+
+  // Pressing Escape closes command palette
   await page.locator(".pv-sidebar__top .ayy-search-bar").click();
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");

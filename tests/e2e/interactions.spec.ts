@@ -128,6 +128,45 @@ for (const renderer of ["react", "html"] as const) {
       await expect(sidebar).toBeVisible();
     });
 
+    test("app shell collapsible sidebar: rail when collapsed, hover preview overlays, toggle button expands", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await open(page, "app-shell", { renderer });
+      const shell = stage(page, 5).locator(".ayy-app-shell");
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const main = shell.locator(".ayy-app-shell__main");
+      const toggle = sidebar.locator(".ayy-app-shell__toggle");
+
+      await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+      await expect(shell).toHaveClass(/ayy-app-shell--hover-preview/);
+
+      // Collapsed: sidebar is icon rail width (~52px), text label is hidden
+      const collapsedBox = (await sidebar.boundingBox())!;
+      expect(Math.round(collapsedBox.width)).toBeLessThan(70);
+      const mainBoxBefore = (await main.boundingBox())!;
+
+      // Hover preview: hovering sidebar widens it over main without shifting main
+      await sidebar.hover();
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
+      const mainBoxDuringHover = (await main.boundingBox())!;
+      expect(Math.round(mainBoxDuringHover.x)).toBe(Math.round(mainBoxBefore.x));
+
+      // Moving away collapses it back
+      await main.hover();
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+
+      // Toggle button expands sidebar
+      await toggle.click();
+      await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
+
+      // Toggle again collapses it; unhovering and clearing focus returns to rail width
+      await toggle.click();
+      await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+      await main.hover();
+      await page.keyboard.press("Escape");
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+    });
+
     test("navbar folds its links into a menu on phones", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "navbar", { renderer });
@@ -429,7 +468,7 @@ for (const renderer of ["react", "html"] as const) {
       const toggle = stage(page).getByRole("button", { name: "Theme" });
       await toggle.click();
       const items = page.getByRole("menuitemradio");
-      await expect(items).toHaveText(["System", "Dark", "Dark soft", "Light", "Light gray"]);
+      await expect(items).toHaveText(["System", "Dark", "Dark contrast", "Light", "Light gray"]);
       await items.filter({ hasText: /^Light gray$/ }).click();
       await expect(page.locator("html")).toHaveAttribute("data-theme", "light-gray");
       expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("light-gray");

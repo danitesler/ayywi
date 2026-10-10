@@ -136,10 +136,80 @@ export function App() {
 
   const [commandOpen, setCommandOpen] = useState(false);
 
+  const scrollNavTo = (targetRoute: string) => {
+    const base = targetRoute.split("/")[0] ?? targetRoute;
+    const linkEl =
+      document.querySelector<HTMLElement>(`#pv-nav [data-route="${CSS.escape(base)}"]`) ??
+      document.querySelector<HTMLElement>(`#pv-nav a[href="#/${base}"]`);
+    if (!linkEl) return;
+
+    const sidebar = document.querySelector<HTMLElement>(".pv-sidebar");
+    if (!sidebar) return;
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const topBar = sidebar.querySelector<HTMLElement>(".pv-sidebar__top");
+    const topOffset = topBar ? topBar.offsetHeight : 0;
+    const visibleHeight = sidebar.clientHeight - topOffset;
+    const visibleCenter = topOffset + visibleHeight / 2;
+
+    const linkRect = linkEl.getBoundingClientRect();
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const relativeLinkTop = linkRect.top - sidebarRect.top;
+    const linkCenter = relativeLinkTop + linkEl.offsetHeight / 2;
+    const delta = linkCenter - visibleCenter;
+
+    const maxScroll = Math.max(0, sidebar.scrollHeight - sidebar.clientHeight);
+    const targetTop = Math.max(0, Math.min(sidebar.scrollTop + delta, maxScroll));
+
+    if (prefersReduced) {
+      sidebar.scrollTop = targetTop;
+      return;
+    }
+
+    const startTop = sidebar.scrollTop;
+    const distance = targetTop - startTop;
+    if (Math.abs(distance) < 2) return;
+
+    const duration = Math.min(550, Math.max(350, Math.round(Math.abs(distance) * 0.4)));
+    const startTime = performance.now();
+    const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    let rafId: number;
+    const onUserInterrupt = () => {
+      cancelAnimationFrame(rafId);
+      sidebar.removeEventListener("wheel", onUserInterrupt);
+      sidebar.removeEventListener("touchmove", onUserInterrupt);
+    };
+
+    sidebar.addEventListener("wheel", onUserInterrupt, { passive: true });
+    sidebar.addEventListener("touchmove", onUserInterrupt, { passive: true });
+
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      sidebar.scrollTop = startTop + distance * easeInOutCubic(progress);
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      } else {
+        sidebar.removeEventListener("wheel", onUserInterrupt);
+        sidebar.removeEventListener("touchmove", onUserInterrupt);
+      }
+    };
+
+    rafId = requestAnimationFrame(step);
+  };
+
   const link = (item: NavItem) => {
     const current = page === item.route;
     return (
-      <AppShellLink href={`#/${item.route}`} className="pv-nav__link" current={current} aria-current={current ? "page" : undefined}>
+      <AppShellLink
+        href={`#/${item.route}`}
+        data-route={item.route}
+        className="pv-nav__link"
+        current={current}
+        aria-current={current ? "page" : undefined}
+      >
         {item.title}
       </AppShellLink>
     );
@@ -184,8 +254,6 @@ export function App() {
               }
             }}
             formProps={{
-              role: "button",
-              tabIndex: 0,
               "aria-haspopup": "dialog",
               "aria-expanded": commandOpen,
               onClick: () => setCommandOpen(true),
@@ -228,9 +296,12 @@ export function App() {
         label="Search components and foundations"
         placeholder="Search components and foundations…"
         onRun={(route) => {
-          if (route) {
+          if (route !== undefined) {
             window.location.hash = `#/${route}`;
             setCommandOpen(false);
+            requestAnimationFrame(() => {
+              scrollNavTo(route);
+            });
           }
         }}
         footer={

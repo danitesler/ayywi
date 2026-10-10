@@ -21,10 +21,12 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - `.ayy-app-shell__back` — First in a settings sidebar: an <a href> back to the page settings were opened from (or a <button>), with a directional arrow icon and "Back to <app name>". In settings mode, Esc follows it.
 - `.ayy-app-shell__title` — A settings sidebar's heading, an <h2> "Settings" under the __back. Large on the phone's section list.
 - `.ayy-app-shell__toggle` — The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the "More" tab of the bottom nav (<button class="ayy-bottom-nav__link ayy-app-shell__toggle">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it.
+- `.ayy-app-shell--collapsed` — Collapsed sidebar mode on wide screens: reduces the sidebar to an icon rail and hides link labels, group labels and sub-lists. The toggle's aria-expanded reflects the state.
+- `.ayy-app-shell--hover-preview` — When combined with --collapsed, hovering or focusing the collapsed sidebar on wide screens temporarily expands it to full width as a floating overlay with shadow, without shifting main content.
 
 **States**
 - `default` — A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills.
-- `hover` (`.ayy-app-shell__link:hover`) — Link gets a wash fill and the text colour.
+- `hover` (`.ayy-app-shell__link:hover; on a collapsed shell with hover preview, .ayy-app-shell__sidebar:hover expands the sidebar as an overlay`) — Link gets a wash fill and the text colour. In hover preview, the sidebar expands to 15rem with the overlay shadow over the content.
 - `pressed` — doesn't apply: Links have no pressed look.
 - `focus` (`links, brand, sidebar and main :focus-visible`) — Links and brand: 2px ring, 2px offset. A focused scroll area (sidebar or main with tabindex="0") gets the ring inset.
 - `disabled` — doesn't apply: Sidebar links are never disabled: leave out pages the user can't open.
@@ -35,15 +37,17 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 
 **Sizes**
 - Density — Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.
-- Width — Fills the viewport (100dvh) or its box (block-size: 100%). Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither.
+- Width — Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither.
 
-**JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and, on a settings shell, Esc to leave settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).
+**JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).
 
-**Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On a settings shell, Esc follows the __back. Otherwise it does nothing.
-
+**Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On wide screens, wires sidebar collapsing and optional hover-preview. On a settings shell, Esc follows the __back.
+- attribute `collapsed`: boolean — collapse the sidebar to an icon rail on wide screens (sets ayy-app-shell--collapsed).
+- attribute `hover-preview`: boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (sets ayy-app-shell--hover-preview).
+- event `ayy-collapse-change`: { collapsed: boolean } — fired when the sidebar is collapsed or expanded via a toggle button or the collapsed property.
 
 **React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
-- `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle". Props: `settings` boolean — settings mode (ayy-app-shell--settings): the sidebar holds AppShellBack, AppShellTitle and the sections; Esc leaves.
+- `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle". Props: `settings` boolean — settings mode (ayy-app-shell--settings): the sidebar holds AppShellBack, AppShellTitle and the sections; Esc leaves.; `collapsed` boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).; `hoverPreview` boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview).; `onCollapseChange` (collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button.
 - `<AppShellBack>` renders <a class="ayy-app-shell__back" href> with a directional arrow and the children in a <span>; a <button type="button"> without href. Props: `href` string — where leaving settings goes. Without it, pass onClick.; `children` "Back to <app name>" (translate it).
 - `<AppShellTitle>` renders <h2 class="ayy-app-shell__title">. Props: `children` "Settings".
 - `<AppShellSidebar>` renders <aside class="ayy-app-shell__sidebar">.
@@ -919,6 +923,148 @@ export default function Example() {
               </Select>
             </SettingsRow>
           </Settings>
+        </AppShellMain>
+      </AppShell>
+    </div>
+  );
+}
+```
+
+## App shell — Collapsible sidebar with hover preview
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the block-size on the shell. -->
+<div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
+  <ayy-app-shell collapsed hover-preview>
+    <div class="ayy-app-shell ayy-app-shell--collapsed ayy-app-shell--hover-preview" style="block-size: 100%">
+      <aside class="ayy-app-shell__sidebar">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <a class="ayy-app-shell__brand" href="#home">
+            <span class="ayy-avatar ayy-avatar--sm" aria-hidden="true"><span class="ayy-avatar__fallback">NW</span></span>
+            <span>Northwind</span>
+          </a>
+          <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon ayy-app-shell__toggle" aria-label="Toggle sidebar" aria-expanded="false">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5L20 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 12L20 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 19L20 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <nav class="ayy-app-shell__nav" aria-label="Main">
+          <a class="ayy-app-shell__link" href="#dashboard" aria-current="page" title="Dashboard">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.6903 19.4567C13.5 18.9973 13.5 18.4149 13.5 17.25C13.5 16.0851 13.5 15.5027 13.6903 15.0433C13.944 14.4307 14.4307 13.944 15.0433 13.6903C15.5027 13.5 16.0851 13.5 17.25 13.5C18.4149 13.5 18.9973 13.5 19.4567 13.6903C20.0693 13.944 20.556 14.4307 20.8097 15.0433C21 15.5027 21 16.0851 21 17.25C21 18.4149 21 18.9973 20.8097 19.4567C20.556 20.0693 20.0693 20.556 19.4567 20.8097C18.9973 21 18.4149 21 17.25 21C16.0851 21 15.5027 21 15.0433 20.8097C14.4307 20.556 13.944 20.0693 13.6903 19.4567Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"/><path d="M13.6903 8.95671C13.5 8.49728 13.5 7.91485 13.5 6.75C13.5 5.58515 13.5 5.00272 13.6903 4.54329C13.944 3.93072 14.4307 3.44404 15.0433 3.1903C15.5027 3 16.0851 3 17.25 3C18.4149 3 18.9973 3 19.4567 3.1903C20.0693 3.44404 20.556 3.93072 20.8097 4.54329C21 5.00272 21 5.58515 21 6.75C21 7.91485 21 8.49728 20.8097 8.95671C20.556 9.56928 20.0693 10.056 19.4567 10.3097C18.9973 10.5 18.4149 10.5 17.25 10.5C16.0851 10.5 15.5027 10.5 15.0433 10.3097C14.4307 10.056 13.944 9.56928 13.6903 8.95671Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"/><path d="M3.1903 19.4567C3 18.9973 3 18.4149 3 17.25C3 16.0851 3 15.5027 3.1903 15.0433C3.44404 14.4307 3.93072 13.944 4.54329 13.6903C5.00272 13.5 5.58515 13.5 6.75 13.5C7.91485 13.5 8.49728 13.5 8.95671 13.6903C9.56928 13.944 10.056 14.4307 10.3097 15.0433C10.5 15.5027 10.5 16.0851 10.5 17.25C10.5 18.4149 10.5 18.9973 10.3097 19.4567C10.056 20.0693 9.56928 20.556 8.95671 20.8097C8.49728 21 7.91485 21 6.75 21C5.58515 21 5.00272 21 4.54329 20.8097C3.93072 20.556 3.44404 20.0693 3.1903 19.4567Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"/><path d="M3.1903 8.95671C3 8.49728 3 7.91485 3 6.75C3 5.58515 3 5.00272 3.1903 4.54329C3.44404 3.93072 3.93072 3.44404 4.54329 3.1903C5.00272 3 5.58515 3 6.75 3C7.91485 3 8.49728 3 8.95671 3.1903C9.56928 3.44404 10.056 3.93072 10.3097 4.54329C10.5 5.00272 10.5 5.58515 10.5 6.75C10.5 7.91485 10.5 8.49728 10.3097 8.95671C10.056 9.56928 9.56928 10.056 8.95671 10.3097C8.49728 10.5 7.91485 10.5 6.75 10.5C5.58515 10.5 5.00272 10.5 4.54329 10.3097C3.93072 10.056 3.44404 9.56928 3.1903 8.95671Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"/></svg>
+            <span>Dashboard</span>
+          </a>
+          <a class="ayy-app-shell__link" href="#projects" title="Projects">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+            <span>Projects</span>
+          </a>
+          <a class="ayy-app-shell__link" href="#team" title="Team">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.4995 20.5C18.2663 17.5685 15.8417 15.2477 12.808 15.0521L11.9995 15C11.7107 15.0076 11.4416 15.0178 11.1877 15.0298C8.18075 15.1723 5.7304 17.5974 5.49951 20.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M15.2495 9.25C15.2495 11.0449 13.7944 12.5 11.9995 12.5C10.2046 12.5 8.74952 11.0449 8.74952 9.25C8.74952 7.45507 10.2046 6 11.9995 6C13.7944 6 15.2495 7.45507 15.2495 9.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M5.50249 8.5C5.17908 7.99485 4.99158 7.39432 4.99158 6.75C4.99158 4.95507 6.44665 3.5 8.24157 3.5C8.68752 3.5 9.1125 3.58982 9.49939 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M18.4963 8.5C18.8197 7.99485 19.0072 7.39432 19.0072 6.75C19.0072 4.95507 17.5521 3.5 15.7572 3.5C15.3113 3.5 14.8863 3.58982 14.4994 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M22.0007 17.9996C21.8208 15.7374 19.9995 13.5 17.9995 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M1.99927 17.9996C2.17923 15.7374 4.00049 13.5 6.00049 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+            <span>Team</span>
+          </a>
+        </nav>
+        <div class="ayy-app-shell__footer">
+          <a class="ayy-app-shell__link" href="#settings" title="Settings">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+            <span>Settings</span>
+          </a>
+        </div>
+      </aside>
+      <main class="ayy-app-shell__main">
+        <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
+          <h2 class="ayy-h3">Dashboard</h2>
+          <p class="ayy-muted">Hover over the collapsed sidebar to preview it, or click the toggle to expand.</p>
+          <div class="ayy-grid" style="--ayy-min: 9rem">
+            <div class="ayy-stat">
+              <p class="ayy-stat__label">Open projects</p>
+              <p class="ayy-stat__value">12</p>
+            </div>
+            <div class="ayy-stat">
+              <p class="ayy-stat__label">Shipped this week</p>
+              <p class="ayy-stat__value">38</p>
+            </div>
+            <div class="ayy-stat">
+              <p class="ayy-stat__label">Team members</p>
+              <p class="ayy-stat__value">9</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </ayy-app-shell>
+</div>
+```
+
+React:
+
+```tsx
+import { useState, type CSSProperties } from "react";
+import { DashboardSquare01Icon, Folder01Icon, Settings02Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
+import {
+  AppShell,
+  AppShellBrand,
+  AppShellFooter,
+  AppShellLink,
+  AppShellMain,
+  AppShellNav,
+  AppShellSidebar,
+  AppShellToggle,
+  Icon,
+  Stat,
+} from "@danitesler/ayywi/react";
+
+export default function Example() {
+  const [collapsed, setCollapsed] = useState(true);
+
+  return (
+    <div style={{ inlineSize: "100%", blockSize: "28rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
+      <AppShell
+        collapsed={collapsed}
+        hoverPreview
+        onCollapseChange={setCollapsed}
+        style={{ blockSize: "100%" }}
+      >
+        <AppShellSidebar>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <AppShellBrand href="#home">
+              <span className="ayy-avatar ayy-avatar--sm" aria-hidden="true">
+                <span className="ayy-avatar__fallback">NW</span>
+              </span>
+              <span>Northwind</span>
+            </AppShellBrand>
+            <AppShellToggle aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} />
+          </div>
+          <AppShellNav>
+            <AppShellLink href="#dashboard" current title="Dashboard">
+              <Icon icon={DashboardSquare01Icon} />
+              <span>Dashboard</span>
+            </AppShellLink>
+            <AppShellLink href="#projects" title="Projects">
+              <Icon icon={Folder01Icon} />
+              <span>Projects</span>
+            </AppShellLink>
+            <AppShellLink href="#team" title="Team">
+              <Icon icon={UserGroupIcon} />
+              <span>Team</span>
+            </AppShellLink>
+          </AppShellNav>
+          <AppShellFooter>
+            <AppShellLink href="#settings" title="Settings">
+              <Icon icon={Settings02Icon} />
+              <span>Settings</span>
+            </AppShellLink>
+          </AppShellFooter>
+        </AppShellSidebar>
+        <AppShellMain>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
+            <h2 className="ayy-h3">Dashboard</h2>
+            <p className="ayy-muted">Hover over the collapsed sidebar to preview it, or click the toggle to expand.</p>
+            <div className="ayy-grid" style={{ "--ayy-min": "9rem" } as CSSProperties}>
+              <Stat labelFirst label="Open projects" value="12" />
+              <Stat labelFirst label="Shipped this week" value="38" />
+              <Stat labelFirst label="Team members" value="9" />
+            </div>
+          </div>
         </AppShellMain>
       </AppShell>
     </div>

@@ -20,6 +20,8 @@ export const appShellToggleClass = "ayy-app-shell__toggle";
 export const appShellSettingsClass = "ayy-app-shell--settings";
 export const appShellBackClass = "ayy-app-shell__back";
 export const appShellTitleClass = "ayy-app-shell__title";
+export const appShellCollapsedClass = "ayy-app-shell--collapsed";
+export const appShellHoverPreviewClass = "ayy-app-shell--hover-preview";
 
 /** SVG markup for the menu icon (Hugeicons Menu01) the toggle draws, for non-React renderers. */
 export const appShellMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);
@@ -37,6 +39,9 @@ const DRAWER_QUERY = "(max-width: 48rem)";
 /** Where a drawer toggle may live: the phone bar, or the bottom nav (a "More" tab). */
 const TOGGLE_SELECTOR = `:scope > .${appShellBarClass} .${appShellToggleClass}, :scope > .ayy-bottom-nav .${appShellToggleClass}`;
 
+/** Where a sidebar collapse toggle may live. */
+const SIDEBAR_TOGGLE_SELECTOR = `:scope > .${appShellSidebarClass} .${appShellToggleClass}`;
+
 /** A dialog or a popover (menu, tooltip, picker; the toaster aside) is open, so Esc is its to handle. */
 function overlayOpen(): boolean {
   if (document.querySelector("dialog[open]")) return true;
@@ -47,16 +52,22 @@ function overlayOpen(): boolean {
   }
 }
 
+export interface ConnectAppShellOptions {
+  /** Called when the sidebar is collapsed or expanded. */
+  onCollapseChange?: (collapsed: boolean) => void;
+}
+
 /**
- * Wires the phone drawer onto an `.ayy-app-shell` that has a `.ayy-app-shell__toggle` in its `.ayy-app-shell__bar` or its
- * `.ayy-bottom-nav`. The toggle's aria-expanded is the state (the CSS reads it). Opening moves focus into the sidebar and makes
- * the rest of the shell inert; Esc, the scrim, a link in the sidebar or growing past the breakpoint close it. On a settings
- * shell (`.ayy-app-shell--settings`), Esc outside a field or an overlay follows its `.ayy-app-shell__back` out of settings.
+ * Wires the phone drawer and desktop sidebar collapsing onto an `.ayy-app-shell`.
+ * - On phones: a toggle in `.ayy-app-shell__bar` or `.ayy-bottom-nav` opens/closes the sidebar as a drawer.
+ * - On wide screens: a toggle in the sidebar or shell collapses/expands the sidebar into an icon rail.
+ * - On a settings shell (`.ayy-app-shell--settings`), Esc follows its `.ayy-app-shell__back` out of settings.
  * Returns a cleanup.
  */
-export function connectAppShell(shell: HTMLElement): () => void {
+export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOptions): () => void {
   const toggle = () => shell.querySelector<HTMLElement>(TOGGLE_SELECTOR);
   const sidebar = () => shell.querySelector<HTMLElement>(`:scope > .${appShellSidebarClass}`);
+  const sidebarToggles = () => Array.from(shell.querySelectorAll<HTMLElement>(SIDEBAR_TOGGLE_SELECTOR));
   const isOpen = () => toggle()?.getAttribute("aria-expanded") === "true";
   const media = typeof matchMedia === "function" ? matchMedia(DRAWER_QUERY) : null;
 
@@ -66,6 +77,28 @@ export function connectAppShell(shell: HTMLElement): () => void {
     if (!init.hasAttribute("aria-expanded")) init.setAttribute("aria-expanded", "false");
     init.setAttribute("aria-controls", ensureId(aside, "ayy-sidebar"));
   }
+
+  if (aside) {
+    for (const st of sidebarToggles()) {
+      if (!st.hasAttribute("aria-expanded")) {
+        st.setAttribute("aria-expanded", String(!shell.classList.contains(appShellCollapsedClass)));
+      }
+      st.setAttribute("aria-controls", ensureId(aside, "ayy-sidebar"));
+    }
+  }
+
+  const syncSidebarToggles = (collapsed: boolean) => {
+    for (const st of sidebarToggles()) {
+      st.setAttribute("aria-expanded", String(!collapsed));
+    }
+  };
+
+  const toggleCollapse = () => {
+    const next = !shell.classList.contains(appShellCollapsedClass);
+    shell.classList.toggle(appShellCollapsedClass, next);
+    syncSidebarToggles(next);
+    options?.onCollapseChange?.(next);
+  };
 
   const set = (open: boolean, { returnFocus = true } = {}) => {
     const button = toggle();
@@ -86,7 +119,24 @@ export function connectAppShell(shell: HTMLElement): () => void {
     const target = event.target as Element | null;
     if (!target) return;
     const button = toggle();
-    if (button && button.contains(target)) return set(!isOpen());
+    const stList = sidebarToggles();
+    const clickedSidebarToggle = stList.find((t) => t.contains(target));
+
+    if (clickedSidebarToggle) {
+      if (media?.matches) {
+        if (isOpen()) set(false);
+      } else {
+        toggleCollapse();
+      }
+      return;
+    }
+
+    if (button && button.contains(target)) {
+      if (media?.matches) return set(!isOpen());
+      toggleCollapse();
+      return;
+    }
+
     if (!isOpen()) return;
     if (target === shell) return set(false);
     const link = target.closest("a[href]");
@@ -99,6 +149,15 @@ export function connectAppShell(shell: HTMLElement): () => void {
       event.preventDefault();
       set(false);
       toggle()?.focus();
+      return;
+    }
+    if (
+      event.key === "Escape" &&
+      !isOpen() &&
+      shell.classList.contains(appShellHoverPreviewClass) &&
+      sidebar()?.contains(document.activeElement)
+    ) {
+      (document.activeElement as HTMLElement | null)?.blur();
     }
   };
 
@@ -116,6 +175,9 @@ export function connectAppShell(shell: HTMLElement): () => void {
 
   const onMedia = (event: MediaQueryListEvent) => {
     if (!event.matches && isOpen()) set(false, { returnFocus: false });
+    if (!event.matches) {
+      syncSidebarToggles(shell.classList.contains(appShellCollapsedClass));
+    }
   };
 
   shell.addEventListener("click", onClick);

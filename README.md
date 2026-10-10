@@ -1,117 +1,115 @@
 # ayywi
 
-A small design system that works in any stack and is built for AI agents to use.
+A design system built for product managers, designers, and AI builders.
 
-Components are plain CSS classes (`ayy-button`, `ayy-card`…) driven by design tokens, so they work anywhere that outputs HTML. React gets typed components; other frameworks get a few custom elements for the interactive parts.
+When you ask an AI tool to build UI, you usually get five mismatched shades of grey, broken mobile layouts, and missing empty states. **ayywi** fixes that. It gives your AI tools a strict contract of design tokens, accessible components, and responsive product shells—so every screen comes out looking like a senior product designer built it.
 
 - **Small:** zero runtime dependencies, ~24 kB of CSS gzipped for all 66 components.
-- **Themes and density:** four themes and three sizes, each one attribute.
-- **Accessible:** keyboard support, focus rings, ARIA, RTL and Windows High Contrast built in.
-- **AI-ready:** paste one prompt, or run one command, and your coding agent uses it correctly (see [AI setup](#ai-setup)).
-- **One frame per kind of product:** apps get a sidebar on wide screens and a bottom nav on phones; websites get a navbar that folds into a menu. Neither needs a media query of yours.
+- **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
+- **Production-ready polish:** every view includes empty, loading, and error states; every control has focus rings, keyboard support, ARIA, RTL, and Windows High Contrast.
+- **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.
+- **Responsive by contract:** apps automatically switch from a desktop sidebar to a mobile top bar and bottom nav; websites fold into a phone menu without custom media queries.
 
-## See it
+## Why ayywi?
+
+| Role | What you get |
+|---|---|
+| **Product Managers & Founders** | Ship finished software instead of half-baked prototypes. Screens handle real-world states (loading skeletons, zero-data empties, network errors) and work on phones out of the box with zero runtime dependencies. |
+| **Designers** | A token-driven system with four themes and a one-colour brand generator that guarantees WCAG contrast (4.5:1 text, 3:1 controls). Clean typography, Hugeicons glyphs, and seamless dark and high-contrast modes. |
+| **AI Builders** | Stop fixing hallucinated CSS and random Tailwind colours. AI agents (Cursor, Claude Code, Lovable, Bolt, v0, ChatGPT) use ayywi's strict classes and tokens to build consistent UI on the first try. |
+
+## Start building in one prompt
+
+You don't need manual npm installs or complex framework configurations. Your AI agent sets up and builds everything from a single prompt.
+
+### 1. Web app builders (Lovable, Bolt, v0, Replit)
+
+Paste this into your chat when starting an app:
+
+```markdown
+Style this project with the ayywi design system. Link these in <head>:
+<script src="https://danitesler.github.io/ayywi/dist/theme-init.js"></script>
+<link rel="stylesheet" href="https://danitesler.github.io/ayywi/dist/fonts.css">
+<link rel="stylesheet" href="https://danitesler.github.io/ayywi/dist/ayywi.min.css">
+<script src="https://danitesler.github.io/ayywi/dist/elements.global.js" defer></script>
+
+Rules:
+- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://danitesler.github.io/ayywi/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
+- An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
+- Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).
+- No hardcoded colours. Dark and light themes follow data-theme on <html>.
+```
+
+### 2. Coding agents (Cursor, Claude Code, Windsurf)
+
+Connect ayywi's Model Context Protocol (MCP) server so your agent can inspect components, search tokens, and lint its own UI:
+
+```json
+{
+  "mcpServers": {
+    "ayywi": {
+      "command": "npx",
+      "args": ["-y", "@danitesler/ayywi", "mcp"]
+    }
+  }
+}
+```
+
+Or ask your agent to initialize ayywi in an existing codebase:
 
 ```sh
-pnpm install
-pnpm preview    # http://localhost:5173
+npx @danitesler/ayywi init
 ```
 
-Every component with copy-ready HTML and React (under each example's Code), seven full example apps (dashboard, marketing site, inbox, settings, tracker, store, booking) at desktop, tablet and phone sizes, search (<kbd>/</kbd> or <kbd>⌘</kbd><kbd>K</kbd>), and a menu for theme and density. The built site (`pnpm preview:build`) also hosts `dist/ayywi.min.css`, `dist/elements.global.js`, the fonts, `llms-full.txt` and a page per component (`llms/<slug>.md`), so agents can use ayywi from it without installing anything; each build publishes its runtime files under `v/<release>/` too, and the prompts link those, so a later release can't restyle an app.
+This sets up the agent skill, Cursor rules, AGENTS.md guide, and MCP server automatically.
 
-## Install
+### 3. Interactive prompt generator
+
+Visit the live **[Get Started](https://danitesler.github.io/ayywi/#/)** page in the preview:
+- Pick your product type (Dashboard, Booking, Store, Support Inbox, Settings, Landing Page).
+- Customize who it's for and what it needs.
+- Select your target AI tool (Lovable, Bolt, v0, Cursor, Claude Code, Replit, ChatGPT) to get a tailored prompt.
+- Copy one-click refinement prompts for mobile polish, dark mode, button consistency, and missing states.
+
+## Product shells & responsive layouts
+
+ayywi eliminates custom responsive CSS by providing built-in layout contracts:
+
+- **Web Apps (`App shell`):** On wide screens, renders a desktop sidebar with a collapsible icon rail. On phones, automatically transforms into a top brand bar and bottom tab navigation.
+- **Websites (`Navbar`):** Full horizontal navigation on desktop; automatically collapses into an accessible mobile menu button on screens below 48rem.
+- **Settings & Full-Screen Views:** Notion- and Cursor-style full-screen settings with split master-detail on desktop and drill-down navigation on phones.
+
+## Brand in one colour
+
+ayywi is monochrome until you brand it. Give it one seed colour and a corner preference:
 
 ```sh
-npm i @danitesler/ayywi        # or: pnpm add @danitesler/ayywi / yarn add @danitesler/ayywi
+npx ayywi brand "#0ea5e9" --name acme --shape soft
 ```
 
-Published on npm as [`@danitesler/ayywi`](https://www.npmjs.com/package/@danitesler/ayywi). The `ayywi` command (`init`, `lint`, `mcp`) comes with it, so `npx ayywi …` works inside a project that has it installed. To run it once without installing: `npx @danitesler/ayywi init`.
+The brand engine automatically:
+1. Generates an 11-step colour scale (`--ayy-brand-50` … `--ayy-brand-950`).
+2. Mathematically selects primary button fills (3:1 contrast) and text (4.5:1 contrast) across dark and light themes.
+3. Sets focus ring tokens and corner radiuses (`pill`, `round`, `soft`, `sharp`).
 
-Then load the CSS once at the root of your app (and `@danitesler/ayywi/elements` if you use the custom elements outside React; see [Use it](#use-it) for each framework):
+AI agents can also generate brands on the fly using the MCP tool `create_brand`.
 
-```ts
-import "@danitesler/ayywi/css";
-```
+## Themes and density
 
-Icons are optional: add `@hugeicons/core-free-icons` if you use the `Icon` component. React 18.2+ is an optional peer, needed only for `@danitesler/ayywi/react`.
-
-No install at all: link the files the preview site hosts (or copy them into your project, with the `fonts/` folder next to `fonts.css`). Use a release's `v/<release>/dist/` path (Get started's prompts do, and `versions.json` lists them): those files never change, so a later release can't restyle your app. `dist/` without a release is always the latest.
-
-```html
-<script src="https://<your-preview-site>/v/<release>/dist/theme-init.js"></script>
-<link rel="stylesheet" href="https://<your-preview-site>/v/<release>/dist/fonts.css">
-<link rel="stylesheet" href="https://<your-preview-site>/v/<release>/dist/ayywi.min.css">
-<script src="https://<your-preview-site>/v/<release>/dist/elements.global.js" defer></script>
-```
-
-`theme-init.js` applies a theme saved by the Theme toggle before the first paint, `fonts.css` loads Sora and Unbounded; both are optional.
-
-The same two files from a CDN (pin the version you use): `https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.1/dist/ayywi.min.css`.
-
-## Use it
-
-**Plain HTML / server templates:** load the files above, then write markup:
-
-```html
-<button class="ayy-button">Save</button>
-<button class="ayy-button ayy-button--outline" onclick="ayywi.toast('Saved')">Toast</button>
-```
-
-**React:**
-
-```tsx
-import "@danitesler/ayywi/css";
-import { Button, toast } from "@danitesler/ayywi/react";
-
-<Button variant="outline" onClick={() => toast("Saved")}>Save</Button>
-```
-
-**Vue, Svelte, Angular, Solid…:** import `@danitesler/ayywi/css` and `@danitesler/ayywi/elements` once, then use the same markup as plain HTML. Vue needs `isCustomElement: (tag) => tag.startsWith("ayy-")`; Angular needs `CUSTOM_ELEMENTS_SCHEMA`.
-
-**Tailwind:** alongside `@danitesler/ayywi/css`, v4 `@import "@danitesler/ayywi/tailwind.css"`; v3 `presets: [require("@danitesler/ayywi/tailwind-preset")]`. Utilities then use ayywi's colours (`bg-surface`, `text-muted`, `bg-chart-1`).
-
-**A project already on shadcn/ui** (Lovable, v0 and Bolt templates): load `@danitesler/ayywi/shadcn.css` after ayywi and the shadcn components still there take ayywi's colours, radius and font while you replace them.
-
-**Other platforms:** `pnpm build` writes SCSS, SwiftUI, Compose and JSON tokens to `dist/tokens/`.
-
-### Good to know
-
-- **Your CSS wins.** ayywi's CSS sits in cascade layers, so a global reset like `button { background: none }` overrides it too. Put your reset in a layer, or use `@danitesler/ayywi/ayywi.unlayered.css` (also the one to use with Tailwind v3).
-- **Fonts are opt-in:** `@danitesler/ayywi/fonts.css` (self-hosted) or `@danitesler/ayywi/fonts-google.css`. Without either you get system fonts.
-- **Icons** are [Hugeicons](https://hugeicons.com). Install `@hugeicons/core-free-icons` next to ayywi, then `<Icon icon={Search01Icon} />` in React or `iconSvg(Search01Icon)` elsewhere.
-
-## Theme and density
+Apply themes and density modes with single HTML attributes on `<html>` or any container:
 
 ```html
 <html data-theme="dark-contrast" data-density="comfortable">
 ```
 
-| Theme | Looks like |
+| Theme | Appearance |
 |---|---|
-| *(none)* | follows the OS, dark or light |
-| `dark` / `light` | the defaults |
-| `dark-contrast` | pure-black page, high contrast cards |
-| `light-gray` | white cards on a grey page |
+| *(none)* | Follows the user's operating system (dark or light) |
+| `dark` / `light` | The default clean dark and light palettes |
+| `dark-contrast` | Pure OLED black page with high-contrast cards |
+| `light-gray` | Clean white cards on a grey canvas |
 
-Density is `compact` by default; phones and tablets get `touch` automatically. Both attributes work on any element, not just `<html>`. From JS, use `setTheme()` and `setDensity()`, and put `themeInitScript` (or `dist/theme-init.js`) in `<head>` to avoid a flash on load; the Theme toggle restores a saved choice by itself too.
-
-## Brands
-
-ayywi is monochrome until you give it a brand: one colour, and optionally fonts and a corner shape.
-
-```sh
-npx ayywi brand "#0ea5e9" --name acme --shape soft --body "Inter" --out acme.css
-```
-
-That writes `acme.css` and prints a report. From the seed it makes an 11-step scale (`--ayy-brand-50` … `--ayy-brand-950`, with your exact colour at its nearest step), then picks `primary`, `primary-fg` and `ring` for dark and for light themes: the step nearest your colour that keeps text on the button at 4.5:1 and the fill and focus ring at 3:1 against every surface, in every theme. If your colour can't do that on light backgrounds (a yellow, say), the report says which darker step it used instead. Fonts get ayywi's fallbacks, system fonts included. `--shape` is `pill` (ayywi's own), `round`, `soft` or `sharp`; `--radius-button`, `--radius-card` and `--radius-control` set exact values.
-
-Load the file after ayywi's CSS and name the brand where it applies:
-
-```html
-<html data-brand="acme">
-```
-
-From JS, `createBrand()` returns the same thing as data, `brandCss()` the stylesheet, and `setBrand({ name, color })` generates and applies one at runtime (a user-picked accent, say). `setBrand("violet")` with `@danitesler/ayywi/brands/violet.css` loaded applies a ready-made one. Agents get the same generator as the MCP tool `create_brand`. For native apps and Figma, `--tokens <dir>` writes the brand as DTCG JSON per theme, to layer over `@danitesler/ayywi/tokens/<theme>.json`.
+Densities include `compact` (desktop default), `comfortable` (looser spacing), and `touch` (automatically activated on mobile devices for 44px+ tap targets).
 
 ## Components
 
@@ -125,35 +123,23 @@ From JS, `createBrand()` returns the same thing as data, `brandCss()` the styles
 | Feedback | Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state |
 | Data display | Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Data list, Swipe actions, Frame, Chat, Table, Chart |
 
-Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) cover the glue between them, and a site kit (containers, hero type, scroll reveal, reading progress) covers marketing pages and portfolios.
+Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) and a marketing site kit (containers, hero type, scroll reveal) handle the structure between components.
 
-## AI setup
+## Explore live
 
-The quickest way is the preview's Get started page. Builders pick what they're making, fill in one sentence, and copy one prompt that works across Lovable, Bolt, v0, Cursor, Replit, Claude, ChatGPT and more: it links the CSS and the elements script the site hosts, so nothing gets installed, and carries the rules and every class name. Fix-it prompts follow for when something looks off. Developers get dedicated tabs to link the files, install the package, or run in a chat with no project.
-
-With the package installed, in the app that uses ayywi:
-
-```sh
-npx ayywi init          # sets up your agent: skill, AGENTS.md section, Cursor rule, MCP server
-npx ayywi init --force  # later: refresh them after upgrading ayywi
-npx ayywi lint src      # checks the code for misuse
-```
-
-After that the agent picks ayywi up on its own. Run `ayywi lint --max-warnings 0` in your build to catch mistakes whoever made them.
+Visit the [interactive preview](https://danitesler.github.io/ayywi/):
+- **7 full-scale showcase apps:** Dashboard, Marketing site, Support inbox, Settings, Habit tracker, Store, Booking app (viewable at desktop, tablet, and mobile sizes).
+- **Component browser:** Every component with live interactive stages, theme toggles, and copy-ready HTML and React code.
+- **Brand playground:** Test your brand colour and corner radius in real time.
 
 ## Working on ayywi
 
+Instructions for contributors and agents modifying ayywi itself are in [AGENTS.md](AGENTS.md). Changes are tracked in [CHANGELOG.md](CHANGELOG.md).
+
 ```sh
-pnpm build && pnpm typecheck && pnpm check && pnpm test   # before every commit
-pnpm test:e2e                                             # for visual or interactive changes
-scripts/check-all.sh                                      # every check, locally (--quick skips the preview build and e2e)
+pnpm build && pnpm typecheck && pnpm check && pnpm test
+scripts/check-all.sh
 ```
-
-There is no hosted CI: `scripts/check-all.sh` is the gate before merging or publishing. Don't add GitHub Actions workflows.
-
-Conventions and repo layout are in [AGENTS.md](AGENTS.md). Changes go in [CHANGELOG.md](CHANGELOG.md); renaming or removing a class, token or prop is a breaking change.
-
-**Publishing:** build the preview with `pnpm preview:build` and host `preview/dist` anywhere. Publish the package with `npm publish` (it is scoped, `publishConfig.access` is `public`; `prepublishOnly` runs `pnpm check`). Bump `version` in package.json and add the release to CHANGELOG.md first.
 
 ## License
 

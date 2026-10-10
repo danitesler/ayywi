@@ -23,14 +23,18 @@
     "ayy-app-shell--settings": "Settings mode, on the root. The sidebar holds an __back, an __title and a nav of settings sections (groups of links, one aria-current=\"page\"); the main holds the open section, starting with a Top bar whose title names it and whose back button shows on phones only; the section's content sits in a column of --ayy-size-measure, centred. No __bar and no bottom nav. Below 48rem: with no section link current the sidebar is the whole screen (a large title and rows with chevrons) and the main is hidden; with one current, the main is the screen and the sidebar is hidden.",
     "ayy-app-shell__back": "First in a settings sidebar: an <a href> back to the page settings were opened from (or a <button>), with a directional arrow icon and \"Back to <app name>\". In settings mode, Esc follows it.",
     "ayy-app-shell__title": "A settings sidebar's heading, an <h2> \"Settings\" under the __back. Large on the phone's section list.",
-    "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it."
+    "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. connectAppShell() / <ayy-app-shell> / React AppShell manage it.",
+    "ayy-app-shell--collapsed": "Collapsed sidebar mode on wide screens: reduces the sidebar to an icon rail and hides link labels, group labels and sub-lists. The toggle's aria-expanded reflects the state.",
+    "ayy-app-shell--hover-preview": "When combined with --collapsed, hovering or focusing the collapsed sidebar on wide screens temporarily expands it to full width as a floating overlay with shadow, without shifting main content."
   },
   "variants": {
-    "settings": { "values": [false, true], "default": false, "component": "AppShell" }
+    "settings": { "values": [false, true], "default": false, "component": "AppShell" },
+    "collapsed": { "values": [false, true], "default": false, "component": "AppShell" },
+    "hoverPreview": { "values": [false, true], "default": false, "component": "AppShell" }
   },
   "states": {
     "default": { "looks": "A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills." },
-    "hover": { "when": ".ayy-app-shell__link:hover", "looks": "Link gets a wash fill and the text colour." },
+    "hover": { "when": ".ayy-app-shell__link:hover; on a collapsed shell with hover preview, .ayy-app-shell__sidebar:hover expands the sidebar as an overlay", "looks": "Link gets a wash fill and the text colour. In hover preview, the sidebar expands to 15rem with the overlay shadow over the content." },
     "pressed": { "none": "Links have no pressed look." },
     "focus": { "when": "links, brand, sidebar and main :focus-visible", "looks": "Links and brand: 2px ring, 2px offset. A focused scroll area (sidebar or main with tabindex=\"0\") gets the ring inset." },
     "disabled": { "none": "Sidebar links are never disabled: leave out pages the user can't open." },
@@ -41,15 +45,20 @@
   },
   "sizes": {
     "density": "Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.",
-    "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
+    "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
   },
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass constants; connectAppShell(shell) wires the phone drawer (a toggle in the bar or the bottom nav) and, on a settings shell, Esc to leave settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
   "react": {
     "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "AppShell": {
         "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\"",
-        "props": { "settings": "boolean — settings mode (ayy-app-shell--settings): the sidebar holds AppShellBack, AppShellTitle and the sections; Esc leaves." }
+        "props": {
+          "settings": "boolean — settings mode (ayy-app-shell--settings): the sidebar holds AppShellBack, AppShellTitle and the sections; Esc leaves.",
+          "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).",
+          "hoverPreview": "boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview).",
+          "onCollapseChange": "(collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button."
+        }
       },
       "AppShellBack": {
         "renders": "<a class=\"ayy-app-shell__back\" href> with a directional arrow and the children in a <span>; a <button type=\"button\"> without href",
@@ -127,12 +136,18 @@
     { "id": "tabs", "title": "Tab bar on phones, with More" },
     { "id": "grouped", "title": "Groups, sub-sections and a collapse" },
     { "id": "drawer", "title": "Phone drawer" },
-    { "id": "settings", "title": "Full-screen settings" }
+    { "id": "settings", "title": "Full-screen settings" },
+    { "id": "collapsible", "title": "Collapsible sidebar with hover preview" }
   ],
   "element": {
     "tag": "ayy-app-shell",
-    "attributes": {},
-    "events": {},
-    "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On a settings shell, Esc follows the __back. Otherwise it does nothing."
+    "attributes": {
+      "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (sets ayy-app-shell--collapsed).",
+      "hover-preview": "boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (sets ayy-app-shell--hover-preview)."
+    },
+    "events": {
+      "ayy-collapse-change": "{ collapsed: boolean } — fired when the sidebar is collapsed or expanded via a toggle button or the collapsed property."
+    },
+    "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On wide screens, wires sidebar collapsing and optional hover-preview. On a settings shell, Esc follows the __back."
   }
 }
