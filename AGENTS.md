@@ -139,7 +139,7 @@ Once approved, a release is one job; do every step, in order, and stop at the fi
 2. `npm version <version> --no-git-tag-version`.
 3. `pnpm build && node scripts/pin-readme.mjs`: moves the README's jsDelivr links to the new version with SRI hashes from `dist/`. `pnpm check` fails until this is done.
 4. Commit everything (`Release <version>`).
-5. `scripts/check-all.sh`. Everything must pass, on the committed tree (it fails if the build changes tracked files). Fix and amend if not, then `git tag v<version>`.
+5. `scripts/check-all.sh`. Everything must pass, on the committed tree (it fails if the build changes tracked files). Fix and amend if not, then `git tag -a v<version> -m "Release <version>"` (annotated, so `--follow-tags` pushes it).
 6. `npm publish`. If npm asks for a one-time password, stop and ask the maintainer to run it; never handle their 2FA codes.
 7. `git push --follow-tags`.
 8. Verify: `npm view @danitesler/ayywi version` shows the new version, and `node scripts/pin-readme.mjs --verify` passes (jsDelivr can take a few minutes to see a new release).
