@@ -19,7 +19,8 @@ function sectionRange(text) {
   const next = own < 0 ? -1 : text.indexOf("\n## ", own + 1);
   return [start, next < 0 ? text.length : next + 1];
 }
-const MCP_SERVER = { command: "npx", args: ["ayywi", "mcp"] };
+// The scoped name: a bare `npx ayywi` would fetch whatever owns the unscoped `ayywi` on npm.
+const MCP_SERVER = { command: "npx", args: ["-y", "@danitesler/ayywi", "mcp"] };
 // After every file Claude Code writes, lint it; findings go back to the agent (exit 2) so it fixes them before moving on.
 const HOOK_COMMAND = "npx --no ayywi lint --hook";
 const HOOK = { matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: HOOK_COMMAND }] };

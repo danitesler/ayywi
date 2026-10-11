@@ -86,7 +86,7 @@ ${headTags(l, "   ")}
       "A skill, Cursor rules and an AGENTS.md guide",
       "An MCP server with get_component, search and lint tools",
       "Automatic responsive shell and complete UI states",
-      "A final npx ayywi lint pass",
+      "A final npx @danitesler/ayywi lint pass",
     ],
     prompt: () => `Set up the ayywi design system in this project and build a first screen with it.
 
@@ -94,7 +94,7 @@ ${headTags(l, "   ")}
 2. Load ayywi once at the app entry: import "@danitesler/ayywi/css" (React: use "@danitesler/ayywi/react"; other frameworks: import "@danitesler/ayywi/elements" and use <ayy-*> elements).
 3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
 4. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, Sections and Footer. Include empty, loading and error states.
-5. Run npx ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
+5. Run npx @danitesler/ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
   },
   chat: {
     label: "Web Chat",
@@ -123,7 +123,7 @@ const MORE = [
     why: "Five shades of grey, three button styles and a hand-rolled modal. Converge on one system without a rewrite.",
     prompt: `Migrate src/pages/Billing.tsx to ayywi. Replace hand-written buttons, inputs, cards, tabs and the confirm modal with ayywi components, and hardcoded colours, spacing and font sizes with ayywi tokens. Keep the behaviour and the copy exactly as they are.
 
-Lint the file (npx ayywi lint, or check it against the rules), fix what it reports, and list anything you couldn't map to an ayywi component so I can decide.`,
+Lint the file (npx @danitesler/ayywi lint, or check it against the rules), fix what it reports, and list anything you couldn't map to an ayywi component so I can decide.`,
   },
   {
     id: "flow",
@@ -145,7 +145,7 @@ const REVIEW = [
   "Tab through the page. Every button, link and field should show a focus ring.",
   "Look for one main button per view. Everything else should be quieter.",
   "Empty the list, slow the network and break the request: each of those needs its own state.",
-  "Run the linter (npx ayywi lint) where the package is installed. It catches made-up classes, hardcoded colours and layouts that break in right-to-left languages.",
+  "Run the linter (npx @danitesler/ayywi lint) where the package is installed. It catches made-up classes, hardcoded colours and layouts that break in right-to-left languages.",
 ];
 
 export const getStarted = {
@@ -490,7 +490,7 @@ function DeveloperGuide({ setup }: { setup: Setup }) {
       </h2>
       <p className="pv-note">
         Everything the prompts point at is on this site, so you can paste it into any tool. With the package installed,{" "}
-        <code>npx ayywi mcp</code> serves the same over MCP and <code>npx ayywi lint</code> checks the result.
+        <code>npx @danitesler/ayywi mcp</code> serves the same over MCP and <code>npx @danitesler/ayywi lint</code> checks the result.
       </p>
       <div className="pv-files">
         <CopyButton text={agentsSnippet} label="Copy the rules for AGENTS.md" variant="outline" />

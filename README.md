@@ -1,22 +1,30 @@
 # ayywi
 
-A design system built for product managers, designers, and AI builders.
+**The AI-first design system.** Say it "AY-wee": *AI* + *UI*, squashed into one word.
 
-When you ask an AI tool to build UI, you usually get five mismatched shades of grey, broken mobile layouts, and missing empty states. **ayywi** fixes that. It gives your AI tools a strict contract of design tokens, accessible components, and responsive product shells—so every screen comes out looking like a senior product designer built it.
+When you ask an AI tool to build UI, you usually get five mismatched shades of grey, broken mobile layouts, and missing empty states. **ayywi** is written for the agent as much as for you: a strict contract of design tokens, accessible components, and responsive product shells, plus a linter that catches the agent when it strays.
 
-- **Small:** zero runtime dependencies, ~24 kB of CSS gzipped for all 66 components.
+> **Status: early (0.0.x).** The API can still change between releases. Pin a version.
+
+![The Dashboard showcase app, built only from ayywi components](https://raw.githubusercontent.com/danitesler/ayywi/main/preview/src/showcase/screenshots/dashboard.png)
+
+- **Small:** zero runtime dependencies, ~24 kB of CSS gzipped for all 65 components.
 - **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
-- **Production-ready polish:** every view includes empty, loading, and error states; every control has focus rings, keyboard support, ARIA, RTL, and Windows High Contrast.
+- **States and accessibility built in:** components ship empty, loading, and error states; interactive ones have focus rings, keyboard support, ARIA, RTL, and Windows High Contrast styles. axe runs on every component page and showcase app (no serious or critical violations), and `pnpm check` tests every text colour against every surface in every theme.
 - **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.
 - **Responsive by contract:** apps automatically switch from a desktop sidebar to a mobile top bar and bottom nav; websites fold into a phone menu without custom media queries.
 
-## Why ayywi?
+## Who it's for
 
-| Role | What you get |
+Anyone who builds UI by asking an AI tool. You describe the product, your agent builds it with ayywi, and the linter sends it back when it drifts. You don't need to be a designer or a front-end developer, and if you are one, the tokens, themes and brand engine are yours to shape.
+
+| AI tools usually… | ayywi gives them… |
 |---|---|
-| **Product Managers & Founders** | Ship finished software instead of half-baked prototypes. Screens handle real-world states (loading skeletons, zero-data empties, network errors) and work on phones out of the box with zero runtime dependencies. |
-| **Designers** | A token-driven system with four themes and a one-colour brand generator that guarantees WCAG contrast (4.5:1 text, 3:1 controls). Clean typography, Hugeicons glyphs, and seamless dark and high-contrast modes. |
-| **AI Builders** | Stop fixing hallucinated CSS and random Tailwind colours. AI agents (Cursor, Claude Code, Lovable, Bolt, v0, ChatGPT) use ayywi's strict classes and tokens to build consistent UI on the first try. |
+| invent colours and spacing | Tokens only. The linter flags raw colours (hex, rgb(), named) and made-up ayy- classes. |
+| skip empty, loading and error states | A rule plus a component for each: Skeleton, Empty state, Alert with retry. |
+| break on phones | Shells that switch to phone layouts by themselves: sidebar → top bar and bottom nav, navbar → menu. |
+| hand-build controls that fail with a keyboard or screen reader | Native-first components with focus rings, ARIA, RTL and High Contrast. |
+| drift from screen to screen | One contract, read through `llms.txt` or MCP, and a reviewer agent that checks finished screens. |
 
 ## Start building in one prompt
 
@@ -28,17 +36,20 @@ Paste this into your chat when starting an app:
 
 ```markdown
 Style this project with the ayywi design system. Link these in <head>:
-<script src="https://danitesler.github.io/ayywi/dist/theme-init.js"></script>
-<link rel="stylesheet" href="https://danitesler.github.io/ayywi/dist/fonts.css">
-<link rel="stylesheet" href="https://danitesler.github.io/ayywi/dist/ayywi.min.css">
-<script src="https://danitesler.github.io/ayywi/dist/elements.global.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/theme-init.js" integrity="sha384-lGmWLHV63f2b1zy44y+untQnyYqkUy+4KcwBm+sfcXKIO/kWbNNpS4+F1cX4uGfz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/fonts.css" integrity="sha384-xlJC6P/OPjbl1PpLS8nyeR5McBXBvlbILZYs3NqxQ7FfDQXHvg7heYTa98Xsh1av" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/ayywi.min.css" integrity="sha384-altFI0nfvLSSoGPhVT70AVPSf95VMLF+yG6Xlae/gnfkwrCAetcXPS5u4vhp5ozx" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/elements.global.js" integrity="sha384-xK75X2mKGtliwi6gHAqBfZXRM664py5XCf1fUULjWKLpOr3s8CcalLjP/ZqvydXA" crossorigin="anonymous" defer></script>
 
 Rules:
-- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://danitesler.github.io/ayywi/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
+- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
+- If the project already uses Tailwind, use it for layout only, never its colour scale (bg-gray-900, text-blue-500). Don't add shadcn/ui or another UI kit.
 - An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
 - Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).
 - No hardcoded colours. Dark and light themes follow data-theme on <html>.
 ```
+
+The links are pinned to one release with [SRI](https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity) hashes, so a later release can't restyle a shipped app and a tampered file won't load. To upgrade, change the version and the hashes together.
 
 ### 2. Coding agents (Cursor, Claude Code, Windsurf)
 
@@ -86,15 +97,16 @@ ayywi eliminates custom responsive CSS by providing built-in layout contracts:
 
 ## Brand in one colour
 
-ayywi is monochrome until you brand it. Give it one seed colour and a corner preference:
+ayywi is monochrome until you brand it. Give it one seed colour and a corner preference.
+
 
 ```sh
-npx ayywi brand "#0ea5e9" --name acme --shape soft
+npx @danitesler/ayywi brand "#0ea5e9" --name acme --shape soft
 ```
 
 The brand engine automatically:
 1. Generates an 11-step colour scale (`--ayy-brand-50` … `--ayy-brand-950`).
-2. Mathematically selects primary button fills (3:1 contrast) and text (4.5:1 contrast) across dark and light themes.
+2. Picks the primary button fill nearest your seed that reaches 3:1 against every surface, and a label colour that reaches 4.5:1 on that fill, in every theme. It prints each check, and skips any step that would fail.
 3. Sets focus ring tokens and corner radiuses (`pill`, `round`, `soft`, `sharp`).
 
 AI agents can also generate brands on the fly using the MCP tool `create_brand`.

@@ -15,7 +15,7 @@ export const PUBLIC_HOOKS = {
   "--ayy-swatch": "A swatch's colour, set on the .ayy-swatch (a token: var(--ayy-chart-1), var(--ayy-accent-brand)…).",
   "--ayy-swipe-bg": "Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).",
   "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
-  "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
+  "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
   "--ayy-slide": "Width of each carousel slide (default min(22rem, 85%)).",
 };
 
@@ -72,7 +72,7 @@ export const ORDER = [
   "page-header", "section", "card", "tabs", "accordion", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
-  "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "data-list", "swipe", "frame", "chat", "table", "chart",
+  "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "frame", "chat", "table", "chart",
 ];
 
 /** Screens built from several components that every app should build the same way. Each is rendered into the manifest
@@ -159,7 +159,6 @@ export const NEEDS = [
   { need: "Group content in a box", use: ["card"], how: "Card with CardHeader / CardTitle / CardDescription, CardContent, CardFooter; CardLink when the whole card opens something.", not: "a <div> with a border, radius and padding" },
   { need: "Rows of things (members, files, threads, settings)", use: ["list", "settings", "swipe"], how: "List (ListLink for clickable rows, divided for settings-style rows); Settings for preference rows; Swipe actions on phones.", not: "<ul>/<div> rows with your own borders and hover, <li onClick>" },
   { need: "Records compared across columns", use: ["table", "pagination"], how: "Table (sortable headers, a select column), Pagination under it.", not: "a raw <table>, a CSS grid of divs" },
-  { need: "Facts about one thing (key: value)", use: ["data-list"], how: "Data list.", not: "a <dl> or two-column divs styled by hand" },
   { need: "A number that matters (KPI)", use: ["stat", "card", "badge", "chart"], how: "Card + Stat + a status Badge, a Sparkline beside it.", not: "big bold text in a div" },
   { need: "A chart", use: ["chart"], how: "LineChart, BarChart, BarList, Sparkline, coloured from --ayy-chart-1… in order.", not: "a chart library's default palette, divs as bars" },
   { need: "A status, count or label on something", use: ["badge"], how: "Badge (status variants).", not: "a coloured <span> pill" },
@@ -178,7 +177,7 @@ export const NEEDS = [
 export const ATTRIBUTES = {
   "data-theme": "\"dark\" | \"light\" | \"dark-contrast\" | \"light-gray\" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-contrast is a pure-black theme (a #000000 page, #0a0a0a cards, white text); light-gray puts white cards and panels on a grey page.",
   "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
-  "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
+  "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx @danitesler/ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
   dir: "\"rtl\" mirrors every component (logical properties throughout).",
 };
 
@@ -203,7 +202,7 @@ export const RULES = [
   "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
   "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
   "Theme with data-theme=\"dark|light|dark-contrast|light-gray\" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.",
-  "Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from \"@danitesler/ayywi\", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.",
+  "Brand a product with a generated brand, never hand-picked colours: `npx @danitesler/ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from \"@danitesler/ayywi\", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.",
   "Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).",
   "Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.",
   "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
@@ -221,5 +220,5 @@ export const RULES = [
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
   "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
-  "Run `npx ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.",
+  "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.",
 ];

@@ -67,7 +67,6 @@
 @import "../components/icon/icon.css" layer(ayywi.components);
 @import "../components/icon-tile/icon-tile.css" layer(ayywi.components);
 @import "../components/stat/stat.css" layer(ayywi.components);
-@import "../components/data-list/data-list.css" layer(ayywi.components);
 @import "../components/swipe/swipe.css" layer(ayywi.components);
 @import "../components/list/list.css" layer(ayywi.components);
 @import "../components/frame/frame.css" layer(ayywi.components);

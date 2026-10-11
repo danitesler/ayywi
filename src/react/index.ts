@@ -143,7 +143,6 @@ export { Carousel, CarouselSlide, type CarouselProps } from "../components/carou
 export { ThemeToggle, type ThemeToggleProps } from "../components/theme-toggle/theme-toggle.react";
 export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";
 export { Stat, type StatProps } from "../components/stat/stat.react";
-export { DataList, DataListItem, type DataListProps, type DataListItemProps } from "../components/data-list/data-list.react";
 export { Frame, type FrameProps } from "../components/frame/frame.react";
 export {
   Chat,

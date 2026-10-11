@@ -1,8 +1,8 @@
-# @danitesler/ayywi 0.0.1 — full context for LLMs
+# @danitesler/ayywi 0.0.2 — full context for LLMs
 
-> Lightweight, framework-agnostic, AI-first design system. One CSS class contract for HTML, Vue, Svelte, Angular, server templates — plus typed React components.
+> The AI-first design system (say "AY-wee": AI + UI). One CSS class contract for HTML, Vue, Svelte, Angular, server templates, plus typed React components, a linter and an MCP server.
 
-Generated from source by scripts/build-manifest.mjs. Structured version: manifest/components.json. Query it live with the MCP server: `npx ayywi mcp`.
+Generated from source by scripts/build-manifest.mjs. Structured version: manifest/components.json. Query it live with the MCP server: `npx @danitesler/ayywi mcp`.
 
 ## How to use it
 
@@ -11,7 +11,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-menu>, <ayy-command>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tag-input>, <ayy-calendar>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - One component at a time: `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt.
-- Check your work: `npx ayywi lint`.
+- Check your work: `npx @danitesler/ayywi lint`.
 
 ## Rules
 
@@ -20,7 +20,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.
 - Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.
 - Theme with data-theme="dark|light|dark-contrast|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.
-- Brand a product with a generated brand, never hand-picked colours: `npx ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from "@danitesler/ayywi", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.
+- Brand a product with a generated brand, never hand-picked colours: `npx @danitesler/ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from "@danitesler/ayywi", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).
 - Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
@@ -38,7 +38,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
 - In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).
-- Run `npx ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
+- Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
 
@@ -74,7 +74,6 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Group content in a box | Card with CardHeader / CardTitle / CardDescription, CardContent, CardFooter; CardLink when the whole card opens something. | a <div> with a border, radius and padding |
 | Rows of things (members, files, threads, settings) | List (ListLink for clickable rows, divided for settings-style rows); Settings for preference rows; Swipe actions on phones. | <ul>/<div> rows with your own borders and hover, <li onClick> |
 | Records compared across columns | Table (sortable headers, a select column), Pagination under it. | a raw <table>, a CSS grid of divs |
-| Facts about one thing (key: value) | Data list. | a <dl> or two-column divs styled by hand |
 | A number that matters (KPI) | Card + Stat + a status Badge, a Sparkline beside it. | big bold text in a div |
 | A chart | LineChart, BarChart, BarList, Sparkline, coloured from --ayy-chart-1… in order. | a chart library's default palette, divs as bars |
 | A status, count or label on something | Badge (status variants). | a coloured <span> pill |
@@ -138,7 +137,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 - **state**: State lives in native/ARIA attributes (disabled, :checked, aria-selected, aria-invalid, [open], :popover-open) so every framework drives it the same way.
 - **theming**: No attribute = follow OS (dark or light). data-theme="dark" | "light" | "dark-contrast" | "light-gray" forces a theme on any element and its subtree (.dark/.light classes work too). See "themes" for what each one does; every theme keeps text at WCAG AA. setTheme() switches and persists; getColorScheme() says "dark" or "light".
 - **density**: Controls default to compact (touch on touch-first devices). data-density="compact" | "comfortable" | "touch" on any element resizes buttons, inputs, tabs, switches, checkboxes and menu items below it.
-- **branding**: A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand="<name>"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.
+- **branding**: A brand is one seed colour plus optional fonts and a shape. createBrand() (or `npx @danitesler/ayywi brand`, or the MCP create_brand tool) turns it into an 11-step scale (--ayy-brand-50…950, the seed itself at its nearest step) and, for dark and for light themes, a primary, primary-fg and ring taken from the scale step nearest the seed that keeps 4.5:1 text on the button and 3:1 against every surface in every theme. Fonts get ayywi's fallbacks (system fonts for body text); shape pill | round | soft | sharp (or exact radius) sets --ayy-radius-control, -card and -button. brandCss() writes it in the ayywi.brand layer for [data-brand="<name>"]; setBrand(brand) adds it to the page and sets the attribute. Components never change, only tokens.
 - **direction**: All layout uses logical properties; set dir="rtl" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.
 - **elements**: Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith("ayy-"); Angular: CUSTOM_ELEMENTS_SCHEMA.
 - **highContrast**: Every stateful component has a forced-colors (Windows High Contrast) style using system colours.
@@ -148,7 +147,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 
 - `data-theme`: "dark" | "light" | "dark-contrast" | "light-gray" — force a theme on this element and its subtree. None = follow the OS (dark or light). dark-contrast is a pure-black theme (a #000000 page, #0a0a0a cards, white text); light-gray puts white cards and panels on a grey page.
 - `data-density`: "compact" | "comfortable" | "touch" — control sizes for this subtree. None = compact, or touch on touch-first devices.
-- `data-brand`: A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.
+- `data-brand`: A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx @danitesler/ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.
 - `dir`: "rtl" mirrors every component (logical properties throughout).
 
 ## Tokens
@@ -347,7 +346,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 
 ## Brands
 
-Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx ayywi brand <#seed> --name <name>`.
+Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danitesler/ayywi brand <#seed> --name <name>`.
 
 - `violet` — Example brand: violet buttons, checks and focus rings, softer button and card corners. Load @danitesler/ayywi/brands/violet.css and set data-brand="violet" on any element (or setBrand("violet")). Made from: `{"name":"violet","color":"#7c3aed","radius":{"button":"10px","card":"20px"}}`
 
@@ -366,7 +365,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx ayywi 
 - `--ayy-swatch`: A swatch's colour, set on the .ayy-swatch (a token: var(--ayy-chart-1), var(--ayy-accent-brand)…).
 - `--ayy-swipe-bg`: Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).
 - `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.
-- `--ayy-min`: Narrowest column of .ayy-grid (default 16rem) or of .ayy-data-list--row (default 9rem) before it drops a column; the aside width of .ayy-split (default 18rem).
+- `--ayy-min`: Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).
 - `--ayy-slide`: Width of each carousel slide (default min(22rem, 85%)).
 
 ## Utility classes
@@ -409,7 +408,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx ayywi 
 - **Layout** (Containers and ways to organise content.): Page header, Section, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Data list, Swipe actions, Frame, Chat, Table, Chart
+- **Data display** (Values, people and records.): Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Frame, Chat, Table, Chart
 
 ## Button
 
@@ -9679,7 +9678,6 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 
 **Don't**
 - Don't use a list for data people compare across columns — use a Table.
-- Don't use it for label/value pairs about one thing — use a Data list.
 - Don't use it for the site or app navigation — use the App shell or Navbar.
 - Don't put two links in a row's title, or wrap the whole <li> in an <a>.
 
@@ -9826,97 +9824,6 @@ export default function Example() {
         </List>
       </CardContent>
     </Card>
-  );
-}
-```
-
-## Data list
-
-Category: Data display. Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row. Also called: data-list, kv, key-value, definition-list.
-
-**Classes**
-- `.ayy-data-list` — Root <dl>. Items stacked.
-- `.ayy-data-list--row` — Items side by side, wrapping to fit (each at least --ayy-min, default 9rem).
-- `.ayy-data-list__item` — A <div> holding one <dt> and its <dd>.
-- `.ayy-data-list__label` — The <dt>: small uppercase muted label.
-- `.ayy-data-list__value` — The <dd>: the value, in body text.
-
-**States**
-- `default` — Stacked pairs: a muted 2xs uppercase label over an md value. row puts the pairs side by side.
-- `hover` — doesn't apply: Static.
-- `pressed` — doesn't apply: Not interactive.
-- `focus` — doesn't apply: Not focusable.
-- `disabled` — doesn't apply: Not interactive.
-- `selected` — doesn't apply: Not interactive.
-- `error` — doesn't apply: No error state; show "—" for a missing value.
-- `loading` — doesn't apply: Use a text Skeleton in each value while it loads.
-
-**Sizes**
-- Density — Doesn't follow data-density.
-- Width — Fills its container. row is a grid of columns at least --ayy-min (9rem) wide; values break anywhere rather than overflow.
-
-**JS (framework-free)**: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
-
-**React** — `import { DataList, DataListItem } from "@danitesler/ayywi/react";`
-- `<DataList>` renders <dl>. Props: `row` boolean
-- `<DataListItem>` renders <div><dt>label</dt><dd>children</dd></div>. Props: `label` ReactNode (required)
-
-**Accessibility**
-- A real <dl>/<dt>/<dd>, so screen readers announce each value with its term.
-- Links in values keep their focus ring; external ones should say so.
-
-**Do**
-- Use a data list for facts about a thing: Role, Company, Years, Platform on a case study; plan details; file metadata.
-- Keep labels to one or two words.
-- Use the row form under a title, as the facts line of a case study.
-
-**Don't**
-- Don't use it for many records with the same fields — use Table.
-- Don't use it for editable settings — use Field with inputs.
-- Don't use it for prose; values should be short.
-
-### Data list — Facts row
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<dl class="ayy-data-list ayy-data-list--row" style="inline-size: 100%">
-  <div class="ayy-data-list__item">
-    <dt class="ayy-data-list__label">Role</dt>
-    <dd class="ayy-data-list__value">Product designer</dd>
-  </div>
-  <div class="ayy-data-list__item">
-    <dt class="ayy-data-list__label">Company</dt>
-    <dd class="ayy-data-list__value"><a class="ayy-link" href="#oktopost">oktopost.com</a></dd>
-  </div>
-  <div class="ayy-data-list__item">
-    <dt class="ayy-data-list__label">Years</dt>
-    <dd class="ayy-data-list__value">2023 – present</dd>
-  </div>
-  <div class="ayy-data-list__item">
-    <dt class="ayy-data-list__label">Platform</dt>
-    <dd class="ayy-data-list__value">Web, mobile web &amp; email</dd>
-  </div>
-</dl>
-```
-
-React:
-
-```tsx
-import { DataList, DataListItem } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <DataList row style={{ inlineSize: "100%" }}>
-      <DataListItem label="Role">Product designer</DataListItem>
-      <DataListItem label="Company">
-        <a className="ayy-link" href="#oktopost">
-          oktopost.com
-        </a>
-      </DataListItem>
-      <DataListItem label="Years">2023 – present</DataListItem>
-      <DataListItem label="Platform">Web, mobile web &amp; email</DataListItem>
-    </DataList>
   );
 }
 ```
@@ -10658,7 +10565,7 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 - Keep the scale honest: bars start at 0; let chartScale() round the top.
 
 **Don't**
-- Don't use a chart when the exact numbers matter more than the shape — use a Table or a Data list.
+- Don't use a chart when the exact numbers matter more than the shape — use a Table.
 - Don't use a pie or donut for parts of a whole — a Bar list or a stacked bar is easier to read.
 - Don't pick series colours from the status or accent tokens unless the colour means something (success for a goal line).
 - Don't draw more than six series; group the rest as Other.

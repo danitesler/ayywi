@@ -528,14 +528,6 @@ Rows of people, records, threads or settings: leading media (avatar, icon, icon 
 - JS: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
 - A11y: It's a real list: screen readers announce how many rows there are. One link per row, in the title, so a row is one tab stop with a meaningful name. Buttons and switches in the row are separate tab stops after it. Mark the open row with aria-current="page" (it's a page) or "true" (a selection in a list-detail view); it gets a tint and a heavier title, not just colour. A switch or checkbox in a settings row needs its label: make the title a <label for> pointing at it. Avatars and icons in the leading slot are decorative when the title names the row.
 
-## Data list (Data display)
-Label / value pairs on a description list: small uppercase labels over their values, stacked or in a wrapping row.
-- Classes: `.ayy-data-list` `.ayy-data-list--row` `.ayy-data-list__item` `.ayy-data-list__label` `.ayy-data-list__value`
-- States: none, it's static
-- React: `<DataList row>`, `<DataListItem label>`
-- JS: dataListClass({ row?, className? }) → string; dataListItemClass, dataListLabelClass, dataListValueClass constants.
-- A11y: A real <dl>/<dt>/<dd>, so screen readers announce each value with its term. Links in values keep their focus ring; external ones should say so.
-
 ## Swipe actions (Data display)
 A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.
 - Classes: `.ayy-swipe` `.ayy-swipe__content` `.ayy-swipe__actions` `.ayy-swipe__actions--start` `.ayy-swipe__actions--end` `.ayy-swipe__action` `.ayy-swipe__action--primary` `.ayy-swipe__action--success` `.ayy-swipe__action--warning` `.ayy-swipe__action--info` `.ayy-swipe__action--destructive`

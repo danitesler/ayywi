@@ -101,8 +101,6 @@ import {
   ChoiceCard,
   ChoiceGroup,
   Combobox,
-  DataList,
-  DataListItem,
   Dialog,
   DialogBody,
   DialogClose,
@@ -1160,14 +1158,24 @@ function InboxApp() {
               <p className="ayy-muted">Ops lead</p>
             </div>
           </div>
-          <DataList>
-            <DataListItem label="Company">Acme Inc.</DataListItem>
-            <DataListItem label="Plan">
+          <div className="ayy-stack" style={gap(2)}>
+            <div className="ayy-spread">
+              <span className="ayy-muted">Company</span>
+              <span>Acme Inc.</span>
+            </div>
+            <div className="ayy-spread">
+              <span className="ayy-muted">Plan</span>
               <Badge variant="info">Scale</Badge>
-            </DataListItem>
-            <DataListItem label="Customer since">March 2023</DataListItem>
-            <DataListItem label="Open tickets">2</DataListItem>
-          </DataList>
+            </div>
+            <div className="ayy-spread">
+              <span className="ayy-muted">Customer since</span>
+              <span>March 2023</span>
+            </div>
+            <div className="ayy-spread">
+              <span className="ayy-muted">Open tickets</span>
+              <span>2</span>
+            </div>
+          </div>
           <Separator />
           <Alert variant="warning">
             <AlertTitle>SLA in 38 minutes</AlertTitle>
@@ -1329,11 +1337,20 @@ const LEDGER_SETTINGS: AppSettings = {
           icon: Wallet01Icon,
           content: (
             <div className="ayy-stack" style={gap(6)}>
-              <DataList row>
-                <DataListItem label="Plan">Business</DataListItem>
-                <DataListItem label="Next invoice">Oct 1, 2026</DataListItem>
-                <DataListItem label="Card">•••• 4242</DataListItem>
-              </DataList>
+              <div className="ayy-grid" style={min("9rem")}>
+                <div className="ayy-stack" style={gap(1)}>
+                  <span className="ayy-muted ayy-eyebrow">Plan</span>
+                  <span>Business</span>
+                </div>
+                <div className="ayy-stack" style={gap(1)}>
+                  <span className="ayy-muted ayy-eyebrow">Next invoice</span>
+                  <span>Oct 1, 2026</span>
+                </div>
+                <div className="ayy-stack" style={gap(1)}>
+                  <span className="ayy-muted ayy-eyebrow">Card</span>
+                  <span>•••• 4242</span>
+                </div>
+              </div>
               <Settings title="Business plan">
                 <SettingsRow label="Billing cycle" hint="Yearly saves two months.">
                   <SegmentedControl aria-label="Billing cycle" defaultValue="yearly">
@@ -1941,13 +1958,20 @@ function StoreApp() {
                   <ChoiceCard value="standard" title="Standard" description="3–5 days" meta="Free" />
                   <ChoiceCard value="express" title="Express" description="Tomorrow" meta="$9.00" />
                 </ChoiceGroup>
-                <DataList row>
-                  <DataListItem label="Subtotal">{dollars(subtotal)}</DataListItem>
-                  <DataListItem label="Delivery">{shipping ? dollars(shipping) : "Free"}</DataListItem>
-                  <DataListItem label="Total">
+                <div className="ayy-stack" style={gap(2)}>
+                  <div className="ayy-spread">
+                    <span className="ayy-muted">Subtotal</span>
+                    <span>{dollars(subtotal)}</span>
+                  </div>
+                  <div className="ayy-spread">
+                    <span className="ayy-muted">Delivery</span>
+                    <span>{shipping ? dollars(shipping) : "Free"}</span>
+                  </div>
+                  <div className="ayy-spread">
+                    <span className="ayy-muted">Total</span>
                     <strong>{dollars(subtotal + shipping)}</strong>
-                  </DataListItem>
-                </DataList>
+                  </div>
+                </div>
               </div>
             ) : (
               <EmptyState compact>
@@ -2199,13 +2223,20 @@ function BookingApp() {
                   <Combobox id="hv-studio" options={STUDIOS} defaultValue="principe-real" placeholder="Search studios" />
                 </Field>
                 {pick ? (
-                  <DataList>
-                    <DataListItem label="Class">{pick.name}</DataListItem>
-                    <DataListItem label="Time">
-                      {pick.time}, {pick.length} min
-                    </DataListItem>
-                    <DataListItem label="Teacher">{pick.teacher}</DataListItem>
-                  </DataList>
+                  <div className="ayy-stack" style={gap(2)}>
+                    <div className="ayy-spread">
+                      <span className="ayy-muted">Class</span>
+                      <span>{pick.name}</span>
+                    </div>
+                    <div className="ayy-spread">
+                      <span className="ayy-muted">Time</span>
+                      <span>{pick.time}, {pick.length} min</span>
+                    </div>
+                    <div className="ayy-spread">
+                      <span className="ayy-muted">Teacher</span>
+                      <span>{pick.teacher}</span>
+                    </div>
+                  </div>
                 ) : null}
                 <Field>
                   <Label htmlFor="hv-spots">Spots</Label>
@@ -2273,7 +2304,7 @@ The Overview page: a Page header with a date-range Segmented control (7d, 30d, 9
 
 Settings (the Settings destination): Account — Profile, Preferences, Notifications; Workspace — General, Data, with a destructive Delete all data link row.
 
-Dark theme, compact density. ayywi components and tokens only; run npx ayywi lint when you're done.`,
+Dark theme, compact density. ayywi components and tokens only; run npx @danitesler/ayywi lint when you're done.`,
     screenshot: dashboardScreenshot,
     Component: DashboardApp,
   },
@@ -2289,7 +2320,7 @@ Dark theme, compact density. ayywi components and tokens only; run npx ayywi lin
 
 Sections: a centred hero (AI badge, h1, lede, a ring and an outline button, .ayy-bg-grid behind it); three feature cards with IconTiles in different accents; pricing with a Monthly/Yearly Segmented control and three plan cards (the middle one featured with a "Most popular" badge, perks in a compact List); a Carousel of customer quotes; an FAQ Accordion (single); a closing section with an email InputGroup and a submit button.
 
-Light theme. One ring call to action per view; everything else outline or ghost. Run npx ayywi lint when you're done.`,
+Light theme. One ring call to action per view; everything else outline or ghost. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: landingScreenshot,
     Component: LandingApp,
   },
@@ -2300,14 +2331,14 @@ Light theme. One ring call to action per view; everything else outline or ghost.
     description: "Conversations, a thread with AI-suggested replies, and customer details, in three panes on wide screens. On a phone it's the list, with tabs below. Its settings open in a near-full-screen dialog.",
     theme: "dark-contrast",
     density: "comfortable",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "data-list", "alert", "separator"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "alert", "separator"],
     prompt: `Build a support inbox with ayywi, in ${APP_FRAME} (Inbox, Mentions, Sent, Customers).
 
-The main area has three panes: a conversation List (avatar, name as a ListLink, a truncated preview, a status Badge, the time in ListMeta, the open one marked current) under a search InputGroup with a Kbd "/" hint; the thread (a Chat with incoming and outgoing messages, a typing indicator and suggested replies, then a reply form with a Textarea, an attach icon button and Send); and a customer panel (Avatar, a Data list, a warning Alert for the SLA). The panes collapse to the list on phones.
+The main area has three panes: a conversation List (avatar, name as a ListLink, a truncated preview, a status Badge, the time in ListMeta, the open one marked current) under a search InputGroup with a Kbd "/" hint; the thread (a Chat with incoming and outgoing messages, a typing indicator and suggested replies, then a reply form with a Textarea, an attach icon button and Send); and a customer panel (Avatar, customer details, a warning Alert for the SLA). The panes collapse to the list on phones.
 
 Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile with a stacked signature Textarea, Notifications; Inbox — Replies, AI assistant, Shortcuts with Shortcut recorders.
 
-Dark-contrast theme. ayywi components and tokens only; run npx ayywi lint when you're done.`,
+Dark-contrast theme. ayywi components and tokens only; run npx @danitesler/ayywi lint when you're done.`,
     screenshot: inboxScreenshot,
     Component: InboxApp,
   },
@@ -2318,12 +2349,12 @@ Dark-contrast theme. ayywi components and tokens only; run npx ayywi lint when y
     description: "Settings in a near-full-screen dialog over the app: sections in its sidebar, a profile that shows it's saving, notification switches, the plan's usage, invoices with pagination and an empty state. Full screen on phones, the sections and a section as two screens. Light gray with touch-sized controls.",
     theme: "light-gray",
     density: "touch",
-    uses: ["app-shell", "dialog", "settings", "top-bar", "bottom-nav", "page-header", "stat", "card", "input", "select", "textarea", "dropzone", "segmented-control", "progress", "switch", "data-list", "table", "pagination", "empty-state", "alert"],
+    uses: ["app-shell", "dialog", "settings", "top-bar", "bottom-nav", "page-header", "stat", "card", "input", "select", "textarea", "dropzone", "segmented-control", "progress", "switch", "table", "pagination", "empty-state", "alert"],
     prompt: `Build an invoicing app's settings with ayywi, in ${APP_FRAME} (Home, Invoices, Clients, Settings; help and the account in the sidebar footer). The Settings destination opens the settings dialog instead of a page.
 
-The Home page behind it: a Page header with one primary New invoice button and three Stat cards. The settings shell: a "Settings" title over two groups of sections (Account: Profile, Notifications; Workspace: Plan, Billing, General); each section starts with a Top bar naming it. Profile: Settings rows with inputs, a role Select, a photo Dropzone and an About Textarea (stacked), then Save changes that shows loading. Notifications: a Settings group of Switch rows with hints. Plan: a row Data list, a billing-cycle Segmented control, a usage Progress and a receipts Switch. Billing: an invoices Table with Pagination and a compact Empty state for "No backup card". General: workspace rows and a destructive Alert for deleting the workspace.
+The Home page behind it: a Page header with one primary New invoice button and three Stat cards. The settings shell: a "Settings" title over two groups of sections (Account: Profile, Notifications; Workspace: Plan, Billing, General); each section starts with a Top bar naming it. Profile: Settings rows with inputs, a role Select, a photo Dropzone and an About Textarea (stacked), then Save changes that shows loading. Notifications: a Settings group of Switch rows with hints. Plan: plan details in a grid, a billing-cycle Segmented control, a usage Progress and a receipts Switch. Billing: an invoices Table with Pagination and a compact Empty state for "No backup card". General: workspace rows and a destructive Alert for deleting the workspace.
 
-Light-gray theme, touch density. Run npx ayywi lint when you're done.`,
+Light-gray theme, touch density. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: settingsScreenshot,
     Component: SettingsApp,
   },
@@ -2341,7 +2372,7 @@ A Page header with one primary "New task" button. An onboarding card with Steps 
 
 Settings (Settings, behind More): Account — Preferences, Notifications, Shortcuts; Team — Members with a role Select per person, Integrations as link rows with their status.
 
-Light theme, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx ayywi lint when you're done.`,
+Light theme, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: trackerScreenshot,
     Component: TrackerApp,
   },
@@ -2352,14 +2383,14 @@ Light theme, compact density. Every state — empty, loading, error — uses an 
     description: "A coffee shop: category chips with counts, a price range and a sort, a product grid with an empty state, and a cart drawer with quantities, delivery options and the total.",
     theme: "dark",
     density: "comfortable",
-    uses: ["navbar", "section", "chip", "slider", "select", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "data-list", "footer", "button", "toast"],
+    uses: ["navbar", "section", "chip", "slider", "select", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "footer", "button", "toast"],
     prompt: `Build an online coffee store with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), a Section at .ayy-container width, and a Footer.
 
 The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Chips for the kind of coffee (with counts), a SliderRange for the price with the range in text, and a Select to sort; then an .ayy-grid of product Cards (CardMedia with an IconTile on .ayy-bg-grid in the product's --ayy-spot colour, the name, the roast and tasting notes, the price and an outline Add button), or an Empty state with Reset filters when nothing matches.
 
-The cart is a Dialog with side="end": a divided List of items with a small NumberField each, a Delivery ChoiceGroup (Standard free, Express $9), a Data list with the subtotal, delivery and total, and a footer with Keep shopping and one primary Check out that shows a toast.
+The cart is a Dialog with side="end": a divided List of items with a small NumberField each, a Delivery ChoiceGroup (Standard free, Express $9), the subtotal, delivery and total, and a footer with Keep shopping and one primary Check out that shows a toast.
 
-Dark theme. Run npx ayywi lint when you're done.`,
+Dark theme. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: storeScreenshot,
     Component: StoreApp,
   },
@@ -2370,14 +2401,14 @@ Dark theme. Run npx ayywi lint when you're done.`,
     description: "A yoga studio's schedule: a day strip of compact choice cards, style chips, classes as choice cards with spots left, and a booking card with a studio combobox and a spots stepper. Touch-sized for phones. Its settings open in a near-full-screen dialog.",
     theme: "light",
     density: "touch",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "data-list", "number-field", "field", "button", "toast"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "number-field", "field", "button", "toast"],
     prompt: `Build a class booking app for a yoga studio with ayywi, in ${APP_FRAME} (Schedule, My bookings, Teachers, Profile).
 
-The Schedule page: a Page header (the week and the classes left on the pass); a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, a Data list of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
+The Schedule page: a Page header (the week and the classes left on the pass); a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, details of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
 
 Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile, Notifications; Studio — Membership with link rows and a destructive Sign out, Preferences.
 
-Light theme, touch density. Run npx ayywi lint when you're done.`,
+Light theme, touch density. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: bookingScreenshot,
     Component: BookingApp,
   },

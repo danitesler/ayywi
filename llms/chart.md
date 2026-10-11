@@ -64,7 +64,7 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 - Keep the scale honest: bars start at 0; let chartScale() round the top.
 
 **Don't**
-- Don't use a chart when the exact numbers matter more than the shape — use a Table or a Data list.
+- Don't use a chart when the exact numbers matter more than the shape — use a Table.
 - Don't use a pie or donut for parts of a whole — a Bar list or a stacked bar is easier to read.
 - Don't pick series colours from the status or accent tokens unless the colour means something (success for a goal line).
 - Don't draw more than six series; group the rest as Other.
@@ -618,4 +618,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

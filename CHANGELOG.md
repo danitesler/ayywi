@@ -9,6 +9,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+## 0.0.2 — 2026-10-11
+
 ### Changed
 - **[Select](#/select)**
   Opened the OS menu, which looked foreign next to ayywi → with a mouse or trackpad it opens ayywi's own options list (check on the chosen one, full keyboard); phones keep the OS picker. Same `<select>` markup, `onChange` unchanged.
@@ -112,6 +114,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Generic aliases in Navbar, Input Group, and List → reassigned to dedicated [Top Bar](#/top-bar), [Search Bar](#/search-bar), and [Settings](#/settings) components.
 
 ### Fixed
+- **CLI** (security)
+  `ayywi init` wrote `npx ayywi mcp` into MCP configs, and the docs said `npx ayywi …`, which fetches whatever owns the unscoped `ayywi` on npm → everything uses `npx @danitesler/ayywi …`. Run `init` again to update an existing config.
+- **README**
+  Quick-start prompt loaded unversioned files from the preview site → pinned to one release on jsDelivr with SRI hashes. Overclaims removed, brand contrast wording now says the button label is checked at 4.5:1.
 - **[Contents](#/toc)**
   On phones the current link could end up half out of the strip when fonts loaded late → it's centred again whenever the links change size.
 - **[Theme toggle](#/theme-toggle)**
@@ -126,6 +132,19 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Kept desktop padding (80px) on mobile → reduced to 48px padding for mobile screens.
 - **[Card](#/card)** & **[Button](#/button)**
   Touch taps left hover animations stuck in active state → hover states now restricted to devices with real cursor hover.
+
+- **README**
+  Pinned versions and hashes had to be edited by hand → `scripts/pin-readme.mjs` writes them on release and `pnpm check` fails when they name another version.
+- **CLI**
+  `npx ayywi` reached nothing on npm → the unscoped `ayywi` package now runs `@danitesler/ayywi`.
+- **Preview**
+  The public site was offline → `scripts/deploy-pages.sh` publishes it to GitHub Pages from a local build.
+- **README**
+  Opened with a pitch per role (PMs, designers, AI builders) → one AI-first pitch: what AI tools get wrong and what ayywi gives them. Says how to pronounce "ayywi".
+
+### Removed
+- **[Data list](#/data-list)** (**Breaking**)
+  `.ayy-data-list` removed → use `.ayy-spread`, `.ayy-grid` or `List`.
 
 ## 0.0.1 — 2026-10-07
 

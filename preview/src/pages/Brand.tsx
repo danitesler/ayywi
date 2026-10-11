@@ -99,7 +99,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
   }, [full]);
   const brand = result.brand;
   const css = brand ? brandCss(brand) : "";
-  const cli = `npx ayywi brand "${input.color}" --name ${input.name}${input.shape && input.shape !== "pill" ? ` --shape ${input.shape}` : ""}${font ? ` --heading "${font}" --body "${font}"` : ""} --out ${input.name}.css`;
+  const cli = `npx @danitesler/ayywi brand "${input.color}" --name ${input.name}${input.shape && input.shape !== "pill" ? ` --shape ${input.shape}` : ""}${font ? ` --heading "${font}" --body "${font}"` : ""} --out ${input.name}.css`;
   const set = (patch: Partial<BrandInput>) => setInput((prev) => ({ ...prev, ...patch }));
   const hex = /^#[0-9a-f]{6}$/i.test(input.color) ? input.color : "#000000";
 

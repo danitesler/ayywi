@@ -42,7 +42,6 @@ export * from "./components/carousel/carousel";
 export * from "./components/theme-toggle/theme-toggle";
 export * from "./components/icon-tile/icon-tile";
 export * from "./components/stat/stat";
-export * from "./components/data-list/data-list";
 export * from "./components/frame/frame";
 export * from "./components/chat/chat";
 export * from "./components/page-header/page-header";

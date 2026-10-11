@@ -78,7 +78,6 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Charts | in a `Card` with the title and the key number: `LineChart` for a trend (last period as a `compare` series), `BarChart` for amounts by category or period (`stacked` for parts), `BarList` for a ranking, `Sparkline` next to a `Stat`. Series take `--ayy-chart-1`… in order. With a library: `var(--ayy-chart-N)` in SVG, `chartColors()` / `chartTheme()` for canvas |
 | Picking values | two to five words: `SegmentedControl`; options with a sentence or a price: `ChoiceGroup` of `ChoiceCard`s (`compact` for time slots, `scroll` for a day strip); many known values: `Combobox`; small counts: `NumberField`; a rough amount or a price range: `Slider` / `SliderRange`; dates and times: `Input type="date"` / `"time"` |
 | Uploads | `Dropzone` (`compact` in a form), then a `List divided` of the files with a `Progress` each and a remove button |
-| Facts about one thing | `DataList` |
 | Settings | A near-full-screen dialog over the app, never a small or side dialog or tabs: `<DialogContent size="full">` holding `AppShell settings` with `AppShellTitle` (the dialog's name) and an `AppShellNav aria-label="Settings"` of groups, and `<AppShellMain as="div">`; each section starts with a `TopBar` (back to the list, shown on phones only) and `Settings` groups of `SettingsRow` / `SettingsLink`. On phones the dialog fills the screen and the section list and a section are two screens. Recipe and specs: the Settings pattern (`get_rules`, llms-full.txt → Patterns) |
 | Multi-step flows | `Steps` above the form, one primary Continue per step |
 
@@ -94,10 +93,10 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Pricing | `SegmentedControl` for monthly/yearly, plan `Card`s (the recommended one `featured`, with a Badge), perks in a `List compact` with icons |
 | FAQ | `Accordion single` |
 | Grid of work | `.ayy-grid` of `Card interactive spotlight` with `CardMedia` and a `CardLink` title, `--ayy-spot` per item |
-| Case-study page | `Breadcrumb pill`, `Frame` around screenshots, `DataList row`, `Toc sticky numbered` beside `.ayy-prose` sections |
+| Case-study page | `Breadcrumb pill`, `Frame` around screenshots, `Toc sticky numbered` beside `.ayy-prose` sections |
 | Photo or quote strip | `Carousel` |
 | Sign-up | `InputGroup` (email, with an icon) and a submit `Button` |
-| Shop | category `Chip`s (radio) with counts, a `SliderRange` for price, a `Select` to sort; an `.ayy-grid` of product `Card`s; the cart in a `Dialog side="end"` with a `NumberField` per line, delivery `ChoiceCard`s and a `DataList row` of totals |
+| Shop | category `Chip`s (radio) with counts, a `SliderRange` for price, a `Select` to sort; an `.ayy-grid` of product `Card`s; the cart in a `Dialog side="end"` with a `NumberField` per line, delivery `ChoiceCard`s and totals in an `.ayy-stack` |
 | End of page | `Footer`: `FooterBrand`, `FooterNav` of `FooterGroup`s, `FooterBottom` for copyright and legal links |
 | Motion | `.ayy-reveal` on blocks, `.ayy-scroll-progress` at the top of long reads — CSS only |
 
@@ -105,7 +104,7 @@ Colour comes from the content: set `--ayy-spot` to an `--ayy-accent-*` token on 
 
 ### Branding a product
 
-Never pick brand colours, hover shades or text-on-brand colours yourself. Run `npx ayywi brand "<#seed>" --name <name> [--shape pill|round|soft|sharp] [--body "<font>"] --out <name>.css` (or the MCP `create_brand` tool), load the CSS after ayywi's and put `data-brand="<name>"` on `<html>`. It sets `primary`, `primary-fg`, `ring`, the corners, the fonts and an `--ayy-brand-50…950` scale, with contrast checked in every theme. Buttons, checks, switches and focus rings follow; navigation and page backgrounds stay neutral. For a colour the user picks at runtime, call `setBrand({ name, color })`. Load brand fonts yourself (`@font-face` or a font service).
+Never pick brand colours, hover shades or text-on-brand colours yourself. Run `npx @danitesler/ayywi brand "<#seed>" --name <name> [--shape pill|round|soft|sharp] [--body "<font>"] --out <name>.css` (or the MCP `create_brand` tool), load the CSS after ayywi's and put `data-brand="<name>"` on `<html>`. It sets `primary`, `primary-fg`, `ring`, the corners, the fonts and an `--ayy-brand-50…950` scale, with contrast checked in every theme. Buttons, checks, switches and focus rings follow; navigation and page backgrounds stay neutral. For a colour the user picks at runtime, call `setBrand({ name, color })`. Load brand fonts yourself (`@font-face` or a font service).
 
 ## 6. Every screen has four states
 
@@ -123,8 +122,8 @@ Compose it from existing components, utilities and tokens in the app's own code.
 
 ## 8. Before you finish
 
-- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every finding, warnings included. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size, other icon sets, and skipped components: raw native controls (`raw-control`), hand-styled ones (`bare-control`), clickable divs (`clickable-element`), look-alike classes (`rebuilt-component`) and restyled components (`component-override`). In Claude Code, `npx ayywi init` runs it after every file you write and hands you the findings.
-- Built or changed a whole screen? Have the `ayywi-ui-reviewer` agent (installed by `npx ayywi init`) review it, and fix what it reports.
+- Run `npx @danitesler/ayywi lint <changed files>` (or the MCP `lint` tool) and fix every finding, warnings included. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size, other icon sets, and skipped components: raw native controls (`raw-control`), hand-styled ones (`bare-control`), clickable divs (`clickable-element`), look-alike classes (`rebuilt-component`) and restyled components (`component-override`). In Claude Code, `npx @danitesler/ayywi init` runs it after every file you write and hands you the findings.
+- Built or changed a whole screen? Have the `ayywi-ui-reviewer` agent (installed by `npx @danitesler/ayywi init`) review it, and fix what it reports.
 - Look at the screen below 48rem: an app shows its bottom nav, a site's navbar folds into a menu, nothing scrolls sideways.
 - If the app has a theme switch, check dark and light (and dark-contrast, light-gray). If it supports RTL, check with `dir="rtl"`.
 - Interactive pieces work by keyboard: Tab to reach, Enter/Space to activate, Esc closes dialogs, menus and drawers, arrows move between tabs and segments.

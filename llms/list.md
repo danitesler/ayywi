@@ -55,7 +55,6 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 
 **Don't**
 - Don't use a list for data people compare across columns — use a Table.
-- Don't use it for label/value pairs about one thing — use a Data list.
 - Don't use it for the site or app navigation — use the App shell or Navbar.
 - Don't put two links in a row's title, or wrap the whole <li> in an <a>.
 
@@ -207,4 +206,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.1: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -1,0 +1,14 @@
+{
+  "name": "ayywi",
+  "version": "0.0.2",
+  "description": "Runs the ayywi CLI. The design system itself is @danitesler/ayywi; this name exists so `npx ayywi` reaches it.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Dani Tesler <danylpo.com@gmail.com>",
+  "repository": { "type": "git", "url": "git+https://github.com/danitesler/ayywi.git", "directory": "shim" },
+  "homepage": "https://github.com/danitesler/ayywi#readme",
+  "bin": { "ayywi": "index.mjs" },
+  "files": ["index.mjs", "README.md"],
+  "dependencies": { "@danitesler/ayywi": ">=0.0.2 <1" },
+  "publishConfig": { "access": "public" }
+}

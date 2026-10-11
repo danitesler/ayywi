@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { cssRuleFindings, lintPaths, loadContract } from "../cli/lint.mjs";
 import { ATTRIBUTES, CATEGORIES, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
 import { contrast, mix } from "./lib/contrast.mjs";
+import { links as cdnLinks, PINNED, tags as cdnTags } from "./lib/readme-pins.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -265,6 +266,19 @@ for (const slug of readdirSync(join(root, "src/components"))) {
 }
 
 // ---- Base, and the shadcn/ui bridge (tokens only, like everything else) ----
+// ---- The README's jsDelivr links name this version, and each runtime file has an SRI hash (scripts/pin-readme.mjs) ----
+{
+  const readme = read("README.md");
+  const { version } = JSON.parse(read("package.json"));
+  for (const l of cdnLinks(readme)) if (l.version !== version) fail("README.md", `links ${l.file} at @${l.version}; package.json is ${version} — run pnpm build && node scripts/pin-readme.mjs`);
+  const pinned = cdnTags(readme);
+  for (const file of PINNED) {
+    const tag = pinned.find((t) => t.file === file);
+    if (!tag) fail("README.md", `the quick-start prompt doesn't load ${file} from jsDelivr`);
+    else if (!tag.integrity) fail("README.md", `${file} has no integrity hash — run node scripts/pin-readme.mjs`);
+  }
+}
+
 const base = read("src/css/base.css");
 lintCss("src/css/base.css", base);
 lintCss("src/css/shadcn.css", read("src/css/shadcn.css"));

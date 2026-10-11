@@ -57,6 +57,7 @@ pnpm test:e2e       # Playwright + axe against the built preview
 scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
 pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme from the theme button, density from the menu beside it
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
+scripts/deploy-pages.sh  # publish the preview to GitHub Pages (gh-pages branch, pushed from here); part of a release
 ```
 
 Run `pnpm build && pnpm typecheck && pnpm check && pnpm test` before every commit, and `pnpm test:e2e` for anything visual or interactive. All must pass.
@@ -109,7 +110,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 
 Semver: renaming or removing a class, token or prop is **breaking**.
 
-Record every change in `CHANGELOG.md` under the active release heading (`## Unreleased` or the version being prepared). Every changelog item must be short, specific, and easy for anyone on a cross-functional team to understand:
+Record every change in `CHANGELOG.md` under `## Unreleased` (only a release renames it; see Releases below). Every changelog item must be short, specific, and easy for anyone on a cross-functional team to understand:
 - **Link actual components**: Bold and link the component to its preview route (`**[Button](#/button)**`, `**[Dialog](#/dialog)**`…). For non-component areas, bold the area name (`**Tokens**`, `**Brand System**`, `**Linter**`).
 - **Separate rows for title and description**: The title goes on the first bullet line, and the description goes on the next line indented with two spaces.
 - **Before → After**: Clearly state what it was before and what it is now (`<was X> → <now Y>`).
@@ -126,3 +127,21 @@ Entry format:
 - Removed:
   - **[Component](#/slug)** (**Breaking**)
     <was X> removed → <now use Y>.
+
+### Releases: the maintainer decides
+
+Never release on your own. That means no version bump in `package.json`, no renaming `## Unreleased`, no git tag, no `npm publish` — not even for a breaking change, and not when a task says "finish" or "ship". Keep adding to `## Unreleased`.
+
+When the work under `## Unreleased` looks ready to ship, ask the maintainer whether to release, and suggest a version: on 0.x, a patch (`0.1.0` → `0.1.1`) for fixes and safe additions, a minor (`0.1.0` → `0.2.0`) for anything breaking. Wait for a clear yes and the version number.
+
+Once approved, a release is one job; do every step, in order, and stop at the first failure:
+1. `CHANGELOG.md`: `## Unreleased` → `## <version> — <YYYY-MM-DD>`, with a new empty `## Unreleased` above it.
+2. `npm version <version> --no-git-tag-version`.
+3. `pnpm build && node scripts/pin-readme.mjs`: moves the README's jsDelivr links to the new version with SRI hashes from `dist/`. `pnpm check` fails until this is done.
+4. Commit everything (`Release <version>`).
+5. `scripts/check-all.sh`. Everything must pass, on the committed tree (it fails if the build changes tracked files). Fix and amend if not, then `git tag v<version>`.
+6. `npm publish`. If npm asks for a one-time password, stop and ask the maintainer to run it; never handle their 2FA codes.
+7. `git push --follow-tags`.
+8. Verify: `npm view @danitesler/ayywi version` shows the new version, and `node scripts/pin-readme.mjs --verify` passes (jsDelivr can take a few minutes to see a new release).
+9. Publish the site: `scripts/deploy-pages.sh`.
+10. If `shim/` (the unscoped `ayywi` package) should follow, bump its version and dependency range, then `npm publish` from `shim/`.

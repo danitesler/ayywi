@@ -24,7 +24,7 @@ test("init sets up a project once and is idempotent", (t) => {
   assert.equal(agents.split("<!-- ayywi:agents -->").length, 2, "snippet appended exactly once");
   const mcp = JSON.parse(readFileSync(join(cwd, ".mcp.json"), "utf8"));
   assert.ok(mcp.mcpServers.other, "existing servers kept");
-  assert.ok(mcp.mcpServers.ayywi);
+  assert.deepEqual(mcp.mcpServers.ayywi.args, ["-y", "@danitesler/ayywi", "mcp"], "runs the scoped package");
   assert.ok(existsSync(join(cwd, ".cursor/mcp.json")));
 });
 

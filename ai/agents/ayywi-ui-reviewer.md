@@ -13,7 +13,7 @@ The files you were pointed at, or else the UI files changed in the working tree 
 ## How
 
 1. Load the contract once. If the ayywi MCP server is connected, call `get_rules` (rules, patterns, the need → component map). Otherwise read the "Rules" and "Need → component" sections of `node_modules/@danitesler/ayywi/llms-full.txt`.
-2. Run `npx ayywi lint <files>`. Every finding is a problem, warnings included.
+2. Run `npx @danitesler/ayywi lint <files>`. Every finding is a problem, warnings included.
 3. Read each file and go through it piece by piece: every control, list, panel, overlay, status, empty or loading state. For each one ask what it has to do, and find the ayywi component for that need (MCP `pick_component`, or the map). Flag it when:
    - it's a native element written raw or styled by hand: `<button>`, `<select>`, `<input>`, `<textarea>`, `<table>`, `<dialog>`, `<details>`, `<progress>`;
    - it's a `<div>`/`<span>`/`<li>` with a click handler, or a hand-positioned popup;

@@ -167,7 +167,7 @@ test("search bar opens command palette, filters results and jumps to a page", as
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input-group", "segmented-control", "list", "empty-state", "accordion", "section", "toc", "carousel", "chat", "data-list"]) {
+  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input-group", "segmented-control", "list", "empty-state", "accordion", "section", "toc", "carousel", "chat"]) {
     await open(page, route);
     for (const dir of ["ltr", "rtl"]) {
       await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
