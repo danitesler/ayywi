@@ -21,6 +21,7 @@ export function ShowcaseFrame({ id }: { id: string }) {
 
   if (!app) return <p className="ayy-muted">No example called “{id}”.</p>;
   return (
+    // ayywi-lint-disable-next-line -- not an action: it stops the demo's in-page links from changing the route
     <div className="pv-frame" onClick={onClick}>
       <app.Component />
     </div>

@@ -140,10 +140,39 @@ test("structure: native controls and ARIA widgets styled by hand", () => {
 <button className={buttonClass({ variant: "ghost", className: "row-add" })}>Add</button>
 <button className={classes}>Add</button>
 <button {...props} className="x">Add</button>
-<button>Add</button>
 <input type="hidden" className="x" />
 <Button className="row-add">Add</Button>`;
   assert.deepEqual(rules(fine, "a.tsx"), []);
+});
+
+test("structure: native controls written raw, without any class", () => {
+  const tsx = `<button onClick={save}>Save</button>
+<select value={theme}><option>Dark</option></select>
+<input type="checkbox" />
+<textarea rows={3} />
+<table><tbody /></table>
+<details><summary>More</summary></details>`;
+  const findings = lintText(tsx, "a.tsx", contract).filter((f) => f.rule === "raw-control");
+  assert.deepEqual(findings.map((f) => f.line), [1, 2, 3, 4, 5, 6]);
+  assert.match(findings[1].message, /Select \(it opens ayywi's own options list\)/);
+  assert.match(findings[5].message, /Accordion/);
+  const fine = `<!-- a <button> in a comment -->
+// <select> in a line comment
+<label class="ayy-chip"><input type="checkbox" name="tag" />Design</label>
+<label className="ayy-segmented-control__option"><input type="radio" name="v" />List</label>
+<input type="hidden" name="id" />
+<button {...props}>Add</button>
+<Button>Add</Button>
+<Select><option>Dark</option></Select>`;
+  assert.deepEqual(rules(fine, "a.tsx"), []);
+});
+
+test("structure: elements that handle clicks instead of a button", () => {
+  const html = `<div class="row" onclick="open()">Open</div>
+<span @click="toggle">Toggle</span>`;
+  assert.deepEqual(rules(html, "a.vue"), ["clickable-element", "clickable-element"]);
+  assert.deepEqual(rules(`<li onClick={() => pick(x)}>{x}</li>`, "a.tsx"), ["clickable-element"]);
+  assert.deepEqual(rules(`<div onClick={(e) => e.stopPropagation()}>…</div>`, "a.tsx"), []);
 });
 
 test("structure: lintPaths matches classes across files", () => {
@@ -156,4 +185,25 @@ test("structure: lintPaths matches classes across files", () => {
 
 test("every alias names its component", () => {
   for (const [alias, name] of contract.aka) assert.equal(componentNamed(`app-${alias}`, contract), name, alias);
+});
+
+test("lint --hook: findings in the edited file go back to the agent with exit 2", async () => {
+  const { lintHook } = await import("../../cli/lint.mjs");
+  const { Readable } = await import("node:stream");
+  const dir = mkdtempSync(join(tmpdir(), "ayywi-hook-"));
+  writeFileSync(join(dir, "Prefs.tsx"), `export const P = () => <select><option>Dark</option></select>;\n`);
+  writeFileSync(join(dir, "Ok.tsx"), `export const P = () => <Select><option>Dark</option></Select>;\n`);
+  const run = (tool_input) => lintHook({ cwd: dir, input: Readable.from([JSON.stringify({ tool_name: "Write", tool_input })]) });
+  const write = process.stderr.write;
+  let err = "";
+  process.stderr.write = (s) => ((err += s), true);
+  try {
+    assert.equal(await run({ file_path: join(dir, "Prefs.tsx") }), 2);
+    assert.equal(await run({ file_path: join(dir, "Ok.tsx") }), 0);
+    assert.equal(await run({ file_path: join(dir, "notes.md") }), 0, "not UI: ignored");
+  } finally {
+    process.stderr.write = write;
+  }
+  assert.match(err, /raw-control/);
+  assert.match(err, /fix every finding above, warnings included/);
 });

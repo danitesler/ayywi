@@ -25,12 +25,13 @@ const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spac
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
   // The page opens on the no-code guide; the developer guide lists every component.
-  await expect(page.getByRole("radio", { name: "AI Builders" })).toBeChecked();
+  await expect(page.getByRole("tab", { name: "AI Builders" })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
-  await page.getByRole("radio", { name: "Cursor" }).click();
+  await page.getByRole("radiogroup", { name: "Pick your AI tool:" }).getByText("Cursor", { exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Cursor" })).toBeChecked();
   await expect(page.getByText(".cursor/rules/ayywi.mdc")).toBeVisible();
-  await page.getByText("No-Build / CDN").click();
-  await expect(page.locator(".pv-chip")).toHaveCount(slugs.length);
+  await page.getByRole("tab", { name: "No-Build / CDN" }).click();
+  await expect(page.getByRole("navigation", { name: "Components" }).getByRole("link")).toHaveCount(slugs.length);
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
     await page.goto(`/#/${route}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
@@ -67,15 +68,16 @@ test("example code is one click away", async ({ page }) => {
   await open(page, "button");
   const code = page.locator(".pv-example").first().locator(".pv-code");
   await expect(code).toBeHidden();
-  await page.locator(".pv-source__toggle").first().click();
+  await page.locator(".pv-example").first().locator(".pv-source summary").click();
   await expect(code).toBeVisible();
 });
 
 test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByRole("button", { name: "What you're building" }).click();
-  await page.getByRole("menuitemradio", { name: "online store" }).click();
+  // A Select: ayywi's own options list opens under it.
+  await page.getByLabel("What you're building").click();
+  await page.getByRole("listbox", { name: "What you're building" }).getByRole("option", { name: "online store" }).click();
   await expect(page.locator(".pv-madlib")).toContainText("Build me an");
   await page.getByRole("combobox", { name: "Who it's for" }).fill("a bakery in Lisbon");
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
@@ -199,6 +201,70 @@ const SHOWCASE = [
   { id: "booking", name: "Haven", theme: "light", density: "touch" },
 ];
 
+test("the docs sidebar collapses to a rail, previews on hover, and remembers it", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await open(page, "app-shell");
+  const shell = page.locator(".pv-shell");
+  const sidebar = page.locator(".pv-sidebar");
+  await page.locator(".pv-sidebar__toggle").click();
+  await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+  await page.locator(".pv-content").hover();
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+  // The rail: the toggle and a search button. The nav's links (no icons) are out of the way.
+  await expect(sidebar.getByRole("button", { name: "Search", exact: true })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Button", exact: true })).toBeHidden();
+  // The App shell examples on the page keep their own sidebars.
+  expect(Math.round((await page.locator(".pv-content .ayy-app-shell:not(.ayy-app-shell--collapsed) > .ayy-app-shell__sidebar").first().boundingBox())!.width)).toBe(240);
+
+  await sidebar.hover({ position: { x: 30, y: 400 } });
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(256);
+  await expect(sidebar.getByRole("link", { name: "Button", exact: true })).toBeVisible();
+  await page.locator(".pv-content").hover({ position: { x: 600, y: 300 } });
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+
+  await page.reload();
+  await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+  await page.locator(".pv-sidebar__toggle").click();
+  await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
+});
+
+test("the docs sidebar's preview stays on top of the page while it closes, and its rail has no dividers", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await open(page, "");
+  await page.locator(".pv-sidebar__toggle").click();
+  const sidebar = page.locator(".pv-sidebar");
+  await page.locator(".pv-content").hover({ position: { x: 600, y: 300 } });
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+  // In the rail, the groups' dividers are gone with their labels.
+  const dividers = await sidebar.locator(".ayy-app-shell__group + .ayy-app-shell__group").evaluateAll((els) => els.map((el) => getComputedStyle(el).borderBlockStartColor));
+  expect(dividers.every((c) => c === "rgba(0, 0, 0, 0)")).toBe(true);
+
+  // The example app cards (a carousel of positioned, spotlit cards) in view, beside the sidebar.
+  await page.locator(".pv-examples").scrollIntoViewIfNeeded();
+  const cards = (await page.locator(".pv-examples").boundingBox())!;
+  await sidebar.hover({ position: { x: 30, y: Math.round(cards.y + cards.height / 2) } });
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(256);
+  // A long transition, so a busy machine still samples it mid-way.
+  await page.locator(".pv-shell").evaluate((el) => el.style.setProperty("--ayy-duration-base", "1500ms"));
+  await page.mouse.move(1200, Math.round(cards.y + cards.height / 2));
+  // Sample while it narrows: it keeps the overlay's z-index (so the cards never paint over it), and what's painted just
+  // inside its edge is the sidebar.
+  const samples = await sidebar.evaluate(async (el) => {
+    const seen: { width: number; z: string; onTop: boolean }[] = [];
+    const start = performance.now();
+    while (performance.now() - start < 2500) {
+      const r = el.getBoundingClientRect();
+      seen.push({ width: r.width, z: getComputedStyle(el).zIndex, onTop: el.contains(document.elementFromPoint(r.right - 6, r.top + r.height / 2)) });
+      await new Promise((done) => requestAnimationFrame(done));
+    }
+    return seen;
+  });
+  const narrowing = samples.filter((s) => s.width > 70 && s.width < 250);
+  expect(narrowing.length).toBeGreaterThan(2);
+  expect(narrowing.every((s) => Number(s.z) > 0 && s.onTop)).toBe(true);
+  expect(samples.at(-1)!.width).toBeLessThan(70);
+});
+
 test("what you can build: cards open a device preview", async ({ page }) => {
   const errors = await open(page, "showcase");
   await expect(page.getByRole("heading", { level: 1, name: "What you can build" })).toBeVisible();
@@ -210,10 +276,10 @@ test("what you can build: cards open a device preview", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: "Relay" })).toBeVisible();
 
   const frame = page.locator(".pv-device iframe");
-  const device = page.getByRole("group", { name: "Device" });
+  const device = page.getByRole("radiogroup", { name: "Device" });
   for (const [label, width] of [["Tablet", 834], ["Mobile", 390], ["Desktop", 1280]] as const) {
-    await device.getByRole("button", { name: label }).click();
-    await expect(device.getByRole("button", { name: label })).toHaveAttribute("aria-pressed", "true");
+    await device.getByText(label, { exact: true }).click();
+    await expect(device.getByRole("radio", { name: label })).toBeChecked();
     await expect(frame).toHaveCSS("width", `${width}px`);
   }
   expect(errors).toEqual([]);
@@ -234,9 +300,52 @@ test("each showcase app renders in its own theme and density, and fits a phone",
     } else {
       // An app: the same frame everywhere — tabs at the bottom, no navbar, the sidebar tucked away.
       await expect(page.locator(".ayy-bottom-nav"), app.id).toBeVisible();
-      await expect(page.locator(".ayy-app-shell__sidebar"), app.id).toBeHidden();
+      await expect(page.locator(".pv-app > .ayy-app-shell__sidebar"), app.id).toBeHidden();
       await expect(page.locator(".ayy-navbar"), app.id).toHaveCount(0);
       await expect(page.locator(".ayy-page-header, .pv-app-inbox"), app.id).not.toHaveCount(0);
     }
   }
+});
+
+test("each app opens its own settings in a near-full-screen dialog", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  for (const app of SHOWCASE.filter((a) => a.id !== "landing" && a.id !== "store")) {
+    await page.goto(`/?app=${app.id}`);
+    await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
+    const dialog = page.getByRole("dialog", { name: "Settings" });
+    // Ledger is about its settings, so they're open on load.
+    if (app.id !== "settings") {
+      await expect(dialog).toBeHidden();
+      await page.locator(".pv-app > .ayy-app-shell__sidebar").getByRole("link", { name: "Settings" }).click();
+    }
+    await expect(dialog, app.id).toBeVisible();
+    await expect(dialog).toHaveClass(/ayy-dialog--full/);
+    const links = dialog.getByRole("navigation", { name: "Settings" }).getByRole("link");
+    expect(await links.count(), app.id).toBeGreaterThanOrEqual(4);
+    await expect(links.first()).toHaveAttribute("aria-current", "page");
+    await expect(dialog.getByRole("heading", { level: 1 })).toHaveText(await links.first().innerText());
+    await links.nth(1).click();
+    await expect(links.nth(1)).toHaveAttribute("aria-current", "page");
+    await expect(dialog.getByRole("heading", { level: 1 })).toHaveText(await links.nth(1).innerText());
+    await page.keyboard.press("Escape");
+    await expect(dialog, app.id).toBeHidden();
+  }
+});
+
+test("on a phone, an app's settings fill the screen: the section list, then a section", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/?app=inbox");
+  await page.locator(".ayy-app-shell__bar").getByRole("button", { name: "Settings" }).click();
+  const dialog = page.getByRole("dialog", { name: "Settings" });
+  await expect(dialog).toBeVisible();
+  await expect.poll(() => dialog.evaluate((el) => getComputedStyle(el).transform)).toBe("none");
+  expect(Math.round((await dialog.boundingBox())!.width)).toBe(390);
+  const list = dialog.locator(".ayy-app-shell__sidebar");
+  await expect(list).toBeVisible();
+  await list.getByRole("link", { name: "AI assistant" }).click();
+  await expect(list).toBeHidden();
+  await expect(dialog.getByRole("heading", { level: 1, name: "AI assistant" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Settings" }).click();
+  await expect(list).toBeVisible();
+  await expect(list.getByRole("link", { name: "AI assistant" })).toBeFocused();
 });

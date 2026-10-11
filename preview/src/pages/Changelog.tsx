@@ -1,6 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { Badge, Icon } from "@danitesler/ayywi/react";
+import { Accordion, AccordionItem, Badge } from "@danitesler/ayywi/react";
 import changelog from "../../../CHANGELOG.md?raw";
 
 const ROUTE = "changelog";
@@ -58,17 +57,22 @@ export function ChangelogPage() {
         <p className="ayy-lede">What changed in each release. Renaming or removing a class, token or prop is a breaking change.</p>
       </header>
 
-      <div className="pv-releases">
+      <Accordion className="pv-releases">
         {releases.map((release, index) => {
           const [version, ...rest] = release.title.split(" — ");
           const id = `${ROUTE}-${slug(release.title)}`;
           return (
-            <details key={release.title} className="pv-release" id={id} open={index === 0}>
-              <summary className="pv-release__summary">
-                <span className="pv-release__version">{version}</span>
-                {rest.length ? <span className="pv-release__date">{rest.join(" — ")}</span> : null}
-                <Icon icon={ArrowDown01Icon} className="pv-release__chevron" />
-              </summary>
+            <AccordionItem
+              key={release.title}
+              id={id}
+              open={index === 0}
+              label={
+                <span className="ayy-cluster">
+                  <span className="pv-release__version">{version}</span>
+                  {rest.length ? <span className="ayy-muted">{rest.join(" — ")}</span> : null}
+                </span>
+              }
+            >
               <div className="pv-release__body">
                 {release.intro.map((p) => (
                   <p key={p} className="pv-note">{inline(p)}</p>
@@ -118,10 +122,10 @@ export function ChangelogPage() {
                   </section>
                 ))}
               </div>
-            </details>
+            </AccordionItem>
           );
         })}
-      </div>
+      </Accordion>
     </article>
   );
 }

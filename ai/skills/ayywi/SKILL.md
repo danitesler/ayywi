@@ -7,6 +7,24 @@ description: Build and edit UI with the ayywi design system. Use whenever you cr
 
 ayywi is a CSS class contract (`.ayy-*`) plus design tokens (`--ayy-*`), with typed React components and light-DOM custom elements on top. The same markup works in React, Vue, Svelte, Angular, Astro, plain HTML and server templates.
 
+## 0. Every piece is an ayywi component
+
+Before you write a screen, list its pieces (actions, inputs, choices, lists, panels, overlays, states) and name the ayywi component for each by what it has to do. The map is in the MCP `get_rules` / `pick_component`, or llms-full.txt → "Need → component". The ones agents get wrong most:
+
+| You're about to write | Write instead |
+|---|---|
+| `<button>` (raw or with your classes), `<div onClick>` | `Button` (ghost or `size="icon"` for small actions); `ListLink` / `CardLink` for a clickable row or card |
+| `<select>`, a button that opens a `<div>` of choices, a Dropdown menu used as a picker | `Select` (opens ayywi's own options list; touch screens keep the OS picker); `SegmentedControl` for two to five short options; `Combobox` to type and filter |
+| Buttons with `aria-pressed` or an active class to switch a view | `SegmentedControl`; `Tabs` when it swaps panels of content |
+| `<input type="checkbox">`, a toggle made of divs | `Switch` (applies at once) or `Checkbox` (submitted with a form) |
+| `<input>`, `<textarea>` | `Field` + `Label` + `Input` / `InputGroup` / `Textarea` / `NumberField` |
+| A bordered `<div>` box, a coloured `<span>` pill | `Card` (+ `CardHeader`, `CardTitle`, `CardContent`), `Badge` |
+| `<ul>` rows with borders and hover | `List` (`divided`, `ListLink`), `Settings` rows for preferences |
+| `<table>`, `<details>`, `<dialog>`, `<progress>` | `Table`, `Accordion`, `Dialog`, `Progress` |
+| A fixed `<div>` that slides in, a hand-positioned popup | `Dialog side="end"`, `Popover`, `DropdownMenu`, `Tooltip` |
+
+A raw native control is never right in an ayywi project: it renders as the browser default and skips the focus ring, density, themes and RTL. If the component you need doesn't exist, compose it from ayywi components (section 7) — don't fall back to raw HTML.
+
 ## 1. Load the right context first
 
 - Building a whole screen that has a pattern (settings)? Follow the pattern first: `get_rules` lists each one's recipe, phone behaviour and specs (llms-full.txt → Patterns without MCP).
@@ -47,6 +65,7 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Need | Use |
 |---|---|
 | Frame | `AppShell`: `AppShellSidebar` (brand, `AppShellNav` of `AppShellGroup`s, `AppShellFooter` for the account and help) and `AppShellMain`. No Navbar. |
+| Screen width | The main fills the shell. Don't wrap a screen in `.ayy-container` or a `max-inline-size`. Those on examples only size the preview. Long text may stop at `--ayy-size-measure`. Settings mode already centres its column — don't add a second cap. |
 | Phone navigation | `BottomNav` as a direct child of the shell, after the main, with the sidebar's top destinations (same labels, icons, order). More than five? The four most used, then a More tab (`BottomNavButton className="ayy-app-shell__toggle"`) that opens the sidebar as a drawer. |
 | Phone top bar | `AppShellBar` first in the shell: the brand, then one or two actions (search, avatar). Add `AppShellToggle` only for a drawer-only app without a bottom nav. |
 | Top of every screen | `PageHeader`: `PageHeaderTitle` (the `<h1>`), `PageHeaderDescription`, `PageHeaderActions` (at most one primary button). A `Breadcrumb` goes first when pages nest. |
@@ -60,7 +79,7 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Picking values | two to five words: `SegmentedControl`; options with a sentence or a price: `ChoiceGroup` of `ChoiceCard`s (`compact` for time slots, `scroll` for a day strip); many known values: `Combobox`; small counts: `NumberField`; a rough amount or a price range: `Slider` / `SliderRange`; dates and times: `Input type="date"` / `"time"` |
 | Uploads | `Dropzone` (`compact` in a form), then a `List divided` of the files with a `Progress` each and a remove button |
 | Facts about one thing | `DataList` |
-| Settings | Full screen, never a dialog or tabs: `AppShell settings` with `AppShellBack` ("Back to <app>"), `AppShellTitle` and an `AppShellNav aria-label="Settings"` of groups; each section is its own URL, starting with a `TopBar` (back to the list, shown on phones only) and `Settings` groups of `SettingsRow` / `SettingsLink`. On phones the section list and a section are two screens. Recipe and specs: the Settings pattern (`get_rules`, llms-full.txt → Patterns) |
+| Settings | A near-full-screen dialog over the app, never a small or side dialog or tabs: `<DialogContent size="full">` holding `AppShell settings` with `AppShellTitle` (the dialog's name) and an `AppShellNav aria-label="Settings"` of groups, and `<AppShellMain as="div">`; each section starts with a `TopBar` (back to the list, shown on phones only) and `Settings` groups of `SettingsRow` / `SettingsLink`. On phones the dialog fills the screen and the section list and a section are two screens. Recipe and specs: the Settings pattern (`get_rules`, llms-full.txt → Patterns) |
 | Multi-step flows | `Steps` above the form, one primary Continue per step |
 
 ## 5. Websites, landing pages and portfolios
@@ -104,7 +123,8 @@ Compose it from existing components, utilities and tokens in the app's own code.
 
 ## 8. Before you finish
 
-- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every error. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size and other icon sets.
+- Run `npx ayywi lint <changed files>` (or the MCP `lint` tool) and fix every finding, warnings included. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size, other icon sets, and skipped components: raw native controls (`raw-control`), hand-styled ones (`bare-control`), clickable divs (`clickable-element`), look-alike classes (`rebuilt-component`) and restyled components (`component-override`). In Claude Code, `npx ayywi init` runs it after every file you write and hands you the findings.
+- Built or changed a whole screen? Have the `ayywi-ui-reviewer` agent (installed by `npx ayywi init`) review it, and fix what it reports.
 - Look at the screen below 48rem: an app shows its bottom nav, a site's navbar folds into a menu, nothing scrolls sideways.
 - If the app has a theme switch, check dark and light (and dark-contrast, light-gray). If it supports RTL, check with `dir="rtl"`.
 - Interactive pieces work by keyboard: Tab to reach, Enter/Space to activate, Esc closes dialogs, menus and drawers, arrows move between tabs and segments.

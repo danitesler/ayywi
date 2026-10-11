@@ -1,5 +1,6 @@
 import { useEffect, useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
 import { tokens, type TokenDefinition } from "@danitesler/ayywi";
+import { Button, Card, CardContent, Input } from "@danitesler/ayywi/react";
 import { themeOptions } from "../themes";
 
 type Entry = [string, TokenDefinition];
@@ -37,13 +38,13 @@ function ThemeSample({ name, label }: (typeof themeOptions)[number]) {
 
 function Swatches({ entries }: { entries: Entry[] }) {
   return (
-    <div className="pv-swatches">
+    <div className="pv-color-tiles">
       {entries.map(([name, t]) => (
-        <div className="pv-swatch" key={name}>
-          <div className="pv-swatch__chip" style={{ background: `var(${t.cssVar})` }} />
-          <div className="pv-swatch__meta">
+        <div className="pv-color-tile" key={name}>
+          <div className="pv-color-tile__chip" style={{ background: `var(${t.cssVar})` }} />
+          <div className="pv-color-tile__meta">
             <strong>{short(name)}</strong>
-            {t.description ? <span className="pv-swatch__desc">{t.description}</span> : null}
+            {t.description ? <span className="pv-color-tile__desc">{t.description}</span> : null}
           </div>
         </div>
       ))}
@@ -57,7 +58,7 @@ function ColorsPage() {
   return (
     <article className="pv-page">
       <Header title="Colors">
-        Components use these named colours, never raw hex. They switch with the theme, so one design works in all of them. Switch the theme from the palette menu
+        Components use these named colours, never raw hex. They switch with the theme, so one design works in all of them. Switch the theme from the theme button
         at the top of the sidebar to see each set.
       </Header>
 
@@ -183,21 +184,19 @@ function SpacingPage() {
       </div>
 
       <h2 className="pv-h pv-h--section">Density</h2>
-      <p className="pv-note">The same controls at each density. Pick one for the whole site from the palette menu at the top of the sidebar.</p>
+      <p className="pv-note">The same controls at each density. Pick one for the whole site from the menu beside the theme button, at the top of the sidebar.</p>
       <div className="pv-densities">
         {DENSITIES.map(([mode, text]) => (
-          <div key={mode} className="pv-density" data-density={mode}>
-            <p className="pv-note">{text}</p>
-            <input className="ayy-input" aria-label={`Name (${mode})`} placeholder="Project name" />
-            <div className="ayy-cluster">
-              <button type="button" className="ayy-button">
-                Save
-              </button>
-              <button type="button" className="ayy-button ayy-button--outline">
-                Cancel
-              </button>
-            </div>
-          </div>
+          <Card key={mode} data-density={mode}>
+            <CardContent className="ayy-stack">
+              <p className="pv-note">{text}</p>
+              <Input aria-label={`Name (${mode})`} placeholder="Project name" />
+              <div className="ayy-cluster">
+                <Button>Save</Button>
+                <Button variant="outline">Cancel</Button>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </article>

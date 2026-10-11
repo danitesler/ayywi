@@ -14,6 +14,7 @@ import {
   appShellFooterClass,
   appShellGroupClass,
   appShellGroupLabelClass,
+  appShellHeadClass,
   appShellHoverPreviewClass,
   appShellLinkClass,
   appShellLinkSubClass,
@@ -30,8 +31,8 @@ import {
 
 export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   /**
-   * Settings mode: the sidebar holds an AppShellBack, an AppShellTitle and the settings sections, and the main shows one
-   * section full screen. On phones the sections list and the open section are separate screens. Esc leaves settings.
+   * Settings mode, for a shell inside <DialogContent size="full">: the sidebar holds an AppShellTitle and the settings
+   * sections, and the main shows one section. On phones the sections list and the open section are separate screens.
    */
   settings?: boolean;
   /**
@@ -103,6 +104,11 @@ export const AppShellBack = forwardRef<HTMLAnchorElement & HTMLButtonElement, Ap
 /** The settings sidebar's heading ("Settings"), under AppShellBack. An <h2>: each section's Top bar holds the page's <h1>. */
 export const AppShellTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(function AppShellTitle({ className, ...props }, ref) {
   return <h2 ref={ref} className={cx(appShellTitleClass, className)} {...props} />;
+});
+
+/** The sidebar's top row: an AppShellToggle that collapses the sidebar, then the AppShellBrand. The toggle stays in place in the rail. */
+export const AppShellHead = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function AppShellHead({ className, ...props }, ref) {
+  return <div ref={ref} className={cx(appShellHeadClass, className)} {...props} />;
 });
 
 /** The phone top bar (hidden from 48rem): an AppShellToggle, the brand, and maybe a search button. Put it first in the shell. */
@@ -229,6 +235,11 @@ export const AppShellFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivE
   return <div ref={ref} className={cx(appShellFooterClass, className)} {...props} />;
 });
 
-export const AppShellMain = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function AppShellMain({ className, ...props }, ref) {
-  return <main ref={ref} className={cx(appShellMainClass, className)} {...props} />;
+export interface AppShellMainProps extends HTMLAttributes<HTMLElement> {
+  /** "div" for a settings shell in a Dialog: the page behind it already has the one <main>. Default "main". */
+  as?: "main" | "div";
+}
+
+export const AppShellMain = forwardRef<HTMLElement, AppShellMainProps>(function AppShellMain({ as: Tag = "main", className, ...props }, ref) {
+  return <Tag ref={ref as never} className={cx(appShellMainClass, className)} {...props} />;
 });

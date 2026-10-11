@@ -77,6 +77,24 @@
   color: var(--ayy-color-destructive);
 }
 
+/* A checked menuitemradio / menuitemcheckbox: semibold with a check at the inline end, drawn from borders in
+   currentColor (the same shape in RTL) (the same check as Select's chosen option). */
+.ayy-menu__item[aria-checked="true"] {
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-menu__item[aria-checked="true"]::after {
+  content: "";
+  flex: none;
+  inline-size: 0.35em;
+  block-size: 0.65em;
+  margin-inline-start: auto;
+  margin-block-end: 0.15em;
+  border-right: 2px solid currentColor; /* ayy-allow-physical: a check is a glyph, it doesn't mirror in RTL */
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
 .ayy-menu__item:is(:disabled, [aria-disabled="true"]) {
   opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;

@@ -8,6 +8,7 @@ import {
   type ButtonHTMLAttributes,
   type HTMLAttributes,
   type KeyboardEvent,
+  type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
 import { nextTabIndex, tabsClass, tabsListClass, tabsPanelClass, tabsTabClass } from "./tabs";
@@ -85,10 +86,12 @@ export const TabsList = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement
 
 export interface TabsTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   value: string;
+  /** An optional icon before the label. */
+  icon?: ReactNode;
 }
 
 export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(function TabsTrigger(
-  { value, className, onClick, ...props },
+  { value, icon, className, onClick, children, ...props },
   ref,
 ) {
   const ctx = useTabs("TabsTrigger");
@@ -109,7 +112,10 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(funct
         if (!event.defaultPrevented) ctx.select(value);
       }}
       {...props}
-    />
+    >
+      {icon}
+      {children}
+    </button>
   );
 });
 

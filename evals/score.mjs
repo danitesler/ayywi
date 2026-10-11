@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Scores one agent output against a task: the file exists, `ayywi lint` finds no errors, every `expect:` pattern
+// Scores one agent output against a task: the file exists, `ayywi lint` finds no errors and no skipped components
+// (raw-control, bare-control, clickable-element, rebuilt-component), every `expect:` pattern
 // matches and no `reject:` pattern does. Usage: node evals/score.mjs <task.md> <workspace-dir>
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -24,6 +25,8 @@ export function parseTask(text) {
 }
 
 let contract;
+// Lint rules that mean a component was skipped: an ayywi UI has none of them.
+const SKIPPED = new Set(["raw-control", "bare-control", "clickable-element", "rebuilt-component"]);
 
 /** Score `task.file` inside `dir`. Returns { score, checks: [{ name, pass, detail? }] }. */
 export function scoreOutput(task, dir) {
@@ -31,10 +34,13 @@ export function scoreOutput(task, dir) {
   const path = join(dir, task.file);
   if (!existsSync(path)) return { score: 0, checks: [{ name: `writes ${task.file}`, pass: false }] };
   const code = readFileSync(path, "utf8");
-  const errors = lintText(code, task.file, contract).filter((f) => f.severity === "error");
+  const findings = lintText(code, task.file, contract);
+  const errors = findings.filter((f) => f.severity === "error");
+  const skipped = findings.filter((f) => SKIPPED.has(f.rule));
   const checks = [
     { name: `writes ${task.file}`, pass: true },
     { name: "ayywi lint: no errors", pass: errors.length === 0, detail: errors.map((f) => `${f.line}:${f.column} ${f.rule} ${f.message}`).join("; ") },
+    { name: "ayywi lint: no skipped components", pass: skipped.length === 0, detail: skipped.map((f) => `${f.line}:${f.column} ${f.rule}`).join("; ") },
     ...task.expect.map((p) => ({ name: `has /${p}/`, pass: new RegExp(p).test(code) })),
     ...task.reject.map((p) => ({ name: `avoids /${p}/`, pass: !new RegExp(p).test(code) })),
   ];

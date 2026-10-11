@@ -97,7 +97,7 @@ Use only ayywi's class names (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No 
 
 const RULES = `Rules:
 - Only ayywi components and tokens. No hardcoded colours (use var(--ayy-color-*)), no made-up ayy- classes, no left/right CSS (margin-inline-start, not margin-left).
-- An app gets a sidebar on wide screens, and a top bar plus a bottom tab bar on phones: .ayy-app-shell with a .ayy-app-shell__bar and a .ayy-bottom-nav inside. A website gets an .ayy-navbar with a menu button for phones (.ayy-navbar__toggle), .ayy-section blocks and an .ayy-footer.
+- An app gets a sidebar on wide screens, and a top bar plus a bottom tab bar on phones: .ayy-app-shell with a .ayy-app-shell__bar and a .ayy-bottom-nav inside. Each screen fills the main — don't wrap it in .ayy-container or a max-inline-size. A website gets an .ayy-navbar with a menu button for phones (.ayy-navbar__toggle), .ayy-section blocks at .ayy-container width, and an .ayy-footer.
 - Each screen starts with a page header (.ayy-page-header). Every list and table has a loading state (.ayy-skeleton), an empty state (.ayy-empty-state) and an error state (.ayy-alert--destructive with a Try again button).
 - One main button per screen (.ayy-button); everything else .ayy-button--outline or --ghost.
 - Charts are ayywi charts (.ayy-chart, .ayy-bar-list, .ayy-sparkline); with a chart library, colour series with var(--ayy-chart-1), var(--ayy-chart-2)…

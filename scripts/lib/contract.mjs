@@ -83,20 +83,20 @@ export const PATTERNS = [
     name: "Settings",
     slug: "settings",
     summary:
-      "Settings open full screen in the app's own frame, as Notion's and Cursor's do: the sidebar's destinations give way to a Back link, a Settings title and the settings sections, and the main shows one section. Never a dialog, never tabs inside a page.",
+      "Settings open over the app in a near-full-screen dialog, as Notion's and Claude's do: a Settings title and the settings sections in its sidebar, one section in its main, a close button in the corner. Full screen on phones. Never a small or side dialog, never tabs inside a page.",
     components: ["app-shell", "top-bar", "settings", "switch", "select", "segmented-control", "shortcut", "button", "dialog", "toast"],
     example: "app-shell/settings",
     steps: [
-      "Entry: a Settings link in the sidebar's AppShellFooter (an icon and \"Settings\"). On phones, the same link in the More drawer, or the account button in the AppShellBar. Desktop apps also open it on ⌘, (Ctrl+, elsewhere).",
-      "Open: render the same AppShell with settings (class ayy-app-shell--settings) in place of the app's. Its AppShellSidebar holds, in order: AppShellBack (href = the page settings were opened from, text \"Back to <app name>\"), AppShellTitle (\"Settings\"), and an AppShellNav aria-label=\"Settings\" of AppShellGroups (\"Account\": profile, preferences, notifications; \"Workspace\" or \"App\": the app's own areas; \"About\" last). No AppShellBar, no BottomNav, no brand.",
-      "Sections: each section is its own URL (/settings/notifications) and its AppShellLink has current (aria-current=\"page\"). On wide screens /settings opens the first section; on phones it shows the section list.",
-      "Section page: the main starts with a TopBar (title = the section's name, its <h1>; backHref = /settings, backLabel = \"Settings\"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.",
+      "Entry: a Settings link in the sidebar's AppShellFooter (an icon and \"Settings\"). On phones, the same link in the More drawer, or a settings icon button in the AppShellBar. Desktop apps also open it on ⌘, (Ctrl+, elsewhere).",
+      "Open: a Dialog with <DialogContent size=\"full\" aria-labelledby=\"<the title's id>\"> (class ayy-dialog--full) over the page the user was on, holding an AppShell with settings (class ayy-app-shell--settings). Its AppShellSidebar holds, in order: AppShellTitle (\"Settings\", with the id the dialog points at) and an AppShellNav aria-label=\"Settings\" of AppShellGroups (\"Account\": profile, preferences, notifications; \"Workspace\" or \"App\": the app's own areas; \"About\" last). Its main is <AppShellMain as=\"div\"> (the page keeps its one <main>). No AppShellBack, AppShellBar, BottomNav or brand: the dialog's close button is the way out.",
+      "Sections: the open section's AppShellLink has current (aria-current=\"page\"); a link click switches the section in place. On wide screens settings open on the first section; on phones on the section list.",
+      "Section: the main starts with a TopBar (title = the section's name, its <h1>; onBack returns to the section list, backLabel = \"Settings\"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.",
       "Saving: switches, selects and segmented controls apply at once; confirm with a Toast only when the effect isn't visible. Free text (a name, a folder path) saves on blur or Enter. Anything that must be submitted together (a password change) is a Dialog opened from a SettingsLink.",
       "Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.",
-      "Leave: AppShellBack, Esc (outside a text field or an open overlay; connectAppShell handles it), or the browser's back. Put focus back on the Settings link the user came from.",
+      "Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.",
     ],
     phone: [
-      "Below 48rem the settings shell is two screens, picked by aria-current: with no section current, the sidebar is the screen (AppShellBack at the top, a large \"Settings\" title, the sections as rows with chevrons); with one current, the section fills the screen and its TopBar's back returns to /settings.",
+      "Below 48rem the settings shell is two screens, picked by aria-current: the dialog fills the screen and the settings shell is two screens, picked by aria-current: with no section current, the sidebar is the screen (a large \"Settings\" title, the sections as rows with chevrons); with one current, the section fills it and its TopBar's back returns to the list. Move focus to the section when it opens and back to its link when it closes.",
       "Settings rows wrap the control under the label when there isn't room; never shrink a control below its size.",
       "For a choice with more than five options on a phone, use a SettingsLink with the current value that opens a sub-page with a radio list, instead of a long Select.",
       "Touch density (data-density=\"touch\") raises sidebar items and rows to 52px; nothing is sized by hand.",
@@ -109,7 +109,9 @@ export const PATTERNS = [
       "Settings row (.ayy-settings__row)":
         "At least --ayy-size-control-lg high, padding --ayy-space-3 block and --ayy-space-4 inline, --ayy-space-4 between the text and the control. Label --ayy-text-sm medium; hint --ayy-text-xs muted, one line. The control sits at the inline end. A 1px --ayy-color-hairline between rows only: none above the first or below the last.",
       "Section header (.ayy-top-bar in the settings main)":
-        "Sticky, the page colour with a hairline under it; title --ayy-text-md semibold, lined up with the content column. One <h1> per section.",
+        "Sticky, the page colour with a hairline under it; title semibold (--ayy-text-xl in the dialog on wide screens, --ayy-text-md on phones), lined up with the content column. One <h1> per section.",
+      "Settings dialog (.ayy-dialog--full)":
+        "Up to 72rem by 50rem, 4rem clear of the viewport on each axis, no padding: the settings shell fills it, the sidebar 15rem. The whole screen below 48rem, without border or radius. The close button sits in the top-end corner over the section's Top bar.",
     },
     do: [
       "Use this pattern for every settings, preferences or account screen in an app, however few settings there are.",
@@ -117,12 +119,59 @@ export const PATTERNS = [
       "Keep every setting's label short and put the why in its hint.",
     ],
     dont: [
-      "Don't put settings in a Dialog, a Popover or Tabs inside a page: they can't hold a growing list of sections, and they end up looking different in every app.",
-      "Don't keep the app's destinations, bar or bottom nav on screen while settings are open; the Back link is the way out.",
+      "Don't put settings in a small or side Dialog, a Popover or Tabs inside a page: they can't hold a growing list of sections, and they end up looking different in every app.",
+      "Don't put the app's destinations, bar or bottom nav inside the settings dialog; its close button is the way out.",
       "Don't restyle sidebar items or settings rows (radius, padding, dividers) in app CSS: the specs above are the contract, and they follow density on their own.",
       "Don't add a Save button for settings that apply at once.",
     ],
   },
+];
+
+/** What to reach for, by what the UI has to do. `use` names components by slug (checked by the build); `not` is what
+    agents tend to hand-build instead. Rendered into llms-full.txt, ai/ and the MCP `pick_component` tool; `ayywi lint`
+    catches the hand-built versions (raw-control, bare-control, clickable-element, rebuilt-component). */
+export const NEEDS = [
+  { need: "Run an action (save, create, delete, open)", use: ["button"], how: "Button: one primary per view, outline/ghost for the rest, destructive for delete, size icon + aria-label for icon-only.", not: "<button> with your own classes or none, a <div>/<span> with onClick, a link styled as a button for an action" },
+  { need: "Choose one value from a list (theme, country, role, sort order)", use: ["select", "segmented-control", "combobox"], how: "Select for a list (it opens ayywi's own options list; touch screens keep the OS picker), Segmented control for two to five short options shown at once, Combobox for many values people type to find.", not: "a raw <select>, a button that opens a hand-built <div> of choices, a Dropdown menu used as a picker" },
+  { need: "Choose between options that each need a sentence, an icon or a price (plans, delivery, time slots)", use: ["choice-card"], how: "ChoiceGroup of ChoiceCards (compact for time slots, scroll for a day strip).", not: "Cards with onClick and a selected class" },
+  { need: "Switch between views or ranges of the same content (list/grid, 7d/30d)", use: ["segmented-control"], how: "SegmentedControl, two to five options.", not: "a row of buttons with aria-pressed or an active class" },
+  { need: "Show one of several panels of content", use: ["tabs"], how: "Tabs (TabsList, TabsTrigger, TabsContent).", not: "a Segmented control or buttons that swap panels" },
+  { need: "Turn a setting on or off (a toggle: notifications, dark mode, auto-save)", use: ["switch", "checkbox"], how: "Switch when it applies at once; Checkbox in a form that's submitted, or to agree to something.", not: "<input type=\"checkbox\"> unstyled, a toggle drawn with divs" },
+  { need: "Pick one of a few options in a form", use: ["radio", "segmented-control"], how: "Radio group; a Segmented control when the options are short.", not: "raw <input type=\"radio\">" },
+  { need: "Filter a list or tag things", use: ["chip", "tag-input"], how: "Chips (checkbox, radio or ChipButton, with counts) above the results, the active ones as removable chips; Tag input for free-text tags or recipients.", not: "pills built from <span>s or buttons with an active class" },
+  { need: "Type text, an email, a number or a password", use: ["field", "input", "input-group", "textarea", "number-field"], how: "Field + Label + Input (Input group for an icon or a unit, Textarea for long text, Number field for small counts), FieldHint and FieldError under it.", not: "a raw <input>/<textarea>, a placeholder instead of a label" },
+  { need: "Search or filter by typing", use: ["search-bar", "combobox", "command"], how: "Search bar to filter what's on screen, Combobox to pick a value, Command palette (⌘K) to jump anywhere.", not: "an <input> with a hand-drawn magnifier" },
+  { need: "Pick a date or time", use: ["calendar", "input"], how: "Calendar or DatePicker for a date near today; Input type=\"date\" for a birth date, type=\"time\" for times.", not: "a hand-built month grid" },
+  { need: "Pick a colour", use: ["swatch"], how: "Swatches, SwatchCustom for any colour.", not: "a raw <input type=\"color\">, coloured buttons" },
+  { need: "Set an amount or a range", use: ["slider", "number-field"], how: "Slider / SliderRange for a rough amount or a price range, Number field for exact small counts.", not: "a raw <input type=\"range\">" },
+  { need: "Upload files", use: ["dropzone", "list", "progress"], how: "Dropzone (compact in a form), then a List divided of the files with a Progress each.", not: "a raw <input type=\"file\">, a dashed div" },
+  { need: "Record a keyboard shortcut or show one", use: ["shortcut", "kbd"], how: "Shortcut recorder to set one; Kbd / Shortcut to show one.", not: "a <kbd> or <span> styled by hand" },
+  { need: "Show more actions behind a button (⋯, a user menu)", use: ["menu"], how: "DropdownMenu of items; destructive item last.", not: "a hand-built absolutely positioned <div>" },
+  { need: "Ask to confirm, or collect a few fields over the page", use: ["dialog"], how: "Dialog (DialogContent, title, body, footer with the primary action last).", not: "window.confirm(), a fixed <div> with a backdrop" },
+  { need: "A side panel, drawer or bottom sheet", use: ["dialog"], how: "Dialog with side=\"end\", \"start\" or \"bottom\".", not: "a custom fixed div that slides in" },
+  { need: "Settings for an app", use: ["dialog", "app-shell", "settings", "top-bar"], how: "The Settings pattern: a full-size Dialog holding the App shell in settings mode, Settings groups of SettingsRow / SettingsLink.", not: "a settings page with Tabs, a small dialog, rows built from divs" },
+  { need: "Small extra content on click (details, a mini form)", use: ["popover"], how: "Popover.", not: "a hand-positioned div" },
+  { need: "Explain an icon button on hover or focus", use: ["tooltip"], how: "Tooltip (the button keeps its aria-label).", not: "title=\"\" or a CSS-only bubble" },
+  { need: "Confirm something happened, or offer undo", use: ["toast"], how: "toast.success() / toast() with an action.", not: "a hand-built fixed banner" },
+  { need: "Tell people about a problem or a state on the page", use: ["alert"], how: "Alert (destructive with a retry for a failed load or save).", not: "a coloured <div>" },
+  { need: "Show loading", use: ["skeleton", "spinner", "progress", "button"], how: "Skeleton in the shape of the content (aria-busy on the region), Spinner for a small area, Button loading for an action, Progress for a known amount.", not: "\"Loading…\" text, a hand-drawn spinner" },
+  { need: "Nothing to show yet, or no results", use: ["empty-state"], how: "Empty state with the action that fills it (compact inside a card or table).", not: "a centred muted paragraph" },
+  { need: "Group content in a box", use: ["card"], how: "Card with CardHeader / CardTitle / CardDescription, CardContent, CardFooter; CardLink when the whole card opens something.", not: "a <div> with a border, radius and padding" },
+  { need: "Rows of things (members, files, threads, settings)", use: ["list", "settings", "swipe"], how: "List (ListLink for clickable rows, divided for settings-style rows); Settings for preference rows; Swipe actions on phones.", not: "<ul>/<div> rows with your own borders and hover, <li onClick>" },
+  { need: "Records compared across columns", use: ["table", "pagination"], how: "Table (sortable headers, a select column), Pagination under it.", not: "a raw <table>, a CSS grid of divs" },
+  { need: "Facts about one thing (key: value)", use: ["data-list"], how: "Data list.", not: "a <dl> or two-column divs styled by hand" },
+  { need: "A number that matters (KPI)", use: ["stat", "card", "badge", "chart"], how: "Card + Stat + a status Badge, a Sparkline beside it.", not: "big bold text in a div" },
+  { need: "A chart", use: ["chart"], how: "LineChart, BarChart, BarList, Sparkline, coloured from --ayy-chart-1… in order.", not: "a chart library's default palette, divs as bars" },
+  { need: "A status, count or label on something", use: ["badge"], how: "Badge (status variants).", not: "a coloured <span> pill" },
+  { need: "A person or a team", use: ["avatar"], how: "Avatar (image with initials fallback), AvatarGroup.", not: "a round <img> or initials in a div" },
+  { need: "Collapsible sections or FAQ", use: ["accordion"], how: "Accordion (single to keep one open).", not: "a raw <details>, a div toggled by a button" },
+  { need: "A multi-step flow", use: ["steps"], how: "Steps above the form, one primary Continue per step.", not: "numbered circles drawn by hand" },
+  { need: "The frame of an app", use: ["app-shell", "bottom-nav", "page-header"], how: "App shell (sidebar, a bar and a Bottom nav on phones), each screen starting with a Page header.", not: "a hand-built sidebar, header or bottom tab bar" },
+  { need: "The top of a website", use: ["navbar"], how: "Navbar with a NavbarToggle so links fold into a menu on phones.", not: "a <header> of links with a hand-built burger menu" },
+  { need: "Where you are, or which page of results", use: ["breadcrumb", "pagination"], how: "Breadcrumb for nested pages, Pagination for pages of results.", not: "links separated by slashes, numbered buttons" },
+  { need: "A screen pushed from a list on a phone", use: ["top-bar"], how: "Top bar (back, title, actions).", not: "a hand-built header with a back arrow" },
+  { need: "A screenshot or picture of the product", use: ["frame"], how: "Frame around it.", not: "an <img> with a border and shadow" },
+  { need: "Light/dark switch", use: ["theme-toggle"], how: "Theme toggle.", not: "a button that flips a class" },
 ];
 
 /** Attributes ayywi reads on any element. */
@@ -149,7 +198,7 @@ export const STATES = {
 
 /** Rules every agent (and human) must follow. Rendered into llms-full.txt and ai/; enforced by `pnpm check` and `ayywi lint`. */
 export const RULES = [
-  "Use existing ayywi classes/components and their variants before writing any custom CSS. Never rebuild one under your own name (a .x-chip, .x-card, a <button> styled by hand) or restyle one: your class next to its ayy- class sets only layout (margin, size, position). If nothing fits, compose ayywi pieces. Never add a second UI kit.",
+  "Use existing ayywi classes/components and their variants before writing any custom CSS. Never rebuild one under your own name (a .x-chip, .x-card, a <button> styled by hand) or restyle one: your class next to its ayy- class sets only layout (margin, size, position). If nothing fits, compose ayywi pieces. Never add a second UI kit. Never write a raw native control (<button>, <select>, <input>, <textarea>, <table>, <dialog>, <details>) or a <div>/<span> with a click handler: each is an ayywi component. Before writing a screen, name the component for every piece by what it has to do (the Need → component map, or the MCP pick_component tool).",
   "Never hardcode colours (hex, rgb, hsl, named) — in stylesheets or in inline styles. Use var(--ayy-color-*) tokens; for tints use color-mix(in srgb, var(--ayy-color-text) N%, transparent) or the wash/line tokens.",
   "Use logical properties only: margin-inline-start, padding-inline, inset-inline-end, text-align: start, inline-size. Never left/right/margin-left/padding-right, so RTL works.",
   "Spacing, sizes, radius, type and motion come from tokens (--ayy-space-*, --ayy-size-*, --ayy-radius-*, --ayy-text-*, --ayy-weight-*, --ayy-leading-*, --ayy-control-*, --ayy-shadow-*, --ayy-ease-*, --ayy-duration-*). Control sizes follow data-density — don't hardcode heights.",
@@ -161,7 +210,8 @@ export const RULES = [
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state. Movement on :hover (lifts, zooms, spins) goes inside @media (hover: hover), because a tap leaves :hover stuck on touch screens.",
   "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
   "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
-  "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button; on phones a screen pushed from a list starts with a Top bar (back, title, actions) instead, and a screen's one main create action can be a Floating action button. Lists of rows on phones get Swipe actions for their two or three most common actions, which are also reachable elsewhere. Settings open full screen in the App shell's settings mode (the Settings pattern: the sidebar swaps to Back, a Settings title and the sections; the main shows one section of Settings rows; on phones the section list and a section are two screens), never in a dialog; desktop apps add a Command palette on ⌘K. Never put a Navbar in an app.",
+  "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button; on phones a screen pushed from a list starts with a Top bar (back, title, actions) instead, and a screen's one main create action can be a Floating action button. Lists of rows on phones get Swipe actions for their two or three most common actions, which are also reachable elsewhere. Settings open over the app in a near-full-screen Dialog (size=\"full\") holding the App shell in settings mode (the Settings pattern: a Settings title and the sections in its sidebar; one section of Settings rows in its main; on phones the dialog fills the screen and the section list and a section are two screens), never in a small or side dialog; desktop apps add a Command palette on ⌘K. Never put a Navbar in an app.",
+  "An app screen fills the main. Don't wrap it in .ayy-container or a max-inline-size — a max-inline-size on an example only sizes that example in the docs, it is not page layout. Long text (a description, .ayy-prose) may stop at --ayy-size-measure. Settings mode already centres its column; don't add a second cap.",
   "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
   "Data views use ayywi's own pieces: Chart (BarChart, LineChart), Bar list and Sparkline for charts, coloured from --ayy-chart-1… in order; filters as Chips (with counts) above the results and the active ones as removable chips; sortable Table columns with a .ayy-table__sort button and aria-sort on the <th>. With a chart library, colour it with var(--ayy-chart-N) (SVG) or chartColors() and chartTheme() (canvas); never its default palette.",
   "Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Number field for small counts, a Slider for a rough amount, a Calendar or DatePicker for a date near today (native type=\"date\" for a birth date, type=\"time\" for times), Swatches for a colour, a Tag input for free-text tags or recipients, a Search bar to filter a list, a Shortcut recorder for key bindings, File upload for files.",
@@ -171,5 +221,5 @@ export const RULES = [
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
   "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
-  "Run `npx ayywi lint` after UI changes and fix every error it reports.",
+  "Run `npx ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.",
 ];

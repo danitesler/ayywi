@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
+import { Accordion, AccordionItem, Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 import { CodeBlock } from "./CodeBlock";
 import type { ExampleEntry } from "./data";
 import type { Renderer } from "./settings";
@@ -27,6 +27,7 @@ export function Example({ example, renderer }: { example: ExampleEntry; renderer
       <h3 className="pv-example__title" id={`ex-${example.id}`}>
         {example.title}
       </h3>
+      {/* ayywi-lint-disable-next-line -- not an action: it catches in-page links inside the example (see onStageClick) */}
       <div className="pv-stage" data-renderer={showHtml ? "html" : "react"} onClick={onStageClick}>
         {showHtml ? (
           <HtmlStage key={example.id} html={example.htmlSource} />
@@ -34,21 +35,22 @@ export function Example({ example, renderer }: { example: ExampleEntry; renderer
           <div className="pv-stage__inner">{Component ? <Component /> : null}</div>
         )}
       </div>
-      <details className="pv-source">
-        <summary className="pv-source__toggle">Code</summary>
-        <Tabs key={renderer} defaultValue={renderer}>
-          <TabsList aria-label={`${example.title} code`}>
-            <TabsTrigger value="react">React</TabsTrigger>
-            <TabsTrigger value="html">HTML · Vue · Svelte · any</TabsTrigger>
-          </TabsList>
-          <TabsContent value="react">
-            <CodeBlock code={example.reactSource} label="tsx" />
-          </TabsContent>
-          <TabsContent value="html">
-            <CodeBlock code={example.htmlSource} label="html" />
-          </TabsContent>
-        </Tabs>
-      </details>
+      <Accordion className="pv-source">
+        <AccordionItem label="Code">
+          <Tabs key={renderer} defaultValue={renderer}>
+            <TabsList aria-label={`${example.title} code`}>
+              <TabsTrigger value="react">React</TabsTrigger>
+              <TabsTrigger value="html">HTML · Vue · Svelte · any</TabsTrigger>
+            </TabsList>
+            <TabsContent value="react">
+              <CodeBlock code={example.reactSource} label="tsx" />
+            </TabsContent>
+            <TabsContent value="html">
+              <CodeBlock code={example.htmlSource} label="html" />
+            </TabsContent>
+          </Tabs>
+        </AccordionItem>
+      </Accordion>
     </section>
   );
 }

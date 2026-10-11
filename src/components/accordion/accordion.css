@@ -22,7 +22,7 @@
   line-height: var(--ayy-leading-snug);
   list-style: none;
   cursor: pointer;
-  transition: color var(--ayy-duration-base) ease;
+  transition: color var(--ayy-duration-base) var(--ayy-ease-standard);
 }
 
 .ayy-accordion__trigger::-webkit-details-marker {
@@ -41,7 +41,7 @@
   border-block-end: 1.5px solid currentColor;
   color: var(--ayy-color-muted);
   transform: translateY(-0.125em) rotate(45deg);
-  transition: transform var(--ayy-duration-base) ease;
+  transition: transform var(--ayy-duration-base) var(--ayy-ease-menu);
 }
 
 .ayy-accordion__item[open] > .ayy-accordion__trigger::after {
@@ -62,6 +62,24 @@
   color: var(--ayy-color-text-soft);
   font-size: var(--ayy-text-sm);
   line-height: var(--ayy-leading-normal);
+}
+
+/* Opening rolls the answer open instead of snapping it in: the UA keeps a closed item's
+   ::details-content unrendered, and interpolate-size lets its block-size travel between 0 and
+   auto on the menu easing, in step with the chevron. Browsers without ::details-content or
+   interpolate-size skip the motion and snap, as before. Reduced motion is handled globally:
+   base.css collapses every ayy- transition. */
+.ayy-accordion__item::details-content {
+  interpolate-size: allow-keywords;
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size var(--ayy-duration-base) var(--ayy-ease-menu),
+    content-visibility var(--ayy-duration-base) allow-discrete;
+}
+
+.ayy-accordion__item[open]::details-content {
+  block-size: auto;
 }
 
 .ayy-accordion__content > * {

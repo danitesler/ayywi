@@ -21,6 +21,13 @@ function save(key: string, value: string) {
   }
 }
 
+/** The docs sidebar: open, or collapsed to a rail that previews on hover. Remembered per browser. */
+export function useSidebarCollapsed() {
+  const [value, setValue] = usePersisted("ayy-preview-sidebar", ["open", "collapsed"] as const, "open");
+  const set = useCallback((collapsed: boolean) => setValue(collapsed ? "collapsed" : "open"), [setValue]);
+  return [value === "collapsed", set] as const;
+}
+
 function usePersisted<T extends string>(key: string, allowed: readonly T[], fallback: T) {
   const [value, setValue] = useState<T>(() => load(key, allowed, fallback));
   const set = useCallback(

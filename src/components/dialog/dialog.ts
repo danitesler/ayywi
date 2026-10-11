@@ -2,14 +2,14 @@ import { cx } from "../../lib/cx";
 import { Cancel01Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
 
-export const dialogSizes = ["sm", "md", "lg", "xl"] as const;
+export const dialogSizes = ["sm", "md", "lg", "xl", "full"] as const;
 export type DialogSize = (typeof dialogSizes)[number];
 /** "center" is a regular modal; "start" and "end" make a side modal on that inline edge (end = right in LTR, left in RTL); "bottom" is a bottom sheet. */
 export const dialogSides = ["center", "start", "end", "bottom"] as const;
 export type DialogSide = (typeof dialogSides)[number];
 
 export interface DialogClassOptions {
-  /** Width: 24, 32, 42 or 56rem. */
+  /** Width: 24, 32, 42 or 56rem. "full" is near full screen (72rem by 50rem at most), and full screen on phones. */
   size?: DialogSize;
   side?: DialogSide;
   className?: string;

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // ayywi command line: lint | brand | init | mcp
 import { readFileSync } from "node:fs";
-import { formatFindings, lintPaths } from "./lint.mjs";
+import { formatFindings, lintHook, lintPaths } from "./lint.mjs";
 
 const [command, ...raw] = process.argv.slice(2);
 // "--max-warnings 0" and "--max-warnings=0" both work.
@@ -20,12 +20,16 @@ const HELP = `ayywi ${version}
         physical-property (left/right CSS), img-size (<img> without width/height), icon-library (a second icon set).
       Structure (warnings): rebuilt-component (a class named after an ayywi component, like .x-chip or .sidebar,
         never used with it), component-override (CSS that changes how a component looks, beyond layout),
-        bare-control (a <button>, <input>, role="tab"… with your classes and none of ayywi's). Class names are
-        matched across every file linted together, so lint the whole UI in one run.
+        bare-control (a <button>, <input>, role="tab"… with your classes and none of ayywi's), raw-control (a
+        <button>, <select>, <input>, <table>, <details>… with no class at all), clickable-element (a <div> or
+        <span> with a click handler). Class names are matched across every file linted together, so lint the
+        whole UI in one run.
       Default path: current directory. Exits 1 on errors, or on more than N warnings.
       Configure rules in ayywi.config.json: { "rules": { "physical-property": "off" }, "ignore": ["legacy/**"] }.
       Silence a line with a comment containing ayywi-lint-disable-line (or -next-line); a whole file with
       ayywi-lint-disable-file in its first five lines.
+      --hook: run as a Claude Code PostToolUse hook (reads the hook JSON on stdin, lints the edited file, exits 2
+      with the findings so the agent fixes them). \`ayywi init\` sets it up.
 
   ayywi brand <#seed | brand.json> [--name acme] [--shape pill|round|soft|sharp] [--heading "Font"]
               [--body "Font"] [--mono "Font"] [--radius-button 10px] [--radius-card 20px] [--radius-control 8px]
@@ -37,9 +41,10 @@ const HELP = `ayywi ${version}
       --tokens writes the brand as DTCG JSON per theme (for iOS, Android, Figma, Style Dictionary), to layer
       over ayywi/tokens/<theme>.json.
 
-  ayywi init [--no-mcp] [--force] [--dry-run]
-      Set up this project for AI agents: .claude/skills/ayywi, .cursor/rules/ayywi.mdc, an ayywi section
-      in AGENTS.md, and the MCP server in .mcp.json and .cursor/mcp.json.
+  ayywi init [--no-mcp] [--no-hook] [--force] [--dry-run]
+      Set up this project for AI agents: .claude/skills/ayywi, the .claude/agents/ayywi-ui-reviewer agent,
+      a Claude Code hook in .claude/settings.json that lints every UI file the agent writes, .cursor/rules/ayywi.mdc,
+      an ayywi section in AGENTS.md, and the MCP server in .mcp.json and .cursor/mcp.json.
 
   ayywi mcp
       Run the ayywi MCP server over stdio (for Claude Code, Cursor, and other MCP clients).
@@ -47,6 +52,10 @@ const HELP = `ayywi ${version}
 
 switch (command) {
   case "lint": {
+    if (flags.has("--hook")) {
+      process.exitCode = await lintHook();
+      break;
+    }
     const result = lintPaths(args);
     if (flags.has("--json")) process.stdout.write(`${JSON.stringify(result.findings, null, 2)}\n`);
     else console.log(formatFindings(result));
@@ -78,7 +87,7 @@ switch (command) {
   }
   case "init": {
     const { init } = await import("./init.mjs");
-    init({ mcp: !flags.has("--no-mcp"), force: flags.has("--force"), dryRun: flags.has("--dry-run") });
+    init({ mcp: !flags.has("--no-mcp"), hook: !flags.has("--no-hook"), force: flags.has("--force"), dryRun: flags.has("--dry-run") });
     break;
   }
   case "mcp": {

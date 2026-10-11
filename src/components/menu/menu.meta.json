@@ -23,7 +23,7 @@
     "pressed": { "none": "Items have no pressed look: activating one runs it and closes the menu." },
     "focus": { "when": ".ayy-menu__item:focus (arrow keys) / :focus-visible", "looks": "Focused item gets the wash-hover background; keyboard focus adds a 2px ring inset by 2px. Forced colours: Highlight fill." },
     "disabled": { "when": ".ayy-menu__item:disabled or [aria-disabled=\"true\"]", "looks": "Item dims to --ayy-opacity-disabled with a not-allowed cursor; arrow keys skip it." },
-    "selected": { "none": "Menu items run commands and show no checked look (Theme toggle adds a check to its own items). For a choice that stays, use Select, Radio or a Segmented control." },
+    "selected": { "when": ".ayy-menu__item[aria-checked=\"true\"] on role=\"menuitemradio\" or \"menuitemcheckbox\"", "looks": "Semibold with a check at the inline end, drawn in currentColor. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select." },
     "error": { "none": "A menu has no error state; report a failed command with a toast." },
     "loading": { "none": "Build the items before opening; if they load, put the trigger Button in loading until they're ready." },
     "open": { "when": ":popover-open", "looks": "Fades in and scales up from 97%; fades out when it closes." }

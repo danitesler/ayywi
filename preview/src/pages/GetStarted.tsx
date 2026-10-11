@@ -1,25 +1,33 @@
 import { useState } from "react";
-import { ArrowDown01Icon, ArrowRight01Icon, ChatGptIcon, ClaudeIcon, Tick02Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, ChatGptIcon, ClaudeIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { themes, tokens, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import {
   Accordion,
   AccordionItem,
   buttonClass,
   Card,
+  CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardMedia,
   CardTitle,
   Carousel,
   CarouselSlide,
+  Chip,
+  ChipGroup,
   Combobox,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Icon,
+  List,
+  ListItem,
   SegmentedControl,
   SegmentedControlItem,
+  Select,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea,
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { components } from "../data";
@@ -132,7 +140,7 @@ Lint the file (npx ayywi lint, or check it against the rules), fix what it repor
 ];
 
 const REVIEW = [
-  "Switch the theme and density (the Theme menu at the top of the sidebar, or of the screen on a phone), then do the same in your app. Everything should still read well.",
+  "Switch the theme (the theme button at the top of the sidebar, or of the screen on a phone) and the density beside it, then do the same in your app. Everything should still read well.",
   "Narrow the window below 48rem. An app should swap its sidebar for a bottom nav; a site's navbar links should fold into a menu.",
   "Tab through the page. Every button, link and field should show a focus ring.",
   "Look for one main button per view. Everything else should be quieter.",
@@ -298,14 +306,14 @@ function TabSummary({ intro }: { intro: TabIntro }) {
     <section className="pv-intro" aria-label={`${intro.label}: what you get`}>
       <p className="pv-intro__when">{intro.when}</p>
       <p className="pv-intro__title">Included when you copy</p>
-      <ul className="pv-intro__list">
+      <List compact>
         {intro.includes.map((item) => (
-          <li key={item}>
-            <Icon icon={Tick02Icon} className="pv-intro__check" aria-hidden />
-            <span>{item}</span>
-          </li>
+          <ListItem key={item}>
+            <Icon icon={Tick02Icon} />
+            {item}
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </section>
   );
 }
@@ -338,29 +346,13 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
     <>
       <div className="pv-madlib">
         Build me {article}{" "}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            aria-label="What you're building"
-            variant="ghost"
-            className="pv-slot pv-slot--trigger"
-          >
-            <span>{what}</span>
-            <Icon icon={ArrowDown01Icon} className="pv-slot__chevron" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent aria-label="What you're building">
-            {STARTERS.map((s) => (
-              <DropdownMenuItem
-                key={s.id}
-                role="menuitemradio"
-                aria-checked={s.id === starter}
-                onSelect={() => pick(s.id)}
-              >
-                {s.what}
-                {s.id === starter ? <Icon icon={Tick02Icon} className="pv-picker__check" /> : null}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>{" "}
+        <Select aria-label="What you're building" value={starter} onChange={(e) => pick(e.target.value as StarterId)}>
+          {STARTERS.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.what}
+            </option>
+          ))}
+        </Select>{" "}
         for{" "}
         <Combobox
           aria-label="Who it's for"
@@ -373,8 +365,9 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
           className="pv-slot"
         />
         . It needs:
-        <textarea
-          className="ayy-textarea pv-slot pv-slot--long"
+        <Textarea
+          autosize
+          className="pv-slot pv-slot--long"
           aria-label="What it needs"
           rows={1}
           value={needs}
@@ -392,26 +385,18 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
         </p>
       ) : null}
 
-      <div className="pv-supported">
-        <span className="pv-supported__badge">
-          <Icon icon={Tick02Icon} className="pv-supported__check" />
-          <span>Pick your AI tool:</span>
+      <div className="ayy-cluster">
+        <span className="ayy-label" id="pv-tool-label">
+          Pick your AI tool:
         </span>
-        <div className="pv-supported__icons" role="radiogroup" aria-label="AI tools">
+        <ChipGroup role="radiogroup" aria-labelledby="pv-tool-label">
           {TOOL_LOGOS.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              role="radio"
-              aria-checked={tool === t.id}
-              className="pv-tool-btn"
-              onClick={() => onToolChange(t.id)}
-            >
-              <span className="pv-supported__icon">{t.svg}</span>
-              <span>{t.name}</span>
-            </button>
+            <Chip key={t.id} type="radio" name="pv-tool" value={t.id} checked={tool === t.id} onCheckedChange={(on) => on && onToolChange(t.id)}>
+              {t.svg}
+              {t.name}
+            </Chip>
           ))}
-        </div>
+        </ChipGroup>
       </div>
 
       <p className="pv-note pv-tool-note">
@@ -420,18 +405,21 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
 
       <CodeBlock code={prompt} label="prompt" copyLabel="Copy prompt" wrap />
 
-      <div className="pv-mcp-box">
-        <div className="pv-mcp-box__header">
-          <div>
-            <strong>Or connect via MCP</strong>
-            <span className="ayy-muted"> · Cursor, Claude Code, Windsurf</span>
-          </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Or connect via MCP</CardTitle>
+          <CardDescription>Cursor, Claude Code, Windsurf</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="pv-note">
+            Give your agent native tools: <code>pick_component</code>, <code>get_component</code>, <code>search</code>, <code>get_tokens</code>,{" "}
+            <code>create_brand</code>, and real-time <code>lint</code> without pasting full prompts.
+          </p>
+        </CardContent>
+        <CardFooter>
           <CopyButton text={MCP_CONFIG} label="Copy MCP config" variant="outline" />
-        </div>
-        <p className="pv-note">
-          Give your agent native tools: <code>get_component</code>, <code>search</code>, <code>get_tokens</code>, <code>create_brand</code>, and real-time <code>lint</code> without pasting full prompts.
-        </p>
-      </div>
+        </CardFooter>
+      </Card>
 
       <h2 className="pv-h pv-h--section" id="refine">
         Refine with follow-up prompts
@@ -518,9 +506,9 @@ function DeveloperGuide({ setup }: { setup: Setup }) {
       <h2 className="pv-h pv-h--section" id="inside">
         What's in it
       </h2>
-      <nav className="pv-chips" aria-label="Components">
+      <nav className="ayy-cluster pv-links" aria-label="Components">
         {components.map((c) => (
-          <a key={c.slug} href={`#/${c.slug}`} className="pv-chip">
+          <a key={c.slug} href={`#/${c.slug}`} className={buttonClass({ variant: "outline", size: "sm" })}>
             {c.name}
           </a>
         ))}
@@ -530,6 +518,7 @@ function DeveloperGuide({ setup }: { setup: Setup }) {
 }
 
 type Tab = "builder" | Setup;
+const TABS: Tab[] = ["builder", "files", "package", "chat"];
 
 export function GetStartedPage(appearance: Appearance) {
   const [tab, setTab] = useState<Tab>("builder");
@@ -550,18 +539,22 @@ export function GetStartedPage(appearance: Appearance) {
 
       <Examples tool={tool} />
 
-      <div className="pv-doors">
-        <SegmentedControl aria-label="How you build" value={tab} onValueChange={(v) => setTab(v as Tab)}>
-          <SegmentedControlItem value="builder">{BUILDER_INTRO.label}</SegmentedControlItem>
-          <SegmentedControlItem value="files">{SETUPS.files.label}</SegmentedControlItem>
-          <SegmentedControlItem value="package">{SETUPS.package.label}</SegmentedControlItem>
-          <SegmentedControlItem value="chat">{SETUPS.chat.label}</SegmentedControlItem>
-        </SegmentedControl>
-      </div>
-
-      <TabSummary intro={tab === "builder" ? BUILDER_INTRO : SETUPS[tab]} />
-
-      {tab === "builder" ? <BuilderGuide tool={tool} onToolChange={setTool} /> : <DeveloperGuide setup={tab} />}
+      {/* The guide changes with the choice: panels of content, so Tabs rather than a Segmented control. */}
+      <Tabs className="pv-doors" value={tab} onValueChange={(v) => setTab(v as Tab)}>
+        <TabsList aria-label="How you build">
+          {TABS.map((t) => (
+            <TabsTrigger key={t} value={t}>
+              {t === "builder" ? BUILDER_INTRO.label : SETUPS[t].label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {TABS.map((t) => (
+          <TabsContent key={t} value={t} className="pv-page pv-page--compact">
+            <TabSummary intro={t === "builder" ? BUILDER_INTRO : SETUPS[t]} />
+            {t === "builder" ? <BuilderGuide tool={tool} onToolChange={setTool} /> : <DeveloperGuide setup={t} />}
+          </TabsContent>
+        ))}
+      </Tabs>
 
       <div>
         <a href="#/showcase" className={buttonClass({ variant: "outline" })}>

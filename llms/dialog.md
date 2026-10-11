@@ -7,6 +7,7 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 - `.ayy-dialog--sm` — 24rem wide.
 - `.ayy-dialog--lg` — 42rem wide.
 - `.ayy-dialog--xl` — 56rem wide.
+- `.ayy-dialog--full` — Near full screen: 72rem by 50rem at most, 4rem clear of the viewport on each axis, no padding; what it holds lays itself out (an App shell in settings mode). Fills the screen below 48rem, with no border or radius.
 - `.ayy-dialog--side-start` — Side modal on the inline-start edge (left in LTR, right in RTL): full height, slides in. Width from the size modifiers.
 - `.ayy-dialog--side-end` — Side modal on the inline-end edge (right in LTR, left in RTL): full height, slides in. Width from the size modifiers.
 - `.ayy-dialog--side-bottom` — Bottom sheet: anchored to the bottom edge with a grab handle, slides up. Full width on phones, centred at the size modifier's width on wider screens; clears the home indicator (safe-area inset).
@@ -33,8 +34,9 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 - `md` (default) — 32rem wide.
 - `lg` — 42rem wide.
 - `xl` — 56rem wide.
+- `full` — Near full screen: up to 72rem by 50rem, no padding. Full screen on phones.
 - Density — Padding is fixed (--ayy-space-6); its controls follow data-density.
-- Width — The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem.
+- Width — The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem; full is 4rem clear of the viewport on each axis, and the whole screen below 48rem.
 
 **JS (framework-free)**: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
 
@@ -64,13 +66,14 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 **Do**
 - Use a dialog for short, focused tasks that must finish before continuing (rename, create).
 - Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.
-- Use a side modal to edit or inspect a record without leaving the page, and for settings, filters or a mobile nav drawer.
+- Use a side modal to edit or inspect a record without leaving the page, and for a few project options, filters or a mobile nav drawer.
+- Use size="full" for an app's settings: it holds the App shell in settings mode (sections in its sidebar, one section in its main) over the page the user was on.
 - Put the primary action last in the footer.
 - Use a bottom sheet on phones for a short list of actions or options on the thing just tapped (share, sort, quick settings): it sits under the thumb.
 - In a side modal, put the form fields in the body and submit from the footer with <button type="submit" form="form-id">.
 
 **Don't**
-- Don't use a dialog for long forms or multi-step flows — use a page.
+- Don't use a dialog for long forms or multi-step flows — use a page. App settings are the exception: a size="full" dialog with a settings shell.
 - Don't use a dialog for non-blocking messages — use an Alert on the page, or a Toast for a confirmation.
 - Don't use a modal for a panel people keep open while they work with the page — use a layout column.
 - Don't open a dialog from inside another dialog.

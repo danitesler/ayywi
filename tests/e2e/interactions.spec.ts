@@ -108,9 +108,11 @@ for (const renderer of ["react", "html"] as const) {
       await expect(sidebar).toBeHidden();
       await expect(tabs.locator('[aria-current="page"]')).toHaveText("Dashboard");
       // The tab bar sits at the bottom of the shell, the bar at the top.
-      const shellBox = (await shell.boundingBox())!;
-      const tabsBox = (await tabs.boundingBox())!;
-      expect(Math.round(tabsBox.y + tabsBox.height)).toBe(Math.round(shellBox.y + shellBox.height));
+      await expect.poll(async () => {
+        const shellBox = (await shell.boundingBox())!;
+        const tabsBox = (await tabs.boundingBox())!;
+        return Math.round(tabsBox.y + tabsBox.height) - Math.round(shellBox.y + shellBox.height);
+      }).toBe(0);
       await expect(shell.locator(".ayy-app-shell__bar")).toBeVisible();
 
       await expect(more).toHaveAttribute("aria-expanded", "false");
@@ -159,12 +161,47 @@ for (const renderer of ["react", "html"] as const) {
       await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
 
-      // Toggle again collapses it; unhovering and clearing focus returns to rail width
+      // Toggle again collapses it, and the preview stays shut while the pointer is still on the toggle.
+      const icon = sidebar.locator(".ayy-app-shell__link").first().locator("svg");
+      const iconXOpen = (await icon.boundingBox())!.x;
       await toggle.click();
       await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
-      await main.hover();
-      await page.keyboard.press("Escape");
+      await expect(sidebar).toHaveAttribute("data-ayy-hold", "");
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+      // The icons barely move between the open sidebar and the rail: rows keep their place.
+      expect(Math.abs((await icon.boundingBox())!.x - iconXOpen)).toBeLessThan(6);
+      // Leaving lets it go; coming back previews again.
+      await main.hover();
+      await expect(sidebar).not.toHaveAttribute("data-ayy-hold");
+      await sidebar.hover();
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
+      await main.hover();
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+    });
+
+    test("app shell collapsible sidebar: the width animates, and labels fade instead of jumping", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await open(page, "app-shell", { renderer });
+      const shell = stage(page, 5).locator(".ayy-app-shell");
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const toggle = sidebar.locator(".ayy-app-shell__toggle");
+      await shell.locator(".ayy-app-shell__main").hover();
+      // A long transition, so a busy machine can't finish it before it's measured.
+      await shell.evaluate((el) => el.style.setProperty("--ayy-duration-base", "10s"));
+      await toggle.evaluate((el) => (el as HTMLElement).click());
+      // Part-way through, the sidebar is between the rail and the full width, and the label is part-way faded in.
+      const mid = await sidebar.evaluate((el) => {
+        const label = el.querySelector(".ayy-app-shell__link > span")!;
+        for (const a of [...el.getAnimations(), ...label.getAnimations()]) {
+          a.pause();
+          a.currentTime = 1000;
+        }
+        return { width: el.getBoundingClientRect().width, opacity: Number(getComputedStyle(label).opacity) };
+      });
+      expect(mid.width).toBeGreaterThan(70);
+      expect(mid.width).toBeLessThan(230);
+      expect(mid.opacity).toBeGreaterThan(0);
+      expect(mid.opacity).toBeLessThan(1);
     });
 
     test("navbar folds its links into a menu on phones", async ({ page }) => {
@@ -307,6 +344,19 @@ for (const renderer of ["react", "html"] as const) {
       await expect(panel).toHaveAttribute("aria-labelledby", tabId!);
     });
 
+    test("tabs can have custom icons and support arrow navigation", async ({ page }) => {
+      await open(page, "tabs", { renderer });
+      const example = page.locator("#ex-icons").locator("xpath=ancestor::section");
+      const account = example.getByRole("tab", { name: "Account" });
+      await expect(account.locator("svg")).toBeVisible();
+      await account.click();
+      await page.keyboard.press("ArrowRight");
+      const notifs = example.getByRole("tab", { name: "Notifications" });
+      await expect(notifs).toHaveAttribute("aria-selected", "true");
+      await expect(notifs.locator("svg")).toBeVisible();
+      await expect(example.getByRole("tabpanel")).toContainText("Choose what updates");
+    });
+
     test("switch toggles with Space", async ({ page }) => {
       await open(page, "switch", { renderer });
       const sw = stage(page).getByRole("switch", { name: "Share anonymous usage" });
@@ -367,6 +417,68 @@ for (const renderer of ["react", "html"] as const) {
       await trigger.click();
       await menu.getByRole("menuitem", { name: /Duplicate/ }).click();
       await expect(menu).toBeHidden();
+    });
+
+    test("select: a mouse opens ayywi's list, choosing fires change, the keyboard works", async ({ page }) => {
+      await open(page, "select", { renderer });
+      const select = stage(page).getByLabel("Region");
+      await select.evaluate((el) => {
+        (window as unknown as { changes: string[] }).changes = [];
+        el.addEventListener("change", () => (window as unknown as { changes: string[] }).changes.push((el as HTMLSelectElement).value));
+      });
+
+      await select.click();
+      const list = page.getByRole("listbox", { name: "Region" });
+      await expect(list).toBeVisible();
+      await expect(select).toHaveAttribute("aria-expanded", "true");
+      await expect(list.getByRole("option", { name: "Europe" })).toHaveAttribute("aria-selected", "true");
+      await expect(list.getByRole("option", { name: "Europe" })).toBeFocused();
+      // Under the select, at least as wide.
+      const s = (await select.boundingBox())!;
+      const l = (await list.boundingBox())!;
+      expect(Math.abs(l.y - (s.y + s.height))).toBeLessThan(12);
+      // Layout width: the entry animation scales the box while it opens.
+      expect(await list.evaluate((el) => (el as HTMLElement).offsetWidth)).toBeGreaterThanOrEqual(Math.floor(s.width));
+
+      await list.getByRole("option", { name: "Asia Pacific" }).click();
+      await expect(list).toBeHidden();
+      await expect(select).toHaveValue("apac");
+      await expect(select).toBeFocused();
+      await expect(page.locator(".ayy-select__list")).toHaveCount(0);
+      expect(await page.evaluate(() => (window as unknown as { changes: string[] }).changes)).toEqual(["apac"]);
+
+      // Keyboard: Space opens on the chosen option, arrows move, Enter chooses; Esc closes without changing.
+      await page.keyboard.press(" ");
+      await expect(list.getByRole("option", { name: "Asia Pacific" })).toBeFocused();
+      await page.keyboard.press("ArrowUp");
+      await expect(list.getByRole("option", { name: "Europe" })).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect(select).toHaveValue("eu");
+      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("u");
+      await expect(list.getByRole("option", { name: "United States" })).toBeFocused();
+      await page.keyboard.press("Escape");
+      await expect(list).toBeHidden();
+      await expect(select).toHaveValue("eu");
+      await expect(select).toBeFocused();
+
+      // Clicking the select while the list is open closes it.
+      await select.click();
+      await expect(list).toBeVisible();
+      await select.click();
+      await expect(list).toBeHidden();
+
+      // Outside the stage, the list still takes its direction and theme.
+      await stage(page).evaluate((el) => (el.setAttribute("dir", "rtl"), el.setAttribute("data-theme", "light")));
+      await select.click();
+      await expect(list).toHaveAttribute("dir", "rtl");
+      await expect(list).toHaveAttribute("data-theme", "light");
+      await page.keyboard.press("Escape");
+      await stage(page).evaluate((el) => (el.removeAttribute("dir"), el.removeAttribute("data-theme")));
+
+      // A disabled select opens nothing.
+      await stage(page).getByLabel("Plan").click({ force: true });
+      await expect(page.getByRole("listbox")).toHaveCount(0);
     });
 
     test("toast appears, runs its action, and sits above a modal dialog", async ({ page }) => {
@@ -698,3 +810,15 @@ for (const renderer of ["react", "html"] as const) {
     if (renderer === "html") await expect(avatar.locator("img")).toBeHidden();
   });
 }
+
+test.describe("select on a touch screen", () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 800 } });
+
+  test("keeps the OS picker: no ayywi list opens", async ({ page }) => {
+    await open(page, "select");
+    const select = stage(page).getByLabel("Region");
+    expect(await select.evaluate((el) => (window as unknown as { ayywi?: unknown }) && matchMedia("(pointer: fine)").matches)).toBe(false);
+    await select.tap();
+    await expect(page.locator(".ayy-select__list")).toHaveCount(0);
+  });
+});

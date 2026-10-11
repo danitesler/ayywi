@@ -4,10 +4,12 @@
 .ayy-app-shell {
   --_sidebar-w: 15rem;
   --_sidebar-w-collapsed: calc(var(--ayy-size-control-lg) + var(--ayy-space-3) * 2);
+  /* The sidebar column now (the rail when collapsed). Set on every shell so a shell inside another doesn't inherit it. */
+  --_col: var(--_sidebar-w);
   position: relative;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: var(--_sidebar-w) minmax(0, 1fr);
+  grid-template-columns: var(--_col) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   block-size: 100dvh;
   background-color: var(--ayy-color-bg);
@@ -215,85 +217,142 @@ ayy-app-shell {
   outline-offset: -2px;
 }
 
-/* Wide screens: grid placement, collapsible sidebar and hover preview */
+/* Wide screens: grid placement, collapsible sidebar and hover preview.
+   A collapsible shell (collapsed, hover preview, or a __toggle in its sidebar) keeps every row on one line and in place,
+   so narrowing the sidebar only clips and fades what no longer fits: icons stay put, nothing reflows or jumps. The
+   sidebar's own width animates with the grid column. Hover preview widens the sidebar over the main area (the column
+   stays narrow), after a short pause so passing the pointer over it doesn't open it, and closes a moment after the
+   pointer leaves. Rail = collapsed and not previewing; --_delay times both. */
 @media (min-width: 48.001rem) {
   .ayy-app-shell--collapsed {
-    --_sidebar-w: var(--_sidebar-w-collapsed, calc(var(--ayy-size-control-lg) + var(--ayy-space-3) * 2));
+    --_col: var(--_sidebar-w-collapsed);
   }
 
   .ayy-app-shell > .ayy-app-shell__sidebar {
     grid-column: 1;
-    transition:
-      inline-size var(--ayy-duration-base) var(--ayy-ease-menu),
-      box-shadow var(--ayy-duration-base) ease;
   }
 
   .ayy-app-shell > .ayy-app-shell__main {
     grid-column: 2;
   }
 
-  /* When collapsed and not in hover preview: center icons, hide labels and sub-lists */
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__link,
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__link {
-    justify-content: center;
-    padding-inline: 0;
-    font-size: 0;
+  /* z-index switches with no animation: up as the preview starts opening, back down only once it has closed, so the
+     page's positioned content never paints over the sidebar while it narrows. */
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar {
+    --_t: var(--ayy-duration-base) var(--ayy-ease-menu) var(--_delay, 0s);
+    z-index: 0;
+    inline-size: var(--_col);
+    transition:
+      inline-size var(--_t),
+      box-shadow var(--_t),
+      z-index 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
   }
 
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__link > :not(svg, .ayy-icon, img),
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__link > :not(svg, .ayy-icon, img) {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+  /* Group dividers fade with the labels: the rail is one column of icons. */
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__group + .ayy-app-shell__group {
+    transition: border-color var(--_t);
+  }
+
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__group + .ayy-app-shell__group {
+    border-block-start-color: transparent;
+  }
+
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__brand, .ayy-app-shell__group-label) {
     white-space: nowrap;
-    border: 0;
   }
 
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__brand,
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__brand {
-    justify-content: center;
-    padding-inline: 0;
-    font-size: 0;
-  }
-
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__brand > :not(svg, .ayy-icon, img),
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__brand > :not(svg, .ayy-icon, img) {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    padding: 0;
-    margin: -1px;
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
+    min-inline-size: 0;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    transition:
+      color var(--ayy-duration-base) ease,
+      background-color var(--ayy-duration-base) ease,
+      padding-inline var(--_t),
+      opacity var(--_t),
+      visibility 0s linear var(--_delay, 0s);
   }
 
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__group-label,
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__group-label,
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__sublist,
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__sublist {
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :is(svg, .ayy-icon, img, .ayy-avatar) {
+    flex: none;
+  }
+
+  /* Labels fade as they're clipped. Wrap a link's label in a <span> to fade it; bare text is only clipped. */
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :not(svg, .ayy-icon, img, .ayy-avatar),
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__group-label,
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__collapse > summary::after {
+    transition: opacity var(--_t);
+  }
+
+  /* ---- The rail ---- */
+
+  /* The icon sits in the middle of the rail; the same padding animates back when it opens. */
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
+    padding-inline: calc((var(--ayy-size-control-lg) - var(--ayy-size-icon-md)) / 2);
+  }
+
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :not(svg, .ayy-icon, img, .ayy-avatar),
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__group-label,
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__collapse > summary::after {
+    opacity: 0;
+  }
+
+  /* A link with no icon has nothing to show in the rail: it fades out, then leaves the tab order. Its group keeps its
+     height, so the icons around it don't move. */
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__link:not(:has(> svg, > .ayy-icon, > img)) {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      color var(--ayy-duration-base) ease,
+      background-color var(--ayy-duration-base) ease,
+      padding-inline var(--_t),
+      opacity var(--_t),
+      visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
+  }
+
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__sublist {
     display: none;
   }
 
-  .ayy-app-shell--collapsed:not(.ayy-app-shell--hover-preview) > .ayy-app-shell__sidebar .ayy-app-shell__collapse > summary::after,
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:not(:hover, :focus-within) .ayy-app-shell__collapse > summary::after {
-    display: none;
+  /* ---- Hover preview: the full sidebar over the main area. Pointer or keyboard focus opens it; a mouse click on a
+     control inside doesn't keep it open, and right after the toggle collapses it, connectAppShell holds it shut
+     (data-ayy-hold) until the pointer leaves or focus moves on. ---- */
+  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar {
+    --_delay: 150ms;
   }
 
-  /* Hover preview: expands the collapsed sidebar as a floating overlay over the main area */
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :focus-within) {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 15rem;
+  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar[data-ayy-hold] {
+    --_delay: 0s;
+  }
+
+  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :has(:focus-visible)):not([data-ayy-hold]) {
+    --_col: var(--_sidebar-w);
+    --_delay: 100ms;
     z-index: var(--ayy-z-overlay);
     box-shadow: var(--ayy-shadow-overlay);
+    transition:
+      inline-size var(--_t),
+      box-shadow var(--_t),
+      z-index 0s linear var(--_delay, 0s);
   }
+}
+
+/* The sidebar's top row: the collapse __toggle, then the brand (and any actions). The toggle lines up with the link
+   icons under it, so it stays put in the rail while the brand is clipped. */
+.ayy-app-shell__head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+}
+
+.ayy-app-shell__head > .ayy-app-shell__toggle:first-child {
+  flex: none;
+  margin-inline-start: calc((var(--ayy-size-control-lg) - var(--ayy-size-control-md)) / 2);
+}
+
+.ayy-app-shell__head > .ayy-app-shell__brand {
+  flex: 1 1 auto;
 }
 
 /* ---- Phones (below 48rem). Three layouts, picked by what the shell holds:
@@ -443,10 +502,33 @@ ayy-app-shell {
   }
 }
 
-/* ---- Settings: the same shell, swapped. Opening settings replaces the app's sidebar with a __back link ("Back to
-   Dooduu"), a __title and a nav of settings sections, and the main shows one section full screen; there is no dialog.
+/* ---- Settings: the same shell, swapped. Settings open over the app in a near-full-screen Dialog (ayy-dialog--full)
+   holding a settings shell: a __title and a nav of settings sections in the sidebar, one section in the main. The
+   dialog's close button is the way out. (A settings shell on a page of its own starts its sidebar with a __back link.)
    On phones it becomes a stack: with no section current the sidebar is the screen (a list of sections), and with one
    current the main is, its Top bar's back button leading to the list. The bar and the bottom nav don't belong here. ---- */
+
+/* In the dialog: the shell fills it instead of the viewport. */
+.ayy-dialog .ayy-app-shell {
+  flex: 1 1 auto;
+  block-size: auto;
+  min-block-size: 0;
+}
+
+/* Wide screens: the sidebar's title and the section's, larger, line up at the top of the dialog. */
+@media (min-width: 48.001rem) {
+  .ayy-dialog .ayy-app-shell--settings > .ayy-app-shell__sidebar {
+    padding-block-start: var(--ayy-space-5);
+  }
+
+  .ayy-dialog .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child {
+    padding-block: var(--ayy-space-5) var(--ayy-space-3);
+  }
+
+  .ayy-dialog .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child .ayy-top-bar__title {
+    font-size: var(--ayy-text-xl);
+  }
+}
 
 .ayy-app-shell__back {
   box-sizing: border-box;
@@ -587,7 +669,7 @@ ayy-app-shell {
     background-color: Highlight;
     color: HighlightText;
   }
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :focus-within) {
+  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :has(:focus-visible)):not([data-ayy-hold]) {
     border-inline-end: 2px solid CanvasText;
   }
 }

@@ -90,6 +90,7 @@ export function createServer(contract = loadContract()) {
         const hits = [
           // A pattern is the recipe for a whole screen, so it outranks the components it's built from.
           ...(manifest.patterns ?? []).map((p) => [score(`${p.name} ${p.summary}`) * 2, `pattern ${p.slug}: ${p.summary} (get_rules has the recipe and specs)`]),
+          ...(manifest.needs ?? []).map((n) => [score(`${n.need} ${n.how}`) * 1.5, `need "${n.need}": ${n.how}`]),
           ...manifest.components.map((c) => [score(JSON.stringify([c.name, c.aka, c.description, c.do, c.classes])), `component ${c.slug}: ${c.description}`]),
           ...manifest.tokens.map((t) => [score(`${t.name} ${t.description ?? ""}`), `token ${t.cssVar}: ${t.description ?? t.value}`]),
           ...Object.entries(manifest.utilities ?? {}).map(([k, v]) => [score(`${k} ${v}`), `utility .${k}: ${v}`]),
@@ -98,6 +99,33 @@ export function createServer(contract = loadContract()) {
           .sort((a, b) => b[0] - a[0])
           .slice(0, 15);
         return hits.length ? hits.map(([, t]) => `- ${t}`).join("\n") : "No matches. Try list_components.";
+      },
+    },
+    pick_component: {
+      description:
+        "Which ayywi component to use for a piece of UI, by what it has to do (\"choose a theme\", \"confirm delete\", \"side panel\", \"rows of members\", \"upload a file\"). Call it for every piece of a screen before writing it; the answer also names what not to hand-build.",
+      inputSchema: { type: "object", properties: { need: { type: "string", description: "What the UI has to do, in plain words." } }, required: ["need"] },
+      run: ({ need }) => {
+        const STOP = new Set(["a", "an", "the", "to", "of", "for", "or", "and", "on", "in", "with", "from", "it", "is", "i", "my", "some", "that", "this"]);
+        const words = String(need).toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 1 && !STOP.has(w));
+        const stem = (w) => w.replace(/(?:ing|es|s)$/, "");
+        const score = (text) => {
+          const hay = text.toLowerCase();
+          return words.reduce((n, w) => n + (hay.includes(w) ? 2 : hay.includes(stem(w)) ? 1 : 0), 0);
+        };
+        const ranked = (manifest.needs ?? [])
+          .map((n) => {
+            const names = n.use.map((slug) => manifest.components.find((c) => c.slug === slug)).filter(Boolean);
+            const aka = names.flatMap((c) => [c.name, ...(c.aka ?? [])]).join(" ");
+            return { n, names, s: score(n.need) * 2 + score(`${n.how} ${aka}`) };
+          })
+          .filter((r) => r.s > 0)
+          .sort((a, b) => b.s - a.s)
+          .slice(0, 3);
+        if (!ranked.length) return `No direct match. Every need and its component:\n${(manifest.needs ?? []).map((n) => `- ${n.need} → ${n.use.join(", ")}`).join("\n")}\n\nStill nothing? Compose it from ayywi components and tokens (list_components), never from raw HTML controls.`;
+        return ranked
+          .map(({ n, names }) => `## ${n.need}\nUse: ${n.how}\nNot: ${n.not}\nSpecs: ${names.map((c) => `get_component("${c.slug}")`).join(", ")}`)
+          .join("\n\n");
       },
     },
     get_tokens: {
@@ -119,6 +147,9 @@ export function createServer(contract = loadContract()) {
         [
           "Rules:",
           ...manifest.rules.map((r, i) => `${i + 1}. ${r}`),
+          "",
+          "Need → component (Not = what gets hand-built instead):",
+          ...(manifest.needs ?? []).map((n) => `- ${n.need}: ${n.how} Not ${n.not}.`),
           "",
           ...(manifest.patterns ?? []).flatMap((p) => [
             `Pattern: ${p.name} — ${p.summary}`,
@@ -181,7 +212,7 @@ export function createServer(contract = loadContract()) {
       run: ({ code, filename = "snippet.tsx" }) => {
         const findings = lintText(String(code), filename, contract);
         return findings.length
-          ? findings.map((f) => `${f.line}:${f.column} ${f.severity} ${f.rule}: ${f.message}`).join("\n")
+          ? `${findings.map((f) => `${f.line}:${f.column} ${f.severity} ${f.rule}: ${f.message}`).join("\n")}\n\nFix every finding, warnings included, then lint again.`
           : "No problems found.";
       },
     },
@@ -199,7 +230,8 @@ export function createServer(contract = loadContract()) {
           protocolVersion: SUPPORTED.includes(requested) ? requested : SUPPORTED[0],
           capabilities: { tools: {} },
           serverInfo: { name: "ayywi", version: manifest.version },
-          instructions: "ayywi design system. Call list_components or search first, then get_component before writing UI, and lint your snippet. To brand a product, call create_brand with its colour rather than choosing colours.",
+          instructions:
+            "ayywi design system. Every piece of UI is an ayywi component: never write a raw <button>, <select>, <input>, <textarea>, <table>, <dialog> or <details>, a clickable <div>, or a hand-built dropdown, card, pill or tab row. Before writing a screen: get_rules once (rules, patterns, the need → component map), pick_component for each piece you're unsure of, get_component for each component you'll use (copy its example). After writing: lint the code and fix every finding, warnings included. To brand a product, call create_brand with its colour rather than choosing colours.",
         });
       }
       case "ping":

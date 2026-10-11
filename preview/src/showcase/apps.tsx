@@ -2,7 +2,7 @@
 // only size the showcase frame, lay out the inbox's three panes and frame the store's product art; every colour, size
 // and control comes from ayywi. The apps share one frame (AppFrame): the sidebar on wide screens, a top bar and a
 // bottom nav on phones. The marketing site and the store are websites: a Navbar and a Footer.
-import { useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
+import { useId, useRef, useState, type ComponentType, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import {
   Add01Icon,
   Alert02Icon,
@@ -21,6 +21,7 @@ import {
   HelpCircleIcon,
   Home01Icon,
   InboxIcon,
+  KeyboardIcon,
   Invoice01Icon,
   Layers01Icon,
   Link01Icon,
@@ -28,6 +29,7 @@ import {
   Message01Icon,
   MoreHorizontalIcon,
   Notification01Icon,
+  PaintBoardIcon,
   RefreshIcon,
   Rocket01Icon,
   Search01Icon,
@@ -35,7 +37,6 @@ import {
   Settings01Icon,
   Shield01Icon,
   ShoppingBag01Icon,
-  SmartPhone01Icon,
   SparklesIcon,
   Task01Icon,
   Ticket01Icon,
@@ -70,6 +71,7 @@ import {
   AppShellMain,
   AppShellNav,
   AppShellSidebar,
+  AppShellTitle,
   Avatar,
   AvatarGroup,
   Badge,
@@ -77,7 +79,6 @@ import {
   BottomNavButton,
   BottomNavLink,
   BarList,
-  Breadcrumb,
   Button,
   buttonClass,
   Card,
@@ -160,6 +161,10 @@ import {
   SegmentedControlItem,
   Select,
   Separator,
+  Settings,
+  SettingsLink,
+  SettingsRow,
+  ShortcutRecorder,
   Skeleton,
   SliderRange,
   Sparkline,
@@ -172,11 +177,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
   Textarea,
+  TopBar,
   compareValues,
   nextSortDirection,
   type SortDirection,
@@ -193,6 +195,114 @@ interface Destination {
   icon: IconData;
 }
 
+/** One settings section: a link in the settings dialog's sidebar and what it shows. */
+interface SettingsSection {
+  href: string;
+  label: string;
+  icon: IconData;
+  content: ReactNode;
+}
+
+interface AppSettings {
+  groups: { label: string; sections: SettingsSection[] }[];
+  /** Open on load (the Ledger showcase is about its settings). */
+  defaultOpen?: boolean;
+}
+
+const PHONE = "(max-width: 48rem)";
+const onPhone = () => typeof matchMedia === "function" && matchMedia(PHONE).matches;
+
+/** The settings shell inside the dialog. Mounted on every open: wide screens start on the first section, phones on the list. */
+function SettingsShell({ settings, titleId }: { settings: AppSettings; titleId: string }) {
+  const sections = settings.groups.flatMap((g) => g.sections);
+  const [current, setCurrent] = useState<string | null>(() => (onPhone() ? null : sections[0].href));
+  const shown = sections.find((s) => s.href === (current ?? (onPhone() ? null : sections[0].href)));
+  const main = useRef<HTMLElement>(null);
+  const sidebar = useRef<HTMLElement>(null);
+  const open = (event: MouseEvent, href: string) => {
+    event.preventDefault();
+    setCurrent(href);
+    // On phones the list gives way to the section: move focus with it.
+    if (onPhone()) requestAnimationFrame(() => main.current?.focus({ preventScroll: true }));
+  };
+  const back = () => {
+    const from = current;
+    setCurrent(null);
+    requestAnimationFrame(() => sidebar.current?.querySelector<HTMLElement>(`a[href="${from}"]`)?.focus());
+  };
+  return (
+    <AppShell settings>
+      <AppShellSidebar ref={sidebar}>
+        <AppShellTitle id={titleId}>Settings</AppShellTitle>
+        <AppShellNav aria-label="Settings">
+          {settings.groups.map((g) => (
+            <AppShellGroup key={g.label} label={g.label}>
+              {g.sections.map((section) => (
+                <AppShellItem key={section.href}>
+                  <AppShellLink href={section.href} current={section === shown} onClick={(event) => open(event, section.href)}>
+                    <Icon icon={section.icon} />
+                    {section.label}
+                  </AppShellLink>
+                </AppShellItem>
+              ))}
+            </AppShellGroup>
+          ))}
+        </AppShellNav>
+      </AppShellSidebar>
+      <AppShellMain as="div" ref={main} tabIndex={-1}>
+        {shown ? (
+          <>
+            <TopBar onBack={back} backLabel="Settings" title={shown.label} />
+            {shown.content}
+          </>
+        ) : null}
+      </AppShellMain>
+    </AppShell>
+  );
+}
+
+/** Settings over the app: a near-full-screen dialog (full screen on phones) holding the App shell in settings mode. */
+function SettingsDialog({ settings, open, onOpenChange }: { settings: AppSettings; open: boolean; onOpenChange: (open: boolean) => void }) {
+  const titleId = useId();
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent size="full" aria-labelledby={titleId}>
+        <SettingsShell settings={settings} titleId={titleId} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** A setting that's on or off. */
+const switchRow = (id: string, label: string, hint: string, on = false) => (
+  <SettingsRow key={id} label={label} htmlFor={id} hint={hint}>
+    <Switch id={id} aria-describedby={`${id}-hint`} defaultChecked={on} />
+  </SettingsRow>
+);
+
+/** A setting that's one of a few. */
+const selectRow = (id: string, label: string, options: [string, string][], value: string, hint?: string) => (
+  <SettingsRow key={id} label={label} htmlFor={id} hint={hint}>
+    <Select id={id} defaultValue={value} aria-describedby={hint ? `${id}-hint` : undefined}>
+      {options.map(([v, text]) => (
+        <option key={v} value={v}>
+          {text}
+        </option>
+      ))}
+    </Select>
+  </SettingsRow>
+);
+
+/** A shortcut, recorded. */
+function ShortcutRow({ id, label, initial }: { id: string; label: string; initial: string | null }) {
+  const [keys, setKeys] = useState(initial);
+  return (
+    <SettingsRow label={label}>
+      <ShortcutRecorder id={id} label={label} value={keys} onValueChange={setKeys} />
+    </SettingsRow>
+  );
+}
+
 interface AppFrameProps {
   brand: { name: string; icon: IconData; href: string };
   /** Sidebar groups. The bottom nav shows `tabs` of these (same labels, icons and order). */
@@ -205,13 +315,22 @@ interface AppFrameProps {
   barActions?: ReactNode;
   /** Sidebar footer: the account, help. */
   footer: ReactNode;
+  /** The app's settings. A #settings destination opens them; without one, a Settings link in the footer and a button in the phone bar do. */
+  settings: AppSettings;
   mainClassName?: string;
   children: ReactNode;
 }
 
 /** One app frame for every app: sidebar on wide screens; below 48rem a bar with the brand and a bottom nav. */
-function AppFrame({ brand, groups, tabs, current, barActions, footer, mainClassName, children }: AppFrameProps) {
+function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, mainClassName, children }: AppFrameProps) {
+  const [settingsOpen, setSettingsOpen] = useState(settings.defaultOpen ?? false);
+  const openSettings = (event: MouseEvent) => {
+    event.preventDefault();
+    setSettingsOpen(true);
+  };
   const all = groups.flatMap((g) => g.items);
+  const hasSettings = all.some((d) => d.href === "#settings");
+  const onDestination = (href: string) => (href === "#settings" ? openSettings : undefined);
   const tabItems = tabs.map((href) => all.find((d) => d.href === href)).filter((d) => d !== undefined);
   const more = all.length > tabItems.length;
   const brandLink = (
@@ -225,6 +344,11 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, mainClassN
       <AppShellBar>
         {brandLink}
         {barActions}
+        {hasSettings ? null : (
+          <Button variant="ghost" size="icon" aria-label="Settings" aria-haspopup="dialog" onClick={openSettings}>
+            <Icon icon={Settings01Icon} />
+          </Button>
+        )}
       </AppShellBar>
       <AppShellSidebar>
         {brandLink}
@@ -233,7 +357,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, mainClassN
             <AppShellGroup key={g.label} label={g.label}>
               {g.items.map((d) => (
                 <AppShellItem key={d.href}>
-                  <AppShellLink href={d.href} current={d.href === current}>
+                  <AppShellLink href={d.href} current={d.href === current} onClick={onDestination(d.href)}>
                     <Icon icon={d.icon} />
                     {d.label}
                   </AppShellLink>
@@ -242,12 +366,20 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, mainClassN
             </AppShellGroup>
           ))}
         </AppShellNav>
-        <AppShellFooter>{footer}</AppShellFooter>
+        <AppShellFooter>
+          {hasSettings ? null : (
+            <AppShellLink href="#settings" onClick={openSettings}>
+              <Icon icon={Settings01Icon} />
+              Settings
+            </AppShellLink>
+          )}
+          {footer}
+        </AppShellFooter>
       </AppShellSidebar>
       <AppShellMain className={mainClassName}>{children}</AppShellMain>
       <BottomNav aria-label={brand.name}>
         {tabItems.map((d) => (
-          <BottomNavLink key={d.href} href={d.href} icon={<Icon icon={d.icon} />} current={d.href === current}>
+          <BottomNavLink key={d.href} href={d.href} icon={<Icon icon={d.icon} />} current={d.href === current} onClick={onDestination(d.href)}>
             {d.label}
           </BottomNavLink>
         ))}
@@ -257,6 +389,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, mainClassN
           </BottomNavButton>
         ) : null}
       </BottomNav>
+      <SettingsDialog settings={settings} open={settingsOpen} onOpenChange={setSettingsOpen} />
     </AppShell>
   );
 }
@@ -315,6 +448,102 @@ const GOALS = [
   { label: "Churn budget used", value: 71, note: "Watch this one", variant: "warning" },
 ] as const;
 
+const PULSE_SETTINGS: AppSettings = {
+  groups: [
+    {
+      label: "Account",
+      sections: [
+        {
+          href: "#pl-profile",
+          label: "Profile",
+          icon: UserCircleIcon,
+          content: (
+            <>
+              <Settings title="Your details">
+                <SettingsRow label="Name" htmlFor="pl-name">
+                  <Input id="pl-name" defaultValue="Maya Chen" autoComplete="name" />
+                </SettingsRow>
+                <SettingsRow label="Email" htmlFor="pl-email" hint="Reports and alerts go here.">
+                  <Input id="pl-email" type="email" defaultValue="maya@pulse.dev" autoComplete="email" aria-describedby="pl-email-hint" />
+                </SettingsRow>
+              </Settings>
+              <Settings title="Sign-in">
+                {switchRow("pl-2fa", "Two-factor authentication", "A code from your authenticator app at every sign-in.", true)}
+                <SettingsLink href="#pl-sessions" label="Active sessions" value="3 devices" />
+              </Settings>
+            </>
+          ),
+        },
+        {
+          href: "#pl-preferences",
+          label: "Preferences",
+          icon: PaintBoardIcon,
+          content: (
+            <>
+              <Settings title="Appearance">
+                {selectRow("pl-theme", "Theme", [["system", "Match the system"], ["dark", "Dark"], ["light", "Light"]], "dark")}
+                {switchRow("pl-dense", "Compact tables", "More rows on screen, smaller type.", true)}
+              </Settings>
+              <Settings title="Charts">
+                {selectRow("pl-range", "Default date range", [["7d", "Last 7 days"], ["30d", "Last 30 days"], ["90d", "Last 90 days"]], "30d")}
+                {switchRow("pl-compare", "Compare to the previous period", "A dashed line for the period before.", true)}
+              </Settings>
+            </>
+          ),
+        },
+        {
+          href: "#pl-notifications",
+          label: "Notifications",
+          icon: Notification01Icon,
+          content: (
+            <Settings title="Email me" description="Alerts go to maya@pulse.dev.">
+              {switchRow("pl-weekly", "Weekly report", "Traffic, revenue and top pages, every Monday.", true)}
+              {switchRow("pl-spike", "Traffic spikes", "When visitors jump 50% above the usual for that hour.", true)}
+              {switchRow("pl-goal", "Goal reached", "The day a goal hits its target.")}
+            </Settings>
+          ),
+        },
+      ],
+    },
+    {
+      label: "Workspace",
+      sections: [
+        {
+          href: "#pl-general",
+          label: "General",
+          icon: Settings01Icon,
+          content: (
+            <Settings title="Workspace">
+              <SettingsRow label="Name" htmlFor="pl-workspace">
+                <Input id="pl-workspace" defaultValue="Northwind" />
+              </SettingsRow>
+              {selectRow("pl-tz", "Time zone", [["utc", "UTC"], ["ny", "New York (UTC−4)"], ["ber", "Berlin (UTC+2)"]], "ber", "Days in reports start at midnight here.")}
+              {selectRow("pl-currency", "Currency", [["usd", "US dollar"], ["eur", "Euro"], ["gbp", "Pound sterling"]], "eur")}
+            </Settings>
+          ),
+        },
+        {
+          href: "#pl-data",
+          label: "Data",
+          icon: Shield01Icon,
+          content: (
+            <>
+              <Settings title="Collection">
+                {switchRow("pl-bots", "Exclude bots", "Leave known crawlers out of every report.", true)}
+                {switchRow("pl-self", "Ignore my visits", "Visits from this browser aren't counted.")}
+                {selectRow("pl-keep", "Keep raw events for", [["6", "6 months"], ["14", "14 months"], ["26", "26 months"]], "14")}
+              </Settings>
+              <Settings>
+                <SettingsLink label="Delete all data" hint="Every event and report in Northwind. This can't be undone." destructive />
+              </Settings>
+            </>
+          ),
+        },
+      ],
+    },
+  ],
+};
+
 function DashboardApp() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortDirection>("descending");
@@ -345,6 +574,7 @@ function DashboardApp() {
       current="#overview"
       barActions={searchButton("Search")}
       footer={account("Maya Chen")}
+      settings={PULSE_SETTINGS}
     >
       <div className="ayy-stack" style={gap(5)}>
         <PageHeader>
@@ -729,6 +959,90 @@ const THREADS = [
   { id: "sam", name: "Sam Okafor", text: "SSO login loops back to the start page.", time: "5h", status: "Bug", variant: "warning" },
 ] as const;
 
+const RELAY_SETTINGS: AppSettings = {
+  groups: [
+    {
+      label: "Account",
+      sections: [
+        {
+          href: "#rl-profile",
+          label: "Profile",
+          icon: UserCircleIcon,
+          content: (
+            <Settings title="How customers see you">
+              <SettingsRow label="Display name" htmlFor="rl-name" hint="Shown above every reply you send.">
+                <Input id="rl-name" defaultValue="Maya from Relay" aria-describedby="rl-name-hint" />
+              </SettingsRow>
+              <SettingsRow label="Signature" htmlFor="rl-signature" hint="Added to the end of email replies." stack>
+                <Textarea id="rl-signature" rows={3} defaultValue={"Maya Chen\nCustomer success, Relay"} aria-describedby="rl-signature-hint" />
+              </SettingsRow>
+            </Settings>
+          ),
+        },
+        {
+          href: "#rl-notifications",
+          label: "Notifications",
+          icon: Notification01Icon,
+          content: (
+            <>
+              <Settings title="Notify me about">
+                {switchRow("rl-new", "New conversations", "In the queues you're part of.", true)}
+                {switchRow("rl-mentions", "Mentions", "When a teammate @mentions you in a note.", true)}
+                {switchRow("rl-sla", "SLA warnings", "Fifteen minutes before a reply is overdue.", true)}
+              </Settings>
+              <Settings title="Desktop">
+                {switchRow("rl-sound", "Play a sound", "A short chime with each notification.")}
+              </Settings>
+            </>
+          ),
+        },
+      ],
+    },
+    {
+      label: "Inbox",
+      sections: [
+        {
+          href: "#rl-replies",
+          label: "Replies",
+          icon: SentIcon,
+          content: (
+            <Settings title="Sending">
+              {switchRow("rl-enter", "Send with ⌘ Enter", "Enter alone starts a new line.", true)}
+              {selectRow("rl-undo", "Undo send", [["0", "Off"], ["5", "5 seconds"], ["10", "10 seconds"], ["30", "30 seconds"]], "10")}
+              {selectRow("rl-after", "After sending", [["next", "Open the next conversation"], ["stay", "Stay on this one"], ["list", "Go back to the list"]], "next")}
+            </Settings>
+          ),
+        },
+        {
+          href: "#rl-ai",
+          label: "AI assistant",
+          icon: SparklesIcon,
+          content: (
+            <Settings title="Relay AI" description="Suggestions are drafts. Nothing is sent until you send it.">
+              {switchRow("rl-suggest", "Suggest replies", "Three short replies under each customer message.", true)}
+              {selectRow("rl-tone", "Tone", [["friendly", "Friendly"], ["neutral", "Neutral"], ["formal", "Formal"]], "friendly")}
+              {switchRow("rl-summary", "Summarise long threads", "A two-line summary at the top of threads over ten messages.", true)}
+              {switchRow("rl-learn", "Learn from my replies", "Suggestions pick up your wording over time.")}
+            </Settings>
+          ),
+        },
+        {
+          href: "#rl-shortcuts",
+          label: "Shortcuts",
+          icon: KeyboardIcon,
+          content: (
+            <Settings title="Keyboard shortcuts" description="Click a shortcut, then press the new keys.">
+              <ShortcutRow id="rl-key-send" label="Send reply" initial="Mod+Enter" />
+              <ShortcutRow id="rl-key-assign" label="Assign to me" initial="Mod+Shift+A" />
+              <ShortcutRow id="rl-key-close" label="Close conversation" initial="Mod+Shift+E" />
+            </Settings>
+          ),
+        },
+      ],
+    },
+  ],
+};
+
 function InboxApp() {
   const jonah = <Avatar size="sm" name="Jonah Weiss" />;
   const agent = <Avatar size="sm" name="Relay AI" fallback="AI" />;
@@ -756,6 +1070,7 @@ function InboxApp() {
           <Avatar name="Eli Stone" size="sm" />
         </AvatarGroup>
       }
+      settings={RELAY_SETTINGS}
       mainClassName="pv-app-inbox"
     >
       <section className="pv-app-inbox__list" aria-labelledby="rl-inbox">
@@ -864,13 +1179,13 @@ function InboxApp() {
   );
 }
 
-/* ---- 4. Account settings ---- */
+/* ---- 4. Account settings: the settings dialog, open over the app's home ---- */
 
 const NOTIFY = [
-  { id: "paid", icon: Wallet01Icon, title: "Invoice paid", text: "As soon as a client pays.", on: true },
-  { id: "late", icon: Alert02Icon, title: "Late payments", text: "The morning after an invoice is overdue.", on: true },
-  { id: "digest", icon: Mail01Icon, title: "Weekly digest", text: "Money in, money out and what's due, every Monday.", on: false },
-  { id: "push", icon: SmartPhone01Icon, title: "Push notifications", text: "The same alerts on your phone.", on: false },
+  { id: "paid", title: "Invoice paid", text: "As soon as a client pays.", on: true },
+  { id: "late", title: "Late payments", text: "The morning after an invoice is overdue.", on: true },
+  { id: "digest", title: "Weekly digest", text: "Money in, money out and what's due, every Monday.", on: false },
+  { id: "push", title: "Push notifications", text: "The same alerts on your phone.", on: false },
 ];
 
 const INVOICES = [
@@ -879,13 +1194,194 @@ const INVOICES = [
   { id: "INV-0120", date: "Jul 1, 2026", amount: "$240.00", status: "Paid" },
 ];
 
-function SettingsApp() {
+const LEDGER_STATS = [
+  { label: "Outstanding", value: "$12.4k", note: "8 invoices" },
+  { label: "Overdue", value: "$1.9k", note: "2 invoices" },
+  { label: "Paid this month", value: "$31.7k", note: "24 invoices" },
+];
+
+function LedgerProfile() {
   const [saving, setSaving] = useState(false);
-  const [invoicePage, setInvoicePage] = useState(1);
   const save = () => {
     setSaving(true);
     window.setTimeout(() => setSaving(false), 1200);
   };
+  return (
+    <>
+      <Settings title="Your details" description="This is how clients and teammates see you.">
+        <SettingsRow label="Full name" htmlFor="lg-name">
+          <Input id="lg-name" defaultValue="Dana Levi" autoComplete="name" />
+        </SettingsRow>
+        <SettingsRow label="Email" htmlFor="lg-email">
+          <Input id="lg-email" type="email" defaultValue="dana@ledger.app" autoComplete="email" />
+        </SettingsRow>
+        {selectRow("lg-role", "Role", [["owner", "Owner"], ["finance", "Finance manager"], ["viewer", "Viewer"]], "finance")}
+        <SettingsRow label="Photo" htmlFor="lg-photo" stack>
+          <div className="ayy-cluster" style={gap(3)}>
+            <Avatar name="Dana Levi" />
+            <Dropzone
+              id="lg-photo"
+              compact
+              accept="image/png, image/jpeg"
+              icon={null}
+              title={
+                <>
+                  Drop a photo or <span className="ayy-link">choose one</span>
+                </>
+              }
+              hint="Square, at least 256 × 256"
+              style={{ flex: 1 }}
+            />
+          </div>
+        </SettingsRow>
+        <SettingsRow label="About" htmlFor="lg-bio" hint="Shown on invoices you send." stack>
+          <Textarea id="lg-bio" rows={3} defaultValue="Keeps the books tidy and the invoices on time." aria-describedby="lg-bio-hint" />
+        </SettingsRow>
+      </Settings>
+      <div className="ayy-cluster">
+        <Button loading={saving} onClick={save}>
+          {saving ? "Saving…" : "Save changes"}
+        </Button>
+        <Button variant="ghost">Cancel</Button>
+      </div>
+    </>
+  );
+}
+
+function LedgerBilling() {
+  const [invoicePage, setInvoicePage] = useState(1);
+  return (
+    <div className="ayy-stack" style={gap(6)}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Invoices</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table compact>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Invoice</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead numeric>Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {INVOICES.map((inv) => (
+                <TableRow key={inv.id}>
+                  <TableCell>
+                    <span className="ayy-mono">{inv.id}</span>
+                  </TableCell>
+                  <TableCell>{inv.date}</TableCell>
+                  <TableCell>
+                    <Badge variant="success">{inv.status}</Badge>
+                  </TableCell>
+                  <TableCell numeric>{inv.amount}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter>
+          <Pagination page={invoicePage} count={4} onPageChange={setInvoicePage} />
+        </CardFooter>
+      </Card>
+      <Card>
+        <EmptyState compact>
+          <IconTile size="sm">
+            <Icon icon={CreditCardIcon} />
+          </IconTile>
+          <EmptyStateTitle>No backup card</EmptyStateTitle>
+          <EmptyStateDescription>If •••• 4242 is declined, we'll try this one before pausing your account.</EmptyStateDescription>
+          <EmptyStateActions>
+            <Button size="sm" variant="outline">
+              <Icon icon={Add01Icon} />
+              Add a card
+            </Button>
+          </EmptyStateActions>
+        </EmptyState>
+      </Card>
+    </div>
+  );
+}
+
+const LEDGER_SETTINGS: AppSettings = {
+  defaultOpen: true,
+  groups: [
+    {
+      label: "Account",
+      sections: [
+        { href: "#lg-profile", label: "Profile", icon: UserCircleIcon, content: <LedgerProfile /> },
+        {
+          href: "#lg-notifications",
+          label: "Notifications",
+          icon: Notification01Icon,
+          content: <Settings title="Email me about">{NOTIFY.map((n) => switchRow(`lg-${n.id}`, n.title, n.text, n.on))}</Settings>,
+        },
+      ],
+    },
+    {
+      label: "Workspace",
+      sections: [
+        {
+          href: "#lg-plan",
+          label: "Plan",
+          icon: Wallet01Icon,
+          content: (
+            <div className="ayy-stack" style={gap(6)}>
+              <DataList row>
+                <DataListItem label="Plan">Business</DataListItem>
+                <DataListItem label="Next invoice">Oct 1, 2026</DataListItem>
+                <DataListItem label="Card">•••• 4242</DataListItem>
+              </DataList>
+              <Settings title="Business plan">
+                <SettingsRow label="Billing cycle" hint="Yearly saves two months.">
+                  <SegmentedControl aria-label="Billing cycle" defaultValue="yearly">
+                    <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
+                    <SegmentedControlItem value="yearly">Yearly</SegmentedControlItem>
+                  </SegmentedControl>
+                </SettingsRow>
+                <SettingsRow label="Invoices this month" hint="164 of 250. Resets on the 1st." stack>
+                  <Progress value={66} aria-label="Invoices used this month" />
+                </SettingsRow>
+                {switchRow("lg-receipts", "Email receipts to accounting", "A copy of every receipt to books@ledger.app.", true)}
+              </Settings>
+            </div>
+          ),
+        },
+        { href: "#lg-billing", label: "Billing", icon: Invoice01Icon, content: <LedgerBilling /> },
+        {
+          href: "#lg-workspace",
+          label: "General",
+          icon: Settings01Icon,
+          content: (
+            <div className="ayy-stack" style={gap(6)}>
+              <Settings title="Workspace">
+                <SettingsRow label="Business name" htmlFor="lg-business" hint="On every invoice and receipt.">
+                  <Input id="lg-business" defaultValue="Levi & Co." aria-describedby="lg-business-hint" />
+                </SettingsRow>
+                {selectRow("lg-currency", "Currency", [["usd", "US dollar"], ["eur", "Euro"], ["ils", "Israeli shekel"]], "usd")}
+                {selectRow("lg-fiscal", "Fiscal year starts", [["1", "January"], ["4", "April"], ["7", "July"]], "1")}
+              </Settings>
+              <Alert variant="destructive">
+                <AlertTitle>Delete workspace</AlertTitle>
+                <AlertDescription>Removes every invoice, client and report. This can’t be undone.</AlertDescription>
+                <AlertActions>
+                  <Button variant="destructive" size="sm">
+                    <Icon icon={Mail01Icon} />
+                    Email me a confirmation link
+                  </Button>
+                </AlertActions>
+              </Alert>
+            </div>
+          ),
+        },
+      ],
+    },
+  ],
+};
+
+function SettingsApp() {
   return (
     <AppFrame
       brand={{ name: "Ledger", icon: CreditCardIcon, href: "#home" }}
@@ -901,7 +1397,7 @@ function SettingsApp() {
         },
       ]}
       tabs={["#home", "#invoices", "#clients", "#settings"]}
-      current="#settings"
+      current="#home"
       barActions={<Avatar name="Dana Levi" size="sm" />}
       footer={
         <>
@@ -912,204 +1408,28 @@ function SettingsApp() {
           {account("Dana Levi")}
         </>
       }
+      settings={LEDGER_SETTINGS}
     >
       <div className="ayy-stack" style={gap(6)}>
         <PageHeader>
-          <Breadcrumb items={[{ label: "Settings", href: "#settings" }, { label: "Profile" }]} />
-          <PageHeaderTitle>Settings</PageHeaderTitle>
-          <PageHeaderDescription>Your profile, notifications and plan.</PageHeaderDescription>
+          <PageHeaderTitle>Home</PageHeaderTitle>
+          <PageHeaderDescription>What clients owe you and what came in this month.</PageHeaderDescription>
+          <PageHeaderActions>
+            <Button>
+              <Icon icon={Add01Icon} />
+              New invoice
+            </Button>
+          </PageHeaderActions>
         </PageHeader>
-
-        <Tabs defaultValue="profile">
-          <TabsList aria-label="Settings sections">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="billing">Billing</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="profile">
-            <div className="ayy-split" style={min("18rem")}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profile</CardTitle>
-                  <CardDescription>This is how clients and teammates see you.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="ayy-stack" style={gap(4)}>
-                    <div className="ayy-grid" style={{ ...min("12rem"), ...gap(4) }}>
-                      <Field>
-                        <Label htmlFor="lg-name">Full name</Label>
-                        <Input id="lg-name" defaultValue="Dana Levi" autoComplete="name" />
-                      </Field>
-                      <Field>
-                        <Label htmlFor="lg-email">Email</Label>
-                        <Input id="lg-email" type="email" defaultValue="dana@ledger.app" autoComplete="email" />
-                      </Field>
-                    </div>
-                    <Field>
-                      <Label htmlFor="lg-role">Role</Label>
-                      <Select id="lg-role" defaultValue="finance">
-                        <option value="owner">Owner</option>
-                        <option value="finance">Finance manager</option>
-                        <option value="viewer">Viewer</option>
-                      </Select>
-                    </Field>
-                    <Field>
-                      <Label htmlFor="lg-photo">Photo</Label>
-                      <div className="ayy-cluster" style={gap(3)}>
-                        <Avatar name="Dana Levi" />
-                        <Dropzone
-                          id="lg-photo"
-                          compact
-                          accept="image/png, image/jpeg"
-                          icon={null}
-                          title={
-                            <>
-                              Drop a photo or <span className="ayy-link">choose one</span>
-                            </>
-                          }
-                          hint="Square, at least 256 × 256"
-                          style={{ flex: 1 }}
-                        />
-                      </div>
-                    </Field>
-                    <Field>
-                      <Label htmlFor="lg-bio">About</Label>
-                      <Textarea id="lg-bio" rows={3} defaultValue="Keeps the books tidy and the invoices on time." />
-                      <FieldHint>Shown on invoices you send.</FieldHint>
-                    </Field>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button loading={saving} onClick={save}>
-                    {saving ? "Saving…" : "Save changes"}
-                  </Button>
-                  <Button variant="ghost">Cancel</Button>
-                </CardFooter>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Plan</CardTitle>
-                  <CardDescription>Business, billed yearly.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="ayy-stack" style={gap(4)}>
-                    <SegmentedControl aria-label="Billing cycle" defaultValue="yearly" full>
-                      <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
-                      <SegmentedControlItem value="yearly">Yearly</SegmentedControlItem>
-                    </SegmentedControl>
-                    <div className="ayy-stack" style={gap(2)}>
-                      <div className="ayy-spread">
-                        <span>Invoices this month</span>
-                        <span className="ayy-muted">164 of 250</span>
-                      </div>
-                      <Progress value={66} aria-label="Invoices used this month" />
-                    </div>
-                    <Field inline>
-                      <Checkbox id="lg-receipts" defaultChecked />
-                      <Label htmlFor="lg-receipts">Email receipts to accounting</Label>
-                    </Field>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="notifications">
-            <Card>
-              <CardHeader>
-                <CardTitle>Email me about</CardTitle>
-              </CardHeader>
+        <div className="ayy-grid" style={min("12rem")}>
+          {LEDGER_STATS.map((k) => (
+            <Card key={k.label}>
               <CardContent>
-                <List divided aria-label="Notifications">
-                  {NOTIFY.map((n) => (
-                    <ListItem key={n.id}>
-                      <IconTile size="sm">
-                        <Icon icon={n.icon} />
-                      </IconTile>
-                      <ListContent>
-                        <ListTitle htmlFor={`lg-${n.id}`}>{n.title}</ListTitle>
-                        <ListDescription>{n.text}</ListDescription>
-                      </ListContent>
-                      <Switch id={`lg-${n.id}`} defaultChecked={n.on} />
-                    </ListItem>
-                  ))}
-                </List>
+                <Stat labelFirst size="sm" label={k.label} value={k.value} unit={k.note} />
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="billing">
-            <div className="ayy-stack" style={gap(4)}>
-              <DataList row>
-                <DataListItem label="Plan">Business</DataListItem>
-                <DataListItem label="Next invoice">Oct 1, 2026</DataListItem>
-                <DataListItem label="Card">•••• 4242</DataListItem>
-              </DataList>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Invoices</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Table compact>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Invoice</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead numeric>Amount</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {INVOICES.map((inv) => (
-                        <TableRow key={inv.id}>
-                          <TableCell>
-                            <span className="ayy-mono">{inv.id}</span>
-                          </TableCell>
-                          <TableCell>{inv.date}</TableCell>
-                          <TableCell>
-                            <Badge variant="success">{inv.status}</Badge>
-                          </TableCell>
-                          <TableCell numeric>{inv.amount}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-                <CardFooter>
-                  <Pagination page={invoicePage} count={4} onPageChange={setInvoicePage} />
-                </CardFooter>
-              </Card>
-              <Card>
-                <EmptyState compact>
-                  <IconTile size="sm">
-                    <Icon icon={CreditCardIcon} />
-                  </IconTile>
-                  <EmptyStateTitle>No backup card</EmptyStateTitle>
-                  <EmptyStateDescription>If •••• 4242 is declined, we'll try this one before pausing your account.</EmptyStateDescription>
-                  <EmptyStateActions>
-                    <Button size="sm" variant="outline">
-                      <Icon icon={Add01Icon} />
-                      Add a card
-                    </Button>
-                  </EmptyStateActions>
-                </EmptyState>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        <Alert variant="destructive">
-          <AlertTitle>Delete workspace</AlertTitle>
-          <AlertDescription>Removes every invoice, client and report. This can’t be undone.</AlertDescription>
-          <AlertActions>
-            <Button variant="destructive" size="sm">
-              <Icon icon={Mail01Icon} />
-              Email me a confirmation link
-            </Button>
-          </AlertActions>
-        </Alert>
+          ))}
+        </div>
       </div>
     </AppFrame>
   );
@@ -1123,6 +1443,103 @@ const TASKS = [
   { id: "t3", title: "Fix the signup email in Outlook", project: "Growth", due: "Tomorrow", who: "Eli Stone", done: false },
   { id: "t4", title: "Plan the October release", project: "Product", due: "Fri", who: "Maya Chen", done: true },
 ];
+
+const MEMBERS = [
+  { name: "Maya Chen", email: "maya@orbit.so", role: "admin" },
+  { name: "Ravi Shah", email: "ravi@orbit.so", role: "member" },
+  { name: "Eli Stone", email: "eli@orbit.so", role: "member" },
+  { name: "Noa Peretz", email: "noa@studio.co", role: "guest" },
+];
+
+const ORBIT_SETTINGS: AppSettings = {
+  groups: [
+    {
+      label: "Account",
+      sections: [
+        {
+          href: "#ob-preferences",
+          label: "Preferences",
+          icon: PaintBoardIcon,
+          content: (
+            <Settings title="General">
+              {selectRow("ob-start", "Open on", [["tasks", "My tasks"], ["projects", "Projects"], ["calendar", "Calendar"]], "tasks")}
+              {selectRow("ob-week", "Week starts on", [["0", "Sunday"], ["1", "Monday"], ["6", "Saturday"]], "1")}
+              {switchRow("ob-done", "Show completed tasks", "Done tasks stay in the list, struck through, until tomorrow.")}
+            </Settings>
+          ),
+        },
+        {
+          href: "#ob-notifications",
+          label: "Notifications",
+          icon: Notification01Icon,
+          content: (
+            <Settings title="Tell me when">
+              {switchRow("ob-assigned", "A task is assigned to me", "In the app and by email.", true)}
+              {switchRow("ob-due", "Tasks are due today", "One summary at 9:00, not one per task.", true)}
+              {switchRow("ob-mention", "Someone mentions me", "In a task's comments.", true)}
+              {switchRow("ob-weekly", "Weekly summary", "What the team finished, every Friday.")}
+            </Settings>
+          ),
+        },
+        {
+          href: "#ob-shortcuts",
+          label: "Shortcuts",
+          icon: KeyboardIcon,
+          content: (
+            <Settings title="Keyboard shortcuts" description="Click a shortcut, then press the new keys.">
+              <ShortcutRow id="ob-key-new" label="New task" initial="Mod+Shift+N" />
+              <ShortcutRow id="ob-key-search" label="Search" initial="Mod+K" />
+              <ShortcutRow id="ob-key-done" label="Mark as done" initial="Mod+Enter" />
+            </Settings>
+          ),
+        },
+      ],
+    },
+    {
+      label: "Team",
+      sections: [
+        {
+          href: "#ob-members",
+          label: "Members",
+          icon: UserGroupIcon,
+          content: (
+            <>
+              <Settings title="Members" description="4 of 10 seats on the Team plan.">
+                {MEMBERS.map((m, i) => (
+                  <SettingsRow key={m.email} label={m.name} htmlFor={`ob-role-${i}`} hint={m.email}>
+                    <Select id={`ob-role-${i}`} defaultValue={m.role} aria-describedby={`ob-role-${i}-hint`}>
+                      <option value="admin">Admin</option>
+                      <option value="member">Member</option>
+                      <option value="guest">Guest</option>
+                    </Select>
+                  </SettingsRow>
+                ))}
+              </Settings>
+              <div className="ayy-cluster">
+                <Button variant="outline">
+                  <Icon icon={Add01Icon} />
+                  Invite people
+                </Button>
+              </div>
+            </>
+          ),
+        },
+        {
+          href: "#ob-integrations",
+          label: "Integrations",
+          icon: Link01Icon,
+          content: (
+            <Settings title="Connected apps">
+              <SettingsLink href="#ob-github" label="GitHub" hint="Close tasks from pull requests." value="Sync failed" />
+              <SettingsLink href="#ob-slack" label="Slack" hint="Post finished tasks to #launch." value="Connected" />
+              <SettingsLink href="#ob-calendar" label="Google Calendar" hint="Show due dates on your calendar." value="Not connected" />
+            </Settings>
+          ),
+        },
+      ],
+    },
+  ],
+};
 
 function TrackerApp() {
   const [view, setView] = useState("today");
@@ -1161,6 +1578,7 @@ function TrackerApp() {
       current="#tasks"
       barActions={searchButton("Search tasks")}
       footer={account("Maya Chen")}
+      settings={ORBIT_SETTINGS}
     >
       <div className="ayy-stack" style={gap(5)}>
         <PageHeader>
@@ -1610,6 +2028,81 @@ const STUDIOS = [
   { value: "baixa", label: "Baixa", meta: "Porto" },
 ];
 
+const HAVEN_SETTINGS: AppSettings = {
+  groups: [
+    {
+      label: "Account",
+      sections: [
+        {
+          href: "#hv-profile",
+          label: "Profile",
+          icon: UserCircleIcon,
+          content: (
+            <Settings title="Your details" description="Teachers see your first name on the class list.">
+              <SettingsRow label="Name" htmlFor="hv-name">
+                <Input id="hv-name" defaultValue="Dana Levi" autoComplete="name" />
+              </SettingsRow>
+              <SettingsRow label="Email" htmlFor="hv-email">
+                <Input id="hv-email" type="email" defaultValue="dana@levi.me" autoComplete="email" />
+              </SettingsRow>
+              <SettingsRow label="Phone" htmlFor="hv-phone" hint="For last-minute changes to a class.">
+                <Input id="hv-phone" type="tel" defaultValue="+972 52 555 0142" autoComplete="tel" aria-describedby="hv-phone-hint" />
+              </SettingsRow>
+            </Settings>
+          ),
+        },
+        {
+          href: "#hv-notifications",
+          label: "Notifications",
+          icon: Notification01Icon,
+          content: (
+            <Settings title="Remind me">
+              {switchRow("hv-remind", "Before a class", "A push notification with the studio and room.", true)}
+              {selectRow("hv-when", "How early", [["1", "1 hour before"], ["2", "2 hours before"], ["24", "The day before"]], "2")}
+              {switchRow("hv-waitlist", "A waitlist spot opens", "You get ten minutes to take it.", true)}
+              {switchRow("hv-news", "Studio news", "New teachers, workshops and holiday hours. About once a month.")}
+            </Settings>
+          ),
+        },
+      ],
+    },
+    {
+      label: "Studio",
+      sections: [
+        {
+          href: "#hv-membership",
+          label: "Membership",
+          icon: Ticket01Icon,
+          content: (
+            <>
+              <Settings title="10-class pass" description="6 classes left, valid until December 31.">
+                {switchRow("hv-renew", "Renew automatically", "Buy the next pass when this one runs out.")}
+                <SettingsLink href="#hv-buy" label="Buy more classes" value="From $18 a class" />
+                <SettingsLink href="#hv-history" label="Payment history" />
+              </Settings>
+              <Settings>
+                <SettingsLink label="Sign out" destructive />
+              </Settings>
+            </>
+          ),
+        },
+        {
+          href: "#hv-preferences",
+          label: "Preferences",
+          icon: Yoga01Icon,
+          content: (
+            <Settings title="Booking">
+              {selectRow("hv-studio", "Home studio", [["florentin", "Florentin"], ["port", "Old Port"], ["park", "Park Hayarkon"]], "florentin", "Its classes show first on the schedule.")}
+              {selectRow("hv-spots", "Spots to book", [["1", "Just me"], ["2", "Me and a friend"]], "1")}
+              {switchRow("hv-mat", "Rent a mat", "Added to every booking for $2.")}
+            </Settings>
+          ),
+        },
+      ],
+    },
+  ],
+};
+
 function BookingApp() {
   const [day, setDay] = useState("tue");
   const [styles, setStyles] = useState<string[]>([]);
@@ -1637,6 +2130,7 @@ function BookingApp() {
       tabs={["#schedule", "#bookings", "#teachers", "#profile"]}
       current="#schedule"
       footer={account("Dana Levi")}
+      settings={HAVEN_SETTINGS}
     >
       <div className="ayy-stack" style={gap(5)}>
         <PageHeader>
@@ -1762,20 +2256,22 @@ export interface ShowcaseApp {
   Component: ComponentType;
 }
 
-const APP_FRAME = "an ayywi App shell: a sidebar on wide screens; on phones a top bar with the brand and one action, and a Bottom nav with the same top destinations";
+const APP_FRAME = "an ayywi App shell: a sidebar on wide screens; on phones a top bar with the brand and one action, and a Bottom nav with the same top destinations. Settings open over the app in a Dialog with size=\"full\" holding the App shell in settings mode (sections in its sidebar, one section of Settings rows in its main, two screens on phones)";
 
 export const showcaseApps: ShowcaseApp[] = [
   {
     id: "dashboard",
     name: "Pulse",
     kind: "Analytics dashboard",
-    description: "KPIs with sparklines, a visitors chart against last month, a sortable top-pages table, traffic sources and goals. Dense and dark for people who live in it all day. Seven destinations, so phones get four tabs and More.",
+    description: "KPIs with sparklines, a visitors chart against last month, a sortable top-pages table, traffic sources and goals. Dense and dark for people who live in it all day. Seven destinations, so phones get four tabs and More. Its settings open in a near-full-screen dialog.",
     theme: "dark",
     density: "compact",
-    uses: ["app-shell", "bottom-nav", "page-header", "segmented-control", "card", "stat", "chart", "badge", "table", "pagination", "progress", "alert", "button", "avatar", "icon"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "segmented-control", "card", "stat", "chart", "badge", "table", "pagination", "progress", "alert", "button", "avatar", "icon"],
     prompt: `Build an analytics dashboard with ayywi, in ${APP_FRAME}. Seven destinations in two sidebar groups (Workspace: Overview, Reports, Audiences, Projects; Account: Integrations, Billing, Settings), so the bottom nav shows the first four and a More tab that opens the sidebar as a drawer.
 
 The Overview page: a Page header with a date-range Segmented control (7d, 30d, 90d) and an outline Export button; four KPI cards (Stat, a success or warning Badge and a Sparkline) in an .ayy-grid; a Visitors card with a LineChart of this month against last month (the comparison series dashed); then an .ayy-split with a Top pages table (compact, numeric columns, the Views column sortable, status badges, Pagination in the card footer) beside a Traffic sources card with a BarList, a Goals card of Progress bars and an info Alert.
+
+Settings (the Settings destination): Account — Profile, Preferences, Notifications; Workspace — General, Data, with a destructive Delete all data link row.
 
 Dark theme, compact density. ayywi components and tokens only; run npx ayywi lint when you're done.`,
     screenshot: dashboardScreenshot,
@@ -1801,13 +2297,15 @@ Light theme. One ring call to action per view; everything else outline or ghost.
     id: "inbox",
     name: "Relay",
     kind: "Support inbox",
-    description: "Conversations, a thread with AI-suggested replies, and customer details, in three panes on wide screens. On a phone it's the list, with tabs below.",
+    description: "Conversations, a thread with AI-suggested replies, and customer details, in three panes on wide screens. On a phone it's the list, with tabs below. Its settings open in a near-full-screen dialog.",
     theme: "dark-contrast",
     density: "comfortable",
-    uses: ["app-shell", "bottom-nav", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "data-list", "alert", "separator"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "data-list", "alert", "separator"],
     prompt: `Build a support inbox with ayywi, in ${APP_FRAME} (Inbox, Mentions, Sent, Customers).
 
 The main area has three panes: a conversation List (avatar, name as a ListLink, a truncated preview, a status Badge, the time in ListMeta, the open one marked current) under a search InputGroup with a Kbd "/" hint; the thread (a Chat with incoming and outgoing messages, a typing indicator and suggested replies, then a reply form with a Textarea, an attach icon button and Send); and a customer panel (Avatar, a Data list, a warning Alert for the SLA). The panes collapse to the list on phones.
+
+Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile with a stacked signature Textarea, Notifications; Inbox — Replies, AI assistant, Shortcuts with Shortcut recorders.
 
 Dark-contrast theme. ayywi components and tokens only; run npx ayywi lint when you're done.`,
     screenshot: inboxScreenshot,
@@ -1817,13 +2315,13 @@ Dark-contrast theme. ayywi components and tokens only; run npx ayywi lint when y
     id: "settings",
     name: "Ledger",
     kind: "Account settings",
-    description: "A profile form that shows it's saving, notification switches in a list, invoices with pagination and an empty state. Light gray with touch-sized controls.",
+    description: "Settings in a near-full-screen dialog over the app: sections in its sidebar, a profile that shows it's saving, notification switches, the plan's usage, invoices with pagination and an empty state. Full screen on phones, the sections and a section as two screens. Light gray with touch-sized controls.",
     theme: "light-gray",
     density: "touch",
-    uses: ["app-shell", "bottom-nav", "page-header", "breadcrumb", "tabs", "card", "field", "input", "select", "textarea", "segmented-control", "progress", "checkbox", "list", "switch", "data-list", "table", "pagination", "empty-state", "alert"],
-    prompt: `Build an account settings page with ayywi, in ${APP_FRAME} (Home, Invoices, Clients, Settings; help and the account in the sidebar footer).
+    uses: ["app-shell", "dialog", "settings", "top-bar", "bottom-nav", "page-header", "stat", "card", "input", "select", "textarea", "dropzone", "segmented-control", "progress", "switch", "data-list", "table", "pagination", "empty-state", "alert"],
+    prompt: `Build an invoicing app's settings with ayywi, in ${APP_FRAME} (Home, Invoices, Clients, Settings; help and the account in the sidebar footer). The Settings destination opens the settings dialog instead of a page.
 
-A Page header with a Breadcrumb (Settings › Profile), then Tabs: Profile (an .ayy-split of a form card — name, email, role Select, About Textarea with a hint, a Save button that shows loading while it saves — beside a Plan card with a full-width Segmented control, a usage Progress and a checkbox); Notifications (a divided List of rows with an IconTile, a title that labels the row's Switch, and a description); Billing (a row Data list, an invoices Table with Pagination, and a compact Empty state for "No backup card"). A destructive Alert for deleting the workspace at the end.
+The Home page behind it: a Page header with one primary New invoice button and three Stat cards. The settings shell: a "Settings" title over two groups of sections (Account: Profile, Notifications; Workspace: Plan, Billing, General); each section starts with a Top bar naming it. Profile: Settings rows with inputs, a role Select, a photo Dropzone and an About Textarea (stacked), then Save changes that shows loading. Notifications: a Settings group of Switch rows with hints. Plan: a row Data list, a billing-cycle Segmented control, a usage Progress and a receipts Switch. Billing: an invoices Table with Pagination and a compact Empty state for "No backup card". General: workspace rows and a destructive Alert for deleting the workspace.
 
 Light-gray theme, touch density. Run npx ayywi lint when you're done.`,
     screenshot: settingsScreenshot,
@@ -1833,13 +2331,15 @@ Light-gray theme, touch density. Run npx ayywi lint when you're done.`,
     id: "tracker",
     name: "Orbit",
     kind: "Project tracker",
-    description: "Onboarding steps, a task list filtered by project chips with an empty state for each case, an error with a retry that shows it's working, and skeletons while activity loads.",
+    description: "Onboarding steps, a task list filtered by project chips with an empty state for each case, an error with a retry that shows it's working, and skeletons while activity loads. Its settings open in a near-full-screen dialog.",
     theme: "light",
     density: "compact",
-    uses: ["app-shell", "bottom-nav", "page-header", "steps", "segmented-control", "chip", "kbd", "list", "checkbox", "empty-state", "alert", "skeleton", "card", "button", "avatar"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "steps", "segmented-control", "chip", "kbd", "list", "checkbox", "empty-state", "alert", "skeleton", "card", "button", "avatar"],
     prompt: `Build a task tracker home screen with ayywi, in ${APP_FRAME} (My tasks, Projects, Calendar, Inbox in the tabs; Members and Settings behind More).
 
 A Page header with one primary "New task" button. An onboarding card with Steps (Create a project ✓, Invite your team — current, Connect GitHub) and two buttons. Then an .ayy-split: a Today/Upcoming/All Segmented control with a Kbd hint, project filter chips (ChipButton with counts, in a scrolling ChipGroup), and a card that holds either a divided List of tasks (a Checkbox labelled by the title, project and due date, the assignee's Avatar) or a compact Empty state when a view has nothing (another, with a "Show every project" button, when the chips filter everything out); beside it a destructive Alert "GitHub sync failed" whose Try again button shows loading, and an Activity card of Skeleton rows while it loads (aria-busy).
+
+Settings (Settings, behind More): Account — Preferences, Notifications, Shortcuts; Team — Members with a role Select per person, Integrations as link rows with their status.
 
 Light theme, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx ayywi lint when you're done.`,
     screenshot: trackerScreenshot,
@@ -1867,13 +2367,15 @@ Dark theme. Run npx ayywi lint when you're done.`,
     id: "booking",
     name: "Haven",
     kind: "Booking app",
-    description: "A yoga studio's schedule: a day strip of compact choice cards, style chips, classes as choice cards with spots left, and a booking card with a studio combobox and a spots stepper. Touch-sized for phones.",
+    description: "A yoga studio's schedule: a day strip of compact choice cards, style chips, classes as choice cards with spots left, and a booking card with a studio combobox and a spots stepper. Touch-sized for phones. Its settings open in a near-full-screen dialog.",
     theme: "light",
     density: "touch",
-    uses: ["app-shell", "bottom-nav", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "data-list", "number-field", "field", "button", "toast"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "data-list", "number-field", "field", "button", "toast"],
     prompt: `Build a class booking app for a yoga studio with ayywi, in ${APP_FRAME} (Schedule, My bookings, Teachers, Profile).
 
 The Schedule page: a Page header (the week and the classes left on the pass); a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, a Data list of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
+
+Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile, Notifications; Studio — Membership with link rows and a destructive Sign out, Preferences.
 
 Light theme, touch density. Run npx ayywi lint when you're done.`,
     screenshot: bookingScreenshot,

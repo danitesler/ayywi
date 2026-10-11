@@ -42,7 +42,7 @@
     "components": {
       "Tabs": { "renders": "<div>", "props": { "value / defaultValue": "Selected tab value (controlled / uncontrolled).", "onValueChange": "(value: string) => void" } },
       "TabsList": { "renders": "<div role=\"tablist\">", "props": { "aria-label": "Recommended." } },
-      "TabsTrigger": { "renders": "<button role=\"tab\">", "props": { "value": "string (required)" } },
+      "TabsTrigger": { "renders": "<button role=\"tab\">", "props": { "value": "string (required)", "icon": "ReactNode — optional icon before the label." } },
       "TabsContent": { "renders": "<div role=\"tabpanel\">", "props": { "value": "string (required)", "keepMounted": "Keep children mounted while hidden. Default false." } }
     }
   },
@@ -64,6 +64,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
+    { "id": "icons", "title": "With icons" },
     { "id": "counts", "title": "Filters with counts" }
   ]
 }

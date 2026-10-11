@@ -9,7 +9,41 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Changed
+- **[Select](#/select)**
+  Opened the OS menu, which looked foreign next to ayywi → with a mouse or trackpad it opens ayywi's own options list (check on the chosen one, full keyboard); phones keep the OS picker. Same `<select>` markup, `onChange` unchanged.
+- **[Dropdown menu](#/menu)**
+  Radio and checkbox items had no checked look → `aria-checked="true"` shows a check at the inline end.
+- **Linter**
+  Only hand-styled controls were flagged → also raw ones with no class (`raw-control`: `<button>`, `<select>`, `<input>`, `<table>`, `<details>`…) and `<div>`/`<span>` click handlers (`clickable-element`). `ayywi lint --hook` runs it as a Claude Code hook.
+- **Rules**
+  "Reuse components" → never write a raw native control or a clickable div, name the component for every piece first, and fix lint warnings too.
+- **Preview**
+  Some pages hand-built their controls → the tool picker is Chips, the setup switcher Tabs, the device picker a Segmented control, release notes and example code Accordions, the seed colour a Swatch, the sentence picker a Select. `pnpm check` now lints the preview.
+- **Preview**
+  Custom “Theme” menu in the sidebar and phone bar → the design-system theme button, with density and brand in the menu beside it.
+- **Rules**
+  App screens had no width rule, so copies capped every page → the main fills the shell. Don't add `.ayy-container` or a `max-inline-size`. Long text and settings mode stay measured.
+- **[App shell](#/app-shell)**
+  Settings replaced the app full screen, with a Back link → they open over the app in a near-full-screen dialog holding the settings shell (full screen on phones). `AppShellMain as="div"` keeps one `<main>` on the page.
+- **[App shell](#/app-shell)**
+  Collapsing snapped labels away and the hover preview jumped open → the width animates, icons stay put while labels fade, the preview opens after a short pause and closes smoothly, and it no longer reopens under the pointer right after you collapse. New `AppShellHead` (`ayy-app-shell__head`) for the toggle and brand row.
+- **Preview**
+  The docs sidebar was always open → it collapses to a rail (toggle and search) that previews on hover, and remembers the choice.
+- **Settings pattern**
+  "Never in a dialog" → settings live in a `size="full"` Dialog; the dialog's close button and Esc are the way out.
+- **Showcase**
+  Ledger's settings were a page with Tabs → every app (Pulse, Relay, Ledger, Orbit, Haven) opens its own settings sections in the settings dialog.
+- **[Accordion](#/accordion)**
+  Opening snapped the answer in → it rolls open on the menu easing, in step with the chevron; easings now come from tokens.
+
 ### Added
+- **AI kit**
+  New "need → component" map (llms-full.txt, AGENTS.md, Cursor rule) and MCP `pick_component` tool; `ayywi init` also installs the lint hook and an `ayywi-ui-reviewer` agent.
+- **[Tabs](#/tabs)**
+  Text-only tab triggers → optional `icon` prop on `TabsTrigger` for custom icons before labels, with matching SVG sizing in CSS.
+- **[Dialog](#/dialog)**
+  New `full` size (`ayy-dialog--full`) — a near-full-screen modal, full screen on phones.
 - **[Calendar](#/calendar)**
   New component — 6-week month calendar and date picker with keyboard navigation.
 - **[Swatch](#/swatch)**
@@ -78,6 +112,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Generic aliases in Navbar, Input Group, and List → reassigned to dedicated [Top Bar](#/top-bar), [Search Bar](#/search-bar), and [Settings](#/settings) components.
 
 ### Fixed
+- **[Contents](#/toc)**
+  On phones the current link could end up half out of the strip when fonts loaded late → it's centred again whenever the links change size.
+- **[Theme toggle](#/theme-toggle)**
+  The check by the current theme turned into "<" in RTL → it stays a check.
 - **[Contents](#/toc)**
   Squeezed into narrow side column on mobile → now displays as a sticky horizontal row below the navbar.
 - **[Contents](#/toc)** & **[Breadcrumb](#/breadcrumb)**

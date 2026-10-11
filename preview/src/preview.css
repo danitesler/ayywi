@@ -2,11 +2,12 @@
 
 /* The AppShell frame and sidebar, with the page (not the shell) doing the scrolling: examples such as Contents track window scroll. */
 .pv-shell {
-  --_sidebar-w: 240px;
+  --_sidebar-w: 256px;
   block-size: auto;
   min-block-size: 100dvh;
 }
 
+/* ayywi-lint-disable-next-line -- docs chrome: an ~80-link sidebar needs a tighter frame than an app's */
 .pv-sidebar {
   position: sticky;
   inset-block-start: 0;
@@ -32,50 +33,10 @@
   margin-block-start: var(--ayy-space-4);
 }
 
-.pv-release {
-  border: 1px solid var(--ayy-color-hairline);
-  border-radius: var(--ayy-radius-lg);
-}
-
-.pv-release__summary {
-  display: flex;
-  align-items: baseline;
-  gap: var(--ayy-space-3);
-  padding: var(--ayy-space-4) var(--ayy-space-5);
-  border-radius: inherit;
-  cursor: pointer;
-  list-style: none;
-}
-
-.pv-release__summary::-webkit-details-marker {
-  display: none;
-}
-
-.pv-release__summary:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
 .pv-release__version {
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-lg);
   font-weight: var(--ayy-weight-medium);
-}
-
-.pv-release__date {
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-sm);
-}
-
-.pv-release__chevron {
-  margin-inline-start: auto;
-  align-self: center;
-  color: var(--ayy-color-muted);
-  transition: transform var(--ayy-duration-fast) var(--ayy-ease-standard);
-}
-
-.pv-release[open] .pv-release__chevron {
-  transform: rotate(180deg);
 }
 
 .pv-release__body {
@@ -128,12 +89,7 @@
   color: var(--ayy-color-muted);
 }
 
-@media (forced-colors: active) {
-  .pv-release {
-    border-color: CanvasText;
-  }
-}
-
+/* ayywi-lint-disable-next-line -- docs chrome: the wordmark, not an app brand */
 .pv-brand {
   gap: var(--ayy-space-2);
   margin-block-end: var(--ayy-space-3);
@@ -143,6 +99,7 @@
 }
 
 .pv-brand__mark {
+  flex: none;
   inline-size: 14px;
   block-size: 14px;
   border: 3px solid var(--ayy-color-text);
@@ -150,12 +107,17 @@
 }
 
 /* Search: an icon button beside the brand; "/" or Ctrl/⌘K opens the field. */
+/* The toggle, the brand, then the appearance controls at the end. */
 .pv-sidebar__head {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: var(--ayy-space-2);
+  gap: var(--ayy-space-1);
   margin-block-end: var(--ayy-space-3);
+}
+
+/* ayywi-lint-disable-next-line -- docs chrome: the wordmark, not an app brand */
+.pv-sidebar__head .pv-brand {
+  margin-block-end: 0;
+  padding-inline: var(--ayy-space-1);
 }
 
 .pv-sidebar__actions {
@@ -168,6 +130,57 @@
   display: contents;
 }
 
+/* Collapsed (wide screens): the sidebar is a rail of the toggle and a search button; the rest fades out until the
+   pointer rests on it or keyboard focus enters, and the App shell previews it in full. The rows keep their place, so
+   nothing moves while it opens or closes. */
+.pv-finder {
+  position: relative;
+}
+
+.pv-finder__rail {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc((var(--ayy-size-control-lg) - var(--ayy-size-control-md)) / 2);
+  margin-block: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--_t, var(--ayy-duration-base)),
+    visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
+}
+
+.pv-finder .ayy-search-bar,
+.pv-sidebar__actions {
+  transition:
+    opacity var(--_t, var(--ayy-duration-base)),
+    visibility 0s linear var(--_delay, 0s);
+}
+
+@media (min-width: 48.001rem) {
+  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(:hover, :has(:focus-visible)), [data-ayy-hold]) .pv-finder__rail {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity var(--_t),
+      visibility 0s linear var(--_delay, 0s);
+  }
+
+  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.pv-finder .ayy-search-bar, .pv-sidebar__actions) {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--_t),
+      visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
+  }
+}
+
+/* Phones: the bar's menu button opens the sidebar; collapsing is for wide screens. */
+@media (max-width: 48rem) {
+  .pv-sidebar__toggle {
+    display: none;
+  }
+}
+
 .pv-sidebar__top .ayy-search-bar,
 .pv-sidebar__top .ayy-search-bar__field,
 .pv-sidebar__top .ayy-search-bar__input {
@@ -178,18 +191,8 @@
   gap: 0;
 }
 
-.pv-nav .ayy-app-shell__link[aria-current="location"] {
-  color: var(--ayy-color-text);
-  font-weight: var(--ayy-weight-medium);
-}
 
-.pv-nav__empty {
-  margin: 0;
-  padding-inline: var(--ayy-space-2);
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-sm);
-}
-
+/* ayywi-lint-disable-next-line -- docs chrome: ~80 links, so denser rows than an app sidebar */
 .pv-nav__link {
   display: block;
   min-block-size: 0;
@@ -199,23 +202,15 @@
   font-weight: var(--ayy-weight-regular);
 }
 
+/* ayywi-lint-disable-next-line -- docs chrome: denser nav rows */
 .pv-nav__link[aria-current="page"] {
   font-weight: var(--ayy-weight-medium);
-}
-
-.pv-card-link:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
 }
 
 .pv-main {
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
-}
-
-.pv-picker__check {
-  margin-inline-start: auto;
 }
 
 .pv-content {
@@ -254,7 +249,6 @@
   margin: 0;
 }
 
-
 .pv-h {
   margin: 0 0 var(--ayy-space-2);
   font-family: var(--ayy-font-body);
@@ -281,11 +275,6 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--ayy-space-6);
   margin-block-start: var(--ayy-space-4);
-}
-
-.pv-guide {
-  gap: var(--ayy-space-3);
-  padding: var(--ayy-space-5);
 }
 
 .pv-guide--yes {
@@ -381,30 +370,6 @@
   font-size: var(--ayy-text-sm);
 }
 
-.pv-usecases {
-  display: grid;
-  gap: var(--ayy-space-6);
-}
-
-.pv-usecase {
-  display: grid;
-  gap: var(--ayy-space-2);
-}
-
-.pv-usecase__title {
-  margin: 0;
-  font-family: var(--ayy-font-heading);
-  font-size: var(--ayy-text-lg);
-  font-weight: var(--ayy-weight-medium);
-}
-
-.pv-usecase__why {
-  margin: 0;
-  max-inline-size: 65ch;
-  font-size: var(--ayy-text-sm);
-  color: var(--ayy-color-muted);
-}
-
 .pv-code__pre {
   max-block-size: 420px;
   margin: 0;
@@ -434,7 +399,6 @@
   font-size: var(--ayy-text-sm);
 }
 
-
 /* ---- Foundations ---- */
 
 .pv-section {
@@ -442,7 +406,6 @@
   flex-direction: column;
   gap: var(--ayy-space-4);
 }
-
 
 /* Theme samples: each card renders in its own theme via data-theme. */
 .pv-themes {
@@ -473,31 +436,19 @@
   font-size: var(--ayy-text-sm);
 }
 
-
 .pv-theme__big {
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-3xl);
   line-height: 1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-.pv-swatches {
+.pv-color-tiles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: var(--ayy-space-3);
 }
 
-.pv-swatch {
+.pv-color-tile {
   display: flex;
   gap: var(--ayy-space-3);
   padding: var(--ayy-space-3);
@@ -506,7 +457,7 @@
   background-color: var(--ayy-color-surface);
 }
 
-.pv-swatch__chip {
+.pv-color-tile__chip {
   flex: none;
   inline-size: 44px;
   block-size: 44px;
@@ -514,7 +465,7 @@
   border-radius: var(--ayy-radius-lg);
 }
 
-.pv-swatch__meta {
+.pv-color-tile__meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -522,7 +473,7 @@
   font-size: var(--ayy-text-xs);
 }
 
-.pv-swatch__desc {
+.pv-color-tile__desc {
   color: var(--ayy-color-muted);
   font-size: var(--ayy-text-2xs);
 }
@@ -643,33 +594,6 @@
   }
 }
 
-/* ---- Home ---- */
-
-.pv-cat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-3);
-  margin-block-end: var(--ayy-space-6);
-}
-
-.pv-cat__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--ayy-space-1) var(--ayy-space-3);
-}
-
-.pv-cat__title {
-  margin: 0;
-  font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-md);
-  font-weight: var(--ayy-weight-semibold);
-}
-
-
-
-
-
 /* ---- Overview ---- */
 
 .pv-page--compact {
@@ -731,21 +655,6 @@
   max-inline-size: 60ch;
 }
 
-/* The numbered steps of Get started. */
-.pv-step {
-  display: inline-grid;
-  flex: none;
-  place-items: center;
-  inline-size: var(--ayy-size-control-sm);
-  block-size: var(--ayy-size-control-sm);
-  border-radius: 50%;
-  background-color: var(--ayy-color-text);
-  color: var(--ayy-color-bg);
-  font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-sm);
-  font-weight: var(--ayy-weight-semibold);
-}
-
 .pv-files {
   display: flex;
   flex-wrap: wrap;
@@ -758,139 +667,22 @@
   color: var(--ayy-color-muted);
 }
 
-.pv-demo {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
-  gap: var(--ayy-space-4);
-  align-items: start;
-  padding: var(--ayy-space-6);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background: var(--ayy-color-wash);
-}
-
-.pv-demo__badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ayy-space-2);
-}
-
-.pv-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ayy-space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pv-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ayy-space-2);
-  padding: var(--ayy-space-1) var(--ayy-space-3);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-pill);
-  font-size: var(--ayy-text-sm);
-  color: inherit;
-  text-decoration: none;
-}
-
-.pv-chip:hover {
-  border-color: var(--ayy-color-line-hover);
-}
-
-.pv-chip:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
-
-
-
-
-.pv-count {
-  margin-inline-start: var(--ayy-space-1);
-  font-weight: var(--ayy-weight-regular);
-  font-size: var(--ayy-text-xs);
-  color: var(--ayy-color-muted);
-}
-
-.pv-page--compact .pv-cat {
-  gap: var(--ayy-space-2);
-  margin-block-end: var(--ayy-space-3);
-}
-
-.pv-tiles {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: var(--ayy-space-2);
-}
-
-.pv-tile {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--ayy-space-2) var(--ayy-space-3);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background: var(--ayy-color-surface);
-  color: inherit;
-  text-align: start;
-  text-decoration: none;
-  transition: border-color var(--ayy-duration-fast);
-}
-
-.pv-tile:hover {
-  border-color: var(--ayy-color-line-hover);
-}
-
-.pv-tile:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
-.pv-tile__name {
-  display: flex;
-  align-items: center;
-  gap: var(--ayy-space-2);
-  font-weight: var(--ayy-weight-semibold);
-  font-size: var(--ayy-text-sm);
-}
-
-.pv-tile__desc {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-size: var(--ayy-text-xs);
-  color: var(--ayy-color-muted);
-}
-
-.pv-tile__meta {
-  margin-block-start: auto;
-  padding-block-start: var(--ayy-space-1);
-  font-family: var(--ayy-font-mono);
-  font-size: 0.6875rem;
-  color: var(--ayy-color-muted);
-}
-
 /* ---- Small screens ---- */
 
 /* Phones: the sidebar is the app shell's drawer, opened from the bar. The preview scrolls the page rather than the shell,
    so the drawer is fixed to the viewport and the bar sticks to the top. */
 @media (max-width: 48rem) {
-  .pv-topbar {
+  .pv-shell-bar {
     position: sticky;
     inset-block-start: 0;
     z-index: var(--ayy-z-sticky);
   }
 
-  .pv-topbar .pv-brand {
+  .pv-shell-bar .pv-brand {
     margin-block-end: 0;
   }
 
-  .pv-topbar__actions {
+  .pv-shell-bar__actions {
     margin-inline-start: auto;
   }
 
@@ -920,24 +712,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--ayy-space-3);
-}
-
-.pv-source__toggle {
-  inline-size: fit-content;
-  padding: var(--ayy-space-1) var(--ayy-space-2);
-  border-radius: var(--ayy-radius-md);
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-sm);
-  cursor: pointer;
-}
-
-.pv-source__toggle:hover {
-  color: var(--ayy-color-text);
-}
-
-.pv-source__toggle:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
 }
 
 .pv-scale {
@@ -977,15 +751,6 @@
   gap: var(--ayy-space-4);
 }
 
-.pv-density {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-3);
-  padding: var(--ayy-space-4);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-}
-
 /* ---- What you can build: gallery and device preview ---- */
 
 .pv-showcase {
@@ -1002,35 +767,7 @@
 }
 
 .pv-showcase__thumb {
-  border-block-end: 1px solid var(--ayy-color-hairline);
   pointer-events: none;
-}
-
-.pv-showcase__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-2);
-  padding: var(--ayy-space-4) var(--ayy-space-5) var(--ayy-space-5);
-}
-
-.pv-showcase__title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--ayy-space-1) var(--ayy-space-2);
-}
-
-.pv-showcase__name {
-  margin: 0;
-  font-family: var(--ayy-font-heading);
-  font-size: var(--ayy-text-lg);
-  font-weight: var(--ayy-weight-medium);
-}
-
-.pv-showcase__desc {
-  margin: 0;
-  color: var(--ayy-color-muted);
-  line-height: 1.5;
 }
 
 /* A real-size iframe, scaled to fit. */
@@ -1200,13 +937,12 @@
 }
 
 .pv-doors {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--ayy-space-3);
-  margin-block-start: var(--ayy-space-8);
-  padding-block-start: var(--ayy-space-6);
-  border-block-start: 1px solid var(--ayy-color-hairline);
+  margin-block-start: var(--ayy-space-2);
+}
+
+/* Rows of links to components: outline buttons, packed tight. */
+.pv-links {
+  --ayy-gap: var(--ayy-space-2);
 }
 
 .pv-intro {
@@ -1225,28 +961,6 @@
   color: var(--ayy-color-muted);
   font-size: var(--ayy-text-sm);
   font-weight: 600;
-}
-
-.pv-intro__list {
-  display: grid;
-  gap: var(--ayy-space-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--ayy-color-text-soft);
-  font-size: var(--ayy-text-sm);
-}
-
-.pv-intro__list li {
-  display: flex;
-  align-items: baseline;
-  gap: var(--ayy-space-2);
-}
-
-.pv-intro__check {
-  flex: none;
-  color: var(--ayy-color-primary);
-  translate: 0 0.2em;
 }
 
 /* The fill-in sentence: dropdowns and inputs as wide as their words. */
@@ -1284,8 +998,10 @@
   vertical-align: baseline;
 }
 
+/* ayywi-lint-disable-next-line -- the fill-in sentence: controls drawn as dashed blanks in the heading type */
 .pv-madlib .ayy-select__control {
   inline-size: auto;
+  field-sizing: content;
   max-inline-size: 100%;
   block-size: auto;
   padding-block: 0;
@@ -1297,154 +1013,10 @@
   line-height: 1.5;
 }
 
-.pv-madlib .pv-slot--trigger.ayy-button {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ayy-space-1);
-  inline-size: auto;
-  max-inline-size: 100%;
-  block-size: auto;
-  padding-block: 0;
-  padding-inline: var(--ayy-space-2);
-  border: 1px dashed var(--ayy-color-line-hover);
-  border-radius: var(--ayy-radius-control);
-  background-color: var(--ayy-color-wash-hover);
-  color: var(--ayy-color-text);
-  font: inherit;
-  font-weight: inherit;
-  line-height: 1.5;
-  vertical-align: baseline;
-  transform: none;
-}
-
-.pv-madlib .pv-slot--trigger.ayy-button:hover {
-  transform: none;
-  border-color: var(--ayy-color-line-strong);
-  background-color: var(--ayy-color-wash-active);
-  box-shadow: none;
-}
-
-.pv-madlib .pv-slot--trigger.ayy-button:active {
-  transform: none;
-}
-
-.pv-madlib .pv-slot__chevron {
-  flex: none;
-  inline-size: var(--ayy-size-icon-sm);
-  block-size: var(--ayy-size-icon-sm);
-  color: var(--ayy-color-muted);
-}
-
 /* The slot padding would cover the combobox chevron: keep its room. */
+/* ayywi-lint-disable-next-line -- the fill-in sentence */
 .pv-madlib .ayy-combobox > .ayy-input {
   padding-inline-end: calc(var(--ayy-space-2) + var(--ayy-size-icon-sm) + var(--ayy-space-2));
-}
-
-.pv-copy {
-  --ayy-gap: var(--ayy-space-6);
-  --ayy-min: 20rem;
-  margin-block-start: var(--ayy-space-2);
-}
-
-.pv-copy__where {
-  font-size: var(--ayy-text-md);
-}
-
-.pv-included > summary {
-  cursor: pointer;
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-sm);
-}
-
-.pv-included > summary:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
-.pv-included[open] > summary {
-  margin-block-end: var(--ayy-space-3);
-}
-
-.pv-supported {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--ayy-space-2) var(--ayy-space-3);
-  margin-block-start: var(--ayy-space-5);
-  margin-block-end: var(--ayy-space-3);
-  font-size: var(--ayy-text-sm);
-}
-
-.pv-supported__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ayy-space-1);
-  font-weight: var(--ayy-weight-medium);
-  color: var(--ayy-color-text);
-}
-
-.pv-supported__check {
-  color: var(--ayy-color-primary);
-}
-
-.pv-supported__divider {
-  color: var(--ayy-color-muted);
-}
-
-.pv-supported__icons {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ayy-space-2);
-}
-
-.pv-supported__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ayy-color-text-soft);
-  transition: color var(--ayy-duration-fast) var(--ayy-ease);
-}
-
-.pv-supported__icon:hover {
-  color: var(--ayy-color-text);
-}
-
-.pv-supported__more {
-  color: var(--ayy-color-muted);
-}
-
-.pv-tool-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-2);
-  padding-block: var(--ayy-space-1);
-  border-radius: var(--ayy-radius-full);
-  border: 1px solid var(--ayy-color-line);
-  background: var(--ayy-color-surface);
-  color: var(--ayy-color-text-soft);
-  font-size: var(--ayy-text-xs);
-  cursor: pointer;
-  transition: border-color var(--ayy-duration-fast) var(--ayy-ease),
-              background var(--ayy-duration-fast) var(--ayy-ease),
-              color var(--ayy-duration-fast) var(--ayy-ease);
-}
-
-.pv-tool-btn:hover {
-  color: var(--ayy-color-text);
-  border-color: var(--ayy-color-line-strong);
-}
-
-.pv-tool-btn:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
-.pv-tool-btn[aria-checked="true"] {
-  background: var(--ayy-color-surface-raised);
-  border-color: var(--ayy-color-primary);
-  color: var(--ayy-color-text);
-  font-weight: var(--ayy-weight-medium);
 }
 
 .pv-tool-note {
@@ -1452,35 +1024,8 @@
   margin-block-end: var(--ayy-space-2);
 }
 
-.pv-mcp-box {
-  margin-block-start: var(--ayy-space-5);
-  margin-block-end: var(--ayy-space-5);
-  padding: var(--ayy-space-4);
-  border-radius: var(--ayy-radius-card);
-  border: 1px solid var(--ayy-color-line);
-  background: var(--ayy-color-surface-sunken);
-}
-
-.pv-mcp-box__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--ayy-space-2);
-  margin-block-end: var(--ayy-space-2);
-}
-
-.pv-paste {
-  inline-size: 100%;
-}
-
-.pv-paste .ayy-chat {
-  padding: var(--ayy-space-4);
-}
-
-
-
 /* The long slot gets its own line and grows with what's typed. */
+/* ayywi-lint-disable-next-line -- the fill-in sentence */
 .pv-slot.pv-slot--long {
   display: block;
   inline-size: 100%;
@@ -1500,21 +1045,7 @@
   margin-block-end: var(--ayy-space-4);
 }
 
-.pv-brand__picker {
-  inline-size: var(--ayy-size-control-md);
-  block-size: var(--ayy-size-control-md);
-  padding: 0;
-  border: 1px solid var(--ayy-color-line-strong);
-  border-radius: var(--ayy-radius-control);
-  background: none;
-  cursor: pointer;
-}
-
-.pv-brand__picker:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-}
-
+/* ayywi-lint-disable-next-line -- a hex code reads best in mono (Input has no mono option yet) */
 .pv-brand__hex {
   flex: 1;
   min-inline-size: 0;

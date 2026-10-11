@@ -20,6 +20,8 @@ export const DEFAULT_RULES = {
   "rebuilt-component": "warn",
   "component-override": "warn",
   "bare-control": "warn",
+  "raw-control": "warn",
+  "clickable-element": "warn",
 };
 
 const CSS_EXT = new Set([".css", ".scss", ".sass", ".less", ".pcss"]);
@@ -470,6 +472,67 @@ function bareControlFindings(text, contract, push) {
   }
 }
 
+// Tags that are one ayywi component when written raw (no class at all).
+const RAW_TAGS = /<(button|select|textarea|input|table|dialog|details|progress|meter)(?=[\s/>])/g;
+
+const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
+
+/** Comments blanked out (same length, so offsets still match): <!-- -->, /* *\/ and // line comments. */
+function blankComments(text) {
+  const blank = (m) => m.replace(/[^\n]/g, " ");
+  return text.replace(/<!--[\s\S]*?-->/g, blank).replace(/\/\*[\s\S]*?\*\//g, blank).replace(/(^|[^:"'`\w])\/\/[^\n]*/g, (m, pre) => pre + blank(m.slice(pre.length)));
+}
+
+/** raw-control findings: a native control with no class at all, which renders as the browser default. */
+function rawControlFindings(source, push) {
+  const text = blankComments(source);
+  const stack = []; // open tags around the current position: { name, open }
+  for (const m of text.matchAll(/<(\/?)([A-Za-z][\w.:-]*)(?=[\s/>])/g)) {
+    const [, closing, name] = m;
+    const end = tagEnd(text, m.index);
+    if (closing) {
+      const at = stack.findLastIndex((t) => t.name === name);
+      if (at >= 0) stack.length = at;
+      continue;
+    }
+    const openTag = text.slice(m.index, end);
+    const selfClosing = /\/\s*$/.test(openTag) || VOID_TAGS.has(name.toLowerCase());
+    const parent = stack.at(-1);
+    if (!selfClosing) stack.push({ name, open: openTag });
+    if (!/^(?:button|select|textarea|input|table|dialog|details|progress|meter)$/.test(name)) continue;
+    if (/\{\s*\.\.\./.test(openTag) || /(?<![\w-])(?:class|className|:class|v-bind:class|class:list|\[class\]|\[ngClass\]|ngClass)\s*=/.test(openTag)) continue;
+    // Inputs inside an ayywi label (Chip, Segmented control, Swatch, Drop zone) are that component's own part.
+    if (name === "input" && parent && (/^ayy-/.test(parent.name) || /(?<![\w-])ayy-[\w-]+/.test(parent.open))) continue;
+    const role = openTag.match(/\srole=["']([\w-]+)["']/)?.[1];
+    let control;
+    if (role) control = CONTROL_OF_ROLE[role];
+    else if (name === "input") {
+      const type = openTag.match(/\stype=["']([\w-]+)["']/)?.[1] ?? "text";
+      if (type === "hidden") continue;
+      control = type === "color" ? "Swatch (SwatchCustom)" : (CONTROL_OF_INPUT[type] ?? "Input");
+    } else control = CONTROL_OF_TAG[name];
+    if (!control) continue;
+    if (name === "select") control = "Select (it opens ayywi's own options list), or a Segmented control for two to five short options";
+    push("raw-control", `<${name}${role ? ` role="${role}"` : ""}> without ayywi's class renders as the browser default — use ayywi's ${control} (get_component or llms/<slug>.md for its markup)`, m.index);
+  }
+}
+
+/** clickable-element findings: a div, span, li… that handles clicks, i.e. a hand-built button or link. */
+function clickableElementFindings(source, push) {
+  const text = blankComments(source);
+  for (const m of text.matchAll(/<(div|span|li|p|td|tr|img|section|article|header|footer|figure)(?=[\s>])/g)) {
+    const openTag = text.slice(m.index, tagEnd(text, m.index));
+    if (!/\s(?:onClick|onclick|@click|v-on:click|on:click|\(click\))\s*=/.test(openTag)) continue;
+    // A handler that only stops the event (inside a menu or dialog) isn't an action.
+    if (/(?:onClick|onclick|@click|on:click)\s*=\s*\{?\s*(?:\(?\s*\w*\s*\)?\s*=>\s*)?\w*\.?stopPropagation\(\)\s*\}?/.test(openTag)) continue;
+    push(
+      "clickable-element",
+      `<${m[1]}> with a click handler is a hand-built button — use ayywi's Button (ghost or icon size for small actions), ListLink or CardLink when a whole row or card is clickable, or a Chip for a filter`,
+      m.index,
+    );
+  }
+}
+
 function lintCss(css, contract, offset = { line: 0 }, coUse = new Map()) {
   const out = [...cssRuleFindings(css), ...structureFindings(css, contract, coUse)].map((f) => ({ ...f, line: f.line + offset.line }));
   const pos = lineIndex(css);
@@ -579,6 +642,8 @@ function lintMarkup(text, contract, coUse = new Map()) {
   }
 
   bareControlFindings(text, contract, push);
+  rawControlFindings(text, push);
+  clickableElementFindings(text, push);
 
   // Icon-only buttons need an accessible name
   for (const m of text.matchAll(/<(button|a|Button)(?=[\s/>])/g)) {
@@ -721,4 +786,36 @@ export function formatFindings({ findings, files }) {
       : `✓ ayywi lint: ${files} file(s), no problems`,
   );
   return lines.join("\n");
+}
+
+/**
+ * `ayywi lint --hook`: a Claude Code PostToolUse hook. Reads the hook's JSON from stdin, lints the file the agent just
+ * wrote, and on findings prints them to stderr and exits 2, which hands them back to the agent to fix.
+ */
+export async function lintHook({ cwd = process.cwd(), input = process.stdin } = {}) {
+  let raw = "";
+  for await (const chunk of input) raw += chunk;
+  let file;
+  try {
+    const event = JSON.parse(raw || "{}");
+    file = event.tool_input?.file_path ?? event.tool_input?.path;
+  } catch {
+    return 0;
+  }
+  if (!file) return 0;
+  const abs = resolve(cwd, file);
+  const ext = extname(abs).toLowerCase();
+  if (!existsSync(abs) || !(CSS_EXT.has(ext) || MARKUP_EXT.has(ext))) return 0;
+  const config = loadConfig(cwd);
+  const rel = relative(cwd, abs).split("\\").join("/");
+  if (rel.split("/").some((part) => SKIP_DIRS.has(part)) || config.ignore.some((re) => re.test(rel))) return 0;
+  // One file at a time can't see a class used with a component in another file, so a stylesheet skips that rule here.
+  const rules = CSS_EXT.has(ext) ? { ...config.rules, "rebuilt-component": "off" } : config.rules;
+  const findings = lintText(readFileSync(abs, "utf8"), rel, loadContract(), { ...config, rules });
+  if (!findings.length) return 0;
+  process.stderr.write(
+    `${formatFindings({ findings, files: 1 })}\n\nayywi: fix every finding above, warnings included — each one means an ayywi component was skipped or restyled. ` +
+      "Look up the right one with the MCP pick_component / get_component tools (or llms-full.txt → Need → component), then edit the file again.\n",
+  );
+  return 2;
 }

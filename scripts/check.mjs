@@ -362,6 +362,9 @@ for (const script of ["scripts/build-tokens.mjs", "scripts/build-manifest.mjs"])
 if (generatedOk) {
   const { findings } = lintPaths(["src/components"], { cwd: root, contract: loadContract(join(root, "manifest/components.json")) });
   for (const f of findings.filter((x) => x.file.includes("/examples/"))) fail(`${f.file}:${f.line}`, `ayywi lint ${f.rule} — ${f.message}`);
+  // The preview is built with ayywi too, and held to the same linter: no raw controls, look-alikes or restyles.
+  const preview = lintPaths(["preview/src"], { cwd: root, contract: loadContract(join(root, "manifest/components.json")) });
+  for (const f of preview.findings) fail(`${f.file}:${f.line}`, `ayywi lint ${f.rule} — ${f.message}`);
 }
 
 if (problems.length) {

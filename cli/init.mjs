@@ -1,4 +1,5 @@
-// ayywi init — set up a consuming project for AI agents: Claude skill, Cursor rule, AGENTS.md snippet, MCP config.
+// ayywi init — set up a consuming project for AI agents: Claude skill, reviewer agent and lint hook, Cursor rule,
+// AGENTS.md snippet, MCP config.
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,6 +20,33 @@ function sectionRange(text) {
   return [start, next < 0 ? text.length : next + 1];
 }
 const MCP_SERVER = { command: "npx", args: ["ayywi", "mcp"] };
+// After every file Claude Code writes, lint it; findings go back to the agent (exit 2) so it fixes them before moving on.
+const HOOK_COMMAND = "npx --no ayywi lint --hook";
+const HOOK = { matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: HOOK_COMMAND }] };
+
+function mergeHook(cwd, log, dryRun) {
+  const name = ".claude/settings.json";
+  const file = join(cwd, name);
+  let json = {};
+  if (existsSync(file)) {
+    try {
+      json = JSON.parse(readFileSync(file, "utf8"));
+    } catch {
+      log(`skip  ${name} (not valid JSON — add the ayywi lint hook by hand: ${HOOK_COMMAND})`);
+      return;
+    }
+  }
+  json.hooks ??= {};
+  json.hooks.PostToolUse ??= [];
+  if (json.hooks.PostToolUse.some((entry) => entry.hooks?.some((h) => String(h.command ?? "").includes("ayywi lint --hook"))))
+    return log(`keep  ${name} (ayywi lint hook already configured)`);
+  json.hooks.PostToolUse.push(HOOK);
+  if (!dryRun) {
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, `${JSON.stringify(json, null, 2)}\n`);
+  }
+  log(`write ${name} (lint hook)`);
+}
 
 function mergeMcp(cwd, name, key, log, dryRun) {
   const file = join(cwd, name);
@@ -42,9 +70,9 @@ function mergeMcp(cwd, name, key, log, dryRun) {
 }
 
 /**
- * @param {{ cwd?: string, mcp?: boolean, force?: boolean, dryRun?: boolean, log?: (s: string) => void }} options
+ * @param {{ cwd?: string, mcp?: boolean, hook?: boolean, force?: boolean, dryRun?: boolean, log?: (s: string) => void }} options
  */
-export function init({ cwd = process.cwd(), mcp = true, force = false, dryRun = false, log = console.log } = {}) {
+export function init({ cwd = process.cwd(), mcp = true, hook = true, force = false, dryRun = false, log = console.log } = {}) {
   const copy = (from, to) => {
     const target = join(cwd, to);
     if (existsSync(target) && !force) return log(`keep  ${to} (exists; --force to overwrite)`);
@@ -56,6 +84,8 @@ export function init({ cwd = process.cwd(), mcp = true, force = false, dryRun = 
   };
 
   copy("ai/skills/ayywi", ".claude/skills/ayywi");
+  copy("ai/agents/ayywi-ui-reviewer.md", ".claude/agents/ayywi-ui-reviewer.md");
+  if (hook) mergeHook(cwd, log, dryRun);
   copy("ai/cursor/ayywi.mdc", ".cursor/rules/ayywi.mdc");
 
   const agents = join(cwd, "AGENTS.md");
@@ -78,5 +108,5 @@ export function init({ cwd = process.cwd(), mcp = true, force = false, dryRun = 
     mergeMcp(cwd, ".mcp.json", "mcpServers", log, dryRun);
     mergeMcp(cwd, ".cursor/mcp.json", "mcpServers", log, dryRun);
   }
-  log(dryRun ? "\n(dry run — nothing written)" : "\nDone. Agents will now read the ayywi rules and can query components over MCP.");
+  log(dryRun ? "\n(dry run — nothing written)" : "\nDone. Agents will now read the ayywi rules, query components over MCP, and get lint findings back after every UI file they write.");
 }

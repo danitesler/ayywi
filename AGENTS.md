@@ -8,8 +8,8 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-calendar>`, `<ayy-toolbar>`, `<ayy-shortcut-recorder>`, `<ayy-command>`, `<ayy-tag-input>`, `<ayy-swipe>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, custom swatch colours, search bar clear buttons, shortcuts drawn for Apple devices, drop zones),
-- machine-readable docs, a linter and an MCP server for AI tools (`cli/`).
+- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-calendar>`, `<ayy-toolbar>`, `<ayy-shortcut-recorder>`, `<ayy-command>`, `<ayy-tag-input>`, `<ayy-swipe>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, custom swatch colours, search bar clear buttons, select option lists, shortcuts drawn for Apple devices, drop zones),
+- machine-readable docs, a linter and an MCP server for AI tools (`cli/`), plus what `ayywi init` installs in an app: the skill, a lint hook and the `ayywi-ui-reviewer` agent (`ai/`).
 
 Zero runtime dependencies. React is an optional peer.
 
@@ -31,7 +31,7 @@ src/react/index.ts          "@danitesler/ayywi/react" entry
 src/elements/               "@danitesler/ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
 cli/                        shipped `ayywi` bin: lint.mjs, init.mjs, mcp.mjs (plain Node ESM, no deps)
 tailwind/                   Tailwind v3 preset + v4 @theme mapping
-scripts/                    build, generators, check; scripts/lib/contract.mjs holds RULES, PUBLIC_HOOKS, UTILITIES, ATTRIBUTES,
+scripts/                    build, generators, check; scripts/lib/contract.mjs holds RULES, NEEDS (need → component), PUBLIC_HOOKS, UTILITIES, ATTRIBUTES,
                             CATEGORIES and the component ORDER (the manifest, llms files and the preview all read them)
 tests/                      node/ (node:test) and e2e/ (Playwright + axe)
 evals/                      skill evals: tasks, runner, scorer
@@ -55,7 +55,7 @@ pnpm check          # design rules, docs ↔ CSS ↔ props ↔ elements, generat
 pnpm test           # node tests (linter, MCP, init, token exports, eval scorer) — needs a build
 pnpm test:e2e       # Playwright + axe against the built preview
 scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
-pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme and density from the Theme menu
+pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme from the theme button, density from the menu beside it
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
 ```
 
@@ -101,6 +101,8 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.
 - Example HTML should match what the React example renders. Write the `.tsx` first and render it to markup (react-dom/server) rather than retyping it; only custom-element wrappers (`<ayy-app-shell>`, `<ayy-navbar>`…) and comments differ.
 - JSON under `src/components/` and `tokens/` is hand-formatted (short objects on one line). Edit it as text or keep the existing layout; a full `JSON.stringify` rewrite buries the real change in the diff.
+- A popover shown on `mousedown` is light-dismissed by the `pointerup` that follows. Select's list blocks the OS picker on mousedown and opens on `click`; it cleans up on `beforetoggle`, since `toggle` events coalesce and a quick reopen would find the old list.
+- The preview is built with ayywi and `pnpm check` lints `preview/src` like the examples. A deliberate docs-only restyle gets an `ayywi-lint-disable-next-line -- <why>` comment; anything else uses the component.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme, plus status text on its own tint). New text colours or surfaces belong in its lists.
 
 ## Versioning and changelog rules

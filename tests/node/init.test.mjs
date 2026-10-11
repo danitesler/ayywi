@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -46,4 +46,23 @@ test("init --force replaces only the ayywi section of AGENTS.md", (t) => {
 
   init({ cwd, mcp: false, force: true, log: () => {} });
   assert.equal(readFileSync(join(cwd, "AGENTS.md"), "utf8"), agents, "updating twice changes nothing");
+});
+
+test("init adds the reviewer agent and the lint hook once, keeping existing settings", (t) => {
+  const cwd = mkdtempSync(join(tmpdir(), "ayywi-init-"));
+  t.after(() => rmSync(cwd, { recursive: true, force: true }));
+  mkdirSync(join(cwd, ".claude"));
+  writeFileSync(join(cwd, ".claude/settings.json"), JSON.stringify({ permissions: { allow: ["Bash(ls)"] }, hooks: { PostToolUse: [{ matcher: "Write", hooks: [{ type: "command", command: "prettier --write" }] }] } }));
+  init({ cwd, mcp: false, log: () => {} });
+  init({ cwd, mcp: false, log: () => {} });
+  assert.ok(existsSync(join(cwd, ".claude/agents/ayywi-ui-reviewer.md")));
+  const settings = JSON.parse(readFileSync(join(cwd, ".claude/settings.json"), "utf8"));
+  assert.deepEqual(settings.permissions, { allow: ["Bash(ls)"] }, "other settings kept");
+  const commands = settings.hooks.PostToolUse.flatMap((e) => e.hooks.map((h) => h.command));
+  assert.deepEqual(commands, ["prettier --write", "npx --no ayywi lint --hook"], "hook added exactly once, after the project's own");
+
+  const bare = mkdtempSync(join(tmpdir(), "ayywi-init-"));
+  t.after(() => rmSync(bare, { recursive: true, force: true }));
+  init({ cwd: bare, mcp: false, hook: false, log: () => {} });
+  assert.ok(!existsSync(join(bare, ".claude/settings.json")), "--no-hook leaves settings alone");
 });

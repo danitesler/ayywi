@@ -82,9 +82,17 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
 
   window.addEventListener("scroll", schedule, { passive: true });
   window.addEventListener("resize", schedule);
+  // Links that change size after the current one was centred (web fonts arriving, a label changing) would push it out
+  // of the strip: centre it again.
+  const resized = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
+    const link = current ? root.querySelector<HTMLAnchorElement>('a.ayy-toc__link[aria-current="location"]') : null;
+    if (link) reveal(link);
+  }) : null;
+  for (const item of root.querySelectorAll(".ayy-toc__list > li")) resized?.observe(item);
   update();
   return () => {
     cancelAnimationFrame(frame);
+    resized?.disconnect();
     window.removeEventListener("scroll", schedule);
     window.removeEventListener("resize", schedule);
   };

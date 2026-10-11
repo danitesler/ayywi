@@ -16,7 +16,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `pressed` — doesn't apply: Items have no pressed look: activating one runs it and closes the menu.
 - `focus` (`.ayy-menu__item:focus (arrow keys) / :focus-visible`) — Focused item gets the wash-hover background; keyboard focus adds a 2px ring inset by 2px. Forced colours: Highlight fill.
 - `disabled` (`.ayy-menu__item:disabled or [aria-disabled="true"]`) — Item dims to --ayy-opacity-disabled with a not-allowed cursor; arrow keys skip it.
-- `selected` — doesn't apply: Menu items run commands and show no checked look (Theme toggle adds a check to its own items). For a choice that stays, use Select, Radio or a Segmented control.
+- `selected` (`.ayy-menu__item[aria-checked="true"] on role="menuitemradio" or "menuitemcheckbox"`) — Semibold with a check at the inline end, drawn in currentColor. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select.
 - `error` — doesn't apply: A menu has no error state; report a failed command with a toast.
 - `loading` — doesn't apply: Build the items before opening; if they load, put the trigger Button in loading until they're ready.
 - `open` (`:popover-open`) — Fades in and scales up from 97%; fades out when it closes.

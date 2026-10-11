@@ -18,7 +18,7 @@
   color: light-dark(currentColor, transparent);
 }
 
-/* The theme in force gets a check at the inline end, drawn from borders so it follows currentColor and text direction. */
+/* The theme in force gets a check at the inline end, drawn from borders in currentColor (the same shape in RTL). */
 .ayy-theme-toggle__item[aria-checked="true"] {
   font-weight: var(--ayy-weight-semibold);
 }
@@ -30,8 +30,8 @@
   block-size: 0.65em;
   margin-inline-start: auto;
   margin-block-end: 0.15em;
-  border-inline-end: 2px solid currentColor;
-  border-block-end: 2px solid currentColor;
+  border-right: 2px solid currentColor; /* ayy-allow-physical: a check is a glyph, it doesn't mirror in RTL */
+  border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
 }
 

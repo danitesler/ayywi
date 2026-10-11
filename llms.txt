@@ -17,7 +17,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 Screens every app builds the same way, from several components:
 
-- [Settings](llms/pattern-settings.md): Settings open full screen in the app's own frame, as Notion's and Cursor's do: the sidebar's destinations give way to a Back link, a Settings title and the settings sections, and the main shows one section. Never a dialog, never tabs inside a page.
+- [Settings](llms/pattern-settings.md): Settings open over the app in a near-full-screen dialog, as Notion's and Claude's do: a Settings title and the settings sections in its sidebar, one section in its main, a close button in the corner. Full screen on phones. Never a small or side dialog, never tabs inside a page.
 
 ## Components
 
@@ -35,7 +35,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 ### Navigation
 
 - [Navbar](llms/navbar.md): Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.
-- [App shell](llms/app-shell.md): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode: the sidebar swaps to a way back and the settings sections, and one section fills the main area (on phones, the section list and the open section are two screens).
+- [App shell](llms/app-shell.md): The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode, inside a near-full-screen Dialog (size "full") over the app: the settings sections in its sidebar, one section in its main (on phones the dialog fills the screen, and the section list and the open section are two screens).
 - [Bottom nav](llms/bottom-nav.md): A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones.
 - [Top bar](llms/top-bar.md): A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.
 - [Footer](llms/footer.md): The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.
@@ -51,7 +51,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Input group](llms/input-group.md): An input with things attached inside its box: a leading icon, a prefix or suffix, a keyboard hint, or a small button (clear, copy, show password). The group draws the field and the focus ring.
 - [Search bar](llms/search-bar.md): A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role="search"> around an <input type="search">, so phones show a Search key. The clear button only shows while there's text.
 - [Textarea](llms/textarea.md): Multi-line text field. Optional auto-grow and monospace modes.
-- [Select](llms/select.md): Styled native <select>. Keeps the OS picker, keyboard handling and form behaviour.
+- [Select](llms/select.md): Styled native <select>. With a mouse or trackpad its options open in ayywi's own list; touch screens keep the OS picker. Value, form behaviour and change events stay native.
 - [Combobox](llms/combobox.md): An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.
 - [Tag input](llms/tag-input.md): A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox.
 - [Calendar](llms/calendar.md): A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.

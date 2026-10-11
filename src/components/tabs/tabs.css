@@ -70,6 +70,12 @@
   cursor: not-allowed;
 }
 
+.ayy-tabs__tab > svg {
+  flex: none;
+  inline-size: 1.25em;
+  block-size: 1.25em;
+}
+
 /* Count beside a tab label, e.g. how many items a filter shows. */
 .ayy-tabs__count {
   display: inline-flex;

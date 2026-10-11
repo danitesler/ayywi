@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft01Icon, ComputerIcon, LinkSquare01Icon, SmartPhone01Icon, Tablet01Icon } from "@hugeicons/core-free-icons";
-import { Badge, Button, buttonClass, Card, CardLink, CardMedia, Icon } from "@danitesler/ayywi/react";
+import { Badge, buttonClass, Card, CardDescription, CardFooter, CardHeader, CardLink, CardMedia, Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
 import { showcaseApps, type ShowcaseApp } from "../showcase/apps";
@@ -81,18 +81,16 @@ function Gallery() {
               <CardMedia className="pv-showcase__thumb">
                 <img src={app.screenshot} alt={`${app.name}, ${app.kind}`} loading="lazy" width={1280} height={800} />
               </CardMedia>
-              <div className="pv-showcase__body">
-                <div className="pv-showcase__title">
-                  <h2 className="pv-showcase__name">
-                    <CardLink href={`#/${ROUTE}/${app.id}`}>{app.name}</CardLink>
-                  </h2>
-                  <span className="ayy-muted">{app.kind}</span>
-                </div>
-                <p className="pv-showcase__desc" id={`sc-${app.id}-desc`}>
-                  {app.description}
-                </p>
+              <CardHeader>
+                {/* CardTitle's markup on an h2: the cards sit straight under the page's h1. */}
+                <h2 className="ayy-card__title">
+                  <CardLink href={`#/${ROUTE}/${app.id}`}>{app.name}</CardLink> <span className="ayy-muted">{app.kind}</span>
+                </h2>
+                <CardDescription id={`sc-${app.id}-desc`}>{app.description}</CardDescription>
+              </CardHeader>
+              <CardFooter>
                 <Modes app={app} />
-              </div>
+              </CardFooter>
             </Card>
           </li>
         ))}
@@ -130,14 +128,14 @@ function Detail({ app }: { app: ShowcaseApp }) {
       </header>
 
       <div className="pv-device-bar">
-        <div className="ayy-cluster" role="group" aria-label="Device">
+        <SegmentedControl size="sm" aria-label="Device" value={device} onValueChange={(v) => setDevice(v as Device)}>
           {(Object.keys(DEVICES) as Device[]).map((key) => (
-            <Button key={key} size="sm" variant={key === device ? "secondary" : "ghost"} aria-pressed={key === device} onClick={() => setDevice(key)}>
+            <SegmentedControlItem key={key} value={key}>
               <Icon icon={DEVICES[key].icon} />
               {DEVICES[key].label}
-            </Button>
+            </SegmentedControlItem>
           ))}
-        </div>
+        </SegmentedControl>
         <span className="ayy-muted ayy-mono pv-device-bar__size">
           {d.width} × {d.height}
         </span>
@@ -166,9 +164,9 @@ function Detail({ app }: { app: ShowcaseApp }) {
       <CodeBlock code={app.prompt} label="prompt" wrap />
 
       <h2 className="pv-h pv-h--section">Built with</h2>
-      <nav className="pv-chips" aria-label={`Components in ${app.name}`}>
+      <nav className="ayy-cluster pv-links" aria-label={`Components in ${app.name}`}>
         {used.map((c) => (
-          <a key={c.slug} href={`#/${c.slug}`} className="pv-chip">
+          <a key={c.slug} href={`#/${c.slug}`} className={buttonClass({ variant: "outline", size: "sm" })}>
             {c.name}
           </a>
         ))}

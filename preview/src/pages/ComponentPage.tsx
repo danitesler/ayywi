@@ -1,4 +1,4 @@
-import { Card } from "@danitesler/ayywi/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 import type { ComponentEntry } from "../data";
 import { Example } from "../Example";
 import type { Renderer } from "../settings";
@@ -12,12 +12,16 @@ function Guidance({ title, items, tone }: { title: string; items: string[]; tone
   if (!items.length) return null;
   return (
     <Card spotlight spotColor={TONES[tone]} className={`pv-guide pv-guide--${tone}`}>
-      <h3 className="ayy-h6">{title}</h3>
-      <ul className="pv-guide__list">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="pv-guide__list">
+          {items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </CardContent>
     </Card>
   );
 }

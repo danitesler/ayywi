@@ -40,10 +40,16 @@ test("MCP handshake and tools", async (t) => {
 
   const list = await s.request("tools/list");
   const names = list.result.tools.map((tool) => tool.name).sort();
-  assert.deepEqual(names, ["create_brand", "get_component", "get_rules", "get_tokens", "lint", "list_components", "search"]);
+  assert.deepEqual(names, ["create_brand", "get_component", "get_rules", "get_tokens", "lint", "list_components", "pick_component", "search"]);
 
   const call = (name, args) => s.request("tools/call", { name, arguments: args }).then((r) => r.result.content[0].text);
   assert.match(await call("list_components", {}), /Dropdown menu|menu/i);
+  // Picking by need: a value picker is a Select, never a raw <select>; a toggle is a Switch.
+  const theme = await call("pick_component", { need: "choose the theme from three options" });
+  assert.match(theme.split("\n\n")[0], /Select/);
+  assert.match(theme, /Not: a raw <select>/);
+  assert.match((await call("pick_component", { need: "toggle notifications on" })).split("\n\n")[0], /Switch/);
+  assert.match(init.result.instructions, /never write a raw <button>/);
   assert.match(await call("get_component", { name: "DropdownMenu" }), /ayy-menu__item/);
   assert.match(await call("get_component", { name: "ayy-tabs" }), /ayy-value-change/);
   const button = await call("get_component", { name: "Button" });
@@ -56,7 +62,7 @@ test("MCP handshake and tools", async (t) => {
   assert.match(brand, /--ayy-radius-button: var\(--ayy-radius-lg\)/);
   assert.doesNotMatch(brand, /✗/);
   assert.match(await call("search", { query: "settings" }), /^- pattern settings:/);
-  assert.match(await call("get_rules", {}), /Pattern: Settings[\s\S]*Back to <app name>[\s\S]*Settings row/);
+  assert.match(await call("get_rules", {}), /Pattern: Settings[\s\S]*DialogContent size="full"[\s\S]*Settings row/);
   assert.match(await call("lint", { code: `<button class="ayy-buton">x</button>`, filename: "x.html" }), /unknown-class/);
 
   const bad = await s.request("tools/call", { name: "nope", arguments: {} });

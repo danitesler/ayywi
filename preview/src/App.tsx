@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { PaintBoardIcon, Tick02Icon } from "@hugeicons/core-free-icons";
+import { Search01Icon, Settings01Icon, SidebarLeftIcon } from "@hugeicons/core-free-icons";
 import {
   AppShell,
   AppShellBar,
   AppShellBrand,
   AppShellGroup,
+  AppShellHead,
   AppShellItem,
   AppShellLink,
   AppShellNav,
   AppShellSidebar,
   AppShellToggle,
+  Button,
   CommandDialog,
   CommandGroup,
   CommandItem,
@@ -17,6 +19,7 @@ import {
   Icon,
   Kbd,
   SearchBar,
+  ThemeToggle,
 } from "@danitesler/ayywi/react";
 import { brandPresets, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import { brandPage, BrandPage } from "./pages/Brand";
@@ -26,8 +29,8 @@ import { ComponentPage } from "./pages/ComponentPage";
 import { foundations, foundationText } from "./pages/Foundations";
 import { getStarted, GetStartedPage } from "./pages/GetStarted";
 import { showcase, ShowcasePage } from "./pages/Showcase";
-import { useHashRoute, useSettings } from "./settings";
-import { themeOptions } from "./themes";
+import { useHashRoute, useSettings, useSidebarCollapsed } from "./settings";
+
 
 interface NavItem {
   route: string;
@@ -75,8 +78,6 @@ const DENSITY_OPTIONS: [DensityMode, string][] = [
   ["touch", "Touch"],
 ];
 
-const THEME_OPTIONS: [ThemeMode, string][] = [["system", "System"], ...themeOptions.map((t): [ThemeMode, string] => [t.name, t.label])];
-
 interface AppearanceProps {
   theme: ThemeMode;
   setTheme: (v: ThemeMode) => void;
@@ -86,8 +87,8 @@ interface AppearanceProps {
   setBrand: (v: BrandInput | null) => void;
 }
 
-/** One menu for theme, density and brand, so the sidebar footer stays just navigation. */
-function AppearanceMenu({ theme, setTheme, density, setDensity, brand, setBrand }: AppearanceProps) {
+/** Density and brand stay in a menu. Theme is the design-system Theme toggle. */
+function DisplayMenu({ density, setDensity, brand, setBrand }: Omit<AppearanceProps, "theme" | "setTheme">) {
   // Mono, the shipped brands, and the one made on the Brand page if it's in use.
   const brandOptions: [string, string][] = [["", "Mono"], ...Object.keys(brandPresets).map((n): [string, string] => [n, n.charAt(0).toUpperCase() + n.slice(1)])];
   if (brand && !(brand.name in brandPresets)) brandOptions.push([brand.name, `${brand.name} (Brand page)`]);
@@ -98,25 +99,31 @@ function AppearanceMenu({ theme, setTheme, density, setDensity, brand, setBrand 
       {options.map(([key, text]) => (
         <DropdownMenuItem key={key} role="menuitemradio" aria-checked={key === value} onSelect={() => onChange(key)}>
           {text}
-          {key === value ? <Icon icon={Tick02Icon} className="pv-picker__check" /> : null}
         </DropdownMenuItem>
       ))}
     </div>
   );
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger variant="ghost" size="sm">
-        <Icon icon={PaintBoardIcon} />
-        Theme
+      <DropdownMenuTrigger variant="outline" size="icon" aria-label="Density and brand">
+        <Icon icon={Settings01Icon} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" aria-label="Theme, density and brand">
-        {group("Theme", theme, THEME_OPTIONS, setTheme)}
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" aria-label="Density and brand">
         {group("Density", density, DENSITY_OPTIONS, setDensity)}
         <DropdownMenuSeparator />
         {group("Brand", brand?.name ?? "", brandOptions, pickBrand)}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+/** Theme toggle from the design system, plus density and brand. Same controls in the sidebar and the phone bar. */
+function AppearanceControls({ setTheme, density, setDensity, brand, setBrand }: AppearanceProps) {
+  return (
+    <>
+      <ThemeToggle onValueChange={setTheme} />
+      <DisplayMenu density={density} setDensity={setDensity} brand={brand} setBrand={setBrand} />
+    </>
   );
 }
 
@@ -135,6 +142,7 @@ export function App() {
   }, [page, part]);
 
   const [commandOpen, setCommandOpen] = useState(false);
+  const [collapsed, setCollapsed] = useSidebarCollapsed();
 
   const scrollNavTo = (targetRoute: string) => {
     const base = targetRoute.split("/")[0] ?? targetRoute;
@@ -216,49 +224,59 @@ export function App() {
   };
 
   return (
-    <AppShell className="pv-shell">
-      <AppShellBar className="pv-topbar">
+    <AppShell className="pv-shell" collapsed={collapsed} hoverPreview onCollapseChange={setCollapsed}>
+      <AppShellBar className="pv-shell-bar">
         <AppShellToggle aria-label="Open navigation" />
         <AppShellBrand href="#/" className="pv-brand">
           <span className="pv-brand__mark" aria-hidden="true" />
           ayywi
         </AppShellBrand>
-        <div className="pv-topbar__actions">
-          <AppearanceMenu {...appearance} />
+        <div className="pv-shell-bar__actions">
+          <AppearanceControls {...appearance} />
         </div>
       </AppShellBar>
       <AppShellSidebar className="pv-sidebar ayy-scroll">
         <div className="pv-sidebar__top">
-          <div className="pv-sidebar__head">
+          <AppShellHead className="pv-sidebar__head">
+            {/* Collapses the sidebar to a rail on wide screens; resting the pointer on the rail previews it. */}
+            <AppShellToggle aria-label="Sidebar" className="pv-sidebar__toggle">
+              <Icon icon={SidebarLeftIcon} directional />
+            </AppShellToggle>
             <AppShellBrand href="#/" className="pv-brand">
               <span className="pv-brand__mark" aria-hidden="true" />
-              ayywi
+              <span>ayywi</span>
             </AppShellBrand>
             <div className="pv-sidebar__actions">
               {/* On phones the bar carries this menu. */}
               <span className="pv-sidebar__appearance">
-                <AppearanceMenu {...appearance} />
+                <AppearanceControls {...appearance} />
               </span>
             </div>
+          </AppShellHead>
+          <div className="pv-finder">
+            {/* The rail's stand-in for the search field. Mouse only: keyboard focus opens the full sidebar, field included. */}
+            <Button variant="ghost" size="icon" className="pv-finder__rail" aria-label="Search" tabIndex={-1} onClick={() => setCommandOpen(true)}>
+              <Icon icon={Search01Icon} />
+            </Button>
+            <SearchBar
+              placeholder="Search"
+              label="Search components and foundations"
+              shortcut="Mod+E"
+              readOnly
+              onClick={() => setCommandOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setCommandOpen(true);
+                }
+              }}
+              formProps={{
+                "aria-haspopup": "dialog",
+                "aria-expanded": commandOpen,
+                onClick: () => setCommandOpen(true),
+              }}
+            />
           </div>
-          <SearchBar
-            placeholder="Search"
-            label="Search components and foundations"
-            shortcut="Mod+E"
-            readOnly
-            onClick={() => setCommandOpen(true)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setCommandOpen(true);
-              }
-            }}
-            formProps={{
-              "aria-haspopup": "dialog",
-              "aria-expanded": commandOpen,
-              onClick: () => setCommandOpen(true),
-            }}
-          />
         </div>
         <AppShellNav id="pv-nav" className="pv-nav" aria-label="Design system">
           {SECTIONS.map((s) => (

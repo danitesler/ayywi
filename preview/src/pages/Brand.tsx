@@ -12,6 +12,7 @@ import {
   SegmentedControl,
   SegmentedControlItem,
   Select,
+  SwatchCustom,
   Switch,
   Table,
   TableBody,
@@ -51,10 +52,10 @@ function Sample({ theme, label }: { theme: string; label: string }) {
         </Button>
       </div>
       <div className="ayy-cluster">
-        <label className="ayy-label">
-          <Checkbox defaultChecked />
-          Checked
-        </label>
+        <Field inline>
+          <Checkbox id={`pv-brand-check-${theme}`} defaultChecked />
+          <Label htmlFor={`pv-brand-check-${theme}`}>Checked</Label>
+        </Field>
         <Field inline>
           <Switch id={`pv-brand-switch-${theme}`} defaultChecked />
           <Label htmlFor={`pv-brand-switch-${theme}`}>On</Label>
@@ -117,7 +118,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <Field>
           <Label htmlFor="pv-brand-color">Seed colour</Label>
           <div className="ayy-cluster">
-            <input type="color" className="pv-brand__picker" aria-label="Pick the seed colour" value={hex} onChange={(e) => set({ color: e.target.value })} />
+            <SwatchCustom size="lg" label="Pick the seed colour" value={hex} onChange={(e) => set({ color: e.target.value })} />
             <Input id="pv-brand-color" className="pv-brand__hex" value={input.color} onChange={(e) => set({ color: e.target.value })} spellCheck={false} />
           </div>
         </Field>

@@ -17,7 +17,7 @@ Category: Layout. Questions and answers, or sections people open one at a time: 
 - `selected` — doesn't apply: Open is the only state (see open).
 - `error` — doesn't apply: No error state.
 - `loading` — doesn't apply: No loading state.
-- `open` (`[open] on the <details>`) — Chevron points up and the content shows in text-soft sm text. With the same name on each item, opening one closes the others.
+- `open` (`[open] on the <details>`) — Chevron points up and the content rolls open in text-soft sm text. With the same name on each item, opening one closes the others.
 
 **Sizes**
 - Density — Doesn't follow data-density.

@@ -61,7 +61,12 @@ Or ask your agent to initialize ayywi in an existing codebase:
 npx @danitesler/ayywi init
 ```
 
-This sets up the agent skill, Cursor rules, AGENTS.md guide, and MCP server automatically.
+This sets up the agent skill, Cursor rules, AGENTS.md guide, and MCP server automatically, plus two things that keep agents on the components:
+
+- **A lint hook** (Claude Code): after every UI file the agent writes, `ayywi lint` runs on it and hands the findings back, so a raw `<select>`, a clickable `<div>` or a hand-built card gets fixed before the agent moves on.
+- **A reviewer agent** (`ayywi-ui-reviewer`): checks a finished screen piece by piece against the "need → component" map and lists every place an ayywi component was skipped.
+
+The MCP server's `pick_component` tool answers "what do I use for this?" (`"choose a theme"` → Select or Segmented control, never a raw `<select>`).
 
 ### 3. Interactive prompt generator
 
@@ -77,7 +82,7 @@ ayywi eliminates custom responsive CSS by providing built-in layout contracts:
 
 - **Web Apps (`App shell`):** On wide screens, renders a desktop sidebar with a collapsible icon rail. On phones, automatically transforms into a top brand bar and bottom tab navigation.
 - **Websites (`Navbar`):** Full horizontal navigation on desktop; automatically collapses into an accessible mobile menu button on screens below 48rem.
-- **Settings & Full-Screen Views:** Notion- and Cursor-style full-screen settings with split master-detail on desktop and drill-down navigation on phones.
+- **Settings:** Notion- and Claude-style settings in a near-full-screen modal — sections beside the open one on desktop, full screen with drill-down navigation on phones.
 
 ## Brand in one colour
 

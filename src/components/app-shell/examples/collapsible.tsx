@@ -1,9 +1,10 @@
 import { useState, type CSSProperties } from "react";
-import { DashboardSquare01Icon, Folder01Icon, Settings02Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
+import { DashboardSquare01Icon, Folder01Icon, Settings02Icon, SidebarLeftIcon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import {
   AppShell,
   AppShellBrand,
   AppShellFooter,
+  AppShellHead,
   AppShellLink,
   AppShellMain,
   AppShellNav,
@@ -16,24 +17,20 @@ import {
 export default function Example() {
   const [collapsed, setCollapsed] = useState(true);
 
+  // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the
+  // block-size on the shell.
   return (
     <div style={{ inlineSize: "100%", blockSize: "28rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
-      <AppShell
-        collapsed={collapsed}
-        hoverPreview
-        onCollapseChange={setCollapsed}
-        style={{ blockSize: "100%" }}
-      >
+      <AppShell collapsed={collapsed} hoverPreview onCollapseChange={setCollapsed} style={{ blockSize: "100%" }}>
         <AppShellSidebar>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <AppShellHead>
+            <AppShellToggle aria-label="Sidebar">
+              <Icon icon={SidebarLeftIcon} directional />
+            </AppShellToggle>
             <AppShellBrand href="#home">
-              <span className="ayy-avatar ayy-avatar--sm" aria-hidden="true">
-                <span className="ayy-avatar__fallback">NW</span>
-              </span>
               <span>Northwind</span>
             </AppShellBrand>
-            <AppShellToggle aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} />
-          </div>
+          </AppShellHead>
           <AppShellNav>
             <AppShellLink href="#dashboard" current title="Dashboard">
               <Icon icon={DashboardSquare01Icon} />
@@ -58,7 +55,7 @@ export default function Example() {
         <AppShellMain>
           <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
             <h2 className="ayy-h3">Dashboard</h2>
-            <p className="ayy-muted">Hover over the collapsed sidebar to preview it, or click the toggle to expand.</p>
+            <p className="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open.</p>
             <div className="ayy-grid" style={{ "--ayy-min": "9rem" } as CSSProperties}>
               <Stat labelFirst label="Open projects" value="12" />
               <Stat labelFirst label="Shipped this week" value="38" />

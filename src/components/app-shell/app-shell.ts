@@ -20,6 +20,7 @@ export const appShellToggleClass = "ayy-app-shell__toggle";
 export const appShellSettingsClass = "ayy-app-shell--settings";
 export const appShellBackClass = "ayy-app-shell__back";
 export const appShellTitleClass = "ayy-app-shell__title";
+export const appShellHeadClass = "ayy-app-shell__head";
 export const appShellCollapsedClass = "ayy-app-shell--collapsed";
 export const appShellHoverPreviewClass = "ayy-app-shell--hover-preview";
 
@@ -38,6 +39,18 @@ const DRAWER_QUERY = "(max-width: 48rem)";
 
 /** Where a drawer toggle may live: the phone bar, or the bottom nav (a "More" tab). */
 const TOGGLE_SELECTOR = `:scope > .${appShellBarClass} .${appShellToggleClass}, :scope > .ayy-bottom-nav .${appShellToggleClass}`;
+
+/** Set on the sidebar while the hover preview is held shut after a collapse. */
+const HOLD = "data-ayy-hold";
+
+/** The pointer is on the sidebar, or keyboard focus is in it: what opens the hover preview. */
+function wouldPreview(aside: HTMLElement): boolean {
+  try {
+    return aside.matches(":hover, :has(:focus-visible)");
+  } catch {
+    return aside.matches(":hover");
+  }
+}
 
 /** Where a sidebar collapse toggle may live. */
 const SIDEBAR_TOGGLE_SELECTOR = `:scope > .${appShellSidebarClass} .${appShellToggleClass}`;
@@ -93,8 +106,19 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     }
   };
 
+  // Collapsing from the sidebar's own toggle leaves the pointer (or focus) on the sidebar, which would open the hover
+  // preview straight away. Hold it shut until the pointer leaves or focus moves to something else.
+  const release = () => sidebar()?.removeAttribute(HOLD);
+  const onPointerLeave = () => release();
+  const onFocusIn = (event: FocusEvent) => {
+    if (!sidebarToggles().some((t) => t.contains(event.target as Node))) release();
+  };
+
   const toggleCollapse = () => {
     const next = !shell.classList.contains(appShellCollapsedClass);
+    const aside = sidebar();
+    if (next && aside && shell.classList.contains(appShellHoverPreviewClass) && wouldPreview(aside)) aside.setAttribute(HOLD, "");
+    else release();
     shell.classList.toggle(appShellCollapsedClass, next);
     syncSidebarToggles(next);
     options?.onCollapseChange?.(next);
@@ -181,11 +205,16 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   };
 
   shell.addEventListener("click", onClick);
+  aside?.addEventListener("pointerleave", onPointerLeave);
+  aside?.addEventListener("focusin", onFocusIn);
   document.addEventListener("keydown", onKeydown);
   document.addEventListener("keydown", onSettingsEscape, true);
   media?.addEventListener("change", onMedia);
   return () => {
     shell.removeEventListener("click", onClick);
+    aside?.removeEventListener("pointerleave", onPointerLeave);
+    aside?.removeEventListener("focusin", onFocusIn);
+    release();
     document.removeEventListener("keydown", onKeydown);
     document.removeEventListener("keydown", onSettingsEscape, true);
     media?.removeEventListener("change", onMedia);

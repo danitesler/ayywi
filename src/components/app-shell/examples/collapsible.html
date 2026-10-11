@@ -3,14 +3,13 @@
   <ayy-app-shell collapsed hover-preview>
     <div class="ayy-app-shell ayy-app-shell--collapsed ayy-app-shell--hover-preview" style="block-size: 100%">
       <aside class="ayy-app-shell__sidebar">
-        <div style="display: flex; align-items: center; justify-content: space-between">
+        <div class="ayy-app-shell__head">
+          <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon ayy-app-shell__toggle" aria-label="Sidebar" aria-expanded="false">
+            <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12C2 8.31087 2 6.4663 2.81382 5.15877C3.1149 4.67502 3.48891 4.25427 3.91891 3.91554C5.08116 3 6.72077 3 10 3H14C17.2792 3 18.9188 3 20.0811 3.91554C20.5111 4.25427 20.8851 4.67502 21.1862 5.15877C22 6.4663 22 8.31087 22 12C22 15.6891 22 17.5337 21.1862 18.8412C20.8851 19.325 20.5111 19.7457 20.0811 20.0845C18.9188 21 17.2792 21 14 21H10C6.72077 21 5.08116 21 3.91891 20.0845C3.48891 19.7457 3.1149 19.325 2.81382 18.8412C2 17.5337 2 15.6891 2 12Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9.5 3L9.5 21" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"></path><path d="M5 7H6M5 10H6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+          </button>
           <a class="ayy-app-shell__brand" href="#home">
-            <span class="ayy-avatar ayy-avatar--sm" aria-hidden="true"><span class="ayy-avatar__fallback">NW</span></span>
             <span>Northwind</span>
           </a>
-          <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon ayy-app-shell__toggle" aria-label="Toggle sidebar" aria-expanded="false">
-            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5L20 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 12L20 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 19L20 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
-          </button>
         </div>
         <nav class="ayy-app-shell__nav" aria-label="Main">
           <a class="ayy-app-shell__link" href="#dashboard" aria-current="page" title="Dashboard">
@@ -36,7 +35,7 @@
       <main class="ayy-app-shell__main">
         <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
           <h2 class="ayy-h3">Dashboard</h2>
-          <p class="ayy-muted">Hover over the collapsed sidebar to preview it, or click the toggle to expand.</p>
+          <p class="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open.</p>
           <div class="ayy-grid" style="--ayy-min: 9rem">
             <div class="ayy-stat">
               <p class="ayy-stat__label">Open projects</p>

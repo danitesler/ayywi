@@ -23,6 +23,7 @@ import { trackDropzones } from "../components/dropzone/dropzone";
 import { stepNumberField, syncNumberField } from "../components/number-field/number-field";
 import { syncSlider } from "../components/slider/slider";
 import { clearSearchBar } from "../components/search-bar/search-bar";
+import { openSelectListFrom } from "../components/select/select";
 import { syncShortcuts } from "../components/shortcut/shortcut";
 import { syncSwatch } from "../components/swatch/swatch";
 import { define } from "../lib/element";
@@ -60,7 +61,12 @@ function onClick(event: MouseEvent): void {
   if (clear) clearSearchBar(clear);
 }
 
-/** Register every <ayy-*> element and the page-wide helpers: card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, drop zones. Safe to call twice. */
+// Selects open ayywi's options list with a mouse or trackpad (React Select does it itself and calls preventDefault).
+function onSelectOpen(event: MouseEvent | KeyboardEvent): void {
+  if ((event.target as Element | null)?.closest?.(".ayy-select__control")) openSelectListFrom(event);
+}
+
+/** Register every <ayy-*> element and the page-wide helpers: card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, select option lists, drop zones. Safe to call twice. */
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
   define("ayy-table", AyyTableElement);
@@ -86,6 +92,9 @@ export function defineElements(): void {
     document.addEventListener("error", onError, true);
     document.addEventListener("input", onInput);
     document.addEventListener("click", onClick);
+    document.addEventListener("mousedown", onSelectOpen);
+    document.addEventListener("click", onSelectOpen);
+    document.addEventListener("keydown", onSelectOpen);
     trackDropzones(document);
     // Images that failed before this script ran.
     for (const img of document.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) {

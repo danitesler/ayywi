@@ -78,6 +78,40 @@ ayy-dialog {
 .ayy-dialog--lg { --_w: 42rem; }
 .ayy-dialog--xl { --_w: 56rem; }
 
+/* ---- Full: near full screen, for a workspace of its own (the App shell's settings mode). No padding: what it holds
+   lays itself out and scrolls its own parts. Full screen on phones. ---- */
+
+.ayy-dialog--full {
+  --_w: 72rem;
+  --_pad: 0;
+  gap: 0;
+  inline-size: min(var(--_w), calc(100vw - var(--ayy-space-16)));
+  block-size: min(50rem, calc(100dvh - var(--ayy-space-16)));
+  max-inline-size: none;
+  max-block-size: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Over a sticky Top bar inside it. */
+.ayy-dialog--full > .ayy-dialog__close {
+  z-index: calc(var(--ayy-z-sticky) + 1);
+}
+
+@media (max-width: 48rem) {
+  .ayy-dialog--full {
+    inline-size: 100vw;
+    block-size: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .ayy-dialog--full > .ayy-dialog__close {
+    inset-block-start: calc(var(--ayy-space-3) + env(safe-area-inset-top, 0px));
+    inset-inline-end: var(--ayy-space-3);
+  }
+}
+
 /* ---- Side modal: full height on the inline-start or inline-end edge, width from the size modifiers ---- */
 
 .ayy-dialog--side-start,

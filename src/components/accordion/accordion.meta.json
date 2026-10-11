@@ -21,7 +21,7 @@
     "selected": { "none": "Open is the only state (see open)." },
     "error": { "none": "No error state." },
     "loading": { "none": "No loading state." },
-    "open": { "when": "[open] on the <details>", "looks": "Chevron points up and the content shows in text-soft sm text. With the same name on each item, opening one closes the others." }
+    "open": { "when": "[open] on the <details>", "looks": "Chevron points up and the content rolls open in text-soft sm text. With the same name on each item, opening one closes the others." }
   },
   "sizes": {
     "density": "Doesn't follow data-density.",
