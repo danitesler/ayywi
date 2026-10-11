@@ -19,9 +19,10 @@ if (process.argv.includes("--verify")) {
     const res = await fetch(`${CDN}${version}/${file}`);
     const body = Buffer.from(await res.arrayBuffer());
     const want = hashes.get(file);
-    const ok = res.ok && (!want || sri(body) === want);
-    if (!ok) bad++;
-    console.log(`${ok ? "✓" : "✗"} ${res.status} ${file}${want ? (sri(body) === want ? " (hash matches)" : " (HASH DIFFERS)") : ""}`);
+    const match = !want || sri(body) === want;
+    if (!res.ok || !match) bad++;
+    const note = !res.ok ? "" : want ? (match ? " (hash matches)" : " (HASH DIFFERS)") : "";
+    console.log(`${res.ok && match ? "✓" : "✗"} ${res.status} ${file}${note}`);
   }
   if (bad) {
     console.error(`${bad} file(s) not served as pinned. A new release can take a few minutes to reach jsDelivr; try again.`);
