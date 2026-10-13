@@ -1,6 +1,6 @@
 {
   "name": "ayywi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Runs the ayywi CLI. The design system itself is @danitesler/ayywi; this name exists so `npx ayywi` reaches it.",
   "type": "module",
   "license": "MIT",
