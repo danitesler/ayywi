@@ -1,11 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-import { open, rtl, stage } from "./helpers";
+import { example, open, rtl } from "./helpers";
 
-// The Settings pattern: the App shell in settings mode, in a near-full-screen dialog. Fifth example on the App shell page.
-const SETTINGS = 4;
+// The Settings pattern: the App shell in settings mode, in a near-full-screen dialog (the "settings" example).
+const SETTINGS = "settings";
 
 async function openSettings(page: Page) {
-  await stage(page, SETTINGS).getByRole("button", { name: "Settings" }).click();
+  await example(page, SETTINGS).getByRole("button", { name: "Settings" }).click();
   const dialog = page.getByRole("dialog", { name: "Settings" });
   await expect(dialog).toBeVisible();
   // It scales in as it opens: measure once it's settled.
@@ -97,7 +97,7 @@ for (const renderer of ["react", "html"] as const) {
       const chevron = () => row.evaluate((el) => getComputedStyle(el, "::after").transform);
       expect(await chevron()).not.toBe("none");
       const ltr = await chevron();
-      await rtl(stage(page, SETTINGS));
+      await rtl(example(page, SETTINGS));
       expect(await chevron()).not.toBe(ltr);
     });
 
@@ -108,7 +108,7 @@ for (const renderer of ["react", "html"] as const) {
       await dialog.getByRole("switch", { name: "Open at login" }).focus();
       await page.keyboard.press("Escape");
       await expect(dialog).toBeHidden();
-      await expect(stage(page, SETTINGS).getByRole("button", { name: "Settings" })).toBeFocused();
+      await expect(example(page, SETTINGS).getByRole("button", { name: "Settings" })).toBeFocused();
     });
   });
 }

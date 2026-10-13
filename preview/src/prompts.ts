@@ -97,7 +97,7 @@ Use only ayywi's class names (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No 
 
 const RULES = `Rules:
 - Only ayywi components and tokens. No hardcoded colours (use var(--ayy-color-*)), no made-up ayy- classes, no left/right CSS (margin-inline-start, not margin-left).
-- An app gets a sidebar on wide screens, and a top bar plus a bottom tab bar on phones: .ayy-app-shell with a .ayy-app-shell__bar and a .ayy-bottom-nav inside. Each screen fills the main — don't wrap it in .ayy-container or a max-inline-size. A website gets an .ayy-navbar with a menu button for phones (.ayy-navbar__toggle), .ayy-section blocks at .ayy-container width, and an .ayy-footer.
+- An app gets a sidebar on wide screens, and a top bar plus a bottom tab bar on phones: .ayy-app-shell with a .ayy-app-shell__bar and a .ayy-bottom-nav inside. Each screen fills the main — don't wrap it in .ayy-container or a max-inline-size. A website gets an .ayy-navbar with a menu button for phones (.ayy-navbar__toggle), content at .ayy-container width, and an .ayy-footer.
 - Each screen starts with a page header (.ayy-page-header). Every list and table has a loading state (.ayy-skeleton), an empty state (.ayy-empty-state) and an error state (.ayy-alert--destructive with a Try again button).
 - One main button per screen (.ayy-button); everything else .ayy-button--outline or --ghost.
 - Charts are ayywi charts (.ayy-chart, .ayy-bar-list, .ayy-sparkline); with a chart library, colour series with var(--ayy-chart-1), var(--ayy-chart-2)…
@@ -145,7 +145,7 @@ export const FIXES = [
   },
   {
     title: "Add a dark mode switch",
-    prompt: `Add the ayywi theme toggle (.ayy-theme-toggle inside <ayy-theme-toggle>, or ThemeToggle in React) to the navbar, or to the sidebar footer in an app. It remembers the choice; load ayywi's theme-init.js first thing in <head> so the saved theme applies before the page paints. Don't write dark colours yourself or use a .dark class: the ayywi tokens switch with data-theme on <html>.`,
+    prompt: `Add a theme switcher to the navbar, or to the sidebar footer in an app, switching data-theme on <html> (with setTheme() or setting data-theme directly). It remembers the choice; load ayywi's theme-init.js first thing in <head> so the saved theme applies before the page paints. Don't write dark colours yourself or use a .dark class: the ayywi tokens switch with data-theme on <html>.`,
   },
   {
     title: "Use ayywi instead of custom styles",
@@ -176,3 +176,73 @@ export const FIXES = [
 /** A follow-up prompt, with a reminder of where the rules are. */
 export const fixPrompt = (prompt: string, l = links()) =>
   `${prompt}\n\nThis project uses the ayywi design system: stick to its classes and tokens (each component, with examples: ${l.docs}llms/<component>.md; everything: ${l.docs}llms-full.txt).`;
+
+export interface ComponentPromptMeta {
+  name: string;
+  slug: string;
+  description: string;
+  classes?: Record<string, string>;
+  react?: { import: string; components?: Record<string, unknown> };
+  element?: { tag: string };
+  do?: string[];
+  dont?: string[];
+}
+
+export interface ExamplePromptMeta {
+  title: string;
+  reactSource?: string;
+  htmlSource?: string;
+}
+
+/** Generate an actionable AI prompt to build a component example with ayywi. */
+export function componentPrompt(
+  component: ComponentPromptMeta,
+  example: ExamplePromptMeta,
+  renderer: "react" | "html" = "react",
+  l = links(),
+): string {
+  const isHtml = renderer === "html" && Boolean(example.htmlSource);
+  const lines = [
+    `Build ${/^[aeiou]/i.test(component.name) ? "an" : "a"} ${component.name} component (${example.title}) using the ayywi design system.`,
+    ``,
+    `Context:`,
+    component.description,
+    ``,
+    `Implementation:`,
+  ];
+
+  if (!isHtml && component.react?.import) {
+    lines.push(`- React: ${component.react.import}`);
+  }
+  if (component.element?.tag) {
+    lines.push(`- Element: <${component.element.tag}> (from "@danitesler/ayywi/elements")`);
+  }
+  const keyClasses = Object.keys(component.classes ?? {}).slice(0, 5).map((c) => `.${c}`).join(", ");
+  if (keyClasses) {
+    lines.push(`- Classes: ${keyClasses}`);
+  }
+
+  if (component.do?.length || component.dont?.length) {
+    lines.push(``, `Key guidelines:`);
+    if (component.do?.length) lines.push(`- Do: ${component.do[0]}`);
+    if (component.dont?.length) lines.push(`- Don't: ${component.dont[0]}`);
+  }
+
+  lines.push(
+    `- Rules: Tokens only (var(--ayy-*)). No hardcoded hex/rgb colours, no made-up ayy- classes.`,
+    `- Docs: ${l.docs}llms/${component.slug}.md`,
+  );
+
+  const snippet = isHtml ? example.htmlSource : (example.reactSource || example.htmlSource);
+  if (snippet) {
+    lines.push(
+      ``,
+      `Reference code:`,
+      `\`\`\`${isHtml ? "html" : "tsx"}`,
+      snippet,
+      `\`\`\``,
+    );
+  }
+
+  return lines.join("\n");
+}

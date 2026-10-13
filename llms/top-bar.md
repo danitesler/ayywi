@@ -56,7 +56,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 ```html
 <div style="inline-size: min(100%, 24rem); border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl); overflow: hidden">
   <header class="ayy-top-bar">
-    <a class="ayy-top-bar__back" href="#lists"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span>Lists</span></a>
+    <a class="ayy-top-bar__back" href="#lists" aria-label="Back"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
     <div class="ayy-top-bar__heading">
       <h1 class="ayy-top-bar__title">Groceries</h1>
       <p class="ayy-top-bar__subtitle">8 items, 3 done</p>
@@ -82,7 +82,6 @@ export default function Example() {
     <div style={{ inlineSize: "min(100%, 24rem)", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)", overflow: "hidden" }}>
       <TopBar
         backHref="#lists"
-        backLabel="Lists"
         title="Groceries"
         subtitle="8 items, 3 done"
         actions={
@@ -203,4 +202,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -2,7 +2,7 @@
 
 /** Custom properties consumers may set. Everything else starting with --ayy- must be a token. */
 export const PUBLIC_HOOKS = {
-  "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.",
+  "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card or page: it lights card spotlights, the active contents item, icon tiles, the scroll-progress bar and .ayy-accent-text.",
   "--ayy-mx": "Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).",
   "--ayy-my": "Card spotlight pointer Y in px (set by React Card or @danitesler/ayywi/elements).",
   "--ayy-dot": "Badge status-dot colour override.",
@@ -66,10 +66,10 @@ export const CATEGORIES = {
 /** Component order within a category (categories themselves follow CATEGORIES), for the manifest, llms files and preview.
     Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
-  "button", "toolbar", "menu", "command", "fab", "theme-toggle",
+  "button", "toolbar", "menu", "command", "fab",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc",
   "field", "input", "input-group", "search-bar", "textarea", "select", "combobox", "tag-input", "calendar", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "dropzone", "switch", "shortcut", "settings",
-  "page-header", "section", "card", "tabs", "accordion", "carousel", "separator",
+  "page-header", "card", "tabs", "accordion", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
   "badge", "kbd", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "frame", "chat", "table", "chart",
@@ -103,7 +103,7 @@ export const PATTERNS = [
     ],
     specs: {
       "Sidebar item (.ayy-app-shell__link, in the app and in settings)":
-        "--ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-3, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current=\"page\"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-1 apart. Groups: an uppercase --ayy-text-2xs label, and a hairline plus --ayy-space-3 above every group after the first.",
+        "--ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-3, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current=\"page\"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-0-5 apart. Groups: an uppercase --ayy-text-2xs label, and a hairline plus --ayy-space-3 above every group after the first.",
       "Settings group (.ayy-settings)":
         "A <section> labelled by its <h2> (--ayy-text-md, semibold), an optional muted --ayy-text-sm description, then the rows in a card: a 1px --ayy-color-line border, --ayy-radius-card, --ayy-color-surface. Groups are --ayy-space-6 apart. .ayy-settings--plain (no card) only in a sheet or dialog that already has a surface.",
       "Settings row (.ayy-settings__row)":
@@ -170,7 +170,7 @@ export const NEEDS = [
   { need: "Where you are, or which page of results", use: ["breadcrumb", "pagination"], how: "Breadcrumb for nested pages, Pagination for pages of results.", not: "links separated by slashes, numbered buttons" },
   { need: "A screen pushed from a list on a phone", use: ["top-bar"], how: "Top bar (back, title, actions).", not: "a hand-built header with a back arrow" },
   { need: "A screenshot or picture of the product", use: ["frame"], how: "Frame around it.", not: "an <img> with a border and shadow" },
-  { need: "Light/dark switch", use: ["theme-toggle"], how: "Theme toggle.", not: "a button that flips a class" },
+  { need: "Light/dark switch", use: ["menu"], how: "Dropdown menu of themes (radio items) that calls setTheme(); an icon trigger shows the current one.", not: "a button that flips a class" },
 ];
 
 /** Attributes ayywi reads on any element. */
@@ -207,8 +207,8 @@ export const RULES = [
   "Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.",
   "Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).",
   "Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state. Movement on :hover (lifts, zooms, spins) goes inside @media (hover: hover), because a tap leaves :hover stuck on touch screens.",
-  "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
-  "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
+  "The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card or page that shows the content, and the spotlight, contents bar, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.",
+  "Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.",
   "Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button; on phones a screen pushed from a list starts with a Top bar (back, title, actions) instead, and a screen's one main create action can be a Floating action button. Lists of rows on phones get Swipe actions for their two or three most common actions, which are also reachable elsewhere. Settings open over the app in a near-full-screen Dialog (size=\"full\") holding the App shell in settings mode (the Settings pattern: a Settings title and the sections in its sidebar; one section of Settings rows in its main; on phones the dialog fills the screen and the section list and a section are two screens), never in a small or side dialog; desktop apps add a Command palette on ⌘K. Never put a Navbar in an app.",
   "An app screen fills the main. Don't wrap it in .ayy-container or a max-inline-size — a max-inline-size on an example only sizes that example in the docs, it is not page layout. Long text (a description, .ayy-prose) may stop at --ayy-size-measure. Settings mode already centres its column; don't add a second cap.",
   "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
@@ -219,6 +219,6 @@ export const RULES = [
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).",
+  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>).",
   "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.",
 ];

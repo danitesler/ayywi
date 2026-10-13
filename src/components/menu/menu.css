@@ -55,7 +55,19 @@
 }
 
 /* Items take focus with the arrow keys and show it with the highlight; keyboard focus adds the ring, as everywhere else. */
-.ayy-menu__item:is(:hover, :focus-visible, :focus) {
+.ayy-menu--sub {
+  z-index: 1;
+}
+
+.ayy-menu--static {
+  position: static;
+  inset: auto;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) {
   outline: none;
   background-color: var(--ayy-color-wash-hover);
 }
@@ -70,6 +82,31 @@
   inline-size: 1.1em;
   block-size: 1.1em;
   color: var(--ayy-color-muted);
+}
+
+.ayy-menu__item--described {
+  padding-block: var(--ayy-space-1-5);
+  align-items: flex-start;
+  white-space: normal;
+}
+
+.ayy-menu__item--described > svg {
+  margin-block-start: 0.15em;
+}
+
+.ayy-menu__item-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+  flex: 1 1 auto;
+}
+
+.ayy-menu__description {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  line-height: var(--ayy-leading-snug);
+  white-space: normal;
 }
 
 .ayy-menu__item--destructive,
@@ -100,6 +137,13 @@
   cursor: not-allowed;
 }
 
+.ayy-menu__value {
+  margin-inline-start: auto;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  white-space: nowrap;
+}
+
 .ayy-menu__shortcut {
   margin-inline-start: auto;
   padding-inline-start: var(--ayy-space-4);
@@ -107,6 +151,47 @@
   font-family: inherit;
   font-size: var(--ayy-text-2xs);
   letter-spacing: var(--ayy-tracking-wide);
+}
+
+.ayy-menu__item--sub {
+  position: relative;
+}
+
+.ayy-menu__chevron {
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 0.45em;
+  block-size: 0.45em;
+  margin-inline-start: auto;
+  border-inline-end: 1.5px solid currentColor;
+  border-block-end: 1.5px solid currentColor;
+  color: var(--ayy-color-muted);
+  /* Drawn from the inline-end and block-end borders, which swap sides in RTL: × --_ayy-dir keeps it pointing to the inline end. */
+  transform: rotate(calc(var(--_ayy-dir, 1) * -45deg));
+  transition: transform var(--ayy-duration-base) var(--ayy-ease-menu);
+}
+
+.ayy-menu__value + .ayy-menu__chevron,
+.ayy-menu__shortcut + .ayy-menu__chevron {
+  margin-inline-start: var(--ayy-space-2);
+}
+
+.ayy-menu__item--expand > .ayy-menu__chevron {
+  transform: translateY(-0.1em) rotate(calc(var(--_ayy-dir, 1) * 45deg));
+}
+
+.ayy-menu__item--expand[aria-expanded="true"] > .ayy-menu__chevron {
+  transform: translateY(0.1em) rotate(calc(var(--_ayy-dir, 1) * -135deg));
+}
+
+.ayy-menu__group--inline {
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: calc(var(--ayy-space-2) + 1.1em);
+}
+
+.ayy-menu__group--inline[hidden] {
+  display: none;
 }
 
 .ayy-menu__label {
@@ -135,12 +220,13 @@ ayy-menu {
   .ayy-menu {
     border-color: CanvasText;
   }
-  .ayy-menu__item:is(:hover, :focus-visible, :focus) {
+  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
   }
-  .ayy-menu__item:is(:hover, :focus-visible, :focus) > svg {
+  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) > svg,
+  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) > .ayy-menu__chevron {
     color: HighlightText;
   }
   .ayy-menu__separator {

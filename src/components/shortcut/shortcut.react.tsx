@@ -1,11 +1,11 @@
 import { forwardRef, useEffect, useRef, useState, useSyncExternalStore, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
-import { recorderLabel, shortcutClass, shortcutFromEvent, shortcutKeys, shortcutLabel, shortcutRecorderClass, isApplePlatform } from "./shortcut";
+import { recorderLabel, shortcutClass, shortcutFromEvent, shortcutKeys, shortcutLabel, shortcutRecorderClass, getPlatform, type Platform } from "./shortcut";
 
 const noop = () => () => {};
-/** Apple or not, without a hydration mismatch: the server (and the first client render) say "not Apple". */
-function useApple(): boolean {
-  return useSyncExternalStore(noop, isApplePlatform, () => false);
+/** This device's platform, without a hydration mismatch: the server (and the first client render) say "other". */
+export function usePlatform(): Platform {
+  return useSyncExternalStore(noop, getPlatform, () => "other");
 }
 
 export interface ShortcutProps extends HTMLAttributes<HTMLSpanElement> {
@@ -15,11 +15,11 @@ export interface ShortcutProps extends HTMLAttributes<HTMLSpanElement> {
 
 /** A shortcut's keys as keycaps (⌘ ⇧ K on a Mac, Ctrl Shift K elsewhere), read aloud as words. */
 export const Shortcut = forwardRef<HTMLSpanElement, ShortcutProps>(function Shortcut({ keys, className, ...props }, ref) {
-  const apple = useApple();
+  const platform = usePlatform();
   return (
     <span ref={ref} className={cx(shortcutClass, className)} data-keys={keys} {...props}>
-      <span className="ayy-sr-only">{shortcutLabel(keys, apple)}</span>
-      {shortcutKeys(keys, apple).map((key, i) => (
+      <span className="ayy-sr-only">{shortcutLabel(keys, platform)}</span>
+      {shortcutKeys(keys, platform).map((key, i) => (
         <kbd key={i} className="ayy-kbd" aria-hidden="true">
           {key}
         </kbd>

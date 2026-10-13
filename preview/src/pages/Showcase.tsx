@@ -69,9 +69,8 @@ function Gallery() {
         <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">What you can build</h1>
         <p className="ayy-lede">
-          Seven screens made only from ayywi components, each in its own theme and density. The apps share one frame: a sidebar on wide
-          screens, a top bar and tabs on phones; the two websites get a navbar that folds into a menu. Open one to see it on desktop,
-          tablet and mobile, and copy the prompt that builds it.
+          Seven screens, ayywi only, each its own theme and density. Same frame: sidebar on desktop, bar and tabs on phones; navbar on
+          sites. Open one for desktop, tablet and mobile, plus its build prompt.
         </p>
       </header>
       <ul className="pv-showcase">
@@ -158,8 +157,7 @@ function Detail({ app }: { app: ShowcaseApp }) {
 
       <h2 className="pv-h pv-h--section">Build it with AI</h2>
       <p className="pv-note">
-        Paste this into your coding agent in a project that has ayywi set up (see Get started). It names the components, so the agent
-        doesn't have to guess.
+        Paste into your agent in a project with ayywi set up (see Get started). It names the components.
       </p>
       <CodeBlock code={app.prompt} label="prompt" wrap />
 

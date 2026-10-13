@@ -94,7 +94,7 @@
   outline-offset: 2px;
 }
 
-/* The last row: copyright on one side, legal links (and maybe a theme toggle) on the other. */
+/* The last row: copyright on one side, legal links (and maybe a theme menu) on the other. */
 .ayy-footer__bottom {
   display: flex;
   flex-wrap: wrap;

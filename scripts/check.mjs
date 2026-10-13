@@ -29,13 +29,16 @@ function selectorClasses(css) {
   return out;
 }
 
-function lintCss(file, css) {
+function lintCss(file, css, { foreignVars = false } = {}) {
   for (const f of cssRuleFindings(css)) fail(`${file}:${f.line}`, `${f.rule} — ${f.message}`);
   stripComments(css)
     .split("\n")
     .forEach((line, i) => {
       for (const v of line.matchAll(/var\((--ayy-[\w-]+)/g)) {
         if (!allowedVars.has(v[1])) fail(`${file}:${i + 1}`, `unknown custom property ${v[1]} — not a token or documented hook`);
+      }
+      if (!foreignVars) for (const v of line.matchAll(/(?:^|[\s(;{,])(--(?!ayy-|_)[a-zA-Z][\w-]*)\s*[:,)]/g)) {
+        fail(`${file}:${i + 1}`, `custom property ${v[1]} must be --ayy-* (public) or --_* (private)`);
       }
       for (const k of line.matchAll(/@keyframes\s+([\w-]+)/g)) {
         if (!k[1].startsWith("ayy-")) fail(`${file}:${i + 1}`, `keyframes "${k[1]}" must be prefixed ayy-`);
@@ -263,6 +266,15 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   if (Number(count) !== metas.length) fail("README.md", `says "all ${count ?? "?"} components"; there are ${metas.length}`);
   const table = readme.split("## Components")[1]?.split("\n## ")[0] ?? "";
   for (const m of metas) if (!new RegExp(`\\b${m.name}\\b`).test(table)) fail("README.md", `the Components table doesn't list ${m.name}`);
+  // …and lists nothing else (a removed or renamed component). "Calendar (and date picker)": the name is before the "(".
+  const names = new Set(metas.map((m) => m.name));
+  for (const row of table.matchAll(/^\| *([A-Z][\w ]*?) *\| *(.+?) *\|$/gm)) {
+    if (row[1] === "Category") continue;
+    for (const cell of row[2].replace(/\(.*?\)/g, "").split(",")) {
+      const name = cell.trim();
+      if (name && !names.has(name)) fail("README.md", `the Components table lists "${name}", which isn't a component`);
+    }
+  }
 }
 
 // ---- Base, and the shadcn/ui bridge (tokens only, like everything else) ----
@@ -281,7 +293,7 @@ for (const slug of readdirSync(join(root, "src/components"))) {
 
 const base = read("src/css/base.css");
 lintCss("src/css/base.css", base);
-lintCss("src/css/shadcn.css", read("src/css/shadcn.css"));
+lintCss("src/css/shadcn.css", read("src/css/shadcn.css"), { foreignVars: true }); // sets shadcn/ui's own variables on purpose
 const baseClasses = selectorClasses(base);
 for (const cls of baseClasses) if (!(cls in UTILITIES)) fail("scripts/lib/contract.mjs", `utility .${cls} (base.css) isn't documented in UTILITIES`);
 for (const cls of Object.keys(UTILITIES)) if (!baseClasses.has(cls)) fail("scripts/lib/contract.mjs", `UTILITIES documents .${cls}, which base.css doesn't define`);

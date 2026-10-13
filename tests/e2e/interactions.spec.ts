@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { open, rtl, settle, stage } from "./helpers";
+import { example, open, rtl, settle, stage } from "./helpers";
 
 for (const renderer of ["react", "html"] as const) {
   test.describe(renderer, () => {
@@ -48,7 +48,7 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell drawer: the bar's toggle opens the sidebar on phones, Esc and links close it", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "app-shell", { renderer });
-      const shell = stage(page, 3).locator(".ayy-app-shell");
+      const shell = example(page, "drawer").locator(".ayy-app-shell");
       const toggle = shell.getByRole("button", { name: "Menu" });
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const main = shell.locator(".ayy-app-shell__main");
@@ -78,7 +78,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
       // RTL: it comes from the right edge.
-      await rtl(stage(page, 3));
+      await rtl(example(page, "drawer"));
       await toggle.click();
       await expect
         .poll(async () => {
@@ -88,7 +88,7 @@ for (const renderer of ["react", "html"] as const) {
         })
         .toBe(0);
       await page.keyboard.press("Escape");
-      await stage(page, 3).evaluate((el) => el.removeAttribute("dir"));
+      await example(page, "drawer").evaluate((el) => el.removeAttribute("dir"));
 
       // Wider than a phone: no bar, the sidebar in place.
       await page.setViewportSize({ width: 1280, height: 720 });
@@ -133,7 +133,7 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell collapsible sidebar: rail when collapsed, hover preview overlays, toggle button expands", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await open(page, "app-shell", { renderer });
-      const shell = stage(page, 5).locator(".ayy-app-shell");
+      const shell = example(page, "collapsible").locator(".ayy-app-shell");
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const main = shell.locator(".ayy-app-shell__main");
       const toggle = sidebar.locator(".ayy-app-shell__toggle");
@@ -182,7 +182,7 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell collapsible sidebar: the width animates, and labels fade instead of jumping", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await open(page, "app-shell", { renderer });
-      const shell = stage(page, 5).locator(".ayy-app-shell");
+      const shell = example(page, "collapsible").locator(".ayy-app-shell");
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const toggle = sidebar.locator(".ayy-app-shell__toggle");
       await shell.locator(".ayy-app-shell__main").hover();
@@ -419,6 +419,76 @@ for (const renderer of ["react", "html"] as const) {
       await expect(menu).toBeHidden();
     });
 
+    test("menu: submenus, radio/check items, inline expand, keyboard flyout", async ({ page }) => {
+      await open(page, "menu", { renderer });
+      const captureTrigger = stage(page, 1).getByRole("button", { name: "Capture options" });
+      await captureTrigger.click();
+
+      const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Takerr" });
+      await expect(main).toBeVisible();
+
+      // Submenu trigger keyboard navigation
+      const timerTrigger = main.getByRole("menuitem", { name: /Self-timer/ });
+      await timerTrigger.focus();
+      await page.keyboard.press("ArrowRight");
+
+      const timerSub = page.locator("#submenu-timer, .ayy-menu--sub").filter({ hasText: "In 3 seconds" });
+      await expect(timerSub).toBeVisible();
+      await expect(timerTrigger).toHaveAttribute("aria-expanded", "true");
+
+      // ArrowLeft closes submenu, leaves focus on parent trigger
+      await page.keyboard.press("ArrowLeft");
+      await expect(timerSub).toBeHidden();
+      await expect(timerTrigger).toBeFocused();
+
+      // Enter opens submenu and Esc closes only the submenu
+      await page.keyboard.press("Enter");
+      await expect(timerSub).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(timerSub).toBeHidden();
+      await expect(main).toBeVisible();
+
+      // Inline expandable group
+      const advTrigger = main.getByRole("menuitem", { name: /Advanced options/ });
+      await advTrigger.click();
+      await expect(advTrigger).toHaveAttribute("aria-expanded", "true");
+      const checkbox = main.getByRole("menuitemcheckbox", { name: "Include pointer" });
+      await expect(checkbox).toBeVisible();
+
+      // Radio selection checks item without closing by default
+      await timerTrigger.click();
+      await expect(timerSub).toBeVisible();
+      const radio3s = timerSub.getByRole("menuitemradio", { name: "In 3 seconds" });
+      await radio3s.click();
+      await expect(radio3s).toHaveAttribute("aria-checked", "true");
+      await expect(timerSub).toBeVisible();
+
+      // Normal action item closes everything
+      const fullScreen = main.getByRole("menuitem", { name: /Full screen/ });
+      await fullScreen.click();
+      await expect(main).toBeHidden();
+      await expect(timerSub).toBeHidden();
+    });
+
+    test("menu: hovering the submenu panel keeps it open", async ({ page }) => {
+      await open(page, "menu", { renderer });
+      const captureTrigger = stage(page, 1).getByRole("button", { name: "Capture options" });
+      await captureTrigger.click();
+
+      const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Takerr" });
+      const timerTrigger = main.getByRole("menuitem", { name: /Self-timer/ });
+      await timerTrigger.hover();
+
+      const timerSub = page.locator("#submenu-timer, .ayy-menu--sub").filter({ hasText: "In 3 seconds" });
+      await expect(timerSub).toBeVisible();
+
+      // Moving onto the panel itself must not close it (panel hover bubbles to the parent menu).
+      await timerSub.getByRole("menuitemradio", { name: "In 5 seconds" }).hover();
+      await expect(timerSub).toBeVisible();
+      await page.waitForTimeout(300);
+      await expect(timerSub).toBeVisible();
+    });
+
     test("select: a mouse opens ayywi's list, choosing fires change, the keyboard works", async ({ page }) => {
       await open(page, "select", { renderer });
       const select = stage(page).getByLabel("Region");
@@ -573,26 +643,6 @@ for (const renderer of ["react", "html"] as const) {
       expect(new Set(tops).size).toBe(1);
       expect((await list.locator(".ayy-breadcrumb__link").first().boundingBox())!.height).toBeGreaterThanOrEqual(39.5);
       await page.setViewportSize({ width: 1280, height: 720 });
-    });
-
-    test("theme toggle lists every theme, applies the choice and remembers it", async ({ page }) => {
-      await open(page, "theme-toggle", { renderer, theme: "dark" });
-      const toggle = stage(page).getByRole("button", { name: "Theme" });
-      await toggle.click();
-      const items = page.getByRole("menuitemradio");
-      await expect(items).toHaveText(["System", "Dark", "Dark contrast", "Light", "Light gray"]);
-      await items.filter({ hasText: /^Light gray$/ }).click();
-      await expect(page.locator("html")).toHaveAttribute("data-theme", "light-gray");
-      expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("light-gray");
-      const shown = () =>
-        toggle
-          .locator("svg")
-          .evaluateAll((svgs) => svgs.filter((s) => getComputedStyle(s).color !== "rgba(0, 0, 0, 0)").map((s) => (s.classList.contains("ayy-theme-toggle__sun") ? "sun" : "moon")));
-      await expect.poll(shown).toEqual(["sun"]);
-      await toggle.click();
-      await expect(page.getByRole("menuitemradio", { name: "Light gray" })).toHaveAttribute("aria-checked", "true");
-      await page.getByRole("menuitemradio", { name: "System" }).click();
-      await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.+/);
     });
 
     test("a card link covers the whole card", async ({ page }) => {

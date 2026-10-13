@@ -1,6 +1,6 @@
 <!-- The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the block-size on the shell. -->
 <div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
-  <ayy-app-shell collapsed hover-preview>
+  <ayy-app-shell collapsed>
     <div class="ayy-app-shell ayy-app-shell--collapsed ayy-app-shell--hover-preview" style="block-size: 100%">
       <aside class="ayy-app-shell__sidebar">
         <div class="ayy-app-shell__head">
@@ -35,7 +35,7 @@
       <main class="ayy-app-shell__main">
         <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
           <h2 class="ayy-h3">Dashboard</h2>
-          <p class="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open.</p>
+          <p class="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open. Set <code>hover-preview="false"</code> to keep the icon rail until the toggle opens it.</p>
           <div class="ayy-grid" style="--ayy-min: 9rem">
             <div class="ayy-stat">
               <p class="ayy-stat__label">Open projects</p>

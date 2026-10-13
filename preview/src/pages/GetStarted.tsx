@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { ArrowRight01Icon, ChatGptIcon, ClaudeIcon, Tick02Icon } from "@hugeicons/core-free-icons";
-import { themes, tokens, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
+import { ChatGptIcon, ClaudeIcon } from "@hugeicons/core-free-icons";
+import type { DensityMode, ThemeMode } from "@danitesler/ayywi";
 import {
-  Accordion,
-  AccordionItem,
   buttonClass,
   Card,
-  CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardMedia,
@@ -18,8 +14,6 @@ import {
   ChipGroup,
   Combobox,
   Icon,
-  List,
-  ListItem,
   SegmentedControl,
   SegmentedControlItem,
   Select,
@@ -30,123 +24,39 @@ import {
   Textarea,
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
-import { components } from "../data";
-import { buildPrompt, FIXES, fixPrompt, headTags, links, request, STARTERS, TOOLS, type Links, type StarterId, type Tool } from "../prompts";
+import { buildPrompt, headTags, links, request, STARTERS, TOOLS, type Links, type StarterId, type Tool } from "../prompts";
 import { showcaseApps } from "../showcase/apps";
 import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
-import llmsIndex from "../../../llms.txt?raw";
 
 const ROUTE = "";
 
-type Setup = "files" | "package" | "chat";
+type Setup = "package" | "files";
 
-/** Same shape for every tab: who it's for, then what the copied prompt contains. */
-interface TabIntro {
-  label: string;
-  when: string;
-  includes: string[];
-}
+/** For a codebase: the agent sets ayywi up. Chat and AI builders are covered by the tool picker above. */
+const SETUPS: Record<Setup, { label: string; prompt: (l: Links) => string }> = {
+  package: {
+    label: "npm package",
+    prompt: () => `Set up the ayywi design system in this project and build a first screen with it.
 
-const BUILDER_INTRO: TabIntro = {
-  label: "AI Builders",
-  when: "For Lovable, Bolt, v0, Cursor, Claude Code or ChatGPT. Describe what you want, pick your tool, and paste one prompt.",
-  includes: [
-    "Your request, customized from the sentence above",
-    "Tailored setup instructions for your chosen AI tool",
-    "The design rules: ayywi classes and tokens only, no hardcoded colours",
-    "Every component class and responsive layout rules",
-  ],
-};
-
-const SETUPS: Record<Setup, TabIntro & { prompt: (l: Links) => string }> = {
+1. Run npx -y @danitesler/ayywi init. That configures the ayywi agent skill, Cursor rules, AGENTS.md instructions, and the MCP server (with get_component, search, get_tokens, get_rules, create_brand and lint tools).
+2. Load ayywi once at the app entry: import "@danitesler/ayywi/css" (React: use "@danitesler/ayywi/react"; other frameworks: import "@danitesler/ayywi/elements" and use <ayy-*> elements).
+3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
+4. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, .ayy-container content and Footer. Include empty, loading and error states.
+5. Run npx @danitesler/ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
+  },
   files: {
-    label: "No-Build / CDN",
-    when: "For an existing site or app with no package manager or build step: plain HTML, Astro, a CMS theme. The agent links the files straight from this site.",
-    includes: [
-      "The <head> tags for the stylesheet, fonts and script, pinned to one release",
-      "A link to the full rules and every component (llms-full.txt)",
-      "The rules to save in AGENTS.md, so later sessions follow them",
-      "A first screen with its empty, loading and error states",
-    ],
+    label: "No build (CDN)",
     prompt: (l) => `Set up the ayywi design system in this project and build a first screen with it. Don't install any packages.
 
 1. Load these once from the app's HTML entry, in <head>. They're pinned to one release, so a later one can't change your app; to own them, download them into the project (for example public/vendor/ayywi/, with the fonts/ folder next to fonts.css). With a bundler you can import the CSS instead.
 ${headTags(l, "   ")}
 2. Before writing any UI, read ${l.docs}llms-full.txt: the rules, the tokens, and every component with copy-ready HTML and React (or ${l.docs}llms.txt and one page per component, ${l.docs}llms/<component>.md). Use only its classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No hardcoded colours, no made-up classes, no left/right CSS.
 3. Save the rules at ${l.docs}ai/AGENTS.snippet.md into AGENTS.md (or CLAUDE.md, or .cursorrules) so later sessions follow them too.
-4. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, Sections and a Footer. Include its empty, loading and error states.
+4. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, content at .ayy-container width and a Footer. Include its empty, loading and error states.
 5. Tell me which files you changed and how to open the screen.`,
   },
-  package: {
-    label: "Agent & MCP",
-    when: "For Cursor, Claude Code, Windsurf, or existing codebases: tell your agent to set up ayywi and connect the MCP server.",
-    includes: [
-      "npx -y @danitesler/ayywi init (or npx @danitesler/ayywi mcp)",
-      "A skill, Cursor rules and an AGENTS.md guide",
-      "An MCP server with get_component, search and lint tools",
-      "Automatic responsive shell and complete UI states",
-      "A final npx @danitesler/ayywi lint pass",
-    ],
-    prompt: () => `Set up the ayywi design system in this project and build a first screen with it.
-
-1. Run npx -y @danitesler/ayywi init. That configures the ayywi agent skill, Cursor rules, AGENTS.md instructions, and the MCP server (with get_component, search, get_tokens, get_rules, create_brand and lint tools).
-2. Load ayywi once at the app entry: import "@danitesler/ayywi/css" (React: use "@danitesler/ayywi/react"; other frameworks: import "@danitesler/ayywi/elements" and use <ayy-*> elements).
-3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
-4. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, Sections and Footer. Include empty, loading and error states.
-5. Run npx @danitesler/ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
-  },
-  chat: {
-    label: "Web Chat",
-    when: "For Claude, ChatGPT or Gemini in the browser. You get one HTML file that loads ayywi from this site: good for a prototype or a quick mock.",
-    includes: [
-      "Links to llms.txt and the page of each component",
-      "The <head> tags for the stylesheet, fonts and script",
-      "The rules: one self-contained HTML file, ayywi only, inline icons",
-      "A sample first screen: a pricing page",
-    ],
-    prompt: (l) => `You're helping me build UI with the ayywi design system. Read ${l.docs}llms.txt, then the page of each component you need (${l.docs}llms/<component>.md). If you can't open links, ask me to paste the component sections.
-
-Answer with one self-contained HTML file that has these in its <head>
-${headTags(l, "  ")}
-and uses only ayywi classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No other CSS framework, no hardcoded colours, no left/right CSS. Icons are inline Hugeicons SVGs with class="ayy-icon".
-
-My first screen: a pricing page with three plans (the middle one recommended), a monthly/yearly switch and an FAQ.`,
-  },
 };
-
-/** Use cases beyond the showcase apps. */
-const MORE = [
-  {
-    id: "migrate",
-    title: "Clean up an existing page",
-    why: "Five shades of grey, three button styles and a hand-rolled modal. Converge on one system without a rewrite.",
-    prompt: `Migrate src/pages/Billing.tsx to ayywi. Replace hand-written buttons, inputs, cards, tabs and the confirm modal with ayywi components, and hardcoded colours, spacing and font sizes with ayywi tokens. Keep the behaviour and the copy exactly as they are.
-
-Lint the file (npx @danitesler/ayywi lint, or check it against the rules), fix what it reports, and list anything you couldn't map to an ayywi component so I can decide.`,
-  },
-  {
-    id: "flow",
-    title: "A sign-up flow",
-    why: "Three screens, one form each, and a clear sense of how much is left.",
-    prompt: `Build a three-step sign-up flow with ayywi: Account (name, email, password with a show/hide button in an Input group), Team (invite emails, a Segmented control for team size), and Plan (plan cards, the chosen one featured). Steps at the top shows where you are; each step has one primary Continue button and a ghost Back button, and Continue shows loading while it saves. Validation errors go in a FieldError under the field with aria-invalid on the input. Use the ayywi components and tokens only.`,
-  },
-  {
-    id: "component",
-    title: "Add one piece to a screen",
-    why: "Most days you ask for one thing. The agent should reach for the component, not write new CSS.",
-    prompt: `On the Projects page, add a dialog that asks before deleting a project: the project name in the title, one sentence on what's lost, a destructive Delete button and a ghost Cancel. While it deletes, the button shows loading; afterwards show a toast with Undo. Use the ayywi Dialog, Button and toast().`,
-  },
-];
-
-const REVIEW = [
-  "Switch the theme (the theme button at the top of the sidebar, or of the screen on a phone) and the density beside it, then do the same in your app. Everything should still read well.",
-  "Narrow the window below 48rem. An app should swap its sidebar for a bottom nav; a site's navbar links should fold into a menu.",
-  "Tab through the page. Every button, link and field should show a focus ring.",
-  "Look for one main button per view. Everything else should be quieter.",
-  "Empty the list, slow the network and break the request: each of those needs its own state.",
-  "Run the linter (npx @danitesler/ayywi lint) where the package is installed. It catches made-up classes, hardcoded colours and layouts that break in right-to-left languages.",
-];
 
 export const getStarted = {
   route: ROUTE,
@@ -300,24 +210,6 @@ const MCP_CONFIG = JSON.stringify(
   2,
 );
 
-/** Who a tab is for and what its copied prompt contains. */
-function TabSummary({ intro }: { intro: TabIntro }) {
-  return (
-    <section className="pv-intro" aria-label={`${intro.label}: what you get`}>
-      <p className="pv-intro__when">{intro.when}</p>
-      <p className="pv-intro__title">Included when you copy</p>
-      <List compact>
-        {intro.includes.map((item) => (
-          <ListItem key={item}>
-            <Icon icon={Tick02Icon} />
-            {item}
-          </ListItem>
-        ))}
-      </List>
-    </section>
-  );
-}
-
 interface BuilderGuideProps {
   tool: Tool;
   onToolChange: (tool: Tool) => void;
@@ -404,124 +296,49 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
       </p>
 
       <CodeBlock code={prompt} label="prompt" copyLabel="Copy prompt" wrap />
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Or connect via MCP</CardTitle>
-          <CardDescription>Cursor, Claude Code, Windsurf</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="pv-note">
-            Give your agent native tools: <code>pick_component</code>, <code>get_component</code>, <code>search</code>, <code>get_tokens</code>,{" "}
-            <code>create_brand</code>, and real-time <code>lint</code> without pasting full prompts.
-          </p>
-        </CardContent>
-        <CardFooter>
-          <CopyButton text={MCP_CONFIG} label="Copy MCP config" variant="outline" />
-        </CardFooter>
-      </Card>
-
-      <h2 className="pv-h pv-h--section" id="refine">
-        Refine with follow-up prompts
-      </h2>
-      <p className="pv-note">
-        When something looks off, don't write custom CSS. Paste one of these into your chat to guide the agent:
-      </p>
-      <Accordion single>
-        {FIXES.map((fix) => (
-          <AccordionItem key={fix.title} label={fix.title}>
-            <CodeBlock code={fixPrompt(fix.prompt)} label="prompt" copyLabel="Copy prompt" wrap />
-          </AccordionItem>
-        ))}
-      </Accordion>
     </>
   );
 }
 
-/** The guide for developers: install paths, use-case prompts, checks and the raw files. */
-function DeveloperGuide({ setup }: { setup: Setup }) {
-  const l = links();
-  const chosen = SETUPS[setup];
-  const stable = components.filter((c) => c.status === "stable").length;
-  const facts = [`${components.length} components (${stable} stable)`, `${Object.keys(tokens).length} tokens`, `${themes.length} themes`, "any framework", "0 runtime dependencies"];
+/** For a codebase: one setup prompt, plus the raw files for anything else. */
+function DeveloperGuide() {
+  const [setup, setSetup] = useState<Setup>("package");
   return (
     <>
-      <p className="pv-facts">{facts.join(" · ")}</p>
-      <CodeBlock code={chosen.prompt(l)} label="prompt" copyLabel="Copy prompt" wrap />
-
-      <h2 className="pv-h pv-h--section" id="build">
-        Ask for a screen
+      <h2 className="pv-h pv-h--section" id="developers">
+        In your own codebase
       </h2>
       <p className="pv-note">
-        After setup the agent knows the rules, so plain words work. These prompts name the components, so nothing is left to guess; the
-        first seven are the screens in What you can build.
+        Paste this into your coding agent. It sets ayywi up, saves the rules and builds a first screen.
       </p>
-      <Accordion single>
-        {showcaseApps.map((app) => (
-          <AccordionItem key={app.id} label={`${app.kind} — like ${app.name}`}>
-            <p>{app.description}</p>
-            <CodeBlock code={app.prompt} label="prompt" wrap />
-            <p>
-              <a className="ayy-link" href={`#/showcase/${app.id}`}>
-                See {app.name} on desktop, tablet and phone
-              </a>
-            </p>
-          </AccordionItem>
+      <Tabs value={setup} onValueChange={(v) => setSetup(v as Setup)}>
+        <TabsList aria-label="Setup">
+          {(Object.keys(SETUPS) as Setup[]).map((s) => (
+            <TabsTrigger key={s} value={s}>
+              {SETUPS[s].label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {(Object.keys(SETUPS) as Setup[]).map((s) => (
+          <TabsContent key={s} value={s}>
+            <CodeBlock code={SETUPS[s].prompt(links())} label="prompt" copyLabel="Copy setup prompt" wrap />
+          </TabsContent>
         ))}
-        {MORE.map((u) => (
-          <AccordionItem key={u.id} label={u.title}>
-            <p>{u.why}</p>
-            <CodeBlock code={u.prompt} label="prompt" wrap />
-          </AccordionItem>
-        ))}
-      </Accordion>
-
-      <h2 className="pv-h pv-h--section" id="check">
-        Check what it built
-      </h2>
-      <ul className="pv-list">
-        {REVIEW.map((t) => (
-          <li key={t}>{t}</li>
-        ))}
-      </ul>
-
-      <h2 className="pv-h pv-h--section" id="context">
-        The raw context
-      </h2>
-      <p className="pv-note">
-        Everything the prompts point at is on this site, so you can paste it into any tool. With the package installed,{" "}
-        <code>npx @danitesler/ayywi mcp</code> serves the same over MCP and <code>npx @danitesler/ayywi lint</code> checks the result.
-      </p>
+      </Tabs>
       <div className="pv-files">
-        <CopyButton text={agentsSnippet} label="Copy the rules for AGENTS.md" variant="outline" />
-        <CopyButton text={llmsIndex} label="Copy llms.txt (index)" variant="outline" />
         <CopyButton text={MCP_CONFIG} label="Copy MCP config" variant="outline" />
-        {(["llms-full.txt", "dist/ayywi.min.css", "dist/elements.global.js", "manifest/components.json"] as const).map((path) => (
+        <CopyButton text={agentsSnippet} label="Copy rules for AGENTS.md" variant="outline" />
+        {(["llms.txt", "llms-full.txt", "dist/ayywi.min.css", "manifest/components.json"] as const).map((path) => (
           <a key={path} className={buttonClass({ variant: "ghost", size: "sm" })} href={path} target="_blank" rel="noreferrer">
             {path}
           </a>
         ))}
       </div>
-
-      <h2 className="pv-h pv-h--section" id="inside">
-        What's in it
-      </h2>
-      <nav className="ayy-cluster pv-links" aria-label="Components">
-        {components.map((c) => (
-          <a key={c.slug} href={`#/${c.slug}`} className={buttonClass({ variant: "outline", size: "sm" })}>
-            {c.name}
-          </a>
-        ))}
-      </nav>
     </>
   );
 }
 
-type Tab = "builder" | Setup;
-const TABS: Tab[] = ["builder", "files", "package", "chat"];
-
 export function GetStartedPage(appearance: Appearance) {
-  const [tab, setTab] = useState<Tab>("builder");
   const [tool, setTool] = useState<Tool>("lovable");
   return (
     <article className="pv-page pv-page--compact">
@@ -529,39 +346,16 @@ export function GetStartedPage(appearance: Appearance) {
         <div className="pv-hero__main">
           <h1 className="ayy-display">ayywi</h1>
           <p className="pv-tagline">Make your app look designed, in one paste</p>
-          <p className="ayy-lede">
-            Pick what you're building, copy one prompt into Lovable, Bolt, v0, Cursor or ChatGPT, and get screens that match: the same
-            buttons, spacing and colours everywhere, with dark mode and phones handled.
-          </p>
+          <p className="ayy-lede">Describe your app, pick your AI tool, paste one prompt. Dark mode and phones included.</p>
         </div>
         <TryIt {...appearance} />
       </header>
 
       <Examples tool={tool} />
 
-      {/* The guide changes with the choice: panels of content, so Tabs rather than a Segmented control. */}
-      <Tabs className="pv-doors" value={tab} onValueChange={(v) => setTab(v as Tab)}>
-        <TabsList aria-label="How you build">
-          {TABS.map((t) => (
-            <TabsTrigger key={t} value={t}>
-              {t === "builder" ? BUILDER_INTRO.label : SETUPS[t].label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {TABS.map((t) => (
-          <TabsContent key={t} value={t} className="pv-page pv-page--compact">
-            <TabSummary intro={t === "builder" ? BUILDER_INTRO : SETUPS[t]} />
-            {t === "builder" ? <BuilderGuide tool={tool} onToolChange={setTool} /> : <DeveloperGuide setup={t} />}
-          </TabsContent>
-        ))}
-      </Tabs>
+      <BuilderGuide tool={tool} onToolChange={setTool} />
 
-      <div>
-        <a href="#/showcase" className={buttonClass({ variant: "outline" })}>
-          What you can build
-          <Icon icon={ArrowRight01Icon} directional />
-        </a>
-      </div>
+      <DeveloperGuide />
     </article>
   );
 }

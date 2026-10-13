@@ -23,7 +23,7 @@ Category: Forms. Keyboard shortcuts written once as "Mod+Shift+K" and shown for 
 - Density — The recorder is the md control height (32px compact, 40 comfortable, 44 touch); keycaps follow the text around them.
 - Width — Keycaps hug their keys. The recorder is at least 9rem; the list fills its container.
 
-**JS (framework-free)**: Shortcuts are strings like "Mod+Shift+K" (Mod = ⌘ on Apple devices, Ctrl elsewhere; also Ctrl, Alt, Shift, Meta). shortcutFromEvent(event, { bare? }) → the shortcut a keydown makes, or null for modifiers alone; matchShortcut(event, "Mod+K") → boolean, for your own handlers; shortcutKeys(s) → ["⌘", "K"]; shortcutLabel(s) → "Command K"; shortcutHtml(s) → markup; syncShortcuts(root?) redraws static .ayy-shortcut[data-keys] for Apple devices (@danitesler/ayywi/elements does it on load); isApplePlatform(); keyFromCode(code). connectShortcutRecorder(button, { value?, label?, bare?, onChange?, onRecordingChange? }) → { setValue, destroy }. shortcutClass, shortcutRecorderClass().
+**JS (framework-free)**: Shortcuts are strings like "Mod+Shift+K" (Mod = ⌘ on Apple devices, Ctrl elsewhere; also Ctrl, Alt, Shift, Meta). shortcutFromEvent(event, { bare? }) → the shortcut a keydown makes, or null for modifiers alone; matchShortcut(event, "Mod+K") → boolean, for your own handlers, by physical key, so it works on any layout (Russian Cmd+У is Mod+E); shortcutKeys(s, platform?) → ["⌘", "K"] (Super on Linux, Win on Windows); shortcutLabel(s, platform?) → "Command K"; shortcutHtml(s, platform?) → markup; syncShortcuts(root?, platform?) redraws static .ayy-shortcut[data-keys] for Apple and Linux devices (@danitesler/ayywi/elements does it on load); getPlatform(); isApplePlatform(); isWindowsPlatform(); isLinuxPlatform(); keyFromCode(code). connectShortcutRecorder(button, { value?, label?, bare?, onChange?, onRecordingChange? }) → { setValue, destroy }. shortcutClass, shortcutRecorderClass().
 
 **Custom element** `<ayy-shortcut-recorder>` (@danitesler/ayywi/elements) — 
 - attribute `value`: The shortcut, "Mod+Shift+2". Updated when one is recorded; removed when cleared.
@@ -215,4 +215,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

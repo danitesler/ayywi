@@ -1,0 +1,47 @@
+<div class="ayy-card" style="inline-size: min(100%, 26rem)">
+  <div class="ayy-card__header">
+    <div class="ayy-spread">
+      <h3 class="ayy-card__title">Exporting data</h3>
+      <span class="ayy-badge ayy-badge--muted">Running</span>
+    </div>
+  </div>
+  <div class="ayy-card__content">
+    <div class="ayy-stack" style="gap: 1rem">
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="task-export-label-html">Customer records</span>
+          <span class="ayy-muted ayy-mono">68%</span>
+        </div>
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68" class="ayy-progress" style="--ayy-value: 68" aria-labelledby="task-export-label-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <div class="ayy-spread ayy-muted" style="font-size: var(--ayy-text-xs)">
+          <span>Step 3 of 4 · 6,800 of 10,000 rows</span>
+          <span>~25s left</span>
+        </div>
+      </div>
+
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="task-backup-label-html">Database backup</span>
+          <span class="ayy-muted ayy-mono">100%</span>
+        </div>
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" class="ayy-progress ayy-progress--success" style="--ayy-value: 100" aria-labelledby="task-backup-label-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">Complete · Saved to cold storage</p>
+      </div>
+
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="task-ai-label-html">AI summary</span>
+          <span class="ayy-muted">In progress</span>
+        </div>
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="ayy-progress ayy-progress--ai ayy-progress--sm ayy-progress--indeterminate" aria-labelledby="task-ai-label-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">Extracting key takeaways…</p>
+      </div>
+    </div>
+  </div>
+</div>

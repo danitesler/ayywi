@@ -1,27 +1,27 @@
-import { useMemo, useState } from "react";
-import { BRAND_SHAPES, BRAND_STEPS, brandCss, brandPresets, createBrand, type Brand, type BrandInput, type BrandShape } from "@danitesler/ayywi";
+import { useEffect, useMemo, useState } from "react";
+import { BRAND_SHAPES, BRAND_STEPS, brandCss, createBrand, tokens, type Brand, type BrandInput, type BrandShape } from "@danitesler/ayywi";
 import {
   Alert,
   AlertDescription,
+  Avatar,
   Badge,
   Button,
   Checkbox,
   Field,
   Input,
   Label,
+  Progress,
+  Radio,
   SegmentedControl,
   SegmentedControlItem,
   Select,
+  Slider,
+  SwatchButton,
   SwatchCustom,
+  SwatchGroup,
   Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Tooltip,
 } from "@danitesler/ayywi/react";
-import { CodeBlock } from "../CodeBlock";
 import { themeOptions } from "../themes";
 
 export const brandPage = {
@@ -30,12 +30,36 @@ export const brandPage = {
   text: "brand branding colour color seed scale primary ring contrast fonts shape radius corners setBrand createBrand brandCss data-brand violet",
 };
 
-// Fonts every desktop has, so the playground shows a change without loading anything.
-const FONTS: [string, string][] = [
-  ["", "ayywi's (Sora, Unbounded)"],
-  ["Georgia", "Georgia"],
-  ["Verdana", "Verdana"],
-  ["system-ui", "System"],
+export interface PresetBrand {
+  name: string;
+  label: string;
+  color: string;
+  shape?: BrandShape;
+  isMono?: boolean;
+}
+
+export const BRAND_PRESETS: PresetBrand[] = [
+  { name: "mono", label: "Mono", color: "var(--ayy-color-text)", isMono: true },
+  { name: "sky", label: "Sky", color: "#0ea5e9", shape: "pill" },
+  { name: "violet", label: "Violet", color: "#7c3aed", shape: "soft" },
+  { name: "emerald", label: "Emerald", color: "#10b981", shape: "round" },
+  { name: "rose", label: "Rose", color: "#f43f5e", shape: "pill" },
+  { name: "amber", label: "Amber", color: "#f59e0b", shape: "soft" },
+];
+
+const HEADING_FONTS: [string, string][] = [
+  ["", "ayywi's (Unbounded)"],
+  ["Sora", "Sora (Sans)"],
+  ["Georgia", "Georgia (Serif)"],
+  ["Verdana", "Verdana (Clean)"],
+  ["system-ui", "System UI"],
+];
+
+const BODY_FONTS: [string, string][] = [
+  ["", "ayywi's (Sora)"],
+  ["Georgia", "Georgia (Serif)"],
+  ["Verdana", "Verdana (Clean)"],
+  ["system-ui", "System UI"],
 ];
 
 const SHAPES = Object.keys(BRAND_SHAPES) as BrandShape[];
@@ -50,46 +74,87 @@ function Sample({ theme, label }: { theme: string; label: string }) {
         <Button size="sm" variant="outline">
           Outline
         </Button>
+        <Button size="sm" variant="ghost">
+          Ghost
+        </Button>
       </div>
+      <Input size="sm" defaultValue="Acme Corp" aria-label={`Brand name (${label})`} />
+      <SegmentedControl size="sm" full defaultValue="left" aria-label={`Options (${label})`}>
+        <SegmentedControlItem value="left">Active</SegmentedControlItem>
+        <SegmentedControlItem value="right">Option</SegmentedControlItem>
+      </SegmentedControl>
       <div className="ayy-cluster">
         <Field inline>
           <Checkbox id={`pv-brand-check-${theme}`} defaultChecked />
-          <Label htmlFor={`pv-brand-check-${theme}`}>Checked</Label>
+          <Label htmlFor={`pv-brand-check-${theme}`}>Check</Label>
+        </Field>
+        <Field inline>
+          <Radio id={`pv-brand-radio-${theme}`} name={`pv-brand-radio-${theme}`} value="1" defaultChecked />
+          <Label htmlFor={`pv-brand-radio-${theme}`}>Radio</Label>
         </Field>
         <Field inline>
           <Switch id={`pv-brand-switch-${theme}`} defaultChecked />
           <Label htmlFor={`pv-brand-switch-${theme}`}>On</Label>
         </Field>
       </div>
+      <Slider defaultValue={65} aria-label={`Slider (${label})`} />
+      <Progress value={65} size="sm" aria-label={`Progress (${label})`} />
       <div className="ayy-cluster">
         <Badge>Badge</Badge>
+        <Badge variant="outline">Outline</Badge>
+        <Avatar name="Acme" fallback="AC" size="sm" />
         <span className="pv-brand__ring">Focus ring</span>
       </div>
     </div>
   );
 }
 
-function Scale({ brand }: { brand: Brand }) {
+function Scale({ brand }: { brand?: Brand | null }) {
   return (
     <ol className="pv-brand__scale" aria-label="Brand scale">
-      {BRAND_STEPS.map((step) => (
-        <li key={step} className="pv-brand__step">
-          <span className="pv-brand__chip" style={{ background: `var(--ayy-brand-${step})` }} />
-          <strong>
-            {step}
-            {step === brand.seedStep ? " · seed" : ""}
-          </strong>
-          <span className="ayy-mono ayy-muted">{brand.scale[step]}</span>
-        </li>
-      ))}
+      {BRAND_STEPS.map((step) => {
+        const hex = brand ? brand.scale[step] : (tokens[`brand.${step}` as keyof typeof tokens]?.value as string);
+        return (
+          <li key={step} className="pv-brand__step">
+            <span className="pv-brand__chip" style={{ background: `var(--ayy-brand-${step})` }} />
+            <strong>
+              {step}
+              {brand && step === brand.seedStep ? " · seed" : ""}
+            </strong>
+            <span className="ayy-mono ayy-muted">{hex}</span>
+          </li>
+        );
+      })}
     </ol>
   );
 }
 
 export function BrandPage({ current, onUse }: { current: BrandInput | null; onUse: (brand: BrandInput | null) => void }) {
   const [input, setInput] = useState<BrandInput>(() => current ?? { name: "acme", color: "#0ea5e9", shape: "pill" });
-  const [font, setFont] = useState(typeof input.font?.body === "string" ? input.font.body : "");
-  const full: BrandInput = useMemo(() => ({ ...input, font: font ? { heading: font, body: font } : undefined }), [input, font]);
+  const [headingFont, setHeadingFont] = useState(typeof input.font?.heading === "string" ? input.font.heading : "");
+  const [bodyFont, setBodyFont] = useState(typeof input.font?.body === "string" ? input.font.body : "");
+
+  // Sync state when shell settings gear changes branding
+  useEffect(() => {
+    if (current) {
+      setInput(current);
+      setHeadingFont(typeof current.font?.heading === "string" ? current.font.heading : "");
+      setBodyFont(typeof current.font?.body === "string" ? current.font.body : "");
+    } else {
+      setInput({ name: "acme", color: "#0ea5e9", shape: "pill" });
+      setHeadingFont("");
+      setBodyFont("");
+    }
+  }, [current]);
+
+  const full: BrandInput = useMemo(
+    () => ({
+      ...input,
+      font: headingFont || bodyFont ? { heading: headingFont || undefined, body: bodyFont || undefined } : undefined,
+    }),
+    [input, headingFont, bodyFont],
+  );
+
   const result = useMemo(() => {
     try {
       return { brand: createBrand(full) };
@@ -98,9 +163,72 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
     }
   }, [full]);
   const brand = result.brand;
-  const css = brand ? brandCss(brand) : "";
-  const cli = `npx @danitesler/ayywi brand "${input.color}" --name ${input.name}${input.shape && input.shape !== "pill" ? ` --shape ${input.shape}` : ""}${font ? ` --heading "${font}" --body "${font}"` : ""} --out ${input.name}.css`;
-  const set = (patch: Partial<BrandInput>) => setInput((prev) => ({ ...prev, ...patch }));
+
+  const applyPreset = (preset: PresetBrand) => {
+    if (preset.isMono) {
+      onUse(null);
+      return;
+    }
+    const next: BrandInput = { ...input, color: preset.color, shape: preset.shape ?? input.shape, name: preset.name };
+    setInput(next);
+    const nextFull: BrandInput = {
+      ...next,
+      font: headingFont || bodyFont ? { heading: headingFont || undefined, body: bodyFont || undefined } : undefined,
+    };
+    onUse(nextFull);
+  };
+
+  const updateCustomColor = (raw: string) => {
+    const color = raw.trim();
+    const next = { ...input, color, name: "acme" };
+    setInput(next);
+    const hexMatch = /^#?([0-9a-f]{6})$/i.exec(color);
+    if (hexMatch) {
+      const validHex = `#${hexMatch[1]}`;
+      const nextFull: BrandInput = {
+        ...next,
+        color: validHex,
+        font: headingFont || bodyFont ? { heading: headingFont || undefined, body: bodyFont || undefined } : undefined,
+      };
+      onUse(nextFull);
+    }
+  };
+
+  const updateShape = (shape: BrandShape) => {
+    const next = { ...input, shape };
+    setInput(next);
+    const nextFull: BrandInput = {
+      ...next,
+      font: headingFont || bodyFont ? { heading: headingFont || undefined, body: bodyFont || undefined } : undefined,
+    };
+    onUse(nextFull);
+  };
+
+  const updateHeadingFont = (val: string) => {
+    setHeadingFont(val);
+    const nextFull: BrandInput = {
+      ...input,
+      font: val || bodyFont ? { heading: val || undefined, body: bodyFont || undefined } : undefined,
+    };
+    onUse(nextFull);
+  };
+
+  const updateBodyFont = (val: string) => {
+    setBodyFont(val);
+    const nextFull: BrandInput = {
+      ...input,
+      font: headingFont || val ? { heading: headingFont || undefined, body: val || undefined } : undefined,
+    };
+    onUse(nextFull);
+  };
+
+  const resetToDefault = () => {
+    setInput({ name: "acme", color: "#0ea5e9", shape: "pill" });
+    setHeadingFont("");
+    setBodyFont("");
+    onUse(null);
+  };
+
   const hex = /^#[0-9a-f]{6}$/i.test(input.color) ? input.color : "#000000";
 
   return (
@@ -109,8 +237,8 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Brand</h1>
         <p className="ayy-lede">
-          One colour, and optionally fonts and a corner shape, become a brand: a colour scale, and primary, text-on-primary and focus-ring colours for every theme, each checked
-          for contrast. Components don't change; only tokens do.
+          One colour plus fonts and shape make a brand: scale, primary, text-on-primary and focus ring for every theme, contrast-checked.
+          Tokens change, components stay the same.
         </p>
       </header>
 
@@ -118,29 +246,23 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <Field>
           <Label htmlFor="pv-brand-color">Seed colour</Label>
           <div className="ayy-cluster">
-            <SwatchCustom size="lg" label="Pick the seed colour" value={hex} onChange={(e) => set({ color: e.target.value })} />
-            <Input id="pv-brand-color" className="pv-brand__hex" value={input.color} onChange={(e) => set({ color: e.target.value })} spellCheck={false} />
+            <Tooltip content="Custom colour">
+              <SwatchCustom
+                size="lg"
+                label="Pick the seed colour"
+                value={hex}
+                onChange={(e) => updateCustomColor(e.target.value)}
+                onInput={(e) => updateCustomColor(e.currentTarget.value)}
+              />
+            </Tooltip>
+            <Input id="pv-brand-color" className="pv-brand__hex" value={input.color} onChange={(e) => updateCustomColor(e.target.value)} spellCheck={false} />
           </div>
-        </Field>
-        <Field>
-          <Label htmlFor="pv-brand-name">Name</Label>
-          <Input id="pv-brand-name" value={input.name} onChange={(e) => set({ name: e.target.value })} spellCheck={false} />
-        </Field>
-        <Field>
-          <Label htmlFor="pv-brand-font">Font</Label>
-          <Select id="pv-brand-font" value={font} onChange={(e) => setFont(e.target.value)}>
-            {FONTS.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </Select>
         </Field>
         <Field>
           <span className="ayy-label" id="pv-brand-shape">
             Shape
           </span>
-          <SegmentedControl aria-labelledby="pv-brand-shape" value={input.shape ?? "pill"} onValueChange={(v) => set({ shape: v as BrandShape })}>
+          <SegmentedControl aria-labelledby="pv-brand-shape" value={input.shape ?? "pill"} onValueChange={(v) => updateShape(v as BrandShape)}>
             {SHAPES.map((s) => (
               <SegmentedControlItem key={s} value={s}>
                 {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -148,17 +270,50 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
             ))}
           </SegmentedControl>
         </Field>
-      </div>
-      <div className="ayy-cluster">
-        <Button variant="outline" size="sm" onClick={() => onUse(full)} disabled={!brand}>
-          Use across the preview
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => onUse(brandPresets.violet)}>
-          Use Violet
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => onUse(null)} disabled={!current}>
-          Back to mono
-        </Button>
+        <Field>
+          <Label htmlFor="pv-brand-heading-font">Heading font</Label>
+          <Select id="pv-brand-heading-font" value={headingFont} onChange={(e) => updateHeadingFont(e.target.value)}>
+            {HEADING_FONTS.map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field>
+          <Label htmlFor="pv-brand-body-font">Body font</Label>
+          <Select id="pv-brand-body-font" value={bodyFont} onChange={(e) => updateBodyFont(e.target.value)}>
+            {BODY_FONTS.map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+
+        <div className="pv-brand__presets-row">
+          <SwatchGroup track role="group" aria-label="Preset colours" className="pv-brand__swatches">
+            {BRAND_PRESETS.map((p) => {
+              const isSelected = p.isMono
+                ? !current || current.name === "mono"
+                : current?.name === p.name || (current?.color.toLowerCase() === p.color.toLowerCase());
+              return (
+                <Tooltip key={p.name} content={p.label}>
+                  <SwatchButton
+                    size="sm"
+                    color={p.color}
+                    label={p.label}
+                    pressed={isSelected}
+                    onClick={() => applyPreset(p)}
+                  />
+                </Tooltip>
+              );
+            })}
+          </SwatchGroup>
+          <Button size="sm" variant="ghost" onClick={resetToDefault} disabled={!current}>
+            Reset to default
+          </Button>
+        </div>
       </div>
 
       {result.error ? (
@@ -167,69 +322,24 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         </Alert>
       ) : null}
 
-      {brand ? (
-        <>
-          <style>{brandCss(brand, { selector: ".pv-brand-live" })}</style>
-          <div className="pv-brand-live">
-            <h2 className="pv-h pv-h--section" id="brand-scale">
-              Scale
-            </h2>
-            <p className="pv-note">
-              Eleven steps in the seed's hue, evenly spaced in perceived lightness, with the seed itself at step {brand.seedStep}. Use them as --ayy-brand-50 … 950 for
-              illustrations and brand moments.
-            </p>
-            <Scale brand={brand} />
+      {current && brand ? <style>{brandCss(brand, { selector: ".pv-brand-live" })}</style> : null}
+      <div className="pv-brand-live">
+        <div className="pv-themes">
+          {themeOptions.map((t) => (
+            <Sample key={t.name} theme={t.name} label={t.label} />
+          ))}
+        </div>
 
-            <h2 className="pv-h pv-h--section" id="brand-themes">
-              In every theme
-            </h2>
-            <p className="pv-note">
-              Dark themes use brand-{brand.dark.step} ({brand.dark.primary}), light themes brand-{brand.light.step} ({brand.light.primary}).{" "}
-              {brand.notes.join(" ")}
-            </p>
-            <div className="pv-themes">
-              {themeOptions.map((t) => (
-                <Sample key={t.name} theme={t.name} label={t.label} />
-              ))}
-            </div>
-          </div>
-
-          <h2 className="pv-h pv-h--section" id="brand-contrast">
-            Contrast
-          </h2>
-          <p className="pv-note">Text on primary needs 4.5:1; the fill and the focus ring need 3:1 against every surface. A step that misses any of them is skipped.</p>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Theme</TableHead>
-                <TableHead>Pair</TableHead>
-                <TableHead>Ratio</TableHead>
-                <TableHead>Needs</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {brand.checks.map((c) => (
-                <TableRow key={`${c.theme} ${c.pair}`}>
-                  <TableCell>{c.theme}</TableCell>
-                  <TableCell>{c.pair}</TableCell>
-                  <TableCell className="ayy-mono">{c.ratio.toFixed(2)}:1</TableCell>
-                  <TableCell className="ayy-mono">{c.min}:1</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <h2 className="pv-h pv-h--section" id="brand-code">
-            Use it
-          </h2>
-          <p className="pv-note">
-            Run the command (or call createBrand() and brandCss() from "@danitesler/ayywi"), load the CSS after ayywi's and put data-brand="{brand.name}" on &lt;html&gt;. For a
-            colour people pick at runtime, setBrand({"{"} name, color {"}"}) does both.
-          </p>
-          <CodeBlock label="Command" code={cli} wrap />
-          <CodeBlock label={`${brand.name}.css`} code={css} />
-        </>
-      ) : null}
+        <h2 className="pv-h pv-h--section" id="brand-scale">
+          Scale
+        </h2>
+        <p className="pv-note">
+          {current && brand
+            ? `Eleven steps in the seed hue, seed at step ${brand.seedStep}. Use --ayy-brand-50 … 950 for illustrations and brand moments.`
+            : "Eleven steps, light to dark (var(--ayy-brand-50) … var(--ayy-brand-950)). Neutral grey until you pick a seed."}
+        </p>
+        <Scale brand={current ? brand : null} />
+      </div>
     </article>
   );
 }

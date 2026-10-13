@@ -1,10 +1,10 @@
 {
-  "name": "Kbd",
+  "name": "Keyboard hint",
   "slug": "kbd",
   "status": "beta",
   "category": "Data display",
-  "description": "A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields.",
-  "aka": ["kbd", "keycap", "hotkey", "shortcut-key"],
+  "description": "A keyboard key or shortcut hint drawn as a small keycap: in help text, menus, tooltips and search fields, with platform-specific modifier adaptation (macOS ⌘/⌥, Windows Ctrl/Win, Linux Super) and international layout awareness.",
+  "aka": ["kbd", "keyboard-hint", "keycap", "hotkey", "shortcut-key"],
   "classes": {
     "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
   },
@@ -23,24 +23,47 @@
     "density": "Scales with the text around it (1.6em tall); doesn't follow data-density.",
     "width": "At least 1.6em wide, grows with the key name."
   },
-  "js": "kbdClass constant.",
+  "js": "kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names (\"mod\" → ⌘ on Mac, Ctrl on Windows/Linux; \"meta\" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name (\"Command\" for ⌘).",
   "react": {
-    "import": "import { Kbd } from \"@danitesler/ayywi/react\";",
-    "components": { "Kbd": { "renders": "<kbd class=\"ayy-kbd\">" } }
+    "import": "import { Kbd, KeyboardHint } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Kbd": {
+        "renders": "<kbd class=\"ayy-kbd\">",
+        "props": {
+          "keyName": "string — a modifier or key drawn for the platform (\"mod\", \"meta\", \"alt\", \"ctrl\", \"shift\", \"enter\", \"backspace\"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.",
+          "platform": "\"mac\" | \"windows\" | \"linux\" — force a target platform instead of detecting it"
+        }
+      },
+      "KeyboardHint": {
+        "renders": "<kbd class=\"ayy-kbd\">",
+        "props": {
+          "keyName": "string — optional modifier/key name to adapt (\"mod\", \"meta\", \"alt\", \"ctrl\", \"shift\")",
+          "platform": "\"mac\" | \"windows\" | \"linux\" — force a target platform instead of detecting it"
+        }
+      }
+    }
   },
   "a11y": [
     "Use the <kbd> element: screen readers and search know it's a key.",
-    "Write modifier names out where symbols may not read well (\"Ctrl\" rather than \"^\"), or add aria-label=\"Command K\" to a <kbd>⌘K</kbd>.",
+    "Write modifier names out where symbols may not read well (\"Ctrl\" rather than \"^\"), or add aria-label=\"Command K\" to a <kbd>⌘K</kbd> (screen readers pronounce \"⌘\" as \"place of interest sign\").",
     "A shortcut hint doesn't replace aria-keyshortcuts on the control it triggers."
   ],
   "do": [
     "Use a kbd for keys people press: \"Press / to search\", shortcuts in a menu or tooltip, a hint in a search field (InputGroupAddon).",
-    "Use one kbd for a whole shortcut (⌘K), or one per key with a plus between them (Ctrl + Shift + P)."
+    "Use one kbd for a whole shortcut (⌘K), or one per key with a plus between them (Ctrl + Shift + P).",
+    "Adapt modifiers to the user's OS: ⌘ / ⌥ / ⇧ / ⌃ on macOS, Ctrl / Alt / Shift / Win on Windows, and Ctrl / Alt / Shift / Super on Linux (or use <Shortcut keys=\"Mod+K\" /> / <Kbd keyName=\"mod\" />).",
+    "Listen to event.code (physical key like 'KeyE') or use matchShortcut(event, 'Mod+E') rather than event.key === 'e' so hotkeys work across keyboard layouts and languages (e.g. Russian Cyrillic Cmd+У)."
   ],
   "dont": [
     "Don't use a kbd for code or file names — use .ayy-mono or <code>.",
     "Don't use it as a badge or a tag — use Badge.",
-    "Don't show shortcuts on touch-first screens, where there's no keyboard."
+    "Don't show shortcuts on touch-first screens, where there's no keyboard.",
+    "Don't hardcode Mac-only symbols (⌘) or Windows-only names (Ctrl) when targeting multiple operating systems.",
+    "Don't check event.key for letter shortcuts: on non-Latin keyboard layouts (e.g. Russian ЙЦУКЕН), event.key produces localized characters ('у' instead of 'e') and the hotkey fails silently."
   ],
-  "examples": [{ "id": "basic", "title": "Shortcuts in text" }]
+  "examples": [
+    { "id": "basic", "title": "Shortcuts in text" },
+    { "id": "platform", "title": "Platform adaptation (macOS, Windows, Linux)" },
+    { "id": "multilingual", "title": "Multi-language hotkey handling" }
+  ]
 }

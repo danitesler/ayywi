@@ -14,8 +14,6 @@ type Modifier = "Control" | "Alt" | "Shift" | "Meta";
 const ORDER_APPLE: Modifier[] = ["Control", "Alt", "Shift", "Meta"];
 const ORDER_OTHER: Modifier[] = ["Control", "Meta", "Alt", "Shift"];
 const APPLE_SYMBOLS: Record<Modifier, string> = { Control: "⌃", Alt: "⌥", Shift: "⇧", Meta: "⌘" };
-const OTHER_NAMES: Record<Modifier, string> = { Control: "Ctrl", Alt: "Alt", Shift: "Shift", Meta: "Win" };
-
 const KEY_LABELS: Record<string, string> = {
   ArrowUp: "↑",
   ArrowDown: "↓",
@@ -42,12 +40,49 @@ const KEY_LABELS: Record<string, string> = {
 
 const MODIFIER_CODES = /^(Shift|Control|Alt|Meta|OS)(Left|Right)?$/;
 
+export type Platform = "mac" | "windows" | "linux" | "other";
+
+/** Detect the current OS platform ("mac", "windows", "linux", "other"). */
+export function getPlatform(): Platform {
+  if (typeof navigator === "undefined") return "other";
+  const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
+  const str = (nav.userAgentData?.platform ?? nav.platform ?? nav.userAgent ?? "").toLowerCase();
+  if (/mac|iphone|ipad|ipod/.test(str)) return "mac";
+  if (/win/.test(str)) return "windows";
+  if (/linux/.test(str)) return "linux";
+  return "other";
+}
+
 /** True on macOS, iOS and iPadOS, where Mod is ⌘ and modifiers are drawn as symbols. */
 export function isApplePlatform(): boolean {
-  if (typeof navigator === "undefined") return false;
-  const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
-  return /mac|iphone|ipad|ipod/i.test(nav.userAgentData?.platform ?? nav.platform ?? nav.userAgent);
+  return getPlatform() === "mac";
 }
+
+/** True on Windows devices. */
+export function isWindowsPlatform(): boolean {
+  return getPlatform() === "windows";
+}
+
+/** True on Linux devices. */
+export function isLinuxPlatform(): boolean {
+  return getPlatform() === "linux";
+}
+
+const WINDOWS_NAMES: Record<Modifier, string> = { Control: "Ctrl", Alt: "Alt", Shift: "Shift", Meta: "Win" };
+const LINUX_NAMES: Record<Modifier, string> = { Control: "Ctrl", Alt: "Alt", Shift: "Shift", Meta: "Super" };
+
+function platformModifierNames(platform: Platform): Record<Modifier, string> {
+  if (platform === "mac") return APPLE_SYMBOLS;
+  if (platform === "linux") return LINUX_NAMES;
+  return WINDOWS_NAMES;
+}
+
+const CYRILLIC_TO_KEY: Record<string, string> = {
+  ё: "Backquote",
+  й: "q", ц: "w", у: "e", к: "r", е: "t", н: "y", г: "u", ш: "i", щ: "o", з: "p", х: "BracketLeft", ъ: "BracketRight",
+  ф: "a", ы: "s", в: "d", а: "f", п: "g", р: "h", о: "j", л: "k", д: "l", ж: "Semicolon", э: "Quote",
+  я: "z", ч: "x", с: "c", м: "v", и: "b", т: "n", ь: "m", б: "Comma", ю: "Period",
+};
 
 function modifierOf(part: string, apple: boolean): Modifier | null {
   switch (part.toLowerCase()) {
@@ -113,33 +148,48 @@ export function shortcutFromEvent(event: Pick<KeyboardEvent, "code" | "key" | "c
   return [...mods, key].join("+");
 }
 
-/** Does this key press match the shortcut? matchShortcut(event, "Mod+K"). */
+/**
+ * Does this key press match the shortcut? matchShortcut(event, "Mod+K").
+ * Supports international keyboard layouts (e.g. Russian Cyrillic Cmd+У matching Cmd+E).
+ */
 export function matchShortcut(event: KeyboardEvent, shortcut: string, apple = isApplePlatform()): boolean {
   const pressed = shortcutFromEvent(event, { bare: true, apple });
   if (!pressed) return false;
   const a = parse(pressed, apple);
   const b = parse(shortcut, apple);
-  if (a.key.toLowerCase() !== b.key.toLowerCase() || a.mods.size !== b.mods.size) return false;
+  if (a.mods.size !== b.mods.size) return false;
   for (const m of a.mods) if (!b.mods.has(m)) return false;
-  return true;
+
+  const aKey = a.key.toLowerCase();
+  const bKey = b.key.toLowerCase();
+  if (aKey === bKey) return true;
+
+  // The pressed key comes from event.code, so it is already layout-independent (Russian Cmd+У is KeyE). A Cyrillic
+  // letter only shows up when event.code is missing, or when the shortcut itself is written in Cyrillic ("Mod+у").
+  // Never fall back to event.key: on Dvorak or AZERTY one press would then match two different shortcuts.
+  if (CYRILLIC_TO_KEY[aKey]?.toLowerCase() === bKey) return true;
+  if (CYRILLIC_TO_KEY[bKey]?.toLowerCase() === aKey) return true;
+  return false;
 }
 
 /**
- * What to draw for a shortcut, one entry per key: ["⌘", "⇧", "K"] on Apple devices, ["Ctrl", "Shift", "K"] elsewhere.
- * Modifiers come first in each platform's usual order.
+ * What to draw for a shortcut, one entry per key: ["⌘", "⇧", "K"] on Apple devices, ["Ctrl", "Shift", "K"] on Windows,
+ * ["Ctrl", "Shift", "K"] (and "Super" for Meta) on Linux. Modifiers come first in each platform's usual order.
  */
-export function shortcutKeys(shortcut: string, apple = isApplePlatform()): string[] {
+export function shortcutKeys(shortcut: string, target: Platform | boolean = isApplePlatform()): string[] {
+  const platform: Platform = typeof target === "boolean" ? (target ? "mac" : "windows") : target;
+  const apple = platform === "mac";
   const { mods, key } = parse(shortcut, apple);
-  const names = apple ? APPLE_SYMBOLS : OTHER_NAMES;
+  const names = platformModifierNames(platform);
   const labels = (apple ? ORDER_APPLE : ORDER_OTHER).filter((m) => mods.has(m)).map((m) => names[m]);
   if (key) labels.push(KEY_LABELS[key] ?? (key === "Backspace" && apple ? "⌫" : key === "Enter" && apple ? "↩" : key));
   return labels;
 }
 
-/** The shortcut as text for screen readers and titles: "Command Shift K", "Ctrl Shift K". */
-export function shortcutLabel(shortcut: string, apple = isApplePlatform()): string {
+/** The shortcut as text for screen readers and titles: "Command Shift K", "Ctrl Shift K", "Ctrl Super Shift K". */
+export function shortcutLabel(shortcut: string, target: Platform | boolean = isApplePlatform()): string {
   const words: Record<string, string> = { "⌘": "Command", "⌥": "Option", "⇧": "Shift", "⌃": "Control", "↑": "Up", "↓": "Down", "←": "Left", "→": "Right", "⌫": "Delete", "↩": "Return" };
-  return shortcutKeys(shortcut, apple)
+  return shortcutKeys(shortcut, target)
     .map((k) => words[k] ?? k)
     .join(" ");
 }
@@ -148,25 +198,26 @@ export function shortcutLabel(shortcut: string, apple = isApplePlatform()): stri
  * Markup for a shortcut, as React's Shortcut renders it (for innerHTML in plain HTML): the spoken label for screen
  * readers, then one <kbd> per key, hidden from them (they'd read "⌘" as "place of interest sign").
  */
-export function shortcutHtml(shortcut: string, apple = isApplePlatform()): string {
+export function shortcutHtml(shortcut: string, target: Platform | boolean = isApplePlatform()): string {
   const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const keys = shortcutKeys(shortcut, apple)
+  const keys = shortcutKeys(shortcut, target)
     .map((k) => `<kbd class="ayy-kbd" aria-hidden="true">${escape(k)}</kbd>`)
     .join("");
-  return `<span class="ayy-shortcut" data-keys="${escape(shortcut).replace(/"/g, "&quot;")}"><span class="ayy-sr-only">${escape(shortcutLabel(shortcut, apple))}</span>${keys}</span>`;
+  return `<span class="ayy-shortcut" data-keys="${escape(shortcut).replace(/"/g, "&quot;")}"><span class="ayy-sr-only">${escape(shortcutLabel(shortcut, target))}</span>${keys}</span>`;
 }
 
 /**
- * Redraw every .ayy-shortcut[data-keys] under root for this device (⌘ ⇧ K on Apple devices). Server-rendered and
- * static HTML is written for Windows and Linux; @danitesler/ayywi/elements calls this once on load.
+ * Redraw every .ayy-shortcut[data-keys] under root for this device (⌘ ⇧ K on Apple devices, Super for Meta on Linux).
+ * Server-rendered and static HTML is written with Windows names; @danitesler/ayywi/elements calls this once on load.
  */
-export function syncShortcuts(root: ParentNode = document, apple = isApplePlatform()): void {
-  if (!apple) return;
+export function syncShortcuts(root: ParentNode = document, target: Platform | boolean = getPlatform()): void {
+  const platform: Platform = typeof target === "boolean" ? (target ? "mac" : "windows") : target;
+  if (platform === "windows" || platform === "other") return;
   for (const el of root.querySelectorAll<HTMLElement>(".ayy-shortcut[data-keys]")) {
     const keys = el.dataset.keys!;
-    const kbds = shortcutKeys(keys, true);
+    const kbds = shortcutKeys(keys, platform);
     const label = el.querySelector(".ayy-sr-only");
-    if (label) label.textContent = shortcutLabel(keys, true);
+    if (label) label.textContent = shortcutLabel(keys, platform);
     for (const kbd of el.querySelectorAll("kbd")) kbd.remove();
     for (const key of kbds) {
       const kbd = document.createElement("kbd");

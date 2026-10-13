@@ -1,6 +1,27 @@
 import { useEffect, useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
 import { tokens, type TokenDefinition } from "@danitesler/ayywi";
-import { Button, Card, CardContent, Input } from "@danitesler/ayywi/react";
+import {
+  Accordion,
+  AccordionItem,
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  Icon,
+  Input,
+  Label,
+  Progress,
+  ProgressRing,
+  Skeleton,
+  Spinner,
+  Switch,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@danitesler/ayywi/react";
+import { CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
 import { themeOptions } from "../themes";
 
 type Entry = [string, TokenDefinition];
@@ -58,15 +79,15 @@ function ColorsPage() {
   return (
     <article className="pv-page">
       <Header title="Colors">
-        Components use these named colours, never raw hex. They switch with the theme, so one design works in all of them. Switch the theme from the theme button
-        at the top of the sidebar to see each set.
+        Named colours only, never raw hex. They switch with the theme, so one design fits all. Try the theme button at the top of the
+        sidebar.
       </Header>
 
       <h2 className="pv-h pv-h--section" id="colors-themes">
         Themes
       </h2>
       <p className="pv-note">
-        Dark contrast is a pure black theme with high contrast: a #000000 page, cards a step up, white text. Light gray puts white cards on a grey page. All text passes WCAG AA contrast in every
+        Dark contrast: a #000000 page, cards a step up, white text. Light gray: white cards on a grey page. All text passes WCAG AA in every
         theme.
       </p>
       <div className="pv-themes">
@@ -87,7 +108,7 @@ function ColorsPage() {
       <h2 className="pv-h pv-h--section" id="colors-accents">
         Accents
       </h2>
-      <p className="pv-note">For content, not chrome: categories, spotlights, charts. The same in every theme.</p>
+      <p className="pv-note">Categories, spotlights, charts. Same in every theme.</p>
       <Swatches entries={group("accent")} />
     </article>
   );
@@ -105,9 +126,9 @@ const TYPE_STYLES: { sample: ReactNode; use: string }[] = [
   { sample: <p className="ayy-h4">Heading 4</p>, use: "Card and panel titles, group titles inside a section." },
   { sample: <p className="ayy-h5">Heading 5</p>, use: "Titles inside dense UI: list groups, sidebar sections, form fieldsets." },
   { sample: <p className="ayy-h6">Heading 6</p>, use: "The smallest heading: table headers, inline group labels." },
-  { sample: <p className="ayy-lede">Lede, a calm intro paragraph that sets up the page.</p>, use: "The intro paragraph right under a page or section title. Keep it to two lines or so." },
+  { sample: <p className="ayy-lede">Lede, a calm intro that sets up the page.</p>, use: "Intro under a page or section title. Two lines at most." },
   { sample: <p>Body text. 日本語、العربية، Ελληνικά, हिन्दी all render with the OS font.</p>, use: "Everything else: paragraphs, labels, table cells, form text. It is the default, so it needs no class." },
-  { sample: <p className="ayy-muted">Muted, for captions and secondary info.</p>, use: "Captions, hints, timestamps, helper text. Not for anything the reader must not miss." },
+  { sample: <p className="ayy-muted">Muted, for captions and secondary info.</p>, use: "Captions, hints, timestamps. Nothing critical." },
   { sample: <p className="ayy-signature" style={{ fontSize: "var(--ayy-text-2xl)" }}>Signature accent</p>, use: "A personal touch: a sign-off, a name, one highlighted word. Once per screen, and never for UI text." },
   { sample: <p className="ayy-mono">Mono, for code</p>, use: "Code, commands, tokens, IDs and anything where characters must line up." },
 ];
@@ -116,7 +137,7 @@ function TypographyPage() {
   const sizes = byValue(group("text").filter(([, t]) => String(t.value).endsWith("rem")));
   return (
     <article className="pv-page">
-      <Header title="Typography">Four families and one size scale. Sizes follow the reader's browser font size, and every script falls back to the system font.</Header>
+      <Header title="Typography">Four families, one size scale. Sizes follow the browser font size; every script falls back to the system font.</Header>
       <div className="pv-type">
         {TYPE_STYLES.map(({ sample, use }) => (
           <div key={use} className="pv-type__row">
@@ -160,15 +181,15 @@ function TypographyPage() {
 // ---- Spacing & sizing ----
 
 const DENSITIES: [string, string][] = [
-  ["compact", "Compact, the default on desktop."],
-  ["comfortable", "Comfortable, a little more room."],
-  ["touch", "Touch, automatic on touch screens."],
+  ["compact", "Compact, the desktop default."],
+  ["comfortable", "Comfortable, more room."],
+  ["touch", "Touch, for touch screens."],
 ];
 
 function SpacingPage() {
   return (
     <article className="pv-page">
-      <Header title="Spacing & sizing">Layout spacing sits on a 4px grid. Controls grow or shrink with the density setting.</Header>
+      <Header title="Spacing & sizing">Spacing on a 4px grid. Controls grow with density.</Header>
 
       <h2 className="pv-h pv-h--section">Spacing</h2>
       <div className="pv-scale">
@@ -184,7 +205,7 @@ function SpacingPage() {
       </div>
 
       <h2 className="pv-h pv-h--section">Density</h2>
-      <p className="pv-note">The same controls at each density. Pick one for the whole site from the menu beside the theme button, at the top of the sidebar.</p>
+      <p className="pv-note">Same controls, each density. Pick one from the menu beside the theme button.</p>
       <div className="pv-densities">
         {DENSITIES.map(([mode, text]) => (
           <Card key={mode} data-density={mode}>
@@ -208,7 +229,7 @@ function SpacingPage() {
 function ElevationPage() {
   return (
     <article className="pv-page">
-      <Header title="Radius & elevation">Corner radii, and the shadows that lift cards, menus and dialogs off the page.</Header>
+      <Header title="Radius & elevation">Corner radii and shadows for cards, menus and dialogs.</Header>
       <h2 className="pv-h pv-h--section">Radius</h2>
       <div className="pv-tiles">
         {group("radius").map(([name, t]) => (
@@ -257,9 +278,176 @@ function MotionRow({ name, value, ease, duration, end }: { name: string; value: 
 
 function MotionPage() {
   const end = useFlip(1600);
+  const [loopStep, setLoopStep] = useState(0);
+  const [running, setRunning] = useState(true);
+  const [manualTab, setManualTab] = useState<string | null>(null);
+  const [manualToggled, setManualToggled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => {
+      setLoopStep((s) => s + 1);
+      setManualTab(null);
+      setManualToggled(null);
+    }, 2000);
+    return () => clearInterval(id);
+  }, [running]);
+
+  const step = loopStep % 4;
+  const isToggled = manualToggled ?? (step % 2 === 1);
+  const tabOptions = ["overview", "activity", "settings"];
+  const activeTab = manualTab ?? tabOptions[step % tabOptions.length];
+  const progressValues = [25, 65, 100, 45];
+  const progressVal = progressValues[step];
+
   return (
     <article className="pv-page">
-      <Header title="Motion">Only position and opacity animate, and motion is cut short when the reader asks for reduced motion.</Header>
+      <Header title="Motion">Only position and opacity animate. Reduced motion cuts it short.</Header>
+
+      <h2 className="pv-h pv-h--section">Components in motion</h2>
+      <p className="pv-note">Real components on a loop through their active states.</p>
+
+      <div className="pv-motion__controls">
+        <div className="ayy-cluster">
+          <Button variant="outline" size="sm" onClick={() => setRunning((r) => !r)}>
+            <Icon icon={running ? PauseIcon : PlayIcon} />
+            {running ? "Pause loop" : "Play loop"}
+          </Button>
+          <Badge variant={running ? "success" : "outline"}>
+            {running ? `Looping · step ${step + 1} of 4` : "Paused"}
+          </Badge>
+        </div>
+        <span className="ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+          Cycles every 2s · Interact with any control to test
+        </span>
+      </div>
+
+      <div className="pv-motion__grid">
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Toggles & switches</strong>
+            <Badge variant="outline">ease.spring · 300ms</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <div className="ayy-cluster" style={{ gap: "var(--ayy-space-4)", alignItems: "center" }}>
+              <Switch checked={isToggled} onChange={() => setManualToggled(!isToggled)} aria-label="Auto-save toggle" />
+              <Label className="ayy-cluster" style={{ cursor: "pointer" }}>
+                <Checkbox checked={isToggled} onChange={() => setManualToggled(!isToggled)} />
+                <span>Auto-save</span>
+              </Label>
+            </div>
+          </div>
+          <p className="pv-note">Slight spring overshoot (<code>--ayy-ease-spring</code>) on thumb slide and checkmark scale.</p>
+        </div>
+
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Tabs selection</strong>
+            <Badge variant="outline">ease.spring · 300ms</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <Tabs value={activeTab} onValueChange={(val) => setManualTab(val)}>
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="activity">Activity</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </TabsList>
+              <TabsContent value="overview" className="ayy-sr-only">Overview</TabsContent>
+              <TabsContent value="activity" className="ayy-sr-only">Activity</TabsContent>
+              <TabsContent value="settings" className="ayy-sr-only">Settings</TabsContent>
+            </Tabs>
+          </div>
+          <p className="pv-note">Pill indicator background glides between options with spring curve over base duration.</p>
+        </div>
+
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Progress & meter</strong>
+            <Badge variant="outline">ease.out-expo · 600ms</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <div style={{ inlineSize: "100%", display: "flex", alignItems: "center", gap: "var(--ayy-space-4)" }}>
+              <Progress aria-label="Task progress" value={progressVal} style={{ flex: "1 1 auto" }} />
+              <ProgressRing aria-label="Task completion percentage" value={progressVal} size="md">
+                <span style={{ fontSize: "var(--ayy-text-xs)", fontWeight: "var(--ayy-weight-medium)" }}>{progressVal}%</span>
+              </ProgressRing>
+            </div>
+          </div>
+          <p className="pv-note">Decelerating <code>--ayy-ease-out-expo</code> over <code>--ayy-duration-slower</code> for value changes.</p>
+        </div>
+
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Accordion disclosure</strong>
+            <Badge variant="outline">ease.menu · 300ms</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <Accordion single style={{ inlineSize: "100%" }}>
+              <AccordionItem label="Security audit" open={isToggled}>
+                <p className="ayy-muted" style={{ margin: 0 }}>All 14 encryption checks passed.</p>
+              </AccordionItem>
+            </Accordion>
+          </div>
+          <p className="pv-note">Menu easing (<code>--ayy-ease-menu</code>) animates block size and chevron rotation in lockstep.</p>
+        </div>
+
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Toast & overlays</strong>
+            <Badge variant="outline">ease.menu · 300ms</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <div className="pv-motion__toast" data-visible={isToggled || undefined} aria-hidden={!isToggled}>
+              <Icon icon={CheckmarkCircle02Icon} />
+              <span>Workspace settings updated</span>
+            </div>
+          </div>
+          <p className="pv-note">Menu easing curve for entrance translate and fade on sheets, menus, and toasts.</p>
+        </div>
+
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Interactive elevation</strong>
+            <Badge variant="outline">ease.out-expo · 450ms</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <Card interactive className="pv-motion__lift" data-lifted={isToggled || undefined} style={{ inlineSize: "100%" }}>
+              <CardContent>
+                <div className="ayy-cluster" style={{ justifyContent: "space-between", alignItems: "center" }}>
+                  <strong>Pro Workspace</strong>
+                  <Badge variant="outline">Active</Badge>
+                </div>
+                <p className="ayy-muted" style={{ marginBlockStart: "var(--ayy-space-1)", marginBlockEnd: 0, fontSize: "var(--ayy-text-xs)" }}>
+                  Elevates with shadow and lift
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          <p className="pv-note">Out-expo curve (<code>--ayy-ease-out-expo</code>) over slow duration (450ms) for card lifts.</p>
+        </div>
+
+        <div className="pv-motion__card">
+          <div className="pv-motion__row" style={{ justifyContent: "space-between" }}>
+            <strong>Continuous loading</strong>
+            <Badge variant="outline">ease.standard · infinite</Badge>
+          </div>
+          <div className="pv-motion__stage">
+            <div style={{ inlineSize: "100%", display: "flex", flexDirection: "column", gap: "var(--ayy-space-3)" }}>
+              <Progress aria-label="Loading task" />
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--ayy-space-3)" }}>
+                <Skeleton shape="circle" />
+                <div style={{ flex: "1 1 auto", display: "flex", flexDirection: "column", gap: "var(--ayy-space-1-5)" }}>
+                  <Skeleton shape="text" style={{ inlineSize: "80%" }} />
+                  <Skeleton shape="text" style={{ inlineSize: "50%" }} />
+                </div>
+                <Spinner size="sm" />
+              </div>
+            </div>
+          </div>
+          <p className="pv-note">Infinite keyframe loop running <code>--ayy-ease-standard</code> on indeterminate progress and shimmer.</p>
+        </div>
+      </div>
+
       <h2 className="pv-h pv-h--section">Easing</h2>
       <p className="pv-note">Same distance over the slower duration (600ms); only the curve changes.</p>
       <div className="pv-motion">

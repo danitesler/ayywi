@@ -25,7 +25,7 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 - `sm` — The input at Input sm.
 - `md` (default) — The input at Input md.
 - `lg` — The input at Input lg.
-- Density — Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.
+- Density — Input height (md control height, 32px compact, 40 comfortable, 44 touch) and options (sm control height, 28px compact, 32 comfortable, 40 touch) follow data-density.
 - Width — Fills its container; the list is at most 28rem wide.
 
 **JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
@@ -109,4 +109,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "@danitesler/ayywi";
 import { Button } from "@danitesler/ayywi/react";
 
 export async function copyText(text: string): Promise<boolean> {
@@ -38,6 +39,7 @@ export function CopyButton({
       onClick={async () => {
         if (await copyText(text)) {
           setCopied(true);
+          toast.success(label === "Copy" ? "Copied to clipboard" : `${label.replace(/^Copy\s*/, "") || "Copied"} copied`);
           window.setTimeout(() => setCopied(false), 1400);
         }
       }}

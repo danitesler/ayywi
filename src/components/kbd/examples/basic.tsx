@@ -7,7 +7,7 @@ export default function Example() {
         Press <Kbd>/</Kbd> to search, or <Kbd aria-label="Command K">⌘K</Kbd> to open the command menu.
       </p>
       <p className="ayy-muted">
-        Save a draft with <Kbd>Ctrl</Kbd> + <Kbd>S</Kbd>.
+        Save a draft with <Kbd keyName="mod" /> + <Kbd>S</Kbd>.
       </p>
     </div>
   );

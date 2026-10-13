@@ -13,7 +13,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, and
 
 **States**
 - `default` — A pill-shaped wash-hover field with a muted magnifier and placeholder; the clear button and Cancel only show when there's something to clear or cancel.
-- `hover` (`.ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)`) — The clear button gets a wash; Cancel's text softens.
+- `hover` (`.ayy-search-bar__field:hover; .ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)`) — Field border turns line-hover; the clear button gets a wash; Cancel's text softens.
 - `pressed` — doesn't apply: No pressed look; the clear button empties the field and Cancel ends the search at once.
 - `focus` (`.ayy-search-bar__field:has(> .ayy-search-bar__input:focus-visible); :focus-visible on the buttons`) — A 2px ring around the pill; the clear and Cancel buttons get their own ring.
 - `disabled` — doesn't apply: Don't disable search: an empty list still takes a query. Hide the bar if search doesn't apply to the screen.
@@ -121,4 +121,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

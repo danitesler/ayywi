@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { open, rtl, stage } from "./helpers";
+import { example, open, rtl, stage } from "./helpers";
 
 // The components Teyykit and Dooduu had built for themselves, and the phone basics.
 for (const renderer of ["react", "html"] as const) {
@@ -241,7 +241,7 @@ test("top bar: the back chevron points back in both directions, the title is the
   await open(page, "top-bar");
   const bar = stage(page).locator(".ayy-top-bar");
   await expect(bar.getByRole("heading", { level: 1, name: "Groceries" })).toBeVisible();
-  const back = bar.getByRole("link", { name: "Lists" });
+  const back = bar.getByRole("link", { name: "Back" });
   const title = bar.locator(".ayy-top-bar__heading");
   expect((await back.boundingBox())!.x).toBeLessThan((await title.boundingBox())!.x);
   const flip = () => back.locator("svg").evaluate((el) => getComputedStyle(el).scale.split(" ")[0]);
@@ -249,4 +249,18 @@ test("top bar: the back chevron points back in both directions, the title is the
   await rtl(stage(page));
   expect((await back.boundingBox())!.x).toBeGreaterThan((await title.boundingBox())!.x);
   expect(await flip()).toBe("-1");
+});
+
+test("app shell sizes: Big and Small differ, and a Big shell inside the docs' Small sidebar stays Big", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await open(page, "app-shell");
+  const [big, small] = [0, 1].map((i) => example(page, "sizes").locator(".ayy-app-shell").nth(i).getByRole("link", { name: "Projects" }));
+  const height = (l: typeof big) => l.evaluate((el) => (el as HTMLElement).offsetHeight);
+  const radius = (l: typeof big) => l.evaluate((el) => getComputedStyle(el).borderTopLeftRadius);
+  expect(await height(big)).toBeGreaterThan(await height(small));
+  expect(await radius(big)).not.toBe(await radius(small));
+  // The docs page's own shell is Small; that must not reach the examples inside its main.
+  await expect(page.locator(".pv-shell")).toHaveClass(/ayy-app-shell--sm/);
+  const basic = example(page, "basic").getByRole("link", { name: "Projects" });
+  expect(await height(basic)).toBe(await height(big));
 });

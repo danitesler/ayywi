@@ -4,17 +4,16 @@
  */
 
 .ayy-toaster {
+  --_toast-gap: var(--ayy-space-3);
+  --_toast-peek: 0.625rem;
   position: fixed;
   inset: auto;
   inset-block-end: var(--ayy-space-4);
   inset-inline-end: var(--ayy-space-4);
   z-index: var(--ayy-z-toast);
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-2);
   inline-size: min(22rem, calc(100vw - 2rem));
-  block-size: auto;
+  block-size: var(--_toast-front-height, 3.5rem);
   margin: 0;
   padding: 0;
   overflow: visible;
@@ -31,7 +30,6 @@
 .ayy-toaster[data-position^="top"] {
   inset-block-end: auto;
   inset-block-start: var(--ayy-space-4);
-  flex-direction: column-reverse;
 }
 
 .ayy-toaster[data-position$="start"] {
@@ -44,75 +42,178 @@
   margin-inline: auto;
 }
 
-.ayy-toast {
-  --_c: transparent;
+/* Expansion on hover or focus: don't limit amount of toasts, fan them all out */
+.ayy-toaster[data-expanded] {
+  block-size: var(--_toast-expanded-height, auto);
   pointer-events: auto;
+}
+
+.ayy-toast {
+  --_toast-index: 0;
+  --_toast-offset-y: 0px;
+  --_toast-swipe-y: 0px;
+  --_scale: calc(max(0, 1 - (var(--_toast-index) * 0.05)));
+  --_peek-y: calc(var(--_toast-index) * -1 * var(--_toast-peek));
+  --_icon-color: var(--ayy-color-text);
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  pointer-events: auto;
+  user-select: none;
+  touch-action: pan-x;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  column-gap: var(--ayy-space-3);
-  row-gap: var(--ayy-space-1);
-  padding: var(--ayy-space-3) var(--ayy-space-3) var(--ayy-space-3) var(--ayy-space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  inline-size: 100%;
+  padding: var(--ayy-space-3);
   border: 1px solid var(--ayy-color-line-strong);
-  border-inline-start: 3px solid var(--_c);
-  border-radius: var(--ayy-radius-control);
+  border-radius: var(--ayy-radius-card);
   background-color: var(--ayy-color-surface-raised);
   color: var(--ayy-color-text);
   box-shadow: var(--ayy-shadow-overlay);
   font-size: var(--ayy-text-sm);
   line-height: var(--ayy-leading-snug);
-  animation: ayy-toast-in var(--ayy-duration-base) var(--ayy-ease-menu);
+  z-index: calc(1000 - var(--_toast-index));
+  transform-origin: bottom center;
+  transform: translateY(calc(var(--_peek-y) + var(--_toast-swipe-y))) scale(var(--_scale));
+  transition:
+    transform var(--ayy-duration-base) var(--ayy-ease-menu),
+    opacity var(--ayy-duration-base) var(--ayy-ease-menu);
+  will-change: transform, opacity;
 }
 
-.ayy-toast--success { --_c: var(--ayy-color-success); }
-.ayy-toast--warning { --_c: var(--ayy-color-warning); }
-.ayy-toast--destructive { --_c: var(--ayy-color-destructive); }
-.ayy-toast--info { --_c: var(--ayy-color-info); }
+@starting-style {
+  .ayy-toast {
+    opacity: 0;
+    transform: translateY(2.25rem) scale(0.94);
+  }
+
+  .ayy-toaster[data-position^="top"] .ayy-toast {
+    transform: translateY(-2.25rem) scale(0.94);
+  }
+}
+
+/* Invisible hit bridge between cards when expanded so hover never flickers across gaps */
+.ayy-toast::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(-1 * var(--_toast-gap));
+  block-size: var(--_toast-gap);
+  pointer-events: auto;
+}
+
+.ayy-toaster[data-position^="top"] .ayy-toast::after {
+  inset-block-start: auto;
+  inset-block-end: calc(-1 * var(--_toast-gap));
+}
+
+.ayy-toaster[data-position^="top"] .ayy-toast {
+  inset-block-end: auto;
+  inset-block-start: 0;
+  --_peek-y: calc(var(--_toast-index) * var(--_toast-peek));
+  transform-origin: top center;
+}
+
+/* Expanded state: fan out vertically with gap (no limit on amount of toasts) */
+.ayy-toaster[data-expanded] .ayy-toast {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(calc(-1 * var(--_toast-offset-y) + var(--_toast-swipe-y))) scale(1);
+}
+
+.ayy-toaster[data-position^="top"][data-expanded] .ayy-toast {
+  transform: translateY(calc(var(--_toast-offset-y) + var(--_toast-swipe-y))) scale(1);
+}
+
+/* Quiet stacked cards: hide inner contents on cards sitting behind the frontmost card */
+.ayy-toast[data-behind]:not(:focus-within) > * {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+.ayy-toaster[data-expanded] .ayy-toast > * {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity var(--ayy-duration-base) var(--ayy-ease-menu);
+}
+
+/* In preview (collapsed) mode: limit amount of toasts to 5 */
+.ayy-toaster:not([data-expanded]) .ayy-toast[data-limited] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden;
+  transition:
+    transform var(--ayy-duration-base) var(--ayy-ease-menu),
+    opacity var(--ayy-duration-base) ease,
+    visibility 0s linear var(--ayy-duration-base);
+}
+
+.ayy-toast--success { --_icon-color: var(--ayy-color-success); }
+.ayy-toast--warning { --_icon-color: var(--ayy-color-warning); }
+.ayy-toast--destructive { --_icon-color: var(--ayy-color-destructive); }
+.ayy-toast--info { --_icon-color: var(--ayy-color-info); }
 
 .ayy-toast[data-leaving] {
   animation: ayy-toast-out var(--ayy-duration-fast) ease forwards;
+  pointer-events: none;
 }
 
-/* Only the 4 newest are shown; older ones wait their turn. */
-.ayy-toast:nth-last-child(n + 5) {
-  display: none;
+.ayy-toast__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--_icon-color);
+}
+
+.ayy-toast__icon > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-toast__content {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
 }
 
 .ayy-toast__title {
-  grid-column: 1;
   margin: 0;
   font-weight: var(--ayy-weight-semibold);
 }
 
 .ayy-toast__description {
-  grid-column: 1;
   margin: 0;
   color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-xs);
 }
 
 .ayy-toast__actions {
-  grid-column: 1;
   display: flex;
-  gap: var(--ayy-space-2);
-  margin-block-start: var(--ayy-space-1);
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .ayy-toast__close {
-  grid-column: 2;
-  grid-row: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
-  margin: calc(-1 * var(--ayy-space-1));
+  flex-shrink: 0;
+  inline-size: var(--ayy-size-icon-lg);
+  block-size: var(--ayy-size-icon-lg);
   padding: 0;
   border: 0;
-  border-radius: var(--ayy-radius-pill);
+  border-radius: var(--ayy-radius-control);
   background: transparent;
   color: var(--ayy-color-muted);
   cursor: pointer;
+  transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
 }
 
 .ayy-toast__close:hover {
@@ -126,16 +227,14 @@
 }
 
 .ayy-toast__close > svg {
-  inline-size: 0.875rem;
-  block-size: 0.875rem;
-}
-
-@keyframes ayy-toast-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
 }
 
 @keyframes ayy-toast-out {
-  to { opacity: 0; transform: scale(0.96); }
+  to {
+    opacity: 0;
+  }
 }
 
 @media (forced-colors: active) {

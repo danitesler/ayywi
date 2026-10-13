@@ -23,13 +23,21 @@ import {
   appShellNavClass,
   appShellSettingsClass,
   appShellSidebarClass,
+  appShellSmClass,
   appShellSublistClass,
   appShellTitleClass,
   appShellToggleClass,
   connectAppShell,
+  type AppShellSize,
 } from "./app-shell";
 
+export type { AppShellSize };
+
 export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * Small size variation (`sm` / `ayy-app-shell--sm`): denser nav rows with 14px text, control border radius, tighter padding and gap. Default is Big (`md`).
+   */
+  size?: AppShellSize;
   /**
    * Settings mode, for a shell inside <DialogContent size="full">: the sidebar holds an AppShellTitle and the settings
    * sections, and the main shows one section. On phones the sections list and the open section are separate screens.
@@ -40,7 +48,7 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
    */
   collapsed?: boolean;
   /**
-   * Hover preview mode: when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview).
+   * Hover preview mode: when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview). Defaults to true.
    */
   hoverPreview?: boolean;
   /**
@@ -51,7 +59,7 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
 
 /** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. Wide screens support collapsing to an icon rail and hover preview. */
 export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
-  { settings, collapsed, hoverPreview, onCollapseChange, className, ...props },
+  { size, settings, collapsed, hoverPreview = true, onCollapseChange, className, ...props },
   ref,
 ) {
   const own = useRef<HTMLDivElement>(null);
@@ -61,6 +69,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
       ref={mergeRefs(own, ref)}
       className={cx(
         appShellClass,
+        size === "sm" && appShellSmClass,
         settings && appShellSettingsClass,
         collapsed && appShellCollapsedClass,
         hoverPreview && appShellHoverPreviewClass,

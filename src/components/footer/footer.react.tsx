@@ -62,7 +62,7 @@ export const FooterLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTM
   );
 });
 
-/** The last row: copyright, legal links, maybe a theme toggle. */
+/** The last row: copyright, legal links, maybe a theme menu. */
 export const FooterBottom = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function FooterBottom({ className, ...props }, ref) {
   return <div ref={ref} className={cx(footerBottomClass, className)} {...props} />;
 });

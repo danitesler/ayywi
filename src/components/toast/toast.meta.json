@@ -6,12 +6,14 @@
   "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
   "aka": ["toast", "snackbar", "notification"],
   "classes": {
-    "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position.",
-    "ayy-toast": "One toast.",
-    "ayy-toast--success": "Green edge.",
-    "ayy-toast--warning": "Amber edge.",
-    "ayy-toast--destructive": "Red edge; announced with role=\"alert\".",
-    "ayy-toast--info": "Blue edge.",
+    "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position; data-expanded on hover or focus.",
+    "ayy-toast": "One toast; stacked card with swipe-to-dismiss.",
+    "ayy-toast--success": "Success variant with checkmark icon.",
+    "ayy-toast--warning": "Warning variant with alert icon.",
+    "ayy-toast--destructive": "Destructive variant with cancel icon; announced with role=\"alert\".",
+    "ayy-toast--info": "Info variant with information icon.",
+    "ayy-toast__icon": "Leading status icon.",
+    "ayy-toast__content": "Message and description container.",
     "ayy-toast__title": "Message.",
     "ayy-toast__description": "Optional second line.",
     "ayy-toast__actions": "Action button row.",
@@ -22,15 +24,15 @@
     "position": { "values": ["bottom-end", "bottom-start", "bottom-center", "top-end", "top-start", "top-center"], "default": "bottom-end", "component": "Toaster" }
   },
   "states": {
-    "default": { "looks": "Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start." },
-    "hover": { "when": ".ayy-toast__close:hover", "looks": "Close button gets a wash-hover circle and the text colour." },
+    "default": { "looks": "Raised card with line-strong border, overlay shadow, and stacked offset; success, warning, destructive, and info include their status icon." },
+    "hover": { "when": ".ayy-toaster[data-expanded]", "looks": "Deck expands vertically so all toasts fan out into readable view. Close button gets wash-hover." },
     "pressed": { "none": "No pressed look." },
     "focus": { "when": ".ayy-toast__close:focus-visible", "looks": "2px ring, 2px offset." },
     "disabled": { "none": "Not disabled." },
     "selected": { "none": "No selected state." },
-    "error": { "when": "toast({ variant: \"destructive\" })", "looks": "Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError)." },
+    "error": { "when": "toast({ variant: \"destructive\" })", "looks": "Destructive icon in destructive colour. Only for errors that need no fixing in place; form errors go inline (FieldError)." },
     "loading": { "none": "A toast confirms; for a long task show Progress where the work happens." },
-    "leaving": { "when": "[data-leaving] (set by toast())", "looks": "Fades and shrinks out. Only the 4 newest show; older ones wait." }
+    "leaving": { "when": "[data-leaving] (set by toast())", "looks": "Fades out." }
   },
   "sizes": {
     "density": "Doesn't follow data-density.",

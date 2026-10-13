@@ -70,5 +70,10 @@
     "Don't use it for the steps of a flow — use Steps.",
     "Don't animate a determinate bar backwards."
   ],
-  "examples": [{ "id": "basic", "title": "Values, tones, indeterminate" }]
+  "examples": [
+    { "id": "basic", "title": "Values, tones, indeterminate" },
+    { "id": "task", "title": "Task progress with status" },
+    { "id": "meter", "title": "Usage quotas and limits" },
+    { "id": "interactive", "title": "Interactive simulation" }
+  ]
 }

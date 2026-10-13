@@ -16,7 +16,6 @@ import { AyyToolbarElement } from "../components/toolbar/toolbar.element";
 import { AyyCommandElement } from "../components/command/command.element";
 import { AyyTagInputElement } from "../components/tag-input/tag-input.element";
 import { AyySwipeElement } from "../components/swipe/swipe.element";
-import { AyyThemeToggleElement } from "../components/theme-toggle/theme-toggle.element";
 import { AyyTocElement } from "../components/toc/toc.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { trackDropzones } from "../components/dropzone/dropzone";
@@ -28,7 +27,7 @@ import { syncShortcuts } from "../components/shortcut/shortcut";
 import { syncSwatch } from "../components/swatch/swatch";
 import { define } from "../lib/element";
 
-export { AyyAppShellElement, AyyCalendarElement, AyyCarouselElement, AyyComboboxElement, AyyCommandElement, AyyDialogElement, AyyMenuElement, AyyNavbarElement, AyyPopoverElement, AyyShortcutRecorderElement, AyySwipeElement, AyyTableElement, AyyTabsElement, AyyTagInputElement, AyyThemeToggleElement, AyyTocElement, AyyToolbarElement, AyyTooltipElement };
+export { AyyAppShellElement, AyyCalendarElement, AyyCarouselElement, AyyComboboxElement, AyyCommandElement, AyyDialogElement, AyyMenuElement, AyyNavbarElement, AyyPopoverElement, AyyShortcutRecorderElement, AyySwipeElement, AyyTableElement, AyyTabsElement, AyyTagInputElement, AyyTocElement, AyyToolbarElement, AyyTooltipElement };
 
 let spotlightListening = false;
 
@@ -79,7 +78,6 @@ export function defineElements(): void {
   define("ayy-menu", AyyMenuElement);
   define("ayy-toc", AyyTocElement);
   define("ayy-carousel", AyyCarouselElement);
-  define("ayy-theme-toggle", AyyThemeToggleElement);
   define("ayy-calendar", AyyCalendarElement);
   define("ayy-toolbar", AyyToolbarElement);
   define("ayy-shortcut-recorder", AyyShortcutRecorderElement);

@@ -11,7 +11,7 @@ Category: Navigation. The site footer at the end of every website page: brand an
 - `.ayy-footer__heading` — The column heading, a small uppercase <p> that names the list (aria-labelledby).
 - `.ayy-footer__list` — The <ul> of links in a column.
 - `.ayy-footer__link` — A footer link: soft text, underline on hover, focus ring.
-- `.ayy-footer__bottom` — The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme toggle at the end.
+- `.ayy-footer__bottom` — The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme menu at the end.
 
 **States**
 - `default` — A hairline on top, brand and a muted line, columns of text-soft links under muted eyebrow headings, then a legal row.
@@ -45,12 +45,12 @@ Category: Navigation. The site footer at the end of every website page: brand an
 **Do**
 - Use the footer at the end of every page of a website, after <main>.
 - Group links into two to four columns with one-word headings (Product, Company, Resources, Legal).
-- Put the copyright and legal links in FooterBottom, and a theme toggle there too if the navbar doesn't have one.
+- Put the copyright and legal links in FooterBottom, and a theme menu there too if the navbar doesn't have one.
 
 **Don't**
 - Don't use it inside the App shell — apps put account and help links in the sidebar's footer.
 - Don't repeat every navbar link; the footer is for everything else people look for at the end.
-- Don't put a call to action inside the footer grid — end the page with a closing Section instead.
+- Don't put a call to action inside the footer grid — end the page with a closing call to action before the footer instead.
 
 ## Footer — Site footer
 
@@ -154,4 +154,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

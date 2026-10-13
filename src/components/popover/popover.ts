@@ -1,4 +1,4 @@
-import { autoPlace, supportsPopover, type FloatingAlign, type FloatingSide } from "../../lib/position";
+import { autoPlace, supportsPopover, type FloatingAlign, type FloatingSide, type PlaceBoundary } from "../../lib/position";
 
 export const popoverClass = "ayy-popover";
 
@@ -6,6 +6,8 @@ export interface PopoverControllerOptions {
   side?: FloatingSide;
   align?: FloatingAlign;
   offset?: number;
+  crossAxisOffset?: number;
+  boundary?: PlaceBoundary;
   /** Called after every open/close (including light dismiss and Esc). */
   onToggle?: (open: boolean) => void;
 }

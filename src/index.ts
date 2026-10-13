@@ -3,7 +3,7 @@ import { tokens, type TokenName } from "./tokens";
 
 export { tokens, themes, themeBase, brands, brandPresets, type TokenName, type TokenDefinition, type ThemeName, type BrandName } from "./tokens";
 export { cx, type ClassValue } from "./lib/cx";
-export { place, autoPlace, supportsPopover, type FloatingSide, type FloatingAlign, type PlaceOptions } from "./lib/position";
+export { place, autoPlace, supportsPopover, type FloatingSide, type FloatingAlign, type PlaceOptions, type PlaceBoundary, type PlaceBoundaryRect } from "./lib/position";
 export * from "./theme";
 export * from "./brand";
 
@@ -36,10 +36,8 @@ export * from "./components/app-shell/app-shell";
 export * from "./components/bottom-nav/bottom-nav";
 export * from "./components/breadcrumb/breadcrumb";
 export * from "./components/toc/toc";
-export * from "./components/section/section";
 export * from "./components/separator/separator";
 export * from "./components/carousel/carousel";
-export * from "./components/theme-toggle/theme-toggle";
 export * from "./components/icon-tile/icon-tile";
 export * from "./components/stat/stat";
 export * from "./components/frame/frame";

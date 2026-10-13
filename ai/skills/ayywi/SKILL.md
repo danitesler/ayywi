@@ -38,7 +38,7 @@ A raw native control is never right in an ayywi project: it renders as the brows
 | Project | Write |
 |---|---|
 | React / Next / Remix | `import { Button, Dialog, … } from "@danitesler/ayywi/react"` |
-| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"@danitesler/ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-theme-toggle>` from `"@danitesler/ayywi/elements"` for interactive parts; `toast()` from `"@danitesler/ayywi"` |
+| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"@danitesler/ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>` from `"@danitesler/ayywi/elements"` for interactive parts; `toast()` from `"@danitesler/ayywi"` |
 | Plain HTML, Rails, Django, Laravel, Go, .NET, PHP | same markup + `dist/ayywi.min.css` and `dist/elements.global.js` (also gives `window.ayywi.toast`, `setTheme`, `chartColors`…); `dist/fonts.css` for the fonts and `dist/theme-init.js` first in `<head>` so a saved theme applies before the first paint |
 | Tailwind | keep ayywi components; map Tailwind's theme to ayywi (`@danitesler/ayywi/tailwind.css` for v4, `@danitesler/ayywi/tailwind-preset` for v3) and use its utilities (`bg-surface`, `border-line`, `rounded-card`, `bg-chart-1`) for layout glue, never Tailwind's own colour scale |
 | Already on shadcn/ui | load `@danitesler/ayywi/shadcn.css` after ayywi so leftover shadcn parts take ayywi's colours, radius and font; build new UI with ayywi and replace a shadcn component whenever you touch it |
@@ -86,9 +86,9 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | Need | Use |
 |---|---|
 | Page width, gutters | `.ayy-container` (1400px, 24px gutter, 16px on phones) |
-| Top bar | `Navbar` (brand, links with `aria-current="page"`, actions with a `ThemeToggle` and one `ring` button, and a `NavbarToggle` last so the links fold into a menu on phones) |
+| Top bar | `Navbar` (brand, links with `aria-current="page"`, actions with a theme `DropdownMenu` (radio items calling `setTheme()`) and one `ring` button, and a `NavbarToggle` last so the links fold into a menu on phones) |
 | Hero | `.ayy-bg-grid` behind it, a `Badge`, `.ayy-display` or `.ayy-h1`, `.ayy-lede`, a ring and an outline button |
-| Page section | `Section` (`center` on marketing pages; `SectionEyebrow number="01"` in long reads), fading `Separator` between sections |
+| Page section | `<section>` with generous block padding, fading `Separator` between sections |
 | Features | `.ayy-grid` of `Card`s with an `IconTile` each, in different `--ayy-accent-*` tokens |
 | Pricing | `SegmentedControl` for monthly/yearly, plan `Card`s (the recommended one `featured`, with a Badge), perks in a `List compact` with icons |
 | FAQ | `Accordion single` |
@@ -100,7 +100,7 @@ Every app screen uses the same frame, so the product feels like one thing on eve
 | End of page | `Footer`: `FooterBrand`, `FooterNav` of `FooterGroup`s, `FooterBottom` for copyright and legal links |
 | Motion | `.ayy-reveal` on blocks, `.ayy-scroll-progress` at the top of long reads — CSS only |
 
-Colour comes from the content: set `--ayy-spot` to an `--ayy-accent-*` token on the card, section or `<main>` — never tint the chrome.
+Colour comes from the content: set `--ayy-spot` to an `--ayy-accent-*` token on the card or `<main>` — never tint the chrome.
 
 ### Branding a product
 

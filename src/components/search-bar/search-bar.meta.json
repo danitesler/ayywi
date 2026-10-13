@@ -19,7 +19,7 @@
   },
   "states": {
     "default": { "looks": "A pill-shaped wash-hover field with a muted magnifier and placeholder; the clear button and Cancel only show when there's something to clear or cancel." },
-    "hover": { "when": ".ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)", "looks": "The clear button gets a wash; Cancel's text softens." },
+    "hover": { "when": ".ayy-search-bar__field:hover; .ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)", "looks": "Field border turns line-hover; the clear button gets a wash; Cancel's text softens." },
     "pressed": { "none": "No pressed look; the clear button empties the field and Cancel ends the search at once." },
     "focus": { "when": ".ayy-search-bar__field:has(> .ayy-search-bar__input:focus-visible); :focus-visible on the buttons", "looks": "A 2px ring around the pill; the clear and Cancel buttons get their own ring." },
     "disabled": { "none": "Don't disable search: an empty list still takes a query. Hide the bar if search doesn't apply to the screen." },

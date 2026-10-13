@@ -4,19 +4,21 @@ import {
   appShellCollapsedClass,
   appShellHoverPreviewClass,
   appShellSidebarClass,
+  appShellSmClass,
   appShellToggleClass,
   connectAppShell,
 } from "./app-shell";
 
 /**
- * <ayy-app-shell [collapsed] [hover-preview]> — wraps a `.ayy-app-shell` and wires its interactions:
+ * <ayy-app-shell [collapsed] [hover-preview] [size]> — wraps a `.ayy-app-shell` and wires its interactions:
  * - On phones: the `.ayy-app-shell__toggle` in the `.ayy-app-shell__bar` or bottom nav opens and closes the drawer.
  * - On wide screens: collapses to an icon rail when `collapsed` is set, and a toggle collapses/expands the sidebar.
- * - With `hover-preview`, hovering or focusing the collapsed sidebar temporarily expands it as an overlay preview.
+ * - Hovering or focusing the collapsed sidebar expands it as an overlay preview; on by default, hover-preview="false" turns it off.
+ * - `size="sm"` is the Small size (sets ayy-app-shell--sm); Big ("md") is the default.
  * Fires "ayy-collapse-change" ({ collapsed }) when toggled.
  */
 export class AyyAppShellElement extends ElementBase {
-  static observedAttributes = ["collapsed", "hover-preview"];
+  static observedAttributes = ["collapsed", "hover-preview", "size"];
   #cleanup: (() => void) | null = null;
   #lastCollapsed: boolean | null = null;
 
@@ -28,10 +30,21 @@ export class AyyAppShellElement extends ElementBase {
   }
 
   get hoverPreview(): boolean {
-    return this.hasAttribute("hover-preview");
+    return this.getAttribute("hover-preview") !== "false";
   }
   set hoverPreview(value: boolean) {
-    this.toggleAttribute("hover-preview", value);
+    if (!value) {
+      this.setAttribute("hover-preview", "false");
+    } else {
+      this.removeAttribute("hover-preview");
+    }
+  }
+
+  get size(): string {
+    return this.getAttribute("size") || "md";
+  }
+  set size(value: string) {
+    this.setAttribute("size", value);
   }
 
   get shell(): HTMLElement | null {
@@ -77,6 +90,8 @@ export class AyyAppShellElement extends ElementBase {
     if (!shell) return;
     shell.classList.toggle(appShellCollapsedClass, this.collapsed);
     shell.classList.toggle(appShellHoverPreviewClass, this.hoverPreview);
+    // Only when size is set, so a hand-written .ayy-app-shell--sm survives.
+    if (this.hasAttribute("size")) shell.classList.toggle(appShellSmClass, this.size === "sm");
     const toggles = shell.querySelectorAll<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellToggleClass}`);
     for (const toggle of toggles) {
       toggle.setAttribute("aria-expanded", String(!this.collapsed));

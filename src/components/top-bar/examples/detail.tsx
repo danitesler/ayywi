@@ -7,7 +7,6 @@ export default function Example() {
     <div style={{ inlineSize: "min(100%, 24rem)", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)", overflow: "hidden" }}>
       <TopBar
         backHref="#lists"
-        backLabel="Lists"
         title="Groceries"
         subtitle="8 items, 3 done"
         actions={

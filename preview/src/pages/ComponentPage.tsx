@@ -40,7 +40,7 @@ export function ComponentPage({ component: c, renderer }: { component: Component
       </header>
 
       {c.examples.map((ex) => (
-        <Example key={ex.id} example={ex} renderer={renderer} />
+        <Example key={ex.id} example={ex} component={c} renderer={renderer} />
       ))}
 
       <div className="pv-usage">

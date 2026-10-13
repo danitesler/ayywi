@@ -23,6 +23,10 @@ export const appShellTitleClass = "ayy-app-shell__title";
 export const appShellHeadClass = "ayy-app-shell__head";
 export const appShellCollapsedClass = "ayy-app-shell--collapsed";
 export const appShellHoverPreviewClass = "ayy-app-shell--hover-preview";
+export const appShellSmClass = "ayy-app-shell--sm";
+
+export const appShellSizes = ["md", "sm"] as const;
+export type AppShellSize = (typeof appShellSizes)[number];
 
 /** SVG markup for the menu icon (Hugeicons Menu01) the toggle draws, for non-React renderers. */
 export const appShellMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);

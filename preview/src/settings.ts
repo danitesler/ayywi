@@ -28,6 +28,11 @@ export function useSidebarCollapsed() {
   return [value === "collapsed", set] as const;
 }
 
+/** The docs sidebar's App shell size: Small (the docs default, dense like a docs tree) or Big (the App shell default). */
+export function useSidebarSize() {
+  return usePersisted("ayy-preview-sidebar-size", ["sm", "md"] as const, "sm");
+}
+
 function usePersisted<T extends string>(key: string, allowed: readonly T[], fallback: T) {
   const [value, setValue] = useState<T>(() => load(key, allowed, fallback));
   const set = useCallback(

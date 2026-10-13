@@ -33,7 +33,7 @@
       "md": "The input at Input md.",
       "lg": "The input at Input lg."
     },
-    "density": "Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.",
+    "density": "Input height (md control height, 32px compact, 40 comfortable, 44 touch) and options (sm control height, 28px compact, 32 comfortable, 40 touch) follow data-density.",
     "width": "Fills its container; the list is at most 28rem wide."
   },
   "js": "connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",

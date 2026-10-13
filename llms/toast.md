@@ -3,27 +3,29 @@
 Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused. Also called: toast, snackbar, notification.
 
 **Classes**
-- `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position.
-- `.ayy-toast` — One toast.
-- `.ayy-toast--success` — Green edge.
-- `.ayy-toast--warning` — Amber edge.
-- `.ayy-toast--destructive` — Red edge; announced with role="alert".
-- `.ayy-toast--info` — Blue edge.
+- `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position; data-expanded on hover or focus.
+- `.ayy-toast` — One toast; stacked card with swipe-to-dismiss.
+- `.ayy-toast--success` — Success variant with checkmark icon.
+- `.ayy-toast--warning` — Warning variant with alert icon.
+- `.ayy-toast--destructive` — Destructive variant with cancel icon; announced with role="alert".
+- `.ayy-toast--info` — Info variant with information icon.
+- `.ayy-toast__icon` — Leading status icon.
+- `.ayy-toast__content` — Message and description container.
 - `.ayy-toast__title` — Message.
 - `.ayy-toast__description` — Optional second line.
 - `.ayy-toast__actions` — Action button row.
 - `.ayy-toast__close` — Close button.
 
 **States**
-- `default` — Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start.
-- `hover` (`.ayy-toast__close:hover`) — Close button gets a wash-hover circle and the text colour.
+- `default` — Raised card with line-strong border, overlay shadow, and stacked offset; success, warning, destructive, and info include their status icon.
+- `hover` (`.ayy-toaster[data-expanded]`) — Deck expands vertically so all toasts fan out into readable view. Close button gets wash-hover.
 - `pressed` — doesn't apply: No pressed look.
 - `focus` (`.ayy-toast__close:focus-visible`) — 2px ring, 2px offset.
 - `disabled` — doesn't apply: Not disabled.
 - `selected` — doesn't apply: No selected state.
-- `error` (`toast({ variant: "destructive" })`) — Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError).
+- `error` (`toast({ variant: "destructive" })`) — Destructive icon in destructive colour. Only for errors that need no fixing in place; form errors go inline (FieldError).
 - `loading` — doesn't apply: A toast confirms; for a long task show Progress where the work happens.
-- `leaving` (`[data-leaving] (set by toast())`) — Fades and shrinks out. Only the 4 newest show; older ones wait.
+- `leaving` (`[data-leaving] (set by toast())`) — Fades out.
 
 **Sizes**
 - Density — Doesn't follow data-density.
@@ -96,4 +98,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

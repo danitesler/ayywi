@@ -8,7 +8,7 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 - `.ayy-navbar__brand` — Logo / name link at the start.
 - `.ayy-navbar__nav` — <nav> of links. It and everything after it sit at the end. Without a __toggle it scrolls sideways if the links don't fit; with one, below 48rem it becomes a panel under the bar, shown while the toggle has aria-expanded="true".
 - `.ayy-navbar__link` — Top-level link. Hover adds a wash; aria-current="page" marks the page you're on with a stronger tint (High Contrast: the system highlight).
-- `.ayy-navbar__actions` — Group of buttons (theme toggle, call to action). Next to the brand, or at the end after the nav. Stays in the bar on phones, so keep it to one or two items.
+- `.ayy-navbar__actions` — Group of buttons (a theme menu, the call to action). Next to the brand, or at the end after the nav. Stays in the bar on phones, so keep it to one or two items.
 - `.ayy-navbar__toggle` — The phone menu button, last in the inner row (combine with ayy-button ayy-button--ghost ayy-button--icon and a menu icon). Hidden from 48rem. Its aria-expanded is the menu's state; connectNavbar() / <ayy-navbar> / React Navbar manage it.
 
 **States**
@@ -50,7 +50,7 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 - Use a navbar as the top bar of a website: logo, two to five top-level links, one call to action.
 - Keep one call to action in the actions group (a ring button for marketing pages, size sm).
 - Add a NavbarToggle (last) once the links don't fit a phone: they fold into a panel under the bar, and the brand and call to action stay visible.
-- Put the theme toggle in the actions group.
+- Put the theme switch (a DropdownMenu of themes that calls setTheme()) in the actions group.
 
 **Don't**
 - Don't use a navbar in a signed-in app — use the App shell (sidebar, and a Bottom nav on phones).
@@ -174,4 +174,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

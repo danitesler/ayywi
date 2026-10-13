@@ -3,7 +3,7 @@
   "slug": "app-shell",
   "status": "beta",
   "category": "Navigation",
-  "description": "The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode, inside a near-full-screen Dialog (size \"full\") over the app: the settings sections in its sidebar, one section in its main (on phones the dialog fills the screen, and the section list and the open section are two screens).",
+  "description": "The frame of a web app: a sidebar beside a main area, each scrolling on its own. On phones the sidebar becomes a Bottom nav (recommended), a drawer or a sideways row. Settings reuse it inside a full-size Dialog.",
   "aka": ["app-shell", "sidebar", "side-nav", "sidenav", "nav-item", "sidebar-item", "nav-list"],
   "classes": {
     "ayy-app-shell": "Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.",
@@ -26,12 +26,14 @@
     "ayy-app-shell__title": "A settings sidebar's heading, an <h2> \"Settings\" that names the dialog (aria-labelledby). Large on the phone's section list.",
     "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. In the sidebar (first in an __head, with a directional sidebar icon and aria-label=\"Sidebar\") it collapses and expands the sidebar on wide screens, and its aria-expanded is whether the sidebar is open. connectAppShell() / <ayy-app-shell> / React AppShell manage it.",
     "ayy-app-shell--collapsed": "Collapsed sidebar mode on wide screens: the sidebar narrows to an icon rail, animating its width with the main column. Rows stay on one line and in place, so icons keep their spot while labels and group labels fade and clip (wrap a link's label in a <span> to fade it); links without an icon fade out and leave the tab order; sub-lists hide. The toggle's aria-expanded reflects the state.",
-    "ayy-app-shell--hover-preview": "With --collapsed: resting the pointer on the rail (after a short pause) or moving keyboard focus into it widens the sidebar to full width over the main area with the overlay shadow, without moving the main content; it closes a moment after the pointer leaves. A mouse click inside doesn't keep it open. Right after the sidebar's toggle collapses it, connectAppShell sets data-ayy-hold on the sidebar so it doesn't reopen under the pointer, until the pointer leaves or focus moves on."
+    "ayy-app-shell--hover-preview": "With --collapsed: resting the pointer on the rail (after a short pause) or moving keyboard focus into it widens the sidebar to full width over the main area with the overlay shadow, without moving the main content; it closes a moment after the pointer leaves. A mouse click inside doesn't keep it open. Right after the sidebar's toggle collapses it, connectAppShell sets data-ayy-hold on the sidebar so it doesn't reopen under the pointer, until the pointer leaves or focus moves on.",
+    "ayy-app-shell--sm": "Small size, for long navigation such as a docs tree: md-height links with no gap between them, regular weight, sm icons and the control radius. Big (no modifier) is the default for apps."
   },
   "variants": {
+    "size": { "values": ["md", "sm"], "default": "md", "component": "AppShell" },
     "settings": { "values": [false, true], "default": false, "component": "AppShell" },
     "collapsed": { "values": [false, true], "default": false, "component": "AppShell" },
-    "hoverPreview": { "values": [false, true], "default": false, "component": "AppShell" }
+    "hoverPreview": { "values": [false, true], "default": true, "component": "AppShell" }
   },
   "states": {
     "default": { "looks": "A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills." },
@@ -45,19 +47,24 @@
     "open": { "when": "__toggle[aria-expanded=\"true\"] (below 48rem, with a __bar or a Bottom nav); <details open> for a collapse", "looks": "Phone: the sidebar slides in from the inline-start edge as a drawer (at most 18rem) over a scrim, with the overlay shadow. A collapse's chevron turns up." }
   },
   "sizes": {
-    "density": "Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.",
+    "scale": {
+      "sm": "Small: links at the md control height (32px compact), sub-links sm (28px), no gap between rows, regular weight, 16px icons, the control radius.",
+      "md": "Big (default): links at the lg control height (40px compact), sub-links md, --ayy-space-0-5 between rows, medium weight, 20px icons, pill radius."
+    },
+    "density": "Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch), Small ones md (32, 40, 44); both with lg control text, sub-links one step down. Grows with data-density.",
     "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
   },
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
   "react": {
     "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, AppShellHead, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "AppShell": {
         "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\"",
         "props": {
+          "size": "\"md\" | \"sm\" — Big (default, for apps) or Small (long navigation such as a docs tree; ayy-app-shell--sm).",
           "settings": "boolean — settings mode (ayy-app-shell--settings), inside <DialogContent size=\"full\">: the sidebar holds AppShellTitle and the sections.",
           "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).",
-          "hoverPreview": "boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview).",
+          "hoverPreview": "boolean, default true — when collapsed, hovering or focusing the sidebar expands it as an overlay preview (ayy-app-shell--hover-preview). false keeps the icon rail until the toggle opens it.",
           "onCollapseChange": "(collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button."
         }
       },
@@ -106,48 +113,39 @@
     "The phone sidebar (closed drawer) is visibility: hidden, and the bottom nav is display: none from 48rem, so hidden links are out of the tab order and the accessibility tree."
   ],
   "do": [
-    "Use the app shell as the outer layout of a signed-in app or dashboard: a persistent list of destinations next to the page content.",
-    "Give every app the same frame: sidebar on wide screens, a Bottom nav on phones (a direct child after the main) with the same top destinations, icons and order, and a __bar with the brand and one or two actions.",
-    "With more than five destinations, put the four most used in the bottom nav and end it with a \"More\" tab (a BottomNavButton with the ayy-app-shell__toggle class) that opens the full sidebar as a drawer.",
-    "Use a __bar with a __toggle and no bottom nav when the nav is a long tree people browse (docs, settings with many sections): the drawer keeps groups, sub-lists and collapses.",
-    "Group destinations under a heading once there are more than about six; one group can hold up to a dozen links.",
-    "Use a collapse when a parent has children that are destinations in their own right and you'd otherwise scroll past them; keep the tree one level deep.",
-    "Use a link followed by a __sublist when the parent is itself a page and its children are sections of it (Colors → Surfaces, Text…).",
-    "Keep to one line per link: an icon and a short label.",
-    "Put account and help links in the footer, not among the destinations. Keep it to one or two compact items.",
-    "Start each page in the main with a Page header (title, description, actions).",
-    "Open settings from the sidebar's Settings link (on phones: the More drawer, or a settings button in the __bar) in a near-full-screen Dialog (size \"full\") over the app: a settings shell with a \"Settings\" title and the sections grouped (Account, Workspace / App). Each section starts with a Top bar.",
-    "On wide screens open settings on the first section; on phones open the section list (no link current) and push a section from it."
+    "Use it as the outer layout of a signed-in app or dashboard.",
+    "Keep the same destinations, icons and order on every screen.",
+    "Use size=\"sm\" for long navigation such as a docs tree.",
+    "With more than five destinations, put the four most used in the bottom nav and end with a \"More\" tab that opens the drawer.",
+    "Group destinations under headings once there are more than about six.",
+    "Keep each link to one line: an icon and a short label. Put account and help in the footer.",
+    "Start each page in the main with a Page header.",
+    "Open settings in a Dialog with size=\"full\", sections grouped, each starting with a Top bar."
   ],
   "dont": [
-    "Don't use it for a marketing site or a content page — use Navbar and Sections.",
-    "Don't use it to switch views of one object inside a page — use Tabs.",
-    "Don't put a Navbar above it or inside it: the sidebar (and on phones the bar and bottom nav) is the navigation.",
-    "Don't nest deeper than one level, and don't put a collapse inside a collapse.",
-    "Don't rely on the sideways row (no bar, no bottom nav) for a real app: it shows top-level links only and hides the rest off-screen. Use a bottom nav or a drawer.",
-    "Don't hide or show the sidebar and bottom nav with your own media queries; the shell switches them at 48rem.",
-    "Don't make a collapse the only way to reach a page the user needs often.",
-    "Don't nest a second app shell.",
-    "Don't put settings in Tabs inside a page, or in a small or side Dialog; they are a settings shell in a size=\"full\" Dialog. A small Dialog is for one or two quick options next to what they change.",
-    "Don't put the app's own destinations, a __bar or a bottom nav in the settings shell; the dialog's close button is the way out.",
-    "Don't scroll the page body as well; the shell already fills the viewport.",
-    "Don't cap the main with .ayy-container or a max-inline-size. A screen fills the column. A max-inline-size on an example only sizes the preview. Settings mode already centres its column; don't add a second cap.",
-    "Don't give the sidebar its own background colour; the surface token follows every theme.",
-    "Don't keep the drawer open as a persistent panel on phones, and don't open it on page load."
+    "Don't use it for a marketing site (use Navbar) or to switch views of one object (use Tabs).",
+    "Don't put a Navbar in it or nest a second app shell.",
+    "Don't nest links deeper than one level.",
+    "Don't rely on the sideways row for a real app: it hides links. Use a bottom nav or a drawer.",
+    "Don't show or hide the sidebar with your own media queries; the shell switches at 48rem.",
+    "Don't scroll the page body as well, or cap the main width.",
+    "Don't put settings in Tabs or a small Dialog."
   ],
   "examples": [
     { "id": "basic", "title": "Sidebar with navigation" },
     { "id": "tabs", "title": "Tab bar on phones, with More" },
     { "id": "grouped", "title": "Groups, sub-sections and a collapse" },
+    { "id": "sizes", "title": "Big and Small sidebars" },
     { "id": "drawer", "title": "Phone drawer" },
     { "id": "settings", "title": "Settings in a near-full-screen dialog" },
-    { "id": "collapsible", "title": "Collapsible sidebar with hover preview" }
+    { "id": "collapsible", "title": "Collapsible sidebar, previews on hover" }
   ],
   "element": {
     "tag": "ayy-app-shell",
     "attributes": {
+      "size": "\"md\" | \"sm\" — Big (default) or Small (sets ayy-app-shell--sm). Leave it out to keep a hand-written ayy-app-shell--sm.",
       "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (sets ayy-app-shell--collapsed).",
-      "hover-preview": "boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (sets ayy-app-shell--hover-preview)."
+      "hover-preview": "On by default: when collapsed, hovering or focusing the sidebar expands it as an overlay preview (sets ayy-app-shell--hover-preview). hover-preview=\"false\" keeps the icon rail until the toggle opens it."
     },
     "events": {
       "ayy-collapse-change": "{ collapsed: boolean } — fired when the sidebar is collapsed or expanded via a toggle button or the collapsed property."

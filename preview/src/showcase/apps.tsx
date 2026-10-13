@@ -150,11 +150,6 @@ import {
   PageHeaderTitle,
   Pagination,
   Progress,
-  Section,
-  SectionDescription,
-  SectionEyebrow,
-  SectionHeader,
-  SectionTitle,
   SegmentedControl,
   SegmentedControlItem,
   Select,
@@ -771,8 +766,8 @@ function LandingApp() {
       </Navbar>
 
       <main id="nw-main">
-        <Section center className="ayy-container ayy-bg-grid" aria-labelledby="nw-hero">
-          <SectionHeader>
+        <section className="ayy-container ayy-bg-grid" style={{ paddingBlock: "var(--ayy-space-24)", textAlign: "center" }} aria-labelledby="nw-hero">
+          <header className="ayy-stack" style={{ alignItems: "center", gap: "var(--ayy-space-4)", maxInlineSize: "var(--ayy-size-measure)", marginInline: "auto" }}>
             <Badge variant="ai">New · AI page builder</Badge>
             <h1 className="ayy-h1" id="nw-hero">
               Launch pages your team is proud of
@@ -786,14 +781,14 @@ function LandingApp() {
                 Book a demo
               </a>
             </div>
-          </SectionHeader>
-        </Section>
+          </header>
+        </section>
 
-        <Section className="ayy-container" id="product" aria-labelledby="nw-features">
-          <SectionHeader>
-            <SectionEyebrow number="01">Why Northwind</SectionEyebrow>
-            <SectionTitle id="nw-features">Everything a launch needs</SectionTitle>
-          </SectionHeader>
+        <section className="ayy-container" id="product" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-features">
+          <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
+            <p className="ayy-eyebrow">01 · Why Northwind</p>
+            <h2 className="ayy-h2" id="nw-features">Everything a launch needs</h2>
+          </header>
           <div className="ayy-grid" style={min("15rem")}>
             {FEATURES.map((f) => (
               <Card key={f.title}>
@@ -807,18 +802,18 @@ function LandingApp() {
               </Card>
             ))}
           </div>
-        </Section>
+        </section>
 
-        <Section className="ayy-container" id="pricing" aria-labelledby="nw-pricing">
-          <SectionHeader>
-            <SectionEyebrow number="02">Pricing</SectionEyebrow>
-            <SectionTitle id="nw-pricing">Simple plans that grow with you</SectionTitle>
-            <SectionDescription>Per editor, per month. Viewers are always free.</SectionDescription>
+        <section className="ayy-container" id="pricing" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-pricing">
+          <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
+            <p className="ayy-eyebrow">02 · Pricing</p>
+            <h2 className="ayy-h2" id="nw-pricing">Simple plans that grow with you</h2>
+            <p className="ayy-muted">Per editor, per month. Viewers are always free.</p>
             <SegmentedControl aria-label="Billing cycle" value={cycle} onValueChange={setCycle}>
               <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
               <SegmentedControlItem value="yearly">Yearly · save 20%</SegmentedControlItem>
             </SegmentedControl>
-          </SectionHeader>
+          </header>
           <div className="ayy-grid" style={min("15rem")}>
             {PLANS.map((p) => (
               <Card key={p.name} featured={p.featured}>
@@ -848,13 +843,13 @@ function LandingApp() {
               </Card>
             ))}
           </div>
-        </Section>
+        </section>
 
-        <Section className="ayy-container" id="customers" aria-labelledby="nw-customers">
-          <SectionHeader>
-            <SectionEyebrow number="03">Customers</SectionEyebrow>
-            <SectionTitle id="nw-customers">Teams that switched</SectionTitle>
-          </SectionHeader>
+        <section className="ayy-container" id="customers" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-customers">
+          <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
+            <p className="ayy-eyebrow">03 · Customers</p>
+            <h2 className="ayy-h2" id="nw-customers">Teams that switched</h2>
+          </header>
           <Carousel label="Customer quotes" slideWidth="18rem">
             {QUOTES.map((q) => (
               <CarouselSlide key={q.name}>
@@ -875,13 +870,13 @@ function LandingApp() {
               </CarouselSlide>
             ))}
           </Carousel>
-        </Section>
+        </section>
 
-        <Section className="ayy-container" id="faq" aria-labelledby="nw-faq">
-          <SectionHeader>
-            <SectionEyebrow number="04">FAQ</SectionEyebrow>
-            <SectionTitle id="nw-faq">Questions, answered</SectionTitle>
-          </SectionHeader>
+        <section className="ayy-container" id="faq" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-faq">
+          <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
+            <p className="ayy-eyebrow">04 · FAQ</p>
+            <h2 className="ayy-h2" id="nw-faq">Questions, answered</h2>
+          </header>
           <Accordion single>
             {FAQ.map((f, i) => (
               <AccordionItem key={f.q} label={f.q} open={i === 0}>
@@ -889,12 +884,12 @@ function LandingApp() {
               </AccordionItem>
             ))}
           </Accordion>
-        </Section>
+        </section>
 
-        <Section center className="ayy-container" id="start" aria-labelledby="nw-start">
-          <SectionHeader>
-            <SectionTitle id="nw-start">Your next launch, this afternoon</SectionTitle>
-            <SectionDescription>Free for your first project. No card needed.</SectionDescription>
+        <section className="ayy-container" id="start" style={{ paddingBlock: "var(--ayy-space-24)", textAlign: "center" }} aria-labelledby="nw-start">
+          <header className="ayy-stack" style={{ alignItems: "center", gap: "var(--ayy-space-3)", maxInlineSize: "var(--ayy-size-measure)", marginInline: "auto" }}>
+            <h2 className="ayy-h2" id="nw-start">Your next launch, this afternoon</h2>
+            <p className="ayy-muted">Free for your first project. No card needed.</p>
             <form className="ayy-cluster" onSubmit={(e) => e.preventDefault()}>
               <InputGroup size="lg" style={{ inlineSize: "18rem" }}>
                 <Icon icon={Mail01Icon} />
@@ -904,8 +899,8 @@ function LandingApp() {
                 Get started
               </Button>
             </form>
-          </SectionHeader>
-        </Section>
+          </header>
+        </section>
       </main>
 
       <Footer>
@@ -1814,14 +1809,14 @@ function StoreApp() {
       </Navbar>
 
       <main id="em-main">
-        <Section className="ayy-container" aria-labelledby="em-title">
-          <SectionHeader>
+        <section className="ayy-container" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="em-title">
+          <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
             <p className="ayy-eyebrow">Roasted every Tuesday</p>
             <h1 className="ayy-h2" id="em-title">
               Coffee from farms we know by name
             </h1>
             <p className="ayy-lede">250 g bags, shipped the day after roasting. Standard delivery is free.</p>
-          </SectionHeader>
+          </header>
 
           <div className="ayy-stack" style={gap(5)}>
             <div className="ayy-spread" style={gap(4)}>
@@ -1916,7 +1911,7 @@ function StoreApp() {
               )}
             </div>
           </div>
-        </Section>
+        </section>
       </main>
 
       <Dialog open={cartOpen} onOpenChange={setCartOpen}>
@@ -2294,7 +2289,7 @@ export const showcaseApps: ShowcaseApp[] = [
     id: "dashboard",
     name: "Pulse",
     kind: "Analytics dashboard",
-    description: "KPIs with sparklines, a visitors chart against last month, a sortable top-pages table, traffic sources and goals. Dense and dark for people who live in it all day. Seven destinations, so phones get four tabs and More. Its settings open in a near-full-screen dialog.",
+    description: "KPIs, visitors chart, top pages, sources, goals. Dark and dense. Seven destinations: four tabs plus More on phones. Settings in a full dialog.",
     theme: "dark",
     density: "compact",
     uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "segmented-control", "card", "stat", "chart", "badge", "table", "pagination", "progress", "alert", "button", "avatar", "icon"],
@@ -2312,11 +2307,11 @@ Dark theme, compact density. ayywi components and tokens only; run npx @danitesl
     id: "landing",
     name: "Northwind",
     kind: "Marketing site",
-    description: "Hero, features, pricing with a billing toggle, a customer carousel, FAQ and a footer. The navbar folds into a menu on phones.",
+    description: "Hero, features, pricing with billing toggle, customer carousel, FAQ, footer. Navbar folds into a menu on phones.",
     theme: "light",
     density: "comfortable",
-    uses: ["navbar", "section", "card", "icon-tile", "segmented-control", "stat", "list", "badge", "carousel", "accordion", "input-group", "footer", "button", "avatar"],
-    prompt: `Build a one-page marketing site with ayywi: skip link, a Navbar (brand, four links, a ring "Start free" button, a NavbarToggle for phones), then <main> made of .ayy-section blocks at .ayy-container width, then a Footer.
+    uses: ["navbar", "card", "icon-tile", "segmented-control", "stat", "list", "badge", "carousel", "accordion", "input-group", "footer", "button", "avatar"],
+    prompt: `Build a one-page marketing site with ayywi: skip link, a Navbar (brand, four links, a ring "Start free" button, a NavbarToggle for phones), then <main> at .ayy-container width, then a Footer.
 
 Sections: a centred hero (AI badge, h1, lede, a ring and an outline button, .ayy-bg-grid behind it); three feature cards with IconTiles in different accents; pricing with a Monthly/Yearly Segmented control and three plan cards (the middle one featured with a "Most popular" badge, perks in a compact List); a Carousel of customer quotes; an FAQ Accordion (single); a closing section with an email InputGroup and a submit button.
 
@@ -2328,7 +2323,7 @@ Light theme. One ring call to action per view; everything else outline or ghost.
     id: "inbox",
     name: "Relay",
     kind: "Support inbox",
-    description: "Conversations, a thread with AI-suggested replies, and customer details, in three panes on wide screens. On a phone it's the list, with tabs below. Its settings open in a near-full-screen dialog.",
+    description: "Conversations, thread with AI replies, customer details. Three panes on desktop, list on phones. Settings in a full dialog.",
     theme: "dark-contrast",
     density: "comfortable",
     uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "alert", "separator"],
@@ -2346,7 +2341,7 @@ Dark-contrast theme. ayywi components and tokens only; run npx @danitesler/ayywi
     id: "settings",
     name: "Ledger",
     kind: "Account settings",
-    description: "Settings in a near-full-screen dialog over the app: sections in its sidebar, a profile that shows it's saving, notification switches, the plan's usage, invoices with pagination and an empty state. Full screen on phones, the sections and a section as two screens. Light gray with touch-sized controls.",
+    description: "Settings in a full dialog over the app: profile with saving state, notifications, plan usage, invoices with pagination and empty state. Full screen on phones. Light gray, touch size.",
     theme: "light-gray",
     density: "touch",
     uses: ["app-shell", "dialog", "settings", "top-bar", "bottom-nav", "page-header", "stat", "card", "input", "select", "textarea", "dropzone", "segmented-control", "progress", "switch", "table", "pagination", "empty-state", "alert"],
@@ -2362,7 +2357,7 @@ Light-gray theme, touch density. Run npx @danitesler/ayywi lint when you're done
     id: "tracker",
     name: "Orbit",
     kind: "Project tracker",
-    description: "Onboarding steps, a task list filtered by project chips with an empty state for each case, an error with a retry that shows it's working, and skeletons while activity loads. Its settings open in a near-full-screen dialog.",
+    description: "Onboarding, filterable tasks with empty states, retryable error, loading skeletons. Settings in a full dialog.",
     theme: "light",
     density: "compact",
     uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "steps", "segmented-control", "chip", "kbd", "list", "checkbox", "empty-state", "alert", "skeleton", "card", "button", "avatar"],
@@ -2380,11 +2375,11 @@ Light theme, compact density. Every state — empty, loading, error — uses an 
     id: "store",
     name: "Ember",
     kind: "Online store",
-    description: "A coffee shop: category chips with counts, a price range and a sort, a product grid with an empty state, and a cart drawer with quantities, delivery options and the total.",
+    description: "Coffee shop: filters, product grid with empty state, cart drawer with quantities and total.",
     theme: "dark",
     density: "comfortable",
-    uses: ["navbar", "section", "chip", "slider", "select", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "footer", "button", "toast"],
-    prompt: `Build an online coffee store with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), a Section at .ayy-container width, and a Footer.
+    uses: ["navbar", "chip", "slider", "select", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "footer", "button", "toast"],
+    prompt: `Build an online coffee store with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), content at .ayy-container width, and a Footer.
 
 The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Chips for the kind of coffee (with counts), a SliderRange for the price with the range in text, and a Select to sort; then an .ayy-grid of product Cards (CardMedia with an IconTile on .ayy-bg-grid in the product's --ayy-spot colour, the name, the roast and tasting notes, the price and an outline Add button), or an Empty state with Reset filters when nothing matches.
 
@@ -2398,7 +2393,7 @@ Dark theme. Run npx @danitesler/ayywi lint when you're done.`,
     id: "booking",
     name: "Haven",
     kind: "Booking app",
-    description: "A yoga studio's schedule: a day strip of compact choice cards, style chips, classes as choice cards with spots left, and a booking card with a studio combobox and a spots stepper. Touch-sized for phones. Its settings open in a near-full-screen dialog.",
+    description: "Yoga schedule: day strip, style chips, classes with spots left, booking card. Touch size. Settings in a full dialog.",
     theme: "light",
     density: "touch",
     uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "number-field", "field", "button", "toast"],

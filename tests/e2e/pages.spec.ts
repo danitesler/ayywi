@@ -24,14 +24,13 @@ const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spac
 
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
-  // The page opens on the no-code guide; the developer guide lists every component.
-  await expect(page.getByRole("tab", { name: "AI Builders" })).toHaveAttribute("aria-selected", "true");
+  // One flow: the sentence, the tool, the prompt; the codebase setup sits under it.
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
   await page.getByRole("radiogroup", { name: "Pick your AI tool:" }).getByText("Cursor", { exact: true }).click();
   await expect(page.getByRole("radio", { name: "Cursor" })).toBeChecked();
   await expect(page.getByText(".cursor/rules/ayywi.mdc")).toBeVisible();
-  await page.getByRole("tab", { name: "No-Build / CDN" }).click();
-  await expect(page.getByRole("navigation", { name: "Components" }).getByRole("link")).toHaveCount(slugs.length);
+  await page.getByRole("tab", { name: "No build (CDN)" }).click();
+  await expect(page.getByRole("button", { name: "Copy setup prompt" })).toBeVisible();
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
     await page.goto(`/#/${route}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
@@ -68,8 +67,10 @@ test("example code is one click away", async ({ page }) => {
   await open(page, "button");
   const code = page.locator(".pv-example").first().locator(".pv-code");
   await expect(code).toBeHidden();
-  await page.locator(".pv-example").first().locator(".pv-source summary").click();
+  await page.locator(".pv-example").first().getByRole("button", { name: "Copy for..." }).click();
   await expect(code).toBeVisible();
+  await expect(page.getByRole("tab", { name: "AI prompt" })).toHaveAttribute("aria-selected", "true");
+  await expect(code).toContainText("Build a Button component");
 });
 
 test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
@@ -95,7 +96,7 @@ test("the site hosts each release's runtime files under v/<release>/; prompts fr
   // Served from a real host name (not localhost), the prompts point at this build's own v/<release>/ copies.
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByText("Web Chat").click();
+  await page.getByRole("radio", { name: "ChatGPT" }).check();
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const local = await page.evaluate(() => navigator.clipboard.readText());
   expect(local).not.toContain("/v/");
@@ -167,7 +168,7 @@ test("search bar opens command palette, filters results and jumps to a page", as
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input-group", "segmented-control", "list", "empty-state", "accordion", "section", "toc", "carousel", "chat"]) {
+  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input-group", "segmented-control", "list", "empty-state", "accordion", "toc", "carousel", "chat"]) {
     await open(page, route);
     for (const dir of ["ltr", "rtl"]) {
       await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);

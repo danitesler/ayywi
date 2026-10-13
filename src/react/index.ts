@@ -52,9 +52,21 @@ export {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   type DropdownMenuProps,
   type DropdownMenuContentProps,
   type DropdownMenuItemProps,
+  type DropdownMenuSubProps,
+  type DropdownMenuSubTriggerProps,
+  type DropdownMenuSubContentProps,
+  type DropdownMenuCheckboxItemProps,
+  type DropdownMenuRadioGroupProps,
+  type DropdownMenuRadioItemProps,
 } from "../components/menu/menu.react";
 export { Tooltip, type TooltipProps } from "../components/tooltip/tooltip.react";
 export { Toaster, type ToasterProps } from "../components/toast/toast.react";
@@ -119,6 +131,7 @@ export {
   AppShellTitle,
   AppShellHead,
   type AppShellProps,
+  type AppShellSize,
   type AppShellMainProps,
   type AppShellBackProps,
   type AppShellLinkProps,
@@ -129,18 +142,8 @@ export {
 export { BottomNav, BottomNavLink, BottomNavButton, type BottomNavLinkProps, type BottomNavButtonProps } from "../components/bottom-nav/bottom-nav.react";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
-export {
-  Section,
-  SectionHeader,
-  SectionEyebrow,
-  SectionTitle,
-  SectionDescription,
-  type SectionProps,
-  type SectionEyebrowProps,
-} from "../components/section/section.react";
 export { Separator, type SeparatorProps } from "../components/separator/separator.react";
 export { Carousel, CarouselSlide, type CarouselProps } from "../components/carousel/carousel.react";
-export { ThemeToggle, type ThemeToggleProps } from "../components/theme-toggle/theme-toggle.react";
 export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";
 export { Stat, type StatProps } from "../components/stat/stat.react";
 export { Frame, type FrameProps } from "../components/frame/frame.react";
@@ -178,7 +181,7 @@ export {
   type EmptyStateProps,
 } from "../components/empty-state/empty-state.react";
 export { Spinner, type SpinnerProps } from "../components/spinner/spinner.react";
-export { Kbd } from "../components/kbd/kbd.react";
+export { Kbd, KeyboardHint, type KbdProps, type KeyboardHintProps } from "../components/kbd/kbd.react";
 export { InputGroup, InputGroupAddon, type InputGroupProps } from "../components/input-group/input-group.react";
 export {
   SegmentedControl,

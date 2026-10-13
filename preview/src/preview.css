@@ -140,13 +140,17 @@
 .pv-finder__rail {
   position: absolute;
   inset-block: 0;
-  inset-inline-start: calc((var(--ayy-size-control-lg) - var(--ayy-size-control-md)) / 2);
+  inset-inline-start: 0;
   margin-block: auto;
   opacity: 0;
   visibility: hidden;
   transition:
     opacity var(--_t, var(--ayy-duration-base)),
     visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
+}
+
+.pv-shell:not(.ayy-app-shell--sm) .pv-finder__rail {
+  inset-inline-start: calc((var(--ayy-size-control-lg) - var(--ayy-size-control-md)) / 2);
 }
 
 .pv-finder .ayy-search-bar,
@@ -157,7 +161,7 @@
 }
 
 @media (min-width: 48.001rem) {
-  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(:hover, :has(:focus-visible)), [data-ayy-hold]) .pv-finder__rail {
+  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .pv-finder__rail {
     opacity: 1;
     visibility: visible;
     transition:
@@ -165,9 +169,10 @@
       visibility 0s linear var(--_delay, 0s);
   }
 
-  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.pv-finder .ayy-search-bar, .pv-sidebar__actions) {
+  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.pv-finder .ayy-search-bar, .pv-sidebar__actions) {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition:
       opacity var(--_t),
       visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
@@ -192,20 +197,7 @@
 }
 
 
-/* ayywi-lint-disable-next-line -- docs chrome: ~80 links, so denser rows than an app sidebar */
-.pv-nav__link {
-  display: block;
-  min-block-size: 0;
-  padding: var(--ayy-space-1) var(--ayy-space-3);
-  border-radius: var(--ayy-radius-md);
-  font-size: var(--ayy-text-sm);
-  font-weight: var(--ayy-weight-regular);
-}
-
-/* ayywi-lint-disable-next-line -- docs chrome: denser nav rows */
-.pv-nav__link[aria-current="page"] {
-  font-weight: var(--ayy-weight-medium);
-}
+/* Docs chrome: App shell size prop (Big vs Small) handles nav row density */
 
 .pv-main {
   display: flex;
@@ -313,11 +305,19 @@
   margin-block-end: var(--ayy-space-8);
 }
 
+.pv-example__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+}
+
 .pv-example__title {
   margin: 0;
   font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-sm);
+  font-size: var(--ayy-text-md);
   font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
 }
 
 .pv-stage {
@@ -342,8 +342,7 @@
 
 .pv-stage__inner > .ayy-tabs,
 .pv-stage__inner > .ayy-table-wrap,
-.pv-stage__inner > .ayy-navbar,
-.pv-stage__inner > .ayy-section {
+.pv-stage__inner > .ayy-navbar {
   inline-size: 100%;
 }
 
@@ -594,6 +593,85 @@
   }
 }
 
+.pv-motion__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+  margin-block-end: var(--ayy-space-4);
+}
+
+.pv-motion__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--ayy-space-4);
+  margin-block-end: var(--ayy-space-8);
+}
+
+.pv-motion__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-3);
+  min-inline-size: 0;
+}
+
+.pv-motion__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 7.5rem;
+  padding: var(--ayy-space-4);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-lg);
+  background-color: var(--ayy-color-wash);
+  overflow: clip;
+}
+
+.pv-motion__toast {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-surface-raised);
+  box-shadow: var(--ayy-shadow-overlay);
+  font-size: var(--ayy-text-sm);
+  color: var(--ayy-color-text);
+  transform: translateY(8px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pv-motion__toast[data-visible] {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pv-motion__toast {
+    transition:
+      transform var(--ayy-duration-base) var(--ayy-ease-menu),
+      opacity var(--ayy-duration-base) var(--ayy-ease-menu);
+  }
+
+  .pv-motion__lift {
+    transition:
+      transform var(--ayy-duration-slow) var(--ayy-ease-out-expo),
+      box-shadow var(--ayy-duration-slow) var(--ayy-ease-out-expo);
+  }
+}
+
+/* ayywi-lint-disable-next-line -- simulates active/hover card lift in motion loop */
+.pv-motion__lift[data-lifted] {
+  transform: translateY(-4px);
+  box-shadow: var(--ayy-shadow-lift);
+}
+
 /* ---- Overview ---- */
 
 .pv-page--compact {
@@ -662,10 +740,6 @@
   gap: var(--ayy-space-2);
 }
 
-.pv-facts {
-  font-size: var(--ayy-text-sm);
-  color: var(--ayy-color-muted);
-}
 
 /* ---- Small screens ---- */
 
@@ -707,11 +781,16 @@
 
 /* ---- Simplified pages ---- */
 
-/* Example code stays one click away instead of filling the page. */
-.pv-source {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-3);
+/* Example code stays one click away in a popover. */
+.pv-code-popover {
+  inline-size: min(32rem, calc(100vw - 2rem));
+  max-inline-size: min(32rem, calc(100vw - 2rem));
+  max-block-size: min(28rem, calc(100vh - 4rem));
+  overflow-y: auto;
+}
+
+.pv-code-popover .pv-code__pre {
+  max-block-size: min(260px, calc(100vh - 14rem));
 }
 
 .pv-scale {
@@ -936,32 +1015,14 @@
   block-size: 100%;
 }
 
-.pv-doors {
-  margin-block-start: var(--ayy-space-2);
-}
 
 /* Rows of links to components: outline buttons, packed tight. */
 .pv-links {
   --ayy-gap: var(--ayy-space-2);
 }
 
-.pv-intro {
-  display: grid;
-  gap: var(--ayy-space-2);
-  margin-block-start: var(--ayy-space-4);
-}
 
-.pv-intro__when {
-  margin: 0;
-  color: var(--ayy-color-text-soft);
-}
 
-.pv-intro__title {
-  margin: var(--ayy-space-2) 0 0;
-  color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-sm);
-  font-weight: 600;
-}
 
 /* The fill-in sentence: dropdowns and inputs as wide as their words. */
 .pv-madlib {
@@ -1052,30 +1113,76 @@
   font-family: var(--ayy-font-mono);
 }
 
+.pv-brand__presets-row {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+}
+
+.pv-brand__swatches {
+  margin-block-start: 0;
+}
+
+.pv-menu-custom-color {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+}
+
+.pv-menu-custom-color .ayy-menu__item {
+  flex: 1;
+}
+
+.pv-menu-custom-color .ayy-swatch {
+  flex: none;
+  margin-inline-end: var(--ayy-space-2);
+}
+
 .pv-brand__alert {
   margin-block-start: var(--ayy-space-4);
 }
 
 .pv-brand__scale {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-  gap: var(--ayy-space-2);
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  gap: var(--ayy-space-1-5);
   margin: 0;
   padding: 0;
   list-style: none;
   font-size: var(--ayy-text-xs);
 }
 
+@media (min-width: 48rem) {
+  .pv-brand__scale {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    gap: var(--ayy-space-1);
+  }
+}
+
 .pv-brand__step {
   display: flex;
   flex-direction: column;
-  gap: var(--ayy-space-1);
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+.pv-brand__step strong {
+  font-size: var(--ayy-text-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv-brand__step .ayy-mono {
+  font-size: 11px;
 }
 
 .pv-brand__chip {
-  block-size: 56px;
+  block-size: 32px;
   border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-lg);
+  border-radius: var(--ayy-radius-md);
 }
 
 .pv-brand__sample {

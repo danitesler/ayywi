@@ -9,6 +9,63 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+## 0.0.3 — 2026-10-13
+
+### Added
+- **[Motion](#/motion)**
+  Only showed abstract sliding dot tracks → added real component examples (Switch, Tabs, Progress, Accordion, Toast, Card lift, Shimmer) running in a synchronized animation loop with play/pause controls.
+- **[Progress](#/progress)**
+  Only showed an unlabelled bar stack → added examples for labelled task progress with steps, resource usage quotas with `role="meter"`, and an interactive simulation with live percentage controls.
+- **[Dropdown menu](#/menu)**
+  Only supported flat items and separators without nesting → added submenus next to the menu with pointer-intent safe triangles, inline expandable accordion sections, radio/checkbox items, values, descriptions, static rendering, and context menu coordinates.
+- **[Shortcut](#/shortcut)**
+  Platform detection was Apple-only → added `getPlatform()`, `isWindowsPlatform()`, and `isLinuxPlatform()`, Linux Super modifier support (in React's Shortcut and in static shortcuts redrawn by `@danitesler/ayywi/elements`), and matching by physical key so hotkeys work on any keyboard layout.
+- **[App shell](#/app-shell)**
+  One sidebar size → a `size="sm"` Small sidebar (`ayy-app-shell--sm`) with denser rows for long navigation such as a docs tree; Big stays the default. New "Big and Small sidebars" example shows both side by side.
+
+### Changed
+- **[App shell](#/app-shell)**
+  Long description and 10 dos / 8 don'ts → shorter description and 8 dos / 7 don'ts.
+- **[Keyboard hint](#/kbd)**
+  Component was named Kbd without platform adaptation → renamed to Keyboard hint with platform modifier symbols (macOS ⌘/⌥, Windows Ctrl/Win, Linux Super), international layout hotkey matching (e.g. Russian Cyrillic `Cmd+У` matching `Cmd+E`), and new platform and multilingual examples.
+- **[Combobox](#/combobox)**
+  Options were the md control height (32px compact) → sm (28px compact), across Combobox and Tag input suggestions.
+- **[App shell](#/app-shell)**
+  Sidebar items 4px apart, groups 12px apart → items 2px apart, and more air above each group (16px margin, 20px padding).
+- **[App shell](#/app-shell)**
+  Hover preview was opt-in (`hoverPreview`, `hover-preview`) → on by default for a collapsed sidebar; `hoverPreview={false}` or `hover-preview="false"` turns it off.
+- **[Search bar](#/search-bar)**
+  The field's border didn't react to the pointer → it darkens to line-hover on hover, like Input.
+- **[Toast](#/toast)**
+  Flat edge-bordered notifications → stacked card deck with leading status icons, quiet background cards, 5-item preview limit, unrestricted hover expansion, and smooth `@starting-style` transitions.
+- **[Brand System](#/brand)**
+  Manual "Use across preview" button and static preset list → Mono default preset circle, live preview updates on seed color changes, tooltip labels on swatches, "Reset to default" button aligned beside swatches, custom color picker in shell settings menu, and pure unbranded themes when Mono is selected.
+- **Preview**
+  The display menu's "Expand on hover" switch → the docs sidebar always previews on hover, and the menu picks its size (Small or Big).
+- **Preview**
+  Code accordion below example stages → compact "Copy for..." popover with AI prompt, React and HTML tabs, with larger example titles.
+- **Preview**
+  Long page intros and showcase descriptions → shortened throughout Get started, Foundations, Brand, Showcase and the seven example blurbs.
+- **Preview**
+  Separate theme and display buttons with grouped radio lists → one Appearance menu with Theme, Density, Brand and Sidebar submenu flyouts, each with a leading icon and the current value.
+- **Preview**
+  Get started showed follow-up fix prompts and a "What you can build" button → both removed for a shorter one-flow page.
+- **Preview**
+  Get started had four tabs, "included" checklists, 13 screen prompts, a review list and a component list → one flow (describe, pick your tool, copy), follow-up fixes, and a short codebase setup with npm or CDN.
+
+### Fixed
+- **[Dropdown menu](#/menu)**
+  Hovering an open submenu panel closed it after a beat → the parent menu now ignores hover events from inside its own submenu panels, so the flyout stays open while the pointer is on it.
+- **README**
+  The Components table listed Section, Theme toggle and a "Data list" that doesn't exist → removed; `pnpm check` now fails on a table entry that isn't a component, and on custom properties that aren't `--ayy-*` or `--_*`.
+
+### Removed
+- **Section** (**Breaking**)
+  `.ayy-section` and `<Section>` component removed → use native `<section>` with standard layout utilities and tokens.
+- **Theme toggle** (**Breaking**)
+  `.ayy-theme-toggle`, `<ThemeToggle>`, and `<ayy-theme-toggle>` removed → switch themes with standard button/menu components and `setTheme()`.
+
+
 ## 0.0.2 — 2026-10-11
 
 ### Changed

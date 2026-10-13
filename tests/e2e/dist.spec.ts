@@ -52,26 +52,15 @@ const route = (body: string) => async (r: import("@playwright/test").Route) => {
   return r.fulfill({ contentType: file.endsWith(".css") ? "text/css" : "text/javascript", body: read(file) });
 };
 
-test("a saved theme comes back: theme-init.js before the first paint, the toggle when it connects", async ({ page }) => {
+test("a saved theme comes back: theme-init.js before the first paint", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("ayy-theme", "light-gray"));
-  const head = (init: boolean) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>t</title>
-${init ? '<script src="/smoke/theme-init.js"></script>' : ""}
+  const head = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>t</title>
+<script src="/smoke/theme-init.js"></script>
 <link rel="stylesheet" href="/smoke/ayywi.min.css"><script src="/smoke/elements.global.js" defer></script></head><body>`;
-  const toggle = `<ayy-theme-toggle><button class="ayy-theme-toggle" aria-label="Theme"></button>
-<div class="ayy-menu" popover role="menu"><button class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" data-value="system">System</button>
-<button class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" data-value="light-gray">Light gray</button></div></ayy-theme-toggle>`;
 
-  // theme-init.js alone, no toggle: applied before any other script runs.
-  await page.route("**/smoke/**", route(`${head(true)}<script>window.seen = document.documentElement.dataset.theme</script></body></html>`));
+  await page.route("**/smoke/**", route(`${head}<script>window.seen = document.documentElement.dataset.theme</script></body></html>`));
   await page.goto("/smoke/index.html");
   expect(await page.evaluate(() => (window as unknown as { seen: string }).seen)).toBe("light-gray");
-
-  // No theme-init.js: the toggle restores it, and marks it in its menu.
-  await page.unroute("**/smoke/**");
-  await page.route("**/smoke/**", route(`${head(false)}${toggle}</body></html>`));
-  await page.goto("/smoke/index.html");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light-gray");
-  await expect(page.locator('[data-value="light-gray"]')).toHaveAttribute("aria-checked", "true");
 });
 
 test("page-wide helpers work on plain HTML: number fields step, sliders fill, combobox picks", async ({ page }) => {

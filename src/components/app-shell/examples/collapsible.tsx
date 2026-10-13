@@ -21,7 +21,7 @@ export default function Example() {
   // block-size on the shell.
   return (
     <div style={{ inlineSize: "100%", blockSize: "28rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
-      <AppShell collapsed={collapsed} hoverPreview onCollapseChange={setCollapsed} style={{ blockSize: "100%" }}>
+      <AppShell collapsed={collapsed} onCollapseChange={setCollapsed} style={{ blockSize: "100%" }}>
         <AppShellSidebar>
           <AppShellHead>
             <AppShellToggle aria-label="Sidebar">
@@ -55,7 +55,10 @@ export default function Example() {
         <AppShellMain>
           <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
             <h2 className="ayy-h3">Dashboard</h2>
-            <p className="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open.</p>
+            <p className="ayy-muted">
+              Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open. Set{" "}
+              <code>hoverPreview={"{false}"}</code> to keep the icon rail until the toggle opens it.
+            </p>
             <div className="ayy-grid" style={{ "--ayy-min": "9rem" } as CSSProperties}>
               <Stat labelFirst label="Open projects" value="12" />
               <Stat labelFirst label="Shipped this week" value="38" />

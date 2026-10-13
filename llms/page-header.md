@@ -42,7 +42,7 @@ Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, t
 - Keep the description to one sentence that says what the page is for.
 
 **Don't**
-- Don't use it on marketing pages — use a Section with a SectionHeader, or .ayy-display for a hero.
+- Don't use it on marketing pages — use .ayy-display or headings for a hero.
 - Don't put tabs, search or filters in it — put them in a toolbar row (.ayy-spread) under it.
 - Don't put more than three actions in it; move the rest into a DropdownMenu.
 - Don't add a second h1 elsewhere on the page.
@@ -100,4 +100,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

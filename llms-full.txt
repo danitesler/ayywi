@@ -1,4 +1,4 @@
-# @danitesler/ayywi 0.0.2 — full context for LLMs
+# @danitesler/ayywi 0.0.3 — full context for LLMs
 
 > The AI-first design system (say "AY-wee": AI + UI). One CSS class contract for HTML, Vue, Svelte, Angular, server templates, plus typed React components, a linter and an MCP server.
 
@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-menu>, <ayy-command>, <ayy-theme-toggle>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tag-input>, <ayy-calendar>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tag-input>, <ayy-calendar>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, setTheme, getTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - One component at a time: `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -25,8 +25,8 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
 - Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state. Movement on :hover (lifts, zooms, spins) goes inside @media (hover: hover), because a tap leaves :hover stuck on touch screens.
-- The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card, section or page that shows the content, and the spotlight, contents bar, section numbers, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.
-- Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> made of .ayy-section blocks at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.
+- The frame is monochrome; colour comes from the content. Set --ayy-spot (to an --ayy-accent-* token) on the card or page that shows the content, and the spotlight, contents bar, icon tiles and .ayy-accent-text inside pick it up. Never tint the navbar, sidebar, buttons or page background per page.
+- Websites follow one anatomy: .ayy-skip-link, a Navbar (with a NavbarToggle so its links fold into a menu on phones), then <main> at .ayy-container width (fading Separators between marketing sections), then the Footer. The page's call to action is a ring button (the navbar's repeats the same action); everything else outline or ghost.
 - Apps (anything signed-in) follow one frame: .ayy-skip-link, then the App shell — a sidebar on wide screens; on phones an __bar (brand plus one or two actions) and a Bottom nav with the sidebar's top destinations, same icons and order (four and a More tab when there are more). Each screen in its main starts with a Page header: the one h1, a line of description, at most one primary button; on phones a screen pushed from a list starts with a Top bar (back, title, actions) instead, and a screen's one main create action can be a Floating action button. Lists of rows on phones get Swipe actions for their two or three most common actions, which are also reachable elsewhere. Settings open over the app in a near-full-screen Dialog (size="full") holding the App shell in settings mode (the Settings pattern: a Settings title and the sections in its sidebar; one section of Settings rows in its main; on phones the dialog fills the screen and the section list and a section are two screens), never in a small or side dialog; desktop apps add a Command palette on ⌘K. Never put a Navbar in an app.
 - An app screen fills the main. Don't wrap it in .ayy-container or a max-inline-size — a max-inline-size on an example only sizes that example in the docs, it is not page layout. Long text (a description, .ayy-prose) may stop at --ayy-size-measure. Settings mode already centres its column; don't add a second cap.
 - Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).
@@ -37,7 +37,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-theme-toggle>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-calendar>, <ayy-toolbar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -85,7 +85,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Where you are, or which page of results | Breadcrumb for nested pages, Pagination for pages of results. | links separated by slashes, numbered buttons |
 | A screen pushed from a list on a phone | Top bar (back, title, actions). | a hand-built header with a back arrow |
 | A screenshot or picture of the product | Frame around it. | an <img> with a border and shadow |
-| Light/dark switch | Theme toggle. | a button that flips a class |
+| Light/dark switch | Dropdown menu of themes (radio items) that calls setTheme(); an icon trigger shows the current one. | a button that flips a class |
 
 ## Patterns
 
@@ -113,7 +113,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 - Touch density (data-density="touch") raises sidebar items and rows to 52px; nothing is sized by hand.
 
 **Specs** (don't restyle these)
-- **Sidebar item (.ayy-app-shell__link, in the app and in settings)**: --ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-3, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current="page"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-1 apart. Groups: an uppercase --ayy-text-2xs label, and a hairline plus --ayy-space-3 above every group after the first.
+- **Sidebar item (.ayy-app-shell__link, in the app and in settings)**: --ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-3, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current="page"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-0-5 apart. Groups: an uppercase --ayy-text-2xs label, and a hairline plus --ayy-space-3 above every group after the first.
 - **Settings group (.ayy-settings)**: A <section> labelled by its <h2> (--ayy-text-md, semibold), an optional muted --ayy-text-sm description, then the rows in a card: a 1px --ayy-color-line border, --ayy-radius-card, --ayy-color-surface. Groups are --ayy-space-6 apart. .ayy-settings--plain (no card) only in a sheet or dialog that already has a surface.
 - **Settings row (.ayy-settings__row)**: At least --ayy-size-control-lg high, padding --ayy-space-3 block and --ayy-space-4 inline, --ayy-space-4 between the text and the control. Label --ayy-text-sm medium; hint --ayy-text-xs muted, one line. The control sits at the inline end. A 1px --ayy-color-hairline between rows only: none above the first or below the last.
 - **Section header (.ayy-top-bar in the settings main)**: Sticky, the page colour with a hairline under it; title semibold (--ayy-text-xl in the dialog on wide screens, --ayy-text-md on phones), lined up with the content column. One <h1> per section.
@@ -284,9 +284,9 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 | space.10 | `--ayy-space-10` | 2.5rem |  |  |
 | space.12 | `--ayy-space-12` | 3rem |  |  |
 | space.16 | `--ayy-space-16` | 4rem |  |  |
-| space.20 | `--ayy-space-20` | 5rem |  | Section padding on phones. |
-| space.24 | `--ayy-space-24` | 6rem |  | Section padding. |
-| space.32 | `--ayy-space-32` | 8rem |  | Section padding on wide screens. |
+| space.20 | `--ayy-space-20` | 5rem |  | Generous block padding on phones. |
+| space.24 | `--ayy-space-24` | 6rem |  | Generous block padding. |
+| space.32 | `--ayy-space-32` | 8rem |  | Generous block padding on wide screens. |
 | space.0-5 | `--ayy-space-0-5` | 0.125rem |  |  |
 | space.1-5 | `--ayy-space-1-5` | 0.375rem |  |  |
 | size.control-sm | `--ayy-size-control-sm` | 1.75rem |  | Small control height. · density: comfortable 2rem, touch 2.5rem |
@@ -352,7 +352,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 ## Public custom properties
 
-- `--ayy-spot`: The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card, section or page: it lights card spotlights, the active contents item, section numbers, icon tiles, the scroll-progress bar and .ayy-accent-text.
+- `--ayy-spot`: The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card or page: it lights card spotlights, the active contents item, icon tiles, the scroll-progress bar and .ayy-accent-text.
 - `--ayy-mx`: Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).
 - `--ayy-my`: Card spotlight pointer Y in px (set by React Card or @danitesler/ayywi/elements).
 - `--ayy-dot`: Badge status-dot colour override.
@@ -402,13 +402,13 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 ## Components by category
 
-- **Actions** (Things people click to do something.): Button, Toolbar, Dropdown menu, Command palette, Floating action button, Theme toggle
+- **Actions** (Things people click to do something.): Button, Toolbar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Contents
 - **Forms** (Inputs, choices and their labels.): Field, Input, Input group, Search bar, Textarea, Select, Combobox, Tag input, Calendar, Checkbox, Radio, Segmented control, Chip, Swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
-- **Layout** (Containers and ways to organise content.): Page header, Section, Card, Tabs, Accordion, Carousel, Separator
+- **Layout** (Containers and ways to organise content.): Page header, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Frame, Chat, Table, Chart
+- **Data display** (Values, people and records.): Badge, Keyboard hint, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Frame, Chat, Table, Chart
 
 ## Button
 
@@ -891,12 +891,22 @@ export default function Example() {
 
 ## Dropdown menu
 
-Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab). Also called: menu, dropdown, dropdown-menu, context-menu, menu-item.
+Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab), submenus and inline expandable sections. Also called: menu, dropdown, dropdown-menu, context-menu, menu-item, submenu, nested-menu, cascading-menu.
 
 **Classes**
 - `.ayy-menu` — On the element with popover and role="menu".
+- `.ayy-menu--sub` — Submenu flyout panel.
+- `.ayy-menu--static` — Static menu rendered inline in a page or window without popover behavior.
 - `.ayy-menu__item` — Each action: a <button role="menuitem">.
 - `.ayy-menu__item--destructive` — Red item for destructive actions.
+- `.ayy-menu__item--sub` — Submenu parent row with an inline-end chevron.
+- `.ayy-menu__item--expand` — Inline accordion row that expands its items below itself.
+- `.ayy-menu__item--described` — Two-line row with an aligned label and soft description.
+- `.ayy-menu__item-text` — Text container for a described row's label and description.
+- `.ayy-menu__description` — Soft description text under a described row's label.
+- `.ayy-menu__value` — Muted text or badge before the chevron or shortcut.
+- `.ayy-menu__chevron` — Chevron icon pointing towards the inline end or down when expandable.
+- `.ayy-menu__group--inline` — Indented role="group" of items revealed by an expandable row.
 - `.ayy-menu__shortcut` — Keyboard shortcut hint at the end of an item.
 - `.ayy-menu__label` — Small uppercase group label.
 - `.ayy-menu__separator` — Divider (role="separator").
@@ -910,36 +920,45 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `selected` (`.ayy-menu__item[aria-checked="true"] on role="menuitemradio" or "menuitemcheckbox"`) — Semibold with a check at the inline end, drawn in currentColor. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select.
 - `error` — doesn't apply: A menu has no error state; report a failed command with a toast.
 - `loading` — doesn't apply: Build the items before opening; if they load, put the trigger Button in loading until they're ready.
-- `open` (`:popover-open`) — Fades in and scales up from 97%; fades out when it closes.
+- `open` (`:popover-open or [aria-expanded="true"] on parent row`) — Fades in and scales up from 97%; parent rows keep the hover background while open.
 
 **Sizes**
 - Density — Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.
 - Width — At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item.
 
-**JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
+**JS (framework-free)**: menuItemClass({ destructive?, sub?, expand?, described?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })
 
-**Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
+**Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons, optional submenu panels, and expandable groups.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: start | center | end
 - attribute `open`: Two-way open state
 - event `ayy-select`: { value: string, item: HTMLElement } — value is the item's data-value, else its text
 - event `ayy-open-change`: { open: boolean }
+- event `ayy-submenu-layout`: { open: boolean, width: number, height: number, side: FloatingSide }
 
-**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@danitesler/ayywi/react";`
-- `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
+**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@danitesler/ayywi/react";`
+- `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `anchorPoint` { x: number, y: number }; `boundary` Element | Rect
 - `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…
-- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"
-- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes; `destructive` boolean; `shortcut` string — hint like "⌘D"
+- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"; `static` boolean; `boundary` Element | Rect; `subSide` "end" | "start"; `onSubmenuLayout` (layout) => void
+- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes unless closeOnSelect=false; `destructive` boolean; `shortcut` string — hint like "⌘D"; `value` ReactNode; `description` ReactNode; `icon` ReactNode; `closeOnSelect` boolean
 - `<DropdownMenuLabel>` renders <div role="presentation">.
 - `<DropdownMenuSeparator>` renders <div role="separator">.
+- `<DropdownMenuSub>` renders nothing (submenu state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `inline` boolean
+- `<DropdownMenuSubTrigger>` renders <button role="menuitem" aria-haspopup="menu">. Props: `icon` ReactNode; `value` ReactNode; `description` ReactNode
+- `<DropdownMenuSubContent>` renders <div popover role="menu"> or <div role="group"> (inline). Props: `side` "end" | "start"; `align` "start"
+- `<DropdownMenuCheckboxItem>` renders <button role="menuitemcheckbox">. Props: `checked` boolean; `onCheckedChange` (checked: boolean) => void; `closeOnSelect` boolean
+- `<DropdownMenuRadioGroup>` renders <div role="group">. Props: `value` string; `onValueChange` (value: string) => void; `closeOnSelect` boolean
+- `<DropdownMenuRadioItem>` renders <button role="menuitemradio">. Props: `value` string
 
 **Accessibility**
 - Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items.
+- ArrowRight / ArrowLeft open and close submenus (mirrored in RTL); Esc inside a submenu closes only that panel.
 - Esc or Tab closes the menu and focus returns to the trigger.
 - Icon-only triggers (⋯) need aria-label.
 
 **Do**
 - Use a menu for an item's secondary actions (rename, duplicate, delete) and for overflow “⋯” menus in toolbars and table rows.
+- Nest one level at most, for variants of one action. Don't hide frequent actions in a submenu.
 - Put destructive actions last, after a separator.
 - Keep item labels to a verb + noun: "Rename project".
 
@@ -947,7 +966,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - Don't use a menu to choose a value in a form — use Select or Radio.
 - Don't use a menu to navigate between pages — use links.
 - Don't put form fields or rich content in a menu — use Popover.
-- Don't nest menus.
+- Don't nest submenus more than one level.
 
 ### Dropdown menu — Item actions
 
@@ -1017,6 +1036,182 @@ export default function Example() {
         <DropdownMenuItem destructive onSelect={() => toast.error("Project deleted")}>
           <Icon icon={Delete02Icon} />
           Delete project
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
+### Dropdown menu — Submenus and options
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-menu> (@danitesler/ayywi/elements) supports submenus and inline expandable groups. -->
+<ayy-menu>
+  <button type="button" class="ayy-button ayy-button--outline" popovertarget="capture-menu-html" aria-haspopup="menu">Capture options</button>
+  <div class="ayy-menu" id="capture-menu-html" popover role="menu">
+    <div class="ayy-menu__label" role="presentation">Takerr</div>
+    <button type="button" class="ayy-menu__item ayy-menu__item--described" role="menuitem" data-value="capture-area">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3V18C6 19.8856 6 20.8284 6.58579 21.4142C7.17157 22 8.11438 22 10 22H21" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/><path d="M18 21V6C18 4.11438 18 3.17157 17.4142 2.58579C16.8284 2 15.8856 2 14 2H3" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+      <span class="ayy-menu__item-text">
+        <span>Capture area</span>
+        <span class="ayy-menu__description">Drag to select part of the screen</span>
+      </span>
+      <span class="ayy-menu__shortcut">⌘4</span>
+    </button>
+
+    <button type="button" class="ayy-menu__item ayy-menu__item--sub" role="menuitem" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-timer">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14.5 14.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      Self-timer
+      <span class="ayy-menu__value">5s</span>
+      <span class="ayy-menu__chevron" aria-hidden="true"></span>
+    </button>
+    <div class="ayy-menu ayy-menu--sub" id="submenu-timer" popover role="menu">
+      <div role="group">
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="off">Off</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="3">In 3 seconds</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="true" data-value="5">In 5 seconds</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="10">In 10 seconds</button>
+      </div>
+    </div>
+
+    <button type="button" class="ayy-menu__item ayy-menu__item--sub" role="menuitem" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-format">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15V3M12 15L8 11M12 15L16 11" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M2 17L2.62112 19.4845C2.84655 20.3862 3.65922 21 4.58988 21H19.4101C20.3408 21 21.1535 20.3862 21.3789 19.4845L22 17" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+      Export format
+      <span class="ayy-menu__value">PNG</span>
+      <span class="ayy-menu__chevron" aria-hidden="true"></span>
+    </button>
+    <div class="ayy-menu ayy-menu--sub" id="submenu-format" popover role="menu">
+      <div role="group">
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="true" data-value="png">PNG (lossless)</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="jpg">JPG (compressed)</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="pdf">PDF (document)</button>
+      </div>
+    </div>
+
+    <button type="button" class="ayy-menu__item ayy-menu__item--expand" role="menuitem" aria-expanded="false" aria-controls="menu-inline-options">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      Advanced options
+      <span class="ayy-menu__chevron" aria-hidden="true"></span>
+    </button>
+    <div class="ayy-menu__group--inline" id="menu-inline-options" role="group" hidden>
+      <button type="button" class="ayy-menu__item" role="menuitemcheckbox" aria-checked="true" data-value="pointer">
+        Include pointer
+      </button>
+    </div>
+
+    <div class="ayy-menu__separator" role="separator"></div>
+    <button type="button" class="ayy-menu__item" role="menuitem" data-value="fullscreen">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="13" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M9 3H15L16.5 5H20C21.1046 5 22 5.89543 22 7V19C22 20.1046 21.1046 21 20 21H4C2.89543 21 2 20.1046 2 19V7C2 5.89543 2.89543 5 4 5H7.5L9 3Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      Full screen <span class="ayy-menu__shortcut">⌘3</span>
+    </button>
+  </div>
+</ayy-menu>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import {
+  Camera01Icon,
+  Clock01Icon,
+  CropIcon,
+  Download01Icon,
+  Layers01Icon,
+} from "@hugeicons/core-free-icons";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+  Icon,
+  toast,
+} from "@danitesler/ayywi/react";
+
+export default function Example() {
+  const [timer, setTimer] = useState("off");
+  const [format, setFormat] = useState("png");
+  const [showCursor, setShowCursor] = useState(true);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger variant="outline">Capture options</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Takerr</DropdownMenuLabel>
+        <DropdownMenuItem
+          icon={<Icon icon={CropIcon} />}
+          description="Drag to select part of the screen"
+          onSelect={() => toast("Capture area")}
+          shortcut="⌘4"
+        >
+          Capture area
+        </DropdownMenuItem>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger
+            icon={<Icon icon={Clock01Icon} />}
+            value={timer === "off" ? "Off" : `${timer}s`}
+          >
+            Self-timer
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup value={timer} onValueChange={(val) => { setTimer(val); toast(`Timer: ${val}s`); }}>
+              <DropdownMenuRadioItem value="off">Off</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="3">In 3 seconds</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="5">In 5 seconds</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="10">In 10 seconds</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger icon={<Icon icon={Download01Icon} />} value={format.toUpperCase()}>
+            Export format
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup value={format} onValueChange={(val) => { setFormat(val); toast(`Format: ${val.toUpperCase()}`); }}>
+              <DropdownMenuRadioItem value="png">PNG (lossless)</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="jpg">JPG (compressed)</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="pdf">PDF (document)</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub inline>
+          <DropdownMenuSubTrigger icon={<Icon icon={Layers01Icon} />}>
+            Advanced options
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuCheckboxItem
+              checked={showCursor}
+              onCheckedChange={(checked) => {
+                setShowCursor(checked);
+                toast(checked ? "Cursor included" : "Cursor hidden");
+              }}
+            >
+              Include pointer
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          icon={<Icon icon={Camera01Icon} />}
+          onSelect={() => toast("Screen captured")}
+          shortcut="⌘3"
+        >
+          Full screen
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -1448,85 +1643,6 @@ export default function Example() {
 }
 ```
 
-## Theme toggle
-
-Category: Actions. An icon button that opens a menu of every theme (System, Dark, Dark contrast, Light, Light gray), applies the choice to the page and remembers it. The moon or sun on the button shows from CSS alone, following the colour scheme, so it's right on first paint. Also called: theme-toggle, theme-switch, theme-switcher, theme-picker.
-
-**Classes**
-- `.ayy-theme-toggle` — On the button (with ayy-button ayy-button--outline ayy-button--icon). Stacks the two icons. Pair it with an ayy-menu popover of theme items.
-- `.ayy-theme-toggle__moon` — Icon shown in dark themes.
-- `.ayy-theme-toggle__sun` — Icon shown in light themes.
-- `.ayy-theme-toggle__item` — On each ayy-menu__item (role="menuitemradio", data-value = theme name or "system"). The one with aria-checked="true" is bold and shows a check.
-
-**States**
-- `default` — An outline icon Button showing the moon in dark themes and the sun in light ones (picked by CSS before any JS runs).
-- `hover` (`Button :hover`) — Button outline's hover: wash fill, stronger border, 2px lift.
-- `pressed` (`Button :active`) — As Button: drops back while held.
-- `focus` (`Button :focus-visible; menu items :focus-visible`) — Button's 2px ring; items as in Menu.
-- `disabled` — doesn't apply: Always available: the theme can always change.
-- `selected` (`.ayy-theme-toggle__item[aria-checked="true"]`) — The theme in force is semibold with a check mark at the inline end.
-- `error` — doesn't apply: Nothing to fail: switching is local.
-- `loading` — doesn't apply: Switching is instant.
-- `open` (`the menu's :popover-open`) — As Menu.
-
-**Sizes**
-- Density — The button is Button icon (md control height, follows density); items follow Menu.
-- Width — Square button; the menu as Menu.
-
-**JS (framework-free)**: themeToggleClass, themeToggleMoonClass, themeToggleSunClass, themeToggleItemClass constants; themeToggleOptions (System plus every theme, with labels); connectThemeToggle(button, menu, { onChange?, restore? }) → cleanup; it applies the theme chosen on an earlier visit when <html> has none (restore: false to skip).
-
-**Custom element** `<ayy-theme-toggle>` (@danitesler/ayywi/elements) — The icon <button> and a [popover] menu whose items are role="menuitemradio" with data-value. aria-checked is kept in sync for you, including when the theme changes elsewhere.
-- event `ayy-value-change`: { value: string } — the theme just applied ("system" clears the override)
-
-**React** — `import { ThemeToggle } from "@danitesler/ayywi/react";`
-- `<ThemeToggle>` renders <button class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle"> with both icons, plus the <div class="ayy-menu" popover> listing System and every theme. Props: `onValueChange` (theme: ThemeMode) => void; `aria-label` Default "Theme" (translate it).; `labels` Menu item text per theme, for translation ({ system: "Système", dark: "Sombre" }). Defaults: System, Dark, Dark contrast, Light, Light gray.
-
-**Accessibility**
-- A menu button: aria-haspopup="menu" with the fixed name "Theme". Arrow keys move through the items, Esc closes and returns focus.
-- Items are menuitemradio; aria-checked marks the theme in force, and the check is not the only cue (the item is also bold).
-- The icons are aria-hidden; the name carries the meaning.
-
-**Do**
-- Use it in a site or app header where readers pick a theme, including following the system.
-- Put it next to the brand or before the call to action in the Navbar.
-- Load dist/theme-init.js (or inline themeInitScript) first thing in <head>, so the stored theme applies before the first paint. The toggle restores it anyway when it connects, a moment later.
-
-**Don't**
-- Don't use it when there are only ever two themes and no "system" — a plain Button calling setTheme() is enough.
-- Don't use it to theme one section — set data-theme on it.
-- Don't change the button's label with the theme; the menu shows which one is selected.
-
-### Theme toggle — Theme menu
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<!-- <ayy-theme-toggle> (@danitesler/ayywi/elements) opens the menu, switches <html> to the chosen theme and remembers it. data-value is a theme name or "system". -->
-<ayy-theme-toggle>
-  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon ayy-theme-toggle" aria-label="Theme" aria-haspopup="menu" popovertarget="theme-menu-html">
-    <svg class="ayy-icon ayy-theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
-    <svg class="ayy-icon ayy-theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
-  </button>
-  <div class="ayy-menu" id="theme-menu-html" popover role="menu" aria-label="Theme">
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="true" data-value="system">System</button>
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark">Dark</button>
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="dark-contrast">Dark contrast</button>
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light">Light</button>
-    <button type="button" class="ayy-menu__item ayy-theme-toggle__item" role="menuitemradio" aria-checked="false" data-value="light-gray">Light gray</button>
-  </div>
-</ayy-theme-toggle>
-```
-
-React:
-
-```tsx
-import { ThemeToggle } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return <ThemeToggle />;
-}
-```
-
 ## Navbar
 
 Category: Navigation. Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar. Also called: navbar, site-header, nav-bar, header-nav.
@@ -1537,7 +1653,7 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 - `.ayy-navbar__brand` — Logo / name link at the start.
 - `.ayy-navbar__nav` — <nav> of links. It and everything after it sit at the end. Without a __toggle it scrolls sideways if the links don't fit; with one, below 48rem it becomes a panel under the bar, shown while the toggle has aria-expanded="true".
 - `.ayy-navbar__link` — Top-level link. Hover adds a wash; aria-current="page" marks the page you're on with a stronger tint (High Contrast: the system highlight).
-- `.ayy-navbar__actions` — Group of buttons (theme toggle, call to action). Next to the brand, or at the end after the nav. Stays in the bar on phones, so keep it to one or two items.
+- `.ayy-navbar__actions` — Group of buttons (a theme menu, the call to action). Next to the brand, or at the end after the nav. Stays in the bar on phones, so keep it to one or two items.
 - `.ayy-navbar__toggle` — The phone menu button, last in the inner row (combine with ayy-button ayy-button--ghost ayy-button--icon and a menu icon). Hidden from 48rem. Its aria-expanded is the menu's state; connectNavbar() / <ayy-navbar> / React Navbar manage it.
 
 **States**
@@ -1579,7 +1695,7 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 - Use a navbar as the top bar of a website: logo, two to five top-level links, one call to action.
 - Keep one call to action in the actions group (a ring button for marketing pages, size sm).
 - Add a NavbarToggle (last) once the links don't fit a phone: they fold into a panel under the bar, and the brand and call to action stay visible.
-- Put the theme toggle in the actions group.
+- Put the theme switch (a DropdownMenu of themes that calls setTheme()) in the actions group.
 
 **Don't**
 - Don't use a navbar in a signed-in app — use the App shell (sidebar, and a Bottom nav on phones).
@@ -1704,7 +1820,7 @@ export default function Example() {
 
 ## App shell
 
-Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navigation, footer) beside a main area, filling the viewport; the two scroll independently. On phones the sidebar gives way to a Bottom nav (recommended), a drawer opened from a top bar, or — with neither — a single row that scrolls sideways. Settings use the same shell in settings mode, inside a near-full-screen Dialog (size "full") over the app: the settings sections in its sidebar, one section in its main (on phones the dialog fills the screen, and the section list and the open section are two screens). Also called: app-shell, sidebar, side-nav, sidenav, nav-item, sidebar-item, nav-list.
+Category: Navigation. The frame of a web app: a sidebar beside a main area, each scrolling on its own. On phones the sidebar becomes a Bottom nav (recommended), a drawer or a sideways row. Settings reuse it inside a full-size Dialog. Also called: app-shell, sidebar, side-nav, sidenav, nav-item, sidebar-item, nav-list.
 
 **Classes**
 - `.ayy-app-shell` — Root. A viewport-high (100dvh) grid: sidebar column (15rem) and a main column. Neither column grows the page; each scrolls on its own. Sets position: relative (the drawer and its scrim are placed inside it). To embed the shell in a box with a fixed height, set block-size: 100% on it. Below 48rem its phone layout follows its children: a .ayy-bottom-nav child shows as the tab bar and the sidebar hides; a __bar makes the sidebar a drawer; with neither, the sidebar becomes a sideways row.
@@ -1728,6 +1844,7 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - `.ayy-app-shell__toggle` — The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the "More" tab of the bottom nav (<button class="ayy-bottom-nav__link ayy-app-shell__toggle">). Its aria-expanded is the drawer's state. In the sidebar (first in an __head, with a directional sidebar icon and aria-label="Sidebar") it collapses and expands the sidebar on wide screens, and its aria-expanded is whether the sidebar is open. connectAppShell() / <ayy-app-shell> / React AppShell manage it.
 - `.ayy-app-shell--collapsed` — Collapsed sidebar mode on wide screens: the sidebar narrows to an icon rail, animating its width with the main column. Rows stay on one line and in place, so icons keep their spot while labels and group labels fade and clip (wrap a link's label in a <span> to fade it); links without an icon fade out and leave the tab order; sub-lists hide. The toggle's aria-expanded reflects the state.
 - `.ayy-app-shell--hover-preview` — With --collapsed: resting the pointer on the rail (after a short pause) or moving keyboard focus into it widens the sidebar to full width over the main area with the overlay shadow, without moving the main content; it closes a moment after the pointer leaves. A mouse click inside doesn't keep it open. Right after the sidebar's toggle collapses it, connectAppShell sets data-ayy-hold on the sidebar so it doesn't reopen under the pointer, until the pointer leaves or focus moves on.
+- `.ayy-app-shell--sm` — Small size, for long navigation such as a docs tree: md-height links with no gap between them, regular weight, sm icons and the control radius. Big (no modifier) is the default for apps.
 
 **States**
 - `default` — A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills.
@@ -1741,18 +1858,21 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - `open` (`__toggle[aria-expanded="true"] (below 48rem, with a __bar or a Bottom nav); <details open> for a collapse`) — Phone: the sidebar slides in from the inline-start edge as a drawer (at most 18rem) over a scrim, with the overlay shadow. A collapse's chevron turns up.
 
 **Sizes**
-- Density — Links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text; sub-links md. Grows with data-density.
+- `sm` — Small: links at the md control height (32px compact), sub-links sm (28px), no gap between rows, regular weight, 16px icons, the control radius.
+- `md` (default) — Big (default): links at the lg control height (40px compact), sub-links md, --ayy-space-0-5 between rows, medium weight, 20px icons, pill radius.
+- Density — Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch), Small ones md (32, 40, 44); both with lg control text, sub-links one step down. Grows with data-density.
 - Width — Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither.
 
-**JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).
+**JS (framework-free)**: appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).
 
 **Custom element** `<ayy-app-shell>` (@danitesler/ayywi/elements) — A <div class="ayy-app-shell">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On wide screens, wires sidebar collapsing and optional hover-preview. On a settings shell, Esc follows the __back.
+- attribute `size`: "md" | "sm" — Big (default) or Small (sets ayy-app-shell--sm). Leave it out to keep a hand-written ayy-app-shell--sm.
 - attribute `collapsed`: boolean — collapse the sidebar to an icon rail on wide screens (sets ayy-app-shell--collapsed).
-- attribute `hover-preview`: boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (sets ayy-app-shell--hover-preview).
+- attribute `hover-preview`: On by default: when collapsed, hovering or focusing the sidebar expands it as an overlay preview (sets ayy-app-shell--hover-preview). hover-preview="false" keeps the icon rail until the toggle opens it.
 - event `ayy-collapse-change`: { collapsed: boolean } — fired when the sidebar is collapsed or expanded via a toggle button or the collapsed property.
 
 **React** — `import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, AppShellHead, BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
-- `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle". Props: `settings` boolean — settings mode (ayy-app-shell--settings), inside <DialogContent size="full">: the sidebar holds AppShellTitle and the sections.; `collapsed` boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).; `hoverPreview` boolean — when collapsed, hovering or focusing the sidebar temporarily expands it as an overlay preview (ayy-app-shell--hover-preview).; `onCollapseChange` (collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button.
+- `<AppShell>` renders <div class="ayy-app-shell">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className="ayy-app-shell__toggle". Props: `size` "md" | "sm" — Big (default, for apps) or Small (long navigation such as a docs tree; ayy-app-shell--sm).; `settings` boolean — settings mode (ayy-app-shell--settings), inside <DialogContent size="full">: the sidebar holds AppShellTitle and the sections.; `collapsed` boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).; `hoverPreview` boolean, default true — when collapsed, hovering or focusing the sidebar expands it as an overlay preview (ayy-app-shell--hover-preview). false keeps the icon rail until the toggle opens it.; `onCollapseChange` (collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button.
 - `<AppShellBack>` renders <a class="ayy-app-shell__back" href> with a directional arrow and the children in a <span>; a <button type="button"> without href. Props: `href` string — where leaving settings goes. Without it, pass onClick.; `children` "Back to <app name>" (translate it).
 - `<AppShellHead>` renders <div class="ayy-app-shell__head">. Props: `children` An AppShellToggle (the collapse toggle, a sidebar icon), then the AppShellBrand.
 - `<AppShellTitle>` renders <h2 class="ayy-app-shell__title">. Props: `children` "Settings". Give it an id and point the DialogContent's aria-labelledby at it.
@@ -1785,34 +1905,23 @@ Category: Navigation. The frame of a web app: a fixed-width sidebar (brand, navi
 - The phone sidebar (closed drawer) is visibility: hidden, and the bottom nav is display: none from 48rem, so hidden links are out of the tab order and the accessibility tree.
 
 **Do**
-- Use the app shell as the outer layout of a signed-in app or dashboard: a persistent list of destinations next to the page content.
-- Give every app the same frame: sidebar on wide screens, a Bottom nav on phones (a direct child after the main) with the same top destinations, icons and order, and a __bar with the brand and one or two actions.
-- With more than five destinations, put the four most used in the bottom nav and end it with a "More" tab (a BottomNavButton with the ayy-app-shell__toggle class) that opens the full sidebar as a drawer.
-- Use a __bar with a __toggle and no bottom nav when the nav is a long tree people browse (docs, settings with many sections): the drawer keeps groups, sub-lists and collapses.
-- Group destinations under a heading once there are more than about six; one group can hold up to a dozen links.
-- Use a collapse when a parent has children that are destinations in their own right and you'd otherwise scroll past them; keep the tree one level deep.
-- Use a link followed by a __sublist when the parent is itself a page and its children are sections of it (Colors → Surfaces, Text…).
-- Keep to one line per link: an icon and a short label.
-- Put account and help links in the footer, not among the destinations. Keep it to one or two compact items.
-- Start each page in the main with a Page header (title, description, actions).
-- Open settings from the sidebar's Settings link (on phones: the More drawer, or a settings button in the __bar) in a near-full-screen Dialog (size "full") over the app: a settings shell with a "Settings" title and the sections grouped (Account, Workspace / App). Each section starts with a Top bar.
-- On wide screens open settings on the first section; on phones open the section list (no link current) and push a section from it.
+- Use it as the outer layout of a signed-in app or dashboard.
+- Keep the same destinations, icons and order on every screen.
+- Use size="sm" for long navigation such as a docs tree.
+- With more than five destinations, put the four most used in the bottom nav and end with a "More" tab that opens the drawer.
+- Group destinations under headings once there are more than about six.
+- Keep each link to one line: an icon and a short label. Put account and help in the footer.
+- Start each page in the main with a Page header.
+- Open settings in a Dialog with size="full", sections grouped, each starting with a Top bar.
 
 **Don't**
-- Don't use it for a marketing site or a content page — use Navbar and Sections.
-- Don't use it to switch views of one object inside a page — use Tabs.
-- Don't put a Navbar above it or inside it: the sidebar (and on phones the bar and bottom nav) is the navigation.
-- Don't nest deeper than one level, and don't put a collapse inside a collapse.
-- Don't rely on the sideways row (no bar, no bottom nav) for a real app: it shows top-level links only and hides the rest off-screen. Use a bottom nav or a drawer.
-- Don't hide or show the sidebar and bottom nav with your own media queries; the shell switches them at 48rem.
-- Don't make a collapse the only way to reach a page the user needs often.
-- Don't nest a second app shell.
-- Don't put settings in Tabs inside a page, or in a small or side Dialog; they are a settings shell in a size="full" Dialog. A small Dialog is for one or two quick options next to what they change.
-- Don't put the app's own destinations, a __bar or a bottom nav in the settings shell; the dialog's close button is the way out.
-- Don't scroll the page body as well; the shell already fills the viewport.
-- Don't cap the main with .ayy-container or a max-inline-size. A screen fills the column. A max-inline-size on an example only sizes the preview. Settings mode already centres its column; don't add a second cap.
-- Don't give the sidebar its own background colour; the surface token follows every theme.
-- Don't keep the drawer open as a persistent panel on phones, and don't open it on page load.
+- Don't use it for a marketing site (use Navbar) or to switch views of one object (use Tabs).
+- Don't put a Navbar in it or nest a second app shell.
+- Don't nest links deeper than one level.
+- Don't rely on the sideways row for a real app: it hides links. Use a bottom nav or a drawer.
+- Don't show or hide the sidebar with your own media queries; the shell switches at 48rem.
+- Don't scroll the page body as well, or cap the main width.
+- Don't put settings in Tabs or a small Dialog.
 
 ### App shell — Sidebar with navigation
 
@@ -2228,6 +2337,172 @@ export default function Example() {
           </div>
         </AppShellMain>
       </AppShell>
+    </div>
+  );
+}
+```
+
+### App shell — Big and Small sidebars
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- Each shell is 100dvh high. These boxes only stand in for the browser window; in your app, drop the wrappers and the block-size on the shell. -->
+<div class="ayy-grid" style="inline-size: 100%; --ayy-min: 24rem">
+  <div style="block-size: 27rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
+    <div class="ayy-app-shell" style="block-size: 100%">
+      <aside class="ayy-app-shell__sidebar">
+        <a class="ayy-app-shell__brand" href="#home">Northwind</a>
+        <nav class="ayy-app-shell__nav" aria-label="Big navigation">
+          <div class="ayy-app-shell__group">
+            <p class="ayy-app-shell__group-label" id="big-workspace">Workspace</p>
+            <ul class="ayy-app-shell__list" aria-labelledby="big-workspace">
+              <li><a class="ayy-app-shell__link" aria-current="page" href="#dashboard"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.6903 19.4567C13.5 18.9973 13.5 18.4149 13.5 17.25C13.5 16.0851 13.5 15.5027 13.6903 15.0433C13.944 14.4307 14.4307 13.944 15.0433 13.6903C15.5027 13.5 16.0851 13.5 17.25 13.5C18.4149 13.5 18.9973 13.5 19.4567 13.6903C20.0693 13.944 20.556 14.4307 20.8097 15.0433C21 15.5027 21 16.0851 21 17.25C21 18.4149 21 18.9973 20.8097 19.4567C20.556 20.0693 20.0693 20.556 19.4567 20.8097C18.9973 21 18.4149 21 17.25 21C16.0851 21 15.5027 21 15.0433 20.8097C14.4307 20.556 13.944 20.0693 13.6903 19.4567Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13.6903 8.95671C13.5 8.49728 13.5 7.91485 13.5 6.75C13.5 5.58515 13.5 5.00272 13.6903 4.54329C13.944 3.93072 14.4307 3.44404 15.0433 3.1903C15.5027 3 16.0851 3 17.25 3C18.4149 3 18.9973 3 19.4567 3.1903C20.0693 3.44404 20.556 3.93072 20.8097 4.54329C21 5.00272 21 5.58515 21 6.75C21 7.91485 21 8.49728 20.8097 8.95671C20.556 9.56928 20.0693 10.056 19.4567 10.3097C18.9973 10.5 18.4149 10.5 17.25 10.5C16.0851 10.5 15.5027 10.5 15.0433 10.3097C14.4307 10.056 13.944 9.56928 13.6903 8.95671Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3.1903 19.4567C3 18.9973 3 18.4149 3 17.25C3 16.0851 3 15.5027 3.1903 15.0433C3.44404 14.4307 3.93072 13.944 4.54329 13.6903C5.00272 13.5 5.58515 13.5 6.75 13.5C7.91485 13.5 8.49728 13.5 8.95671 13.6903C9.56928 13.944 10.056 14.4307 10.3097 15.0433C10.5 15.5027 10.5 16.0851 10.5 17.25C10.5 18.4149 10.5 18.9973 10.3097 19.4567C10.056 20.0693 9.56928 20.556 8.95671 20.8097C8.49728 21 7.91485 21 6.75 21C5.58515 21 5.00272 21 4.54329 20.8097C3.93072 20.556 3.44404 20.0693 3.1903 19.4567Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3.1903 8.95671C3 8.49728 3 7.91485 3 6.75C3 5.58515 3 5.00272 3.1903 4.54329C3.44404 3.93072 3.93072 3.44404 4.54329 3.1903C5.00272 3 5.58515 3 6.75 3C7.91485 3 8.49728 3 8.95671 3.1903C9.56928 3.44404 10.056 3.93072 10.3097 4.54329C10.5 5.00272 10.5 5.58515 10.5 6.75C10.5 7.91485 10.5 8.49728 10.3097 8.95671C10.056 9.56928 9.56928 10.056 8.95671 10.3097C8.49728 10.5 7.91485 10.5 6.75 10.5C5.58515 10.5 5.00272 10.5 4.54329 10.3097C3.93072 10.056 3.44404 9.56928 3.1903 8.95671Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path></svg><span>Dashboard</span></a></li>
+              <li><a class="ayy-app-shell__link" href="#projects"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg><span>Projects</span></a></li>
+              <li><a class="ayy-app-shell__link" href="#team"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.4995 20.5C18.2663 17.5685 15.8417 15.2477 12.808 15.0521L11.9995 15C11.7107 15.0076 11.4416 15.0178 11.1877 15.0298C8.18075 15.1723 5.7304 17.5974 5.49951 20.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M15.2495 9.25C15.2495 11.0449 13.7944 12.5 11.9995 12.5C10.2046 12.5 8.74952 11.0449 8.74952 9.25C8.74952 7.45507 10.2046 6 11.9995 6C13.7944 6 15.2495 7.45507 15.2495 9.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M5.50249 8.5C5.17908 7.99485 4.99158 7.39432 4.99158 6.75C4.99158 4.95507 6.44665 3.5 8.24157 3.5C8.68752 3.5 9.1125 3.58982 9.49939 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.4963 8.5C18.8197 7.99485 19.0072 7.39432 19.0072 6.75C19.0072 4.95507 17.5521 3.5 15.7572 3.5C15.3113 3.5 14.8863 3.58982 14.4994 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M22.0007 17.9996C21.8208 15.7374 19.9995 13.5 17.9995 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M1.99927 17.9996C2.17923 15.7374 4.00049 13.5 6.00049 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span>Team</span></a></li>
+            </ul>
+          </div>
+          <div class="ayy-app-shell__group">
+            <p class="ayy-app-shell__group-label" id="big-help">Help</p>
+            <ul class="ayy-app-shell__list" aria-labelledby="big-help">
+              <li>
+                <details class="ayy-app-shell__collapse" open>
+                  <summary class="ayy-app-shell__link">Guides</summary>
+                  <ul class="ayy-app-shell__sublist">
+                    <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#install">Install</a></li>
+                    <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#first-screen">First screen</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+      <main class="ayy-app-shell__main">
+        <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-2)">
+          <h2 class="ayy-h4">Big</h2>
+          <p class="ayy-muted">The default. Roomy rows for an app’s handful of destinations.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div style="block-size: 27rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
+    <div class="ayy-app-shell ayy-app-shell--sm" style="block-size: 100%">
+      <aside class="ayy-app-shell__sidebar">
+        <a class="ayy-app-shell__brand" href="#home">Northwind</a>
+        <nav class="ayy-app-shell__nav" aria-label="Small navigation">
+          <div class="ayy-app-shell__group">
+            <p class="ayy-app-shell__group-label" id="small-workspace">Workspace</p>
+            <ul class="ayy-app-shell__list" aria-labelledby="small-workspace">
+              <li><a class="ayy-app-shell__link" aria-current="page" href="#dashboard"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.6903 19.4567C13.5 18.9973 13.5 18.4149 13.5 17.25C13.5 16.0851 13.5 15.5027 13.6903 15.0433C13.944 14.4307 14.4307 13.944 15.0433 13.6903C15.5027 13.5 16.0851 13.5 17.25 13.5C18.4149 13.5 18.9973 13.5 19.4567 13.6903C20.0693 13.944 20.556 14.4307 20.8097 15.0433C21 15.5027 21 16.0851 21 17.25C21 18.4149 21 18.9973 20.8097 19.4567C20.556 20.0693 20.0693 20.556 19.4567 20.8097C18.9973 21 18.4149 21 17.25 21C16.0851 21 15.5027 21 15.0433 20.8097C14.4307 20.556 13.944 20.0693 13.6903 19.4567Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13.6903 8.95671C13.5 8.49728 13.5 7.91485 13.5 6.75C13.5 5.58515 13.5 5.00272 13.6903 4.54329C13.944 3.93072 14.4307 3.44404 15.0433 3.1903C15.5027 3 16.0851 3 17.25 3C18.4149 3 18.9973 3 19.4567 3.1903C20.0693 3.44404 20.556 3.93072 20.8097 4.54329C21 5.00272 21 5.58515 21 6.75C21 7.91485 21 8.49728 20.8097 8.95671C20.556 9.56928 20.0693 10.056 19.4567 10.3097C18.9973 10.5 18.4149 10.5 17.25 10.5C16.0851 10.5 15.5027 10.5 15.0433 10.3097C14.4307 10.056 13.944 9.56928 13.6903 8.95671Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3.1903 19.4567C3 18.9973 3 18.4149 3 17.25C3 16.0851 3 15.5027 3.1903 15.0433C3.44404 14.4307 3.93072 13.944 4.54329 13.6903C5.00272 13.5 5.58515 13.5 6.75 13.5C7.91485 13.5 8.49728 13.5 8.95671 13.6903C9.56928 13.944 10.056 14.4307 10.3097 15.0433C10.5 15.5027 10.5 16.0851 10.5 17.25C10.5 18.4149 10.5 18.9973 10.3097 19.4567C10.056 20.0693 9.56928 20.556 8.95671 20.8097C8.49728 21 7.91485 21 6.75 21C5.58515 21 5.00272 21 4.54329 20.8097C3.93072 20.556 3.44404 20.0693 3.1903 19.4567Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3.1903 8.95671C3 8.49728 3 7.91485 3 6.75C3 5.58515 3 5.00272 3.1903 4.54329C3.44404 3.93072 3.93072 3.44404 4.54329 3.1903C5.00272 3 5.58515 3 6.75 3C7.91485 3 8.49728 3 8.95671 3.1903C9.56928 3.44404 10.056 3.93072 10.3097 4.54329C10.5 5.00272 10.5 5.58515 10.5 6.75C10.5 7.91485 10.5 8.49728 10.3097 8.95671C10.056 9.56928 9.56928 10.056 8.95671 10.3097C8.49728 10.5 7.91485 10.5 6.75 10.5C5.58515 10.5 5.00272 10.5 4.54329 10.3097C3.93072 10.056 3.44404 9.56928 3.1903 8.95671Z" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"></path></svg><span>Dashboard</span></a></li>
+              <li><a class="ayy-app-shell__link" href="#projects"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg><span>Projects</span></a></li>
+              <li><a class="ayy-app-shell__link" href="#team"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.4995 20.5C18.2663 17.5685 15.8417 15.2477 12.808 15.0521L11.9995 15C11.7107 15.0076 11.4416 15.0178 11.1877 15.0298C8.18075 15.1723 5.7304 17.5974 5.49951 20.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M15.2495 9.25C15.2495 11.0449 13.7944 12.5 11.9995 12.5C10.2046 12.5 8.74952 11.0449 8.74952 9.25C8.74952 7.45507 10.2046 6 11.9995 6C13.7944 6 15.2495 7.45507 15.2495 9.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M5.50249 8.5C5.17908 7.99485 4.99158 7.39432 4.99158 6.75C4.99158 4.95507 6.44665 3.5 8.24157 3.5C8.68752 3.5 9.1125 3.58982 9.49939 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.4963 8.5C18.8197 7.99485 19.0072 7.39432 19.0072 6.75C19.0072 4.95507 17.5521 3.5 15.7572 3.5C15.3113 3.5 14.8863 3.58982 14.4994 3.75235" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M22.0007 17.9996C21.8208 15.7374 19.9995 13.5 17.9995 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M1.99927 17.9996C2.17923 15.7374 4.00049 13.5 6.00049 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span>Team</span></a></li>
+            </ul>
+          </div>
+          <div class="ayy-app-shell__group">
+            <p class="ayy-app-shell__group-label" id="small-help">Help</p>
+            <ul class="ayy-app-shell__list" aria-labelledby="small-help">
+              <li>
+                <details class="ayy-app-shell__collapse" open>
+                  <summary class="ayy-app-shell__link">Guides</summary>
+                  <ul class="ayy-app-shell__sublist">
+                    <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#install">Install</a></li>
+                    <li><a class="ayy-app-shell__link ayy-app-shell__link--sub" href="#first-screen">First screen</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+      <main class="ayy-app-shell__main">
+        <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-2)">
+          <h2 class="ayy-h4">Small</h2>
+          <p class="ayy-muted">size="sm": denser rows for long navigation, like a docs tree.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { DashboardSquare01Icon, Folder01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
+import {
+  AppShell,
+  AppShellBrand,
+  AppShellCollapse,
+  AppShellGroup,
+  AppShellItem,
+  AppShellLink,
+  AppShellMain,
+  AppShellNav,
+  AppShellSidebar,
+  Icon,
+  type AppShellSize,
+} from "@danitesler/ayywi/react";
+
+function Shell({ size, title, text }: { size: AppShellSize; title: string; text: string }) {
+  // The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell.
+  return (
+    <div style={{ blockSize: "27rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
+      <AppShell size={size} style={{ blockSize: "100%" }}>
+        <AppShellSidebar>
+          <AppShellBrand href="#home">Northwind</AppShellBrand>
+          <AppShellNav aria-label={`${title} navigation`}>
+            <AppShellGroup label="Workspace">
+              <AppShellItem>
+                <AppShellLink current href="#dashboard">
+                  <Icon icon={DashboardSquare01Icon} />
+                  <span>Dashboard</span>
+                </AppShellLink>
+              </AppShellItem>
+              <AppShellItem>
+                <AppShellLink href="#projects">
+                  <Icon icon={Folder01Icon} />
+                  <span>Projects</span>
+                </AppShellLink>
+              </AppShellItem>
+              <AppShellItem>
+                <AppShellLink href="#team">
+                  <Icon icon={UserGroupIcon} />
+                  <span>Team</span>
+                </AppShellLink>
+              </AppShellItem>
+            </AppShellGroup>
+            <AppShellGroup label="Help">
+              <AppShellItem>
+                <AppShellCollapse label="Guides" open>
+                  <AppShellItem>
+                    <AppShellLink sub href="#install">Install</AppShellLink>
+                  </AppShellItem>
+                  <AppShellItem>
+                    <AppShellLink sub href="#first-screen">First screen</AppShellLink>
+                  </AppShellItem>
+                </AppShellCollapse>
+              </AppShellItem>
+            </AppShellGroup>
+          </AppShellNav>
+        </AppShellSidebar>
+        <AppShellMain>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-2)" } as CSSProperties}>
+            <h2 className="ayy-h4">{title}</h2>
+            <p className="ayy-muted">{text}</p>
+          </div>
+        </AppShellMain>
+      </AppShell>
+    </div>
+  );
+}
+
+export default function Example() {
+  return (
+    <div className="ayy-grid" style={{ inlineSize: "100%", "--ayy-min": "24rem" } as CSSProperties}>
+      <Shell size="md" title="Big" text="The default. Roomy rows for an app’s handful of destinations." />
+      <Shell size="sm" title="Small" text={'size="sm": denser rows for long navigation, like a docs tree.'} />
     </div>
   );
 }
@@ -2650,14 +2925,14 @@ export default function Example() {
 }
 ```
 
-### App shell — Collapsible sidebar with hover preview
+### App shell — Collapsible sidebar, previews on hover
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
 <!-- The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the block-size on the shell. -->
 <div style="inline-size: 100%; block-size: 28rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)">
-  <ayy-app-shell collapsed hover-preview>
+  <ayy-app-shell collapsed>
     <div class="ayy-app-shell ayy-app-shell--collapsed ayy-app-shell--hover-preview" style="block-size: 100%">
       <aside class="ayy-app-shell__sidebar">
         <div class="ayy-app-shell__head">
@@ -2692,7 +2967,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       <main class="ayy-app-shell__main">
         <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
           <h2 class="ayy-h3">Dashboard</h2>
-          <p class="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open.</p>
+          <p class="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open. Set <code>hover-preview="false"</code> to keep the icon rail until the toggle opens it.</p>
           <div class="ayy-grid" style="--ayy-min: 9rem">
             <div class="ayy-stat">
               <p class="ayy-stat__label">Open projects</p>
@@ -2740,7 +3015,7 @@ export default function Example() {
   // block-size on the shell.
   return (
     <div style={{ inlineSize: "100%", blockSize: "28rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
-      <AppShell collapsed={collapsed} hoverPreview onCollapseChange={setCollapsed} style={{ blockSize: "100%" }}>
+      <AppShell collapsed={collapsed} onCollapseChange={setCollapsed} style={{ blockSize: "100%" }}>
         <AppShellSidebar>
           <AppShellHead>
             <AppShellToggle aria-label="Sidebar">
@@ -2774,7 +3049,10 @@ export default function Example() {
         <AppShellMain>
           <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
             <h2 className="ayy-h3">Dashboard</h2>
-            <p className="ayy-muted">Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open.</p>
+            <p className="ayy-muted">
+              Rest the pointer on the collapsed sidebar to preview it, or use the toggle to keep it open. Set{" "}
+              <code>hoverPreview={"{false}"}</code> to keep the icon rail until the toggle opens it.
+            </p>
             <div className="ayy-grid" style={{ "--ayy-min": "9rem" } as CSSProperties}>
               <Stat labelFirst label="Open projects" value="12" />
               <Stat labelFirst label="Shipped this week" value="38" />
@@ -2975,7 +3253,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 ```html
 <div style="inline-size: min(100%, 24rem); border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl); overflow: hidden">
   <header class="ayy-top-bar">
-    <a class="ayy-top-bar__back" href="#lists"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span>Lists</span></a>
+    <a class="ayy-top-bar__back" href="#lists" aria-label="Back"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
     <div class="ayy-top-bar__heading">
       <h1 class="ayy-top-bar__title">Groceries</h1>
       <p class="ayy-top-bar__subtitle">8 items, 3 done</p>
@@ -3001,7 +3279,6 @@ export default function Example() {
     <div style={{ inlineSize: "min(100%, 24rem)", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)", overflow: "hidden" }}>
       <TopBar
         backHref="#lists"
-        backLabel="Lists"
         title="Groceries"
         subtitle="8 items, 3 done"
         actions={
@@ -3134,7 +3411,7 @@ Category: Navigation. The site footer at the end of every website page: brand an
 - `.ayy-footer__heading` — The column heading, a small uppercase <p> that names the list (aria-labelledby).
 - `.ayy-footer__list` — The <ul> of links in a column.
 - `.ayy-footer__link` — A footer link: soft text, underline on hover, focus ring.
-- `.ayy-footer__bottom` — The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme toggle at the end.
+- `.ayy-footer__bottom` — The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme menu at the end.
 
 **States**
 - `default` — A hairline on top, brand and a muted line, columns of text-soft links under muted eyebrow headings, then a legal row.
@@ -3168,12 +3445,12 @@ Category: Navigation. The site footer at the end of every website page: brand an
 **Do**
 - Use the footer at the end of every page of a website, after <main>.
 - Group links into two to four columns with one-word headings (Product, Company, Resources, Legal).
-- Put the copyright and legal links in FooterBottom, and a theme toggle there too if the navbar doesn't have one.
+- Put the copyright and legal links in FooterBottom, and a theme menu there too if the navbar doesn't have one.
 
 **Don't**
 - Don't use it inside the App shell — apps put account and help links in the sidebar's footer.
 - Don't repeat every navbar link; the footer is for everything else people look for at the end.
-- Don't put a call to action inside the footer grid — end the page with a closing Section instead.
+- Don't put a call to action inside the footer grid — end the page with a closing call to action before the footer instead.
 
 ### Footer — Site footer
 
@@ -4090,7 +4367,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, and
 
 **States**
 - `default` — A pill-shaped wash-hover field with a muted magnifier and placeholder; the clear button and Cancel only show when there's something to clear or cancel.
-- `hover` (`.ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)`) — The clear button gets a wash; Cancel's text softens.
+- `hover` (`.ayy-search-bar__field:hover; .ayy-search-bar__clear:hover, .ayy-search-bar__cancel:hover (devices that hover)`) — Field border turns line-hover; the clear button gets a wash; Cancel's text softens.
 - `pressed` — doesn't apply: No pressed look; the clear button empties the field and Cancel ends the search at once.
 - `focus` (`.ayy-search-bar__field:has(> .ayy-search-bar__input:focus-visible); :focus-visible on the buttons`) — A 2px ring around the pill; the clear and Cancel buttons get their own ring.
 - `disabled` — doesn't apply: Don't disable search: an empty list still takes a query. Hide the bar if search doesn't apply to the screen.
@@ -4405,7 +4682,7 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 - `sm` — The input at Input sm.
 - `md` (default) — The input at Input md.
 - `lg` — The input at Input lg.
-- Density — Input height and options (md control height, 32px compact, 40 comfortable, 44 touch) follow data-density.
+- Density — Input height (md control height, 32px compact, 40 comfortable, 44 touch) and options (sm control height, 28px compact, 32 comfortable, 40 touch) follow data-density.
 - Width — Fills its container; the list is at most 28rem wide.
 
 **JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
@@ -5345,7 +5622,7 @@ Category: Forms. Round colour dots to pick one colour: a tag's or a list's colou
 - Use a track group in a toolbar, size sm.
 
 **Don't**
-- Don't use swatches to choose a theme or a status — use the Theme toggle or a Select; colour alone doesn't say what a status means.
+- Don't use swatches to choose a theme or a status — use a Segmented control or a Select; colour alone doesn't say what a status means.
 - Don't hardcode hex values in --ayy-swatch; use tokens, or the app's own colour variables when people pick colours (stored values belong in data, not in markup).
 - Don't show more than about ten swatches in a row — group them, or add a SwatchCustom.
 - Don't use colour names that only make sense in one theme ("Black" turns white in dark mode) — name the role ("Ink").
@@ -6113,7 +6390,7 @@ Category: Forms. Keyboard shortcuts written once as "Mod+Shift+K" and shown for 
 - Density — The recorder is the md control height (32px compact, 40 comfortable, 44 touch); keycaps follow the text around them.
 - Width — Keycaps hug their keys. The recorder is at least 9rem; the list fills its container.
 
-**JS (framework-free)**: Shortcuts are strings like "Mod+Shift+K" (Mod = ⌘ on Apple devices, Ctrl elsewhere; also Ctrl, Alt, Shift, Meta). shortcutFromEvent(event, { bare? }) → the shortcut a keydown makes, or null for modifiers alone; matchShortcut(event, "Mod+K") → boolean, for your own handlers; shortcutKeys(s) → ["⌘", "K"]; shortcutLabel(s) → "Command K"; shortcutHtml(s) → markup; syncShortcuts(root?) redraws static .ayy-shortcut[data-keys] for Apple devices (@danitesler/ayywi/elements does it on load); isApplePlatform(); keyFromCode(code). connectShortcutRecorder(button, { value?, label?, bare?, onChange?, onRecordingChange? }) → { setValue, destroy }. shortcutClass, shortcutRecorderClass().
+**JS (framework-free)**: Shortcuts are strings like "Mod+Shift+K" (Mod = ⌘ on Apple devices, Ctrl elsewhere; also Ctrl, Alt, Shift, Meta). shortcutFromEvent(event, { bare? }) → the shortcut a keydown makes, or null for modifiers alone; matchShortcut(event, "Mod+K") → boolean, for your own handlers, by physical key, so it works on any layout (Russian Cmd+У is Mod+E); shortcutKeys(s, platform?) → ["⌘", "K"] (Super on Linux, Win on Windows); shortcutLabel(s, platform?) → "Command K"; shortcutHtml(s, platform?) → markup; syncShortcuts(root?, platform?) redraws static .ayy-shortcut[data-keys] for Apple and Linux devices (@danitesler/ayywi/elements does it on load); getPlatform(); isApplePlatform(); isWindowsPlatform(); isLinuxPlatform(); keyFromCode(code). connectShortcutRecorder(button, { value?, label?, bare?, onChange?, onRecordingChange? }) → { setValue, destroy }. shortcutClass, shortcutRecorderClass().
 
 **Custom element** `<ayy-shortcut-recorder>` (@danitesler/ayywi/elements) — 
 - attribute `value`: The shortcut, "Mod+Shift+2". Updated when one is recorded; removed when cleared.
@@ -6587,7 +6864,7 @@ Category: Layout. The top of an app screen: an optional breadcrumb or eyebrow, t
 - Keep the description to one sentence that says what the page is for.
 
 **Don't**
-- Don't use it on marketing pages — use a Section with a SectionHeader, or .ayy-display for a hero.
+- Don't use it on marketing pages — use .ayy-display or headings for a hero.
 - Don't put tabs, search or filters in it — put them in a toolbar row (.ayy-spread) under it.
 - Don't put more than three actions in it; move the rest into a DropdownMenu.
 - Don't add a second h1 elsewhere on the page.
@@ -6640,144 +6917,6 @@ export default function Example() {
         </PageHeaderActions>
       </PageHeader>
     </div>
-  );
-}
-```
-
-## Section
-
-Category: Layout. A band of a page with generous vertical rhythm and a header: optional eyebrow (with a section number), a big title and a muted description. Also called: page-section.
-
-**Classes**
-- `.ayy-section` — Root <section>. 96px block padding (48px on phones, 128px on wide screens). Add ayy-container for page width.
-- `.ayy-section--center` — Header centred over the content; start-aligned again on phones.
-- `.ayy-section__header` — Eyebrow, title and description, capped at a readable width.
-- `.ayy-section__eyebrow` — Small uppercase label above the title.
-- `.ayy-section__number` — Section number inside the eyebrow ("01"), followed by a short rule, in the accent (--ayy-spot).
-- `.ayy-section__title` — The section's <h2>. Fluid, 28px on phones to 48px.
-- `.ayy-section__description` — One or two sentences under the title, muted.
-
-**States**
-- `default` — Block padding of --ayy-space-24 (20 on phones, 32 from 90rem); an optional header with eyebrow, accent number, a bold fluid title and a muted lg description.
-- `hover` — doesn't apply: Static.
-- `pressed` — doesn't apply: Not interactive.
-- `focus` — doesn't apply: Not focusable.
-- `disabled` — doesn't apply: Not interactive.
-- `selected` — doesn't apply: Not interactive.
-- `error` — doesn't apply: No error state.
-- `loading` — doesn't apply: No loading state.
-
-**Sizes**
-- Density — Doesn't follow data-density.
-- Width — Full width; combine with .ayy-container to centre it. The header stops at --ayy-size-measure; center centres it (back to the start on phones). The title scales from 2xl to 4xl with the viewport.
-
-**JS (framework-free)**: sectionClass({ center?, className? }) → string; sectionHeaderClass, sectionEyebrowClass, sectionNumberClass, sectionTitleClass, sectionDescriptionClass constants.
-
-**React** — `import { Section, SectionHeader, SectionEyebrow, SectionTitle, SectionDescription } from "@danitesler/ayywi/react";`
-- `<Section>` renders <section>. Props: `center` boolean
-- `<SectionHeader>` renders <header>.
-- `<SectionEyebrow>` renders <p>. Props: `number` ReactNode — shown before the label, e.g. "01".
-- `<SectionTitle>` renders <h2>.
-- `<SectionDescription>` renders <p>.
-
-**Accessibility**
-- Name the section with its title: aria-labelledby on the <section> pointing at the title's id makes it a landmark.
-- Keep the heading order: page title h1, section titles h2.
-
-**Do**
-- Use a section for each block of a marketing page, portfolio or landing page (Work, Projects, About, Contact).
-- Use sections for the chapters of a long case study or article, with numbered eyebrows that match the Contents list.
-- Separate homepage sections with a fading Separator.
-- Set --ayy-spot on a case study's <main> so the numbers take its accent.
-
-**Don't**
-- Don't use it for grouping inside an app screen — use Card or plain headings.
-- Don't use a section for a single heading with no content under it.
-- Don't stack two sections' paddings with extra margins; the padding is the rhythm.
-- Don't write a paragraph as the description — one or two sentences.
-
-### Section — Centred header
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<section class="ayy-section ayy-section--center ayy-container" aria-labelledby="work-title">
-  <header class="ayy-section__header">
-    <h2 class="ayy-section__title" id="work-title">Portfolio work</h2>
-    <p class="ayy-section__description">Selected case studies in product design, systems and UX strategy.</p>
-  </header>
-  <div class="ayy-grid" style="--ayy-min: 12rem">
-    <div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Oktopost</h3></div></div>
-    <div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Comeet</h3></div></div>
-    <div class="ayy-card"><div class="ayy-card__header"><h3 class="ayy-card__title">Scalez</h3></div></div>
-  </div>
-</section>
-```
-
-React:
-
-```tsx
-import type { CSSProperties } from "react";
-import { Card, CardHeader, CardTitle, Section, SectionDescription, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <Section center className="ayy-container" aria-labelledby="work-title">
-      <SectionHeader>
-        <SectionTitle id="work-title">Portfolio work</SectionTitle>
-        <SectionDescription>Selected case studies in product design, systems and UX strategy.</SectionDescription>
-      </SectionHeader>
-      <div className="ayy-grid" style={{ "--ayy-min": "12rem" } as CSSProperties}>
-        {["Oktopost", "Comeet", "Scalez"].map((name) => (
-          <Card key={name}>
-            <CardHeader>
-              <CardTitle>{name}</CardTitle>
-            </CardHeader>
-          </Card>
-        ))}
-      </div>
-    </Section>
-  );
-}
-```
-
-### Section — Numbered chapter
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<!-- A case-study chapter. --ayy-spot (usually set once on <main>) colours the number. -->
-<section class="ayy-section" style="--ayy-spot: var(--ayy-accent-product)" aria-labelledby="ds-title">
-  <header class="ayy-section__header">
-    <p class="ayy-section__eyebrow"><span class="ayy-section__number">02</span>Design system</p>
-    <h2 class="ayy-section__title" id="ds-title">Lobster: the shared language behind every screen</h2>
-  </header>
-  <div class="ayy-prose">
-    <p>The product had outgrown its shared UI: navigation, cards and colour varied from screen to screen, and every new feature risked drifting further.</p>
-  </div>
-</section>
-```
-
-React:
-
-```tsx
-import type { CSSProperties } from "react";
-import { Section, SectionEyebrow, SectionHeader, SectionTitle } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <Section style={{ "--ayy-spot": "var(--ayy-accent-product)" } as CSSProperties} aria-labelledby="ds-title">
-      <SectionHeader>
-        <SectionEyebrow number="02">Design system</SectionEyebrow>
-        <SectionTitle id="ds-title">Lobster: the shared language behind every screen</SectionTitle>
-      </SectionHeader>
-      <div className="ayy-prose">
-        <p>
-          The product had outgrown its shared UI: navigation, cards and colour varied from screen to screen, and every new feature risked
-          drifting further.
-        </p>
-      </div>
-    </Section>
   );
 }
 ```
@@ -8290,27 +8429,29 @@ export default function Example() {
 Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused. Also called: toast, snackbar, notification.
 
 **Classes**
-- `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position.
-- `.ayy-toast` — One toast.
-- `.ayy-toast--success` — Green edge.
-- `.ayy-toast--warning` — Amber edge.
-- `.ayy-toast--destructive` — Red edge; announced with role="alert".
-- `.ayy-toast--info` — Blue edge.
+- `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position; data-expanded on hover or focus.
+- `.ayy-toast` — One toast; stacked card with swipe-to-dismiss.
+- `.ayy-toast--success` — Success variant with checkmark icon.
+- `.ayy-toast--warning` — Warning variant with alert icon.
+- `.ayy-toast--destructive` — Destructive variant with cancel icon; announced with role="alert".
+- `.ayy-toast--info` — Info variant with information icon.
+- `.ayy-toast__icon` — Leading status icon.
+- `.ayy-toast__content` — Message and description container.
 - `.ayy-toast__title` — Message.
 - `.ayy-toast__description` — Optional second line.
 - `.ayy-toast__actions` — Action button row.
 - `.ayy-toast__close` — Close button.
 
 **States**
-- `default` — Raised surface card with a line-strong border and overlay shadow, slides in from below; success, warning, destructive and info add a 3px bar in their colour at the inline start.
-- `hover` (`.ayy-toast__close:hover`) — Close button gets a wash-hover circle and the text colour.
+- `default` — Raised card with line-strong border, overlay shadow, and stacked offset; success, warning, destructive, and info include their status icon.
+- `hover` (`.ayy-toaster[data-expanded]`) — Deck expands vertically so all toasts fan out into readable view. Close button gets wash-hover.
 - `pressed` — doesn't apply: No pressed look.
 - `focus` (`.ayy-toast__close:focus-visible`) — 2px ring, 2px offset.
 - `disabled` — doesn't apply: Not disabled.
 - `selected` — doesn't apply: No selected state.
-- `error` (`toast({ variant: "destructive" })`) — Red bar at the inline start. Only for errors that need no fixing in place; form errors go inline (FieldError).
+- `error` (`toast({ variant: "destructive" })`) — Destructive icon in destructive colour. Only for errors that need no fixing in place; form errors go inline (FieldError).
 - `loading` — doesn't apply: A toast confirms; for a long task show Progress where the work happens.
-- `leaving` (`[data-leaving] (set by toast())`) — Fades and shrinks out. Only the 4 newest show; older ones wait.
+- `leaving` (`[data-leaving] (set by toast())`) — Fades out.
 
 **Sizes**
 - Density — Doesn't follow data-density.
@@ -8469,6 +8610,316 @@ export default function Example() {
       <Progress value={90} variant="warning" size="lg" aria-label="Storage used" />
       <Progress variant="ai" size="sm" aria-label="Generating" />
     </div>
+  );
+}
+```
+
+### Progress — Task progress with status
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-card" style="inline-size: min(100%, 26rem)">
+  <div class="ayy-card__header">
+    <div class="ayy-spread">
+      <h3 class="ayy-card__title">Exporting data</h3>
+      <span class="ayy-badge ayy-badge--muted">Running</span>
+    </div>
+  </div>
+  <div class="ayy-card__content">
+    <div class="ayy-stack" style="gap: 1rem">
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="task-export-label-html">Customer records</span>
+          <span class="ayy-muted ayy-mono">68%</span>
+        </div>
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68" class="ayy-progress" style="--ayy-value: 68" aria-labelledby="task-export-label-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <div class="ayy-spread ayy-muted" style="font-size: var(--ayy-text-xs)">
+          <span>Step 3 of 4 · 6,800 of 10,000 rows</span>
+          <span>~25s left</span>
+        </div>
+      </div>
+
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="task-backup-label-html">Database backup</span>
+          <span class="ayy-muted ayy-mono">100%</span>
+        </div>
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" class="ayy-progress ayy-progress--success" style="--ayy-value: 100" aria-labelledby="task-backup-label-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">Complete · Saved to cold storage</p>
+      </div>
+
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="task-ai-label-html">AI summary</span>
+          <span class="ayy-muted">In progress</span>
+        </div>
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="ayy-progress ayy-progress--ai ayy-progress--sm ayy-progress--indeterminate" aria-labelledby="task-ai-label-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">Extracting key takeaways…</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Badge, Card, CardContent, CardHeader, CardTitle, Progress } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <Card style={{ inlineSize: "min(100%, 26rem)" }}>
+      <CardHeader>
+        <div className="ayy-spread">
+          <CardTitle>Exporting data</CardTitle>
+          <Badge variant="muted">Running</Badge>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="ayy-stack" style={{ gap: "1rem" }}>
+          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+            <div className="ayy-spread">
+              <span id="task-export-label">Customer records</span>
+              <span className="ayy-muted ayy-mono">68%</span>
+            </div>
+            <Progress value={68} aria-labelledby="task-export-label" />
+            <div className="ayy-spread ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+              <span>Step 3 of 4 · 6,800 of 10,000 rows</span>
+              <span>~25s left</span>
+            </div>
+          </div>
+
+          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+            <div className="ayy-spread">
+              <span id="task-backup-label">Database backup</span>
+              <span className="ayy-muted ayy-mono">100%</span>
+            </div>
+            <Progress value={100} variant="success" aria-labelledby="task-backup-label" />
+            <p className="ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+              Complete · Saved to cold storage
+            </p>
+          </div>
+
+          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+            <div className="ayy-spread">
+              <span id="task-ai-label">AI summary</span>
+              <span className="ayy-muted">In progress</span>
+            </div>
+            <Progress variant="ai" size="sm" aria-labelledby="task-ai-label" />
+            <p className="ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+              Extracting key takeaways…
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Progress — Usage quotas and limits
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-card" style="inline-size: min(100%, 26rem)">
+  <div class="ayy-card__header">
+    <h3 class="ayy-card__title">Plan usage</h3>
+    <p class="ayy-card__description">Resets in 12 days on November 1.</p>
+  </div>
+  <div class="ayy-card__content">
+    <div class="ayy-stack" style="gap: 1rem">
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="meter-storage-html">Cloud storage</span>
+          <span class="ayy-muted ayy-mono">18.4 / 20 GB</span>
+        </div>
+        <div role="meter" aria-valuemin="0" aria-valuemax="20" aria-valuenow="18.4" class="ayy-progress ayy-progress--warning" style="--ayy-value: 92" aria-labelledby="meter-storage-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">92% used · Upgrade recommended</p>
+      </div>
+
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="meter-api-html">Monthly API calls</span>
+          <span class="ayy-muted ayy-mono">99,200 / 100k</span>
+        </div>
+        <div role="meter" aria-valuemin="0" aria-valuemax="100000" aria-valuenow="99200" class="ayy-progress ayy-progress--destructive" style="--ayy-value: 99" aria-labelledby="meter-api-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">99% used · Requests will throttle soon</p>
+      </div>
+
+      <div class="ayy-stack" style="gap: 0.375rem">
+        <div class="ayy-spread">
+          <span id="meter-seats-html">Team seats</span>
+          <span class="ayy-muted ayy-mono">12 / 50</span>
+        </div>
+        <div role="meter" aria-valuemin="0" aria-valuemax="50" aria-valuenow="12" class="ayy-progress" style="--ayy-value: 24" aria-labelledby="meter-seats-html">
+          <div class="ayy-progress__bar"></div>
+        </div>
+        <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">38 seats available</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Progress } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <Card style={{ inlineSize: "min(100%, 26rem)" }}>
+      <CardHeader>
+        <CardTitle>Plan usage</CardTitle>
+        <CardDescription>Resets in 12 days on November 1.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="ayy-stack" style={{ gap: "1rem" }}>
+          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+            <div className="ayy-spread">
+              <span id="meter-storage">Cloud storage</span>
+              <span className="ayy-muted ayy-mono">18.4 / 20 GB</span>
+            </div>
+            <Progress
+              role="meter"
+              value={92}
+              variant="warning"
+              aria-labelledby="meter-storage"
+              aria-valuemin={0}
+              aria-valuemax={20}
+              aria-valuenow={18.4}
+            />
+            <p className="ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+              92% used · Upgrade recommended
+            </p>
+          </div>
+
+          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+            <div className="ayy-spread">
+              <span id="meter-api">Monthly API calls</span>
+              <span className="ayy-muted ayy-mono">99,200 / 100k</span>
+            </div>
+            <Progress
+              role="meter"
+              value={99}
+              variant="destructive"
+              aria-labelledby="meter-api"
+              aria-valuemin={0}
+              aria-valuemax={100000}
+              aria-valuenow={99200}
+            />
+            <p className="ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+              99% used · Requests will throttle soon
+            </p>
+          </div>
+
+          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+            <div className="ayy-spread">
+              <span id="meter-seats">Team seats</span>
+              <span className="ayy-muted ayy-mono">12 / 50</span>
+            </div>
+            <Progress
+              role="meter"
+              value={24}
+              aria-labelledby="meter-seats"
+              aria-valuemin={0}
+              aria-valuemax={50}
+              aria-valuenow={12}
+            />
+            <p className="ayy-muted" style={{ fontSize: "var(--ayy-text-xs)" }}>
+              38 seats available
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Progress — Interactive simulation
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-card" style="inline-size: min(100%, 26rem)">
+  <div class="ayy-card__header">
+    <div class="ayy-spread">
+      <h3 class="ayy-card__title">File upload</h3>
+      <span class="ayy-mono ayy-muted">45%</span>
+    </div>
+    <p class="ayy-card__description">Uploading client-presentation-v2.pdf…</p>
+  </div>
+  <div class="ayy-card__content">
+    <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" class="ayy-progress" style="--ayy-value: 45" aria-label="File upload progress">
+      <div class="ayy-progress__bar"></div>
+    </div>
+  </div>
+  <div class="ayy-card__footer">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">-25%</button>
+    <button type="button" class="ayy-button ayy-button--sm">+25%</button>
+    <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Reset</button>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Progress } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  const [progress, setProgress] = useState(45);
+
+  const step = (delta: number) => {
+    setProgress((prev) => Math.min(100, Math.max(0, prev + delta)));
+  };
+
+  const isComplete = progress === 100;
+
+  return (
+    <Card style={{ inlineSize: "min(100%, 26rem)" }}>
+      <CardHeader>
+        <div className="ayy-spread">
+          <CardTitle>File upload</CardTitle>
+          <span className="ayy-mono ayy-muted">{progress}%</span>
+        </div>
+        <CardDescription>
+          {isComplete ? "Upload complete. File is ready to share." : "Uploading client-presentation-v2.pdf…"}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Progress
+          value={progress}
+          variant={isComplete ? "success" : progress > 80 ? "warning" : "default"}
+          aria-label="File upload progress"
+        />
+      </CardContent>
+      <CardFooter>
+        <Button size="sm" variant="outline" onClick={() => step(-25)} disabled={progress <= 0}>
+          -25%
+        </Button>
+        <Button size="sm" onClick={() => step(25)} disabled={progress >= 100}>
+          +25%
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setProgress(0)} disabled={progress === 0}>
+          Reset
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 ```
@@ -9020,9 +9471,9 @@ export default function Example() {
 }
 ```
 
-## Kbd
+## Keyboard hint
 
-Category: Data display. A keyboard key or shortcut drawn as a small keycap: in help text, menus, tooltips and search fields. Also called: kbd, keycap, hotkey, shortcut-key.
+Category: Data display. A keyboard key or shortcut hint drawn as a small keycap: in help text, menus, tooltips and search fields, with platform-specific modifier adaptation (macOS ⌘/⌥, Windows Ctrl/Win, Linux Super) and international layout awareness. Also called: kbd, keyboard-hint, keycap, hotkey, shortcut-key.
 
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
@@ -9041,26 +9492,31 @@ Category: Data display. A keyboard key or shortcut drawn as a small keycap: in h
 - Density — Scales with the text around it (1.6em tall); doesn't follow data-density.
 - Width — At least 1.6em wide, grows with the key name.
 
-**JS (framework-free)**: kbdClass constant.
+**JS (framework-free)**: kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names ("mod" → ⌘ on Mac, Ctrl on Windows/Linux; "meta" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name ("Command" for ⌘).
 
-**React** — `import { Kbd } from "@danitesler/ayywi/react";`
-- `<Kbd>` renders <kbd class="ayy-kbd">.
+**React** — `import { Kbd, KeyboardHint } from "@danitesler/ayywi/react";`
+- `<Kbd>` renders <kbd class="ayy-kbd">. Props: `keyName` string — a modifier or key drawn for the platform ("mod", "meta", "alt", "ctrl", "shift", "enter", "backspace"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.; `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
+- `<KeyboardHint>` renders <kbd class="ayy-kbd">. Props: `keyName` string — optional modifier/key name to adapt ("mod", "meta", "alt", "ctrl", "shift"); `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
 
 **Accessibility**
 - Use the <kbd> element: screen readers and search know it's a key.
-- Write modifier names out where symbols may not read well ("Ctrl" rather than "^"), or add aria-label="Command K" to a <kbd>⌘K</kbd>.
+- Write modifier names out where symbols may not read well ("Ctrl" rather than "^"), or add aria-label="Command K" to a <kbd>⌘K</kbd> (screen readers pronounce "⌘" as "place of interest sign").
 - A shortcut hint doesn't replace aria-keyshortcuts on the control it triggers.
 
 **Do**
 - Use a kbd for keys people press: "Press / to search", shortcuts in a menu or tooltip, a hint in a search field (InputGroupAddon).
 - Use one kbd for a whole shortcut (⌘K), or one per key with a plus between them (Ctrl + Shift + P).
+- Adapt modifiers to the user's OS: ⌘ / ⌥ / ⇧ / ⌃ on macOS, Ctrl / Alt / Shift / Win on Windows, and Ctrl / Alt / Shift / Super on Linux (or use <Shortcut keys="Mod+K" /> / <Kbd keyName="mod" />).
+- Listen to event.code (physical key like 'KeyE') or use matchShortcut(event, 'Mod+E') rather than event.key === 'e' so hotkeys work across keyboard layouts and languages (e.g. Russian Cyrillic Cmd+У).
 
 **Don't**
 - Don't use a kbd for code or file names — use .ayy-mono or <code>.
 - Don't use it as a badge or a tag — use Badge.
 - Don't show shortcuts on touch-first screens, where there's no keyboard.
+- Don't hardcode Mac-only symbols (⌘) or Windows-only names (Ctrl) when targeting multiple operating systems.
+- Don't check event.key for letter shortcuts: on non-Latin keyboard layouts (e.g. Russian ЙЦУКЕН), event.key produces localized characters ('у' instead of 'e') and the hotkey fails silently.
 
-### Kbd — Shortcuts in text
+### Keyboard hint — Shortcuts in text
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -9083,8 +9539,137 @@ export default function Example() {
         Press <Kbd>/</Kbd> to search, or <Kbd aria-label="Command K">⌘K</Kbd> to open the command menu.
       </p>
       <p className="ayy-muted">
-        Save a draft with <Kbd>Ctrl</Kbd> + <Kbd>S</Kbd>.
+        Save a draft with <Kbd keyName="mod" /> + <Kbd>S</Kbd>.
       </p>
+    </div>
+  );
+}
+```
+
+### Keyboard hint — Platform adaptation (macOS, Windows, Linux)
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <div class="ayy-cluster" aria-label="macOS shortcuts">
+    <span class="ayy-muted">macOS:</span>
+    <kbd class="ayy-kbd" aria-label="Command">⌘</kbd>
+    <kbd class="ayy-kbd" aria-label="Option">⌥</kbd>
+    <kbd class="ayy-kbd" aria-label="Shift">⇧</kbd>
+    <kbd class="ayy-kbd" aria-label="Control">⌃</kbd>
+    <kbd class="ayy-kbd">K</kbd>
+  </div>
+  <div class="ayy-cluster" aria-label="Windows shortcuts">
+    <span class="ayy-muted">Windows:</span>
+    <kbd class="ayy-kbd">Ctrl</kbd>
+    <kbd class="ayy-kbd">Alt</kbd>
+    <kbd class="ayy-kbd">Shift</kbd>
+    <kbd class="ayy-kbd">Win</kbd>
+    <kbd class="ayy-kbd">K</kbd>
+  </div>
+  <div class="ayy-cluster" aria-label="Linux shortcuts">
+    <span class="ayy-muted">Linux:</span>
+    <kbd class="ayy-kbd">Ctrl</kbd>
+    <kbd class="ayy-kbd">Alt</kbd>
+    <kbd class="ayy-kbd">Shift</kbd>
+    <kbd class="ayy-kbd">Super</kbd>
+    <kbd class="ayy-kbd">K</kbd>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Kbd } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <div className="ayy-cluster" aria-label="macOS shortcuts">
+        <span className="ayy-muted">macOS:</span>
+        <Kbd platform="mac" keyName="mod" />
+        <Kbd platform="mac" keyName="alt" />
+        <Kbd platform="mac" keyName="shift" />
+        <Kbd platform="mac" keyName="ctrl" />
+        <Kbd platform="mac">K</Kbd>
+      </div>
+      <div className="ayy-cluster" aria-label="Windows shortcuts">
+        <span className="ayy-muted">Windows:</span>
+        <Kbd platform="windows" keyName="ctrl" />
+        <Kbd platform="windows" keyName="alt" />
+        <Kbd platform="windows" keyName="shift" />
+        <Kbd platform="windows" keyName="meta" />
+        <Kbd platform="windows">K</Kbd>
+      </div>
+      <div className="ayy-cluster" aria-label="Linux shortcuts">
+        <span className="ayy-muted">Linux:</span>
+        <Kbd platform="linux" keyName="ctrl" />
+        <Kbd platform="linux" keyName="alt" />
+        <Kbd platform="linux" keyName="shift" />
+        <Kbd platform="linux" keyName="meta" />
+        <Kbd platform="linux">K</Kbd>
+      </div>
+    </div>
+  );
+}
+```
+
+### Keyboard hint — Multi-language hotkey handling
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <p>Listen to physical key codes (<code>event.code</code> or <code>matchShortcut</code>) so hotkeys work across languages:</p>
+  <div class="ayy-cluster">
+    <span class="ayy-muted">English layout:</span>
+    <kbd class="ayy-kbd">Ctrl</kbd> + <kbd class="ayy-kbd">E</kbd>
+  </div>
+  <div class="ayy-cluster">
+    <span class="ayy-muted">Russian (ЙЦУКЕН):</span>
+    <kbd class="ayy-kbd">Ctrl</kbd> + <kbd class="ayy-kbd">У</kbd>
+  </div>
+  <p class="ayy-muted">Press Ctrl+E (⌘E on a Mac) on any keyboard layout to test.</p>
+</div>
+```
+
+React:
+
+```tsx
+import { useEffect, useState } from "react";
+import { Kbd } from "@danitesler/ayywi/react";
+import { matchShortcut } from "@danitesler/ayywi";
+
+export default function Example() {
+  const [status, setStatus] = useState<string>("Press Ctrl+E (⌘E on a Mac) on any keyboard layout to test.");
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (matchShortcut(e, "Mod+E")) {
+        e.preventDefault();
+        setStatus(`Matched Mod+E: code ${e.code || "unknown"}, key "${e.key}".`);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  return (
+    <div className="ayy-stack">
+      <p>
+        Listen to physical key codes (<code>event.code</code> or <code>matchShortcut</code>) so hotkeys work across languages:
+      </p>
+      <div className="ayy-cluster">
+        <span className="ayy-muted">English layout:</span>
+        <Kbd keyName="mod" /> + <Kbd>E</Kbd>
+      </div>
+      <div className="ayy-cluster">
+        <span className="ayy-muted">Russian (ЙЦУКЕН):</span>
+        <Kbd keyName="mod" /> + <Kbd>У</Kbd>
+      </div>
+      <p className="ayy-muted">{status}</p>
     </div>
   );
 }

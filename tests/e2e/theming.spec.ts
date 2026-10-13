@@ -96,14 +96,15 @@ test("app shell: sidebar and main scroll on their own, the sidebar follows the i
 
 test("accent text is darker on light themes than the raw accent", async ({ page }) => {
   const colors = async () =>
-    stage(page, 1)
-      .locator(".ayy-section__number")
-      .evaluate((el) => [getComputedStyle(el).color, getComputedStyle(el.closest(".ayy-section")!).getPropertyValue("--ayy-spot")]);
-  await open(page, "section", { renderer: "html", theme: "dark" });
+    stage(page)
+      .locator(".ayy-icon-tile")
+      .first()
+      .evaluate((el) => [getComputedStyle(el).color, getComputedStyle(el).getPropertyValue("--_accent")]);
+  await open(page, "icon-tile", { renderer: "html", theme: "dark" });
   const [dark] = await colors();
-  await open(page, "section", { renderer: "html", theme: "light" });
+  await open(page, "icon-tile", { renderer: "html", theme: "light" });
   const [light] = await colors();
-  expect(dark).toBe("rgb(91, 157, 255)"); // --ayy-accent-product, raw
+  expect(dark).toBe("rgb(244, 114, 182)"); // --ayy-accent-brand, raw
   expect(light).not.toBe(dark);
 });
 
@@ -145,13 +146,6 @@ test.describe("forced colors (Windows High Contrast)", () => {
       return color;
     });
     expect(await current.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(highlight);
-
-    // Only one of the theme toggle's two stacked icons shows.
-    await page.goto("/#/theme-toggle");
-    const icons = await stage(page)
-      .locator(".ayy-theme-toggle svg")
-      .evaluateAll((svgs) => svgs.map((s) => getComputedStyle(s).color === "rgba(0, 0, 0, 0)"));
-    expect(icons.sort()).toEqual([false, true]);
   });
 });
 
@@ -185,7 +179,6 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   const before = await primary(".pv-theme[data-theme=\"light\"]");
   await page.goto("/#/brand");
   await page.getByLabel("Seed colour", { exact: true }).fill("#dc2626");
-  await page.getByRole("button", { name: "Use across the preview" }).click();
   await page.goto("/#/colors");
   await expect(page.locator("html")).toHaveAttribute("data-brand", "acme");
   const button = page.locator(".pv-theme[data-theme=\"light\"] .ayy-button").first();
@@ -193,8 +186,9 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   await expect(page.locator(".pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
   expect(await primary(".pv-theme[data-theme=\"light\"]")).not.toBe(before);
   await page.goto("/#/brand");
-  await page.getByRole("button", { name: "Back to mono" }).click();
+  await page.getByRole("button", { name: "Reset to default" }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
 });
 
 for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {

@@ -49,7 +49,7 @@ Category: Forms. Round colour dots to pick one colour: a tag's or a list's colou
 - Use a track group in a toolbar, size sm.
 
 **Don't**
-- Don't use swatches to choose a theme or a status — use the Theme toggle or a Select; colour alone doesn't say what a status means.
+- Don't use swatches to choose a theme or a status — use a Segmented control or a Select; colour alone doesn't say what a status means.
 - Don't hardcode hex values in --ayy-swatch; use tokens, or the app's own colour variables when people pick colours (stored values belong in data, not in markup).
 - Don't show more than about ten swatches in a row — group them, or add a SwatchCustom.
 - Don't use colour names that only make sense in one theme ("Black" turns white in dark mode) — name the role ("Ink").
@@ -146,4 +146,4 @@ export default function Example() {
 ```
 
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

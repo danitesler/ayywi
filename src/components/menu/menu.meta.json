@@ -3,12 +3,22 @@
   "slug": "menu",
   "status": "stable",
   "category": "Actions",
-  "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab).",
-  "aka": ["menu", "dropdown", "dropdown-menu", "context-menu", "menu-item"],
+  "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab), submenus and inline expandable sections.",
+  "aka": ["menu", "dropdown", "dropdown-menu", "context-menu", "menu-item", "submenu", "nested-menu", "cascading-menu"],
   "classes": {
     "ayy-menu": "On the element with popover and role=\"menu\".",
+    "ayy-menu--sub": "Submenu flyout panel.",
+    "ayy-menu--static": "Static menu rendered inline in a page or window without popover behavior.",
     "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",
     "ayy-menu__item--destructive": "Red item for destructive actions.",
+    "ayy-menu__item--sub": "Submenu parent row with an inline-end chevron.",
+    "ayy-menu__item--expand": "Inline accordion row that expands its items below itself.",
+    "ayy-menu__item--described": "Two-line row with an aligned label and soft description.",
+    "ayy-menu__item-text": "Text container for a described row's label and description.",
+    "ayy-menu__description": "Soft description text under a described row's label.",
+    "ayy-menu__value": "Muted text or badge before the chevron or shortcut.",
+    "ayy-menu__chevron": "Chevron icon pointing towards the inline end or down when expandable.",
+    "ayy-menu__group--inline": "Indented role=\"group\" of items revealed by an expandable row.",
     "ayy-menu__shortcut": "Keyboard shortcut hint at the end of an item.",
     "ayy-menu__label": "Small uppercase group label.",
     "ayy-menu__separator": "Divider (role=\"separator\")."
@@ -26,13 +36,13 @@
     "selected": { "when": ".ayy-menu__item[aria-checked=\"true\"] on role=\"menuitemradio\" or \"menuitemcheckbox\"", "looks": "Semibold with a check at the inline end, drawn in currentColor. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select." },
     "error": { "none": "A menu has no error state; report a failed command with a toast." },
     "loading": { "none": "Build the items before opening; if they load, put the trigger Button in loading until they're ready." },
-    "open": { "when": ":popover-open", "looks": "Fades in and scales up from 97%; fades out when it closes." }
+    "open": { "when": ":popover-open or [aria-expanded=\"true\"] on parent row", "looks": "Fades in and scales up from 97%; parent rows keep the hover background while open." }
   },
   "sizes": {
     "density": "Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.",
     "width": "At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item."
   },
-  "js": "menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })",
+  "js": "menuItemClass({ destructive?, sub?, expand?, described?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })",
   "element": {
     "tag": "ayy-menu",
     "attributes": {
@@ -42,34 +52,43 @@
     },
     "events": {
       "ayy-select": "{ value: string, item: HTMLElement } — value is the item's data-value, else its text",
-      "ayy-open-change": "{ open: boolean }"
+      "ayy-open-change": "{ open: boolean }",
+      "ayy-submenu-layout": "{ open: boolean, width: number, height: number, side: FloatingSide }"
     },
-    "children": "A trigger <button> and a [popover] element with role=\"menu\" containing .ayy-menu__item buttons."
+    "children": "A trigger <button> and a [popover] element with role=\"menu\" containing .ayy-menu__item buttons, optional submenu panels, and expandable groups."
   },
   "react": {
-    "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from \"@danitesler/ayywi/react\";",
+    "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from \"@danitesler/ayywi/react\";",
     "components": {
-      "DropdownMenu": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
+      "DropdownMenu": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void", "anchorPoint": "{ x: number, y: number }", "boundary": "Element | Rect" } },
       "DropdownMenuTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },
       "DropdownMenuContent": {
         "renders": "<div popover role=\"menu\">",
-        "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"start\" | \"center\" | \"end\"" }
+        "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"start\" | \"center\" | \"end\"", "static": "boolean", "boundary": "Element | Rect", "subSide": "\"end\" | \"start\"", "onSubmenuLayout": "(layout) => void" }
       },
       "DropdownMenuItem": {
         "renders": "<button role=\"menuitem\">",
-        "props": { "onSelect": "() => void — runs when chosen; the menu then closes", "destructive": "boolean", "shortcut": "string — hint like \"⌘D\"" }
+        "props": { "onSelect": "() => void — runs when chosen; the menu then closes unless closeOnSelect=false", "destructive": "boolean", "shortcut": "string — hint like \"⌘D\"", "value": "ReactNode", "description": "ReactNode", "icon": "ReactNode", "closeOnSelect": "boolean" }
       },
       "DropdownMenuLabel": { "renders": "<div role=\"presentation\">" },
-      "DropdownMenuSeparator": { "renders": "<div role=\"separator\">" }
+      "DropdownMenuSeparator": { "renders": "<div role=\"separator\">" },
+      "DropdownMenuSub": { "renders": "nothing (submenu state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void", "inline": "boolean" } },
+      "DropdownMenuSubTrigger": { "renders": "<button role=\"menuitem\" aria-haspopup=\"menu\">", "props": { "icon": "ReactNode", "value": "ReactNode", "description": "ReactNode" } },
+      "DropdownMenuSubContent": { "renders": "<div popover role=\"menu\"> or <div role=\"group\"> (inline)", "props": { "side": "\"end\" | \"start\"", "align": "\"start\"" } },
+      "DropdownMenuCheckboxItem": { "renders": "<button role=\"menuitemcheckbox\">", "props": { "checked": "boolean", "onCheckedChange": "(checked: boolean) => void", "closeOnSelect": "boolean" } },
+      "DropdownMenuRadioGroup": { "renders": "<div role=\"group\">", "props": { "value": "string", "onValueChange": "(value: string) => void", "closeOnSelect": "boolean" } },
+      "DropdownMenuRadioItem": { "renders": "<button role=\"menuitemradio\">", "props": { "value": "string" } }
     }
   },
   "a11y": [
     "Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items.",
+    "ArrowRight / ArrowLeft open and close submenus (mirrored in RTL); Esc inside a submenu closes only that panel.",
     "Esc or Tab closes the menu and focus returns to the trigger.",
     "Icon-only triggers (⋯) need aria-label."
   ],
   "do": [
     "Use a menu for an item's secondary actions (rename, duplicate, delete) and for overflow “⋯” menus in toolbars and table rows.",
+    "Nest one level at most, for variants of one action. Don't hide frequent actions in a submenu.",
     "Put destructive actions last, after a separator.",
     "Keep item labels to a verb + noun: \"Rename project\"."
   ],
@@ -77,7 +96,10 @@
     "Don't use a menu to choose a value in a form — use Select or Radio.",
     "Don't use a menu to navigate between pages — use links.",
     "Don't put form fields or rich content in a menu — use Popover.",
-    "Don't nest menus."
+    "Don't nest submenus more than one level."
   ],
-  "examples": [{ "id": "actions", "title": "Item actions" }]
+  "examples": [
+    { "id": "actions", "title": "Item actions" },
+    { "id": "submenus", "title": "Submenus and options" }
+  ]
 }

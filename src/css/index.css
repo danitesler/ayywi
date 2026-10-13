@@ -10,7 +10,6 @@
 
 @import "../components/button/button.css" layer(ayywi.components);
 @import "../components/toolbar/toolbar.css" layer(ayywi.components);
-@import "../components/section/section.css" layer(ayywi.components);
 @import "../components/page-header/page-header.css" layer(ayywi.components);
 @import "../components/card/card.css" layer(ayywi.components);
 @import "../components/badge/badge.css" layer(ayywi.components);
@@ -43,7 +42,6 @@
 @import "../components/command/command.css" layer(ayywi.components);
 @import "../components/popover/popover.css" layer(ayywi.components);
 @import "../components/menu/menu.css" layer(ayywi.components);
-@import "../components/theme-toggle/theme-toggle.css" layer(ayywi.components);
 @import "../components/navbar/navbar.css" layer(ayywi.components);
 @import "../components/footer/footer.css" layer(ayywi.components);
 @import "../components/app-shell/app-shell.css" layer(ayywi.components);

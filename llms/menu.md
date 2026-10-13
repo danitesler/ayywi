@@ -1,11 +1,21 @@
 # Dropdown menu
 
-Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab). Also called: menu, dropdown, dropdown-menu, context-menu, menu-item.
+Category: Actions. List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab), submenus and inline expandable sections. Also called: menu, dropdown, dropdown-menu, context-menu, menu-item, submenu, nested-menu, cascading-menu.
 
 **Classes**
 - `.ayy-menu` — On the element with popover and role="menu".
+- `.ayy-menu--sub` — Submenu flyout panel.
+- `.ayy-menu--static` — Static menu rendered inline in a page or window without popover behavior.
 - `.ayy-menu__item` — Each action: a <button role="menuitem">.
 - `.ayy-menu__item--destructive` — Red item for destructive actions.
+- `.ayy-menu__item--sub` — Submenu parent row with an inline-end chevron.
+- `.ayy-menu__item--expand` — Inline accordion row that expands its items below itself.
+- `.ayy-menu__item--described` — Two-line row with an aligned label and soft description.
+- `.ayy-menu__item-text` — Text container for a described row's label and description.
+- `.ayy-menu__description` — Soft description text under a described row's label.
+- `.ayy-menu__value` — Muted text or badge before the chevron or shortcut.
+- `.ayy-menu__chevron` — Chevron icon pointing towards the inline end or down when expandable.
+- `.ayy-menu__group--inline` — Indented role="group" of items revealed by an expandable row.
 - `.ayy-menu__shortcut` — Keyboard shortcut hint at the end of an item.
 - `.ayy-menu__label` — Small uppercase group label.
 - `.ayy-menu__separator` — Divider (role="separator").
@@ -19,36 +29,45 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `selected` (`.ayy-menu__item[aria-checked="true"] on role="menuitemradio" or "menuitemcheckbox"`) — Semibold with a check at the inline end, drawn in currentColor. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select.
 - `error` — doesn't apply: A menu has no error state; report a failed command with a toast.
 - `loading` — doesn't apply: Build the items before opening; if they load, put the trigger Button in loading until they're ready.
-- `open` (`:popover-open`) — Fades in and scales up from 97%; fades out when it closes.
+- `open` (`:popover-open or [aria-expanded="true"] on parent row`) — Fades in and scales up from 97%; parent rows keep the hover background while open.
 
 **Sizes**
 - Density — Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.
 - Width — At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item.
 
-**JS (framework-free)**: menuItemClass({ destructive?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass constants; connectMenu(trigger, content, { side?, align?, onSelect?, onToggle? })
+**JS (framework-free)**: menuItemClass({ destructive?, sub?, expand?, described?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })
 
-**Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons.
+**Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons, optional submenu panels, and expandable groups.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: start | center | end
 - attribute `open`: Two-way open state
 - event `ayy-select`: { value: string, item: HTMLElement } — value is the item's data-value, else its text
 - event `ayy-open-change`: { open: boolean }
+- event `ayy-submenu-layout`: { open: boolean, width: number, height: number, side: FloatingSide }
 
-**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@danitesler/ayywi/react";`
-- `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
+**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@danitesler/ayywi/react";`
+- `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `anchorPoint` { x: number, y: number }; `boundary` Element | Rect
 - `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…
-- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"
-- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes; `destructive` boolean; `shortcut` string — hint like "⌘D"
+- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"; `static` boolean; `boundary` Element | Rect; `subSide` "end" | "start"; `onSubmenuLayout` (layout) => void
+- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes unless closeOnSelect=false; `destructive` boolean; `shortcut` string — hint like "⌘D"; `value` ReactNode; `description` ReactNode; `icon` ReactNode; `closeOnSelect` boolean
 - `<DropdownMenuLabel>` renders <div role="presentation">.
 - `<DropdownMenuSeparator>` renders <div role="separator">.
+- `<DropdownMenuSub>` renders nothing (submenu state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `inline` boolean
+- `<DropdownMenuSubTrigger>` renders <button role="menuitem" aria-haspopup="menu">. Props: `icon` ReactNode; `value` ReactNode; `description` ReactNode
+- `<DropdownMenuSubContent>` renders <div popover role="menu"> or <div role="group"> (inline). Props: `side` "end" | "start"; `align` "start"
+- `<DropdownMenuCheckboxItem>` renders <button role="menuitemcheckbox">. Props: `checked` boolean; `onCheckedChange` (checked: boolean) => void; `closeOnSelect` boolean
+- `<DropdownMenuRadioGroup>` renders <div role="group">. Props: `value` string; `onValueChange` (value: string) => void; `closeOnSelect` boolean
+- `<DropdownMenuRadioItem>` renders <button role="menuitemradio">. Props: `value` string
 
 **Accessibility**
 - Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items.
+- ArrowRight / ArrowLeft open and close submenus (mirrored in RTL); Esc inside a submenu closes only that panel.
 - Esc or Tab closes the menu and focus returns to the trigger.
 - Icon-only triggers (⋯) need aria-label.
 
 **Do**
 - Use a menu for an item's secondary actions (rename, duplicate, delete) and for overflow “⋯” menus in toolbars and table rows.
+- Nest one level at most, for variants of one action. Don't hide frequent actions in a submenu.
 - Put destructive actions last, after a separator.
 - Keep item labels to a verb + noun: "Rename project".
 
@@ -56,7 +75,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - Don't use a menu to choose a value in a form — use Select or Radio.
 - Don't use a menu to navigate between pages — use links.
 - Don't put form fields or rich content in a menu — use Popover.
-- Don't nest menus.
+- Don't nest submenus more than one level.
 
 ## Dropdown menu — Item actions
 
@@ -133,5 +152,181 @@ export default function Example() {
 }
 ```
 
+## Dropdown menu — Submenus and options
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-menu> (@danitesler/ayywi/elements) supports submenus and inline expandable groups. -->
+<ayy-menu>
+  <button type="button" class="ayy-button ayy-button--outline" popovertarget="capture-menu-html" aria-haspopup="menu">Capture options</button>
+  <div class="ayy-menu" id="capture-menu-html" popover role="menu">
+    <div class="ayy-menu__label" role="presentation">Takerr</div>
+    <button type="button" class="ayy-menu__item ayy-menu__item--described" role="menuitem" data-value="capture-area">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3V18C6 19.8856 6 20.8284 6.58579 21.4142C7.17157 22 8.11438 22 10 22H21" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/><path d="M18 21V6C18 4.11438 18 3.17157 17.4142 2.58579C16.8284 2 15.8856 2 14 2H3" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+      <span class="ayy-menu__item-text">
+        <span>Capture area</span>
+        <span class="ayy-menu__description">Drag to select part of the screen</span>
+      </span>
+      <span class="ayy-menu__shortcut">⌘4</span>
+    </button>
+
+    <button type="button" class="ayy-menu__item ayy-menu__item--sub" role="menuitem" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-timer">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14.5 14.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      Self-timer
+      <span class="ayy-menu__value">5s</span>
+      <span class="ayy-menu__chevron" aria-hidden="true"></span>
+    </button>
+    <div class="ayy-menu ayy-menu--sub" id="submenu-timer" popover role="menu">
+      <div role="group">
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="off">Off</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="3">In 3 seconds</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="true" data-value="5">In 5 seconds</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="10">In 10 seconds</button>
+      </div>
+    </div>
+
+    <button type="button" class="ayy-menu__item ayy-menu__item--sub" role="menuitem" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-format">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15V3M12 15L8 11M12 15L16 11" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M2 17L2.62112 19.4845C2.84655 20.3862 3.65922 21 4.58988 21H19.4101C20.3408 21 21.1535 20.3862 21.3789 19.4845L22 17" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+      Export format
+      <span class="ayy-menu__value">PNG</span>
+      <span class="ayy-menu__chevron" aria-hidden="true"></span>
+    </button>
+    <div class="ayy-menu ayy-menu--sub" id="submenu-format" popover role="menu">
+      <div role="group">
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="true" data-value="png">PNG (lossless)</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="jpg">JPG (compressed)</button>
+        <button type="button" class="ayy-menu__item" role="menuitemradio" aria-checked="false" data-value="pdf">PDF (document)</button>
+      </div>
+    </div>
+
+    <button type="button" class="ayy-menu__item ayy-menu__item--expand" role="menuitem" aria-expanded="false" aria-controls="menu-inline-options">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      Advanced options
+      <span class="ayy-menu__chevron" aria-hidden="true"></span>
+    </button>
+    <div class="ayy-menu__group--inline" id="menu-inline-options" role="group" hidden>
+      <button type="button" class="ayy-menu__item" role="menuitemcheckbox" aria-checked="true" data-value="pointer">
+        Include pointer
+      </button>
+    </div>
+
+    <div class="ayy-menu__separator" role="separator"></div>
+    <button type="button" class="ayy-menu__item" role="menuitem" data-value="fullscreen">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="13" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M9 3H15L16.5 5H20C21.1046 5 22 5.89543 22 7V19C22 20.1046 21.1046 21 20 21H4C2.89543 21 2 20.1046 2 19V7C2 5.89543 2.89543 5 4 5H7.5L9 3Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      Full screen <span class="ayy-menu__shortcut">⌘3</span>
+    </button>
+  </div>
+</ayy-menu>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import {
+  Camera01Icon,
+  Clock01Icon,
+  CropIcon,
+  Download01Icon,
+  Layers01Icon,
+} from "@hugeicons/core-free-icons";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+  Icon,
+  toast,
+} from "@danitesler/ayywi/react";
+
+export default function Example() {
+  const [timer, setTimer] = useState("off");
+  const [format, setFormat] = useState("png");
+  const [showCursor, setShowCursor] = useState(true);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger variant="outline">Capture options</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Takerr</DropdownMenuLabel>
+        <DropdownMenuItem
+          icon={<Icon icon={CropIcon} />}
+          description="Drag to select part of the screen"
+          onSelect={() => toast("Capture area")}
+          shortcut="⌘4"
+        >
+          Capture area
+        </DropdownMenuItem>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger
+            icon={<Icon icon={Clock01Icon} />}
+            value={timer === "off" ? "Off" : `${timer}s`}
+          >
+            Self-timer
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup value={timer} onValueChange={(val) => { setTimer(val); toast(`Timer: ${val}s`); }}>
+              <DropdownMenuRadioItem value="off">Off</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="3">In 3 seconds</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="5">In 5 seconds</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="10">In 10 seconds</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger icon={<Icon icon={Download01Icon} />} value={format.toUpperCase()}>
+            Export format
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup value={format} onValueChange={(val) => { setFormat(val); toast(`Format: ${val.toUpperCase()}`); }}>
+              <DropdownMenuRadioItem value="png">PNG (lossless)</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="jpg">JPG (compressed)</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="pdf">PDF (document)</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub inline>
+          <DropdownMenuSubTrigger icon={<Icon icon={Layers01Icon} />}>
+            Advanced options
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuCheckboxItem
+              checked={showCursor}
+              onCheckedChange={(checked) => {
+                setShowCursor(checked);
+                toast(checked ? "Cursor included" : "Cursor hidden");
+              }}
+            >
+              Include pointer
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          icon={<Icon icon={Camera01Icon} />}
+          onSelect={() => toast("Screen captured")}
+          shortcut="⌘3"
+        >
+          Full screen
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
 ---
-Part of @danitesler/ayywi 0.0.2: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).
+Part of @danitesler/ayywi 0.0.3: load `dist/ayywi.min.css` (and `dist/elements.global.js` for the <ayy-*> elements). The rules every screen follows: [llms-full.txt#rules](../llms-full.txt#rules). Every component: [llms.txt](../llms.txt).

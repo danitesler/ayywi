@@ -15,6 +15,10 @@ import MinusSignIcon from "@hugeicons/core-free-icons/MinusSignIcon";
 import PlusSignIcon from "@hugeicons/core-free-icons/PlusSignIcon";
 import Calendar03Icon from "@hugeicons/core-free-icons/Calendar03Icon";
 import Search01Icon from "@hugeicons/core-free-icons/Search01Icon";
+import CheckmarkCircle02Icon from "@hugeicons/core-free-icons/CheckmarkCircle02Icon";
+import Alert02Icon from "@hugeicons/core-free-icons/Alert02Icon";
+import InformationCircleIcon from "@hugeicons/core-free-icons/InformationCircleIcon";
+import CancelCircleIcon from "@hugeicons/core-free-icons/CancelCircleIcon";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -101,4 +105,8 @@ test("the calendar, date picker, settings, top bar, command palette, search bar 
   assert.equal(m.searchBarIcon, m.iconSvg(Search01Icon));
   assert.equal(m.searchBarClearIcon, m.iconSvg(Cancel01Icon));
   assert.equal(m.tagRemoveIcon, m.iconSvg(Cancel01Icon));
+  assert.equal(m.toastSuccessIcon, m.iconSvg(CheckmarkCircle02Icon));
+  assert.equal(m.toastWarningIcon, m.iconSvg(Alert02Icon));
+  assert.equal(m.toastInfoIcon, m.iconSvg(InformationCircleIcon));
+  assert.equal(m.toastErrorIcon, m.iconSvg(CancelCircleIcon));
 });

@@ -8,7 +8,7 @@ When you ask an AI tool to build UI, you usually get five mismatched shades of g
 
 ![The Dashboard showcase app, built only from ayywi components](https://raw.githubusercontent.com/danitesler/ayywi/main/preview/src/showcase/screenshots/dashboard.png)
 
-- **Small:** zero runtime dependencies, ~24 kB of CSS gzipped for all 65 components.
+- **Small:** zero runtime dependencies, ~26 kB of CSS gzipped for all 63 components.
 - **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
 - **States and accessibility built in:** components ship empty, loading, and error states; interactive ones have focus rings, keyboard support, ARIA, RTL, and Windows High Contrast styles. axe runs on every component page and showcase app (no serious or critical violations), and `pnpm check` tests every text colour against every surface in every theme.
 - **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.
@@ -36,13 +36,13 @@ Paste this into your chat when starting an app:
 
 ```markdown
 Style this project with the ayywi design system. Link these in <head>:
-<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/theme-init.js" integrity="sha384-lGmWLHV63f2b1zy44y+untQnyYqkUy+4KcwBm+sfcXKIO/kWbNNpS4+F1cX4uGfz" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/fonts.css" integrity="sha384-xlJC6P/OPjbl1PpLS8nyeR5McBXBvlbILZYs3NqxQ7FfDQXHvg7heYTa98Xsh1av" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/ayywi.min.css" integrity="sha384-altFI0nfvLSSoGPhVT70AVPSf95VMLF+yG6Xlae/gnfkwrCAetcXPS5u4vhp5ozx" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/dist/elements.global.js" integrity="sha384-xK75X2mKGtliwi6gHAqBfZXRM664py5XCf1fUULjWKLpOr3s8CcalLjP/ZqvydXA" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/dist/theme-init.js" integrity="sha384-lGmWLHV63f2b1zy44y+untQnyYqkUy+4KcwBm+sfcXKIO/kWbNNpS4+F1cX4uGfz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/dist/fonts.css" integrity="sha384-xlJC6P/OPjbl1PpLS8nyeR5McBXBvlbILZYs3NqxQ7FfDQXHvg7heYTa98Xsh1av" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/dist/ayywi.min.css" integrity="sha384-UCZpGkdQQXHckcGSLW60jMVqU+sjMAEw+M1hvfQJY/od7kVGJE3ZoQ/OxwRdkuix" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/dist/elements.global.js" integrity="sha384-usq1JjmfgKcnrKeu4w9JVVylzMTrWlH7vdIWtQNIn49JTP4msAjGRVg5oxHao2/A" crossorigin="anonymous" defer></script>
 
 Rules:
-- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.2/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
+- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
 - If the project already uses Tailwind, use it for layout only, never its colour scale (bg-gray-900, text-blue-500). Don't add shadcn/ui or another UI kit.
 - An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
 - Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).
@@ -132,13 +132,13 @@ Densities include `compact` (desktop default), `comfortable` (looser spacing), a
 
 | Category | Components |
 |---|---|
-| Actions | Button, Toolbar, Dropdown menu, Command palette, Floating action button, Theme toggle |
+| Actions | Button, Toolbar, Dropdown menu, Command palette, Floating action button |
 | Navigation | Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Contents |
 | Forms | Field, Input, Input group, Search bar, Textarea, Select, Combobox, Tag input, Calendar (and date picker), Checkbox, Radio, Segmented control, Chip, Swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut (keys and recorder), Settings |
-| Layout | Page header, Section, Card, Tabs, Accordion, Carousel, Separator |
+| Layout | Page header, Card, Tabs, Accordion, Carousel, Separator |
 | Overlays | Dialog (centred, side modal or bottom sheet), Popover, Tooltip |
 | Feedback | Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state |
-| Data display | Badge, Kbd, Avatar, Icon, Icon tile, Stat, List, Data list, Swipe actions, Frame, Chat, Table, Chart |
+| Data display | Badge, Keyboard hint, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Frame, Chat, Table, Chart |
 
 Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) and a marketing site kit (containers, hero type, scroll reveal) handle the structure between components.
 

@@ -48,7 +48,7 @@
     "Keep the description to one sentence that says what the page is for."
   ],
   "dont": [
-    "Don't use it on marketing pages — use a Section with a SectionHeader, or .ayy-display for a hero.",
+    "Don't use it on marketing pages — use .ayy-display or headings for a hero.",
     "Don't put tabs, search or filters in it — put them in a toolbar row (.ayy-spread) under it.",
     "Don't put more than three actions in it; move the rest into a DropdownMenu.",
     "Don't add a second h1 elsewhere on the page."
