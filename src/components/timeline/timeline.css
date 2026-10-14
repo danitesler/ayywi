@@ -1,0 +1,211 @@
+/* Timeline: a chronological list of events, milestones, or history.
+   Each item features a vertical track with a marker, tabular timestamp, title, and body. */
+
+.ayy-timeline {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ayy-timeline__item {
+  --_marker-size: var(--ayy-size-icon-lg);
+  display: grid;
+  grid-template-columns: var(--_marker-size) minmax(0, 1fr);
+  grid-template-areas: "track content";
+  column-gap: var(--ayy-space-4);
+  position: relative;
+  min-inline-size: 0;
+}
+
+/* Vertical connecting rail line between items. */
+.ayy-timeline__track {
+  grid-area: track;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+}
+
+.ayy-timeline__track::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-block-end: 0;
+  inset-inline-start: calc(50% - 1px);
+  inline-size: 2px;
+  background-color: var(--ayy-color-line);
+}
+
+.ayy-timeline__item:first-child .ayy-timeline__track::before {
+  inset-block-start: calc(var(--_marker-size) / 2);
+}
+
+.ayy-timeline__item:last-child .ayy-timeline__track::before {
+  inset-block-end: calc(100% - var(--_marker-size) / 2);
+}
+
+.ayy-timeline__item:only-child .ayy-timeline__track::before {
+  display: none;
+}
+
+/* Circle dot, icon, or avatar placed on the track. */
+.ayy-timeline__marker {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  position: relative;
+  z-index: 1;
+  inline-size: var(--_marker-size);
+  block-size: var(--_marker-size);
+  border-radius: var(--ayy-radius-pill);
+  border: 2px solid var(--ayy-color-line-strong);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  line-height: 1;
+}
+
+.ayy-timeline__marker:empty::before {
+  content: "";
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* Pulsing active status ring for in-progress or live events. */
+.ayy-timeline__marker--pulse {
+  border-color: var(--ayy-color-primary);
+  color: var(--ayy-color-primary);
+}
+
+.ayy-timeline__marker--pulse::after {
+  content: "";
+  position: absolute;
+  inset-block: -3px;
+  inset-inline: -3px;
+  border-radius: inherit;
+  border: 2px solid var(--ayy-color-primary);
+  opacity: 0;
+  animation: ayy-timeline-pulse 2s var(--ayy-ease-standard) infinite;
+}
+
+/* Event details container. */
+.ayy-timeline__content {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  padding-block-end: var(--ayy-space-6);
+  min-inline-size: 0;
+}
+
+.ayy-timeline__item:last-child .ayy-timeline__content {
+  padding-block-end: 0;
+}
+
+/* Muted tabular timestamp / date. */
+.ayy-timeline__time {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--ayy-leading-snug);
+}
+
+/* Event heading. */
+.ayy-timeline__title {
+  margin: 0;
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
+}
+
+/* Event description or status badge. */
+.ayy-timeline__body {
+  margin: 0;
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-sm);
+  line-height: var(--ayy-leading-normal);
+}
+
+/* Alternate: alternating items left and right across a centered track. */
+.ayy-timeline--alternate .ayy-timeline__item {
+  grid-template-columns: 1fr var(--_marker-size) 1fr;
+  grid-template-areas: "start track end";
+}
+
+.ayy-timeline--alternate .ayy-timeline__item .ayy-timeline__track {
+  grid-area: track;
+}
+
+.ayy-timeline--alternate .ayy-timeline__item:nth-child(odd) .ayy-timeline__content {
+  grid-area: start;
+  text-align: end;
+  align-items: flex-end;
+}
+
+.ayy-timeline--alternate .ayy-timeline__item:nth-child(even) .ayy-timeline__content {
+  grid-area: end;
+  text-align: start;
+  align-items: flex-start;
+}
+
+@container (max-width: 36rem) {
+  .ayy-timeline--alternate .ayy-timeline__item {
+    grid-template-columns: var(--_marker-size) minmax(0, 1fr);
+    grid-template-areas: "track content";
+  }
+
+  .ayy-timeline--alternate .ayy-timeline__item:nth-child(odd) .ayy-timeline__content,
+  .ayy-timeline--alternate .ayy-timeline__item:nth-child(even) .ayy-timeline__content {
+    grid-area: content;
+    text-align: start;
+    align-items: flex-start;
+  }
+}
+
+@keyframes ayy-timeline-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-timeline__track::before {
+    background-color: CanvasText;
+  }
+  .ayy-timeline__marker {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+  .ayy-timeline__marker:empty::before {
+    background-color: CanvasText;
+  }
+  .ayy-timeline__marker--pulse {
+    border-color: Highlight;
+    color: Highlight;
+  }
+  .ayy-timeline__marker--pulse:empty::before {
+    background-color: Highlight;
+  }
+  .ayy-timeline__marker--pulse::after {
+    border-color: Highlight;
+  }
+}

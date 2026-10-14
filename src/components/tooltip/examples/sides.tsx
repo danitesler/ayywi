@@ -1,9 +1,15 @@
-import { Button, Tooltip } from "@danitesler/ayywi/react";
+import { Button, Shortcut, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
     <>
-      <Tooltip content="Save changes (⌘S)">
+      <Tooltip
+        content={
+          <>
+            Save changes <Shortcut keys="Mod+S" />
+          </>
+        }
+      >
         <Button variant="outline">Top</Button>
       </Tooltip>
       <Tooltip content="Opens in a new window" side="bottom">

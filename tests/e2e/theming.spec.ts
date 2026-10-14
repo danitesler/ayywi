@@ -57,7 +57,8 @@ test("carousel pages towards the inline end in RTL", async ({ page }) => {
 test("app shell: sidebar and main scroll on their own, the sidebar follows the inline start and stacks on phones", async ({ page }) => {
   for (const renderer of ["react", "html"] as const) {
     await open(page, "app-shell", { renderer });
-    const shell = stage(page).locator(".ayy-app-shell");
+    // The playground's closed settings dialog stays mounted; the shell under test is the first one.
+    const shell = stage(page).locator(".ayy-app-shell").first();
     const sidebar = shell.locator(".ayy-app-shell__sidebar");
     const main = shell.locator(".ayy-app-shell__main");
     const footer = shell.locator(".ayy-app-shell__footer");
@@ -84,11 +85,21 @@ test("app shell: sidebar and main scroll on their own, the sidebar follows the i
     expect((await box(sidebar)).x).toBeGreaterThan((await box(main)).x);
     await stage(page).evaluate((el) => el.removeAttribute("dir"));
 
-    // On a phone the sidebar stacks above main, and the nav becomes a row.
+    // On a phone with no bar or bottom nav, the sidebar stacks above main and the nav becomes a row.
+    if (renderer === "react") {
+      const demo = page.locator('.pv-example[aria-labelledby="ex-playground"] .pv-stage');
+      for (const name of ["Top bar", "Bottom nav"]) {
+        const sw = demo.getByRole("switch", { name });
+        if (await sw.isChecked()) await sw.click();
+      }
+    } else {
+      await shell.locator(":scope > .ayy-app-shell__bar").evaluate((el) => el.remove());
+      await shell.locator(":scope > .ayy-bottom-nav").evaluate((el) => el.remove());
+    }
     await page.setViewportSize({ width: 390, height: 800 });
     expect((await box(sidebar)).y + (await box(sidebar)).height).toBeLessThanOrEqual((await box(main)).y + 1);
     expect((await box(sidebar)).width).toBeCloseTo((await box(shell)).width, 0);
-    const links = await shell.locator(".ayy-app-shell__nav .ayy-app-shell__link").all();
+    const links = await shell.locator(".ayy-app-shell__nav .ayy-app-shell__link:visible").all();
     expect((await box(links[0])).y).toBe((await box(links[1])).y);
     await page.setViewportSize({ width: 1280, height: 720 });
   }

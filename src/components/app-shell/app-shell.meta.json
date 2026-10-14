@@ -27,13 +27,19 @@
     "ayy-app-shell__toggle": "The button that opens the sidebar as a drawer on phones: in the __bar (with ayy-button ayy-button--ghost ayy-button--icon and a menu icon), or as the \"More\" tab of the bottom nav (<button class=\"ayy-bottom-nav__link ayy-app-shell__toggle\">). Its aria-expanded is the drawer's state. In the sidebar (first in an __head, with a directional sidebar icon and aria-label=\"Sidebar\") it collapses and expands the sidebar on wide screens, and its aria-expanded is whether the sidebar is open. connectAppShell() / <ayy-app-shell> / React AppShell manage it.",
     "ayy-app-shell--collapsed": "Collapsed sidebar mode on wide screens: the sidebar narrows to an icon rail, animating its width with the main column. Rows stay on one line and in place, so icons keep their spot while labels and group labels fade and clip (wrap a link's label in a <span> to fade it); links without an icon fade out and leave the tab order; sub-lists hide. The toggle's aria-expanded reflects the state.",
     "ayy-app-shell--hover-preview": "With --collapsed: resting the pointer on the rail (after a short pause) or moving keyboard focus into it widens the sidebar to full width over the main area with the overlay shadow, without moving the main content; it closes a moment after the pointer leaves. A mouse click inside doesn't keep it open. Right after the sidebar's toggle collapses it, connectAppShell sets data-ayy-hold on the sidebar so it doesn't reopen under the pointer, until the pointer leaves or focus moves on.",
+    "ayy-app-shell--drawer": "Root modifier: below 48rem the sidebar is a drawer even with no __bar and no bottom nav (instead of the sideways row), and the __toggle may sit in the main area, in an app's own top bar. Wide screens are unchanged.",
+    "ayy-app-shell__detail": "A third column at the inline end (an <aside>), for what's picked in the main area: a task, a message. Surface background, hairline on its inline-start edge, scrolls on its own, --ayy-detail-w wide (22rem). Show and hide it with the hidden attribute: hidden, the shell is two columns again. Below 48rem it covers the screen, so start it with a Top bar and a back button.",
+    "ayy-app-shell__resize": "A drag handle on the sidebar's inline-end edge, a direct child of the shell with role=\"separator\" aria-orientation=\"vertical\" tabindex=\"0\" (added for you). Dragging, the arrow keys (Shift for big steps), Home and End set --ayy-sidebar-w on the shell; a double click resets it. Limits come from aria-valuemin / aria-valuemax in px (default 192 and 384), and the main area always keeps 320px. Hidden below 48rem and while the sidebar is collapsed.",
+    "ayy-app-shell__resize--detail": "Modifier: the handle for the detail pane's inline-start edge, setting --ayy-detail-w (limits default 288 and 640). Shown only while the detail pane is.",
+    "ayy-app-shell--resizing": "Set by connectAppShell while a handle is being dragged: columns follow the pointer without animating. Don't set it yourself.",
     "ayy-app-shell--sm": "Small size, for long navigation such as a docs tree: md-height links with no gap between them, regular weight, sm icons and the control radius. Big (no modifier) is the default for apps."
   },
   "variants": {
     "size": { "values": ["md", "sm"], "default": "md", "component": "AppShell" },
     "settings": { "values": [false, true], "default": false, "component": "AppShell" },
     "collapsed": { "values": [false, true], "default": false, "component": "AppShell" },
-    "hoverPreview": { "values": [false, true], "default": true, "component": "AppShell" }
+    "hoverPreview": { "values": [false, true], "default": true, "component": "AppShell" },
+    "drawer": { "values": [false, true], "default": false, "component": "AppShell" }
   },
   "states": {
     "default": { "looks": "A 15rem surface sidebar with a hairline at the inline end, and the main area on the page background; each scrolls on its own. Links are muted pills." },
@@ -65,7 +71,9 @@
           "settings": "boolean — settings mode (ayy-app-shell--settings), inside <DialogContent size=\"full\">: the sidebar holds AppShellTitle and the sections.",
           "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).",
           "hoverPreview": "boolean, default true — when collapsed, hovering or focusing the sidebar expands it as an overlay preview (ayy-app-shell--hover-preview). false keeps the icon rail until the toggle opens it.",
-          "onCollapseChange": "(collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button."
+          "onCollapseChange": "(collapsed: boolean) => void — called when the sidebar is collapsed or expanded via a toggle button.",
+          "drawer": "boolean — below 48rem the sidebar is a drawer even without an AppShellBar or a BottomNav; the AppShellToggle may sit in the main area (ayy-app-shell--drawer).",
+          "onResize": "(edge: \"sidebar\" | \"detail\", width: number | null) => void — a resize ended (drag or key); width in px, null when reset. Save it and start the next session with style={{ \"--ayy-sidebar-w\": `${width}px` }}."
         }
       },
       "AppShellBack": {
@@ -87,6 +95,11 @@
       "AppShellCollapse": {
         "renders": "<details class=\"ayy-app-shell__collapse\"> with a link-styled <summary> and a <ul>",
         "props": { "label": "The toggle row: an icon and a short label.", "open": "Start open. Set it when the group holds the current page." }
+      },
+      "AppShellDetail": { "renders": "<aside class=\"ayy-app-shell__detail\"> — pass the hidden attribute to hide it; the shell goes back to two columns" },
+      "AppShellResize": {
+        "renders": "<div class=\"ayy-app-shell__resize\" role=\"separator\" tabindex=\"0\"> — a direct child of AppShell",
+        "props": { "edge": "\"sidebar\" | \"detail\", default \"sidebar\" — which edge it drags.", "aria-valuemin / aria-valuemax": "Limits in px.", "aria-label": "Defaults to \"Resize sidebar\" / \"Resize detail pane\" (translate it)." }
       },
       "AppShellFooter": { "renders": "<div class=\"ayy-app-shell__footer\">" },
       "AppShellMain": { "renders": "<main class=\"ayy-app-shell__main\">", "props": { "as": "\"main\" | \"div\" — \"div\" in a settings dialog, so the page keeps one <main>. Default \"main\"." } },
@@ -110,6 +123,8 @@
     "Settings mode: name the dialog by the sidebar title (aria-labelledby on the <dialog>), give the sections' nav its own label (\"Settings\"), mark the open section with aria-current=\"page\", and make the section's Top bar title its <h1> (the sidebar title is an <h2>). Render the main as a <div> so the page keeps one <main>. On phones, opening a section moves focus to the main, and its back button returns it to the section's link.",
     "A collapsed sidebar with hover preview opens when keyboard focus moves into it (:focus-visible), so every link is reachable and readable from the keyboard; links without an icon are only in the tab order while it's open. Give rail links a title for a tooltip with the pointer.",
     "In a dialog, Esc closes settings and focus returns to what opened them. A settings shell on a page of its own leaves through its __back on Esc, except when focus is in a text field or an open menu, popover or dialog has it.",
+    "A resize handle is a separator you can focus: arrow keys move the edge by 16px (Shift 64), Home and End jump to the limits, and aria-valuenow / min / max are kept in px.",
+    "The detail pane is an <aside>: label it (aria-label) for what it shows, and move focus into it when you open it from the main area.",
     "The phone sidebar (closed drawer) is visibility: hidden, and the bottom nav is display: none from 48rem, so hidden links are out of the tab order and the accessibility tree."
   ],
   "do": [
@@ -120,25 +135,21 @@
     "Group destinations under headings once there are more than about six.",
     "Keep each link to one line: an icon and a short label. Put account and help in the footer.",
     "Start each page in the main with a Page header.",
+    "Add a __resize handle when people have long names to read, and save the width from onResize / ayy-resize.",
     "Open settings in a Dialog with size=\"full\", sections grouped, each starting with a Top bar."
   ],
   "dont": [
     "Don't use it for a marketing site (use Navbar) or to switch views of one object (use Tabs).",
     "Don't put a Navbar in it or nest a second app shell.",
     "Don't nest links deeper than one level.",
-    "Don't rely on the sideways row for a real app: it hides links. Use a bottom nav or a drawer.",
+    "Don't rely on the sideways row for a real app: it hides links. Use a bottom nav, a __bar, or the --drawer modifier.",
+    "Don't make the detail pane the only place to do something: on phones it covers the screen, so give it a back button.",
     "Don't show or hide the sidebar with your own media queries; the shell switches at 48rem.",
     "Don't scroll the page body as well, or cap the main width.",
     "Don't put settings in Tabs or a small Dialog."
   ],
   "examples": [
-    { "id": "basic", "title": "Sidebar with navigation" },
-    { "id": "tabs", "title": "Tab bar on phones, with More" },
-    { "id": "grouped", "title": "Groups, sub-sections and a collapse" },
-    { "id": "sizes", "title": "Big and Small sidebars" },
-    { "id": "drawer", "title": "Phone drawer" },
-    { "id": "settings", "title": "Settings in a near-full-screen dialog" },
-    { "id": "collapsible", "title": "Collapsible sidebar, previews on hover" }
+    { "id": "playground", "title": "Playground — one shell, every variation" }
   ],
   "element": {
     "tag": "ayy-app-shell",
@@ -148,7 +159,8 @@
       "hover-preview": "On by default: when collapsed, hovering or focusing the sidebar expands it as an overlay preview (sets ayy-app-shell--hover-preview). hover-preview=\"false\" keeps the icon rail until the toggle opens it."
     },
     "events": {
-      "ayy-collapse-change": "{ collapsed: boolean } — fired when the sidebar is collapsed or expanded via a toggle button or the collapsed property."
+      "ayy-collapse-change": "{ collapsed: boolean } — fired when the sidebar is collapsed or expanded via a toggle button or the collapsed property.",
+      "ayy-resize": "{ edge: \"sidebar\" | \"detail\", width: number | null } — fired when a resize handle's drag or key press ends; width in px, null when reset to the default."
     },
     "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On wide screens, wires sidebar collapsing and optional hover-preview. On a settings shell, Esc follows the __back."
   }

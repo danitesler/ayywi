@@ -12,7 +12,7 @@
     "ayy-settings__description": "A muted line under the heading.",
     "ayy-settings__list": "The rows, in a card with a line border; hairlines between rows.",
     "ayy-settings__row": "One setting: text at the start, the control at the end. Wraps the control under the text when there isn't room (a phone).",
-    "ayy-settings__row--stack": "The control under the text at full width: a textarea, a radio list.",
+    "ayy-settings__row--stack": "The control under the text at full width: a textarea, a radio list, a group of choice cards. The row doesn't wrap.",
     "ayy-settings__text": "The label and hint column.",
     "ayy-settings__label": "The setting's name: a <label for> pointing at the control, or a <span> when the control is labelled otherwise.",
     "ayy-settings__hint": "One muted line explaining the setting; give it an id and point the control's aria-describedby at it. With ayy-field__error it's an error.",
@@ -99,6 +99,7 @@
   ],
   "examples": [
     { "id": "preferences", "title": "Preferences with switches and selects" },
-    { "id": "account", "title": "Phone settings with link rows" }
+    { "id": "account", "title": "Phone settings with link rows" },
+    { "id": "theme", "title": "Choice cards in a stacked row" }
   ]
 }

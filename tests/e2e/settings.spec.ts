@@ -1,11 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import { example, open, rtl } from "./helpers";
 
-// The Settings pattern: the App shell in settings mode, in a near-full-screen dialog (the "settings" example).
-const SETTINGS = "settings";
+// The Settings pattern: the App shell in settings mode, in a near-full-screen dialog (the playground's settings demo).
+const SETTINGS = "playground";
 
 async function openSettings(page: Page) {
-  await example(page, SETTINGS).getByRole("button", { name: "Settings" }).click();
+  await example(page, SETTINGS).getByRole("button", { name: "Settings", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Settings" });
   await expect(dialog).toBeVisible();
   // It scales in as it opens: measure once it's settled.
@@ -108,7 +108,7 @@ for (const renderer of ["react", "html"] as const) {
       await dialog.getByRole("switch", { name: "Open at login" }).focus();
       await page.keyboard.press("Escape");
       await expect(dialog).toBeHidden();
-      await expect(example(page, SETTINGS).getByRole("button", { name: "Settings" })).toBeFocused();
+      await expect(example(page, SETTINGS).getByRole("button", { name: "Settings", exact: true })).toBeFocused();
     });
   });
 }

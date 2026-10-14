@@ -9,6 +9,40 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Added
+- **[Date range](#/date-range)**
+  New component — two-month calendar to select start and end date ranges with continuous wash band, popover trigger, and `<ayy-date-range>` element.
+- **[Time picker](#/time-picker)**
+  New component — scroll-snap column selector for hours, minutes, and AM/PM periods with popover trigger and `<ayy-time-picker>` element.
+- **[Color picker](#/color-picker)**
+  New component — visual panel with 2D saturation/brightness area, hue and alpha sliders, hex input, preset swatches, and `<ayy-color-picker>` element.
+- **[Timeline](#/timeline)**
+  New component — chronological activity stream and audit log with connecting vertical rail, status nodes, and alternating layout.
+- **[Code block](#/code-block)**
+  New component — formatted code container with header bar, copy button, line numbers, and token styling.
+- **[App shell](#/app-shell)**
+  Sidebar fixed at 15rem → draggable `__resize` handle (mouse, arrow keys, Home/End, double click to reset) that sets `--ayy-sidebar-w`; `onResize` / `ayy-resize` report the width to save.
+- **[App shell](#/app-shell)**
+  Only a sidebar and a main area → optional `__detail` pane as a third column (covers the screen on phones), with its own `__resize--detail` handle and `--ayy-detail-w`.
+- **[App shell](#/app-shell)**
+  Phone drawer only with a bar or bottom nav → `drawer` / `ayy-app-shell--drawer` makes the sidebar a drawer without them, and the menu button can sit in the main area.
+- **[Checkbox](#/checkbox)**
+  Always primary-coloured → `--ayy-check-color` (box border and fill) and `--ayy-check-fg` (tick) colour it, e.g. by task priority.
+
+### Fixed
+- **[App shell](#/app-shell)**
+  Only the first menu button (top bar or bottom nav) opened the phone drawer → every `__toggle` opens and closes it, stays in sync, and opening focuses the first link instead of the sidebar toggle.
+- **[Settings](#/settings)**
+  A choice group in a stacked row made the row several times too tall (630px instead of 141px) → the row is now as tall as its content.
+
+### Changed
+- **[App shell](#/app-shell)**
+  Eight separate previews (basic, tabs, grouped, sizes, drawer, settings, collapsible, workspace) → one playground with switches for size, collapsed sidebar, hover preview, top bar, bottom nav, drawer, grouped nav, detail pane and resizing, plus the settings dialog.
+- **[Dropdown menu](#/menu)**
+  Shortcut hints were plain muted text with hardcoded Mac symbols (`shortcut="⌘D"`) → keycap hints via `Shortcut` (`shortcut="Mod+D"`), showing ⌘D on a Mac and Ctrl+D elsewhere.
+- **[Tooltip](#/tooltip)**
+  Shortcut hints were plain text in parentheses (`Save changes (⌘S)`) → keycap hints via `Shortcut` (`keys="Mod+S"`), showing ⌘S on a Mac and Ctrl+S elsewhere.
+
 ## 0.0.3 — 2026-10-13
 
 ### Added

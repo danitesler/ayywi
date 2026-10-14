@@ -37,7 +37,7 @@ export default function Example() {
           icon={<Icon icon={CropIcon} />}
           description="Drag to select part of the screen"
           onSelect={() => toast("Capture area")}
-          shortcut="⌘4"
+          shortcut="Mod+4"
         >
           Capture area
         </DropdownMenuItem>
@@ -93,7 +93,7 @@ export default function Example() {
         <DropdownMenuItem
           icon={<Icon icon={Camera01Icon} />}
           onSelect={() => toast("Screen captured")}
-          shortcut="⌘3"
+          shortcut="Mod+3"
         >
           Full screen
         </DropdownMenuItem>

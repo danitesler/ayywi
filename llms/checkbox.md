@@ -6,12 +6,12 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
 
 **States**
-- `default` — A box --ayy-size-check square with a line-hover border on a wash fill.
+- `default` — A box --ayy-size-check square with a line-hover border (or --ayy-check-color) on a wash fill.
 - `hover` (`:hover`) — Border turns text-soft.
 - `pressed` — doesn't apply: No pressed look; it toggles on release.
 - `focus` (`:focus-visible`) — 2px ring, 2px offset.
 - `disabled` (`:disabled`) — --ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border (and fill when checked).
-- `selected` (`:checked`) — Primary fill and border with a primary-fg tick that springs in.
+- `selected` (`:checked`) — Primary fill and border (or --ayy-check-color) with a primary-fg tick (or --ayy-check-fg) that springs in.
 - `error` (`aria-invalid="true"`) — Destructive border. Forced colours: dashed.
 - `loading` — doesn't apply: Toggles are instant; if saving fails, revert it and say so in a toast.
 - `indeterminate` (`:indeterminate (el.indeterminate = true; React: indeterminate)`) — Primary fill with a bar instead of the tick: some of a group selected.
@@ -26,6 +26,7 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 - `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
 
 **Accessibility**
+- A colour alone doesn't say what it means: keep the priority or status in the label too.
 - Wrap it in a <label class="ayy-label"> with the text, or pair with <label for>.
 - Indeterminate is announced as "mixed" automatically.
 - Group related checkboxes in a <fieldset> with a <legend>.
@@ -77,6 +78,43 @@ export default function Example() {
       <label className="ayy-label">
         <Checkbox disabled defaultChecked />
         Security alerts (always on)
+      </label>
+    </div>
+  );
+}
+```
+
+## Checkbox — Coloured by priority
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" style="--ayy-check-color: var(--ayy-color-destructive)" checked /> High priority: send the invoice</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" style="--ayy-check-color: var(--ayy-color-warning)" /> Medium priority: book the venue</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" style="--ayy-check-color: var(--ayy-color-info)" checked /> Low priority: tidy the shared drive</label>
+</div>
+```
+
+React:
+
+```tsx
+import { Checkbox } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <label className="ayy-label">
+        <Checkbox defaultChecked style={{ "--ayy-check-color": "var(--ayy-color-destructive)" } as React.CSSProperties} />
+        High priority: send the invoice
+      </label>
+      <label className="ayy-label">
+        <Checkbox style={{ "--ayy-check-color": "var(--ayy-color-warning)" } as React.CSSProperties} />
+        Medium priority: book the venue
+      </label>
+      <label className="ayy-label">
+        <Checkbox defaultChecked style={{ "--ayy-check-color": "var(--ayy-color-info)" } as React.CSSProperties} />
+        Low priority: tidy the shared drive
       </label>
     </div>
   );

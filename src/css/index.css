@@ -21,6 +21,9 @@
 @import "../components/select/select.css" layer(ayywi.components);
 @import "../components/combobox/combobox.css" layer(ayywi.components);
 @import "../components/calendar/calendar.css" layer(ayywi.components);
+@import "../components/date-range/date-range.css" layer(ayywi.components);
+@import "../components/time-picker/time-picker.css" layer(ayywi.components);
+@import "../components/color-picker/color-picker.css" layer(ayywi.components);
 @import "../components/tag-input/tag-input.css" layer(ayywi.components);
 @import "../components/checkbox/checkbox.css" layer(ayywi.components);
 @import "../components/radio/radio.css" layer(ayywi.components);
@@ -67,7 +70,9 @@
 @import "../components/stat/stat.css" layer(ayywi.components);
 @import "../components/swipe/swipe.css" layer(ayywi.components);
 @import "../components/list/list.css" layer(ayywi.components);
+@import "../components/timeline/timeline.css" layer(ayywi.components);
 @import "../components/frame/frame.css" layer(ayywi.components);
 @import "../components/chat/chat.css" layer(ayywi.components);
+@import "../components/code-block/code-block.css" layer(ayywi.components);
 @import "../components/table/table.css" layer(ayywi.components);
 @import "../components/chart/chart.css" layer(ayywi.components);

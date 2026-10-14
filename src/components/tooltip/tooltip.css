@@ -93,6 +93,17 @@
   transition-delay: 0s;
 }
 
+/* A shortcut in the hint: label and keycaps on one line with a gap. */
+.ayy-tooltip__content:has(.ayy-shortcut) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+}
+
+.ayy-tooltip__content .ayy-shortcut {
+  font-size: var(--ayy-text-xs);
+}
+
 /* ---- Enhanced mode: top-layer popover placed by JS ---- */
 
 .ayy-tooltip__content[data-floating] {

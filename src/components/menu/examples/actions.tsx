@@ -16,11 +16,11 @@ export default function Example() {
       <DropdownMenuTrigger variant="outline">Project actions</DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Marketing site</DropdownMenuLabel>
-        <DropdownMenuItem onSelect={() => toast("Rename")} shortcut="⌘R">
+        <DropdownMenuItem onSelect={() => toast("Rename")} shortcut="Mod+R">
           <Icon icon={PencilEdit02Icon} />
           Rename
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => toast("Duplicated")} shortcut="⌘D">
+        <DropdownMenuItem onSelect={() => toast("Duplicated")} shortcut="Mod+D">
           <Icon icon={Copy01Icon} />
           Duplicate
         </DropdownMenuItem>

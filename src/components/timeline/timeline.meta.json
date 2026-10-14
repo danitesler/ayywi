@@ -1,0 +1,85 @@
+{
+  "name": "Timeline",
+  "slug": "timeline",
+  "status": "beta",
+  "category": "Data display",
+  "description": "Chronological list of events, milestones, or history with vertical connecting tracks, status markers, timestamps, and descriptions.",
+  "aka": ["timeline", "event-log", "activity-feed", "history-feed", "audit-trail"],
+  "classes": {
+    "ayy-timeline": "Root <ol> or <ul> list container for ordered events or history.",
+    "ayy-timeline--alternate": "Alternates timeline items between start and end sides across a centered vertical track.",
+    "ayy-timeline__item": "Single event entry row containing the track and content.",
+    "ayy-timeline__track": "Vertical connecting rail line between items with the marker positioned along it.",
+    "ayy-timeline__marker": "Circle dot, icon or avatar placed on the track representing the event anchor point.",
+    "ayy-timeline__marker--pulse": "Pulsing active status ring indicating a current, in-progress or live event.",
+    "ayy-timeline__content": "Container holding the event details (time, title, body).",
+    "ayy-timeline__time": "Muted timestamp or date with tabular numbers.",
+    "ayy-timeline__title": "Heading or summary of the event.",
+    "ayy-timeline__body": "Supporting text, description, or status badge for the event."
+  },
+  "variants": {
+    "alternate": { "values": [false, true], "default": false, "component": "Timeline" },
+    "pulse": { "values": [false, true], "default": false, "component": "TimelineMarker" }
+  },
+  "states": {
+    "default": { "looks": "Vertical connecting line in line color with markers at event nodes, muted xs tabular timestamps, semibold sm titles, and soft sm body text." },
+    "hover": { "none": "Timeline items are non-interactive by default; links or buttons inside content handle their own hover states." },
+    "pressed": { "none": "No pressed state on timeline items." },
+    "focus": { "none": "Timeline items do not receive focus; place interactive elements like links or buttons inside content." },
+    "disabled": { "none": "Timeline events are informational history and cannot be disabled." },
+    "selected": { "none": "Use pulse on the current or live event marker instead of a selection state." },
+    "error": { "none": "No error state on the timeline itself; use an Alert or status Badge inside the event body." },
+    "loading": { "none": "No loading state on the timeline; use a Skeleton or Spinner while events are loading." },
+    "pulse": { "when": "ayy-timeline__marker--pulse", "looks": "A status ring expands outward from the marker and fades, looping continuously to indicate a live or in-progress event." }
+  },
+  "sizes": {
+    "density": "Markers and spacing are fixed; controls or badges inside event content follow data-density.",
+    "width": "Fills its container. In alternate mode, centers the track with 1fr columns on either side above 36rem, collapsing to a single start-aligned column below 36rem."
+  },
+  "js": "timelineClass({ alternate?, className? }) → string; timelineMarkerClass({ pulse?, className? }) → string; timelineItemClass, timelineTrackClass, timelineContentClass, timelineTimeClass, timelineTitleClass, timelineBodyClass constants.",
+  "react": {
+    "import": "import { Timeline, TimelineItem, TimelineMarker, TimelineContent, TimelineTime, TimelineTitle, TimelineBody } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Timeline": {
+        "renders": "<ol class=\"ayy-timeline\">",
+        "props": { "alternate": "boolean — alternate items between start and end sides across a centered vertical track." }
+      },
+      "TimelineItem": {
+        "renders": "<li class=\"ayy-timeline__item\">",
+        "props": { "marker": "ReactNode — the marker dot, icon or avatar placed on the track." }
+      },
+      "TimelineMarker": {
+        "renders": "<span class=\"ayy-timeline__marker\">",
+        "props": { "pulse": "boolean — pulsing active status ring for in-progress or live events." }
+      },
+      "TimelineContent": { "renders": "<div class=\"ayy-timeline__content\">" },
+      "TimelineTime": { "renders": "<time class=\"ayy-timeline__time\">" },
+      "TimelineTitle": { "renders": "<div class=\"ayy-timeline__title\">" },
+      "TimelineBody": { "renders": "<div class=\"ayy-timeline__body\">" }
+    }
+  },
+  "a11y": [
+    "Rendered as an ordered list (<ol>) by default so screen readers announce the item count and sequence.",
+    "Timestamps use the semantic <time> element with tabular numbers for consistent alignment and screen reader comprehension.",
+    "Decorative markers and track lines are marked aria-hidden=\"true\" to prevent screen reader noise; important status information should be in the title or body.",
+    "Active pulse rings are visual enhancements; screen readers receive the active status via text in the title, body, or an accessible badge.",
+    "Supports Windows High Contrast mode via @media (forced-colors: active) with system CanvasText, Canvas, and Highlight colors."
+  ],
+  "do": [
+    "Use a timeline to show a chronological log or sequence of events: deploy history, shipment tracking, audit trails, activity feeds.",
+    "Use TimelineMarker pulse on the latest or currently active event in a running process.",
+    "Use Timeline alternate for milestones, company history, or changelogs on wide marketing or overview pages.",
+    "Include TimelineTime with a semantic timestamp so users can anchor events in time.",
+    "Keep markers consistent within a timeline: all dots, or all icons, or all avatars."
+  ],
+  "dont": [
+    "Don't use a timeline for a multi-step user task with future steps — use Steps.",
+    "Don't use it for navigation or hierarchical page links — use Breadcrumb.",
+    "Don't wrap entire items in clickable links — place interactive links or buttons inside TimelineTitle or TimelineBody.",
+    "Don't hardcode colors on markers or lines; use semantic tokens or status badges."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Deployment history" },
+    { "id": "alternate", "title": "Alternating product milestones" }
+  ]
+}

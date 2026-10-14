@@ -1,0 +1,14 @@
+<!-- <ayy-popover> places the time columns under the trigger; <ayy-time-picker> draws the hours and minutes and updates
+     the trigger's .ayy-time-picker-trigger__value when an option is picked. -->
+<div class="ayy-field" style="inline-size: min(100%, 16rem)">
+  <label class="ayy-label" for="meeting-time-html">Meeting time</label>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-time-picker-trigger" id="meeting-time-html" popovertarget="time-picker-popover-html" aria-haspopup="dialog" aria-describedby="meeting-time-value-html meeting-time-hint-html"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span id="meeting-time-value-html" class="ayy-time-picker-trigger__value" data-placeholder="Pick a time">09:30</span></button>
+    <div class="ayy-popover" id="time-picker-popover-html" popover role="dialog" aria-label="Pick a time">
+      <ayy-time-picker value="09:30" format="24h" step="15" name="meeting-time">
+        <div class="ayy-time-picker"></div>
+      </ayy-time-picker>
+    </div>
+  </ayy-popover>
+  <p class="ayy-field__hint" id="meeting-time-hint-html">Select a start time for the standup.</p>
+</div>

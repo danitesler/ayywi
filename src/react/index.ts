@@ -130,8 +130,12 @@ export {
   AppShellBack,
   AppShellTitle,
   AppShellHead,
+  AppShellDetail,
+  AppShellResize,
   type AppShellProps,
+  type AppShellEdge,
   type AppShellSize,
+  type AppShellResizeProps,
   type AppShellMainProps,
   type AppShellBackProps,
   type AppShellLinkProps,
@@ -235,3 +239,45 @@ export { Fab, type FabProps } from "../components/fab/fab.react";
 export { TopBar, type TopBarProps } from "../components/top-bar/top-bar.react";
 export { SearchBar, type SearchBarProps } from "../components/search-bar/search-bar.react";
 export { Swipe, SwipeAction, type SwipeProps, type SwipeActionProps } from "../components/swipe/swipe.react";
+export {
+  DateRange,
+  DateRangePicker,
+  type DateRangeProps,
+  type DateRangePickerProps,
+} from "../components/date-range/date-range.react";
+export {
+  TimePicker,
+  TimePickerTrigger,
+  type TimePickerProps,
+  type TimePickerTriggerProps,
+} from "../components/time-picker/time-picker.react";
+export {
+  ColorPicker,
+  type ColorPickerProps,
+} from "../components/color-picker/color-picker.react";
+export {
+  Timeline,
+  TimelineItem,
+  TimelineMarker,
+  TimelineContent,
+  TimelineTime,
+  TimelineTitle,
+  TimelineBody,
+  type TimelineProps,
+  type TimelineItemProps,
+  type TimelineMarkerProps,
+} from "../components/timeline/timeline.react";
+export {
+  CodeBlock,
+  CodeBlockHeader,
+  CodeBlockFilename,
+  CodeBlockCopy,
+  CodeBlockPre,
+  CodeBlockCode,
+  type CodeBlockProps,
+  type CodeBlockHeaderProps,
+  type CodeBlockFilenameProps,
+  type CodeBlockCopyProps,
+  type CodeBlockPreProps,
+  type CodeBlockCodeProps,
+} from "../components/code-block/code-block.react";

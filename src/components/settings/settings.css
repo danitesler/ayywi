@@ -109,6 +109,9 @@
 /* The control under the text, full width: a textarea, a radio list, a long select. */
 .ayy-settings__row--stack {
   flex-direction: column;
+  /* A wrapping column sizes its items before it knows their width, so a grid inside (choice cards) is measured as one
+     tall column and the row ends up far too high. */
+  flex-wrap: nowrap;
   align-items: stretch;
 }
 

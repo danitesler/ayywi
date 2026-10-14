@@ -12,7 +12,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ayy-space-1-5);
+  gap: var(--ayy-space-2);
   block-size: var(--ayy-size-control-md);
   margin: 0;
   padding-block: 0;
@@ -24,7 +24,7 @@
   font-family: inherit;
   font-size: var(--ayy-control-text-md);
   font-weight: var(--_weight);
-  line-height: 1;
+  line-height: var(--ayy-leading-snug);
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
@@ -63,8 +63,8 @@
 
 .ayy-button > svg {
   flex: none;
-  inline-size: 1.25em;
-  block-size: 1.25em;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
 }
 
 /* Loading: aria-busy="true" with an .ayy-spinner first inside. It ignores the pointer until the work is done; keep the label
@@ -186,6 +186,7 @@
 /* ---- Sizes ---- */
 
 .ayy-button--sm {
+  gap: var(--ayy-space-1-5);
   block-size: var(--ayy-size-control-sm);
   padding-inline: var(--ayy-control-pad-sm);
   font-size: var(--ayy-control-text-sm);
@@ -197,8 +198,15 @@
   font-size: var(--ayy-control-text-lg);
 }
 
+.ayy-button--lg > svg,
+.ayy-button--icon-lg > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
 .ayy-button--icon,
-.ayy-button--icon-sm {
+.ayy-button--icon-sm,
+.ayy-button--icon-lg {
   aspect-ratio: 1;
   padding-inline: 0;
 }
@@ -207,6 +215,9 @@
 }
 .ayy-button--icon-sm {
   block-size: var(--ayy-size-control-sm);
+}
+.ayy-button--icon-lg {
+  block-size: var(--ayy-size-control-lg);
 }
 
 /* Block: fills its container's width (a card footer, a phone form). */

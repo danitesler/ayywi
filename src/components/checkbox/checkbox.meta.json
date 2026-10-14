@@ -10,12 +10,12 @@
   },
   "variants": {},
   "states": {
-    "default": { "looks": "A box --ayy-size-check square with a line-hover border on a wash fill." },
+    "default": { "looks": "A box --ayy-size-check square with a line-hover border (or --ayy-check-color) on a wash fill." },
     "hover": { "when": ":hover", "looks": "Border turns text-soft." },
     "pressed": { "none": "No pressed look; it toggles on release." },
     "focus": { "when": ":focus-visible", "looks": "2px ring, 2px offset." },
     "disabled": { "when": ":disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText border (and fill when checked)." },
-    "selected": { "when": ":checked", "looks": "Primary fill and border with a primary-fg tick that springs in." },
+    "selected": { "when": ":checked", "looks": "Primary fill and border (or --ayy-check-color) with a primary-fg tick (or --ayy-check-fg) that springs in." },
     "error": { "when": "aria-invalid=\"true\"", "looks": "Destructive border. Forced colours: dashed." },
     "loading": { "none": "Toggles are instant; if saving fails, revert it and say so in a toast." },
     "indeterminate": { "when": ":indeterminate (el.indeterminate = true; React: indeterminate)", "looks": "Primary fill with a bar instead of the tick: some of a group selected." }
@@ -40,6 +40,7 @@
     }
   },
   "a11y": [
+    "A colour alone doesn't say what it means: keep the priority or status in the label too.",
     "Wrap it in a <label class=\"ayy-label\"> with the text, or pair with <label for>.",
     "Indeterminate is announced as \"mixed\" automatically.",
     "Group related checkboxes in a <fieldset> with a <legend>."
@@ -54,5 +55,5 @@
     "Don't use checkboxes to pick exactly one option — use Radio.",
     "Don't use a checkbox to trigger an immediate action."
   ],
-  "examples": [{ "id": "basic", "title": "States" }]
+  "examples": [{ "id": "basic", "title": "States" }, { "id": "colored", "title": "Coloured by priority" }]
 }

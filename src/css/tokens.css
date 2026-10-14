@@ -122,7 +122,7 @@
   --ayy-control-text-lg: 0.875rem;
   --ayy-control-pad-sm: 0.75rem;
   --ayy-control-pad-md: 1rem;
-  --ayy-control-pad-lg: 1.5rem;
+  --ayy-control-pad-lg: 1.25rem;
   --ayy-radius-sm: 4px;
   --ayy-radius-md: 6px;
   --ayy-radius-lg: 8px;
@@ -356,7 +356,7 @@
   --ayy-control-text-lg: 0.875rem;
   --ayy-control-pad-sm: 0.75rem;
   --ayy-control-pad-md: 1rem;
-  --ayy-control-pad-lg: 1.5rem;
+  --ayy-control-pad-lg: 1.25rem;
 }
 
 [data-density="comfortable"] {

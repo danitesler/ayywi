@@ -15,7 +15,8 @@ import {
  * - On wide screens: collapses to an icon rail when `collapsed` is set, and a toggle collapses/expands the sidebar.
  * - Hovering or focusing the collapsed sidebar expands it as an overlay preview; on by default, hover-preview="false" turns it off.
  * - `size="sm"` is the Small size (sets ayy-app-shell--sm); Big ("md") is the default.
- * Fires "ayy-collapse-change" ({ collapsed }) when toggled.
+ * - A `.ayy-app-shell__resize` handle drags the sidebar's width, an `.ayy-app-shell__resize--detail` one the detail pane's.
+ * Fires "ayy-collapse-change" ({ collapsed }) when toggled and "ayy-resize" ({ edge, width }) when a resize ends.
  */
 export class AyyAppShellElement extends ElementBase {
   static observedAttributes = ["collapsed", "hover-preview", "size"];
@@ -62,6 +63,7 @@ export class AyyAppShellElement extends ElementBase {
           this.collapsed = collapsed;
           emit(this, "ayy-collapse-change", { collapsed });
         },
+        onResize: (edge, width) => emit(this, "ayy-resize", { edge, width }),
       });
     }
   }

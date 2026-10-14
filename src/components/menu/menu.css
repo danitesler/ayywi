@@ -145,12 +145,11 @@
 }
 
 .ayy-menu__shortcut {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
   margin-inline-start: auto;
   padding-inline-start: var(--ayy-space-4);
-  color: var(--ayy-color-muted);
-  font-family: inherit;
-  font-size: var(--ayy-text-2xs);
-  letter-spacing: var(--ayy-tracking-wide);
 }
 
 .ayy-menu__item--sub {

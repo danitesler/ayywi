@@ -12,6 +12,9 @@ export default function Example() {
         <Icon icon={UserAdd01Icon} />
         Invite member
       </Button>
+      <Button variant="outline" size="icon-lg" aria-label="Add">
+        <Icon icon={PlusSignIcon} />
+      </Button>
       <Button variant="outline" size="icon" aria-label="Add">
         <Icon icon={PlusSignIcon} />
       </Button>

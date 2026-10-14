@@ -171,7 +171,7 @@ export const tokens = {
   "control.text-lg": { cssVar: "--ayy-control-text-lg", type: "dimension", value: "0.875rem", density: {"comfortable":"1rem","touch":"1.125rem"} },
   "control.pad-sm": { cssVar: "--ayy-control-pad-sm", type: "dimension", value: "0.75rem", density: {"comfortable":"0.875rem","touch":"1rem"} },
   "control.pad-md": { cssVar: "--ayy-control-pad-md", type: "dimension", value: "1rem", density: {"comfortable":"1.125rem","touch":"1.25rem"} },
-  "control.pad-lg": { cssVar: "--ayy-control-pad-lg", type: "dimension", value: "1.5rem", density: {"comfortable":"1.5rem","touch":"1.75rem"} },
+  "control.pad-lg": { cssVar: "--ayy-control-pad-lg", type: "dimension", value: "1.25rem", density: {"comfortable":"1.5rem","touch":"1.75rem"} },
   "radius.sm": { cssVar: "--ayy-radius-sm", type: "dimension", value: "4px" },
   "radius.md": { cssVar: "--ayy-radius-md", type: "dimension", value: "6px" },
   "radius.lg": { cssVar: "--ayy-radius-lg", type: "dimension", value: "8px" },

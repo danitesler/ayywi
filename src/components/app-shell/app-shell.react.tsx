@@ -11,6 +11,8 @@ import {
   appShellCollapseClass,
   appShellClass,
   appShellCollapsedClass,
+  appShellDetailClass,
+  appShellDrawerClass,
   appShellFooterClass,
   appShellGroupClass,
   appShellGroupLabelClass,
@@ -21,6 +23,8 @@ import {
   appShellListClass,
   appShellMainClass,
   appShellNavClass,
+  appShellResizeClass,
+  appShellResizeDetailClass,
   appShellSettingsClass,
   appShellSidebarClass,
   appShellSmClass,
@@ -28,10 +32,11 @@ import {
   appShellTitleClass,
   appShellToggleClass,
   connectAppShell,
+  type AppShellEdge,
   type AppShellSize,
 } from "./app-shell";
 
-export type { AppShellSize };
+export type { AppShellEdge, AppShellSize };
 
 export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -55,15 +60,25 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
    * Called when the sidebar is collapsed or expanded via a toggle button.
    */
   onCollapseChange?: (collapsed: boolean) => void;
+  /**
+   * Below 48rem the sidebar is a drawer even without an AppShellBar or a BottomNav; the AppShellToggle may sit in the main area
+   * (ayy-app-shell--drawer).
+   */
+  drawer?: boolean;
+  /**
+   * Called when an AppShellResize handle finishes a drag or key press: the new width in px, or null for the default again.
+   * Save it and start the next session with style={{ "--ayy-sidebar-w": `${width}px` }} (or --ayy-detail-w).
+   */
+  onResize?: (edge: AppShellEdge, width: number | null) => void;
 }
 
 /** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. Wide screens support collapsing to an icon rail and hover preview. */
 export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
-  { size, settings, collapsed, hoverPreview = true, onCollapseChange, className, ...props },
+  { size, settings, collapsed, hoverPreview = true, drawer, onCollapseChange, onResize, className, ...props },
   ref,
 ) {
   const own = useRef<HTMLDivElement>(null);
-  useEffect(() => (own.current ? connectAppShell(own.current, { onCollapseChange }) : undefined), [onCollapseChange]);
+  useEffect(() => (own.current ? connectAppShell(own.current, { onCollapseChange, onResize }) : undefined), [onCollapseChange, onResize]);
   return (
     <div
       ref={mergeRefs(own, ref)}
@@ -71,6 +86,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
         appShellClass,
         size === "sm" && appShellSmClass,
         settings && appShellSettingsClass,
+        drawer && appShellDrawerClass,
         collapsed && appShellCollapsedClass,
         hoverPreview && appShellHoverPreviewClass,
         className,
@@ -251,4 +267,29 @@ export interface AppShellMainProps extends HTMLAttributes<HTMLElement> {
 
 export const AppShellMain = forwardRef<HTMLElement, AppShellMainProps>(function AppShellMain({ as: Tag = "main", className, ...props }, ref) {
   return <Tag ref={ref as never} className={cx(appShellMainClass, className)} {...props} />;
+});
+
+/** The third column at the inline end, for what's picked in the main area. Show and hide it with `hidden`; on phones it covers the screen. */
+export const AppShellDetail = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function AppShellDetail({ className, ...props }, ref) {
+  return <aside ref={ref} className={cx(appShellDetailClass, className)} {...props} />;
+});
+
+export interface AppShellResizeProps extends HTMLAttributes<HTMLDivElement> {
+  /** Which edge it drags: the sidebar's (default) or the detail pane's. */
+  edge?: AppShellEdge;
+}
+
+/** A drag handle on the sidebar's or the detail pane's edge (a keyboard-operable separator). A direct child of AppShell. */
+export const AppShellResize = forwardRef<HTMLDivElement, AppShellResizeProps>(function AppShellResize({ edge = "sidebar", className, ...props }, ref) {
+  return (
+    <div
+      ref={ref}
+      role="separator"
+      aria-orientation="vertical"
+      tabIndex={0}
+      aria-label={edge === "sidebar" ? "Resize sidebar" : "Resize detail pane"}
+      className={cx(appShellResizeClass, edge === "detail" && appShellResizeDetailClass, className)}
+      {...props}
+    />
+  );
 });

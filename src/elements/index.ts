@@ -4,7 +4,10 @@ import { AyyAppShellElement } from "../components/app-shell/app-shell.element";
 import { AyyCalendarElement } from "../components/calendar/calendar.element";
 import { trackSpotlight } from "../components/card/card";
 import { AyyCarouselElement } from "../components/carousel/carousel.element";
+import { copyCodeBlock } from "../components/code-block/code-block";
+import { AyyColorPickerElement } from "../components/color-picker/color-picker.element";
 import { AyyComboboxElement } from "../components/combobox/combobox.element";
+import { AyyDateRangeElement } from "../components/date-range/date-range.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyMenuElement } from "../components/menu/menu.element";
 import { AyyNavbarElement } from "../components/navbar/navbar.element";
@@ -12,6 +15,7 @@ import { AyyPopoverElement } from "../components/popover/popover.element";
 import { AyyShortcutRecorderElement } from "../components/shortcut/shortcut.element";
 import { AyyTableElement } from "../components/table/table.element";
 import { AyyTabsElement } from "../components/tabs/tabs.element";
+import { AyyTimePickerElement } from "../components/time-picker/time-picker.element";
 import { AyyToolbarElement } from "../components/toolbar/toolbar.element";
 import { AyyCommandElement } from "../components/command/command.element";
 import { AyyTagInputElement } from "../components/tag-input/tag-input.element";
@@ -27,7 +31,7 @@ import { syncShortcuts } from "../components/shortcut/shortcut";
 import { syncSwatch } from "../components/swatch/swatch";
 import { define } from "../lib/element";
 
-export { AyyAppShellElement, AyyCalendarElement, AyyCarouselElement, AyyComboboxElement, AyyCommandElement, AyyDialogElement, AyyMenuElement, AyyNavbarElement, AyyPopoverElement, AyyShortcutRecorderElement, AyySwipeElement, AyyTableElement, AyyTabsElement, AyyTagInputElement, AyyTocElement, AyyToolbarElement, AyyTooltipElement };
+export { AyyAppShellElement, AyyCalendarElement, AyyCarouselElement, AyyColorPickerElement, AyyComboboxElement, AyyCommandElement, AyyDateRangeElement, AyyDialogElement, AyyMenuElement, AyyNavbarElement, AyyPopoverElement, AyyShortcutRecorderElement, AyySwipeElement, AyyTableElement, AyyTabsElement, AyyTagInputElement, AyyTimePickerElement, AyyTocElement, AyyToolbarElement, AyyTooltipElement };
 
 let spotlightListening = false;
 
@@ -58,6 +62,8 @@ function onClick(event: MouseEvent): void {
   if (button) stepNumberField(button);
   const clear = (event.target as Element | null)?.closest?.(".ayy-search-bar__clear");
   if (clear) clearSearchBar(clear);
+  const copy = (event.target as Element | null)?.closest?.(".ayy-code-block__copy");
+  if (copy) void copyCodeBlock(copy);
 }
 
 // Selects open ayywi's options list with a mouse or trackpad (React Select does it itself and calls preventDefault).
@@ -79,6 +85,9 @@ export function defineElements(): void {
   define("ayy-toc", AyyTocElement);
   define("ayy-carousel", AyyCarouselElement);
   define("ayy-calendar", AyyCalendarElement);
+  define("ayy-date-range", AyyDateRangeElement);
+  define("ayy-time-picker", AyyTimePickerElement);
+  define("ayy-color-picker", AyyColorPickerElement);
   define("ayy-toolbar", AyyToolbarElement);
   define("ayy-shortcut-recorder", AyyShortcutRecorderElement);
   define("ayy-command", AyyCommandElement);

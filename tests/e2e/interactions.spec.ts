@@ -1,11 +1,29 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { example, open, rtl, settle, stage } from "./helpers";
+
+/** The app shell playground's toolbar switch. Inert in the HTML renderer: use pgSetup() there instead. */
+async function pgSwitch(page: Page, name: string, on: boolean) {
+  const sw = example(page, "playground").getByRole("switch", { name });
+  if ((await sw.isChecked()) !== on) await sw.click();
+}
+
+/** The playground shell both renderers show: grouped nav, phone bar and bottom nav, detail pane and resize handles. */
+const pgShell = (page: Page) => example(page, "playground").locator(".ayy-app-shell").first();
 
 for (const renderer of ["react", "html"] as const) {
   test.describe(renderer, () => {
     test("app shell collapse toggles with the keyboard, the sub-list indents, and phones drop nested items", async ({ page }) => {
       await open(page, "app-shell", { renderer });
-      const shell = stage(page, 2);
+      // The row layout needs no phone chrome: drop the bar and the bottom nav (switches in React, nodes in HTML).
+      if (renderer === "react") {
+        await pgSwitch(page, "Top bar", false);
+        await pgSwitch(page, "Bottom nav", false);
+      } else {
+        await pgShell(page).locator(":scope > .ayy-app-shell__bar").evaluate((el) => el.remove());
+        await pgShell(page).locator(":scope > .ayy-bottom-nav").evaluate((el) => el.remove());
+      }
+      const demo = example(page, "playground");
+      const shell = pgShell(page);
       const typography = shell.locator("summary", { hasText: "Typography" });
       const scale = shell.getByRole("link", { name: "Scale" });
       const details = typography.locator("xpath=..");
@@ -26,9 +44,9 @@ for (const renderer of ["react", "html"] as const) {
         return b.x + b.width;
       };
       expect(await x(scale)).toBeGreaterThan(await x(typography));
-      await rtl(stage(page, 2));
+      await rtl(demo);
       expect(await end(scale)).toBeLessThan(await end(typography));
-      await stage(page, 2).evaluate((el) => el.removeAttribute("dir"));
+      await demo.evaluate((el) => el.removeAttribute("dir"));
 
       // A closed group that holds the current page is drawn bolder than a plain one.
       const colors = shell.locator("summary", { hasText: "Colors" });
@@ -48,7 +66,10 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell drawer: the bar's toggle opens the sidebar on phones, Esc and links close it", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "app-shell", { renderer });
-      const shell = example(page, "drawer").locator(".ayy-app-shell");
+      // The detail pane would cover the phone screen: hide it first.
+      if (renderer === "react") await pgSwitch(page, "Detail pane", false);
+      else await pgShell(page).locator(".ayy-app-shell__detail").evaluate((el) => ((el as HTMLElement).hidden = true));
+      const shell = pgShell(page);
       const toggle = shell.getByRole("button", { name: "Menu" });
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const main = shell.locator(".ayy-app-shell__main");
@@ -62,7 +83,7 @@ for (const renderer of ["react", "html"] as const) {
       await toggle.click();
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
       await expect(sidebar).toBeVisible();
-      await expect(sidebar.getByText("Billing")).toBeVisible();
+      await expect(sidebar.getByText("Foundations")).toBeVisible();
       await expect(sidebar.locator("a").first()).toBeFocused();
       await expect(main).toHaveJSProperty("inert", true);
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.x - (await shell.boundingBox())!.x)).toBe(0);
@@ -74,11 +95,11 @@ for (const renderer of ["react", "html"] as const) {
 
       // A link in the drawer closes it.
       await toggle.click();
-      await sidebar.getByRole("link", { name: "Projects" }).click();
+      await sidebar.getByRole("link", { name: "Spacing" }).click();
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
       // RTL: it comes from the right edge.
-      await rtl(example(page, "drawer"));
+      await rtl(example(page, "playground"));
       await toggle.click();
       await expect
         .poll(async () => {
@@ -88,7 +109,7 @@ for (const renderer of ["react", "html"] as const) {
         })
         .toBe(0);
       await page.keyboard.press("Escape");
-      await example(page, "drawer").evaluate((el) => el.removeAttribute("dir"));
+      await example(page, "playground").evaluate((el) => el.removeAttribute("dir"));
 
       // Wider than a phone: no bar, the sidebar in place.
       await page.setViewportSize({ width: 1280, height: 720 });
@@ -99,7 +120,10 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell with a bottom nav: tabs on phones, More opens the drawer, the sidebar from 48rem", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "app-shell", { renderer });
-      const shell = stage(page, 1).locator(".ayy-app-shell");
+      // The detail pane would cover the phone screen: hide it first.
+      if (renderer === "react") await pgSwitch(page, "Detail pane", false);
+      else await pgShell(page).locator(".ayy-app-shell__detail").evaluate((el) => ((el as HTMLElement).hidden = true));
+      const shell = pgShell(page);
       const tabs = shell.locator(".ayy-bottom-nav");
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const more = tabs.getByRole("button", { name: "More" });
@@ -119,7 +143,7 @@ for (const renderer of ["react", "html"] as const) {
       await more.click();
       await expect(more).toHaveAttribute("aria-expanded", "true");
       await expect(sidebar).toBeVisible();
-      await expect(sidebar.getByRole("link", { name: "Invoices" })).toBeVisible();
+      await expect(sidebar.getByRole("link", { name: "Themes" })).toBeVisible();
       await expect(shell.locator(".ayy-app-shell__main")).toHaveJSProperty("inert", true);
       await page.keyboard.press("Escape");
       await expect(more).toHaveAttribute("aria-expanded", "false");
@@ -133,13 +157,16 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell collapsible sidebar: rail when collapsed, hover preview overlays, toggle button expands", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await open(page, "app-shell", { renderer });
-      const shell = example(page, "collapsible").locator(".ayy-app-shell");
+      if (renderer === "react") await pgSwitch(page, "Collapsed sidebar", true);
+      else await pgShell(page).evaluate((el) => el.classList.add("ayy-app-shell--collapsed"));
+      const shell = pgShell(page);
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const main = shell.locator(".ayy-app-shell__main");
       const toggle = sidebar.locator(".ayy-app-shell__toggle");
 
       await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
       await expect(shell).toHaveClass(/ayy-app-shell--hover-preview/);
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
 
       // Collapsed: sidebar is icon rail width (~52px), text label is hidden
       const collapsedBox = (await sidebar.boundingBox())!;
@@ -162,7 +189,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
 
       // Toggle again collapses it, and the preview stays shut while the pointer is still on the toggle.
-      const icon = sidebar.locator(".ayy-app-shell__link").first().locator("svg");
+      const icon = sidebar.locator(".ayy-app-shell__link:has(svg)").first().locator("svg");
       const iconXOpen = (await icon.boundingBox())!.x;
       await toggle.click();
       await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
@@ -179,12 +206,167 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
     });
 
+    test("app shell workspace: drag and keys resize the sidebar and the detail pane, a double click resets", async ({ page }) => {
+      await page.setViewportSize({ width: 1800, height: 900 });
+      await open(page, "app-shell", { renderer });
+      const shell = pgShell(page);
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const detail = shell.locator(".ayy-app-shell__detail");
+      const main = shell.locator(".ayy-app-shell__main");
+      const side = shell.getByRole("separator", { name: "Resize sidebar" });
+      const edge = shell.getByRole("separator", { name: "Resize detail pane" });
+      const width = async (l: typeof sidebar) => Math.round((await l.boundingBox())!.width);
+      // The HTML switches are inert, so hide its pane directly; the React one has a Close button and a switch to open it from.
+      const showDetail = async (show: boolean) => {
+        if (renderer === "react") {
+          if (show) await pgSwitch(page, "Detail pane", true);
+          else await detail.getByRole("button", { name: "Close" }).click();
+        } else await detail.evaluate((el, hide) => ((el as HTMLElement).hidden = hide), !show);
+        await (show ? expect(detail).toBeVisible() : expect(detail).toBeHidden());
+      };
+
+      // With the detail pane open the main area keeps its 320px, which caps how wide the sidebar may get in this box.
+      await expect(detail).toBeVisible();
+      await expect.poll(() => width(sidebar)).toBe(240);
+      await expect(side).toHaveAttribute("aria-valuenow", "240");
+      await side.focus();
+      await page.keyboard.press("End");
+      await expect.poll(() => width(main)).toBeGreaterThanOrEqual(319);
+
+      await showDetail(false);
+      await expect(edge).toBeHidden();
+      await side.dblclick();
+      await expect.poll(() => width(sidebar)).toBe(240);
+
+      // Drag the sidebar's edge 60px towards the inline end.
+      const handle = (await side.boundingBox())!;
+      await page.mouse.move(handle.x + handle.width / 2, handle.y + 100);
+      await page.mouse.down();
+      await page.mouse.move(handle.x + handle.width / 2 + 60, handle.y + 100, { steps: 5 });
+      await page.mouse.up();
+      await expect.poll(() => width(sidebar)).toBe(300);
+      await expect(side).toHaveAttribute("aria-valuenow", "300");
+      expect(await shell.evaluate((el) => el.style.getPropertyValue("--ayy-sidebar-w"))).toBe("300px");
+
+      // Keys: arrows step 16px, Shift 64px, End goes to the upper limit, Home to the lower.
+      await side.focus();
+      await page.keyboard.press("ArrowLeft");
+      await expect.poll(() => width(sidebar)).toBe(284);
+      await page.keyboard.press("Shift+ArrowRight");
+      await expect.poll(() => width(sidebar)).toBe(348);
+      await page.keyboard.press("End");
+      await expect.poll(() => width(sidebar)).toBe(384);
+      await page.keyboard.press("Home");
+      await expect.poll(() => width(sidebar)).toBe(192);
+      await side.dblclick();
+      await expect.poll(() => width(sidebar)).toBe(240);
+
+      // The detail pane's edge works the other way round: right shrinks it, left grows it.
+      await showDetail(true);
+      const before = await width(detail);
+      expect(before).toBe(352);
+      await edge.focus();
+      await page.keyboard.press("ArrowRight");
+      await expect.poll(() => width(detail)).toBe(before - 16);
+      await page.keyboard.press("ArrowLeft");
+      await expect.poll(() => width(detail)).toBe(before);
+      await page.keyboard.press("Home");
+      await expect.poll(() => width(detail)).toBe(288);
+      await page.keyboard.press("End");
+      await expect.poll(() => width(main)).toBeGreaterThanOrEqual(319);
+
+      // Hiding the detail pane gives the column back.
+      await showDetail(false);
+      await expect
+        .poll(async () => {
+          const mainBox = (await main.boundingBox())!;
+          const box = (await shell.boundingBox())!;
+          return Math.round(box.x + box.width - (mainBox.x + mainBox.width));
+        })
+        .toBe(0);
+    });
+
+    test("app shell workspace in RTL: the keys follow the edge", async ({ page }) => {
+      await page.setViewportSize({ width: 1800, height: 900 });
+      await open(page, "app-shell", { renderer });
+      const demo = example(page, "playground");
+      await rtl(demo);
+      const shell = demo.locator(".ayy-app-shell").first();
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const side = shell.getByRole("separator", { name: "Resize sidebar" });
+      // Room for the sidebar to grow: close the detail pane.
+      await shell.locator(".ayy-app-shell__detail").evaluate((el) => ((el as HTMLElement).hidden = true));
+      await side.focus();
+      await page.keyboard.press("ArrowLeft");
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(256);
+      await page.keyboard.press("ArrowRight");
+      await page.keyboard.press("ArrowRight");
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(224);
+      const handle = (await side.boundingBox())!;
+      const edgeX = (await sidebar.boundingBox())!.x;
+      expect(Math.abs(handle.x + handle.width / 2 - edgeX)).toBeLessThan(2);
+    });
+
+    test("app shell workspace on phones: the sidebar is a drawer opened from the main area, the detail pane covers the screen", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 });
+      await open(page, "app-shell", { renderer });
+      // A drawer with its toggle in the main area: no bar, no bottom nav, Drawer on phones.
+      if (renderer === "react") {
+        await pgSwitch(page, "Top bar", false);
+        await pgSwitch(page, "Bottom nav", false);
+        await pgSwitch(page, "Drawer on phones", true);
+      } else {
+        await pgShell(page).evaluate((el) => {
+          const shell = el as HTMLElement;
+          const toggle = shell.querySelector(":scope > .ayy-app-shell__bar .ayy-app-shell__toggle");
+          const main = shell.querySelector(":scope > .ayy-app-shell__main");
+          if (toggle && main) {
+            const wrap = document.createElement("div");
+            wrap.className = "ayy-cluster";
+            wrap.append(toggle);
+            main.prepend(wrap);
+          }
+          shell.querySelector(":scope > .ayy-app-shell__bar")?.remove();
+          shell.querySelector(":scope > .ayy-bottom-nav")?.remove();
+          shell.classList.add("ayy-app-shell--drawer");
+        });
+      }
+      const shell = pgShell(page);
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const toggle = shell.locator(".ayy-app-shell__main .ayy-app-shell__toggle");
+      const detail = shell.locator(".ayy-app-shell__detail");
+
+      // No sideways row: the sidebar waits off-screen.
+      expect(await sidebar.evaluate((el) => getComputedStyle(el).flexDirection)).toBe("column");
+      await expect(sidebar).toBeHidden();
+      await expect(shell.locator(".ayy-app-shell__resize").first()).toBeHidden();
+
+      const shellBox = (await shell.boundingBox())!;
+      const detailBox = (await detail.boundingBox())!;
+      expect(Math.round(detailBox.width)).toBe(Math.round(shellBox.width));
+      expect(Math.round(detailBox.height)).toBe(Math.round(shellBox.height));
+      if (renderer === "react") {
+        await detail.getByRole("button", { name: "Close" }).click();
+        await expect(detail).toBeHidden();
+      } else await detail.evaluate((el) => ((el as HTMLElement).hidden = true));
+
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await expect(sidebar).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(sidebar).toBeHidden();
+    });
+
     test("app shell collapsible sidebar: the width animates, and labels fade instead of jumping", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await open(page, "app-shell", { renderer });
-      const shell = example(page, "collapsible").locator(".ayy-app-shell");
+      if (renderer === "react") await pgSwitch(page, "Collapsed sidebar", true);
+      else await pgShell(page).evaluate((el) => el.classList.add("ayy-app-shell--collapsed"));
+      const shell = pgShell(page);
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const toggle = sidebar.locator(".ayy-app-shell__toggle");
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
       await shell.locator(".ayy-app-shell__main").hover();
       // A long transition, so a busy machine can't finish it before it's measured.
       await shell.evaluate((el) => el.style.setProperty("--ayy-duration-base", "10s"));
@@ -369,7 +551,7 @@ for (const renderer of ["react", "html"] as const) {
       await open(page, "tooltip", { renderer });
       const trigger = stage(page).getByRole("button", { name: "Top" });
       await trigger.focus();
-      const tip = page.getByRole("tooltip", { name: "Save changes (⌘S)" });
+      const tip = page.getByRole("tooltip", { name: /Save changes/ });
       await expect(tip).toBeVisible();
       await expect(trigger).toHaveAttribute("aria-describedby", (await tip.getAttribute("id"))!);
       if (await tip.evaluate((el) => el.hasAttribute("popover"))) {
@@ -715,11 +897,16 @@ for (const renderer of ["react", "html"] as const) {
     test("combobox filters as you type, Enter picks, reopening lists everything", async ({ page }) => {
       await open(page, "combobox", { renderer });
       const input = stage(page).getByRole("combobox", { name: "Time zone" });
+      const hint = stage(page).locator("#timezone-hint");
+      // The list floats over the page: opening it must not push the hint down.
+      const gap = async () => Math.round((await hint.boundingBox())!.y - (await input.boundingBox())!.y);
+      const closed = await gap();
       await expect(input).toHaveValue("Lisbon");
       await input.fill("");
       await input.pressSequentially("jap");
       const listbox = page.getByRole("listbox");
       await expect(listbox).toBeVisible();
+      expect(await gap()).toBe(closed);
       await expect(input).toHaveAttribute("aria-expanded", "true");
       await expect(listbox.getByRole("option")).toHaveCount(1);
       await expect(listbox.getByRole("option", { name: /Tokyo/ })).toHaveAttribute("aria-selected", "true");
@@ -732,6 +919,39 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Escape");
       await expect(listbox).toBeHidden();
       await expect(stage(page).locator('input[type="hidden"][name="timezone"]')).toHaveValue("Asia/Tokyo");
+    });
+
+    test("checkbox colour: --ayy-check-color fills a checked box and outlines an empty one", async ({ page }) => {
+      await open(page, "checkbox", { renderer });
+      const boxes = example(page, "colored").getByRole("checkbox");
+      const danger = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ayy-color-destructive"));
+      expect(danger).not.toBe("");
+      const checked = await boxes.nth(0).evaluate((el) => getComputedStyle(el).backgroundColor);
+      const empty = await boxes.nth(1).evaluate((el) => getComputedStyle(el).borderColor);
+      const checkedLow = await boxes.nth(2).evaluate((el) => getComputedStyle(el).backgroundColor);
+      expect(checked).not.toBe(checkedLow);
+      expect(empty).not.toBe(checked);
+      const primary = await boxes.nth(0).evaluate((el) => {
+        const probe = document.createElement("span");
+        probe.style.backgroundColor = "var(--ayy-color-primary)";
+        el.after(probe);
+        const color = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return color;
+      });
+      expect(checked).not.toBe(primary);
+    });
+
+    test("settings: a choice group in a stacked row doesn't stretch the row", async ({ page }) => {
+      await page.setViewportSize({ width: 1000, height: 800 });
+      await open(page, "settings", { renderer });
+      const row = example(page, "theme").locator(".ayy-settings__row--stack");
+      const group = row.locator(".ayy-choice-group");
+      const rowBox = (await row.boundingBox())!;
+      const groupBox = (await group.boundingBox())!;
+      const textBox = (await row.locator(".ayy-settings__text").boundingBox())!;
+      // The row is its padding, the text, the gap and the group, and nothing more.
+      expect(rowBox.height).toBeLessThan(textBox.height + groupBox.height + 24 + 8 + 4);
     });
 
     test("number field steps with its buttons and stops at max; sliders fill to the thumb", async ({ page }) => {
@@ -783,6 +1003,68 @@ for (const renderer of ["react", "html"] as const) {
       await expect(zone).toHaveAttribute("data-dragging", "");
       await zone.locator("input").dispatchEvent("drop", { dataTransfer: transfer });
       await expect(zone).not.toHaveAttribute("data-dragging");
+    });
+
+    test("date range picker selects start and end dates and updates its trigger", async ({ page }) => {
+      await open(page, "date-range", { renderer });
+      const trigger = stage(page).getByRole("button", { name: "Dates of stay" });
+      await trigger.click();
+      const popover = page.locator(".ayy-popover:popover-open");
+      await expect(popover).toBeVisible();
+      await popover.locator('.ayy-date-range__day[data-date="2026-10-10"]').first().click();
+      await expect(popover).toBeVisible();
+      await popover.locator('.ayy-date-range__day[data-date="2026-10-15"]').first().click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-range-picker__value")).toContainText("10");
+      await expect(trigger.locator(".ayy-date-range-picker__value")).toContainText("15");
+
+      // Inline two-month range calendar supports keyboard navigation
+      const inlineRange = example(page, "inline").locator(".ayy-date-range");
+      const startDay = inlineRange.locator('.ayy-date-range__day[data-date="2026-10-14"]').first();
+      await startDay.focus();
+      await page.keyboard.press("ArrowRight");
+      await expect(inlineRange.locator('.ayy-date-range__day[data-date="2026-10-15"]').first()).toBeFocused();
+    });
+
+    test("time picker selects hours, minutes and 12h period", async ({ page }) => {
+      await open(page, "time-picker", { renderer });
+      const trigger = stage(page).getByRole("button", { name: "Meeting time" });
+      await trigger.click();
+      const popover = page.locator(".ayy-popover:popover-open");
+      await expect(popover).toBeVisible();
+      await popover.getByRole("listbox", { name: "Hours" }).getByRole("option", { name: "14" }).click();
+      await popover.getByRole("listbox", { name: "Minutes" }).getByRole("option", { name: "45" }).click();
+      await expect(trigger.locator(".ayy-time-picker-trigger__value")).toHaveText("14:45");
+      await page.keyboard.press("Escape");
+
+      const twelve = example(page, "twelve-hour").locator(".ayy-time-picker");
+      await twelve.getByRole("listbox", { name: "Period" }).getByRole("option", { name: "AM" }).click();
+      await expect(twelve.getByRole("listbox", { name: "Period" }).getByRole("option", { name: "AM" })).toHaveAttribute("aria-selected", "true");
+    });
+
+    test("color picker updates from area keyboard, hex input and preset swatches", async ({ page }) => {
+      await open(page, "color-picker", { renderer });
+      const picker = example(page, "basic").locator(".ayy-color-picker");
+      const area = picker.getByRole("slider", { name: "Color saturation and brightness" });
+      const hex = picker.getByRole("textbox", { name: "Hex color" });
+      await expect(hex).toHaveValue("#2563eb");
+
+      const redSwatch = picker.getByRole("button", { name: "#ef4444" });
+      await redSwatch.click();
+      await expect(hex).toHaveValue("#ef4444");
+      await expect(redSwatch).toHaveAttribute("aria-pressed", "true");
+
+      await area.focus();
+      await page.keyboard.press("Shift+ArrowDown");
+      await expect(hex).not.toHaveValue("#ef4444");
+    });
+
+    test("code block copy button enters copied state on click", async ({ page }) => {
+      await open(page, "code-block", { renderer });
+      const copyBtn = example(page, "basic").getByRole("button", { name: "Copy code" });
+      await copyBtn.click();
+      await expect(example(page, "basic").locator(".ayy-code-block__copy")).toHaveAttribute("data-copied", "true");
+      await expect(example(page, "basic").locator(".ayy-code-block__copy")).toHaveAttribute("aria-label", "Copied!");
     });
   });
 }

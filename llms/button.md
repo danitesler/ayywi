@@ -10,10 +10,11 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `.ayy-button--destructive` — Tinted red. Irreversible actions.
 - `.ayy-button--link` — Looks like a text link.
 - `.ayy-button--ring` — Showcase call to action: quiet fill inside a gradient ring that spins on keyboard focus and mouse hover (not after a tap). For marketing and portfolio pages; one per view.
-- `.ayy-button--sm` — 28px tall.
-- `.ayy-button--lg` — 40px tall.
-- `.ayy-button--icon` — Square 32px, for a single icon.
-- `.ayy-button--icon-sm` — Square 28px, for a single icon.
+- `.ayy-button--sm` — Small control step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-text-sm, --ayy-size-icon-sm (16px) icon, 6px gap.
+- `.ayy-button--lg` — Large control step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-text-lg, --ayy-size-icon-md (20px) icon, 8px gap. Matches large App shell links.
+- `.ayy-button--icon` — Square at the md control height (32px compact, 40 comfortable, 44 touch), for a single 16px icon.
+- `.ayy-button--icon-sm` — Square at the sm control height (28px compact, 32 comfortable, 40 touch), for a single 16px icon.
+- `.ayy-button--icon-lg` — Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.
 - `.ayy-button--block` — Fills its container's width: a card footer, a phone form, a dialog's only action.
 
 **States**
@@ -27,18 +28,19 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
-- `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), sm padding and text.
-- `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
-- `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), more padding, larger text.
-- `icon` — Square at the md height, for one icon (needs aria-label).
-- `icon-sm` — Square at the sm height.
-- Density — Height, inline padding and label size follow data-density (the heights above).
+- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (11/12/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
+- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/14/16px), --ayy-size-icon-sm (16px) icon, 8px gap.
+- `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/16/18px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
+- `icon` — Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).
+- `icon-sm` — Square at the sm control height (28/32/40px) with a 16px icon.
+- `icon-lg` — Square at the lg control height (40/48/52px) with a 20px icon.
+- Density — Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
 **JS (framework-free)**: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 
 **React** — `import { Button } from "@danitesler/ayywi/react";`
-- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
+- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
 
 **Accessibility**
 - Icon-only buttons need aria-label.
@@ -51,7 +53,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - Apply buttonClass() to an <a> when a link should look like an action.
 - Keep one primary button per view or section; make everything else secondary, outline or ghost.
 - On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
-- Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (1.25em).
+- Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).
 
 **Don't**
 - Don't use a button for navigation inside running text — use a plain link.
@@ -138,6 +140,9 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 20.5002C3.28417 16.8058 6.3 13.7193 10.0008 13.5379C10.3134 13.5226 10.6446 13.5097 11 13.5L11.995 13.5663C12.6939 13.6129 13.3665 13.7543 14 13.9777" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M18 15.5V21.5M21 18.5L15 18.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="11" cy="6.5" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
   Invite member
 </button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--icon-lg" aria-label="Add">
+  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+</button>
 <button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-label="Add">
   <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
 </button>
@@ -162,6 +167,9 @@ export default function Example() {
       <Button variant="secondary">
         <Icon icon={UserAdd01Icon} />
         Invite member
+      </Button>
+      <Button variant="outline" size="icon-lg" aria-label="Add">
+        <Icon icon={PlusSignIcon} />
       </Button>
       <Button variant="outline" size="icon" aria-label="Add">
         <Icon icon={PlusSignIcon} />

@@ -2,7 +2,7 @@
 
 Settings open over the app in a near-full-screen dialog, as Notion's and Claude's do: a Settings title and the settings sections in its sidebar, one section in its main, a close button in the corner. Full screen on phones. Never a small or side dialog, never tabs inside a page.
 
-Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Shortcut, Button, Dialog, Toast. Example: App shell → "Settings in a near-full-screen dialog" (`get_component app-shell`, llms/app-shell.md).
+Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Shortcut, Button, Dialog, Toast. Example: App shell → "Playground — one shell, every variation" (`get_component app-shell`, llms/app-shell.md).
 
 **How**
 1. Entry: a Settings link in the sidebar's AppShellFooter (an icon and "Settings"). On phones, the same link in the More drawer, or a settings icon button in the AppShellBar. Desktop apps also open it on ⌘, (Ctrl+, elsewhere).

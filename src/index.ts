@@ -70,6 +70,11 @@ export * from "./components/top-bar/top-bar";
 export * from "./components/fab/fab";
 export * from "./components/shortcut/shortcut";
 export * from "./components/settings/settings";
+export * from "./components/date-range/date-range";
+export * from "./components/time-picker/time-picker";
+export * from "./components/color-picker/color-picker";
+export * from "./components/timeline/timeline";
+export * from "./components/code-block/code-block";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */
 export function cssVar(name: TokenName): string {

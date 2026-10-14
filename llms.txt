@@ -54,6 +54,9 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Combobox](llms/combobox.md): An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.
 - [Tag input](llms/tag-input.md): A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox.
 - [Calendar](llms/calendar.md): A month of day buttons to pick one date, inline or in a popover (DatePicker). Six weeks so the height never jumps, one Tab stop with arrow keys, today ringed, the picked day filled, days outside min/max crossed out. Optional presets (Today, Tomorrow, Next week) and a footer for a time or a Clear button.
+- [Date range](llms/date-range.md): A two-month (or multi-month) calendar to pick a start and end date range, inline or in a popover (DateRangePicker). Side-by-side or stacked month grids, range start and end filled, days in between highlighted in a continuous wash band.
+- [Time picker](llms/time-picker.md): Scrollable columns of hours, minutes, and optional period (AM/PM) to pick a time, inline or in a popover (TimePickerTrigger). Quiet scrollbars with scroll-snap, touch target heights driven by density tokens, and high contrast support.
+- [Color picker](llms/color-picker.md): A panel to pick any colour: a 2D saturation/brightness area with a crosshair handle, hue and alpha range sliders, a preview swatch, hex input, and preset swatches.
 - [Checkbox](llms/checkbox.md): Native checkbox with a drawn box, check mark and indeterminate state.
 - [Radio](llms/radio.md): Native radio buttons with a drawn dot, grouped in a fieldset with a legend.
 - [Segmented control](llms/segmented-control.md): Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.
@@ -102,8 +105,10 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Stat](llms/stat.md): A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
 - [List](llms/list.md): Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.
 - [Swipe actions](llms/swipe.md): A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.
+- [Timeline](llms/timeline.md): Chronological list of events, milestones, or history with vertical connecting tracks, status markers, timestamps, and descriptions.
 - [Frame](llms/frame.md): A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.
 - [Chat](llms/chat.md): A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.
+- [Code block](llms/code-block.md): Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.
 - [Table](llms/table.md): Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.
 - [Chart](llms/chart.md): Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
 

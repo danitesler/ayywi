@@ -1,0 +1,100 @@
+{
+  "name": "Code block",
+  "slug": "code-block",
+  "status": "stable",
+  "category": "Data display",
+  "description": "Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.",
+  "aka": ["code-block", "codeblock", "syntax-highlighter", "code-snippet", "code-view", "code-box"],
+  "classes": {
+    "ayy-code-block": "Bordered container for code with rounded corners and surface background.",
+    "ayy-code-block--numbered": "Adds line numbers using CSS counters.",
+    "ayy-code-block__header": "Top toolbar with filename and copy button.",
+    "ayy-code-block__filename": "File title, path, or language indicator.",
+    "ayy-code-block__copy": "Copy button with icon, copied feedback, and tooltip.",
+    "ayy-code-block__pre": "Scrollable preformatted text container.",
+    "ayy-code-block__code": "Code element with monospace font and preformatted whitespace.",
+    "ayy-token-keyword": "Syntax token for language keywords.",
+    "ayy-token-string": "Syntax token for string literals.",
+    "ayy-token-comment": "Syntax token for comments.",
+    "ayy-token-function": "Syntax token for function and method names.",
+    "ayy-token-number": "Syntax token for numeric literals.",
+    "ayy-token-operator": "Syntax token for operators and punctuation."
+  },
+  "variants": {
+    "numbered": { "values": [false, true], "default": false, "component": "CodeBlock" }
+  },
+  "states": {
+    "default": { "looks": "Surface background, line border, card radius; preformatted code area." },
+    "hover": { "when": ".ayy-code-block__copy:hover", "looks": "Copy button text colour and wash-hover background; tooltip appears after a short delay." },
+    "pressed": { "when": ".ayy-code-block__copy:active", "looks": "Copy button scales down to 0.96 for tactile feedback." },
+    "focus": { "when": ".ayy-code-block__copy:focus-visible", "looks": "Copy button shows 2px ring outline with 2px offset." },
+    "disabled": { "none": "Code blocks display readable content and are not disabled; copy button remains usable." },
+    "selected": { "none": "Code blocks have no selected or checked state; use Choice card or Checkbox for selectable items." },
+    "error": { "none": "No error look; show an Alert above the code block for syntax or execution failures." },
+    "loading": { "none": "No loading look; show a Skeleton in the shape of the code block while fetching code." },
+    "copied": { "when": ".ayy-code-block__copy[data-copied=\"true\"]", "looks": "Copy button turns success colour and displays checkmark feedback icon and \"Copied!\" tooltip." }
+  },
+  "sizes": {
+    "density": "Padding and copy button follow data-density.",
+    "width": "Fills its container width; code pre scrolls horizontally when lines overflow."
+  },
+  "js": "codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass(); codeBlockFilenameClass(); codeBlockCopyClass(); codeBlockPreClass(); codeBlockCodeClass(); copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
+  "react": {
+    "import": "import { CodeBlock, CodeBlockHeader, CodeBlockFilename, CodeBlockCopy, CodeBlockPre, CodeBlockCode } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "CodeBlock": {
+        "renders": "<div class=\"ayy-code-block\">",
+        "props": {
+          "numbered": "boolean — display line numbers with CSS counters"
+        }
+      },
+      "CodeBlockHeader": {
+        "renders": "<div class=\"ayy-code-block__header\">",
+        "props": {}
+      },
+      "CodeBlockFilename": {
+        "renders": "<span class=\"ayy-code-block__filename\">",
+        "props": {}
+      },
+      "CodeBlockCopy": {
+        "renders": "<button class=\"ayy-code-block__copy\">",
+        "props": {
+          "code": "string — code string to copy; if omitted, copies text from the nearest code element",
+          "timeout": "number — duration in ms to show the copied state (default 2000)",
+          "onCopy": "(code: string) => void — callback fired when code is copied",
+          "label": "string — accessible label and tooltip before copy (default \"Copy code\")",
+          "copiedLabel": "string — accessible label and tooltip after copy (default \"Copied!\")"
+        }
+      },
+      "CodeBlockPre": {
+        "renders": "<pre class=\"ayy-code-block__pre\">",
+        "props": {}
+      },
+      "CodeBlockCode": {
+        "renders": "<code class=\"ayy-code-block__code\">",
+        "props": {}
+      }
+    }
+  },
+  "a11y": [
+    "Pre element is scrollable via keyboard by adding tabindex=\"0\".",
+    "Copy button has an accessible label (aria-label) and announces state changes.",
+    "Line numbers use CSS counters with user-select: none to avoid being copied into the clipboard.",
+    "Syntax token classes maintain WCAG AA 4.5:1 contrast against the surface background in light and dark themes."
+  ],
+  "do": [
+    "Use CodeBlock to display snippets, examples, configs, and commands with syntax highlighting.",
+    "Include a CodeBlockFilename in the header when showing multiple files or language context.",
+    "Include CodeBlockCopy so readers can easily copy snippet contents to clipboard.",
+    "Use numbered on multi-line snippets when referencing specific lines in accompanying text."
+  ],
+  "dont": [
+    "Don't use CodeBlock for short inline code references — use <code class=\"ayy-mono\"> or Kbd instead.",
+    "Don't bake line numbers into the text content — use the numbered variant with CSS counters.",
+    "Don't hardcode syntax highlighting colors — use the semantic token classes (.ayy-token-keyword, .ayy-token-string, etc.)."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Code block with filename and copy" },
+    { "id": "numbered", "title": "Numbered lines" }
+  ]
+}

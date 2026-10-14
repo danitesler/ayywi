@@ -24,6 +24,11 @@ export const appShellHeadClass = "ayy-app-shell__head";
 export const appShellCollapsedClass = "ayy-app-shell--collapsed";
 export const appShellHoverPreviewClass = "ayy-app-shell--hover-preview";
 export const appShellSmClass = "ayy-app-shell--sm";
+export const appShellDrawerClass = "ayy-app-shell--drawer";
+export const appShellDetailClass = "ayy-app-shell__detail";
+export const appShellResizeClass = "ayy-app-shell__resize";
+export const appShellResizeDetailClass = "ayy-app-shell__resize--detail";
+export const appShellResizingClass = "ayy-app-shell--resizing";
 
 export const appShellSizes = ["md", "sm"] as const;
 export type AppShellSize = (typeof appShellSizes)[number];
@@ -43,6 +48,18 @@ const DRAWER_QUERY = "(max-width: 48rem)";
 
 /** Where a drawer toggle may live: the phone bar, or the bottom nav (a "More" tab). */
 const TOGGLE_SELECTOR = `:scope > .${appShellBarClass} .${appShellToggleClass}, :scope > .ayy-bottom-nav .${appShellToggleClass}`;
+
+/** A `--drawer` shell may also keep its toggle in the main area (a Top bar of its own). */
+const DRAWER_TOGGLE_SELECTOR = `${TOGGLE_SELECTOR}, :scope > .${appShellMainClass} .${appShellToggleClass}`;
+
+/** Resize limits in px when the handle has no aria-valuemin / aria-valuemax, and what the main area must keep. */
+const RESIZE_LIMITS = { sidebar: [192, 384], detail: [288, 640] } as const;
+const MIN_MAIN = 320;
+/** Arrow key step in px; Shift takes the big one. */
+const RESIZE_STEP = 16;
+const RESIZE_STEP_BIG = 64;
+
+export type AppShellEdge = "sidebar" | "detail";
 
 /** Set on the sidebar while the hover preview is held shut after a collapse. */
 const HOLD = "data-ayy-hold";
@@ -72,6 +89,11 @@ function overlayOpen(): boolean {
 export interface ConnectAppShellOptions {
   /** Called when the sidebar is collapsed or expanded. */
   onCollapseChange?: (collapsed: boolean) => void;
+  /**
+   * Called when a drag or the keyboard ends a resize of the sidebar or the detail pane: `width` in px, or null when it
+   * went back to the default (double click). Save it and set `--ayy-sidebar-w` / `--ayy-detail-w` to it on the next load.
+   */
+  onResize?: (edge: AppShellEdge, width: number | null) => void;
 }
 
 /**
@@ -79,20 +101,30 @@ export interface ConnectAppShellOptions {
  * - On phones: a toggle in `.ayy-app-shell__bar` or `.ayy-bottom-nav` opens/closes the sidebar as a drawer.
  * - On wide screens: a toggle in the sidebar or shell collapses/expands the sidebar into an icon rail.
  * - On a settings shell (`.ayy-app-shell--settings`), Esc follows its `.ayy-app-shell__back` out of settings.
+ * - A `.ayy-app-shell__resize` handle (a direct child of the shell) resizes the sidebar by dragging or with the arrow
+ *   keys, and an `.ayy-app-shell__resize--detail` one the detail pane: they set `--ayy-sidebar-w` / `--ayy-detail-w` on
+ *   the shell. Home / End jump to the limits, a double click goes back to the default.
  * Returns a cleanup.
  */
 export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOptions): () => void {
-  const toggle = () => shell.querySelector<HTMLElement>(TOGGLE_SELECTOR);
+  // Every toggle that can open the drawer: the bar's, the bottom nav's "More", and (with --drawer) the main area's.
+  const drawerToggles = () =>
+    Array.from(
+      shell.querySelectorAll<HTMLElement>(shell.classList.contains(appShellDrawerClass) ? DRAWER_TOGGLE_SELECTOR : TOGGLE_SELECTOR),
+    );
   const sidebar = () => shell.querySelector<HTMLElement>(`:scope > .${appShellSidebarClass}`);
   const sidebarToggles = () => Array.from(shell.querySelectorAll<HTMLElement>(SIDEBAR_TOGGLE_SELECTOR));
-  const isOpen = () => toggle()?.getAttribute("aria-expanded") === "true";
+  const isOpen = () => drawerToggles().some((t) => t.getAttribute("aria-expanded") === "true");
   const media = typeof matchMedia === "function" ? matchMedia(DRAWER_QUERY) : null;
+  // The toggle that opened the drawer, so Esc and closing give the focus back to it.
+  let opener: HTMLElement | null = null;
 
-  const init = toggle();
   const aside = sidebar();
-  if (init && aside) {
-    if (!init.hasAttribute("aria-expanded")) init.setAttribute("aria-expanded", "false");
-    init.setAttribute("aria-controls", ensureId(aside, "ayy-sidebar"));
+  if (aside) {
+    for (const button of drawerToggles()) {
+      if (!button.hasAttribute("aria-expanded")) button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-controls", ensureId(aside, "ayy-sidebar"));
+    }
   }
 
   if (aside) {
@@ -129,24 +161,29 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   };
 
   const set = (open: boolean, { returnFocus = true } = {}) => {
-    const button = toggle();
+    const buttons = drawerToggles();
     const panel = sidebar();
-    if (!button || !panel) return;
-    button.setAttribute("aria-expanded", String(open));
-    // Everything but the drawer and the part that holds the toggle (the bar or the bottom nav) goes inert while it's open.
+    if (!buttons.length || !panel) return;
+    for (const button of buttons) button.setAttribute("aria-expanded", String(open));
+    // Everything but the drawer and the parts that hold a toggle (the bar, the bottom nav, the main area) goes inert.
     for (const child of Array.from(shell.children)) {
-      if (child === panel || child.contains(button)) continue;
+      if (child === panel || buttons.some((b) => child.contains(b))) continue;
       if (open) child.setAttribute("inert", "");
       else child.removeAttribute("inert");
     }
-    if (open) panel.querySelector<HTMLElement>("a[href], button:not([disabled]), input, summary, [tabindex]:not([tabindex='-1'])")?.focus();
-    else if (returnFocus && panel.contains(document.activeElement)) button.focus();
+    // Opening moves focus to the first link in the drawer, past the sidebar's own collapse toggle.
+    if (open)
+      panel
+        .querySelector<HTMLElement>(
+          `a[href], button:not([disabled]):not(.${appShellToggleClass}), input, summary, [tabindex]:not([tabindex='-1'])`,
+        )
+        ?.focus();
+    else if (returnFocus && panel.contains(document.activeElement)) (opener?.isConnected ? opener : buttons[0])?.focus();
   };
 
   const onClick = (event: MouseEvent) => {
     const target = event.target as Element | null;
     if (!target) return;
-    const button = toggle();
     const stList = sidebarToggles();
     const clickedSidebarToggle = stList.find((t) => t.contains(target));
 
@@ -159,7 +196,9 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
       return;
     }
 
-    if (button && button.contains(target)) {
+    const clickedDrawerToggle = drawerToggles().find((b) => b.contains(target));
+    if (clickedDrawerToggle) {
+      opener = clickedDrawerToggle;
       if (media?.matches) return set(!isOpen());
       toggleCollapse();
       return;
@@ -176,7 +215,7 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     if (event.key === "Escape" && isOpen()) {
       event.preventDefault();
       set(false);
-      toggle()?.focus();
+      (opener?.isConnected ? opener : drawerToggles()[0])?.focus();
       return;
     }
     if (
@@ -208,6 +247,152 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     }
   };
 
+  // ---- Resize: separators that set --ayy-sidebar-w / --ayy-detail-w ----
+  const handles = Array.from(shell.querySelectorAll<HTMLElement>(`:scope > .${appShellResizeClass}`));
+  const edgeOf = (handle: HTMLElement): AppShellEdge => (handle.classList.contains(appShellResizeDetailClass) ? "detail" : "sidebar");
+  const paneOf = (edge: AppShellEdge) =>
+    shell.querySelector<HTMLElement>(`:scope > .${edge === "sidebar" ? appShellSidebarClass : appShellDetailClass}`);
+  const hookOf = (edge: AppShellEdge) => (edge === "sidebar" ? "--ayy-sidebar-w" : "--ayy-detail-w");
+  const isRtl = () => getComputedStyle(shell).direction === "rtl";
+  // The author's limits, read once: aria-valuemin / aria-valuemax are then kept at what the handle can do right now.
+  const configured = new Map<HTMLElement, [number, number]>();
+  for (const handle of handles) {
+    const [min, max] = RESIZE_LIMITS[edgeOf(handle)];
+    configured.set(handle, [Number(handle.getAttribute("aria-valuemin")) || min, Number(handle.getAttribute("aria-valuemax")) || max]);
+  }
+
+  const limits = (handle: HTMLElement): [number, number] => {
+    const edge = edgeOf(handle);
+    const [min, configuredMax] = configured.get(handle)!;
+    let max = configuredMax;
+    // The main area keeps room: whatever the other pane takes is out of the budget too.
+    const other = paneOf(edge === "sidebar" ? "detail" : "sidebar");
+    const room = shell.clientWidth - (other && !other.hidden ? other.offsetWidth : 0) - MIN_MAIN;
+    max = Math.min(max, room);
+    return [min, Math.max(min, max)];
+  };
+
+  const syncHandle = (handle: HTMLElement) => {
+    const pane = paneOf(edgeOf(handle));
+    const [min, max] = limits(handle);
+    handle.setAttribute("aria-valuemin", String(Math.round(min)));
+    handle.setAttribute("aria-valuemax", String(Math.round(max)));
+    if (pane && pane.offsetWidth) handle.setAttribute("aria-valuenow", String(Math.round(pane.offsetWidth)));
+  };
+
+  for (const handle of handles) {
+    const edge = edgeOf(handle);
+    const pane = paneOf(edge);
+    handle.setAttribute("role", "separator");
+    handle.setAttribute("aria-orientation", "vertical");
+    if (!handle.hasAttribute("tabindex")) handle.setAttribute("tabindex", "0");
+    if (!handle.hasAttribute("aria-label") && !handle.hasAttribute("aria-labelledby")) {
+      handle.setAttribute("aria-label", edge === "sidebar" ? "Resize sidebar" : "Resize detail pane");
+    }
+    if (pane) handle.setAttribute("aria-controls", ensureId(pane, edge === "sidebar" ? "ayy-sidebar" : "ayy-detail"));
+    syncHandle(handle);
+  }
+
+  // Where a key press left each pane. The width on screen lags behind it while the columns animate, and the next press
+  // has to continue from the target, not from the frame it lands on.
+  const target = new Map<HTMLElement, number>();
+
+  const setWidth = (handle: HTMLElement, width: number | null) => {
+    const edge = edgeOf(handle);
+    if (width === null) {
+      shell.style.removeProperty(hookOf(edge));
+      target.delete(handle);
+    } else {
+      const [min, max] = limits(handle);
+      const next = Math.min(max, Math.max(min, width));
+      shell.style.setProperty(hookOf(edge), `${next}px`);
+      target.set(handle, next);
+    }
+    syncHandle(handle);
+  };
+
+  let drag: { handle: HTMLElement; startX: number; startWidth: number; id: number } | null = null;
+
+  const endDrag = (event?: PointerEvent) => {
+    if (!drag) return;
+    const { handle, id } = drag;
+    drag = null;
+    shell.classList.remove(appShellResizingClass);
+    handle.removeAttribute("data-dragging");
+    if (handle.hasPointerCapture?.(id)) handle.releasePointerCapture(id);
+    if (event) options?.onResize?.(edgeOf(handle), Number(handle.getAttribute("aria-valuenow")) || null);
+  };
+
+  const onResizeDown = (event: PointerEvent) => {
+    const handle = (event.target as Element | null)?.closest<HTMLElement>(`.${appShellResizeClass}`);
+    if (!handle || event.button !== 0 || handle.parentElement !== shell) return;
+    const pane = paneOf(edgeOf(handle));
+    if (!pane) return;
+    event.preventDefault();
+    handle.focus();
+    handle.setPointerCapture?.(event.pointerId);
+    drag = { handle, startX: event.clientX, startWidth: pane.offsetWidth, id: event.pointerId };
+    handle.setAttribute("data-dragging", "");
+    shell.classList.add(appShellResizingClass);
+  };
+
+  const onResizeMove = (event: PointerEvent) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    // Dragging towards the inline end grows the sidebar and shrinks the detail pane.
+    const toward = (event.clientX - drag.startX) * (isRtl() ? -1 : 1);
+    setWidth(drag.handle, drag.startWidth + (edgeOf(drag.handle) === "sidebar" ? toward : -toward));
+  };
+
+  const onResizeUp = (event: PointerEvent) => {
+    if (drag && event.pointerId === drag.id) endDrag(event);
+  };
+
+  const onResizeKey = (event: KeyboardEvent) => {
+    const handle = (event.target as Element | null)?.closest<HTMLElement>(`.${appShellResizeClass}`);
+    if (!handle || handle.parentElement !== shell) return;
+    const edge = edgeOf(handle);
+    const pane = paneOf(edge);
+    if (!pane) return;
+    const [min, max] = limits(handle);
+    const step = event.shiftKey ? RESIZE_STEP_BIG : RESIZE_STEP;
+    // ArrowRight grows the sidebar in LTR (the edge moves right), and shrinks the detail pane whose edge it is.
+    const grows = (edge === "sidebar" ? 1 : -1) * (isRtl() ? -1 : 1);
+    let next: number | null | undefined;
+    const current = target.get(handle) ?? pane.offsetWidth;
+    if (event.key === "ArrowRight") next = current + step * grows;
+    else if (event.key === "ArrowLeft") next = current - step * grows;
+    else if (event.key === "Home") next = min;
+    else if (event.key === "End") next = max;
+    if (next === undefined) return;
+    event.preventDefault();
+    setWidth(handle, next);
+    options?.onResize?.(edge, Number(handle.getAttribute("aria-valuenow")) || null);
+  };
+
+  const onResizeReset = (event: MouseEvent) => {
+    const handle = (event.target as Element | null)?.closest<HTMLElement>(`.${appShellResizeClass}`);
+    if (!handle || handle.parentElement !== shell) return;
+    setWidth(handle, null);
+    options?.onResize?.(edgeOf(handle), null);
+  };
+
+  const onResizeFocus = (event: FocusEvent) => {
+    const handle = event.target instanceof Element ? event.target.closest<HTMLElement>(`.${appShellResizeClass}`) : null;
+    if (!handle || handle.parentElement !== shell) return;
+    target.delete(handle);
+    syncHandle(handle);
+  };
+
+  if (handles.length) {
+    shell.addEventListener("pointerdown", onResizeDown);
+    shell.addEventListener("pointermove", onResizeMove);
+    shell.addEventListener("pointerup", onResizeUp);
+    shell.addEventListener("pointercancel", onResizeUp);
+    shell.addEventListener("keydown", onResizeKey);
+    shell.addEventListener("dblclick", onResizeReset);
+    shell.addEventListener("focusin", onResizeFocus);
+  }
+
   shell.addEventListener("click", onClick);
   aside?.addEventListener("pointerleave", onPointerLeave);
   aside?.addEventListener("focusin", onFocusIn);
@@ -215,6 +400,14 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   document.addEventListener("keydown", onSettingsEscape, true);
   media?.addEventListener("change", onMedia);
   return () => {
+    endDrag();
+    shell.removeEventListener("pointerdown", onResizeDown);
+    shell.removeEventListener("pointermove", onResizeMove);
+    shell.removeEventListener("pointerup", onResizeUp);
+    shell.removeEventListener("pointercancel", onResizeUp);
+    shell.removeEventListener("keydown", onResizeKey);
+    shell.removeEventListener("dblclick", onResizeReset);
+    shell.removeEventListener("focusin", onResizeFocus);
     shell.removeEventListener("click", onClick);
     aside?.removeEventListener("pointerleave", onPointerLeave);
     aside?.removeEventListener("focusin", onFocusIn);

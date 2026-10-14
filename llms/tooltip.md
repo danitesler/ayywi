@@ -37,6 +37,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 
 **Do**
 - Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.
+- Show a shortcut with <Shortcut keys="Mod+…" /> (or .ayy-shortcut in HTML) so Mac and Windows users each see their own keys as keycaps.
 - Keep it under ~60 characters.
 - Use side="start"/"end", not left/right, so RTL works.
 - Inside overflow:hidden containers, use the React component or <ayy-tooltip> — the CSS-only version can be clipped there.
@@ -45,6 +46,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 - Don't put essential information in a tooltip — tooltips are invisible on touch devices.
 - Don't put interactive content (links, buttons) in a tooltip — use a popover or dialog.
 - Don't wrap disabled buttons — they can't receive focus or hover events reliably.
+- Don't write a shortcut as plain text like "(⌘S)" — use Shortcut so it draws keycaps.
 
 ## Tooltip — Sides
 
@@ -54,7 +56,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <!-- Works with CSS alone. <ayy-tooltip> (@danitesler/ayywi/elements) adds ids, Esc-to-dismiss and edge-aware placement. -->
 <ayy-tooltip class="ayy-tooltip">
   <button type="button" class="ayy-button ayy-button--outline">Top</button>
-  <span class="ayy-tooltip__content" role="tooltip">Save changes (⌘S)</span>
+  <span class="ayy-tooltip__content" role="tooltip">Save changes <span class="ayy-shortcut" data-keys="Mod+S"><span class="ayy-sr-only">Ctrl S</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">S</kbd></span></span>
 </ayy-tooltip>
 <ayy-tooltip class="ayy-tooltip" side="bottom">
   <button type="button" class="ayy-button ayy-button--outline">Bottom</button>
@@ -73,12 +75,18 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, Tooltip } from "@danitesler/ayywi/react";
+import { Button, Shortcut, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
     <>
-      <Tooltip content="Save changes (⌘S)">
+      <Tooltip
+        content={
+          <>
+            Save changes <Shortcut keys="Mod+S" />
+          </>
+        }
+      >
         <Button variant="outline">Top</Button>
       </Tooltip>
       <Tooltip content="Opens in a new window" side="bottom">

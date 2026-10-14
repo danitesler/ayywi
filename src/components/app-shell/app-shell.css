@@ -1,8 +1,11 @@
-/* App shell: the frame of a signed-in app. A viewport-high grid of a sidebar and the main content; each scrolls on its own.
+/* App shell: the frame of a signed-in app. A viewport-high grid of a sidebar and the main content (and, when the app has
+   one, a detail pane at the inline end); each scrolls on its own. --ayy-sidebar-w and --ayy-detail-w set the widths, and
+   __resize handles let people drag them.
    To embed it in a box of fixed height, set block-size: 100% on the shell. Below 48rem the layout depends on what the shell
    holds (a bottom nav, a __bar, or neither; see the phone section). Drawer behaviour: connectAppShell() or <ayy-app-shell>. */
 .ayy-app-shell {
-  --_sidebar-w: 15rem;
+  --_sidebar-w: var(--ayy-sidebar-w, 15rem);
+  --_detail-w: var(--ayy-detail-w, 22rem);
   --_sidebar-w-collapsed: calc(var(--ayy-size-control-lg) + var(--ayy-space-3) * 2);
   /* The sidebar column now (the rail when collapsed). Set on every shell so a shell inside another doesn't inherit it. */
   --_col: var(--_sidebar-w);
@@ -336,6 +339,106 @@ ayy-app-shell {
   }
 }
 
+/* ---- Detail pane: a third column at the inline end, for the item picked in the main area (a task, a message). Show and
+   hide it with the hidden attribute; hidden, the shell is two columns again. On phones it covers the screen. ---- */
+
+.ayy-app-shell__detail {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: var(--ayy-space-6);
+  overflow: auto;
+  border-inline-start: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-surface);
+}
+
+.ayy-app-shell__detail[hidden] {
+  display: none;
+}
+
+.ayy-app-shell__detail:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+/* The drag handles for the sidebar's edge and the detail pane's. Wide screens only; a thin hit area on the edge with a
+   line that shows on hover, focus and drag. */
+.ayy-app-shell__resize {
+  display: none;
+}
+
+@media (min-width: 48.001rem) {
+  .ayy-app-shell:has(> .ayy-app-shell__detail:not([hidden])) {
+    grid-template-columns: var(--_col) minmax(0, 1fr) var(--_detail-w);
+  }
+
+  .ayy-app-shell > .ayy-app-shell__detail {
+    grid-column: 3;
+  }
+
+  .ayy-app-shell > .ayy-app-shell__resize {
+    position: absolute;
+    inset-block: 0;
+    z-index: var(--ayy-z-overlay);
+    display: block;
+    box-sizing: border-box;
+    inline-size: 0.5rem;
+    cursor: col-resize;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    inset-inline-start: calc(var(--_col) - 0.25rem);
+  }
+
+  .ayy-app-shell > .ayy-app-shell__resize--detail {
+    inset-inline-start: auto;
+    inset-inline-end: calc(var(--_detail-w) - 0.25rem);
+  }
+
+  /* The rail is a fixed width, and no detail pane means nothing to drag. */
+  .ayy-app-shell--collapsed > .ayy-app-shell__resize:not(.ayy-app-shell__resize--detail),
+  .ayy-app-shell:not(:has(> .ayy-app-shell__detail:not([hidden]))) > .ayy-app-shell__resize--detail {
+    display: none;
+  }
+
+  .ayy-app-shell__resize::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline: 0;
+    inline-size: 2px;
+    margin-inline: auto;
+    background-color: transparent;
+    transition: background-color var(--ayy-duration-fast) ease;
+  }
+
+  @media (hover: hover) {
+    .ayy-app-shell__resize:hover::after {
+      background-color: var(--ayy-color-line-hover);
+    }
+  }
+
+  .ayy-app-shell__resize:focus-visible::after,
+  .ayy-app-shell__resize[data-dragging]::after {
+    background-color: var(--ayy-color-ring);
+  }
+
+  .ayy-app-shell__resize:focus-visible {
+    outline: 2px solid var(--ayy-color-ring);
+    outline-offset: 0;
+  }
+
+  /* While dragging, the columns follow the pointer at once, and the page doesn't select text or flicker the cursor. */
+  .ayy-app-shell--resizing {
+    cursor: col-resize;
+    transition: none;
+    user-select: none;
+  }
+
+  .ayy-app-shell.ayy-app-shell--resizing:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar {
+    transition: none;
+  }
+}
+
 /* The sidebar's top row: the collapse __toggle, then the brand (and any actions). The toggle lines up with the link
    icons under it, so it stays put in the rail while the brand is clipped. */
 .ayy-app-shell__head {
@@ -448,7 +551,8 @@ ayy-app-shell {
    - a .ayy-bottom-nav (recommended for apps): the tab bar sits at the bottom, the sidebar hides, and an optional __bar
      carries the brand and actions. A __toggle in the bar or the bottom nav ("More") opens the sidebar as a drawer.
    - a __bar only: the sidebar is a drawer that the bar's __toggle opens.
-   - neither: the sidebar becomes one row that scrolls sideways (brand, links, footer in reading order).
+   - neither: the sidebar becomes one row that scrolls sideways (brand, links, footer in reading order), unless the shell
+     has --drawer: then it is a drawer as above, and its __toggle may live in the main area (an app's own top bar).
    A settings shell (--settings) has its own phone layout instead: see the settings section. ---- */
 
 /* Wide screens: the bottom nav is the phone's navigation; the sidebar has the same links. */
@@ -472,9 +576,21 @@ ayy-app-shell {
     flex: none;
   }
 
+  /* The detail pane covers the screen; the app hides it (hidden) to go back, so start it with a Top bar and a back button. */
+  .ayy-app-shell > .ayy-app-shell__detail {
+    position: absolute;
+    inset: 0;
+    z-index: var(--ayy-z-overlay);
+    padding: var(--ayy-space-4);
+    padding-block-start: calc(var(--ayy-space-4) + env(safe-area-inset-top, 0px));
+    padding-block-end: calc(var(--ayy-space-4) + env(safe-area-inset-bottom, 0px));
+    border-inline-start: 0;
+    background-color: var(--ayy-color-bg);
+  }
+
   /* ---- Row: no bar and no bottom nav. The vertical padding keeps focus rings from being clipped. ---- */
 
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) > .ayy-app-shell__sidebar {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) > .ayy-app-shell__sidebar {
     flex: none;
     flex-direction: row;
     align-items: center;
@@ -487,36 +603,36 @@ ayy-app-shell {
     border-block-end: 1px solid var(--ayy-color-hairline);
   }
 
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__brand {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__brand {
     padding-inline: var(--ayy-space-2);
   }
 
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__nav,
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__nav,
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
     flex: none;
     flex-direction: row;
   }
 
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__footer {
     margin-block-start: 0;
     margin-inline-start: auto;
   }
 
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__link {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__link {
     flex: none;
     white-space: nowrap;
   }
 
   /* The row shows top-level links only: headings, sub-lists and collapses are left out. */
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group,
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list,
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list > li {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group,
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list,
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__list > li {
     display: contents;
   }
 
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group-label,
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__sublist,
-  .ayy-app-shell:not(.ayy-app-shell--settings, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__collapse {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group-label,
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__sublist,
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__collapse {
     display: none;
   }
 
@@ -545,12 +661,12 @@ ayy-app-shell {
      inset-inline-start, so it comes from the right in RTL. ---- */
 
   /* clip, not hidden: the closed drawer sits past the inline-start edge (the page's right edge in RTL) and must not widen the page. */
-  .ayy-app-shell:has(> .ayy-app-shell__bar, > .ayy-bottom-nav) {
+  .ayy-app-shell:is(.ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) {
     --_drawer: min(18rem, calc(100% - 3.5rem));
     overflow: clip;
   }
 
-  .ayy-app-shell:has(> .ayy-app-shell__bar, > .ayy-bottom-nav) > .ayy-app-shell__sidebar {
+  .ayy-app-shell:is(.ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) > .ayy-app-shell__sidebar {
     position: absolute;
     inset-block: 0;
     inset-inline-start: calc(-1 * var(--_drawer));
@@ -565,7 +681,7 @@ ayy-app-shell {
   }
 
   /* The scrim: the shell's own ::after, so a click on it lands on the shell and closes the drawer. */
-  .ayy-app-shell:has(> .ayy-app-shell__bar, > .ayy-bottom-nav)::after {
+  .ayy-app-shell:is(.ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav))::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -576,7 +692,7 @@ ayy-app-shell {
     transition: opacity var(--ayy-duration-base) ease;
   }
 
-  .ayy-app-shell:has(> :is(.ayy-app-shell__bar, .ayy-bottom-nav) .ayy-app-shell__toggle[aria-expanded="true"]) > .ayy-app-shell__sidebar {
+  .ayy-app-shell:is(:has(> :is(.ayy-app-shell__bar, .ayy-bottom-nav) .ayy-app-shell__toggle[aria-expanded="true"]), .ayy-app-shell--drawer:has(> .ayy-app-shell__main .ayy-app-shell__toggle[aria-expanded="true"])) > .ayy-app-shell__sidebar {
     inset-inline-start: 0;
     visibility: visible;
     box-shadow: var(--ayy-shadow-overlay);
@@ -585,7 +701,7 @@ ayy-app-shell {
       visibility 0s;
   }
 
-  .ayy-app-shell:has(> :is(.ayy-app-shell__bar, .ayy-bottom-nav) .ayy-app-shell__toggle[aria-expanded="true"])::after {
+  .ayy-app-shell:is(:has(> :is(.ayy-app-shell__bar, .ayy-bottom-nav) .ayy-app-shell__toggle[aria-expanded="true"]), .ayy-app-shell--drawer:has(> .ayy-app-shell__main .ayy-app-shell__toggle[aria-expanded="true"]))::after {
     opacity: 1;
     pointer-events: auto;
   }
@@ -746,8 +862,17 @@ ayy-app-shell {
 /* Forced colors: fills are erased, so the current link takes the system highlight and the hairline becomes a real border. */
 @media (forced-colors: active) {
   .ayy-app-shell__sidebar,
-  .ayy-app-shell__bar {
+  .ayy-app-shell__bar,
+  .ayy-app-shell__detail {
     border-color: CanvasText;
+  }
+  .ayy-app-shell__resize::after {
+    forced-color-adjust: none;
+  }
+  .ayy-app-shell__resize:hover::after,
+  .ayy-app-shell__resize:focus-visible::after,
+  .ayy-app-shell__resize[data-dragging]::after {
+    background-color: Highlight;
   }
   .ayy-app-shell__sublist,
   .ayy-app-shell__group + .ayy-app-shell__group {

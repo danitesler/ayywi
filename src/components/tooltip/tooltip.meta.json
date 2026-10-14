@@ -57,6 +57,7 @@
   ],
   "do": [
     "Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.",
+    "Show a shortcut with <Shortcut keys=\"Mod+…\" /> (or .ayy-shortcut in HTML) so Mac and Windows users each see their own keys as keycaps.",
     "Keep it under ~60 characters.",
     "Use side=\"start\"/\"end\", not left/right, so RTL works.",
     "Inside overflow:hidden containers, use the React component or <ayy-tooltip> — the CSS-only version can be clipped there."
@@ -64,7 +65,8 @@
   "dont": [
     "Don't put essential information in a tooltip — tooltips are invisible on touch devices.",
     "Don't put interactive content (links, buttons) in a tooltip — use a popover or dialog.",
-    "Don't wrap disabled buttons — they can't receive focus or hover events reliably."
+    "Don't wrap disabled buttons — they can't receive focus or hover events reliably.",
+    "Don't write a shortcut as plain text like \"(⌘S)\" — use Shortcut so it draws keycaps."
   ],
   "examples": [{ "id": "sides", "title": "Sides" }]
 }

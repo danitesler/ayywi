@@ -9,7 +9,7 @@ Category: Forms. Preferences as rows: a label and a one-line hint at the start, 
 - `.ayy-settings__description` — A muted line under the heading.
 - `.ayy-settings__list` — The rows, in a card with a line border; hairlines between rows.
 - `.ayy-settings__row` — One setting: text at the start, the control at the end. Wraps the control under the text when there isn't room (a phone).
-- `.ayy-settings__row--stack` — The control under the text at full width: a textarea, a radio list.
+- `.ayy-settings__row--stack` — The control under the text at full width: a textarea, a radio list, a group of choice cards. The row doesn't wrap.
 - `.ayy-settings__text` — The label and hint column.
 - `.ayy-settings__label` — The setting's name: a <label for> pointing at the control, or a <span> when the control is labelled otherwise.
 - `.ayy-settings__hint` — One muted line explaining the setting; give it an id and point the control's aria-describedby at it. With ayy-field__error it's an error.
@@ -231,6 +231,52 @@ export default function Example() {
       </Settings>
       <Settings>
         <SettingsLink label="Sign out" destructive />
+      </Settings>
+    </div>
+  );
+}
+```
+
+## Settings — Choice cards in a stacked row
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div style="inline-size: 100%; max-inline-size: 36rem">
+  <section class="ayy-settings" aria-labelledby="settings-theme-title">
+    <h2 id="settings-theme-title" class="ayy-settings__title">Appearance</h2>
+    <div class="ayy-settings__list">
+      <div class="ayy-settings__row ayy-settings__row--stack">
+        <div class="ayy-settings__text"><span class="ayy-settings__label">Theme</span><p class="ayy-settings__hint">Follows your system unless you pick one.</p></div>
+        <div class="ayy-settings__control">
+          <fieldset role="radiogroup" aria-label="Theme" class="ayy-choice-group" style="--ayy-min: 8rem">
+            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="theme" checked="" value="system"/><span class="ayy-choice-card__title">System</span><span class="ayy-choice-card__description">Match the device</span></label>
+            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="theme" value="light"/><span class="ayy-choice-card__title">Light</span><span class="ayy-choice-card__description">Bright surfaces</span></label>
+            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="theme" value="dark"/><span class="ayy-choice-card__title">Dark</span><span class="ayy-choice-card__description">Dim surfaces</span></label>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+```
+
+React:
+
+```tsx
+import { ChoiceCard, ChoiceGroup, Settings, SettingsRow } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div style={{ inlineSize: "100%", maxInlineSize: "36rem" }}>
+      <Settings title="Appearance">
+        <SettingsRow label="Theme" hint="Follows your system unless you pick one." stack>
+          <ChoiceGroup aria-label="Theme" defaultValue="system" name="theme" style={{ "--ayy-min": "8rem" } as React.CSSProperties}>
+            <ChoiceCard value="system" title="System" description="Match the device" />
+            <ChoiceCard value="light" title="Light" description="Bright surfaces" />
+            <ChoiceCard value="dark" title="Dark" description="Dim surfaces" />
+          </ChoiceGroup>
+        </SettingsRow>
       </Settings>
     </div>
   );

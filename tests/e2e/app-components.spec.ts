@@ -251,16 +251,20 @@ test("top bar: the back chevron points back in both directions, the title is the
   expect(await flip()).toBe("-1");
 });
 
-test("app shell sizes: Big and Small differ, and a Big shell inside the docs' Small sidebar stays Big", async ({ page }) => {
+test("app shell sizes: Small rows are denser than Big, and the docs' Small sidebar doesn't leak into examples", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await open(page, "app-shell");
-  const [big, small] = [0, 1].map((i) => example(page, "sizes").locator(".ayy-app-shell").nth(i).getByRole("link", { name: "Projects" }));
-  const height = (l: typeof big) => l.evaluate((el) => (el as HTMLElement).offsetHeight);
-  const radius = (l: typeof big) => l.evaluate((el) => getComputedStyle(el).borderTopLeftRadius);
-  expect(await height(big)).toBeGreaterThan(await height(small));
-  expect(await radius(big)).not.toBe(await radius(small));
-  // The docs page's own shell is Small; that must not reach the examples inside its main.
+  const demo = example(page, "playground");
+  const link = demo.locator(".ayy-app-shell").first().getByRole("link", { name: "Spacing" });
+  const height = () => link.evaluate((el) => (el as HTMLElement).offsetHeight);
+  const radius = () => link.evaluate((el) => getComputedStyle(el).borderTopLeftRadius);
+  const big = await height();
+  const bigRadius = await radius();
+  await demo.getByRole("switch", { name: "Small size" }).click();
+  await expect.poll(height).toBeLessThan(big);
+  expect(await radius()).not.toBe(bigRadius);
+  // The docs page's own shell is Small; flipping back proves the example keeps its own size.
   await expect(page.locator(".pv-shell")).toHaveClass(/ayy-app-shell--sm/);
-  const basic = example(page, "basic").getByRole("link", { name: "Projects" });
-  expect(await height(basic)).toBe(await height(big));
+  await demo.getByRole("switch", { name: "Small size" }).click();
+  await expect.poll(height).toBe(big);
 });

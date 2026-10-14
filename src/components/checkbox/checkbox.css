@@ -1,4 +1,6 @@
-/* Native <input type="checkbox"> with a drawn box and check mark (::before). Size follows --ayy-size-check (density-aware). */
+/* Native <input type="checkbox"> with a drawn box and check mark (::before). Size follows --ayy-size-check (density-aware).
+   --ayy-check-color recolours the box (a priority, a label colour): its border when empty, its fill when checked.
+   --ayy-check-fg is the tick on that fill, for a colour primary-fg wouldn't read on. */
 
 .ayy-checkbox {
   --_s: var(--ayy-size-check);
@@ -12,10 +14,10 @@
   inline-size: var(--_s);
   block-size: var(--_s);
   margin: 0;
-  border: 1px solid var(--ayy-color-line-hover);
+  border: 1px solid var(--ayy-check-color, var(--ayy-color-line-hover));
   border-radius: var(--ayy-radius-sm);
   background-color: var(--ayy-color-wash);
-  color: var(--ayy-color-primary-fg);
+  color: var(--ayy-check-fg, var(--ayy-color-primary-fg));
   vertical-align: middle;
   cursor: pointer;
   transition:
@@ -34,13 +36,13 @@
 }
 
 .ayy-checkbox:hover {
-  border-color: var(--ayy-color-text-soft);
+  border-color: var(--ayy-check-color, var(--ayy-color-text-soft));
 }
 
 .ayy-checkbox:checked,
 .ayy-checkbox:indeterminate {
-  border-color: var(--ayy-color-primary);
-  background-color: var(--ayy-color-primary);
+  border-color: var(--ayy-check-color, var(--ayy-color-primary));
+  background-color: var(--ayy-check-color, var(--ayy-color-primary));
 }
 
 .ayy-checkbox:checked::before {

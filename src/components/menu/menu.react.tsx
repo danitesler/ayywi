@@ -16,6 +16,7 @@ import { cx } from "../../lib/cx";
 import type { FloatingAlign, FloatingSide, PlaceBoundary } from "../../lib/position";
 import { mergeRefs } from "../../lib/refs";
 import { Button, type ButtonProps } from "../button/button.react";
+import { Shortcut } from "../shortcut/shortcut.react";
 import {
   connectMenu,
   menuChevronClass,
@@ -174,7 +175,7 @@ export interface DropdownMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLBut
   /** Called when the item is chosen (click, Enter, Space). The menu closes afterwards unless closeOnSelect is false. */
   onSelect?: () => void;
   destructive?: boolean;
-  /** Keyboard shortcut hint shown at the end, e.g. "⌘D". */
+  /** Keyboard shortcut keys shown at the end as keycaps, e.g. "Mod+D" (⌘D on a Mac, Ctrl+D elsewhere). */
   shortcut?: string;
   /** Value or badge text shown before shortcut/chevron. */
   value?: ReactNode;
@@ -233,7 +234,11 @@ export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemPr
         children
       )}
       {value ? <span className={menuValueClass}>{value}</span> : null}
-      {shortcut ? <span className={menuShortcutClass}>{shortcut}</span> : null}
+      {shortcut ? (
+        <span className={menuShortcutClass}>
+          <Shortcut keys={shortcut} />
+        </span>
+      ) : null}
     </button>
   );
 });
