@@ -1,0 +1,1 @@
+(function(){try{var d=document.documentElement,t=localStorage.getItem("ayy-theme"),n=localStorage.getItem("ayy-density");if(["dark","light","dark-contrast","light-gray"].indexOf(t)>-1)d.setAttribute("data-theme",t);if(n==="compact"||n==="comfortable"||n==="touch")d.setAttribute("data-density",n)}catch(e){}})();

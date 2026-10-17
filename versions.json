@@ -1,0 +1,85 @@
+{
+  "latest": "0.1.0-bb5355f0",
+  "versions": [
+    {
+      "id": "0.1.0-bb5355f0",
+      "version": "0.1.0",
+      "built": "2026-10-17",
+      "files": [
+        "dist/ayywi.css",
+        "dist/ayywi.min.css",
+        "dist/elements.global.js",
+        "dist/fonts.css",
+        "dist/fonts/LICENSE-Caveat.txt",
+        "dist/fonts/LICENSE-Sora.txt",
+        "dist/fonts/LICENSE-Unbounded.txt",
+        "dist/fonts/caveat-cyrillic-ext-wght-normal.woff2",
+        "dist/fonts/caveat-cyrillic-wght-normal.woff2",
+        "dist/fonts/caveat-latin-ext-wght-normal.woff2",
+        "dist/fonts/caveat-latin-wght-normal.woff2",
+        "dist/fonts/sora-latin-ext-wght-normal.woff2",
+        "dist/fonts/sora-latin-wght-normal.woff2",
+        "dist/fonts/unbounded-cyrillic-ext-wght-normal.woff2",
+        "dist/fonts/unbounded-cyrillic-wght-normal.woff2",
+        "dist/fonts/unbounded-latin-ext-wght-normal.woff2",
+        "dist/fonts/unbounded-latin-wght-normal.woff2",
+        "dist/fonts/unbounded-vietnamese-wght-normal.woff2",
+        "dist/theme-init.js"
+      ]
+    },
+    {
+      "id": "0.0.3-a7dbaff5",
+      "version": "0.0.3",
+      "built": "2026-10-13",
+      "files": [
+        "dist/ayywi.css",
+        "dist/ayywi.min.css",
+        "dist/elements.global.js",
+        "dist/fonts.css",
+        "dist/fonts/LICENSE-Caveat.txt",
+        "dist/fonts/LICENSE-Sora.txt",
+        "dist/fonts/LICENSE-Unbounded.txt",
+        "dist/fonts/caveat-cyrillic-ext-wght-normal.woff2",
+        "dist/fonts/caveat-cyrillic-wght-normal.woff2",
+        "dist/fonts/caveat-latin-ext-wght-normal.woff2",
+        "dist/fonts/caveat-latin-wght-normal.woff2",
+        "dist/fonts/sora-latin-ext-wght-normal.woff2",
+        "dist/fonts/sora-latin-wght-normal.woff2",
+        "dist/fonts/unbounded-cyrillic-ext-wght-normal.woff2",
+        "dist/fonts/unbounded-cyrillic-wght-normal.woff2",
+        "dist/fonts/unbounded-latin-ext-wght-normal.woff2",
+        "dist/fonts/unbounded-latin-wght-normal.woff2",
+        "dist/fonts/unbounded-vietnamese-wght-normal.woff2",
+        "dist/shadcn.css",
+        "dist/theme-init.js"
+      ]
+    },
+    {
+      "id": "0.0.2-a910892c",
+      "version": "0.0.2",
+      "built": "2026-10-11",
+      "files": [
+        "dist/ayywi.css",
+        "dist/ayywi.min.css",
+        "dist/elements.global.js",
+        "dist/fonts.css",
+        "dist/fonts/LICENSE-Caveat.txt",
+        "dist/fonts/LICENSE-Sora.txt",
+        "dist/fonts/LICENSE-Unbounded.txt",
+        "dist/fonts/caveat-cyrillic-ext-wght-normal.woff2",
+        "dist/fonts/caveat-cyrillic-wght-normal.woff2",
+        "dist/fonts/caveat-latin-ext-wght-normal.woff2",
+        "dist/fonts/caveat-latin-wght-normal.woff2",
+        "dist/fonts/sora-latin-ext-wght-normal.woff2",
+        "dist/fonts/sora-latin-wght-normal.woff2",
+        "dist/fonts/unbounded-cyrillic-ext-wght-normal.woff2",
+        "dist/fonts/unbounded-cyrillic-wght-normal.woff2",
+        "dist/fonts/unbounded-latin-ext-wght-normal.woff2",
+        "dist/fonts/unbounded-latin-wght-normal.woff2",
+        "dist/fonts/unbounded-vietnamese-wght-normal.woff2",
+        "dist/shadcn.css",
+        "dist/theme-init.js"
+      ]
+    }
+  ]
+}
