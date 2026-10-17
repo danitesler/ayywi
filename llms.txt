@@ -6,7 +6,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ## Start here
 
-- [llms-full.txt](llms-full.txt): everything in one file — rules, tokens, every component's API and examples
+- [llms-full.txt](llms-full.txt): the whole contract in one file — rules, patterns, tokens, every component's API (examples are in the per-component pages)
 - [manifest/components.json](manifest/components.json): the same, as JSON
 - [README.md](README.md): install and usage per framework
 - [ai/AGENTS.snippet.md](ai/AGENTS.snippet.md): rules to paste into a consuming project's AGENTS.md (or run `npx @danitesler/ayywi init`)
@@ -23,7 +23,7 @@ Screens every app builds the same way, from several components:
 
 ## Components
 
-Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); the same sections are in llms-full.txt.
+Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); llms-full.txt has the same sections without the examples.
 
 ### Actions
 

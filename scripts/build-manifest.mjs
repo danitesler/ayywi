@@ -132,7 +132,7 @@ md.push(
 - React: \`import { Button } from "@danitesler/ayywi/react"\` plus the CSS.
 - Vue, Svelte, Angular, Solid, Lit: class names or helpers (\`import { buttonClass } from "@danitesler/ayywi"\`), and \`import "@danitesler/ayywi/elements"\` for interactive components (${elements.map((e) => `<${e}>`).join(", ")}).
 - Plain HTML: \`<link rel="stylesheet" href=".../dist/ayywi.min.css">\` + \`<script src=".../dist/elements.global.js" defer></script>\` (also gives window.ayywi: ${globals.join(", ")}). Add \`<link rel="stylesheet" href=".../dist/fonts.css">\` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and \`<script src=".../dist/theme-init.js"></script>\` in <head> so a saved theme applies before the first paint.
-- One component at a time: \`llms/<slug>.md\` (llms/button.md, llms/table.md…), listed in llms.txt.
+- Copy-ready HTML and React examples: one page per component, \`llms/<slug>.md\` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: \`npx @danitesler/ayywi lint\`.`,
 );
 md.push(`## Rules\n\n${list(RULES)}`);
@@ -178,18 +178,19 @@ md.push(`## Public custom properties\n\n${list(Object.entries(PUBLIC_HOOKS).map(
 md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => `\`.${k}\`: ${v}`))}`);
 md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
 /** One line per state: how to get it and what it looks like, or why it doesn't apply. Shared with the MCP server's wording. */
-const stateLines = (c) =>
-  Object.entries(c.states).map(([k, s]) => (s.none ? `\`${k}\` — doesn't apply: ${s.none}` : `\`${k}\`${s.when ? ` (\`${s.when}\`)` : ""} — ${s.looks}`));
+const stateLines = (c, { naStates = true } = {}) =>
+  Object.entries(c.states).filter(([, s]) => naStates || !s.none).map(([k, s]) => (s.none ? `\`${k}\` — doesn't apply: ${s.none}` : `\`${k}\`${s.when ? ` (\`${s.when}\`)` : ""} — ${s.looks}`));
 const sizeLines = (c) => [
   ...Object.entries(c.sizes.scale ?? {}).map(([k, v]) => `\`${k}\`${k === String(c.variants.size?.default) ? " (default)" : ""} — ${v}`),
   `Density — ${c.sizes.density}`,
   `Width — ${c.sizes.width}`,
 ];
-/** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md. */
-function componentMarkdown(c, h = "##") {
+/** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md.
+    llms-full.txt leaves out the examples (most of the bytes: icons are inline SVG) and the states that don't apply, so AI tools can read it whole. */
+function componentMarkdown(c, h = "##", { full = true } = {}) {
   const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}${c.aka?.length ? ` Also called: ${c.aka.join(", ")}.` : ""}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
-  part.push(`**States**\n${list(stateLines(c))}`);
+  part.push(`**States**\n${list(stateLines(c, { naStates: full }))}`);
   part.push(`**Sizes**\n${list(sizeLines(c))}`);
   const allElements = [
     ...(c.element ? [c.element] : []),
@@ -217,6 +218,10 @@ function componentMarkdown(c, h = "##") {
   if (c.a11y?.length) part.push(`**Accessibility**\n${list(c.a11y)}`);
   if (c.do?.length) part.push(`**Do**\n${list(c.do)}`);
   if (c.dont?.length) part.push(`**Don't**\n${list(c.dont)}`);
+  if (!full) {
+    if (c.examples.length) part.push(`**Examples**: ${c.examples.map((ex) => ex.title).join(", ")}. Copy-ready HTML and React in llms/${c.slug}.md.`);
+    return part.join("\n\n");
+  }
   for (const ex of c.examples) {
     part.push(`${h}# ${c.name} — ${ex.title}`);
     if (ex.html) part.push(`HTML (also Vue/Svelte/Angular templates, server templates):\n\n${fence("html", ex.html)}`);
@@ -224,7 +229,7 @@ function componentMarkdown(c, h = "##") {
   }
   return part.join("\n\n");
 }
-for (const c of components) md.push(componentMarkdown(c));
+for (const c of components) md.push(componentMarkdown(c, "##", { full: false }));
 
 // ---- llms/<slug>.md: one component per file, for tools that should fetch only what they use ----
 const componentPages = components.map((c) => [
@@ -254,7 +259,7 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 
 ## Start here
 
-- [llms-full.txt](llms-full.txt): everything in one file — rules, tokens, every component's API and examples
+- [llms-full.txt](llms-full.txt): the whole contract in one file — rules, patterns, tokens, every component's API (examples are in the per-component pages)
 - [manifest/components.json](manifest/components.json): the same, as JSON
 - [README.md](README.md): install and usage per framework
 - [ai/AGENTS.snippet.md](ai/AGENTS.snippet.md): rules to paste into a consuming project's AGENTS.md (or run \`npx @danitesler/ayywi init\`)
@@ -269,7 +274,7 @@ ${PATTERNS.map((p) => `- [${p.name}](llms/pattern-${p.slug}.md): ${p.summary}`).
 
 ## Components
 
-Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); the same sections are in llms-full.txt.
+Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); llms-full.txt has the same sections without the examples.
 
 ${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}](llms/${c.slug}.md): ${c.description}`).join("\n")}`).join("\n\n")}
 
@@ -283,7 +288,7 @@ ${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}
 const GENERATED = "<!-- GENERATED by scripts/build-manifest.mjs — edit scripts/lib/contract.mjs or component meta instead. -->";
 const numbered = RULES.map((r, i) => `${i + 1}. ${r}`).join("\n");
 const needsCompact = `Need → component (name one for every piece before you write it; MCP \`pick_component\` answers the same):\n${NEEDS.map((n) => `- ${n.need}: ${n.how} Not ${n.not}.`).join("\n")}`;
-const lookup = `Look up a component before using it — via the ayywi MCP server (\`get_component\`) if it's configured, else \`node_modules/@danitesler/ayywi/manifest/components.json\` (JSON) or \`node_modules/@danitesler/ayywi/llms-full.txt\` (markdown). Each entry lists classes, variants, React props, custom element, accessibility notes, do/don't and copy-ready examples. Run \`npx @danitesler/ayywi lint\` when you're done.`;
+const lookup = `Look up a component before using it — via the ayywi MCP server (\`get_component\`) if it's configured, else \`node_modules/@danitesler/ayywi/llms/<component>.md\` (markdown) or \`node_modules/@danitesler/ayywi/manifest/components.json\` (JSON). Each lists classes, variants, React props, custom element, accessibility notes, do/don't and copy-ready examples; \`llms-full.txt\` has every rule and component API in one file, without examples. Run \`npx @danitesler/ayywi lint\` when you're done.`;
 
 const snippet = `${GENERATED}
 ## UI: ayywi design system

@@ -2,6 +2,8 @@
 // Skill eval: runs a coding agent on each task twice — with the ayywi AI kit installed and without — and scores both.
 //
 //   AYYWI_EVAL_AGENT='claude -p --permission-mode acceptEdits' node evals/run.mjs [task-id…] [--runs=N]
+//   AYYWI_EVAL_OUT=/tmp/ayywi-evals …   (recommended: workspaces inside the repo inherit its agent instructions)
+//   node evals/report.mjs <runs-dir>/*/results.json > evals/RESULTS.md
 //
 // The agent command runs inside a fresh workspace with the task prompt on stdin. Anything that writes files
 // works: Claude Code (`claude -p`), Codex (`codex exec -`), a script calling an API. Results land in evals/runs/.
@@ -45,7 +47,8 @@ function install(dir) {
 }
 
 const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-const out = join(here, "runs", stamp);
+// AYYWI_EVAL_OUT puts the workspaces outside this repo, so agents don't pick up its CLAUDE.md / AGENTS.md.
+const out = join(process.env.AYYWI_EVAL_OUT ?? join(here, "runs"), stamp);
 const results = [];
 
 for (const task of tasks) {
@@ -61,15 +64,17 @@ for (const task of tasks) {
       const proc = spawnSync(agent, { cwd: dir, input: task.prompt, shell: true, encoding: "utf8", timeout: 10 * 60_000 });
       writeFileSync(join(dir, ".agent.log"), `${proc.stdout ?? ""}\n--- stderr ---\n${proc.stderr ?? ""}`);
       const { score, checks } = scoreOutput(task, dir);
-      results.push({ task: task.id, condition, run, score, seconds: Math.round((Date.now() - started) / 1000), failed: checks.filter((c) => !c.pass).map((c) => c.name) });
-      console.log(`${task.id.padEnd(18)} ${condition.padEnd(9)} #${run}  ${(score * 100).toFixed(0).padStart(3)}%`);
+      // An agent that exits non-zero (not signed in, timed out) didn't attempt the task: report it, don't score it.
+      const error = proc.status === 0 ? undefined : (proc.error?.message ?? `${proc.stdout ?? ""}${proc.stderr ?? ""}`.trim().slice(0, 200)) || `exit ${proc.status}`;
+      results.push({ task: task.id, condition, run, score, seconds: Math.round((Date.now() - started) / 1000), failed: checks.filter((c) => !c.pass).map((c) => c.name), ...(error && { error }) });
+      console.log(`${task.id.padEnd(18)} ${condition.padEnd(9)} #${run}  ${error ? `agent failed: ${error}` : `${(score * 100).toFixed(0).padStart(3)}%`}`);
     }
   }
 }
 
 writeFileSync(join(out, "results.json"), JSON.stringify(results, null, 2));
 const mean = (c) => {
-  const r = results.filter((x) => x.condition === c);
+  const r = results.filter((x) => x.condition === c && !x.error);
   return r.reduce((s, x) => s + x.score, 0) / (r.length || 1);
 };
 console.log(`\nmean score  with kit ${(mean("with-kit") * 100).toFixed(0)}%  ·  without ${(mean("without") * 100).toFixed(0)}%`);

@@ -30,7 +30,7 @@ A raw native control is never right in an ayywi project: it renders as the brows
 - Building a whole screen that has a pattern (Settings, Data explorer, Marketing page)? Follow the pattern first: `get_rules` lists each one's recipe, phone behaviour and specs (llms-full.txt → Patterns without MCP).
 - If the `ayywi` MCP server is connected, use it: `list_components` or `search` to find the piece, `get_component` for its spec and copy-ready examples, `get_tokens`, `get_rules` (rules, utilities, custom properties), and `lint` to check what you wrote.
 - Quick lookup: [reference.md](reference.md) — every component's classes, React props and a11y in one screen.
-- Full detail for a component you're about to use: its entry in `node_modules/@danitesler/ayywi/manifest/components.json`, or its section of `node_modules/@danitesler/ayywi/llms-full.txt` (the ayywi preview site hosts the same `llms-full.txt` when the package isn't installed). Start from an example rather than from scratch.
+- Full detail for a component you're about to use: its entry in `node_modules/@danitesler/ayywi/manifest/components.json`, or its page `node_modules/@danitesler/ayywi/llms/<component>.md`, which has the copy-ready examples (the ayywi preview site hosts the same `llms/` pages when the package isn't installed; `llms-full.txt` has every component's API but no examples). Start from an example rather than from scratch.
 - Tokens: the `tokens` array in the same manifest (name, css var, values per theme, purpose).
 
 ## 2. Pick the integration style the project already uses
