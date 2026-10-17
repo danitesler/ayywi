@@ -420,6 +420,13 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
 }
 
+// ---- llms-full.txt stays small enough for an AI tool to read whole (examples live in llms/<slug>.md) ----
+{
+  const LLMS_FULL_BUDGET = 420_000; // bytes, about 100k tokens; it was 1.15 MB with examples inlined
+  const size = statSync(join(root, "llms-full.txt")).size;
+  if (size > LLMS_FULL_BUDGET) fail("llms-full.txt", `${Math.round(size / 1000)} kB is over its ${LLMS_FULL_BUDGET / 1000} kB budget — keep long content in llms/<slug>.md (componentMarkdown in scripts/build-manifest.mjs)`);
+}
+
 // ---- Base (tokens only, like everything else) ----
 const base = read("src/css/base.css");
 lintCss("src/css/base.css", base);

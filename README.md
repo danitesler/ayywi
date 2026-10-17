@@ -42,7 +42,7 @@ Style this project with the ayywi design system. Link these in <head>:
 <script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/dist/elements.global.js" integrity="sha384-usq1JjmfgKcnrKeu4w9JVVylzMTrWlH7vdIWtQNIn49JTP4msAjGRVg5oxHao2/A" crossorigin="anonymous" defer></script>
 
 Rules:
-- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
+- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/llms-full.txt for the rules, patterns and every component's API, and the page of each component you use for copy-ready HTML: llms/<component>.md in the same folder, like https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/llms/table.md.
 - ayywi is self-contained: use its layout utilities (.ayy-stack, .ayy-cluster, .ayy-spread, .ayy-grid, .ayy-split) and components directly without external CSS frameworks or UI kits.
 - An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
 - Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).

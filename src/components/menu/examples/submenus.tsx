@@ -32,7 +32,7 @@ export default function Example() {
     <DropdownMenu>
       <DropdownMenuTrigger variant="outline">Capture options</DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Takerr</DropdownMenuLabel>
+        <DropdownMenuLabel>Screenshot</DropdownMenuLabel>
         <DropdownMenuItem
           icon={<Icon icon={CropIcon} />}
           description="Drag to select part of the screen"

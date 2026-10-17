@@ -102,8 +102,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 
+- **llms-full.txt**
+  1.15 MB with every example inlined, too big for AI tools to read whole → 372 kB with every rule, pattern and component API; examples stay in `llms/<component>.md`, and `pnpm check` fails above 420 kB.
+- **[Dropdown menu](#/menu)**
+  Submenus example was labelled with another app's name → labelled "Screenshot".
 - **[Toast](#/toast)**
-  Leaving toast only faded out in place → subtle left-to-right drift (translateX 28px, scale down to 0.95, fade out) over 280ms matching Takerr. Fade-out also works while the stack is expanded, and neighbours slide into the gap more smoothly.
+  Leaving toast only faded out in place → subtle left-to-right drift (translateX 28px, scale down to 0.95, fade out) over 280ms. Fade-out also works while the stack is expanded, and neighbours slide into the gap more smoothly.
 - **[Action bar](#/action-bar)**
   Dense buttons with compact padding and abrupt removal on deselect → standard button horizontal paddings (`--ayy-control-pad-md`), 8px action gaps, and smooth reverse exit animation with `@starting-style` and `transition-behavior: allow-discrete`.
 - **Tokens**
