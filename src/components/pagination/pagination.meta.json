@@ -1,7 +1,6 @@
 {
   "name": "Pagination",
   "slug": "pagination",
-  "status": "beta",
   "category": "Navigation",
   "description": "Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.",
   "aka": ["pagination", "pager"],

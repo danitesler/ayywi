@@ -1,7 +1,6 @@
 {
   "name": "Toast",
   "slug": "toast",
-  "status": "stable",
   "category": "Feedback",
   "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Supports text notifications, visual content previews (CardToast) for images, videos, and GIFs, and embedded in-place feedback (InlineToast).",
   "aka": ["toast", "snackbar", "notification", "card-toast", "quick-access"],

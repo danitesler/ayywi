@@ -1,7 +1,6 @@
 {
   "name": "App shell",
   "slug": "app-shell",
-  "status": "beta",
   "category": "Navigation",
   "description": "The frame of a web app: a sidebar beside a main area, each scrolling on its own. On phones the sidebar becomes a Bottom nav (recommended), a drawer or a sideways row. Settings reuse it inside a full-size Dialog.",
   "aka": ["app-shell", "sidebar", "side-nav", "sidenav", "nav-item", "sidebar-item", "nav-list"],

@@ -4,7 +4,6 @@ import { CATEGORIES, ORDER } from "../../scripts/lib/contract.mjs";
 export interface ComponentMeta {
   name: string;
   slug: string;
-  status: string;
   category: string;
   description: string;
   aka?: string[];

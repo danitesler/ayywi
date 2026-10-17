@@ -1,7 +1,6 @@
 {
   "name": "Progress ring",
   "slug": "progress-ring",
-  "status": "beta",
   "category": "Feedback",
   "description": "Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle.",
   "aka": ["progress-ring", "circular-progress", "progress-circle", "radial-progress", "ring-progress", "timer-ring"],

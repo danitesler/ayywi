@@ -1,7 +1,6 @@
 {
   "name": "Filter bar",
   "slug": "filter-bar",
-  "status": "beta",
   "category": "Forms",
   "description": "A coordinating bar for filtering lists, tables, and feeds. Combines quick filter tabs with count badges, faceted filter dropdown triggers with active counts, search, and active removable filter chips with a clear all action.",
   "aka": ["filter-bar", "filterbar", "filters", "filter-toolbar", "filter-group", "filter-strip", "faceted-filter"],

@@ -1,7 +1,6 @@
 {
   "name": "Empty state",
   "slug": "empty-state",
-  "status": "beta",
   "category": "Feedback",
   "description": "What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.",
   "aka": ["empty-state", "empty", "blank-slate", "no-results"],

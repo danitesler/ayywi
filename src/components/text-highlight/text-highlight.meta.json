@@ -1,7 +1,6 @@
 {
   "name": "Text highlight",
   "slug": "text-highlight",
-  "status": "beta",
   "category": "Data display",
   "description": "An inline text highlight for search matches or callout phrases. Subtle gray wash with clean underline by default, with warning (yellow), destructive (red), success (green), info (blue), and orange variants.",
   "aka": ["text-highlight", "highlight", "mark", "search-highlight"],

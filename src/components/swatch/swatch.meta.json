@@ -1,7 +1,6 @@
 {
   "name": "Color swatch",
   "slug": "swatch",
-  "status": "beta",
   "category": "Forms",
   "description": "Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a \"no colour\" and an \"any colour\" (opens ayywi's built-in ColorPicker) swatch. The picked one gets a ring and a tick.",
   "aka": ["color-swatch", "swatch", "swatches", "color-dot", "colour-dot", "color-picker", "colour-picker"],

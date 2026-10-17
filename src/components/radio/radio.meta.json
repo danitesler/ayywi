@@ -1,7 +1,6 @@
 {
   "name": "Radio",
   "slug": "radio",
-  "status": "stable",
   "category": "Forms",
   "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
   "aka": ["radio", "radio-group"],

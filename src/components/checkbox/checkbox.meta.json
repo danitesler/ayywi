@@ -1,7 +1,6 @@
 {
   "name": "Checkbox",
   "slug": "checkbox",
-  "status": "stable",
   "category": "Forms",
   "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
   "aka": ["checkbox", "check-box", "tickbox"],

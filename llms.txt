@@ -18,6 +18,8 @@ Dark-first, monochrome frame with colour coming from content. Tokens are CSS cus
 Screens every app builds the same way, from several components:
 
 - [Settings](llms/pattern-settings.md): Settings open over the app in a near-full-screen dialog, as Notion's and Claude's do: a Settings title and the settings sections in its sidebar, one section in its main, a close button in the corner. Full screen on phones. Never a small or side dialog, never tabs inside a page.
+- [Data explorer](llms/pattern-data-explorer.md): A searchable, filterable, sortable view of records or media assets with multi-select and bulk actions: a Page header at the top, a Filter bar with status tabs, faceted dropdowns, search and sorting, a Table (for columns) or Grid (for cards and media) with inline quick actions and a ⋯ menu, a floating Action bar while items are selected, and Skeleton / Empty state / Alert states.
+- [Marketing page](llms/pattern-marketing-page.md): A public website, landing page or product site: a skip link, a sticky glass Navbar that folds into a menu on phones, sections at .ayy-container width separated by fading Separators (hero with .ayy-bg-grid, feature Cards with IconTiles, pricing Cards with a Segmented control, FAQ Accordion), and a multi-column Footer.
 
 ## Components
 

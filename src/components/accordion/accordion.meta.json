@@ -1,7 +1,6 @@
 {
   "name": "Accordion",
   "slug": "accordion",
-  "status": "beta",
   "category": "Layout",
   "description": "Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.",
   "aka": ["accordion", "collapsible", "disclosure", "expander"],

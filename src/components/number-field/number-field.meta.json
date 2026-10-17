@@ -1,7 +1,6 @@
 {
   "name": "Number field",
   "slug": "number-field",
-  "status": "beta",
   "category": "Forms",
   "description": "A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.",
   "aka": ["number-field", "stepper", "spinbox", "quantity"],

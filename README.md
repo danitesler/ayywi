@@ -8,7 +8,7 @@ When you ask an AI tool to build UI, you usually get five mismatched shades of g
 
 ![The Dashboard showcase app, built only from ayywi components](https://raw.githubusercontent.com/danitesler/ayywi/main/preview/src/showcase/screenshots/dashboard.png)
 
-- **Small:** zero runtime dependencies, ~26 kB of CSS gzipped for all 72 components.
+- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 72 components.
 - **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
 - **States and accessibility built in:** components ship empty, loading, and error states; interactive ones have focus rings, keyboard support, ARIA, RTL, and Windows High Contrast styles. axe runs on every component page and showcase app (no serious or critical violations), and `pnpm check` tests every text colour against every surface in every theme.
 - **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.

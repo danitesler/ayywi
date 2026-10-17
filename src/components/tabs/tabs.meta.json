@@ -1,7 +1,6 @@
 {
   "name": "Tabs",
   "slug": "tabs",
-  "status": "stable",
   "category": "Layout",
   "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
   "aka": ["tabs", "tab", "tab-list", "tablist"],

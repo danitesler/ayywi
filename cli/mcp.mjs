@@ -16,7 +16,7 @@ function componentMarkdown(c) {
   );
   const parts = [
     `# ${c.name}`,
-    `${c.category ? `Category: ${c.category}. ` : ""}Status: ${c.status}. ${c.description}`,
+    `${c.category ? `Category: ${c.category}. ` : ""}${c.description}`,
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
   ];
   if (variants.length) parts.push(`Variants:\n${list(variants)}`);

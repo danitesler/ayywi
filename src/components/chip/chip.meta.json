@@ -1,7 +1,6 @@
 {
   "name": "Chip",
   "slug": "chip",
-  "status": "beta",
   "category": "Forms",
   "description": "Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.",
   "aka": ["chip", "tag", "token", "filter-chip"],

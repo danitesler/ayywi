@@ -1,7 +1,6 @@
 {
   "name": "Spinner",
   "slug": "spinner",
-  "status": "beta",
   "category": "Feedback",
   "description": "An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.",
   "aka": ["spinner", "loader", "throbber", "loading-ring"],

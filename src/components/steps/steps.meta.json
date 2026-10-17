@@ -1,7 +1,6 @@
 {
   "name": "Steps",
   "slug": "steps",
-  "status": "beta",
   "category": "Navigation",
   "description": "Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current=\"step\" is the only state.",
   "aka": ["steps", "wizard-steps", "progress-steps"],

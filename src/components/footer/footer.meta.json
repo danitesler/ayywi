@@ -1,7 +1,6 @@
 {
   "name": "Footer",
   "slug": "footer",
-  "status": "beta",
   "category": "Navigation",
   "description": "The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.",
   "aka": ["footer", "site-footer"],

@@ -1,7 +1,6 @@
 {
   "name": "Sorting",
   "slug": "sorting",
-  "status": "beta",
   "category": "Forms",
   "description": "A dedicated dropdown trigger for ordering lists, tables, and feeds, styled to coordinate with filter bars and paired with dropdown menus.",
   "aka": ["sorting", "sort", "sort-menu", "sort-button", "sort-dropdown", "sort-select"],

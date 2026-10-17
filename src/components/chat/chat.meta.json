@@ -1,7 +1,6 @@
 {
   "name": "Chat",
   "slug": "chat",
-  "status": "beta",
   "category": "Data display",
   "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
   "aka": ["chat", "bubble", "message-bubble"],

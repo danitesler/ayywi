@@ -1,7 +1,6 @@
 {
   "name": "Card",
   "slug": "card",
-  "status": "stable",
   "category": "Layout",
   "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
   "aka": ["card", "panel-card"],

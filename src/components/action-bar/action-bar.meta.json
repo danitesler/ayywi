@@ -1,7 +1,6 @@
 {
   "name": "Action bar",
   "slug": "action-bar",
-  "status": "beta",
   "category": "Actions",
   "description": "Floating bottom multi-select bar that animates into view when one or more rows or cards are selected in a Table, Grid or List. Shows the selected count, a clear button (Esc), and bulk actions such as Edit, Duplicate, Copy, Archive and Delete.",
   "aka": ["action-bar", "actionbar", "bulk-actions", "bulk-action-bar", "selection-bar", "batch-actions", "multi-select-bar"],

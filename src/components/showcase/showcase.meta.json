@@ -1,7 +1,6 @@
 {
   "name": "Showcase",
   "slug": "showcase",
-  "status": "beta",
   "category": "Layout",
   "description": "An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets.",
   "aka": ["showcase", "responsive-preview", "device-preview", "viewport-preview"],

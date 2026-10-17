@@ -1,7 +1,6 @@
 {
   "name": "Table",
   "slug": "table",
-  "status": "stable",
   "category": "Data display",
   "description": "Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.",
   "aka": ["table", "data-table", "datagrid"],

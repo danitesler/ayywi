@@ -146,6 +146,89 @@ export const PATTERNS = [
       "Don't add a Save button for settings that apply at once.",
     ],
   },
+  {
+    name: "Data explorer",
+    slug: "data-explorer",
+    summary:
+      "A searchable, filterable, sortable view of records or media assets with multi-select and bulk actions: a Page header at the top, a Filter bar with status tabs, faceted dropdowns, search and sorting, a Table (for columns) or Grid (for cards and media) with inline quick actions and a ⋯ menu, a floating Action bar while items are selected, and Skeleton / Empty state / Alert states.",
+    components: ["page-header", "filter-bar", "search-bar", "sorting", "chip", "table", "grid", "action-bar", "menu", "pagination", "skeleton", "empty-state", "alert"],
+    example: "table/actions",
+    steps: [
+      "Header: start the screen with a PageHeader (PageHeaderTitle as the one <h1>, PageHeaderDescription, and PageHeaderActions with at most one primary create Button and optional export/view controls).",
+      "Controls: place a FilterBar below the header. Its FilterBarMain holds FilterBarTabs (quick status tabs with counts), a FilterBarGroup of faceted FilterBarTriggers (opening DropdownMenus with DropdownMenuSelectedItem checkboxes), a SearchBar to filter by text, and a Sorting trigger (opening a DropdownMenu of sort fields and directions). When faceted filters are active, render FilterBarActive with ChipRemovable pills and a FilterBarClear button.",
+      "Records: render a Table (when comparing attributes across columns) or a Grid (when browsing media assets, screenshots, social posts or cards). Include a select-all Checkbox in the header/toolbar and a selection Checkbox on each row (TableCell select) or card (GridItemSelect).",
+      "Item actions: put 1–2 common inline icon Buttons (Edit, Copy) and a ⋯ DropdownMenu trigger (Duplicate, Archive, Delete last as destructive) inside TableRowActions (in a trailing TableCell actions) or GridItemActions (with reveal on desktop so actions show on hover, focus-within or selection).",
+      "Bulk actions: mount an ActionBar (open={selected.size > 0}) with ActionBarSelection (ActionBarCount + ActionBarClose for Esc/clear) and ActionBarActions of ActionBarButtons (Edit, Duplicate, Copy, Archive, and destructive Delete last).",
+      "States & paging: render Skeleton rows or cards with aria-busy=\"true\" while loading, an EmptyState (with a \"Clear filters\" action when filters match nothing, or a primary create action when the collection is empty), an Alert variant=\"destructive\" with a retry Button when loading fails, and Pagination below the table.",
+    ],
+    phone: [
+      "FilterBarMain and FilterBarActive wrap naturally; when a chip strip sits alone on a phone, use ChipGroup scroll so it scrolls horizontally without wrapping into a tall block.",
+      "Table scrolls horizontally inside .ayy-table-wrap; Grid drops columns automatically down to a single column below 48rem.",
+      "Reveal actions (.ayy-table__row-actions--reveal and .ayy-grid__actions--reveal) stay visible on touch screens (@media (hover: none)) so every item's actions remain tappable without hover.",
+      "The floating ActionBar stays anchored at the bottom of the viewport above safe areas; keep its action labels concise.",
+    ],
+    specs: {
+      "Filter bar (.ayy-filter-bar)":
+        "Vertical stack (--ayy-space-2 gap) with --ayy-space-3 padding, 1px --ayy-color-line border, --ayy-radius-card, --ayy-color-surface (or .ayy-filter-bar--flush inside a card). Tabs sit in a wash track; faceted triggers use --ayy-size-control-md height (--ayy-size-control-sm in sm).",
+      "Table row & Grid card selection":
+        "Selected table rows (tr[aria-selected=\"true\"]) get --ayy-color-wash-hover; selected grid cards (.ayy-grid__item[aria-selected=\"true\"]) get a 2px --ayy-color-text border, 1px ring and 4% text tint.",
+      "Item actions (.ayy-table__row-actions, .ayy-grid__actions)":
+        "Inline-flex cluster (--ayy-space-1 gap). With --reveal, opacity is 0 at rest on hover-capable devices and 1 on row/card :hover, :focus-within, [aria-selected=\"true\"], or when a menu trigger inside has [aria-expanded=\"true\"].",
+      "Action bar (.ayy-action-bar)":
+        "Fixed bottom-center pill (--ayy-space-6 from the bottom, z-index 40), --ayy-color-surface-raised, 1px --ayy-color-line-hover border, --ayy-radius-card, --ayy-shadow-lg. Selection count pill at the start, hairline divider, action buttons (--ayy-control-pad-md) with 8px gap.",
+    },
+    do: [
+      "Use this pattern for every table, directory, asset library, inbox list or record manager in an app.",
+      "Keep the same actions in the per-item ⋯ DropdownMenu and the bulk ActionBar so single and multi-item workflows match.",
+      "Distinguish an empty collection (offer the create button) from an empty filter result (offer \"Clear filters\").",
+    ],
+    dont: [
+      "Don't build custom filter rows out of raw selects or unstyled buttons — use FilterBar, SearchBar and Sorting.",
+      "Don't place static bulk action buttons above the table that sit disabled when nothing is selected — use the floating ActionBar.",
+      "Don't hide row or card actions with display: none on hover, which removes them from keyboard Tab order and touch screens.",
+    ],
+  },
+  {
+    name: "Marketing page",
+    slug: "marketing-page",
+    summary:
+      "A public website, landing page or product site: a skip link, a sticky glass Navbar that folds into a menu on phones, sections at .ayy-container width separated by fading Separators (hero with .ayy-bg-grid, feature Cards with IconTiles, pricing Cards with a Segmented control, FAQ Accordion), and a multi-column Footer.",
+    components: ["navbar", "button", "badge", "card", "icon-tile", "frame", "segmented-control", "list", "accordion", "separator", "footer"],
+    example: "navbar/site",
+    steps: [
+      "Top of page: start <body> with an .ayy-skip-link pointing to #main (and an empty .ayy-scroll-progress div for long reads), followed by a Navbar (NavbarBrand, NavbarNav of NavbarLinks with current on the active page, NavbarActions with a theme DropdownMenu and one small ring Button for the primary CTA, and a NavbarToggle last).",
+      "Hero: inside <main id=\"main\">, open with a hero section wrapped in .ayy-bg-grid and .ayy-container: a status or announcement Badge, a heading in .ayy-display or .ayy-h1 (with .ayy-gradient-text or .ayy-accent-text on the key phrase), an .ayy-lede intro paragraph (capped at --ayy-size-measure), a cluster with one ring Button and one outline Button, and the product visual inside a Frame.",
+      "Sections: separate major blocks with <Separator fade /> inside .ayy-container. Give each section an .ayy-eyebrow label, an .ayy-h2 heading, and an .ayy-lede description before its content grid, and add .ayy-reveal to blocks so they fade and lift in on scroll.",
+      "Features & spotlights: lay out features in an .ayy-grid of Cards (interactive and spotlight when clickable, with --ayy-spot set to a distinct --ayy-accent-* token per card) holding an IconTile, CardTitle and CardDescription.",
+      "Pricing & FAQ: build pricing with a SegmentedControl (Monthly / Yearly) above an .ayy-grid of plan Cards (the recommended plan gets featured and a Badge; perks use a List compact with check icons). Build the FAQ with an Accordion single centered at --ayy-size-measure.",
+      "Footer: close the page with a Footer containing FooterBrand (logo, tagline), FooterNav of FooterGroups (Product, Docs, Company, Legal), and FooterBottom (copyright and secondary links).",
+    ],
+    phone: [
+      "Below 48rem the Navbar automatically hides inline links and opens them in a surface panel below the header when NavbarToggle is pressed; NavbarBrand and NavbarActions stay visible in the bar.",
+      ".ayy-container switches its inline gutter from 24px to 16px below 64rem, and .ayy-display scales fluidly down to 44px on phones without custom media queries.",
+      "Feature and pricing .ayy-grid layouts collapse to a single column automatically when the viewport is narrower than two --ayy-min tracks.",
+    ],
+    specs: {
+      "Site header (.ayy-navbar)":
+        "Sticky top 0, --ayy-size-header (72px) tall, --ayy-color-glass backdrop with 16px blur, 1px --ayy-color-hairline bottom border. Inner row centred at --ayy-size-container (1400px) with 24px gutter (16px below 64rem).",
+      "Hero & section typography":
+        "Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (12px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).",
+      "Primary call to action (.ayy-button--ring)":
+        "Marketing pages use the ring variant for the primary CTA in the hero and repeat it (size sm) in NavbarActions; supporting actions use outline or ghost.",
+      "Footer (.ayy-footer)":
+        "1px --ayy-color-hairline top border, --ayy-space-12 block padding, inner content at --ayy-size-container width.",
+    },
+    do: [
+      "Use this anatomy for every landing page, marketing site, documentation home or portfolio.",
+      "Keep the chrome (Navbar, Footer, page background) monochrome and let colour come from content via --ayy-spot (--ayy-accent-*) on cards, icon tiles and section highlights.",
+      "Include a NavbarToggle in every Navbar so phone navigation works without custom CSS.",
+    ],
+    dont: [
+      "Don't use a Navbar in a signed-in product or dashboard — use AppShell with BottomNav.",
+      "Don't tint the Navbar, Footer or page background per section.",
+      "Don't put more than one ring CTA button in the Navbar or hero.",
+    ],
+  },
 ];
 
 /** What to reach for, by what the UI has to do. `use` names components by slug (checked by the build); `not` is what

@@ -1,7 +1,6 @@
 {
   "name": "Select",
   "slug": "select",
-  "status": "stable",
   "category": "Forms",
   "description": "Styled native <select>. With a mouse or trackpad its options open in ayywi's own list; touch screens keep the OS picker. Value, form behaviour and change events stay native.",
   "aka": ["select", "native-select", "picker", "listbox", "custom-select"],

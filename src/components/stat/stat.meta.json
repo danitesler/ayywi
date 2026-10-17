@@ -1,7 +1,6 @@
 {
   "name": "Stat",
   "slug": "stat",
-  "status": "beta",
   "category": "Data display",
   "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
   "aka": ["stat", "metric", "kpi", "stat-card"],

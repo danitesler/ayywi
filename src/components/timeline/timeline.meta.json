@@ -1,7 +1,6 @@
 {
   "name": "Timeline",
   "slug": "timeline",
-  "status": "beta",
   "category": "Data display",
   "description": "Chronological list of events, milestones, or history with vertical connecting tracks, status markers, timestamps, and descriptions.",
   "aka": ["timeline", "event-log", "activity-feed", "history-feed", "audit-trail"],

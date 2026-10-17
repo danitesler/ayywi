@@ -1,7 +1,6 @@
 {
   "name": "Progress",
   "slug": "progress",
-  "status": "stable",
   "category": "Feedback",
   "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
   "aka": ["progress", "progress-bar", "progressbar", "meter"],

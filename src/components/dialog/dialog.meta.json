@@ -1,7 +1,6 @@
 {
   "name": "Dialog",
   "slug": "dialog",
-  "status": "stable",
   "category": "Overlays",
   "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.",
   "aka": ["dialog", "modal", "sheet", "bottom-sheet", "drawer", "lightbox"],

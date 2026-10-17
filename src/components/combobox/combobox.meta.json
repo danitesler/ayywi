@@ -1,7 +1,6 @@
 {
   "name": "Combobox",
   "slug": "combobox",
-  "status": "beta",
   "category": "Forms",
   "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
   "aka": ["combobox", "autocomplete", "typeahead", "suggest", "suggestions"],

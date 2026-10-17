@@ -1,7 +1,6 @@
 {
   "name": "Shortcut",
   "slug": "shortcut",
-  "status": "beta",
   "category": "Forms",
   "description": "Keyboard shortcuts written once as \"Mod+Shift+K\" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet.",
   "aka": ["shortcut", "shortcuts", "shortcut-list", "shortcut-recorder", "hotkey-recorder", "key-recorder", "keybinding", "keybind"],

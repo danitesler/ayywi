@@ -1,7 +1,6 @@
 {
   "name": "Icon",
   "slug": "icon",
-  "status": "stable",
   "category": "Data display",
   "description": "Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.",
   "aka": ["svg-icon"],

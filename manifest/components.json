@@ -538,6 +538,105 @@
         "Don't restyle sidebar items or settings rows (radius, padding, dividers) in app CSS: the specs above are the contract, and they follow density on their own.",
         "Don't add a Save button for settings that apply at once."
       ]
+    },
+    {
+      "name": "Data explorer",
+      "slug": "data-explorer",
+      "summary": "A searchable, filterable, sortable view of records or media assets with multi-select and bulk actions: a Page header at the top, a Filter bar with status tabs, faceted dropdowns, search and sorting, a Table (for columns) or Grid (for cards and media) with inline quick actions and a ⋯ menu, a floating Action bar while items are selected, and Skeleton / Empty state / Alert states.",
+      "components": [
+        "page-header",
+        "filter-bar",
+        "search-bar",
+        "sorting",
+        "chip",
+        "table",
+        "grid",
+        "action-bar",
+        "menu",
+        "pagination",
+        "skeleton",
+        "empty-state",
+        "alert"
+      ],
+      "example": "table/actions",
+      "steps": [
+        "Header: start the screen with a PageHeader (PageHeaderTitle as the one <h1>, PageHeaderDescription, and PageHeaderActions with at most one primary create Button and optional export/view controls).",
+        "Controls: place a FilterBar below the header. Its FilterBarMain holds FilterBarTabs (quick status tabs with counts), a FilterBarGroup of faceted FilterBarTriggers (opening DropdownMenus with DropdownMenuSelectedItem checkboxes), a SearchBar to filter by text, and a Sorting trigger (opening a DropdownMenu of sort fields and directions). When faceted filters are active, render FilterBarActive with ChipRemovable pills and a FilterBarClear button.",
+        "Records: render a Table (when comparing attributes across columns) or a Grid (when browsing media assets, screenshots, social posts or cards). Include a select-all Checkbox in the header/toolbar and a selection Checkbox on each row (TableCell select) or card (GridItemSelect).",
+        "Item actions: put 1–2 common inline icon Buttons (Edit, Copy) and a ⋯ DropdownMenu trigger (Duplicate, Archive, Delete last as destructive) inside TableRowActions (in a trailing TableCell actions) or GridItemActions (with reveal on desktop so actions show on hover, focus-within or selection).",
+        "Bulk actions: mount an ActionBar (open={selected.size > 0}) with ActionBarSelection (ActionBarCount + ActionBarClose for Esc/clear) and ActionBarActions of ActionBarButtons (Edit, Duplicate, Copy, Archive, and destructive Delete last).",
+        "States & paging: render Skeleton rows or cards with aria-busy=\"true\" while loading, an EmptyState (with a \"Clear filters\" action when filters match nothing, or a primary create action when the collection is empty), an Alert variant=\"destructive\" with a retry Button when loading fails, and Pagination below the table."
+      ],
+      "phone": [
+        "FilterBarMain and FilterBarActive wrap naturally; when a chip strip sits alone on a phone, use ChipGroup scroll so it scrolls horizontally without wrapping into a tall block.",
+        "Table scrolls horizontally inside .ayy-table-wrap; Grid drops columns automatically down to a single column below 48rem.",
+        "Reveal actions (.ayy-table__row-actions--reveal and .ayy-grid__actions--reveal) stay visible on touch screens (@media (hover: none)) so every item's actions remain tappable without hover.",
+        "The floating ActionBar stays anchored at the bottom of the viewport above safe areas; keep its action labels concise."
+      ],
+      "specs": {
+        "Filter bar (.ayy-filter-bar)": "Vertical stack (--ayy-space-2 gap) with --ayy-space-3 padding, 1px --ayy-color-line border, --ayy-radius-card, --ayy-color-surface (or .ayy-filter-bar--flush inside a card). Tabs sit in a wash track; faceted triggers use --ayy-size-control-md height (--ayy-size-control-sm in sm).",
+        "Table row & Grid card selection": "Selected table rows (tr[aria-selected=\"true\"]) get --ayy-color-wash-hover; selected grid cards (.ayy-grid__item[aria-selected=\"true\"]) get a 2px --ayy-color-text border, 1px ring and 4% text tint.",
+        "Item actions (.ayy-table__row-actions, .ayy-grid__actions)": "Inline-flex cluster (--ayy-space-1 gap). With --reveal, opacity is 0 at rest on hover-capable devices and 1 on row/card :hover, :focus-within, [aria-selected=\"true\"], or when a menu trigger inside has [aria-expanded=\"true\"].",
+        "Action bar (.ayy-action-bar)": "Fixed bottom-center pill (--ayy-space-6 from the bottom, z-index 40), --ayy-color-surface-raised, 1px --ayy-color-line-hover border, --ayy-radius-card, --ayy-shadow-lg. Selection count pill at the start, hairline divider, action buttons (--ayy-control-pad-md) with 8px gap."
+      },
+      "do": [
+        "Use this pattern for every table, directory, asset library, inbox list or record manager in an app.",
+        "Keep the same actions in the per-item ⋯ DropdownMenu and the bulk ActionBar so single and multi-item workflows match.",
+        "Distinguish an empty collection (offer the create button) from an empty filter result (offer \"Clear filters\")."
+      ],
+      "dont": [
+        "Don't build custom filter rows out of raw selects or unstyled buttons — use FilterBar, SearchBar and Sorting.",
+        "Don't place static bulk action buttons above the table that sit disabled when nothing is selected — use the floating ActionBar.",
+        "Don't hide row or card actions with display: none on hover, which removes them from keyboard Tab order and touch screens."
+      ]
+    },
+    {
+      "name": "Marketing page",
+      "slug": "marketing-page",
+      "summary": "A public website, landing page or product site: a skip link, a sticky glass Navbar that folds into a menu on phones, sections at .ayy-container width separated by fading Separators (hero with .ayy-bg-grid, feature Cards with IconTiles, pricing Cards with a Segmented control, FAQ Accordion), and a multi-column Footer.",
+      "components": [
+        "navbar",
+        "button",
+        "badge",
+        "card",
+        "icon-tile",
+        "frame",
+        "segmented-control",
+        "list",
+        "accordion",
+        "separator",
+        "footer"
+      ],
+      "example": "navbar/site",
+      "steps": [
+        "Top of page: start <body> with an .ayy-skip-link pointing to #main (and an empty .ayy-scroll-progress div for long reads), followed by a Navbar (NavbarBrand, NavbarNav of NavbarLinks with current on the active page, NavbarActions with a theme DropdownMenu and one small ring Button for the primary CTA, and a NavbarToggle last).",
+        "Hero: inside <main id=\"main\">, open with a hero section wrapped in .ayy-bg-grid and .ayy-container: a status or announcement Badge, a heading in .ayy-display or .ayy-h1 (with .ayy-gradient-text or .ayy-accent-text on the key phrase), an .ayy-lede intro paragraph (capped at --ayy-size-measure), a cluster with one ring Button and one outline Button, and the product visual inside a Frame.",
+        "Sections: separate major blocks with <Separator fade /> inside .ayy-container. Give each section an .ayy-eyebrow label, an .ayy-h2 heading, and an .ayy-lede description before its content grid, and add .ayy-reveal to blocks so they fade and lift in on scroll.",
+        "Features & spotlights: lay out features in an .ayy-grid of Cards (interactive and spotlight when clickable, with --ayy-spot set to a distinct --ayy-accent-* token per card) holding an IconTile, CardTitle and CardDescription.",
+        "Pricing & FAQ: build pricing with a SegmentedControl (Monthly / Yearly) above an .ayy-grid of plan Cards (the recommended plan gets featured and a Badge; perks use a List compact with check icons). Build the FAQ with an Accordion single centered at --ayy-size-measure.",
+        "Footer: close the page with a Footer containing FooterBrand (logo, tagline), FooterNav of FooterGroups (Product, Docs, Company, Legal), and FooterBottom (copyright and secondary links)."
+      ],
+      "phone": [
+        "Below 48rem the Navbar automatically hides inline links and opens them in a surface panel below the header when NavbarToggle is pressed; NavbarBrand and NavbarActions stay visible in the bar.",
+        ".ayy-container switches its inline gutter from 24px to 16px below 64rem, and .ayy-display scales fluidly down to 44px on phones without custom media queries.",
+        "Feature and pricing .ayy-grid layouts collapse to a single column automatically when the viewport is narrower than two --ayy-min tracks."
+      ],
+      "specs": {
+        "Site header (.ayy-navbar)": "Sticky top 0, --ayy-size-header (72px) tall, --ayy-color-glass backdrop with 16px blur, 1px --ayy-color-hairline bottom border. Inner row centred at --ayy-size-container (1400px) with 24px gutter (16px below 64rem).",
+        "Hero & section typography": "Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (12px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).",
+        "Primary call to action (.ayy-button--ring)": "Marketing pages use the ring variant for the primary CTA in the hero and repeat it (size sm) in NavbarActions; supporting actions use outline or ghost.",
+        "Footer (.ayy-footer)": "1px --ayy-color-hairline top border, --ayy-space-12 block padding, inner content at --ayy-size-container width."
+      },
+      "do": [
+        "Use this anatomy for every landing page, marketing site, documentation home or portfolio.",
+        "Keep the chrome (Navbar, Footer, page background) monochrome and let colour come from content via --ayy-spot (--ayy-accent-*) on cards, icon tiles and section highlights.",
+        "Include a NavbarToggle in every Navbar so phone navigation works without custom CSS."
+      ],
+      "dont": [
+        "Don't use a Navbar in a signed-in product or dashboard — use AppShell with BottomNav.",
+        "Don't tint the Navbar, Footer or page background per section.",
+        "Don't put more than one ring CTA button in the Navbar or hero."
+      ]
     }
   ],
   "attributes": {
@@ -2130,7 +2229,6 @@
     {
       "name": "Button",
       "slug": "button",
-      "status": "stable",
       "category": "Actions",
       "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
       "aka": [
@@ -2341,7 +2439,6 @@
     {
       "name": "Toolbar",
       "slug": "toolbar",
-      "status": "beta",
       "category": "Actions",
       "description": "A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role=\"toolbar\" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.",
       "aka": [
@@ -2530,7 +2627,6 @@
     {
       "name": "Action bar",
       "slug": "action-bar",
-      "status": "beta",
       "category": "Actions",
       "description": "Floating bottom multi-select bar that animates into view when one or more rows or cards are selected in a Table, Grid or List. Shows the selected count, a clear button (Esc), and bulk actions such as Edit, Duplicate, Copy, Archive and Delete.",
       "aka": [
@@ -2703,7 +2799,6 @@
     {
       "name": "Dropdown menu",
       "slug": "menu",
-      "status": "stable",
       "category": "Actions",
       "description": "List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab), submenus and inline expandable sections.",
       "aka": [
@@ -2959,7 +3054,6 @@
     {
       "name": "Command palette",
       "slug": "command",
-      "status": "beta",
       "category": "Actions",
       "description": "A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count.",
       "aka": [
@@ -3135,7 +3229,6 @@
     {
       "name": "Floating action button",
       "slug": "fab",
-      "status": "beta",
       "category": "Actions",
       "description": "The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.",
       "aka": [
@@ -3275,7 +3368,6 @@
     {
       "name": "Navbar",
       "slug": "navbar",
-      "status": "beta",
       "category": "Navigation",
       "description": "Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.",
       "aka": [
@@ -3417,7 +3509,6 @@
     {
       "name": "App shell",
       "slug": "app-shell",
-      "status": "beta",
       "category": "Navigation",
       "description": "The frame of a web app: a sidebar beside a main area, each scrolling on its own. On phones the sidebar becomes a Bottom nav (recommended), a drawer or a sideways row. Settings reuse it inside a full-size Dialog.",
       "aka": [
@@ -3722,7 +3813,6 @@
     {
       "name": "Bottom nav",
       "slug": "bottom-nav",
-      "status": "beta",
       "category": "Navigation",
       "description": "A phone app's tab bar: top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Supports three sizes and compact mode for more items. Inside an App shell it replaces the sidebar on phones.",
       "aka": [
@@ -3871,7 +3961,6 @@
     {
       "name": "Top bar",
       "slug": "top-bar",
-      "status": "beta",
       "category": "Navigation",
       "description": "A phone screen's header: a back button, the screen's title (and a subtitle), and one to three actions, sticky at the top and clear of the notch. Centred title for iOS-style screens, a large title on its own line for a tab's first screen, and an optional second row for a search bar or a segmented control.",
       "aka": [
@@ -4008,7 +4097,6 @@
     {
       "name": "Footer",
       "slug": "footer",
-      "status": "beta",
       "category": "Navigation",
       "description": "The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.",
       "aka": [
@@ -4122,7 +4210,6 @@
     {
       "name": "Breadcrumb",
       "slug": "breadcrumb",
-      "status": "beta",
       "category": "Navigation",
       "description": "Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.",
       "aka": [
@@ -4226,7 +4313,6 @@
     {
       "name": "Pagination",
       "slug": "pagination",
-      "status": "beta",
       "category": "Navigation",
       "description": "Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.",
       "aka": [
@@ -4326,7 +4412,6 @@
     {
       "name": "Steps",
       "slug": "steps",
-      "status": "beta",
       "category": "Navigation",
       "description": "Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current=\"step\" is the only state.",
       "aka": [
@@ -4430,7 +4515,6 @@
     {
       "name": "Table of contents",
       "slug": "toc",
-      "status": "beta",
       "category": "Navigation",
       "description": "On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.",
       "aka": [
@@ -4559,7 +4643,6 @@
     {
       "name": "Field",
       "slug": "field",
-      "status": "stable",
       "category": "Forms",
       "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
       "aka": [
@@ -4671,7 +4754,6 @@
     {
       "name": "Input",
       "slug": "input",
-      "status": "stable",
       "category": "Forms",
       "description": "Single-line text field and input group. Works for every native input type (text, password, email, search, tel, url, file…) and supports inline addons, icons and action buttons.",
       "aka": [
@@ -4823,7 +4905,6 @@
     {
       "name": "Search bar",
       "slug": "search-bar",
-      "status": "beta",
       "category": "Forms",
       "description": "A rounded search field with a magnifier and a clear button, and optionally a Cancel button after it, as at the top of a phone list. A <form role=\"search\"> around an <input type=\"search\">, so phones show a Search key. The clear button only shows while there's text.",
       "aka": [
@@ -4954,7 +5035,6 @@
     {
       "name": "Filter bar",
       "slug": "filter-bar",
-      "status": "beta",
       "category": "Forms",
       "description": "A coordinating bar for filtering lists, tables, and feeds. Combines quick filter tabs with count badges, faceted filter dropdown triggers with active counts, search, and active removable filter chips with a clear all action.",
       "aka": [
@@ -5153,7 +5233,6 @@
     {
       "name": "Sorting",
       "slug": "sorting",
-      "status": "beta",
       "category": "Forms",
       "description": "A dedicated dropdown trigger for ordering lists, tables, and feeds, styled to coordinate with filter bars and paired with dropdown menus.",
       "aka": [
@@ -5272,7 +5351,6 @@
     {
       "name": "Textarea",
       "slug": "textarea",
-      "status": "stable",
       "category": "Forms",
       "description": "Multi-line text field. Optional auto-grow and monospace modes.",
       "aka": [
@@ -5377,7 +5455,6 @@
     {
       "name": "Select",
       "slug": "select",
-      "status": "stable",
       "category": "Forms",
       "description": "Styled native <select>. With a mouse or trackpad its options open in ayywi's own list; touch screens keep the OS picker. Value, form behaviour and change events stay native.",
       "aka": [
@@ -5503,7 +5580,6 @@
     {
       "name": "Combobox",
       "slug": "combobox",
-      "status": "beta",
       "category": "Forms",
       "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
       "aka": [
@@ -5642,7 +5718,6 @@
     {
       "name": "Tag input",
       "slug": "tag-input",
-      "status": "beta",
       "category": "Forms",
       "description": "A field that turns what you type into removable chips: tags, labels, email recipients. Enter or a comma adds one, pasting a comma-separated list adds them all, Backspace in the empty field removes the last. Optional suggestions open under it as you type, like a Combobox.",
       "aka": [
@@ -5789,7 +5864,6 @@
     {
       "name": "Date & time picker",
       "slug": "date-time-picker",
-      "status": "beta",
       "category": "Forms",
       "description": "Pick a single date, date range, time, or combined date and time, inline or in popovers (DatePicker, DateRangePicker, TimePicker, DateTimePicker). Six weeks month grids so height never jumps, one Tab stop with arrow keys, side-by-side or stacked month grids, connected ribbon wash bands for ranges, and scrollable hour/minute columns.",
       "aka": [
@@ -6229,7 +6303,6 @@
     {
       "name": "Color picker",
       "slug": "color-picker",
-      "status": "beta",
       "category": "Forms",
       "description": "A panel to pick any colour: a 2D saturation/brightness area with a crosshair handle, hue and alpha range sliders, a preview swatch, hex input, and preset swatches.",
       "aka": [
@@ -6359,7 +6432,6 @@
     {
       "name": "Checkbox",
       "slug": "checkbox",
-      "status": "stable",
       "category": "Forms",
       "description": "Native checkbox with a drawn box, check mark and indeterminate state.",
       "aka": [
@@ -6465,7 +6537,6 @@
     {
       "name": "Radio",
       "slug": "radio",
-      "status": "stable",
       "category": "Forms",
       "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
       "aka": [
@@ -6577,7 +6648,6 @@
     {
       "name": "Segmented control",
       "slug": "segmented-control",
-      "status": "beta",
       "category": "Forms",
       "description": "Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list.",
       "aka": [
@@ -6707,7 +6777,6 @@
     {
       "name": "Chip",
       "slug": "chip",
-      "status": "beta",
       "category": "Forms",
       "description": "Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick.",
       "aka": [
@@ -6858,7 +6927,6 @@
     {
       "name": "Color swatch",
       "slug": "swatch",
-      "status": "beta",
       "category": "Forms",
       "description": "Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a \"no colour\" and an \"any colour\" (opens ayywi's built-in ColorPicker) swatch. The picked one gets a ring and a tick.",
       "aka": [
@@ -7033,7 +7101,6 @@
     {
       "name": "Choice card",
       "slug": "choice-card",
-      "status": "beta",
       "category": "Forms",
       "description": "A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.",
       "aka": [
@@ -7194,7 +7261,6 @@
     {
       "name": "Slider",
       "slug": "slider",
-      "status": "beta",
       "category": "Forms",
       "description": "A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.",
       "aka": [
@@ -7309,7 +7375,6 @@
     {
       "name": "Number field",
       "slug": "number-field",
-      "status": "beta",
       "category": "Forms",
       "description": "A native number input between minus and plus buttons, for small counts: quantities, guests, seats. Typing, arrow keys, min, max and step work as for any number input.",
       "aka": [
@@ -7426,7 +7491,6 @@
     {
       "name": "File upload",
       "slug": "dropzone",
-      "status": "beta",
       "category": "Forms",
       "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
       "aka": [
@@ -7547,7 +7611,6 @@
     {
       "name": "Switch",
       "slug": "switch",
-      "status": "stable",
       "category": "Forms",
       "description": "On/off toggle for a setting that applies immediately. A native checkbox with role=\"switch\".",
       "aka": [
@@ -7639,7 +7702,6 @@
     {
       "name": "Shortcut",
       "slug": "shortcut",
-      "status": "beta",
       "category": "Forms",
       "description": "Keyboard shortcuts written once as \"Mod+Shift+K\" and shown for the device: ⌘ ⇧ K on Apple devices, Ctrl Shift K elsewhere, read aloud as words. Plus a recorder button that listens for a new shortcut (Esc cancels, Backspace clears), and a list of shortcuts for a help sheet.",
       "aka": [
@@ -7785,7 +7847,6 @@
     {
       "name": "Settings",
       "slug": "settings",
-      "status": "beta",
       "category": "Forms",
       "description": "Preferences as rows: a label and a one-line hint at the start, the control (Switch, Select, Shortcut recorder, Button) at the end, grouped under a heading in a card with hairlines between rows. A row can also be a link to a sub-page with the current value and a chevron, or an action like Sign out, as phone settings are.",
       "aka": [
@@ -7963,7 +8024,6 @@
     {
       "name": "Page header",
       "slug": "page-header",
-      "status": "beta",
       "category": "Layout",
       "description": "The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.",
       "aka": [
@@ -8061,7 +8121,6 @@
     {
       "name": "Showcase",
       "slug": "showcase",
-      "status": "beta",
       "category": "Layout",
       "description": "An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets.",
       "aka": [
@@ -8191,7 +8250,6 @@
     {
       "name": "Card",
       "slug": "card",
-      "status": "stable",
       "category": "Layout",
       "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
       "aka": [
@@ -8358,7 +8416,6 @@
     {
       "name": "Tabs",
       "slug": "tabs",
-      "status": "stable",
       "category": "Layout",
       "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
       "aka": [
@@ -8500,7 +8557,6 @@
     {
       "name": "Accordion",
       "slug": "accordion",
-      "status": "beta",
       "category": "Layout",
       "description": "Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.",
       "aka": [
@@ -8613,7 +8669,6 @@
     {
       "name": "Carousel",
       "slug": "carousel",
-      "status": "beta",
       "category": "Layout",
       "description": "A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.",
       "aka": [
@@ -8723,7 +8778,6 @@
     {
       "name": "Separator",
       "slug": "separator",
-      "status": "beta",
       "category": "Layout",
       "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
       "aka": [
@@ -8828,7 +8882,6 @@
     {
       "name": "Dialog",
       "slug": "dialog",
-      "status": "stable",
       "category": "Overlays",
       "description": "Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones.",
       "aka": [
@@ -9040,7 +9093,6 @@
     {
       "name": "Popover",
       "slug": "popover",
-      "status": "stable",
       "category": "Overlays",
       "description": "Non-modal floating panel anchored to a button. Built on the native popover attribute: top layer, click-outside and Esc to close.",
       "aka": [
@@ -9179,7 +9231,6 @@
     {
       "name": "Tooltip",
       "slug": "tooltip",
-      "status": "stable",
       "category": "Overlays",
       "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
       "aka": [
@@ -9297,7 +9348,6 @@
     {
       "name": "Alert",
       "slug": "alert",
-      "status": "stable",
       "category": "Feedback",
       "description": "Inline message box with optional icon, title, description and actions.",
       "aka": [
@@ -9413,7 +9463,6 @@
     {
       "name": "Toast",
       "slug": "toast",
-      "status": "stable",
       "category": "Feedback",
       "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Supports text notifications, visual content previews (CardToast) for images, videos, and GIFs, and embedded in-place feedback (InlineToast).",
       "aka": [
@@ -9676,7 +9725,6 @@
     {
       "name": "Progress",
       "slug": "progress",
-      "status": "stable",
       "category": "Feedback",
       "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
       "aka": [
@@ -9820,7 +9868,6 @@
     {
       "name": "Progress ring",
       "slug": "progress-ring",
-      "status": "beta",
       "category": "Feedback",
       "description": "Progress as a ring that fills clockwise from the top: a focus timer, a daily goal, a habit's week, a small upload next to a file name. Determinate (--ayy-value 0–100) or indeterminate, with an optional value, time or icon in the middle.",
       "aka": [
@@ -9956,7 +10003,6 @@
     {
       "name": "Spinner",
       "slug": "spinner",
-      "status": "beta",
       "category": "Feedback",
       "description": "An indeterminate loading ring in the text colour, sized like an icon. For short waits on a small area or inside a button; Skeleton covers content that's loading.",
       "aka": [
@@ -10065,7 +10111,6 @@
     {
       "name": "Skeleton",
       "slug": "skeleton",
-      "status": "stable",
       "category": "Feedback",
       "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
       "aka": [
@@ -10161,7 +10206,6 @@
     {
       "name": "Empty state",
       "slug": "empty-state",
-      "status": "beta",
       "category": "Feedback",
       "description": "What a list, table or page shows when there's nothing in it yet, or nothing matches: an optional icon tile, a title, one sentence on why, and the action that fills it.",
       "aka": [
@@ -10289,7 +10333,6 @@
     {
       "name": "Badge",
       "slug": "badge",
-      "status": "stable",
       "category": "Data display",
       "description": "Small pill label for status, category or count. Optional pulsing status dot.",
       "aka": [
@@ -10408,7 +10451,6 @@
     {
       "name": "Status dot",
       "slug": "status-dot",
-      "status": "stable",
       "category": "Data display",
       "description": "A compact standalone status indicator dot for online presence, live event streaming, server health, and table row statuses.",
       "aka": [
@@ -10537,7 +10579,6 @@
     {
       "name": "Keyboard hint",
       "slug": "kbd",
-      "status": "beta",
       "category": "Data display",
       "description": "A keyboard key or shortcut hint drawn as a small keycap: in help text, menus, tooltips and search fields, with platform-specific modifier adaptation (macOS ⌘/⌥, Windows Ctrl/Win, Linux Super) and international layout awareness.",
       "aka": [
@@ -10649,7 +10690,6 @@
     {
       "name": "Text highlight",
       "slug": "text-highlight",
-      "status": "beta",
       "category": "Data display",
       "description": "An inline text highlight for search matches or callout phrases. Subtle gray wash with clean underline by default, with warning (yellow), destructive (red), success (green), info (blue), and orange variants.",
       "aka": [
@@ -10763,7 +10803,6 @@
     {
       "name": "Avatar",
       "slug": "avatar",
-      "status": "stable",
       "category": "Data display",
       "description": "Round (or square) picture of a person or workspace, with initials that show when there's no image or it fails to load.",
       "aka": [
@@ -10899,7 +10938,6 @@
     {
       "name": "Icon",
       "slug": "icon",
-      "status": "stable",
       "category": "Data display",
       "description": "Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one.",
       "aka": [
@@ -11037,7 +11075,6 @@
     {
       "name": "Icon tile",
       "slug": "icon-tile",
-      "status": "beta",
       "category": "Data display",
       "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
       "aka": [
@@ -11140,7 +11177,6 @@
     {
       "name": "Stat",
       "slug": "stat",
-      "status": "beta",
       "category": "Data display",
       "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
       "aka": [
@@ -11247,7 +11283,6 @@
     {
       "name": "List",
       "slug": "list",
-      "status": "beta",
       "category": "Data display",
       "description": "Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.",
       "aka": [
@@ -11397,7 +11432,6 @@
     {
       "name": "Swipe actions",
       "slug": "swipe",
-      "status": "beta",
       "category": "Data display",
       "description": "A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.",
       "aka": [
@@ -11538,7 +11572,6 @@
     {
       "name": "Timeline",
       "slug": "timeline",
-      "status": "beta",
       "category": "Data display",
       "description": "Chronological list of events, milestones, or history with vertical connecting tracks, status markers, timestamps, and descriptions.",
       "aka": [
@@ -11692,7 +11725,6 @@
     {
       "name": "Frame",
       "slug": "frame",
-      "status": "beta",
       "category": "Data display",
       "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
       "aka": [
@@ -11781,7 +11813,6 @@
     {
       "name": "Chat",
       "slug": "chat",
-      "status": "beta",
       "category": "Data display",
       "description": "A conversation: incoming bubbles at the start edge, the reader's own inverted at the end, a typing indicator and quick-reply buttons.",
       "aka": [
@@ -11899,7 +11930,6 @@
     {
       "name": "Code block",
       "slug": "code-block",
-      "status": "stable",
       "category": "Data display",
       "description": "Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.",
       "aka": [
@@ -12086,7 +12116,6 @@
     {
       "name": "Table",
       "slug": "table",
-      "status": "stable",
       "category": "Data display",
       "description": "Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.",
       "aka": [
@@ -12275,7 +12304,6 @@
     {
       "name": "Grid",
       "slug": "grid",
-      "status": "beta",
       "category": "Data display",
       "description": "Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar.",
       "aka": [
@@ -12469,7 +12497,6 @@
     {
       "name": "Chart",
       "slug": "chart",
-      "status": "beta",
       "category": "Data display",
       "description": "Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
       "aka": [

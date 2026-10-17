@@ -1,7 +1,6 @@
 {
   "name": "Bottom nav",
   "slug": "bottom-nav",
-  "status": "beta",
   "category": "Navigation",
   "description": "A phone app's tab bar: top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Supports three sizes and compact mode for more items. Inside an App shell it replaces the sidebar on phones.",
   "aka": ["bottom-nav", "tab-bar", "tabbar", "bottom-bar"],

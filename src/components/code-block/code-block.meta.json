@@ -1,7 +1,6 @@
 {
   "name": "Code block",
   "slug": "code-block",
-  "status": "stable",
   "category": "Data display",
   "description": "Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.",
   "aka": ["code-block", "codeblock", "syntax-highlighter", "code-snippet", "code-view", "code-box"],

@@ -1,7 +1,6 @@
 {
   "name": "Status dot",
   "slug": "status-dot",
-  "status": "stable",
   "category": "Data display",
   "description": "A compact standalone status indicator dot for online presence, live event streaming, server health, and table row statuses.",
   "aka": ["status-dot", "status-indicator", "presence-dot", "live-dot", "health-dot"],

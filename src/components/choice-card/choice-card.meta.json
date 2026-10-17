@@ -1,7 +1,6 @@
 {
   "name": "Choice card",
   "slug": "choice-card",
-  "status": "beta",
   "category": "Forms",
   "description": "A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input.",
   "aka": ["choice-card", "option-card", "plan-card"],

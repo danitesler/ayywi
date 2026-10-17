@@ -1,7 +1,6 @@
 {
   "name": "File upload",
   "slug": "dropzone",
-  "status": "beta",
   "category": "Forms",
   "description": "A drop zone that is also a file picker: a label around a native file input that covers it, so clicking opens the picker and dropping files lands on the input, with no script. Show what was picked in a List with Progress.",
   "aka": ["dropzone", "drop-zone", "uploader", "file-drop"],

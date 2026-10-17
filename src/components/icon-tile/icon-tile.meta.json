@@ -1,7 +1,6 @@
 {
   "name": "Icon tile",
   "slug": "icon-tile",
-  "status": "beta",
   "category": "Data display",
   "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
   "aka": ["icon-tile", "app-icon"],

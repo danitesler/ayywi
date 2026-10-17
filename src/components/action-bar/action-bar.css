@@ -118,11 +118,11 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  gap: var(--ayy-space-2);
+  gap: var(--ayy-space-1-5);
   block-size: var(--ayy-size-control-sm);
   margin: 0;
   padding-block: 0;
-  padding-inline: var(--ayy-control-pad-md);
+  padding-inline: var(--ayy-control-pad-sm);
   border: 1px solid transparent;
   border-radius: var(--ayy-radius-button);
   background-color: transparent;

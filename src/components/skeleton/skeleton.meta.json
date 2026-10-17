@@ -1,7 +1,6 @@
 {
   "name": "Skeleton",
   "slug": "skeleton",
-  "status": "stable",
   "category": "Feedback",
   "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
   "aka": ["skeleton", "shimmer"],

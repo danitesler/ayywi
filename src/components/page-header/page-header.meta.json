@@ -1,7 +1,6 @@
 {
   "name": "Page header",
   "slug": "page-header",
-  "status": "beta",
   "category": "Layout",
   "description": "The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.",
   "aka": ["page-header", "page-title", "view-header"],

@@ -5,7 +5,7 @@ export function componentSpec(c: ComponentEntry): string {
   const list = (items: string[]) => items.map((i) => `- ${i}`).join("\n");
   const parts = [
     `# ayywi ${c.name}`,
-    `${c.category}. Status: ${c.status}. ${c.description}`,
+    `${c.category}. ${c.description}`,
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
   ];
   const variants = Object.entries(c.variants ?? {});

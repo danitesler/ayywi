@@ -1,7 +1,6 @@
 {
   "name": "Floating action button",
   "slug": "fab",
-  "status": "beta",
   "category": "Actions",
   "description": "The one main action of a phone screen (New task, Compose, Scan), as a round button floating at the bottom inline-end corner over the content. Extended adds a label. Fixed to the viewport and clear of the home indicator; as a direct child of an App shell it sits in the shell's corner and above its bottom nav on phones.",
   "aka": ["fab", "floating-action", "floating-button", "float-button"],

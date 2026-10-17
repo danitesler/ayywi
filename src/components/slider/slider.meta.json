@@ -1,7 +1,6 @@
 {
   "name": "Slider",
   "slug": "slider",
-  "status": "beta",
   "category": "Forms",
   "description": "A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input.",
   "aka": ["slider", "range", "range-input"],

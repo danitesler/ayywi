@@ -11,6 +11,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **AI Kit & Patterns**
+  Only Settings had a full-screen pattern recipe → added **Data explorer** (Filter bar, Search bar, Sorting, Table/Grid, Row actions, Action bar, and states) and **Marketing page** (Navbar, Hero, Feature spotlights, Pricing, FAQ, and Footer) patterns across `manifest/components.json`, `llms-full.txt`, `llms/pattern-*.md`, and MCP `get_rules`.
 - **[Toast](#/toast)**
   Open stack could only be closed one toast at a time → a "Clear all" button appears in its top-end corner while the stack is open with two or more toasts (`clearLabel` to translate it).
 - **[Date & time picker](#/date-time-picker)**
@@ -102,6 +104,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 
+- **Manifest & Docs**
+  Components carried separate `beta` / `stable` status fields → removed component status markers so all 72 components are treated as ready by default, and synced `SKILL.md` and `README.md` bundle metrics.
 - **[Toast](#/toast)**
   Leaving toast only faded out in place → subtle left-to-right drift (translateX 28px, scale down to 0.95, fade out) over 280ms matching Takerr. Fade-out also works while the stack is expanded, and neighbours slide into the gap more smoothly.
 - **[Action bar](#/action-bar)**

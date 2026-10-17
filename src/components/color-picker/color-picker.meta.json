@@ -1,7 +1,6 @@
 {
   "name": "Color picker",
   "slug": "color-picker",
-  "status": "beta",
   "category": "Forms",
   "description": "A panel to pick any colour: a 2D saturation/brightness area with a crosshair handle, hue and alpha range sliders, a preview swatch, hex input, and preset swatches.",
   "aka": ["color-selector", "colour-selector", "palette-picker", "color-chooser", "hsv-picker"],

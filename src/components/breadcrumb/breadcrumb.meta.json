@@ -1,7 +1,6 @@
 {
   "name": "Breadcrumb",
   "slug": "breadcrumb",
-  "status": "beta",
   "category": "Navigation",
   "description": "Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes.",
   "aka": ["breadcrumb", "breadcrumbs", "crumbs"],

@@ -1,7 +1,6 @@
 {
   "name": "Grid",
   "slug": "grid",
-  "status": "beta",
   "category": "Data display",
   "description": "Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar.",
   "aka": ["data-grid", "card-grid", "media-grid", "asset-grid", "gallery-grid", "tile-grid"],

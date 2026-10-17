@@ -113,7 +113,7 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     // Reported per component below.
   }
 }
-const REQUIRED_META = ["name", "slug", "status", "category", "description", "aka", "classes", "variants", "states", "sizes", "react", "a11y", "do", "dont", "examples"];
+const REQUIRED_META = ["name", "slug", "category", "description", "aka", "classes", "variants", "states", "sizes", "react", "a11y", "do", "dont", "examples"];
 // CSS that styles a state, so a component can't call that state "none".
 const STATE_CSS = {
   hover: /:hover\b/,
@@ -164,6 +164,7 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
   for (const key of REQUIRED_META) if (!(key in meta)) fail(files.meta, `missing "${key}"`);
   for (const key of ["whenToUse", "whenNotToUse"]) if (key in meta) fail(files.meta, `"${key}" is gone — fold it into "do" / "dont"`);
+  if ("status" in meta) fail(files.meta, `"status" is gone — all components are ready by default`);
   if (meta.slug !== slug) fail(files.meta, `slug "${meta.slug}" should be "${slug}"`);
   if ("aka" in meta) {
     // Names apps give a hand-built copy: `ayywi lint` flags classes that end in one (rebuilt-component).

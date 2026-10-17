@@ -1,7 +1,6 @@
 {
   "name": "Keyboard hint",
   "slug": "kbd",
-  "status": "beta",
   "category": "Data display",
   "description": "A keyboard key or shortcut hint drawn as a small keycap: in help text, menus, tooltips and search fields, with platform-specific modifier adaptation (macOS ⌘/⌥, Windows Ctrl/Win, Linux Super) and international layout awareness.",
   "aka": ["kbd", "keyboard-hint", "keycap", "hotkey", "shortcut-key"],

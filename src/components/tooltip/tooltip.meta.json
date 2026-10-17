@@ -1,7 +1,6 @@
 {
   "name": "Tooltip",
   "slug": "tooltip",
-  "status": "stable",
   "category": "Overlays",
   "description": "Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges.",
   "aka": ["tooltip", "tip"],

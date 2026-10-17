@@ -1,7 +1,6 @@
 {
   "name": "List",
   "slug": "list",
-  "status": "beta",
   "category": "Data display",
   "description": "Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.",
   "aka": ["list-item", "list-row"],

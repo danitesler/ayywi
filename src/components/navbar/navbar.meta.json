@@ -1,7 +1,6 @@
 {
   "name": "Navbar",
   "slug": "navbar",
-  "status": "beta",
   "category": "Navigation",
   "description": "Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar.",
   "aka": ["navbar", "site-header", "nav-bar", "header-nav"],
