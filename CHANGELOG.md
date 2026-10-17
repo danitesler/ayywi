@@ -9,6 +9,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+## 0.1.0 — 2026-10-17
+
 ### Added
 
 - **AI Kit & Patterns**

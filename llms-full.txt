@@ -1,4 +1,4 @@
-# @danitesler/ayywi 0.0.3 — full context for LLMs
+# @danitesler/ayywi 0.1.0 — full context for LLMs
 
 > The AI-first design system (say "AY-wee": AI + UI). One CSS class contract for HTML, Vue, Svelte, Angular, server templates, plus typed React components, a linter and an MCP server.
 

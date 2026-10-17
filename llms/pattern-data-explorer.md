@@ -35,4 +35,4 @@ Built from: Page header, Filter bar, Search bar, Sorting, Chip, Table, Grid, Act
 - Don't hide row or card actions with display: none on hover, which removes them from keyboard Tab order and touch screens.
 
 ---
-A pattern of @danitesler/ayywi 0.0.3. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).
+A pattern of @danitesler/ayywi 0.1.0. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).
