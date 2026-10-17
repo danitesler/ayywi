@@ -25,8 +25,6 @@ Category: Data display. A headline number in the heading font, with a muted unit
 - Density — Doesn't follow data-density.
 - Width — Hugs its content; the value wraps its unit below when narrow.
 
-**JS (framework-free)**: statClass({ size?, className? }) → string; statValueClass, statUnitClass, statLabelClass constants.
-
 **React** — `import { Stat } from "@danitesler/ayywi/react";`
 - `<Stat>` renders <div class="ayy-stat">. Props: `value` ReactNode (required) — the formatted number.; `unit` ReactNode; `label` ReactNode; `labelFirst` boolean — label above the number.; `size` "md" | "sm"
 

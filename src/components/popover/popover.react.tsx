@@ -1,6 +1,8 @@
 import {
+  cloneElement,
   createContext,
   forwardRef,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
@@ -9,6 +11,7 @@ import {
   useState,
   type HTMLAttributes,
   type MutableRefObject,
+  type ReactElement,
   type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
@@ -66,10 +69,33 @@ export function Popover({ open: controlled, defaultOpen = false, onOpenChange, c
   );
 }
 
-/** The button that opens the popover. Accepts all Button props. */
-export const PopoverTrigger = forwardRef<HTMLButtonElement, ButtonProps>(function PopoverTrigger(props, ref) {
+export interface PopoverTriggerProps extends ButtonProps {
+  /** Clone the child element and merge trigger props onto it instead of rendering a Button. */
+  asChild?: boolean;
+}
+
+/** The button that opens the popover. Accepts all Button props, or pass asChild to clone a custom trigger element. */
+export const PopoverTrigger = forwardRef<HTMLButtonElement, PopoverTriggerProps>(function PopoverTrigger(
+  { asChild = false, children, ...props },
+  ref,
+) {
   const ctx = usePopover("PopoverTrigger");
-  return <Button ref={mergeRefs(ref, ctx.triggerRef)} aria-haspopup="dialog" {...props} />;
+  if (asChild) {
+    return isValidElement(children)
+      ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+          "aria-haspopup": "dialog",
+          ...props,
+          ...(children.props as Record<string, unknown>),
+          className: cx(props.className, (children.props as { className?: string })?.className) || undefined,
+          ref: mergeRefs(ref, ctx.triggerRef, (children as any).ref ?? (children.props as any)?.ref),
+        })
+      : null;
+  }
+  return (
+    <Button ref={mergeRefs(ref, ctx.triggerRef)} aria-haspopup="dialog" {...props}>
+      {children}
+    </Button>
+  );
 });
 
 export interface PopoverContentProps extends HTMLAttributes<HTMLDivElement> {

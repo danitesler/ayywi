@@ -1,6 +1,20 @@
 import { forwardRef, useEffect, useId, useRef, type HTMLAttributes, type ReactNode } from "react";
+import { ArrowDown01Icon, Menu01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
-import { connectToc, tocClass, tocLinkClass, tocListClass, tocNumberClass, tocTitleClass } from "./toc";
+import { Icon } from "../icon/icon.react";
+import {
+  connectToc,
+  tocBarClass,
+  tocClass,
+  tocLinkClass,
+  tocListClass,
+  tocNumberClass,
+  tocTitleClass,
+  tocToggleCaretClass,
+  tocToggleClass,
+  tocToggleCurrentClass,
+  tocToggleIconClass,
+} from "./toc";
 
 export interface TocItem {
   /** Id of the section on the page. */
@@ -12,8 +26,10 @@ export interface TocItem {
 
 export interface TocProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   items: TocItem[];
-  /** Visible heading above the list, e.g. "Contents". */
+  /** Visible heading above the list, e.g. "Table of contents". */
   title?: ReactNode;
+  /** Accessible label for the mobile toggle button. Default: "Table of contents". */
+  toggleLabel?: string;
   /** Number the top-level items 01, 02… */
   numbered?: boolean;
   sticky?: boolean;
@@ -24,7 +40,18 @@ export interface TocProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
 }
 
 export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
-  { items, title, numbered, sticky, offset, onValueChange, className, "aria-label": label = "On this page", ...props },
+  {
+    items,
+    title,
+    toggleLabel = "Table of contents",
+    numbered,
+    sticky,
+    offset,
+    onValueChange,
+    className,
+    "aria-label": label = "On this page",
+    ...props
+  },
   ref,
 ) {
   const local = useRef<HTMLElement>(null);
@@ -36,6 +63,8 @@ export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
     if (!local.current) return;
     return connectToc(local.current, { offset, onChange: (id) => onChange.current?.(id) });
   }, [offset]);
+
+  const defaultToggleText = items[0]?.label ?? (typeof title === "string" ? title : "Table of contents");
 
   const list = (entries: TocItem[], top: boolean) => (
     <ol className={tocListClass}>
@@ -59,6 +88,17 @@ export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
       aria-labelledby={title ? titleId : undefined}
       {...props}
     >
+      <div className={tocBarClass}>
+        <button type="button" className={tocToggleClass} aria-expanded="false" aria-label={toggleLabel}>
+          <span className={tocToggleIconClass}>
+            <Icon icon={Menu01Icon} />
+          </span>
+          <span className={tocToggleCurrentClass}>{defaultToggleText}</span>
+          <span className={tocToggleCaretClass}>
+            <Icon icon={ArrowDown01Icon} />
+          </span>
+        </button>
+      </div>
       {title ? (
         <p className={tocTitleClass} id={titleId}>
           {title}

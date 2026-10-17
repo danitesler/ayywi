@@ -28,8 +28,6 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 - Density — Input height (md control height, 32px compact, 40 comfortable, 44 touch) and options (sm control height, 28px compact, 32 comfortable, 40 touch) follow data-density.
 - Width — Fills its container; the list is at most 28rem wide.
 
-**JS (framework-free)**: connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.
-
 **Custom element** `<ayy-combobox>` (@danitesler/ayywi/elements) — 
 - attribute `manual`: Don't filter: replace the options yourself as people type (a search API), then call refresh().
 - event `ayy-select`: { value, label, option } when an option is chosen — value is its data-value, else its label.

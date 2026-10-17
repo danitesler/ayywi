@@ -21,8 +21,6 @@ Category: Forms. Multi-line text field. Optional auto-grow and monospace modes. 
 - Density — Text follows control md; the minimum height (5rem) and padding don't change.
 - Width — Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls).
 
-**JS (framework-free)**: textareaClass({ autosize?, mono?, className? }) → string
-
 **React** — `import { Textarea } from "@danitesler/ayywi/react";`
 - `<Textarea>` renders <textarea>. Props: `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
 

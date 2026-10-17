@@ -12,7 +12,7 @@
   background-color: var(--ayy-color-wash);
   color: var(--ayy-color-text);
   font-family: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--ayy-control-text-field);
   line-height: var(--ayy-leading-normal);
   resize: vertical;
   transition:

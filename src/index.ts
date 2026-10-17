@@ -9,7 +9,9 @@ export * from "./brand";
 
 export * from "./components/button/button";
 export * from "./components/card/card";
+export * from "./components/showcase/showcase";
 export * from "./components/badge/badge";
+export * from "./components/status-dot/status-dot";
 export * from "./components/input/input";
 export * from "./components/textarea/textarea";
 export * from "./components/select/select";
@@ -47,7 +49,6 @@ export * from "./components/list/list";
 export * from "./components/empty-state/empty-state";
 export * from "./components/spinner/spinner";
 export * from "./components/kbd/kbd";
-export * from "./components/input-group/input-group";
 export * from "./components/segmented-control/segmented-control";
 export * from "./components/chip/chip";
 export * from "./components/choice-card/choice-card";
@@ -59,22 +60,27 @@ export * from "./components/pagination/pagination";
 export * from "./components/accordion/accordion";
 export * from "./components/steps/steps";
 export * from "./components/footer/footer";
-export * from "./components/calendar/calendar";
+export * from "./components/date-time-picker/date-time-picker";
 export * from "./components/swatch/swatch";
 export * from "./components/toolbar/toolbar";
 export * from "./components/command/command";
 export * from "./components/tag-input/tag-input";
 export * from "./components/swipe/swipe";
 export * from "./components/search-bar/search-bar";
+export * from "./components/filter-bar/filter-bar";
+export * from "./components/sorting/sorting";
 export * from "./components/top-bar/top-bar";
 export * from "./components/fab/fab";
 export * from "./components/shortcut/shortcut";
 export * from "./components/settings/settings";
-export * from "./components/date-range/date-range";
-export * from "./components/time-picker/time-picker";
 export * from "./components/color-picker/color-picker";
 export * from "./components/timeline/timeline";
 export * from "./components/code-block/code-block";
+export * from "./components/text-highlight/text-highlight";
+export * from "./components/status-dot/status-dot";
+export * from "./components/showcase/showcase";
+export * from "./components/action-bar/action-bar";
+export * from "./components/grid/grid";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */
 export function cssVar(name: TokenName): string {

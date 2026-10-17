@@ -23,8 +23,6 @@ Category: Navigation. Trail from the top level down to the current page (Home / 
 - Density — sm text at every density.
 - Width — Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes.
 
-**JS (framework-free)**: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
-
 **React** — `import { Breadcrumb } from "@danitesler/ayywi/react";`
 - `<Breadcrumb>` renders <nav aria-label="Breadcrumb"><ol>…. Props: `items` { label: ReactNode; href?: string }[] — top level first; the last one is the current page.; `pill` boolean; `aria-label` Defaults to "Breadcrumb" (translate it).
 

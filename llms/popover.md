@@ -20,8 +20,6 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 - Density — Padding is fixed; its controls follow data-density.
 - Width — As wide as its content, at most 22rem (or the viewport minus 1rem).
 
-**JS (framework-free)**: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }
-
 **Custom element** `<ayy-popover>` (@danitesler/ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
 - attribute `side`: bottom | top | start | end
 - attribute `align`: center | start | end
@@ -30,7 +28,7 @@ Category: Overlays. Non-modal floating panel anchored to a button. Built on the 
 
 **React** — `import { Popover, PopoverTrigger, PopoverContent } from "@danitesler/ayywi/react";`
 - `<Popover>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
-- `<PopoverTrigger>` renders Button. Props: `...ButtonProps` variant, size…
+- `<PopoverTrigger>` renders Button. Props: `asChild` boolean — clone child element and merge trigger props; `...ButtonProps` variant, size…
 - `<PopoverContent>` renders <div popover role="dialog">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "center" | "start" | "end"
 
 **Accessibility**

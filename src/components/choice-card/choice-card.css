@@ -103,7 +103,7 @@
 
 .ayy-choice-card__description {
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 /* A price, a delivery date: pushed to the bottom so a row of cards lines them up. */

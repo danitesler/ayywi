@@ -23,8 +23,6 @@ Category: Layout. Questions and answers, or sections people open one at a time: 
 - Density — Doesn't follow data-density.
 - Width — Fills its container.
 
-**JS (framework-free)**: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
-
 **React** — `import { Accordion, AccordionItem } from "@danitesler/ayywi/react";`
 - `<Accordion>` renders <div class="ayy-accordion">. Props: `single` boolean — one item open at a time (a shared name on every <details>).
 - `<AccordionItem>` renders <details class="ayy-accordion__item"><summary class="ayy-accordion__trigger">…<div class="ayy-accordion__content">. Props: `label` The always-visible row: the question or section name.; `open` Start expanded.

@@ -27,8 +27,6 @@ Category: Navigation. The site footer at the end of every website page: brand an
 - Density — Doesn't follow data-density.
 - Width — Full width; content centred at --ayy-size-container. Brand beside the columns; one column below 64rem.
 
-**JS (framework-free)**: footerClass, footerInnerClass, footerBrandClass, footerNavClass, footerGroupClass, footerHeadingClass, footerListClass, footerLinkClass, footerBottomClass constants.
-
 **React** — `import { Footer, FooterBrand, FooterNav, FooterGroup, FooterLink, FooterBottom } from "@danitesler/ayywi/react";`
 - `<Footer>` renders <footer class="ayy-footer"><div class="ayy-footer__inner">.
 - `<FooterBrand>` renders <div class="ayy-footer__brand">.

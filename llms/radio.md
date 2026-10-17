@@ -22,8 +22,6 @@ Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset wi
 - Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
 - Width — Fixed circle. The group stacks (vertical) or wraps in a row (horizontal).
 
-**JS (framework-free)**: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
-
 **React** — `import { RadioGroup, Radio } from "@danitesler/ayywi/react";`
 - `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"
 - `<Radio>` renders <input type="radio">. Props: `value` string (required); `...rest` All native <input> attributes.

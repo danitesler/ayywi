@@ -86,7 +86,7 @@
   padding-inline: var(--ayy-space-1-5);
   border-radius: var(--ayy-radius-pill);
   background-color: var(--ayy-color-wash-hover);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-variant-numeric: tabular-nums;
   line-height: var(--ayy-leading-snug);
 }

@@ -23,8 +23,6 @@ Category: Forms. Form field wrapper: Label + control + hint or error, stacked wi
 - Density — Label text follows control md, hint and error control sm, so they grow with data-density.
 - Width — Fills its column; the control inside stretches to it. inline puts the control and label side by side (checkboxes, switches).
 
-**JS (framework-free)**: fieldClass({ inline?, className? }); labelClass, fieldHintClass, fieldErrorClass constants
-
 **React** — `import { Field, Label, FieldHint, FieldError } from "@danitesler/ayywi/react";`
 - `<Field>` renders <div>. Props: `inline` boolean
 - `<Label>` renders <label>. Props: `htmlFor` id of the control

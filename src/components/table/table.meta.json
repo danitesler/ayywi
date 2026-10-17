@@ -3,7 +3,7 @@
   "slug": "table",
   "status": "stable",
   "category": "Data display",
-  "description": "Data table with quiet hairlines, uppercase headers and hover rows. Styles plain table elements under .ayy-table.",
+  "description": "Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.",
   "aka": ["table", "data-table", "datagrid"],
   "classes": {
     "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
@@ -11,14 +11,18 @@
     "ayy-table--compact": "Tighter rows.",
     "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits.",
     "ayy-table__sort": "A <button> inside a sortable <th>, with an arrow drawn after the text. aria-sort=\"ascending\" or \"descending\" on the <th> marks the sorted column; the others show both arrows, faint.",
-    "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box."
+    "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box.",
+    "ayy-table__actions": "On the trailing th/td holding a row's inline action buttons and ⋯ overflow menu trigger: end-aligned, as narrow as its controls.",
+    "ayy-table__row-actions": "Inline-flex cluster of row action buttons and overflow menu trigger inside an .ayy-table__actions cell.",
+    "ayy-table__row-actions--reveal": "Reveals quick actions when the row is hovered, focused within, selected or has an open menu (stays visible on touch screens)."
   },
   "variants": {
-    "compact": { "values": [true, false], "default": false }
+    "compact": { "values": [true, false], "default": false, "component": "Table" },
+    "reveal": { "values": [false, true], "default": false, "component": "TableRowActions" }
   },
   "states": {
-    "default": { "looks": "Collapsed table, xs text; header row on a wash fill with muted 2xs uppercase labels; hairlines between rows." },
-    "hover": { "when": "tbody tr:hover; .ayy-table__sort:hover", "looks": "Row gets a wash fill; a sort button's label turns text colour." },
+    "default": { "looks": "Collapsed table, xs text; header row on a wash fill with muted xs uppercase labels; hairlines between rows." },
+    "hover": { "when": "tbody tr:hover; .ayy-table__sort:hover", "looks": "Row gets a wash fill and reveals .ayy-table__row-actions--reveal; a sort button's label turns text colour." },
     "pressed": { "none": "No pressed look." },
     "focus": { "when": ".ayy-table__sort:focus-visible", "looks": "2px ring on the sort button." },
     "disabled": { "none": "Rows aren't disabled; disable the controls in them." },
@@ -31,7 +35,7 @@
     "density": "Doesn't follow data-density. Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter.",
     "width": "Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit."
   },
-  "js": "tableClass({ compact?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
+  "js": "tableClass({ compact?, className? }); tableRowActionsClass({ reveal?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass, tableActionsClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
   "element": {
     "tag": "ayy-table",
     "description": "Wraps an .ayy-table (or its .ayy-table-wrap). Header .ayy-table__sort buttons set aria-sort and reorder the body rows by that column (a cell's data-sort-value wins over its text); .ayy-table__select checkboxes set aria-selected on their row, and a checkbox in the header's select cell selects all and shows some as indeterminate.",
@@ -42,7 +46,7 @@
     }
   },
   "react": {
-    "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from \"@danitesler/ayywi/react\";",
+    "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableRowActions, TableCaption } from \"@danitesler/ayywi/react\";",
     "components": {
       "Table": { "renders": "<div class=\"ayy-table-wrap\"><table>", "props": { "compact": "boolean" } },
       "TableHeader": { "renders": "<thead>" },
@@ -54,11 +58,25 @@
         "props": {
           "numeric": "boolean",
           "select": "boolean — the checkbox column",
+          "actions": "boolean — the trailing row actions column",
           "sort": "\"ascending\" | \"descending\" | \"none\" — makes the header a sort button; \"none\" for a sortable column that isn't sorted",
           "onSort": "() => void — flip with nextSortDirection() and sort your rows (compareValues helps)"
         }
       },
-      "TableCell": { "renders": "<td>", "props": { "numeric": "boolean", "select": "boolean — the checkbox column" } },
+      "TableCell": {
+        "renders": "<td>",
+        "props": {
+          "numeric": "boolean",
+          "select": "boolean — the checkbox column",
+          "actions": "boolean — the trailing row actions column"
+        }
+      },
+      "TableRowActions": {
+        "renders": "<div class=\"ayy-table__row-actions\">",
+        "props": {
+          "reveal": "boolean — reveal on row hover, focus-within or selection (stays visible on touch)"
+        }
+      },
       "TableCaption": { "renders": "<caption>" }
     }
   },
@@ -66,24 +84,26 @@
     "Use real <th> header cells with scope (React sets scope=\"col\").",
     "A <caption> or aria-label names the table for screen readers.",
     "Sorting is a button inside the header, so it's reachable by Tab and announced with the column's aria-sort. Only the sorted column carries aria-sort.",
-    "Every row checkbox needs an aria-label naming its row (\"Select INV-1042\"); the select-all box is indeterminate when some rows are selected."
+    "Every row checkbox needs an aria-label naming its row (\"Select INV-1042\"); the select-all box is indeterminate when some rows are selected.",
+    "Row action icon buttons and ⋯ menu triggers need an aria-label that names the row (\"Edit Northwind\", \"More actions for Northwind\")."
   ],
   "do": [
     "Use a table to compare items across the same attributes (projects × status × builds).",
     "End-align numbers with numeric/ayy-table__num.",
     "Keep cell content short; truncate with a tooltip if needed.",
     "Make the columns people scan sortable (names, dates, amounts), and start sorted by the most useful one. Put the real value in data-sort-value when the cell shows a formatted one (a date, a currency).",
-    "Add a checkbox column only when rows have bulk actions, and show the count and the actions above the table.",
-    "Filter a table with Chips and a search InputGroup above it; page a long one with Pagination below."
+    "Put per-row quick actions (Edit, Copy) and a ⋯ DropdownMenu for secondary actions (Duplicate, Archive, Delete) in a trailing TableCell actions with TableRowActions.",
+    "Pair a selectable table with an ActionBar at the bottom for bulk actions on selected rows."
   ],
   "dont": [
     "Don't use tables for layout.",
     "Don't use a table for rows with one attribute — use a List.",
     "Don't zebra-stripe; hairlines + hover are enough.",
-    "Don't nest interactive controls in every cell — one action column is plenty."
+    "Don't nest interactive controls in every cell — one trailing actions column is plenty."
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
-    { "id": "sortable", "title": "Sortable columns and selectable rows" }
+    { "id": "sortable", "title": "Sortable columns and selectable rows" },
+    { "id": "actions", "title": "Row actions, secondary menu and bulk action bar" }
   ]
 }

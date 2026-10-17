@@ -28,7 +28,7 @@
   color: var(--ayy-color-text);
   box-shadow: var(--ayy-shadow-overlay);
   font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-regular);
   line-height: var(--ayy-leading-snug);
   text-align: start;
@@ -37,10 +37,13 @@
   visibility: hidden;
   pointer-events: none;
   translate: var(--_x) var(--_y);
+  scale: 0.96;
+  transform-origin: center;
   transition:
-    opacity var(--ayy-duration-fast) ease 80ms,
-    translate var(--ayy-duration-fast) var(--ayy-ease-out-expo) 80ms,
-    visibility 0s linear calc(var(--ayy-duration-fast) + 80ms);
+    opacity var(--ayy-duration-fast) ease,
+    translate var(--ayy-duration-fast) var(--ayy-ease-out-expo),
+    scale var(--ayy-duration-fast) var(--ayy-ease-out-expo),
+    visibility 0s linear var(--ayy-duration-fast);
 }
 
 /* ---- Placement. data-side: top (default) | bottom | start | end ---- */
@@ -77,19 +80,20 @@
 
 /* ---- Visible ---- */
 
-.ayy-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .ayy-tooltip__content {
+.ayy-tooltip:is(:hover, :has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition-delay: 200ms, 200ms, 0s;
+  scale: 1;
+  transition-delay: 200ms, 200ms, 200ms, 0s;
 }
 
-.ayy-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .ayy-tooltip__content:not([data-side]),
-.ayy-tooltip:is(:hover, :focus-within):not([data-dismissed]) > .ayy-tooltip__content:is([data-side="top"], [data-side="bottom"]) {
+.ayy-tooltip:is(:hover, :has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content:not([data-side]),
+.ayy-tooltip:is(:hover, :has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content:is([data-side="top"], [data-side="bottom"]) {
   --_y: 0px;
 }
 
-.ayy-tooltip:focus-within:not([data-dismissed]) > .ayy-tooltip__content {
+.ayy-tooltip:is(:has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content {
   transition-delay: 0s;
 }
 
@@ -101,7 +105,7 @@
 }
 
 .ayy-tooltip__content .ayy-shortcut {
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 /* ---- Enhanced mode: top-layer popover placed by JS ---- */
@@ -117,6 +121,7 @@
 @starting-style {
   .ayy-tooltip__content[data-floating]:popover-open {
     opacity: 0;
+    scale: 0.96;
   }
 }
 

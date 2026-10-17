@@ -32,10 +32,11 @@
     "ayy-app-shell__resize": "A drag handle on the sidebar's inline-end edge, a direct child of the shell with role=\"separator\" aria-orientation=\"vertical\" tabindex=\"0\" (added for you). Dragging, the arrow keys (Shift for big steps), Home and End set --ayy-sidebar-w on the shell; a double click resets it. Limits come from aria-valuemin / aria-valuemax in px (default 192 and 384), and the main area always keeps 320px. Hidden below 48rem and while the sidebar is collapsed.",
     "ayy-app-shell__resize--detail": "Modifier: the handle for the detail pane's inline-start edge, setting --ayy-detail-w (limits default 288 and 640). Shown only while the detail pane is.",
     "ayy-app-shell--resizing": "Set by connectAppShell while a handle is being dragged: columns follow the pointer without animating. Don't set it yourself.",
-    "ayy-app-shell--sm": "Small size, for long navigation such as a docs tree: md-height links with no gap between them, regular weight, sm icons and the control radius. Big (no modifier) is the default for apps."
+    "ayy-app-shell--md": "Medium size: 32px compact rows with 16px icons.",
+    "ayy-app-shell--sm": "Small size, for long navigation such as a docs tree: sm-height links with no gap between them, regular weight, sm icons and the control radius. Big (lg, no modifier) is the default for apps."
   },
   "variants": {
-    "size": { "values": ["md", "sm"], "default": "md", "component": "AppShell" },
+    "size": { "values": ["sm", "md", "lg"], "default": "lg", "component": "AppShell" },
     "settings": { "values": [false, true], "default": false, "component": "AppShell" },
     "collapsed": { "values": [false, true], "default": false, "component": "AppShell" },
     "hoverPreview": { "values": [false, true], "default": true, "component": "AppShell" },
@@ -54,20 +55,21 @@
   },
   "sizes": {
     "scale": {
-      "sm": "Small: links at the md control height (32px compact), sub-links sm (28px), no gap between rows, regular weight, 16px icons, the control radius.",
-      "md": "Big (default): links at the lg control height (40px compact), sub-links md, --ayy-space-0-5 between rows, medium weight, 20px icons, pill radius."
+      "sm": "Small: links at the sm control height (28px compact), sub-links sm, no gap between rows, regular weight, 16px icons, the control radius.",
+      "md": "Medium: links at the md control height (32px compact), sub-links sm, 16px icons.",
+      "lg": "Big (default): links at the lg control height (40px compact), sub-links md, --ayy-space-0-5 between rows, medium weight, 20px icons, pill radius."
     },
-    "density": "Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch), Small ones md (32, 40, 44); both with lg control text, sub-links one step down. Grows with data-density.",
+    "density": "Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch), Small ones sm (28, 36, 40); both with lg control text, sub-links one step down. Grows with data-density.",
     "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
   },
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass, appShellMdClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
   "react": {
     "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, AppShellHead, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "AppShell": {
         "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\"",
         "props": {
-          "size": "\"md\" | \"sm\" — Big (default, for apps) or Small (long navigation such as a docs tree; ayy-app-shell--sm).",
+          "size": "\"sm\" | \"md\" | \"lg\" — Big (lg, default, for apps), Medium (md) or Small (sm, for long navigation such as a docs tree).",
           "settings": "boolean — settings mode (ayy-app-shell--settings), inside <DialogContent size=\"full\">: the sidebar holds AppShellTitle and the sections.",
           "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (ayy-app-shell--collapsed).",
           "hoverPreview": "boolean, default true — when collapsed, hovering or focusing the sidebar expands it as an overlay preview (ayy-app-shell--hover-preview). false keeps the icon rail until the toggle opens it.",

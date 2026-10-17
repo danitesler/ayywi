@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useState, useEffect, type CSSProperties, type ReactNode } from "react";
 import {
   DashboardSquare01Icon,
   Database01Icon,
@@ -20,7 +20,6 @@ import {
   AppShellBar,
   AppShellBrand,
   AppShellCollapse,
-  AppShellDetail,
   AppShellFooter,
   AppShellGroup,
   AppShellHead,
@@ -49,65 +48,256 @@ import {
   Stat,
   Switch,
   TopBar,
+  type AppShellSize,
+  type BottomNavSize,
 } from "@danitesler/ayywi/react";
 
-export default function Example() {
-  const [small, setSmall] = useState(false);
+export default function Example({
+  device = "desktop",
+  setControls,
+}: {
+  device?: "desktop" | "tablet" | "mobile" | string;
+  setControls?: (node: ReactNode) => void;
+} = {}) {
+  const [standaloneDevice, setStandaloneDevice] = useState<"desktop" | "tablet" | "mobile">((device as any) || "desktop");
+  const [size, setSize] = useState<AppShellSize>("lg");
   const [collapsed, setCollapsed] = useState(false);
   const [hover, setHover] = useState(true);
   const [showBar, setShowBar] = useState(true);
   const [showTabs, setShowTabs] = useState(true);
   const [drawer, setDrawer] = useState(false);
   const [grouped, setGrouped] = useState(true);
-  const [detail, setDetail] = useState(true);
   const [resizable, setResizable] = useState(true);
+  const [navSize, setNavSize] = useState<BottomNavSize>("lg");
+  const [navCompact, setNavCompact] = useState(false);
+  const [navIconOnly, setNavIconOnly] = useState(false);
+
+  const activeDevice = setControls ? device : standaloneDevice;
+
+  useEffect(() => {
+    return () => setControls?.(null);
+  }, [setControls]);
+
+  useEffect(() => {
+    if (!setControls) return;
+
+    if (activeDevice === "mobile") {
+      setControls(
+        <div className="pv-props-list">
+          <div className="pv-props-group">
+            <span className="pv-props-group__title">Layout</span>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-bar" className="pv-props-label">Top bar</Label>
+              <Switch id="pg-bar" checked={showBar} onCheckedChange={setShowBar} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-tabs" className="pv-props-label">Bottom nav</Label>
+              <Switch id="pg-tabs" checked={showTabs} onCheckedChange={setShowTabs} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-drawer" className="pv-props-label">Drawer on phones</Label>
+              <Switch id="pg-drawer" checked={drawer} onCheckedChange={setDrawer} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-grouped" className="pv-props-label">Grouped nav</Label>
+              <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
+            </div>
+          </div>
+          {showTabs ? (
+            <div className="pv-props-group">
+              <span className="pv-props-group__title">Bottom nav</span>
+              <div className="pv-props-item">
+                <Label htmlFor="pg-nav-size" className="pv-props-label">Nav size</Label>
+                <div style={{ inlineSize: "7.5rem" }}>
+                  <Select
+                    id="pg-nav-size"
+                    size="sm"
+                    aria-label="Bottom nav size"
+                    value={navSize}
+                    onChange={(e) => setNavSize(e.target.value as BottomNavSize)}
+                  >
+                    <option value="lg">Big (lg)</option>
+                    <option value="md">Medium (md)</option>
+                    <option value="sm">Small (sm)</option>
+                  </Select>
+                </div>
+              </div>
+              <div className="pv-props-item">
+                <Label htmlFor="pg-nav-compact" className="pv-props-label">Compact</Label>
+                <Switch id="pg-nav-compact" checked={navCompact} onCheckedChange={setNavCompact} />
+              </div>
+              <div className="pv-props-item">
+                <Label htmlFor="pg-nav-icon-only" className="pv-props-label">Icon only</Label>
+                <Switch id="pg-nav-icon-only" checked={navIconOnly} onCheckedChange={setNavIconOnly} />
+              </div>
+            </div>
+          ) : null}
+        </div>
+      );
+    } else {
+      setControls(
+        <div className="pv-props-list">
+          <div className="pv-props-group">
+            <div className="pv-props-item">
+              <Label htmlFor="pg-size" className="pv-props-label">Sidebar size</Label>
+              <div style={{ inlineSize: "7.5rem" }}>
+                <Select
+                  id="pg-size"
+                  size="sm"
+                  aria-label="Sidebar size"
+                  value={size}
+                  onChange={(e) => setSize(e.target.value as AppShellSize)}
+                >
+                  <option value="lg">Big</option>
+                  <option value="md">Medium</option>
+                  <option value="sm">Small</option>
+                </Select>
+              </div>
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-collapsed" className="pv-props-label">Collapsed sidebar</Label>
+              <Switch id="pg-collapsed" checked={collapsed} onCheckedChange={setCollapsed} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-hover" className="pv-props-label">Hover preview</Label>
+              <Switch id="pg-hover" checked={hover} onCheckedChange={setHover} disabled={!collapsed} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-grouped" className="pv-props-label">Grouped nav</Label>
+              <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="pg-resize" className="pv-props-label">Resize handles</Label>
+              <Switch id="pg-resize" checked={resizable} onCheckedChange={setResizable} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }, [
+    setControls,
+    activeDevice,
+    size,
+    collapsed,
+    hover,
+    showBar,
+    showTabs,
+    drawer,
+    grouped,
+    resizable,
+    navSize,
+    navCompact,
+    navIconOnly,
+  ]);
 
   return (
-    <div className="ayy-stack" style={{ inlineSize: "100%", "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
-      <div className="ayy-grid" style={{ "--ayy-min": "12rem" } as CSSProperties}>
-        <Field inline>
-          <Switch id="pg-small" checked={small} onCheckedChange={setSmall} />
-          <Label htmlFor="pg-small">Small size</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-collapsed" checked={collapsed} onCheckedChange={setCollapsed} />
-          <Label htmlFor="pg-collapsed">Collapsed sidebar</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-hover" checked={hover} onCheckedChange={setHover} disabled={!collapsed} />
-          <Label htmlFor="pg-hover">Hover preview</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-bar" checked={showBar} onCheckedChange={setShowBar} />
-          <Label htmlFor="pg-bar">Top bar</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-tabs" checked={showTabs} onCheckedChange={setShowTabs} />
-          <Label htmlFor="pg-tabs">Bottom nav</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-drawer" checked={drawer} onCheckedChange={setDrawer} />
-          <Label htmlFor="pg-drawer">Drawer on phones</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
-          <Label htmlFor="pg-grouped">Grouped nav</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-detail" checked={detail} onCheckedChange={setDetail} />
-          <Label htmlFor="pg-detail">Detail pane</Label>
-        </Field>
-        <Field inline>
-          <Switch id="pg-resize" checked={resizable} onCheckedChange={setResizable} />
-          <Label htmlFor="pg-resize">Resize handles</Label>
-        </Field>
-      </div>
+    <div className="ayy-stack" style={{ inlineSize: "100%", blockSize: "100%", "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
+      {!setControls ? (
+        <div className="ayy-grid" style={{ "--ayy-min": "12rem" } as CSSProperties}>
+          <Field inline>
+            <Label htmlFor="pg-device">Device</Label>
+            <div style={{ inlineSize: "7.5rem" }}>
+              <Select
+                id="pg-device"
+                size="sm"
+                value={standaloneDevice}
+                onChange={(e) => setStandaloneDevice(e.target.value as "desktop" | "tablet" | "mobile")}
+              >
+                <option value="desktop">Desktop</option>
+                <option value="tablet">Tablet</option>
+                <option value="mobile">Mobile</option>
+              </Select>
+            </div>
+          </Field>
+          {activeDevice === "mobile" ? (
+            <>
+              <Field inline>
+                <Switch id="pg-bar" checked={showBar} onCheckedChange={setShowBar} />
+                <Label htmlFor="pg-bar">Top bar</Label>
+              </Field>
+              <Field inline>
+                <Switch id="pg-tabs" checked={showTabs} onCheckedChange={setShowTabs} />
+                <Label htmlFor="pg-tabs">Bottom nav</Label>
+              </Field>
+              {showTabs ? (
+                <>
+                  <Field inline>
+                    <Label htmlFor="pg-nav-size-inline">Nav size</Label>
+                    <div style={{ inlineSize: "7.5rem" }}>
+                      <Select
+                        id="pg-nav-size-inline"
+                        size="sm"
+                        value={navSize}
+                        onChange={(e) => setNavSize(e.target.value as BottomNavSize)}
+                      >
+                        <option value="lg">Big</option>
+                        <option value="md">Medium</option>
+                        <option value="sm">Small</option>
+                      </Select>
+                    </div>
+                  </Field>
+                  <Field inline>
+                    <Switch id="pg-nav-compact-inline" checked={navCompact} onCheckedChange={setNavCompact} />
+                    <Label htmlFor="pg-nav-compact-inline">Compact</Label>
+                  </Field>
+                  <Field inline>
+                    <Switch id="pg-nav-icon-inline" checked={navIconOnly} onCheckedChange={setNavIconOnly} />
+                    <Label htmlFor="pg-nav-icon-inline">Icon only</Label>
+                  </Field>
+                </>
+              ) : null}
+              <Field inline>
+                <Switch id="pg-drawer" checked={drawer} onCheckedChange={setDrawer} />
+                <Label htmlFor="pg-drawer">Drawer on phones</Label>
+              </Field>
+              <Field inline>
+                <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
+                <Label htmlFor="pg-grouped">Grouped nav</Label>
+              </Field>
+            </>
+          ) : (
+            <>
+              <Field inline>
+                <Label htmlFor="pg-size">Sidebar size</Label>
+                <div style={{ inlineSize: "7.5rem" }}>
+                  <Select
+                    id="pg-size"
+                    size="sm"
+                    value={size}
+                    onChange={(e) => setSize(e.target.value as AppShellSize)}
+                  >
+                    <option value="lg">Big</option>
+                    <option value="md">Medium</option>
+                    <option value="sm">Small</option>
+                  </Select>
+                </div>
+              </Field>
+              <Field inline>
+                <Switch id="pg-collapsed" checked={collapsed} onCheckedChange={setCollapsed} />
+                <Label htmlFor="pg-collapsed">Collapsed sidebar</Label>
+              </Field>
+              <Field inline>
+                <Switch id="pg-hover" checked={hover} onCheckedChange={setHover} disabled={!collapsed} />
+                <Label htmlFor="pg-hover">Hover preview</Label>
+              </Field>
+              <Field inline>
+                <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
+                <Label htmlFor="pg-grouped">Grouped nav</Label>
+              </Field>
+              <Field inline>
+                <Switch id="pg-resize" checked={resizable} onCheckedChange={setResizable} />
+                <Label htmlFor="pg-resize">Resize handles</Label>
+              </Field>
+            </>
+          )}
+        </div>
+      ) : null}
       {/* The shell is 100dvh high. This box only stands in for the browser window; in your app, drop the wrapper and the blockSize on the shell. */}
       <div style={{ inlineSize: "100%", blockSize: "32rem", overflow: "hidden", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
         {/* Remount when the handles come and go: connectAppShell wires them once, so new ones need a fresh shell. */}
         <AppShell
           key={String(resizable)}
-          size={small ? "sm" : undefined}
+          size={size === "lg" ? undefined : size}
           collapsed={collapsed}
           onCollapseChange={setCollapsed}
           hoverPreview={hover}
@@ -235,18 +425,8 @@ export default function Example() {
               </div>
             )}
           </AppShellMain>
-          {resizable ? <AppShellResize edge="detail" aria-label="Resize detail pane" /> : null}
-          <AppShellDetail aria-label="Task" hidden={!detail}>
-            <div className="ayy-stack">
-              <Button variant="ghost" size="sm" onClick={() => setDetail(false)}>
-                Close
-              </Button>
-              <h3 className="ayy-h5">Send the March invoice</h3>
-              <p className="ayy-muted">Due today</p>
-            </div>
-          </AppShellDetail>
           {showTabs ? (
-            <BottomNav>
+            <BottomNav size={navSize} compact={navCompact} iconOnly={navIconOnly}>
               <BottomNavLink href="#dashboard" icon={<Icon icon={DashboardSquare01Icon} />} current>
                 Dashboard
               </BottomNavLink>
@@ -264,8 +444,8 @@ export default function Example() {
         </AppShell>
       </div>
       <p className="ayy-muted">
-        Narrow the window below 48rem for phones: the bar and the bottom nav appear, the sidebar becomes a drawer, and the detail pane covers the
-        screen. Without a bar or a bottom nav the sidebar is one sideways row, unless Drawer on phones makes it a drawer instead.
+        Narrow the window below 48rem for phones: the bar and the bottom nav appear, and the sidebar becomes a drawer.
+        Without a bar or a bottom nav the sidebar is one sideways row, unless Drawer on phones makes it a drawer instead.
       </p>
       <Dialog>
         <DialogTrigger variant="outline">

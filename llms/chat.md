@@ -24,8 +24,6 @@ Category: Data display. A conversation: incoming bubbles at the start edge, the 
 - Density — sm text; doesn't follow data-density.
 - Width — Fills its container; bubbles wrap and break long words.
 
-**JS (framework-free)**: chatMessageClass({ direction?, className? }) → string; chatClass, chatBubbleClass, chatTypingClass, chatRepliesClass constants.
-
 **React** — `import { Chat, ChatMessage, ChatTyping, ChatReplies } from "@danitesler/ayywi/react";`
 - `<Chat>` renders <div role="log" class="ayy-chat">.
 - `<ChatMessage>` renders <div class="ayy-chat__message"> with the avatar and a bubble around children. Props: `direction` "in" | "out"; `avatar` ReactNode — e.g. an Avatar size sm.

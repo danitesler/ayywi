@@ -61,7 +61,6 @@ module.exports = {
         mono: [v("font-mono")],
       },
       fontSize: {
-        "2xs": v("text-2xs"),
         display: [v("text-display"), { lineHeight: v("leading-display"), letterSpacing: v("tracking-display") }],
       },
       maxWidth: {

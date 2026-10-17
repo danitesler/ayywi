@@ -1,23 +1,24 @@
 {
-  "name": "Swatch",
+  "name": "Color swatch",
   "slug": "swatch",
   "status": "beta",
   "category": "Forms",
-  "description": "Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a \"no colour\" and an \"any colour\" (native colour input) swatch. The picked one gets a ring and a tick.",
-  "aka": ["swatch", "swatches", "color-swatch", "color-dot", "colour-dot", "color-picker", "colour-picker"],
+  "description": "Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a \"no colour\" and an \"any colour\" (opens ayywi's built-in ColorPicker) swatch. The picked one gets a ring and a tick.",
+  "aka": ["color-swatch", "swatch", "swatches", "color-dot", "colour-dot", "color-picker", "colour-picker"],
   "classes": {
     "ayy-swatch": "One colour: a <label> around a native radio (which stays in the page but draws nothing), or a <button aria-pressed>. Set --ayy-swatch on it to the colour, a token: var(--ayy-chart-1…6), var(--ayy-accent-*), var(--ayy-color-destructive). The radio (or the button) needs an aria-label naming the colour.",
     "ayy-swatch--sm": "Smaller dot, for toolbars.",
     "ayy-swatch--lg": "Bigger dot, a control's height.",
     "ayy-swatch--none": "\"No colour\": the surface with a red diagonal stroke. No --ayy-swatch.",
-    "ayy-swatch--custom": "Any colour: a <label> around an <input type=\"color\">, drawn as a ring of the chart colours around the picked colour (React and @danitesler/ayywi/elements keep --ayy-swatch in step with the input).",
+    "ayy-swatch--custom": "Any colour: a <label> around an <input type=\"color\">, drawn as a ring of the chart colours around the picked colour. Clicking it opens ayywi's built-in ColorPicker in a floating popover instead of the OS picker (React and @danitesler/ayywi/elements keep --ayy-swatch in step with the input).",
+    "ayy-swatch-popover": "Popover container for ayywi's ColorPicker opened by a custom swatch: top layer (popover=\"auto\"), positioned next to the swatch dot.",
     "ayy-swatch-group": "Wrapping row of swatches: role=\"radiogroup\" with an aria-label or aria-labelledby. Padded so the picked ring and focus ring aren't clipped.",
     "ayy-swatch-group--track": "On a pill-shaped wash, like a toolbar's colour row."
   },
   "variants": {
     "size": { "values": ["sm", "md", "lg"], "default": "md" },
-    "none": { "values": [false, true], "default": false, "component": "Swatch" },
-    "track": { "values": [false, true], "default": false, "component": "SwatchGroup" }
+    "none": { "values": [false, true], "default": false, "component": "ColorSwatch" },
+    "track": { "values": [false, true], "default": false, "component": "ColorSwatchGroup" }
   },
   "states": {
     "default": { "looks": "A round dot in --ayy-swatch with a hairline so light and dark colours both show. none is the surface crossed by a red stroke; custom is a rainbow ring around the current colour." },
@@ -38,11 +39,11 @@
     "density": "Dot size follows data-density (above); the hit area always reaches the sm control height.",
     "width": "Square. A group wraps onto more lines; track (ayy-swatch-group--track) puts them on a pill."
   },
-  "js": "swatchClass({ size?, none?, custom?, className? }), swatchGroupClass({ track?, className? }) → string; syncSwatch(input) shows a custom swatch's colour (@danitesler/ayywi/elements does it on every input).",
+  "js": "colorSwatchClass({ size?, none?, custom?, className? }), colorSwatchGroupClass({ track?, className? }) → string; syncColorSwatch(input) shows a custom swatch's colour; usesColorPicker(input) checks Popover API support; openSwatchColorPicker(input) opens ayywi's ColorPicker in a popover; openColorPickerFrom(event) intercepts mousedown/click/keydown on custom swatches.",
   "react": {
-    "import": "import { Swatch, SwatchButton, SwatchCustom, SwatchGroup } from \"@danitesler/ayywi/react\";",
+    "import": "import { ColorSwatch, ColorSwatchButton, ColorSwatchCustom, ColorSwatchGroup } from \"@danitesler/ayywi/react\";",
     "components": {
-      "Swatch": {
+      "ColorSwatch": {
         "renders": "<label class=\"ayy-swatch\" style=\"--ayy-swatch: …\"><input type=\"radio\" aria-label>",
         "props": {
           "color": "string — a CSS colour, ideally a token (\"var(--ayy-chart-2)\")",
@@ -57,16 +58,16 @@
           "inputProps": "Props for the native radio."
         }
       },
-      "SwatchButton": {
+      "ColorSwatchButton": {
         "renders": "<button type=\"button\" class=\"ayy-swatch\" aria-pressed aria-label>",
         "props": { "color": "string", "label": "string — required", "pressed": "boolean", "size": "\"sm\" | \"md\" | \"lg\"", "none": "boolean" }
       },
-      "SwatchCustom": {
+      "ColorSwatchCustom": {
         "renders": "<label class=\"ayy-swatch ayy-swatch--custom\"><input type=\"color\" aria-label>",
         "props": { "label": "string — required (\"Custom colour\")", "size": "\"sm\" | \"md\" | \"lg\"", "...": "Every <input type=\"color\"> prop: value, defaultValue (hex), onChange." }
       },
-      "SwatchGroup": {
-        "renders": "<div role=\"radiogroup\" class=\"ayy-swatch-group\"> (pass role=\"group\" for SwatchButtons)",
+      "ColorSwatchGroup": {
+        "renders": "<div role=\"radiogroup\" class=\"ayy-swatch-group\"> (pass role=\"group\" for ColorSwatchButtons)",
         "props": { "track": "boolean — on a pill-shaped wash" }
       }
     }
@@ -80,13 +81,13 @@
   "do": [
     "Use swatches to pick a colour from a short, fixed set: a tag, a list, a calendar, an annotation pen.",
     "Colour them with tokens (--ayy-chart-1…6 are made to be told apart and meet 3:1 on every surface), and name each one.",
-    "Offer a none swatch when \"no colour\" is a real choice, and a SwatchCustom when people may need any colour (an image editor).",
+    "Offer a none swatch when \"no colour\" is a real choice, and a ColorSwatchCustom when people may need any colour (an image editor).",
     "Use a track group in a toolbar, size sm."
   ],
   "dont": [
     "Don't use swatches to choose a theme or a status — use a Segmented control or a Select; colour alone doesn't say what a status means.",
     "Don't hardcode hex values in --ayy-swatch; use tokens, or the app's own colour variables when people pick colours (stored values belong in data, not in markup).",
-    "Don't show more than about ten swatches in a row — group them, or add a SwatchCustom.",
+    "Don't show more than about ten swatches in a row — group them, or add a ColorSwatchCustom.",
     "Don't use colour names that only make sense in one theme (\"Black\" turns white in dark mode) — name the role (\"Ink\")."
   ],
   "examples": [

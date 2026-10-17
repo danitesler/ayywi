@@ -1,6 +1,8 @@
 import {
+  cloneElement,
   createContext,
   forwardRef,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
@@ -10,6 +12,7 @@ import {
   type ButtonHTMLAttributes,
   type HTMLAttributes,
   type MutableRefObject,
+  type ReactElement,
   type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
@@ -99,10 +102,33 @@ export function DropdownMenu({
   );
 }
 
-/** The button that opens the menu. Accepts all Button props. */
-export const DropdownMenuTrigger = forwardRef<HTMLButtonElement, ButtonProps>(function DropdownMenuTrigger(props, ref) {
+export interface DropdownMenuTriggerProps extends ButtonProps {
+  /** Clone the child element and merge trigger props onto it instead of rendering a Button. */
+  asChild?: boolean;
+}
+
+/** The button that opens the menu. Accepts all Button props, or pass asChild to clone a custom trigger element. */
+export const DropdownMenuTrigger = forwardRef<HTMLButtonElement, DropdownMenuTriggerProps>(function DropdownMenuTrigger(
+  { asChild = false, children, ...props },
+  ref,
+) {
   const ctx = useMenu("DropdownMenuTrigger");
-  return <Button ref={mergeRefs(ref, ctx.triggerRef)} aria-haspopup="menu" {...props} />;
+  if (asChild) {
+    return isValidElement(children)
+      ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+          "aria-haspopup": "menu",
+          ...props,
+          ...((children as ReactElement<{ className?: string }>).props as Record<string, unknown>),
+          className: cx(props.className, (children as ReactElement<{ className?: string }>).props?.className) || undefined,
+          ref: mergeRefs(ref, ctx.triggerRef, (children as any).ref ?? ((children as any).props as any)?.ref),
+        })
+      : null;
+  }
+  return (
+    <Button ref={mergeRefs(ref, ctx.triggerRef)} aria-haspopup="menu" {...props}>
+      {children}
+    </Button>
+  );
 });
 
 export interface DropdownMenuContentProps extends HTMLAttributes<HTMLDivElement> {
@@ -175,6 +201,8 @@ export interface DropdownMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLBut
   /** Called when the item is chosen (click, Enter, Space). The menu closes afterwards unless closeOnSelect is false. */
   onSelect?: () => void;
   destructive?: boolean;
+  /** Whether the item is selected/checked. Reserves space on the start for the checkmark. */
+  selected?: boolean;
   /** Keyboard shortcut keys shown at the end as keycaps, e.g. "Mod+D" (⌘D on a Mac, Ctrl+D elsewhere). */
   shortcut?: string;
   /** Value or badge text shown before shortcut/chevron. */
@@ -196,6 +224,7 @@ export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemPr
     description,
     icon,
     closeOnSelect,
+    selected,
     className,
     onClick,
     children,
@@ -206,16 +235,18 @@ export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemPr
 ) {
   const descId = useId();
   const hasDesc = Boolean(description);
+  const isSelectable = selected !== undefined || props.role === "menuitemcheckbox" || props.role === "menuitemradio";
 
   return (
     <button
       ref={ref}
       type={type}
-      role="menuitem"
+      role={props.role ?? "menuitem"}
       tabIndex={-1}
       data-close-on-select={closeOnSelect !== undefined ? String(closeOnSelect) : undefined}
       aria-describedby={hasDesc ? descId : undefined}
-      className={menuItemClass({ destructive, described: hasDesc, className })}
+      aria-checked={selected !== undefined ? (selected ? "true" : "false") : props["aria-checked"]}
+      className={menuItemClass({ destructive, described: hasDesc, selected: isSelectable, className })}
       onClick={(event) => {
         onClick?.(event);
         if (!event.defaultPrevented) onSelect?.();
@@ -301,31 +332,35 @@ export function DropdownMenuSub({
 
 export interface DropdownMenuSubTriggerProps extends Omit<DropdownMenuItemProps, "shortcut"> {
   icon?: ReactNode;
+  selected?: boolean;
 }
 
 export const DropdownMenuSubTrigger = forwardRef<HTMLButtonElement, DropdownMenuSubTriggerProps>(
   function DropdownMenuSubTrigger(
-    { children, icon, value, description, className, onClick, ...props },
+    { children, icon, value, description, selected, className, onClick, ...props },
     ref,
   ) {
     const sub = useSubmenu("DropdownMenuSubTrigger");
     const descId = useId();
     const hasDesc = Boolean(description);
+    const isSelectable = selected !== undefined || props.role === "menuitemcheckbox" || props.role === "menuitemradio";
 
     return (
       <button
         ref={mergeRefs(ref, sub.subTriggerRef)}
         type="button"
-        role="menuitem"
+        role={props.role ?? "menuitem"}
         tabIndex={-1}
         aria-haspopup="menu"
         aria-expanded={sub.open ? "true" : "false"}
         aria-controls={sub.subContentId}
         aria-describedby={hasDesc ? descId : undefined}
+        aria-checked={selected !== undefined ? (selected ? "true" : "false") : props["aria-checked"]}
         className={menuItemClass({
           sub: !sub.inline,
           expand: sub.inline,
           described: hasDesc,
+          selected: isSelectable,
           className,
         })}
         onClick={(event) => {
@@ -393,6 +428,39 @@ export const DropdownMenuSubContent = forwardRef<HTMLDivElement, DropdownMenuSub
 
 /* ---- Checkbox & Radio Items ---- */
 
+export interface DropdownMenuSelectedItemProps extends DropdownMenuItemProps {
+  selected?: boolean;
+  onSelectedChange?: (selected: boolean) => void;
+}
+
+/** A selectable menu item that reserves space on the start (left) for a checkmark indicator when selected. */
+export const DropdownMenuSelectedItem = forwardRef<HTMLButtonElement, DropdownMenuSelectedItemProps>(
+  function DropdownMenuSelectedItem(
+    { selected = false, onSelectedChange, onSelect, closeOnSelect = false, onClick, children, ...props },
+    ref,
+  ) {
+    return (
+      <DropdownMenuItem
+        ref={ref}
+        role="menuitemcheckbox"
+        selected={selected}
+        aria-checked={selected}
+        closeOnSelect={closeOnSelect}
+        onClick={(e) => {
+          onClick?.(e);
+          if (!e.defaultPrevented) {
+            onSelectedChange?.(!selected);
+          }
+        }}
+        onSelect={onSelect}
+        {...props}
+      >
+        {children}
+      </DropdownMenuItem>
+    );
+  },
+);
+
 export interface DropdownMenuCheckboxItemProps extends DropdownMenuItemProps {
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -407,6 +475,7 @@ export const DropdownMenuCheckboxItem = forwardRef<HTMLButtonElement, DropdownMe
       <DropdownMenuItem
         ref={ref}
         role="menuitemcheckbox"
+        selected={checked}
         aria-checked={checked}
         closeOnSelect={closeOnSelect}
         onClick={(e) => {
@@ -463,6 +532,7 @@ export const DropdownMenuRadioItem = forwardRef<HTMLButtonElement, DropdownMenuR
       <DropdownMenuItem
         ref={ref}
         role="menuitemradio"
+        selected={checked}
         aria-checked={checked}
         closeOnSelect={group?.closeOnSelect ?? false}
         onClick={(e) => {

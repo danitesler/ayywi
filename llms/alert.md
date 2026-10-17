@@ -26,8 +26,6 @@ Category: Feedback. Inline message box with optional icon, title, description an
 - Density — Padding and sm text are fixed.
 - Width — Fills its container.
 
-**JS (framework-free)**: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
-
 **React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "@danitesler/ayywi/react";`
 - `<Alert>` renders <div>. Props: `variant` "default" | "info" | "success" | "warning" | "destructive"
 - `<AlertTitle>` renders <p>.

@@ -26,7 +26,7 @@
   background-color: var(--ayy-color-wash);
   color: inherit;
   font-family: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--ayy-control-text-field);
   line-height: var(--ayy-leading-normal);
   text-overflow: ellipsis;
   cursor: pointer;
@@ -184,7 +184,7 @@
 .ayy-select__label {
   padding: var(--ayy-space-1-5) var(--ayy-space-2) var(--ayy-space-1);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
   letter-spacing: var(--ayy-tracking-eyebrow);
   text-transform: uppercase;

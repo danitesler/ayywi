@@ -8,6 +8,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `.ayy-menu--static` — Static menu rendered inline in a page or window without popover behavior.
 - `.ayy-menu__item` — Each action: a <button role="menuitem">.
 - `.ayy-menu__item--destructive` — Red item for destructive actions.
+- `.ayy-menu__item--selected` — Selectable menu item with checkmark indicator.
 - `.ayy-menu__item--sub` — Submenu parent row with an inline-end chevron.
 - `.ayy-menu__item--expand` — Inline accordion row that expands its items below itself.
 - `.ayy-menu__item--described` — Two-line row with an aligned label and soft description.
@@ -26,7 +27,7 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - `pressed` — doesn't apply: Items have no pressed look: activating one runs it and closes the menu.
 - `focus` (`.ayy-menu__item:focus (arrow keys) / :focus-visible`) — Focused item gets the wash-hover background; keyboard focus adds a 2px ring inset by 2px. Forced colours: Highlight fill.
 - `disabled` (`.ayy-menu__item:disabled or [aria-disabled="true"]`) — Item dims to --ayy-opacity-disabled with a not-allowed cursor; arrow keys skip it.
-- `selected` (`.ayy-menu__item[aria-checked="true"] on role="menuitemradio" or "menuitemcheckbox"`) — Semibold with a check at the inline end, drawn in currentColor. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select.
+- `selected` (`.ayy-menu__item[aria-checked="true"], .ayy-menu__item[aria-selected="true"], or .ayy-menu__item--selected`) — Semibold with a check at the inline start, drawn in currentColor with space reserved so trailing values stay aligned. For view options in a menu (density, sort, show/hide columns); to choose a form value, use Select.
 - `error` — doesn't apply: A menu has no error state; report a failed command with a toast.
 - `loading` — doesn't apply: Build the items before opening; if they load, put the trigger Button in loading until they're ready.
 - `open` (`:popover-open or [aria-expanded="true"] on parent row`) — Fades in and scales up from 97%; parent rows keep the hover background while open.
@@ -34,8 +35,6 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 **Sizes**
 - Density — Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.
 - Width — At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item.
-
-**JS (framework-free)**: menuItemClass({ destructive?, sub?, expand?, described?, className? }); menuClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })
 
 **Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons, optional submenu panels, and expandable groups.
 - attribute `side`: bottom | top | start | end
@@ -45,17 +44,18 @@ Category: Actions. List of actions that opens from a button. Native popover + WA
 - event `ayy-open-change`: { open: boolean }
 - event `ayy-submenu-layout`: { open: boolean, width: number, height: number, side: FloatingSide }
 
-**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@danitesler/ayywi/react";`
+**React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuSelectedItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@danitesler/ayywi/react";`
 - `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `anchorPoint` { x: number, y: number }; `boundary` Element | Rect
-- `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…
+- `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…; `asChild` boolean — clone custom trigger element without button styling
 - `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"; `static` boolean; `boundary` Element | Rect; `subSide` "end" | "start"; `onSubmenuLayout` (layout) => void
-- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes unless closeOnSelect=false; `destructive` boolean; `shortcut` string — shortcut keys like "Mod+D" (shown as keycaps, ⌘D on a Mac, Ctrl+D elsewhere); `value` ReactNode; `description` ReactNode; `icon` ReactNode; `closeOnSelect` boolean
+- `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes unless closeOnSelect=false; `destructive` boolean; `selected` boolean — reserves space on inline start for checkmark indicator; `shortcut` string — shortcut keys like "Mod+D" (shown as keycaps, ⌘D on a Mac, Ctrl+D elsewhere); `value` ReactNode; `description` ReactNode; `icon` ReactNode; `closeOnSelect` boolean
 - `<DropdownMenuLabel>` renders <div role="presentation">.
 - `<DropdownMenuSeparator>` renders <div role="separator">.
 - `<DropdownMenuSub>` renders nothing (submenu state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `inline` boolean
-- `<DropdownMenuSubTrigger>` renders <button role="menuitem" aria-haspopup="menu">. Props: `icon` ReactNode; `value` ReactNode; `description` ReactNode
+- `<DropdownMenuSubTrigger>` renders <button role="menuitem" aria-haspopup="menu">. Props: `icon` ReactNode; `value` ReactNode; `description` ReactNode; `selected` boolean — reserves space on inline start for checkmark indicator
 - `<DropdownMenuSubContent>` renders <div popover role="menu"> or <div role="group"> (inline). Props: `side` "end" | "start"; `align` "start"
 - `<DropdownMenuCheckboxItem>` renders <button role="menuitemcheckbox">. Props: `checked` boolean; `onCheckedChange` (checked: boolean) => void; `closeOnSelect` boolean
+- `<DropdownMenuSelectedItem>` renders <button role="menuitemcheckbox">. Props: `selected` boolean; `onSelectedChange` (selected: boolean) => void; `closeOnSelect` boolean
 - `<DropdownMenuRadioGroup>` renders <div role="group">. Props: `value` string; `onValueChange` (value: string) => void; `closeOnSelect` boolean
 - `<DropdownMenuRadioItem>` renders <button role="menuitemradio">. Props: `value` string
 

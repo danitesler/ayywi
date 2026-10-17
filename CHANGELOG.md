@@ -10,10 +10,81 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ## Unreleased
 
 ### Added
-- **[Date range](#/date-range)**
-  New component — two-month calendar to select start and end date ranges with continuous wash band, popover trigger, and `<ayy-date-range>` element.
-- **[Time picker](#/time-picker)**
-  New component — scroll-snap column selector for hours, minutes, and AM/PM periods with popover trigger and `<ayy-time-picker>` element.
+
+- **[Toast](#/toast)**
+  Open stack could only be closed one toast at a time → a "Clear all" button appears in its top-end corner while the stack is open with two or more toasts (`clearLabel` to translate it).
+- **[Date & time picker](#/date-time-picker)**
+  No Clear or Today action buttons → added action footer with ghost "Clear" and secondary "Today" buttons across DatePicker, DateRangePicker, and DateTimePicker.
+- **[Toast](#/toast)**
+  Short message format only → added long text toast variant (`.ayy-toast--long`, `toast.long()`) with normal font size (`--ayy-text-sm`), multiline wrapping, and built-in copy button with feedback.
+- **[Date & time picker](#/date-time-picker)**
+  Time picker columns had no manual input option → added numeric input fields at the top of the selector with bidirectional column selection and smooth scrolling.
+- **[Date & time picker](#/date-time-picker)**
+  View switching caused container width shifts → stabilized container width and smoothed view transitions across days, months, and years.
+- **[Date & time picker](#/date-time-picker)**
+  Static month and year header text in single and range calendars → interactive month and year buttons that swap the day grid into a 3×4 month or 12-year picker grid.
+- **[Grid](#/grid)**
+  New component — multi-select card grid for media assets, screenshots, social posts, project cards, and user records with select-all toolbar, range selection, floating corner controls, inline quick actions, and per-card `⋯` action menus.
+- **[Action bar](#/action-bar)**
+  New component — floating bottom multi-select bar that animates into view when items are selected, showing the selection count, a clear button (`Esc`), and bulk actions (`Edit`, `Duplicate`, `Copy`, `Archive`, `Delete`) with roving keyboard navigation.
+- **[Table](#/table)**
+  Row actions had no dedicated contract → added `TableRowActions` (`.ayy-table__row-actions`, `--reveal`), `.ayy-table__actions` cell alignment, inline quick action buttons, per-row `⋯` secondary action menus, and `ActionBar` bulk action integration.
+- **[Button](#/button)**
+  No dedicated loading spinner example or variant entry on the Button page → added a "Loading with spinner" example across variants, sizes, and icon-only buttons, included a loading button in the Variants showcase, and documented `loading` under Button variants.
+- **[Button](#/button)**
+  Wide buttons always centered the icon and label → new `align` prop (`start`, `center`, `end`) sets where they sit, like App shell links, in every size.
+- **[Bottom nav](#/bottom-nav)**
+  Single fixed size with 3-5 items → added `size` variants (`sm`, `md`, `lg`), `compact` spacing, and `iconOnly` mode supporting up to 6+ items, with interactive controls in the preview and responsive device switcher removed.
+- **[App shell](#/app-shell)**
+  Mobile bottom nav had fixed appearance → added bottom nav controls (`Nav size`, `Compact`, `Icon only`) in the mobile playground popover, replicating the full range of bottom nav configurations.
+- **[Showcase](#/showcase)**
+  Props popover button had no hover hint → added hover tooltip on the props trigger, and added the props selector button with tooltip and popover to showcase actions as one of the action elements that can be added.
+- **[Table](#/table)**
+  Static preview example → interactive props selector in the toolbar to toggle compact density, caption, numeric builds column, and footer.
+- **[Navbar](#/navbar)**
+  Static preview example → interactive props selector in the toolbar to toggle active page, call to action button, and brand icon.
+- **[Code block](#/code-block)**
+  Fixed options in example → interactive props selector in the toolbar to toggle line numbers, header, and copy button.
+- **[Page header](#/page-header)**
+  Static preview example → interactive props selector in the toolbar to toggle breadcrumbs, description, and secondary action button.
+
+- **[Chart](#/chart)**
+  Only graphical charts (bars, lines, sparklines, bar lists) → added `TableChart` component to render chart series and labels as an accessible data table utilizing ayywi's Table component.
+
+- **[Code block](#/code-block)**
+  Plain unstyled snippet text → built-in zero-dependency syntax highlighter mapping 20+ languages (`tsx`, `html`, `css`, `json`, `bash`, `md`, `python`, `sql`, `yaml`…), plus `CodeBlockSelector` backed by Ayywi's native DropdownMenu for selecting languages in the header.
+- **[Toast](#/toast)**
+  Card toasts only supported full-bleed overlay cards → added split `CardToast` variation combining an image preview thumbnail with text and actions, refocused `CardToast` on visual content previews, and added usage Dos and Don'ts for `InlineToast`.
+- **[Toast](#/toast)**
+  Toasts only supported notification popovers → added `NotificationToast` and `InlineToast` components with icon/text variants, dedicated `Inline toast` preview category, `toast.copy()` action helper, and wheel/keyboard scrolling without a visible scrollbar to cycle through older toasts in expanded stacks.
+- **[Dropdown menu](#/menu)**
+  Submenu triggers only rendered standard item rows → added `selected` prop to `DropdownMenuSubTrigger` to reserve space for checkmark indentation and display active selection indicators.
+- **[Dropdown menu](#/menu)**
+  Selectable items with checkmark indicator — `DropdownMenuSelectedItem` and `.ayy-menu__item--selected` reserve space on the start side for checkmarks while values remain flush right.
+- **[Filter bar](#/filter-bar)**
+  Consolidated filter example — single filter button opening a dropdown menu with submenus for each filter dimension.
+- **[Showcase](#/showcase)**
+  New component — responsive preview container for showing UI at desktop, tablet, and mobile widths with smooth `max-inline-size` transitions and optional device/props controls.
+- **[App shell](#/app-shell)**
+  Size selector offered only Big and Small (binary switch) → now a three-option selector: Big (`lg`), Medium (`md`), and Small (`sm`).
+- **[Density](#/density)**
+  Density section under spacing and sizing → dedicated foundation page under Brand with live mode switcher, side-by-side comparison, subtree scoping, and token reference.
+- **[Status dot](#/status-dot)**
+  New component — compact standalone indicator dot for online presence, live event streaming, server health, and table statuses with pulsing animations.
+- **[Popover](#/popover)**
+  Trigger only rendered a styled Button → `asChild` prop on `PopoverTrigger` clones custom trigger elements without button styling.
+- **[Text highlight](#/text-highlight)**
+  New component — inline text highlighting with subtle gray wash and clean underline by default, status variants (warning, destructive, success, info, orange), zero horizontal padding, and `<mark>` base styling.
+- **[Command palette](#/command)**
+  Search matches and item density — title-prioritized search scoring across sections, 1-line descriptions shown conditionally when matches occur in item descriptions, block title flow to prevent word splitting, and a dedicated reference example demonstrating search text highlighting across titles and descriptions.
+- **[Filter bar](#/filter-bar)**
+  New component — coordinating bar for filtering lists and tables with quick status tabs, faceted triggers with count badges, and search.
+- **[Sorting](#/sorting)**
+  New component — dedicated dropdown trigger for ordering lists and tables, styled to coordinate with filter bars and paired with dropdown menus.
+- **Foundations**
+  Spacing & sizing only documented spacing tokens → added size scale definitions (`sm`, `md`, `lg`, icons, targets) and a three-column component size comparison.
+- **[Date & time picker](#/date-time-picker)**
+  New component — unified date picker, date range picker, time picker, and compound date-time picker with month grids, dual-month range ribbons, scrollable time columns, and custom elements.
 - **[Color picker](#/color-picker)**
   New component — visual panel with 2D saturation/brightness area, hue and alpha sliders, hex input, preset swatches, and `<ayy-color-picker>` element.
 - **[Timeline](#/timeline)**
@@ -29,19 +100,98 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **[Checkbox](#/checkbox)**
   Always primary-coloured → `--ayy-check-color` (box border and fill) and `--ayy-check-fg` (tick) colour it, e.g. by task priority.
 
+### Changed
+
+- **[Toast](#/toast)**
+  Leaving toast only faded out in place → subtle left-to-right drift (translateX 28px, scale down to 0.95, fade out) over 280ms matching Takerr. Fade-out also works while the stack is expanded, and neighbours slide into the gap more smoothly.
+- **[Action bar](#/action-bar)**
+  Dense buttons with compact padding and abrupt removal on deselect → standard button horizontal paddings (`--ayy-control-pad-md`), 8px action gaps, and smooth reverse exit animation with `@starting-style` and `transition-behavior: allow-discrete`.
+- **Tokens**
+  Small UI text was 12px in every density and control text jumped 12 → 14 → 16px → new `--ayy-text-s` and `--ayy-control-text-sm`/`-md` all go 12 / 13 / 14px (compact / comfortable / touch) and `--ayy-control-text-lg` goes 14 / 15 / 16px.
+- **Tokens**
+  Inputs shared button text size → new `--ayy-control-text-field` (12 / 13 / 16px) keeps typing fields at 16px on touch so iOS doesn't zoom.
+- **Typography**
+  The type scale showed only the compact value → it lists density-aware sizes separately with all three values.
+- **[Table of contents](#/toc)**
+  Named "Contents" with a horizontal scrolling links row on phones → renamed to "Table of contents" with a sticky pill bar showing the active section that toggles an elevated dropdown menu.
+- **[Color picker](#/color-picker)**
+  Bulky 16rem panel with 32px swatch and plain text input → compact 13.5rem footprint with 24px preview swatch, 6.75rem area height, slider tracks height and gap precisely aligned with the preview swatch, and small InputGroup with configurable addon (prefix/suffix) and copy button.
+- **[Color swatch](#/swatch)**
+  Named "Swatch" with native color dialog and plain inputs → renamed to "Color swatch" (`ColorSwatch` components and exports) and custom color popover now uses ayywi's unified ColorPicker with HEX input group, copy button, and toast feedback.
+- **[Tooltip](#/tooltip)**
+  Only translated without scaling and delayed dismiss → scale and opacity transition smoothly using `ease-out-expo` with clean starting styles in top-layer and static modes.
+
 ### Fixed
+- **[Date & time picker](#/date-time-picker)**
+  Flex row container with full-width action footer caused oversized popovers with blank right-hand and bottom gaps → compact grid layout prevents container expansion and cleanly spans the footer across dual months and combined date/time columns.
+- **[Date & time picker](#/date-time-picker)**
+  Closing any date, date range, time, or date-time picker popover briefly showed a small empty rectangle → the inner picker grid and columns stay mounted during the close transition so the popover fades out at full size.
+- **[App shell](#/app-shell)**
+  Collapsed sidebar rail showed a scrollbar over hidden icon-less links → vertical scrolling is disabled in the rail when the nav has no icons.
+- **[Toast](#/toast)**
+  Card toast scrim transitioned opacity on page load when rendered with `data-hover` → `data-hover` scrim and center actions now render immediately without transition.
+- **[Toast](#/toast)**
+  Regular toasts stretched to card height, stacked toasts lost content on expansion, and clicking buttons inside collapsed the stack → regular toasts maintain compact height, expanded toasts keep full content and hover controls, and the toaster stack remains open during hover or active interaction.
+- **[Dropdown menu](#/menu)**
+  Checkmark on selected menu items was displayed at the trailing end and shifted trailing number values → moved to the start side with reserved padding.
+- **[Filter bar](#/filter-bar)**
+  Faceted filter controls wrapped prematurely onto multiple lines → inline flex layout kept on controls group.
+- **[Code block](#/code-block)**
+  Tooltip on copy button was clipped by `overflow: hidden` on the container → removed `overflow: hidden` from `.ayy-code-block` and applied matching border radii to header and pre elements.
+- **[Date & time picker](#/date-time-picker)**
+  Current date within a picked range was squared by the in-range wash band → today's outline stays circular while the connecting ribbon remains continuous behind it.
 - **[App shell](#/app-shell)**
   Only the first menu button (top bar or bottom nav) opened the phone drawer → every `__toggle` opens and closes it, stays in sync, and opening focuses the first link instead of the sidebar toggle.
 - **[Settings](#/settings)**
   A choice group in a stacked row made the row several times too tall (630px instead of 141px) → the row is now as tall as its content.
+- **[Tooltip](#/tooltip)**
+  Clicking a trigger kept tooltips open indefinitely because mouse focus retained focus-within state → tooltips dismiss on click (`pointerdown`), and only keyboard navigation (`:focus-visible`) keeps the bubble open.
+- **Preview**
+  Tablet and mobile viewports had content flush against the container edges and corners → added 16px padding inside tablet and mobile viewports.
+- **Preview**
+  Selecting Mobile on desktop viewports did not trigger media-query based phone layouts → responsive components render inside a device iframe when switching to mobile on wide viewports.
+- **Preview**
+  Brand menu in Appearance settings had custom item misaligned and missing active indicator → indented Custom submenu trigger to align with presets and rendered checkmark when custom color is active.
 
 ### Changed
+- **[Toast](#/toast)**
+  Card toast close button sat on top-left and preview variants were unlabeled → close button moved to top-right corner, and all preview variants include descriptive title labels.
+- **[Button](#/button)**
+  External section labels above buttons → removed floating labels and labeled variants directly inside button text.
+- **[Input](#/input)**
+  Types and sizes had floating section labels above fields → removed floating labels and labeled variants directly inside input placeholders.
+- **[Avatar](#/avatar)**
+  Single preview combined sizes, fallback initials, and group → separated into distinct "Sizes", "Fallback", and "Group" previews.
 - **[App shell](#/app-shell)**
-  Eight separate previews (basic, tabs, grouped, sizes, drawer, settings, collapsible, workspace) → one playground with switches for size, collapsed sidebar, hover preview, top bar, bottom nav, drawer, grouped nav, detail pane and resizing, plus the settings dialog.
+  Props in playground showed all switches simultaneously with a detail pane → switches are shown conditionally for the active device (Desktop/Tablet vs Mobile), and the detail pane was removed.
+- **[Filter bar](#/filter-bar)**
+  Long descriptive example titles → shortened to "Status tabs", "Faceted filters", and "Consolidated filter".
+- **[Input](#/input)**
+  Input group was a separate component and navbar entry → merged into Input, with sizes and input types separated, date input removed in favor of Date & time picker, and copy/reveal buttons enhanced with tooltips and feedback toasts.
+
+- **Preview**
+  Device switcher and Props button had text labels → icon-only buttons with hover tooltips and accessible screen-reader labels.
+- **Preview**
+  Device switcher now only appears on examples where the viewport width meaningfully changes the view; purely inline variant grids (e.g. FAB variants) no longer show the switcher.
+
+- **[Color picker](#/color-picker)**
+  Preview seed colour and custom brand swatch opened native OS picker → integrated into `ColorPicker` in Popover and Appearance menu flyout.
+- **[Code block](#/code-block)**
+  Preview code blocks used ad-hoc container markup and custom copy button → updated to use ayywi's `CodeBlock`, `CodeBlockHeader`, `CodeBlockFilename`, `CodeBlockCopy`, and `CodeBlockPre`.
+- **[App shell](#/app-shell)**
+  Eight separate previews (basic, tabs, grouped, sizes, drawer, settings, collapsible, workspace) → one playground with switches for size, collapsed sidebar, hover preview, top bar, bottom nav, drawer, grouped nav and resizing, plus the settings dialog.
 - **[Dropdown menu](#/menu)**
   Shortcut hints were plain muted text with hardcoded Mac symbols (`shortcut="⌘D"`) → keycap hints via `Shortcut` (`shortcut="Mod+D"`), showing ⌘D on a Mac and Ctrl+D elsewhere.
 - **[Tooltip](#/tooltip)**
   Shortcut hints were plain text in parentheses (`Save changes (⌘S)`) → keycap hints via `Shortcut` (`keys="Mod+S"`), showing ⌘S on a Mac and Ctrl+S elsewhere.
+- **Tokens**
+  `--ayy-control-text-sm` base value was 11px (`0.6875rem`) → 12px (`0.75rem`), eliminating all 11px font usage in compact density.
+
+### Removed
+- **[Input](#/input)**
+  Redundant native date and time picker examples removed → use [Date & time picker](#/date-time-picker).
+- **Tokens** (**Breaking**)
+  `--ayy-text-2xs` (11px) removed → use `--ayy-text-xs` (12px), and all components that used 2xs updated to xs.
 
 ## 0.0.3 — 2026-10-13
 

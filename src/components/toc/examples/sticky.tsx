@@ -9,7 +9,7 @@ export default function Example() {
       <Toc
         sticky
         numbered
-        title="Contents"
+        title="Table of contents"
         items={[
           { id: "toc-overview", label: "Overview" },
           { id: "toc-system", label: "Design system", children: [{ id: "toc-tokens", label: "Tokens" }] },

@@ -26,8 +26,6 @@ Category: Forms. A card-sized radio or checkbox for choices that need a sentence
 - Density — Card padding is fixed; the corner input follows --ayy-size-check. Compact cards are at least the lg control height.
 - Width — The group is a grid of columns at least --ayy-min wide (12rem, 6rem for compact) that fills its box; scroll makes one sideways row.
 
-**JS (framework-free)**: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
-
 **React** — `import { ChoiceGroup, ChoiceCard } from "@danitesler/ayywi/react";`
 - `<ChoiceGroup>` renders <fieldset role="radiogroup" class="ayy-choice-group"><legend>…. Props: `legend` ReactNode — the question; `type` "radio" (one choice, kept by the group) | "checkbox" (cards that combine); `name` Shared radio name. Generated if omitted.; `value / defaultValue` The chosen card's value.; `onValueChange` (value: string) => void; `min` CSS length — narrowest card; `scroll` boolean — one row that scrolls sideways; `disabled` boolean — every card
 - `<ChoiceCard>` renders <label class="ayy-choice-card"><input class="ayy-radio">…. Props: `value` string; `title` ReactNode; `description` ReactNode; `meta` ReactNode — price or date; `icon` ReactNode — an Icon or Icon tile above the title; `compact` boolean; `type` "checkbox" | "radio" — outside a radio ChoiceGroup; `checked / defaultChecked` boolean — outside a radio ChoiceGroup; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `inputProps` Props for the native input (name for checkbox cards).

@@ -21,8 +21,6 @@ Category: Feedback. Placeholder shapes shown while content loads, with a subtle 
 - Density — Doesn't follow data-density.
 - Width — Size it like the content it stands in for. block fills the width at 1rem tall; text is 0.75em tall; circle is 2.5rem (an avatar).
 
-**JS (framework-free)**: skeletonClass({ shape?, className? }) → string
-
 **React** — `import { Skeleton } from "@danitesler/ayywi/react";`
 - `<Skeleton>` renders <div aria-hidden="true">. Props: `shape` "block" | "text" | "circle"
 

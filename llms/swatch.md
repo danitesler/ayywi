@@ -1,13 +1,14 @@
-# Swatch
+# Color swatch
 
-Category: Forms. Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a "no colour" and an "any colour" (native colour input) swatch. The picked one gets a ring and a tick. Also called: swatch, swatches, color-swatch, color-dot, colour-dot, color-picker, colour-picker.
+Category: Forms. Round colour dots to pick one colour: a tag's or a list's colour, a pen in an editor. Radios in a label (or toggle buttons), coloured by --ayy-swatch set to a token, with a "no colour" and an "any colour" (opens ayywi's built-in ColorPicker) swatch. The picked one gets a ring and a tick. Also called: color-swatch, swatch, swatches, color-dot, colour-dot, color-picker, colour-picker.
 
 **Classes**
 - `.ayy-swatch` — One colour: a <label> around a native radio (which stays in the page but draws nothing), or a <button aria-pressed>. Set --ayy-swatch on it to the colour, a token: var(--ayy-chart-1…6), var(--ayy-accent-*), var(--ayy-color-destructive). The radio (or the button) needs an aria-label naming the colour.
 - `.ayy-swatch--sm` — Smaller dot, for toolbars.
 - `.ayy-swatch--lg` — Bigger dot, a control's height.
 - `.ayy-swatch--none` — "No colour": the surface with a red diagonal stroke. No --ayy-swatch.
-- `.ayy-swatch--custom` — Any colour: a <label> around an <input type="color">, drawn as a ring of the chart colours around the picked colour (React and @danitesler/ayywi/elements keep --ayy-swatch in step with the input).
+- `.ayy-swatch--custom` — Any colour: a <label> around an <input type="color">, drawn as a ring of the chart colours around the picked colour. Clicking it opens ayywi's built-in ColorPicker in a floating popover instead of the OS picker (React and @danitesler/ayywi/elements keep --ayy-swatch in step with the input).
+- `.ayy-swatch-popover` — Popover container for ayywi's ColorPicker opened by a custom swatch: top layer (popover="auto"), positioned next to the swatch dot.
 - `.ayy-swatch-group` — Wrapping row of swatches: role="radiogroup" with an aria-label or aria-labelledby. Padded so the picked ring and focus ring aren't clipped.
 - `.ayy-swatch-group--track` — On a pill-shaped wash, like a toolbar's colour row.
 
@@ -28,13 +29,11 @@ Category: Forms. Round colour dots to pick one colour: a tag's or a list's colou
 - Density — Dot size follows data-density (above); the hit area always reaches the sm control height.
 - Width — Square. A group wraps onto more lines; track (ayy-swatch-group--track) puts them on a pill.
 
-**JS (framework-free)**: swatchClass({ size?, none?, custom?, className? }), swatchGroupClass({ track?, className? }) → string; syncSwatch(input) shows a custom swatch's colour (@danitesler/ayywi/elements does it on every input).
-
-**React** — `import { Swatch, SwatchButton, SwatchCustom, SwatchGroup } from "@danitesler/ayywi/react";`
-- `<Swatch>` renders <label class="ayy-swatch" style="--ayy-swatch: …"><input type="radio" aria-label>. Props: `color` string — a CSS colour, ideally a token ("var(--ayy-chart-2)"); `label` string — the colour's name, required ("Blue"); `name` string — the same for every swatch in the group; `value` string; `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `size` "sm" | "md" | "lg"; `none` boolean — the "no colour" swatch; `inputProps` Props for the native radio.
-- `<SwatchButton>` renders <button type="button" class="ayy-swatch" aria-pressed aria-label>. Props: `color` string; `label` string — required; `pressed` boolean; `size` "sm" | "md" | "lg"; `none` boolean
-- `<SwatchCustom>` renders <label class="ayy-swatch ayy-swatch--custom"><input type="color" aria-label>. Props: `label` string — required ("Custom colour"); `size` "sm" | "md" | "lg"; `...` Every <input type="color"> prop: value, defaultValue (hex), onChange.
-- `<SwatchGroup>` renders <div role="radiogroup" class="ayy-swatch-group"> (pass role="group" for SwatchButtons). Props: `track` boolean — on a pill-shaped wash
+**React** — `import { ColorSwatch, ColorSwatchButton, ColorSwatchCustom, ColorSwatchGroup } from "@danitesler/ayywi/react";`
+- `<ColorSwatch>` renders <label class="ayy-swatch" style="--ayy-swatch: …"><input type="radio" aria-label>. Props: `color` string — a CSS colour, ideally a token ("var(--ayy-chart-2)"); `label` string — the colour's name, required ("Blue"); `name` string — the same for every swatch in the group; `value` string; `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `size` "sm" | "md" | "lg"; `none` boolean — the "no colour" swatch; `inputProps` Props for the native radio.
+- `<ColorSwatchButton>` renders <button type="button" class="ayy-swatch" aria-pressed aria-label>. Props: `color` string; `label` string — required; `pressed` boolean; `size` "sm" | "md" | "lg"; `none` boolean
+- `<ColorSwatchCustom>` renders <label class="ayy-swatch ayy-swatch--custom"><input type="color" aria-label>. Props: `label` string — required ("Custom colour"); `size` "sm" | "md" | "lg"; `...` Every <input type="color"> prop: value, defaultValue (hex), onChange.
+- `<ColorSwatchGroup>` renders <div role="radiogroup" class="ayy-swatch-group"> (pass role="group" for ColorSwatchButtons). Props: `track` boolean — on a pill-shaped wash
 
 **Accessibility**
 - Radio swatches are native: Tab enters the group, arrow keys move the pick, and screen readers say the colour's name and "checked". Every swatch needs a name (label prop / aria-label) because a dot has no text.
@@ -45,16 +44,16 @@ Category: Forms. Round colour dots to pick one colour: a tag's or a list's colou
 **Do**
 - Use swatches to pick a colour from a short, fixed set: a tag, a list, a calendar, an annotation pen.
 - Colour them with tokens (--ayy-chart-1…6 are made to be told apart and meet 3:1 on every surface), and name each one.
-- Offer a none swatch when "no colour" is a real choice, and a SwatchCustom when people may need any colour (an image editor).
+- Offer a none swatch when "no colour" is a real choice, and a ColorSwatchCustom when people may need any colour (an image editor).
 - Use a track group in a toolbar, size sm.
 
 **Don't**
 - Don't use swatches to choose a theme or a status — use a Segmented control or a Select; colour alone doesn't say what a status means.
 - Don't hardcode hex values in --ayy-swatch; use tokens, or the app's own colour variables when people pick colours (stored values belong in data, not in markup).
-- Don't show more than about ten swatches in a row — group them, or add a SwatchCustom.
+- Don't show more than about ten swatches in a row — group them, or add a ColorSwatchCustom.
 - Don't use colour names that only make sense in one theme ("Black" turns white in dark mode) — name the role ("Ink").
 
-## Swatch — Tag colour
+## Color swatch — Tag colour
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -77,7 +76,7 @@ React:
 
 ```tsx
 import type { CSSProperties } from "react";
-import { Swatch, SwatchGroup } from "@danitesler/ayywi/react";
+import { ColorSwatch, ColorSwatchGroup } from "@danitesler/ayywi/react";
 
 const COLOURS = [
   { value: "blue", label: "Blue", color: "var(--ayy-chart-1)" },
@@ -94,18 +93,18 @@ export default function Example() {
       <span className="ayy-label" id="tag-colour-label">
         Tag colour
       </span>
-      <SwatchGroup aria-labelledby="tag-colour-label">
-        <Swatch none label="No colour" name="tag-colour" value="none" />
+      <ColorSwatchGroup aria-labelledby="tag-colour-label">
+        <ColorSwatch none label="No colour" name="tag-colour" value="none" />
         {COLOURS.map((c) => (
-          <Swatch key={c.value} color={c.color} label={c.label} name="tag-colour" value={c.value} defaultChecked={c.value === "green"} />
+          <ColorSwatch key={c.value} color={c.color} label={c.label} name="tag-colour" value={c.value} defaultChecked={c.value === "green"} />
         ))}
-      </SwatchGroup>
+      </ColorSwatchGroup>
     </div>
   );
 }
 ```
 
-## Swatch — Pen colours on a track, with any colour
+## Color swatch — Pen colours on a track, with any colour
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -123,7 +122,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Swatch, SwatchCustom, SwatchGroup } from "@danitesler/ayywi/react";
+import { ColorSwatch, ColorSwatchCustom, ColorSwatchGroup } from "@danitesler/ayywi/react";
 
 const PENS = [
   { value: "ink", label: "Ink", color: "var(--ayy-color-text)" },
@@ -135,12 +134,12 @@ const PENS = [
 
 export default function Example() {
   return (
-    <SwatchGroup aria-label="Pen colour" track>
+    <ColorSwatchGroup aria-label="Pen colour" track>
       {PENS.map((p) => (
-        <Swatch key={p.value} size="sm" color={p.color} label={p.label} name="pen" value={p.value} defaultChecked={p.value === "red"} />
+        <ColorSwatch key={p.value} size="sm" color={p.color} label={p.label} name="pen" value={p.value} defaultChecked={p.value === "red"} />
       ))}
-      <SwatchCustom size="sm" label="Custom colour" defaultValue="#7c5cff" />
-    </SwatchGroup>
+      <ColorSwatchCustom size="sm" label="Custom colour" defaultValue="#7c5cff" />
+    </ColorSwatchGroup>
   );
 }
 ```

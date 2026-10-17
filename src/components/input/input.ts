@@ -11,3 +11,18 @@ export interface InputClassOptions {
 export function inputClass({ size = "md", className }: InputClassOptions = {}): string {
   return cx("ayy-input", size !== "md" && `ayy-input--${size}`, className);
 }
+
+export const inputGroupSizes = ["sm", "md", "lg"] as const;
+export type InputGroupSize = (typeof inputGroupSizes)[number];
+
+export interface InputGroupClassOptions {
+  size?: InputGroupSize;
+  className?: string;
+}
+
+export function inputGroupClass({ size = "md", className }: InputGroupClassOptions = {}): string {
+  return cx("ayy-input-group", size !== "md" && `ayy-input-group--${size}`, className);
+}
+
+export const inputGroupAddonClass = "ayy-input-group__addon";
+

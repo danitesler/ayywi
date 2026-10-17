@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@danitesler/ayywi/react";
 import type { ComponentEntry } from "../data";
-import { Example } from "../Example";
+import { Showcase } from "../Showcase";
 import type { Renderer } from "../settings";
 
 const TONES = {
@@ -40,7 +40,7 @@ export function ComponentPage({ component: c, renderer }: { component: Component
       </header>
 
       {c.examples.map((ex) => (
-        <Example key={ex.id} example={ex} component={c} renderer={renderer} />
+        <Showcase key={ex.id} example={ex} component={c} renderer={renderer} />
       ))}
 
       <div className="pv-usage">

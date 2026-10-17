@@ -1,0 +1,72 @@
+{
+  "name": "Sorting",
+  "slug": "sorting",
+  "status": "beta",
+  "category": "Forms",
+  "description": "A dedicated dropdown trigger for ordering lists, tables, and feeds, styled to coordinate with filter bars and paired with dropdown menus.",
+  "aka": ["sorting", "sort", "sort-menu", "sort-button", "sort-dropdown", "sort-select"],
+  "classes": {
+    "ayy-sorting": "Root inline-flex container for a sorting control.",
+    "ayy-sorting--sm": "Compact size variant for tight toolbars and mobile viewports.",
+    "ayy-sorting__trigger": "Unified dropdown button trigger opening a sort menu (aria-haspopup=\"menu\").",
+    "ayy-sorting__trigger--sm": "Compact size trigger button."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md"], "default": "md", "component": "Sorting" }
+  },
+  "states": {
+    "default": { "looks": "A bordered control with surface background and line border matching filter bar triggers." },
+    "hover": { "when": ".ayy-sorting__trigger:hover", "looks": "Border turns line-hover and background turns wash-hover." },
+    "pressed": { "none": "No distinct pressed state; opens menu on release." },
+    "focus": { "when": ":focus-visible on trigger", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ":disabled on trigger", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "none": "Selection is indicated within the opened DropdownMenu radio items." },
+    "error": { "none": "Sorting does not fail visibly." },
+    "loading": { "none": "Loading is shown in the results view with Skeleton." },
+    "open": { "when": ".ayy-sorting__trigger[aria-expanded=\"true\"]", "looks": "Trigger gets ring border and wash-hover background. Forced colours: Highlight." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Controls at the sm control height (28px compact, 32px comfortable, 40px touch), 13px text.",
+      "md": "Controls at the md control height (32px compact, 40px comfortable, 44px touch), 14px text."
+    },
+    "density": "Control heights and padding follow data-density.",
+    "width": "Inline-flex, hugs its content."
+  },
+  "js": "sortingClass({ size?, className? }) → string; sortingTriggerClass constant.",
+  "react": {
+    "import": "import { Sorting, SortingTrigger } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Sorting": {
+        "renders": "<div class=\"ayy-sorting\">",
+        "props": {
+          "size": "\"sm\" | \"md\""
+        }
+      },
+      "SortingTrigger": {
+        "renders": "<button type=\"button\" class=\"ayy-sorting__trigger\">",
+        "props": {
+          "size": "\"sm\" | \"md\"",
+          "open": "boolean — aria-expanded for menu state"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "SortingTrigger uses aria-haspopup=\"menu\" and aria-expanded to announce menu state to assistive technology.",
+    "Visible 2px focus ring on the trigger button (:focus-visible).",
+    "Sort options inside the paired DropdownMenu use role=\"menuitemradio\" and aria-checked for accessible single-choice state."
+  ],
+  "do": [
+    "Use Sorting when users need to order a table, grid, search feed, or list by multiple properties.",
+    "Pair SortingTrigger with DropdownMenu and DropdownMenuRadioGroup for accessible sort selection.",
+    "Display the currently active sort order in the trigger label so users always know how items are sorted."
+  ],
+  "dont": [
+    "Don't rely on icon direction alone without accessible text or aria-label.",
+    "Don't hide the current sort order without an on-screen label on the trigger."
+  ],
+  "examples": [
+    { "id": "dropdown", "title": "Unified dropdown sort menu" }
+  ]
+}

@@ -42,6 +42,7 @@
   margin: 0;
   opacity: 0;
   cursor: inherit;
+  z-index: 1;
 }
 
 @media (hover: hover) {
@@ -66,6 +67,7 @@
   block-size: 45%;
   background-color: currentColor;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  pointer-events: none;
 }
 
 /* The tick is drawn in the page colour; on a light swatch in a dark theme that would vanish, so it gets a halo. */
@@ -78,6 +80,12 @@
 .ayy-swatch:has(> input:focus-visible) {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 5px;
+}
+
+.ayy-swatch:has(> input[aria-expanded="true"]),
+.ayy-swatch[aria-expanded="true"] {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 3px;
 }
 
 .ayy-swatch:disabled,
@@ -115,6 +123,7 @@
   border-radius: inherit;
   background-color: var(--ayy-swatch, var(--ayy-color-surface));
   box-shadow: 0 0 0 2px var(--ayy-color-surface-raised);
+  pointer-events: none;
 }
 
 /* ---- A row of swatches ---- */
@@ -139,6 +148,43 @@
   background-color: var(--ayy-color-wash);
 }
 
+/* ---- Popover with ayywi's ColorPicker ---- */
+
+.ayy-swatch-popover {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ayy-color-text);
+  overflow: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    transform var(--ayy-duration-fast) var(--ayy-ease-menu),
+    overlay var(--ayy-duration-fast) allow-discrete,
+    display var(--ayy-duration-fast) allow-discrete;
+}
+
+.ayy-swatch-popover:not(:popover-open) {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+@starting-style {
+  .ayy-swatch-popover:popover-open {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.ayy-swatch-popover > .ayy-color-picker {
+  background-color: var(--ayy-color-surface-raised);
+  box-shadow: var(--ayy-shadow-overlay);
+  border-color: var(--ayy-color-line-strong);
+}
+
 @media (forced-colors: active) {
   .ayy-swatch {
     forced-color-adjust: none;
@@ -149,8 +195,14 @@
     outline: 3px solid Highlight;
     outline-offset: 2px;
   }
+  .ayy-swatch:has(> input[aria-expanded="true"]),
+  .ayy-swatch[aria-expanded="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: 3px;
+  }
   .ayy-swatch:has(> input:checked)::before,
   .ayy-swatch[aria-pressed="true"]::before {
     background-color: CanvasText;
   }
 }
+

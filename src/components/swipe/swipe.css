@@ -63,7 +63,7 @@
   background-color: color-mix(in srgb, var(--_c) 15%, var(--ayy-color-surface));
   color: var(--_c);
   font: inherit;
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-medium);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

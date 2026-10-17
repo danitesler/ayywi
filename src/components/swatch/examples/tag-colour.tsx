@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Swatch, SwatchGroup } from "@danitesler/ayywi/react";
+import { ColorSwatch, ColorSwatchGroup } from "@danitesler/ayywi/react";
 
 const COLOURS = [
   { value: "blue", label: "Blue", color: "var(--ayy-chart-1)" },
@@ -16,12 +16,12 @@ export default function Example() {
       <span className="ayy-label" id="tag-colour-label">
         Tag colour
       </span>
-      <SwatchGroup aria-labelledby="tag-colour-label">
-        <Swatch none label="No colour" name="tag-colour" value="none" />
+      <ColorSwatchGroup aria-labelledby="tag-colour-label">
+        <ColorSwatch none label="No colour" name="tag-colour" value="none" />
         {COLOURS.map((c) => (
-          <Swatch key={c.value} color={c.color} label={c.label} name="tag-colour" value={c.value} defaultChecked={c.value === "green"} />
+          <ColorSwatch key={c.value} color={c.color} label={c.label} name="tag-colour" value={c.value} defaultChecked={c.value === "green"} />
         ))}
-      </SwatchGroup>
+      </ColorSwatchGroup>
     </div>
   );
 }

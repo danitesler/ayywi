@@ -20,8 +20,6 @@ Category: Forms. A native range input with a filled track and a round thumb, and
 - Density — The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.
 - Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
 
-**JS (framework-free)**: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
-
 **React** — `import { Slider, SliderRange } from "@danitesler/ayywi/react";`
 - `<Slider>` renders <input type="range" class="ayy-slider">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
 - `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean

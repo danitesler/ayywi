@@ -24,8 +24,6 @@ Category: Forms. Pill-shaped filters and choices: a label around a native checkb
 - Density — Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.
 - Width — Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars).
 
-**JS (framework-free)**: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
-
 **React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "@danitesler/ayywi/react";`
 - `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
 - `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode

@@ -1,0 +1,246 @@
+/* Filter bar: a coordinating bar for filtering lists, tables, and feeds. Supports quick filter tabs,
+   faceted filter dropdown triggers with count badges, search, sort controls, and active filter chip rows. */
+
+.ayy-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-3);
+  inline-size: 100%;
+  box-sizing: border-box;
+}
+
+.ayy-filter-bar--flush {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.ayy-filter-bar--sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 10;
+  padding-block: var(--ayy-space-2);
+  border-block-end: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-glass);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.ayy-filter-bar__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+}
+
+.ayy-filter-bar__group {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  max-inline-size: 100%;
+}
+
+.ayy-filter-bar__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  box-sizing: border-box;
+  block-size: var(--ayy-size-control-md);
+  max-inline-size: 100%;
+  padding: var(--ayy-space-0-5);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  overflow-x: auto;
+}
+
+.ayy-filter-bar__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  box-sizing: border-box;
+  block-size: 100%;
+  padding-inline: var(--ayy-control-pad-md);
+  border: 0;
+  border-radius: calc(var(--ayy-radius-control) - var(--ayy-space-0-5));
+  background: none;
+  color: var(--ayy-color-text-soft);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--ayy-duration-fast) ease, color var(--ayy-duration-fast) ease;
+}
+
+.ayy-filter-bar__tab:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-filter-bar__tab:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-filter-bar__tab:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-filter-bar__tab[aria-selected="true"],
+.ayy-filter-bar__tab[aria-pressed="true"] {
+  background-color: var(--ayy-color-text);
+  color: var(--ayy-color-bg);
+  font-weight: var(--ayy-weight-semibold);
+  box-shadow: var(--ayy-shadow-rest);
+}
+
+.ayy-filter-bar__tab-count {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--ayy-text-s);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.ayy-filter-bar__tab[aria-selected="true"] .ayy-filter-bar__tab-count,
+.ayy-filter-bar__tab[aria-pressed="true"] .ayy-filter-bar__tab-count {
+  opacity: 0.9;
+}
+
+.ayy-filter-bar__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  box-sizing: border-box;
+  block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-control-pad-md);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-filter-bar__trigger > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-filter-bar__trigger:hover {
+  border-color: var(--ayy-color-line-hover);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-filter-bar__trigger:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-filter-bar__trigger:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-filter-bar__trigger[aria-expanded="true"] {
+  border-color: var(--ayy-color-ring);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-filter-bar__trigger[aria-pressed="true"] {
+  border-color: var(--ayy-color-ring);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+}
+
+.ayy-filter-bar__trigger-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.25rem;
+  block-size: 1.25rem;
+  padding-inline: var(--ayy-space-1);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-s);
+  font-weight: var(--ayy-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.ayy-filter-bar__active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+}
+
+.ayy-filter-bar__summary {
+  margin-inline-start: auto;
+  font-size: var(--ayy-text-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-filter-bar__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  block-size: var(--ayy-size-control-sm);
+  padding-inline: var(--ayy-space-2);
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background: none;
+  color: var(--ayy-color-muted);
+  font: inherit;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--ayy-duration-fast) ease;
+}
+
+.ayy-filter-bar__clear:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-filter-bar__clear:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-filter-bar--sm .ayy-filter-bar__tabs {
+  block-size: var(--ayy-size-control-sm);
+}
+
+.ayy-filter-bar--sm .ayy-filter-bar__tab,
+.ayy-filter-bar--sm .ayy-filter-bar__trigger {
+  padding-inline: var(--ayy-control-pad-sm);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-filter-bar--sm .ayy-filter-bar__trigger {
+  block-size: var(--ayy-size-control-sm);
+}
+
+@media (forced-colors: active) {
+  .ayy-filter-bar__tab[aria-selected="true"],
+  .ayy-filter-bar__tab[aria-pressed="true"] {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-filter-bar__trigger[aria-expanded="true"],
+  .ayy-filter-bar__trigger[aria-pressed="true"] {
+    border-color: Highlight;
+  }
+}

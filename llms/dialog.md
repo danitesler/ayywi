@@ -38,8 +38,6 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 - Density — Padding is fixed (--ayy-space-6); its controls follow data-density.
 - Width — The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem; full is 4rem clear of the viewport on each axis, and the whole screen below 48rem.
 
-**JS (framework-free)**: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
-
 **Custom element** `<ayy-dialog>` (@danitesler/ayywi/elements) — A trigger with data-ayy-open and a <dialog class="ayy-dialog"> (centred or side). Inside the dialog, data-ayy-close="value" closes it and sets dialog.returnValue.
 - attribute `open`: Two-way open state
 - attribute `persistent`: Backdrop clicks don't close it (Esc still does)

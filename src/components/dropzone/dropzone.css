@@ -79,7 +79,7 @@
 
 .ayy-dropzone__hint {
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 /* One line, for a form field or a chat composer: icon, then the text. */

@@ -27,8 +27,6 @@ Category: Navigation. A phone screen's header: a back button, the screen's title
 - Density — At least the lg control height plus 16px; the back button is the md control height (32px compact, 40 comfortable, 44 touch).
 - Width — Full width of its scroll container (edge to edge as the first child of an App shell's main). large wraps the title onto its own line.
 
-**JS (framework-free)**: topBarClass({ center?, large?, className? }) → string; topBarBackIcon (the back chevron's SVG markup, mirrored in RTL).
-
 **React** — `import { TopBar } from "@danitesler/ayywi/react";`
 - `<TopBar>` renders <header class="ayy-top-bar"> back + <h1 class="ayy-top-bar__title"> + actions; children go in a __row. Props: `title` ReactNode — the screen's name (an <h1>); `subtitle` ReactNode — a line under it; `backHref` string — the back button is a link there; `onBack` () => void — the back button is a <button> running this; `backLabel` string — the previous screen's name after the chevron; `backAriaLabel` string — the chevron's name when there's no backLabel. Default "Back"; `actions` ReactNode — icon buttons at the end; `center` boolean — centre the title; `large` boolean — a big title under the buttons
 

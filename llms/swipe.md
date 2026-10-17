@@ -31,8 +31,6 @@ Category: Data display. A list row that slides sideways to show buttons undernea
 - Density — Actions are at least 4.5rem wide and as tall as the row; the row keeps its own density.
 - Width — Fills the list's width, like the row it wraps.
 
-**JS (framework-free)**: connectSwipe(row, { onOpenChange? }) → { open(side), close(), destroy() } wires the gesture on plain markup: drag past half a tray to keep it open; a tap on the row, a tap elsewhere, Esc or an action closes it. swipeActionClass({ variant? }); swipeActionVariants.
-
 **Custom element** `<ayy-swipe>` (@danitesler/ayywi/elements) — 
 - event `ayy-open-change`: { side } — "start", "end" or null when the row closes.
 

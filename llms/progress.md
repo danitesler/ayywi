@@ -30,8 +30,6 @@ Category: Feedback. Thin progress bar. Determinate (--ayy-value 0–100) or inde
 - Density — Doesn't follow data-density.
 - Width — Fills its container.
 
-**JS (framework-free)**: progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)
-
 **React** — `import { Progress } from "@danitesler/ayywi/react";`
 - `<Progress>` renders <div role="progressbar">. Props: `value` number 0–100; omit/null → indeterminate; `variant` "default" | "success" | "warning" | "destructive" | "ai" — the same prop name as Alert and Badge; `tone` Deprecated alias of variant.; `size` "sm" | "md" | "lg"
 

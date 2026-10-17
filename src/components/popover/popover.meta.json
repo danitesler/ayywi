@@ -42,7 +42,7 @@
     "import": "import { Popover, PopoverTrigger, PopoverContent } from \"@danitesler/ayywi/react\";",
     "components": {
       "Popover": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void" } },
-      "PopoverTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…" } },
+      "PopoverTrigger": { "renders": "Button", "props": { "asChild": "boolean — clone child element and merge trigger props", "...ButtonProps": "variant, size…" } },
       "PopoverContent": {
         "renders": "<div popover role=\"dialog\">",
         "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"center\" | \"start\" | \"end\"" }

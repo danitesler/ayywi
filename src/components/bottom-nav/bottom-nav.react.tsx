@@ -1,13 +1,42 @@
 import { forwardRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
-import { bottomNavClass, bottomNavLabelClass, bottomNavLinkClass } from "./bottom-nav";
+import {
+  bottomNavClass,
+  bottomNavLabelClass,
+  bottomNavLinkClass,
+  type BottomNavSize,
+} from "./bottom-nav";
 
-/** A phone app's tab bar: three to five top-level destinations, pinned to the bottom of its scroll container. */
-export const BottomNav = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function BottomNav(
-  { className, "aria-label": label = "Main", ...props },
+export type { BottomNavSize };
+
+export interface BottomNavProps extends HTMLAttributes<HTMLElement> {
+  /**
+   * Sizing tier: `sm` (28px height, 16px icons), `md` (32px height, 20px icons), or `lg` (default, 40px height, 20px icons).
+   */
+  size?: BottomNavSize;
+  /**
+   * Compact mode: tighter padding, zero gap, and narrower pills so more tabs (5+) fit comfortably.
+   */
+  compact?: boolean;
+  /**
+   * Icon-only mode: visually hides the tab text while preserving it for screen readers.
+   */
+  iconOnly?: boolean;
+}
+
+/** A phone app's tab bar: top-level destinations pinned to the bottom of its scroll container. */
+export const BottomNav = forwardRef<HTMLElement, BottomNavProps>(function BottomNav(
+  { size = "lg", compact, iconOnly, className, "aria-label": label = "Main", ...props },
   ref,
 ) {
-  return <nav ref={ref} className={cx(bottomNavClass, className)} aria-label={label} {...props} />;
+  return (
+    <nav
+      ref={ref}
+      className={bottomNavClass({ size, compact, iconOnly, className })}
+      aria-label={label}
+      {...props}
+    />
+  );
 });
 
 export interface BottomNavLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

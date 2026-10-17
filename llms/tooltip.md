@@ -7,10 +7,10 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 - `.ayy-tooltip__content` — The bubble (role="tooltip"). Placement via data-side="top|bottom|start|end" (start/end follow text direction).
 
 **States**
-- `default` — Hidden. The bubble is a raised surface with a line-strong border and 2xs text.
+- `default` — Hidden. The bubble is a raised surface with a line-strong border and xs text.
 - `hover` (`.ayy-tooltip:hover`) — The bubble fades and slides in after 200ms.
 - `pressed` — doesn't apply: No pressed look; the trigger keeps its own.
-- `focus` (`.ayy-tooltip:focus-within`) — The bubble shows at once (no delay) while the trigger has focus.
+- `focus` (`.ayy-tooltip:is(:has(:focus-visible), :focus-visible)`) — The bubble shows at once (no delay) while the trigger has keyboard focus.
 - `disabled` — doesn't apply: A disabled button gets no focus and shows no tooltip; explain why it's disabled in visible text instead.
 - `selected` — doesn't apply: No selected state.
 - `error` — doesn't apply: Never put errors in a tooltip; use a FieldError.
@@ -20,8 +20,6 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 **Sizes**
 - Density — Doesn't follow data-density.
 - Width — As wide as its text, at most 16rem, then wraps.
-
-**JS (framework-free)**: tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).
 
 **Custom element** `<ayy-tooltip>` (@danitesler/ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.
 - attribute `side`: top | bottom | start | end

@@ -19,8 +19,6 @@ Category: Forms. On/off toggle for a setting that applies immediately. A native 
 - Density — --ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.
 - Width — Fixed. Put it in an inline Field with its label.
 
-**JS (framework-free)**: switchClass constant
-
 **React** — `import { Switch } from "@danitesler/ayywi/react";`
 - `<Switch>` renders <input type="checkbox" role="switch">. Props: `checked / defaultChecked` Controlled / uncontrolled, same as a checkbox.; `onCheckedChange` (checked: boolean) => void; `...rest` All native <input> attributes (name, value, disabled, required…).
 

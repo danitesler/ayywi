@@ -13,10 +13,10 @@
     "side": { "values": ["top", "bottom", "start", "end"], "default": "top" }
   },
   "states": {
-    "default": { "looks": "Hidden. The bubble is a raised surface with a line-strong border and 2xs text." },
+    "default": { "looks": "Hidden. The bubble is a raised surface with a line-strong border and xs text." },
     "hover": { "when": ".ayy-tooltip:hover", "looks": "The bubble fades and slides in after 200ms." },
     "pressed": { "none": "No pressed look; the trigger keeps its own." },
-    "focus": { "when": ".ayy-tooltip:focus-within", "looks": "The bubble shows at once (no delay) while the trigger has focus." },
+    "focus": { "when": ".ayy-tooltip:is(:has(:focus-visible), :focus-visible)", "looks": "The bubble shows at once (no delay) while the trigger has keyboard focus." },
     "disabled": { "none": "A disabled button gets no focus and shows no tooltip; explain why it's disabled in visible text instead." },
     "selected": { "none": "No selected state." },
     "error": { "none": "Never put errors in a tooltip; use a FieldError." },

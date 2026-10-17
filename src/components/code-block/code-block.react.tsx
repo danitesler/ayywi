@@ -6,16 +6,42 @@ import {
   type ButtonHTMLAttributes,
   type HTMLAttributes,
   type MouseEvent,
+  type ReactNode,
 } from "react";
-import { Copy01Icon, Tick02Icon } from "../../lib/icons";
+import { ArrowDown01Icon, Copy01Icon, Tick02Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "../menu/menu.react";
+import {
+  codeBlockActionsClass,
+  codeBlockChevronClass,
   codeBlockClass,
   codeBlockCodeClass,
   codeBlockCopyClass,
   codeBlockFilenameClass,
   codeBlockHeaderClass,
+  codeBlockMenuClass,
   codeBlockPreClass,
+  codeBlockSelectorClass,
+  SUPPORTED_LANGUAGES,
+  type LanguagePreset,
+  tokenizeCode,
+  tokenKeywordClass,
+  tokenStringClass,
+  tokenCommentClass,
+  tokenFunctionClass,
+  tokenNumberClass,
+  tokenOperatorClass,
+  tokenTagClass,
+  tokenAttributeClass,
+  tokenPropertyClass,
+  tokenPunctuationClass,
+  tokenBooleanClass,
 } from "./code-block";
 
 export interface CodeBlockProps extends HTMLAttributes<HTMLDivElement> {
@@ -57,6 +83,100 @@ export const CodeBlockFilename = forwardRef<HTMLSpanElement, CodeBlockFilenamePr
     <span ref={ref} className={codeBlockFilenameClass(className)} {...props}>
       {children}
     </span>
+  );
+});
+
+export interface CodeBlockActionsProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CodeBlockActions = forwardRef<HTMLDivElement, CodeBlockActionsProps>(function CodeBlockActions(
+  { className, children, ...props },
+  ref,
+) {
+  return (
+    <div ref={ref} className={codeBlockActionsClass(className)} {...props}>
+      {children}
+    </div>
+  );
+});
+
+export interface CodeBlockSelectorProps {
+  /** Language ID to select. */
+  value?: string;
+  /** Initial language ID when uncontrolled. */
+  defaultValue?: string;
+  /** Callback fired when a language is selected. */
+  onValueChange?: (value: string) => void;
+  /** Change event handler for compatibility. */
+  onChange?: (event: { target: { value: string } }) => void;
+  /** Optional array of languages to populate options; defaults to SUPPORTED_LANGUAGES. */
+  languages?: LanguagePreset[];
+  /** Additional CSS class names for the trigger button. */
+  className?: string;
+  /** Accessible label for the selector button. Default is "Select language". */
+  "aria-label"?: string;
+  /** Whether the selector is disabled. */
+  disabled?: boolean;
+  children?: ReactNode;
+}
+
+export const CodeBlockSelector = forwardRef<HTMLButtonElement, CodeBlockSelectorProps>(function CodeBlockSelector(
+  {
+    value: controlledValue,
+    defaultValue = "tsx",
+    onValueChange,
+    onChange,
+    languages,
+    className,
+    "aria-label": ariaLabel = "Select language",
+    disabled,
+    children,
+  },
+  ref,
+) {
+  const [uncontrolled, setUncontrolled] = useState(defaultValue);
+  const value = controlledValue !== undefined ? controlledValue : uncontrolled;
+
+  const items = languages ?? SUPPORTED_LANGUAGES;
+  const current = items.find((l) => l.id === value);
+  const displayLabel = current ? current.label : value;
+
+  const handleSelect = (nextValue: string) => {
+    if (controlledValue === undefined) {
+      setUncontrolled(nextValue);
+    }
+    onValueChange?.(nextValue);
+    onChange?.({ target: { value: nextValue } });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          ref={ref}
+          type="button"
+          className={codeBlockSelectorClass(className)}
+          aria-label={ariaLabel}
+          disabled={disabled}
+        >
+          <span>{displayLabel}</span>
+          <Icon icon={ArrowDown01Icon} className={codeBlockChevronClass()} />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className={codeBlockMenuClass()}>
+        <DropdownMenuRadioGroup
+          value={value}
+          onValueChange={handleSelect}
+          closeOnSelect={true}
+        >
+          {children ??
+            items.map((preset) => (
+              <DropdownMenuRadioItem key={preset.id} value={preset.id}>
+                {preset.label}
+              </DropdownMenuRadioItem>
+            ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 });
 
@@ -155,15 +275,58 @@ export const CodeBlockPre = forwardRef<HTMLPreElement, CodeBlockPreProps>(functi
   );
 });
 
-export interface CodeBlockCodeProps extends HTMLAttributes<HTMLElement> {}
+export interface CodeBlockCodeProps extends HTMLAttributes<HTMLElement> {
+  /** Language name or file extension for syntax highlighting (e.g. tsx, html, css, json, bash, md, python). */
+  language?: string;
+  /** Code content to highlight and display. If omitted, renders children. */
+  code?: string;
+}
+
+const TOKEN_CLASSES: Record<string, string | undefined> = {
+  keyword: tokenKeywordClass,
+  string: tokenStringClass,
+  comment: tokenCommentClass,
+  function: tokenFunctionClass,
+  number: tokenNumberClass,
+  operator: tokenOperatorClass,
+  tag: tokenTagClass,
+  attribute: tokenAttributeClass,
+  property: tokenPropertyClass,
+  punctuation: tokenPunctuationClass,
+  boolean: tokenBooleanClass,
+};
 
 export const CodeBlockCode = forwardRef<HTMLElement, CodeBlockCodeProps>(function CodeBlockCode(
-  { className, children, ...props },
+  { language, code, className, children, ...props },
   ref,
 ) {
+  const content = code !== undefined ? code : typeof children === "string" ? children : undefined;
+
+  let body = children;
+  if (content !== undefined && language) {
+    const tokens = tokenizeCode(content, language);
+    body = (
+      <>
+        {tokens.map((token, index) => {
+          const cls = TOKEN_CLASSES[token.type];
+          return cls ? (
+            <span key={index} className={cls}>
+              {token.value}
+            </span>
+          ) : (
+            token.value
+          );
+        })}
+      </>
+    );
+  } else if (code !== undefined) {
+    body = code;
+  }
+
   return (
-    <code ref={ref} className={codeBlockCodeClass(className)} {...props}>
-      {children}
+    <code ref={ref} className={codeBlockCodeClass(className)} data-language={language} {...props}>
+      {body}
     </code>
   );
 });
+

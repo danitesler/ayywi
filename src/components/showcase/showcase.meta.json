@@ -1,0 +1,90 @@
+{
+  "name": "Showcase",
+  "slug": "showcase",
+  "status": "beta",
+  "category": "Layout",
+  "description": "An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets.",
+  "aka": ["showcase", "responsive-preview", "device-preview", "viewport-preview"],
+  "classes": {
+    "ayy-showcase": "Root container: flex column, line border, card radius, background.",
+    "ayy-showcase__header": "Top bar containing the title and action controls.",
+    "ayy-showcase__title": "Title or label for the previewed component or screen.",
+    "ayy-showcase__actions": "Cluster of action controls (device switcher, props, copy button).",
+    "ayy-showcase__stage": "The canvas holding the previewed element, with an ambient pattern.",
+    "ayy-showcase__viewport": "The responsive viewport container that smoothly transitions width.",
+    "ayy-showcase__viewport--desktop": "Full width desktop viewport.",
+    "ayy-showcase__viewport--tablet": "Tablet width viewport (max 834px).",
+    "ayy-showcase__viewport--mobile": "Mobile width viewport (max 390px).",
+    "ayy-showcase__body": "Content wrapper inside the viewport."
+  },
+  "variants": {
+    "device": { "values": ["desktop", "tablet", "mobile"], "default": "desktop" }
+  },
+  "states": {
+    "default": { "looks": "A surface container with a line border, card radius, and a subtle pattern on the preview stage." },
+    "hover": { "none": "Container; interactive elements inside handle hover." },
+    "pressed": { "none": "Container; interactive controls handle active states." },
+    "focus": { "none": "Not directly focusable; child controls receive focus." },
+    "disabled": { "none": "Showcase is not disabled." },
+    "selected": { "none": "Container; device items show selection." },
+    "error": { "none": "No error state." },
+    "loading": { "none": "No loading state." }
+  },
+  "sizes": {
+    "density": "Toolbar controls follow data-density.",
+    "width": "Fills its container width; the viewport transitions max-inline-size to match the active device."
+  },
+  "js": "showcaseClass, showcaseHeaderClass, showcaseTitleClass, showcaseActionsClass, showcaseStageClass, showcaseBodyClass constants; showcaseViewportClass({ device?, className? }) → string.",
+  "react": {
+    "import": "import { Showcase, ShowcaseHeader, ShowcaseTitle, ShowcaseActions, ShowcaseStage, ShowcaseViewport, ShowcaseBody } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Showcase": {
+        "renders": "<section class=\"ayy-showcase\">",
+        "props": {
+          "device": "\"desktop\" | \"tablet\" | \"mobile\" — default \"desktop\""
+        }
+      },
+      "ShowcaseHeader": {
+        "renders": "<div class=\"ayy-showcase__header\">",
+        "props": {}
+      },
+      "ShowcaseTitle": {
+        "renders": "<h3 class=\"ayy-showcase__title\">",
+        "props": {}
+      },
+      "ShowcaseActions": {
+        "renders": "<div class=\"ayy-showcase__actions\">",
+        "props": {}
+      },
+      "ShowcaseStage": {
+        "renders": "<div class=\"ayy-showcase__stage\">",
+        "props": {}
+      },
+      "ShowcaseViewport": {
+        "renders": "<div class=\"ayy-showcase__viewport\">",
+        "props": {
+          "device": "\"desktop\" | \"tablet\" | \"mobile\" — default \"desktop\""
+        }
+      },
+      "ShowcaseBody": {
+        "renders": "<div class=\"ayy-showcase__body\">",
+        "props": {}
+      }
+    }
+  },
+  "a11y": [
+    "Give the Showcase an aria-labelledby pointing to its ShowcaseTitle.",
+    "Device switchers must have accessible labels describing the active viewport."
+  ],
+  "do": [
+    "Use Showcase to demonstrate component variations and responsive layouts in docs and style guides.",
+    "Use the device switcher when previewing components with distinct phone or tablet layouts."
+  ],
+  "dont": [
+    "Don't hardcode fixed heights that balloon small inline components.",
+    "Don't show device controls for components with no responsive variation."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Responsive preview with device switcher" }
+  ]
+}

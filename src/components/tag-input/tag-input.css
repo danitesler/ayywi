@@ -18,7 +18,7 @@
   border-radius: var(--ayy-radius-control);
   background-color: var(--ayy-color-wash);
   color: var(--ayy-color-text);
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--ayy-control-text-field);
   cursor: text;
   transition:
     border-color var(--ayy-duration-fast) ease,

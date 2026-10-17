@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { BRAND_SHAPES, BRAND_STEPS, brandCss, createBrand, tokens, type Brand, type BrandInput, type BrandShape } from "@danitesler/ayywi";
 import {
   Alert,
@@ -7,18 +7,21 @@ import {
   Badge,
   Button,
   Checkbox,
+  ColorPicker,
   Field,
   Input,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Progress,
   Radio,
   SegmentedControl,
   SegmentedControlItem,
   Select,
   Slider,
-  SwatchButton,
-  SwatchCustom,
-  SwatchGroup,
+  ColorSwatchButton,
+  ColorSwatchGroup,
   Switch,
   Tooltip,
 } from "@danitesler/ayywi/react";
@@ -126,6 +129,39 @@ function Scale({ brand }: { brand?: Brand | null }) {
         );
       })}
     </ol>
+  );
+}
+
+function SwatchColorPicker({
+  value,
+  onValueChange,
+  presets,
+}: {
+  value: string;
+  onValueChange: (val: string) => void;
+  presets: string[];
+}) {
+  return (
+    <Popover>
+      <Tooltip content="Pick custom colour">
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label="Pick custom seed colour"
+            className="ayy-swatch ayy-swatch--lg"
+            style={{ "--ayy-swatch": value } as CSSProperties}
+          />
+        </PopoverTrigger>
+      </Tooltip>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        aria-label="Colour picker"
+        style={{ padding: "var(--ayy-space-2)" }}
+      >
+        <ColorPicker value={value} onValueChange={onValueChange} swatches={presets} />
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -246,15 +282,11 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <Field>
           <Label htmlFor="pv-brand-color">Seed colour</Label>
           <div className="ayy-cluster">
-            <Tooltip content="Custom colour">
-              <SwatchCustom
-                size="lg"
-                label="Pick the seed colour"
-                value={hex}
-                onChange={(e) => updateCustomColor(e.target.value)}
-                onInput={(e) => updateCustomColor(e.currentTarget.value)}
-              />
-            </Tooltip>
+            <SwatchColorPicker
+              value={hex}
+              onValueChange={updateCustomColor}
+              presets={BRAND_PRESETS.filter((p) => !p.isMono).map((p) => p.color)}
+            />
             <Input id="pv-brand-color" className="pv-brand__hex" value={input.color} onChange={(e) => updateCustomColor(e.target.value)} spellCheck={false} />
           </div>
         </Field>
@@ -292,14 +324,14 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         </Field>
 
         <div className="pv-brand__presets-row">
-          <SwatchGroup track role="group" aria-label="Preset colours" className="pv-brand__swatches">
+          <ColorSwatchGroup track role="group" aria-label="Preset colours" className="pv-brand__swatches">
             {BRAND_PRESETS.map((p) => {
               const isSelected = p.isMono
                 ? !current || current.name === "mono"
                 : current?.name === p.name || (current?.color.toLowerCase() === p.color.toLowerCase());
               return (
                 <Tooltip key={p.name} content={p.label}>
-                  <SwatchButton
+                  <ColorSwatchButton
                     size="sm"
                     color={p.color}
                     label={p.label}
@@ -309,7 +341,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
                 </Tooltip>
               );
             })}
-          </SwatchGroup>
+          </ColorSwatchGroup>
           <Button size="sm" variant="ghost" onClick={resetToDefault} disabled={!current}>
             Reset to default
           </Button>

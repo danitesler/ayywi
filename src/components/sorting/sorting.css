@@ -1,0 +1,69 @@
+/* Sorting: a dedicated dropdown trigger for ordering lists, tables, and feeds.
+   Coordinates with filter bar triggers and pairs with dropdown menus. */
+
+.ayy-sorting {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+  box-sizing: border-box;
+}
+
+.ayy-sorting__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  box-sizing: border-box;
+  block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-control-pad-md);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-text);
+  font: inherit;
+  font-size: var(--ayy-control-text-md);
+  font-weight: var(--ayy-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-sorting__trigger > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-sorting__trigger:hover {
+  border-color: var(--ayy-color-line-hover);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-sorting__trigger:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-sorting__trigger:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-sorting__trigger[aria-expanded="true"] {
+  border-color: var(--ayy-color-ring);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-sorting--sm .ayy-sorting__trigger,
+.ayy-sorting__trigger--sm {
+  block-size: var(--ayy-size-control-sm);
+  padding-inline: var(--ayy-control-pad-sm);
+  font-size: var(--ayy-control-text-sm);
+}
+
+@media (forced-colors: active) {
+  .ayy-sorting__trigger[aria-expanded="true"] {
+    border-color: Highlight;
+  }
+}

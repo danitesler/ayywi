@@ -7,6 +7,7 @@ import {
   Add01Icon,
   Alert02Icon,
   Analytics01Icon,
+  ArrowDown01Icon,
   Attachment01Icon,
   Calendar03Icon,
   ChartLineData01Icon,
@@ -109,6 +110,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   Dropzone,
   EmptyState,
   EmptyStateActions,
@@ -160,6 +166,8 @@ import {
   ShortcutRecorder,
   Skeleton,
   SliderRange,
+  Sorting,
+  SortingTrigger,
   Sparkline,
   Stat,
   Steps,
@@ -1854,13 +1862,23 @@ function StoreApp() {
                     labels={["Lowest price", "Highest price"]}
                   />
                 </div>
-                <div style={{ inlineSize: "12rem" }}>
-                  <Select size="sm" aria-label="Sort by" value={order} onChange={(e) => setOrder(e.target.value)}>
-                    <option value="popular">Most popular</option>
-                    <option value="price-low">Price, low to high</option>
-                    <option value="price-high">Price, high to low</option>
-                  </Select>
-                </div>
+                <Sorting size="sm">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SortingTrigger size="sm" aria-label={`Sort by ${order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular"}`}>
+                        <span>{`Sort: ${order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular"}`}</span>
+                        <Icon icon={ArrowDown01Icon} />
+                      </SortingTrigger>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" aria-label="Sort by">
+                      <DropdownMenuRadioGroup value={order} onValueChange={setOrder} closeOnSelect>
+                        <DropdownMenuRadioItem value="popular">Most popular</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="price-low">Price, low to high</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="price-high">Price, high to low</DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </Sorting>
               </div>
             </div>
 
@@ -2310,7 +2328,7 @@ Dark theme, compact density. ayywi components and tokens only; run npx @danitesl
     description: "Hero, features, pricing with billing toggle, customer carousel, FAQ, footer. Navbar folds into a menu on phones.",
     theme: "light",
     density: "comfortable",
-    uses: ["navbar", "card", "icon-tile", "segmented-control", "stat", "list", "badge", "carousel", "accordion", "input-group", "footer", "button", "avatar"],
+    uses: ["navbar", "card", "icon-tile", "segmented-control", "stat", "list", "badge", "carousel", "accordion", "input", "footer", "button", "avatar"],
     prompt: `Build a one-page marketing site with ayywi: skip link, a Navbar (brand, four links, a ring "Start free" button, a NavbarToggle for phones), then <main> at .ayy-container width, then a Footer.
 
 Sections: a centred hero (AI badge, h1, lede, a ring and an outline button, .ayy-bg-grid behind it); three feature cards with IconTiles in different accents; pricing with a Monthly/Yearly Segmented control and three plan cards (the middle one featured with a "Most popular" badge, perks in a compact List); a Carousel of customer quotes; an FAQ Accordion (single); a closing section with an email InputGroup and a submit button.
@@ -2326,7 +2344,7 @@ Light theme. One ring call to action per view; everything else outline or ghost.
     description: "Conversations, thread with AI replies, customer details. Three panes on desktop, list on phones. Settings in a full dialog.",
     theme: "dark-contrast",
     density: "comfortable",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input-group", "kbd", "chat", "avatar", "badge", "textarea", "button", "alert", "separator"],
+    uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input", "kbd", "chat", "avatar", "badge", "textarea", "button", "alert", "separator"],
     prompt: `Build a support inbox with ayywi, in ${APP_FRAME} (Inbox, Mentions, Sent, Customers).
 
 The main area has three panes: a conversation List (avatar, name as a ListLink, a truncated preview, a status Badge, the time in ListMeta, the open one marked current) under a search InputGroup with a Kbd "/" hint; the thread (a Chat with incoming and outgoing messages, a typing indicator and suggested replies, then a reply form with a Textarea, an attach icon button and Send); and a customer panel (Avatar, customer details, a warning Alert for the SLA). The panes collapse to the list on phones.
@@ -2378,10 +2396,10 @@ Light theme, compact density. Every state — empty, loading, error — uses an 
     description: "Coffee shop: filters, product grid with empty state, cart drawer with quantities and total.",
     theme: "dark",
     density: "comfortable",
-    uses: ["navbar", "chip", "slider", "select", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "footer", "button", "toast"],
+    uses: ["navbar", "chip", "slider", "sorting", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "footer", "button", "toast"],
     prompt: `Build an online coffee store with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), content at .ayy-container width, and a Footer.
 
-The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Chips for the kind of coffee (with counts), a SliderRange for the price with the range in text, and a Select to sort; then an .ayy-grid of product Cards (CardMedia with an IconTile on .ayy-bg-grid in the product's --ayy-spot colour, the name, the roast and tasting notes, the price and an outline Add button), or an Empty state with Reset filters when nothing matches.
+The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Chips for the kind of coffee (with counts), a SliderRange for the price with the range in text, and Sorting to sort; then an .ayy-grid of product Cards (CardMedia with an IconTile on .ayy-bg-grid in the product's --ayy-spot colour, the name, the roast and tasting notes, the price and an outline Add button), or an Empty state with Reset filters when nothing matches.
 
 The cart is a Dialog with side="end": a divided List of items with a small NumberField each, a Delivery ChoiceGroup (Standard free, Express $9), the subtotal, delivery and total, and a footer with Keep shopping and one primary Check out that shows a toast.
 

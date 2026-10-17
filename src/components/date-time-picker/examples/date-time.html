@@ -1,0 +1,17 @@
+<!-- <ayy-popover> places the compound date & time picker under the trigger;
+     <ayy-date-time-picker> draws the month grid and time columns side-by-side. -->
+<div class="ayy-field" style="inline-size: min(100%, 20rem)">
+  <label class="ayy-label" for="departure-time-html">Flight departure</label>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-input ayy-date-time-picker-trigger" id="departure-time-html" popovertarget="departure-popover-html" aria-haspopup="dialog" aria-describedby="departure-value-html departure-hint-html">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <span id="departure-value-html" class="ayy-date-time-picker-trigger__value" data-placeholder="Pick date & time">14 Oct 2026, 14:30</span>
+    </button>
+    <div class="ayy-popover" id="departure-popover-html" popover role="dialog" aria-label="Pick date & time">
+      <ayy-date-time-picker value="2026-10-14T14:30" format="24h" step="15" name="departure" show-actions>
+        <div class="ayy-date-time-picker"></div>
+      </ayy-date-time-picker>
+    </div>
+  </ayy-popover>
+  <p class="ayy-field__hint" id="departure-hint-html">Check in at least 2 hours before.</p>
+</div>

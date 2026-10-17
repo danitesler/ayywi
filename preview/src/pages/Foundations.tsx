@@ -13,6 +13,7 @@ import {
   Label,
   Progress,
   ProgressRing,
+  Select,
   Skeleton,
   Spinner,
   Switch,
@@ -21,7 +22,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@danitesler/ayywi/react";
-import { CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
+import { Add01Icon, CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
 import { themeOptions } from "../themes";
 
 type Entry = [string, TokenDefinition];
@@ -130,11 +131,15 @@ const TYPE_STYLES: { sample: ReactNode; use: string }[] = [
   { sample: <p>Body text. 日本語、العربية، Ελληνικά, हिन्दी all render with the OS font.</p>, use: "Everything else: paragraphs, labels, table cells, form text. It is the default, so it needs no class." },
   { sample: <p className="ayy-muted">Muted, for captions and secondary info.</p>, use: "Captions, hints, timestamps. Nothing critical." },
   { sample: <p className="ayy-signature" style={{ fontSize: "var(--ayy-text-2xl)" }}>Signature accent</p>, use: "A personal touch: a sign-off, a name, one highlighted word. Once per screen, and never for UI text." },
-  { sample: <p className="ayy-mono">Mono, for code</p>, use: "Code, commands, tokens, IDs and anything where characters must line up." },
+  { sample: <p>Text highlight (default): <mark className="ayy-text-highlight">search match</mark></p>, use: "Search hits and neutral inline callouts: subtle wash with clean underline." },
+  { sample: <p>Text highlight (yellow): <mark className="ayy-text-highlight ayy-text-highlight--warning">attention required</mark></p>, use: "Warning and caution callouts: amber/yellow tint with matching underline." },
+  { sample: <p>Text highlight (red): <mark className="ayy-text-highlight ayy-text-highlight--destructive">critical action</mark></p>, use: "Danger and error callouts: red tint with matching underline." },
+  { sample: <p>Text highlight (green): <mark className="ayy-text-highlight ayy-text-highlight--success">completed item</mark></p>, use: "Success and confirmation callouts: green tint with matching underline." },
 ];
 
 function TypographyPage() {
   const sizes = byValue(group("text").filter(([, t]) => String(t.value).endsWith("rem")));
+  const densityText = [...sizes.filter(([, t]) => t.density), ...group("control").filter(([name]) => short(name).startsWith("text-"))];
   return (
     <article className="pv-page">
       <Header title="Typography">Four families, one size scale. Sizes follow the browser font size; every script falls back to the system font.</Header>
@@ -160,36 +165,58 @@ function TypographyPage() {
         ))}
       </div>
 
-      <h2 className="pv-h pv-h--section">Sizes</h2>
-      <div className="pv-scale">
-        {sizes.map(([name, t]) => (
-          <div key={name} className="pv-scale__row">
-            <span className="pv-scale__label">
-              {short(name)}
-              <span className="ayy-muted">{px(t.value)}</span>
-            </span>
-            <span className="pv-scale__sample" style={{ fontSize: `var(${t.cssVar})` }}>
-              Build it once, ship it everywhere
-            </span>
-          </div>
-        ))}
-      </div>
+      <h2 className="pv-h pv-h--section">Sizes that follow density</h2>
+      <p className="pv-note">
+        UI chrome: buttons, menus, tables, the app shell. Compact / comfortable / touch. Each step is 1px; fields jump to 16px on touch so
+        iOS doesn't zoom on focus.
+      </p>
+      <ScaleRows entries={densityText} />
+
+      <h2 className="pv-h pv-h--section">Fixed sizes</h2>
+      <p className="pv-note">Content: headings, body copy, descriptions. Same in every density.</p>
+      <ScaleRows entries={sizes.filter(([, t]) => !t.density)} />
     </article>
+  );
+}
+
+function ScaleRows({ entries }: { entries: Entry[] }) {
+  return (
+    <div className="pv-scale">
+      {entries.map(([name, t]) => (
+        <div key={name} className="pv-scale__row">
+          <span className="pv-scale__label">
+            {t.cssVar.replace("--ayy-", "")}
+            <span className="ayy-muted">
+              {t.density ? `${px(t.value)} / ${px(t.density.comfortable)} / ${px(t.density.touch)}` : px(t.value)}
+            </span>
+          </span>
+          <span className="pv-scale__sample" style={{ fontSize: `var(${t.cssVar})` }}>
+            Build it once, ship it everywhere
+          </span>
+        </div>
+      ))}
+    </div>
   );
 }
 
 // ---- Spacing & sizing ----
 
-const DENSITIES: [string, string][] = [
-  ["compact", "Compact, the desktop default."],
-  ["comfortable", "Comfortable, more room."],
-  ["touch", "Touch, for touch screens."],
+const SIZES = [
+  { name: "sm", px: "28px", desc: "Small control height (32px comfortable, 40px touch)." },
+  { name: "md", px: "32px", desc: "Default control height (40px comfortable, 44px touch)." },
+  { name: "lg", px: "40px", desc: "Large control height (48px comfortable, 52px touch)." },
+  { name: "icon-sm", px: "16px", desc: "Dense rows, button icons." },
+  { name: "icon-md", px: "20px", desc: "List rows, headings, next to body text." },
+  { name: "icon-lg", px: "24px", desc: "Native icon grid." },
+  { name: "switch", px: "20px", desc: "Switch track height." },
+  { name: "check", px: "16px", desc: "Checkbox and radio box." },
+  { name: "touch", px: "44px", desc: "Minimum touch target." },
 ];
 
 function SpacingPage() {
   return (
     <article className="pv-page">
-      <Header title="Spacing & sizing">Spacing on a 4px grid. Controls grow with density.</Header>
+      <Header title="Spacing & sizing">Spacing on a 4px grid and standard control height scale.</Header>
 
       <h2 className="pv-h pv-h--section">Spacing</h2>
       <div className="pv-scale">
@@ -204,21 +231,78 @@ function SpacingPage() {
         ))}
       </div>
 
-      <h2 className="pv-h pv-h--section">Density</h2>
-      <p className="pv-note">Same controls, each density. Pick one from the menu beside the theme button.</p>
-      <div className="pv-densities">
-        {DENSITIES.map(([mode, text]) => (
-          <Card key={mode} data-density={mode}>
-            <CardContent className="ayy-stack">
-              <p className="pv-note">{text}</p>
-              <Input aria-label={`Name (${mode})`} placeholder="Project name" />
-              <div className="ayy-cluster">
-                <Button>Save</Button>
-                <Button variant="outline">Cancel</Button>
-              </div>
-            </CardContent>
-          </Card>
+      <h2 className="pv-h pv-h--section">Sizes</h2>
+      <div className="pv-scale">
+        {SIZES.map(({ name, px, desc }) => (
+          <div key={name} className="pv-scale__row">
+            <span className="pv-scale__label">
+              {name}
+              <span className="ayy-muted">{px}</span>
+            </span>
+            <span className="pv-scale__sample ayy-muted">{desc}</span>
+          </div>
         ))}
+      </div>
+
+      <h2 className="pv-h pv-h--section">Components by size</h2>
+      <p className="pv-note">Controls at each size tier share identical block heights and vertical alignment.</p>
+      <div className="pv-densities">
+        <Card>
+          <CardContent className="ayy-stack">
+            <div>
+              <strong>Small</strong>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>28px height</p>
+            </div>
+            <Input aria-label="Small project name" placeholder="Project name" size="sm" />
+            <Select aria-label="Small project status" size="sm" defaultValue="active">
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </Select>
+            <div className="ayy-cluster">
+              <Button size="sm">Save</Button>
+              <Button variant="outline" size="sm">Cancel</Button>
+              <Button variant="outline" size="icon-sm" aria-label="Add project"><Icon icon={Add01Icon} /></Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="ayy-stack">
+            <div>
+              <strong>Medium</strong>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>32px height · Default</p>
+            </div>
+            <Input aria-label="Medium project name" placeholder="Project name" size="md" />
+            <Select aria-label="Medium project status" size="md" defaultValue="active">
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </Select>
+            <div className="ayy-cluster">
+              <Button size="md">Save</Button>
+              <Button variant="outline" size="md">Cancel</Button>
+              <Button variant="outline" size="icon" aria-label="Add project"><Icon icon={Add01Icon} /></Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="ayy-stack">
+            <div>
+              <strong>Large</strong>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>40px height</p>
+            </div>
+            <Input aria-label="Large project name" placeholder="Project name" size="lg" />
+            <Select aria-label="Large project status" size="lg" defaultValue="active">
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </Select>
+            <div className="ayy-cluster">
+              <Button size="lg">Save</Button>
+              <Button variant="outline" size="lg">Cancel</Button>
+              <Button variant="outline" size="icon-lg" aria-label="Add project"><Icon icon={Add01Icon} /></Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </article>
   );
@@ -480,7 +564,7 @@ export interface Foundation {
 export const foundations: Foundation[] = [
   { route: "colors", title: "Colors", groups: ["color", "accent"], keywords: `theme themes dark light soft gray contrast accents ${colorCategories.join(" ")}`, Page: ColorsPage },
   { route: "typography", title: "Typography", groups: ["font", "text"], keywords: "type fonts headings", Page: TypographyPage },
-  { route: "spacing", title: "Spacing & sizing", groups: ["space", "size"], keywords: "density compact comfortable touch layout gap padding", Page: SpacingPage },
+  { route: "spacing", title: "Spacing & sizing", groups: ["space", "size", "control"], keywords: "layout gap padding sizes scale height controls", Page: SpacingPage },
   { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow"], keywords: "corners depth shadow", Page: ElevationPage },
   { route: "motion", title: "Motion", groups: ["ease", "duration"], keywords: "animation easing transition reduced motion", Page: MotionPage },
 ];

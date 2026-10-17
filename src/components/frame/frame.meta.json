@@ -13,7 +13,7 @@
   },
   "variants": {},
   "states": {
-    "default": { "looks": "A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted 2xs address." },
+    "default": { "looks": "A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted xs address." },
     "hover": { "none": "Decorative." },
     "pressed": { "none": "Decorative." },
     "focus": { "none": "Not focusable." },

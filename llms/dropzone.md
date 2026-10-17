@@ -23,8 +23,6 @@ Category: Forms. A drop zone that is also a file picker: a label around a native
 - Density — Padding and text are fixed; doesn't follow data-density.
 - Width — Fills its container. compact is one line (icon then text) for a form field or a chat composer.
 
-**JS (framework-free)**: dropzoneClass({ compact?, className? }) → string; dropzoneTitleClass, dropzoneHintClass constants; dropzoneIcon (SVG markup); trackDropzones(root?) sets data-dragging on every .ayy-dropzone under root while files are dragged over (@danitesler/ayywi/elements runs it for the document); dragHasFiles(event).
-
 **React** — `import { Dropzone } from "@danitesler/ayywi/react";`
 - `<Dropzone>` renders <label class="ayy-dropzone"><input type="file"><svg><span class="ayy-dropzone__title">…. Props: `title` ReactNode, default "Drop files here or browse"; `hint` ReactNode — types and size; `icon` ReactNode — replaces the upload icon; null for none; `onFiles` (files: File[]) => void — check types and sizes here: accept isn't enforced on a drop; `compact` boolean; `className` On the <label>; every other prop (accept, multiple, name, id, disabled…) goes to the input; `style` On the <label>
 

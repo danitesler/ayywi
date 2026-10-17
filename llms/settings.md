@@ -33,8 +33,6 @@ Category: Forms. Preferences as rows: a label and a one-line hint at the start, 
 - Density — Rows are at least the lg control height (40px compact, 48 comfortable, 52 touch); their controls follow data-density.
 - Width — Fills its container. A row wraps its control under the label when there's no room; stack does it always. Selects and inputs in a row are at least 11rem.
 
-**JS (framework-free)**: settingsClass({ plain? }), settingsRowClass({ stack?, link?, destructive? }) → class strings; settingsChevronIcon (SVG markup for a link row's chevron, mirrored in RTL).
-
 **React** — `import { Settings, SettingsRow, SettingsLink } from "@danitesler/ayywi/react";`
 - `<Settings>` renders <section class="ayy-settings" aria-labelledby> <h2 class="ayy-settings__title"> … <div class="ayy-settings__list">{children}</div>. Props: `title` ReactNode — the heading; the section is labelled by it; `description` ReactNode — a line under the heading; `plain` boolean — no card around the rows
 - `<SettingsRow>` renders <div class="ayy-settings__row"> text + <div class="ayy-settings__control">{children}</div>. Props: `label` ReactNode — the setting's name; `htmlFor` string — the control's id: the label becomes a <label for>, and the hint gets the id `${htmlFor}-hint` for the control's aria-describedby; `hint` ReactNode — one line explaining it; `error` ReactNode — replaces the hint, in red, with role="alert"; `stack` boolean — the control under the text at full width

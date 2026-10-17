@@ -20,8 +20,6 @@ Category: Forms. Native checkbox with a drawn box, check mark and indeterminate 
 - Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.
 - Width — Fixed square.
 
-**JS (framework-free)**: checkboxClass constant
-
 **React** — `import { Checkbox } from "@danitesler/ayywi/react";`
 - `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
 

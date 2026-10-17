@@ -6,7 +6,16 @@ import {
   type ThHTMLAttributes,
 } from "react";
 import { cx } from "../../lib/cx";
-import { tableClass, tableNumClass, tableSelectClass, tableSortClass, tableWrapClass, type SortDirection } from "./table";
+import {
+  tableActionsClass,
+  tableClass,
+  tableNumClass,
+  tableRowActionsClass,
+  tableSelectClass,
+  tableSortClass,
+  tableWrapClass,
+  type SortDirection,
+} from "./table";
 
 export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
   compact?: boolean;
@@ -53,6 +62,8 @@ export interface TableCellProps {
   numeric?: boolean;
   /** The narrow checkbox column for selecting rows. */
   select?: boolean;
+  /** The narrow end-aligned column for row action buttons and overflow menus. */
+  actions?: boolean;
 }
 
 export interface TableHeadProps extends ThHTMLAttributes<HTMLTableCellElement>, TableCellProps {
@@ -63,7 +74,7 @@ export interface TableHeadProps extends ThHTMLAttributes<HTMLTableCellElement>, 
 }
 
 export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(
-  { numeric, select, sort, onSort, className, scope = "col", children, ...props },
+  { numeric, select, actions, sort, onSort, className, scope = "col", children, ...props },
   ref,
 ) {
   const sortable = sort !== undefined || onSort !== undefined;
@@ -72,7 +83,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(functi
       ref={ref}
       scope={scope}
       aria-sort={sort && sort !== "none" ? sort : undefined}
-      className={cx(numeric && tableNumClass, select && tableSelectClass, className) || undefined}
+      className={cx(numeric && tableNumClass, select && tableSelectClass, actions && tableActionsClass, className) || undefined}
       {...props}
     >
       {sortable ? (
@@ -87,10 +98,28 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(functi
 });
 
 export const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCellElement> & TableCellProps>(
-  function TableCell({ numeric, select, className, ...props }, ref) {
-    return <td ref={ref} className={cx(numeric && tableNumClass, select && tableSelectClass, className) || undefined} {...props} />;
+  function TableCell({ numeric, select, actions, className, ...props }, ref) {
+    return (
+      <td
+        ref={ref}
+        className={cx(numeric && tableNumClass, select && tableSelectClass, actions && tableActionsClass, className) || undefined}
+        {...props}
+      />
+    );
   },
 );
+
+export interface TableRowActionsProps extends HTMLAttributes<HTMLDivElement> {
+  /** Reveal quick actions on row hover, keyboard focus, or when selected (touch screens keep them visible). */
+  reveal?: boolean;
+}
+
+export const TableRowActions = forwardRef<HTMLDivElement, TableRowActionsProps>(function TableRowActions(
+  { reveal, className, ...props },
+  ref,
+) {
+  return <div ref={ref} className={tableRowActionsClass({ reveal, className })} {...props} />;
+});
 
 export const TableCaption = forwardRef<HTMLTableCaptionElement, HTMLAttributes<HTMLTableCaptionElement>>(
   function TableCaption(props, ref) {

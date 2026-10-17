@@ -30,8 +30,6 @@ Category: Data display. Round (or square) picture of a person or workspace, with
 - Density — Doesn't follow data-density. Initials are 38% of the size.
 - Width — Square. A group overlaps them by 20% with a page-colour ring.
 
-**JS (framework-free)**: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
-
 **React** — `import { Avatar, AvatarGroup } from "@danitesler/ayywi/react";`
 - `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "sm" | "md" | "lg" | "xl"; `shape` "circle" | "square"
 - `<AvatarGroup>` renders <div role="group">.
@@ -50,7 +48,7 @@ Category: Data display. Round (or square) picture of a person or workspace, with
 - Don't use an avatar for icons — use Icon.
 - Don't rely on the picture alone to identify someone — show the name nearby.
 
-## Avatar — Sizes, fallback, group
+## Avatar — Sizes
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -63,15 +61,76 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
   <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
 </span>
+<span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Maya Chen">
+  <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+  <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+</span>
+<span class="ayy-avatar ayy-avatar--xl" role="img" aria-label="Maya Chen">
+  <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+  <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+</span>
+<span class="ayy-avatar ayy-avatar--xl ayy-avatar--square" role="img" aria-label="Northwind"><span class="ayy-avatar__fallback" aria-hidden="true">N</span></span>
+```
+
+React:
+
+```tsx
+import { Avatar } from "@danitesler/ayywi/react";
+
+const photo =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>";
+
+export default function Example() {
+  return (
+    <>
+      <Avatar name="Maya Chen" src={photo} size="sm" />
+      <Avatar name="Maya Chen" src={photo} />
+      <Avatar name="Maya Chen" src={photo} size="lg" />
+      <Avatar name="Maya Chen" src={photo} size="xl" />
+      <Avatar name="Northwind" shape="square" size="xl" />
+    </>
+  );
+}
+```
+
+## Avatar — Fallback
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
 <span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Leo Park"><span class="ayy-avatar__fallback" aria-hidden="true">LP</span></span>
 <!-- The image fails; @danitesler/ayywi/elements hides it so the initials show through. -->
 <span class="ayy-avatar ayy-avatar--lg" role="img" aria-label="Broken Image">
   <span class="ayy-avatar__fallback" aria-hidden="true">BI</span>
   <img class="ayy-avatar__image" alt="" src="/missing.png" />
 </span>
-<span class="ayy-avatar ayy-avatar--xl ayy-avatar--square" role="img" aria-label="Northwind"><span class="ayy-avatar__fallback" aria-hidden="true">N</span></span>
+```
+
+React:
+
+```tsx
+import { Avatar } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Avatar name="Leo Park" size="lg" />
+      <Avatar name="Broken Image" src="/missing.png" size="lg" />
+    </>
+  );
+}
+```
+
+## Avatar — Group
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
 <div class="ayy-avatar-group" role="group" aria-label="4 collaborators">
-  <span class="ayy-avatar" role="img" aria-label="Maya Chen"><span class="ayy-avatar__fallback" aria-hidden="true">MC</span></span>
+  <span class="ayy-avatar" role="img" aria-label="Maya Chen">
+    <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+    <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+  </span>
   <span class="ayy-avatar" role="img" aria-label="Leo Park"><span class="ayy-avatar__fallback" aria-hidden="true">LP</span></span>
   <span class="ayy-avatar" role="img" aria-label="Ana Ruiz"><span class="ayy-avatar__fallback" aria-hidden="true">AR</span></span>
   <span class="ayy-avatar" role="img" aria-label="Sam Okafor"><span class="ayy-avatar__fallback" aria-hidden="true">SO</span></span>
@@ -90,11 +149,6 @@ const photo =
 export default function Example() {
   return (
     <>
-      <Avatar name="Maya Chen" src={photo} size="sm" />
-      <Avatar name="Maya Chen" src={photo} />
-      <Avatar name="Leo Park" size="lg" />
-      <Avatar name="Broken Image" src="/missing.png" size="lg" />
-      <Avatar name="Northwind" shape="square" size="xl" />
       <AvatarGroup aria-label="4 collaborators">
         <Avatar name="Maya Chen" src={photo} />
         <Avatar name="Leo Park" />

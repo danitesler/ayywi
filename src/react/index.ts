@@ -14,8 +14,25 @@ export {
   CardLink,
   type CardProps,
 } from "../components/card/card.react";
+export {
+  Showcase,
+  ShowcaseHeader,
+  ShowcaseTitle,
+  ShowcaseActions,
+  ShowcaseStage,
+  ShowcaseViewport,
+  ShowcaseBody,
+  type ShowcaseProps,
+  type ShowcaseHeaderProps,
+  type ShowcaseTitleProps,
+  type ShowcaseActionsProps,
+  type ShowcaseStageProps,
+  type ShowcaseViewportProps,
+  type ShowcaseBodyProps,
+} from "../components/showcase/showcase.react";
 export { Badge, type BadgeProps } from "../components/badge/badge.react";
-export { Input, type InputProps } from "../components/input/input.react";
+export { StatusDot, type StatusDotProps } from "../components/status-dot/status-dot.react";
+export { Input, type InputProps, InputGroup, InputGroupAddon, type InputGroupProps } from "../components/input/input.react";
 export { Textarea, type TextareaProps } from "../components/textarea/textarea.react";
 export { Select, type SelectProps } from "../components/select/select.react";
 export { Checkbox, type CheckboxProps } from "../components/checkbox/checkbox.react";
@@ -44,7 +61,14 @@ export {
   type DialogProps,
   type DialogContentProps,
 } from "../components/dialog/dialog.react";
-export { Popover, PopoverTrigger, PopoverContent, type PopoverProps, type PopoverContentProps } from "../components/popover/popover.react";
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  type PopoverProps,
+  type PopoverTriggerProps,
+  type PopoverContentProps,
+} from "../components/popover/popover.react";
 export {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -56,20 +80,55 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
   DropdownMenuCheckboxItem,
+  DropdownMenuSelectedItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   type DropdownMenuProps,
+  type DropdownMenuTriggerProps,
   type DropdownMenuContentProps,
   type DropdownMenuItemProps,
   type DropdownMenuSubProps,
   type DropdownMenuSubTriggerProps,
   type DropdownMenuSubContentProps,
   type DropdownMenuCheckboxItemProps,
+  type DropdownMenuSelectedItemProps,
   type DropdownMenuRadioGroupProps,
   type DropdownMenuRadioItemProps,
 } from "../components/menu/menu.react";
 export { Tooltip, type TooltipProps } from "../components/tooltip/tooltip.react";
-export { Toaster, type ToasterProps } from "../components/toast/toast.react";
+export {
+  Toaster,
+  NotificationToast,
+  Toast,
+  InlineToast,
+  CardToast,
+  CardToastBackdrop,
+  CardToastImage,
+  CardToastMedia,
+  CardToastScrim,
+  CardToastClose,
+  CardToastCorner,
+  CardToastCenter,
+  CardToastAction,
+  CardToastStatus,
+  CardToastThumb,
+  type ToasterProps,
+  type NotificationToastProps,
+  type InlineToastProps,
+  type CardToastProps,
+  type CardToastBackdropProps,
+  type CardToastImageProps,
+  type CardToastMediaProps,
+  type CardToastScrimProps,
+  type CardToastCloseProps,
+  type CardToastCornerProps,
+  type CardToastCenterProps,
+  type CardToastActionProps,
+  type CardToastStatusProps,
+  type CardToastThumbProps,
+} from "../components/toast/toast.react";
+export { toast, cardToast, inlineToastClass, type CardToastOptions, type CardToastHandle } from "../components/toast/toast";
+
 export { Alert, AlertTitle, AlertDescription, AlertActions, type AlertProps } from "../components/alert/alert.react";
 export { Progress, type ProgressProps } from "../components/progress/progress.react";
 export { ProgressRing, type ProgressRingProps } from "../components/progress-ring/progress-ring.react";
@@ -85,16 +144,63 @@ export {
   TableHead,
   TableCell,
   TableCaption,
+  TableRowActions,
   type TableProps,
   type TableCellProps,
   type TableHeadProps,
   type TableRowProps,
+  type TableRowActionsProps,
 } from "../components/table/table.react";
+export {
+  ActionBar,
+  ActionBarSelection,
+  ActionBarCount,
+  ActionBarClose,
+  ActionBarSeparator,
+  ActionBarActions,
+  ActionBarButton,
+  type ActionBarProps,
+  type ActionBarSelectionProps,
+  type ActionBarCountProps,
+  type ActionBarCloseProps,
+  type ActionBarSeparatorProps,
+  type ActionBarActionsProps,
+  type ActionBarButtonProps,
+} from "../components/action-bar/action-bar.react";
+export {
+  GridWrap,
+  GridToolbar,
+  GridSelectAll,
+  Grid,
+  GridItem,
+  GridItemMedia,
+  GridItemHeader,
+  GridItemSelect,
+  GridItemActions,
+  GridItemTitle,
+  GridItemDescription,
+  GridItemBody,
+  GridItemFooter,
+  type GridWrapProps,
+  type GridToolbarProps,
+  type GridSelectAllProps,
+  type GridProps,
+  type GridItemProps,
+  type GridItemMediaProps,
+  type GridItemHeaderProps,
+  type GridItemSelectProps,
+  type GridItemActionsProps,
+  type GridItemTitleProps,
+  type GridItemDescriptionProps,
+  type GridItemBodyProps,
+  type GridItemFooterProps,
+} from "../components/grid/grid.react";
 export {
   BarChart,
   LineChart,
   Sparkline,
   BarList,
+  TableChart,
   type BarChartProps,
   type LineChartProps,
   type LineChartSeries,
@@ -103,6 +209,7 @@ export {
   type SparklineProps,
   type BarListProps,
   type BarListItem,
+  type TableChartProps,
 } from "../components/chart/chart.react";
 export {
   Navbar,
@@ -143,7 +250,15 @@ export {
   type AppShellSublistProps,
   type AppShellCollapseProps,
 } from "../components/app-shell/app-shell.react";
-export { BottomNav, BottomNavLink, BottomNavButton, type BottomNavLinkProps, type BottomNavButtonProps } from "../components/bottom-nav/bottom-nav.react";
+export {
+  BottomNav,
+  BottomNavLink,
+  BottomNavButton,
+  type BottomNavProps,
+  type BottomNavSize,
+  type BottomNavLinkProps,
+  type BottomNavButtonProps,
+} from "../components/bottom-nav/bottom-nav.react";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
 export { Separator, type SeparatorProps } from "../components/separator/separator.react";
@@ -186,7 +301,6 @@ export {
 } from "../components/empty-state/empty-state.react";
 export { Spinner, type SpinnerProps } from "../components/spinner/spinner.react";
 export { Kbd, KeyboardHint, type KbdProps, type KeyboardHintProps } from "../components/kbd/kbd.react";
-export { InputGroup, InputGroupAddon, type InputGroupProps } from "../components/input-group/input-group.react";
 export {
   SegmentedControl,
   SegmentedControlItem,
@@ -220,8 +334,43 @@ export {
   FooterBottom,
   type FooterGroupProps,
 } from "../components/footer/footer.react";
-export { Calendar, DatePicker, type CalendarProps, type CalendarPreset, type DatePickerProps } from "../components/calendar/calendar.react";
-export { Swatch, SwatchButton, SwatchCustom, SwatchGroup, type SwatchProps, type SwatchButtonProps, type SwatchCustomProps, type SwatchGroupProps } from "../components/swatch/swatch.react";
+export {
+  DatePicker,
+  DatePickerGrid,
+  DateRange,
+  DateRangePicker,
+  TimePicker,
+  TimePickerTrigger,
+  DateTimePicker,
+  DateTimePickerTrigger,
+  type DatePickerProps,
+  type DatePickerGridProps,
+  type DatePickerPreset,
+  type DateRangeProps,
+  type DateRangePickerProps,
+  type TimePickerProps,
+  type TimePickerTriggerProps,
+  type DateTimePickerProps,
+  type DateTimePickerTriggerProps,
+} from "../components/date-time-picker/date-time-picker.react";
+export {
+  ColorSwatch,
+  ColorSwatchButton,
+  ColorSwatchCustom,
+  ColorSwatchGroup,
+  ColorSwatch as Swatch,
+  ColorSwatchButton as SwatchButton,
+  ColorSwatchCustom as SwatchCustom,
+  ColorSwatchGroup as SwatchGroup,
+  type ColorSwatchProps,
+  type ColorSwatchButtonProps,
+  type ColorSwatchCustomProps,
+  type ColorSwatchGroupProps,
+  type ColorSwatchProps as SwatchProps,
+  type ColorSwatchButtonProps as SwatchButtonProps,
+  type ColorSwatchCustomProps as SwatchCustomProps,
+  type ColorSwatchGroupProps as SwatchGroupProps,
+} from "../components/swatch/swatch.react";
 export { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, type ToolbarProps, type ToolbarButtonProps } from "../components/toolbar/toolbar.react";
 export {
   Shortcut,
@@ -238,19 +387,34 @@ export { TagInput, type TagInputProps } from "../components/tag-input/tag-input.
 export { Fab, type FabProps } from "../components/fab/fab.react";
 export { TopBar, type TopBarProps } from "../components/top-bar/top-bar.react";
 export { SearchBar, type SearchBarProps } from "../components/search-bar/search-bar.react";
+export {
+  FilterBar,
+  FilterBarMain,
+  FilterBarGroup,
+  FilterBarTabs,
+  FilterBarTab,
+  FilterBarTrigger,
+  FilterBarActive,
+  FilterBarSummary,
+  FilterBarClear,
+  type FilterBarProps,
+  type FilterBarMainProps,
+  type FilterBarGroupProps,
+  type FilterBarTabsProps,
+  type FilterBarTabProps,
+  type FilterBarTriggerProps,
+  type FilterBarActiveProps,
+  type FilterBarSummaryProps,
+  type FilterBarClearProps,
+} from "../components/filter-bar/filter-bar.react";
+export {
+  Sorting,
+  SortingTrigger,
+  type SortingProps,
+  type SortingTriggerProps,
+  type SortingSize,
+} from "../components/sorting/sorting.react";
 export { Swipe, SwipeAction, type SwipeProps, type SwipeActionProps } from "../components/swipe/swipe.react";
-export {
-  DateRange,
-  DateRangePicker,
-  type DateRangeProps,
-  type DateRangePickerProps,
-} from "../components/date-range/date-range.react";
-export {
-  TimePicker,
-  TimePickerTrigger,
-  type TimePickerProps,
-  type TimePickerTriggerProps,
-} from "../components/time-picker/time-picker.react";
 export {
   ColorPicker,
   type ColorPickerProps,
@@ -271,13 +435,18 @@ export {
   CodeBlock,
   CodeBlockHeader,
   CodeBlockFilename,
+  CodeBlockActions,
+  CodeBlockSelector,
   CodeBlockCopy,
   CodeBlockPre,
   CodeBlockCode,
   type CodeBlockProps,
   type CodeBlockHeaderProps,
   type CodeBlockFilenameProps,
+  type CodeBlockActionsProps,
+  type CodeBlockSelectorProps,
   type CodeBlockCopyProps,
   type CodeBlockPreProps,
   type CodeBlockCodeProps,
 } from "../components/code-block/code-block.react";
+export { TextHighlight, type TextHighlightProps } from "../components/text-highlight/text-highlight.react";

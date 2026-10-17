@@ -14,6 +14,7 @@
     "ayy-color-picker__alpha": "Checkerboard and gradient track range slider (0–100) controlling opacity.",
     "ayy-color-picker__preview": "Color swatch showing the currently picked colour over a transparency checkerboard.",
     "ayy-color-picker__inputs": "Row holding the hex colour text input.",
+    "ayy-color-picker__copy": "Copy button inside the hex inputs row or input group.",
     "ayy-color-picker__swatches": "Row of preset colour swatch buttons.",
     "ayy-color-picker__swatch": "One preset colour button inside the swatches row, coloured by --_swatch."
   },
@@ -30,7 +31,7 @@
   },
   "sizes": {
     "density": "Control heights and padding follow data-density: slider tracks and hex input scale from compact to comfortable and touch.",
-    "width": "Panel inline-size (16rem / 256px), adapts up to 100% of its container."
+    "width": "Panel inline-size (13.5rem / 216px), adapts up to 100% of its container."
   },
   "js": "colorPickerClass({ className? }) → string; connectColorPicker(root, { value?, alpha?, swatches?, onChange? }) → { setValue, update, destroy } wires the 2D area, sliders, hex input and preset swatches; hsvToRgb(hsv), rgbToHsv(rgb), rgbToHex(rgb), hexToRgb(hex) conversion functions.",
   "element": {
@@ -55,6 +56,9 @@
           "onValueChange": "(color: string) => void — called when the colour changes",
           "alpha": "boolean — whether to show the alpha slider and allow opacity changes",
           "swatches": "string[] — list of preset colour hex codes",
+          "addon": "ReactNode — optional text or element beside the hex input (e.g. \"HEX\")",
+          "addonPosition": "\"start\" | \"end\" — placement of the addon beside the input (default \"start\")",
+          "copyable": "boolean — whether to show a copy button inside the hex input group",
           "...": "HTMLAttributes<HTMLDivElement> props"
         }
       }

@@ -24,8 +24,6 @@ Category: Data display. An app-icon squircle lit from below by the content's acc
 - Density — Doesn't follow data-density.
 - Width — Square; the glyph is 55% of it.
 
-**JS (framework-free)**: iconTileClass({ size?, className? }) → string
-
 **React** — `import { IconTile } from "@danitesler/ayywi/react";`
 - `<IconTile>` renders <span class="ayy-icon-tile">. Props: `size` "sm" | "md" | "lg"; `spotColor` CSS colour for the glow and glyph, e.g. "var(--ayy-accent-system)". Else inherits --ayy-spot.; `aria-label` Makes the tile an image with this name; without it the tile is aria-hidden.
 

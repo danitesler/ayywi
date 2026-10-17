@@ -206,19 +206,26 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   // Custom element ↔ meta.element ↔ registration
   const elementFile = `${dir}/${slug}.element.ts`;
   const hasElement = existsSync(join(root, elementFile));
-  if (hasElement && !meta.element) fail(files.meta, `${slug}.element.ts exists but meta has no "element" block`);
-  if (meta.element) {
-    if (!hasElement && !meta.element.tag) fail(files.meta, `"element" block needs a tag`);
-    if (!elementsIndex.includes(`define("${meta.element.tag}"`)) fail("src/elements/index.ts", `doesn't register <${meta.element.tag}>`);
-    if (hasElement) {
-      const src = read(elementFile);
-      const observed = src.match(/observedAttributes = \[([^\]]*)\]/)?.[1] ?? "";
-      for (const a of observed.matchAll(/"([\w-]+)"/g)) {
-        if (!(a[1] in (meta.element.attributes ?? {}))) fail(files.meta, `<${meta.element.tag}> observes "${a[1]}" but it isn't documented in element.attributes`);
-      }
-      for (const e of src.matchAll(/emit\(this, "([\w-]+)"/g)) {
-        if (!(e[1] in (meta.element.events ?? {}))) fail(files.meta, `<${meta.element.tag}> fires "${e[1]}" but it isn't documented in element.events`);
-      }
+  if (hasElement && !meta.element && !meta.elements) fail(files.meta, `${slug}.element.ts exists but meta has no "element" block`);
+  const allMetaElements = [
+    ...(meta.element ? [meta.element] : []),
+    ...(Array.isArray(meta.elements) ? meta.elements : []),
+  ];
+  const checkedTags = new Set();
+  for (const el of allMetaElements) {
+    if (checkedTags.has(el.tag)) continue;
+    checkedTags.add(el.tag);
+    if (!hasElement && !el.tag) fail(files.meta, `"element" block needs a tag`);
+    if (!elementsIndex.includes(`define("${el.tag}"`)) fail("src/elements/index.ts", `doesn't register <${el.tag}>`);
+  }
+  if (meta.element && hasElement) {
+    const src = read(elementFile);
+    const observed = src.match(/observedAttributes = \[([^\]]*)\]/)?.[1] ?? "";
+    for (const a of observed.matchAll(/"([\w-]+)"/g)) {
+      if (!(a[1] in (meta.element.attributes ?? {}))) fail(files.meta, `<${meta.element.tag}> observes "${a[1]}" but it isn't documented in element.attributes`);
+    }
+    for (const e of src.matchAll(/emit\(this, "([\w-]+)"/g)) {
+      if (!(e[1] in (meta.element.events ?? {}))) fail(files.meta, `<${meta.element.tag}> fires "${e[1]}" but it isn't documented in element.events`);
     }
   }
 

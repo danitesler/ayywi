@@ -22,8 +22,6 @@ Category: Navigation. Where you are in a short flow (sign-up, checkout, import):
 - Density — Markers are the sm control height (28px compact, 32 comfortable, 40 touch).
 - Width — Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone.
 
-**JS (framework-free)**: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
-
 **React** — `import { Steps } from "@danitesler/ayywi/react";`
 - `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
 

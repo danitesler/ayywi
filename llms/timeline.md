@@ -29,8 +29,6 @@ Category: Data display. Chronological list of events, milestones, or history wit
 - Density — Markers and spacing are fixed; controls or badges inside event content follow data-density.
 - Width — Fills its container. In alternate mode, centers the track with 1fr columns on either side above 36rem, collapsing to a single start-aligned column below 36rem.
 
-**JS (framework-free)**: timelineClass({ alternate?, className? }) → string; timelineMarkerClass({ pulse?, className? }) → string; timelineItemClass, timelineTrackClass, timelineContentClass, timelineTimeClass, timelineTitleClass, timelineBodyClass constants.
-
 **React** — `import { Timeline, TimelineItem, TimelineMarker, TimelineContent, TimelineTime, TimelineTitle, TimelineBody } from "@danitesler/ayywi/react";`
 - `<Timeline>` renders <ol class="ayy-timeline">. Props: `alternate` boolean — alternate items between start and end sides across a centered vertical track.
 - `<TimelineItem>` renders <li class="ayy-timeline__item">. Props: `marker` ReactNode — the marker dot, icon or avatar placed on the track.

@@ -23,7 +23,7 @@
 .ayy-toc__title {
   margin-block: 0 var(--ayy-space-4);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
   letter-spacing: var(--ayy-tracking-eyebrow);
   line-height: var(--ayy-leading-normal);
@@ -62,7 +62,7 @@
 
 .ayy-toc__list .ayy-toc__list .ayy-toc__link {
   padding-inline-start: var(--ayy-space-8);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 /* The accent bar on the rail. */
@@ -98,7 +98,7 @@
   min-inline-size: 1.5em;
   color: var(--ayy-color-muted);
   font-family: var(--ayy-font-heading);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-variant-numeric: tabular-nums;
   transition: color var(--ayy-duration-base) ease;
 }
@@ -107,71 +107,197 @@
   color: light-dark(color-mix(in srgb, var(--_accent) 45%, var(--ayy-color-text)), var(--_accent));
 }
 
-/* Phones: the sticky rail turns into one scrolling row of top-level sections under the navbar, the current one
-   underlined (connectToc scrolls it into view). Sub-sections are left out; their parent lights up while you read them. */
+.ayy-toc__bar {
+  display: none;
+}
+
+.ayy-toc__toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  min-block-size: var(--ayy-size-control-md);
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
+  box-shadow: var(--ayy-shadow-overlay);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-family: inherit;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-tight);
+  cursor: pointer;
+  transition:
+    border-color var(--ayy-duration-fast),
+    background-color var(--ayy-duration-fast),
+    box-shadow var(--ayy-duration-fast);
+}
+
+.ayy-toc__toggle:hover {
+  background-color: color-mix(in srgb, var(--ayy-color-surface-raised), var(--ayy-color-text) 5%);
+  border-color: var(--ayy-color-line-hover);
+}
+
+.ayy-toc__toggle:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-toc[data-open="true"] .ayy-toc__toggle,
+.ayy-toc__toggle[aria-expanded="true"] {
+  border-color: var(--_accent);
+}
+
+.ayy-toc[data-open="true"] .ayy-toc__toggle:hover,
+.ayy-toc__toggle[aria-expanded="true"]:hover {
+  border-color: var(--_accent);
+}
+
+.ayy-toc__toggle-icon {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-toc__toggle-current {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+}
+
+.ayy-toc__toggle-caret {
+  flex: none;
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  color: var(--ayy-color-muted);
+  transition: transform var(--ayy-duration-fast) var(--ayy-ease-out-expo);
+}
+
+.ayy-toc[data-open="true"] .ayy-toc__toggle-caret,
+.ayy-toc__toggle[aria-expanded="true"] .ayy-toc__toggle-caret {
+  transform: rotate(180deg);
+}
+
+/* Phones: a sticky pill bar showing the active section that opens the full table of contents in a dropdown menu. */
 @media (max-width: 48rem) {
   .ayy-toc--sticky {
-    z-index: 1;
+    position: sticky;
+    z-index: var(--ayy-z-overlay, 50);
     flex-basis: 100%;
     inset-block-start: var(--ayy-size-header);
     max-block-size: none;
     overflow: visible;
-    border-block-end: 1px solid var(--ayy-color-hairline);
-    background-color: var(--ayy-color-bg);
+    border-block-end: 0;
+    background-color: transparent;
   }
 
   .ayy-toc--sticky .ayy-toc__title {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+    display: none;
   }
 
+  .ayy-toc--sticky .ayy-toc__bar {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* The contents list becomes a floating dropdown menu below the pill */
   .ayy-toc--sticky .ayy-toc__list {
-    flex-direction: row;
+    position: absolute;
+    inset-block-start: calc(100% + var(--ayy-space-2));
+    inset-inline-start: 0;
+    z-index: var(--ayy-z-overlay, 50);
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
     gap: var(--ayy-space-1);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    border-inline-start: 0;
-    scrollbar-width: none;
+    min-inline-size: min(18rem, calc(100vw - var(--ayy-space-8)));
+    max-inline-size: min(22rem, calc(100vw - var(--ayy-space-4)));
+    max-block-size: min(60vh, 24rem);
+    padding: var(--ayy-space-2);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--ayy-color-line-strong);
+    border-radius: var(--ayy-radius-card);
+    background-color: var(--ayy-color-surface-raised);
+    box-shadow: var(--ayy-shadow-overlay);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    scrollbar-width: thin;
   }
 
-  .ayy-toc--sticky .ayy-toc__list::-webkit-scrollbar {
-    display: none;
+  .ayy-toc--sticky[data-open="true"] .ayy-toc__list,
+  .ayy-toc--sticky:has(.ayy-toc__toggle[aria-expanded="true"]) .ayy-toc__list {
+    display: flex;
   }
 
+  /* Nested list in the mobile dropdown */
   .ayy-toc--sticky .ayy-toc__list .ayy-toc__list {
-    display: none;
+    position: static;
+    display: flex;
+    min-inline-size: 0;
+    max-inline-size: none;
+    max-block-size: none;
+    padding: 0;
+    margin-block-start: var(--ayy-space-1);
+    border: 0;
+    background-color: transparent;
+    box-shadow: none;
   }
 
   .ayy-toc--sticky .ayy-toc__link {
-    flex: none;
-    gap: var(--ayy-space-2);
-    margin-inline-start: 0;
+    display: flex;
+    align-items: center;
+    padding-block: var(--ayy-space-2);
     padding-inline: var(--ayy-space-3);
-    white-space: nowrap;
+    border-radius: var(--ayy-radius-md);
+    white-space: normal;
+  }
+
+  .ayy-toc--sticky .ayy-toc__list .ayy-toc__list .ayy-toc__link {
+    padding-inline-start: var(--ayy-space-6);
   }
 
   .ayy-toc--sticky .ayy-toc__link::before {
-    inset-block: auto 0;
-    inset-inline: var(--ayy-space-3);
-    inline-size: auto;
-    block-size: 2px;
-    transform: scaleX(0);
+    display: none;
   }
 
-  /* Reading a sub-section: its parent, the link that's shown, takes the bar. */
-  .ayy-toc--sticky li:has(.ayy-toc__link[aria-current]:not([aria-current="false"])) > .ayy-toc__link::before {
-    transform: scaleX(1);
+  .ayy-toc--sticky .ayy-toc__link:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+
+  .ayy-toc--sticky .ayy-toc__link[aria-current]:not([aria-current="false"]) {
+    background-color: color-mix(in srgb, var(--_accent) 14%, transparent);
+    color: var(--ayy-color-text);
+    font-weight: var(--ayy-weight-medium);
   }
 }
 
 @media (forced-colors: active) {
   .ayy-toc__list {
     border-inline-start-color: CanvasText;
+  }
+  .ayy-toc__toggle {
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+  .ayy-toc--sticky .ayy-toc__list {
+    border-color: CanvasText;
   }
   .ayy-toc__link[aria-current]:not([aria-current="false"]) {
     text-decoration: underline;

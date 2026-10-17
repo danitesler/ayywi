@@ -7,14 +7,23 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
+import { Copy01Icon, Tick02Icon } from "../../lib/icons";
+import { Button } from "../button/button.react";
+import { Icon } from "../icon/icon.react";
+import { Input, InputGroup, InputGroupAddon } from "../input/input.react";
+import { toast } from "../toast/toast";
+import { Tooltip } from "../tooltip/tooltip.react";
 import {
   colorPickerAlphaClass,
   colorPickerAreaBackground,
   colorPickerAreaClass,
   colorPickerClassConstant,
+  colorPickerCopyClass,
   colorPickerHandleClass,
   colorPickerHueClass,
   colorPickerHueTrackBackground,
@@ -36,6 +45,9 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   onValueChange?: (color: string) => void;
   alpha?: boolean;
   swatches?: string[];
+  addon?: ReactNode;
+  addonPosition?: "start" | "end";
+  copyable?: boolean;
 }
 
 function parseToHsv(colorStr: string): HSV {
@@ -52,6 +64,9 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
     onValueChange,
     alpha = false,
     swatches,
+    addon = "HEX",
+    addonPosition = "start",
+    copyable = false,
     className,
     style,
     ...props
@@ -63,7 +78,28 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
 
   const [internalHsv, setInternalHsv] = useState<HSV>(() => parseToHsv(currentHex));
   const [inputText, setInputText] = useState(currentHex);
+  const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
+  const handleCopy = (e: ReactMouseEvent) => {
+    e.preventDefault();
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      void navigator.clipboard.writeText(currentHex);
+    }
+    setCopied(true);
+    toast("Color copied to clipboard");
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  };
 
   useEffect(() => {
     const parsed = hexToRgb(currentHex);
@@ -205,7 +241,7 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
 
       <div className={colorPickerSlidersClass}>
         <div className={colorPickerPreviewClass} aria-hidden="true" />
-        <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-2)", flex: 1, minInlineSize: 0 } as CSSProperties}>
+        <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1)", flex: 1, minInlineSize: 0 } as CSSProperties}>
           <input
             type="range"
             min={0}
@@ -230,15 +266,32 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
       </div>
 
       <div className={colorPickerInputsClass}>
-        <input
-          type="text"
-          className="ayy-input"
-          value={inputText}
-          aria-label="Hex color"
-          spellCheck={false}
-          onChange={(e) => onInputChange(e.target.value)}
-          onBlur={onInputBlur}
-        />
+        <InputGroup size="sm">
+          {Boolean(addon) && addonPosition === "start" && <InputGroupAddon>{addon}</InputGroupAddon>}
+          <Input
+            value={inputText}
+            aria-label="Hex color"
+            spellCheck={false}
+            className="ayy-mono"
+            onChange={(e) => onInputChange(e.target.value)}
+            onBlur={onInputBlur}
+          />
+          {Boolean(addon) && addonPosition === "end" && <InputGroupAddon>{addon}</InputGroupAddon>}
+          {copyable && (
+            <Tooltip content={copied ? "Copied!" : "Copy hex"}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className={colorPickerCopyClass}
+                aria-label={copied ? "Copied!" : "Copy hex"}
+                onClick={handleCopy}
+              >
+                <Icon icon={copied ? Tick02Icon : Copy01Icon} />
+              </Button>
+            </Tooltip>
+          )}
+        </InputGroup>
       </div>
 
       {swatches && swatches.length > 0 && (

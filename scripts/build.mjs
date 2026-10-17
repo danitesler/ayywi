@@ -2,7 +2,7 @@
 // and token exports for other platforms. Prints gzip sizes.
 import { build, transform } from "esbuild";
 import { execFileSync } from "node:child_process";
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { gzipSync } from "node:zlib";
@@ -13,7 +13,7 @@ const dist = join(root, "dist");
 const src = (p) => join(root, "src", p);
 const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;";
 
-rmSync(dist, { recursive: true, force: true });
+rmSync(dist, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
 for (const dir of ["css", "brands", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
 
 // ---- CSS: layered (default) ----
@@ -40,7 +40,9 @@ writeFileSync(join(dist, "tokens.css"), wrap("ayywi.tokens", readFileSync(src("c
 writeFileSync(join(dist, "css/tokens.css"), wrap("ayywi.tokens", readFileSync(src("css/tokens.css"), "utf8")));
 writeFileSync(join(dist, "css/base.css"), wrap("ayywi.base", readFileSync(src("css/base.css"), "utf8")));
 for (const name of readdirSync(src("components"))) {
-  writeFileSync(join(dist, `css/${name}.css`), wrap("ayywi.components", readFileSync(src(`components/${name}/${name}.css`), "utf8")));
+  const cssPath = src(`components/${name}/${name}.css`);
+  if (!existsSync(cssPath)) continue;
+  writeFileSync(join(dist, `css/${name}.css`), wrap("ayywi.components", readFileSync(cssPath, "utf8")));
 }
 
 // ---- Fonts: self-hosted (default) + Google Fonts alternative ----

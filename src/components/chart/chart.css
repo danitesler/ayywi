@@ -11,7 +11,7 @@
   min-inline-size: 0;
   margin: 0;
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   line-height: var(--ayy-leading-none);
 }
 
@@ -248,7 +248,7 @@
   padding: 0;
   list-style: none;
   color: var(--ayy-color-text-soft);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 .ayy-chart__legend-item {

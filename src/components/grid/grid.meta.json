@@ -1,0 +1,107 @@
+{
+  "name": "Grid",
+  "slug": "grid",
+  "status": "beta",
+  "category": "Data display",
+  "description": "Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar.",
+  "aka": ["data-grid", "card-grid", "media-grid", "asset-grid", "gallery-grid", "tile-grid"],
+  "classes": {
+    "ayy-grid-wrap": "Stack wrapper grouping the grid toolbar, the card grid and the floating Action bar.",
+    "ayy-grid__toolbar": "Header bar above the grid holding the select-all checkbox, count and sorting or view controls.",
+    "ayy-grid__select-all": "Labelled select-all checkbox control in the grid toolbar.",
+    "ayy-grid": "Responsive CSS grid container: as many card columns of at least --ayy-min (16rem) as fit.",
+    "ayy-grid--compact": "Dense variant (--ayy-min: 13rem, tighter gap and card padding) for media libraries and directories.",
+    "ayy-grid__item": "Selectable record card (<article>). Highlights with a 2px text-colour border and tint when aria-selected=\"true\".",
+    "ayy-grid__media": "Top preview frame for images, screenshots, social post visuals or video thumbnails. Floating glass corners when .ayy-grid__select or .ayy-grid__actions sit inside.",
+    "ayy-grid__header": "Top block of the card holding the checkbox, avatar/icon, title, description and item actions.",
+    "ayy-grid__select": "Wrapper for the card's selection Checkbox (inline in the header or floating in the top-start corner of .ayy-grid__media).",
+    "ayy-grid__actions": "Cluster of quick action buttons (Edit, Copy) and the ⋯ DropdownMenu trigger (inline in the header or floating in the top-end corner of .ayy-grid__media).",
+    "ayy-grid__actions--reveal": "Reveals item actions when the card is hovered, focused within, selected or has an open menu (stays visible on touch screens).",
+    "ayy-grid__title": "Card heading (<h3>).",
+    "ayy-grid__description": "Muted subtitle, handle or supporting metadata line.",
+    "ayy-grid__body": "Card body content between header and footer.",
+    "ayy-grid__footer": "Bottom bar for status Badges, timestamps or avatars, pinned to the bottom of stretched cards."
+  },
+  "variants": {
+    "compact": { "values": [false, true], "default": false, "component": "Grid" },
+    "reveal": { "values": [false, true], "default": false, "component": "GridItemActions" }
+  },
+  "states": {
+    "default": { "looks": "Responsive grid of surface cards with line borders, rest shadow, optional top media preview, header, body and hairline footer." },
+    "hover": { "when": ".ayy-grid__item:hover", "looks": "Card border turns line-hover and reveals .ayy-grid__actions--reveal." },
+    "pressed": { "none": "No pressed look; clicking a selectable card or its checkbox toggles selection on release." },
+    "focus": { "when": ".ayy-grid__item:focus-within", "looks": "Reveals .ayy-grid__actions--reveal while any checkbox, button or menu trigger inside the card has keyboard focus." },
+    "disabled": { "none": "Cards aren't disabled; disable the controls inside them." },
+    "selected": { "when": ".ayy-grid__item[aria-selected=\"true\"] (with a Checkbox in .ayy-grid__select)", "looks": "Text-colour border plus a 1px ring and a 4% text tint over the surface. Forced colours: Highlight outline." },
+    "error": { "none": "Show a failed load as an Alert with a retry instead of the grid." },
+    "loading": { "none": "No loading look; render Skeleton cards in the grid layout with aria-busy on the container." }
+  },
+  "sizes": {
+    "density": "Card padding is fixed (16px, 12px when compact); checkboxes and action buttons inside follow data-density.",
+    "width": "Fills its container with auto-fitting columns at least --ayy-min wide (16rem default, 13rem compact)."
+  },
+  "js": "gridClass({ compact?, className? }) → string; gridItemActionsClass({ reveal?, className? }) → string; gridWrapClass, gridToolbarClass, gridSelectAllClass, gridItemClass, gridMediaClass, gridHeaderClass, gridSelectClass, gridActionsClass, gridTitleClass, gridDescriptionClass, gridBodyClass, gridFooterClass constants; connectGrid(root, { onSelectionChange? }) wires select-all, card checkboxes, card-body click selection and Shift+click range selection (used by <ayy-grid>).",
+  "element": {
+    "tag": "ayy-grid",
+    "description": "Wraps an .ayy-grid-wrap or .ayy-grid. Wires the .ayy-grid__select-all checkbox (including indeterminate state), each card's .ayy-grid__select checkbox, card-body click-to-select, and Shift+click range selection.",
+    "attributes": {},
+    "events": {
+      "ayy-selection-change": "{ items } — the selected .ayy-grid__item elements."
+    }
+  },
+  "react": {
+    "import": "import { GridWrap, GridToolbar, GridSelectAll, Grid, GridItem, GridItemMedia, GridItemHeader, GridItemSelect, GridItemActions, GridItemTitle, GridItemDescription, GridItemBody, GridItemFooter } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "GridWrap": { "renders": "<div class=\"ayy-grid-wrap\">", "props": {} },
+      "GridToolbar": { "renders": "<div class=\"ayy-grid__toolbar\">", "props": {} },
+      "GridSelectAll": { "renders": "<label class=\"ayy-grid__select-all\">", "props": {} },
+      "Grid": {
+        "renders": "<div class=\"ayy-grid\">",
+        "props": {
+          "compact": "boolean — denser cards and 13rem minimum column width",
+          "min": "string — minimum column width (--ayy-min, default \"16rem\")"
+        }
+      },
+      "GridItem": {
+        "renders": "<article class=\"ayy-grid__item\">",
+        "props": {
+          "selected": "boolean — sets aria-selected",
+          "onSelectedChange": "(selected: boolean) => void — toggles selection when the card body is clicked"
+        }
+      },
+      "GridItemMedia": { "renders": "<div class=\"ayy-grid__media\">", "props": {} },
+      "GridItemHeader": { "renders": "<div class=\"ayy-grid__header\">", "props": {} },
+      "GridItemSelect": { "renders": "<div class=\"ayy-grid__select\">", "props": {} },
+      "GridItemActions": {
+        "renders": "<div class=\"ayy-grid__actions\">",
+        "props": {
+          "reveal": "boolean — reveal on card hover, focus-within or selection (stays visible on touch)"
+        }
+      },
+      "GridItemTitle": { "renders": "<h3 class=\"ayy-grid__title\">", "props": {} },
+      "GridItemDescription": { "renders": "<p class=\"ayy-grid__description\">", "props": {} },
+      "GridItemBody": { "renders": "<div class=\"ayy-grid__body\">", "props": {} },
+      "GridItemFooter": { "renders": "<div class=\"ayy-grid__footer\">", "props": {} }
+    }
+  },
+  "a11y": [
+    "Each selectable card contains a native Checkbox in GridItemSelect with an aria-label naming the item (\"Select Hero screenshot\").",
+    "Selected cards carry aria-selected=\"true\" and a 2px border (Highlight outline in High Contrast mode), never colour alone.",
+    "Per-card icon buttons and ⋯ DropdownMenu triggers carry an aria-label naming the item (\"More actions for Hero screenshot\").",
+    "GridItemActions with reveal uses opacity so controls remain in the Tab order and become visible on :focus-within."
+  ],
+  "do": [
+    "Use Grid when items are browsed visually or as cards — media assets, screenshots, social media posts, projects and user records — and need multi-select and per-item actions like a Table.",
+    "Put GridItemSelect and GridItemActions inside GridItemMedia for visual cards (screenshots, media, social posts), or inside GridItemHeader for record cards (projects, users).",
+    "Provide a ⋯ DropdownMenu on each card for targeted secondary actions (Edit, Duplicate, Copy, Archive, Delete) and an ActionBar at the bottom for bulk actions on selected cards."
+  ],
+  "dont": [
+    "Don't use Grid for static marketing feature tiles that aren't selectable records — use plain Cards in an .ayy-grid layout.",
+    "Don't use Grid for single-choice form inputs (like picking a pricing plan) — use ChoiceCard.",
+    "Don't hide the selection checkbox on selected cards."
+  ],
+  "examples": [
+    { "id": "media", "title": "Media assets, screenshots and social posts" },
+    { "id": "records", "title": "Project cards and user records" }
+  ]
+}

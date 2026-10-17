@@ -113,7 +113,7 @@ function Examples({ tool }: { tool: Tool }) {
             </CardHeader>
             <CardFooter>
               <CopyButton text={buildPrompt(app.prompt, tool)} label="Copy prompt to build this" variant="outline" />
-              <a className={buttonClass({ variant: "ghost", size: "sm" })} href={`#/showcase/${app.id}`}>
+              <a className={buttonClass({ variant: "ghost", size: "sm" })} href={`#/apps/${app.id}`}>
                 See it
               </a>
             </CardFooter>
@@ -270,7 +270,7 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
       {example ? (
         <p className="pv-note">
           Something like it:{" "}
-          <a className="ayy-link" href={`#/showcase/${example.id}`}>
+          <a className="ayy-link" href={`#/apps/${example.id}`}>
             {example.name}, {example.kind.toLowerCase()}
           </a>
           .

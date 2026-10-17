@@ -24,8 +24,6 @@ Category: Feedback. An indeterminate loading ring in the text colour, sized like
 - Density — Doesn't follow data-density; md follows the font size around it.
 - Width — Square.
 
-**JS (framework-free)**: spinnerClass({ size?, className? }) → string. Buttons: add aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: <Button loading>).
-
 **React** — `import { Spinner } from "@danitesler/ayywi/react";`
 - `<Spinner>` renders <span class="ayy-spinner" role="status" aria-label="Loading">. Props: `size` "sm" | "md" | "lg"; `label` What's loading, for screen readers. Default "Loading" (translate it). "" makes it decorative (aria-hidden) when nearby text already says it.
 

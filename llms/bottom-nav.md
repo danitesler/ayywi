@@ -1,14 +1,19 @@
 # Bottom nav
 
-Category: Navigation. A phone app's tab bar: three to five top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Inside an App shell it replaces the sidebar on phones. Also called: bottom-nav, tab-bar, tabbar, bottom-bar.
+Category: Navigation. A phone app's tab bar: top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Supports three sizes and compact mode for more items. Inside an App shell it replaces the sidebar on phones. Also called: bottom-nav, tab-bar, tabbar, bottom-bar.
 
 **Classes**
 - `.ayy-bottom-nav` — The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below. As a direct child of .ayy-app-shell it shows below 48rem only; from 48rem the sidebar carries the same links.
+- `.ayy-bottom-nav--sm` — Small height (28px) with 16px icons and compact padding.
+- `.ayy-bottom-nav--md` — Medium height (32px) with 20px icons and medium padding.
+- `.ayy-bottom-nav--lg` — Large height (40px, default) with 20px icons and generous touch padding.
+- `.ayy-bottom-nav--compact` — Compact layout with tighter padding and narrower pills so five or more tabs fit side-by-side without overflowing.
+- `.ayy-bottom-nav--icon-only` — Icon-only layout, visually hiding tab labels while keeping them accessible for screen readers.
 - `.ayy-bottom-nav__link` — A tab: icon over label. An <a> for a destination, or a <button> for a tab that acts ("More", which opens the app shell's drawer when it also has ayy-app-shell__toggle). aria-current="page" (or aria-expanded="true" on the button) draws a pill behind the icon and a heavier label.
 - `.ayy-bottom-nav__label` — The tab's text, one line, cut with an ellipsis if it's too long.
 
 **States**
-- `default` — Surface bar pinned to the bottom with a hairline on top; each tab is a muted icon over a 2xs label.
+- `default` — Surface bar pinned to the bottom with a hairline on top; each tab is a muted icon over an xs label.
 - `hover` (`.ayy-bottom-nav__link:hover`) — Label turns text colour; a wash pill appears behind the icon.
 - `pressed` — doesn't apply: No pressed look (touch highlight is off); the page change is the feedback.
 - `focus` (`.ayy-bottom-nav__link:focus-visible`) — 2px ring inset by 2px.
@@ -18,35 +23,36 @@ Category: Navigation. A phone app's tab bar: three to five top-level destination
 - `loading` — doesn't apply: No loading state.
 
 **Sizes**
-- Density — Each tab is at least the lg control height (40px compact, 48 comfortable, 52 touch); icons 20px; the bar adds the safe-area inset at the bottom.
-- Width — Full width, tabs share it equally (three to five). Inside an App shell it shows below 48rem only.
-
-**JS (framework-free)**: bottomNavClass, bottomNavLinkClass, bottomNavLabelClass constants.
+- `sm` — Small height (28px compact, 32 comfortable, 40 touch) with 16px icons.
+- `md` — Medium height (32px compact, 40 comfortable, 44 touch) with 20px icons.
+- `lg` (default) — Large height (40px compact, 48 comfortable, 52 touch) with 20px icons and generous touch padding.
+- Density — Each tab follows the control height scale (sm 28px, md 32px, lg 40px compact); the bar adds the safe-area inset at the bottom.
+- Width — Full width, tabs share it equally (three to five in default, five to seven or more in compact).
 
 **React** — `import { BottomNav, BottomNavLink, BottomNavButton } from "@danitesler/ayywi/react";`
-- `<BottomNav>` renders <nav class="ayy-bottom-nav">. Props: `aria-label` Defaults to "Main" (translate it).
+- `<BottomNav>` renders <nav class="ayy-bottom-nav">. Props: `size` "sm" | "md" | "lg" — height scale (default "lg").; `compact` boolean — tighter horizontal footprint to fit more items.; `iconOnly` boolean — visually hides text labels while preserving screen reader text.; `aria-label` Defaults to "Main" (translate it).
 - `<BottomNavLink>` renders <a class="ayy-bottom-nav__link"> with the icon and a <span class="ayy-bottom-nav__label">. Props: `icon` ReactNode — the icon above the label (an <Icon>).; `current` boolean — sets aria-current="page".
 - `<BottomNavButton>` renders <button type="button" class="ayy-bottom-nav__link"> with the icon and a label <span>. Props: `icon` ReactNode — the icon above the label.
 
 **Accessibility**
 - It's a <nav>: give it an aria-label ("Main" by default in React). Inside an App shell only one of it and the sidebar shows at a time, so they can share the label.
 - Mark the current page with aria-current="page". It also gets a pill and a heavier weight, so colour isn't the only cue; High Contrast mode fills the pill with the system highlight.
-- Every tab keeps a visible text label. Icon-only tabs are guesswork.
+- Visible labels are recommended. When iconOnly is used, screen reader text is preserved via visually hidden labels.
 - A "More" tab is a <button> with aria-expanded (set for you when it's an app shell toggle), not a link to "#".
-- Each tab is at least the large control height, so it's a comfortable touch target at every density.
+- Each tab is at least the control height of its size tier (sm 28px, md 32px, lg 40px), maintaining comfortable touch targets.
 - Outside an App shell, content above it needs bottom padding (or to end before it) so the last line isn't hidden behind the bar.
 
 **Do**
-- Use a bottom nav for the three to five top-level destinations of a phone app, so they're one thumb-tap away.
+- Use a bottom nav for top-level destinations of a phone app, so they're one thumb-tap away.
+- Use compact mode or sm/md sizes when accommodating five or more destinations.
 - Put it inside the App shell, after the main: it shows on phones and the sidebar takes over from 48rem, with no media query of yours.
 - Give it the same destinations, icons and order as the sidebar's top-level links.
 - Keep labels to one short word: Home, Search, Inbox, Account.
-- With more than five destinations, keep the four most used and end with a "More" tab that opens the sidebar as a drawer (a BottomNavButton with the ayy-app-shell__toggle class).
+- With many destinations, end with a "More" tab that opens the sidebar as a drawer (a BottomNavButton with the ayy-app-shell__toggle class).
 
 **Don't**
 - Don't use a bottom nav for actions (compose, share) — use a Button, or a bottom-sheet Dialog for a list of actions. The one exception is a "More" tab that opens the drawer.
 - Don't use it to switch views of one thing inside a page — use Tabs or a Segmented control.
-- Don't put more than five tabs in it; the rest go in the drawer behind "More".
 - Don't show it next to the sidebar on wide screens, and don't hide it with your own media query when it's inside an App shell.
 - Don't nest menus in it or change its tabs from page to page.
 
@@ -97,31 +103,131 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { DashboardSquare01Icon, Folder01Icon, Notification03Icon, UserIcon } from "@hugeicons/core-free-icons";
-import { BottomNav, BottomNavLink, Icon } from "@danitesler/ayywi/react";
+import {
+  DashboardSquare01Icon,
+  Folder01Icon,
+  Notification03Icon,
+  Search01Icon,
+  Task01Icon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  BottomNav,
+  BottomNavLink,
+  Field,
+  Icon,
+  Label,
+  Select,
+  Switch,
+  type BottomNavSize,
+} from "@danitesler/ayywi/react";
 
-export default function Example() {
-  // A phone-sized screen. The nav is sticky, so it stays at the bottom of whatever scrolls: the page, or a box like this one.
+export default function Example({
+  setControls,
+}: {
+  setControls?: (node: ReactNode) => void;
+} = {}) {
+  const [size, setSize] = useState<BottomNavSize>("lg");
+  const [compact, setCompact] = useState(false);
+  const [iconOnly, setIconOnly] = useState(false);
+  const [moreItems, setMoreItems] = useState(false);
+
+  useEffect(() => {
+    if (setControls) {
+      setControls(
+        <div className="pv-props-content">
+          <div className="pv-props-group">
+            <span className="pv-props-group__title">Options</span>
+            <div className="pv-props-item">
+              <Label htmlFor="bn-size" className="pv-props-label">Size</Label>
+              <div style={{ inlineSize: "7.5rem" }}>
+                <Select
+                  id="bn-size"
+                  size="sm"
+                  value={size}
+                  onChange={(e) => setSize(e.target.value as BottomNavSize)}
+                >
+                  <option value="lg">Big (lg)</option>
+                  <option value="md">Medium (md)</option>
+                  <option value="sm">Small (sm)</option>
+                </Select>
+              </div>
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="bn-compact" className="pv-props-label">Compact</Label>
+              <Switch id="bn-compact" checked={compact} onCheckedChange={setCompact} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="bn-icon-only" className="pv-props-label">Icon only</Label>
+              <Switch id="bn-icon-only" checked={iconOnly} onCheckedChange={setIconOnly} />
+            </div>
+            <div className="pv-props-item">
+              <Label htmlFor="bn-more" className="pv-props-label">More items (6)</Label>
+              <Switch id="bn-more" checked={moreItems} onCheckedChange={setMoreItems} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }, [setControls, size, compact, iconOnly, moreItems]);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", inlineSize: "min(100%, 24rem)", blockSize: "22rem", overflow: "auto", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
-      <div className="ayy-stack" style={{ flex: 1, padding: "var(--ayy-space-4)" }}>
-        <h2 className="ayy-h4">Home</h2>
-        <p className="ayy-muted">Three deploys went out this morning. Nothing needs you.</p>
+    <div className="ayy-stack" style={{ inlineSize: "100%", alignItems: "center", "--ayy-gap": "var(--ayy-space-4)" } as CSSProperties}>
+      {!setControls ? (
+        <div className="ayy-grid" style={{ "--ayy-min": "10rem", inlineSize: "min(100%, 24rem)" } as CSSProperties}>
+          <Field inline>
+            <Label htmlFor="bn-size-inline">Size</Label>
+            <Select id="bn-size-inline" size="sm" value={size} onChange={(e) => setSize(e.target.value as BottomNavSize)}>
+              <option value="lg">Big</option>
+              <option value="md">Medium</option>
+              <option value="sm">Small</option>
+            </Select>
+          </Field>
+          <Field inline>
+            <Switch id="bn-compact-inline" checked={compact} onCheckedChange={setCompact} />
+            <Label htmlFor="bn-compact-inline">Compact</Label>
+          </Field>
+          <Field inline>
+            <Switch id="bn-icon-inline" checked={iconOnly} onCheckedChange={setIconOnly} />
+            <Label htmlFor="bn-icon-inline">Icon only</Label>
+          </Field>
+          <Field inline>
+            <Switch id="bn-more-inline" checked={moreItems} onCheckedChange={setMoreItems} />
+            <Label htmlFor="bn-more-inline">6 items</Label>
+          </Field>
+        </div>
+      ) : null}
+      <div style={{ display: "flex", flexDirection: "column", inlineSize: "min(100%, 24rem)", blockSize: "22rem", overflow: "auto", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)" }}>
+        <div className="ayy-stack" style={{ flex: 1, padding: "var(--ayy-space-4)" }}>
+          <h2 className="ayy-h4">Home</h2>
+          <p className="ayy-muted">Three deploys went out this morning. Nothing needs you.</p>
+        </div>
+        <BottomNav size={size} compact={compact} iconOnly={iconOnly}>
+          <BottomNavLink href="#home" icon={<Icon icon={DashboardSquare01Icon} />} current>
+            Home
+          </BottomNavLink>
+          {moreItems ? (
+            <BottomNavLink href="#search" icon={<Icon icon={Search01Icon} />}>
+              Search
+            </BottomNavLink>
+          ) : null}
+          <BottomNavLink href="#projects" icon={<Icon icon={Folder01Icon} />}>
+            Projects
+          </BottomNavLink>
+          {moreItems ? (
+            <BottomNavLink href="#tasks" icon={<Icon icon={Task01Icon} />}>
+              Tasks
+            </BottomNavLink>
+          ) : null}
+          <BottomNavLink href="#inbox" icon={<Icon icon={Notification03Icon} />}>
+            Inbox
+          </BottomNavLink>
+          <BottomNavLink href="#account" icon={<Icon icon={UserIcon} />}>
+            Account
+          </BottomNavLink>
+        </BottomNav>
       </div>
-      <BottomNav>
-        <BottomNavLink href="#home" icon={<Icon icon={DashboardSquare01Icon} />} current>
-          Home
-        </BottomNavLink>
-        <BottomNavLink href="#projects" icon={<Icon icon={Folder01Icon} />}>
-          Projects
-        </BottomNavLink>
-        <BottomNavLink href="#inbox" icon={<Icon icon={Notification03Icon} />}>
-          Inbox
-        </BottomNavLink>
-        <BottomNavLink href="#account" icon={<Icon icon={UserIcon} />}>
-          Account
-        </BottomNavLink>
-      </BottomNav>
     </div>
   );
 }

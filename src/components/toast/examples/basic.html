@@ -1,5 +1,36 @@
 <!-- toast() is on window.ayywi when you load dist/elements.global.js; with a bundler: import { toast } from "@danitesler/ayywi". -->
-<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Changes saved')">Default</button>
-<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.success('Deployed', { description: 'Marketing site is live.' })">Success</button>
-<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast('Project archived', { action: { label: 'Undo', onClick: () => ayywi.toast.info('Project restored') } })">With action</button>
-<button type="button" class="ayy-button ayy-button--outline" onclick="ayywi.toast.error('Build failed', { description: '3 type errors in api/server.ts' })">Error</button>
+<button
+  type="button"
+  class="ayy-button ayy-button--outline"
+  onclick="(() => {
+    const list = [
+      () => ayywi.toast('Changes saved'),
+      () => ayywi.toast.success('Deployed', { description: 'Marketing site is live.' }),
+      () => ayywi.toast('Project archived', { action: { label: 'Undo', onClick: () => ayywi.toast.info('Project restored') } }),
+      () => ayywi.toast.error('Build failed', { description: '3 type errors in api/server.ts' }),
+      () => ayywi.toast.card({
+        src: 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'560\' height=\'350\' viewBox=\'0 0 560 350\'><defs><linearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%236366f1\'/><stop offset=\'100%\' stop-color=\'%23ec4899\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g)\'/><rect x=\'40\' y=\'40\' width=\'480\' height=\'270\' rx=\'12\' fill=\'%23ffffff\' fill-opacity=\'0.15\'/></svg>',
+        alt: 'Capture preview',
+        centerActions: [
+          { label: 'Copy', onClick: () => {} },
+          { label: 'Save', variant: 'secondary', onClick: () => {} }
+        ]
+      }),
+      () => ayywi.toast.card({
+        split: true,
+        src: 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'560\' height=\'350\' viewBox=\'0 0 560 350\'><defs><linearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%236366f1\'/><stop offset=\'100%\' stop-color=\'%23ec4899\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g)\'/><rect x=\'40\' y=\'40\' width=\'480\' height=\'270\' rx=\'12\' fill=\'%23ffffff\' fill-opacity=\'0.15\'/></svg>',
+        alt: 'Screenshot preview',
+        title: 'Screenshot_2026-10-16.png',
+        description: '1920×1080 • 1.2 MB',
+        actions: [
+          { label: 'Copy', onClick: () => ayywi.toast.info('Copied to clipboard') },
+          { label: 'Share', variant: 'secondary', onClick: () => ayywi.toast.info('Link copied') }
+        ]
+      }),
+      () => ayywi.toast.long('npm i @danitesler/ayywi@latest --save-exact', { description: 'Package installed. Add import \'@danitesler/ayywi/css\' to your entry file.' })
+    ];
+    list[Math.floor(Math.random() * list.length)]();
+  })()"
+>
+  Trigger random toast
+</button>

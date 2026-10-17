@@ -9,7 +9,7 @@ Category: Data display. A browser window around a screenshot, video or coded moc
 - `.ayy-frame__body` — Holds the <img>, <video>, <picture> or <svg>, edge to edge.
 
 **States**
-- `default` — A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted 2xs address.
+- `default` — A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted xs address.
 - `hover` — doesn't apply: Decorative.
 - `pressed` — doesn't apply: Decorative.
 - `focus` — doesn't apply: Not focusable.
@@ -21,8 +21,6 @@ Category: Data display. A browser window around a screenshot, video or coded moc
 **Sizes**
 - Density — Doesn't follow data-density.
 - Width — Fills its container; the media inside scales to its width.
-
-**JS (framework-free)**: frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.
 
 **React** — `import { Frame } from "@danitesler/ayywi/react";`
 - `<Frame>` renders <div class="ayy-frame"> with the bar and body. Props: `title` ReactNode — text in the address bar.

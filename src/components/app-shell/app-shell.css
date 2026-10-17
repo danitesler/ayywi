@@ -39,7 +39,7 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--ayy-space-3);
+  gap: var(--ayy-space-2);
   min-inline-size: 0;
   padding-block: var(--ayy-space-2);
   padding-inline: var(--ayy-space-3);
@@ -67,7 +67,7 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: var(--ayy-space-3);
+  gap: var(--ayy-space-2);
   min-block-size: var(--ayy-size-control-lg);
   padding-block: var(--ayy-space-1);
   padding-inline: var(--ayy-space-3);
@@ -122,7 +122,7 @@
   margin: 0;
   padding-inline: var(--ayy-space-3);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
   letter-spacing: var(--ayy-tracking-eyebrow);
   line-height: var(--ayy-leading-normal);
@@ -152,6 +152,11 @@
   min-block-size: var(--ayy-size-control-md);
   font-size: var(--ayy-control-text-md);
   font-weight: var(--ayy-weight-regular);
+}
+
+.ayy-app-shell__link--sub > :is(svg, .ayy-icon) {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
 }
 
 /* Collapse: a native <details>. The <summary> is styled as a link with a chevron at the inline end. */
@@ -316,6 +321,11 @@ ayy-app-shell {
     display: none;
   }
 
+  /* A nav with no icons has nothing to scroll to in the rail: don't show a scrollbar for its hidden links. */
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]):not(:has(.ayy-app-shell__nav .ayy-app-shell__link > :is(svg, .ayy-icon, img))) {
+    overflow-y: hidden;
+  }
+
   /* ---- Hover preview: the full sidebar over the main area. Pointer or keyboard focus opens it; a mouse click on a
      control inside doesn't keep it open, and right after the toggle collapses it, connectAppShell holds it shut
      (data-ayy-hold) until the pointer leaves or focus moves on. ---- */
@@ -458,11 +468,50 @@ ayy-app-shell {
   flex: 1 1 auto;
 }
 
-/* ---- Small (size="sm" / .ayy-app-shell--sm), for long navigation such as a docs tree ----
-   md-height rows with no gap between them, regular weight, a small icon and the control radius. Big is the default.
-   Every rule goes through "> .ayy-app-shell__sidebar" so a Big shell placed inside a Small one's main stays Big. */
-.ayy-app-shell--sm {
+/* ---- Sizes: lg (default), md (.ayy-app-shell--md) and sm (.ayy-app-shell--sm), matching Button's sm/md/lg scale ----
+   Every rule goes through "> .ayy-app-shell__sidebar" so a shell placed inside a smaller one's main area keeps its own size.
+   Action buttons placed in the sidebar (outside __head) automatically match the sidebar's size step. */
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]) {
+  block-size: var(--ayy-size-control-lg);
+  font-size: var(--ayy-control-text-lg);
+}
+
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]) > svg,
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]) > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+}
+
+.ayy-app-shell--md {
   --_sidebar-w-collapsed: calc(var(--ayy-size-control-md) + var(--ayy-space-3) * 2);
+}
+
+.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__link {
+  min-block-size: var(--ayy-size-control-md);
+  font-size: var(--ayy-control-text-md);
+  gap: var(--ayy-space-2);
+}
+
+.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__link > :is(svg, .ayy-icon) {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__link--sub {
+  min-block-size: var(--ayy-size-control-sm);
+  padding-block: var(--ayy-space-0-5);
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-control-text-sm);
+  gap: var(--ayy-space-1-5);
+}
+
+.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle:first-child {
+  margin-inline-start: 0;
+}
+
+.ayy-app-shell--sm {
+  --_sidebar-w-collapsed: calc(var(--ayy-size-control-sm) + var(--ayy-space-3) * 2);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar {
@@ -471,7 +520,7 @@ ayy-app-shell {
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__brand {
-  gap: var(--ayy-space-2);
+  gap: var(--ayy-space-1-5);
   padding-block: var(--ayy-space-1);
   padding-inline: var(--ayy-space-2);
   border-radius: var(--ayy-radius-control);
@@ -483,12 +532,13 @@ ayy-app-shell {
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__link {
-  min-block-size: var(--ayy-size-control-md);
-  padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-3);
+  min-block-size: var(--ayy-size-control-sm);
+  padding-block: var(--ayy-space-0-5);
+  padding-inline: var(--ayy-space-2);
   border-radius: var(--ayy-radius-control);
+  font-size: var(--ayy-control-text-sm);
   font-weight: var(--ayy-weight-regular);
-  gap: var(--ayy-space-2);
+  gap: var(--ayy-space-1-5);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__link > :is(svg, .ayy-icon) {
@@ -511,8 +561,8 @@ ayy-app-shell {
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__group-label {
   padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-3);
-  font-size: var(--ayy-text-2xs);
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-text-s);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__list {
@@ -531,6 +581,8 @@ ayy-app-shell {
   padding-block: var(--ayy-space-0-5);
   padding-inline: var(--ayy-space-2);
   border-radius: var(--ayy-radius-control);
+  font-size: var(--ayy-control-text-sm);
+  gap: var(--ayy-space-1-5);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__footer {
@@ -538,12 +590,30 @@ ayy-app-shell {
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle:first-child {
+  block-size: var(--ayy-size-control-sm);
   margin-inline-start: 0;
 }
 
+.ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) {
+  gap: var(--ayy-space-1-5);
+  block-size: var(--ayy-size-control-sm);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > svg,
+.ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
 @media (min-width: 48.001rem) {
-  .ayy-app-shell--sm.ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
+  .ayy-app-shell--md.ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
     padding-inline: calc((var(--ayy-size-control-md) - var(--ayy-size-icon-sm)) / 2);
+  }
+
+  .ayy-app-shell--sm.ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
+    padding-inline: calc((var(--ayy-size-control-sm) - var(--ayy-size-icon-sm)) / 2);
   }
 }
 

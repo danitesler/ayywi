@@ -27,6 +27,7 @@ import {
   appShellResizeDetailClass,
   appShellSettingsClass,
   appShellSidebarClass,
+  appShellMdClass,
   appShellSmClass,
   appShellSublistClass,
   appShellTitleClass,
@@ -40,7 +41,8 @@ export type { AppShellEdge, AppShellSize };
 
 export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   /**
-   * Small size variation (`sm` / `ayy-app-shell--sm`): denser nav rows with 14px text, control border radius, tighter padding and gap. Default is Big (`md`).
+   * Sidebar row size, matching Button's `sm | md | lg` scale: `lg` (default, 40px compact rows with 20px icons),
+   * `md` (`ayy-app-shell--md`, 32px compact rows with 16px icons), or `sm` (`ayy-app-shell--sm`, 28px compact rows for long trees such as docs).
    */
   size?: AppShellSize;
   /**
@@ -85,6 +87,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
       className={cx(
         appShellClass,
         size === "sm" && appShellSmClass,
+        size === "md" && appShellMdClass,
         settings && appShellSettingsClass,
         drawer && appShellDrawerClass,
         collapsed && appShellCollapsedClass,

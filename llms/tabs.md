@@ -23,8 +23,6 @@ Category: Layout. Segmented pill tabs switching between panels of related conten
 - Density — The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.
 - Width — The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container.
 
-**JS (framework-free)**: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
-
 **Custom element** `<ayy-tabs>` (@danitesler/ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
 - attribute `value`: The selected tab's data-value (or index). Two-way.
 - attribute `class`: Put ayy-tabs on it for block layout.

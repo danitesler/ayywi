@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { ALargeSmallIcon, ColorsIcon, Moon02Icon, Search01Icon, Settings01Icon, SidebarLeftIcon, Sun03Icon } from "@hugeicons/core-free-icons";
 import {
   AppShell,
@@ -8,10 +8,12 @@ import {
   AppShellHead,
   AppShellItem,
   AppShellLink,
+  AppShellMain,
   AppShellNav,
   AppShellSidebar,
   AppShellToggle,
   Button,
+  ColorPicker,
   CommandDialog,
   CommandGroup,
   CommandItem,
@@ -23,14 +25,15 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
+  TextHighlight,
   Icon,
   Kbd,
   SearchBar,
-  SwatchCustom,
 } from "@danitesler/ayywi/react";
-import { type AppShellSize, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
+import { commandMatches, type AppShellSize, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import { brandPage, BrandPage, BRAND_PRESETS } from "./pages/Brand";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
+import { densityPage, DensityPage } from "./pages/Density";
 import { componentGroups, components } from "./data";
 import { ComponentPage } from "./pages/ComponentPage";
 import { foundations, foundationText } from "./pages/Foundations";
@@ -42,6 +45,7 @@ import { useHashRoute, useSettings, useSidebarCollapsed, useSidebarSize } from "
 interface NavItem {
   route: string;
   title: string;
+  description?: string;
   /** Everything the search matches against. */
   text: string;
 }
@@ -51,21 +55,31 @@ interface NavSection {
   items: NavItem[];
 }
 
+const FOUNDATION_DESCRIPTIONS: Record<string, string> = {
+  colors: "Palette primitives, semantic tokens, themes and spot colours",
+  typography: "Font families, heading hierarchy and text sizes",
+  spacing: "Spacing scale, control sizes and layout gaps",
+  elevation: "Corner radiuses and elevation shadows",
+  motion: "Easing curves, durations and reduced motion support",
+  density: "Compact, comfortable and touch scales across controls, text and padding",
+};
+
 const SECTIONS: NavSection[] = [
   {
     title: "Start",
     items: [
-      { route: getStarted.route, title: getStarted.title, text: getStarted.text },
-      { route: showcase.route, title: showcase.title, text: showcase.text },
-      { route: changelogPage.route, title: changelogPage.title, text: changelogPage.text },
+      { route: getStarted.route, title: getStarted.title, description: "Interactive prompt generator and setup guide for AI tools", text: getStarted.text },
+      { route: showcase.route, title: showcase.title, description: "Full production app examples built with ayywi", text: showcase.text },
+      { route: changelogPage.route, title: changelogPage.title, description: "Release notes and design system updates", text: changelogPage.text },
     ],
   },
   {
     title: "Foundations",
     items: [
-      ...foundations.map((f) => ({ route: f.route, title: f.title, text: foundationText(f) })),
-      { route: brandPage.route, title: brandPage.title, text: brandPage.text },
-    ].sort((a, b) => a.title.localeCompare(b.title)),
+      { route: brandPage.route, title: brandPage.title, description: "Theme seed colours, corner radius presets and brand generator", text: brandPage.text },
+      { route: densityPage.route, title: densityPage.title, description: FOUNDATION_DESCRIPTIONS.density, text: densityPage.text },
+      ...foundations.map((f) => ({ route: f.route, title: f.title, description: FOUNDATION_DESCRIPTIONS[f.route] ?? f.keywords, text: foundationText(f) })),
+    ],
   },
   ...componentGroups.map((g) => ({
     title: g.category,
@@ -73,6 +87,7 @@ const SECTIONS: NavSection[] = [
       .map((c) => ({
         route: c.slug,
         title: c.name,
+        description: c.description,
         text: [c.slug, c.description, ...Object.keys(c.classes), ...Object.keys(c.react.components), c.element?.tag ?? ""].join(" "),
       }))
       .sort((a, b) => a.title.localeCompare(b.title)),
@@ -89,7 +104,8 @@ const DENSITY_OPTIONS: [DensityMode, string][] = [
 
 const SIDEBAR_SIZE_OPTIONS: [AppShellSize, string][] = [
   ["sm", "Small"],
-  ["md", "Big"],
+  ["md", "Medium"],
+  ["lg", "Big"],
 ];
 
 const THEME_OPTIONS: [ThemeMode, string][] = [
@@ -113,7 +129,6 @@ interface AppearanceProps {
 
 /** Theme, density, brand and sidebar in one menu with submenu flyouts. Same control in the sidebar and the phone bar. */
 function AppearanceMenu({ theme, setTheme, density, setDensity, brand, setBrand, sidebarSize, setSidebarSize }: AppearanceProps) {
-  const customColorRef = useRef<HTMLInputElement>(null);
   const isCustom = Boolean(brand && !BRAND_PRESETS.some((p) => !p.isMono && p.name === brand.name));
   const customHex = isCustom && /^#[0-9a-f]{6}$/i.test(brand?.color ?? "") ? brand!.color : "#0ea5e9";
   const currentBrandKey = !brand || brand.name === "mono" ? "mono" : isCustom ? "custom" : brand.name;
@@ -183,30 +198,31 @@ function AppearanceMenu({ theme, setTheme, density, setDensity, brand, setBrand,
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup value={currentBrandKey} onValueChange={pickBrand}>
               {BRAND_PRESETS.map((p) => (
-                <DropdownMenuRadioItem key={p.name} value={p.name}>
+                <DropdownMenuRadioItem
+                  key={p.name}
+                  value={p.name}
+                  icon={<span className="ayy-swatch ayy-swatch--sm" style={{ "--ayy-swatch": p.color } as CSSProperties} />}
+                >
                   {p.label}
                 </DropdownMenuRadioItem>
               ))}
-              <div className="pv-menu-custom-color">
-                <DropdownMenuRadioItem
-                  value="custom"
-                  onClick={() => {
-                    customColorRef.current?.showPicker ? customColorRef.current.showPicker() : customColorRef.current?.click();
-                  }}
-                >
-                  Custom colour
-                </DropdownMenuRadioItem>
-                <SwatchCustom
-                  ref={customColorRef}
-                  size="sm"
-                  label="Pick custom colour"
-                  value={customHex}
-                  onChange={(e) => pickCustomColor(e.target.value)}
-                  onInput={(e) => pickCustomColor(e.currentTarget.value)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
             </DropdownMenuRadioGroup>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger
+                selected={isCustom}
+                onClick={() => pickCustomColor(customHex)}
+                icon={<span className="ayy-swatch ayy-swatch--sm" style={{ "--ayy-swatch": customHex } as CSSProperties} />}
+              >
+                Custom
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent style={{ padding: "var(--ayy-space-2)" }}>
+                <ColorPicker
+                  value={customHex}
+                  onValueChange={pickCustomColor}
+                  swatches={BRAND_PRESETS.filter((p) => !p.isMono).map((p) => p.color)}
+                />
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
@@ -240,6 +256,7 @@ export function App() {
   }, [page, part]);
 
   const [commandOpen, setCommandOpen] = useState(false);
+  const [commandQuery, setCommandQuery] = useState("");
   const [collapsed, setCollapsed] = useSidebarCollapsed();
   const [sidebarSize, setSidebarSize] = useSidebarSize();
   const appearance = { theme, setTheme, density, setDensity, brand, setBrand, sidebarSize, setSidebarSize };
@@ -359,6 +376,7 @@ export function App() {
               <Icon icon={Search01Icon} />
             </Button>
             <SearchBar
+              size={sidebarSize === "lg" ? "lg" : "md"}
               placeholder="Search"
               label="Search components and foundations"
               shortcut="Mod+E"
@@ -389,27 +407,33 @@ export function App() {
         </AppShellNav>
       </AppShellSidebar>
 
-      <div className="pv-main">
+      <AppShellMain className="pv-main">
         <main className="pv-content" id="main">
-          {component ? (
+          {component && (!part || component.slug !== "showcase") ? (
             <ComponentPage key={component.slug} component={component} renderer={renderer} />
-          ) : page === showcase.route ? (
+          ) : page === showcase.route || page === "apps" || (page === "showcase" && part) ? (
             <ShowcasePage id={part} />
           ) : page === changelogPage.route ? (
             <ChangelogPage />
           ) : page === brandPage.route ? (
             <BrandPage current={brand} onUse={setBrand} />
+          ) : page === densityPage.route ? (
+            <DensityPage density={density} setDensity={setDensity} />
           ) : foundation ? (
             <foundation.Page key={foundation.route} />
           ) : (
             <GetStartedPage theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
           )}
         </main>
-      </div>
+      </AppShellMain>
 
       <CommandDialog
         open={commandOpen}
-        onOpenChange={setCommandOpen}
+        onOpenChange={(next) => {
+          setCommandOpen(next);
+          if (!next) setCommandQuery("");
+        }}
+        onSearchChange={setCommandQuery}
         shortcut="Mod+E"
         label="Search components and foundations"
         placeholder="Search components and foundations…"
@@ -417,6 +441,7 @@ export function App() {
           if (route !== undefined) {
             window.location.hash = `#/${route}`;
             setCommandOpen(false);
+            setCommandQuery("");
             requestAnimationFrame(() => {
               scrollNavTo(route);
             });
@@ -438,16 +463,32 @@ export function App() {
       >
         {SECTIONS.map((section) => (
           <CommandGroup key={section.title} heading={section.title}>
-            {section.items.map((item) => (
-              <CommandItem
-                key={item.route}
-                value={item.route}
-                keywords={item.text}
-                meta={section.title}
-              >
-                {item.title}
-              </CommandItem>
-            ))}
+            {section.items.map((item) => {
+              const q = commandQuery.trim();
+              const titleMatches = q ? commandMatches(item.title, q) : false;
+              const descMatches = q && item.description ? commandMatches(item.description, q) : false;
+              const showDescription = Boolean(q && !titleMatches && descMatches && item.description);
+
+              return (
+                <CommandItem
+                  key={item.route}
+                  value={item.route}
+                  keywords={item.text}
+                  description={
+                    showDescription && item.description ? (
+                      <TextHighlight text={item.description} query={commandQuery} />
+                    ) : undefined
+                  }
+                  meta={section.title}
+                >
+                  {commandQuery ? (
+                    <TextHighlight text={item.title} query={commandQuery} />
+                  ) : (
+                    item.title
+                  )}
+                </CommandItem>
+              );
+            })}
           </CommandGroup>
         ))}
       </CommandDialog>

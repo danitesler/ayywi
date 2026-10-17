@@ -1,0 +1,83 @@
+.ayy-status-dot {
+  --_dot-color: var(--ayy-color-muted);
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  vertical-align: middle;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background-color: var(--_dot-color);
+  box-shadow: 0 0 0 1px var(--ayy-color-hairline);
+}
+
+.ayy-status-dot--sm {
+  inline-size: 6px;
+  block-size: 6px;
+}
+
+.ayy-status-dot--lg {
+  inline-size: 10px;
+  block-size: 10px;
+}
+
+.ayy-status-dot--neutral {
+  --_dot-color: var(--ayy-color-muted);
+}
+
+.ayy-status-dot--success {
+  --_dot-color: var(--ayy-color-success);
+}
+
+.ayy-status-dot--warning {
+  --_dot-color: var(--ayy-color-warning);
+}
+
+.ayy-status-dot--destructive {
+  --_dot-color: var(--ayy-color-destructive);
+}
+
+.ayy-status-dot--info {
+  --_dot-color: var(--ayy-color-info);
+}
+
+.ayy-status-dot--pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--_dot-color);
+  animation: ayy-status-dot-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes ayy-status-dot-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-status-dot {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+    box-shadow: 0 0 0 1px CanvasText;
+  }
+
+  .ayy-status-dot--success,
+  .ayy-status-dot--info {
+    background-color: Highlight;
+    box-shadow: 0 0 0 1px Highlight;
+  }
+
+  .ayy-status-dot--pulse::after {
+    display: none;
+  }
+}

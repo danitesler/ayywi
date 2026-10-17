@@ -1,5 +1,6 @@
-/* Bottom nav: a phone app's tab bar. Three to five top-level destinations, icon over a short label, pinned to the bottom
-   of its scroll container (sticky) and clear of the home indicator. The current page is a pill behind the icon and a heavier label.
+/* Bottom nav: a phone app's tab bar. Three to five (or more in compact mode) top-level destinations,
+   icon over a short label, pinned to the bottom of its scroll container (sticky) and clear of the home indicator.
+   The current page is a pill behind the icon and a heavier label.
    Inside an .ayy-app-shell it shows below 48rem only (app-shell.css places it). */
 .ayy-bottom-nav {
   position: sticky;
@@ -15,6 +16,63 @@
   border-block-start: 1px solid var(--ayy-color-hairline);
   background-color: var(--ayy-color-surface);
   color: var(--ayy-color-muted);
+}
+
+/* Sizing tiers */
+.ayy-bottom-nav--sm {
+  gap: var(--ayy-space-0-5);
+  padding-block: var(--ayy-space-1) calc(var(--ayy-space-1) + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--ayy-space-1);
+}
+
+.ayy-bottom-nav--md {
+  gap: var(--ayy-space-0-5);
+  padding-block: var(--ayy-space-1-5) calc(var(--ayy-space-1-5) + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--ayy-space-1-5);
+}
+
+.ayy-bottom-nav--lg {
+  gap: var(--ayy-space-1);
+  padding-block: var(--ayy-space-2) calc(var(--ayy-space-2) + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--ayy-space-2);
+}
+
+/* Compact variation: tighter horizontal footprint to support more items */
+.ayy-bottom-nav--compact {
+  gap: 0;
+  padding-inline: var(--ayy-space-1);
+}
+
+.ayy-bottom-nav--compact .ayy-bottom-nav__link {
+  padding-inline: 2px;
+  gap: 2px;
+}
+
+.ayy-bottom-nav--compact .ayy-bottom-nav__link > svg {
+  padding-inline: var(--ayy-space-2);
+}
+
+.ayy-bottom-nav--compact .ayy-bottom-nav__label {
+  letter-spacing: -0.01em;
+  line-height: var(--ayy-leading-tight);
+}
+
+/* Icon-only variation: hides text labels visually while preserving accessibility */
+.ayy-bottom-nav--icon-only .ayy-bottom-nav__label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ayy-bottom-nav--icon-only .ayy-bottom-nav__link {
+  gap: 0;
+  justify-content: center;
 }
 
 /* A <button> (a "More" tab that opens the app shell's drawer) looks like the links. */
@@ -35,13 +93,33 @@
   padding: var(--ayy-space-1);
   border-radius: var(--ayy-radius-md);
   color: inherit;
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-medium);
   line-height: var(--ayy-leading-snug);
   text-align: center;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   transition: color var(--ayy-duration-base) ease;
+}
+
+.ayy-bottom-nav--sm .ayy-bottom-nav__link {
+  min-block-size: var(--ayy-size-control-sm);
+  padding-block: 2px;
+  padding-inline: var(--ayy-space-0-5);
+  gap: 2px;
+}
+
+.ayy-bottom-nav--md .ayy-bottom-nav__link {
+  min-block-size: var(--ayy-size-control-md);
+  padding-block: var(--ayy-space-0-5);
+  padding-inline: var(--ayy-space-1);
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-bottom-nav--lg .ayy-bottom-nav__link {
+  min-block-size: var(--ayy-size-control-lg);
+  padding: var(--ayy-space-1);
+  gap: var(--ayy-space-1);
 }
 
 /* The label stays on one line; a long one is cut rather than pushing the bar taller. */
@@ -61,6 +139,31 @@
   padding-inline: var(--ayy-space-4);
   border-radius: var(--ayy-radius-pill);
   transition: background-color var(--ayy-duration-base) ease;
+}
+
+.ayy-bottom-nav--sm .ayy-bottom-nav__link > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  padding-block: 2px;
+  padding-inline: var(--ayy-space-2);
+}
+
+.ayy-bottom-nav--md .ayy-bottom-nav__link > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+  padding-block: 2px;
+  padding-inline: var(--ayy-space-3);
+}
+
+.ayy-bottom-nav--lg .ayy-bottom-nav__link > svg {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-4);
+}
+
+.ayy-bottom-nav--sm.ayy-bottom-nav--compact .ayy-bottom-nav__link > svg {
+  padding-inline: var(--ayy-space-1-5);
 }
 
 .ayy-bottom-nav__link:hover {

@@ -25,8 +25,6 @@ Category: Actions. The one main action of a phone screen (New task, Compose, Sca
 - Density — Its diameter follows data-density through the lg control height (the sizes above).
 - Width — Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow).
 
-**JS (framework-free)**: fabClass({ variant?, size?, extended?, inline?, className? }) → string; fabVariants, fabSizes.
-
 **React** — `import { Fab } from "@danitesler/ayywi/react";`
 - `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
 

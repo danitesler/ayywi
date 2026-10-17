@@ -16,6 +16,8 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `.ayy-button--icon-sm` — Square at the sm control height (28px compact, 32 comfortable, 40 touch), for a single 16px icon.
 - `.ayy-button--icon-lg` — Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.
 - `.ayy-button--block` — Fills its container's width: a card footer, a phone form, a dialog's only action.
+- `.ayy-button--start` — Icon and label sit at the inline start of a wide button (like an App shell link). Use with block.
+- `.ayy-button--end` — Icon and label sit at the inline end of a wide button. Use with block. Centered is the default, no class.
 
 **States**
 - `default` — Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring.
@@ -28,7 +30,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
-- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (11/12/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
+- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (12/12/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
 - `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/14/16px), --ayy-size-icon-sm (16px) icon, 8px gap.
 - `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/16/18px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
 - `icon` — Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).
@@ -37,10 +39,8 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - Density — Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
-**JS (framework-free)**: buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
-
 **React** — `import { Button } from "@danitesler/ayywi/react";`
-- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
+- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
 
 **Accessibility**
 - Icon-only buttons need aria-label.
@@ -72,6 +72,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <button type="button" class="ayy-button ayy-button--ghost">Ghost</button>
 <button type="button" class="ayy-button ayy-button--destructive">Delete</button>
 <button type="button" class="ayy-button ayy-button--link">Link</button>
+<button type="button" class="ayy-button" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Saving…</button>
 <button type="button" class="ayy-button" disabled>Disabled</button>
 ```
 
@@ -89,6 +90,7 @@ export default function Example() {
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Delete</Button>
       <Button variant="link">Link</Button>
+      <Button loading>Saving…</Button>
       <Button disabled>Disabled</Button>
     </>
   );
@@ -178,6 +180,207 @@ export default function Example() {
         <Icon icon={PlusSignIcon} />
       </Button>
     </>
+  );
+}
+```
+
+## Button — Loading with spinner
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<button type="button" class="ayy-button" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Saving…</button>
+<button type="button" class="ayy-button ayy-button--secondary" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Uploading…</button>
+<button type="button" class="ayy-button ayy-button--outline" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Refreshing</button>
+<button type="button" class="ayy-button ayy-button--ghost ayy-button--sm" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Syncing</button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-busy="true" aria-label="Refreshing"><span class="ayy-spinner" aria-hidden="true"></span></button>
+```
+
+React:
+
+```tsx
+import { Button } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Button loading>Saving…</Button>
+      <Button variant="secondary" loading>
+        Uploading…
+      </Button>
+      <Button variant="outline" loading>
+        Refreshing
+      </Button>
+      <Button variant="ghost" size="sm" loading>
+        Syncing
+      </Button>
+      <Button variant="outline" size="icon" loading aria-label="Refreshing" />
+    </>
+  );
+}
+```
+
+## Button — Wide button alignment
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 20rem); --ayy-gap: var(--ayy-space-2)">
+  <button type="button" class="ayy-button ayy-button--secondary ayy-button--block ayy-button--start">
+    <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+    Align start
+  </button>
+  <button type="button" class="ayy-button ayy-button--secondary ayy-button--block">
+    <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+    Align center (default)
+  </button>
+  <button type="button" class="ayy-button ayy-button--secondary ayy-button--block ayy-button--end">
+    <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+    Align end
+  </button>
+</div>
+```
+
+React:
+
+```tsx
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { PlusSignIcon } from "@hugeicons/core-free-icons";
+import {
+  Button,
+  Field,
+  Icon,
+  Label,
+  Select,
+  type ButtonSize,
+  type ButtonVariant,
+} from "@danitesler/ayywi/react";
+
+export default function Example({
+  setControls,
+}: {
+  setControls?: (node: ReactNode) => void;
+} = {}) {
+  const [size, setSize] = useState<ButtonSize>("md");
+  const [variant, setVariant] = useState<ButtonVariant>("secondary");
+
+  useEffect(() => {
+    return () => setControls?.(null);
+  }, [setControls]);
+
+  useEffect(() => {
+    if (!setControls) return;
+    setControls(
+      <div className="pv-props-list">
+        <div className="pv-props-group">
+          <div className="pv-props-item">
+            <Label htmlFor="btn-align-size" className="pv-props-label">
+              Size
+            </Label>
+            <div style={{ inlineSize: "7.5rem" }}>
+              <Select
+                id="btn-align-size"
+                size="sm"
+                value={size}
+                onChange={(e) => setSize(e.target.value as ButtonSize)}
+              >
+                <option value="sm">Small (sm)</option>
+                <option value="md">Medium (md)</option>
+                <option value="lg">Large (lg)</option>
+              </Select>
+            </div>
+          </div>
+          <div className="pv-props-item">
+            <Label htmlFor="btn-align-variant" className="pv-props-label">
+              Variant
+            </Label>
+            <div style={{ inlineSize: "7.5rem" }}>
+              <Select
+                id="btn-align-variant"
+                size="sm"
+                value={variant}
+                onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+              >
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="outline">Outline</option>
+                <option value="ghost">Ghost</option>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }, [setControls, size, variant]);
+
+  return (
+    <div
+      className="ayy-stack"
+      style={{
+        inlineSize: "100%",
+        alignItems: "center",
+        "--ayy-gap": "var(--ayy-space-4)",
+      } as CSSProperties}
+    >
+      {!setControls ? (
+        <div
+          className="ayy-cluster"
+          style={{
+            "--ayy-gap": "var(--ayy-space-3)",
+            justifyContent: "center",
+          } as CSSProperties}
+        >
+          <Field inline>
+            <Label htmlFor="btn-align-size-inline">Size</Label>
+            <Select
+              id="btn-align-size-inline"
+              size="sm"
+              value={size}
+              onChange={(e) => setSize(e.target.value as ButtonSize)}
+            >
+              <option value="sm">Small (sm)</option>
+              <option value="md">Medium (md)</option>
+              <option value="lg">Large (lg)</option>
+            </Select>
+          </Field>
+          <Field inline>
+            <Label htmlFor="btn-align-variant-inline">Variant</Label>
+            <Select
+              id="btn-align-variant-inline"
+              size="sm"
+              value={variant}
+              onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+            >
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="outline">Outline</option>
+              <option value="ghost">Ghost</option>
+            </Select>
+          </Field>
+        </div>
+      ) : null}
+
+      <div
+        className="ayy-stack"
+        style={{
+          inlineSize: "min(100%, 20rem)",
+          "--ayy-gap": "var(--ayy-space-2)",
+        } as CSSProperties}
+      >
+        <Button variant={variant} size={size} block align="start">
+          <Icon icon={PlusSignIcon} />
+          Align start
+        </Button>
+        <Button variant={variant} size={size} block align="center">
+          <Icon icon={PlusSignIcon} />
+          Align center (default)
+        </Button>
+        <Button variant={variant} size={size} block align="end">
+          <Icon icon={PlusSignIcon} />
+          Align end
+        </Button>
+      </div>
+    </div>
   );
 }
 ```

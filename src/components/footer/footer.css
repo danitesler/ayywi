@@ -58,7 +58,7 @@
 .ayy-footer__heading {
   margin: 0;
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
   letter-spacing: var(--ayy-tracking-eyebrow);
   line-height: var(--ayy-leading-normal);
@@ -105,7 +105,7 @@
   padding-block-start: var(--ayy-space-6);
   border-block-start: 1px solid var(--ayy-color-hairline);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 .ayy-footer__bottom > * {

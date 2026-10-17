@@ -90,7 +90,7 @@
 .ayy-settings__hint {
   margin: 0;
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   overflow-wrap: anywhere;
 }
 

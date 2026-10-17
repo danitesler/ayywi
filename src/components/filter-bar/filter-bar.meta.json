@@ -1,0 +1,126 @@
+{
+  "name": "Filter bar",
+  "slug": "filter-bar",
+  "status": "beta",
+  "category": "Forms",
+  "description": "A coordinating bar for filtering lists, tables, and feeds. Combines quick filter tabs with count badges, faceted filter dropdown triggers with active counts, search, and active removable filter chips with a clear all action.",
+  "aka": ["filter-bar", "filterbar", "filters", "filter-toolbar", "filter-group", "filter-strip", "faceted-filter"],
+  "classes": {
+    "ayy-filter-bar": "Root container. A vertical stack grouping the main controls row and the active filter row.",
+    "ayy-filter-bar--flush": "Flush variant without borders, background or padding, for cards or panels.",
+    "ayy-filter-bar--sticky": "Sticky variant pinned to the top of scroll containers with a translucent glass backdrop.",
+    "ayy-filter-bar--sm": "Compact size variant for tight headers and mobile lists.",
+    "ayy-filter-bar__main": "Horizontal row holding search, filter tabs, triggers, and summary.",
+    "ayy-filter-bar__group": "Cluster of filter triggers or controls.",
+    "ayy-filter-bar__tabs": "Pill track container for quick filter status tabs (role=\"tablist\").",
+    "ayy-filter-bar__tab": "Individual filter tab button. Inverts when active (aria-selected=\"true\").",
+    "ayy-filter-bar__tab-count": "Count badge after a filter tab label.",
+    "ayy-filter-bar__trigger": "Faceted filter trigger button opening a dropdown menu with checkbox items (aria-haspopup=\"menu\").",
+    "ayy-filter-bar__trigger-badge": "Badge showing count of selected values for that facet.",
+    "ayy-filter-bar__active": "Row of applied filter chips (ChipRemovable) and the clear button.",
+    "ayy-filter-bar__summary": "Muted results summary (e.g. \"Showing 12 of 80\").",
+    "ayy-filter-bar__clear": "Clear all / reset button."
+  },
+  "variants": {
+    "sticky": { "values": [false, true], "default": false, "component": "FilterBar" },
+    "flush": { "values": [false, true], "default": false, "component": "FilterBar" },
+    "size": { "values": ["sm", "md"], "default": "md", "component": "FilterBar" }
+  },
+  "states": {
+    "default": { "looks": "A flexible bar with a pill track of filter tabs, bordered filter triggers, and a clean active filters row." },
+    "hover": { "when": ".ayy-filter-bar__tab:hover, .ayy-filter-bar__trigger:hover, .ayy-filter-bar__clear:hover", "looks": "Tabs get full text color; triggers get line-hover border and wash-hover background; clear button turns text color." },
+    "pressed": { "none": "No pressed look; tabs and triggers activate or toggle on release." },
+    "focus": { "when": ":focus-visible on tabs, triggers, and the clear button", "looks": "2px ring, 2px offset." },
+    "disabled": { "when": ":disabled on tabs or triggers", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "when": ".ayy-filter-bar__tab[aria-selected=\"true\"], [aria-pressed=\"true\"]", "looks": "Tabs fill with text color, page-color text, small shadow; active triggers get ring border and wash fill. Forced colours: Highlight." },
+    "error": { "none": "Filters do not fail visibly; display empty or error states in the results view." },
+    "loading": { "none": "Loading is shown in the results view with Skeleton, not in the filter bar." },
+    "open": { "when": ".ayy-filter-bar__trigger[aria-expanded=\"true\"]", "looks": "Trigger border turns ring color with wash-hover background." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Tabs and triggers at the sm control height (28px compact, 32px comfortable, 40px touch), 13px text.",
+      "md": "Tabs and triggers at the md control height (32px compact, 40px comfortable, 44px touch), 14px text."
+    },
+    "density": "Tab and trigger heights and padding follow data-density.",
+    "width": "Fills its container (inline-size: 100%); main row and active row wrap when narrow."
+  },
+  "js": "filterBarClass({ sticky?, flush?, size?, className? }) → string; filterBarMainClass, filterBarGroupClass, filterBarTabsClass, filterBarTabClass, filterBarTabCountClass, filterBarTriggerClass, filterBarTriggerBadgeClass, filterBarActiveClass, filterBarSummaryClass, filterBarClearClass constants.",
+  "react": {
+    "import": "import { FilterBar, FilterBarMain, FilterBarGroup, FilterBarTabs, FilterBarTab, FilterBarTrigger, FilterBarActive, FilterBarSummary, FilterBarClear } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "FilterBar": {
+        "renders": "<div class=\"ayy-filter-bar\">",
+        "props": {
+          "sticky": "boolean — sticky header with glass backdrop",
+          "flush": "boolean — omit outer border and padding for cards",
+          "size": "\"sm\" | \"md\""
+        }
+      },
+      "FilterBarMain": {
+        "renders": "<div class=\"ayy-filter-bar__main\">",
+        "props": {}
+      },
+      "FilterBarGroup": {
+        "renders": "<div role=\"group\" class=\"ayy-filter-bar__group\">",
+        "props": {}
+      },
+      "FilterBarTabs": {
+        "renders": "<div role=\"tablist\" class=\"ayy-filter-bar__tabs\">",
+        "props": {
+          "label": "string — aria-label for the tablist (default \"Filters\")"
+        }
+      },
+      "FilterBarTab": {
+        "renders": "<button role=\"tab\" class=\"ayy-filter-bar__tab\">",
+        "props": {
+          "selected": "boolean — aria-selected",
+          "count": "ReactNode — number of items in this status"
+        }
+      },
+      "FilterBarTrigger": {
+        "renders": "<button type=\"button\" class=\"ayy-filter-bar__trigger\">",
+        "props": {
+          "count": "ReactNode — number of active values selected for this facet",
+          "open": "boolean — aria-expanded for menu state",
+          "active": "boolean — aria-pressed when filters are applied"
+        }
+      },
+      "FilterBarActive": {
+        "renders": "<div class=\"ayy-filter-bar__active\">",
+        "props": {}
+      },
+      "FilterBarSummary": {
+        "renders": "<span class=\"ayy-filter-bar__summary\">",
+        "props": {}
+      },
+      "FilterBarClear": {
+        "renders": "<button type=\"button\" class=\"ayy-filter-bar__clear\">",
+        "props": {}
+      }
+    }
+  },
+  "a11y": [
+    "Quick filter tabs form a role=\"tablist\" with an aria-label. Tabs announce aria-selected=\"true\" when active.",
+    "Faceted filter triggers carry aria-haspopup=\"menu\" (set by DropdownMenuTrigger) and aria-expanded for open/closed state.",
+    "Active filters provide removable chips with accessible remove labels (\"Remove Status: Draft\").",
+    "Visible :focus-visible rings on all interactive tabs, triggers, and action buttons.",
+    "High Contrast mode fills active tabs and outlines active triggers using system Highlight."
+  ],
+  "do": [
+    "Use a filter bar above tables, cards, lists, and feeds that support filtering by multiple criteria.",
+    "Use quick filter tabs for primary mutually exclusive statuses (All, Drafts, Published) with live counts.",
+    "Use faceted filter triggers for secondary multi-select dimensions (Assignee, Priority, Label).",
+    "Display applied filters as removable chips with a Clear all button so users see and modify current filters in one glance."
+  ],
+  "dont": [
+    "Don't build custom button rows or ad-hoc active classes for status filters — use FilterBarTabs and FilterBarTab.",
+    "Don't hide active filters inside menus without showing badges or active removable chips.",
+    "Don't disable the filter bar when there are zero results — let the user adjust filters to recover."
+  ],
+  "examples": [
+    { "id": "tabs", "title": "Status tabs" },
+    { "id": "faceted", "title": "Faceted filters" },
+    { "id": "consolidated", "title": "Consolidated filter" }
+  ]
+}

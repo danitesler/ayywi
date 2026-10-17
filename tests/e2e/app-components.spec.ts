@@ -4,12 +4,12 @@ import { example, open, rtl, stage } from "./helpers";
 // The components Teyykit and Dooduu had built for themselves, and the phone basics.
 for (const renderer of ["react", "html"] as const) {
   test.describe(renderer, () => {
-    test("calendar: one Tab stop, arrows move the day (mirrored in RTL), Enter picks, PageDown turns the month", async ({ page }) => {
-      await open(page, "calendar", { renderer });
-      const cal = stage(page);
-      const grid = cal.locator(".ayy-calendar__grid");
+    test("date picker: one Tab stop, arrows move the day (mirrored in RTL), Enter picks, PageDown turns the month", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const cal = example(page, "presets").locator(".ayy-date-picker-grid");
+      const grid = cal.locator(".ayy-date-picker-grid__grid");
       await expect(grid.locator('[tabindex="0"]')).toHaveCount(1);
-      await expect(cal.locator('.ayy-calendar__day[data-date="2026-10-09"]')).toHaveAttribute("aria-pressed", "true");
+      await expect(cal.locator('.ayy-date-picker-grid__day[data-date="2026-10-09"]')).toHaveAttribute("aria-pressed", "true");
       await cal.locator('[data-date="2026-10-09"]').focus();
       await page.keyboard.press("ArrowRight");
       await expect(cal.locator('[data-date="2026-10-10"]')).toBeFocused();
@@ -23,26 +23,43 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("ArrowRight");
       await expect(cal.locator('[data-date="2026-10-16"]')).toBeFocused();
 
-      const title = cal.locator(".ayy-calendar__title");
+      const title = cal.locator(".ayy-date-picker-grid__title");
       const before = await title.textContent();
       await page.keyboard.press("PageDown");
       await expect(cal.locator('[data-date="2026-11-16"]')).toBeFocused();
       await expect(title).not.toHaveText(before!);
+
+      // Click year to swap to 3x4 year grid, pick 2028; click month to swap to 3x4 month grid, pick March.
+      const daysWidth = (await cal.boundingBox())!.width;
+      await title.locator('[data-view="years"]').click();
+      await expect(cal.locator(".ayy-date-picker-grid__years")).toBeVisible();
+      expect((await cal.boundingBox())!.width).toBe(daysWidth);
+      await cal.locator('.ayy-date-picker-grid__cell[data-year="2028"]').click();
+      await expect(cal.locator(".ayy-date-picker-grid__grid")).toBeVisible();
+      await expect(title).toContainText("2028");
+
+      await title.locator('[data-view="months"]').click();
+      await expect(cal.locator(".ayy-date-picker-grid__months")).toBeVisible();
+      expect((await cal.boundingBox())!.width).toBe(daysWidth);
+      await cal.locator('.ayy-date-picker-grid__cell[data-month="2028-03-01"]').click();
+      await expect(cal.locator('.ayy-date-picker-grid__day[data-date="2028-03-01"]')).toBeVisible();
+      expect((await cal.boundingBox())!.width).toBe(daysWidth);
     });
 
     test("date picker opens a month in a popover, a pick fills the field and closes it", async ({ page }) => {
-      await open(page, "calendar", { renderer });
-      const field = stage(page, 1);
+      await open(page, "date-time-picker", { renderer });
+      const field = example(page, "basic");
       const trigger = field.getByRole("button", { name: "Check-in" });
       await expect(field.locator(".ayy-date-picker__value")).toHaveText("");
       await trigger.click();
       const popover = page.locator(".ayy-popover:popover-open");
       await expect(popover).toBeVisible();
-      await expect(popover.locator(".ayy-calendar__day:focus")).toHaveCount(1);
+      await expect(popover.locator(".ayy-date-picker-grid__day:focus")).toHaveCount(1);
       // A month after today is all after min.
       await page.keyboard.press("PageDown");
       await page.keyboard.press("Enter");
       await expect(popover).toHaveCount(0);
+      await expect(field.locator(".ayy-popover .ayy-date-picker-grid")).toHaveCount(1);
       await expect(field.locator(".ayy-date-picker__value")).not.toHaveText("");
       await expect(trigger).toBeFocused();
     });
@@ -203,6 +220,46 @@ for (const renderer of ["react", "html"] as const) {
       const dash = await ring.locator(".ayy-progress-ring__bar").evaluate((el) => getComputedStyle(el).strokeDasharray);
       expect(dash.replace(/px|calc\(|\)/g, "")).toMatch(/^60,? 100$/);
     });
+
+    test("swatch: custom swatch opens ColorPicker popover, updates input and color dot, closes on Escape", async ({ page }) => {
+      await open(page, "swatch", { renderer });
+      const pen = example(page, "pen");
+      const customInput = pen.locator(".ayy-swatch--custom > input[type='color']");
+      const customSwatch = pen.locator(".ayy-swatch--custom");
+
+      await expect(customInput).toHaveValue("#7c5cff");
+      await expect(customSwatch).toHaveCSS("--ayy-swatch", "#7c5cff");
+
+      await customSwatch.click();
+      const popover = page.locator(".ayy-swatch-popover:popover-open");
+      await expect(popover).toBeVisible();
+      await expect(customSwatch).toHaveAttribute("aria-expanded", "true");
+
+      const picker = popover.locator(".ayy-color-picker");
+      await expect(picker).toBeVisible();
+      const hexInput = picker.locator(".ayy-color-picker__inputs input");
+      await expect(hexInput).toHaveValue("#7c5cff");
+
+      await hexInput.fill("#ff0055");
+      await hexInput.dispatchEvent("input");
+      await expect(customInput).toHaveValue("#ff0055");
+      await expect(customSwatch).toHaveCSS("--ayy-swatch", "#ff0055");
+
+      await page.keyboard.press("Escape");
+      await expect(popover).toHaveCount(0);
+      await expect(customSwatch).not.toHaveAttribute("aria-expanded");
+      await expect(customInput).toBeFocused();
+
+      // Clicking the swatch while open closes it, and clicking again re-opens
+      await customSwatch.click();
+      await expect(popover).toBeVisible();
+      await customSwatch.click();
+      await expect(popover).toHaveCount(0);
+      await expect(customSwatch).not.toHaveAttribute("aria-expanded");
+      await customSwatch.click();
+      await expect(popover).toBeVisible();
+      await page.keyboard.press("Escape");
+    });
   });
 }
 
@@ -251,7 +308,7 @@ test("top bar: the back chevron points back in both directions, the title is the
   expect(await flip()).toBe("-1");
 });
 
-test("app shell sizes: Small rows are denser than Big, and the docs' Small sidebar doesn't leak into examples", async ({ page }) => {
+test("app shell sizes: Small and Medium rows are denser than Big, and the docs' Small sidebar doesn't leak into examples", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await open(page, "app-shell");
   const demo = example(page, "playground");
@@ -260,11 +317,30 @@ test("app shell sizes: Small rows are denser than Big, and the docs' Small sideb
   const radius = () => link.evaluate((el) => getComputedStyle(el).borderTopLeftRadius);
   const big = await height();
   const bigRadius = await radius();
-  await demo.getByRole("switch", { name: "Small size" }).click();
+  const ex = page.locator('.pv-example[aria-labelledby="ex-playground"]');
+  const propsBtn = ex.getByRole("button", { name: "Props" });
+  if (await propsBtn.isVisible()) {
+    await propsBtn.hover();
+    await expect(page.getByRole("tooltip", { name: "Props" })).toBeVisible();
+    await page.mouse.move(0, 0);
+  }
+  const setSize = async (size: "sm" | "md" | "lg") => {
+    if (await propsBtn.isVisible()) {
+      const popover = ex.locator(".pv-props-popover");
+      if (!(await popover.isVisible())) await propsBtn.click();
+      await popover.locator("#pg-size").selectOption(size);
+    } else {
+      await demo.locator("#pg-size").selectOption(size);
+    }
+  };
+  await setSize("md");
   await expect.poll(height).toBeLessThan(big);
+  const med = await height();
+  await setSize("sm");
+  await expect.poll(height).toBeLessThan(med);
   expect(await radius()).not.toBe(bigRadius);
   // The docs page's own shell is Small; flipping back proves the example keeps its own size.
   await expect(page.locator(".pv-shell")).toHaveClass(/ayy-app-shell--sm/);
-  await demo.getByRole("switch", { name: "Small size" }).click();
+  await setSize("lg");
   await expect.poll(height).toBe(big);
 });

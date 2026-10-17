@@ -27,8 +27,6 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 - Density — Padding and sm text are fixed; controls in rows follow data-density.
 - Width — Fills its container; titles and descriptions wrap, meta stays on one line.
 
-**JS (framework-free)**: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
-
 **React** — `import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from "@danitesler/ayywi/react";`
 - `<List>` renders <ul class="ayy-list">. Props: `divided` boolean — hairlines between flush rows.; `compact` boolean — tight rows for an icon checklist.
 - `<ListItem>` renders <li class="ayy-list__item">.

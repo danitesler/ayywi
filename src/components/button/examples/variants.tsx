@@ -9,6 +9,7 @@ export default function Example() {
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Delete</Button>
       <Button variant="link">Link</Button>
+      <Button loading>Saving…</Button>
       <Button disabled>Disabled</Button>
     </>
   );

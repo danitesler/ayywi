@@ -30,8 +30,6 @@ Category: Actions. A row or column of tools and actions for one surface: an edit
 - Density — Button size follows data-density (above).
 - Width — Hugs its buttons. vertical makes a column; scroll keeps one line that scrolls sideways on phones; a spacer pushes later items to the far end.
 
-**JS (framework-free)**: toolbarClass({ vertical?, floating?, scroll?, size?, className? }) → string; toolbarButtonClass, toolbarGroupClass, toolbarSeparatorClass, toolbarSpacerClass constants; connectToolbar(el) → { refresh, destroy } wires the keyboard pattern on plain markup.
-
 **Custom element** `<ayy-toolbar>` (@danitesler/ayywi/elements) — 
 - event `ayy-press`: { button, pressed } before a button's aria-pressed changes; preventDefault() keeps the old state.
 

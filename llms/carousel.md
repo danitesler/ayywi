@@ -22,8 +22,6 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 - Density — The track doesn't follow data-density; the control Buttons do.
 - Width — Fills its container; each slide is --ayy-slide wide (default min(22rem, 85%)) and as tall as the tallest.
 
-**JS (framework-free)**: carouselClass, carouselTrackClass, carouselSlideClass, carouselControlsClass constants; connectCarousel(root) → cleanup — wires the buttons, aria-disabled at the ends and slide labels.
-
 **Custom element** `<ayy-carousel>` (@danitesler/ayywi/elements) — A .ayy-carousel__track of .ayy-carousel__slide elements, and buttons with data-ayy-prev / data-ayy-next anywhere inside. They scroll one slide at a time (smoothly unless the user prefers reduced motion) and get aria-disabled="true" at the ends. Slides without a label are named "2 of 6".
 - attribute `class`: Put ayy-carousel on it for block layout.
 

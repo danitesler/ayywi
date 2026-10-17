@@ -44,7 +44,7 @@
   background: none;
   color: var(--ayy-color-text);
   font: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--ayy-control-text-field);
   font-variant-numeric: tabular-nums;
   text-align: center;
 }

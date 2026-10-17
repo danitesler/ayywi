@@ -66,7 +66,7 @@
   border: 2px solid var(--ayy-color-line-strong);
   background-color: var(--ayy-color-surface);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   line-height: 1;
 }
 
@@ -112,7 +112,7 @@
 /* Muted tabular timestamp / date. */
 .ayy-timeline__time {
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   font-variant-numeric: tabular-nums;
   line-height: var(--ayy-leading-snug);
 }

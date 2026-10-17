@@ -36,8 +36,6 @@ Category: Feedback. Progress as a ring that fills clockwise from the top: a focu
 - Density — Doesn't change with data-density; pick a size.
 - Width — Square at its size; the label in the middle scales with it.
 
-**JS (framework-free)**: progressRingClass({ variant?, size?, indeterminate?, className? }) → string; progressRingSvg (the SVG markup to put first inside the ring); progressRingSizes. The fill colour can be overridden with --ayy-progress-color, as on Progress.
-
 **React** — `import { ProgressRing } from "@danitesler/ayywi/react";`
 - `<ProgressRing>` renders <div role="progressbar" class="ayy-progress-ring"><svg class="ayy-progress-ring__svg">…</svg><span class="ayy-progress-ring__label">{children}</span></div>. Props: `value` number 0–100; omit/null → indeterminate; `variant` "default" | "success" | "warning" | "destructive" | "ai" — as on Progress; `size` "sm" | "md" | "lg" | "xl"
 

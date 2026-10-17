@@ -56,7 +56,7 @@
   background: none;
   color: inherit;
   font: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--ayy-control-text-field);
   appearance: none;
 }
 

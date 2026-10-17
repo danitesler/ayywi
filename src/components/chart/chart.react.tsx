@@ -1,10 +1,11 @@
-import { forwardRef, useId, type CSSProperties, type HTMLAttributes, type ReactNode, type SVGAttributes } from "react";
+import { forwardRef, useId, type CSSProperties, type HTMLAttributes, type ReactNode, type SVGAttributes, type TableHTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
 import {
   barListClass,
   barListItemClass,
   barListLabelClass,
   barListValueClass,
+  CHART_SERIES,
   chartClass,
   chartLegendItemClass,
   chartPath,
@@ -13,6 +14,7 @@ import {
   chartSeriesClass,
   sparklineClass,
 } from "./chart";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../table/table.react";
 
 export interface ChartSeries {
   name: string;
@@ -314,5 +316,58 @@ export const BarList = forwardRef<HTMLOListElement, BarListProps>(function BarLi
         </li>
       ))}
     </ol>
+  );
+});
+
+export interface TableChartProps extends Omit<TableHTMLAttributes<HTMLTableElement>, "children"> {
+  /** What the chart shows ("Signups per day"). Becomes the table's caption. */
+  label: string;
+  /** One per row along the side. */
+  labels: string[];
+  /** Columns of data. */
+  series: (ChartSeries & { compare?: boolean })[];
+  /** Formats cell values. Default: compact numbers (1.2K). */
+  format?: (value: number) => string;
+  /** Tighter row padding. */
+  compact?: boolean;
+}
+
+/** A table view of chart data with series swatches in the headers and tabular numeric cells, using ayywi's Table. */
+export const TableChart = forwardRef<HTMLTableElement, TableChartProps>(function TableChart(
+  { label, labels, series, format = formatCompact, compact, className, ...props },
+  ref,
+) {
+  return (
+    <Table ref={ref} compact={compact} className={className} {...props}>
+      {label && <TableCaption>{label}</TableCaption>}
+      <TableHeader>
+        <TableRow>
+          <TableHead scope="col" />
+          {series.map((s, i) => (
+            <TableHead key={s.name} scope="col" numeric>
+              <span
+                className={chartLegendItemClass({ compare: s.compare })}
+                style={vars({ "--ayy-chart-color": s.color ?? `var(--ayy-chart-${(i % CHART_SERIES) + 1})` })}
+              >
+                <span className="ayy-chart__swatch" />
+                {s.name}
+              </span>
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {labels.map((name, i) => (
+          <TableRow key={`${name}-${i}`}>
+            <TableHead scope="row">{name}</TableHead>
+            {series.map((s) => (
+              <TableCell key={s.name} numeric>
+                {Number.isFinite(s.values[i]) ? format(s.values[i]) : ""}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 });

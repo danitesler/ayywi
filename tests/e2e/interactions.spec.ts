@@ -3,8 +3,21 @@ import { example, open, rtl, settle, stage } from "./helpers";
 
 /** The app shell playground's toolbar switch. Inert in the HTML renderer: use pgSetup() there instead. */
 async function pgSwitch(page: Page, name: string, on: boolean) {
+  const ex = page.locator('.pv-example[aria-labelledby="ex-playground"]');
+  const propsBtn = ex.getByRole("button", { name: "Props" });
+  if (await propsBtn.isVisible()) {
+    const popover = ex.locator(".pv-props-popover");
+    if (!(await popover.isVisible())) await propsBtn.click();
+    const sw = popover.getByRole("switch", { name });
+    if ((await sw.count()) > 0) {
+      if ((await sw.isChecked()) !== on) await sw.click();
+    }
+    return;
+  }
   const sw = example(page, "playground").getByRole("switch", { name });
-  if ((await sw.isChecked()) !== on) await sw.click();
+  if ((await sw.count()) > 0) {
+    if ((await sw.isChecked()) !== on) await sw.click();
+  }
 }
 
 /** The playground shell both renderers show: grouped nav, phone bar and bottom nav, detail pane and resize handles. */
@@ -15,13 +28,8 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell collapse toggles with the keyboard, the sub-list indents, and phones drop nested items", async ({ page }) => {
       await open(page, "app-shell", { renderer });
       // The row layout needs no phone chrome: drop the bar and the bottom nav (switches in React, nodes in HTML).
-      if (renderer === "react") {
-        await pgSwitch(page, "Top bar", false);
-        await pgSwitch(page, "Bottom nav", false);
-      } else {
-        await pgShell(page).locator(":scope > .ayy-app-shell__bar").evaluate((el) => el.remove());
-        await pgShell(page).locator(":scope > .ayy-bottom-nav").evaluate((el) => el.remove());
-      }
+      await pgShell(page).locator(":scope > .ayy-app-shell__bar").evaluate((el) => el.remove()).catch(() => {});
+      await pgShell(page).locator(":scope > .ayy-bottom-nav").evaluate((el) => el.remove()).catch(() => {});
       const demo = example(page, "playground");
       const shell = pgShell(page);
       const typography = shell.locator("summary", { hasText: "Typography" });
@@ -66,9 +74,6 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell drawer: the bar's toggle opens the sidebar on phones, Esc and links close it", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "app-shell", { renderer });
-      // The detail pane would cover the phone screen: hide it first.
-      if (renderer === "react") await pgSwitch(page, "Detail pane", false);
-      else await pgShell(page).locator(".ayy-app-shell__detail").evaluate((el) => ((el as HTMLElement).hidden = true));
       const shell = pgShell(page);
       const toggle = shell.getByRole("button", { name: "Menu" });
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
@@ -120,9 +125,6 @@ for (const renderer of ["react", "html"] as const) {
     test("app shell with a bottom nav: tabs on phones, More opens the drawer, the sidebar from 48rem", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "app-shell", { renderer });
-      // The detail pane would cover the phone screen: hide it first.
-      if (renderer === "react") await pgSwitch(page, "Detail pane", false);
-      else await pgShell(page).locator(".ayy-app-shell__detail").evaluate((el) => ((el as HTMLElement).hidden = true));
       const shell = pgShell(page);
       const tabs = shell.locator(".ayy-bottom-nav");
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
@@ -206,35 +208,21 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
     });
 
-    test("app shell workspace: drag and keys resize the sidebar and the detail pane, a double click resets", async ({ page }) => {
+    test("app shell workspace: drag and keys resize the sidebar, a double click resets", async ({ page }) => {
       await page.setViewportSize({ width: 1800, height: 900 });
       await open(page, "app-shell", { renderer });
       const shell = pgShell(page);
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
-      const detail = shell.locator(".ayy-app-shell__detail");
       const main = shell.locator(".ayy-app-shell__main");
       const side = shell.getByRole("separator", { name: "Resize sidebar" });
-      const edge = shell.getByRole("separator", { name: "Resize detail pane" });
       const width = async (l: typeof sidebar) => Math.round((await l.boundingBox())!.width);
-      // The HTML switches are inert, so hide its pane directly; the React one has a Close button and a switch to open it from.
-      const showDetail = async (show: boolean) => {
-        if (renderer === "react") {
-          if (show) await pgSwitch(page, "Detail pane", true);
-          else await detail.getByRole("button", { name: "Close" }).click();
-        } else await detail.evaluate((el, hide) => ((el as HTMLElement).hidden = hide), !show);
-        await (show ? expect(detail).toBeVisible() : expect(detail).toBeHidden());
-      };
 
-      // With the detail pane open the main area keeps its 320px, which caps how wide the sidebar may get in this box.
-      await expect(detail).toBeVisible();
       await expect.poll(() => width(sidebar)).toBe(240);
       await expect(side).toHaveAttribute("aria-valuenow", "240");
       await side.focus();
       await page.keyboard.press("End");
       await expect.poll(() => width(main)).toBeGreaterThanOrEqual(319);
 
-      await showDetail(false);
-      await expect(edge).toBeHidden();
       await side.dblclick();
       await expect.poll(() => width(sidebar)).toBe(240);
 
@@ -260,30 +248,6 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(() => width(sidebar)).toBe(192);
       await side.dblclick();
       await expect.poll(() => width(sidebar)).toBe(240);
-
-      // The detail pane's edge works the other way round: right shrinks it, left grows it.
-      await showDetail(true);
-      const before = await width(detail);
-      expect(before).toBe(352);
-      await edge.focus();
-      await page.keyboard.press("ArrowRight");
-      await expect.poll(() => width(detail)).toBe(before - 16);
-      await page.keyboard.press("ArrowLeft");
-      await expect.poll(() => width(detail)).toBe(before);
-      await page.keyboard.press("Home");
-      await expect.poll(() => width(detail)).toBe(288);
-      await page.keyboard.press("End");
-      await expect.poll(() => width(main)).toBeGreaterThanOrEqual(319);
-
-      // Hiding the detail pane gives the column back.
-      await showDetail(false);
-      await expect
-        .poll(async () => {
-          const mainBox = (await main.boundingBox())!;
-          const box = (await shell.boundingBox())!;
-          return Math.round(box.x + box.width - (mainBox.x + mainBox.width));
-        })
-        .toBe(0);
     });
 
     test("app shell workspace in RTL: the keys follow the edge", async ({ page }) => {
@@ -294,8 +258,7 @@ for (const renderer of ["react", "html"] as const) {
       const shell = demo.locator(".ayy-app-shell").first();
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const side = shell.getByRole("separator", { name: "Resize sidebar" });
-      // Room for the sidebar to grow: close the detail pane.
-      await shell.locator(".ayy-app-shell__detail").evaluate((el) => ((el as HTMLElement).hidden = true));
+
       await side.focus();
       await page.keyboard.press("ArrowLeft");
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(256);
@@ -307,7 +270,7 @@ for (const renderer of ["react", "html"] as const) {
       expect(Math.abs(handle.x + handle.width / 2 - edgeX)).toBeLessThan(2);
     });
 
-    test("app shell workspace on phones: the sidebar is a drawer opened from the main area, the detail pane covers the screen", async ({ page }) => {
+    test("app shell workspace on phones: the sidebar is a drawer opened from the main area", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "app-shell", { renderer });
       // A drawer with its toggle in the main area: no bar, no bottom nav, Drawer on phones.
@@ -334,21 +297,11 @@ for (const renderer of ["react", "html"] as const) {
       const shell = pgShell(page);
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const toggle = shell.locator(".ayy-app-shell__main .ayy-app-shell__toggle");
-      const detail = shell.locator(".ayy-app-shell__detail");
 
       // No sideways row: the sidebar waits off-screen.
       expect(await sidebar.evaluate((el) => getComputedStyle(el).flexDirection)).toBe("column");
       await expect(sidebar).toBeHidden();
       await expect(shell.locator(".ayy-app-shell__resize").first()).toBeHidden();
-
-      const shellBox = (await shell.boundingBox())!;
-      const detailBox = (await detail.boundingBox())!;
-      expect(Math.round(detailBox.width)).toBe(Math.round(shellBox.width));
-      expect(Math.round(detailBox.height)).toBe(Math.round(shellBox.height));
-      if (renderer === "react") {
-        await detail.getByRole("button", { name: "Close" }).click();
-        await expect(detail).toBeHidden();
-      } else await detail.evaluate((el) => ((el as HTMLElement).hidden = true));
 
       await toggle.click();
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
@@ -671,6 +624,35 @@ for (const renderer of ["react", "html"] as const) {
       await expect(timerSub).toBeVisible();
     });
 
+    if (renderer === "react") {
+      test("input group: password toggle and copy buttons reveal text, copy to clipboard and trigger toasts", async ({ page }) => {
+        await open(page, "input", { renderer: "react" });
+        const input = stage(page, 2).locator("#ig-password");
+        const toggleBtn = stage(page, 2).getByRole("button", { name: "Show password" });
+        await expect(input).toHaveAttribute("type", "password");
+        await toggleBtn.focus();
+        await expect(page.getByRole("tooltip", { name: "Show password" })).toBeVisible();
+        await toggleBtn.click();
+        await expect(input).toHaveAttribute("type", "text");
+        await expect(page.locator(".ayy-toast").filter({ hasText: "Password revealed" })).toBeVisible();
+        const hideBtn = stage(page, 2).getByRole("button", { name: "Hide password" });
+        await expect(hideBtn).toBeVisible();
+        await hideBtn.click();
+        await expect(input).toHaveAttribute("type", "password");
+        await expect(page.locator(".ayy-toast").filter({ hasText: "Password hidden" })).toBeVisible();
+
+        const copyTokenBtn = stage(page, 2).getByRole("button", { name: "Copy token" });
+        await copyTokenBtn.focus();
+        await expect(page.getByRole("tooltip", { name: "Copy token" })).toBeVisible();
+        await copyTokenBtn.click();
+        await expect(page.locator(".ayy-toast").filter({ hasText: "Access token copied to clipboard" })).toBeVisible();
+
+        const copyPasswordBtn = stage(page, 2).getByRole("button", { name: "Copy password" });
+        await copyPasswordBtn.click();
+        await expect(page.locator(".ayy-toast").filter({ hasText: "Password copied to clipboard" })).toBeVisible();
+      });
+    }
+
     test("select: a mouse opens ayywi's list, choosing fires change, the keyboard works", async ({ page }) => {
       await open(page, "select", { renderer });
       const select = stage(page).getByLabel("Region");
@@ -735,11 +717,18 @@ for (const renderer of ["react", "html"] as const) {
 
     test("toast appears, runs its action, and sits above a modal dialog", async ({ page }) => {
       await open(page, "toast", { renderer });
-      await stage(page).getByRole("button", { name: "With action" }).click();
-      const toast = page.locator(".ayy-toast", { hasText: "Project archived" });
+      await page.evaluate(() => {
+        (window as unknown as { ayywi: { toast: (m: string, o: object) => void } }).ayywi.toast("Project archived", {
+          action: {
+            label: "Undo",
+            onClick: () => (window as unknown as { ayywi: { toast: (m: string) => void } }).ayywi.toast("Project restored"),
+          },
+        });
+      });
+      const toast = page.locator(".ayy-toaster .ayy-toast", { hasText: "Project archived" });
       await expect(toast).toBeVisible();
       await toast.getByRole("button", { name: "Undo" }).click();
-      await expect(page.locator(".ayy-toast", { hasText: "Project restored" })).toBeVisible();
+      await expect(page.locator(".ayy-toaster .ayy-toast", { hasText: "Project restored" })).toBeVisible();
 
       // Open a modal, then toast from inside it: the toast must still be clickable.
       await page.goto("/#/dialog");
@@ -748,6 +737,122 @@ for (const renderer of ["react", "html"] as const) {
       const act = page.locator(".ayy-toast", { hasText: "Over modal" }).getByRole("button", { name: "Act" });
       await act.click(); // fails if the modal's inert backdrop covers it
       await expect(page.locator(".ayy-toast", { hasText: "Over modal" })).toBeHidden();
+
+      // Basic stage single trigger button works
+      await open(page, "toast", { renderer });
+      const basicStage = stage(page, 0);
+      await basicStage.getByRole("button", { name: "Trigger random toast" }).click();
+      await expect(page.locator(".ayy-toaster .ayy-toast").first()).toBeVisible();
+
+      // Stacking multiple text toasts: verify regular toasts maintain compact height and show all text on hover
+      await page.evaluate(() => {
+        document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+        const w = window as unknown as { ayywi: { toast: { (m: string): void; success: (m: string) => void } } };
+        w.ayywi.toast("Default text");
+        w.ayywi.toast.success("Success text");
+      });
+      const textToasts = page.locator(".ayy-toaster .ayy-toast:not(.ayy-toast--card)");
+      await expect(textToasts).toHaveCount(2);
+
+      // Front text toast has compact natural height (< 80px)
+      const frontToastBox = await textToasts.last().boundingBox();
+      expect(frontToastBox!.height).toBeLessThan(80);
+
+      // Hover toaster: expands stack, both text toasts are fully visible with title and close buttons clickable
+      await page.locator(".ayy-toaster").hover();
+      await expect(page.locator(".ayy-toaster")).toHaveAttribute("data-expanded", "");
+      for (const t of await textToasts.all()) {
+        await expect(t.locator(".ayy-toast__title")).toBeVisible();
+      }
+      // Can close the older toast in the expanded stack
+      await textToasts.first().locator(".ayy-toast__close").click();
+      await expect(textToasts).toHaveCount(1);
+    });
+
+    test("open stack shows Clear all in its corner and clears every toast", async ({ page }) => {
+      await open(page, "toast", { renderer });
+      await page.evaluate(() => {
+        document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+        const w = window as unknown as { ayywi: { toast: (m: string, o?: object) => void } };
+        for (const m of ["One", "Two", "Three"]) w.ayywi.toast(m, { duration: Infinity });
+      });
+      const clear = page.locator(".ayy-toaster__clear");
+      await expect(clear).toBeHidden();
+      await page.locator(".ayy-toaster").hover();
+      await expect(clear).toBeVisible();
+      await clear.click();
+      await expect(page.locator(".ayy-toaster .ayy-toast")).toHaveCount(0);
+    });
+
+    test("long text toast appears with copy button, copies text, and animates out", async ({ page }) => {
+      await open(page, "toast", { renderer });
+      await page.evaluate(() => {
+        document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+        const w = window as unknown as { ayywi: { toast: { long: (m: string, o?: object) => void } } };
+        w.ayywi.toast.long("Secret API key", { description: "whsec_test_secret_key_12345" });
+      });
+      const longToast = page.locator(".ayy-toaster .ayy-toast--long");
+      await expect(longToast).toBeVisible();
+      await expect(longToast.locator(".ayy-toast__copy")).toBeVisible();
+      await longToast.locator(".ayy-toast__copy").click();
+      await expect(longToast.locator(".ayy-toast__copy")).toHaveAttribute("data-copied", "");
+      // Close button dismisses with leaving animation
+      await longToast.locator(".ayy-toast__close").click();
+      await expect(page.locator(".ayy-toaster .ayy-toast--long")).toBeHidden();
+    });
+
+    test("card toast appears, shows scrim on hover, and runs action", async ({ page }) => {
+      await open(page, "toast", { renderer });
+      const card = example(page, "types").locator(".ayy-toast--card[data-hover]").first();
+      await expect(card).toBeVisible();
+
+      // Trigger card toasts into the corner
+      await page.evaluate(() => {
+        for (let i = 0; i < 6; i++) {
+          (window as any).ayywi.toast.card({
+            src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350'></svg>",
+            alt: "Card preview",
+          });
+        }
+      });
+      const cornerCard = page.locator(".ayy-toaster .ayy-toast--card");
+      await expect(cornerCard.first()).toBeVisible();
+
+      const toaster = page.locator(".ayy-toaster");
+      const oldestToast = toaster.locator(".ayy-toast[data-limited]");
+      await expect(oldestToast).toHaveCount(1);
+
+      // Hover toaster expands the stack and keeps toasts open
+      await toaster.hover();
+      await expect(toaster).toHaveAttribute("data-expanded", "");
+
+      // In expanded stack, previous cards are fully interactable on hover
+      const allCards = toaster.locator(".ayy-toast--card");
+      const cardCount = await allCards.count();
+      expect(cardCount).toBeGreaterThan(1);
+      // Hover the older card in the stack: its scrim appears with working actions
+      const olderCard = allCards.nth(cardCount - 2);
+      await olderCard.hover();
+      await expect(olderCard.locator(".ayy-toast__scrim")).toBeVisible();
+      await expect(olderCard.locator(".ayy-toast__close")).toBeVisible();
+
+      // Interacting with components inside does NOT collapse the open state
+      await olderCard.locator(".ayy-toast__close").click();
+      await expect(toaster).toHaveAttribute("data-expanded", "");
+
+      // Wheel scroll on expanded toaster cycles through toasts
+      await toaster.dispatchEvent("wheel", { deltaY: -120 });
+      await expect.poll(() => toaster.evaluate((el) => el.style.getPropertyValue("--_toast-scroll-y"))).not.toBe("");
+
+      // Hover preview card reveals actions with close button in top-right corner
+      await card.hover();
+      const closeBox = await card.locator(".ayy-toast__close").boundingBox();
+      const cardBox = await card.boundingBox();
+      expect(closeBox!.x + closeBox!.width).toBeGreaterThan(cardBox!.x + cardBox!.width - 50);
+
+      const copyBtn = card.getByRole("button", { name: "Copy" });
+      await expect(copyBtn).toBeVisible();
+      await copyBtn.click();
     });
 
     test("carousel pages through its slides and stops at the ends", async ({ page }) => {
@@ -767,9 +872,9 @@ for (const renderer of ["react", "html"] as const) {
       expect(await next.evaluate((el) => (el as HTMLButtonElement).disabled)).toBe(false); // aria-disabled only, so focus isn't lost
     });
 
-    test("contents marks the section being read", async ({ page }) => {
+    test("table of contents marks the section being read", async ({ page }) => {
       await open(page, "toc", { renderer });
-      const nav = stage(page).getByRole("navigation", { name: "Contents" });
+      const nav = stage(page).getByRole("navigation", { name: "Table of contents" });
       const impact = nav.getByRole("link", { name: /Impact/ });
       // Room below the example, so every section can scroll up to the reading line (the page itself is short).
       await page.locator(".pv-page").evaluate((el) => (el.style.paddingBlockEnd = "100vh"));
@@ -785,33 +890,31 @@ for (const renderer of ["react", "html"] as const) {
       await expect(page).toHaveURL(/#\/toc$/); // in-page links don't change the preview route
     });
 
-    test("contents is a strip of top-level links on phones, keeping the current one in view", async ({ page }) => {
+    test("table of contents shows a sticky pill bar on phones that opens a menu", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 });
       await open(page, "toc", { renderer, density: "touch" });
-      const nav = stage(page).getByRole("navigation", { name: "Contents" }); // the hidden title still names it
-      const links = nav.locator(".ayy-toc__link:visible");
-      const tops = await links.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
-      expect(new Set(tops).size).toBe(1);
-      await expect(nav.getByRole("link", { name: "Tokens" })).toBeHidden();
+      const nav = stage(page).getByRole("navigation", { name: "Table of contents" });
       expect(await nav.evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
-      expect((await links.first().boundingBox())!.height).toBeGreaterThanOrEqual(39.5);
 
-      // Narrow the strip so it scrolls, then read the last section: its link scrolls into view.
-      const strip = nav.locator(".ayy-toc__list").first();
-      await strip.evaluate((el) => (el.style.maxInlineSize = "8rem"));
-      await page.locator(".pv-page").evaluate((el) => (el.style.paddingBlockEnd = "100vh"));
-      await page.evaluate(() => {
-        const target = document.getElementById("toc-impact")!;
-        window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 8);
-      });
-      const impact = nav.getByRole("link", { name: /Impact/ });
-      await expect(impact).toHaveAttribute("aria-current", "location");
-      await expect
-        .poll(async () => {
-          const [a, s] = await Promise.all([impact.boundingBox(), strip.boundingBox()]);
-          return a!.x >= s!.x - 1 && a!.x + a!.width <= s!.x + s!.width + 1;
-        })
-        .toBe(true);
+      const toggle = nav.getByRole("button", { name: "Table of contents" });
+      await expect(toggle).toBeVisible();
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+      // The menu list should be hidden initially on mobile
+      const list = nav.locator(".ayy-toc__list").first();
+      await expect(list).toBeHidden();
+
+      // Clicking the toggle opens the menu
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await expect(list).toBeVisible();
+
+      // Clicking an item in the menu navigates and closes the dropdown
+      const impactLink = nav.getByRole("link", { name: /Impact/ });
+      await impactLink.click();
+      await expect(list).toBeHidden();
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+
       await page.setViewportSize({ width: 1280, height: 720 });
     });
 
@@ -877,6 +980,84 @@ for (const renderer of ["react", "html"] as const) {
       await table.getByRole("checkbox", { name: "Select INV-1044" }).uncheck();
       await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(3);
       await expect(all).toHaveJSProperty("indeterminate", true);
+    });
+
+    test("table actions: inline buttons, per-row ⋯ menu, and bulk action bar", async ({ page }) => {
+      await open(page, "table", { renderer });
+      const s = example(page, "actions");
+      const table = s.getByRole("table");
+      const bar = s.locator(".ayy-action-bar");
+
+      await expect(bar).toHaveAttribute("open", "");
+      await expect(bar.locator(".ayy-action-bar__count")).toHaveText("1 selected");
+
+      // Selecting another row updates the action bar count
+      await table.getByRole("checkbox", { name: "Select Mobile Onboarding Screenshots" }).check();
+      await expect(bar.locator(".ayy-action-bar__count")).toHaveText("2 selected");
+
+      // Per-row ⋯ menu opens and lists targeted actions
+      const moreBtn = table.getByRole("button", { name: "More actions for Brand Kit 2026" });
+      await moreBtn.click();
+      const menu = s.locator(".ayy-menu:popover-open");
+      await expect(menu).toBeVisible();
+      await expect(menu.getByRole("menuitem", { name: /Duplicate/ })).toBeVisible();
+      await expect(menu.getByRole("menuitem", { name: /Delete/ })).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(menu).toBeHidden();
+
+      // Clicking Clear selection in the action bar unchecks all rows and hides the bar
+      await bar.getByRole("button", { name: "Clear selection" }).click();
+      await expect(bar).not.toHaveAttribute("open");
+      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(0);
+    });
+
+    test("action bar: roving tabindex, arrow keys, and Escape clears selection", async ({ page }) => {
+      await open(page, "action-bar", { renderer });
+      const s = stage(page);
+      const bar = s.locator(".ayy-action-bar");
+      await expect(bar).toHaveAttribute("open", "");
+      await expect(bar.locator(".ayy-action-bar__count")).toHaveText("2 selected");
+
+      const closeBtn = bar.getByRole("button", { name: "Clear selection" });
+      const editBtn = bar.getByRole("button", { name: "Edit" });
+      await closeBtn.focus();
+      await page.keyboard.press("ArrowRight");
+      await expect(editBtn).toBeFocused();
+
+      await page.keyboard.press("Escape");
+      await expect(bar).not.toHaveAttribute("open");
+    });
+
+    test("grid: card selection, select-all, per-item ⋯ menu, and bulk action bar", async ({ page }) => {
+      await open(page, "grid", { renderer });
+      const s = example(page, "media");
+      const bar = s.locator(".ayy-action-bar");
+      await expect(bar).toHaveAttribute("open", "");
+      await expect(bar.locator(".ayy-action-bar__count")).toHaveText("2 selected");
+
+      // Clicking a card header toggles selection
+      const thirdCard = s.locator(".ayy-grid__item").nth(2);
+      const selectAll = s.getByRole("checkbox", { name: "Select all media assets" });
+      await expect(selectAll).toHaveJSProperty("indeterminate", true);
+      await thirdCard.locator(".ayy-grid__header").click();
+      await expect(thirdCard).toHaveAttribute("aria-selected", "true");
+      await expect(s.locator('.ayy-grid__item[aria-selected="true"]')).toHaveCount(3);
+      await expect(bar.locator(".ayy-action-bar__count")).toHaveText("3 selected");
+
+      // Per-card ⋯ menu opens without toggling card selection
+      const moreBtn = s.getByRole("button", { name: "More actions for Dashboard dark mode screenshot" });
+      await moreBtn.click();
+      const menu = s.locator(".ayy-menu:popover-open");
+      await expect(menu).toBeVisible();
+      await expect(menu.getByRole("menuitem", { name: /Archive/ })).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(menu).toBeHidden();
+      await expect(s.locator('.ayy-grid__item[aria-selected="true"]')).toHaveCount(3);
+
+      // Clear selection from action bar
+      await bar.getByRole("button", { name: "Clear selection" }).click();
+      await expect(bar).not.toHaveAttribute("open");
+      await expect(s.locator('.ayy-grid__item[aria-selected="true"]')).toHaveCount(0);
     });
 
     test("chips are checkboxes and radios; checked ones draw a tick", async ({ page }) => {
@@ -1006,40 +1187,175 @@ for (const renderer of ["react", "html"] as const) {
     });
 
     test("date range picker selects start and end dates and updates its trigger", async ({ page }) => {
-      await open(page, "date-range", { renderer });
-      const trigger = stage(page).getByRole("button", { name: "Dates of stay" });
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "range").getByRole("button", { name: "Dates of stay" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
       await trigger.click();
-      const popover = page.locator(".ayy-popover:popover-open");
+      const popover = example(page, "range").locator(".ayy-popover");
       await expect(popover).toBeVisible();
-      await popover.locator('.ayy-date-range__day[data-date="2026-10-10"]').first().click();
+      await popover.locator('.ayy-date-range__period[data-view="years"]').first().click();
+      await expect(popover.locator(".ayy-date-range__years")).toBeVisible();
+      await popover.locator('.ayy-date-range__cell[data-year="2027"]').click();
+      await popover.locator('.ayy-date-range__period[data-view="months"]').first().click();
+      await expect(popover.locator(".ayy-date-range__months")).toBeVisible();
+      await popover.locator('.ayy-date-range__cell[data-month="2027-05-01"]').click();
+      await popover.locator('.ayy-date-range__day[data-date="2027-05-10"]').first().click();
       await expect(popover).toBeVisible();
-      await popover.locator('.ayy-date-range__day[data-date="2026-10-15"]').first().click();
+      await popover.locator('.ayy-date-range__day[data-date="2027-05-15"]').first().click();
+      await expect(popover).toHaveCount(1);
+      await expect(popover.locator(".ayy-date-range")).toHaveCount(1);
       await expect(popover).toBeHidden();
       await expect(trigger.locator(".ayy-date-range-picker__value")).toContainText("10");
       await expect(trigger.locator(".ayy-date-range-picker__value")).toContainText("15");
-
-      // Inline two-month range calendar supports keyboard navigation
-      const inlineRange = example(page, "inline").locator(".ayy-date-range");
-      const startDay = inlineRange.locator('.ayy-date-range__day[data-date="2026-10-14"]').first();
-      await startDay.focus();
-      await page.keyboard.press("ArrowRight");
-      await expect(inlineRange.locator('.ayy-date-range__day[data-date="2026-10-15"]').first()).toBeFocused();
+      await expect(trigger.locator(".ayy-date-range-picker__value")).toContainText("2027");
     });
 
-    test("time picker selects hours, minutes and 12h period", async ({ page }) => {
-      await open(page, "time-picker", { renderer });
-      const trigger = stage(page).getByRole("button", { name: "Meeting time" });
+    test("time picker selects hours, minutes and updates trigger", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "time").getByRole("button", { name: "Meeting time" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
       await trigger.click();
-      const popover = page.locator(".ayy-popover:popover-open");
+      const popover = example(page, "time").locator(".ayy-popover");
       await expect(popover).toBeVisible();
       await popover.getByRole("listbox", { name: "Hours" }).getByRole("option", { name: "14" }).click();
       await popover.getByRole("listbox", { name: "Minutes" }).getByRole("option", { name: "45" }).click();
       await expect(trigger.locator(".ayy-time-picker-trigger__value")).toHaveText("14:45");
       await page.keyboard.press("Escape");
+      await expect(popover).toBeHidden();
+      await expect(popover.locator(".ayy-time-picker")).toHaveCount(1);
+    });
 
-      const twelve = example(page, "twelve-hour").locator(".ayy-time-picker");
-      await twelve.getByRole("listbox", { name: "Period" }).getByRole("option", { name: "AM" }).click();
-      await expect(twelve.getByRole("listbox", { name: "Period" }).getByRole("option", { name: "AM" })).toHaveAttribute("aria-selected", "true");
+    test("time picker allows manual input in selector to identify hours and minutes", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "time").getByRole("button", { name: "Meeting time" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
+      await trigger.click();
+      const popover = example(page, "time").locator(".ayy-popover");
+      await expect(popover).toBeVisible();
+
+      const hourInput = popover.getByRole("textbox", { name: "Hours" });
+      const minuteInput = popover.getByRole("textbox", { name: "Minutes" });
+      await expect(hourInput).toBeVisible();
+      await expect(minuteInput).toBeVisible();
+
+      await hourInput.fill("11");
+      await minuteInput.fill("30");
+
+      // Verify that the columns identify and select the typed time
+      await expect(popover.getByRole("listbox", { name: "Hours" }).getByRole("option", { name: "11" })).toHaveAttribute("aria-selected", "true");
+      await expect(popover.getByRole("listbox", { name: "Minutes" }).getByRole("option", { name: "30" })).toHaveAttribute("aria-selected", "true");
+      await expect(trigger.locator(".ayy-time-picker-trigger__value")).toHaveText("11:30");
+      await page.keyboard.press("Escape");
+    });
+
+    test("date picker container width does not change when switching between days, months, and years", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const grid = example(page, "presets").locator(".ayy-date-picker-grid");
+      const initialBox = await grid.boundingBox();
+      expect(initialBox).not.toBeNull();
+
+      // Switch to months view
+      const monthBtn = grid.locator('.ayy-date-picker-grid__period[data-view="months"]');
+      await monthBtn.click();
+      const monthsBox = await grid.boundingBox();
+      expect(monthsBox?.width).toBeCloseTo(initialBox!.width, 1);
+
+      // Switch to years view
+      const yearBtn = grid.locator('.ayy-date-picker-grid__period[data-view="years"]');
+      await yearBtn.click();
+      const yearsBox = await grid.boundingBox();
+      expect(yearsBox?.width).toBeCloseTo(initialBox!.width, 1);
+    });
+
+    test("date & time picker selects both date and time", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "date-time").getByRole("button", { name: "Flight departure" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
+      await trigger.click();
+      const popover = example(page, "date-time").locator(".ayy-popover");
+      await expect(popover).toBeVisible();
+      await popover.locator('.ayy-date-picker-grid__day[data-date="2026-10-18"]').click();
+      await popover.getByRole("listbox", { name: "Hours" }).getByRole("option", { name: "16" }).click();
+      await expect(trigger.locator(".ayy-date-time-picker-trigger__value")).toContainText("18");
+      await expect(trigger.locator(".ayy-date-time-picker-trigger__value")).toContainText("16");
+      await page.keyboard.press("Escape");
+      await expect(popover).toBeHidden();
+      await expect(popover.locator(".ayy-date-time-picker")).toHaveCount(1);
+    });
+
+    test("date picker clear and today buttons update value", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "basic").getByRole("button", { name: "Check-in" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
+      await trigger.click();
+      const popover = example(page, "basic").locator(".ayy-popover");
+      await expect(popover).toBeVisible();
+
+      // Click Today button
+      const todayBtn = popover.getByRole("button", { name: "Today" });
+      await expect(todayBtn).toBeVisible();
+      await todayBtn.click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-picker__value")).not.toBeEmpty();
+
+      // Open again and click Clear button
+      await trigger.click();
+      await expect(popover).toBeVisible();
+      const clearBtn = popover.getByRole("button", { name: "Clear" });
+      await expect(clearBtn).toBeVisible();
+      await clearBtn.click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-picker__value")).toBeEmpty();
+    });
+
+    test("date range picker clear and today buttons update value", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "range").getByRole("button", { name: "Dates of stay" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
+      await trigger.click();
+      const popover = example(page, "range").locator(".ayy-popover");
+      await expect(popover).toBeVisible();
+
+      // Click Clear button
+      const clearBtn = popover.getByRole("button", { name: "Clear" });
+      await expect(clearBtn).toBeVisible();
+      await clearBtn.click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-range-picker__value")).toBeEmpty();
+
+      // Open again and click Today button
+      await trigger.click();
+      await expect(popover).toBeVisible();
+      const todayBtn = popover.getByRole("button", { name: "Today" });
+      await expect(todayBtn).toBeVisible();
+      await todayBtn.click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-range-picker__value")).not.toBeEmpty();
+    });
+
+    test("date & time picker clear and today buttons update value", async ({ page }) => {
+      await open(page, "date-time-picker", { renderer });
+      const trigger = example(page, "date-time").getByRole("button", { name: "Flight departure" });
+      await trigger.evaluate((el) => el.scrollIntoView({ block: "center" }));
+      await trigger.click();
+      const popover = example(page, "date-time").locator(".ayy-popover");
+      await expect(popover).toBeVisible();
+
+      // Click Clear button
+      const clearBtn = popover.getByRole("button", { name: "Clear" });
+      await expect(clearBtn).toBeVisible();
+      await clearBtn.click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-time-picker-trigger__value")).toBeEmpty();
+
+      // Open again and click Today button
+      await trigger.click();
+      await expect(popover).toBeVisible();
+      const todayBtn = popover.getByRole("button", { name: "Today" });
+      await expect(todayBtn).toBeVisible();
+      await todayBtn.click();
+      await expect(popover).toBeHidden();
+      await expect(trigger.locator(".ayy-date-time-picker-trigger__value")).not.toBeEmpty();
     });
 
     test("color picker updates from area keyboard, hex input and preset swatches", async ({ page }) => {
@@ -1136,7 +1452,7 @@ test("icons: sizes come from tokens, auto follows the text", async ({ page }) =>
 for (const renderer of ["react", "html"] as const) {
   test(`avatar hides a failed image so initials show (${renderer})`, async ({ page }) => {
     await open(page, "avatar", { renderer });
-    const avatar = stage(page).getByRole("img", { name: "Broken Image" });
+    const avatar = example(page, "fallback").getByRole("img", { name: "Broken Image" });
     await expect(avatar.locator(".ayy-avatar__fallback")).toBeVisible();
     await expect(avatar.locator("img")).toHaveCount(renderer === "react" ? 0 : 1);
     if (renderer === "html") await expect(avatar.locator("img")).toBeHidden();
@@ -1154,3 +1470,16 @@ test.describe("select on a touch screen", () => {
     await expect(page.locator(".ayy-select__list")).toHaveCount(0);
   });
 });
+
+test("page-header mobile preview sizes to its content without empty bottom space", async ({ page }) => {
+  await open(page, "page-header");
+  const mobileRadio = page.getByRole("radio", { name: "Mobile" });
+  await mobileRadio.click();
+  const iframe = page.locator(".pv-stage__iframe");
+  await expect(iframe).toBeVisible();
+  await page.waitForTimeout(300);
+  const box = await iframe.boundingBox();
+  expect(box?.height).toBeLessThan(350);
+  expect(box?.height).toBeGreaterThan(100);
+});
+

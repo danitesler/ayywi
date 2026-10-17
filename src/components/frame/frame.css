@@ -34,7 +34,7 @@
   margin-inline-end: 2.25rem;
   overflow: hidden;
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;

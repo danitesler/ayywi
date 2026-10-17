@@ -29,7 +29,7 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 - `.ayy-sparkline` — A small <svg viewBox="0 0 100 100" preserveAspectRatio="none"> line with no axes, for a stat or a table cell. Uses __line and __area paths.
 
 **States**
-- `default` — Bars, lines or areas in --ayy-chart-1… in order, muted 2xs labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table.
+- `default` — Bars, lines or areas in --ayy-chart-1… in order, muted xs labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table.
 - `hover` (`.ayy-chart__column:hover`) — Its bars mix 20% toward the text colour and show their data-value above them.
 - `pressed` — doesn't apply: Not interactive.
 - `focus` — doesn't apply: Not focusable; the data table carries the numbers.
@@ -42,13 +42,12 @@ Category: Data display. Charts drawn by CSS with no library: columns (grouped or
 - Density — Doesn't follow data-density. The plot is --ayy-chart-height (12rem) tall; bar-list rows are at least the sm control height; a sparkline is 6rem × 1.75rem.
 - Width — Fills its container; columns share the width (bars at most 2.5rem wide).
 
-**JS (framework-free)**: chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare? }), chartLegendItemClass({ compare? }) and part class constants.
-
-**React** — `import { BarChart, LineChart, Sparkline, BarList } from "@danitesler/ayywi/react";`
+**React** — `import { BarChart, LineChart, Sparkline, BarList, TableChart } from "@danitesler/ayywi/react";`
 - `<BarChart>` renders <figure class="ayy-chart"> with a plot of __column/__bar, labels, a legend and a visually hidden data table. Props: `label` string — what it shows ("Signups per day"); the data table's caption; `labels` string[] — one per column; `series` { name, values: number[], color? }[]; `stacked` boolean; `showValues` boolean — print values above the bars; `max` number — top of the scale; rounded up from the data if omitted; `ticks` number of value lines, default 3; 0 for none; `format` (value: number) => string — ticks, hover values and the table; default compact (1.2K); `height` CSS length, default 12rem; `legend` boolean — default: more than one series
 - `<LineChart>` renders <figure class="ayy-chart"> with an __svg of __series paths, labels, a legend and a visually hidden data table. Props: `label` string — the data table's caption; `labels` string[] — one per point; `series` { name, values: number[], color?, compare? }[] — compare draws a dashed comparison line; `min` number, default 0; `max` number; `area` boolean, default true; `smooth` boolean, default true (monotone: never overshoots a point); `ticks` number, default 3; `format` (value: number) => string; `height` CSS length; `legend` boolean
 - `<Sparkline>` renders <svg class="ayy-sparkline">. Props: `values` number[]; `label` string — makes it role="img" with this name; without it the sparkline is aria-hidden; `area` boolean; `color` CSS colour, default chart-1; `min` number, default the smallest value; `max` number, default the largest value
 - `<BarList>` renders <ol class="ayy-bar-list">. Props: `items` { label: ReactNode, value: number, href? }[]; `max` number — value of a full bar, default the largest; `format` (value: number) => string, default grouped digits; `color` CSS colour, default chart-1
+- `<TableChart>` renders <div class="ayy-table-wrap"><table class="ayy-table"> with headers, swatches and numeric cells. Props: `label` string — what it shows; the table's caption; `labels` string[] — one per row along the side; `series` { name, values: number[], color?, compare? }[]; `format` (value: number) => string — cell values; default compact (1.2K); `compact` boolean — tighter row padding
 
 **Accessibility**
 - The drawing is aria-hidden. The numbers go in a table (React renders one with .ayy-sr-only; add a visible Table if people need to compare values), with a <caption> saying what the chart shows.
@@ -613,6 +612,96 @@ export default function Example() {
         </Card>
       ))}
     </div>
+  );
+}
+```
+
+## Chart — Table chart
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-card" style="inline-size: 100%; max-inline-size: 36rem">
+  <div class="ayy-card__header">
+    <h3 class="ayy-card__title">Signups by device</h3>
+    <p class="ayy-card__description">Last six months · 21.2K in total</p>
+  </div>
+  <div class="ayy-card__content">
+    <div class="ayy-table-wrap">
+      <table class="ayy-table">
+        <caption>Signups by device, April to September</caption>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col" class="ayy-table__num">
+              <span class="ayy-chart__legend-item" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span>Desktop</span>
+            </th>
+            <th scope="col" class="ayy-table__num">
+              <span class="ayy-chart__legend-item" style="--ayy-chart-color: var(--ayy-chart-2)"><span class="ayy-chart__swatch"></span>Mobile</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Apr</th>
+            <td class="ayy-table__num">1.8K</td>
+            <td class="ayy-table__num">920</td>
+          </tr>
+          <tr>
+            <th scope="row">May</th>
+            <td class="ayy-table__num">2.1K</td>
+            <td class="ayy-table__num">1.2K</td>
+          </tr>
+          <tr>
+            <th scope="row">Jun</th>
+            <td class="ayy-table__num">2K</td>
+            <td class="ayy-table__num">1.3K</td>
+          </tr>
+          <tr>
+            <th scope="row">Jul</th>
+            <td class="ayy-table__num">2.4K</td>
+            <td class="ayy-table__num">1.2K</td>
+          </tr>
+          <tr>
+            <th scope="row">Aug</th>
+            <td class="ayy-table__num">2.3K</td>
+            <td class="ayy-table__num">1.5K</td>
+          </tr>
+          <tr>
+            <th scope="row">Sep</th>
+            <td class="ayy-table__num">2.7K</td>
+            <td class="ayy-table__num">1.7K</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, TableChart } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <Card style={{ inlineSize: "100%", maxInlineSize: "36rem" }}>
+      <CardHeader>
+        <CardTitle>Signups by device</CardTitle>
+        <CardDescription>Last six months · 21.2K in total</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <TableChart
+          label="Signups by device, April to September"
+          labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]}
+          series={[
+            { name: "Desktop", values: [1840, 2120, 1960, 2410, 2280, 2690] },
+            { name: "Mobile", values: [920, 1180, 1340, 1210, 1490, 1730] },
+          ]}
+        />
+      </CardContent>
+    </Card>
   );
 }
 ```

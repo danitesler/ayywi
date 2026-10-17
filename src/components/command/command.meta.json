@@ -13,6 +13,9 @@
     "ayy-command__group": "role=\"group\" aria-labelledby its label. Hidden when none of its items match.",
     "ayy-command__label": "A group's name (\"Go to\"), muted, role=\"presentation\" with an id.",
     "ayy-command__item": "role=\"option\" with an id: an icon, the text, then a __meta. aria-selected=\"true\" on the highlighted one; data-value is what it runs, data-keywords more words that find it.",
+    "ayy-command__content": "Vertical stack for an item's title and optional description.",
+    "ayy-command__title": "The primary label of an item.",
+    "ayy-command__description": "One-line muted summary under the title, truncated with ellipsis.",
     "ayy-command__meta": "At an item's end: a .ayy-shortcut, a list name or a count, muted.",
     "ayy-command__empty": "\"No results\", shown only when nothing matches (hidden otherwise).",
     "ayy-command__footer": "Under the list after a hairline: key hints (↑↓ to move, ↵ to run) or a link."
@@ -78,11 +81,12 @@
         }
       },
       "CommandItem": {
-        "renders": "<div class=\"ayy-command__item\" role=\"option\" data-value data-keywords>",
+        "renders": "<div class=\"ayy-command__item\" role=\"option\" data-value data-keywords data-title data-description>",
         "props": {
           "onSelect": "() => void — runs on Enter or a click",
           "value": "string — passed to onRun",
           "keywords": "string — more words that find it",
+          "description": "ReactNode — optional one-line summary under the title",
           "icon": "ReactNode — an Icon before the text",
           "shortcut": "string — its shortcut at the end (\"Mod+N\")",
           "meta": "ReactNode — other text at the end: a count, a list name",
@@ -102,7 +106,9 @@
     "Offer one in any app with more than a handful of screens or actions, on ⌘K / Ctrl+K, and show the shortcut on a Search button so people find it.",
     "Group items by what they do (Create, Go to, Appearance) and keep labels verb-first (\"New task\", \"Switch theme\").",
     "Add keywords for the words people might type instead (\"preferences\" for Settings).",
-    "Show each item's own shortcut at its end so the palette teaches them."
+    "Show each item's own shortcut at its end so the palette teaches them.",
+    "Use TextHighlight (<TextHighlight> in React, <mark class=\"ayy-text-highlight\"> in HTML) to highlight matching terms in titles and descriptions.",
+    "Show descriptions conditionally when matches occur in item descriptions, or keep descriptions always visible for items that need extra context."
   ],
   "dont": [
     "Don't make it the only way to reach something; it's a shortcut, not navigation.",
@@ -111,6 +117,7 @@
   ],
   "examples": [
     { "id": "palette", "title": "Inline palette with groups and shortcuts" },
-    { "id": "dialog", "title": "⌘K dialog" }
+    { "id": "dialog", "title": "⌘K dialog" },
+    { "id": "search", "title": "Search with text highlight and descriptions" }
   ]
 }

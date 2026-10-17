@@ -97,10 +97,10 @@ test("the combobox chevron, number field steps, drop zone and chip remove draw t
   assert.equal(chipRemoveIcon, iconSvg(Cancel01Icon));
 });
 
-test("the calendar, date picker, settings, top bar, command palette, search bar and tag input draw the Hugeicons glyphs (vendored copies match the package)", { skip }, async () => {
+test("the date picker, date range, time picker, settings, top bar, command palette, search bar and tag input draw the Hugeicons glyphs (vendored copies match the package)", { skip }, async () => {
   const m = await import(dist("index.js"));
-  assert.equal(m.calendarPreviousIcon, m.iconSvg(ArrowLeft01Icon, { directional: true }));
-  assert.equal(m.calendarNextIcon, m.iconSvg(ArrowRight01Icon, { directional: true }));
+  assert.equal(m.datePickerPreviousIcon, m.iconSvg(ArrowLeft01Icon, { directional: true }));
+  assert.equal(m.datePickerNextIcon, m.iconSvg(ArrowRight01Icon, { directional: true }));
   assert.equal(m.datePickerIcon, m.iconSvg(Calendar03Icon));
   assert.equal(m.dateRangePreviousIcon, m.iconSvg(ArrowLeft01Icon, { directional: true }));
   assert.equal(m.dateRangeNextIcon, m.iconSvg(ArrowRight01Icon, { directional: true }));
@@ -118,4 +118,6 @@ test("the calendar, date picker, settings, top bar, command palette, search bar 
   assert.equal(m.toastWarningIcon, m.iconSvg(Alert02Icon));
   assert.equal(m.toastInfoIcon, m.iconSvg(InformationCircleIcon));
   assert.equal(m.toastErrorIcon, m.iconSvg(CancelCircleIcon));
+  assert.equal(m.toastCopyIcon, m.iconSvg(Copy01Icon));
+  assert.equal(m.toastCopiedIcon, m.iconSvg(Tick02Icon));
 });

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useId, useRef, useState, type HTMLAttributes, type InputHTMLAttributes, type ReactNode } from "react";
+import { forwardRef, isValidElement, useEffect, useId, useRef, useState, type HTMLAttributes, type InputHTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { Search01Icon } from "../../lib/icons";
 import { Dialog, DialogContent } from "../dialog/dialog.react";
@@ -203,6 +203,8 @@ export interface CommandItemProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   value?: string;
   /** More words that should find it ("add create" for New task). */
   keywords?: string;
+  /** Short one-line summary displayed under the title. */
+  description?: ReactNode;
   /** An Icon before the text. */
   icon?: ReactNode;
   /** Its shortcut, shown at the end ("Mod+N"). */
@@ -213,10 +215,23 @@ export interface CommandItemProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 }
 
 export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(function CommandItem(
-  { onSelect, value, keywords, icon, shortcut, meta, disabled, className, children, onClick, ...props },
+  { onSelect, value, keywords, description, icon, shortcut, meta, disabled, className, children, onClick, ...props },
   ref,
 ) {
   const id = useId();
+  const titleText =
+    typeof children === "string"
+      ? children
+      : (isValidElement(children) && typeof children.props === "object" && children.props !== null && typeof (children.props as { text?: unknown }).text === "string")
+        ? (children.props as { text: string }).text
+        : undefined;
+  const descText =
+    typeof description === "string"
+      ? description
+      : (isValidElement(description) && typeof description.props === "object" && description.props !== null && typeof (description.props as { text?: unknown }).text === "string")
+        ? (description.props as { text: string }).text
+        : undefined;
+
   return (
     <div
       ref={ref}
@@ -225,6 +240,8 @@ export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(function
       role="option"
       data-value={value}
       data-keywords={keywords}
+      data-title={titleText}
+      data-description={descText}
       aria-disabled={disabled || undefined}
       onClick={(event) => {
         onClick?.(event);
@@ -233,7 +250,14 @@ export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(function
       {...props}
     >
       {icon}
-      {children}
+      {description !== undefined ? (
+        <div className="ayy-command__content">
+          <div className="ayy-command__title">{children}</div>
+          <div className="ayy-command__description">{description}</div>
+        </div>
+      ) : (
+        <span className="ayy-command__title">{children}</span>
+      )}
       {(shortcut || meta) && (
         <span className="ayy-command__meta">
           {meta}

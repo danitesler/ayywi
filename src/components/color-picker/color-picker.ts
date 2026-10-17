@@ -1,4 +1,6 @@
 import { cx } from "../../lib/cx";
+import { Copy01Icon, Tick02Icon } from "../../lib/icons";
+import { iconSvg } from "../icon/icon";
 
 export interface HSV {
   /** Hue angle: 0–360 */
@@ -30,6 +32,7 @@ export const colorPickerHueClass = "ayy-color-picker__hue";
 export const colorPickerAlphaClass = "ayy-color-picker__alpha";
 export const colorPickerPreviewClass = "ayy-color-picker__preview";
 export const colorPickerInputsClass = "ayy-color-picker__inputs";
+export const colorPickerCopyClass = "ayy-color-picker__copy";
 export const colorPickerSwatchesClass = "ayy-color-picker__swatches";
 export const colorPickerSwatchClass = "ayy-color-picker__swatch";
 
@@ -336,16 +339,42 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
 
   const onClick = (event: MouseEvent) => {
     const swatch = (event.target as Element | null)?.closest?.<HTMLButtonElement>(`.${colorPickerSwatchClass}`);
-    if (!swatch || !root.contains(swatch)) return;
-    const c = swatch.dataset.color ?? swatch.getAttribute("aria-label");
-    if (!c) return;
-    const rgb = hexToRgb(c);
-    if (!rgb) return;
-    const nextHsv = rgbToHsv(rgb);
-    hsv = { ...nextHsv, a: rgb.a ?? 1 };
-    currentHex = c;
-    syncDom();
-    onChange?.(currentHex);
+    if (swatch && root.contains(swatch)) {
+      const c = swatch.dataset.color ?? swatch.getAttribute("aria-label");
+      if (!c) return;
+      const rgb = hexToRgb(c);
+      if (!rgb) return;
+      const nextHsv = rgbToHsv(rgb);
+      hsv = { ...nextHsv, a: rgb.a ?? 1 };
+      currentHex = c;
+      syncDom();
+      onChange?.(currentHex);
+      return;
+    }
+    const copyBtn = (event.target as Element | null)?.closest?.<HTMLButtonElement>(
+      `.${colorPickerCopyClass}, [data-color-copy]`,
+    );
+    if (copyBtn && root.contains(copyBtn)) {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        void navigator.clipboard.writeText(currentHex);
+      }
+      try {
+        if (typeof window !== "undefined") {
+          const w = window as unknown as { ayywi?: { toast?: (msg: string) => void } };
+          w.ayywi?.toast?.("Color copied to clipboard");
+        }
+      } catch {}
+      copyBtn.innerHTML = iconSvg(Tick02Icon);
+      copyBtn.setAttribute("aria-label", "Copied!");
+      const tipContent = copyBtn.closest(".ayy-tooltip")?.querySelector(".ayy-tooltip__content");
+      if (tipContent) tipContent.textContent = "Copied!";
+      setTimeout(() => {
+        copyBtn.innerHTML = iconSvg(Copy01Icon);
+        copyBtn.setAttribute("aria-label", "Copy hex");
+        if (tipContent) tipContent.textContent = "Copy hex";
+      }, 2000);
+      return;
+    }
   };
 
   syncDom();

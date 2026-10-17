@@ -20,7 +20,7 @@ for (const renderer of ["react", "html"] as const) {
   });
 }
 
-const FOUNDATIONS = { colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion" };
+const FOUNDATIONS = { brand: "Brand", density: "Density", colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion" };
 
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
@@ -116,7 +116,26 @@ test("search bar opens command palette, filters results and jumps to a page", as
   const isMac = await page.evaluate(() => /mac|iphone|ipad|ipod/i.test(navigator.userAgent));
   await page.keyboard.press(isMac ? "Meta+e" : "Control+e");
   await expect(dialog).toBeVisible();
-  await expect(box).toBeFocused();
+  // Initial state has NO descriptions visible
+  await expect(dialog.locator(".ayy-command__description")).toHaveCount(0);
+
+  // Search "input": title match (Input) appears with highlight and no description;
+  // secondary matches (Slider) show description with highlight
+  await box.fill("input");
+  const inputOption = dialog.locator('.ayy-command__item[data-value="input"]');
+  await expect(inputOption).toBeVisible();
+  await expect(inputOption.locator(".ayy-command__description")).toHaveCount(0);
+  const mark = inputOption.locator("mark.ayy-text-highlight");
+  await expect(mark).toHaveText("Input");
+  await expect(mark).toHaveCSS("text-decoration-line", "underline");
+  await expect(mark).toHaveCSS("padding-inline-start", "0px");
+
+  // Secondary match has description visible with highlighted term
+  const sliderOption = dialog.locator('.ayy-command__item[data-value="slider"]');
+  await expect(sliderOption).toBeVisible();
+  const sliderDesc = sliderOption.locator(".ayy-command__description");
+  await expect(sliderDesc).toBeVisible();
+  await expect(sliderDesc.locator("mark.ayy-text-highlight").first()).toHaveText("input");
 
   await box.fill("ayy-menu__item"); // class names match via keywords
   await expect(dialog.getByRole("option", { name: /Dropdown menu/ })).toBeVisible();
@@ -168,7 +187,7 @@ test("search bar opens command palette, filters results and jumps to a page", as
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "get-started", "showcase", "showcase/dashboard", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input-group", "segmented-control", "list", "empty-state", "accordion", "toc", "carousel", "chat"]) {
+  for (const route of ["", "get-started", "apps", "apps/dashboard", "showcase", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input", "segmented-control", "list", "empty-state", "accordion", "toc", "carousel", "chat"]) {
     await open(page, route);
     for (const dir of ["ltr", "rtl"]) {
       await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
@@ -211,9 +230,10 @@ test("the docs sidebar collapses to a rail, previews on hover, and remembers it"
   await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
   await page.locator(".pv-content").hover();
   await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
-  // The rail: the toggle and a search button. The nav's links (no icons) are out of the way.
+  // The rail: the toggle and a search button. The nav's links (no icons) are out of the way, with nothing to scroll.
   await expect(sidebar.getByRole("button", { name: "Search", exact: true })).toBeVisible();
   await expect(sidebar.getByRole("link", { name: "Button", exact: true })).toBeHidden();
+  await expect(sidebar).toHaveCSS("overflow-y", "hidden");
   // The App shell examples on the page keep their own sidebars.
   expect(Math.round((await page.locator(".pv-content .ayy-app-shell:not(.ayy-app-shell--collapsed) > .ayy-app-shell__sidebar").first().boundingBox())!.width)).toBe(240);
 
@@ -267,13 +287,13 @@ test("the docs sidebar's preview stays on top of the page while it closes, and i
 });
 
 test("what you can build: cards open a device preview", async ({ page }) => {
-  const errors = await open(page, "showcase");
+  const errors = await open(page, "apps");
   await expect(page.getByRole("heading", { level: 1, name: "What you can build" })).toBeVisible();
   const cards = page.locator(".pv-showcase__card");
   await expect(cards).toHaveCount(SHOWCASE.length);
 
   await cards.filter({ hasText: "Relay" }).click();
-  await expect(page).toHaveURL(/#\/showcase\/inbox$/);
+  await expect(page).toHaveURL(/#\/apps\/inbox$/);
   await expect(page.getByRole("heading", { level: 1, name: "Relay" })).toBeVisible();
 
   const frame = page.locator(".pv-device iframe");

@@ -24,8 +24,6 @@ Category: Feedback. What a list, table or page shows when there's nothing in it 
 - Density — Doesn't follow data-density.
 - Width — Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content.
 
-**JS (framework-free)**: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
-
 **React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "@danitesler/ayywi/react";`
 - `<EmptyState>` renders <div class="ayy-empty-state">. Props: `bordered` boolean — dashed outline.; `compact` boolean — less padding.
 - `<EmptyStateTitle>` renders <h2 class="ayy-empty-state__title">.

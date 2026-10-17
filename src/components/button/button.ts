@@ -4,6 +4,9 @@ export const buttonVariants = ["primary", "secondary", "outline", "ghost", "dest
 export const buttonSizes = ["sm", "md", "lg", "icon", "icon-sm", "icon-lg"] as const;
 
 export type ButtonVariant = (typeof buttonVariants)[number];
+export const buttonAligns = ["start", "center", "end"] as const;
+
+export type ButtonAlign = (typeof buttonAligns)[number];
 export type ButtonSize = (typeof buttonSizes)[number];
 
 export interface ButtonClassOptions {
@@ -11,16 +14,19 @@ export interface ButtonClassOptions {
   size?: ButtonSize;
   /** Fill the container's width. */
   block?: boolean;
+  /** Where the icon and label sit in a wide button (use with block). Defaults to "center". */
+  align?: ButtonAlign;
   className?: string;
 }
 
 /** Class string for a button. Works on <button>, <a>, or any framework's link component. */
-export function buttonClass({ variant = "primary", size = "md", block, className }: ButtonClassOptions = {}): string {
+export function buttonClass({ variant = "primary", size = "md", block, align, className }: ButtonClassOptions = {}): string {
   return cx(
     "ayy-button",
     variant !== "primary" && `ayy-button--${variant}`,
     size !== "md" && `ayy-button--${size}`,
     block && "ayy-button--block",
+    align && align !== "center" && `ayy-button--${align}`,
     className,
   );
 }

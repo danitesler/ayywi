@@ -11,6 +11,7 @@ Category: Forms. A panel to pick any colour: a 2D saturation/brightness area wit
 - `.ayy-color-picker__alpha` — Checkerboard and gradient track range slider (0–100) controlling opacity.
 - `.ayy-color-picker__preview` — Color swatch showing the currently picked colour over a transparency checkerboard.
 - `.ayy-color-picker__inputs` — Row holding the hex colour text input.
+- `.ayy-color-picker__copy` — Copy button inside the hex inputs row or input group.
 - `.ayy-color-picker__swatches` — Row of preset colour swatch buttons.
 - `.ayy-color-picker__swatch` — One preset colour button inside the swatches row, coloured by --_swatch.
 
@@ -26,9 +27,7 @@ Category: Forms. A panel to pick any colour: a 2D saturation/brightness area wit
 
 **Sizes**
 - Density — Control heights and padding follow data-density: slider tracks and hex input scale from compact to comfortable and touch.
-- Width — Panel inline-size (16rem / 256px), adapts up to 100% of its container.
-
-**JS (framework-free)**: colorPickerClass({ className? }) → string; connectColorPicker(root, { value?, alpha?, swatches?, onChange? }) → { setValue, update, destroy } wires the 2D area, sliders, hex input and preset swatches; hsvToRgb(hsv), rgbToHsv(rgb), rgbToHex(rgb), hexToRgb(hex) conversion functions.
+- Width — Panel inline-size (13.5rem / 216px), adapts up to 100% of its container.
 
 **Custom element** `<ayy-color-picker>` (@danitesler/ayywi/elements) — 
 - attribute `value`: Hex colour code ("#2563eb"). Updated when the colour changes.
@@ -37,7 +36,7 @@ Category: Forms. A panel to pick any colour: a 2D saturation/brightness area wit
 - event `ayy-change`: { value } when the colour changes.
 
 **React** — `import { ColorPicker } from "@danitesler/ayywi/react";`
-- `<ColorPicker>` renders <div class="ayy-color-picker">. Props: `value / defaultValue` string — hex colour code (e.g. "#2563eb"); `onValueChange` (color: string) => void — called when the colour changes; `alpha` boolean — whether to show the alpha slider and allow opacity changes; `swatches` string[] — list of preset colour hex codes; `...` HTMLAttributes<HTMLDivElement> props
+- `<ColorPicker>` renders <div class="ayy-color-picker">. Props: `value / defaultValue` string — hex colour code (e.g. "#2563eb"); `onValueChange` (color: string) => void — called when the colour changes; `alpha` boolean — whether to show the alpha slider and allow opacity changes; `swatches` string[] — list of preset colour hex codes; `addon` ReactNode — optional text or element beside the hex input (e.g. "HEX"); `addonPosition` "start" | "end" — placement of the addon beside the input (default "start"); `copyable` boolean — whether to show a copy button inside the hex input group; `...` HTMLAttributes<HTMLDivElement> props
 
 **Accessibility**
 - The 2D saturation/brightness area is a focusable role="slider" with aria-label, aria-valuetext, and arrow key navigation (Shift for 10% steps).
@@ -67,13 +66,22 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     </div>
     <div class="ayy-color-picker__sliders">
       <div class="ayy-color-picker__preview" aria-hidden="true"></div>
-      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-2); flex: 1; min-inline-size: 0">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1); flex: 1; min-inline-size: 0">
         <input type="range" class="ayy-color-picker__hue" min="0" max="360" value="217" aria-label="Hue" />
         <input type="range" class="ayy-color-picker__alpha" min="0" max="100" value="100" aria-label="Opacity" />
       </div>
     </div>
     <div class="ayy-color-picker__inputs">
-      <input type="text" class="ayy-input" value="#2563eb" aria-label="Hex color" spellcheck="false" />
+      <div class="ayy-input-group ayy-input-group--sm">
+        <span class="ayy-input-group__addon">HEX</span>
+        <input type="text" class="ayy-input ayy-mono" value="#2563eb" aria-label="Hex color" spellcheck="false" />
+        <ayy-tooltip class="ayy-tooltip">
+          <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon-sm ayy-color-picker__copy" aria-label="Copy hex" onclick="navigator.clipboard?.writeText('#2563eb'); ayywi.toast('Color copied to clipboard')">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+          </button>
+          <span class="ayy-tooltip__content" role="tooltip">Copy hex</span>
+        </ayy-tooltip>
+      </div>
     </div>
     <div class="ayy-color-picker__swatches" role="group" aria-label="Preset colors">
       <button type="button" class="ayy-color-picker__swatch" data-color="#ef4444" aria-label="#ef4444"></button>
@@ -103,6 +111,9 @@ export default function Example() {
       value={color}
       onValueChange={setColor}
       alpha
+      addon="HEX"
+      addonPosition="start"
+      copyable
       swatches={["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#2563eb", "#a855f7", "#ec4899"]}
     />
   );
@@ -121,12 +132,21 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     </div>
     <div class="ayy-color-picker__sliders">
       <div class="ayy-color-picker__preview" aria-hidden="true"></div>
-      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-2); flex: 1; min-inline-size: 0">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1); flex: 1; min-inline-size: 0">
         <input type="range" class="ayy-color-picker__hue" min="0" max="360" value="160" aria-label="Hue" />
       </div>
     </div>
     <div class="ayy-color-picker__inputs">
-      <input type="text" class="ayy-input" value="#10b981" aria-label="Hex color" spellcheck="false" />
+      <div class="ayy-input-group ayy-input-group--sm">
+        <input type="text" class="ayy-input ayy-mono" value="#10b981" aria-label="Hex color" spellcheck="false" />
+        <span class="ayy-input-group__addon">HEX</span>
+        <ayy-tooltip class="ayy-tooltip">
+          <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon-sm ayy-color-picker__copy" aria-label="Copy hex" onclick="navigator.clipboard?.writeText('#10b981'); ayywi.toast('Color copied to clipboard')">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+          </button>
+          <span class="ayy-tooltip__content" role="tooltip">Copy hex</span>
+        </ayy-tooltip>
+      </div>
     </div>
   </div>
 </ayy-color-picker>
@@ -141,7 +161,15 @@ import { ColorPicker } from "@danitesler/ayywi/react";
 export default function Example() {
   const [color, setColor] = useState("#10b981");
 
-  return <ColorPicker value={color} onValueChange={setColor} />;
+  return (
+    <ColorPicker
+      value={color}
+      onValueChange={setColor}
+      addon="HEX"
+      addonPosition="end"
+      copyable
+    />
+  );
 }
 ```
 

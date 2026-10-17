@@ -19,8 +19,6 @@ Category: Data display. A keyboard key or shortcut hint drawn as a small keycap:
 - Density — Scales with the text around it (1.6em tall); doesn't follow data-density.
 - Width — At least 1.6em wide, grows with the key name.
 
-**JS (framework-free)**: kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names ("mod" → ⌘ on Mac, Ctrl on Windows/Linux; "meta" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name ("Command" for ⌘).
-
 **React** — `import { Kbd, KeyboardHint } from "@danitesler/ayywi/react";`
 - `<Kbd>` renders <kbd class="ayy-kbd">. Props: `keyName` string — a modifier or key drawn for the platform ("mod", "meta", "alt", "ctrl", "shift", "enter", "backspace"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.; `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
 - `<KeyboardHint>` renders <kbd class="ayy-kbd">. Props: `keyName` string — optional modifier/key name to adapt ("mod", "meta", "alt", "ctrl", "shift"); `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it

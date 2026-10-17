@@ -1,0 +1,70 @@
+{
+  "name": "Text highlight",
+  "slug": "text-highlight",
+  "status": "beta",
+  "category": "Data display",
+  "description": "An inline text highlight for search matches or callout phrases. Subtle gray wash with clean underline by default, with warning (yellow), destructive (red), success (green), info (blue), and orange variants.",
+  "aka": ["text-highlight", "highlight", "mark", "search-highlight"],
+  "classes": {
+    "ayy-text-highlight": "Inline highlighted span or <mark>: subtle gray wash with clean underline.",
+    "ayy-text-highlight--warning": "Amber/yellow tint for cautions and warnings.",
+    "ayy-text-highlight--destructive": "Red tint for errors and danger callouts.",
+    "ayy-text-highlight--success": "Green tint for positive results or matches.",
+    "ayy-text-highlight--info": "Blue tint for informational emphasis.",
+    "ayy-text-highlight--orange": "Orange tint for spotlight callouts."
+  },
+  "variants": {
+    "variant": {
+      "values": ["default", "warning", "destructive", "success", "info", "orange"],
+      "default": "default"
+    }
+  },
+  "states": {
+    "default": { "looks": "Subtle gray wash with clean underline, inheriting text colour." },
+    "hover": { "none": "A text annotation, not a control." },
+    "pressed": { "none": "A text annotation, not a control." },
+    "focus": { "none": "Not focusable on its own." },
+    "disabled": { "none": "A text annotation, not a control." },
+    "selected": { "none": "A text annotation, not a control." },
+    "error": { "none": "Use variant destructive for error or danger callouts." },
+    "loading": { "none": "No loading state." }
+  },
+  "sizes": {
+    "density": "Follows the text it wraps.",
+    "width": "Inline, wraps with text."
+  },
+  "js": "textHighlightClass({ variant?, className? }) → string; textHighlightParts(text, query) splits text into matching and non-matching segments.",
+  "react": {
+    "import": "import { TextHighlight } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "TextHighlight": {
+        "renders": "<mark class=\"ayy-text-highlight\">",
+        "props": {
+          "text": "string — text to search and highlight within (or provide as string children)",
+          "query": "string — search substring or space-separated words to highlight",
+          "variant": "\"default\" | \"warning\" | \"destructive\" | \"success\" | \"info\" | \"orange\" — highlight tint colour",
+          "as": "ElementType — HTML tag (defaults to mark for callouts, Fragment for queries)"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Uses the standard <mark> HTML tag for search and text highlights, recognised by assistive technology.",
+    "Maintains readable contrast across light, dark, and high-contrast themes via color-mix() and light-dark().",
+    "Under Windows High Contrast mode (forced-colors), highlights switch to the system Highlight and HighlightText colours."
+  ],
+  "do": [
+    "Use TextHighlight to show matched search terms in command palettes, comboboxes, and search results.",
+    "Use the default subtle gray highlight with underline for search results so text remains calm and readable.",
+    "Use color variants (warning/yellow, destructive/red, success/green, info, orange) for specific semantic callouts."
+  ],
+  "dont": [
+    "Don't hardcode background or text colours; use the tokens or built-in variants.",
+    "Don't highlight entire paragraphs; highlight only matched keywords or key phrases.",
+    "Don't replace links or buttons with highlights."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Search match and callout" },
+    { "id": "variants", "title": "Semantic color variants (yellow, red, green, blue, orange)" }
+  ]
+}

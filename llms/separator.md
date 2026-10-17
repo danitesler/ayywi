@@ -21,8 +21,6 @@ Category: Layout. A hairline between blocks: full, fading out at both ends (betw
 - Density — Doesn't follow data-density.
 - Width — Horizontal fills the width; vertical stretches to the row's height (at least 1em). fade fades both ends.
 
-**JS (framework-free)**: separatorClass({ orientation?, fade?, className? }) → string
-
 **React** — `import { Separator } from "@danitesler/ayywi/react";`
 - `<Separator>` renders <hr>. Props: `orientation` "horizontal" | "vertical" — vertical also sets aria-orientation.; `fade` boolean
 

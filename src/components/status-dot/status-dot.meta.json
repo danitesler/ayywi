@@ -1,0 +1,75 @@
+{
+  "name": "Status dot",
+  "slug": "status-dot",
+  "status": "stable",
+  "category": "Data display",
+  "description": "A compact standalone status indicator dot for online presence, live event streaming, server health, and table row statuses.",
+  "aka": ["status-dot", "status-indicator", "presence-dot", "live-dot", "health-dot"],
+  "classes": {
+    "ayy-status-dot": "Root inline-flex dot.",
+    "ayy-status-dot--sm": "Small dot (6px).",
+    "ayy-status-dot--lg": "Large dot (10px).",
+    "ayy-status-dot--neutral": "Muted status dot (var(--ayy-color-muted)).",
+    "ayy-status-dot--success": "Green status dot (var(--ayy-color-success)).",
+    "ayy-status-dot--warning": "Amber status dot (var(--ayy-color-warning)).",
+    "ayy-status-dot--destructive": "Red status dot (var(--ayy-color-destructive)).",
+    "ayy-status-dot--info": "Blue status dot (var(--ayy-color-info)).",
+    "ayy-status-dot--pulse": "Animated pinging ring for live/active statuses (keyframes ayy-status-dot-ping)."
+  },
+  "variants": {
+    "variant": { "values": ["neutral", "success", "warning", "destructive", "info"], "default": "neutral" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
+  "states": {
+    "default": { "looks": "A circular dot with hairline ring for contrast against light and dark backgrounds. Neutral muted colour by default." },
+    "hover": { "none": "A status dot is a static indicator, not an interactive control." },
+    "pressed": { "none": "A status dot is a static indicator, not an interactive control." },
+    "focus": { "none": "Not focusable." },
+    "disabled": { "none": "A status dot is a static indicator, not an interactive control." },
+    "selected": { "none": "A status dot is a static indicator, not an interactive control." },
+    "error": { "none": "Static indicator; use destructive variant (ayy-status-dot--destructive) for error or failed status." },
+    "loading": { "none": "Static indicator; use pulse (ayy-status-dot--pulse) for live or active statuses, or Spinner for pending operations." }
+  },
+  "sizes": {
+    "density": "Fixed dot dimensions (6px, 8px, or 10px); does not scale with data-density.",
+    "width": "Fixed square footprint matching dot dimensions.",
+    "scale": {
+      "sm": "6px diameter for dense table rows or nested badges.",
+      "md": "8px diameter standard dot for status rows and presence.",
+      "lg": "10px diameter prominent dot for live indicators and headers."
+    }
+  },
+  "js": "statusDotClass({ variant?, size?, pulse?, className? }) → string",
+  "react": {
+    "import": "import { StatusDot } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "StatusDot": {
+        "renders": "<span>",
+        "props": {
+          "variant": "\"neutral\" | \"success\" | \"warning\" | \"destructive\" | \"info\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "pulse": "boolean — animated pinging ring for live/active status",
+          "label": "string — accessible label (sets role=\"status\" and aria-label; without it, aria-hidden=\"true\")"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Colour is never the only signal — accompany standalone status dots with a text label or pass the label prop so screen readers announce it.",
+    "When label is provided, sets role=\"status\" and aria-label; when omitted, aria-hidden=\"true\" treats the dot as decorative."
+  ],
+  "do": [
+    "Use a status dot to indicate online presence, server or service health, or active streaming status.",
+    "Place the status dot beside a descriptive label or table cell value.",
+    "Use the pulse modifier for active or real-time statuses like live streams or ongoing recordings."
+  ],
+  "dont": [
+    "Don't rely on color alone to convey meaning without an accompanying label or tooltip.",
+    "Don't make a status dot clickable directly — wrap in a button or link if interaction is required.",
+    "Don't use a status dot for counts or numerical badges — use Badge instead."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Variants" },
+    { "id": "pulse", "title": "Live pulsing" }
+  ]
+}

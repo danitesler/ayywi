@@ -70,5 +70,9 @@
     "Don't use an avatar for icons — use Icon.",
     "Don't rely on the picture alone to identify someone — show the name nearby."
   ],
-  "examples": [{ "id": "basic", "title": "Sizes, fallback, group" }]
+  "examples": [
+    { "id": "sizes", "title": "Sizes" },
+    { "id": "fallback", "title": "Fallback" },
+    { "id": "group", "title": "Group" }
+  ]
 }

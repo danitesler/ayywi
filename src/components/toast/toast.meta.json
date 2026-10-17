@@ -3,71 +3,188 @@
   "slug": "toast",
   "status": "stable",
   "category": "Feedback",
-  "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Pauses while hovered or focused.",
-  "aka": ["toast", "snackbar", "notification"],
+  "description": "Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Supports text notifications, visual content previews (CardToast) for images, videos, and GIFs, and embedded in-place feedback (InlineToast).",
+  "aka": ["toast", "snackbar", "notification", "card-toast", "quick-access"],
   "classes": {
     "ayy-toaster": "The shared region toast() creates (aria-live). Position via data-position; data-expanded on hover or focus.",
+    "ayy-toaster__clear": "\"Clear all\" button in the open stack's top-end corner (bottom-end under a top-positioned stack); shown only while the stack is open with two or more toasts.",
     "ayy-toast": "One toast; stacked card with swipe-to-dismiss.",
     "ayy-toast--success": "Success variant with checkmark icon.",
     "ayy-toast--warning": "Warning variant with alert icon.",
     "ayy-toast--destructive": "Destructive variant with cancel icon; announced with role=\"alert\".",
     "ayy-toast--info": "Info variant with information icon.",
+    "ayy-toast--card": "Card toast variant with media preview and action scrim.",
+    "ayy-toast--card-split": "Split card toast variant with media preview thumbnail and text content details.",
+    "ayy-toast--card-split--vertical": "Vertical split card toast variant with media preview stacked above text details.",
+    "ayy-toast--long": "Long text variant with normal text size and copy button.",
+    "ayy-toast--inline": "Inline feedback pill embedded in a card, toolbar, or form without a toaster region.",
+    "ayy-toast--inline--success": "Success tone for inline toast.",
+    "ayy-toast--inline--busy": "Busy tone for inline toast with spinner.",
+    "ayy-toast--inline--error": "Error tone for inline toast with alert icon.",
     "ayy-toast__icon": "Leading status icon.",
     "ayy-toast__content": "Message and description container.",
     "ayy-toast__title": "Message.",
     "ayy-toast__description": "Optional second line.",
     "ayy-toast__actions": "Action button row.",
-    "ayy-toast__close": "Close button."
+    "ayy-toast__copy": "Copy button to copy message to clipboard.",
+    "ayy-toast__close": "Close button.",
+    "ayy-toast__backdrop": "Blurred backdrop image behind preview.",
+    "ayy-toast__image": "Foreground preview image or video frame.",
+    "ayy-toast__thumb": "Thumbnail container for split card toast preview image.",
+    "ayy-toast__media": "Video or GIF duration badge.",
+    "ayy-toast__scrim": "Action overlay visible on card hover or focus.",
+    "ayy-toast__center": "Center primary and secondary action buttons.",
+    "ayy-toast__corner": "Corner action button container.",
+    "ayy-toast__corner--top": "Top corner action buttons.",
+    "ayy-toast__corner--top-start": "Top start corner action buttons.",
+    "ayy-toast__corner--bottom-start": "Bottom start corner action buttons.",
+    "ayy-toast__corner--bottom-end": "Bottom end corner action buttons.",
+    "ayy-toast__action": "Icon action button inside scrim.",
+    "ayy-toast__status": "Inline feedback pill after an action.",
+    "ayy-toast__status--success": "Success status tone with checkmark.",
+    "ayy-toast__status--busy": "Busy status tone with spinner.",
+    "ayy-toast__status--error": "Error status tone with alert icon."
   },
   "variants": {
-    "variant": { "values": ["default", "success", "warning", "destructive", "info"], "default": "default" },
+    "variant": { "values": ["default", "success", "warning", "destructive", "info", "card", "card-split", "long"], "default": "default" },
     "position": { "values": ["bottom-end", "bottom-start", "bottom-center", "top-end", "top-start", "top-center"], "default": "bottom-end", "component": "Toaster" }
   },
   "states": {
     "default": { "looks": "Raised card with line-strong border, overlay shadow, and stacked offset; success, warning, destructive, and info include their status icon." },
-    "hover": { "when": ".ayy-toaster[data-expanded]", "looks": "Deck expands vertically so all toasts fan out into readable view. Close button gets wash-hover." },
-    "pressed": { "none": "No pressed look." },
+    "hover": { "when": ".ayy-toaster[data-expanded]; .ayy-toast--card:hover", "looks": "Deck expands vertically so all toasts fan out into readable view and timers pause across the stack. Card toast reveals action scrim. Close button gets wash-hover." },
+    "pressed": { "when": ".ayy-toast--card:active", "looks": "Cursor changes to grabbing while dragging." },
     "focus": { "when": ".ayy-toast__close:focus-visible", "looks": "2px ring, 2px offset." },
     "disabled": { "none": "Not disabled." },
     "selected": { "none": "No selected state." },
     "error": { "when": "toast({ variant: \"destructive\" })", "looks": "Destructive icon in destructive colour. Only for errors that need no fixing in place; form errors go inline (FieldError)." },
     "loading": { "none": "A toast confirms; for a long task show Progress where the work happens." },
-    "leaving": { "when": "[data-leaving] (set by toast())", "looks": "Fades out." }
+    "leaving": { "when": "[data-leaving] (set by toast())", "looks": "Drifts out to the right (translateX 28px, scale 0.95, fade out) over 280ms." }
   },
   "sizes": {
     "density": "Doesn't follow data-density.",
-    "width": "min(22rem, viewport minus 2rem), stacked in the corner given by position."
+    "width": "min(22rem, viewport minus 2rem) or min(28rem, viewport minus 2rem) for long text toasts, stacked in the corner given by position; card toasts are min(17.5rem, 100%)."
   },
-  "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, id? }) → { id, dismiss }; toast.success/warning/error/info(message, options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel? }); toastClass({ variant? })",
+  "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, copyable?, copyText?, id? }) → { id, dismiss }; toast.success/warning/error/info/long(message, options); toast.card(options) → { id, dismiss, status }; toast.copy(text, options); cardToast(options); inlineToastClass(options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel?, clearLabel? }); toastClass({ variant? })",
   "react": {
-    "import": "import { toast, Toaster } from \"@danitesler/ayywi/react\";",
+    "import": "import { toast, Toaster, NotificationToast, Toast, InlineToast, CardToast, CardToastThumb, CardToastBackdrop, CardToastImage, CardToastMedia, CardToastScrim, CardToastClose, CardToastCorner, CardToastCenter, CardToastAction, CardToastStatus } from \"@danitesler/ayywi/react\";",
     "components": {
       "Toaster": {
         "renders": "nothing — configures the shared region",
         "props": {
           "position": "\"bottom-end\" | \"bottom-start\" | \"bottom-center\" | \"top-end\" | \"top-start\" | \"top-center\"",
           "label": "string — region name (translate)",
-          "closeLabel": "string — close button name (translate)"
+          "closeLabel": "string — close button name (translate)",
+          "clearLabel": "string — \"Clear all\" button text (translate)"
+        }
+      },
+      "NotificationToast": {
+        "renders": "div.ayy-toast",
+        "props": {
+          "variant": "\"default\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"card\" | \"long\"",
+          "title": "ReactNode — message text",
+          "description": "ReactNode — optional second line",
+          "icon": "ReactNode — leading icon",
+          "action": "{ label: string, onClick?: () => void }",
+          "copyable": "boolean — show copy button (default true for long variant)",
+          "copyText": "string — custom text to copy",
+          "onClose": "() => void — dismiss handler",
+          "closeLabel": "string — accessible dismiss name"
+        }
+      },
+      "Toast": {
+        "renders": "div.ayy-toast — alias of NotificationToast",
+        "props": {}
+      },
+      "InlineToast": {
+        "renders": "div.ayy-toast--inline",
+        "props": {
+          "tone": "\"default\" | \"success\" | \"busy\" | \"error\"",
+          "icon": "ReactNode — leading icon"
+        }
+      },
+      "CardToast": {
+        "renders": "div.ayy-toast.ayy-toast--card",
+        "props": {
+          "split": "boolean | \"horizontal\" | \"vertical\""
+        }
+      },
+      "CardToastThumb": {
+        "renders": "div.ayy-toast__thumb",
+        "props": {}
+      },
+      "CardToastBackdrop": {
+        "renders": "img.ayy-toast__backdrop",
+        "props": {}
+      },
+      "CardToastImage": {
+        "renders": "img.ayy-toast__image",
+        "props": {}
+      },
+      "CardToastMedia": {
+        "renders": "span.ayy-toast__media",
+        "props": {}
+      },
+      "CardToastScrim": {
+        "renders": "div.ayy-toast__scrim",
+        "props": {}
+      },
+      "CardToastClose": {
+        "renders": "button.ayy-toast__close",
+        "props": {
+          "label": "string — accessible name"
+        }
+      },
+      "CardToastCorner": {
+        "renders": "div.ayy-toast__corner",
+        "props": {
+          "position": "\"top\" | \"top-start\" | \"bottom-start\" | \"bottom-end\""
+        }
+      },
+      "CardToastCenter": {
+        "renders": "div.ayy-toast__center",
+        "props": {}
+      },
+      "CardToastAction": {
+        "renders": "button.ayy-toast__action",
+        "props": {
+          "label": "string — accessible name"
+        }
+      },
+      "CardToastStatus": {
+        "renders": "div.ayy-toast__status",
+        "props": {
+          "tone": "\"default\" | \"success\" | \"busy\" | \"error\"",
+          "icon": "ReactNode — status icon"
         }
       }
     }
   },
   "a11y": [
     "The region is aria-live=\"polite\"; destructive toasts use role=\"alert\".",
-    "Timers pause while a toast is hovered or focused, so there's time to read it and reach its action.",
+    "Timers pause while the toaster stack or a toast is hovered or focused, so there's time to read it and reach its action.",
     "Messages are set with textContent — never HTML."
   ],
   "do": [
-    "Use a toast to confirm something happened (Saved, Deployed, Copied) or to report a background result that needs no decision.",
+    "Use NotificationToast (or toast()) to confirm something happened (Saved, Deployed) or report an async receipt needing no decision.",
     "Say what happened in 2–5 words: \"Project deleted\".",
-    "Offer one Undo-style action instead of a confirmation dialog for reversible actions."
+    "Offer one Undo-style action instead of a confirmation dialog for reversible actions.",
+    "Use CardToast (toast.card()) for content previews that are visual — screenshots, screen recordings, video frames, GIFs, and image downloads.",
+    "Use the split CardToast variation when the user needs both an image preview thumbnail and file metadata (filename, dimensions, size) with direct actions.",
+    "Use InlineToast for localized contextual feedback (e.g. \"Copied to clipboard\", loading spinner) embedded directly within a card, toolbar, or form without triggering the toaster region."
   ],
   "dont": [
-    "Don't use a toast for errors the user must fix — show them inline next to the problem.",
+    "Don't use a toast for errors the user must fix — show them inline next to the problem with FieldError.",
     "Don't use a toast for anything needing a decision — use Dialog.",
     "Don't put long or important content in a toast — it disappears.",
     "Don't stack several toasts for one action — reuse an id to update it.",
-    "Don't put links the user must follow in a toast."
+    "Don't put links the user must follow in a toast.",
+    "Don't use CardToast for plain text notifications that do not have a visual preview or thumbnail.",
+    "Don't use InlineToast as a floating viewport notification — use NotificationToast in the shared toaster region instead.",
+    "Don't stack multiple InlineToasts inside one container — update the status tone and message in place."
   ],
-  "examples": [{ "id": "basic", "title": "Variants and actions" }]
+  "examples": [
+    { "id": "basic", "title": "Trigger toast" },
+    { "id": "types", "title": "Toast types" },
+    { "id": "inline", "title": "Inline toast" }
+  ]
 }

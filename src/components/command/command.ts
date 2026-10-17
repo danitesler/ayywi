@@ -38,6 +38,92 @@ export function commandItemText(item: HTMLElement): string {
   return `${label} ${item.dataset.keywords ?? ""}`.toLocaleLowerCase();
 }
 
+/** Details extracted from an item for search scoring: title, description, and keywords. */
+export function commandItemDetails(item: HTMLElement): { title: string; description: string; keywords: string } {
+  const keywords = item.dataset.keywords ?? "";
+
+  let title = item.dataset.title;
+  if (!title) {
+    const titleEl = item.querySelector<HTMLElement>(".ayy-command__title");
+    if (titleEl) {
+      title = titleEl.textContent?.trim() ?? "";
+    } else {
+      let label = item.dataset.label;
+      if (!label) {
+        const clone = item.cloneNode(true) as HTMLElement;
+        for (const meta of clone.querySelectorAll(".ayy-command__meta, .ayy-command__description")) meta.remove();
+        label = clone.textContent?.trim() ?? "";
+      }
+      title = label;
+    }
+  }
+
+  const descEl = item.querySelector<HTMLElement>(".ayy-command__description");
+  const description = item.dataset.description ?? descEl?.textContent?.trim() ?? "";
+
+  return { title, description, keywords };
+}
+
+/**
+ * Scores an item against a search query, with strict priority given to title matches:
+ * 1000: Exact normalized title match
+ * 500:  Title starts with query
+ * 400:  All query words start title words (multi-word)
+ * 300:  A title word starts with query
+ * 200:  Title contains query
+ * 100:  A description or keyword word starts with query
+ * 50:   Description or keywords contains query
+ * 0:    No match
+ */
+export function commandScore(title: string, description: string, keywords: string, query: string): number {
+  const q = query.trim().toLocaleLowerCase();
+  if (!q) return 1;
+
+  const t = title.trim().toLocaleLowerCase();
+  const d = description.trim().toLocaleLowerCase();
+  const k = keywords.trim().toLocaleLowerCase();
+  const dk = `${d} ${k}`.trim();
+
+  // Exact match on title
+  if (t === q) return 1000;
+
+  // Title starts with query
+  if (t.startsWith(q)) return 500;
+
+  const qWords = q.split(/\s+/).filter(Boolean);
+  const tWords = t.split(/[\s\-_/.,:]+/).filter(Boolean);
+  const dkWords = dk.split(/[\s\-_/.,:]+/).filter(Boolean);
+
+  if (qWords.length > 1) {
+    const allInTitle = qWords.every((qw) => tWords.some((tw) => tw.startsWith(qw)));
+    if (allInTitle) return 400;
+
+    const someInTitle = qWords.some((qw) => tWords.some((tw) => tw.startsWith(qw)));
+    const allInCombined = qWords.every(
+      (qw) => tWords.some((tw) => tw.startsWith(qw)) || dkWords.some((dkw) => dkw.startsWith(qw)),
+    );
+    if (allInCombined) return someInTitle ? 250 : 80;
+
+    if (t.includes(q)) return 200;
+    if (dk.includes(q)) return 50;
+    return 0;
+  }
+
+  // Single word: title word starts with query
+  if (tWords.some((w) => w.startsWith(q))) return 300;
+
+  // Title contains query
+  if (t.includes(q)) return 200;
+
+  // Description / keywords word starts with query
+  if (dkWords.some((w) => w.startsWith(q))) return 100;
+
+  // Description / keywords contains query
+  if (dk.includes(q)) return 50;
+
+  return 0;
+}
+
 /**
  * Does `text` match `query`? Every word of the query has to start a word of the text ("ne ta" finds "New task"),
  * or appear anywhere in it when the query is a single run of letters ("task" finds "Subtask").
@@ -45,9 +131,10 @@ export function commandItemText(item: HTMLElement): string {
 export function commandMatches(text: string, query: string): boolean {
   const q = query.trim().toLocaleLowerCase();
   if (!q) return true;
+  const t = text.toLocaleLowerCase();
   const words = q.split(/\s+/);
-  if (words.length === 1) return text.includes(q);
-  const starts = text.split(/[\s\-_/.,:]+/);
+  if (words.length === 1) return t.includes(q);
+  const starts = t.split(/[\s\-_/.,:]+/);
   return words.every((w) => starts.some((s) => s.startsWith(w)));
 }
 
@@ -73,6 +160,26 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
   input.setAttribute("spellcheck", "false");
   list.setAttribute("role", "listbox");
 
+  const initialGroupOrder = new Map<HTMLElement, number>();
+  const initialItemOrder = new Map<HTMLElement, number>();
+
+  const initOrder = () => {
+    let gIdx = 0;
+    for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
+      if (!initialGroupOrder.has(group)) initialGroupOrder.set(group, gIdx++);
+      let iIdx = 0;
+      for (const item of group.querySelectorAll<HTMLElement>(ITEM)) {
+        if (!initialItemOrder.has(item)) initialItemOrder.set(item, iIdx++);
+      }
+    }
+    let directIdx = 0;
+    for (const item of list.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`)) {
+      if (!initialItemOrder.has(item)) initialItemOrder.set(item, directIdx++);
+    }
+  };
+
+  initOrder();
+
   const all = () => Array.from(list.querySelectorAll<HTMLElement>(ITEM));
   const visible = () => all().filter((o) => !o.hidden && o.getAttribute("aria-disabled") !== "true");
   const active = () => all().find((o) => o.getAttribute("aria-selected") === "true") ?? null;
@@ -86,18 +193,78 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
   };
 
   const applyFilter = () => {
+    initOrder();
+    const query = input.value.trim();
+
+    if (!filter || !query) {
+      // Restore initial order when empty
+      const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
+      groups.sort((a, b) => (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0));
+      for (const group of groups) {
+        list.appendChild(group);
+        const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
+        items.sort((a, b) => (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0));
+        for (const item of items) {
+          ensureId(item, "ayy-command-item");
+          item.setAttribute("role", "option");
+          item.hidden = false;
+          group.appendChild(item);
+        }
+        group.hidden = false;
+      }
+      for (const item of all()) item.hidden = false;
+      const empty = list.querySelector<HTMLElement>(".ayy-command__empty");
+      if (empty) {
+        empty.hidden = true;
+        list.appendChild(empty);
+      }
+      return;
+    }
+
     let shown = 0;
+    const itemScores = new Map<HTMLElement, number>();
+    const groupScores = new Map<HTMLElement, number>();
+
     for (const item of all()) {
       ensureId(item, "ayy-command-item");
       item.setAttribute("role", "option");
-      item.hidden = filter && !commandMatches(commandItemText(item), input.value);
+      const details = commandItemDetails(item);
+      const score = commandScore(details.title, details.description, details.keywords, query);
+      itemScores.set(item, score);
+      item.hidden = score === 0;
       if (!item.hidden) shown++;
     }
-    for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
-      group.hidden = !Array.from(group.querySelectorAll<HTMLElement>(ITEM)).some((o) => !o.hidden);
+
+    const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
+    for (const group of groups) {
+      const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
+      items.sort((a, b) => {
+        const diff = (itemScores.get(b) ?? 0) - (itemScores.get(a) ?? 0);
+        if (diff !== 0) return diff;
+        return (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0);
+      });
+      for (const item of items) group.appendChild(item);
+
+      const visibleInGroup = items.filter((o) => !o.hidden);
+      group.hidden = visibleInGroup.length === 0;
+      const maxScore = visibleInGroup.reduce((m, o) => Math.max(m, itemScores.get(o) ?? 0), 0);
+      groupScores.set(group, maxScore);
     }
+
+    // Reorder groups by their highest score so groups with title matches float to top
+    groups.sort((a, b) => {
+      const diff = (groupScores.get(b) ?? 0) - (groupScores.get(a) ?? 0);
+      if (diff !== 0) return diff;
+      return (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0);
+    });
+
+    for (const group of groups) list.appendChild(group);
+
     const empty = list.querySelector<HTMLElement>(".ayy-command__empty");
-    if (empty) empty.hidden = shown > 0;
+    if (empty) {
+      empty.hidden = shown > 0;
+      list.appendChild(empty);
+    }
   };
 
   const refresh = () => {

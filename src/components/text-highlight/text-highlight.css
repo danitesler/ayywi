@@ -1,0 +1,69 @@
+/* Text highlight: inline text callout or search hit. Subtle gray wash with clean underline, plus status variants. */
+
+.ayy-text-highlight {
+  box-sizing: border-box;
+  display: inline;
+  padding-block: 0;
+  padding-inline: 0;
+  border-radius: var(--ayy-radius-sm);
+  background-color: color-mix(in srgb, var(--ayy-color-text) 8%, transparent);
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ayy-color-line-hover);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+}
+
+.ayy-text-highlight--warning {
+  background-color: color-mix(in srgb, var(--ayy-color-warning) 14%, transparent);
+  text-decoration-color: var(--ayy-color-warning);
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-color-warning) 60%, var(--ayy-color-text)),
+    var(--ayy-color-warning)
+  );
+}
+
+.ayy-text-highlight--destructive {
+  background-color: color-mix(in srgb, var(--ayy-color-destructive) 14%, transparent);
+  text-decoration-color: var(--ayy-color-destructive);
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-color-destructive) 60%, var(--ayy-color-text)),
+    var(--ayy-color-destructive)
+  );
+}
+
+.ayy-text-highlight--success {
+  background-color: color-mix(in srgb, var(--ayy-color-success) 14%, transparent);
+  text-decoration-color: var(--ayy-color-success);
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-color-success) 60%, var(--ayy-color-text)),
+    var(--ayy-color-success)
+  );
+}
+
+.ayy-text-highlight--info {
+  background-color: color-mix(in srgb, var(--ayy-color-info) 14%, transparent);
+  text-decoration-color: var(--ayy-color-info);
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-color-info) 60%, var(--ayy-color-text)),
+    var(--ayy-color-info)
+  );
+}
+
+.ayy-text-highlight--orange {
+  background-color: color-mix(in srgb, var(--ayy-accent-marketing) 14%, transparent);
+  text-decoration-color: var(--ayy-accent-marketing);
+  color: light-dark(
+    color-mix(in srgb, var(--ayy-accent-marketing) 60%, var(--ayy-color-text)),
+    var(--ayy-accent-marketing)
+  );
+}
+
+@media (forced-colors: active) {
+  .ayy-text-highlight {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+    text-decoration-color: HighlightText;
+  }
+}

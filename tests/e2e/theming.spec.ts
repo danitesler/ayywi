@@ -86,16 +86,8 @@ test("app shell: sidebar and main scroll on their own, the sidebar follows the i
     await stage(page).evaluate((el) => el.removeAttribute("dir"));
 
     // On a phone with no bar or bottom nav, the sidebar stacks above main and the nav becomes a row.
-    if (renderer === "react") {
-      const demo = page.locator('.pv-example[aria-labelledby="ex-playground"] .pv-stage');
-      for (const name of ["Top bar", "Bottom nav"]) {
-        const sw = demo.getByRole("switch", { name });
-        if (await sw.isChecked()) await sw.click();
-      }
-    } else {
-      await shell.locator(":scope > .ayy-app-shell__bar").evaluate((el) => el.remove());
-      await shell.locator(":scope > .ayy-bottom-nav").evaluate((el) => el.remove());
-    }
+    await shell.locator(":scope > .ayy-app-shell__bar").evaluate((el) => el.remove()).catch(() => {});
+    await shell.locator(":scope > .ayy-bottom-nav").evaluate((el) => el.remove()).catch(() => {});
     await page.setViewportSize({ width: 390, height: 800 });
     expect((await box(sidebar)).y + (await box(sidebar)).height).toBeLessThanOrEqual((await box(main)).y + 1);
     expect((await box(sidebar)).width).toBeCloseTo((await box(shell)).width, 0);
@@ -210,11 +202,12 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
       ...slugs.map((slug: string): [string, string] => [slug, ".pv-stage"]),
-      ...["", "get-started", "showcase", "showcase/inbox", "colors", "typography", "spacing", "elevation", "motion", "brand"].map((r): [string, string] => [r, ".pv-shell"]),
+      ...["", "get-started", "apps", "apps/inbox", "colors", "typography", "spacing", "elevation", "motion", "brand", "density"].map((r): [string, string] => [r, ".pv-shell"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
       await expect(page.locator(".pv-page h1").first(), `/#/${route}`).toBeVisible();
+      await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished)));
       const results = await new AxeBuilder({ page })
         .include(scope)
         .disableRules(["region"]) // examples are fragments, not full pages

@@ -1,4 +1,6 @@
 import { cx } from "../../lib/cx";
+import { ArrowDown01Icon, Menu01Icon } from "../../lib/icons";
+import { iconSvg } from "../icon/icon";
 
 export interface TocClassOptions {
   /** Stays in view beside long content, below the navbar. */
@@ -14,6 +16,14 @@ export const tocTitleClass = "ayy-toc__title";
 export const tocListClass = "ayy-toc__list";
 export const tocLinkClass = "ayy-toc__link";
 export const tocNumberClass = "ayy-toc__number";
+export const tocBarClass = "ayy-toc__bar";
+export const tocToggleClass = "ayy-toc__toggle";
+export const tocToggleIconClass = "ayy-toc__toggle-icon";
+export const tocToggleCurrentClass = "ayy-toc__toggle-current";
+export const tocToggleCaretClass = "ayy-toc__toggle-caret";
+
+export const tocMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);
+export const tocChevronIcon = /* @__PURE__ */ iconSvg(ArrowDown01Icon);
 
 export interface TocOptions {
   /**
@@ -27,13 +37,84 @@ export interface TocOptions {
 
 const hashOf = (link: HTMLAnchorElement) => decodeURIComponent(link.hash.slice(1));
 
+function extractLinkText(link: HTMLAnchorElement): string {
+  const num = link.querySelector(".ayy-toc__number");
+  let text = link.textContent?.trim() ?? "";
+  if (num && num.textContent) {
+    const numText = num.textContent.trim();
+    if (text.startsWith(numText)) {
+      text = text.slice(numText.length).trim();
+    }
+  }
+  return text;
+}
+
 /**
  * Scrollspy for the `.ayy-toc__link[href^="#"]` links inside `root`: the link whose section is being read gets
- * aria-current="location", the others lose it. Framework-free; returns a cleanup function.
+ * aria-current="location", the others lose it. On mobile, handles the sticky toggle pill and dropdown menu.
+ * Framework-free; returns a cleanup function.
  */
 export function connectToc(root: HTMLElement, options: TocOptions = {}): () => void {
   let current: string | null = null;
   let frame = 0;
+
+  const host = root.closest<HTMLElement>(".ayy-toc") ?? root;
+
+  // Auto-inject mobile pill bar if omitted in plain HTML
+  let injectedBar: HTMLElement | null = null;
+  if (!host.querySelector(".ayy-toc__bar")) {
+    const firstLink = host.querySelector<HTMLAnchorElement>("a.ayy-toc__link");
+    const label = firstLink ? extractLinkText(firstLink) : "Table of contents";
+    injectedBar = document.createElement("div");
+    injectedBar.className = tocBarClass;
+    injectedBar.innerHTML = `<button type="button" class="${tocToggleClass}" aria-expanded="false" aria-label="Table of contents"><span class="${tocToggleIconClass}">${tocMenuIcon}</span><span class="${tocToggleCurrentClass}">${label}</span><span class="${tocToggleCaretClass}">${tocChevronIcon}</span></button>`;
+    host.prepend(injectedBar);
+  }
+
+  const toggle = host.querySelector<HTMLButtonElement>(".ayy-toc__toggle");
+  const currentSpan = host.querySelector<HTMLElement>(".ayy-toc__toggle-current");
+
+  const setOpen = (open: boolean) => {
+    if (open) {
+      host.dataset.open = "true";
+      if (root !== host) root.dataset.open = "true";
+    } else {
+      delete host.dataset.open;
+      if (root !== host) delete root.dataset.open;
+    }
+    toggle?.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  const onToggleClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    const isOpen = host.dataset.open === "true" || toggle?.getAttribute("aria-expanded") === "true";
+    setOpen(!isOpen);
+  };
+
+  const onLinkClick = (e: MouseEvent) => {
+    const target = (e.target as HTMLElement).closest("a.ayy-toc__link");
+    if (target) {
+      setOpen(false);
+    }
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape" && (host.dataset.open === "true" || toggle?.getAttribute("aria-expanded") === "true")) {
+      setOpen(false);
+      toggle?.focus();
+    }
+  };
+
+  const onPointerDown = (e: PointerEvent) => {
+    if ((host.dataset.open === "true" || toggle?.getAttribute("aria-expanded") === "true") && !host.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  };
+
+  toggle?.addEventListener("click", onToggleClick);
+  host.addEventListener("click", onLinkClick);
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("pointerdown", onPointerDown);
 
   const update = () => {
     frame = 0;
@@ -59,21 +140,13 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
     const id = index >= 0 ? hashOf(links[index]) : "";
     if (id !== current) {
       current = id;
-      if (index >= 0) reveal(links[index]);
+      if (index >= 0) {
+        if (currentSpan) {
+          currentSpan.textContent = extractLinkText(links[index]);
+        }
+      }
       options.onChange?.(id);
     }
-  };
-
-  // On phones the sticky contents is one scrolling row: keep the current section's top-level link in view. Rects, not
-  // scrollLeft, so it works the same in right-to-left pages.
-  const reveal = (link: HTMLAnchorElement) => {
-    const strip = root.querySelector<HTMLElement>(".ayy-toc__list");
-    if (!strip || strip.scrollWidth <= strip.clientWidth) return;
-    const item = Array.from(strip.children).find((li) => li.contains(link));
-    const shown = item?.querySelector<HTMLElement>("a.ayy-toc__link") ?? link;
-    const a = shown.getBoundingClientRect();
-    const s = strip.getBoundingClientRect();
-    strip.scrollBy({ left: a.left + a.width / 2 - (s.left + s.width / 2) });
   };
 
   const schedule = () => {
@@ -82,18 +155,16 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
 
   window.addEventListener("scroll", schedule, { passive: true });
   window.addEventListener("resize", schedule);
-  // Links that change size after the current one was centred (web fonts arriving, a label changing) would push it out
-  // of the strip: centre it again.
-  const resized = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
-    const link = current ? root.querySelector<HTMLAnchorElement>('a.ayy-toc__link[aria-current="location"]') : null;
-    if (link) reveal(link);
-  }) : null;
-  for (const item of root.querySelectorAll(".ayy-toc__list > li")) resized?.observe(item);
   update();
+
   return () => {
     cancelAnimationFrame(frame);
-    resized?.disconnect();
+    toggle?.removeEventListener("click", onToggleClick);
+    host.removeEventListener("click", onLinkClick);
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("pointerdown", onPointerDown);
     window.removeEventListener("scroll", schedule);
     window.removeEventListener("resize", schedule);
+    injectedBar?.remove();
   };
 }

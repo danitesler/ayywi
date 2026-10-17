@@ -87,6 +87,12 @@
 }
 
 /* A line between groups; groups hidden by the filter don't count. */
+.ayy-command__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+}
+
 .ayy-command__group:not([hidden]) ~ .ayy-command__group:not([hidden]) {
   margin-block-start: var(--ayy-space-1-5);
   padding-block-start: var(--ayy-space-1-5);
@@ -97,7 +103,7 @@
   padding-block: var(--ayy-space-1-5) var(--ayy-space-1);
   padding-inline: var(--ayy-space-2);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-medium);
 }
 
@@ -114,11 +120,43 @@
   scroll-margin-block: var(--ayy-space-1-5);
 }
 
+.ayy-command__item:has(> .ayy-command__content) {
+  min-block-size: var(--ayy-size-control-lg);
+  padding-block: var(--ayy-space-1-5);
+}
+
 .ayy-command__item > svg {
   flex: none;
   inline-size: var(--ayy-size-icon-sm);
   block-size: var(--ayy-size-icon-sm);
   color: var(--ayy-color-muted);
+}
+
+.ayy-command__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-command__title {
+  display: block;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-command__description {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+  line-height: var(--ayy-leading-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* The item the arrow keys or the pointer are on: Enter runs it. */
@@ -128,6 +166,16 @@
 
 .ayy-command__item[aria-selected="true"] > svg {
   color: var(--ayy-color-text);
+}
+
+.ayy-command__item[aria-selected="true"] .ayy-command__description,
+.ayy-command__item[aria-selected="true"] .ayy-command__meta {
+  color: var(--ayy-color-text-soft);
+}
+
+.ayy-command__description mark {
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
 }
 
 .ayy-command__item[aria-disabled="true"] {
@@ -149,7 +197,7 @@
   gap: var(--ayy-space-1);
   margin-inline-start: auto;
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 .ayy-command__empty {
@@ -170,7 +218,7 @@
   padding-inline: var(--ayy-space-4);
   border-block-start: 1px solid var(--ayy-color-hairline);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 @media (forced-colors: active) {
@@ -185,6 +233,9 @@
     color: HighlightText;
   }
   .ayy-command__item[aria-selected="true"] > svg {
+    color: HighlightText;
+  }
+  .ayy-command__item[aria-selected="true"] .ayy-command__description {
     color: HighlightText;
   }
 }

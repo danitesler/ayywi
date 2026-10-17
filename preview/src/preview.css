@@ -94,8 +94,6 @@
   gap: var(--ayy-space-2);
   margin-block-end: var(--ayy-space-3);
   padding-inline: var(--ayy-space-2);
-  font-size: var(--ayy-text-lg);
-  font-weight: var(--ayy-weight-bold);
 }
 
 .pv-brand__mark {
@@ -244,7 +242,7 @@
 .pv-h {
   margin: 0 0 var(--ayy-space-2);
   font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
   letter-spacing: var(--ayy-tracking-eyebrow);
   text-transform: uppercase;
@@ -310,6 +308,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--ayy-space-3);
+  flex-wrap: wrap;
 }
 
 .pv-example__title {
@@ -320,9 +319,95 @@
   line-height: var(--ayy-leading-snug);
 }
 
-.pv-stage {
+.pv-example__actions {
   display: flex;
   align-items: center;
+  gap: var(--ayy-space-2);
+  flex-wrap: wrap;
+}
+
+.pv-props-popover {
+  inline-size: 280px;
+  max-inline-size: 90vw;
+}
+
+.pv-props-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block-end: var(--ayy-space-2);
+  margin-block-end: var(--ayy-space-2);
+  border-block-end: 1px solid var(--ayy-color-line);
+}
+
+.pv-props-popover__title {
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-s);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ayy-color-muted);
+}
+
+.pv-props-popover__device {
+  font-size: var(--ayy-text-s);
+  text-transform: capitalize;
+}
+
+.pv-props-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+}
+
+.pv-props-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+}
+
+.pv-props-group + .pv-props-group {
+  padding-block-start: var(--ayy-space-2);
+  border-block-start: 1px solid var(--ayy-color-line);
+}
+
+.pv-props-group__title {
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-s);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ayy-color-muted);
+  padding-inline: var(--ayy-space-2);
+  margin-block-end: var(--ayy-space-1);
+}
+
+.pv-props-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+  padding: var(--ayy-space-1) var(--ayy-space-2);
+  border-radius: var(--ayy-radius-md);
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.pv-props-item:hover {
+  background-color: var(--ayy-color-wash);
+}
+
+.pv-props-label {
+  font-size: var(--ayy-text-sm);
+  color: var(--ayy-color-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.pv-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-block-size: 128px;
   padding: var(--ayy-space-8) var(--ayy-space-6);
   border: 1px solid var(--ayy-color-line);
@@ -330,6 +415,70 @@
   background-color: var(--ayy-color-bg);
   background-image: radial-gradient(var(--ayy-color-hairline) 1px, transparent 1px);
   background-size: 16px 16px;
+  overflow: hidden;
+}
+
+.pv-stage__viewport {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  margin-inline: auto;
+  transform-origin: top center;
+  transition:
+    max-inline-size 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    inline-size 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-radius 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: max-inline-size, inline-size, transform;
+}
+
+.pv-stage__viewport[data-device="desktop"] {
+  max-inline-size: 100%;
+}
+
+.pv-stage__viewport[data-device="tablet"] {
+  max-inline-size: min(834px, 100%);
+  padding: var(--ayy-space-4);
+  box-sizing: border-box;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-xl);
+  box-shadow: var(--ayy-shadow-lift);
+  overflow: hidden;
+  background-color: var(--ayy-color-bg);
+}
+
+.pv-stage__viewport[data-device="mobile"] {
+  max-inline-size: min(390px, 100%);
+  padding: var(--ayy-space-4);
+  box-sizing: border-box;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-xl);
+  box-shadow: var(--ayy-shadow-frame);
+  overflow: hidden;
+  background-color: var(--ayy-color-bg);
+}
+
+.pv-stage__iframe {
+  inline-size: 100%;
+  border: none;
+  background-color: transparent;
+  display: block;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pv-stage__viewport {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .pv-stage__viewport[data-device="tablet"],
+  .pv-stage__viewport[data-device="mobile"] {
+    border-color: CanvasText;
+  }
 }
 
 .pv-stage__inner {
@@ -346,40 +495,17 @@
   inline-size: 100%;
 }
 
-.pv-code {
-  overflow: hidden;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-xl);
-  background-color: var(--ayy-color-surface);
-}
-
-.pv-code__bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-4) var(--ayy-space-2);
-  border-block-end: 1px solid var(--ayy-color-hairline);
+.pv-code__pre {
+  max-block-size: 420px;
 }
 
 .pv-code__pre.pv-code__pre--wrap {
   max-block-size: none;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font-size: var(--ayy-text-sm);
 }
 
-.pv-code__pre {
-  max-block-size: 420px;
-  margin: 0;
-  padding: var(--ayy-space-4);
-  overflow: auto;
-  color: var(--ayy-color-text-soft);
-  font-family: var(--ayy-font-mono);
-  font-size: var(--ayy-text-xs);
-  line-height: 1.65;
-  tab-size: 2;
-  text-align: start;
+.pv-code__pre.pv-code__pre--wrap > .ayy-code-block__code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .pv-inline-code {
@@ -469,12 +595,12 @@
   flex-direction: column;
   gap: 2px;
   min-inline-size: 0;
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 .pv-color-tile__desc {
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
 }
 
 .pv-type {
@@ -507,7 +633,7 @@
 
 .pv-type .pv-type__use {
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   line-height: var(--ayy-leading-normal);
 }
 
@@ -560,7 +686,7 @@
 
 .pv-motion__label code {
   color: var(--ayy-color-text-soft);
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 .pv-motion__track {
@@ -813,7 +939,7 @@
 }
 
 .pv-scale__label .ayy-muted {
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-regular);
 }
 
@@ -832,6 +958,7 @@
 
 /* ---- What you can build: gallery and device preview ---- */
 
+/* ayywi-lint-disable-next-line -- docs gallery list: showcase apps grid, not the showcase component */
 .pv-showcase {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
@@ -878,7 +1005,7 @@
 
 .pv-device-bar__size {
   margin-inline-start: auto;
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 .pv-device {
@@ -1125,20 +1252,6 @@
   margin-block-start: 0;
 }
 
-.pv-menu-custom-color {
-  display: flex;
-  align-items: center;
-  gap: var(--ayy-space-1);
-}
-
-.pv-menu-custom-color .ayy-menu__item {
-  flex: 1;
-}
-
-.pv-menu-custom-color .ayy-swatch {
-  flex: none;
-  margin-inline-end: var(--ayy-space-2);
-}
 
 .pv-brand__alert {
   margin-block-start: var(--ayy-space-4);
@@ -1151,7 +1264,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
 }
 
 @media (min-width: 48rem) {
@@ -1169,14 +1282,14 @@
 }
 
 .pv-brand__step strong {
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .pv-brand__step .ayy-mono {
-  font-size: 11px;
+  font-size: var(--ayy-text-s);
 }
 
 .pv-brand__chip {
@@ -1195,10 +1308,5 @@
   border-radius: var(--ayy-radius-sm);
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 2px;
-  font-size: var(--ayy-text-xs);
-}
-
-.pv-code__pre:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: -2px;
+  font-size: var(--ayy-text-s);
 }

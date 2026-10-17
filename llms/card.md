@@ -29,8 +29,6 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - Density — Padding and text don't follow data-density.
 - Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card.
 
-**JS (framework-free)**: cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my
-
 **React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "@danitesler/ayywi/react";`
 - `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).
 - `<CardHeader>` renders <div>.

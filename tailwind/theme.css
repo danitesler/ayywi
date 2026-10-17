@@ -73,7 +73,6 @@
   --font-signature: var(--ayy-font-signature);
   --font-mono: var(--ayy-font-mono);
 
-  --text-2xs: var(--ayy-text-2xs);
   --text-display: var(--ayy-text-display);
   --text-display--line-height: var(--ayy-leading-display);
   --text-display--letter-spacing: var(--ayy-tracking-display);

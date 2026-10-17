@@ -10,22 +10,25 @@ export const menuValueClass = "ayy-menu__value";
 export const menuChevronClass = "ayy-menu__chevron";
 export const menuDescriptionClass = "ayy-menu__description";
 export const menuGroupInlineClass = "ayy-menu__group--inline";
+export const menuItemSelectedClass = "ayy-menu__item--selected";
 
 export interface MenuItemClassOptions {
   destructive?: boolean;
   sub?: boolean;
   expand?: boolean;
   described?: boolean;
+  selected?: boolean;
   className?: string;
 }
 
-export function menuItemClass({ destructive, sub, expand, described, className }: MenuItemClassOptions = {}): string {
+export function menuItemClass({ destructive, sub, expand, described, selected, className }: MenuItemClassOptions = {}): string {
   return cx(
     "ayy-menu__item",
     destructive && "ayy-menu__item--destructive",
     sub && "ayy-menu__item--sub",
     expand && "ayy-menu__item--expand",
     described && "ayy-menu__item--described",
+    selected && "ayy-menu__item--selected",
     className,
   );
 }
@@ -169,11 +172,11 @@ export function connectMenu(
     controller = {
       open() {
         isOpen = true;
-        content.classList.remove("ayy-menu--hidden");
+        content.hidden = false;
       },
       close() {
         isOpen = false;
-        content.classList.add("ayy-menu--hidden");
+        content.hidden = true;
       },
       isOpen() {
         return isOpen;

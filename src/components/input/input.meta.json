@@ -3,22 +3,26 @@
   "slug": "input",
   "status": "stable",
   "category": "Forms",
-  "description": "Single-line text field. Works for every native input type (text, email, search, number, file…).",
-  "aka": ["input", "text-field", "textbox", "text-input"],
+  "description": "Single-line text field and input group. Works for every native input type (text, password, email, search, tel, url, file…) and supports inline addons, icons and action buttons.",
+  "aka": ["input", "text-field", "textbox", "text-input", "input-group", "input-addon", "input-adornment"],
   "classes": {
     "ayy-input": "Root, on the <input> itself.",
     "ayy-input--sm": "28px tall.",
-    "ayy-input--lg": "40px tall."
+    "ayy-input--lg": "40px tall.",
+    "ayy-input-group": "Root for an input with inline addons, icons or buttons. Draws the field (border, fill, radius, height) and the focus ring while its .ayy-input is focused.",
+    "ayy-input-group--sm": "Small height (--ayy-size-control-sm).",
+    "ayy-input-group--lg": "Large height (--ayy-size-control-lg).",
+    "ayy-input-group__addon": "Text beside the input: a prefix (https://), a suffix (USD, %) or a Kbd hint. Muted, one line."
   },
   "variants": {
     "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
   "states": {
-    "default": { "looks": "Wash fill, 1px line-strong border, control radius; placeholder in muted at 70%." },
+    "default": { "looks": "Wash fill, 1px line-strong border, control radius; placeholder in muted at 70%. In an input group, addons and icons are muted and the input loses its own border." },
     "hover": { "when": ":hover", "looks": "Border turns line-hover." },
-    "pressed": { "none": "Text fields have no pressed look; the caret shows where you are." },
-    "focus": { "when": ":focus-visible", "looks": "2px ring drawn just inside the edge (-1px offset); the border goes transparent." },
-    "disabled": { "when": ":disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
+    "pressed": { "none": "Text fields have no pressed look; the caret shows where you are. Trailing buttons keep their own pressed look." },
+    "focus": { "when": ":focus-visible, or .ayy-input-group:has(> .ayy-input:focus-visible)", "looks": "2px ring drawn just inside the edge (-1px offset); the border goes transparent. In an input group, the ring moves to the group container." },
+    "disabled": { "when": ":disabled, or .ayy-input-group:has(> .ayy-input:disabled)", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
     "selected": { "none": "Not a choice control." },
     "error": { "when": "aria-invalid=\"true\" (with a FieldError)", "looks": "Border 60% destructive; the focus ring turns destructive. Forced colours: dashed border." },
     "loading": { "none": "No loading look. While a value is checked (a username), use an Input group with a small Spinner as its addon." }
@@ -32,34 +36,48 @@
     "density": "Height and text size follow data-density; touch keeps md text at 16px so iOS doesn't zoom.",
     "width": "Fills its container (inline-size 100%); set a max-inline-size in rem for short values."
   },
-  "js": "inputClass({ size?, className? }) → string",
+  "js": "inputClass({ size?, className? }) → string; inputGroupClass({ size?, className? }) → string; inputGroupAddonClass constant.",
   "react": {
-    "import": "import { Input } from \"@danitesler/ayywi/react\";",
+    "import": "import { Input, InputGroup, InputGroupAddon } from \"@danitesler/ayywi/react\";",
     "components": {
       "Input": {
         "renders": "<input>",
         "props": { "size": "\"sm\" | \"md\" | \"lg\" (visual size; native size attr not exposed)", "...rest": "All native <input> attributes." }
+      },
+      "InputGroup": {
+        "renders": "<div class=\"ayy-input-group\">",
+        "props": { "size": "\"sm\" | \"md\" | \"lg\"", "...rest": "All native <div> attributes." }
+      },
+      "InputGroupAddon": {
+        "renders": "<span class=\"ayy-input-group__addon\">",
+        "props": { "...rest": "All native <span> attributes." }
       }
     }
   },
   "a11y": [
     "Every input needs a label: wrap in a Field with a Label (for/id), or aria-label for search boxes.",
-    "Errors: aria-invalid=\"true\" + aria-describedby pointing at the error text."
+    "The input inside an InputGroup still needs its own label; icons and addons do not name it.",
+    "Errors: aria-invalid=\"true\" + aria-describedby pointing at the error text.",
+    "Action buttons inside an InputGroup (show password, clear) must have an accessible aria-label and aria-pressed where applicable."
   ],
   "do": [
-    "Use an input for short free-text entry: names, URLs, search, API keys.",
-    "Use type=\"date\", \"time\" or \"datetime-local\" for dates and times: the browser's own picker, in the theme's colour scheme, with keyboard entry and the user's locale. Set min and max for bookable ranges.",
+    "Use an input for short free-text entry: names, URLs, search, API keys, passwords.",
+    "Use an InputGroup when an input needs a leading icon, a prefix/suffix unit, or a trailing action button.",
     "Match the input size to neighbouring buttons in a toolbar (sm with sm)."
   ],
   "dont": [
     "Don't use an input for multi-line text — use Textarea.",
     "Don't use an input for on/off — use Switch.",
     "Don't use placeholder as the label.",
-    "Don't hardcode widths in px inside flexible layouts — the input fills its container."
+    "Don't hardcode widths in px inside flexible layouts — the input fills its container.",
+    "Don't use an input for picking dates or times — use Date & time picker (DatePicker, DateRange, TimePicker, DateTimePicker).",
+    "Don't stack more than one addon on each side of an InputGroup.",
+    "Don't put a primary action button inside an InputGroup — place a Button next to it."
   ],
   "examples": [
-    { "id": "basic", "title": "Types & sizes" },
-    { "id": "invalid", "title": "Invalid" },
-    { "id": "date-time", "title": "Date and time" }
+    { "id": "sizes", "title": "Sizes" },
+    { "id": "types", "title": "Input types" },
+    { "id": "group", "title": "Input group & addons" },
+    { "id": "invalid", "title": "Validation error" }
   ]
 }

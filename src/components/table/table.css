@@ -10,7 +10,7 @@
   inline-size: 100%;
   border-collapse: collapse;
   caption-side: bottom;
-  font-size: var(--ayy-text-xs);
+  font-size: var(--ayy-text-s);
   color: var(--ayy-color-text);
 }
 
@@ -44,7 +44,7 @@
   padding-inline: var(--ayy-space-3);
   vertical-align: middle;
   text-align: start;
-  font-size: var(--ayy-text-2xs);
+  font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
   letter-spacing: var(--ayy-tracking-wide);
   text-transform: uppercase;
@@ -138,6 +138,32 @@
 .ayy-table .ayy-table__select {
   inline-size: 1%;
   padding-inline-end: 0;
+}
+
+/* The actions column at the inline end of a row: hugs inline action buttons and a ⋯ overflow menu trigger. */
+.ayy-table .ayy-table__actions {
+  inline-size: 1%;
+  padding-block: var(--ayy-space-1-5);
+  padding-inline-start: 0;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.ayy-table__row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ayy-space-1);
+}
+
+@media (hover: hover) {
+  .ayy-table__row-actions--reveal {
+    transition: opacity var(--ayy-duration-fast) ease;
+  }
+
+  .ayy-table tbody tr:not(:hover, :focus-within, [aria-selected="true"], :has([aria-expanded="true"])) .ayy-table__row-actions--reveal {
+    opacity: 0;
+  }
 }
 
 @media (forced-colors: active) {

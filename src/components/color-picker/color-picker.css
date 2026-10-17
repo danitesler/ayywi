@@ -2,11 +2,11 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: var(--ayy-space-3);
-  inline-size: 16rem;
+  gap: var(--ayy-space-2);
+  inline-size: 13.5rem;
   max-inline-size: 100%;
-  padding-block: var(--ayy-space-3);
-  padding-inline: var(--ayy-space-3);
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-2);
   border: 1px solid var(--ayy-color-line);
   border-radius: var(--ayy-radius-card);
   background-color: var(--ayy-color-surface);
@@ -24,12 +24,13 @@
 .ayy-color-picker__area {
   position: relative;
   inline-size: 100%;
-  block-size: 9.5rem;
+  block-size: 6.75rem;
   border-radius: var(--ayy-radius-md);
   overflow: hidden;
   cursor: crosshair;
   touch-action: none;
   background: var(--_area-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 14%, transparent);
 }
 
 .ayy-color-picker__area:focus-visible {
@@ -47,9 +48,9 @@
   inset-inline-start: var(--_x, 0%);
   inset-block-start: var(--_y, 0%);
   border-radius: var(--ayy-radius-pill);
-  border: 2px solid var(--ayy-color-bg);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 40%, transparent), 0 2px 4px color-mix(in srgb, var(--ayy-color-shadow) 50%, transparent);
-  background-color: transparent;
+  border: 2px solid var(--ayy-color-text);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ayy-color-shadow) 70%, transparent), 0 2px 6px color-mix(in srgb, var(--ayy-color-shadow) 70%, transparent);
+  background-color: var(--_color, transparent);
   pointer-events: none;
 }
 
@@ -67,7 +68,7 @@
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
-  block-size: var(--ayy-size-control-sm);
+  block-size: 0.625rem;
   margin: 0;
   padding: 0;
   background: transparent;
@@ -75,19 +76,19 @@
 }
 
 .ayy-color-picker__hue::-webkit-slider-runnable-track {
-  block-size: 0.75rem;
+  block-size: 0.625rem;
   border-radius: var(--ayy-radius-pill);
   background: var(--_hue-track);
 }
 
 .ayy-color-picker__hue::-moz-range-track {
-  block-size: 0.75rem;
+  block-size: 0.625rem;
   border-radius: var(--ayy-radius-pill);
   background: var(--_hue-track);
 }
 
 .ayy-color-picker__alpha::-webkit-slider-runnable-track {
-  block-size: 0.75rem;
+  block-size: 0.625rem;
   border-radius: var(--ayy-radius-pill);
   background:
     linear-gradient(to right, transparent, var(--_color, var(--ayy-color-text))),
@@ -95,7 +96,7 @@
 }
 
 .ayy-color-picker__alpha::-moz-range-track {
-  block-size: 0.75rem;
+  block-size: 0.625rem;
   border-radius: var(--ayy-radius-pill);
   background:
     linear-gradient(to right, transparent, var(--_color, var(--ayy-color-text))),
@@ -107,9 +108,9 @@
   -webkit-appearance: none;
   appearance: none;
   box-sizing: border-box;
-  inline-size: 1rem;
-  block-size: 1rem;
-  margin-block-start: calc((0.75rem - 1rem) / 2);
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  margin-block-start: calc((0.625rem - 0.875rem) / 2);
   border: 2px solid var(--ayy-color-bg);
   border-radius: var(--ayy-radius-pill);
   background-color: var(--ayy-color-text);
@@ -120,8 +121,8 @@
 .ayy-color-picker__hue::-moz-range-thumb,
 .ayy-color-picker__alpha::-moz-range-thumb {
   box-sizing: border-box;
-  inline-size: 1rem;
-  block-size: 1rem;
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
   border: 2px solid var(--ayy-color-bg);
   border-radius: var(--ayy-radius-pill);
   background-color: var(--ayy-color-text);
@@ -151,8 +152,8 @@
 .ayy-color-picker__preview {
   position: relative;
   box-sizing: border-box;
-  inline-size: var(--ayy-size-control-md);
-  block-size: var(--ayy-size-control-md);
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
   flex: none;
   border-radius: var(--ayy-radius-md);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 18%, transparent);
@@ -167,22 +168,26 @@
   gap: var(--ayy-space-2);
 }
 
-.ayy-color-picker__inputs > input {
+.ayy-color-picker__inputs :is(input, .ayy-input) {
   font-family: var(--ayy-font-mono);
 }
 
+.ayy-color-picker__copy {
+  flex: none;
+}
+
 .ayy-color-picker__swatches {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ayy-space-1-5);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1.125rem, 1fr));
+  gap: var(--ayy-space-1);
   padding-block-start: var(--ayy-space-2);
   border-block-start: 1px solid var(--ayy-color-hairline);
 }
 
 .ayy-color-picker__swatch {
   box-sizing: border-box;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
+  inline-size: 100%;
+  aspect-ratio: 1;
   margin: 0;
   padding: 0;
   border: 0;
@@ -200,8 +205,8 @@
 .ayy-color-picker__swatch[aria-pressed="true"] {
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 18%, transparent),
-    0 0 0 2px var(--ayy-color-surface),
-    0 0 0 4px var(--ayy-color-text);
+    0 0 0 1.5px var(--ayy-color-surface),
+    0 0 0 3px var(--ayy-color-text);
 }
 
 .ayy-color-picker__swatch:focus-visible {
@@ -251,4 +256,9 @@
     outline: 2px solid Highlight;
     outline-offset: 1px;
   }
+}
+
+/* <ayy-color-picker> only adds behaviour; it has no box of its own. */
+ayy-color-picker {
+  display: contents;
 }

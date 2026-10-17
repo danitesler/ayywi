@@ -10,6 +10,9 @@ Category: Actions. A search field over a grouped list of actions and places: typ
 - `.ayy-command__group` — role="group" aria-labelledby its label. Hidden when none of its items match.
 - `.ayy-command__label` — A group's name ("Go to"), muted, role="presentation" with an id.
 - `.ayy-command__item` — role="option" with an id: an icon, the text, then a __meta. aria-selected="true" on the highlighted one; data-value is what it runs, data-keywords more words that find it.
+- `.ayy-command__content` — Vertical stack for an item's title and optional description.
+- `.ayy-command__title` — The primary label of an item.
+- `.ayy-command__description` — One-line muted summary under the title, truncated with ellipsis.
 - `.ayy-command__meta` — At an item's end: a .ayy-shortcut, a list name or a count, muted.
 - `.ayy-command__empty` — "No results", shown only when nothing matches (hidden otherwise).
 - `.ayy-command__footer` — Under the list after a hairline: key hints (↑↓ to move, ↵ to run) or a link.
@@ -30,8 +33,6 @@ Category: Actions. A search field over a grouped list of actions and places: typ
 - Density — Items are the md control height (32px compact, 40 comfortable, 44 touch); the field is the lg height.
 - Width — Inline it fills its container. As a dialog (ayy-dialog ayy-command) it's 36rem wide, at most the viewport less 2rem, near the top of the screen; the list scrolls past 24rem.
 
-**JS (framework-free)**: connectCommand(root, { onSelect?, filter? }) → { refresh, reset, destroy } wires filtering, the arrows, Enter and the pointer on plain markup; Enter clicks the highlighted item. commandMatches(text, query) is the matching rule (every typed word starts a word, or one word anywhere); commandItemText(item). commandClass, commandInputClass, commandListClass, commandItemClass, commandSearchIcon (SVG markup).
-
 **Custom element** `<ayy-command>` (@danitesler/ayywi/elements) — 
 - attribute `shortcut`: Opens and closes the dialog palette from anywhere. Default "Mod+K" (⌘K, Ctrl+K); "" for none.
 - attribute `manual`: Don't filter: you change the items yourself on "input" (a search API), then call refresh().
@@ -41,7 +42,7 @@ Category: Actions. A search field over a grouped list of actions and places: typ
 - `<Command>` renders <div class="ayy-command"> search field, <div role="listbox" class="ayy-command__list">{children}</div>, footer. Props: `label` string — the field's and list's accessible name. Default "Search commands"; `placeholder` string — default "Type a command or search…"; `emptyText` ReactNode — when nothing matches. Default "No results"; `footer` ReactNode — key hints under the list; `filter` boolean — filter by the typed text. Default true; `onSearchChange` (text: string) => void — every keystroke (fetch results here with filter={false}); `onRun` (value?: string) => void — after an item runs, with its value; `inputProps` InputHTMLAttributes — more props for the <input>
 - `<CommandDialog>` renders <dialog class="ayy-dialog ayy-command" aria-label> with the same parts; closes when an item runs. Props: `open / defaultOpen / onOpenChange` Like Dialog; `shortcut` string | null — toggles it from anywhere. Default "Mod+K"; `label / placeholder / emptyText / footer / filter / onSearchChange / onRun / inputProps` As on Command; `className` string — on the <dialog>
 - `<CommandGroup>` renders <div class="ayy-command__group" role="group"> with an .ayy-command__label. Props: `heading` ReactNode — the group's name
-- `<CommandItem>` renders <div class="ayy-command__item" role="option" data-value data-keywords>. Props: `onSelect` () => void — runs on Enter or a click; `value` string — passed to onRun; `keywords` string — more words that find it; `icon` ReactNode — an Icon before the text; `shortcut` string — its shortcut at the end ("Mod+N"); `meta` ReactNode — other text at the end: a count, a list name; `disabled` boolean — dimmed, skipped by the arrows
+- `<CommandItem>` renders <div class="ayy-command__item" role="option" data-value data-keywords data-title data-description>. Props: `onSelect` () => void — runs on Enter or a click; `value` string — passed to onRun; `keywords` string — more words that find it; `description` ReactNode — optional one-line summary under the title; `icon` ReactNode — an Icon before the text; `shortcut` string — its shortcut at the end ("Mod+N"); `meta` ReactNode — other text at the end: a count, a list name; `disabled` boolean — dimmed, skipped by the arrows
 
 **Accessibility**
 - The WAI-ARIA combobox pattern with a listbox that is always shown: focus stays in the input, aria-activedescendant names the highlighted item, and the first match is highlighted as you type.
@@ -55,6 +56,8 @@ Category: Actions. A search field over a grouped list of actions and places: typ
 - Group items by what they do (Create, Go to, Appearance) and keep labels verb-first ("New task", "Switch theme").
 - Add keywords for the words people might type instead ("preferences" for Settings).
 - Show each item's own shortcut at its end so the palette teaches them.
+- Use TextHighlight (<TextHighlight> in React, <mark class="ayy-text-highlight"> in HTML) to highlight matching terms in titles and descriptions.
+- Show descriptions conditionally when matches occur in item descriptions, or keep descriptions always visible for items that need extra context.
 
 **Don't**
 - Don't make it the only way to reach something; it's a shortcut, not navigation.
@@ -234,6 +237,172 @@ export default function Example() {
         </CommandGroup>
       </CommandDialog>
     </>
+  );
+}
+```
+
+## Command palette — Search with text highlight and descriptions
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-command> filters as you type and supports <mark class="ayy-text-highlight"> for search matches. -->
+<ayy-command>
+  <div class="ayy-command" style="max-inline-size: 36rem">
+    <div class="ayy-command__search">
+      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <input type="search" class="ayy-command__input" role="combobox" aria-expanded="true" aria-controls="cmd-search-1-html" aria-autocomplete="list" aria-label="Search commands" value="hi" placeholder="Type a command or search…" autocomplete="off" spellcheck="false" />
+    </div>
+    <div id="cmd-search-1-html" class="ayy-command__list" role="listbox" aria-label="Search commands">
+      <div class="ayy-command__group" role="group" aria-labelledby="cmd-search-data-label">
+        <div id="cmd-search-data-label" class="ayy-command__label" role="presentation">Data display</div>
+        <div id="cmd-search-item-1" class="ayy-command__item" role="option" data-value="keyboard-hint" aria-selected="true"><span class="ayy-command__title">Keyboard <mark class="ayy-text-highlight">hi</mark>nt</span><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-2" class="ayy-command__item" role="option" data-value="text-highlight"><span class="ayy-command__title">Text <mark class="ayy-text-highlight">hi</mark>ghlight</span><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-3" class="ayy-command__item" role="option" data-value="code-block"><div class="ayy-command__content"><div class="ayy-command__title">Code block</div><div class="ayy-command__description">Formatted code container with header, filename, copy button, line numbers and syntax <mark class="ayy-text-highlight">hi</mark>ghlighting</div></div><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-4" class="ayy-command__item" role="option" data-value="timeline"><div class="ayy-command__content"><div class="ayy-command__title">Timeline</div><div class="ayy-command__description">Chronological list of events, milestones, or <mark class="ayy-text-highlight">hi</mark>story with vertical connections</div></div><span class="ayy-command__meta">Data display</span></div>
+      </div>
+      <div class="ayy-command__group" role="group" aria-labelledby="cmd-search-forms-label">
+        <div id="cmd-search-forms-label" class="ayy-command__label" role="presentation">Forms</div>
+        <div id="cmd-search-item-5" class="ayy-command__item" role="option" data-value="chip"><span class="ayy-command__title">C<mark class="ayy-text-highlight">hi</mark>p</span><span class="ayy-command__meta">Forms</span></div>
+        <div id="cmd-search-item-6" class="ayy-command__item" role="option" data-value="field"><div class="ayy-command__content"><div class="ayy-command__title">Field</div><div class="ayy-command__description">Form field wrapper: Label + control + <mark class="ayy-text-highlight">hi</mark>nt or error, stacked with consistent spacing</div></div><span class="ayy-command__meta">Forms</span></div>
+        <div id="cmd-search-item-7" class="ayy-command__item" role="option" data-value="file-upload"><span class="ayy-command__title">File upload</span><span class="ayy-command__meta">Forms</span></div>
+      </div>
+      <div class="ayy-command__empty" role="presentation" hidden="">No results</div>
+    </div>
+    <div class="ayy-command__footer"><span><kbd class="ayy-kbd">↑</kbd> <kbd class="ayy-kbd">↓</kbd> to move</span><span><kbd class="ayy-kbd">↵</kbd> to select</span><span><kbd class="ayy-kbd">esc</kbd> to close</span></div>
+  </div>
+</ayy-command>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import { Command, CommandGroup, CommandItem, Kbd, TextHighlight } from "@danitesler/ayywi/react";
+
+interface SearchItem {
+  id: string;
+  title: string;
+  description: string;
+  group: string;
+  meta: string;
+}
+
+const ITEMS: SearchItem[] = [
+  {
+    id: "keyboard-hint",
+    title: "Keyboard hint",
+    description: "Visual key cap hints and shortcut labels for commands",
+    group: "Data display",
+    meta: "Data display",
+  },
+  {
+    id: "text-highlight",
+    title: "Text highlight",
+    description: "Inline text callouts and search match styling",
+    group: "Data display",
+    meta: "Data display",
+  },
+  {
+    id: "code-block",
+    title: "Code block",
+    description: "Formatted code container with header, filename, copy button, line numbers and syntax highlighting",
+    group: "Data display",
+    meta: "Data display",
+  },
+  {
+    id: "timeline",
+    title: "Timeline",
+    description: "Chronological list of events, milestones, or history with vertical connections",
+    group: "Data display",
+    meta: "Data display",
+  },
+  {
+    id: "chip",
+    title: "Chip",
+    description: "Compact interactive tag chips with dismiss actions",
+    group: "Forms",
+    meta: "Forms",
+  },
+  {
+    id: "field",
+    title: "Field",
+    description: "Form field wrapper: Label + control + hint or error, stacked with consistent spacing",
+    group: "Forms",
+    meta: "Forms",
+  },
+  {
+    id: "file-upload",
+    title: "File upload",
+    description: "Drop zone and file selector for attachments",
+    group: "Forms",
+    meta: "Forms",
+  },
+];
+
+export default function Example() {
+  const [query, setQuery] = useState("hi");
+
+  const q = query.trim().toLowerCase();
+  const isTitleMatch = (title: string) => q.length > 0 && title.toLowerCase().includes(q);
+  const showDescription = (title: string, desc: string) =>
+    !isTitleMatch(title) && q.length > 0 && desc.toLowerCase().includes(q);
+
+  return (
+    <Command
+      style={{ maxInlineSize: "36rem" }}
+      label="Search commands"
+      inputProps={{
+        value: query,
+        onChange: (e) => setQuery(e.target.value),
+      }}
+      footer={
+        <>
+          <span>
+            <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move
+          </span>
+          <span>
+            <Kbd>↵</Kbd> to select
+          </span>
+          <span>
+            <Kbd>esc</Kbd> to close
+          </span>
+        </>
+      }
+    >
+      <CommandGroup heading="Data display">
+        {ITEMS.filter((i) => i.group === "Data display").map((item) => (
+          <CommandItem
+            key={item.id}
+            value={item.id}
+            description={
+              showDescription(item.title, item.description) ? (
+                <TextHighlight text={item.description} query={query} />
+              ) : undefined
+            }
+            meta={item.meta}
+          >
+            {query ? <TextHighlight text={item.title} query={query} /> : item.title}
+          </CommandItem>
+        ))}
+      </CommandGroup>
+      <CommandGroup heading="Forms">
+        {ITEMS.filter((i) => i.group === "Forms").map((item) => (
+          <CommandItem
+            key={item.id}
+            value={item.id}
+            description={
+              showDescription(item.title, item.description) ? (
+                <TextHighlight text={item.description} query={query} />
+              ) : undefined
+            }
+            meta={item.meta}
+          >
+            {query ? <TextHighlight text={item.title} query={query} /> : item.title}
+          </CommandItem>
+        ))}
+      </CommandGroup>
+    </Command>
   );
 }
 ```

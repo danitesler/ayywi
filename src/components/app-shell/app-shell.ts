@@ -24,13 +24,14 @@ export const appShellHeadClass = "ayy-app-shell__head";
 export const appShellCollapsedClass = "ayy-app-shell--collapsed";
 export const appShellHoverPreviewClass = "ayy-app-shell--hover-preview";
 export const appShellSmClass = "ayy-app-shell--sm";
+export const appShellMdClass = "ayy-app-shell--md";
 export const appShellDrawerClass = "ayy-app-shell--drawer";
 export const appShellDetailClass = "ayy-app-shell__detail";
 export const appShellResizeClass = "ayy-app-shell__resize";
 export const appShellResizeDetailClass = "ayy-app-shell__resize--detail";
 export const appShellResizingClass = "ayy-app-shell--resizing";
 
-export const appShellSizes = ["md", "sm"] as const;
+export const appShellSizes = ["sm", "md", "lg"] as const;
 export type AppShellSize = (typeof appShellSizes)[number];
 
 /** SVG markup for the menu icon (Hugeicons Menu01) the toggle draws, for non-React renderers. */
@@ -77,10 +78,12 @@ function wouldPreview(aside: HTMLElement): boolean {
 const SIDEBAR_TOGGLE_SELECTOR = `:scope > .${appShellSidebarClass} .${appShellToggleClass}`;
 
 /** A dialog or a popover (menu, tooltip, picker; the toaster aside) is open, so Esc is its to handle. */
-function overlayOpen(): boolean {
-  if (document.querySelector("dialog[open]")) return true;
+function overlayOpen(doc?: Document): boolean {
+  const d = doc ?? (typeof document !== "undefined" ? document : null);
+  if (!d) return false;
+  if (d.querySelector("dialog[open]")) return true;
   try {
-    return document.querySelector(":popover-open:not(.ayy-toaster)") !== null;
+    return d.querySelector(":popover-open:not(.ayy-toaster)") !== null;
   } catch {
     return false;
   }
@@ -115,7 +118,12 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   const sidebar = () => shell.querySelector<HTMLElement>(`:scope > .${appShellSidebarClass}`);
   const sidebarToggles = () => Array.from(shell.querySelectorAll<HTMLElement>(SIDEBAR_TOGGLE_SELECTOR));
   const isOpen = () => drawerToggles().some((t) => t.getAttribute("aria-expanded") === "true");
-  const media = typeof matchMedia === "function" ? matchMedia(DRAWER_QUERY) : null;
+  const media = typeof shell.ownerDocument.defaultView?.matchMedia === "function"
+    ? shell.ownerDocument.defaultView.matchMedia(DRAWER_QUERY)
+    : typeof matchMedia === "function"
+      ? matchMedia(DRAWER_QUERY)
+      : null;
+  const doc = shell.ownerDocument;
   // The toggle that opened the drawer, so Esc and closing give the focus back to it.
   let opener: HTMLElement | null = null;
 
@@ -178,7 +186,7 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
           `a[href], button:not([disabled]):not(.${appShellToggleClass}), input, summary, [tabindex]:not([tabindex='-1'])`,
         )
         ?.focus();
-    else if (returnFocus && panel.contains(document.activeElement)) (opener?.isConnected ? opener : buttons[0])?.focus();
+    else if (returnFocus && panel.contains(doc.activeElement)) (opener?.isConnected ? opener : buttons[0])?.focus();
   };
 
   const onClick = (event: MouseEvent) => {
@@ -222,9 +230,9 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
       event.key === "Escape" &&
       !isOpen() &&
       shell.classList.contains(appShellHoverPreviewClass) &&
-      sidebar()?.contains(document.activeElement)
+      sidebar()?.contains(doc.activeElement)
     ) {
-      (document.activeElement as HTMLElement | null)?.blur();
+      (doc.activeElement as HTMLElement | null)?.blur();
     }
   };
 
@@ -233,7 +241,7 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   const onSettingsEscape = (event: KeyboardEvent) => {
     if (event.key !== "Escape" || event.defaultPrevented || !shell.classList.contains(appShellSettingsClass)) return;
     const target = event.target instanceof Element ? event.target : null;
-    if (target?.closest(KEEPS_ESCAPE) || target?.closest("[aria-expanded='true']") || overlayOpen()) return;
+    if (target?.closest(KEEPS_ESCAPE) || target?.closest("[aria-expanded='true']") || overlayOpen(doc)) return;
     const back = shell.querySelector<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellBackClass}`);
     if (!back) return;
     event.preventDefault();
@@ -396,8 +404,8 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   shell.addEventListener("click", onClick);
   aside?.addEventListener("pointerleave", onPointerLeave);
   aside?.addEventListener("focusin", onFocusIn);
-  document.addEventListener("keydown", onKeydown);
-  document.addEventListener("keydown", onSettingsEscape, true);
+  doc.addEventListener("keydown", onKeydown);
+  doc.addEventListener("keydown", onSettingsEscape, true);
   media?.addEventListener("change", onMedia);
   return () => {
     endDrag();
@@ -412,8 +420,8 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     aside?.removeEventListener("pointerleave", onPointerLeave);
     aside?.removeEventListener("focusin", onFocusIn);
     release();
-    document.removeEventListener("keydown", onKeydown);
-    document.removeEventListener("keydown", onSettingsEscape, true);
+    doc.removeEventListener("keydown", onKeydown);
+    doc.removeEventListener("keydown", onSettingsEscape, true);
     media?.removeEventListener("change", onMedia);
     if (isOpen()) set(false, { returnFocus: false });
   };

@@ -3,6 +3,7 @@ import {
   appShellClass,
   appShellCollapsedClass,
   appShellHoverPreviewClass,
+  appShellMdClass,
   appShellSidebarClass,
   appShellSmClass,
   appShellToggleClass,
@@ -14,7 +15,7 @@ import {
  * - On phones: the `.ayy-app-shell__toggle` in the `.ayy-app-shell__bar` or bottom nav opens and closes the drawer.
  * - On wide screens: collapses to an icon rail when `collapsed` is set, and a toggle collapses/expands the sidebar.
  * - Hovering or focusing the collapsed sidebar expands it as an overlay preview; on by default, hover-preview="false" turns it off.
- * - `size="sm"` is the Small size (sets ayy-app-shell--sm); Big ("md") is the default.
+ * - `size="sm" | "md" | "lg"` sets the sidebar row size (matching Button's sm/md/lg scale); "lg" is the default.
  * - A `.ayy-app-shell__resize` handle drags the sidebar's width, an `.ayy-app-shell__resize--detail` one the detail pane's.
  * Fires "ayy-collapse-change" ({ collapsed }) when toggled and "ayy-resize" ({ edge, width }) when a resize ends.
  */
@@ -42,7 +43,7 @@ export class AyyAppShellElement extends ElementBase {
   }
 
   get size(): string {
-    return this.getAttribute("size") || "md";
+    return this.getAttribute("size") || "lg";
   }
   set size(value: string) {
     this.setAttribute("size", value);
@@ -92,8 +93,11 @@ export class AyyAppShellElement extends ElementBase {
     if (!shell) return;
     shell.classList.toggle(appShellCollapsedClass, this.collapsed);
     shell.classList.toggle(appShellHoverPreviewClass, this.hoverPreview);
-    // Only when size is set, so a hand-written .ayy-app-shell--sm survives.
-    if (this.hasAttribute("size")) shell.classList.toggle(appShellSmClass, this.size === "sm");
+    // Only when size is set, so a hand-written .ayy-app-shell--sm or --md survives.
+    if (this.hasAttribute("size")) {
+      shell.classList.toggle(appShellSmClass, this.size === "sm");
+      shell.classList.toggle(appShellMdClass, this.size === "md");
+    }
     const toggles = shell.querySelectorAll<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellToggleClass}`);
     for (const toggle of toggles) {
       toggle.setAttribute("aria-expanded", String(!this.collapsed));

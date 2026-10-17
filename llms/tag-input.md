@@ -27,8 +27,6 @@ Category: Forms. A field that turns what you type into removable chips: tags, la
 - Density — The first line's height follows data-density (above); each line of tags adds a chip's height.
 - Width — Fills its container; tags wrap.
 
-**JS (framework-free)**: splitTags(text) → tags split at commas and new lines; addTags(values, add, { max?, caseSensitive? }) → values with the new ones appended (no duplicates, ignoring case); tagChip(value, removeLabel?) → a chip element; tagInputClass({ size?, suggestions? }); tagRemoveIcon (SVG markup). connectTagInput(root, { name?, max?, caseSensitive?, onChange?, removeLabel?, addedText?, removedText? }) → { values, setValues, destroy } wires plain markup and draws the chips.
-
 **Custom element** `<ayy-tag-input>` (@danitesler/ayywi/elements) — 
 - attribute `name`: Form name: a hidden input per tag carries it.
 - attribute `max`: Most tags allowed.

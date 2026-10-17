@@ -10,6 +10,10 @@
     "ayy-code-block--numbered": "Adds line numbers using CSS counters.",
     "ayy-code-block__header": "Top toolbar with filename and copy button.",
     "ayy-code-block__filename": "File title, path, or language indicator.",
+    "ayy-code-block__actions": "Container for header controls such as language selector and copy button.",
+    "ayy-code-block__selector": "Language selector trigger button in the top toolbar.",
+    "ayy-code-block__chevron": "Chevron icon inside the language selector button.",
+    "ayy-code-block__menu": "Dropdown menu listing supported languages for the code block.",
     "ayy-code-block__copy": "Copy button with icon, copied feedback, and tooltip.",
     "ayy-code-block__pre": "Scrollable preformatted text container.",
     "ayy-code-block__code": "Code element with monospace font and preformatted whitespace.",
@@ -18,16 +22,21 @@
     "ayy-token-comment": "Syntax token for comments.",
     "ayy-token-function": "Syntax token for function and method names.",
     "ayy-token-number": "Syntax token for numeric literals.",
-    "ayy-token-operator": "Syntax token for operators and punctuation."
+    "ayy-token-operator": "Syntax token for operators and punctuation.",
+    "ayy-token-tag": "Syntax token for HTML/JSX element tags.",
+    "ayy-token-attribute": "Syntax token for HTML attributes and JSX props.",
+    "ayy-token-property": "Syntax token for object keys and CSS properties.",
+    "ayy-token-punctuation": "Syntax token for punctuation, braces, and delimiters.",
+    "ayy-token-boolean": "Syntax token for boolean literals and nullish values."
   },
   "variants": {
     "numbered": { "values": [false, true], "default": false, "component": "CodeBlock" }
   },
   "states": {
     "default": { "looks": "Surface background, line border, card radius; preformatted code area." },
-    "hover": { "when": ".ayy-code-block__copy:hover", "looks": "Copy button text colour and wash-hover background; tooltip appears after a short delay." },
+    "hover": { "when": ".ayy-code-block__copy:hover, .ayy-code-block__selector:hover", "looks": "Copy button and selector text colour and wash-hover background; tooltip appears after a short delay." },
     "pressed": { "when": ".ayy-code-block__copy:active", "looks": "Copy button scales down to 0.96 for tactile feedback." },
-    "focus": { "when": ".ayy-code-block__copy:focus-visible", "looks": "Copy button shows 2px ring outline with 2px offset." },
+    "focus": { "when": ".ayy-code-block__copy:focus-visible, .ayy-code-block__selector:focus-visible", "looks": "Copy button and selector show ring outline with offset." },
     "disabled": { "none": "Code blocks display readable content and are not disabled; copy button remains usable." },
     "selected": { "none": "Code blocks have no selected or checked state; use Choice card or Checkbox for selectable items." },
     "error": { "none": "No error look; show an Alert above the code block for syntax or execution failures." },
@@ -38,9 +47,9 @@
     "density": "Padding and copy button follow data-density.",
     "width": "Fills its container width; code pre scrolls horizontally when lines overflow."
   },
-  "js": "codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass(); codeBlockFilenameClass(); codeBlockCopyClass(); codeBlockPreClass(); codeBlockCodeClass(); copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
+  "js": "codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass(); codeBlockFilenameClass(); codeBlockActionsClass(); codeBlockSelectorClass(); codeBlockChevronClass(); codeBlockMenuClass(); codeBlockCopyClass(); codeBlockPreClass(); codeBlockCodeClass(); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) updates a code block from the selector dropdown; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
   "react": {
-    "import": "import { CodeBlock, CodeBlockHeader, CodeBlockFilename, CodeBlockCopy, CodeBlockPre, CodeBlockCode } from \"@danitesler/ayywi/react\";",
+    "import": "import { CodeBlock, CodeBlockHeader, CodeBlockFilename, CodeBlockActions, CodeBlockSelector, CodeBlockCopy, CodeBlockPre, CodeBlockCode } from \"@danitesler/ayywi/react\";",
     "components": {
       "CodeBlock": {
         "renders": "<div class=\"ayy-code-block\">",
@@ -55,6 +64,22 @@
       "CodeBlockFilename": {
         "renders": "<span class=\"ayy-code-block__filename\">",
         "props": {}
+      },
+      "CodeBlockActions": {
+        "renders": "<div class=\"ayy-code-block__actions\">",
+        "props": {}
+      },
+      "CodeBlockSelector": {
+        "renders": "<button class=\"ayy-code-block__selector\"> and <div class=\"ayy-menu ayy-code-block__menu\">",
+        "props": {
+          "value": "string — currently selected language ID",
+          "defaultValue": "string — initial language ID when uncontrolled",
+          "onValueChange": "(value: string) => void — callback fired when a language is selected",
+          "onChange": "(event: { target: { value: string } }) => void — change event handler for compatibility",
+          "languages": "LanguagePreset[] — optional array of languages to populate options; defaults to SUPPORTED_LANGUAGES",
+          "className": "string — additional CSS class names for the trigger button",
+          "disabled": "boolean — whether the selector is disabled"
+        }
       },
       "CodeBlockCopy": {
         "renders": "<button class=\"ayy-code-block__copy\">",
@@ -72,7 +97,10 @@
       },
       "CodeBlockCode": {
         "renders": "<code class=\"ayy-code-block__code\">",
-        "props": {}
+        "props": {
+          "language": "string — language name or file extension for syntax highlighting (e.g. tsx, html, css, json, bash, md, python)",
+          "code": "string — code content to highlight and display; if omitted, renders children"
+        }
       }
     }
   },
@@ -95,6 +123,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "Code block with filename and copy" },
-    { "id": "numbered", "title": "Numbered lines" }
+    { "id": "numbered", "title": "Numbered lines" },
+    { "id": "selector", "title": "Language selector" }
   ]
 }

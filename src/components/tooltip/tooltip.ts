@@ -23,6 +23,7 @@ export function enhanceTooltip(host: HTMLElement): () => void {
 
   let hovered = false;
   let focused = false;
+  let pointerDown = false;
   let hideTimer = 0;
   let stopPlacing: (() => void) | null = null;
   const active = () => hovered || focused;
@@ -46,10 +47,17 @@ export function enhanceTooltip(host: HTMLElement): () => void {
     }, 250);
   };
 
+  const dismiss = () => {
+    window.clearTimeout(hideTimer);
+    host.setAttribute("data-dismissed", "");
+    stopPlacing?.();
+    stopPlacing = null;
+    if (floating && content.matches(":popover-open")) content.hidePopover();
+  };
+
   const onEscape = (event: KeyboardEvent) => {
     if (event.key !== "Escape" || !active()) return;
-    host.setAttribute("data-dismissed", "");
-    hide();
+    dismiss();
   };
 
   const update = () => {
@@ -64,6 +72,7 @@ export function enhanceTooltip(host: HTMLElement): () => void {
   };
 
   const onEnter = () => {
+    host.removeAttribute("data-dismissed");
     hovered = true;
     update();
   };
@@ -71,9 +80,26 @@ export function enhanceTooltip(host: HTMLElement): () => void {
     hovered = false;
     update();
   };
-  const onFocusIn = () => {
-    focused = true;
-    update();
+  const onPointerDown = () => {
+    pointerDown = true;
+    focused = false;
+    dismiss();
+  };
+  const onPointerUp = () => {
+    pointerDown = false;
+  };
+  const onFocusIn = (event: FocusEvent) => {
+    if (pointerDown) return;
+    const target = (event.target as HTMLElement | null) ?? host;
+    try {
+      if (target.matches(":focus-visible") || host.matches(":focus-visible")) {
+        focused = true;
+        update();
+      }
+    } catch {
+      focused = true;
+      update();
+    }
   };
   const onFocusOut = (event: FocusEvent) => {
     if (host.contains(event.relatedTarget as Node | null)) return;
@@ -83,12 +109,16 @@ export function enhanceTooltip(host: HTMLElement): () => void {
 
   host.addEventListener("pointerenter", onEnter);
   host.addEventListener("pointerleave", onLeave);
+  host.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointerup", onPointerUp);
   host.addEventListener("focusin", onFocusIn);
   host.addEventListener("focusout", onFocusOut);
 
   return () => {
     host.removeEventListener("pointerenter", onEnter);
     host.removeEventListener("pointerleave", onLeave);
+    host.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
     host.removeEventListener("focusin", onFocusIn);
     host.removeEventListener("focusout", onFocusOut);
     document.removeEventListener("keydown", onEscape);

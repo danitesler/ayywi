@@ -6,13 +6,14 @@ import { components } from "../data";
 import { showcaseApps, type ShowcaseApp } from "../showcase/apps";
 import { themeOptions } from "../themes";
 
-const ROUTE = "showcase";
+const ROUTE = "apps";
 
-export const showcase = {
+export const showcaseAppsPage = {
   route: ROUTE,
   title: "What you can build",
   text: `examples showcase templates apps screens prompt dashboard landing inbox settings tracker desktop tablet mobile ${showcaseApps.map((a) => `${a.name} ${a.kind}`).join(" ")}`,
 };
+export const showcase = showcaseAppsPage;
 
 const DEVICES = {
   desktop: { label: "Desktop", icon: ComputerIcon, width: 1280, height: 800 },

@@ -1,20 +1,25 @@
-# Contents
+# Table of contents
 
-Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content. Also called: toc, table-of-contents.
+Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content. Also called: toc, table-of-contents, contents.
 
 **Classes**
 - `.ayy-toc` — Root <nav>. Accent from --ayy-spot.
-- `.ayy-toc--sticky` — Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky row of top-level section links under the navbar, the current one underlined and scrolled into view.
-- `.ayy-toc__title` — Small uppercase heading ("Contents"). Point the nav's aria-labelledby at it.
-- `.ayy-toc__list` — <ol> of <li>s with a hairline rail. Nest one inside an <li> for sub-sections.
+- `.ayy-toc--sticky` — Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky pill bar showing the active section that opens the full table of contents in a dropdown menu.
+- `.ayy-toc__title` — Small uppercase heading ("Contents" or "Table of contents"). Point the nav's aria-labelledby at it.
+- `.ayy-toc__bar` — Mobile sticky bar holding the toggle pill (hidden above 48rem).
+- `.ayy-toc__toggle` — Pill button on mobile showing the active section title and caret, toggling the dropdown menu.
+- `.ayy-toc__toggle-icon` — Menu icon inside the mobile toggle pill.
+- `.ayy-toc__toggle-current` — Truncated label of the section being read inside the mobile toggle pill.
+- `.ayy-toc__toggle-caret` — Chevron icon inside the mobile toggle pill that rotates 180° when the menu is open.
+- `.ayy-toc__list` — <ol> of <li>s with a hairline rail on desktop, or a floating dropdown card on phones. Nest one inside an <li> for sub-sections.
 - `.ayy-toc__link` — Section link (href="#id"). aria-current (set by the scrollspy) shows the accent bar; its parent link lights up too.
 - `.ayy-toc__number` — Optional section number (01, 02…) before the label, in the accent while current.
 
 **States**
-- `default` — A hairline rail with muted sm links; nested links indent and get smaller.
-- `hover` (`.ayy-toc__link:hover`) — Link turns text colour.
+- `default` — A hairline rail with muted sm links; nested links indent and get smaller. On phones, a sticky pill showing the active section.
+- `hover` (`.ayy-toc__link:hover, .ayy-toc__toggle:hover`) — Link turns text colour; toggle pill border and background lighten.
 - `pressed` — doesn't apply: No pressed look.
-- `focus` (`.ayy-toc__link:focus-visible`) — 2px ring inset by 2px.
+- `focus` (`.ayy-toc__link:focus-visible, .ayy-toc__toggle:focus-visible`) — 2px ring inset by 2px on links; 2px ring with 2px offset on toggle pill.
 - `disabled` — doesn't apply: No disabled links.
 - `selected` (`.ayy-toc__link[aria-current] (not "false"), kept in sync by <ayy-toc> or connectToc`) — Section being read: text colour and a 2px --ayy-spot bar on the rail; its number takes the accent; a parent of it turns text colour too. Forced colours: underline and Highlight bar.
 - `error` — doesn't apply: No error state.
@@ -24,26 +29,24 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - Density — Doesn't follow data-density.
 - Width — Fills its column. sticky stays in view under the navbar and scrolls on its own when taller than the viewport.
 
-**JS (framework-free)**: tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass constants; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy.
-
 **Custom element** `<ayy-toc>` (@danitesler/ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
 - attribute `offset`: Distance in px below the top of the viewport at which a section becomes current. Default: the page's scroll-padding-top (the navbar sets it) + 24.
 - event `ayy-value-change`: { value: string } — id of the section now being read ("" above the first)
 
 **React** — `import { Toc } from "@danitesler/ayywi/react";`
-- `<Toc>` renders <nav class="ayy-toc">. Props: `items` { id: string; label: ReactNode; children?: TocItem[] }[] — ids of sections on the page, in page order.; `title` ReactNode — visible heading; also becomes the nav's accessible name.; `numbered` boolean — number top-level items 01, 02…; `sticky` boolean; `offset` number — px below the top of the viewport at which a section becomes current.; `onValueChange` (id: string) => void — the section being read changed.; `aria-label` Used when there's no title. Defaults to "On this page" (translate it).
+- `<Toc>` renders <nav class="ayy-toc">. Props: `items` { id: string; label: ReactNode; children?: TocItem[] }[] — ids of sections on the page, in page order.; `title` ReactNode — visible heading; also becomes the nav's accessible name.; `toggleLabel` string — accessible label for the mobile toggle button. Default: "Table of contents".; `numbered` boolean — number top-level items 01, 02…; `sticky` boolean; `offset` number — px below the top of the viewport at which a section becomes current.; `onValueChange` (id: string) => void — the section being read changed.; `aria-label` Used when there's no title. Defaults to "On this page" (translate it).
 
 **Accessibility**
 - It's a <nav> with a name (the title via aria-labelledby, or aria-label="On this page"), so it shows up in landmark lists.
 - The current section is aria-current="location", announced by screen readers, not only drawn as a colour bar.
 - Links are ordinary in-page anchors: they work without JS, and the navbar's scroll-padding keeps targets clear of the sticky header.
-- Links grow to a 40px target at touch density. On phones the visible title is hidden but still names the nav.
+- Links grow to a 40px target at touch density. On phones the visible title is hidden but still names the nav, and the sticky toggle pill is labeled via aria-label.
 
 **Do**
 - Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.
 - List sections in page order; the scrollspy assumes it.
 - Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.
-- Make the page layout put it above the content on phones (a wrapping flex row does, as in the example); --sticky then turns it into a strip of section links.
+- Make the page layout put it above the content on phones (a wrapping flex row does, as in the example); --sticky then turns it into a sticky pill with a dropdown menu.
 
 **Don't**
 - Don't add one to short pages with two or three sections.
@@ -51,7 +54,7 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - Don't nest more than one level.
 - Don't list every heading — sections and their direct sub-sections only.
 
-## Contents — Numbered, beside the content
+## Table of contents — Numbered, beside the content
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -60,7 +63,14 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div style="display: flex; flex-wrap: wrap; gap: var(--ayy-space-8); inline-size: 100%; --ayy-spot: var(--ayy-accent-product)">
   <nav class="ayy-toc ayy-toc--sticky" aria-labelledby="toc-title">
     <ayy-toc>
-      <p class="ayy-toc__title" id="toc-title">Contents</p>
+      <div class="ayy-toc__bar">
+        <button type="button" class="ayy-toc__toggle" aria-expanded="false" aria-label="Table of contents">
+          <span class="ayy-toc__toggle-icon"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5L20 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 12L20 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 19L20 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg></span>
+          <span class="ayy-toc__toggle-current">Overview</span>
+          <span class="ayy-toc__toggle-caret"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg></span>
+        </button>
+      </div>
+      <p class="ayy-toc__title" id="toc-title">Table of contents</p>
       <ol class="ayy-toc__list">
         <li><a class="ayy-toc__link" href="#toc-overview"><span class="ayy-toc__number">01</span>Overview</a></li>
         <li>
@@ -96,7 +106,7 @@ export default function Example() {
       <Toc
         sticky
         numbered
-        title="Contents"
+        title="Table of contents"
         items={[
           { id: "toc-overview", label: "Overview" },
           { id: "toc-system", label: "Design system", children: [{ id: "toc-tokens", label: "Tokens" }] },

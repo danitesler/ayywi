@@ -13,6 +13,17 @@ export const tableWrapClass = "ayy-table-wrap";
 export const tableNumClass = "ayy-table__num";
 export const tableSortClass = "ayy-table__sort";
 export const tableSelectClass = "ayy-table__select";
+export const tableActionsClass = "ayy-table__actions";
+
+export interface TableRowActionsClassOptions {
+  /** Reveal quick actions on row hover, keyboard focus, or when selected (touch screens keep them visible). */
+  reveal?: boolean;
+  className?: string;
+}
+
+export function tableRowActionsClass({ reveal, className }: TableRowActionsClassOptions = {}): string {
+  return cx("ayy-table__row-actions", reveal && "ayy-table__row-actions--reveal", className);
+}
 
 export type SortDirection = "ascending" | "descending";
 

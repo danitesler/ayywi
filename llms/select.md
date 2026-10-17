@@ -30,8 +30,6 @@ Category: Forms. Styled native <select>. With a mouse or trackpad its options op
 - Density — Height and text follow data-density.
 - Width — Fills its container; long option text is cut with an ellipsis. The list is at least the select's width and at most 24rem; its options are the md control height.
 
-**JS (framework-free)**: selectClass({ size?, className? }) → string for the wrapper; selectControlClass, selectListClass, selectOptionClass, selectLabelClass constants; openSelectListFrom(event) opens the list from a mousedown or keydown on a select (what React Select and "@danitesler/ayywi/elements" call); openSelectList(select) opens it directly; usesSelectList(select) says whether a select gets the list here
-
 **React** — `import { Select } from "@danitesler/ayywi/react";`
 - `<Select>` renders <div class="ayy-select"><select class="ayy-select__control">. Props: `size` "sm" | "md" | "lg"; `wrapperProps` Props for the wrapper <div>; `...rest` All native <select> attributes and events (onChange fires when an option is chosen from the list too); className goes to the <select>.
 

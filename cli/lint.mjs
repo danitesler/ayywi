@@ -54,7 +54,23 @@ export function loadContract(path = manifestPath()) {
     const reactNames = Object.keys(c.react?.components ?? {});
     for (const n of reactNames) (reactComponents.add(n), owners.set(n, c.name));
     for (const a of c.aka ?? []) aka.set(a, c.name);
-    if (c.element?.tag) owners.set(c.element.tag, c.name);
+    const allElements = [
+      ...(c.element ? [c.element] : []),
+      ...(Array.isArray(c.elements) ? c.elements : []),
+    ];
+    for (const el of allElements) {
+      if (el?.tag) {
+        if (!owners.has(el.tag)) owners.set(el.tag, c.name);
+        if (!elementAttrs.has(el.tag)) {
+          const attrs = {};
+          for (const [a, desc] of Object.entries(el.attributes ?? {})) {
+            const enumMatch = String(desc).match(/^([\w-]+(?: \| [\w-]+)+)/);
+            attrs[a] = enumMatch ? enumMatch[1].split(" | ") : null;
+          }
+          elementAttrs.set(el.tag, attrs);
+        }
+      }
+    }
     for (const [prop, def] of Object.entries(c.variants ?? {})) {
       if (!def.values?.every((v) => typeof v === "string")) continue;
       const comp = def.component ?? reactNames[0];
@@ -71,14 +87,6 @@ export function loadContract(path = manifestPath()) {
       helperVariants.set(m[1], keys);
     }
     for (const m of String(c.js ?? "").matchAll(/\b([a-z]\w*Class)\b/g)) if (!owners.has(m[1])) owners.set(m[1], c.name);
-    if (c.element?.tag) {
-      const attrs = {};
-      for (const [a, desc] of Object.entries(c.element.attributes ?? {})) {
-        const enumMatch = String(desc).match(/^([\w-]+(?: \| [\w-]+)+)/);
-        attrs[a] = enumMatch ? enumMatch[1].split(" | ") : null;
-      }
-      elementAttrs.set(c.element.tag, attrs);
-    }
   }
   const tokens = new Set(manifest.tokens.map((t) => t.cssVar));
   const hooks = new Set(Object.keys(manifest.publicCustomProperties ?? {}));

@@ -16,9 +16,11 @@ const read = (p) => readFileSync(join(root, p), "utf8").trimEnd();
 const CATEGORY_ORDER = Object.keys(CATEGORIES);
 const rank = (list, x) => (list.includes(x) ? list.indexOf(x) : list.length);
 
-const components = readdirSync(join(root, "src/components")).map((slug) => {
-  const dir = `src/components/${slug}`;
-  const meta = JSON.parse(read(`${dir}/${slug}.meta.json`));
+const components = readdirSync(join(root, "src/components"))
+  .filter((slug) => existsSync(join(root, "src/components", slug, `${slug}.meta.json`)))
+  .map((slug) => {
+    const dir = `src/components/${slug}`;
+    const meta = JSON.parse(read(`${dir}/${slug}.meta.json`));
   const files = {
     css: `${dir}/${slug}.css`,
     js: `${dir}/${slug}.ts`,
@@ -51,7 +53,13 @@ const manifestTokens = tokens.map((t) => {
   return entry;
 });
 
-const elements = components.filter((c) => c.element).map((c) => c.element.tag);
+const elements = components.flatMap((c) => {
+  const list = [
+    ...(c.element ? [c.element.tag] : []),
+    ...(Array.isArray(c.elements) ? c.elements.map((e) => e.tag) : []),
+  ];
+  return [...new Set(list)];
+});
 // Framework-free controllers (connectPopover…) and what dist/elements.global.js puts on window.ayywi, read from the source.
 const controllers = components
   .flatMap((c) => [...read(c.files.js).matchAll(/export function ((?:connect|enhance)\w+)/g)].map((m) => m[1]))
@@ -185,12 +193,18 @@ function componentMarkdown(c, h = "##") {
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
   part.push(`**States**\n${list(stateLines(c))}`);
   part.push(`**Sizes**\n${list(sizeLines(c))}`);
-  if (c.js) part.push(`**JS (framework-free)**: ${c.js}`);
-  if (c.element) {
+  const allElements = [
+    ...(c.element ? [c.element] : []),
+    ...(Array.isArray(c.elements) ? c.elements : []),
+  ];
+  const seenTags = new Set();
+  for (const el of allElements) {
+    if (seenTags.has(el.tag)) continue;
+    seenTags.add(el.tag);
     part.push(
-      `**Custom element** \`<${c.element.tag}>\` (@danitesler/ayywi/elements) — ${c.element.children ?? ""}\n${list([
-        ...Object.entries(c.element.attributes ?? {}).map(([k, v]) => `attribute \`${k}\`: ${v}`),
-        ...Object.entries(c.element.events ?? {}).map(([k, v]) => `event \`${k}\`: ${v}`),
+      `**Custom element** \`<${el.tag}>\` (@danitesler/ayywi/elements) — ${el.children ?? ""}\n${list([
+        ...Object.entries(el.attributes ?? {}).map(([k, v]) => `attribute \`${k}\`: ${v}`),
+        ...Object.entries(el.events ?? {}).map(([k, v]) => `event \`${k}\`: ${v}`),
       ])}`,
     );
   }
@@ -323,8 +337,16 @@ States lists the ones a component has besides default; what each looks like, how
     const states = Object.entries(c.states).filter(([k, s]) => !s.none && k !== "default").map(([k]) => k);
     lines.push(`- States: ${states.length ? states.join(", ") : "none, it's static"}`);
     if (c.sizes.scale) lines.push(`- Sizes: ${Object.keys(c.sizes.scale).map((k) => `\`${k}\``).join(" ")}`);
-    lines.push(`- React: ${react}`);
-    if (c.element) lines.push(`- Element: \`<${c.element.tag}${Object.keys(c.element.attributes ?? {}).filter((a) => a !== "class").map((a) => ` ${a}`).join("")}>\`${Object.keys(c.element.events ?? {}).length ? `, events ${Object.keys(c.element.events).map((e) => `\`${e}\``).join(", ")}` : ""}`);
+    const allElementsForLlms = [
+      ...(c.element ? [c.element] : []),
+      ...(Array.isArray(c.elements) ? c.elements : []),
+    ];
+    const seenElementTags = new Set();
+    for (const el of allElementsForLlms) {
+      if (seenElementTags.has(el.tag)) continue;
+      seenElementTags.add(el.tag);
+      lines.push(`- Element: \`<${el.tag}${Object.keys(el.attributes ?? {}).filter((a) => a !== "class").map((a) => ` ${a}`).join("")}>\`${Object.keys(el.events ?? {}).length ? `, events ${Object.keys(el.events).map((e) => `\`${e}\``).join(", ")}` : ""}`);
+    }
     if (c.js) lines.push(`- JS: ${c.js}`);
     lines.push(`- A11y: ${c.a11y.join(" ")}`);
     return lines.join("\n");

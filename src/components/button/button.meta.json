@@ -18,12 +18,16 @@
     "ayy-button--icon": "Square at the md control height (32px compact, 40 comfortable, 44 touch), for a single 16px icon.",
     "ayy-button--icon-sm": "Square at the sm control height (28px compact, 32 comfortable, 40 touch), for a single 16px icon.",
     "ayy-button--icon-lg": "Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.",
-    "ayy-button--block": "Fills its container's width: a card footer, a phone form, a dialog's only action."
+    "ayy-button--block": "Fills its container's width: a card footer, a phone form, a dialog's only action.",
+    "ayy-button--start": "Icon and label sit at the inline start of a wide button (like an App shell link). Use with block.",
+    "ayy-button--end": "Icon and label sit at the inline end of a wide button. Use with block. Centered is the default, no class."
   },
   "variants": {
     "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"], "default": "primary" },
     "size": { "values": ["sm", "md", "lg", "icon", "icon-sm", "icon-lg"], "default": "md" },
-    "block": { "values": [false, true], "default": false, "component": "Button" }
+    "block": { "values": [false, true], "default": false, "component": "Button" },
+    "align": { "values": ["start", "center", "end"], "default": "center", "component": "Button" },
+    "loading": { "values": [false, true], "default": false, "component": "Button" }
   },
   "states": {
     "default": { "looks": "Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring." },
@@ -37,7 +41,7 @@
   },
   "sizes": {
     "scale": {
-      "sm": "Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (11/12/14px), --ayy-size-icon-sm (16px) icon, 6px gap.",
+      "sm": "Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (12/12/14px), --ayy-size-icon-sm (16px) icon, 6px gap.",
       "md": "Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/14/16px), --ayy-size-icon-sm (16px) icon, 8px gap.",
       "lg": "Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/16/18px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.",
       "icon": "Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).",
@@ -47,7 +51,7 @@
     "density": "Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).",
     "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action."
   },
-  "js": "buttonClass({ variant?, size?, block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
+  "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
   "react": {
     "import": "import { Button } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -58,6 +62,7 @@
           "size": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-sm\" | \"icon-lg\"",
           "type": "Defaults to \"button\" (not \"submit\").",
           "block": "boolean — full width (ayy-button--block).",
+          "align": "\"start\" | \"center\" | \"end\" — where the icon and label sit in a wide button; center is the default.",
           "loading": "boolean — a Spinner before the label and aria-busy=\"true\"; clicks and form submits are ignored while it's set. Stays focusable.",
           "...rest": "All native <button> attributes."
         }
@@ -87,6 +92,8 @@
     { "id": "variants", "title": "Variants" },
     { "id": "sizes", "title": "Sizes" },
     { "id": "icon", "title": "With icon & icon-only" },
+    { "id": "loading", "title": "Loading with spinner" },
+    { "id": "align", "title": "Wide button alignment" },
     { "id": "as-link", "title": "Link styled as a button" },
     { "id": "ring", "title": "Ring call to action" }
   ]
