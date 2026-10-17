@@ -327,7 +327,7 @@ export class AyyTimePickerElement extends ElementBase {
  * combining date grid and time columns side-by-side. Fires "ayy-select" ({ value, date, time }).
  */
 export class AyyDateTimePickerElement extends ElementBase {
-  static observedAttributes = ["value", "format", "step", "min", "max"];
+  static observedAttributes = ["value", "format", "step", "min", "max", "week-start"];
   #controller: DateTimePickerController | null = null;
   #syncing = false;
   #dateVal: string | null = null;
@@ -351,6 +351,7 @@ export class AyyDateTimePickerElement extends ElementBase {
     if (!root) return;
     const format = (this.getAttribute("format") as TimePickerFormat | null) ?? "24h";
     const stepAttr = this.getAttribute("step");
+    const weekStart = this.getAttribute("week-start");
     const parts = (this.value ?? "").split("T");
     this.#dateVal = parts[0] || null;
     this.#timeVal = parts[1] || null;
@@ -368,6 +369,7 @@ export class AyyDateTimePickerElement extends ElementBase {
       timeValue: this.#timeVal,
       twelveHour: format === "12h",
       stepMinute: stepAttr === null ? undefined : Number(stepAttr),
+      weekStart: weekStart === null ? undefined : (Number(weekStart) as Weekday),
       min: this.getAttribute("min") ?? undefined,
       max: this.getAttribute("max") ?? undefined,
       locale: this.getAttribute("locale") ?? undefined,
@@ -405,6 +407,9 @@ export class AyyDateTimePickerElement extends ElementBase {
     } else if (name === "step") {
       const stepAttr = this.getAttribute("step");
       this.#controller.update({ stepMinute: stepAttr === null ? 5 : Number(stepAttr) });
+    } else if (name === "week-start") {
+      const weekStart = this.getAttribute("week-start");
+      this.#controller.update({ weekStart: weekStart === null ? undefined : (Number(weekStart) as Weekday) });
     } else {
       this.#controller.update({ [name]: this.getAttribute(name) ?? undefined });
     }

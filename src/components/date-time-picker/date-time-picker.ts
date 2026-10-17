@@ -8,7 +8,7 @@ import { iconSvg } from "../icon/icon";
 
 // Date Picker (Single Date)
 export const datePickerTriggerClass = "ayy-date-picker";
-export const datePickerClass = "ayy-date-picker";
+export const datePickerClassConstant = "ayy-date-picker";
 export const datePickerValueClass = "ayy-date-picker__value";
 export const datePickerGridClass = "ayy-date-picker-grid";
 export const datePickerHeaderClass = "ayy-date-picker-grid__header";
@@ -27,7 +27,7 @@ export const datePickerFooterClass = "ayy-date-picker-grid__footer";
 export const datePickerFullClass = "ayy-date-picker-grid--full";
 
 // Date Range
-export const dateRangeClass = "ayy-date-range";
+export const dateRangeClassConstant = "ayy-date-range";
 export const dateRangeMonthClass = "ayy-date-range__month";
 export const dateRangeHeaderClass = "ayy-date-range__header";
 export const dateRangeTitleClass = "ayy-date-range__title";
@@ -42,12 +42,12 @@ export const dateRangeCellClass = "ayy-date-range__cell";
 export const dateRangeRangeStartClass = "ayy-date-range__day--range-start";
 export const dateRangeRangeEndClass = "ayy-date-range__day--range-end";
 export const dateRangeInRangeClass = "ayy-date-range__day--in-range";
-export const dateRangePickerClass = "ayy-date-range-picker";
+export const dateRangePickerClassConstant = "ayy-date-range-picker";
 export const dateRangePickerValueClass = "ayy-date-range-picker__value";
 export const dateRangeFooterClass = "ayy-date-range__footer";
 
 // Time Picker
-export const timePickerClass = "ayy-time-picker";
+export const timePickerClassConstant = "ayy-time-picker";
 export const timePickerHeaderClass = "ayy-time-picker__header";
 export const timePickerInputsClass = "ayy-time-picker__inputs";
 export const timePickerInputClass = "ayy-time-picker__input";
@@ -57,16 +57,16 @@ export const timePickerColumnsClass = "ayy-time-picker__columns";
 export const timePickerColClass = "ayy-time-picker__col";
 export const timePickerItemClass = "ayy-time-picker__item";
 export const timePickerItemSelectedClass = "ayy-time-picker__item--selected";
-export const timePickerTriggerClass = "ayy-time-picker-trigger";
+export const timePickerTriggerClassConstant = "ayy-time-picker-trigger";
 export const timePickerTriggerValueClass = "ayy-time-picker-trigger__value";
 
 // Combined Date & Time Picker
-export const dateTimePickerClass = "ayy-date-time-picker";
+export const dateTimePickerClassConstant = "ayy-date-time-picker";
 export const dateTimePickerDateClass = "ayy-date-time-picker__date";
 export const dateTimePickerDividerClass = "ayy-date-time-picker__divider";
 export const dateTimePickerTimeClass = "ayy-date-time-picker__time";
 export const dateTimePickerFooterClass = "ayy-date-time-picker__footer";
-export const dateTimePickerTriggerClass = "ayy-date-time-picker-trigger";
+export const dateTimePickerTriggerClassConstant = "ayy-date-time-picker-trigger";
 export const dateTimePickerTriggerValueClass = "ayy-date-time-picker-trigger__value";
 
 // Sizes
@@ -91,14 +91,16 @@ export interface DatePickerClassOptions {
 export function datePickerClassName({ full, className }: DatePickerClassOptions = {}): string {
   return cx(datePickerGridClass, full && datePickerFullClass, className);
 }
+export const datePickerClass = datePickerClassName;
 
 export interface DateRangeClassOptions {
   className?: string;
 }
 
 export function dateRangeClassName({ className }: DateRangeClassOptions = {}): string {
-  return cx(dateRangeClass, className);
+  return cx(dateRangeClassConstant, className);
 }
+export const dateRangeClass = dateRangeClassName;
 
 export interface DateRangePickerClassOptions {
   size?: DateRangeSize;
@@ -106,16 +108,18 @@ export interface DateRangePickerClassOptions {
 }
 
 export function dateRangePickerClassName({ size, className }: DateRangePickerClassOptions = {}): string {
-  return cx("ayy-input", dateRangePickerClass, size === "sm" && "ayy-input--sm", size === "lg" && "ayy-input--lg", className);
+  return cx("ayy-input", dateRangePickerClassConstant, size === "sm" && "ayy-input--sm", size === "lg" && "ayy-input--lg", className);
 }
+export const dateRangePickerClass = dateRangePickerClassName;
 
 export interface TimePickerClassOptions {
   className?: string;
 }
 
 export function timePickerClassName({ className }: TimePickerClassOptions = {}): string {
-  return cx(timePickerClass, className);
+  return cx(timePickerClassConstant, className);
 }
+export const timePickerClass = timePickerClassName;
 
 export interface TimePickerTriggerClassOptions {
   size?: TimePickerSize;
@@ -123,16 +127,18 @@ export interface TimePickerTriggerClassOptions {
 }
 
 export function timePickerTriggerClassName({ size, className }: TimePickerTriggerClassOptions = {}): string {
-  return cx("ayy-input", timePickerTriggerClass, size === "sm" && "ayy-input--sm", size === "lg" && "ayy-input--lg", className);
+  return cx("ayy-input", timePickerTriggerClassConstant, size === "sm" && "ayy-input--sm", size === "lg" && "ayy-input--lg", className);
 }
+export const timePickerTriggerClass = timePickerTriggerClassName;
 
 export interface DateTimePickerClassOptions {
   className?: string;
 }
 
 export function dateTimePickerClassName({ className }: DateTimePickerClassOptions = {}): string {
-  return cx(dateTimePickerClass, className);
+  return cx(dateTimePickerClassConstant, className);
 }
+export const dateTimePickerClass = dateTimePickerClassName;
 
 export interface DateTimePickerTriggerClassOptions {
   size?: DateTimePickerSize;
@@ -140,8 +146,9 @@ export interface DateTimePickerTriggerClassOptions {
 }
 
 export function dateTimePickerTriggerClassName({ size, className }: DateTimePickerTriggerClassOptions = {}): string {
-  return cx("ayy-input", dateTimePickerTriggerClass, size === "sm" && "ayy-input--sm", size === "lg" && "ayy-input--lg", className);
+  return cx("ayy-input", dateTimePickerTriggerClassConstant, size === "sm" && "ayy-input--sm", size === "lg" && "ayy-input--lg", className);
 }
+export const dateTimePickerTriggerClass = dateTimePickerTriggerClassName;
 
 // ==========================================
 // 2. SVG Icons (vendored Hugeicons markup)
@@ -824,7 +831,7 @@ export function connectDatePicker(root: HTMLElement, options: DatePickerControll
       next.setAttribute("aria-label", opts.nextLabel ?? "Next month");
       weekdays.hidden = false;
       grid.className = datePickerDaysClass;
-      grid.setAttribute("role", "grid");
+      grid.setAttribute("role", "group");
       grid.setAttribute("aria-label", labels.month(month));
 
       const days = datePickerMonth({ month, value, today, min: opts.min, max: opts.max, weekStart });
@@ -844,7 +851,6 @@ export function connectDatePicker(root: HTMLElement, options: DatePickerControll
         ...days.map((d) => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.setAttribute("role", "gridcell");
           btn.className = datePickerDayClass;
           btn.dataset.date = d.date;
           if (d.outside) btn.setAttribute("data-outside", "");
@@ -1663,17 +1669,32 @@ export interface TimePickerController {
 export function connectTimePicker(root: HTMLElement, options: TimePickerControllerOptions = {}): TimePickerController {
   let opts = { ...options };
   let value = opts.value ?? "";
-  const twelveHour = Boolean(opts.twelveHour);
+  const isTwelveHour = () => Boolean(opts.twelveHour);
 
   const getSplit = () => {
-    if (!value) return { hour: "12", minute: "00", period: "AM" as TimePickerPeriod };
-    const [hRaw, mRaw] = value.split(":");
-    let h = Number(hRaw);
-    const m = mRaw ?? "00";
-    if (!twelveHour) return { hour: String(h).padStart(2, "0"), minute: m, period: "AM" as TimePickerPeriod };
-    const period: TimePickerPeriod = h >= 12 ? "PM" : "AM";
-    h = h % 12 || 12;
-    return { hour: String(h).padStart(2, "0"), minute: m, period };
+    if (!value) return { hour: "", minute: "", period: "AM" as TimePeriod };
+    const parsed = parseTimeString(value);
+    if (!parsed) return { hour: "", minute: "", period: "AM" as TimePeriod };
+    if (!isTwelveHour()) {
+      let h24 = parsed.hours;
+      if (parsed.period === "PM" && h24 < 12) h24 += 12;
+      if (parsed.period === "AM" && h24 === 12) h24 = 0;
+      return { hour: pad2(h24), minute: pad2(parsed.minutes), period: parsed.period };
+    }
+    const { hours: h12, period } = to12Hour(parsed.hours);
+    const finalPeriod = parsed.period ?? period;
+    return { hour: pad2(h12), minute: pad2(parsed.minutes), period: finalPeriod };
+  };
+
+  const formatEmit = (h: number, m: number, p: TimePeriod): string => {
+    if (isTwelveHour()) {
+      const h12 = h % 12 || 12;
+      return `${pad2(h12)}:${pad2(m)} ${p}`;
+    }
+    let h24 = h;
+    if (p === "PM" && h24 < 12) h24 += 12;
+    if (p === "AM" && h24 === 12) h24 = 0;
+    return `${pad2(h24)}:${pad2(m)}`;
   };
 
   let hourInput: HTMLInputElement;
@@ -1687,14 +1708,22 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
     if (minuteInput && document.activeElement !== minuteInput) minuteInput.value = minute;
     if (periodBtn) periodBtn.textContent = period;
 
-    for (const btn of root.querySelectorAll<HTMLButtonElement>(`.${timePickerItemClass}`)) {
-      let isSelected = false;
-      if (btn.dataset.hour) isSelected = btn.dataset.hour === hour;
-      else if (btn.dataset.minute) isSelected = btn.dataset.minute === minute;
-      else if (btn.dataset.period) isSelected = btn.dataset.period === period;
-      btn.setAttribute("aria-selected", String(isSelected));
-      btn.classList.toggle(timePickerItemSelectedClass, isSelected);
-      btn.tabIndex = isSelected ? 0 : -1;
+    for (const col of root.querySelectorAll<HTMLElement>(`.${timePickerColClass}`)) {
+      const btns = Array.from(col.querySelectorAll<HTMLButtonElement>(`.${timePickerItemClass}`));
+      let hasMatch = false;
+      for (const btn of btns) {
+        let isSelected = false;
+        if (btn.dataset.hour) isSelected = Boolean(hour && btn.dataset.hour === hour);
+        else if (btn.dataset.minute) isSelected = Boolean(minute && btn.dataset.minute === minute);
+        else if (btn.dataset.period) isSelected = Boolean(period && btn.dataset.period === period);
+        if (isSelected) hasMatch = true;
+        btn.setAttribute("aria-selected", String(isSelected));
+        btn.classList.toggle(timePickerItemSelectedClass, isSelected);
+      }
+      btns.forEach((btn, idx) => {
+        const isSelected = btn.getAttribute("aria-selected") === "true";
+        btn.tabIndex = isSelected || (!hasMatch && idx === 0) ? 0 : -1;
+      });
     }
 
     for (const sel of root.querySelectorAll<HTMLElement>(`.${timePickerItemClass}[aria-selected="true"]`)) {
@@ -1708,20 +1737,15 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
       hourInput.value = raw;
       if (!raw) return;
       const num = parseInt(raw, 10);
-      const maxH = twelveHour ? 12 : 23;
-      const minH = twelveHour ? 1 : 0;
+      const maxH = isTwelveHour() ? 12 : 23;
+      const minH = isTwelveHour() ? 1 : 0;
       if (!isNaN(num) && num >= minH && num <= maxH) {
-        let { minute, period } = getSplit();
-        let finalHour = num;
-        if (twelveHour) {
-          if (period === "PM" && finalHour < 12) finalHour += 12;
-          if (period === "AM" && finalHour === 12) finalHour = 0;
-        }
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${minute}`;
+        const { minute, period } = getSplit();
+        const nextVal = formatEmit(num, Number(minute || "00"), period);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
-        if (raw.length === 2 || (twelveHour && num >= 2) || (!twelveHour && num >= 3)) {
+        if (raw.length === 2 || (isTwelveHour() && num >= 2) || (!isTwelveHour() && num >= 3)) {
           minuteInput.focus();
           minuteInput.select();
         }
@@ -1734,13 +1758,8 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
       if (!raw) return;
       const num = parseInt(raw, 10);
       if (!isNaN(num) && num >= 0 && num <= 59) {
-        let { hour, period } = getSplit();
-        let finalHour = Number(hour);
-        if (twelveHour) {
-          if (period === "PM" && finalHour < 12) finalHour += 12;
-          if (period === "AM" && finalHour === 12) finalHour = 0;
-        }
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${String(num).padStart(2, "0")}`;
+        const { hour, period } = getSplit();
+        const nextVal = formatEmit(Number(hour || (isTwelveHour() ? "12" : "00")), num, period);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
@@ -1766,35 +1785,23 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
         }
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        let { hour } = getSplit();
-        let h = parseInt(hour, 10);
-        const maxH = twelveHour ? 12 : 23;
-        const minH = twelveHour ? 1 : 0;
+        let { hour, minute, period } = getSplit();
+        let h = parseInt(hour || (isTwelveHour() ? "12" : "00"), 10);
+        const maxH = isTwelveHour() ? 12 : 23;
+        const minH = isTwelveHour() ? 1 : 0;
         h = h >= maxH ? minH : h + 1;
-        let { minute, period } = getSplit();
-        let finalHour = h;
-        if (twelveHour) {
-          if (period === "PM" && finalHour < 12) finalHour += 12;
-          if (period === "AM" && finalHour === 12) finalHour = 0;
-        }
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${minute}`;
+        const nextVal = formatEmit(h, Number(minute || "00"), period);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
-        let { hour } = getSplit();
-        let h = parseInt(hour, 10);
-        const maxH = twelveHour ? 12 : 23;
-        const minH = twelveHour ? 1 : 0;
+        let { hour, minute, period } = getSplit();
+        let h = parseInt(hour || (isTwelveHour() ? "12" : "00"), 10);
+        const maxH = isTwelveHour() ? 12 : 23;
+        const minH = isTwelveHour() ? 1 : 0;
         h = h <= minH ? maxH : h - 1;
-        let { minute, period } = getSplit();
-        let finalHour = h;
-        if (twelveHour) {
-          if (period === "PM" && finalHour < 12) finalHour += 12;
-          if (period === "AM" && finalHour === 12) finalHour = 0;
-        }
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${minute}`;
+        const nextVal = formatEmit(h, Number(minute || "00"), period);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
@@ -1807,29 +1814,17 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
         hourInput.focus();
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        let { minute } = getSplit();
-        let m = (parseInt(minute, 10) + (opts.stepMinute ?? 1)) % 60;
-        let { hour, period } = getSplit();
-        let finalHour = Number(hour);
-        if (twelveHour) {
-          if (period === "PM" && finalHour < 12) finalHour += 12;
-          if (period === "AM" && finalHour === 12) finalHour = 0;
-        }
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+        let { hour, minute, period } = getSplit();
+        let m = (parseInt(minute || "00", 10) + (opts.stepMinute ?? 1)) % 60;
+        const nextVal = formatEmit(Number(hour || (isTwelveHour() ? "12" : "00")), m, period);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
-        let { minute } = getSplit();
-        let m = (parseInt(minute, 10) - (opts.stepMinute ?? 1) + 60) % 60;
-        let { hour, period } = getSplit();
-        let finalHour = Number(hour);
-        if (twelveHour) {
-          if (period === "PM" && finalHour < 12) finalHour += 12;
-          if (period === "AM" && finalHour === 12) finalHour = 0;
-        }
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+        let { hour, minute, period } = getSplit();
+        let m = (parseInt(minute || "00", 10) - (opts.stepMinute ?? 1) + 60) % 60;
+        const nextVal = formatEmit(Number(hour || (isTwelveHour() ? "12" : "00")), m, period);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
@@ -1840,10 +1835,7 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
       periodBtn.addEventListener("click", () => {
         let { hour, minute, period } = getSplit();
         const nextPeriod = period === "AM" ? "PM" : "AM";
-        let finalHour = Number(hour);
-        if (nextPeriod === "PM" && finalHour < 12) finalHour += 12;
-        if (nextPeriod === "AM" && finalHour === 12) finalHour = 0;
-        const nextVal = `${String(finalHour).padStart(2, "0")}:${minute}`;
+        const nextVal = formatEmit(Number(hour || "12"), Number(minute || "00"), nextPeriod);
         value = nextVal;
         syncColumns();
         opts.onSelect?.(nextVal);
@@ -1853,7 +1845,7 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
 
   const render = () => {
     const { hour, minute, period } = getSplit();
-    const hours = twelveHour ? timePickerHours12 : timePickerHours24;
+    const hours = isTwelveHour() ? timePickerHours12 : timePickerHours24;
     const minutes = timePickerMinutes.filter((_, i) => i % (opts.stepMinute ?? 1) === 0);
 
     const header = document.createElement("div");
@@ -1885,7 +1877,7 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
 
     inputs.append(hourInput, separator, minuteInput);
 
-    if (twelveHour) {
+    if (isTwelveHour()) {
       periodBtn = document.createElement("button");
       periodBtn.type = "button";
       periodBtn.className = timePickerPeriodBtnClass;
@@ -1904,16 +1896,18 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
       col.setAttribute("role", "listbox");
       col.setAttribute("aria-label", type === "hour" ? "Hours" : type === "minute" ? "Minutes" : "Period");
 
-      for (const item of items) {
+      const hasMatch = Boolean(current && items.includes(current));
+      for (let idx = 0; idx < items.length; idx++) {
+        const item = items[idx]!;
         const btn = document.createElement("button");
         btn.type = "button";
         btn.setAttribute("role", "option");
         btn.className = timePickerItemClass;
         btn.dataset[type] = item;
-        const isSelected = item === current;
+        const isSelected = Boolean(current && item === current);
         btn.setAttribute("aria-selected", String(isSelected));
         if (isSelected) btn.classList.add(timePickerItemSelectedClass);
-        btn.tabIndex = isSelected ? 0 : -1;
+        btn.tabIndex = isSelected || (!hasMatch && idx === 0) ? 0 : -1;
         btn.textContent = item;
         col.append(btn);
       }
@@ -1924,7 +1918,7 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
     const minCol = makeCol(minutes, minute, "minute");
 
     const cols = [hourCol, minCol];
-    if (twelveHour) {
+    if (isTwelveHour()) {
       cols.push(makeCol(timePickerPeriods, period, "period"));
     }
 
@@ -1948,14 +1942,9 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
     let { hour, minute, period } = getSplit();
     if (btn.dataset.hour) hour = btn.dataset.hour;
     if (btn.dataset.minute) minute = btn.dataset.minute;
-    if (btn.dataset.period) period = btn.dataset.period as TimePickerPeriod;
+    if (btn.dataset.period) period = btn.dataset.period as TimePeriod;
 
-    let finalHour = Number(hour);
-    if (twelveHour) {
-      if (period === "PM" && finalHour < 12) finalHour += 12;
-      if (period === "AM" && finalHour === 12) finalHour = 0;
-    }
-    const nextVal = `${String(finalHour).padStart(2, "0")}:${minute}`;
+    const nextVal = formatEmit(Number(hour || (isTwelveHour() ? "12" : "00")), Number(minute || "00"), period);
     value = nextVal;
     syncColumns();
     opts.onSelect?.(nextVal);
@@ -2011,6 +2000,7 @@ export interface DateTimePickerControllerOptions {
   today?: string;
   twelveHour?: boolean;
   stepMinute?: number;
+  weekStart?: Weekday;
   min?: string;
   max?: string;
   locale?: string;
@@ -2031,8 +2021,8 @@ export interface DateTimePickerController {
 
 export function connectDateTimePicker(root: HTMLElement, options: DateTimePickerControllerOptions = {}): DateTimePickerController {
   let opts = { ...options };
-  let dateVal = opts.dateValue ?? todayIso();
-  let timeVal = opts.timeValue ?? "12:00";
+  let dateVal = opts.dateValue ?? "";
+  let timeVal = opts.timeValue ?? "";
 
   const dateRoot = document.createElement("div");
   dateRoot.className = dateTimePickerDateClass;
@@ -2049,7 +2039,7 @@ export function connectDateTimePicker(root: HTMLElement, options: DateTimePicker
   timeRoot.className = dateTimePickerTimeClass;
 
   const timeEl = document.createElement("div");
-  timeEl.className = timePickerClass;
+  timeEl.className = timePickerClassConstant;
   timeRoot.append(timeEl);
 
   let footerEl = root.querySelector<HTMLDivElement>(`.${dateTimePickerFooterClass}`);
@@ -2077,10 +2067,11 @@ export function connectDateTimePicker(root: HTMLElement, options: DateTimePicker
   }
 
   const dateCtrl = connectDatePicker(dateGridEl, {
-    value: dateVal,
+    value: dateVal || null,
     min: opts.min,
     max: opts.max,
     locale: opts.locale,
+    weekStart: opts.weekStart,
     showActions: false,
     onSelect(d) {
       dateVal = d;
@@ -2131,7 +2122,7 @@ export function connectDateTimePicker(root: HTMLElement, options: DateTimePicker
     },
     update(next) {
       opts = { ...opts, ...next };
-      dateCtrl.update({ min: opts.min, max: opts.max, locale: opts.locale });
+      dateCtrl.update({ min: opts.min, max: opts.max, locale: opts.locale, weekStart: opts.weekStart });
       timeCtrl.update({ twelveHour: opts.twelveHour, stepMinute: opts.stepMinute });
     },
     focus() {

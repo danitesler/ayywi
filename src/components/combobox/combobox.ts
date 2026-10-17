@@ -139,6 +139,12 @@ export function connectCombobox(input: HTMLInputElement, listbox: HTMLElement, o
   };
 
   const onInput = () => {
+    if (!input.value) {
+      if (chosen !== null) {
+        chosen = null;
+        options.onSelect?.(null as any);
+      }
+    }
     applyFilter();
     open();
     setActive(input.value.trim() ? (visible()[0] ?? null) : null);
@@ -182,8 +188,11 @@ export function connectCombobox(input: HTMLInputElement, listbox: HTMLElement, o
         } else if (input.value) {
           event.preventDefault();
           input.value = "";
+          chosen = null;
+          options.onSelect?.(null as any);
           applyFilter();
           input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
           close();
         }
         return;

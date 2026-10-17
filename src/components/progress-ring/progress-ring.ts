@@ -4,7 +4,14 @@ import type { ProgressVariant } from "../progress/progress";
 export const progressRingSizes = ["sm", "md", "lg", "xl"] as const;
 export type ProgressRingSize = (typeof progressRingSizes)[number];
 
-export function progressRingClass({ variant = "default", size = "md", indeterminate, className }: { variant?: ProgressVariant; size?: ProgressRingSize; indeterminate?: boolean; className?: string } = {}): string {
+export interface ProgressRingClassOptions {
+  variant?: ProgressVariant;
+  size?: ProgressRingSize;
+  indeterminate?: boolean;
+  className?: string;
+}
+
+export function progressRingClass({ variant = "default", size = "md", indeterminate, className }: ProgressRingClassOptions = {}): string {
   return cx(
     "ayy-progress-ring",
     variant !== "default" && `ayy-progress-ring--${variant}`,

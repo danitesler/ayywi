@@ -70,7 +70,7 @@
 
 .ayy-progress-ring--sm { --_size: 1.25rem; --_stroke: 4.5; }
 .ayy-progress-ring--lg { --_size: 4rem; --_stroke: 3; }
-.ayy-progress-ring--xl { --_size: min(16rem, 70vw); --_stroke: 2; }
+.ayy-progress-ring--xl { --_size: min(16rem, 70vi); --_stroke: 2; }
 .ayy-progress-ring--xl .ayy-progress-ring__label { font-size: calc(var(--_size) * 0.16); font-weight: var(--ayy-weight-medium); }
 
 .ayy-progress-ring--success { --_color: var(--ayy-color-success); }
@@ -93,6 +93,9 @@
 }
 
 @media (forced-colors: active) {
+  .ayy-progress-ring {
+    forced-color-adjust: none;
+  }
   .ayy-progress-ring__track {
     stroke: GrayText;
   }

@@ -22,7 +22,6 @@ tokens/themes/*.json        extra themes (dark-contrast, light-gray): overrides 
 src/css/tokens.css          generated
 src/tokens.ts               generated
 src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion, --_ayy-dir
-src/css/shadcn.css          the shadcn/ui bridge (unlayered on purpose), copied to dist/shadcn.css
 src/css/index.css           declares the layers, imports tokens, base, every component into them
 src/components/<slug>/      one folder per component — see .claude/skills/ayywi-add-component/SKILL.md
 src/lib/                    cx, refs, position (floating placement), element (SSR-safe custom element base), icons (Hugeicons glyphs ayywi draws)
@@ -30,7 +29,6 @@ src/index.ts                "@danitesler/ayywi" entry: tokens, helpers, toast, t
 src/react/index.ts          "@danitesler/ayywi/react" entry
 src/elements/               "@danitesler/ayywi/elements" (registers <ayy-*>) + global.ts → dist/elements.global.js (window.ayywi)
 cli/                        shipped `ayywi` bin: lint.mjs, init.mjs, mcp.mjs (plain Node ESM, no deps)
-tailwind/                   Tailwind v3 preset + v4 @theme mapping
 scripts/                    build, generators, check; scripts/lib/contract.mjs holds RULES, NEEDS (need → component), PUBLIC_HOOKS, UTILITIES, ATTRIBUTES,
                             CATEGORIES and the component ORDER (the manifest, llms files and the preview all read them)
 tests/                      node/ (node:test) and e2e/ (Playwright + axe)
@@ -41,7 +39,7 @@ llms/<slug>.md              generated: one page per component
 ai/                         consumer kit (skill, AGENTS snippet, Cursor rule) — partly generated
 preview/                    Vite + React component browser (discovers components automatically), the showcase apps
                             (preview/src/showcase/apps.tsx) and Get started (prompts in preview/src/prompts.ts); its build also
-                            hosts dist/, the llms files, the AI kit and the Tailwind files, and each release's runtime files
+                            hosts dist/, the llms files, the AI kit, and each release's runtime files
                             under v/<release>/ (scripts/keep-versions.mjs carries the earlier ones over on every deploy)
 ```
 
@@ -73,7 +71,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 3. State from native/ARIA attributes, so every framework drives components the same way.
 4. `ayy-` prefix on every class and keyframe; `--ayy-` on every public custom property; private ones are `--_x`.
 5. Visible focus ring on everything interactive. Labels, `aria-*` and keyboard support are part of "done". State shown by colour needs a `@media (forced-colors: active)` block.
-6. Zero runtime dependencies. Don't add Radix/CVA/etc. — native elements first (`<dialog>`, `role="switch"` checkbox…).
+6. Zero runtime dependencies. Native elements first (`<dialog>`, `role="switch"` checkbox…).
 7. Never edit generated files (`src/css/tokens.css`, `src/tokens.ts`, `manifest/`, `llms*.txt`, `llms/`, `ai/AGENTS.snippet.md`, `ai/cursor/ayywi.mdc`, `ai/skills/ayywi/reference.md`). Edit the source and run `pnpm generate`.
 8. Docs are code: a component's `*.meta.json` must describe exactly the classes its CSS defines, every state in `STATES` (`scripts/lib/contract.mjs`) and its sizes. `pnpm check` fails otherwise.
 9. No file names that differ only by case (esbuild + macOS/Windows resolve them to the same file).

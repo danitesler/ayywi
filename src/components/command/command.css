@@ -227,6 +227,10 @@
     outline: 2px solid Highlight;
     outline-offset: -2px;
   }
+  .ayy-command__item[aria-disabled="true"] {
+    color: GrayText;
+    opacity: 1;
+  }
   .ayy-command__item[aria-selected="true"] {
     forced-color-adjust: none;
     background-color: Highlight;
@@ -235,8 +239,12 @@
   .ayy-command__item[aria-selected="true"] > svg {
     color: HighlightText;
   }
-  .ayy-command__item[aria-selected="true"] .ayy-command__description {
+  .ayy-command__item[aria-selected="true"] .ayy-command__description,
+  .ayy-command__item[aria-selected="true"] .ayy-command__meta {
     color: HighlightText;
+  }
+  .ayy-command__meta {
+    color: CanvasText;
   }
 }
 

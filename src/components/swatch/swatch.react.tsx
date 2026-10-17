@@ -70,13 +70,14 @@ export interface ColorSwatchButtonProps extends ButtonHTMLAttributes<HTMLButtonE
   /** Accessible name ("Red"). */
   label: string;
   pressed: boolean;
+  onPressedChange?: (pressed: boolean) => void;
   size?: ColorSwatchSize;
   none?: boolean;
 }
 
 /** A colour that applies on click (an editor's pen colour): <button aria-pressed>. */
 export const ColorSwatchButton = forwardRef<HTMLButtonElement, ColorSwatchButtonProps>(function ColorSwatchButton(
-  { color, label, pressed, size, none, type = "button", className, style, ...props },
+  { color, label, pressed, onPressedChange, size, none, type = "button", className, style, onClick, ...props },
   ref,
 ) {
   return (
@@ -87,6 +88,12 @@ export const ColorSwatchButton = forwardRef<HTMLButtonElement, ColorSwatchButton
       aria-label={label}
       className={colorSwatchClass({ size, none, className })}
       style={colourStyle(color, style)}
+      onClick={(e) => {
+        onClick?.(e);
+        if (!e.defaultPrevented) {
+          onPressedChange?.(!pressed);
+        }
+      }}
       {...props}
     />
   );

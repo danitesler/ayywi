@@ -30,19 +30,28 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table({ c
   );
 });
 
-export const TableHeader = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
+export interface TableHeaderProps extends HTMLAttributes<HTMLTableSectionElement> {
+}
+
+export const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   function TableHeader(props, ref) {
     return <thead ref={ref} {...props} />;
   },
 );
 
-export const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
+export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
+}
+
+export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
   function TableBody(props, ref) {
     return <tbody ref={ref} {...props} />;
   },
 );
 
-export const TableFooter = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
+export interface TableFooterProps extends HTMLAttributes<HTMLTableSectionElement> {
+}
+
+export const TableFooter = forwardRef<HTMLTableSectionElement, TableFooterProps>(
   function TableFooter(props, ref) {
     return <tfoot ref={ref} {...props} />;
   },
@@ -57,7 +66,7 @@ export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function 
   return <tr ref={ref} aria-selected={selected} {...props} />;
 });
 
-export interface TableCellProps {
+export interface TableCellProps extends TdHTMLAttributes<HTMLTableCellElement> {
   /** End-align with tabular digits. */
   numeric?: boolean;
   /** The narrow checkbox column for selecting rows. */
@@ -97,7 +106,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(functi
   );
 });
 
-export const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCellElement> & TableCellProps>(
+export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
   function TableCell({ numeric, select, actions, className, ...props }, ref) {
     return (
       <td
@@ -121,7 +130,10 @@ export const TableRowActions = forwardRef<HTMLDivElement, TableRowActionsProps>(
   return <div ref={ref} className={tableRowActionsClass({ reveal, className })} {...props} />;
 });
 
-export const TableCaption = forwardRef<HTMLTableCaptionElement, HTMLAttributes<HTMLTableCaptionElement>>(
+export interface TableCaptionProps extends HTMLAttributes<HTMLTableCaptionElement> {
+}
+
+export const TableCaption = forwardRef<HTMLTableCaptionElement, TableCaptionProps>(
   function TableCaption(props, ref) {
     return <caption ref={ref} {...props} />;
   },

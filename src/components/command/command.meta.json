@@ -4,7 +4,7 @@
   "status": "beta",
   "category": "Actions",
   "description": "A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count.",
-  "aka": ["command", "command-palette", "cmdk", "command-menu", "quick-switcher", "quick-open"],
+  "aka": ["command", "command-palette", "command-menu", "quick-switcher", "quick-open"],
   "classes": {
     "ayy-command": "Root: a card with the search field, the list and an optional footer. On a <div> inline, or with ayy-dialog on a <dialog> for the ⌘K palette (top-aligned, no padding).",
     "ayy-command__search": "The row with the magnifier icon and the input, over a hairline. A ring under it while the input has keyboard focus.",
@@ -37,7 +37,7 @@
     "density": "Items are the md control height (32px compact, 40 comfortable, 44 touch); the field is the lg height.",
     "width": "Inline it fills its container. As a dialog (ayy-dialog ayy-command) it's 36rem wide, at most the viewport less 2rem, near the top of the screen; the list scrolls past 24rem."
   },
-  "js": "connectCommand(root, { onSelect?, filter? }) → { refresh, reset, destroy } wires filtering, the arrows, Enter and the pointer on plain markup; Enter clicks the highlighted item. commandMatches(text, query) is the matching rule (every typed word starts a word, or one word anywhere); commandItemText(item). commandClass, commandInputClass, commandListClass, commandItemClass, commandSearchIcon (SVG markup).",
+  "js": "connectCommand(root, { onSelect?, filter? }) → { refresh, reset, destroy } wires filtering, the arrows, Enter and the pointer on plain markup; Enter clicks the highlighted item. commandMatches(text, query) is the matching rule (every typed word starts a word, or one word anywhere); commandItemText(item); commandItemDetails(item); commandScore(title, description, keywords, query). commandClass, commandInputClass, commandListClass, commandItemClass, commandSearchIcon (SVG markup).",
   "element": {
     "tag": "ayy-command",
     "description": "Wraps an .ayy-command (a div, or a <dialog class=\"ayy-dialog ayy-command\"> plus the buttons that open it, marked [data-ayy-open]) and wires it. A dialog palette opens with the shortcut, closes after an item runs, on Esc (the first Esc clears the field) or on the backdrop, and is empty each time it opens. Methods: show(), refresh().",

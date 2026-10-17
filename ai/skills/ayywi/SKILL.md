@@ -38,16 +38,14 @@ A raw native control is never right in an ayywi project: it renders as the brows
 | Project | Write |
 |---|---|
 | React / Next / Remix | `import { Button, Dialog, … } from "@danitesler/ayywi/react"` |
-| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"@danitesler/ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>` from `"@danitesler/ayywi/elements"` for interactive parts; `toast()` from `"@danitesler/ayywi"` |
+| Vue, Svelte, Solid, Angular, Lit | markup with `ayy-` classes (or `buttonClass()` from `"@danitesler/ayywi"`); `<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-date-picker>`, `<ayy-date-range>`, `<ayy-time-picker>`, `<ayy-date-time-picker>`, `<ayy-color-picker>`, `<ayy-toolbar>`, `<ayy-action-bar>`, `<ayy-shortcut-recorder>`, `<ayy-command>`, `<ayy-tag-input>`, `<ayy-swipe>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-grid>` from `"@danitesler/ayywi/elements"` for interactive parts; `toast()` from `"@danitesler/ayywi"` |
 | Plain HTML, Rails, Django, Laravel, Go, .NET, PHP | same markup + `dist/ayywi.min.css` and `dist/elements.global.js` (also gives `window.ayywi.toast`, `setTheme`, `chartColors`…); `dist/fonts.css` for the fonts and `dist/theme-init.js` first in `<head>` so a saved theme applies before the first paint |
-| Tailwind | keep ayywi components; map Tailwind's theme to ayywi (`@danitesler/ayywi/tailwind.css` for v4, `@danitesler/ayywi/tailwind-preset` for v3) and use its utilities (`bg-surface`, `border-line`, `rounded-card`, `bg-chart-1`) for layout glue, never Tailwind's own colour scale |
-| Already on shadcn/ui | load `@danitesler/ayywi/shadcn.css` after ayywi so leftover shadcn parts take ayywi's colours, radius and font; build new UI with ayywi and replace a shadcn component whenever you touch it |
 
 Check `package.json` and existing components before choosing. Match what's there.
 
 ## 3. Rules (the full list: the ayywi section of AGENTS.md, or `get_rules`)
 
-1. Reuse ayywi components and their variants before writing custom CSS. Never add a second UI kit (see "Already on shadcn/ui" above for one that's there).
+1. Reuse ayywi components and their variants before writing custom CSS. ayywi is self-contained — never add another CSS framework or UI kit.
 2. No hardcoded colours, in stylesheets or inline styles: `var(--ayy-color-*)`, the wash/line tokens, or `color-mix(in srgb, var(--ayy-color-text) N%, transparent)`.
 3. Logical properties only (`margin-inline-start`, `padding-inline`, `inset-inline-end`, `inline-size`, `text-align: start`). No `left`/`right`, no `:dir()`.
 4. Spacing, sizes, radius, type, shadow and motion from tokens. Lay out with `.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid` and `.ayy-split` (gap via `--ayy-gap`) instead of new flex CSS.

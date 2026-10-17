@@ -323,6 +323,17 @@ export function DropdownMenuSub({
     [controlled, onOpenChange],
   );
 
+  useEffect(() => {
+    const trigger = subTriggerRef.current;
+    if (!trigger) return;
+    const observer = new MutationObserver(() => {
+      const isExpanded = trigger.getAttribute("aria-expanded") === "true";
+      setOpen(isExpanded);
+    });
+    observer.observe(trigger, { attributes: true, attributeFilter: ["aria-expanded"] });
+    return () => observer.disconnect();
+  }, [setOpen]);
+
   return (
     <SubmenuContext.Provider value={{ open, setOpen, subTriggerRef, subContentRef, inline, subContentId }}>
       {children}
@@ -337,7 +348,7 @@ export interface DropdownMenuSubTriggerProps extends Omit<DropdownMenuItemProps,
 
 export const DropdownMenuSubTrigger = forwardRef<HTMLButtonElement, DropdownMenuSubTriggerProps>(
   function DropdownMenuSubTrigger(
-    { children, icon, value, description, selected, className, onClick, ...props },
+    { children, icon, value, description, selected, onSelect, destructive, closeOnSelect, className, onClick, ...props },
     ref,
   ) {
     const sub = useSubmenu("DropdownMenuSubTrigger");
@@ -351,7 +362,7 @@ export const DropdownMenuSubTrigger = forwardRef<HTMLButtonElement, DropdownMenu
         type="button"
         role={props.role ?? "menuitem"}
         tabIndex={-1}
-        aria-haspopup="menu"
+        aria-haspopup={sub.inline ? undefined : "menu"}
         aria-expanded={sub.open ? "true" : "false"}
         aria-controls={sub.subContentId}
         aria-describedby={hasDesc ? descId : undefined}
@@ -361,12 +372,10 @@ export const DropdownMenuSubTrigger = forwardRef<HTMLButtonElement, DropdownMenu
           expand: sub.inline,
           described: hasDesc,
           selected: isSelectable,
+          destructive,
           className,
         })}
-        onClick={(event) => {
-          onClick?.(event);
-          if (!event.defaultPrevented) sub.setOpen(!sub.open);
-        }}
+        onClick={onClick}
         {...props}
       >
         {icon}
@@ -393,7 +402,7 @@ export interface DropdownMenuSubContentProps extends HTMLAttributes<HTMLDivEleme
 }
 
 export const DropdownMenuSubContent = forwardRef<HTMLDivElement, DropdownMenuSubContentProps>(
-  function DropdownMenuSubContent({ className, children, ...props }, ref) {
+  function DropdownMenuSubContent({ side, align, className, children, ...props }, ref) {
     const sub = useSubmenu("DropdownMenuSubContent");
 
     if (sub.inline) {
@@ -550,14 +559,18 @@ export const DropdownMenuRadioItem = forwardRef<HTMLButtonElement, DropdownMenuR
   },
 );
 
-export const DropdownMenuLabel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DropdownMenuLabel(
+export interface DropdownMenuLabelProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const DropdownMenuLabel = forwardRef<HTMLDivElement, DropdownMenuLabelProps>(function DropdownMenuLabel(
   { className, ...props },
   ref,
 ) {
   return <div ref={ref} role="presentation" className={cx(menuLabelClass, className)} {...props} />;
 });
 
-export const DropdownMenuSeparator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DropdownMenuSeparator(
+export interface DropdownMenuSeparatorProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const DropdownMenuSeparator = forwardRef<HTMLDivElement, DropdownMenuSeparatorProps>(function DropdownMenuSeparator(
   { className, ...props },
   ref,
 ) {

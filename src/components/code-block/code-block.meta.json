@@ -17,6 +17,7 @@
     "ayy-code-block__copy": "Copy button with icon, copied feedback, and tooltip.",
     "ayy-code-block__pre": "Scrollable preformatted text container.",
     "ayy-code-block__code": "Code element with monospace font and preformatted whitespace.",
+    "ayy-code-block__line": "Line wrapper inside the code element; receives line numbers when numbered.",
     "ayy-token-keyword": "Syntax token for language keywords.",
     "ayy-token-string": "Syntax token for string literals.",
     "ayy-token-comment": "Syntax token for comments.",
@@ -47,7 +48,7 @@
     "density": "Padding and copy button follow data-density.",
     "width": "Fills its container width; code pre scrolls horizontally when lines overflow."
   },
-  "js": "codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass(); codeBlockFilenameClass(); codeBlockActionsClass(); codeBlockSelectorClass(); codeBlockChevronClass(); codeBlockMenuClass(); codeBlockCopyClass(); codeBlockPreClass(); codeBlockCodeClass(); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) updates a code block from the selector dropdown; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
+  "js": "codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass({ className? }); codeBlockFilenameClass({ className? }); codeBlockActionsClass({ className? }); codeBlockSelectorClass({ className? }); codeBlockChevronClass({ className? }); codeBlockMenuClass({ className? }); codeBlockCopyClass({ className? }); codeBlockPreClass({ className? }); codeBlockCodeClass({ className? }); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) updates a code block from the selector dropdown; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
   "react": {
     "import": "import { CodeBlock, CodeBlockHeader, CodeBlockFilename, CodeBlockActions, CodeBlockSelector, CodeBlockCopy, CodeBlockPre, CodeBlockCode } from \"@danitesler/ayywi/react\";",
     "components": {

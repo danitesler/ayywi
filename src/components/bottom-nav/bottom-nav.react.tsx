@@ -26,7 +26,7 @@ export interface BottomNavProps extends HTMLAttributes<HTMLElement> {
 
 /** A phone app's tab bar: top-level destinations pinned to the bottom of its scroll container. */
 export const BottomNav = forwardRef<HTMLElement, BottomNavProps>(function BottomNav(
-  { size = "lg", compact, iconOnly, className, "aria-label": label = "Main", ...props },
+  { size, compact, iconOnly, className, "aria-label": label = "Main", ...props },
   ref,
 ) {
   return (

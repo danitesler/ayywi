@@ -207,7 +207,12 @@ export function openSwatchColorPicker(input: HTMLInputElement): () => void {
     alpha: false,
     onChange: (color) => {
       if (input.value.toLowerCase() !== color.toLowerCase()) {
-        input.value = color;
+        const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
+        if (descriptor?.set) {
+          descriptor.set.call(input, color);
+        } else {
+          input.value = color;
+        }
         syncSwatch(input);
         input.dispatchEvent(new Event("input", { bubbles: true }));
         input.dispatchEvent(new Event("change", { bubbles: true }));

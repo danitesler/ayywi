@@ -990,22 +990,37 @@
   align-items: center;
   gap: var(--ayy-space-2);
   min-inline-size: 0;
-  block-size: var(--ayy-size-control-md);
   margin: 0;
   padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-3);
   border: 1px solid var(--ayy-color-line-strong);
   border-radius: var(--ayy-radius-control);
   background-color: var(--ayy-color-wash);
   color: var(--ayy-color-text);
   font-family: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--ayy-control-text-field);
   line-height: var(--ayy-leading-normal);
   text-align: start;
   cursor: pointer;
   transition:
     border-color var(--ayy-duration-fast) ease,
     background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-time-picker-trigger:not(.ayy-input--sm):not(.ayy-input--lg) {
+  block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-space-3);
+}
+
+.ayy-time-picker-trigger.ayy-input--sm {
+  block-size: var(--ayy-size-control-sm);
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-time-picker-trigger.ayy-input--lg {
+  block-size: var(--ayy-size-control-lg);
+  padding-inline: var(--ayy-space-4);
+  font-size: var(--ayy-control-text-lg);
 }
 
 .ayy-time-picker-trigger > svg {
@@ -1016,7 +1031,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-time-picker-trigger:hover {
+  .ayy-time-picker-trigger:not(:disabled):not([aria-disabled="true"]):hover {
     border-color: var(--ayy-color-line-hover);
   }
 }

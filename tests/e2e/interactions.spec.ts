@@ -482,14 +482,14 @@ for (const renderer of ["react", "html"] as const) {
     test("tabs can have custom icons and support arrow navigation", async ({ page }) => {
       await open(page, "tabs", { renderer });
       const example = page.locator("#ex-icons").locator("xpath=ancestor::section");
-      const account = example.getByRole("tab", { name: "Account" });
-      await expect(account.locator("svg")).toBeVisible();
-      await account.click();
+      const code = example.getByRole("tab", { name: "Code" });
+      await expect(code.locator("svg")).toBeVisible();
+      await code.click();
       await page.keyboard.press("ArrowRight");
-      const notifs = example.getByRole("tab", { name: "Notifications" });
-      await expect(notifs).toHaveAttribute("aria-selected", "true");
-      await expect(notifs.locator("svg")).toBeVisible();
-      await expect(example.getByRole("tabpanel")).toContainText("Choose what updates");
+      const prs = example.getByRole("tab", { name: "Pull requests" });
+      await expect(prs).toHaveAttribute("aria-selected", "true");
+      await expect(prs.locator("svg")).toBeVisible();
+      await expect(example.getByRole("tabpanel")).toContainText("Review open proposals");
     });
 
     test("switch toggles with Space", async ({ page }) => {

@@ -64,6 +64,10 @@ test("MCP handshake and tools", async (t) => {
   assert.match(await call("search", { query: "settings" }), /^- pattern settings:/);
   assert.match(await call("get_rules", {}), /Pattern: Settings[\s\S]*DialogContent size="full"[\s\S]*Settings row/);
   assert.match(await call("lint", { code: `<button class="ayy-buton">x</button>`, filename: "x.html" }), /unknown-class/);
+  const dateRange = await call("get_component", { name: "ayy-date-range" });
+  assert.match(dateRange, /ayy-date-range/);
+  const timePicker = await call("get_component", { name: "ayy-time-picker" });
+  assert.match(timePicker, /ayy-time-picker/);
 
   const bad = await s.request("tools/call", { name: "nope", arguments: {} });
   assert.ok(bad.error);

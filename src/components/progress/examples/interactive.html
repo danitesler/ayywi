@@ -2,18 +2,65 @@
   <div class="ayy-card__header">
     <div class="ayy-spread">
       <h3 class="ayy-card__title">File upload</h3>
-      <span class="ayy-mono ayy-muted">45%</span>
+      <span class="ayy-mono ayy-muted" id="interactive-progress-pct">45%</span>
     </div>
-    <p class="ayy-card__description">Uploading client-presentation-v2.pdf…</p>
+    <p class="ayy-card__description" id="interactive-progress-desc">Uploading client-presentation-v2.pdf…</p>
   </div>
   <div class="ayy-card__content">
-    <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" class="ayy-progress" style="--ayy-value: 45" aria-label="File upload progress">
+    <div id="interactive-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" class="ayy-progress" style="--ayy-value: 45" aria-label="File upload progress">
       <div class="ayy-progress__bar"></div>
     </div>
   </div>
   <div class="ayy-card__footer">
-    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">-25%</button>
-    <button type="button" class="ayy-button ayy-button--sm">+25%</button>
-    <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Reset</button>
+    <button
+      type="button"
+      class="ayy-button ayy-button--outline ayy-button--sm"
+      onclick="(() => {
+        const bar = document.getElementById('interactive-progress-bar');
+        const pct = document.getElementById('interactive-progress-pct');
+        const desc = document.getElementById('interactive-progress-desc');
+        const val = Math.max(0, (parseInt(bar.getAttribute('aria-valuenow'), 10) || 0) - 25);
+        bar.setAttribute('aria-valuenow', val);
+        bar.style.setProperty('--ayy-value', val);
+        pct.textContent = val + '%';
+        bar.className = 'ayy-progress' + (val === 100 ? ' ayy-progress--success' : val > 80 ? ' ayy-progress--warning' : '');
+        desc.textContent = val === 100 ? 'Upload complete. File is ready to share.' : 'Uploading client-presentation-v2.pdf…';
+      })()"
+    >
+      -25%
+    </button>
+    <button
+      type="button"
+      class="ayy-button ayy-button--sm"
+      onclick="(() => {
+        const bar = document.getElementById('interactive-progress-bar');
+        const pct = document.getElementById('interactive-progress-pct');
+        const desc = document.getElementById('interactive-progress-desc');
+        const val = Math.min(100, (parseInt(bar.getAttribute('aria-valuenow'), 10) || 0) + 25);
+        bar.setAttribute('aria-valuenow', val);
+        bar.style.setProperty('--ayy-value', val);
+        pct.textContent = val + '%';
+        bar.className = 'ayy-progress' + (val === 100 ? ' ayy-progress--success' : val > 80 ? ' ayy-progress--warning' : '');
+        desc.textContent = val === 100 ? 'Upload complete. File is ready to share.' : 'Uploading client-presentation-v2.pdf…';
+      })()"
+    >
+      +25%
+    </button>
+    <button
+      type="button"
+      class="ayy-button ayy-button--ghost ayy-button--sm"
+      onclick="(() => {
+        const bar = document.getElementById('interactive-progress-bar');
+        const pct = document.getElementById('interactive-progress-pct');
+        const desc = document.getElementById('interactive-progress-desc');
+        bar.setAttribute('aria-valuenow', '0');
+        bar.style.setProperty('--ayy-value', '0');
+        pct.textContent = '0%';
+        bar.className = 'ayy-progress';
+        desc.textContent = 'Uploading client-presentation-v2.pdf…';
+      })()"
+    >
+      Reset
+    </button>
   </div>
 </div>

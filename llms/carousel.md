@@ -26,7 +26,7 @@ Category: Layout. A strip of slides that scrolls sideways and snaps, with previo
 - attribute `class`: Put ayy-carousel on it for block layout.
 
 **React** — `import { Carousel, CarouselSlide } from "@danitesler/ayywi/react";`
-- `<Carousel>` renders <div class="ayy-carousel" role="region"> with the track and the two buttons. Props: `label` string (required) — accessible name, e.g. "Team photos".; `slideWidth` CSS length for every slide. Default min(22rem, 85%).; `previousLabel / nextLabel` Button names. Default "Previous" / "Next" Defaults "Previous" / "Next" (translate them).; `slideLabel` Each slide's name, with {index} and {count}. Default "{index} of {count}" (translate it). HTML: data-slide-label on the carousel.
+- `<Carousel>` renders <div class="ayy-carousel" role="region"> with the track and the two buttons. Props: `label` string (required) — accessible name, e.g. "Team photos".; `slideWidth` CSS length for every slide. Default min(22rem, 85%).; `previousLabel / nextLabel` Button names. Defaults "Previous" / "Next" (translate them).; `slideLabel` Each slide's name, with {index} and {count}. Default "{index} of {count}" (translate it). HTML: data-slide-label on the carousel.
 - `<CarouselSlide>` renders <div role="group" aria-roledescription="slide">.
 
 **Accessibility**

@@ -34,7 +34,7 @@
     "density": "At least the lg control height plus 16px; the back button is the md control height (32px compact, 40 comfortable, 44 touch).",
     "width": "Full width of its scroll container (edge to edge as the first child of an App shell's main). large wraps the title onto its own line."
   },
-  "js": "topBarClass({ center?, large?, className? }) → string; topBarBackIcon (the back chevron's SVG markup, mirrored in RTL).",
+  "js": "topBarClass({ center?, large?, className? }) → string; topBarBackClass, topBarTitleClass, topBarHeadingClass, topBarSubtitleClass, topBarActionsClass, topBarRowClass constants; topBarBackIcon (the back chevron's SVG markup, mirrored in RTL).",
   "react": {
     "import": "import { TopBar } from \"@danitesler/ayywi/react\";",
     "components": {

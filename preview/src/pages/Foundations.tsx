@@ -9,6 +9,7 @@ import {
   CardContent,
   Checkbox,
   Icon,
+  InlineToast,
   Input,
   Label,
   Progress,
@@ -51,8 +52,8 @@ function ThemeSample({ name, label }: (typeof themeOptions)[number]) {
       <strong className="pv-theme__head">{label}</strong>
       <p className="pv-theme__big">Aa</p>
       <div className="ayy-cluster">
-        <span className="ayy-button ayy-button--sm">Primary</span>
-        <span className="ayy-button ayy-button--sm ayy-button--outline">Outline</span>
+        <Button size="sm">Primary</Button>
+        <Button size="sm" variant="outline">Outline</Button>
       </div>
     </div>
   );
@@ -251,7 +252,7 @@ function SpacingPage() {
           <CardContent className="ayy-stack">
             <div>
               <strong>Small</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>28px height</p>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>28 / 32 / 40px height</p>
             </div>
             <Input aria-label="Small project name" placeholder="Project name" size="sm" />
             <Select aria-label="Small project status" size="sm" defaultValue="active">
@@ -270,7 +271,7 @@ function SpacingPage() {
           <CardContent className="ayy-stack">
             <div>
               <strong>Medium</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>32px height · Default</p>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>32 / 40 / 44px height · Default</p>
             </div>
             <Input aria-label="Medium project name" placeholder="Project name" size="md" />
             <Select aria-label="Medium project status" size="md" defaultValue="active">
@@ -289,7 +290,7 @@ function SpacingPage() {
           <CardContent className="ayy-stack">
             <div>
               <strong>Large</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>40px height</p>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>40 / 48 / 52px height</p>
             </div>
             <Input aria-label="Large project name" placeholder="Project name" size="lg" />
             <Select aria-label="Large project status" size="lg" defaultValue="active">
@@ -481,10 +482,15 @@ function MotionPage() {
             <Badge variant="outline">ease.menu · 300ms</Badge>
           </div>
           <div className="pv-motion__stage">
-            <div className="pv-motion__toast" data-visible={isToggled || undefined} aria-hidden={!isToggled}>
-              <Icon icon={CheckmarkCircle02Icon} />
-              <span>Workspace settings updated</span>
-            </div>
+            <InlineToast
+              tone="success"
+              icon={<Icon icon={CheckmarkCircle02Icon} />}
+              className="pv-motion__toast"
+              data-visible={isToggled || undefined}
+              aria-hidden={!isToggled}
+            >
+              Workspace settings updated
+            </InlineToast>
           </div>
           <p className="pv-note">Menu easing curve for entrance translate and fade on sheets, menus, and toasts.</p>
         </div>

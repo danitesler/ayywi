@@ -65,7 +65,7 @@
       "DialogContent": {
         "renders": "<dialog>",
         "props": {
-          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\" — width",
+          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\" — width",
           "side": "\"center\" | \"start\" | \"end\" | \"bottom\" — start/end make a side modal on that inline edge, bottom a bottom sheet",
           "hideClose": "boolean — hide the corner close button",
           "closeLabel": "string — accessible name of the close button (translate it). Default \"Close\"",

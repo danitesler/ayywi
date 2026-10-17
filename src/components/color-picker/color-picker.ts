@@ -229,8 +229,12 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
     }
   };
 
-  if (options.swatches && options.swatches.length > 0) {
+  const renderSwatches = (swatchesList?: readonly string[]) => {
     let group = root.querySelector<HTMLElement>(`.${colorPickerSwatchesClass}`);
+    if (!swatchesList || swatchesList.length === 0) {
+      group?.remove();
+      return;
+    }
     if (!group) {
       group = document.createElement("div");
       group.className = colorPickerSwatchesClass;
@@ -239,7 +243,7 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
       root.append(group);
     }
     group.replaceChildren(
-      ...options.swatches.map((hex) => {
+      ...swatchesList.map((hex) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = colorPickerSwatchClass;
@@ -248,6 +252,10 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
         return btn;
       }),
     );
+  };
+
+  if (options.swatches && options.swatches.length > 0) {
+    renderSwatches(options.swatches);
   }
 
   const syncDom = (updateHexInput = true) => {
@@ -345,7 +353,8 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
       const rgb = hexToRgb(c);
       if (!rgb) return;
       const nextHsv = rgbToHsv(rgb);
-      hsv = { ...nextHsv, a: rgb.a ?? 1 };
+      const h = nextHsv.s === 0 || nextHsv.v === 0 ? hsv.h : nextHsv.h;
+      hsv = { h, s: nextHsv.s, v: nextHsv.v, a: rgb.a ?? 1 };
       currentHex = c;
       syncDom();
       onChange?.(currentHex);
@@ -400,6 +409,9 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
     update(next) {
       if (next.alpha !== undefined) alpha = next.alpha;
       if (next.onChange) onChange = next.onChange;
+      if (next.swatches !== undefined) {
+        renderSwatches(next.swatches);
+      }
       if (next.value !== undefined) this.setValue(next.value);
       else syncDom();
     },

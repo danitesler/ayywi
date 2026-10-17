@@ -44,10 +44,10 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
 }
 
 /** The live stage of the n-th example on a component page. */
-export const stage = (page: Page, n = 0) => page.locator(".pv-stage").nth(n);
+export const stage = (page: Page, n = 0) => page.locator(":is(.pv-stage, .ayy-showcase__stage)").nth(n);
 
 /** The live stage of the example with this id (its file name), so adding an example doesn't shift the others. */
-export const example = (page: Page, id: string) => page.locator(`.pv-example[aria-labelledby="ex-${id}"] .pv-stage`);
+export const example = (page: Page, id: string) => page.locator(`:is(.pv-example, .ayy-showcase)[aria-labelledby="ex-${id}"] :is(.pv-stage, .ayy-showcase__stage)`);
 
 /** Wait for entry transitions/animations to finish, so boxes are measured at rest. */
 export const settle = (l: Locator) => l.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));

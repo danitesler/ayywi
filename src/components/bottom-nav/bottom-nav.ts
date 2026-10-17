@@ -12,10 +12,10 @@ export interface BottomNavClassOptions {
 
 export function bottomNavClass(options?: BottomNavClassOptions | string): string {
   if (typeof options === "string") return cx("ayy-bottom-nav", options);
-  const { size = "lg", compact, iconOnly, className } = options ?? {};
+  const { size, compact, iconOnly, className } = options ?? {};
   return cx(
     "ayy-bottom-nav",
-    size !== "lg" && `ayy-bottom-nav--${size}`,
+    size && `ayy-bottom-nav--${size}`,
     compact && "ayy-bottom-nav--compact",
     iconOnly && "ayy-bottom-nav--icon-only",
     className,

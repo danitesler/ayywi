@@ -11,6 +11,7 @@ export class AyyTooltipElement extends ElementBase {
   #cleanup: (() => void) | null = null;
 
   connectedCallback(): void {
+    this.classList.add("ayy-tooltip");
     const content = Array.from(this.children).find((el) => el.classList.contains(tooltipContentClass));
     const trigger = Array.from(this.children).find((el) => el !== content);
     if (content) {

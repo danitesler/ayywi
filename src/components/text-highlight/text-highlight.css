@@ -6,7 +6,7 @@
   padding-block: 0;
   padding-inline: 0;
   border-radius: var(--ayy-radius-sm);
-  background-color: color-mix(in srgb, var(--ayy-color-text) 8%, transparent);
+  background-color: var(--ayy-color-wash-hover);
   color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--ayy-color-line-hover);

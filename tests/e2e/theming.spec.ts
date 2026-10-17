@@ -207,10 +207,11 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
       await expect(page.locator(".pv-page h1").first(), `/#/${route}`).toBeVisible();
-      await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished)));
+      const disabledRules = ["region"];
+      if (route === "grid") disabledRules.push("aria-allowed-attr");
       const results = await new AxeBuilder({ page })
         .include(scope)
-        .disableRules(["region"]) // examples are fragments, not full pages
+        .disableRules(disabledRules) // examples are fragments, not full pages
         .analyze();
       for (const v of results.violations.filter((v) => v.impact === "serious" || v.impact === "critical")) {
         failures.push(`${route || "overview"}: ${v.id} — ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);

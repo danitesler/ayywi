@@ -1,5 +1,5 @@
 import { cx } from "../../lib/cx";
-import { Alert02Icon, Cancel01Icon, CancelCircleIcon, CheckmarkCircle02Icon, Copy01Icon, InformationCircleIcon, Tick02Icon } from "../../lib/icons";
+import { Alert02Icon, Cancel01Icon, CancelCircleIcon, CheckmarkCircle02Icon, Copy01Icon, InformationCircleIcon, PlayIcon, Tick02Icon } from "../../lib/icons";
 import { supportsPopover } from "../../lib/position";
 import { iconSvg } from "../icon/icon";
 
@@ -121,6 +121,7 @@ export const toastSuccessIcon = iconSvg(CheckmarkCircle02Icon);
 export const toastWarningIcon = iconSvg(Alert02Icon);
 export const toastInfoIcon = iconSvg(InformationCircleIcon);
 export const toastErrorIcon = iconSvg(CancelCircleIcon);
+export const toastPlayIcon = iconSvg(PlayIcon, { size: "sm" });
 
 const VARIANT_ICONS: Record<string, string> = {
   success: toastSuccessIcon,
@@ -604,7 +605,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
       const mediaBadge = document.createElement("span");
       mediaBadge.className = "ayy-toast__media";
       mediaBadge.setAttribute("aria-hidden", "true");
-      mediaBadge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="inline-size: 0.75rem; block-size: 0.75rem;"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>${options.media.duration}</span>`;
+      mediaBadge.innerHTML = `${toastPlayIcon}<span>${options.media.duration}</span>`;
       thumb.append(mediaBadge);
     }
     toast.append(thumb);
@@ -686,7 +687,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
       const mediaBadge = document.createElement("span");
       mediaBadge.className = "ayy-toast__media";
       mediaBadge.setAttribute("aria-hidden", "true");
-      mediaBadge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="inline-size: 0.75rem; block-size: 0.75rem;"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>${options.media.duration}</span>`;
+      mediaBadge.innerHTML = `${toastPlayIcon}<span>${options.media.duration}</span>`;
       toast.append(mediaBadge);
     }
 
@@ -800,7 +801,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
     if (!status) return;
 
     statusEl = document.createElement("div");
-    statusEl.className = cx("ayy-toast__status", `ayy-toast__status--${status.tone}`);
+    statusEl.className = inlineToastClass({ tone: status.tone });
     statusEl.setAttribute("role", "status");
 
     const iconSpan = document.createElement("span");
@@ -879,9 +880,9 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
 
 export const cardToast = (options: CardToastOptions): CardToastHandle => showCardToast(options);
 
-export function inlineToastClass(options: { tone?: "default" | "success" | "busy" | "error" } = {}): string {
-  const { tone = "default" } = options;
-  return cx("ayy-toast--inline", tone !== "default" && `ayy-toast--inline--${tone}`);
+export function inlineToastClass(options: { tone?: "default" | "success" | "busy" | "error"; className?: string } = {}): string {
+  const { tone = "default", className } = options;
+  return cx("ayy-toast--inline", tone !== "default" && `ayy-toast--inline--${tone}`, className);
 }
 
 type ToastFn = (message: string, options?: Omit<ToastOptions, "variant">) => ToastHandle;

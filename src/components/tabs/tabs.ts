@@ -2,6 +2,7 @@ export const tabsClass = "ayy-tabs";
 export const tabsListClass = "ayy-tabs__list";
 export const tabsTabClass = "ayy-tabs__tab";
 export const tabsPanelClass = "ayy-tabs__panel";
+export const tabsCountClass = "ayy-tabs__count";
 
 /**
  * Next tab index for a key press, following the WAI-ARIA tabs pattern.

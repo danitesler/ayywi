@@ -35,14 +35,21 @@
   color: var(--ayy-color-muted);
 }
 
-.ayy-search-bar__field:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-search-bar__field:not(:has(> .ayy-search-bar__input:disabled)):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 .ayy-search-bar__field:has(> .ayy-search-bar__input:focus-visible) {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: -1px;
   border-color: transparent;
+}
+
+.ayy-search-bar__field:has(> .ayy-search-bar__input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
 }
 
 .ayy-search-bar__input {
@@ -96,7 +103,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-search-bar__clear:hover {
+  .ayy-search-bar__clear:not(:disabled):hover {
     background-color: var(--ayy-color-wash-hover);
     color: var(--ayy-color-text);
   }
@@ -145,7 +152,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-search-bar__cancel:hover {
+  .ayy-search-bar__cancel:not(:disabled):hover {
     color: var(--ayy-color-text-soft);
   }
 }
@@ -167,5 +174,12 @@
 @media (forced-colors: active) {
   .ayy-search-bar__field {
     border-color: CanvasText;
+  }
+  .ayy-search-bar__field:has(> .ayy-search-bar__input:disabled) {
+    border-color: GrayText;
+  }
+  .ayy-search-bar__clear:disabled,
+  .ayy-search-bar__cancel:disabled {
+    color: GrayText;
   }
 }

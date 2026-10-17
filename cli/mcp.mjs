@@ -28,12 +28,17 @@ function componentMarkdown(c) {
     parts.push(`Sizes:\n${list([...scale, `density — ${c.sizes.density}`, `width — ${c.sizes.width}`])}`);
   }
   if (c.js) parts.push(`JS helpers (from "@danitesler/ayywi"): ${c.js}`);
-  if (c.element)
+  const elements = [
+    ...(c.element ? [c.element] : []),
+    ...(Array.isArray(c.elements) ? c.elements.filter((e) => e.tag !== c.element?.tag) : []),
+  ];
+  for (const el of elements) {
     parts.push(
-      `Custom element <${c.element.tag}> (import "@danitesler/ayywi/elements"): ${c.element.children ?? ""}\nAttributes:\n${list(
-        Object.entries(c.element.attributes ?? {}).map(([k, v]) => `${k}: ${v}`),
-      )}\nEvents:\n${list(Object.entries(c.element.events ?? {}).map(([k, v]) => `${k}: ${v}`))}`,
+      `Custom element <${el.tag}> (import "@danitesler/ayywi/elements"): ${el.children ?? el.description ?? ""}\nAttributes:\n${list(
+        Object.entries(el.attributes ?? {}).map(([k, v]) => `${k}: ${v}`),
+      )}\nEvents:\n${list(Object.entries(el.events ?? {}).map(([k, v]) => `${k}: ${v}`))}`,
     );
+  }
   parts.push(
     `React (${c.react.import}):\n${list(
       Object.entries(c.react.components).map(
@@ -51,13 +56,17 @@ function componentMarkdown(c) {
 export function createServer(contract = loadContract()) {
   const { manifest } = contract;
   const find = (name) => {
-    const key = String(name ?? "").toLowerCase().replace(/^<?ayy-/, "").replace(/[^a-z0-9]/g, "");
+    const raw = String(name ?? "").trim();
+    const q = raw.toLowerCase().replace(/^</, "").replace(/>$/, "");
+    const key = q.replace(/^ayy-/, "").replace(/[^a-z0-9]/g, "");
     return manifest.components.find(
       (c) =>
         c.slug === key ||
         c.name.toLowerCase().replace(/[^a-z0-9]/g, "") === key ||
         Object.keys(c.react.components).some((n) => n.toLowerCase() === key) ||
-        c.element?.tag.replace(/^ayy-/, "").replace(/[^a-z0-9]/g, "") === key,
+        c.element?.tag.replace(/^ayy-/, "").replace(/[^a-z0-9]/g, "") === key ||
+        c.elements?.some((el) => el.tag.toLowerCase() === q || el.tag.replace(/^ayy-/, "").replace(/[^a-z0-9]/g, "") === key) ||
+        c.aka?.some((a) => a.toLowerCase() === q || a.toLowerCase().replace(/[^a-z0-9]/g, "") === key),
     );
   };
 

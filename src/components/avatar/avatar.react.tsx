@@ -38,7 +38,9 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
   );
 });
 
-export const AvatarGroup = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function AvatarGroup(
+export interface AvatarGroupProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(function AvatarGroup(
   { className, ...props },
   ref,
 ) {

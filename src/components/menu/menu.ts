@@ -138,6 +138,21 @@ export function connectMenu(
   let subTimer: ReturnType<typeof setTimeout> | null = null;
   let mousePos = { x: 0, y: 0 };
   let lastExitPos = { x: 0, y: 0 };
+  let listeningMouseMove = false;
+
+  const onMouseMove = (event: MouseEvent) => {
+    mousePos = { x: event.clientX, y: event.clientY };
+  };
+
+  const setMouseMoveListening = (active: boolean) => {
+    if (active && !listeningMouseMove) {
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+      listeningMouseMove = true;
+    } else if (!active && listeningMouseMove) {
+      window.removeEventListener("mousemove", onMouseMove);
+      listeningMouseMove = false;
+    }
+  };
 
   const closeActiveSubmenu = () => {
     if (activeSubmenu) {
@@ -154,6 +169,7 @@ export function connectMenu(
     boundary: options.boundary,
     ...options,
     onToggle: (open) => {
+      setMouseMoveListening(open);
       if (open) {
         for (const item of content.querySelectorAll<HTMLElement>(ITEM)) item.tabIndex = -1;
         const list = items();
@@ -169,14 +185,17 @@ export function connectMenu(
   let controller: PopoverController;
   if (isStatic) {
     let isOpen = true;
+    setMouseMoveListening(true);
     controller = {
       open() {
         isOpen = true;
         content.hidden = false;
+        setMouseMoveListening(true);
       },
       close() {
         isOpen = false;
         content.hidden = true;
+        setMouseMoveListening(false);
       },
       isOpen() {
         return isOpen;
@@ -209,7 +228,7 @@ export function connectMenu(
   const toggleInlineExpand = (item: HTMLElement) => {
     const controlsId = item.getAttribute("aria-controls");
     const group = controlsId
-      ? content.querySelector<HTMLElement>(`#${controlsId}`)
+      ? content.querySelector<HTMLElement>(`#${CSS.escape(controlsId)}`)
       : (item.nextElementSibling as HTMLElement | null);
     if (!group || !group.classList.contains("ayy-menu__group--inline")) return;
 
@@ -223,7 +242,7 @@ export function connectMenu(
           otherItem.setAttribute("aria-expanded", "false");
           const otherId = otherItem.getAttribute("aria-controls");
           const otherGroup = otherId
-            ? content.querySelector<HTMLElement>(`#${otherId}`)
+            ? content.querySelector<HTMLElement>(`#${CSS.escape(otherId)}`)
             : (otherItem.nextElementSibling as HTMLElement | null);
           if (otherGroup?.classList.contains("ayy-menu__group--inline")) {
             otherGroup.hidden = true;
@@ -272,11 +291,10 @@ export function connectMenu(
         onToggle: (open) => {
           subTrigger.setAttribute("aria-expanded", String(open));
           if (options.onSubmenuLayout) {
-            const rect = panel.getBoundingClientRect();
             options.onSubmenuLayout({
               open,
-              width: rect.width,
-              height: rect.height,
+              width: panel.offsetWidth,
+              height: panel.offsetHeight,
               side: (panel.getAttribute("data-placement") as FloatingSide) ?? (isRtl() ? "start" : "end"),
             });
           }
@@ -302,10 +320,6 @@ export function connectMenu(
       );
       subItems[0]?.focus();
     }
-  };
-
-  const onMouseMove = (event: MouseEvent) => {
-    mousePos = { x: event.clientX, y: event.clientY };
   };
 
   const isPointerInSafeTriangle = (panelRect: DOMRect): boolean => {
@@ -381,9 +395,9 @@ export function connectMenu(
         closeAll();
         return;
       case "Escape":
+        event.preventDefault();
+        event.stopPropagation();
         if (options.parentMenu) {
-          event.preventDefault();
-          event.stopPropagation();
           event.stopImmediatePropagation();
           options.parentMenu.focusTrigger();
           controller.close();
@@ -519,7 +533,6 @@ export function connectMenu(
     else controller.open();
   };
 
-  window.addEventListener("mousemove", onMouseMove, { passive: true });
   content.addEventListener("mouseover", onContentPointerOver);
   content.addEventListener("mouseout", onContentPointerLeave);
   content.addEventListener("keydown", onContentKey);
@@ -546,7 +559,7 @@ export function connectMenu(
     closeAll,
     destroy() {
       if (subTimer) clearTimeout(subTimer);
-      window.removeEventListener("mousemove", onMouseMove);
+      setMouseMoveListening(false);
       content.removeEventListener("mouseover", onContentPointerOver);
       content.removeEventListener("mouseout", onContentPointerLeave);
       content.removeEventListener("keydown", onContentKey);

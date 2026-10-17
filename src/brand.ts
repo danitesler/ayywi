@@ -345,17 +345,19 @@ export function brandTokens(brand: Brand | BrandInput, theme: ThemeName): DtcgTr
  * - null to go back to ayywi's monochrome default.
  * Brands are usually fixed per app, so the choice isn't persisted. Returns the generated brand, if any.
  */
-export function setBrand(brand: string | BrandInput | Brand | null, target: HTMLElement = document.documentElement): Brand | undefined {
+export function setBrand(brand: string | BrandInput | Brand | null, target?: HTMLElement): Brand | undefined {
+  const el = target ?? (typeof document !== "undefined" ? document.documentElement : null);
+  if (!el) return undefined;
   if (brand === null) {
-    target.removeAttribute("data-brand");
+    el.removeAttribute("data-brand");
     return undefined;
   }
   if (typeof brand === "string") {
-    target.setAttribute("data-brand", brand);
+    el.setAttribute("data-brand", brand);
     return undefined;
   }
   const b = "scale" in brand ? brand : createBrand(brand);
-  const doc = target.ownerDocument;
+  const doc = el.ownerDocument;
   let style = doc.head.querySelector<HTMLStyleElement>(`style[data-ayy-brand="${b.name}"]`);
   if (!style) {
     style = doc.createElement("style");
@@ -363,6 +365,6 @@ export function setBrand(brand: string | BrandInput | Brand | null, target: HTML
     doc.head.append(style);
   }
   style.textContent = brandCss(b);
-  target.setAttribute("data-brand", b.name);
+  el.setAttribute("data-brand", b.name);
   return b;
 }

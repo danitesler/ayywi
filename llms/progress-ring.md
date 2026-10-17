@@ -59,7 +59,7 @@ Category: Feedback. Progress as a ring that fills clockwise from the top: a focu
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<div class="ayy-cluster" style="align-items: center; gap: 2rem">
+<div class="ayy-cluster" style="align-items: center; --ayy-gap: var(--ayy-space-8)">
   <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="28" class="ayy-progress-ring ayy-progress-ring--xl" style="--ayy-value: 28" aria-label="Focus session, 18 minutes left"><svg class="ayy-progress-ring__svg" viewBox="0 0 36 36" aria-hidden="true"><circle class="ayy-progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle><circle class="ayy-progress-ring__bar" cx="18" cy="18" r="16" pathLength="100"></circle></svg><span class="ayy-progress-ring__label">18:00</span></div>
   <div class="ayy-stack" style="align-items: start">
     <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" class="ayy-progress-ring ayy-progress-ring--lg" style="--ayy-value: 60" aria-label="Habit: 3 of 5 days this week"><svg class="ayy-progress-ring__svg" viewBox="0 0 36 36" aria-hidden="true"><circle class="ayy-progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle><circle class="ayy-progress-ring__bar" cx="18" cy="18" r="16" pathLength="100"></circle></svg><span class="ayy-progress-ring__label">3/5</span></div>
@@ -84,7 +84,7 @@ import { Icon, ProgressRing } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
-    <div className="ayy-cluster" style={{ alignItems: "center", gap: "2rem" }}>
+    <div className="ayy-cluster" style={{ alignItems: "center", "--ayy-gap": "var(--ayy-space-8)" } as any}>
       <ProgressRing value={28} size="xl" aria-label="Focus session, 18 minutes left">
         18:00
       </ProgressRing>

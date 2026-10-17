@@ -1,5 +1,9 @@
 /* On-page contents with a scrollspy: the link of the section being read gets aria-current and an accent bar.
    Accent from --ayy-spot. Put it in a <nav>; <ayy-toc> (or connectToc) keeps aria-current in sync with scrolling. */
+ayy-toc {
+  display: contents;
+}
+
 .ayy-toc {
   --_accent: var(--ayy-spot, var(--ayy-color-text));
   box-sizing: border-box;
@@ -33,7 +37,7 @@
 .ayy-toc__list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--ayy-space-0-5);
   margin: 0;
   padding: 0;
   border-inline-start: 1px solid var(--ayy-color-hairline);
@@ -163,8 +167,11 @@
 
 .ayy-toc__toggle-icon {
   flex: none;
-  inline-size: 1rem;
-  block-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
   color: var(--ayy-color-muted);
 }
 
@@ -180,8 +187,11 @@
 
 .ayy-toc__toggle-caret {
   flex: none;
-  inline-size: 0.875rem;
-  block-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
   color: var(--ayy-color-muted);
   transition: transform var(--ayy-duration-fast) var(--ayy-ease-out-expo);
 }

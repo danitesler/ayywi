@@ -41,7 +41,9 @@
   border-block-end: 1.5px solid currentColor;
   color: var(--ayy-color-muted);
   transform: translateY(-0.125em) rotate(45deg);
-  transition: transform var(--ayy-duration-base) var(--ayy-ease-menu);
+  transition:
+    transform var(--ayy-duration-base) var(--ayy-ease-menu),
+    color var(--ayy-duration-base) ease;
 }
 
 .ayy-accordion__item[open] > .ayy-accordion__trigger::after {

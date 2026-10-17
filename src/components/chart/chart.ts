@@ -12,14 +12,25 @@ export function chartClass({ stacked, values, className }: ChartClassOptions = {
   return cx("ayy-chart", stacked && "ayy-chart--stacked", values && "ayy-chart--values", className);
 }
 
-export function chartSeriesClass({ compare, className }: { compare?: boolean; className?: string } = {}): string {
+export interface ChartSeriesClassOptions {
+  compare?: boolean;
+  className?: string;
+}
+
+export function chartSeriesClass({ compare, className }: ChartSeriesClassOptions = {}): string {
   return cx("ayy-chart__series", compare && "ayy-chart__series--compare", className);
 }
 
-export function chartLegendItemClass({ compare, className }: { compare?: boolean; className?: string } = {}): string {
+export interface ChartLegendItemClassOptions {
+  compare?: boolean;
+  className?: string;
+}
+
+export function chartLegendItemClass({ compare, className }: ChartLegendItemClassOptions = {}): string {
   return cx("ayy-chart__legend-item", compare && "ayy-chart__legend-item--compare", className);
 }
 
+export const chartGradientClass = "ayy-chart__gradient";
 export const chartPlotClass = "ayy-chart__plot";
 export const chartTickClass = "ayy-chart__tick";
 export const chartBarsClass = "ayy-chart__bars";

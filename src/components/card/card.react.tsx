@@ -1,6 +1,16 @@
 import { forwardRef, type AnchorHTMLAttributes, type CSSProperties, type HTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
-import { cardClass, trackSpotlight } from "./card";
+import {
+  cardClass,
+  cardContentClass,
+  cardDescriptionClass,
+  cardFooterClass,
+  cardHeaderClass,
+  cardLinkClass,
+  cardMediaClass,
+  cardTitleClass,
+  trackSpotlight,
+} from "./card";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
@@ -33,51 +43,65 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   );
 });
 
-export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardHeader(
+export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(function CardHeader(
   { className, ...props },
   ref,
 ) {
-  return <div ref={ref} className={cx("ayy-card__header", className)} {...props} />;
+  return <div ref={ref} className={cx(cardHeaderClass, className)} {...props} />;
 });
 
-export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(function CardTitle(
+export interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
+
+export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(function CardTitle(
   { className, ...props },
   ref,
 ) {
-  return <h3 ref={ref} className={cx("ayy-card__title", className)} {...props} />;
+  return <h3 ref={ref} className={cx(cardTitleClass, className)} {...props} />;
 });
 
-export const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+export interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   function CardDescription({ className, ...props }, ref) {
-    return <p ref={ref} className={cx("ayy-card__description", className)} {...props} />;
+    return <p ref={ref} className={cx(cardDescriptionClass, className)} {...props} />;
   },
 );
 
-export const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardContent(
+export interface CardContentProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(function CardContent(
   { className, ...props },
   ref,
 ) {
-  return <div ref={ref} className={cx("ayy-card__content", className)} {...props} />;
+  return <div ref={ref} className={cx(cardContentClass, className)} {...props} />;
 });
 
-export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardFooter(
+export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(function CardFooter(
   { className, ...props },
   ref,
 ) {
-  return <div ref={ref} className={cx("ayy-card__footer", className)} {...props} />;
+  return <div ref={ref} className={cx(cardFooterClass, className)} {...props} />;
 });
 
-export const CardMedia = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardMedia(
+export interface CardMediaProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CardMedia = forwardRef<HTMLDivElement, CardMediaProps>(function CardMedia(
   { className, ...props },
   ref,
 ) {
-  return <div ref={ref} className={cx("ayy-card__media", className)} {...props} />;
+  return <div ref={ref} className={cx(cardMediaClass, className)} {...props} />;
 });
+
+export interface CardLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
 /** The title's link, stretched over the whole card. Put it inside <CardTitle>. */
-export const CardLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement>>(function CardLink(
+export const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(function CardLink(
   { className, ...props },
   ref,
 ) {
-  return <a ref={ref} className={cx("ayy-card__link", className)} {...props} />;
+  return <a ref={ref} className={cx(cardLinkClass, className)} {...props} />;
 });

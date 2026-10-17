@@ -2,8 +2,10 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { chatBubbleClass, chatClass, chatMessageClass, chatRepliesClass, chatTypingClass, type ChatDirection } from "./chat";
 
+export interface ChatProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** role="log": new messages are announced politely. Pass role={undefined} for a static transcript. */
-export const Chat = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function Chat({ className, ...props }, ref) {
+export const Chat = forwardRef<HTMLDivElement, ChatProps>(function Chat({ className, ...props }, ref) {
   return <div ref={ref} role="log" className={cx(chatClass, className)} {...props} />;
 });
 
@@ -50,7 +52,9 @@ export const ChatTyping = forwardRef<HTMLDivElement, ChatTypingProps>(function C
   );
 });
 
-export const ChatReplies = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ChatReplies(
+export interface ChatRepliesProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const ChatReplies = forwardRef<HTMLDivElement, ChatRepliesProps>(function ChatReplies(
   { className, ...props },
   ref,
 ) {

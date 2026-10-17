@@ -2,7 +2,7 @@
 
 /* The AppShell frame and sidebar, with the page (not the shell) doing the scrolling: examples such as Contents track window scroll. */
 .pv-shell {
-  --_sidebar-w: 256px;
+  --ayy-sidebar-w: 16rem;
   block-size: auto;
   min-block-size: 100dvh;
 }
@@ -204,6 +204,7 @@
 }
 
 .pv-content {
+  --ayy-sidebar-w: initial;
   box-sizing: border-box;
   inline-size: 100%;
   max-inline-size: 1040px;
@@ -230,7 +231,7 @@
 }
 
 /* Component pages have no section headings: space the first example off the header. */
-.pv-page__header + .pv-example {
+.pv-page__header + :is(.pv-example, .ayy-showcase) {
   margin-block-start: var(--ayy-space-6);
 }
 
@@ -296,34 +297,8 @@
   color: var(--ayy-color-text-soft);
 }
 
-.pv-example {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-3);
+.ayy-showcase {
   margin-block-end: var(--ayy-space-8);
-}
-
-.pv-example__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--ayy-space-3);
-  flex-wrap: wrap;
-}
-
-.pv-example__title {
-  margin: 0;
-  font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-md);
-  font-weight: var(--ayy-weight-semibold);
-  line-height: var(--ayy-leading-snug);
-}
-
-.pv-example__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--ayy-space-2);
-  flex-wrap: wrap;
 }
 
 .pv-props-popover {
@@ -352,6 +327,31 @@
 .pv-props-popover__device {
   font-size: var(--ayy-text-s);
   text-transform: capitalize;
+}
+
+.pv-props-popover .ayy-stack {
+  --ayy-gap: var(--ayy-space-2);
+}
+
+.pv-props-popover .ayy-stack > .ayy-stack {
+  --ayy-gap: var(--ayy-space-1);
+}
+
+.pv-props-popover .ayy-stack > .ayy-stack + .ayy-stack {
+  padding-block-start: var(--ayy-space-2);
+  border-block-start: 1px solid var(--ayy-color-line);
+}
+
+.pv-props-popover .ayy-spread {
+  padding: var(--ayy-space-1) var(--ayy-space-2);
+  border-radius: var(--ayy-radius-md);
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .pv-props-popover .ayy-spread:hover {
+    background-color: var(--ayy-color-wash);
+  }
 }
 
 .pv-props-list {
@@ -392,8 +392,10 @@
   transition: background-color var(--ayy-duration-fast) ease;
 }
 
-.pv-props-item:hover {
-  background-color: var(--ayy-color-wash);
+@media (hover: hover) {
+  .pv-props-item:hover {
+    background-color: var(--ayy-color-wash);
+  }
 }
 
 .pv-props-label {
@@ -401,63 +403,6 @@
   color: var(--ayy-color-text);
   cursor: pointer;
   user-select: none;
-}
-
-.pv-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-block-size: 128px;
-  padding: var(--ayy-space-8) var(--ayy-space-6);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-bg);
-  background-image: radial-gradient(var(--ayy-color-hairline) 1px, transparent 1px);
-  background-size: 16px 16px;
-  overflow: hidden;
-}
-
-.pv-stage__viewport {
-  box-sizing: border-box;
-  inline-size: 100%;
-  max-inline-size: 100%;
-  margin-inline: auto;
-  transform-origin: top center;
-  transition:
-    max-inline-size 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    inline-size 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-radius 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: max-inline-size, inline-size, transform;
-}
-
-.pv-stage__viewport[data-device="desktop"] {
-  max-inline-size: 100%;
-}
-
-.pv-stage__viewport[data-device="tablet"] {
-  max-inline-size: min(834px, 100%);
-  padding: var(--ayy-space-4);
-  box-sizing: border-box;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-xl);
-  box-shadow: var(--ayy-shadow-lift);
-  overflow: hidden;
-  background-color: var(--ayy-color-bg);
-}
-
-.pv-stage__viewport[data-device="mobile"] {
-  max-inline-size: min(390px, 100%);
-  padding: var(--ayy-space-4);
-  box-sizing: border-box;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-xl);
-  box-shadow: var(--ayy-shadow-frame);
-  overflow: hidden;
-  background-color: var(--ayy-color-bg);
 }
 
 .pv-stage__iframe {
@@ -468,30 +413,9 @@
   overflow: hidden;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .pv-stage__viewport {
-    transition: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .pv-stage__viewport[data-device="tablet"],
-  .pv-stage__viewport[data-device="mobile"] {
-    border-color: CanvasText;
-  }
-}
-
-.pv-stage__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--ayy-space-3);
-  inline-size: 100%;
-}
-
-.pv-stage__inner > .ayy-tabs,
-.pv-stage__inner > .ayy-table-wrap,
-.pv-stage__inner > .ayy-navbar {
+.ayy-showcase__body > .ayy-tabs,
+.ayy-showcase__body > .ayy-table-wrap,
+.ayy-showcase__body > .ayy-navbar {
   inline-size: 100%;
 }
 
@@ -756,25 +680,17 @@
 }
 
 .pv-motion__toast {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ayy-space-2);
-  padding-block: var(--ayy-space-2);
-  padding-inline: var(--ayy-space-3);
-  border: 1px solid var(--ayy-color-line-strong);
-  border-radius: var(--ayy-radius-md);
   background-color: var(--ayy-color-surface-raised);
-  box-shadow: var(--ayy-shadow-overlay);
-  font-size: var(--ayy-text-sm);
-  color: var(--ayy-color-text);
   transform: translateY(8px) scale(0.96);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
 .pv-motion__toast[data-visible] {
   transform: translateY(0) scale(1);
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -900,7 +816,8 @@
     padding: var(--ayy-space-6) var(--ayy-space-4) var(--ayy-space-12);
   }
 
-  .pv-stage {
+  /* ayywi-lint-disable-next-line -- docs chrome on narrow screens: tighter stage padding */
+  .ayy-showcase__stage {
     padding: var(--ayy-space-6) var(--ayy-space-4);
   }
 }
@@ -1233,11 +1150,9 @@
   margin-block-end: var(--ayy-space-4);
 }
 
-/* ayywi-lint-disable-next-line -- a hex code reads best in mono (Input has no mono option yet) */
 .pv-brand__hex {
   flex: 1;
   min-inline-size: 0;
-  font-family: var(--ayy-font-mono);
 }
 
 .pv-brand__presets-row {

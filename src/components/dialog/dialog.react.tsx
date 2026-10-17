@@ -22,6 +22,8 @@ interface DialogContextValue {
   open: boolean;
   setOpen: (open: boolean) => void;
   titleId: string;
+  hasTitle: boolean;
+  setHasTitle: (value: boolean) => void;
   descriptionId: string;
   hasDescription: boolean;
   setHasDescription: (value: boolean) => void;
@@ -46,6 +48,7 @@ export interface DialogProps {
 /** State holder. Renders no element; put a DialogTrigger and a DialogContent inside. */
 export function Dialog({ open: controlled, defaultOpen = false, onOpenChange, children }: DialogProps) {
   const [uncontrolled, setUncontrolled] = useState(defaultOpen);
+  const [hasTitle, setHasTitle] = useState(false);
   const [hasDescription, setHasDescription] = useState(false);
   const open = controlled ?? uncontrolled;
   const id = useId();
@@ -60,14 +63,16 @@ export function Dialog({ open: controlled, defaultOpen = false, onOpenChange, ch
 
   return (
     <DialogContext.Provider
-      value={{ open, setOpen, titleId: `${id}title`, descriptionId: `${id}desc`, hasDescription, setHasDescription }}
+      value={{ open, setOpen, titleId: `${id}title`, hasTitle, setHasTitle, descriptionId: `${id}desc`, hasDescription, setHasDescription }}
     >
       {children}
     </DialogContext.Provider>
   );
 }
 
-export const DialogTrigger = forwardRef<HTMLButtonElement, ButtonProps>(function DialogTrigger({ onClick, ...props }, ref) {
+export interface DialogTriggerProps extends ButtonProps {}
+
+export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>(function DialogTrigger({ onClick, ...props }, ref) {
   const { setOpen } = useDialog("DialogTrigger");
   return (
     <Button
@@ -128,7 +133,13 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
     if (ctx.open || !present || !el) return;
     const done = () => setPresent(false);
     const onEnd = (event: TransitionEvent) => {
-      if (event.target === el && event.propertyName === "opacity") done();
+      if (
+        event.target === el &&
+        (event.propertyName === "opacity" ||
+          event.propertyName === "transform" ||
+          event.propertyName.startsWith("inset-inline"))
+      )
+        done();
     };
     el.addEventListener("transitionend", onEnd);
     const timer = window.setTimeout(done, transitionMs(el) + 50);
@@ -146,7 +157,7 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
         else if (forwardedRef) forwardedRef.current = el;
       }}
       className={dialogClass({ size, side, className })}
-      aria-labelledby={ctx.titleId}
+      aria-labelledby={ctx.hasTitle ? ctx.titleId : undefined}
       aria-describedby={ctx.hasDescription ? ctx.descriptionId : undefined}
       onClose={(event) => {
         onClose?.(event);
@@ -172,34 +183,48 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
   );
 });
 
-export const DialogHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DialogHeader(
+export interface DialogHeaderProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const DialogHeader = forwardRef<HTMLDivElement, DialogHeaderProps>(function DialogHeader(
   { className, ...props },
   ref,
 ) {
   return <div ref={ref} className={cx("ayy-dialog__header", className)} {...props} />;
 });
 
+export interface DialogBodyProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** Scrolls on its own between the header and the footer, which stay in view. Fills the height of a side modal. */
-export const DialogBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DialogBody({ className, ...props }, ref) {
+export const DialogBody = forwardRef<HTMLDivElement, DialogBodyProps>(function DialogBody({ className, ...props }, ref) {
   return <div ref={ref} className={cx("ayy-dialog__body", className)} {...props} />;
 });
 
-export const DialogFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function DialogFooter(
+export interface DialogFooterProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const DialogFooter = forwardRef<HTMLDivElement, DialogFooterProps>(function DialogFooter(
   { className, ...props },
   ref,
 ) {
   return <div ref={ref} className={cx("ayy-dialog__footer", className)} {...props} />;
 });
 
-export const DialogTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(function DialogTitle(
+export interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
+
+export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(function DialogTitle(
   { className, ...props },
   ref,
 ) {
-  const { titleId } = useDialog("DialogTitle");
+  const { titleId, setHasTitle } = useDialog("DialogTitle");
+  useLayoutEffect(() => {
+    setHasTitle(true);
+    return () => setHasTitle(false);
+  }, [setHasTitle]);
   return <h2 ref={ref} id={titleId} className={cx("ayy-dialog__title", className)} {...props} />;
 });
 
-export const DialogDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+export interface DialogDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const DialogDescription = forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
   function DialogDescription({ className, ...props }, ref) {
     const { descriptionId, setHasDescription } = useDialog("DialogDescription");
     useLayoutEffect(() => {
@@ -210,8 +235,10 @@ export const DialogDescription = forwardRef<HTMLParagraphElement, HTMLAttributes
   },
 );
 
+export interface DialogCloseProps extends ButtonProps {}
+
 /** A Button that closes the dialog. Defaults to the secondary variant. */
-export const DialogClose = forwardRef<HTMLButtonElement, ButtonProps>(function DialogClose(
+export const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>(function DialogClose(
   { variant = "secondary", onClick, ...props },
   ref,
 ) {

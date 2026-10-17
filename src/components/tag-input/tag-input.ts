@@ -112,9 +112,10 @@ export function connectTagInput(root: HTMLElement, options: TagInputControllerOp
       }
     }
     if (listbox) {
-      const taken = new Set(values().map((v) => v.toLocaleLowerCase()));
+      const taken = new Set(values().map((v) => (options.caseSensitive ? v : v.toLocaleLowerCase())));
       for (const option of listbox.querySelectorAll<HTMLElement>('[role="option"]')) {
-        const v = (option.dataset.value ?? option.textContent?.trim() ?? "").toLocaleLowerCase();
+        const raw = option.dataset.value ?? option.textContent?.trim() ?? "";
+        const v = options.caseSensitive ? raw : raw.toLocaleLowerCase();
         if (taken.has(v)) option.setAttribute("aria-disabled", "true");
         else option.removeAttribute("aria-disabled");
       }

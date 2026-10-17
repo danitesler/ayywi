@@ -13,7 +13,7 @@
   },
   "variants": {},
   "states": {
-    "default": { "looks": "A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted xs address." },
+    "default": { "looks": "A surface window with a line border, xl radius and the long frame shadow; a raised bar with three dots and a muted s address." },
     "hover": { "none": "Decorative." },
     "pressed": { "none": "Decorative." },
     "focus": { "none": "Not focusable." },
@@ -23,7 +23,7 @@
     "loading": { "none": "Give the image width and height so nothing jumps; no loading look." }
   },
   "sizes": {
-    "density": "Doesn't follow data-density.",
+    "density": "Title text follows data-density via --ayy-text-s; window geometry is fixed.",
     "width": "Fills its container; the media inside scales to its width."
   },
   "js": "frameClass, frameBarClass, frameTitleClass, frameBodyClass constants.",

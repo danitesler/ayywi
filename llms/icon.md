@@ -26,7 +26,7 @@ Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,
 - `md` — 20px.
 - `lg` — 24px.
 - `xl` — 32px.
-- Density — Doesn't follow data-density; inside buttons, menu items and alerts the component sets the size.
+- Density — Default 1.25em scales with surrounding text including --ayy-text-s; inside buttons, menu items and alerts the component sets the size.
 - Width — Square. directional mirrors it in RTL.
 
 **React** — `import { Icon } from "@danitesler/ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`

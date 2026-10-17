@@ -46,7 +46,7 @@ Category: Overlays. Modal dialog built on the native <dialog> element: top layer
 **React** — `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from "@danitesler/ayywi/react";`
 - `<Dialog>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<DialogTrigger>` renders Button. Props: `...ButtonProps` variant, size…
-- `<DialogContent>` renders <dialog>. Props: `size` "sm" | "md" | "lg" | "xl" — width; `side` "center" | "start" | "end" | "bottom" — start/end make a side modal on that inline edge, bottom a bottom sheet; `hideClose` boolean — hide the corner close button; `closeLabel` string — accessible name of the close button (translate it). Default "Close"; `closeOnBackdrop` boolean — default true
+- `<DialogContent>` renders <dialog>. Props: `size` "sm" | "md" | "lg" | "xl" | "full" — width; `side` "center" | "start" | "end" | "bottom" — start/end make a side modal on that inline edge, bottom a bottom sheet; `hideClose` boolean — hide the corner close button; `closeLabel` string — accessible name of the close button (translate it). Default "Close"; `closeOnBackdrop` boolean — default true
 - `<DialogHeader>` renders <div>.
 - `<DialogTitle>` renders <h2>, auto-wired to aria-labelledby.
 - `<DialogDescription>` renders <p>, auto-wired to aria-describedby.

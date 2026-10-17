@@ -32,7 +32,7 @@
 /* Unknown duration: omit aria-valuenow and add this modifier. Slides along the inline axis, so RTL reverses it. */
 .ayy-progress--indeterminate .ayy-progress__bar {
   inline-size: 40%;
-  animation: ayy-progress-slide 1.4s var(--ayy-ease-standard) infinite;
+  animation: ayy-progress-slide calc(var(--ayy-duration-slower) * 2.5) var(--ayy-ease-standard) infinite;
 }
 
 @keyframes ayy-progress-slide {

@@ -46,7 +46,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-swatch:hover {
+  .ayy-swatch:not(:disabled):not([aria-disabled="true"]):not(:has(> input:disabled)):hover {
     transform: scale(1.1);
   }
 }
@@ -203,6 +203,10 @@
   .ayy-swatch:has(> input:checked)::before,
   .ayy-swatch[aria-pressed="true"]::before {
     background-color: CanvasText;
+  }
+  .ayy-swatch:disabled,
+  .ayy-swatch:has(> input:disabled) {
+    border-color: GrayText;
   }
 }
 

@@ -37,7 +37,7 @@
     "density": "Buttons and the clear control follow --ayy-size-control-sm (28px compact, 32px comfortable, 40px touch) and --ayy-control-text-sm.",
     "width": "Hugs its buttons (fit-content) up to 100% of its container (or viewport when fixed), scrolling sideways if actions overflow on a phone."
   },
-  "js": "actionBarClass({ fixed?, className? }) → string; actionBarButtonClass({ variant?, primary?, destructive?, className? }) → string; actionBarSelectionClass, actionBarCountClass, actionBarCloseClass, actionBarSeparatorClass, actionBarActionsClass constants; connectActionBar(bar, { onClear? }) → { refresh, syncCount, destroy } wires keyboard navigation, Escape/close clearing, and count updates.",
+  "js": "actionBarClass({ fixed?, className? }) → string; actionBarButtonClass({ variant?, primary?, secondary?, destructive?, className? }) → string; actionBarSelectionClass, actionBarCountClass, actionBarCloseClass, actionBarSeparatorClass, actionBarActionsClass constants; connectActionBar(bar, { onClear? }) → { refresh, syncCount, destroy } wires keyboard navigation, Escape/close clearing, and count updates.",
   "element": {
     "tag": "ayy-action-bar",
     "description": "Wraps an .ayy-action-bar and wires toolbar keyboard navigation (one Tab stop, Left/Right arrows, Home/End), Escape and close button selection clearing, and automatic count syncing when a sibling <ayy-table> or <ayy-grid> fires ayy-selection-change.",

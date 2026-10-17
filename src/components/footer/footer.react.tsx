@@ -12,8 +12,10 @@ import {
   footerNavClass,
 } from "./footer";
 
+export interface FooterProps extends HTMLAttributes<HTMLElement> {}
+
 /** The site footer. Children go inside the centred inner grid: FooterBrand, FooterNav, FooterBottom. */
-export const Footer = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function Footer({ className, children, ...props }, ref) {
+export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer({ className, children, ...props }, ref) {
   return (
     <footer ref={ref} className={cx(footerClass, className)} {...props}>
       <div className={footerInnerClass}>{children}</div>
@@ -21,12 +23,16 @@ export const Footer = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(funct
   );
 });
 
+export interface FooterBrandProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** The brand link and a line about the product. */
-export const FooterBrand = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function FooterBrand({ className, ...props }, ref) {
+export const FooterBrand = forwardRef<HTMLDivElement, FooterBrandProps>(function FooterBrand({ className, ...props }, ref) {
   return <div ref={ref} className={cx(footerBrandClass, className)} {...props} />;
 });
 
-export const FooterNav = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function FooterNav(
+export interface FooterNavProps extends HTMLAttributes<HTMLElement> {}
+
+export const FooterNav = forwardRef<HTMLElement, FooterNavProps>(function FooterNav(
   { className, "aria-label": label = "Footer", ...props },
   ref,
 ) {
@@ -53,8 +59,10 @@ export const FooterGroup = forwardRef<HTMLDivElement, FooterGroupProps>(function
   );
 });
 
+export interface FooterLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
+
 /** A link in a FooterGroup (renders its own <li>). */
-export const FooterLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement>>(function FooterLink({ className, ...props }, ref) {
+export const FooterLink = forwardRef<HTMLAnchorElement, FooterLinkProps>(function FooterLink({ className, ...props }, ref) {
   return (
     <li>
       <a ref={ref} className={cx(footerLinkClass, className)} {...props} />
@@ -62,7 +70,9 @@ export const FooterLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTM
   );
 });
 
+export interface FooterBottomProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** The last row: copyright, legal links, maybe a theme menu. */
-export const FooterBottom = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function FooterBottom({ className, ...props }, ref) {
+export const FooterBottom = forwardRef<HTMLDivElement, FooterBottomProps>(function FooterBottom({ className, ...props }, ref) {
   return <div ref={ref} className={cx(footerBottomClass, className)} {...props} />;
 });

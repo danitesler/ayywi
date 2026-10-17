@@ -59,8 +59,10 @@
   block-size: var(--ayy-size-icon-sm);
 }
 
-.ayy-segmented-control__option:hover {
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-segmented-control__option:not(:has(> input:disabled)):hover {
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-segmented-control__option:has(> input:checked) {
@@ -119,5 +121,8 @@
   }
   .ayy-segmented-control__option:has(> input:checked:focus-visible) {
     outline-color: HighlightText;
+  }
+  .ayy-segmented-control__option:has(> input:disabled) {
+    color: GrayText;
   }
 }

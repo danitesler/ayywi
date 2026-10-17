@@ -26,7 +26,7 @@ Category: Data display. Chronological list of events, milestones, or history wit
 - `pulse` (`ayy-timeline__marker--pulse`) — A status ring expands outward from the marker and fades, looping continuously to indicate a live or in-progress event.
 
 **Sizes**
-- Density — Markers and spacing are fixed; controls or badges inside event content follow data-density.
+- Density — Markers and spacing are fixed; timestamp text follows data-density via --ayy-text-s; controls or badges inside event content follow data-density.
 - Width — Fills its container. In alternate mode, centers the track with 1fr columns on either side above 36rem, collapsing to a single start-aligned column below 36rem.
 
 **React** — `import { Timeline, TimelineItem, TimelineMarker, TimelineContent, TimelineTime, TimelineTitle, TimelineBody } from "@danitesler/ayywi/react";`
@@ -152,8 +152,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div style="inline-size: 100%; max-inline-size: 42rem">
   <ol class="ayy-timeline ayy-timeline--alternate" aria-label="Product milestones">
     <li class="ayy-timeline__item">
-      <div class="ayy-timeline__track" aria-hidden="true">
-        <span class="ayy-timeline__marker ayy-timeline__marker--pulse"></span>
+      <div class="ayy-timeline__track">
+        <span class="ayy-timeline__marker ayy-timeline__marker--pulse" aria-hidden="true"></span>
       </div>
       <div class="ayy-timeline__content">
         <time class="ayy-timeline__time">Q4 2026</time>
@@ -162,8 +162,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       </div>
     </li>
     <li class="ayy-timeline__item">
-      <div class="ayy-timeline__track" aria-hidden="true">
-        <span class="ayy-timeline__marker"></span>
+      <div class="ayy-timeline__track">
+        <span class="ayy-timeline__marker" aria-hidden="true"></span>
       </div>
       <div class="ayy-timeline__content">
         <time class="ayy-timeline__time">Q2 2026</time>
@@ -172,8 +172,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       </div>
     </li>
     <li class="ayy-timeline__item">
-      <div class="ayy-timeline__track" aria-hidden="true">
-        <span class="ayy-timeline__marker"></span>
+      <div class="ayy-timeline__track">
+        <span class="ayy-timeline__marker" aria-hidden="true"></span>
       </div>
       <div class="ayy-timeline__content">
         <time class="ayy-timeline__time">Q4 2025</time>

@@ -43,7 +43,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-shortcut-recorder:hover {
+  .ayy-shortcut-recorder:not(:disabled):not([aria-disabled="true"]):hover {
     border-color: var(--ayy-color-line-hover);
   }
 }
@@ -119,6 +119,14 @@
   .ayy-shortcut-recorder[aria-pressed="true"] {
     outline: 2px solid Highlight;
     outline-offset: 2px;
+  }
+  .ayy-shortcut-recorder:disabled,
+  .ayy-shortcut-recorder[aria-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+  .ayy-shortcut-recorder[aria-invalid="true"] {
+    border-style: dashed;
   }
 }
 

@@ -24,8 +24,10 @@
   opacity: 1;
 }
 
-.ayy-input:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-input:not(:disabled):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 .ayy-input:focus-visible {
@@ -72,8 +74,10 @@
   transition: opacity var(--ayy-duration-fast) ease;
 }
 
-.ayy-input::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .ayy-input:not(:disabled)::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
 }
 
 .ayy-input--sm {
@@ -110,8 +114,10 @@
   transition: border-color var(--ayy-duration-fast) ease;
 }
 
-.ayy-input-group:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-input-group:not(:has(> .ayy-input:disabled)):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 .ayy-input-group > .ayy-input {
@@ -194,6 +200,11 @@
   .ayy-input,
   .ayy-input-group {
     border-color: FieldText;
+  }
+  .ayy-input:disabled,
+  .ayy-input-group:has(> .ayy-input:disabled) {
+    border-color: GrayText;
+    color: GrayText;
   }
   .ayy-input:focus-visible,
   .ayy-input-group:has(> .ayy-input:focus-visible) {

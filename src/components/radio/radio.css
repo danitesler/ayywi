@@ -33,8 +33,10 @@
   transition: transform var(--ayy-duration-fast) var(--ayy-ease-spring);
 }
 
-.ayy-radio:hover {
-  border-color: var(--ayy-color-text-soft);
+@media (hover: hover) {
+  .ayy-radio:not(:disabled):hover {
+    border-color: var(--ayy-color-text-soft);
+  }
 }
 
 .ayy-radio:checked {
@@ -100,6 +102,9 @@
   .ayy-radio:disabled {
     opacity: 1;
     border-color: GrayText;
+  }
+  .ayy-radio:disabled:checked {
+    background-color: GrayText;
   }
   .ayy-radio[aria-invalid="true"] {
     border-style: dashed;

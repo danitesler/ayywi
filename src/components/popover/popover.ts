@@ -48,11 +48,13 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
   };
   content.addEventListener("toggle", onToggle);
 
-  // Without the Popover API: plain show/hide by attribute so the content is at least reachable.
-  const fallbackClick = () => (isOpen() ? close() : open());
-  if (!native) {
-    content.hidden = !content.hasAttribute("data-open");
-    trigger.addEventListener("click", fallbackClick);
+  // When popoverTargetElement cannot be set (no native API or trigger is not a button e.g. asChild),
+  // attach a click listener to trigger the popover.
+  const toggleClick = () => (isOpen() ? close() : open());
+  const needsClickTrigger = !(native && trigger instanceof HTMLButtonElement);
+  if (needsClickTrigger) {
+    if (!native) content.hidden = !content.hasAttribute("data-open");
+    trigger.addEventListener("click", toggleClick);
   }
 
   function open() {
@@ -62,6 +64,8 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
       content.setAttribute("data-open", "");
       content.hidden = false;
       trigger.setAttribute("aria-expanded", "true");
+      stopPlacing?.();
+      stopPlacing = autoPlace(content, trigger, opts);
       opts.onToggle?.(true);
     }
   }
@@ -73,6 +77,8 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
       content.removeAttribute("data-open");
       content.hidden = true;
       trigger.setAttribute("aria-expanded", "false");
+      stopPlacing?.();
+      stopPlacing = null;
       opts.onToggle?.(false);
     }
   }
@@ -90,7 +96,7 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
     },
     destroy() {
       content.removeEventListener("toggle", onToggle);
-      trigger.removeEventListener("click", fallbackClick);
+      if (needsClickTrigger) trigger.removeEventListener("click", toggleClick);
       stopPlacing?.();
       if (native && trigger instanceof HTMLButtonElement && trigger.popoverTargetElement === content) trigger.popoverTargetElement = null;
     },

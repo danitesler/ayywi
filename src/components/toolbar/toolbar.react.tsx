@@ -63,17 +63,23 @@ export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(f
   return <button ref={ref} type={type} aria-pressed={pressed} className={cx(toolbarButtonClass, className)} {...props} />;
 });
 
+export interface ToolbarGroupProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** Tools that belong together. role="group" with an aria-label when the group has a name ("Shapes"). */
-export const ToolbarGroup = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ToolbarGroup({ className, ...props }, ref) {
+export const ToolbarGroup = forwardRef<HTMLDivElement, ToolbarGroupProps>(function ToolbarGroup({ className, ...props }, ref) {
   return <div ref={ref} role="group" className={cx(toolbarGroupClass, className)} {...props} />;
 });
 
+export interface ToolbarSeparatorProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** A line between groups. */
-export const ToolbarSeparator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ToolbarSeparator({ className, ...props }, ref) {
+export const ToolbarSeparator = forwardRef<HTMLDivElement, ToolbarSeparatorProps>(function ToolbarSeparator({ className, ...props }, ref) {
   return <div ref={ref} role="separator" className={cx(toolbarSeparatorClass, className)} {...props} />;
 });
 
+export interface ToolbarSpacerProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** Pushes the items after it to the far end. */
-export const ToolbarSpacer = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ToolbarSpacer({ className, ...props }, ref) {
+export const ToolbarSpacer = forwardRef<HTMLDivElement, ToolbarSpacerProps>(function ToolbarSpacer({ className, ...props }, ref) {
   return <div ref={ref} aria-hidden="true" className={cx(toolbarSpacerClass, className)} {...props} />;
 });

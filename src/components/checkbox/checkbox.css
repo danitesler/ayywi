@@ -35,8 +35,10 @@
   transition: transform var(--ayy-duration-fast) var(--ayy-ease-spring);
 }
 
-.ayy-checkbox:hover {
-  border-color: var(--ayy-check-color, var(--ayy-color-text-soft));
+@media (hover: hover) {
+  .ayy-checkbox:not(:disabled):hover {
+    border-color: var(--ayy-check-color, var(--ayy-color-text-soft));
+  }
 }
 
 .ayy-checkbox:checked,

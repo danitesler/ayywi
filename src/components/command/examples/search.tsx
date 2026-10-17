@@ -96,6 +96,7 @@ export default function Example() {
           <CommandItem
             key={item.id}
             value={item.id}
+            data-description={item.description}
             description={
               showDescription(item.title, item.description) ? (
                 <TextHighlight text={item.description} query={query} />
@@ -112,6 +113,7 @@ export default function Example() {
           <CommandItem
             key={item.id}
             value={item.id}
+            data-description={item.description}
             description={
               showDescription(item.title, item.description) ? (
                 <TextHighlight text={item.description} query={query} />

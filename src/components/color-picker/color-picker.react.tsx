@@ -190,10 +190,12 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
     const rgb = hexToRgb(val);
     if (rgb) {
       const nextHsv = rgbToHsv(rgb);
+      const h = nextHsv.s === 0 || nextHsv.v === 0 ? internalHsv.h : nextHsv.h;
+      const finalHsv: HSV = { h, s: nextHsv.s, v: nextHsv.v, a: rgb.a ?? (internalHsv.a ?? 1) };
       if (!alpha) {
-        delete nextHsv.a;
+        delete finalHsv.a;
       }
-      setInternalHsv(nextHsv);
+      setInternalHsv(finalHsv);
       if (controlled === undefined) {
         setUncontrolled(val);
       }
@@ -306,11 +308,19 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
               style={{ "--_swatch": swatchHex } as CSSProperties}
               aria-label={swatchHex}
               onClick={() => {
-                const hsv = parseToHsv(swatchHex);
-                setInternalHsv(hsv);
-                setInputText(swatchHex);
-                if (controlled === undefined) setUncontrolled(swatchHex);
-                onValueChange?.(swatchHex);
+                const rgb = hexToRgb(swatchHex);
+                if (rgb) {
+                  const nextHsv = rgbToHsv(rgb);
+                  const h = nextHsv.s === 0 || nextHsv.v === 0 ? internalHsv.h : nextHsv.h;
+                  const finalHsv: HSV = { h, s: nextHsv.s, v: nextHsv.v, a: rgb.a ?? (internalHsv.a ?? 1) };
+                  if (!alpha) {
+                    delete finalHsv.a;
+                  }
+                  setInternalHsv(finalHsv);
+                  setInputText(swatchHex);
+                  if (controlled === undefined) setUncontrolled(swatchHex);
+                  onValueChange?.(swatchHex);
+                }
               }}
             />
           ))}

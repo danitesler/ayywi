@@ -36,22 +36,22 @@ export default function Example({
   useEffect(() => {
     if (!setControls) return;
     setControls(
-      <div className="pv-props-list">
-        <div className="pv-props-group">
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-compact" className="pv-props-label">Compact rows</Label>
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-compact">Compact rows</Label>
             <Switch id="tbl-compact" checked={compact} onCheckedChange={setCompact} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-caption" className="pv-props-label">Caption</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-caption">Caption</Label>
             <Switch id="tbl-caption" checked={showCaption} onCheckedChange={setShowCaption} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-builds" className="pv-props-label">Numeric column</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-builds">Numeric column</Label>
             <Switch id="tbl-builds" checked={showBuilds} onCheckedChange={setShowBuilds} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-footer" className="pv-props-label">Footer</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-footer">Footer</Label>
             <Switch id="tbl-footer" checked={showFooter} onCheckedChange={setShowFooter} />
           </div>
         </div>

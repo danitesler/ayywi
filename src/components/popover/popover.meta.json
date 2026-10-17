@@ -27,7 +27,7 @@
     "density": "Padding is fixed; its controls follow data-density.",
     "width": "As wide as its content, at most 22rem (or the viewport minus 1rem)."
   },
-  "js": "popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, onToggle? }) → { open, close, isOpen, update, destroy }",
+  "js": "popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, crossAxisOffset?, boundary?, onToggle? }) → { open, close, isOpen, update, destroy }",
   "element": {
     "tag": "ayy-popover",
     "attributes": {

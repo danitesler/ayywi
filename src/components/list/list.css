@@ -84,8 +84,10 @@
   z-index: 1;
 }
 
-.ayy-list__item:has(.ayy-list__link):hover {
-  background-color: var(--ayy-color-wash);
+@media (hover: hover) {
+  .ayy-list__item:has(.ayy-list__link):hover {
+    background-color: var(--ayy-color-wash);
+  }
 }
 
 /* The row you're on: the same tint and weight as the current link in the app shell. */
@@ -103,12 +105,12 @@
   gap: 0;
 }
 
-.ayy-list--divided > .ayy-list__item {
+.ayy-list--divided > :is(.ayy-list__item, .ayy-swipe, ayy-swipe) {
   padding-inline: 0;
   border-radius: 0;
 }
 
-.ayy-list--divided > .ayy-list__item + .ayy-list__item {
+.ayy-list--divided > :is(.ayy-list__item, .ayy-swipe, ayy-swipe) + :is(.ayy-list__item, .ayy-swipe, ayy-swipe) {
   border-block-start: 1px solid var(--ayy-color-hairline);
 }
 

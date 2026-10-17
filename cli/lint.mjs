@@ -430,7 +430,7 @@ function structureFindings(css, contract, coUse) {
     if (!target) continue;
     const visual = rule.decls
       .map(([p]) => p)
-      .filter((p) => VISUAL_PROPERTY.test(p) || (target.direct && p.startsWith("--_")))
+      .filter((p) => VISUAL_PROPERTY.test(p) || p.startsWith("--_"))
       .filter((p) => !(target.comp === "Icon" && /^(?:color|fill|stroke)$/.test(p))); // icons take a colour by design
     if (!visual.length) continue;
     out.push({

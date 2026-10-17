@@ -177,7 +177,7 @@ export function Counter() {
   <div class="ayy-card__header">
     <h3 class="ayy-h3">Release 2.0</h3>
   </div>
-  <p class="ayy-text-muted">Zero runtime dependencies.</p>
+  <p class="ayy-muted">Zero runtime dependencies.</p>
 </div>`,
   css: `/* Button primary state */
 .ayy-button--primary {
@@ -670,13 +670,21 @@ function escapeHtml(text: string): string {
 export function highlightCode(code: string, language?: string): string {
   if (!code) return "";
   const tokens = tokenizeCode(code, language);
-  return tokens
-    .map((token) => {
-      const cls = TOKEN_CLASSES[token.type];
-      const escaped = escapeHtml(token.value);
-      return cls ? `<span class="${cls}">${escaped}</span>` : escaped;
-    })
-    .join("");
+  const lines: string[] = [""];
+  for (const token of tokens) {
+    const cls = TOKEN_CLASSES[token.type];
+    const parts = token.value.split("\n");
+    for (let i = 0; i < parts.length; i++) {
+      if (i > 0) {
+        lines.push("");
+      }
+      if (parts[i]) {
+        const escaped = escapeHtml(parts[i]);
+        lines[lines.length - 1] += cls ? `<span class="${cls}">${escaped}</span>` : escaped;
+      }
+    }
+  }
+  return lines.map((line) => `<span class="ayy-code-block__line">${line}</span>`).join("\n");
 }
 
 /** Highlight all code elements with [data-language] inside .ayy-code-block under root. */
@@ -686,6 +694,10 @@ export function highlightCodeBlocks(root: ParentNode = document): void {
     const lang = block.dataset.language;
     const codeEl = block.querySelector<HTMLElement>(".ayy-code-block__code, code");
     if (lang && codeEl && !codeEl.dataset.highlighted) {
+      if (codeEl.querySelector(".ayy-code-block__line, [class*='ayy-token-']")) {
+        codeEl.dataset.highlighted = "true";
+        continue;
+      }
       codeEl.dataset.highlighted = "true";
       codeEl.innerHTML = highlightCode(codeEl.textContent ?? "", lang);
     }
@@ -693,6 +705,10 @@ export function highlightCodeBlocks(root: ParentNode = document): void {
   for (const codeEl of root.querySelectorAll<HTMLElement>(".ayy-code-block__code[data-language], code[data-language]")) {
     const lang = codeEl.dataset.language;
     if (lang && !codeEl.dataset.highlighted) {
+      if (codeEl.querySelector(".ayy-code-block__line, [class*='ayy-token-']")) {
+        codeEl.dataset.highlighted = "true";
+        continue;
+      }
       codeEl.dataset.highlighted = "true";
       codeEl.innerHTML = highlightCode(codeEl.textContent ?? "", lang);
     }
@@ -700,34 +716,71 @@ export function highlightCodeBlocks(root: ParentNode = document): void {
 }
 
 /** Update a code block element based on its selector dropdown value. */
-export function syncCodeBlockSelector(selectOrLang: HTMLElement | string, codeBlock?: HTMLElement): void {
-  let lang: string;
-  let container: HTMLElement | null = null;
-  if (typeof selectOrLang === "string") {
-    lang = selectOrLang;
-    container = codeBlock ?? null;
-  } else if ("value" in selectOrLang && typeof (selectOrLang as any).value === "string" && (selectOrLang as any).value) {
-    lang = (selectOrLang as any).value;
-    container = selectOrLang.closest(".ayy-code-block");
-  } else {
-    lang = selectOrLang.dataset.value ?? selectOrLang.textContent?.trim() ?? "";
-    container = selectOrLang.closest(".ayy-code-block");
+export function syncCodeBlockSelector(
+  selectOrTriggerOrLang: HTMLElement | any | string,
+  codeBlockOrLang?: HTMLElement | any | string,
+): void {
+  let rawLang: string = "";
+  let container: HTMLElement | any = null;
+  let triggerEl: HTMLElement | any = null;
+
+  if (typeof selectOrTriggerOrLang === "string") {
+    rawLang = selectOrTriggerOrLang;
+    container = typeof codeBlockOrLang !== "string" ? codeBlockOrLang ?? null : null;
+  } else if (typeof codeBlockOrLang === "string") {
+    triggerEl = selectOrTriggerOrLang;
+    rawLang = codeBlockOrLang;
+    container = selectOrTriggerOrLang?.closest?.(".ayy-code-block") ?? null;
+  } else if (selectOrTriggerOrLang && "value" in selectOrTriggerOrLang && typeof selectOrTriggerOrLang.value === "string" && selectOrTriggerOrLang.value) {
+    rawLang = selectOrTriggerOrLang.value;
+    container = selectOrTriggerOrLang.closest?.(".ayy-code-block") ?? null;
+  } else if (selectOrTriggerOrLang) {
+    rawLang = selectOrTriggerOrLang.dataset?.value ?? selectOrTriggerOrLang.textContent?.trim() ?? "";
+    container = selectOrTriggerOrLang.closest?.(".ayy-code-block") ?? null;
+    if (selectOrTriggerOrLang.classList?.contains?.("ayy-code-block__selector")) {
+      triggerEl = selectOrTriggerOrLang;
+    }
   }
+
   if (!container) return;
-  const preset = SUPPORTED_LANGUAGES.find((l) => l.id === lang);
-  const snippet = LANGUAGE_SNIPPETS[lang];
+  if (!triggerEl) {
+    triggerEl = container.querySelector?.(".ayy-code-block__selector");
+  }
+
+  const lang = normalizeLanguage(rawLang);
+  const preset = SUPPORTED_LANGUAGES.find((l) => l.id === lang || normalizeLanguage(l.id) === lang || l.id === rawLang);
+  const snippet = LANGUAGE_SNIPPETS[lang] ?? (preset ? LANGUAGE_SNIPPETS[preset.id] : undefined) ?? LANGUAGE_SNIPPETS[rawLang];
+
+  if (triggerEl && preset) {
+    const labelSpan = triggerEl.querySelector?.("span");
+    if (labelSpan) {
+      labelSpan.textContent = preset.label;
+    } else {
+      triggerEl.textContent = preset.label;
+    }
+  }
+
   if (preset) {
-    const filenameEl = container.querySelector(".ayy-code-block__filename");
+    const filenameEl = container.querySelector?.(".ayy-code-block__filename");
     if (filenameEl) {
       filenameEl.textContent = preset.extension?.startsWith(".")
         ? `example${preset.extension}`
         : preset.extension ?? `example.${preset.id}`;
     }
   }
-  const codeEl = container.querySelector<HTMLElement>(".ayy-code-block__code, code");
+
+  const codeEl = container.querySelector?.(".ayy-code-block__code, code");
   if (codeEl && snippet) {
-    codeEl.dataset.language = lang;
-    codeEl.dataset.highlighted = "true";
-    codeEl.innerHTML = highlightCode(snippet, lang);
+    const displayLang = preset ? preset.id : lang;
+    if (codeEl.dataset) {
+      codeEl.dataset.language = displayLang;
+      codeEl.dataset.highlighted = "true";
+    }
+    codeEl.innerHTML = highlightCode(snippet, displayLang);
+  }
+
+  const copyBtn = container.querySelector?.(".ayy-code-block__copy");
+  if (copyBtn && snippet) {
+    copyBtn.setAttribute?.("data-code", snippet);
   }
 }

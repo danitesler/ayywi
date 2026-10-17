@@ -16,10 +16,10 @@ export default function Example() {
       </CodeBlockHeader>
       <CodeBlockPre tabIndex={0}>
         <CodeBlockCode>
-          <span><span className="ayy-token-keyword">import</span> &#123; setTheme, setDensity &#125; <span className="ayy-token-keyword">from</span> <span className="ayy-token-string">"@danitesler/ayywi"</span>;</span>
-          <span><span className="ayy-token-comment">// Apply appearance preferences</span></span>
-          <span><span className="ayy-token-function">setTheme</span>(<span className="ayy-token-string">"dark-contrast"</span>);</span>
-          <span><span className="ayy-token-function">setDensity</span>(<span className="ayy-token-string">"comfortable"</span>);</span>
+          <span className="ayy-code-block__line"><span className="ayy-token-keyword">import</span> &#123; setTheme, setDensity &#125; <span className="ayy-token-keyword">from</span> <span className="ayy-token-string">"@danitesler/ayywi"</span>;</span>
+          <span className="ayy-code-block__line"><span className="ayy-token-comment">// Apply appearance preferences</span></span>
+          <span className="ayy-code-block__line"><span className="ayy-token-function">setTheme</span>(<span className="ayy-token-string">"dark-contrast"</span>);</span>
+          <span className="ayy-code-block__line"><span className="ayy-token-function">setDensity</span>(<span className="ayy-token-string">"comfortable"</span>);</span>
         </CodeBlockCode>
       </CodeBlockPre>
     </CodeBlock>

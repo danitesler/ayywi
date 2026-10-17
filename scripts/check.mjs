@@ -1,11 +1,11 @@
 // Machine-enforced design-system rules and doc/code drift checks.
 // Agents: run `pnpm check` after every change and fix everything it reports.
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cssRuleFindings, lintPaths, loadContract } from "../cli/lint.mjs";
-import { ATTRIBUTES, CATEGORIES, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
 import { contrast, mix } from "./lib/contrast.mjs";
 import { links as cdnLinks, PINNED, tags as cdnTags } from "./lib/readme-pins.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
@@ -18,6 +18,32 @@ const fail = (file, msg) => problems.push(`${file}: ${msg}`);
 const tokenVars = new Set(loadTokens(root).tokens.map((t) => t.cssVar));
 const allowedVars = new Set([...tokenVars, ...Object.keys(PUBLIC_HOOKS)]);
 const stripComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "));
+
+/** Content outside @media (hover: hover) blocks, to catch unwrapped hover transforms. */
+function extractOutsideHoverMedia(css) {
+  const clean = stripComments(css);
+  let outside = "";
+  let i = 0;
+  while (i < clean.length) {
+    const hoverMedia = clean.indexOf("@media (hover: hover)", i);
+    if (hoverMedia === -1) {
+      outside += clean.slice(i);
+      break;
+    }
+    outside += clean.slice(i, hoverMedia);
+    const openBrace = clean.indexOf("{", hoverMedia);
+    if (openBrace === -1) break;
+    let depth = 1;
+    let j = openBrace + 1;
+    while (j < clean.length && depth > 0) {
+      if (clean[j] === "{") depth++;
+      else if (clean[j] === "}") depth--;
+      j++;
+    }
+    i = j;
+  }
+  return outside;
+}
 
 /** Class names used in selectors (text before "{" in each rule). */
 function selectorClasses(css) {
@@ -75,6 +101,8 @@ const indexCss = read("src/css/index.css");
 const reactIndex = read("src/react/index.ts");
 const jsIndex = read("src/index.ts");
 const elementsIndex = read("src/elements/index.ts");
+const tagToClass = new Map();
+for (const m of elementsIndex.matchAll(/define\("([\w-]+)",\s*(\w+)\)/g)) tagToClass.set(m[1], m[2]);
 // Which component documents each class, so one component's CSS may place another's (the app shell hides its bottom nav on wide screens).
 const classOwner = new Map(Object.keys(UTILITIES).map((cls) => [cls, "base.css"]));
 for (const slug of readdirSync(join(root, "src/components"))) {
@@ -115,6 +143,16 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   lintCss(files.css, css);
   if (STATEFUL.test(stripComments(css)) && !css.includes("forced-colors: active")) {
     fail(files.css, "styles a state (checked/selected/progress) but has no @media (forced-colors: active) block — High Contrast users won't see it");
+  }
+  const outsideHover = extractOutsideHoverMedia(css);
+  for (const m of outsideHover.matchAll(/([^{};]+)\{([^}]+)\}/g)) {
+    const sel = m[1];
+    const body = m[2];
+    if (sel.includes(":hover") && !sel.includes(":focus")) {
+      if (/(\btransform\s*:|\bscale\s*:)/.test(body)) {
+        fail(files.css, `unwrapped :hover transform or scale in "${sel.trim()}" — wrap in @media (hover: hover)`);
+      }
+    }
   }
 
   let meta;
@@ -218,14 +256,34 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     if (!hasElement && !el.tag) fail(files.meta, `"element" block needs a tag`);
     if (!elementsIndex.includes(`define("${el.tag}"`)) fail("src/elements/index.ts", `doesn't register <${el.tag}>`);
   }
-  if (meta.element && hasElement) {
+  if (hasElement) {
     const src = read(elementFile);
-    const observed = src.match(/observedAttributes = \[([^\]]*)\]/)?.[1] ?? "";
-    for (const a of observed.matchAll(/"([\w-]+)"/g)) {
-      if (!(a[1] in (meta.element.attributes ?? {}))) fail(files.meta, `<${meta.element.tag}> observes "${a[1]}" but it isn't documented in element.attributes`);
+    for (const el of allMetaElements) {
+      const clsName = tagToClass.get(el.tag);
+      let classChunk = src;
+      if (clsName) {
+        const clsMatch = src.match(new RegExp(`class\\s+${clsName}\\b[\\s\\S]*?(?=(?:export\\s+class|class\\s+Ayy|\\nexport\\s+\\{|$))`));
+        if (clsMatch) classChunk = clsMatch[0];
+      }
+      const observed = classChunk.match(/observedAttributes\s*=\s*\[([^\]]*)\]/)?.[1] ?? "";
+      for (const a of observed.matchAll(/"([\w-]+)"/g)) {
+        if (!(a[1] in (el.attributes ?? {}))) fail(files.meta, `<${el.tag}> observes "${a[1]}" but it isn't documented in element.attributes`);
+      }
+      for (const e of classChunk.matchAll(/emit\(this,\s*"([\w-]+)"/g)) {
+        if (!(e[1] in (el.events ?? {}))) fail(files.meta, `<${el.tag}> fires "${e[1]}" but it isn't documented in element.events`);
+      }
     }
-    for (const e of src.matchAll(/emit\(this, "([\w-]+)"/g)) {
-      if (!(e[1] in (meta.element.events ?? {}))) fail(files.meta, `<${meta.element.tag}> fires "${e[1]}" but it isn't documented in element.events`);
+  }
+
+  // Class options ↔ documented in meta.js
+  const jsSource = read(files.js);
+  const jsDoc = meta.js ?? "";
+  for (const m of jsSource.matchAll(/export interface (\w+ClassOptions)[^{]*\{([\s\S]*?)\n\}/g)) {
+    const ifaceName = m[1];
+    for (const p of m[2].matchAll(/^\s{2}([a-zA-Z][\w]*)\??:/gm)) {
+      if (!jsDoc.includes(p[1])) {
+        fail(files.meta, `${ifaceName}.${p[1]} is not documented in "js"`);
+      }
     }
   }
 
@@ -233,12 +291,77 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     for (const ext of ["html", "tsx"]) {
       const f = `${dir}/examples/${ex.id}.${ext}`;
       if (!existsSync(join(root, f))) fail(files.meta, `example "${ex.id}" is missing ${f}`);
+      else {
+        const exSrc = read(f);
+        if (/\bpv-props-/.test(exSrc)) fail(f, "references preview internal class pv-props-*");
+      }
     }
   }
 
   if (!indexCss.includes(`../components/${slug}/${slug}.css`)) fail("src/css/index.css", `doesn't import ${slug}.css`);
   if (!jsIndex.includes(`./components/${slug}/${slug}"`)) fail("src/index.ts", `doesn't export ./components/${slug}/${slug}`);
   if (!reactIndex.includes(`../components/${slug}/${slug}.react"`)) fail("src/react/index.ts", `doesn't export ${slug}.react`);
+}
+
+// ---- ORDER and entrypoints completeness ----
+{
+  const componentSlugs = readdirSync(join(root, "src/components"));
+  const orderSet = new Set(ORDER);
+  for (const s of componentSlugs) {
+    if (!orderSet.has(s)) fail("scripts/lib/contract.mjs", `ORDER is missing component slug "${s}"`);
+  }
+  for (const s of ORDER) {
+    if (!componentSlugs.includes(s)) fail("scripts/lib/contract.mjs", `ORDER lists "${s}", which is not in src/components`);
+  }
+
+  function checkNoDuplicates(file, re, desc) {
+    const content = read(file);
+    const seen = new Set();
+    for (const m of content.matchAll(re)) {
+      const item = m[1].trim();
+      if (seen.has(item)) fail(file, `duplicate ${desc} "${item}"`);
+      seen.add(item);
+    }
+  }
+  checkNoDuplicates("src/css/index.css", /@import\s+["\x27]([^"\x27]+)["\x27];/g, "CSS import");
+  checkNoDuplicates("src/index.ts", /export\s+\*\s+from\s+["\x27]([^"\x27]+)["\x27];/g, "JS export");
+
+  const agentsMd = read("AGENTS.md");
+  const skillMd = read("ai/skills/ayywi/SKILL.md");
+  for (const m of elementsIndex.matchAll(/define\("([\w-]+)"/g)) {
+    const tag = m[1];
+    if (!agentsMd.includes(`<${tag}>`)) fail("AGENTS.md", `missing custom element <${tag}>`);
+    if (!skillMd.includes(`<${tag}>`)) fail("ai/skills/ayywi/SKILL.md", `missing custom element <${tag}>`);
+  }
+}
+
+// ---- No external UI/CSS library mentions in library source, docs or prompts ----
+{
+  const EXTERNAL_LIBS = /\b(shadcn|tailwind|radix|cva|cmdk|chakra|mantine|mui|daisyui)\b/i;
+  function walkFiles(dir) {
+    let out = [];
+    for (const name of readdirSync(join(root, dir))) {
+      const rel = join(dir, name);
+      const full = join(root, rel);
+      if (statSync(full).isDirectory()) out = out.concat(walkFiles(rel));
+      else out.push(rel);
+    }
+    return out;
+  }
+  const noExternalTargets = [
+    ...walkFiles("src"),
+    "README.md",
+    ...walkFiles("tokens"),
+    ...walkFiles("ai"),
+    "preview/src/prompts.ts",
+    "scripts/lib/contract.mjs",
+  ];
+  for (const rel of noExternalTargets) {
+    if (rel.endsWith(".png") || rel.endsWith(".woff2") || rel.endsWith(".ico") || rel.endsWith(".woff")) continue;
+    const content = read(rel);
+    const match = content.match(EXTERNAL_LIBS);
+    if (match) fail(rel, `mentions external UI/CSS library "${match[0]}"`);
+  }
 }
 
 // ---- Rules name every custom element, so agents know it exists ----
@@ -284,7 +407,6 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
 }
 
-// ---- Base, and the shadcn/ui bridge (tokens only, like everything else) ----
 // ---- The README's jsDelivr links name this version, and each runtime file has an SRI hash (scripts/pin-readme.mjs) ----
 {
   const readme = read("README.md");
@@ -298,9 +420,9 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
 }
 
+// ---- Base (tokens only, like everything else) ----
 const base = read("src/css/base.css");
 lintCss("src/css/base.css", base);
-lintCss("src/css/shadcn.css", read("src/css/shadcn.css"), { foreignVars: true }); // sets shadcn/ui's own variables on purpose
 const baseClasses = selectorClasses(base);
 for (const cls of baseClasses) if (!(cls in UTILITIES)) fail("scripts/lib/contract.mjs", `utility .${cls} (base.css) isn't documented in UTILITIES`);
 for (const cls of Object.keys(UTILITIES)) if (!baseClasses.has(cls)) fail("scripts/lib/contract.mjs", `UTILITIES documents .${cls}, which base.css doesn't define`);

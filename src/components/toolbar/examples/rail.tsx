@@ -15,7 +15,7 @@ export default function Example() {
   const [tool, setTool] = useState("pen");
   return (
     <Toolbar aria-label="Drawing tools" vertical floating>
-      <ToolbarGroup data-exclusive="">
+      <ToolbarGroup>
         {TOOLS.map((t) => (
           <ToolbarButton key={t.id} aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
             <Icon icon={t.icon} />

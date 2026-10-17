@@ -26,7 +26,7 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - `loading` — doesn't apply: No loading state.
 
 **Sizes**
-- Density — Doesn't follow data-density.
+- Density — Links follow the control height scale (var(--ayy-size-control-sm)), so comfortable or touch density expands their tap target to 40px without changing the rail spacing.
 - Width — Fills its column. sticky stays in view under the navbar and scrolls on its own when taller than the viewport.
 
 **Custom element** `<ayy-toc>` (@danitesler/ayywi/elements) — Goes inside <nav class="ayy-toc"> and wraps the title and list. Every .ayy-toc__link with href="#id" is spied; aria-current="location" is set and removed for you.
@@ -64,14 +64,14 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <nav class="ayy-toc ayy-toc--sticky" aria-labelledby="toc-title">
     <ayy-toc>
       <div class="ayy-toc__bar">
-        <button type="button" class="ayy-toc__toggle" aria-expanded="false" aria-label="Table of contents">
+        <button type="button" class="ayy-toc__toggle" aria-label="Table of contents" aria-expanded="false" aria-controls="toc-list">
           <span class="ayy-toc__toggle-icon"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5L20 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 12L20 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 19L20 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg></span>
           <span class="ayy-toc__toggle-current">Overview</span>
           <span class="ayy-toc__toggle-caret"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg></span>
         </button>
       </div>
       <p class="ayy-toc__title" id="toc-title">Table of contents</p>
-      <ol class="ayy-toc__list">
+      <ol class="ayy-toc__list" id="toc-list">
         <li><a class="ayy-toc__link" href="#toc-overview"><span class="ayy-toc__number">01</span>Overview</a></li>
         <li>
           <a class="ayy-toc__link" href="#toc-system"><span class="ayy-toc__number">02</span>Design system</a>

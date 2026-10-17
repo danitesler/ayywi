@@ -102,6 +102,7 @@ export default function Example() {
       <TabsContent value="members">
         <p className="ayy-muted">People with access to this project.</p>
       </TabsContent>
+      <TabsContent value="billing" />
     </Tabs>
   );
 }
@@ -113,20 +114,20 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
 <!-- Tabs with custom icons before each label. -->
-<ayy-tabs class="ayy-tabs" value="account">
-  <div class="ayy-tabs__list" role="tablist" aria-label="Settings">
-    <button type="button" class="ayy-tabs__tab" role="tab" data-value="account" aria-selected="true"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>Account</button>
-    <button type="button" class="ayy-tabs__tab" role="tab" data-value="notifications" aria-selected="false" tabindex="-1"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 18.5011L18.349 7.93407C17.8603 4.80601 15.166 2.5 12 2.5C8.83398 2.5 6.13971 4.80601 5.65098 7.93407L4 18.5011" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M20 18.5C20 16.8431 16.4183 15.5 12 15.5C7.58172 15.5 4 16.8431 4 18.5C4 20.1569 7.58172 21.5 12 21.5C16.4183 21.5 20 20.1569 20 18.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18.5H11" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>Notifications</button>
-    <button type="button" class="ayy-tabs__tab" role="tab" data-value="security" aria-selected="false" tabindex="-1"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.7088 3.49546C16.8165 2.55394 14.5009 2.00012 12 2.00012C9.4991 2.00012 7.1835 2.55394 5.29116 3.49547C4.36318 3.95718 3.89919 4.18804 3.4496 4.91391C3 5.63978 3 6.3426 3 7.74826V11.2372C3 16.9206 7.54236 20.0805 10.173 21.4339C10.9067 21.8114 11.2735 22.0001 12 22.0001C12.7265 22.0001 13.0933 21.8114 13.8269 21.4339C16.4576 20.0805 21 16.9206 21 11.2372L21 7.74827C21 6.34261 21 5.63978 20.5504 4.91391C20.1008 4.18804 19.6368 3.95718 18.7088 3.49546Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M12 9.00012V10.0001M11 9.50012C11 9.76534 11.1054 10.0197 11.2929 10.2072C11.4804 10.3948 11.7348 10.5001 12 10.5001C12.2652 10.5001 12.5196 10.3948 12.7071 10.2072C12.8946 10.0197 13 9.76534 13 9.50012C13 9.23491 12.8946 8.98055 12.7071 8.79302C12.5196 8.60548 12.2652 8.50012 12 8.50012C11.7348 8.50012 11.4804 8.60548 11.2929 8.79302C11.1054 8.98055 11 9.23491 11 9.50012Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M12.75 14.0001H11.25L12 10.5001L12.75 14.0001Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>Security</button>
+<ayy-tabs class="ayy-tabs" value="code">
+  <div class="ayy-tabs__list" role="tablist" aria-label="Project">
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="code" aria-selected="true"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 6.99998L19.0664 9.64296C20.3554 10.7541 21 11.3096 21 12C21 12.6903 20.3555 13.2459 19.0664 14.357L16 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M8 6.99998L4.93365 9.64296C3.64455 10.7541 3 11.3096 3 12C3 12.6903 3.64455 13.2459 4.93365 14.357L8 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>Code</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="pull-requests" aria-selected="false" tabindex="-1"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8L6 16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M18 16V12C18 9.17156 18 7.75735 17.1213 6.87867C16.2426 5.99999 14.8284 5.99999 12 5.99999L11 5.99999M11 5.99999C11 5.29976 12.9943 3.99152 13.5 3.49999M11 5.99999C11 6.70022 12.9943 8.00846 13.5 8.49999" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="6" cy="18" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="6" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="18" r="2" stroke="currentColor" stroke-width="1.5"/></svg>Pull requests</button>
+    <button type="button" class="ayy-tabs__tab" role="tab" data-value="deployments" aria-selected="false" tabindex="-1"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10.1667L12.1232 6.04344C13.2481 4.91858 13.8105 4.35614 14.4312 3.90314C15.7047 2.9737 17.1818 2.36187 18.7395 2.11858C19.4988 2 20.2942 2 21.885 2C21.9681 2 22 2.03812 22 2.11504C22 3.70584 22 4.50125 21.8814 5.26046C21.6381 6.81818 21.0263 8.29527 20.0969 9.56878C19.6439 10.1895 19.0814 10.7519 17.9566 11.8768L13.8333 16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M10.341 8.09838C8.63808 8.09838 6.49778 7.73765 4.9043 8.39769C3.73671 8.88132 2.87754 10.0012 2 10.8787L5.30597 12.2955C6.18208 12.671 5.64651 13.7766 5.50147 14.5018C5.33985 15.3099 5.34886 15.3397 5.93158 15.9224L8.07758 18.0684C8.6603 18.6511 8.69008 18.6602 9.49816 18.4985C10.2234 18.3535 11.329 17.8179 11.7044 18.694L13.1213 22C13.9988 21.1225 15.1187 20.2633 15.6023 19.0957C16.2624 17.5022 15.9016 15.3619 15.9016 13.659" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"/><path d="M12 20L11 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M4 12L3 13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M15 4.07996C16.2 4.25996 17.46 4.73996 18.1614 5.45996C19.0576 6.25211 19.68 7.31996 19.92 8.99996" stroke="currentColor" stroke-linecap="square" stroke-width="1.5"/><path d="M17.94 6.06006L16.5 7.50006" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>Deployments</button>
   </div>
-  <div class="ayy-tabs__panel" role="tabpanel" data-value="account">
-    <p class="ayy-muted">Manage your profile details and email address.</p>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="code">
+    <p class="ayy-muted">Browse repository source files and commits.</p>
   </div>
-  <div class="ayy-tabs__panel" role="tabpanel" data-value="notifications" hidden>
-    <p class="ayy-muted">Choose what updates you want to receive.</p>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="pull-requests" hidden>
+    <p class="ayy-muted">Review open proposals and merge requests.</p>
   </div>
-  <div class="ayy-tabs__panel" role="tabpanel" data-value="security" hidden>
-    <p class="ayy-muted">Two-factor authentication and active sessions.</p>
+  <div class="ayy-tabs__panel" role="tabpanel" data-value="deployments" hidden>
+    <p class="ayy-muted">View production releases and deploy status.</p>
   </div>
 </ayy-tabs>
 ```
@@ -135,30 +136,30 @@ React:
 
 ```tsx
 import { Icon, Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
-import { Notification03Icon, SecurityIcon, UserIcon } from "@hugeicons/core-free-icons";
+import { CodeIcon, GitPullRequestIcon, RocketIcon } from "@hugeicons/core-free-icons";
 
 export default function Example() {
   return (
-    <Tabs defaultValue="account">
-      <TabsList aria-label="Settings">
-        <TabsTrigger value="account" icon={<Icon icon={UserIcon} />}>
-          Account
+    <Tabs defaultValue="code">
+      <TabsList aria-label="Project">
+        <TabsTrigger value="code" icon={<Icon icon={CodeIcon} />}>
+          Code
         </TabsTrigger>
-        <TabsTrigger value="notifications" icon={<Icon icon={Notification03Icon} />}>
-          Notifications
+        <TabsTrigger value="pull-requests" icon={<Icon icon={GitPullRequestIcon} />}>
+          Pull requests
         </TabsTrigger>
-        <TabsTrigger value="security" icon={<Icon icon={SecurityIcon} />}>
-          Security
+        <TabsTrigger value="deployments" icon={<Icon icon={RocketIcon} />}>
+          Deployments
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="account">
-        <p className="ayy-muted">Manage your profile details and email address.</p>
+      <TabsContent value="code">
+        <p className="ayy-muted">Browse repository source files and commits.</p>
       </TabsContent>
-      <TabsContent value="notifications">
-        <p className="ayy-muted">Choose what updates you want to receive.</p>
+      <TabsContent value="pull-requests">
+        <p className="ayy-muted">Review open proposals and merge requests.</p>
       </TabsContent>
-      <TabsContent value="security">
-        <p className="ayy-muted">Two-factor authentication and active sessions.</p>
+      <TabsContent value="deployments">
+        <p className="ayy-muted">View production releases and deploy status.</p>
       </TabsContent>
     </Tabs>
   );

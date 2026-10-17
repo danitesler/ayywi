@@ -30,9 +30,9 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
-- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (12/12/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
-- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/14/16px), --ayy-size-icon-sm (16px) icon, 8px gap.
-- `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/16/18px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
+- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (12/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
+- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
+- `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/15/16px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
 - `icon` — Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).
 - `icon-sm` — Square at the sm control height (28/32/40px) with a 16px icon.
 - `icon-lg` — Square at the lg control height (40/48/52px) with a 20px icon.
@@ -244,7 +244,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useState, type CSSProperties } from "react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import {
   Button,
@@ -256,62 +256,9 @@ import {
   type ButtonVariant,
 } from "@danitesler/ayywi/react";
 
-export default function Example({
-  setControls,
-}: {
-  setControls?: (node: ReactNode) => void;
-} = {}) {
+export default function Example() {
   const [size, setSize] = useState<ButtonSize>("md");
   const [variant, setVariant] = useState<ButtonVariant>("secondary");
-
-  useEffect(() => {
-    return () => setControls?.(null);
-  }, [setControls]);
-
-  useEffect(() => {
-    if (!setControls) return;
-    setControls(
-      <div className="pv-props-list">
-        <div className="pv-props-group">
-          <div className="pv-props-item">
-            <Label htmlFor="btn-align-size" className="pv-props-label">
-              Size
-            </Label>
-            <div style={{ inlineSize: "7.5rem" }}>
-              <Select
-                id="btn-align-size"
-                size="sm"
-                value={size}
-                onChange={(e) => setSize(e.target.value as ButtonSize)}
-              >
-                <option value="sm">Small (sm)</option>
-                <option value="md">Medium (md)</option>
-                <option value="lg">Large (lg)</option>
-              </Select>
-            </div>
-          </div>
-          <div className="pv-props-item">
-            <Label htmlFor="btn-align-variant" className="pv-props-label">
-              Variant
-            </Label>
-            <div style={{ inlineSize: "7.5rem" }}>
-              <Select
-                id="btn-align-variant"
-                size="sm"
-                value={variant}
-                onChange={(e) => setVariant(e.target.value as ButtonVariant)}
-              >
-                <option value="primary">Primary</option>
-                <option value="secondary">Secondary</option>
-                <option value="outline">Outline</option>
-                <option value="ghost">Ghost</option>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }, [setControls, size, variant]);
 
   return (
     <div
@@ -322,43 +269,41 @@ export default function Example({
         "--ayy-gap": "var(--ayy-space-4)",
       } as CSSProperties}
     >
-      {!setControls ? (
-        <div
-          className="ayy-cluster"
-          style={{
-            "--ayy-gap": "var(--ayy-space-3)",
-            justifyContent: "center",
-          } as CSSProperties}
-        >
-          <Field inline>
-            <Label htmlFor="btn-align-size-inline">Size</Label>
-            <Select
-              id="btn-align-size-inline"
-              size="sm"
-              value={size}
-              onChange={(e) => setSize(e.target.value as ButtonSize)}
-            >
-              <option value="sm">Small (sm)</option>
-              <option value="md">Medium (md)</option>
-              <option value="lg">Large (lg)</option>
-            </Select>
-          </Field>
-          <Field inline>
-            <Label htmlFor="btn-align-variant-inline">Variant</Label>
-            <Select
-              id="btn-align-variant-inline"
-              size="sm"
-              value={variant}
-              onChange={(e) => setVariant(e.target.value as ButtonVariant)}
-            >
-              <option value="primary">Primary</option>
-              <option value="secondary">Secondary</option>
-              <option value="outline">Outline</option>
-              <option value="ghost">Ghost</option>
-            </Select>
-          </Field>
-        </div>
-      ) : null}
+      <div
+        className="ayy-cluster"
+        style={{
+          "--ayy-gap": "var(--ayy-space-3)",
+          justifyContent: "center",
+        } as CSSProperties}
+      >
+        <Field inline>
+          <Label htmlFor="btn-align-size-inline">Size</Label>
+          <Select
+            id="btn-align-size-inline"
+            size="sm"
+            value={size}
+            onChange={(e) => setSize(e.target.value as ButtonSize)}
+          >
+            <option value="sm">Small (sm)</option>
+            <option value="md">Medium (md)</option>
+            <option value="lg">Large (lg)</option>
+          </Select>
+        </Field>
+        <Field inline>
+          <Label htmlFor="btn-align-variant-inline">Variant</Label>
+          <Select
+            id="btn-align-variant-inline"
+            size="sm"
+            value={variant}
+            onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+          >
+            <option value="primary">Primary</option>
+            <option value="secondary">Secondary</option>
+            <option value="outline">Outline</option>
+            <option value="ghost">Ghost</option>
+          </Select>
+        </Field>
+      </div>
 
       <div
         className="ayy-stack"

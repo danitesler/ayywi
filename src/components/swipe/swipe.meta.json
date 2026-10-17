@@ -37,7 +37,7 @@
     "density": "Actions are at least 4.5rem wide and as tall as the row; the row keeps its own density.",
     "width": "Fills the list's width, like the row it wraps."
   },
-  "js": "connectSwipe(row, { onOpenChange? }) → { open(side), close(), destroy() } wires the gesture on plain markup: drag past half a tray to keep it open; a tap on the row, a tap elsewhere, Esc or an action closes it. swipeActionClass({ variant? }); swipeActionVariants.",
+  "js": "connectSwipe(row, { onOpenChange? }) → { open(side), close(), destroy() } wires the gesture on plain markup: drag past half a tray to keep it open; a tap on the row, a tap elsewhere, Esc or an action closes it. swipeActionClass({ variant?, className? }); swipeActionVariants; swipeClass, swipeContentClass, swipeActionsClass constants.",
   "element": {
     "tag": "ayy-swipe",
     "description": "Wraps an .ayy-swipe row and wires the gesture. Methods: open(\"start\" | \"end\"), close().",

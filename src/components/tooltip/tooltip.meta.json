@@ -13,7 +13,7 @@
     "side": { "values": ["top", "bottom", "start", "end"], "default": "top" }
   },
   "states": {
-    "default": { "looks": "Hidden. The bubble is a raised surface with a line-strong border and xs text." },
+    "default": { "looks": "Hidden. The bubble is a raised surface with a line-strong border and s text." },
     "hover": { "when": ".ayy-tooltip:hover", "looks": "The bubble fades and slides in after 200ms." },
     "pressed": { "none": "No pressed look; the trigger keeps its own." },
     "focus": { "when": ".ayy-tooltip:is(:has(:focus-visible), :focus-visible)", "looks": "The bubble shows at once (no delay) while the trigger has keyboard focus." },
@@ -24,7 +24,7 @@
     "dismissed": { "when": "[data-dismissed] (Esc, set by React Tooltip or <ayy-tooltip>)", "looks": "Stays hidden until the pointer and focus leave." }
   },
   "sizes": {
-    "density": "Doesn't follow data-density.",
+    "density": "Text size follows data-density (var(--ayy-text-s)); padding is fixed.",
     "width": "As wide as its text, at most 16rem, then wraps."
   },
   "js": "tooltipClass, tooltipContentClass constants; enhanceTooltip(host) moves the bubble to the top layer and adds Esc (returns cleanup).",

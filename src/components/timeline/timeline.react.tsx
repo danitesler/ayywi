@@ -55,8 +55,10 @@ export const TimelineMarker = forwardRef<HTMLSpanElement, TimelineMarkerProps>(f
   return <span ref={ref} className={timelineMarkerClass({ pulse, className })} aria-hidden="true" {...props} />;
 });
 
+export interface TimelineContentProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** Container holding the event details (time, title, body). */
-export const TimelineContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function TimelineContent(
+export const TimelineContent = forwardRef<HTMLDivElement, TimelineContentProps>(function TimelineContent(
   { className, ...props },
   ref,
 ) {

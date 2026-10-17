@@ -7,7 +7,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 - `.ayy-tooltip__content` — The bubble (role="tooltip"). Placement via data-side="top|bottom|start|end" (start/end follow text direction).
 
 **States**
-- `default` — Hidden. The bubble is a raised surface with a line-strong border and xs text.
+- `default` — Hidden. The bubble is a raised surface with a line-strong border and s text.
 - `hover` (`.ayy-tooltip:hover`) — The bubble fades and slides in after 200ms.
 - `pressed` — doesn't apply: No pressed look; the trigger keeps its own.
 - `focus` (`.ayy-tooltip:is(:has(:focus-visible), :focus-visible)`) — The bubble shows at once (no delay) while the trigger has keyboard focus.
@@ -18,7 +18,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 - `dismissed` (`[data-dismissed] (Esc, set by React Tooltip or <ayy-tooltip>)`) — Stays hidden until the pointer and focus leave.
 
 **Sizes**
-- Density — Doesn't follow data-density.
+- Density — Text size follows data-density (var(--ayy-text-s)); padding is fixed.
 - Width — As wide as its text, at most 16rem, then wraps.
 
 **Custom element** `<ayy-tooltip>` (@danitesler/ayywi/elements) — One focusable trigger and a .ayy-tooltip__content bubble. Ids and aria-describedby are wired for you.

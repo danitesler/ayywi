@@ -1,4 +1,5 @@
 import { cx } from "../../lib/cx";
+import { ensureId } from "../../lib/element";
 import { ArrowDown01Icon, Menu01Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
 
@@ -58,6 +59,8 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
   let current: string | null = null;
   let frame = 0;
 
+  const doc = root.ownerDocument;
+  const win = doc.defaultView ?? window;
   const host = root.closest<HTMLElement>(".ayy-toc") ?? root;
 
   // Auto-inject mobile pill bar if omitted in plain HTML
@@ -65,14 +68,18 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
   if (!host.querySelector(".ayy-toc__bar")) {
     const firstLink = host.querySelector<HTMLAnchorElement>("a.ayy-toc__link");
     const label = firstLink ? extractLinkText(firstLink) : "Table of contents";
-    injectedBar = document.createElement("div");
+    injectedBar = doc.createElement("div");
     injectedBar.className = tocBarClass;
-    injectedBar.innerHTML = `<button type="button" class="${tocToggleClass}" aria-expanded="false" aria-label="Table of contents"><span class="${tocToggleIconClass}">${tocMenuIcon}</span><span class="${tocToggleCurrentClass}">${label}</span><span class="${tocToggleCaretClass}">${tocChevronIcon}</span></button>`;
+    injectedBar.innerHTML = `<button type="button" class="${tocToggleClass}" aria-expanded="false"><span class="${tocToggleIconClass}">${tocMenuIcon}</span><span class="${tocToggleCurrentClass}">${label}</span><span class="${tocToggleCaretClass}">${tocChevronIcon}</span></button>`;
     host.prepend(injectedBar);
   }
 
   const toggle = host.querySelector<HTMLButtonElement>(".ayy-toc__toggle");
   const currentSpan = host.querySelector<HTMLElement>(".ayy-toc__toggle-current");
+  const list = host.querySelector<HTMLElement>(".ayy-toc__list");
+  if (toggle && list) {
+    toggle.setAttribute("aria-controls", ensureId(list, "ayy-toc-list"));
+  }
 
   const setOpen = (open: boolean) => {
     if (open) {
@@ -113,24 +120,24 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
 
   toggle?.addEventListener("click", onToggleClick);
   host.addEventListener("click", onLinkClick);
-  window.addEventListener("keydown", onKeyDown);
-  window.addEventListener("pointerdown", onPointerDown);
+  win.addEventListener("keydown", onKeyDown);
+  win.addEventListener("pointerdown", onPointerDown);
 
   const update = () => {
     frame = 0;
     const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('a.ayy-toc__link[href^="#"]'));
-    const doc = document.documentElement;
-    const line = options.offset ?? (parseFloat(getComputedStyle(doc).scrollPaddingBlockStart) || 0) + 24;
+    const docEl = doc.documentElement;
+    const line = options.offset ?? (parseFloat(win.getComputedStyle(docEl).scrollPaddingBlockStart) || 0) + 24;
     let index = -1;
     links.forEach((link, i) => {
-      const target = document.getElementById(hashOf(link));
+      const target = doc.getElementById(hashOf(link));
       if (target && target.getClientRects().length && target.getBoundingClientRect().top <= line) index = i;
     });
     // At the very bottom, the last sections may be too short to ever reach the line: take the last one in view.
-    if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+    if (win.innerHeight + win.scrollY >= docEl.scrollHeight - 2) {
       links.forEach((link, i) => {
-        const target = document.getElementById(hashOf(link));
-        if (target && target.getClientRects().length && target.getBoundingClientRect().top < window.innerHeight) index = i;
+        const target = doc.getElementById(hashOf(link));
+        if (target && target.getClientRects().length && target.getBoundingClientRect().top < win.innerHeight) index = i;
       });
     }
     links.forEach((link, i) => {
@@ -150,21 +157,21 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
   };
 
   const schedule = () => {
-    if (!frame) frame = requestAnimationFrame(update);
+    if (!frame) frame = win.requestAnimationFrame(update);
   };
 
-  window.addEventListener("scroll", schedule, { passive: true });
-  window.addEventListener("resize", schedule);
+  win.addEventListener("scroll", schedule, { passive: true });
+  win.addEventListener("resize", schedule);
   update();
 
   return () => {
-    cancelAnimationFrame(frame);
+    win.cancelAnimationFrame(frame);
     toggle?.removeEventListener("click", onToggleClick);
     host.removeEventListener("click", onLinkClick);
-    window.removeEventListener("keydown", onKeyDown);
-    window.removeEventListener("pointerdown", onPointerDown);
-    window.removeEventListener("scroll", schedule);
-    window.removeEventListener("resize", schedule);
+    win.removeEventListener("keydown", onKeyDown);
+    win.removeEventListener("pointerdown", onPointerDown);
+    win.removeEventListener("scroll", schedule);
+    win.removeEventListener("resize", schedule);
     injectedBar?.remove();
   };
 }

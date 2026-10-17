@@ -7,6 +7,7 @@ export interface ComponentMeta {
   status: string;
   category: string;
   description: string;
+  aka?: string[];
   classes: Record<string, string>;
   variants: Record<string, { values: (string | boolean)[]; default: string | boolean }>;
   states: Record<string, { when?: string; looks?: string; none?: string }>;
@@ -14,6 +15,7 @@ export interface ComponentMeta {
   js?: string;
   react: { import: string; components: Record<string, { renders: string; props?: Record<string, string> }> };
   element?: { tag: string };
+  elements?: NonNullable<ComponentMeta["element"]>[];
   a11y: string[];
   do: string[];
   dont: string[];

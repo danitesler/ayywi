@@ -1,5 +1,5 @@
 import { Clock01Icon, Delete02Icon, PinIcon, Tick02Icon } from "@hugeicons/core-free-icons";
-import { Icon, Swipe, SwipeAction } from "@danitesler/ayywi/react";
+import { Icon, listClass, Swipe, SwipeAction } from "@danitesler/ayywi/react";
 
 const TASKS = [
   { id: "milk", title: "Buy milk", due: "Today" },
@@ -10,11 +10,10 @@ const TASKS = [
 export default function Example() {
   // Swipe a row (or drag it with the mouse). Keyboards reach the buttons with Tab.
   return (
-    <div style={{ inlineSize: "min(100%, 24rem)", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)", overflow: "hidden" }}>
-      {TASKS.map((task, i) => (
+    <div className={listClass({ divided: true })} style={{ inlineSize: "min(100%, 24rem)", border: "1px solid var(--ayy-color-line)", borderRadius: "var(--ayy-radius-xl)", overflow: "hidden" }}>
+      {TASKS.map((task) => (
         <Swipe
           key={task.id}
-          style={i > 0 ? { borderBlockStart: "1px solid var(--ayy-color-hairline)" } : undefined}
           contentProps={{ className: "ayy-list__item" }}
           startActions={
             <SwipeAction variant="success" icon={<Icon icon={Tick02Icon} />}>

@@ -43,7 +43,7 @@ Style this project with the ayywi design system. Link these in <head>:
 
 Rules:
 - Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.0.3/llms-full.txt for the component contract, responsive rules, and copy-ready patterns.
-- If the project already uses Tailwind, use it for layout only, never its colour scale (bg-gray-900, text-blue-500). Don't add shadcn/ui or another UI kit.
+- ayywi is self-contained: use its layout utilities (.ayy-stack, .ayy-cluster, .ayy-spread, .ayy-grid, .ayy-split) and components directly without external CSS frameworks or UI kits.
 - An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
 - Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).
 - No hardcoded colours. Dark and light themes follow data-theme on <html>.

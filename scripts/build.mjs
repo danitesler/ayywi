@@ -11,7 +11,7 @@ import { buildPlatforms } from "./build-platforms.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const src = (p) => join(root, "src", p);
-const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.brand;";
+const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.utilities, ayywi.brand;";
 
 rmSync(dist, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
 for (const dir of ["css", "brands", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
@@ -24,6 +24,34 @@ await build({ entryPoints: [indexCss], bundle: true, minify: true, outfile: join
 // ---- CSS: unlayered escape hatch (same files, plain imports) ----
 const imports = [...readFileSync(indexCss, "utf8").matchAll(/@import\s+"([^"]+)"/g)].map((m) => m[1]);
 const unlayered = imports.map((p) => `@import "${p}";`).join("\n");
+function stripLayers(css) {
+  let out = css.replace(/@layer\s+[^;{]+;/g, "");
+  while (true) {
+    const m = out.match(/@layer\s+[\w.-]+\s*\{/);
+    if (!m) break;
+    const startIdx = m.index;
+    const openBrace = startIdx + m[0].length - 1;
+    let depth = 1;
+    let closeBrace = -1;
+    for (let i = openBrace + 1; i < out.length; i++) {
+      if (out[i] === "{") depth++;
+      else if (out[i] === "}") {
+        depth--;
+        if (depth === 0) {
+          closeBrace = i;
+          break;
+        }
+      }
+    }
+    if (closeBrace !== -1) {
+      out = out.slice(0, startIdx) + out.slice(openBrace + 1, closeBrace) + out.slice(closeBrace + 1);
+    } else {
+      break;
+    }
+  }
+  return out;
+}
+
 for (const [file, minify] of [["ayywi.unlayered.css", false], ["ayywi.unlayered.min.css", true]]) {
   await build({
     stdin: { contents: unlayered, resolveDir: src("css"), loader: "css" },
@@ -32,6 +60,8 @@ for (const [file, minify] of [["ayywi.unlayered.css", false], ["ayywi.unlayered.
     outfile: join(dist, file),
     logLevel: "warning",
   });
+  const unlayeredPath = join(dist, file);
+  writeFileSync(unlayeredPath, stripLayers(readFileSync(unlayeredPath, "utf8")));
 }
 
 // ---- CSS: one file per part, each wrapped in its layer ----
@@ -64,8 +94,6 @@ writeFileSync(
   `/* ayywi brand fonts, self-hosted (works offline, no third-party requests). Import before ayywi.css. */\n${faces.join("\n\n")}\n`,
 );
 copyFileSync(src("css/fonts.css"), join(dist, "fonts-google.css"));
-// The shadcn/ui bridge: plain CSS on purpose (unlayered), so it outranks a project's own shadcn variables.
-copyFileSync(src("css/shadcn.css"), join(dist, "shadcn.css"));
 
 // ---- JS ----
 const shared = {

@@ -67,7 +67,7 @@
   transition: none;
 }
 
-.ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) {
+.ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]):not(:disabled):not([aria-disabled="true"]) {
   outline: none;
   background-color: var(--ayy-color-wash-hover);
 }
@@ -130,7 +130,7 @@
   content: "";
   position: absolute;
   inset-inline-start: var(--ayy-space-2);
-  top: 50%;
+  inset-block-start: 50%;
   flex: none;
   box-sizing: border-box;
   inline-size: 0.35em;
@@ -241,13 +241,18 @@ ayy-menu {
   .ayy-menu {
     border-color: CanvasText;
   }
-  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) {
+  .ayy-menu__item:disabled,
+  .ayy-menu__item[aria-disabled="true"] {
+    color: GrayText;
+    opacity: 1;
+  }
+  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]):not(:disabled):not([aria-disabled="true"]) {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
   }
-  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) > svg,
-  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]) > .ayy-menu__chevron {
+  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]):not(:disabled):not([aria-disabled="true"]) > svg,
+  .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]):not(:disabled):not([aria-disabled="true"]) > .ayy-menu__chevron {
     color: HighlightText;
   }
   .ayy-menu__separator {

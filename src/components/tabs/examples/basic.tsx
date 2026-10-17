@@ -20,6 +20,7 @@ export default function Example() {
       <TabsContent value="members">
         <p className="ayy-muted">People with access to this project.</p>
       </TabsContent>
+      <TabsContent value="billing" />
     </Tabs>
   );
 }

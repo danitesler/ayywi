@@ -2,6 +2,7 @@
 import "./index";
 
 export { toast, configureToaster } from "../components/toast/toast";
-export { setTheme, getTheme, getColorScheme, setDensity, getDensity } from "../theme";
+export { setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity } from "../theme";
 export { setBrand, createBrand, brandCss } from "../brand";
+export { brandPresets } from "../tokens";
 export { chartColors, chartTheme } from "../components/chart/chart";

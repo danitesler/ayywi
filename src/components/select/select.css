@@ -55,8 +55,10 @@
   pointer-events: none;
 }
 
-.ayy-select__control:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-select__control:not(:disabled):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 .ayy-select__control:focus-visible {
@@ -147,10 +149,16 @@
   cursor: pointer;
 }
 
-/* The pointer and the arrow keys move focus between options; keyboard focus adds the ring, as everywhere else. */
-.ayy-select__option:is(:hover, :focus) {
+.ayy-select__option:focus {
   outline: none;
   background-color: var(--ayy-color-wash-hover);
+}
+
+@media (hover: hover) {
+  .ayy-select__option:not([aria-disabled="true"]):hover {
+    outline: none;
+    background-color: var(--ayy-color-wash-hover);
+  }
 }
 
 .ayy-select__option:focus-visible {
@@ -208,6 +216,10 @@
   .ayy-select__control {
     border-color: FieldText;
   }
+  .ayy-select__control:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
   .ayy-select__control:focus-visible {
     outline-color: Highlight;
   }
@@ -217,10 +229,16 @@
   .ayy-select::after {
     color: FieldText;
   }
+  .ayy-select:has(> .ayy-select__control:disabled)::after {
+    color: GrayText;
+  }
   .ayy-select__list {
     border-color: CanvasText;
   }
-  .ayy-select__option:is(:hover, :focus) {
+  .ayy-select__option[aria-disabled="true"] {
+    color: GrayText;
+  }
+  .ayy-select__option:not([aria-disabled="true"]):is(:hover, :focus) {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;

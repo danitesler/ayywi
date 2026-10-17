@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useId, useRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type DetailsHTMLAttributes, type HTMLAttributes, type LiHTMLAttributes, type ReactNode } from "react";
+import { createContext, forwardRef, useContext, useEffect, useId, useRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type DetailsHTMLAttributes, type HTMLAttributes, type LiHTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { ArrowLeft01Icon, Menu01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
@@ -39,6 +39,13 @@ import {
 
 export type { AppShellEdge, AppShellSize };
 
+interface AppShellContextValue {
+  collapsed?: boolean;
+}
+
+const AppShellContext = createContext<AppShellContextValue>({});
+const InHeadContext = createContext<boolean>(false);
+
 export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Sidebar row size, matching Button's `sm | md | lg` scale: `lg` (default, 40px compact rows with 20px icons),
@@ -76,26 +83,39 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
 
 /** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. Wide screens support collapsing to an icon rail and hover preview. */
 export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
-  { size, settings, collapsed, hoverPreview = true, drawer, onCollapseChange, onResize, className, ...props },
+  { size, settings, collapsed, hoverPreview = true, drawer, onCollapseChange, onResize, className, children, ...props },
   ref,
 ) {
   const own = useRef<HTMLDivElement>(null);
   useEffect(() => (own.current ? connectAppShell(own.current, { onCollapseChange, onResize }) : undefined), [onCollapseChange, onResize]);
+  useEffect(() => {
+    if (!own.current) return;
+    const isCollapsed = Boolean(collapsed);
+    const toggles = own.current.querySelectorAll<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellToggleClass}`);
+    for (const toggle of toggles) {
+      toggle.setAttribute("aria-expanded", String(!isCollapsed));
+    }
+  }, [collapsed]);
+
   return (
-    <div
-      ref={mergeRefs(own, ref)}
-      className={cx(
-        appShellClass,
-        size === "sm" && appShellSmClass,
-        size === "md" && appShellMdClass,
-        settings && appShellSettingsClass,
-        drawer && appShellDrawerClass,
-        collapsed && appShellCollapsedClass,
-        hoverPreview && appShellHoverPreviewClass,
-        className,
-      )}
-      {...props}
-    />
+    <AppShellContext.Provider value={{ collapsed }}>
+      <div
+        ref={mergeRefs(own, ref)}
+        className={cx(
+          appShellClass,
+          size === "sm" && appShellSmClass,
+          size === "md" && appShellMdClass,
+          settings && appShellSettingsClass,
+          drawer && appShellDrawerClass,
+          collapsed && appShellCollapsedClass,
+          hoverPreview && appShellHoverPreviewClass,
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    </AppShellContext.Provider>
   );
 });
 
@@ -129,33 +149,51 @@ export const AppShellBack = forwardRef<HTMLAnchorElement & HTMLButtonElement, Ap
   );
 });
 
+export interface AppShellTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
+
 /** The settings sidebar's heading ("Settings"), under AppShellBack. An <h2>: each section's Top bar holds the page's <h1>. */
-export const AppShellTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(function AppShellTitle({ className, ...props }, ref) {
+export const AppShellTitle = forwardRef<HTMLHeadingElement, AppShellTitleProps>(function AppShellTitle({ className, ...props }, ref) {
   return <h2 ref={ref} className={cx(appShellTitleClass, className)} {...props} />;
 });
 
+export interface AppShellHeadProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** The sidebar's top row: an AppShellToggle that collapses the sidebar, then the AppShellBrand. The toggle stays in place in the rail. */
-export const AppShellHead = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function AppShellHead({ className, ...props }, ref) {
-  return <div ref={ref} className={cx(appShellHeadClass, className)} {...props} />;
+export const AppShellHead = forwardRef<HTMLDivElement, AppShellHeadProps>(function AppShellHead({ className, children, ...props }, ref) {
+  return (
+    <InHeadContext.Provider value={true}>
+      <div ref={ref} className={cx(appShellHeadClass, className)} {...props}>
+        {children}
+      </div>
+    </InHeadContext.Provider>
+  );
 });
 
+export interface AppShellBarProps extends HTMLAttributes<HTMLElement> {}
+
 /** The phone top bar (hidden from 48rem): an AppShellToggle, the brand, and maybe a search button. Put it first in the shell. */
-export const AppShellBar = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function AppShellBar({ className, ...props }, ref) {
+export const AppShellBar = forwardRef<HTMLElement, AppShellBarProps>(function AppShellBar({ className, ...props }, ref) {
   return <header ref={ref} className={cx(appShellBarClass, className)} {...props} />;
 });
 
+export interface AppShellToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+
 /** The menu button that opens the sidebar as a drawer. AppShell manages aria-expanded; leave it uncontrolled. */
-export const AppShellToggle = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(function AppShellToggle(
+export const AppShellToggle = forwardRef<HTMLButtonElement, AppShellToggleProps>(function AppShellToggle(
   { className, "aria-label": label = "Menu", children, ...props },
   ref,
 ) {
+  const inHead = useContext(InHeadContext);
+  const { collapsed } = useContext(AppShellContext);
+  const ariaExpanded = props["aria-expanded"] ?? (inHead ? (!collapsed ? "true" : "false") : "false");
+
   return (
     <button
       ref={ref}
       type="button"
       className={buttonClass({ variant: "ghost", size: "icon", className: cx(appShellToggleClass, className) })}
       aria-label={label}
-      aria-expanded="false"
+      aria-expanded={ariaExpanded}
       {...props}
     >
       {children ?? <Icon icon={Menu01Icon} />}
@@ -163,21 +201,27 @@ export const AppShellToggle = forwardRef<HTMLButtonElement, ButtonHTMLAttributes
   );
 });
 
-export const AppShellSidebar = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function AppShellSidebar(
+export interface AppShellSidebarProps extends HTMLAttributes<HTMLElement> {}
+
+export const AppShellSidebar = forwardRef<HTMLElement, AppShellSidebarProps>(function AppShellSidebar(
   { className, ...props },
   ref,
 ) {
   return <aside ref={ref} className={cx(appShellSidebarClass, className)} {...props} />;
 });
 
-export const AppShellBrand = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement>>(function AppShellBrand(
+export interface AppShellBrandProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
+
+export const AppShellBrand = forwardRef<HTMLAnchorElement, AppShellBrandProps>(function AppShellBrand(
   { className, ...props },
   ref,
 ) {
   return <a ref={ref} className={cx(appShellBrandClass, className)} {...props} />;
 });
 
-export const AppShellNav = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function AppShellNav(
+export interface AppShellNavProps extends HTMLAttributes<HTMLElement> {}
+
+export const AppShellNav = forwardRef<HTMLElement, AppShellNavProps>(function AppShellNav(
   { className, "aria-label": label = "Main", ...props },
   ref,
 ) {
@@ -221,7 +265,9 @@ export const AppShellGroup = forwardRef<HTMLDivElement, AppShellGroupProps>(func
   );
 });
 
-export const AppShellItem = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLIElement>>(function AppShellItem(props, ref) {
+export interface AppShellItemProps extends LiHTMLAttributes<HTMLLIElement> {}
+
+export const AppShellItem = forwardRef<HTMLLIElement, AppShellItemProps>(function AppShellItem(props, ref) {
   return <li ref={ref} {...props} />;
 });
 
@@ -256,7 +302,9 @@ export const AppShellCollapse = forwardRef<HTMLDetailsElement, AppShellCollapseP
   );
 });
 
-export const AppShellFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function AppShellFooter(
+export interface AppShellFooterProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const AppShellFooter = forwardRef<HTMLDivElement, AppShellFooterProps>(function AppShellFooter(
   { className, ...props },
   ref,
 ) {
@@ -272,8 +320,10 @@ export const AppShellMain = forwardRef<HTMLElement, AppShellMainProps>(function 
   return <Tag ref={ref as never} className={cx(appShellMainClass, className)} {...props} />;
 });
 
+export interface AppShellDetailProps extends HTMLAttributes<HTMLElement> {}
+
 /** The third column at the inline end, for what's picked in the main area. Show and hide it with `hidden`; on phones it covers the screen. */
-export const AppShellDetail = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function AppShellDetail({ className, ...props }, ref) {
+export const AppShellDetail = forwardRef<HTMLElement, AppShellDetailProps>(function AppShellDetail({ className, ...props }, ref) {
   return <aside ref={ref} className={cx(appShellDetailClass, className)} {...props} />;
 });
 

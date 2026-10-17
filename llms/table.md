@@ -14,7 +14,7 @@ Category: Data display. Data table with quiet hairlines, uppercase headers, hove
 - `.ayy-table__row-actions--reveal` — Reveals quick actions when the row is hovered, focused within, selected or has an open menu (stays visible on touch screens).
 
 **States**
-- `default` — Collapsed table, xs text; header row on a wash fill with muted xs uppercase labels; hairlines between rows.
+- `default` — Collapsed table, s text; header row on a wash fill with muted s uppercase labels; hairlines between rows.
 - `hover` (`tbody tr:hover; .ayy-table__sort:hover`) — Row gets a wash fill and reveals .ayy-table__row-actions--reveal; a sort button's label turns text colour.
 - `pressed` — doesn't apply: No pressed look.
 - `focus` (`.ayy-table__sort:focus-visible`) — 2px ring on the sort button.
@@ -25,7 +25,7 @@ Category: Data display. Data table with quiet hairlines, uppercase headers, hove
 - `sorted` (`th[aria-sort="ascending" | "descending"]`) — Header label turns text colour and only the arrow that applies shows, at full strength. Forced colours: underlined.
 
 **Sizes**
-- Density — Doesn't follow data-density. Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter.
+- Density — Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter. Text size follows data-density via --ayy-text-s.
 - Width — Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit.
 
 **Custom element** `<ayy-table>` (@danitesler/ayywi/elements) — 
@@ -141,22 +141,22 @@ export default function Example({
   useEffect(() => {
     if (!setControls) return;
     setControls(
-      <div className="pv-props-list">
-        <div className="pv-props-group">
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-compact" className="pv-props-label">Compact rows</Label>
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-compact">Compact rows</Label>
             <Switch id="tbl-compact" checked={compact} onCheckedChange={setCompact} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-caption" className="pv-props-label">Caption</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-caption">Caption</Label>
             <Switch id="tbl-caption" checked={showCaption} onCheckedChange={setShowCaption} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-builds" className="pv-props-label">Numeric column</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-builds">Numeric column</Label>
             <Switch id="tbl-builds" checked={showBuilds} onCheckedChange={setShowBuilds} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="tbl-footer" className="pv-props-label">Footer</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="tbl-footer">Footer</Label>
             <Switch id="tbl-footer" checked={showFooter} onCheckedChange={setShowFooter} />
           </div>
         </div>

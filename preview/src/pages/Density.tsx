@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type DensityMode } from "@danitesler/ayywi";
 import {
   Badge,
@@ -45,7 +45,9 @@ const SIZES = [
   { name: "UI text (text-s, control-text-sm/md)", compact: "12px", comfortable: "13px", touch: "14px" },
   { name: "Large control text (control-text-lg)", compact: "14px", comfortable: "15px", touch: "16px" },
   { name: "Field text (control-text-field)", compact: "12px", comfortable: "13px", touch: "16px" },
-  { name: "Control padding", compact: "16px", comfortable: "18px", touch: "20px" },
+  { name: "Control padding (sm)", compact: "12px", comfortable: "14px", touch: "16px" },
+  { name: "Control padding (md)", compact: "16px", comfortable: "18px", touch: "20px" },
+  { name: "Control padding (lg)", compact: "20px", comfortable: "24px", touch: "28px" },
 ];
 
 function DensityCardSample({
@@ -127,6 +129,10 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
   const [activeDensity, setActiveDensity] = useState<"compact" | "comfortable" | "touch">(() =>
     density === "comfortable" || density === "touch" ? density : "compact",
   );
+
+  useEffect(() => {
+    setActiveDensity(density === "comfortable" || density === "touch" ? density : "compact");
+  }, [density]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleDensityChange = (value: string) => {

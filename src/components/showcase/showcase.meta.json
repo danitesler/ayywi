@@ -6,11 +6,11 @@
   "description": "An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets.",
   "aka": ["showcase", "responsive-preview", "device-preview", "viewport-preview"],
   "classes": {
-    "ayy-showcase": "Root container: flex column, line border, card radius, background.",
+    "ayy-showcase": "Root container: flex column holding the header and preview stage.",
     "ayy-showcase__header": "Top bar containing the title and action controls.",
     "ayy-showcase__title": "Title or label for the previewed component or screen.",
     "ayy-showcase__actions": "Cluster of action controls (device switcher, props, copy button).",
-    "ayy-showcase__stage": "The canvas holding the previewed element, with an ambient pattern.",
+    "ayy-showcase__stage": "The canvas holding the previewed element, with a line border, card radius, and an ambient dot pattern.",
     "ayy-showcase__viewport": "The responsive viewport container that smoothly transitions width.",
     "ayy-showcase__viewport--desktop": "Full width desktop viewport.",
     "ayy-showcase__viewport--tablet": "Tablet width viewport (max 834px).",
@@ -18,7 +18,7 @@
     "ayy-showcase__body": "Content wrapper inside the viewport."
   },
   "variants": {
-    "device": { "values": ["desktop", "tablet", "mobile"], "default": "desktop" }
+    "device": { "component": "ShowcaseViewport", "values": ["desktop", "tablet", "mobile"], "default": "desktop" }
   },
   "states": {
     "default": { "looks": "A surface container with a line border, card radius, and a subtle pattern on the preview stage." },
@@ -34,7 +34,7 @@
     "density": "Toolbar controls follow data-density.",
     "width": "Fills its container width; the viewport transitions max-inline-size to match the active device."
   },
-  "js": "showcaseClass, showcaseHeaderClass, showcaseTitleClass, showcaseActionsClass, showcaseStageClass, showcaseBodyClass constants; showcaseViewportClass({ device?, className? }) → string.",
+  "js": "showcaseClass, showcaseHeaderClass, showcaseTitleClass, showcaseActionsClass, showcaseStageClass, showcaseBodyClass, showcaseDevices constants; showcaseViewportClass({ device?, className? }) → string.",
   "react": {
     "import": "import { Showcase, ShowcaseHeader, ShowcaseTitle, ShowcaseActions, ShowcaseStage, ShowcaseViewport, ShowcaseBody } from \"@danitesler/ayywi/react\";",
     "components": {

@@ -88,7 +88,15 @@ const SECTIONS: NavSection[] = [
         route: c.slug,
         title: c.name,
         description: c.description,
-        text: [c.slug, c.description, ...Object.keys(c.classes), ...Object.keys(c.react.components), c.element?.tag ?? ""].join(" "),
+        text: [
+          c.slug,
+          c.description,
+          ...(c.aka ?? []),
+          ...Object.keys(c.classes),
+          ...Object.keys(c.react.components),
+          c.element?.tag ?? "",
+          ...(c.elements?.map((e) => e.tag) ?? []),
+        ].join(" "),
       }))
       .sort((a, b) => a.title.localeCompare(b.title)),
   })),

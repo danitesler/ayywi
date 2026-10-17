@@ -39,6 +39,7 @@ export const Dropzone = forwardRef<HTMLInputElement, DropzoneProps>(function Dro
       data-dragging={dragging ? "" : undefined}
       onDragEnter={enter}
       onDragLeave={leave}
+      onDragEnd={() => setDragging(false)}
       onDrop={() => setDragging(false)}
     >
       <input

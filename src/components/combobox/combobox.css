@@ -24,6 +24,11 @@
   pointer-events: none;
 }
 
+.ayy-combobox:has(> .ayy-input:disabled) > svg,
+.ayy-combobox:has(> .ayy-input[aria-disabled="true"]) > svg {
+  opacity: var(--ayy-opacity-disabled);
+}
+
 .ayy-combobox__listbox {
   box-sizing: border-box;
   max-inline-size: min(28rem, calc(100vw - 1rem));
@@ -81,7 +86,12 @@
 }
 
 /* The option the arrow keys are on (aria-selected, as in the ARIA combobox pattern) or the pointer is over. */
-.ayy-combobox__option:hover,
+@media (hover: hover) {
+  .ayy-combobox__option:not([aria-disabled="true"]):hover {
+    background-color: var(--ayy-color-wash-hover);
+  }
+}
+
 .ayy-combobox__option[aria-selected="true"] {
   background-color: var(--ayy-color-wash-hover);
 }
@@ -117,5 +127,8 @@
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
+  }
+  .ayy-combobox__option[aria-disabled="true"] {
+    color: GrayText;
   }
 }

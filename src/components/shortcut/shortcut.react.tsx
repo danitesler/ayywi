@@ -81,13 +81,14 @@ export const ShortcutRecorder = forwardRef<HTMLButtonElement, ShortcutRecorderPr
     };
   }, [recording, bare]);
 
+  const platform = usePlatform();
   const shown = recording ? preview : value;
   return (
     <button
       ref={ref}
       type="button"
       aria-pressed={recording}
-      aria-label={recorderLabel(label, value, recording, recordingText)}
+      aria-label={recorderLabel(label, value, recording, recordingText, platform)}
       className={shortcutRecorderClass({ className })}
       onClick={(event) => {
         onClick?.(event);

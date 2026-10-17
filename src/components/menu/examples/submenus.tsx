@@ -24,7 +24,7 @@ import {
 } from "@danitesler/ayywi/react";
 
 export default function Example() {
-  const [timer, setTimer] = useState("off");
+  const [timer, setTimer] = useState("5");
   const [format, setFormat] = useState("png");
   const [showCursor, setShowCursor] = useState(true);
 
@@ -50,7 +50,7 @@ export default function Example() {
             Self-timer
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={timer} onValueChange={(val) => { setTimer(val); toast(`Timer: ${val}s`); }}>
+            <DropdownMenuRadioGroup value={timer} onValueChange={(val) => { setTimer(val); toast(val === "off" ? "Timer: off" : `Timer: ${val}s`); }}>
               <DropdownMenuRadioItem value="off">Off</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="3">In 3 seconds</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="5">In 5 seconds</DropdownMenuRadioItem>

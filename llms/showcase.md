@@ -3,11 +3,11 @@
 Category: Layout. An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets. Also called: showcase, responsive-preview, device-preview, viewport-preview.
 
 **Classes**
-- `.ayy-showcase` — Root container: flex column, line border, card radius, background.
+- `.ayy-showcase` — Root container: flex column holding the header and preview stage.
 - `.ayy-showcase__header` — Top bar containing the title and action controls.
 - `.ayy-showcase__title` — Title or label for the previewed component or screen.
 - `.ayy-showcase__actions` — Cluster of action controls (device switcher, props, copy button).
-- `.ayy-showcase__stage` — The canvas holding the previewed element, with an ambient pattern.
+- `.ayy-showcase__stage` — The canvas holding the previewed element, with a line border, card radius, and an ambient dot pattern.
 - `.ayy-showcase__viewport` — The responsive viewport container that smoothly transitions width.
 - `.ayy-showcase__viewport--desktop` — Full width desktop viewport.
 - `.ayy-showcase__viewport--tablet` — Tablet width viewport (max 834px).
@@ -59,16 +59,34 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <h3 class="ayy-showcase__title" id="showcase-basic-title">Card layout</h3>
     <div class="ayy-showcase__actions">
       <div role="radiogroup" class="ayy-segmented-control ayy-segmented-control--sm" aria-label="Device view">
-        <label class="ayy-segmented-control__option" title="Desktop"><input type="radio" name="showcase-device-basic" value="desktop" checked="" /><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 21H16M14 21C13.1716 21 12.5 20.3284 12.5 19.5V17L12 17M14 21H10M10 21H8M10 21C10.8284 21 11.5 20.3284 11.5 19.5V17L12 17M12 17V21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M16 3H8C5.17157 3 3.75736 3 2.87868 3.87868C2 4.75736 2 6.17157 2 9V11C2 13.8284 2 15.2426 2.87868 16.1213C3.75736 17 5.17157 17 8 17H16C18.8284 17 20.2426 17 21.1213 16.1213C22 15.2426 22 13.8284 22 11V9C22 6.17157 22 4.75736 21.1213 3.87868C20.2426 3 18.8284 3 16 3Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></label>
-        <label class="ayy-segmented-control__option" title="Tablet"><input type="radio" name="showcase-device-basic" value="tablet" /><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 2H9.5C6.67157 2 5.25736 2 4.37868 2.87868C3.5 3.75736 3.5 5.17157 3.5 8V16C3.5 18.8284 3.5 20.2426 4.37868 21.1213C5.25736 22 6.67157 22 9.5 22H14.5C17.3284 22 18.7426 22 19.6213 21.1213C20.5 20.2426 20.5 18.8284 20.5 16V8C20.5 5.17157 20.5 3.75736 19.6213 2.87868C18.7426 2 17.3284 2 14.5 2Z" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M12.125 19H12M12.25 19C12.25 19.1381 12.1381 19.25 12 19.25C11.8619 19.25 11.75 19.1381 11.75 19C11.75 18.8619 11.8619 18.75 12 18.75C12.1381 18.75 12.25 18.8619 12.25 19Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></label>
-        <label class="ayy-segmented-control__option" title="Mobile"><input type="radio" name="showcase-device-basic" value="mobile" /><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.5 2H10.5C8.14298 2 6.96447 2 6.23223 2.73223C5.5 3.46447 5.5 4.64298 5.5 7V17C5.5 19.357 5.5 20.5355 6.23223 21.2678C6.96447 22 8.14298 22 10.5 22H13.5C15.857 22 17.0355 22 17.7678 21.2678C18.5 20.5355 18.5 19.357 18.5 17V7C18.5 4.64298 18.5 3.46447 17.7678 2.73223C17.0355 2 15.857 2 13.5 2Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.125 19H12M12.25 19C12.25 19.1381 12.1381 19.25 12 19.25C11.8619 19.25 11.75 19.1381 11.75 19C11.75 18.8619 11.8619 18.75 12 18.75C12.1381 18.75 12.25 18.8619 12.25 19Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></label>
+        <label class="ayy-segmented-control__option" title="Desktop"><input type="radio" name="showcase-device-basic" value="desktop" aria-label="Desktop" checked="" /><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 21H16M14 21C13.1716 21 12.5 20.3284 12.5 19.5V17L12 17M14 21H10M10 21H8M10 21C10.8284 21 11.5 20.3284 11.5 19.5V17L12 17M12 17V21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M16 3H8C5.17157 3 3.75736 3 2.87868 3.87868C2 4.75736 2 6.17157 2 9V11C2 13.8284 2 15.2426 2.87868 16.1213C3.75736 17 5.17157 17 8 17H16C18.8284 17 20.2426 17 21.1213 16.1213C22 15.2426 22 13.8284 22 11V9C22 6.17157 22 4.75736 21.1213 3.87868C20.2426 3 18.8284 3 16 3Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></label>
+        <label class="ayy-segmented-control__option" title="Tablet"><input type="radio" name="showcase-device-basic" value="tablet" aria-label="Tablet" /><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 2H9.5C6.67157 2 5.25736 2 4.37868 2.87868C3.5 3.75736 3.5 5.17157 3.5 8V16C3.5 18.8284 3.5 20.2426 4.37868 21.1213C5.25736 22 6.67157 22 9.5 22H14.5C17.3284 22 18.7426 22 19.6213 21.1213C20.5 20.2426 20.5 18.8284 20.5 16V8C20.5 5.17157 20.5 3.75736 19.6213 2.87868C18.7426 2 17.3284 2 14.5 2Z" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M12.125 19H12M12.25 19C12.25 19.1381 12.1381 19.25 12 19.25C11.8619 19.25 11.75 19.1381 11.75 19C11.75 18.8619 11.8619 18.75 12 18.75C12.1381 18.75 12.25 18.8619 12.25 19Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></label>
+        <label class="ayy-segmented-control__option" title="Mobile"><input type="radio" name="showcase-device-basic" value="mobile" aria-label="Mobile" /><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.5 2H10.5C8.14298 2 6.96447 2 6.23223 2.73223C5.5 3.46447 5.5 4.64298 5.5 7V17C5.5 19.357 5.5 20.5355 6.23223 21.2678C6.96447 22 8.14298 22 10.5 22H13.5C15.857 22 17.0355 22 17.7678 21.2678C18.5 20.5355 18.5 19.357 18.5 17V7C18.5 4.64298 18.5 3.46447 17.7678 2.73223C17.0355 2 15.857 2 13.5 2Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.125 19H12M12.25 19C12.25 19.1381 12.1381 19.25 12 19.25C11.8619 19.25 11.75 19.1381 11.75 19C11.75 18.8619 11.8619 18.75 12 18.75C12.1381 18.75 12.25 18.8619 12.25 19Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></label>
       </div>
-      <span class="ayy-tooltip">
-        <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-sm" aria-label="Props" aria-haspopup="dialog">
-          <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.99963 5.00055L9.99963 5.00031" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M12.9996 5.00031L19.9996 5.00031" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M15.9996 9.00031L15.9996 15.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M9.99963 2.00031L9.99963 8.00031" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M11.9996 16.0003L11.9996 22.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M15.9996 12.0001L19.9996 12.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3.99963 12.0005L12.9996 12.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M11.9996 19.0003L19.9996 19.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3.99963 19.0005L8.99963 19.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>
-        </button>
-        <span role="tooltip" class="ayy-tooltip__content">Props</span>
-      </span>
+      <ayy-popover side="bottom" align="end">
+        <span class="ayy-tooltip">
+          <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-sm" popovertarget="showcase-props-popover" aria-label="Props" aria-haspopup="dialog">
+            <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.99963 5.00055L9.99963 5.00031" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M12.9996 5.00031L19.9996 5.00031" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M15.9996 9.00031L15.9996 15.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M9.99963 2.00031L9.99963 8.00031" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M11.9996 16.0003L11.9996 22.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M15.9996 12.0001L19.9996 12.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3.99963 12.0005L12.9996 12.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M11.9996 19.0003L19.9996 19.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3.99963 19.0005L8.99963 19.0003" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>
+          </button>
+          <span role="tooltip" class="ayy-tooltip__content">Props</span>
+        </span>
+        <div class="ayy-popover" id="showcase-props-popover" popover role="dialog" aria-label="Card properties" style="inline-size: 14rem">
+          <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-3)">
+            <div class="ayy-spread">
+              <label class="ayy-label" for="sc-badge-html">Live badge</label>
+              <input type="checkbox" role="switch" class="ayy-switch" id="sc-badge-html" checked="" />
+            </div>
+            <div class="ayy-spread">
+              <label class="ayy-label" for="sc-desc-html">Description</label>
+              <input type="checkbox" role="switch" class="ayy-switch" id="sc-desc-html" checked="" />
+            </div>
+            <div class="ayy-spread">
+              <label class="ayy-label" for="sc-footer-html">Footer</label>
+              <input type="checkbox" role="switch" class="ayy-switch" id="sc-footer-html" />
+            </div>
+          </div>
+        </div>
+      </ayy-popover>
     </div>
   </div>
   <div class="ayy-showcase__stage">
@@ -143,13 +161,13 @@ export default function Example() {
             value={device}
             onValueChange={(v) => setDevice(v as ShowcaseDevice)}
           >
-            <SegmentedControlItem value="desktop" title="Desktop">
+            <SegmentedControlItem value="desktop" title="Desktop" aria-label="Desktop">
               <Icon icon={ComputerIcon} />
             </SegmentedControlItem>
-            <SegmentedControlItem value="tablet" title="Tablet">
+            <SegmentedControlItem value="tablet" title="Tablet" aria-label="Tablet">
               <Icon icon={Tablet01Icon} />
             </SegmentedControlItem>
-            <SegmentedControlItem value="mobile" title="Mobile">
+            <SegmentedControlItem value="mobile" title="Mobile" aria-label="Mobile">
               <Icon icon={SmartPhone01Icon} />
             </SegmentedControlItem>
           </SegmentedControl>
@@ -170,21 +188,15 @@ export default function Example() {
                 style={{ "--ayy-gap": "var(--ayy-space-3)" } as CSSProperties}
               >
                 <div className="ayy-spread">
-                  <Label htmlFor="sc-badge" style={{ fontSize: "var(--ayy-text-sm)", cursor: "pointer" }}>
-                    Live badge
-                  </Label>
+                  <Label htmlFor="sc-badge">Live badge</Label>
                   <Switch id="sc-badge" checked={showBadge} onCheckedChange={setShowBadge} />
                 </div>
                 <div className="ayy-spread">
-                  <Label htmlFor="sc-desc" style={{ fontSize: "var(--ayy-text-sm)", cursor: "pointer" }}>
-                    Description
-                  </Label>
+                  <Label htmlFor="sc-desc">Description</Label>
                   <Switch id="sc-desc" checked={showDescription} onCheckedChange={setShowDescription} />
                 </div>
                 <div className="ayy-spread">
-                  <Label htmlFor="sc-footer" style={{ fontSize: "var(--ayy-text-sm)", cursor: "pointer" }}>
-                    Footer
-                  </Label>
+                  <Label htmlFor="sc-footer">Footer</Label>
                   <Switch id="sc-footer" checked={showFooter} onCheckedChange={setShowFooter} />
                 </div>
               </div>

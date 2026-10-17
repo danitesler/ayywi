@@ -64,10 +64,11 @@ export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
     return connectToc(local.current, { offset, onChange: (id) => onChange.current?.(id) });
   }, [offset]);
 
+  const listId = useId();
   const defaultToggleText = items[0]?.label ?? (typeof title === "string" ? title : "Table of contents");
 
   const list = (entries: TocItem[], top: boolean) => (
-    <ol className={tocListClass}>
+    <ol className={tocListClass} id={top ? listId : undefined}>
       {entries.map((item, i) => (
         <li key={item.id}>
           <a className={tocLinkClass} href={`#${item.id}`}>
@@ -89,7 +90,7 @@ export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
       {...props}
     >
       <div className={tocBarClass}>
-        <button type="button" className={tocToggleClass} aria-expanded="false" aria-label={toggleLabel}>
+        <button type="button" className={tocToggleClass} aria-label={toggleLabel} aria-expanded="false" aria-controls={listId}>
           <span className={tocToggleIconClass}>
             <Icon icon={Menu01Icon} />
           </span>

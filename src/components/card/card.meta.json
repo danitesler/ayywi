@@ -37,7 +37,7 @@
     "density": "Padding and text don't follow data-density.",
     "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card."
   },
-  "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my",
+  "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
   "react": {
     "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"@danitesler/ayywi/react\";",
     "components": {

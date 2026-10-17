@@ -33,7 +33,8 @@ import {
   dateRangeKeyTarget,
   dateRangeLabels,
   dateRangeMonth,
-  dateTimePickerClass,
+  dateTimePickerClassName,
+  dateTimePickerTriggerClassName,
   formatDate,
   formatDateRange,
   formatDateTime,
@@ -47,7 +48,7 @@ import {
   resolveDatePickerDate,
   startOfMonth,
   timePeriods,
-  timePickerClass,
+  timePickerClassName,
   timePickerColClass,
   timePickerColumnsClass,
   timePickerHeaderClass,
@@ -57,7 +58,7 @@ import {
   timePickerItemSelectedClass,
   timePickerPeriodBtnClass,
   timePickerSeparatorClass,
-  timePickerTriggerClass,
+  timePickerTriggerClassName,
   todayIso,
   to12Hour,
   to24Hour,
@@ -1421,7 +1422,7 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function T
   return (
     <div
       ref={mergeRefs(ref, rootRef)}
-      className={cx(timePickerClass, className)}
+      className={timePickerClassName({ className })}
       role="group"
       aria-label="Time picker"
       onKeyDown={(event) => {
@@ -1489,56 +1490,71 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function T
       )}
       <div className={timePickerColumnsClass}>
         <div className={timePickerColClass} role="listbox" aria-label="Hours">
-          {hours.map((h) => {
-            const isSelected = selectedHour === h;
-            return (
-              <button
-                key={h}
-                type="button"
-                role="option"
-                aria-selected={isSelected}
-                className={cx(timePickerItemClass, isSelected && timePickerItemSelectedClass)}
-                onClick={() => handleSelectHour(h)}
-              >
-                {h}
-              </button>
-            );
-          })}
-        </div>
-        <div className={timePickerColClass} role="listbox" aria-label="Minutes">
-          {minutes.map((m) => {
-            const isSelected = selectedMinute === m;
-            return (
-              <button
-                key={m}
-                type="button"
-                role="option"
-                aria-selected={isSelected}
-                className={cx(timePickerItemClass, isSelected && timePickerItemSelectedClass)}
-                onClick={() => handleSelectMinute(m)}
-              >
-                {m}
-              </button>
-            );
-          })}
-        </div>
-        {format === "12h" && (
-          <div className={timePickerColClass} role="listbox" aria-label="Period">
-            {timePeriods.map((p) => {
-              const isSelected = selectedPeriod === p;
+          {(() => {
+            const hasSelected = hours.some((h) => selectedHour === h);
+            return hours.map((h, i) => {
+              const isSelected = selectedHour === h;
+              const isFocusable = isSelected || (!hasSelected && i === 0);
               return (
                 <button
-                  key={p}
+                  key={h}
                   type="button"
                   role="option"
                   aria-selected={isSelected}
+                  tabIndex={isFocusable ? 0 : -1}
                   className={cx(timePickerItemClass, isSelected && timePickerItemSelectedClass)}
-                  onClick={() => handleSelectPeriod(p)}
+                  onClick={() => handleSelectHour(h)}
                 >
-                  {p}
+                  {h}
                 </button>
               );
-            })}
+            });
+          })()}
+        </div>
+        <div className={timePickerColClass} role="listbox" aria-label="Minutes">
+          {(() => {
+            const hasSelected = minutes.some((m) => selectedMinute === m);
+            return minutes.map((m, i) => {
+              const isSelected = selectedMinute === m;
+              const isFocusable = isSelected || (!hasSelected && i === 0);
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  tabIndex={isFocusable ? 0 : -1}
+                  className={cx(timePickerItemClass, isSelected && timePickerItemSelectedClass)}
+                  onClick={() => handleSelectMinute(m)}
+                >
+                  {m}
+                </button>
+              );
+            });
+          })()}
+        </div>
+        {format === "12h" && (
+          <div className={timePickerColClass} role="listbox" aria-label="Period">
+            {(() => {
+              const hasSelected = timePeriods.some((p) => selectedPeriod === p);
+              return timePeriods.map((p, i) => {
+                const isSelected = selectedPeriod === p;
+                const isFocusable = isSelected || (!hasSelected && i === 0);
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    role="option"
+                    aria-selected={isSelected}
+                    tabIndex={isFocusable ? 0 : -1}
+                    className={cx(timePickerItemClass, isSelected && timePickerItemSelectedClass)}
+                    onClick={() => handleSelectPeriod(p)}
+                  >
+                    {p}
+                  </button>
+                );
+              });
+            })()}
           </div>
         )}
       </div>
@@ -1622,7 +1638,7 @@ export const TimePickerTrigger = forwardRef<HTMLButtonElement, TimePickerTrigger
         aria-haspopup="dialog"
         aria-controls={contentId}
         aria-describedby={cx(valueId, describedBy)}
-        className={cx(inputClass({ size }), timePickerTriggerClass, className)}
+        className={timePickerTriggerClassName({ size, className })}
         {...props}
       >
         <Icon icon={Clock01Icon} />
@@ -1720,7 +1736,7 @@ export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(fu
   };
 
   return (
-    <div ref={ref} className={cx(dateTimePickerClass, className)} role="group" aria-label="Date and time picker" {...props}>
+    <div ref={ref} className={dateTimePickerClassName({ className })} role="group" aria-label="Date and time picker" {...props}>
       <div className="ayy-date-time-picker__date">
         <DatePickerGrid
           value={datePart || null}
@@ -1885,7 +1901,7 @@ export const DateTimePickerTrigger = forwardRef<HTMLButtonElement, DateTimePicke
         aria-haspopup="dialog"
         aria-controls={contentId}
         aria-describedby={cx(valueId, describedBy)}
-        className={cx(inputClass({ size }), "ayy-date-time-picker-trigger", className)}
+        className={dateTimePickerTriggerClassName({ size, className })}
         {...props}
       >
         <Icon icon={Calendar03Icon} />

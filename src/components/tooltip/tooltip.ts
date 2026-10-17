@@ -80,13 +80,15 @@ export function enhanceTooltip(host: HTMLElement): () => void {
     hovered = false;
     update();
   };
+  const onPointerUp = () => {
+    pointerDown = false;
+    window.removeEventListener("pointerup", onPointerUp);
+  };
   const onPointerDown = () => {
     pointerDown = true;
     focused = false;
     dismiss();
-  };
-  const onPointerUp = () => {
-    pointerDown = false;
+    window.addEventListener("pointerup", onPointerUp);
   };
   const onFocusIn = (event: FocusEvent) => {
     if (pointerDown) return;
@@ -110,7 +112,6 @@ export function enhanceTooltip(host: HTMLElement): () => void {
   host.addEventListener("pointerenter", onEnter);
   host.addEventListener("pointerleave", onLeave);
   host.addEventListener("pointerdown", onPointerDown);
-  window.addEventListener("pointerup", onPointerUp);
   host.addEventListener("focusin", onFocusIn);
   host.addEventListener("focusout", onFocusOut);
 

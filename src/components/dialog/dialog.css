@@ -279,7 +279,7 @@ dialog.ayy-dialog--side-bottom:not([open]) {
 }
 
 /* A bottom sheet spans a phone edge to edge, whatever its size modifier. */
-@media (max-width: 40rem) {
+@media (max-width: 39.99rem) {
   .ayy-dialog--side-bottom {
     inline-size: 100vw;
   }
@@ -317,9 +317,11 @@ dialog.ayy-dialog--side-bottom:not([open]) {
     color var(--ayy-duration-fast) ease;
 }
 
-.ayy-dialog__close:hover {
-  background-color: var(--ayy-color-wash-hover);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-dialog__close:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-dialog__close:focus-visible {
@@ -328,8 +330,8 @@ dialog.ayy-dialog--side-bottom:not([open]) {
 }
 
 .ayy-dialog__close > svg {
-  inline-size: 1rem;
-  block-size: 1rem;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
 }
 
 @media (forced-colors: active) {

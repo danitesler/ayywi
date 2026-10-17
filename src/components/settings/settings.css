@@ -102,7 +102,8 @@
   max-inline-size: 100%;
 }
 
-.ayy-settings__control > :is(.ayy-select, .ayy-input, .ayy-combobox, .ayy-date-picker) {
+.ayy-settings__control > :is(.ayy-select, .ayy-input, .ayy-combobox, .ayy-date-picker),
+.ayy-settings__control > :is(ayy-combobox, ayy-date-picker) > :is(.ayy-combobox, .ayy-date-picker) {
   min-inline-size: 11rem;
 }
 
@@ -147,8 +148,15 @@
   color: var(--ayy-color-muted);
 }
 
+.ayy-settings__link:disabled,
+.ayy-settings__link[aria-disabled="true"] {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 @media (hover: hover) {
-  .ayy-settings__link:hover {
+  .ayy-settings__link:not(:disabled):not([aria-disabled="true"]):hover {
     background-color: var(--ayy-color-wash);
   }
 }
@@ -182,4 +190,15 @@
 .ayy-settings__link--destructive,
 .ayy-settings__link--destructive .ayy-settings__label {
   color: var(--ayy-color-destructive);
+}
+
+@media (forced-colors: active) {
+  .ayy-settings__link:disabled,
+  .ayy-settings__link[aria-disabled="true"] {
+    color: GrayText;
+  }
+  .ayy-settings__link--destructive,
+  .ayy-settings__link--destructive .ayy-settings__label {
+    color: LinkText;
+  }
 }

@@ -16,7 +16,7 @@ Category: Data display. A keyboard key or shortcut hint drawn as a small keycap:
 - `loading` — doesn't apply: No loading state.
 
 **Sizes**
-- Density — Scales with the text around it (1.6em tall); doesn't follow data-density.
+- Density — Scales with the text around it (1.6em tall); scales when surrounding text uses --ayy-text-s.
 - Width — At least 1.6em wide, grows with the key name.
 
 **React** — `import { Kbd, KeyboardHint } from "@danitesler/ayywi/react";`

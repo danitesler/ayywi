@@ -60,7 +60,7 @@
       },
       "ColorSwatchButton": {
         "renders": "<button type=\"button\" class=\"ayy-swatch\" aria-pressed aria-label>",
-        "props": { "color": "string", "label": "string — required", "pressed": "boolean", "size": "\"sm\" | \"md\" | \"lg\"", "none": "boolean" }
+        "props": { "color": "string", "label": "string — required", "pressed": "boolean", "onPressedChange": "(pressed: boolean) => void", "size": "\"sm\" | \"md\" | \"lg\"", "none": "boolean" }
       },
       "ColorSwatchCustom": {
         "renders": "<label class=\"ayy-swatch ayy-swatch--custom\"><input type=\"color\" aria-label>",

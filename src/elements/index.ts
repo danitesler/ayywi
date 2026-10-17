@@ -60,6 +60,7 @@ export {
   AyyTocElement,
   AyyToolbarElement,
   AyyTooltipElement,
+  copyCodeBlock,
   highlightCodeBlocks,
   syncCodeBlockSelector,
 };
@@ -74,7 +75,10 @@ function onPointerMove(event: PointerEvent): void {
 // Failed avatar images: hide them so the initials underneath show. `error` doesn't bubble, so capture it.
 function onError(event: Event): void {
   const target = event.target as Element | null;
-  if (target instanceof HTMLImageElement && target.classList.contains("ayy-avatar__image")) target.hidden = true;
+  if (target instanceof HTMLImageElement && target.classList.contains("ayy-avatar__image")) {
+    target.setAttribute("data-error", "");
+    target.hidden = true;
+  }
 }
 
 // Sliders fill up to the thumb, custom swatches show their colour, number fields step from their buttons (React's own buttons call preventDefault).
@@ -91,6 +95,16 @@ function onChange(event: Event): void {
   const target = event.target;
   if (target instanceof HTMLSelectElement && target.classList.contains("ayy-code-block__selector")) {
     syncCodeBlockSelector(target);
+  }
+}
+
+function onAyySelect(event: Event): void {
+  const custom = event as CustomEvent<{ value?: string }>;
+  const menu = (event.target as Element | null)?.closest?.("ayy-menu");
+  const selector = menu?.querySelector(".ayy-code-block__selector");
+  if (selector && custom.detail?.value) {
+    const codeBlock = selector.closest<HTMLElement>(".ayy-code-block") ?? undefined;
+    syncCodeBlockSelector(custom.detail.value, codeBlock);
   }
 }
 
@@ -146,6 +160,7 @@ export function defineElements(): void {
     document.addEventListener("error", onError, true);
     document.addEventListener("input", onInput);
     document.addEventListener("change", onChange);
+    document.addEventListener("ayy-select", onAyySelect);
     document.addEventListener("click", onClick);
     document.addEventListener("mousedown", onSelectOpen);
     document.addEventListener("click", onSelectOpen);
@@ -156,7 +171,10 @@ export function defineElements(): void {
     trackDropzones(document);
     // Images that failed before this script ran.
     for (const img of document.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) {
-      if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) img.hidden = true;
+      if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+        img.setAttribute("data-error", "");
+        img.hidden = true;
+      }
     }
     // Controls already on the page: fill sliders from their values, mark number fields at their limits, colour custom swatches.
     for (const slider of document.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
@@ -173,7 +191,18 @@ export function defineElements(): void {
               for (const input of node.querySelectorAll<HTMLInputElement>(".ayy-swatch--custom > input")) syncSwatch(input);
               if (node.matches?.("input.ayy-slider")) syncSlider(node as HTMLInputElement);
               for (const slider of node.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
+              if (node.matches?.(".ayy-number-field")) syncNumberField(node);
               for (const field of node.querySelectorAll(".ayy-number-field")) syncNumberField(field);
+              syncShortcuts(node);
+              highlightCodeBlocks(node);
+              const checkAvatar = (img: HTMLImageElement) => {
+                if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+                  img.setAttribute("data-error", "");
+                  img.hidden = true;
+                }
+              };
+              if (node.matches?.("img.ayy-avatar__image")) checkAvatar(node as HTMLImageElement);
+              for (const img of node.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) checkAvatar(img);
             }
           }
         }

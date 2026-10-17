@@ -24,8 +24,8 @@ export function syncSlider(input: HTMLInputElement): void {
         if (input === low) low.value = high.value;
         else high.value = low.value;
       }
-      // Both thumbs at the top: the upper input would cover the lower one, so lift the lower one to keep it draggable.
-      low.style.zIndex = Number(low.value) >= Number(low.max === "" ? 100 : low.max) ? "1" : "";
+      // Both thumbs at the top or overlapping: the upper input would cover the lower one, so lift the lower one to keep it draggable.
+      low.style.zIndex = Number(low.value) >= Number(high.value) || Number(low.value) >= Number(low.max === "" ? 100 : low.max) ? "1" : "";
       range.style.setProperty("--ayy-from", String(sliderPercent(low)));
       range.style.setProperty("--ayy-to", String(sliderPercent(high)));
       return;

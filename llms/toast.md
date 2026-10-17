@@ -72,7 +72,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 - `<CardToastCorner>` renders div.ayy-toast__corner. Props: `position` "top" | "top-start" | "bottom-start" | "bottom-end"
 - `<CardToastCenter>` renders div.ayy-toast__center. Props: 
 - `<CardToastAction>` renders button.ayy-toast__action. Props: `label` string — accessible name
-- `<CardToastStatus>` renders div.ayy-toast__status. Props: `tone` "default" | "success" | "busy" | "error"; `icon` ReactNode — status icon
+- `<CardToastStatus>` renders div.ayy-toast--inline. Props: `tone` "default" | "success" | "busy" | "error"; `icon` ReactNode — status icon
 
 **Accessibility**
 - The region is aria-live="polite"; destructive toasts use role="alert".
@@ -262,7 +262,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <img class="ayy-toast__image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350' viewBox='0 0 560 350'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23ec4899'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/><rect x='40' y='40' width='480' height='270' rx='12' fill='%23ffffff' fill-opacity='0.15'/><circle cx='80' cy='75' r='8' fill='%23ffffff' fill-opacity='0.6'/><circle cx='105' cy='75' r='8' fill='%23ffffff' fill-opacity='0.4'/><circle cx='130' cy='75' r='8' fill='%23ffffff' fill-opacity='0.4'/><rect x='60' y='110' width='200' height='20' rx='6' fill='%23ffffff' fill-opacity='0.8'/><rect x='60' y='145' width='440' height='12' rx='4' fill='%23ffffff' fill-opacity='0.4'/><rect x='60' y='170' width='380' height='12' rx='4' fill='%23ffffff' fill-opacity='0.4'/><rect x='60' y='210' width='120' height='36' rx='8' fill='%23ffffff' fill-opacity='0.9'/></svg>" alt="Card preview" draggable="false" />
     <div class="ayy-toast__scrim">
       <button type="button" class="ayy-toast__close" aria-label="Dismiss preview" title="Dismiss preview">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"/></svg>
+        <svg class="ayy-icon ayy-icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"/></svg>
       </button>
       <div class="ayy-toast__corner ayy-toast__corner--top-start">
         <button type="button" class="ayy-toast__action" aria-label="Annotate" title="Annotate">
@@ -307,7 +307,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       </div>
     </div>
     <button type="button" class="ayy-toast__close" aria-label="Dismiss preview" title="Dismiss preview">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"/></svg>
+      <svg class="ayy-icon ayy-icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"/></svg>
     </button>
   </div>
 
@@ -486,7 +486,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <img class="ayy-toast__image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350' viewBox='0 0 560 350'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23ec4899'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/><rect x='40' y='40' width='480' height='270' rx='12' fill='%23ffffff' fill-opacity='0.15'/><circle cx='80' cy='75' r='8' fill='%23ffffff' fill-opacity='0.6'/><circle cx='105' cy='75' r='8' fill='%23ffffff' fill-opacity='0.4'/><circle cx='130' cy='75' r='8' fill='%23ffffff' fill-opacity='0.4'/><rect x='60' y='110' width='200' height='20' rx='6' fill='%23ffffff' fill-opacity='0.8'/><rect x='60' y='145' width='440' height='12' rx='4' fill='%23ffffff' fill-opacity='0.4'/><rect x='60' y='170' width='380' height='12' rx='4' fill='%23ffffff' fill-opacity='0.4'/><rect x='60' y='210' width='120' height='36' rx='8' fill='%23ffffff' fill-opacity='0.9'/></svg>" alt="Card preview" draggable="false" />
     <div class="ayy-toast__scrim">
       <button type="button" class="ayy-toast__close" aria-label="Dismiss preview" title="Dismiss preview">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"/></svg>
+        <svg class="ayy-icon ayy-icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"/></svg>
       </button>
       <div class="ayy-toast__corner ayy-toast__corner--top-start">
         <button type="button" class="ayy-toast__action" aria-label="Annotate" title="Annotate">

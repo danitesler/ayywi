@@ -21,7 +21,7 @@
     "variant": { "values": ["default", "muted", "outline", "success", "warning", "destructive", "info", "ai"], "default": "default" }
   },
   "states": {
-    "default": { "looks": "An xs pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static." },
+    "default": { "looks": "An s pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static." },
     "hover": { "none": "A badge is a label, not a control. For a removable filter use a Chip." },
     "pressed": { "none": "A badge is a label, not a control. For a removable filter use a Chip." },
     "focus": { "none": "Not focusable." },
@@ -31,7 +31,7 @@
     "loading": { "none": "No loading look; a pulsing __dot shows a live state, not progress." }
   },
   "sizes": {
-    "density": "Fixed xs text; doesn't follow data-density.",
+    "density": "Text size follows data-density via --ayy-text-s.",
     "width": "Hugs its text, never wraps."
   },
   "js": "badgeClass({ variant?, className? }) → string",

@@ -66,6 +66,11 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     const c = connectCombobox(input.current, listbox.current, {
       filter,
       onSelect: (element) => {
+        if (!element) {
+          if (hidden.current) hidden.current.value = "";
+          handlers.current.onValueChange?.("" as any, null as any);
+          return;
+        }
         const option = handlers.current.list.find((o) => o.value === element.dataset.value);
         if (!option) return;
         if (hidden.current) hidden.current.value = option.value;
@@ -104,7 +109,13 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         autoComplete="off"
         className={cx(inputClass({ size }), className)}
         defaultValue={initial?.label ?? ""}
-        onInput={(event) => handlers.current.onInputChange?.(event.currentTarget.value)}
+        onInput={(event) => {
+          if (!event.currentTarget.value) {
+            if (hidden.current) hidden.current.value = "";
+            handlers.current.onValueChange?.("" as any, null as any);
+          }
+          handlers.current.onInputChange?.(event.currentTarget.value);
+        }}
         {...props}
       />
       <Icon icon={ArrowDown01Icon} />

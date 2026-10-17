@@ -11,6 +11,8 @@ import {
   showcaseViewportClass,
 } from "./showcase";
 
+export type { ShowcaseDevice };
+
 export interface ShowcaseProps extends HTMLAttributes<HTMLElement> {
   device?: ShowcaseDevice;
 }

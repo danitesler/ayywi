@@ -17,13 +17,10 @@ const HOSTED: Record<string, string> = {
   "dist/elements.global.js": "../dist/elements.global.js",
   "dist/fonts.css": "../dist/fonts.css",
   "dist/theme-init.js": "../dist/theme-init.js",
-  "dist/shadcn.css": "../dist/shadcn.css",
   "llms.txt": "../llms.txt",
   "llms-full.txt": "../llms-full.txt",
   "manifest/components.json": "../manifest/components.json",
   "tokens/tokens.json": "../tokens/tokens.json",
-  "tailwind/theme.css": "../tailwind/theme.css",
-  "tailwind/preset.cjs": "../tailwind/preset.cjs",
   "ai/AGENTS.snippet.md": "../ai/AGENTS.snippet.md",
   "ai/skills/ayywi/SKILL.md": "../ai/skills/ayywi/SKILL.md",
   "ai/skills/ayywi/reference.md": "../ai/skills/ayywi/reference.md",
@@ -33,7 +30,7 @@ const HOSTED: Record<string, string> = {
 const HOSTED_DIRS: Record<string, string> = { "dist/fonts": "../dist/fonts", llms: "../llms" };
 
 /** What an app downloads at run time. Each build also publishes these under v/<release>/, a path whose files never change. */
-const isRuntime = (path: string) => /^dist\/(ayywi(\.min)?\.css|elements\.global\.js|fonts\.css|theme-init\.js|shadcn\.css|fonts\/.+)$/.test(path);
+const isRuntime = (path: string) => /^dist\/(ayywi(\.min)?\.css|elements\.global\.js|fonts\.css|theme-init\.js|fonts\/.+)$/.test(path);
 
 function hosted(): Record<string, string> {
   const files = { ...HOSTED };

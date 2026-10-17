@@ -20,6 +20,13 @@ import {
   PopoverTrigger,
   SegmentedControl,
   SegmentedControlItem,
+  Showcase as AyyShowcase,
+  ShowcaseActions,
+  ShowcaseBody,
+  ShowcaseHeader,
+  ShowcaseStage,
+  ShowcaseTitle,
+  ShowcaseViewport,
   Tabs,
   TabsContent,
   TabsList,
@@ -41,7 +48,7 @@ const DEVICES = [
 
 function HtmlStage({ html }: { html: string }) {
   // <ayy-*> elements upgrade themselves on insertion, exactly like a server-rendered page.
-  return <div className="pv-stage__inner" dangerouslySetInnerHTML={{ __html: html }} />;
+  return <ShowcaseBody className="pv-stage__inner" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 /** In-page anchors in examples (contents links, "#work") scroll to their target instead of changing the preview's route. */
@@ -84,7 +91,7 @@ function DeviceIframe({
       const root = document.documentElement;
       const target = doc.documentElement;
       target.className = root.className;
-      for (const attr of ["data-theme", "data-density", "dir", "lang"]) {
+      for (const attr of ["data-theme", "data-density", "data-brand", "dir", "lang"]) {
         const val = root.getAttribute(attr);
         if (val !== null) target.setAttribute(attr, val);
         else target.removeAttribute(attr);
@@ -112,10 +119,36 @@ function DeviceIframe({
     };
     syncStyles();
 
+    const syncBrandStyle = () => {
+      const brandStyle = document.head.querySelector<HTMLStyleElement>("style[data-ayy-brand]");
+      let iframeBrandStyle = doc.head.querySelector<HTMLStyleElement>("style[data-ayy-brand]");
+      if (brandStyle) {
+        if (!iframeBrandStyle) {
+          iframeBrandStyle = doc.createElement("style");
+          iframeBrandStyle.setAttribute("data-ayy-brand", brandStyle.getAttribute("data-ayy-brand") ?? "");
+          doc.head.appendChild(iframeBrandStyle);
+        } else {
+          iframeBrandStyle.setAttribute("data-ayy-brand", brandStyle.getAttribute("data-ayy-brand") ?? "");
+        }
+        iframeBrandStyle.textContent = brandStyle.textContent;
+      } else if (iframeBrandStyle) {
+        iframeBrandStyle.remove();
+      }
+    };
+    syncBrandStyle();
+
     const observer = new MutationObserver(syncAttrs);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class", "data-theme", "data-density", "dir", "lang"],
+      attributeFilter: ["class", "data-theme", "data-density", "data-brand", "dir", "lang"],
+    });
+
+    const brandObserver = new MutationObserver(syncBrandStyle);
+    brandObserver.observe(document.head, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
     });
 
     const updateHeight = () => {
@@ -133,6 +166,7 @@ function DeviceIframe({
 
     return () => {
       observer.disconnect();
+      brandObserver.disconnect();
       ro.disconnect();
     };
   }, [minHeight]);
@@ -236,29 +270,29 @@ export function Showcase({
   };
 
   const isNarrowScreen = typeof window !== "undefined" && window.matchMedia("(max-width: 48rem)").matches;
-  const useIframe = isResponsive && activeDevice === "mobile" && !isNarrowScreen;
+  const useIframe = renderer === "react" && isResponsive && activeDevice === "mobile" && !isNarrowScreen;
 
   const stageContent = showHtml ? (
     <HtmlStage key={example.id} html={example.htmlSource} />
   ) : (
-    <div className="pv-stage__inner">
+    <ShowcaseBody className="pv-stage__inner">
       {Component ? (
         (() => {
           const Comp = Component as any;
           return <Comp device={activeDevice} onDeviceChange={chooseDevice} setControls={handleSetControls} />;
         })()
       ) : null}
-    </div>
+    </ShowcaseBody>
   );
 
   return (
-    <section className="pv-example" aria-labelledby={`ex-${example.id}`} data-device={activeDevice}>
-      <div className="pv-example__header">
-        <h3 className="pv-example__title" id={`ex-${example.id}`}>
+    <AyyShowcase className="pv-example" aria-labelledby={`ex-${example.id}`} device={activeDevice}>
+      <ShowcaseHeader className="pv-example__header">
+        <ShowcaseTitle className="pv-example__title" id={`ex-${example.id}`}>
           {example.title}
-        </h3>
+        </ShowcaseTitle>
 
-        <div className="pv-example__actions">
+        <ShowcaseActions className="pv-example__actions">
           {/* Device tabs (shown only if the component has responsive layouts) */}
           {isResponsive ? (
             <SegmentedControl
@@ -333,17 +367,16 @@ export function Showcase({
               </Tabs>
             </PopoverContent>
           </Popover>
-        </div>
-      </div>
+        </ShowcaseActions>
+      </ShowcaseHeader>
 
       {/* ayywi-lint-disable-next-line -- not an action: it catches in-page links inside the example */}
-      <div
+      <ShowcaseStage
         className="pv-stage"
-        data-device={activeDevice}
         data-renderer={showHtml ? "html" : "react"}
         onClick={onStageClick}
       >
-        <div className="pv-stage__viewport" data-device={activeDevice}>
+        <ShowcaseViewport className="pv-stage__viewport" device={activeDevice}>
           {useIframe ? (
             <DeviceIframe
               title={`${example.title} (${activeDevice})`}
@@ -354,9 +387,9 @@ export function Showcase({
           ) : (
             stageContent
           )}
-        </div>
-      </div>
-    </section>
+        </ShowcaseViewport>
+      </ShowcaseStage>
+    </AyyShowcase>
   );
 }
 

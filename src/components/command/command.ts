@@ -15,6 +15,8 @@ export interface CommandControllerOptions {
   onSelect?: (item: HTMLElement) => void;
   /** Hide items that don't match the typed text. Default true; false when you filter them yourself (a search API). */
   filter?: boolean;
+  /** Called when the search query changes, including when reset() clears it. */
+  onSearchChange?: (text: string) => void;
 }
 
 export interface CommandController {
@@ -195,28 +197,50 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
   const applyFilter = () => {
     initOrder();
     const query = input.value.trim();
+    const isReact =
+      Object.keys(root).some((k) => k.startsWith("__reactFiber") || k.startsWith("__reactProps")) ||
+      Object.keys(list).some((k) => k.startsWith("__reactFiber") || k.startsWith("__reactProps"));
 
     if (!filter || !query) {
-      // Restore initial order when empty
-      const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
-      groups.sort((a, b) => (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0));
-      for (const group of groups) {
-        list.appendChild(group);
-        const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
-        items.sort((a, b) => (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0));
-        for (const item of items) {
+      if (!isReact) {
+        // Restore initial order when empty
+        const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
+        groups.sort((a, b) => (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0));
+        for (const group of groups) {
+          list.appendChild(group);
+          const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
+          items.sort((a, b) => (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0));
+          for (const item of items) {
+            ensureId(item, "ayy-command-item");
+            item.setAttribute("role", "option");
+            item.hidden = false;
+            group.appendChild(item);
+          }
+          group.hidden = false;
+        }
+        const directItems = Array.from(list.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`));
+        directItems.sort((a, b) => (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0));
+        for (const item of directItems) {
           ensureId(item, "ayy-command-item");
           item.setAttribute("role", "option");
           item.hidden = false;
-          group.appendChild(item);
+          list.appendChild(item);
         }
-        group.hidden = false;
+      } else {
+        for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
+          group.hidden = false;
+        }
+        for (const item of all()) {
+          ensureId(item, "ayy-command-item");
+          item.setAttribute("role", "option");
+          item.hidden = false;
+        }
       }
       for (const item of all()) item.hidden = false;
       const empty = list.querySelector<HTMLElement>(".ayy-command__empty");
       if (empty) {
         empty.hidden = true;
-        list.appendChild(empty);
+        if (!isReact) list.appendChild(empty);
       }
       return;
     }
@@ -235,35 +259,51 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
       if (!item.hidden) shown++;
     }
 
-    const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
-    for (const group of groups) {
-      const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
-      items.sort((a, b) => {
+    if (!isReact) {
+      const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
+      for (const group of groups) {
+        const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
+        items.sort((a, b) => {
+          const diff = (itemScores.get(b) ?? 0) - (itemScores.get(a) ?? 0);
+          if (diff !== 0) return diff;
+          return (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0);
+        });
+        for (const item of items) group.appendChild(item);
+
+        const visibleInGroup = items.filter((o) => !o.hidden);
+        group.hidden = visibleInGroup.length === 0;
+        const maxScore = visibleInGroup.reduce((m, o) => Math.max(m, itemScores.get(o) ?? 0), 0);
+        groupScores.set(group, maxScore);
+      }
+
+      // Reorder groups by their highest score so groups with title matches float to top
+      groups.sort((a, b) => {
+        const diff = (groupScores.get(b) ?? 0) - (groupScores.get(a) ?? 0);
+        if (diff !== 0) return diff;
+        return (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0);
+      });
+
+      for (const group of groups) list.appendChild(group);
+
+      const directItems = Array.from(list.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`));
+      directItems.sort((a, b) => {
         const diff = (itemScores.get(b) ?? 0) - (itemScores.get(a) ?? 0);
         if (diff !== 0) return diff;
         return (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0);
       });
-      for (const item of items) group.appendChild(item);
-
-      const visibleInGroup = items.filter((o) => !o.hidden);
-      group.hidden = visibleInGroup.length === 0;
-      const maxScore = visibleInGroup.reduce((m, o) => Math.max(m, itemScores.get(o) ?? 0), 0);
-      groupScores.set(group, maxScore);
+      for (const item of directItems) list.appendChild(item);
+    } else {
+      for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
+        const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
+        const visibleInGroup = items.filter((o) => !o.hidden);
+        group.hidden = visibleInGroup.length === 0;
+      }
     }
-
-    // Reorder groups by their highest score so groups with title matches float to top
-    groups.sort((a, b) => {
-      const diff = (groupScores.get(b) ?? 0) - (groupScores.get(a) ?? 0);
-      if (diff !== 0) return diff;
-      return (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0);
-    });
-
-    for (const group of groups) list.appendChild(group);
 
     const empty = list.querySelector<HTMLElement>(".ayy-command__empty");
     if (empty) {
       empty.hidden = shown > 0;
-      list.appendChild(empty);
+      if (!isReact) list.appendChild(empty);
     }
   };
 
@@ -288,6 +328,7 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
   const onInput = () => {
     applyFilter();
     setActive(visible()[0] ?? null);
+    options.onSearchChange?.(input.value);
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -341,6 +382,8 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
     applyFilter();
     setActive(visible()[0] ?? null);
     list!.scrollTop = 0;
+    options.onSearchChange?.("");
+    input!.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
   input.addEventListener("input", onInput);

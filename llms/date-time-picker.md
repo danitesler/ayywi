@@ -85,9 +85,11 @@ Category: Forms. Pick a single date, date range, time, or combined date and time
 - event `ayy-select`: { value } when a selection is made.
 
 **Custom element** `<ayy-date-range>` (@danitesler/ayywi/elements) — 
-- attribute `value`: The picked range: start and end ISO dates.
+- attribute `start`: Range start ISO date.
+- attribute `end`: Range end ISO date.
 - attribute `min`: Earliest pickable ISO date.
 - attribute `max`: Latest pickable ISO date.
+- attribute `months`: Number of months to show side-by-side (default 2).
 - event `ayy-select`: { value } when a range is picked.
 
 **Custom element** `<ayy-time-picker>` (@danitesler/ayywi/elements) — 
@@ -102,6 +104,7 @@ Category: Forms. Pick a single date, date range, time, or combined date and time
 - attribute `max`: Latest pickable ISO date.
 - attribute `format`: "12h" | "24h" — time format.
 - attribute `step`: Minute step between items.
+- attribute `week-start`: Weekday index (0=Sun, 1=Mon, 6=Sat) to start weeks on.
 - event `ayy-select`: { value } when date or time changes.
 
 **React** — `import { DatePicker, DatePickerGrid, DateRangePicker, DateRange, TimePicker, TimePickerTrigger, DateTimePicker, DateTimePickerTrigger } from "@danitesler/ayywi/react";`

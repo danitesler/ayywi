@@ -13,15 +13,16 @@
 .ayy-skeleton::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  inline-size: 100%;
   background-image: linear-gradient(
     90deg,
     transparent,
     color-mix(in srgb, var(--ayy-color-text) 7%, transparent),
     transparent
   );
-  transform: translateX(-100%);
-  animation: ayy-shimmer 1.6s var(--ayy-ease-standard) infinite;
+  inset-inline-start: -100%;
+  animation: ayy-shimmer calc(var(--ayy-duration-slower) * 2.5) var(--ayy-ease-standard) infinite;
 }
 
 .ayy-skeleton--text {
@@ -38,7 +39,7 @@
 
 @keyframes ayy-shimmer {
   to {
-    transform: translateX(100%);
+    inset-inline-start: 100%;
   }
 }
 

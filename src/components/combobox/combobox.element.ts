@@ -17,12 +17,12 @@ export class AyyComboboxElement extends ElementBase {
     this.#controller = connectCombobox(input, listbox, {
       filter: !this.hasAttribute("manual"),
       onSelect: (option) => {
-        const label = comboboxOptionLabel(option);
-        const value = option.dataset.value ?? label;
+        const label = option ? comboboxOptionLabel(option) : "";
+        const value = option ? (option.dataset.value ?? label) : "";
         // A hidden input carries the value in forms (the visible one shows the label).
         const field = this.querySelector<HTMLInputElement>("input[type='hidden']");
         if (field) field.value = value;
-        emit(this, "ayy-select", { value, label, option });
+        emit(this, "ayy-select", { value, label, option: option ?? null });
       },
     });
   }

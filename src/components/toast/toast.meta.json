@@ -64,7 +64,7 @@
     "density": "Doesn't follow data-density.",
     "width": "min(22rem, viewport minus 2rem) or min(28rem, viewport minus 2rem) for long text toasts, stacked in the corner given by position; card toasts are min(17.5rem, 100%)."
   },
-  "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, copyable?, copyText?, id? }) → { id, dismiss }; toast.success/warning/error/info/long(message, options); toast.card(options) → { id, dismiss, status }; toast.copy(text, options); cardToast(options); inlineToastClass(options); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel?, clearLabel? }); toastClass({ variant? })",
+  "js": "toast(message, { description?, variant?, duration?, action?: { label, onClick }, copyable?, copyText?, id? }) → { id, dismiss }; toast.success/warning/error/info/long(message, options); toast.card(options) → { id, dismiss, status }; toast.copy(text, options); cardToast(options); inlineToastClass({ tone?, className? }); toast.dismiss(id?); configureToaster({ position?, label?, closeLabel?, clearLabel? }); toastClass({ variant?, className? })",
   "react": {
     "import": "import { toast, Toaster, NotificationToast, Toast, InlineToast, CardToast, CardToastThumb, CardToastBackdrop, CardToastImage, CardToastMedia, CardToastScrim, CardToastClose, CardToastCorner, CardToastCenter, CardToastAction, CardToastStatus } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -151,7 +151,7 @@
         }
       },
       "CardToastStatus": {
-        "renders": "div.ayy-toast__status",
+        "renders": "div.ayy-toast--inline",
         "props": {
           "tone": "\"default\" | \"success\" | \"busy\" | \"error\"",
           "icon": "ReactNode — status icon"

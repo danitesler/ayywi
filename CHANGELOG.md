@@ -152,6 +152,14 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Selecting Mobile on desktop viewports did not trigger media-query based phone layouts → responsive components render inside a device iframe when switching to mobile on wide viewports.
 - **Preview**
   Brand menu in Appearance settings had custom item misaligned and missing active indicator → indented Custom submenu trigger to align with presets and rendered checkmark when custom color is active.
+- **[Linter](#/cli)**
+  Private `--_*` custom property overrides in app CSS were not checked on general selectors → flagged across all app stylesheets.
+- **[MCP Server](#/cli)**
+  Only supported single `<ayy-*>` elements per component → added multi-element support and alias search for all component elements.
+- **React exports**
+  Several component prop types were missing from `@danitesler/ayywi/react` → exported all component `*Props` types.
+- **Build & Quality Gates**
+  Manual checks allowed external library drift and unlayered `@layer` leakage → permanent guardrails enforce zero external library mentions, multi-element documentation parity, class options sync, no unwrapped hover transforms, and pure unlayered CSS.
 
 ### Changed
 - **[Toast](#/toast)**
@@ -188,6 +196,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   `--ayy-control-text-sm` base value was 11px (`0.6875rem`) → 12px (`0.75rem`), eliminating all 11px font usage in compact density.
 
 ### Removed
+- **Tailwind preset** (**Breaking**)
+  `./tailwind-preset` and `./tailwind.css` exports removed → use native ayywi tokens and classes instead.
+- **shadcn layer** (**Breaking**)
+  `./shadcn.css` export removed → use native ayywi classes and custom properties directly.
 - **[Input](#/input)**
   Redundant native date and time picker examples removed → use [Date & time picker](#/date-time-picker).
 - **Tokens** (**Breaking**)

@@ -49,13 +49,13 @@ export default function Example() {
             value={device}
             onValueChange={(v) => setDevice(v as ShowcaseDevice)}
           >
-            <SegmentedControlItem value="desktop" title="Desktop">
+            <SegmentedControlItem value="desktop" title="Desktop" aria-label="Desktop">
               <Icon icon={ComputerIcon} />
             </SegmentedControlItem>
-            <SegmentedControlItem value="tablet" title="Tablet">
+            <SegmentedControlItem value="tablet" title="Tablet" aria-label="Tablet">
               <Icon icon={Tablet01Icon} />
             </SegmentedControlItem>
-            <SegmentedControlItem value="mobile" title="Mobile">
+            <SegmentedControlItem value="mobile" title="Mobile" aria-label="Mobile">
               <Icon icon={SmartPhone01Icon} />
             </SegmentedControlItem>
           </SegmentedControl>
@@ -76,21 +76,15 @@ export default function Example() {
                 style={{ "--ayy-gap": "var(--ayy-space-3)" } as CSSProperties}
               >
                 <div className="ayy-spread">
-                  <Label htmlFor="sc-badge" style={{ fontSize: "var(--ayy-text-sm)", cursor: "pointer" }}>
-                    Live badge
-                  </Label>
+                  <Label htmlFor="sc-badge">Live badge</Label>
                   <Switch id="sc-badge" checked={showBadge} onCheckedChange={setShowBadge} />
                 </div>
                 <div className="ayy-spread">
-                  <Label htmlFor="sc-desc" style={{ fontSize: "var(--ayy-text-sm)", cursor: "pointer" }}>
-                    Description
-                  </Label>
+                  <Label htmlFor="sc-desc">Description</Label>
                   <Switch id="sc-desc" checked={showDescription} onCheckedChange={setShowDescription} />
                 </div>
                 <div className="ayy-spread">
-                  <Label htmlFor="sc-footer" style={{ fontSize: "var(--ayy-text-sm)", cursor: "pointer" }}>
-                    Footer
-                  </Label>
+                  <Label htmlFor="sc-footer">Footer</Label>
                   <Switch id="sc-footer" checked={showFooter} onCheckedChange={setShowFooter} />
                 </div>
               </div>

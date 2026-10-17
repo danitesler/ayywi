@@ -15,7 +15,7 @@ Category: Data display. Small pill label for status, category or count. Optional
 - `.ayy-badge__dot--static` — Dot without the pulse.
 
 **States**
-- `default` — An xs pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static.
+- `default` — An s pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static.
 - `hover` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
 - `pressed` — doesn't apply: A badge is a label, not a control. For a removable filter use a Chip.
 - `focus` — doesn't apply: Not focusable.
@@ -25,7 +25,7 @@ Category: Data display. Small pill label for status, category or count. Optional
 - `loading` — doesn't apply: No loading look; a pulsing __dot shows a live state, not progress.
 
 **Sizes**
-- Density — Fixed xs text; doesn't follow data-density.
+- Density — Text size follows data-density via --ayy-text-s.
 - Width — Hugs its text, never wraps.
 
 **React** — `import { Badge } from "@danitesler/ayywi/react";`

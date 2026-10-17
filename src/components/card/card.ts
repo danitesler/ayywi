@@ -14,6 +14,14 @@ export function cardClass({ interactive, spotlight, featured, className }: CardC
   return cx("ayy-card", interactive && "ayy-card--interactive", spotlight && "ayy-card--spotlight", featured && "ayy-card--featured", className);
 }
 
+export const cardHeaderClass = "ayy-card__header";
+export const cardTitleClass = "ayy-card__title";
+export const cardDescriptionClass = "ayy-card__description";
+export const cardContentClass = "ayy-card__content";
+export const cardFooterClass = "ayy-card__footer";
+export const cardMediaClass = "ayy-card__media";
+export const cardLinkClass = "ayy-card__link";
+
 /** Pointer handler that feeds the spotlight. Framework-free: attach to pointermove on the card. */
 export function trackSpotlight(event: { currentTarget: EventTarget | null; clientX: number; clientY: number }): void {
   const el = event.currentTarget as HTMLElement | null;

@@ -30,14 +30,18 @@ interface CommandPartsProps {
 function CommandParts({ label = "Search commands", placeholder = "Type a command or search…", emptyText = "No results", footer, filter = true, onSearchChange, onRun, inputProps, autoFocus, children }: CommandPartsProps) {
   const search = useRef<HTMLDivElement>(null);
   const controller = useRef<CommandController | null>(null);
-  const handlers = useRef({ onRun });
-  handlers.current = { onRun };
+  const handlers = useRef({ onRun, onSearchChange });
+  handlers.current = { onRun, onSearchChange };
   const listId = useId();
 
   useEffect(() => {
     const root = search.current?.parentElement;
     if (!root) return;
-    const c = connectCommand(root, { filter, onSelect: (item) => handlers.current.onRun?.(item.dataset.value) });
+    const c = connectCommand(root, {
+      filter,
+      onSelect: (item) => handlers.current.onRun?.(item.dataset.value),
+      onSearchChange: (text) => handlers.current.onSearchChange?.(text),
+    });
     controller.current = c;
     return () => {
       c.destroy();
@@ -139,7 +143,10 @@ export interface CommandDialogProps {
 }
 
 /** The palette in a modal dialog near the top of the screen, opened with ⌘K. Running an item closes it. */
-export function CommandDialog({ open: controlled, defaultOpen = false, onOpenChange, shortcut = "Mod+K", className, onRun, ...parts }: CommandDialogProps) {
+export const CommandDialog = forwardRef<HTMLDialogElement, CommandDialogProps>(function CommandDialog(
+  { open: controlled, defaultOpen = false, onOpenChange, shortcut = "Mod+K", className, onRun, ...parts },
+  ref,
+) {
   const [uncontrolled, setUncontrolled] = useState(defaultOpen);
   const open = controlled ?? uncontrolled;
   const state = useRef({ open, onOpenChange, controlled });
@@ -148,6 +155,15 @@ export function CommandDialog({ open: controlled, defaultOpen = false, onOpenCha
     if (state.current.controlled === undefined) setUncontrolled(next);
     state.current.onOpenChange?.(next);
   };
+
+  const [mountKey, setMountKey] = useState(0);
+  const prevOpen = useRef(open);
+  useEffect(() => {
+    if (prevOpen.current !== open) {
+      prevOpen.current = open;
+      setMountKey((k) => k + 1);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!shortcut) return;
@@ -163,8 +179,15 @@ export function CommandDialog({ open: controlled, defaultOpen = false, onOpenCha
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className={cx("ayy-command", className)} hideClose aria-labelledby={undefined} aria-label={parts.label ?? "Search commands"}>
+      <DialogContent
+        ref={ref}
+        className={cx("ayy-command", className)}
+        hideClose
+        aria-labelledby={undefined}
+        aria-label={parts.label ?? "Search commands"}
+      >
         <CommandParts
+          key={mountKey}
           {...parts}
           autoFocus
           onRun={(value) => {
@@ -175,7 +198,7 @@ export function CommandDialog({ open: controlled, defaultOpen = false, onOpenCha
       </DialogContent>
     </Dialog>
   );
-}
+});
 
 export interface CommandGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   /** The group's name, shown above its items ("Tasks", "Go to"). */

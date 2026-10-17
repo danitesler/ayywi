@@ -32,13 +32,20 @@ export const UTILITIES = {
   "ayy-h5": "Heading 5 style (18px).",
   "ayy-h6": "Heading 6 style (16px, semibold).",
   "ayy-lede": "Intro paragraph, 18px soft text.",
+  "ayy-lead": "Intro paragraph (alias of .ayy-lede), 18px soft text.",
+  "ayy-body": "Body paragraph style (14px).",
+  "ayy-small": "Small text style (13px).",
+  "ayy-xs": "Extra-small text style (12px).",
   "ayy-muted": "Muted text colour.",
+  "ayy-faint": "Soft text colour (var(--ayy-color-text-soft)).",
   "ayy-eyebrow": "Small uppercase label above a heading.",
   "ayy-signature": "Handwritten accent font.",
   "ayy-mono": "Monospace font.",
+  "ayy-tabular": "Tabular numbers (tabular-nums font variant).",
   "ayy-display": "Hero title: heading font at the fluid display size (44px on a phone to 200px), tight leading.",
   "ayy-text-outline": "Hollow letters stroked in the text colour. For big display words and numbers; combine with .ayy-muted to dim.",
   "ayy-accent-text": "Text in the local accent (--ayy-spot), darkened on light themes so accent tokens keep 4.5:1.",
+  "ayy-gradient-text": "Text clipped to a gradient from text colour to accent/soft text.",
   "ayy-link": "Inline text link: underlined, text colour, focus ring.",
   "ayy-text-highlight": "Subtle inline text highlight with clean underline. Mark elements take this by default.",
   "ayy-prose": "Long-form reading (articles, case studies): 18px soft text at a readable measure; styles the headings, lists, links, quotes, code and images inside.",
@@ -48,8 +55,17 @@ export const UTILITIES = {
   "ayy-cluster": "Wrapping horizontal row; gap via --ayy-gap (default 8px).",
   "ayy-spread": "Wrapping row with its items pushed to both ends: a title and its meta, a label and a value, a toolbar's filters and actions. Gap via --ayy-gap (default 8px).",
   "ayy-split": "Main content (first child) and an aside (last child) side by side; the aside drops below once the main would be narrower than 60%. Aside width via --ayy-min (default 18rem). No media query, so it adapts to the box it's in.",
+  "ayy-center": "Centered layout container aligning items horizontally and vertically.",
+  "ayy-bleed": "Bleeds out into container gutter by negative gap margin.",
+  "ayy-divider": "Hairline horizontal divider.",
+  "ayy-surface": "Surface background container with default text color.",
+  "ayy-glass": "Translucent frosted-glass backdrop with blur.",
+  "ayy-dot-grid": "Decorative ambient dot grid pattern.",
+  "ayy-glow": "Glow box shadow on featured cards or elements.",
   "ayy-sr-only": "Visually hidden, still read by screen readers.",
   "ayy-truncate": "One line, cut with an ellipsis (also inside a flex row).",
+  "ayy-clamp-2": "Multi-line text clamp to 2 lines with ellipsis.",
+  "ayy-clamp-3": "Multi-line text clamp to 3 lines with ellipsis.",
   "ayy-scroll": "Thin, quiet scrollbars on a scroll container.",
   "ayy-skip-link": "\"Skip to content\" link: hidden above the viewport until it gets keyboard focus. Make it the first thing in <body>.",
   "ayy-bg-grid": "Decorative ambient grid behind a hero or closing section, fading out towards the edges. Sets position: relative.",
@@ -68,8 +84,8 @@ export const CATEGORIES = {
   "Data display": "Values, people and records.",
 };
 
-/** Component order within a category (categories themselves follow CATEGORIES), for the manifest, llms files and preview.
-    Unlisted slugs sort last, alphabetically. */
+/** Component order within a category (categories themselves follow CATEGORIES), for the manifest and llms*.txt
+    (the preview sidebar sorts each category alphabetically). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
   "button", "toolbar", "action-bar", "menu", "command", "fab",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc",
@@ -101,14 +117,14 @@ export const PATTERNS = [
       "Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.",
     ],
     phone: [
-      "Below 48rem the settings shell is two screens, picked by aria-current: the dialog fills the screen and the settings shell is two screens, picked by aria-current: with no section current, the sidebar is the screen (a large \"Settings\" title, the sections as rows with chevrons); with one current, the section fills it and its TopBar's back returns to the list. Move focus to the section when it opens and back to its link when it closes.",
+      "Below 48rem the dialog fills the screen and the settings shell is two screens, picked by aria-current: with no section current, the sidebar is the screen (a large \"Settings\" title, the sections as rows with chevrons); with one current, the section fills it and its TopBar's back returns to the list. Move focus to the section when it opens and back to its link when it closes.",
       "Settings rows wrap the control under the label when there isn't room; never shrink a control below its size.",
       "For a choice with more than five options on a phone, use a SettingsLink with the current value that opens a sub-page with a radio list, instead of a long Select.",
       "Touch density (data-density=\"touch\") raises sidebar items and rows to 52px; nothing is sized by hand.",
     ],
     specs: {
       "Sidebar item (.ayy-app-shell__link, in the app and in settings)":
-        "--ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-3, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current=\"page\"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-0-5 apart. Groups: an uppercase --ayy-text-xs label, and a hairline plus --ayy-space-3 above every group after the first.",
+        "--ayy-size-control-lg high (40px compact, 48px comfortable, 52px touch), padding-inline --ayy-space-3, a --ayy-size-icon-md (20px) icon then --ayy-space-2, --ayy-control-text-lg, medium weight, --ayy-radius-pill. Muted text; hover: --ayy-color-wash and the text colour; current (aria-current=\"page\"): --ayy-color-wash-hover, the text colour, semibold. Items --ayy-space-0-5 apart. Groups: an uppercase --ayy-text-s label, and a hairline with --ayy-space-4 margin and --ayy-space-5 padding above every group after the first.",
       "Settings group (.ayy-settings)":
         "A <section> labelled by its <h2> (--ayy-text-md, semibold), an optional muted --ayy-text-sm description, then the rows in a card: a 1px --ayy-color-line border, --ayy-radius-card, --ayy-color-surface. Groups are --ayy-space-6 apart. .ayy-settings--plain (no card) only in a sheet or dialog that already has a surface.",
       "Settings row (.ayy-settings__row)":

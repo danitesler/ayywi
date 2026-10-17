@@ -14,22 +14,28 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(function E
   return <div ref={ref} className={emptyStateClass({ bordered, compact, className })} {...props} />;
 });
 
+export interface EmptyStateTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
+
 /** An <h2>. For another level, put className="ayy-empty-state__title" on your own heading. */
-export const EmptyStateTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(function EmptyStateTitle(
+export const EmptyStateTitle = forwardRef<HTMLHeadingElement, EmptyStateTitleProps>(function EmptyStateTitle(
   { className, ...props },
   ref,
 ) {
   return <h2 ref={ref} className={cx(emptyStateTitleClass, className)} {...props} />;
 });
 
-export const EmptyStateDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function EmptyStateDescription(
+export interface EmptyStateDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const EmptyStateDescription = forwardRef<HTMLParagraphElement, EmptyStateDescriptionProps>(function EmptyStateDescription(
   { className, ...props },
   ref,
 ) {
   return <p ref={ref} className={cx(emptyStateDescriptionClass, className)} {...props} />;
 });
 
-export const EmptyStateActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function EmptyStateActions(
+export interface EmptyStateActionsProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const EmptyStateActions = forwardRef<HTMLDivElement, EmptyStateActionsProps>(function EmptyStateActions(
   { className, ...props },
   ref,
 ) {

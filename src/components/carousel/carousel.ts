@@ -37,16 +37,19 @@ export function connectCarousel(root: HTMLElement): () => void {
     for (const button of root.querySelectorAll<HTMLElement>("[data-ayy-next]")) button.setAttribute("aria-disabled", String(position >= max - 1));
   };
 
+  const doc = root.ownerDocument;
+  const win = doc.defaultView ?? window;
+
   const schedule = () => {
-    if (!frame) frame = requestAnimationFrame(update);
+    if (!frame) frame = win.requestAnimationFrame(update);
   };
 
   const step = (direction: 1 | -1) => {
     const slide = slides()[0];
-    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const gap = parseFloat(win.getComputedStyle(track).columnGap) || 0;
     const amount = slide ? slide.offsetWidth + gap : track.clientWidth * 0.8;
-    const rtl = getComputedStyle(track).direction === "rtl";
-    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const rtl = win.getComputedStyle(track).direction === "rtl";
+    const smooth = !win.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
     track.scrollBy({ left: (rtl ? -1 : 1) * direction * amount, behavior: smooth ? "smooth" : "auto" });
   };
 
@@ -69,7 +72,7 @@ export function connectCarousel(root: HTMLElement): () => void {
   update();
 
   return () => {
-    cancelAnimationFrame(frame);
+    win.cancelAnimationFrame(frame);
     resize?.disconnect();
     mutations.disconnect();
     root.removeEventListener("click", onClick);

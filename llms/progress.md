@@ -100,8 +100,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     </div>
   </div>
   <div class="ayy-card__content">
-    <div class="ayy-stack" style="gap: 1rem">
-      <div class="ayy-stack" style="gap: 0.375rem">
+    <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1-5)">
         <div class="ayy-spread">
           <span id="task-export-label-html">Customer records</span>
           <span class="ayy-muted ayy-mono">68%</span>
@@ -115,7 +115,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         </div>
       </div>
 
-      <div class="ayy-stack" style="gap: 0.375rem">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1-5)">
         <div class="ayy-spread">
           <span id="task-backup-label-html">Database backup</span>
           <span class="ayy-muted ayy-mono">100%</span>
@@ -126,7 +126,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">Complete · Saved to cold storage</p>
       </div>
 
-      <div class="ayy-stack" style="gap: 0.375rem">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1-5)">
         <div class="ayy-spread">
           <span id="task-ai-label-html">AI summary</span>
           <span class="ayy-muted">In progress</span>
@@ -156,8 +156,8 @@ export default function Example() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="ayy-stack" style={{ gap: "1rem" }}>
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+        <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as any}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="task-export-label">Customer records</span>
               <span className="ayy-muted ayy-mono">68%</span>
@@ -169,7 +169,7 @@ export default function Example() {
             </div>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="task-backup-label">Database backup</span>
               <span className="ayy-muted ayy-mono">100%</span>
@@ -180,7 +180,7 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="task-ai-label">AI summary</span>
               <span className="ayy-muted">In progress</span>
@@ -208,8 +208,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <p class="ayy-card__description">Resets in 12 days on November 1.</p>
   </div>
   <div class="ayy-card__content">
-    <div class="ayy-stack" style="gap: 1rem">
-      <div class="ayy-stack" style="gap: 0.375rem">
+    <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-4)">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1-5)">
         <div class="ayy-spread">
           <span id="meter-storage-html">Cloud storage</span>
           <span class="ayy-muted ayy-mono">18.4 / 20 GB</span>
@@ -220,7 +220,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">92% used · Upgrade recommended</p>
       </div>
 
-      <div class="ayy-stack" style="gap: 0.375rem">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1-5)">
         <div class="ayy-spread">
           <span id="meter-api-html">Monthly API calls</span>
           <span class="ayy-muted ayy-mono">99,200 / 100k</span>
@@ -231,7 +231,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <p class="ayy-muted" style="font-size: var(--ayy-text-xs)">99% used · Requests will throttle soon</p>
       </div>
 
-      <div class="ayy-stack" style="gap: 0.375rem">
+      <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-1-5)">
         <div class="ayy-spread">
           <span id="meter-seats-html">Team seats</span>
           <span class="ayy-muted ayy-mono">12 / 50</span>
@@ -259,8 +259,8 @@ export default function Example() {
         <CardDescription>Resets in 12 days on November 1.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="ayy-stack" style={{ gap: "1rem" }}>
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+        <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as any}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="meter-storage">Cloud storage</span>
               <span className="ayy-muted ayy-mono">18.4 / 20 GB</span>
@@ -279,7 +279,7 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="meter-api">Monthly API calls</span>
               <span className="ayy-muted ayy-mono">99,200 / 100k</span>
@@ -298,7 +298,7 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="meter-seats">Team seats</span>
               <span className="ayy-muted ayy-mono">12 / 50</span>
@@ -331,19 +331,66 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-card__header">
     <div class="ayy-spread">
       <h3 class="ayy-card__title">File upload</h3>
-      <span class="ayy-mono ayy-muted">45%</span>
+      <span class="ayy-mono ayy-muted" id="interactive-progress-pct">45%</span>
     </div>
-    <p class="ayy-card__description">Uploading client-presentation-v2.pdf…</p>
+    <p class="ayy-card__description" id="interactive-progress-desc">Uploading client-presentation-v2.pdf…</p>
   </div>
   <div class="ayy-card__content">
-    <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" class="ayy-progress" style="--ayy-value: 45" aria-label="File upload progress">
+    <div id="interactive-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" class="ayy-progress" style="--ayy-value: 45" aria-label="File upload progress">
       <div class="ayy-progress__bar"></div>
     </div>
   </div>
   <div class="ayy-card__footer">
-    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">-25%</button>
-    <button type="button" class="ayy-button ayy-button--sm">+25%</button>
-    <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Reset</button>
+    <button
+      type="button"
+      class="ayy-button ayy-button--outline ayy-button--sm"
+      onclick="(() => {
+        const bar = document.getElementById('interactive-progress-bar');
+        const pct = document.getElementById('interactive-progress-pct');
+        const desc = document.getElementById('interactive-progress-desc');
+        const val = Math.max(0, (parseInt(bar.getAttribute('aria-valuenow'), 10) || 0) - 25);
+        bar.setAttribute('aria-valuenow', val);
+        bar.style.setProperty('--ayy-value', val);
+        pct.textContent = val + '%';
+        bar.className = 'ayy-progress' + (val === 100 ? ' ayy-progress--success' : val > 80 ? ' ayy-progress--warning' : '');
+        desc.textContent = val === 100 ? 'Upload complete. File is ready to share.' : 'Uploading client-presentation-v2.pdf…';
+      })()"
+    >
+      -25%
+    </button>
+    <button
+      type="button"
+      class="ayy-button ayy-button--sm"
+      onclick="(() => {
+        const bar = document.getElementById('interactive-progress-bar');
+        const pct = document.getElementById('interactive-progress-pct');
+        const desc = document.getElementById('interactive-progress-desc');
+        const val = Math.min(100, (parseInt(bar.getAttribute('aria-valuenow'), 10) || 0) + 25);
+        bar.setAttribute('aria-valuenow', val);
+        bar.style.setProperty('--ayy-value', val);
+        pct.textContent = val + '%';
+        bar.className = 'ayy-progress' + (val === 100 ? ' ayy-progress--success' : val > 80 ? ' ayy-progress--warning' : '');
+        desc.textContent = val === 100 ? 'Upload complete. File is ready to share.' : 'Uploading client-presentation-v2.pdf…';
+      })()"
+    >
+      +25%
+    </button>
+    <button
+      type="button"
+      class="ayy-button ayy-button--ghost ayy-button--sm"
+      onclick="(() => {
+        const bar = document.getElementById('interactive-progress-bar');
+        const pct = document.getElementById('interactive-progress-pct');
+        const desc = document.getElementById('interactive-progress-desc');
+        bar.setAttribute('aria-valuenow', '0');
+        bar.style.setProperty('--ayy-value', '0');
+        pct.textContent = '0%';
+        bar.className = 'ayy-progress';
+        desc.textContent = 'Uploading client-presentation-v2.pdf…';
+      })()"
+    >
+      Reset
+    </button>
   </div>
 </div>
 ```

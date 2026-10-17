@@ -50,11 +50,15 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
     // @danitesler/ayywi/elements steps .ayy-number-field buttons too; this one is React's.
     event.preventDefault();
     const el = input.current;
-    if (!el || event.currentTarget.getAttribute("aria-disabled") === "true") return;
+    if (!el || el.disabled || el.readOnly || event.currentTarget.getAttribute("aria-disabled") === "true") return;
     if (el.value === "") el.value = String(min ?? 0);
     else if (direction > 0) el.stepUp();
     else el.stepDown();
-    set(el.valueAsNumber);
+    const next = el.valueAsNumber;
+    if (controlled !== undefined) {
+      el.value = controlled === undefined ? "" : String(controlled);
+    }
+    set(next);
   };
   const atMin = min !== undefined && value !== undefined && value <= min;
   const atMax = max !== undefined && value !== undefined && value >= max;

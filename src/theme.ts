@@ -36,10 +36,13 @@ function read<T extends string>(key: string, allowed: readonly string[], fallbac
  * Force a theme on `target` (default: <html>). "system" removes the override so the OS preference applies.
  * Any element can carry its own theme, so this also works for a single themed section.
  */
-export function setTheme(mode: ThemeMode, target: HTMLElement = document.documentElement, options: { persist?: boolean } = {}): void {
-  if (mode === "system") target.removeAttribute("data-theme");
-  else target.setAttribute("data-theme", mode);
-  if (options.persist ?? target === document.documentElement) store(THEME_STORAGE_KEY, mode);
+export function setTheme(mode: ThemeMode, target?: HTMLElement, options: { persist?: boolean } = {}): void {
+  const el = target ?? (typeof document !== "undefined" ? document.documentElement : null);
+  if (el) {
+    if (mode === "system") el.removeAttribute("data-theme");
+    else el.setAttribute("data-theme", mode);
+  }
+  if (options.persist ?? (el && typeof document !== "undefined" && el === document.documentElement)) store(THEME_STORAGE_KEY, mode);
 }
 
 /** The stored theme preference, or "system". */
@@ -48,25 +51,39 @@ export function getTheme(): ThemeMode {
 }
 
 /** What `el` actually renders as right now: the nearest forced theme, else the OS preference. */
-export function getResolvedTheme(el: Element = document.documentElement): ResolvedTheme {
-  const forced = el.closest("[data-theme]")?.getAttribute("data-theme");
-  if (forced && (themes as readonly string[]).includes(forced)) return forced as ThemeName;
-  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+export function getResolvedTheme(target?: Element): ResolvedTheme {
+  const el = target ?? (typeof document !== "undefined" ? document.documentElement : null);
+  if (el) {
+    const forcedEl = el.closest("[data-theme], .dark, .light");
+    if (forcedEl) {
+      const forced = forcedEl.getAttribute("data-theme");
+      if (forced && (themes as readonly string[]).includes(forced)) return forced as ThemeName;
+      if (forcedEl.classList.contains("dark")) return "dark";
+      if (forcedEl.classList.contains("light")) return "light";
+    }
+  }
+  if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+  return "dark";
 }
 
 /** "light" or "dark": the scheme `el` renders in (dark-contrast counts as dark). */
-export function getColorScheme(el: Element = document.documentElement): ColorScheme {
-  return themeBase[getResolvedTheme(el)];
+export function getColorScheme(target?: Element): ColorScheme {
+  return themeBase[getResolvedTheme(target)];
 }
 
 /**
  * Set control density on `target` (default: <html>). "auto" removes the override: compact on mouse/trackpad,
  * touch on touch-first devices.
  */
-export function setDensity(mode: DensityMode, target: HTMLElement = document.documentElement, options: { persist?: boolean } = {}): void {
-  if (mode === "auto") target.removeAttribute("data-density");
-  else target.setAttribute("data-density", mode);
-  if (options.persist ?? target === document.documentElement) store(DENSITY_STORAGE_KEY, mode);
+export function setDensity(mode: DensityMode, target?: HTMLElement, options: { persist?: boolean } = {}): void {
+  const el = target ?? (typeof document !== "undefined" ? document.documentElement : null);
+  if (el) {
+    if (mode === "auto") el.removeAttribute("data-density");
+    else el.setAttribute("data-density", mode);
+  }
+  if (options.persist ?? (el && typeof document !== "undefined" && el === document.documentElement)) store(DENSITY_STORAGE_KEY, mode);
 }
 
 /** The stored density preference, or "auto". */

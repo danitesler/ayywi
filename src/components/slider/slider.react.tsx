@@ -85,7 +85,7 @@ export const SliderRange = forwardRef<HTMLDivElement, SliderRangeProps>(function
         step={step}
         value={low}
         disabled={disabled}
-        style={low >= max ? { zIndex: 1 } : undefined}
+        style={low >= high || low >= max ? { zIndex: 1 } : undefined}
         onChange={(event) => update([Math.min(event.currentTarget.valueAsNumber, high), high])}
       />
       <input

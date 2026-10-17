@@ -63,21 +63,23 @@ Category: Navigation. Sticky site header on translucent glass: brand at the star
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<header class="ayy-navbar">
-  <div class="ayy-navbar__inner">
-    <a class="ayy-navbar__brand" href="#top">
-      <span class="ayy-avatar ayy-avatar--sm" aria-hidden="true"><span class="ayy-avatar__fallback">DT</span></span>
-      <span class="ayy-signature">Dani Tesler</span>
-    </a>
-    <nav class="ayy-navbar__nav" aria-label="Main">
-      <a class="ayy-navbar__link" href="#work" aria-current="page">Work</a>
-      <a class="ayy-navbar__link" href="#projects">Projects</a>
-    </nav>
-    <div class="ayy-navbar__actions">
-      <a class="ayy-button ayy-button--ring ayy-button--sm" href="#connect">Let's connect</a>
+<div style="inline-size: 100%">
+  <header class="ayy-navbar">
+    <div class="ayy-navbar__inner">
+      <a class="ayy-navbar__brand" href="#top">
+        <span class="ayy-avatar ayy-avatar--sm" aria-hidden="true"><span class="ayy-avatar__fallback">DT</span></span>
+        <span class="ayy-signature">Dani Tesler</span>
+      </a>
+      <nav class="ayy-navbar__nav" aria-label="Main">
+        <a class="ayy-navbar__link" href="#work" aria-current="page">Work</a>
+        <a class="ayy-navbar__link" href="#projects">Projects</a>
+      </nav>
+      <div class="ayy-navbar__actions">
+        <a class="ayy-button ayy-button--ring ayy-button--sm" href="#connect">Let's connect</a>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
+</div>
 ```
 
 React:
@@ -87,25 +89,27 @@ import { buttonClass, Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarNav 
 
 export default function Example() {
   return (
-    <Navbar>
-      <NavbarBrand href="#top">
-        <span className="ayy-avatar ayy-avatar--sm" aria-hidden="true">
-          <span className="ayy-avatar__fallback">DT</span>
-        </span>
-        <span className="ayy-signature">Dani Tesler</span>
-      </NavbarBrand>
-      <NavbarNav>
-        <NavbarLink href="#work" current>
-          Work
-        </NavbarLink>
-        <NavbarLink href="#projects">Projects</NavbarLink>
-      </NavbarNav>
-      <NavbarActions>
-        <a className={buttonClass({ variant: "ring", size: "sm" })} href="#connect">
-          Let's connect
-        </a>
-      </NavbarActions>
-    </Navbar>
+    <div style={{ inlineSize: "100%" }}>
+      <Navbar>
+        <NavbarBrand href="#top">
+          <span className="ayy-avatar ayy-avatar--sm" aria-hidden="true">
+            <span className="ayy-avatar__fallback">DT</span>
+          </span>
+          <span className="ayy-signature">Dani Tesler</span>
+        </NavbarBrand>
+        <NavbarNav>
+          <NavbarLink href="#work" current>
+            Work
+          </NavbarLink>
+          <NavbarLink href="#projects">Projects</NavbarLink>
+        </NavbarNav>
+        <NavbarActions>
+          <a className={buttonClass({ variant: "ring", size: "sm" })} href="#connect">
+            Let's connect
+          </a>
+        </NavbarActions>
+      </Navbar>
+    </div>
   );
 }
 ```
@@ -171,10 +175,10 @@ export default function Example({
   useEffect(() => {
     if (!setControls) return;
     setControls(
-      <div className="pv-props-list">
-        <div className="pv-props-group">
-          <div className="pv-props-item">
-            <Label htmlFor="nv-page" className="pv-props-label">Active page</Label>
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="nv-page">Active page</Label>
             <div style={{ inlineSize: "7.5rem" }}>
               <Select
                 id="nv-page"
@@ -189,12 +193,12 @@ export default function Example({
               </Select>
             </div>
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="nv-action" className="pv-props-label">Action button</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="nv-action">Action button</Label>
             <Switch id="nv-action" checked={showAction} onCheckedChange={setShowAction} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="nv-icon" className="pv-props-label">Brand icon</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="nv-icon">Brand icon</Label>
             <Switch id="nv-icon" checked={showBrandIcon} onCheckedChange={setShowBrandIcon} />
           </div>
         </div>

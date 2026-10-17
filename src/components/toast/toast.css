@@ -78,7 +78,7 @@
 /* Expansion on hover or focus: don't limit amount of toasts, fan them all out with smooth scroll */
 .ayy-toaster[data-expanded] {
   block-size: var(--_toast-expanded-height, auto);
-  max-block-size: calc(100vh - 2 * var(--ayy-space-4));
+  max-block-size: calc(100dvh - 2 * var(--ayy-space-4));
   overflow-y: clip;
   overflow-x: visible;
   pointer-events: auto;
@@ -117,7 +117,7 @@
   transform-origin: top center;
   transform: translateY(calc(-1 * var(--_toast-peek) + var(--_toast-swipe-y))) scale(var(--_toast-scale));
   transition:
-    transform 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform var(--ayy-duration-base) var(--ayy-ease-standard),
     opacity var(--ayy-duration-base) var(--ayy-ease-menu);
   will-change: transform;
 }
@@ -204,7 +204,12 @@
 }
 
 /* In expanded stack, elevate the hovered or focused toast above its neighbors */
-.ayy-toaster[data-expanded] .ayy-toast:hover,
+@media (hover: hover) {
+  .ayy-toaster[data-expanded] .ayy-toast:hover {
+    z-index: 1050;
+  }
+}
+
 .ayy-toaster[data-expanded] .ayy-toast:focus-within {
   z-index: 1050;
 }
@@ -226,7 +231,7 @@
 .ayy-toast--info { --_icon-color: var(--ayy-color-info); }
 
 .ayy-toast[data-leaving] {
-  animation: ayy-toast-out 280ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation: ayy-toast-out var(--ayy-duration-base) var(--ayy-ease-standard) forwards;
   pointer-events: none;
 }
 
@@ -285,10 +290,12 @@
   transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
 }
 
-.ayy-toast__close:hover,
-.ayy-toast__copy:hover {
-  background-color: var(--ayy-color-wash-hover);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-toast__close:hover,
+  .ayy-toast__copy:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-toast__close:focus-visible,
@@ -455,7 +462,12 @@
   transition: opacity var(--ayy-duration-fast) ease;
 }
 
-.ayy-toast--card:hover .ayy-toast__media,
+@media (hover: hover) {
+  .ayy-toast--card:hover .ayy-toast__media {
+    opacity: 0;
+  }
+}
+
 .ayy-toast--card:focus-within .ayy-toast__media,
 .ayy-toast--card[data-hover] .ayy-toast__media {
   opacity: 0;
@@ -473,7 +485,13 @@
   transition: opacity var(--ayy-duration-fast) ease;
 }
 
-.ayy-toast--card:hover .ayy-toast__scrim,
+@media (hover: hover) {
+  .ayy-toast--card:hover .ayy-toast__scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 .ayy-toast--card:focus-within .ayy-toast__scrim,
 .ayy-toast--card[data-hover] .ayy-toast__scrim {
   opacity: 1;
@@ -492,7 +510,12 @@
   transition: transform var(--ayy-duration-base) var(--ayy-ease-spring);
 }
 
-.ayy-toast--card:hover .ayy-toast__center,
+@media (hover: hover) {
+  .ayy-toast--card:hover .ayy-toast__center {
+    transform: none;
+  }
+}
+
 .ayy-toast--card:focus-within .ayy-toast__center,
 .ayy-toast--card[data-hover] .ayy-toast__center {
   transform: none;
@@ -536,9 +559,11 @@
   backdrop-filter: blur(8px);
 }
 
-.ayy-toast--card .ayy-toast__close:hover {
-  background-color: color-mix(in srgb, var(--ayy-color-surface) 80%, transparent);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-toast--card .ayy-toast__close:hover {
+    background-color: color-mix(in srgb, var(--ayy-color-surface) 80%, transparent);
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-toast__action {
@@ -558,9 +583,11 @@
   transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
 }
 
-.ayy-toast__action:hover {
-  background-color: color-mix(in srgb, var(--ayy-color-surface) 80%, transparent);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-toast__action:hover {
+    background-color: color-mix(in srgb, var(--ayy-color-surface) 80%, transparent);
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-toast__action:focus-visible {

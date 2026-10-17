@@ -31,7 +31,7 @@
     "hover": { "when": ".ayy-settings__link:hover (devices that hover)", "looks": "A wash over the link row." },
     "pressed": { "none": "No pressed look; a link row opens its page at once." },
     "focus": { "when": ".ayy-settings__link:focus-visible; the row's own control", "looks": "Link rows get the ring inside the row's edge (outside in plain groups); controls keep their own ring." },
-    "disabled": { "none": "Rows don't disable; disable the control in the row and say why in its hint." },
+    "disabled": { "when": ".ayy-settings__link:disabled, .ayy-settings__link[aria-disabled=\"true\"]", "looks": "Reduced opacity and not-allowed cursor on link rows." },
     "selected": { "none": "Rows aren't selectable. A link row shows its current value (.ayy-settings__value) instead; the page you're on is the App shell's aria-current." },
     "error": { "when": ".ayy-settings__hint.ayy-field__error, with aria-invalid on the control", "looks": "The hint becomes the error, in the destructive colour." },
     "loading": { "none": "Settings apply at once. While they load, show a Skeleton in the shape of the rows." },
@@ -41,7 +41,7 @@
     "density": "Rows are at least the lg control height (40px compact, 48 comfortable, 52 touch); their controls follow data-density.",
     "width": "Fills its container. A row wraps its control under the label when there's no room; stack does it always. Selects and inputs in a row are at least 11rem."
   },
-  "js": "settingsClass({ plain? }), settingsRowClass({ stack?, link?, destructive? }) → class strings; settingsChevronIcon (SVG markup for a link row's chevron, mirrored in RTL).",
+  "js": "settingsClass({ plain?, className? }), settingsRowClass({ stack?, link?, destructive?, className? }) → class strings; settingsChevronIcon (SVG markup for a link row's chevron, mirrored in RTL).",
   "react": {
     "import": "import { Settings, SettingsRow, SettingsLink } from \"@danitesler/ayywi/react\";",
     "components": {

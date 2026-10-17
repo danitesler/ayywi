@@ -31,7 +31,7 @@ Category: Forms. Round colour dots to pick one colour: a tag's or a list's colou
 
 **React** — `import { ColorSwatch, ColorSwatchButton, ColorSwatchCustom, ColorSwatchGroup } from "@danitesler/ayywi/react";`
 - `<ColorSwatch>` renders <label class="ayy-swatch" style="--ayy-swatch: …"><input type="radio" aria-label>. Props: `color` string — a CSS colour, ideally a token ("var(--ayy-chart-2)"); `label` string — the colour's name, required ("Blue"); `name` string — the same for every swatch in the group; `value` string; `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `size` "sm" | "md" | "lg"; `none` boolean — the "no colour" swatch; `inputProps` Props for the native radio.
-- `<ColorSwatchButton>` renders <button type="button" class="ayy-swatch" aria-pressed aria-label>. Props: `color` string; `label` string — required; `pressed` boolean; `size` "sm" | "md" | "lg"; `none` boolean
+- `<ColorSwatchButton>` renders <button type="button" class="ayy-swatch" aria-pressed aria-label>. Props: `color` string; `label` string — required; `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `size` "sm" | "md" | "lg"; `none` boolean
 - `<ColorSwatchCustom>` renders <label class="ayy-swatch ayy-swatch--custom"><input type="color" aria-label>. Props: `label` string — required ("Custom colour"); `size` "sm" | "md" | "lg"; `...` Every <input type="color"> prop: value, defaultValue (hex), onChange.
 - `<ColorSwatchGroup>` renders <div role="radiogroup" class="ayy-swatch-group"> (pass role="group" for ColorSwatchButtons). Props: `track` boolean — on a pill-shaped wash
 

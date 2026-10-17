@@ -207,3 +207,22 @@ test("lint --hook: findings in the edited file go back to the agent with exit 2"
   assert.match(err, /raw-control/);
   assert.match(err, /fix every finding above, warnings included/);
 });
+
+test("class helpers: accepted options and variant validation", () => {
+  const tsx = `
+const a = actionBarButtonClass({ secondary: true });
+const b = progressClass({ tone: "success" });
+const c = swipeActionClass({ className: "x" });
+`;
+  assert.deepEqual(rules(tsx, "a.tsx"), []);
+});
+
+test("structure: --_* private property overrides in app CSS are flagged", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ayywi-lint-private-"));
+  writeFileSync(join(dir, "app.css"), ".custom-card { --_pad: 12px; }\n.ayy-button { --_size: 40px; }\n");
+  writeFileSync(join(dir, "App.tsx"), `export const A = () => <Card className="custom-card" />;\n`);
+  const { findings } = lintPaths(["."], { cwd: dir, contract, config: { rules: DEFAULT_RULES, ignore: [] } });
+  const overrides = findings.filter((f) => f.rule === "component-override");
+  assert.equal(overrides.length, 2);
+});
+

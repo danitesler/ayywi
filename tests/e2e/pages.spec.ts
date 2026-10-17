@@ -10,10 +10,10 @@ for (const renderer of ["react", "html"] as const) {
     for (const slug of slugs) {
       await page.goto(`/#/${slug}`);
       await expect(page.locator(".pv-page__header h1")).toBeVisible();
-      const stages = page.locator(".pv-stage");
+      const stages = page.locator(":is(.pv-stage, .ayy-showcase__stage)");
       expect(await stages.count(), slug).toBeGreaterThan(0);
       for (const s of await stages.all()) {
-        expect(await s.locator(".pv-stage__inner > *").count(), `${slug} stage is empty`).toBeGreaterThan(0);
+        expect(await s.locator(":is(.pv-stage__inner, .ayy-showcase__body) > *").count(), `${slug} stage is empty`).toBeGreaterThan(0);
       }
     }
     expect(errors).toEqual([]);

@@ -39,7 +39,7 @@
     "density": "Doesn't follow data-density.",
     "width": "Fills its container."
   },
-  "js": "progressClass({ variant?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)",
+  "js": "progressClass({ variant?, tone?, size?, indeterminate?, className? }) → string (tone is a deprecated alias of variant)",
   "react": {
     "import": "import { Progress } from \"@danitesler/ayywi/react\";",
     "components": {

@@ -19,7 +19,7 @@ export function showcaseViewportClass({
 } = {}): string {
   return cx(
     "ayy-showcase__viewport",
-    device !== "desktop" && `ayy-showcase__viewport--${device}`,
+    device && `ayy-showcase__viewport--${device}`,
     className
   );
 }

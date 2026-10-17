@@ -20,7 +20,7 @@
     "loading": { "none": "No loading state." }
   },
   "sizes": {
-    "density": "Scales with the text around it (1.6em tall); doesn't follow data-density.",
+    "density": "Scales with the text around it (1.6em tall); scales when surrounding text uses --ayy-text-s.",
     "width": "At least 1.6em wide, grows with the key name."
   },
   "js": "kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names (\"mod\" → ⌘ on Mac, Ctrl on Windows/Linux; \"meta\" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name (\"Command\" for ⌘).",

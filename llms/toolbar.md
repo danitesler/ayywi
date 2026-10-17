@@ -113,7 +113,7 @@ export default function Example() {
   const [tool, setTool] = useState("arrow");
   return (
     <Toolbar aria-label="Annotate" style={{ inlineSize: "100%" }}>
-      <ToolbarGroup aria-label="Tools" data-exclusive="">
+      <ToolbarGroup aria-label="Tools">
         {TOOLS.map((t) => (
           <ToolbarButton key={t.id} aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
             <Icon icon={t.icon} />
@@ -230,7 +230,7 @@ export default function Example() {
   const [tool, setTool] = useState("pen");
   return (
     <Toolbar aria-label="Drawing tools" vertical floating>
-      <ToolbarGroup data-exclusive="">
+      <ToolbarGroup>
         {TOOLS.map((t) => (
           <ToolbarButton key={t.id} aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
             <Icon icon={t.icon} />

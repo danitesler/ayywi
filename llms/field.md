@@ -16,7 +16,7 @@ Category: Forms. Form field wrapper: Label + control + hint or error, stacked wi
 - `focus` — doesn't apply: The control inside shows the focus ring.
 - `disabled` (`.ayy-field:has(:disabled), .ayy-label:has(> :disabled)`) — Label dims to --ayy-opacity-disabled with a not-allowed cursor; the control dims itself.
 - `selected` — doesn't apply: Selection belongs to the control (Checkbox, Radio, Switch).
-- `error` (`aria-invalid="true" on the control plus .ayy-field__error, linked with aria-describedby (React: Field error)`) — Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border.
+- `error` (`aria-invalid="true" on the control plus .ayy-field__error, linked with aria-describedby (React: FieldError)`) — Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border.
 - `loading` — doesn't apply: Fields don't load; show a Skeleton for the whole form while its data loads.
 
 **Sizes**

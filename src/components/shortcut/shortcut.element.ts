@@ -7,7 +7,7 @@ import { connectShortcutRecorder, type ShortcutRecorderController } from "./shor
  * ({ value }; value is null when cleared) and "ayy-recording" ({ recording }) so the page can pause its own shortcuts.
  */
 export class AyyShortcutRecorderElement extends ElementBase {
-  static observedAttributes = ["value"];
+  static observedAttributes = ["value", "label", "bare"];
   #controller: ShortcutRecorderController | null = null;
   #syncing = false;
 

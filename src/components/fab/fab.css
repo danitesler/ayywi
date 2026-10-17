@@ -44,12 +44,12 @@
 }
 
 @media (hover: hover) {
-  .ayy-fab:hover {
+  .ayy-fab:hover:not(:disabled):not([aria-disabled="true"]) {
     background-color: color-mix(in srgb, var(--_bg) 88%, var(--_fg));
   }
 }
 
-.ayy-fab:active {
+.ayy-fab:active:not(:disabled):not([aria-disabled="true"]) {
   transform: scale(0.94);
 }
 
@@ -62,6 +62,7 @@
 .ayy-fab[aria-disabled="true"] {
   opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Icon and label: a wider pill. */
@@ -114,5 +115,10 @@
 @media (forced-colors: active) {
   .ayy-fab {
     border-color: ButtonText;
+  }
+  .ayy-fab:disabled,
+  .ayy-fab[aria-disabled="true"] {
+    color: GrayText;
+    border-color: GrayText;
   }
 }

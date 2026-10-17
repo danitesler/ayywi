@@ -1,6 +1,6 @@
 # Command palette
 
-Category: Actions. A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count. Also called: command, command-palette, cmdk, command-menu, quick-switcher, quick-open.
+Category: Actions. A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count. Also called: command, command-palette, command-menu, quick-switcher, quick-open.
 
 **Classes**
 - `.ayy-command` — Root: a card with the search field, the list and an optional footer. On a <div> inline, or with ayy-dialog on a <dialog> for the ⌘K palette (top-aligned, no padding).
@@ -74,7 +74,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-command" style="max-inline-size: 32rem">
     <div class="ayy-command__search">
       <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-      <input type="search" class="ayy-command__input" role="combobox" aria-expanded="true" aria-controls="cmd-palette-1-html" aria-autocomplete="list" aria-label="Search commands" placeholder="Type a command or search…" autoComplete="off" spellCheck="false" />
+      <input type="search" class="ayy-command__input" role="combobox" aria-expanded="true" aria-controls="cmd-palette-1-html" aria-autocomplete="list" aria-label="Search commands" placeholder="Type a command or search…" autocomplete="off" spellcheck="false" />
     </div>
     <div id="cmd-palette-1-html" class="ayy-command__list" role="listbox" aria-label="Search commands">
       <div class="ayy-command__group" role="group" aria-labelledby="cmd-palette-2-html">
@@ -165,7 +165,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <dialog class="ayy-dialog ayy-command" aria-label="Search commands">
     <div class="ayy-command__search">
       <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-      <input type="search" class="ayy-command__input" role="combobox" aria-expanded="true" aria-controls="cmd-dialog-1-html" aria-autocomplete="list" aria-label="Search commands" placeholder="Search or jump to…" autoComplete="off" spellCheck="false" />
+      <input type="search" class="ayy-command__input" role="combobox" aria-expanded="true" aria-controls="cmd-dialog-1-html" aria-autocomplete="list" aria-label="Search commands" placeholder="Search or jump to…" autocomplete="off" spellcheck="false" />
     </div>
     <div id="cmd-dialog-1-html" class="ayy-command__list" role="listbox" aria-label="Search commands">
       <div class="ayy-command__group" role="group" aria-labelledby="cmd-dialog-2-html">
@@ -256,15 +256,15 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <div id="cmd-search-1-html" class="ayy-command__list" role="listbox" aria-label="Search commands">
       <div class="ayy-command__group" role="group" aria-labelledby="cmd-search-data-label">
         <div id="cmd-search-data-label" class="ayy-command__label" role="presentation">Data display</div>
-        <div id="cmd-search-item-1" class="ayy-command__item" role="option" data-value="keyboard-hint" aria-selected="true"><span class="ayy-command__title">Keyboard <mark class="ayy-text-highlight">hi</mark>nt</span><span class="ayy-command__meta">Data display</span></div>
-        <div id="cmd-search-item-2" class="ayy-command__item" role="option" data-value="text-highlight"><span class="ayy-command__title">Text <mark class="ayy-text-highlight">hi</mark>ghlight</span><span class="ayy-command__meta">Data display</span></div>
-        <div id="cmd-search-item-3" class="ayy-command__item" role="option" data-value="code-block"><div class="ayy-command__content"><div class="ayy-command__title">Code block</div><div class="ayy-command__description">Formatted code container with header, filename, copy button, line numbers and syntax <mark class="ayy-text-highlight">hi</mark>ghlighting</div></div><span class="ayy-command__meta">Data display</span></div>
-        <div id="cmd-search-item-4" class="ayy-command__item" role="option" data-value="timeline"><div class="ayy-command__content"><div class="ayy-command__title">Timeline</div><div class="ayy-command__description">Chronological list of events, milestones, or <mark class="ayy-text-highlight">hi</mark>story with vertical connections</div></div><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-1" class="ayy-command__item" role="option" data-value="keyboard-hint" aria-selected="true"><span class="ayy-command__title">Keyboard hint</span><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-2" class="ayy-command__item" role="option" data-value="text-highlight"><span class="ayy-command__title">Text highlight</span><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-3" class="ayy-command__item" role="option" data-value="code-block"><div class="ayy-command__content"><div class="ayy-command__title">Code block</div><div class="ayy-command__description">Formatted code container with header, filename, copy button, line numbers and syntax highlighting</div></div><span class="ayy-command__meta">Data display</span></div>
+        <div id="cmd-search-item-4" class="ayy-command__item" role="option" data-value="timeline"><div class="ayy-command__content"><div class="ayy-command__title">Timeline</div><div class="ayy-command__description">Chronological list of events, milestones, or history with vertical connections</div></div><span class="ayy-command__meta">Data display</span></div>
       </div>
       <div class="ayy-command__group" role="group" aria-labelledby="cmd-search-forms-label">
         <div id="cmd-search-forms-label" class="ayy-command__label" role="presentation">Forms</div>
-        <div id="cmd-search-item-5" class="ayy-command__item" role="option" data-value="chip"><span class="ayy-command__title">C<mark class="ayy-text-highlight">hi</mark>p</span><span class="ayy-command__meta">Forms</span></div>
-        <div id="cmd-search-item-6" class="ayy-command__item" role="option" data-value="field"><div class="ayy-command__content"><div class="ayy-command__title">Field</div><div class="ayy-command__description">Form field wrapper: Label + control + <mark class="ayy-text-highlight">hi</mark>nt or error, stacked with consistent spacing</div></div><span class="ayy-command__meta">Forms</span></div>
+        <div id="cmd-search-item-5" class="ayy-command__item" role="option" data-value="chip"><span class="ayy-command__title">Chip</span><span class="ayy-command__meta">Forms</span></div>
+        <div id="cmd-search-item-6" class="ayy-command__item" role="option" data-value="field"><div class="ayy-command__content"><div class="ayy-command__title">Field</div><div class="ayy-command__description">Form field wrapper: Label + control + hint or error, stacked with consistent spacing</div></div><span class="ayy-command__meta">Forms</span></div>
         <div id="cmd-search-item-7" class="ayy-command__item" role="option" data-value="file-upload"><span class="ayy-command__title">File upload</span><span class="ayy-command__meta">Forms</span></div>
       </div>
       <div class="ayy-command__empty" role="presentation" hidden="">No results</div>
@@ -375,6 +375,7 @@ export default function Example() {
           <CommandItem
             key={item.id}
             value={item.id}
+            data-description={item.description}
             description={
               showDescription(item.title, item.description) ? (
                 <TextHighlight text={item.description} query={query} />
@@ -391,6 +392,7 @@ export default function Example() {
           <CommandItem
             key={item.id}
             value={item.id}
+            data-description={item.description}
             description={
               showDescription(item.title, item.description) ? (
                 <TextHighlight text={item.description} query={query} />

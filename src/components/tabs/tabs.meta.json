@@ -27,7 +27,7 @@
     "density": "The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.",
     "width": "The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container."
   },
-  "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
+  "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
   "element": {
     "tag": "ayy-tabs",
     "attributes": {

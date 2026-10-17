@@ -25,8 +25,10 @@
   opacity: 1;
 }
 
-.ayy-textarea:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-textarea:not(:disabled):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 .ayy-textarea:focus-visible {
@@ -60,6 +62,10 @@
 @media (forced-colors: active) {
   .ayy-textarea {
     border-color: FieldText;
+  }
+  .ayy-textarea:disabled {
+    border-color: GrayText;
+    color: GrayText;
   }
   .ayy-textarea:focus-visible {
     outline-color: Highlight;

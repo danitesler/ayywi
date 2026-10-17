@@ -43,7 +43,12 @@
   border-color: var(--_border-hover);
   box-shadow: var(--_shadow-hover);
   opacity: var(--_opacity-hover);
-  transform: translateY(-2px);
+}
+
+@media (hover: hover) {
+  .ayy-button:hover:not(:disabled):not([aria-disabled="true"]):not([aria-busy="true"]) {
+    transform: translateY(-2px);
+  }
 }
 
 .ayy-button:active {
@@ -123,8 +128,13 @@
   text-underline-offset: 4px;
 }
 .ayy-button--link:hover {
-  transform: none;
   text-decoration: underline;
+}
+
+@media (hover: hover) {
+  .ayy-button--link:hover {
+    transform: none;
+  }
 }
 
 /* ---- Ring: the showcase call to action. A gradient ring that spins while hovered (with a mouse) or focused. One per

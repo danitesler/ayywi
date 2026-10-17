@@ -10,21 +10,27 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field({ inl
   return <div ref={ref} className={fieldClass({ inline, className })} {...props} />;
 });
 
-export const Label = forwardRef<HTMLLabelElement, LabelHTMLAttributes<HTMLLabelElement>>(function Label(
+export interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {}
+
+export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
   { className, ...props },
   ref,
 ) {
   return <label ref={ref} className={cx(labelClass, className)} {...props} />;
 });
 
-export const FieldHint = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function FieldHint(
+export interface FieldHintProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const FieldHint = forwardRef<HTMLParagraphElement, FieldHintProps>(function FieldHint(
   { className, ...props },
   ref,
 ) {
   return <p ref={ref} className={cx(fieldHintClass, className)} {...props} />;
 });
 
-export const FieldError = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function FieldError(
+export interface FieldErrorProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const FieldError = forwardRef<HTMLParagraphElement, FieldErrorProps>(function FieldError(
   { className, ...props },
   ref,
 ) {

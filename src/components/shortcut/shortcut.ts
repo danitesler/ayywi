@@ -213,12 +213,20 @@ export function shortcutHtml(shortcut: string, target: Platform | boolean = isAp
 export function syncShortcuts(root: ParentNode = document, target: Platform | boolean = getPlatform()): void {
   const platform: Platform = typeof target === "boolean" ? (target ? "mac" : "windows") : target;
   if (platform === "windows" || platform === "other") return;
-  for (const el of root.querySelectorAll<HTMLElement>(".ayy-shortcut[data-keys]")) {
+  const els = Array.from(root.querySelectorAll<HTMLElement>(".ayy-shortcut[data-keys]"));
+  if ((root as Element).matches?.(".ayy-shortcut[data-keys]")) {
+    els.unshift(root as HTMLElement);
+  }
+  for (const el of els) {
     const keys = el.dataset.keys!;
     const kbds = shortcutKeys(keys, platform);
+    const currentKbds = Array.from(el.querySelectorAll("kbd"));
+    if (currentKbds.length === kbds.length && currentKbds.every((k, i) => k.textContent === kbds[i])) {
+      continue;
+    }
     const label = el.querySelector(".ayy-sr-only");
     if (label) label.textContent = shortcutLabel(keys, platform);
-    for (const kbd of el.querySelectorAll("kbd")) kbd.remove();
+    for (const kbd of currentKbds) kbd.remove();
     for (const key of kbds) {
       const kbd = document.createElement("kbd");
       kbd.className = "ayy-kbd";
@@ -245,9 +253,9 @@ export interface ShortcutRecorderOptions {
 }
 
 /** The recorder button's accessible name for an action, its value and whether it's listening. */
-export function recorderLabel(label: string, value: string | null, recording: boolean, recordingText = "Press keys…"): string {
+export function recorderLabel(label: string, value: string | null, recording: boolean, recordingText = "Press keys…", platform?: Platform | boolean): string {
   if (recording) return `${label}: ${recordingText.replace(/…$/, "")}, or Escape to cancel`;
-  return `${label}: ${value ? shortcutLabel(value) : "not set"}`;
+  return `${label}: ${value ? shortcutLabel(value, platform) : "not set"}`;
 }
 
 export interface ShortcutRecorderController {

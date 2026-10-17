@@ -1,7 +1,15 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { ArrowLeft01Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
-import { topBarClass } from "./top-bar";
+import {
+  topBarActionsClass,
+  topBarBackClass,
+  topBarClass,
+  topBarHeadingClass,
+  topBarRowClass,
+  topBarSubtitleClass,
+  topBarTitleClass,
+} from "./top-bar";
 
 export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   /** The screen's name, in an <h1>. */
@@ -39,24 +47,24 @@ export const TopBar = forwardRef<HTMLElement, TopBarProps>(function TopBar(
   return (
     <header ref={ref} className={topBarClass({ center, large, className })} {...props}>
       {backHref !== undefined ? (
-        <a className="ayy-top-bar__back" href={backHref} aria-label={backName}>
+        <a className={topBarBackClass} href={backHref} aria-label={backName}>
           {backContent}
         </a>
       ) : onBack ? (
-        <button type="button" className="ayy-top-bar__back" aria-label={backName} onClick={onBack}>
+        <button type="button" className={topBarBackClass} aria-label={backName} onClick={onBack}>
           {backContent}
         </button>
       ) : null}
       {subtitle ? (
-        <div className="ayy-top-bar__heading">
-          <h1 className="ayy-top-bar__title">{title}</h1>
-          <p className="ayy-top-bar__subtitle">{subtitle}</p>
+        <div className={topBarHeadingClass}>
+          <h1 className={topBarTitleClass}>{title}</h1>
+          <p className={topBarSubtitleClass}>{subtitle}</p>
         </div>
       ) : (
-        <h1 className="ayy-top-bar__title">{title}</h1>
+        <h1 className={topBarTitleClass}>{title}</h1>
       )}
-      {actions && <div className="ayy-top-bar__actions">{actions}</div>}
-      {children && <div className="ayy-top-bar__row">{children}</div>}
+      {actions && <div className={topBarActionsClass}>{actions}</div>}
+      {children && <div className={topBarRowClass}>{children}</div>}
     </header>
   );
 });

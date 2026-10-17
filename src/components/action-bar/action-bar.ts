@@ -118,13 +118,25 @@ export function connectActionBar(bar: HTMLElement, options: ActionBarControllerO
     triggerClear();
   };
 
-  const onKeyDown = (event: KeyboardEvent) => {
+  const doc = bar.ownerDocument;
+
+  const onDocKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape" && bar.hasAttribute("open")) {
-      if (typeof document !== "undefined" && document.querySelector("[popover]:popover-open")) return;
+      if (doc) {
+        let hasModal = false;
+        try {
+          hasModal = Boolean(doc.querySelector("dialog[open], [popover]:popover-open, .ayy-menu[open], .ayy-popover[open]"));
+        } catch {
+          hasModal = Boolean(doc.querySelector("dialog[open], .ayy-menu[open], .ayy-popover[open]"));
+        }
+        if (hasModal) return;
+      }
       event.preventDefault();
       triggerClear();
-      return;
     }
+  };
+
+  const onKeyDown = (event: KeyboardEvent) => {
     const target = event.target as HTMLElement;
     const rtl = getComputedStyle(bar).direction === "rtl";
     const nextKey = rtl ? "ArrowLeft" : "ArrowRight";
@@ -151,6 +163,7 @@ export function connectActionBar(bar: HTMLElement, options: ActionBarControllerO
   bar.addEventListener("click", onClick);
   bar.addEventListener("keydown", onKeyDown);
   bar.addEventListener("focusin", onFocusIn);
+  doc?.addEventListener("keydown", onDocKeyDown);
   roam();
 
   return {
@@ -160,6 +173,7 @@ export function connectActionBar(bar: HTMLElement, options: ActionBarControllerO
       bar.removeEventListener("click", onClick);
       bar.removeEventListener("keydown", onKeyDown);
       bar.removeEventListener("focusin", onFocusIn);
+      doc?.removeEventListener("keydown", onDocKeyDown);
     },
   };
 }

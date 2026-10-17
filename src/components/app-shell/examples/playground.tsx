@@ -83,31 +83,31 @@ export default function Example({
 
     if (activeDevice === "mobile") {
       setControls(
-        <div className="pv-props-list">
-          <div className="pv-props-group">
-            <span className="pv-props-group__title">Layout</span>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-bar" className="pv-props-label">Top bar</Label>
+        <div className="ayy-stack">
+          <div className="ayy-stack">
+            <span className="ayy-muted ayy-mono ayy-small">Layout</span>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-bar">Top bar</Label>
               <Switch id="pg-bar" checked={showBar} onCheckedChange={setShowBar} />
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-tabs" className="pv-props-label">Bottom nav</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-tabs">Bottom nav</Label>
               <Switch id="pg-tabs" checked={showTabs} onCheckedChange={setShowTabs} />
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-drawer" className="pv-props-label">Drawer on phones</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-drawer">Drawer on phones</Label>
               <Switch id="pg-drawer" checked={drawer} onCheckedChange={setDrawer} />
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-grouped" className="pv-props-label">Grouped nav</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-grouped">Grouped nav</Label>
               <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
             </div>
           </div>
           {showTabs ? (
-            <div className="pv-props-group">
-              <span className="pv-props-group__title">Bottom nav</span>
-              <div className="pv-props-item">
-                <Label htmlFor="pg-nav-size" className="pv-props-label">Nav size</Label>
+            <div className="ayy-stack">
+              <span className="ayy-muted ayy-mono ayy-small">Bottom nav</span>
+              <div className="ayy-spread">
+                <Label htmlFor="pg-nav-size">Nav size</Label>
                 <div style={{ inlineSize: "7.5rem" }}>
                   <Select
                     id="pg-nav-size"
@@ -122,12 +122,12 @@ export default function Example({
                   </Select>
                 </div>
               </div>
-              <div className="pv-props-item">
-                <Label htmlFor="pg-nav-compact" className="pv-props-label">Compact</Label>
+              <div className="ayy-spread">
+                <Label htmlFor="pg-nav-compact">Compact</Label>
                 <Switch id="pg-nav-compact" checked={navCompact} onCheckedChange={setNavCompact} />
               </div>
-              <div className="pv-props-item">
-                <Label htmlFor="pg-nav-icon-only" className="pv-props-label">Icon only</Label>
+              <div className="ayy-spread">
+                <Label htmlFor="pg-nav-icon-only">Icon only</Label>
                 <Switch id="pg-nav-icon-only" checked={navIconOnly} onCheckedChange={setNavIconOnly} />
               </div>
             </div>
@@ -136,10 +136,10 @@ export default function Example({
       );
     } else {
       setControls(
-        <div className="pv-props-list">
-          <div className="pv-props-group">
-            <div className="pv-props-item">
-              <Label htmlFor="pg-size" className="pv-props-label">Sidebar size</Label>
+        <div className="ayy-stack">
+          <div className="ayy-stack">
+            <div className="ayy-spread">
+              <Label htmlFor="pg-size">Sidebar size</Label>
               <div style={{ inlineSize: "7.5rem" }}>
                 <Select
                   id="pg-size"
@@ -154,20 +154,20 @@ export default function Example({
                 </Select>
               </div>
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-collapsed" className="pv-props-label">Collapsed sidebar</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-collapsed">Collapsed sidebar</Label>
               <Switch id="pg-collapsed" checked={collapsed} onCheckedChange={setCollapsed} />
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-hover" className="pv-props-label">Hover preview</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-hover">Hover preview</Label>
               <Switch id="pg-hover" checked={hover} onCheckedChange={setHover} disabled={!collapsed} />
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-grouped" className="pv-props-label">Grouped nav</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-grouped">Grouped nav</Label>
               <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
             </div>
-            <div className="pv-props-item">
-              <Label htmlFor="pg-resize" className="pv-props-label">Resize handles</Label>
+            <div className="ayy-spread">
+              <Label htmlFor="pg-resize">Resize handles</Label>
               <Switch id="pg-resize" checked={resizable} onCheckedChange={setResizable} />
             </div>
           </div>

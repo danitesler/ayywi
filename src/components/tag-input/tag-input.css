@@ -26,7 +26,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-tag-input:hover {
+  .ayy-tag-input:not(:has(> .ayy-tag-input__input:disabled)):hover {
     border-color: var(--ayy-color-line-hover);
   }
 }
@@ -108,6 +108,9 @@
 @media (forced-colors: active) {
   .ayy-tag-input {
     border-color: CanvasText;
+  }
+  .ayy-tag-input:has(> .ayy-tag-input__input:disabled) {
+    border-color: GrayText;
   }
   .ayy-tag-input:has(> .ayy-tag-input__input:focus-visible) {
     outline-color: Highlight;

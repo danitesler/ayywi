@@ -33,7 +33,7 @@ export const TextHighlight = forwardRef<HTMLElement, TextHighlightProps>(functio
       <Comp {...compProps}>
         {parts.map((part, index) =>
           part.match ? (
-            <mark key={index} className={textHighlightClass({ variant })}>
+            <mark key={index} className={textHighlightClass({ variant, className: as ? undefined : className })}>
               {part.text}
             </mark>
           ) : (

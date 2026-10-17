@@ -8,8 +8,8 @@ export default function Example() {
         <CardDescription>Resets in 12 days on November 1.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="ayy-stack" style={{ gap: "1rem" }}>
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+        <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as any}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="meter-storage">Cloud storage</span>
               <span className="ayy-muted ayy-mono">18.4 / 20 GB</span>
@@ -28,7 +28,7 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="meter-api">Monthly API calls</span>
               <span className="ayy-muted ayy-mono">99,200 / 100k</span>
@@ -47,7 +47,7 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="meter-seats">Team seats</span>
               <span className="ayy-muted ayy-mono">12 / 50</span>

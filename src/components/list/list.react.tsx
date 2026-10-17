@@ -14,13 +14,17 @@ export const List = forwardRef<HTMLUListElement, ListProps>(function List({ divi
   return <ul ref={ref} className={listClass({ divided, compact, className })} {...props} />;
 });
 
+export interface ListItemProps extends LiHTMLAttributes<HTMLLIElement> {}
+
 /** One row: leading media (Avatar, Icon, IconTile), a ListContent, then trailing ListMeta or a control. */
-export const ListItem = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLIElement>>(function ListItem({ className, ...props }, ref) {
+export const ListItem = forwardRef<HTMLLIElement, ListItemProps>(function ListItem({ className, ...props }, ref) {
   return <li ref={ref} className={cx(listItemClass, className)} {...props} />;
 });
 
+export interface ListContentProps extends HTMLAttributes<HTMLDivElement> {}
+
 /** The column that holds ListTitle and ListDescription; it takes the free space. */
-export const ListContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ListContent({ className, ...props }, ref) {
+export const ListContent = forwardRef<HTMLDivElement, ListContentProps>(function ListContent({ className, ...props }, ref) {
   return <div ref={ref} className={cx(listContentClass, className)} {...props} />;
 });
 
@@ -35,15 +39,19 @@ export const ListTitle = forwardRef<HTMLElement, ListTitleProps>(function ListTi
   return <p ref={ref as Ref<HTMLParagraphElement>} className={cx(listTitleClass, className)} {...props} />;
 });
 
-export const ListDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function ListDescription(
+export interface ListDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const ListDescription = forwardRef<HTMLParagraphElement, ListDescriptionProps>(function ListDescription(
   { className, ...props },
   ref,
 ) {
   return <p ref={ref} className={cx(listDescriptionClass, className)} {...props} />;
 });
 
+export interface ListMetaProps extends HTMLAttributes<HTMLSpanElement> {}
+
 /** Short trailing text: a time, a count, a size. */
-export const ListMeta = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(function ListMeta({ className, ...props }, ref) {
+export const ListMeta = forwardRef<HTMLSpanElement, ListMetaProps>(function ListMeta({ className, ...props }, ref) {
   return <span ref={ref} className={cx(listMetaClass, className)} {...props} />;
 });
 

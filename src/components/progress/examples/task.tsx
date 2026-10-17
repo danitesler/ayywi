@@ -10,8 +10,8 @@ export default function Example() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="ayy-stack" style={{ gap: "1rem" }}>
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+        <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-4)" } as any}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="task-export-label">Customer records</span>
               <span className="ayy-muted ayy-mono">68%</span>
@@ -23,7 +23,7 @@ export default function Example() {
             </div>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="task-backup-label">Database backup</span>
               <span className="ayy-muted ayy-mono">100%</span>
@@ -34,7 +34,7 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="ayy-stack" style={{ gap: "0.375rem" }}>
+          <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-1-5)" } as any}>
             <div className="ayy-spread">
               <span id="task-ai-label">AI summary</span>
               <span className="ayy-muted">In progress</span>

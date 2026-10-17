@@ -1,9 +1,18 @@
 import { cx } from "../../lib/cx";
 
+export const swipeClass = "ayy-swipe";
+export const swipeContentClass = "ayy-swipe__content";
+export const swipeActionsClass = "ayy-swipe__actions";
+
 export const swipeActionVariants = ["default", "primary", "success", "warning", "info", "destructive"] as const;
 export type SwipeActionVariant = (typeof swipeActionVariants)[number];
 
-export function swipeActionClass({ variant = "default", className }: { variant?: SwipeActionVariant; className?: string } = {}): string {
+export interface SwipeActionClassOptions {
+  variant?: SwipeActionVariant;
+  className?: string;
+}
+
+export function swipeActionClass({ variant = "default", className }: SwipeActionClassOptions = {}): string {
   return cx("ayy-swipe__action", variant !== "default" && `ayy-swipe__action--${variant}`, className);
 }
 
@@ -117,9 +126,15 @@ export function connectSwipe(row: HTMLElement, options: SwipeControllerOptions =
     if (side && !row.contains(event.target as Node)) setSide(null);
   };
   const onKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Escape" && side) {
-      setSide(null);
-      content.focus?.();
+    if (event.key === "Escape") {
+      const hasActionFocus = Boolean(row.querySelector(".ayy-swipe__actions:focus-within"));
+      if (side !== null || hasActionFocus) {
+        if (side !== null) setSide(null);
+        if (!content.hasAttribute("tabindex")) {
+          content.setAttribute("tabindex", "-1");
+        }
+        content.focus?.();
+      }
     }
   };
 

@@ -13,6 +13,13 @@ export {
   CardMedia,
   CardLink,
   type CardProps,
+  type CardHeaderProps,
+  type CardTitleProps,
+  type CardDescriptionProps,
+  type CardContentProps,
+  type CardFooterProps,
+  type CardMediaProps,
+  type CardLinkProps,
 } from "../components/card/card.react";
 export {
   Showcase,
@@ -37,7 +44,16 @@ export { Textarea, type TextareaProps } from "../components/textarea/textarea.re
 export { Select, type SelectProps } from "../components/select/select.react";
 export { Checkbox, type CheckboxProps } from "../components/checkbox/checkbox.react";
 export { RadioGroup, Radio, type RadioGroupProps, type RadioProps } from "../components/radio/radio.react";
-export { Field, Label, FieldHint, FieldError, type FieldProps } from "../components/field/field.react";
+export {
+  Field,
+  Label,
+  FieldHint,
+  FieldError,
+  type FieldProps,
+  type LabelProps,
+  type FieldHintProps,
+  type FieldErrorProps,
+} from "../components/field/field.react";
 export { Switch, type SwitchProps } from "../components/switch/switch.react";
 export {
   Tabs,
@@ -59,7 +75,14 @@ export {
   DialogDescription,
   DialogClose,
   type DialogProps,
+  type DialogTriggerProps,
   type DialogContentProps,
+  type DialogHeaderProps,
+  type DialogBodyProps,
+  type DialogFooterProps,
+  type DialogTitleProps,
+  type DialogDescriptionProps,
+  type DialogCloseProps,
 } from "../components/dialog/dialog.react";
 export {
   Popover,
@@ -127,13 +150,22 @@ export {
   type CardToastStatusProps,
   type CardToastThumbProps,
 } from "../components/toast/toast.react";
-export { toast, cardToast, inlineToastClass, type CardToastOptions, type CardToastHandle } from "../components/toast/toast";
+export { cardToast, inlineToastClass, type CardToastOptions, type CardToastHandle } from "../components/toast/toast";
 
-export { Alert, AlertTitle, AlertDescription, AlertActions, type AlertProps } from "../components/alert/alert.react";
+export {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertActions,
+  type AlertProps,
+  type AlertTitleProps,
+  type AlertDescriptionProps,
+  type AlertActionsProps,
+} from "../components/alert/alert.react";
 export { Progress, type ProgressProps } from "../components/progress/progress.react";
 export { ProgressRing, type ProgressRingProps } from "../components/progress-ring/progress-ring.react";
 export { Skeleton, type SkeletonProps } from "../components/skeleton/skeleton.react";
-export { Avatar, AvatarGroup, type AvatarProps } from "../components/avatar/avatar.react";
+export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps } from "../components/avatar/avatar.react";
 export { Icon, type IconProps } from "../components/icon/icon.react";
 export {
   Table,
@@ -146,10 +178,14 @@ export {
   TableCaption,
   TableRowActions,
   type TableProps,
+  type TableHeaderProps,
+  type TableBodyProps,
+  type TableFooterProps,
+  type TableRowProps,
   type TableCellProps,
   type TableHeadProps,
-  type TableRowProps,
   type TableRowActionsProps,
+  type TableCaptionProps,
 } from "../components/table/table.react";
 export {
   ActionBar,
@@ -218,7 +254,12 @@ export {
   NavbarLink,
   NavbarActions,
   NavbarToggle,
+  type NavbarProps,
+  type NavbarBrandProps,
+  type NavbarNavProps,
   type NavbarLinkProps,
+  type NavbarActionsProps,
+  type NavbarToggleProps,
 } from "../components/navbar/navbar.react";
 export {
   AppShell,
@@ -245,10 +286,20 @@ export {
   type AppShellResizeProps,
   type AppShellMainProps,
   type AppShellBackProps,
+  type AppShellTitleProps,
+  type AppShellHeadProps,
+  type AppShellBarProps,
+  type AppShellToggleProps,
+  type AppShellSidebarProps,
+  type AppShellBrandProps,
+  type AppShellNavProps,
   type AppShellLinkProps,
   type AppShellGroupProps,
+  type AppShellItemProps,
   type AppShellSublistProps,
   type AppShellCollapseProps,
+  type AppShellFooterProps,
+  type AppShellDetailProps,
 } from "../components/app-shell/app-shell.react";
 export {
   BottomNav,
@@ -262,7 +313,7 @@ export {
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
 export { Separator, type SeparatorProps } from "../components/separator/separator.react";
-export { Carousel, CarouselSlide, type CarouselProps } from "../components/carousel/carousel.react";
+export { Carousel, CarouselSlide, type CarouselProps, type CarouselSlideProps } from "../components/carousel/carousel.react";
 export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";
 export { Stat, type StatProps } from "../components/stat/stat.react";
 export { Frame, type FrameProps } from "../components/frame/frame.react";
@@ -271,14 +322,20 @@ export {
   ChatMessage,
   ChatTyping,
   ChatReplies,
+  type ChatProps,
   type ChatMessageProps,
   type ChatTypingProps,
+  type ChatRepliesProps,
 } from "../components/chat/chat.react";
 export {
   PageHeader,
   PageHeaderTitle,
   PageHeaderDescription,
   PageHeaderActions,
+  type PageHeaderProps,
+  type PageHeaderTitleProps,
+  type PageHeaderDescriptionProps,
+  type PageHeaderActionsProps,
 } from "../components/page-header/page-header.react";
 export {
   List,
@@ -289,7 +346,11 @@ export {
   ListMeta,
   ListLink,
   type ListProps,
+  type ListItemProps,
+  type ListContentProps,
   type ListTitleProps,
+  type ListDescriptionProps,
+  type ListMetaProps,
   type ListLinkProps,
 } from "../components/list/list.react";
 export {
@@ -298,6 +359,9 @@ export {
   EmptyStateDescription,
   EmptyStateActions,
   type EmptyStateProps,
+  type EmptyStateTitleProps,
+  type EmptyStateDescriptionProps,
+  type EmptyStateActionsProps,
 } from "../components/empty-state/empty-state.react";
 export { Spinner, type SpinnerProps } from "../components/spinner/spinner.react";
 export { Kbd, KeyboardHint, type KbdProps, type KeyboardHintProps } from "../components/kbd/kbd.react";
@@ -332,7 +396,12 @@ export {
   FooterGroup,
   FooterLink,
   FooterBottom,
+  type FooterProps,
+  type FooterBrandProps,
+  type FooterNavProps,
   type FooterGroupProps,
+  type FooterLinkProps,
+  type FooterBottomProps,
 } from "../components/footer/footer.react";
 export {
   DatePicker,
@@ -371,7 +440,18 @@ export {
   type ColorSwatchCustomProps as SwatchCustomProps,
   type ColorSwatchGroupProps as SwatchGroupProps,
 } from "../components/swatch/swatch.react";
-export { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, type ToolbarProps, type ToolbarButtonProps } from "../components/toolbar/toolbar.react";
+export {
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarSeparator,
+  ToolbarSpacer,
+  type ToolbarProps,
+  type ToolbarButtonProps,
+  type ToolbarGroupProps,
+  type ToolbarSeparatorProps,
+  type ToolbarSpacerProps,
+} from "../components/toolbar/toolbar.react";
 export {
   Shortcut,
   ShortcutRecorder,
@@ -430,6 +510,10 @@ export {
   type TimelineProps,
   type TimelineItemProps,
   type TimelineMarkerProps,
+  type TimelineContentProps,
+  type TimelineTimeProps,
+  type TimelineTitleProps,
+  type TimelineBodyProps,
 } from "../components/timeline/timeline.react";
 export {
   CodeBlock,

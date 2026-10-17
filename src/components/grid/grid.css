@@ -56,16 +56,17 @@
   transition:
     border-color var(--ayy-duration-fast) ease,
     background-color var(--ayy-duration-fast) ease,
-    box-shadow var(--ayy-duration-fast) ease,
-    transform var(--ayy-duration-base) var(--ayy-ease-out-expo);
+    box-shadow var(--ayy-duration-fast) ease;
 }
 
 .ayy-grid__item:has(.ayy-grid__select) {
   cursor: pointer;
 }
 
-.ayy-grid__item:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-grid__item:hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 .ayy-grid__item[aria-selected="true"] {

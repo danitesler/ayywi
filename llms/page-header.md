@@ -101,18 +101,18 @@ export default function Example({
   useEffect(() => {
     if (!setControls) return;
     setControls(
-      <div className="pv-props-list">
-        <div className="pv-props-group">
-          <div className="pv-props-item">
-            <Label htmlFor="ph-breadcrumbs" className="pv-props-label">Breadcrumb</Label>
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="ph-breadcrumbs">Breadcrumb</Label>
             <Switch id="ph-breadcrumbs" checked={showBreadcrumbs} onCheckedChange={setShowBreadcrumbs} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="ph-desc" className="pv-props-label">Description</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="ph-desc">Description</Label>
             <Switch id="ph-desc" checked={showDescription} onCheckedChange={setShowDescription} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="ph-action" className="pv-props-label">Secondary action</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="ph-action">Secondary action</Label>
             <Switch id="ph-action" checked={showSecondaryAction} onCheckedChange={setShowSecondaryAction} />
           </div>
         </div>

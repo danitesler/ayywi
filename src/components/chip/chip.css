@@ -50,10 +50,12 @@
   block-size: var(--ayy-size-icon-sm);
 }
 
-.ayy-chip:hover {
-  border-color: var(--ayy-color-line-hover);
-  background-color: var(--ayy-color-wash);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-chip:not(:disabled):not([aria-disabled="true"]):not(:has(> input:disabled)):hover {
+    border-color: var(--ayy-color-line-hover);
+    background-color: var(--ayy-color-wash);
+    color: var(--ayy-color-text);
+  }
 }
 
 /* On: the text colour's border, a wash and a tick before the label — not colour alone. */
@@ -106,10 +108,6 @@
   cursor: default;
 }
 
-.ayy-chip--removable:hover {
-  border-color: var(--ayy-color-line-strong);
-}
-
 .ayy-chip__remove {
   display: inline-grid;
   flex: none;
@@ -133,9 +131,15 @@
   block-size: var(--ayy-size-icon-sm);
 }
 
-.ayy-chip__remove:hover {
-  background-color: var(--ayy-color-wash-hover);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-chip--removable:hover {
+    border-color: var(--ayy-color-line-strong);
+  }
+
+  .ayy-chip__remove:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-chip__remove:focus-visible {
@@ -179,5 +183,14 @@
   .ayy-chip:has(> input:checked) .ayy-chip__count,
   .ayy-chip[aria-pressed="true"] .ayy-chip__count {
     color: HighlightText;
+  }
+  .ayy-chip:disabled,
+  .ayy-chip:has(> input:disabled) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+  .ayy-chip:disabled .ayy-chip__count,
+  .ayy-chip:has(> input:disabled) .ayy-chip__count {
+    color: GrayText;
   }
 }

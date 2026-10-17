@@ -30,10 +30,10 @@ export default function Example({
   useEffect(() => {
     if (!setControls) return;
     setControls(
-      <div className="pv-props-list">
-        <div className="pv-props-group">
-          <div className="pv-props-item">
-            <Label htmlFor="nv-page" className="pv-props-label">Active page</Label>
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="nv-page">Active page</Label>
             <div style={{ inlineSize: "7.5rem" }}>
               <Select
                 id="nv-page"
@@ -48,12 +48,12 @@ export default function Example({
               </Select>
             </div>
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="nv-action" className="pv-props-label">Action button</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="nv-action">Action button</Label>
             <Switch id="nv-action" checked={showAction} onCheckedChange={setShowAction} />
           </div>
-          <div className="pv-props-item">
-            <Label htmlFor="nv-icon" className="pv-props-label">Brand icon</Label>
+          <div className="ayy-spread">
+            <Label htmlFor="nv-icon">Brand icon</Label>
             <Switch id="nv-icon" checked={showBrandIcon} onCheckedChange={setShowBrandIcon} />
           </div>
         </div>

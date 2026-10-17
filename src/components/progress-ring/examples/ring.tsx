@@ -3,7 +3,7 @@ import { Icon, ProgressRing } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
-    <div className="ayy-cluster" style={{ alignItems: "center", gap: "2rem" }}>
+    <div className="ayy-cluster" style={{ alignItems: "center", "--ayy-gap": "var(--ayy-space-8)" } as any}>
       <ProgressRing value={28} size="xl" aria-label="Focus session, 18 minutes left">
         18:00
       </ProgressRing>

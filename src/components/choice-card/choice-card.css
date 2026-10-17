@@ -77,8 +77,10 @@
   block-size: var(--ayy-size-icon-md);
 }
 
-.ayy-choice-card:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-choice-card:not(:has(> input:disabled)):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 /* Chosen: like Card featured, a text-colour border with a 1px ring, so it reads as 2px without moving anything. */
@@ -169,5 +171,12 @@
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
+  }
+  .ayy-choice-card:has(> input:disabled) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+  .ayy-choice-card:has(> input:disabled) :is(.ayy-choice-card__title, .ayy-choice-card__description, .ayy-choice-card__meta) {
+    color: GrayText;
   }
 }

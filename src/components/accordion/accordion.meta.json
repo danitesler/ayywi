@@ -11,7 +11,9 @@
     "ayy-accordion__trigger": "The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.",
     "ayy-accordion__content": "The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you."
   },
-  "variants": {},
+  "variants": {
+    "single": { "values": [false, true], "default": false }
+  },
   "states": {
     "default": { "looks": "Items stacked between hairlines; each trigger is md text, medium weight, with a muted chevron pointing down." },
     "hover": { "when": ".ayy-accordion__trigger:hover", "looks": "Chevron turns text colour." },

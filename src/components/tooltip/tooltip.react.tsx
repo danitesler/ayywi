@@ -1,5 +1,6 @@
-import { cloneElement, isValidElement, useEffect, useId, useRef, type HTMLAttributes, type ReactElement, type ReactNode } from "react";
+import { cloneElement, forwardRef, isValidElement, useEffect, useId, useRef, type HTMLAttributes, type ReactElement, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
+import { mergeRefs } from "../../lib/refs";
 import { enhanceTooltip, tooltipClass, tooltipContentClass, type TooltipSide } from "./tooltip";
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "content"> {
@@ -11,18 +12,21 @@ export interface TooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "con
 }
 
 /** Shows on hover and focus, Esc dismisses it. Renders in the top layer, so it can't be clipped. */
-export function Tooltip({ content, side = "top", className, children, ...props }: TooltipProps) {
+export const Tooltip = forwardRef<HTMLSpanElement, TooltipProps>(function Tooltip(
+  { content, side = "top", className, children, ...props },
+  ref,
+) {
   const id = useId();
   const hostRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => (hostRef.current ? enhanceTooltip(hostRef.current) : undefined), []);
 
   return (
-    <span ref={hostRef} className={cx(tooltipClass, className)} {...props}>
+    <span ref={mergeRefs(hostRef, ref)} className={cx(tooltipClass, className)} {...props}>
       {isValidElement(children) ? cloneElement(children, { "aria-describedby": cx(children.props["aria-describedby"], id) }) : children}
       <span role="tooltip" id={id} className={tooltipContentClass} data-side={side}>
         {content}
       </span>
     </span>
   );
-}
+});

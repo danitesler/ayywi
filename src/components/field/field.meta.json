@@ -22,7 +22,7 @@
     "focus": { "none": "The control inside shows the focus ring." },
     "disabled": { "when": ".ayy-field:has(:disabled), .ayy-label:has(> :disabled)", "looks": "Label dims to --ayy-opacity-disabled with a not-allowed cursor; the control dims itself." },
     "selected": { "none": "Selection belongs to the control (Checkbox, Radio, Switch)." },
-    "error": { "when": "aria-invalid=\"true\" on the control plus .ayy-field__error, linked with aria-describedby (React: Field error)", "looks": "Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border." },
+    "error": { "when": "aria-invalid=\"true\" on the control plus .ayy-field__error, linked with aria-describedby (React: FieldError)", "looks": "Error message in --ayy-color-destructive, control sm text, replacing or after the hint; the control draws a red border." },
     "loading": { "none": "Fields don't load; show a Skeleton for the whole form while its data loads." }
   },
   "sizes": {

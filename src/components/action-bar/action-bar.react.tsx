@@ -42,7 +42,6 @@ export const ActionBar = forwardRef<HTMLDivElement, ActionBarProps>(function Act
 
   useEffect(() => {
     if (!host.current) return;
-    host.current.toggleAttribute("open", Boolean(open));
     return connectActionBar(host.current, {
       onClear: () => {
         if (onClearRef.current) {
@@ -51,7 +50,13 @@ export const ActionBar = forwardRef<HTMLDivElement, ActionBarProps>(function Act
         }
       },
     }).destroy;
-  });
+  }, []);
+
+  useEffect(() => {
+    if (host.current) {
+      host.current.toggleAttribute("open", Boolean(open));
+    }
+  }, [open]);
 
   return (
     <div

@@ -33,7 +33,7 @@
     "pulse": { "when": "ayy-timeline__marker--pulse", "looks": "A status ring expands outward from the marker and fades, looping continuously to indicate a live or in-progress event." }
   },
   "sizes": {
-    "density": "Markers and spacing are fixed; controls or badges inside event content follow data-density.",
+    "density": "Markers and spacing are fixed; timestamp text follows data-density via --ayy-text-s; controls or badges inside event content follow data-density.",
     "width": "Fills its container. In alternate mode, centers the track with 1fr columns on either side above 36rem, collapsing to a single start-aligned column below 36rem."
   },
   "js": "timelineClass({ alternate?, className? }) → string; timelineMarkerClass({ pulse?, className? }) → string; timelineItemClass, timelineTrackClass, timelineContentClass, timelineTimeClass, timelineTitleClass, timelineBodyClass constants.",

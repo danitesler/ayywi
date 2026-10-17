@@ -129,9 +129,16 @@
   box-shadow: 0 1px 3px color-mix(in srgb, var(--ayy-color-shadow) 50%, transparent);
 }
 
-.ayy-color-picker__hue:hover::-webkit-slider-thumb,
-.ayy-color-picker__alpha:hover::-webkit-slider-thumb {
-  transform: scale(1.1);
+@media (hover: hover) {
+  .ayy-color-picker__hue:not(:disabled):hover::-webkit-slider-thumb,
+  .ayy-color-picker__alpha:not(:disabled):hover::-webkit-slider-thumb {
+    transform: scale(1.1);
+  }
+
+  .ayy-color-picker__hue:not(:disabled):hover::-moz-range-thumb,
+  .ayy-color-picker__alpha:not(:disabled):hover::-moz-range-thumb {
+    transform: scale(1.1);
+  }
 }
 
 .ayy-color-picker__hue:focus-visible,
@@ -198,8 +205,10 @@
   transition: transform var(--ayy-duration-fast) var(--ayy-ease-spring);
 }
 
-.ayy-color-picker__swatch:hover {
-  transform: scale(1.1);
+@media (hover: hover) {
+  .ayy-color-picker__swatch:not(:disabled):not([aria-disabled="true"]):hover {
+    transform: scale(1.1);
+  }
 }
 
 .ayy-color-picker__swatch[aria-pressed="true"] {
@@ -255,6 +264,11 @@
   .ayy-color-picker__swatch[aria-pressed="true"] {
     outline: 2px solid Highlight;
     outline-offset: 1px;
+  }
+
+  .ayy-color-picker__swatch:disabled,
+  .ayy-color-picker__swatch[aria-disabled="true"] {
+    outline-color: GrayText;
   }
 }
 

@@ -27,8 +27,8 @@
   cursor: pointer;
 }
 
-.ayy-field:has(:disabled) .ayy-label,
-.ayy-label:has(> :disabled) {
+.ayy-field:has(:is(input, select, textarea, .ayy-select__control, .ayy-shortcut-recorder):is(:disabled, [aria-disabled="true"])) .ayy-label,
+.ayy-label:has(> :is(:disabled, [aria-disabled="true"])) {
   opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;
 }

@@ -77,8 +77,6 @@ export * from "./components/color-picker/color-picker";
 export * from "./components/timeline/timeline";
 export * from "./components/code-block/code-block";
 export * from "./components/text-highlight/text-highlight";
-export * from "./components/status-dot/status-dot";
-export * from "./components/showcase/showcase";
 export * from "./components/action-bar/action-bar";
 export * from "./components/grid/grid";
 

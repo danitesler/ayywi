@@ -16,8 +16,10 @@
   transition: border-color var(--ayy-duration-fast) ease;
 }
 
-.ayy-number-field:hover {
-  border-color: var(--ayy-color-line-hover);
+@media (hover: hover) {
+  .ayy-number-field:not(:has(> .ayy-number-field__input:disabled)):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
 }
 
 /* Like Input: the ring replaces the border while you type. */
@@ -83,10 +85,12 @@
   block-size: var(--ayy-size-icon-sm);
 }
 
-.ayy-number-field__decrement:hover,
-.ayy-number-field__increment:hover {
-  background-color: var(--ayy-color-wash-hover);
-  color: var(--ayy-color-text);
+@media (hover: hover) {
+  .ayy-number-field__decrement:not(:disabled):not([aria-disabled="true"]):hover,
+  .ayy-number-field__increment:not(:disabled):not([aria-disabled="true"]):hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-number-field__decrement:focus-visible,
@@ -127,5 +131,15 @@
   }
   .ayy-number-field:has(> .ayy-number-field__input[aria-invalid="true"]) {
     border-style: dashed;
+  }
+  .ayy-number-field:has(> .ayy-number-field__input:disabled) {
+    border-color: GrayText;
+  }
+  .ayy-number-field__input:disabled {
+    color: GrayText;
+  }
+  .ayy-number-field__decrement:is(:disabled, [aria-disabled="true"]),
+  .ayy-number-field__increment:is(:disabled, [aria-disabled="true"]) {
+    color: GrayText;
   }
 }

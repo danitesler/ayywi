@@ -87,7 +87,7 @@
     "density": "Day cells are the md control height (32px compact, 40 comfortable, 44 touch); time items follow md control height; nav buttons are sm control height.",
     "width": "Single date fits 7 days; side-by-side range fits two month grids (approx 36rem); combined date-time fits month plus time columns (approx 30rem)."
   },
-  "js": "datePickerMonth, datePickerMonths, datePickerYears, datePickerYearPageStart, datePickerLabels, datePickerKeyTarget, datePickerCellKeyTarget, connectDatePicker, datePickerFooterClass, dateRangeMonth, dateRangeLabels, dateRangeKeyTarget, connectDateRange, dateRangeFooterClass, formatTime, formatTimeString, parseTimeString, connectTimePicker, connectDateTimePicker, dateTimePickerFooterClass, formatDate, formatDateRange, formatDateTime. Date helpers: addDays, addMonths, startOfMonth, startOfWeek, todayIso, localeWeekStart. Icons: datePickerPreviousIcon, datePickerNextIcon, datePickerIcon, timePickerClockIcon (SVG markup).",
+  "js": "datePickerClassName({ full?, className? }), dateRangeClassName({ className? }), dateRangePickerClassName({ size?, className? }), timePickerClassName({ className? }), timePickerTriggerClassName({ size?, className? }), dateTimePickerClassName({ className? }), dateTimePickerTriggerClassName({ size?, className? }), datePickerMonth, datePickerMonths, datePickerYears, datePickerYearPageStart, datePickerLabels, datePickerKeyTarget, datePickerCellKeyTarget, connectDatePicker, datePickerFooterClass, dateRangeMonth, dateRangeLabels, dateRangeKeyTarget, connectDateRange, dateRangeFooterClass, formatTime, formatTimeString, parseTimeString, connectTimePicker, connectDateTimePicker, dateTimePickerFooterClass, formatDate, formatDateRange, formatDateTime. Date helpers: addDays, addMonths, startOfMonth, startOfWeek, todayIso, localeWeekStart. Icons: datePickerPreviousIcon, datePickerNextIcon, datePickerIcon, timePickerClockIcon (SVG markup).",
   "element": {
     "tag": "ayy-date-picker",
     "description": "Wraps picker markups and wires month navigation, keyboard controls, presets, range highlights, and time column scrolling. Automatically updates trigger labels and closes popovers on selection.",
@@ -117,9 +117,11 @@
       "tag": "ayy-date-range",
       "description": "Wraps date range month grids and wires range selection and hover highlights.",
       "attributes": {
-        "value": "The picked range: start and end ISO dates.",
+        "start": "Range start ISO date.",
+        "end": "Range end ISO date.",
         "min": "Earliest pickable ISO date.",
-        "max": "Latest pickable ISO date."
+        "max": "Latest pickable ISO date.",
+        "months": "Number of months to show side-by-side (default 2)."
       },
       "events": {
         "ayy-select": "{ value } when a range is picked."
@@ -145,7 +147,8 @@
         "min": "Earliest pickable ISO date.",
         "max": "Latest pickable ISO date.",
         "format": "\"12h\" | \"24h\" — time format.",
-        "step": "Minute step between items."
+        "step": "Minute step between items.",
+        "week-start": "Weekday index (0=Sun, 1=Mon, 6=Sat) to start weeks on."
       },
       "events": {
         "ayy-select": "{ value } when date or time changes."

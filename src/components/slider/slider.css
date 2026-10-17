@@ -70,10 +70,17 @@
   border-radius: 50%;
   background: var(--ayy-color-bg);
   box-shadow: 0 1px 3px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent);
+  transition: scale var(--ayy-duration-fast) var(--ayy-ease-spring);
 }
 
-.ayy-slider:hover::-webkit-slider-thumb {
-  scale: 1.1;
+@media (hover: hover) {
+  .ayy-slider:not(:disabled):hover::-webkit-slider-thumb {
+    scale: 1.1;
+  }
+
+  .ayy-slider:not(:disabled):hover::-moz-range-thumb {
+    scale: 1.1;
+  }
 }
 
 .ayy-slider:focus-visible {

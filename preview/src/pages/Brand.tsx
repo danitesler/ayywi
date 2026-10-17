@@ -287,7 +287,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
               onValueChange={updateCustomColor}
               presets={BRAND_PRESETS.filter((p) => !p.isMono).map((p) => p.color)}
             />
-            <Input id="pv-brand-color" className="pv-brand__hex" value={input.color} onChange={(e) => updateCustomColor(e.target.value)} spellCheck={false} />
+            <Input id="pv-brand-color" className="pv-brand__hex ayy-mono" value={input.color} onChange={(e) => updateCustomColor(e.target.value)} spellCheck={false} />
           </div>
         </Field>
         <Field>

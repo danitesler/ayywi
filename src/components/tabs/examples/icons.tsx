@@ -1,28 +1,28 @@
 import { Icon, Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
-import { Notification03Icon, SecurityIcon, UserIcon } from "@hugeicons/core-free-icons";
+import { CodeIcon, GitPullRequestIcon, RocketIcon } from "@hugeicons/core-free-icons";
 
 export default function Example() {
   return (
-    <Tabs defaultValue="account">
-      <TabsList aria-label="Settings">
-        <TabsTrigger value="account" icon={<Icon icon={UserIcon} />}>
-          Account
+    <Tabs defaultValue="code">
+      <TabsList aria-label="Project">
+        <TabsTrigger value="code" icon={<Icon icon={CodeIcon} />}>
+          Code
         </TabsTrigger>
-        <TabsTrigger value="notifications" icon={<Icon icon={Notification03Icon} />}>
-          Notifications
+        <TabsTrigger value="pull-requests" icon={<Icon icon={GitPullRequestIcon} />}>
+          Pull requests
         </TabsTrigger>
-        <TabsTrigger value="security" icon={<Icon icon={SecurityIcon} />}>
-          Security
+        <TabsTrigger value="deployments" icon={<Icon icon={RocketIcon} />}>
+          Deployments
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="account">
-        <p className="ayy-muted">Manage your profile details and email address.</p>
+      <TabsContent value="code">
+        <p className="ayy-muted">Browse repository source files and commits.</p>
       </TabsContent>
-      <TabsContent value="notifications">
-        <p className="ayy-muted">Choose what updates you want to receive.</p>
+      <TabsContent value="pull-requests">
+        <p className="ayy-muted">Review open proposals and merge requests.</p>
       </TabsContent>
-      <TabsContent value="security">
-        <p className="ayy-muted">Two-factor authentication and active sessions.</p>
+      <TabsContent value="deployments">
+        <p className="ayy-muted">View production releases and deploy status.</p>
       </TabsContent>
     </Tabs>
   );

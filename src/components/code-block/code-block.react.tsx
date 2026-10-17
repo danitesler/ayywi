@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  Fragment,
   useEffect,
   useRef,
   useState,
@@ -99,7 +100,7 @@ export const CodeBlockActions = forwardRef<HTMLDivElement, CodeBlockActionsProps
   );
 });
 
-export interface CodeBlockSelectorProps {
+export interface CodeBlockSelectorProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "value" | "onChange"> {
   /** Language ID to select. */
   value?: string;
   /** Initial language ID when uncontrolled. */
@@ -110,13 +111,8 @@ export interface CodeBlockSelectorProps {
   onChange?: (event: { target: { value: string } }) => void;
   /** Optional array of languages to populate options; defaults to SUPPORTED_LANGUAGES. */
   languages?: LanguagePreset[];
-  /** Additional CSS class names for the trigger button. */
-  className?: string;
-  /** Accessible label for the selector button. Default is "Select language". */
-  "aria-label"?: string;
-  /** Whether the selector is disabled. */
+  /** Whether the selector trigger is disabled. */
   disabled?: boolean;
-  children?: ReactNode;
 }
 
 export const CodeBlockSelector = forwardRef<HTMLButtonElement, CodeBlockSelectorProps>(function CodeBlockSelector(
@@ -130,6 +126,7 @@ export const CodeBlockSelector = forwardRef<HTMLButtonElement, CodeBlockSelector
     "aria-label": ariaLabel = "Select language",
     disabled,
     children,
+    ...props
   },
   ref,
 ) {
@@ -157,6 +154,7 @@ export const CodeBlockSelector = forwardRef<HTMLButtonElement, CodeBlockSelector
           className={codeBlockSelectorClass(className)}
           aria-label={ariaLabel}
           disabled={disabled}
+          {...props}
         >
           <span>{displayLabel}</span>
           <Icon icon={ArrowDown01Icon} className={codeBlockChevronClass()} />
@@ -305,18 +303,35 @@ export const CodeBlockCode = forwardRef<HTMLElement, CodeBlockCodeProps>(functio
   let body = children;
   if (content !== undefined && language) {
     const tokens = tokenizeCode(content, language);
+    const lines: ReactNode[][] = [[]];
+    for (const token of tokens) {
+      const cls = TOKEN_CLASSES[token.type];
+      const parts = token.value.split("\n");
+      for (let i = 0; i < parts.length; i++) {
+        if (i > 0) {
+          lines.push([]);
+        }
+        if (parts[i]) {
+          lines[lines.length - 1].push(
+            cls ? (
+              <span key={`${lines.length - 1}-${lines[lines.length - 1].length}`} className={cls}>
+                {parts[i]}
+              </span>
+            ) : (
+              parts[i]
+            ),
+          );
+        }
+      }
+    }
     body = (
       <>
-        {tokens.map((token, index) => {
-          const cls = TOKEN_CLASSES[token.type];
-          return cls ? (
-            <span key={index} className={cls}>
-              {token.value}
-            </span>
-          ) : (
-            token.value
-          );
-        })}
+        {lines.map((lineTokens, index) => (
+          <Fragment key={index}>
+            <span className="ayy-code-block__line">{lineTokens}</span>
+            {index < lines.length - 1 ? "\n" : null}
+          </Fragment>
+        ))}
       </>
     );
   } else if (code !== undefined) {

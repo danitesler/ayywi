@@ -32,7 +32,7 @@
     "loading": { "none": "No loading state." }
   },
   "sizes": {
-    "density": "Doesn't follow data-density.",
+    "density": "Links follow the control height scale (var(--ayy-size-control-sm)), so comfortable or touch density expands their tap target to 40px without changing the rail spacing.",
     "width": "Fills its column. sticky stays in view under the navbar and scrolls on its own when taller than the viewport."
   },
   "js": "tocClass({ sticky?, className? }) → string; tocTitleClass, tocListClass, tocLinkClass, tocNumberClass, tocBarClass, tocToggleClass, tocToggleIconClass, tocToggleCurrentClass, tocToggleCaretClass constants; tocMenuIcon, tocChevronIcon SVG strings; connectToc(root, { offset?, onChange? }) → cleanup — the scrollspy and mobile menu.",

@@ -23,7 +23,7 @@ Category: Forms. Preferences as rows: a label and a one-line hint at the start, 
 - `hover` (`.ayy-settings__link:hover (devices that hover)`) — A wash over the link row.
 - `pressed` — doesn't apply: No pressed look; a link row opens its page at once.
 - `focus` (`.ayy-settings__link:focus-visible; the row's own control`) — Link rows get the ring inside the row's edge (outside in plain groups); controls keep their own ring.
-- `disabled` — doesn't apply: Rows don't disable; disable the control in the row and say why in its hint.
+- `disabled` (`.ayy-settings__link:disabled, .ayy-settings__link[aria-disabled="true"]`) — Reduced opacity and not-allowed cursor on link rows.
 - `selected` — doesn't apply: Rows aren't selectable. A link row shows its current value (.ayy-settings__value) instead; the page you're on is the App shell's aria-current.
 - `error` (`.ayy-settings__hint.ayy-field__error, with aria-invalid on the control`) — The hint becomes the error, in the destructive colour.
 - `loading` — doesn't apply: Settings apply at once. While they load, show a Skeleton in the shape of the rows.
@@ -269,7 +269,7 @@ export default function Example() {
     <div style={{ inlineSize: "100%", maxInlineSize: "36rem" }}>
       <Settings title="Appearance">
         <SettingsRow label="Theme" hint="Follows your system unless you pick one." stack>
-          <ChoiceGroup aria-label="Theme" defaultValue="system" name="theme" style={{ "--ayy-min": "8rem" } as React.CSSProperties}>
+          <ChoiceGroup aria-label="Theme" defaultValue="system" name="theme" min="8rem">
             <ChoiceCard value="system" title="System" description="Match the device" />
             <ChoiceCard value="light" title="Light" description="Bright surfaces" />
             <ChoiceCard value="dark" title="Dark" description="Dim surfaces" />

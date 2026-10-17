@@ -50,7 +50,9 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
   );
 });
 
-export const CarouselSlide = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CarouselSlide(
+export interface CarouselSlideProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(function CarouselSlide(
   { className, ...props },
   ref,
 ) {

@@ -24,7 +24,7 @@ Category: Data display. Rows of people, records, threads or settings: leading me
 - `loading` — doesn't apply: No loading look; show Skeleton rows (circle plus two text lines) with aria-busy on the list.
 
 **Sizes**
-- Density — Padding and sm text are fixed; controls in rows follow data-density.
+- Density — Padding and sm text are fixed; row meta text follows data-density via --ayy-text-s; controls in rows follow data-density.
 - Width — Fills its container; titles and descriptions wrap, meta stays on one line.
 
 **React** — `import { List, ListItem, ListContent, ListTitle, ListDescription, ListMeta, ListLink } from "@danitesler/ayywi/react";`

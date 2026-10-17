@@ -137,9 +137,7 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
 
   if (aside) {
     for (const st of sidebarToggles()) {
-      if (!st.hasAttribute("aria-expanded")) {
-        st.setAttribute("aria-expanded", String(!shell.classList.contains(appShellCollapsedClass)));
-      }
+      st.setAttribute("aria-expanded", String(!shell.classList.contains(appShellCollapsedClass)));
       st.setAttribute("aria-controls", ensureId(aside, "ayy-sidebar"));
     }
   }

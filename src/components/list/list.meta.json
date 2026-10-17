@@ -31,7 +31,7 @@
     "loading": { "none": "No loading look; show Skeleton rows (circle plus two text lines) with aria-busy on the list." }
   },
   "sizes": {
-    "density": "Padding and sm text are fixed; controls in rows follow data-density.",
+    "density": "Padding and sm text are fixed; row meta text follows data-density via --ayy-text-s; controls in rows follow data-density.",
     "width": "Fills its container; titles and descriptions wrap, meta stays on one line."
   },
   "js": "listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.",

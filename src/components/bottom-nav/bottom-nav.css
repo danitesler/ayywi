@@ -37,43 +37,7 @@
   padding-inline: var(--ayy-space-2);
 }
 
-/* Compact variation: tighter horizontal footprint to support more items */
-.ayy-bottom-nav--compact {
-  gap: 0;
-  padding-inline: var(--ayy-space-1);
-}
 
-.ayy-bottom-nav--compact .ayy-bottom-nav__link {
-  padding-inline: 2px;
-  gap: 2px;
-}
-
-.ayy-bottom-nav--compact .ayy-bottom-nav__link > svg {
-  padding-inline: var(--ayy-space-2);
-}
-
-.ayy-bottom-nav--compact .ayy-bottom-nav__label {
-  letter-spacing: -0.01em;
-  line-height: var(--ayy-leading-tight);
-}
-
-/* Icon-only variation: hides text labels visually while preserving accessibility */
-.ayy-bottom-nav--icon-only .ayy-bottom-nav__label {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.ayy-bottom-nav--icon-only .ayy-bottom-nav__link {
-  gap: 0;
-  justify-content: center;
-}
 
 /* A <button> (a "More" tab that opens the app shell's drawer) looks like the links. */
 .ayy-bottom-nav__link {
@@ -104,9 +68,9 @@
 
 .ayy-bottom-nav--sm .ayy-bottom-nav__link {
   min-block-size: var(--ayy-size-control-sm);
-  padding-block: 2px;
+  padding-block: var(--ayy-space-0-5);
   padding-inline: var(--ayy-space-0-5);
-  gap: 2px;
+  gap: var(--ayy-space-0-5);
 }
 
 .ayy-bottom-nav--md .ayy-bottom-nav__link {
@@ -144,14 +108,14 @@
 .ayy-bottom-nav--sm .ayy-bottom-nav__link > svg {
   inline-size: var(--ayy-size-icon-sm);
   block-size: var(--ayy-size-icon-sm);
-  padding-block: 2px;
+  padding-block: var(--ayy-space-0-5);
   padding-inline: var(--ayy-space-2);
 }
 
 .ayy-bottom-nav--md .ayy-bottom-nav__link > svg {
   inline-size: var(--ayy-size-icon-md);
   block-size: var(--ayy-size-icon-md);
-  padding-block: 2px;
+  padding-block: var(--ayy-space-0-5);
   padding-inline: var(--ayy-space-3);
 }
 
@@ -164,6 +128,44 @@
 
 .ayy-bottom-nav--sm.ayy-bottom-nav--compact .ayy-bottom-nav__link > svg {
   padding-inline: var(--ayy-space-1-5);
+}
+
+/* Compact variation: tighter horizontal footprint to support more items */
+.ayy-bottom-nav--compact {
+  gap: 0;
+  padding-inline: var(--ayy-space-1);
+}
+
+.ayy-bottom-nav--compact .ayy-bottom-nav__link {
+  padding-inline: var(--ayy-space-0-5);
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-bottom-nav--compact .ayy-bottom-nav__link > svg {
+  padding-inline: var(--ayy-space-2);
+}
+
+.ayy-bottom-nav--compact .ayy-bottom-nav__label {
+  letter-spacing: var(--ayy-tracking-tight);
+  line-height: var(--ayy-leading-tight);
+}
+
+/* Icon-only variation: hides text labels visually while preserving accessibility */
+.ayy-bottom-nav--icon-only .ayy-bottom-nav__label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ayy-bottom-nav--icon-only .ayy-bottom-nav__link {
+  gap: 0;
+  justify-content: center;
 }
 
 .ayy-bottom-nav__link:hover {

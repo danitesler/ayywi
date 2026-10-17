@@ -6,7 +6,7 @@ import { components } from "./data";
 const PUBLIC_SITE: string = (import.meta.env.VITE_AYYWI_SITE ?? "https://danitesler.github.io/ayywi/").replace(/\/*$/, "/");
 
 export interface Links {
-  /** Where the docs are read from (llms files, rules, Tailwind mappings): the latest. */
+  /** Where the docs are read from (llms files, rules): the latest. */
   docs: string;
   /** Where an app loads ayywi from: this release's copies, at a path whose files never change, so a later release can't restyle it. */
   files: string;
@@ -32,13 +32,11 @@ export const headTags = ({ files }: Links, indent = "") =>
 
 export type Tool = "lovable" | "bolt" | "v0" | "replit" | "cursor" | "claude-code" | "chat";
 
-/** Web app builders start from React, Tailwind and shadcn/ui: work with that instead of against it. */
+/** Web app builders start from React: style with ayywi directly. */
 const webBuilder = (l: Links, entry: string) => `Style everything with the ayywi design system. Nothing to install: it's files on the web.
 - ${entry}
 ${headTags(l, "  ")}
-- Build the UI from ayywi's class names (ayy-*) on plain elements (className in React). Don't add shadcn/ui, Radix themes or another UI kit for buttons, inputs, cards, dialogs, tables or navigation.
-- If the project already has shadcn/ui components, also link ${l.files}shadcn.css after ayywi.min.css so they take ayywi's colours, radius and font until you replace them (replace each one you touch). If its tailwind.config wraps colours in hsl(var(--…)), change them to var(--…).
-- Tailwind is fine for layout. Give it ayywi's colours so it can't drift: copy the @theme block from ${l.docs}tailwind/theme.css into the main CSS (Tailwind 4), or add ${l.docs}tailwind/preset.cjs as a preset (Tailwind 3). Then bg-surface, text-muted, border-line follow the theme; never use Tailwind's own colour scale (bg-gray-900, text-blue-500).
+- Build the UI from ayywi's class names (ayy-*) and tokens (--ayy-*). Do not add any external CSS framework or UI kit.
 - Dark and light mode come from data-theme on <html> (window.ayywi.setTheme("light")), not a .dark class.`;
 
 export const TOOLS: Record<Tool, { label: string; where: string; setup: (l: Links) => string }> = {
@@ -73,8 +71,7 @@ export const TOOLS: Record<Tool, { label: string; where: string; setup: (l: Link
 - Load these once from the app's HTML entry, in <head> (or download them into the project, e.g. public/vendor/ayywi/, keeping the fonts/ folder next to fonts.css):
 ${headTags(l, "  ")}
 - Save ${l.docs}ai/cursor/ayywi.mdc as .cursor/rules/ayywi.mdc, so every chat in this project follows the ayywi rules.
-- Before writing UI, read ${l.docs}llms.txt, then the page of each component you use (${l.docs}llms/<component>.md): classes, props and copy-ready HTML and React.
-- If the project uses Tailwind or shadcn/ui: map Tailwind's theme to ayywi (${l.docs}tailwind/theme.css for Tailwind 4, ${l.docs}tailwind/preset.cjs for Tailwind 3) and link ${l.files}shadcn.css so shadcn parts match until you replace them.`,
+- Before writing UI, read ${l.docs}llms.txt, then the page of each component you use (${l.docs}llms/<component>.md): classes, props and copy-ready HTML and React.`,
   },
   "claude-code": {
     label: "Claude Code",
@@ -83,8 +80,7 @@ ${headTags(l, "  ")}
 - Load these once from the app's HTML entry, in <head> (or download them into the project, e.g. public/vendor/ayywi/, keeping the fonts/ folder next to fonts.css):
 ${headTags(l, "  ")}
 - Add the rules at ${l.docs}ai/AGENTS.snippet.md to CLAUDE.md, so later sessions follow them too.
-- Before writing UI, read ${l.docs}llms.txt, then the page of each component you use (${l.docs}llms/<component>.md): classes, props and copy-ready HTML and React.
-- If the project uses Tailwind or shadcn/ui: map Tailwind's theme to ayywi (${l.docs}tailwind/theme.css for Tailwind 4, ${l.docs}tailwind/preset.cjs for Tailwind 3) and link ${l.files}shadcn.css so shadcn parts match until you replace them.`,
+- Before writing UI, read ${l.docs}llms.txt, then the page of each component you use (${l.docs}llms/<component>.md): classes, props and copy-ready HTML and React.`,
   },
   chat: {
     label: "ChatGPT or Claude",
@@ -104,7 +100,17 @@ const RULES = `Rules:
 - Icons: Hugeicons (hugeicons.com) as inline SVG with class="ayy-icon".`;
 
 /** Every component and its classes on one line each: the contract, for tools that can't open the docs. */
-const CLASSES = components.map((c) => `- ${c.name}: ${Object.keys(c.classes).join(" ")}`).join("\n");
+const CLASSES = components
+  .map((c) => {
+    const aka = c.aka?.length ? ` (aka ${c.aka.join(", ")})` : "";
+    const tags = [
+      ...(c.element?.tag ? [c.element.tag] : []),
+      ...(c.elements?.map((e) => e.tag) ?? []),
+    ];
+    const elements = tags.length ? ` [${tags.map((t) => `<${t}>`).join(", ")}]` : "";
+    return `- ${c.name}${aka}${elements}: ${Object.keys(c.classes).join(" ")}`;
+  })
+  .join("\n");
 
 /** The whole prompt: the person's request, then how to build it in their tool. */
 export function buildPrompt(request: string, tool: Tool = "lovable", l = links()): string {
@@ -149,7 +155,7 @@ export const FIXES = [
   },
   {
     title: "Use ayywi instead of custom styles",
-    prompt: `Find every button, input, card, badge, table, menu and dialog styled with custom CSS, Tailwind colour classes or another UI kit, and replace it with the ayywi component. Replace hardcoded colours, font sizes and spacing with ayywi tokens (--ayy-color-*, --ayy-text-*, --ayy-space-*). Keep the behaviour and the text as they are.`,
+    prompt: `Find every button, input, card, badge, table, menu and dialog styled with custom CSS or inline styles, and replace it with the ayywi component. Replace hardcoded colours, font sizes and spacing with ayywi tokens (--ayy-color-*, --ayy-text-*, --ayy-space-*). Keep the behaviour and the text as they are.`,
   },
   {
     title: "The buttons look inconsistent",
@@ -160,8 +166,12 @@ export const FIXES = [
     prompt: `For every list, table and page add the missing states: .ayy-skeleton shapes while it loads (aria-busy="true" on the area), an .ayy-empty-state with the button that fills it when there's nothing, and an .ayy-alert--destructive with a Try again button when loading fails. Buttons that save show a spinner (aria-busy="true" and an .ayy-spinner inside).`,
   },
   {
-    title: "Add filters and sorting",
-    prompt: `Above the main list or table, add a filter bar: an .ayy-input-group search, .ayy-chip filters for the values people filter by (with an .ayy-chip__count each), and the filters in force as .ayy-chip--removable chips with a Clear all button. Make the table's columns sortable: an .ayy-table__sort button in each sortable <th>, aria-sort on the sorted one (<ayy-table> sorts the rows in plain HTML; TableHead sort and onSort in React). Keep the empty state for "no results".`,
+    title: "Add filters, search and sorting",
+    prompt: `Above the main list or table, add a filter bar using .ayy-filter-bar (FilterBar in React) with an .ayy-search-bar (SearchBar in React), filter chips (.ayy-chip) for active filters with count badges, and .ayy-sorting (Sorting in React) for sort options. For bulk actions on selected rows, show a floating .ayy-action-bar (ActionBar in React) with selection count and action buttons. Make table columns sortable with .ayy-table__sort buttons and aria-sort (<ayy-table> in plain HTML; TableHead sort/onSort in React). Keep the empty state (.ayy-empty-state) for "no results".`,
+  },
+  {
+    title: "Add date and color pickers",
+    prompt: `Use ayywi's first-class date and color components: .ayy-date-picker (<ayy-date-picker> in HTML, DatePicker in React) for calendar dates, .ayy-date-range for date ranges, and .ayy-color-picker (<ayy-color-picker> in HTML, ColorPicker in React) with preset swatches for picking colors.`,
   },
   {
     title: "Make the charts match",
@@ -169,7 +179,7 @@ export const FIXES = [
   },
   {
     title: "The spacing looks messy",
-    prompt: `Fix the spacing with ayywi's layout helpers instead of one-off margins: .ayy-page-header at the top of each screen, .ayy-stack and .ayy-cluster with --ayy-gap set to an --ayy-space-* token, .ayy-grid for cards, .ayy-split for a main column with a side panel.`,
+    prompt: `Fix the spacing with ayywi's layout helpers instead of one-off margins: .ayy-page-header at the top of each screen, .ayy-stack and .ayy-cluster with --ayy-gap set to an --ayy-space-* token, .ayy-grid for responsive card grids (Grid in React), .ayy-split for a main column with a side panel.`,
   },
 ];
 
@@ -181,9 +191,11 @@ export interface ComponentPromptMeta {
   name: string;
   slug: string;
   description: string;
+  aka?: string[];
   classes?: Record<string, string>;
   react?: { import: string; components?: Record<string, unknown> };
   element?: { tag: string };
+  elements?: { tag: string }[];
   do?: string[];
   dont?: string[];
 }
@@ -214,8 +226,15 @@ export function componentPrompt(
   if (!isHtml && component.react?.import) {
     lines.push(`- React: ${component.react.import}`);
   }
-  if (component.element?.tag) {
-    lines.push(`- Element: <${component.element.tag}> (from "@danitesler/ayywi/elements")`);
+  const tags = [
+    ...(component.element?.tag ? [component.element.tag] : []),
+    ...(component.elements?.map((e) => e.tag) ?? []),
+  ];
+  if (tags.length) {
+    lines.push(`- Element${tags.length > 1 ? "s" : ""}: ${tags.map((t) => `<${t}>`).join(", ")} (from "@danitesler/ayywi/elements")`);
+  }
+  if (component.aka?.length) {
+    lines.push(`- Also known as: ${component.aka.join(", ")}`);
   }
   const keyClasses = Object.keys(component.classes ?? {}).slice(0, 5).map((c) => `.${c}`).join(", ");
   if (keyClasses) {

@@ -72,8 +72,8 @@ const manifest = {
   version: pkg.version,
   description: pkg.description,
   entrypoints: {
-    "@danitesler/ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.brand — any unlayered app CSS wins. @danitesler/ayywi/ayywi.min.css is the minified file.",
-    "@danitesler/ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset (Tailwind v3 preflight, normalize.css) would otherwise override components.",
+    "@danitesler/ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.utilities < ayywi.brand — any unlayered app CSS wins. @danitesler/ayywi/ayywi.min.css is the minified file.",
+    "@danitesler/ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset would otherwise override components.",
     "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
     "@danitesler/ayywi/brands/<name>.css": `Ready-made brands (${brands.map((b) => b.name).join(", ") || "none"}), applied with data-brand="<name>" or setBrand("<name>"). Make your own with \`npx @danitesler/ayywi brand\`.`,
     "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
@@ -82,8 +82,6 @@ const manifest = {
     "@danitesler/ayywi/elements": `Custom elements for any framework or plain HTML: ${elements.map((e) => `<${e}>`).join(", ")}, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (${globals.join(", ")}).`,
     "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "@danitesler/ayywi/tokens/<file>": `Exports for other platforms: ${themes.map((t) => `${t.name}.json`).join(", ")}, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).`,
-    "@danitesler/ayywi/tailwind-preset": "Tailwind v3 preset.",
-    "@danitesler/ayywi/tailwind.css": "Tailwind v4 @theme mapping.",
     "npx @danitesler/ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio).",
   },
   conventions: {

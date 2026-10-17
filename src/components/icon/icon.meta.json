@@ -35,7 +35,7 @@
       "lg": "24px.",
       "xl": "32px."
     },
-    "density": "Doesn't follow data-density; inside buttons, menu items and alerts the component sets the size.",
+    "density": "Default 1.25em scales with surrounding text including --ayy-text-s; inside buttons, menu items and alerts the component sets the size.",
     "width": "Square. directional mirrors it in RTL."
   },
   "js": "iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from \"@hugeicons/core-free-icons\". Plain HTML: paste the SVG with class=\"ayy-icon\".",

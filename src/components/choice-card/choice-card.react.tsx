@@ -24,6 +24,7 @@ import {
 } from "./choice-card";
 
 interface ChoiceContextValue {
+  type: "radio" | "checkbox";
   name: string;
   value: string | undefined;
   select: (value: string) => void;
@@ -73,8 +74,7 @@ export const ChoiceGroup = forwardRef<HTMLFieldSetElement, ChoiceGroupProps>(fun
       {children}
     </fieldset>
   );
-  if (type === "checkbox") return fieldset;
-  return <ChoiceContext.Provider value={{ name: name ?? generated, value, select }}>{fieldset}</ChoiceContext.Provider>;
+  return <ChoiceContext.Provider value={{ type, name: name ?? generated, value, select }}>{fieldset}</ChoiceContext.Provider>;
 });
 
 export interface ChoiceCardProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, "onChange" | "title"> {
@@ -104,11 +104,12 @@ export const ChoiceCard = forwardRef<HTMLLabelElement, ChoiceCardProps>(function
   ref,
 ) {
   const group = useContext(ChoiceContext);
-  const kind = group ? "radio" : (type ?? "checkbox");
+  const kind = group ? group.type : (type ?? "checkbox");
+  const isRadioGroup = group && group.type === "radio";
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     inputProps?.onChange?.(event);
     onCheckedChange?.(event.currentTarget.checked);
-    if (group && event.currentTarget.checked && value !== undefined) group.select(value);
+    if (isRadioGroup && event.currentTarget.checked && value !== undefined) group.select(value);
   };
   return (
     <label ref={ref} className={choiceCardClass({ compact, className })} {...props}>
@@ -116,10 +117,10 @@ export const ChoiceCard = forwardRef<HTMLLabelElement, ChoiceCardProps>(function
         {...inputProps}
         type={kind}
         className={cx(kind === "radio" ? radioClass : checkboxClass, inputProps?.className)}
-        name={group?.name ?? inputProps?.name}
+        name={isRadioGroup ? group.name : (inputProps?.name ?? (group ? group.name : undefined))}
         value={value}
-        checked={group ? group.value === value : checked}
-        defaultChecked={group ? undefined : defaultChecked}
+        checked={isRadioGroup ? group.value === value : checked}
+        defaultChecked={isRadioGroup ? undefined : defaultChecked}
         disabled={disabled}
         onChange={onChange}
       />

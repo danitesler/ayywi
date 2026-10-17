@@ -59,12 +59,12 @@
       "md": "Medium: links at the md control height (32px compact), sub-links sm, 16px icons.",
       "lg": "Big (default): links at the lg control height (40px compact), sub-links md, --ayy-space-0-5 between rows, medium weight, 20px icons, pill radius."
     },
-    "density": "Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch), Small ones sm (28, 36, 40); both with lg control text, sub-links one step down. Grows with data-density.",
+    "density": "Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text, Medium ones md (32, 40, 44) with md control text, Small ones sm (28, 32, 40) with sm control text; sub-links one step down. Grows with data-density.",
     "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
   },
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass, appShellMdClass constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass, appShellMdClass, appShellDrawerClass, appShellDetailClass, appShellResizeClass, appShellResizeDetailClass, appShellResizingClass, appShellSizes constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
   "react": {
-    "import": "import { AppShell, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellGroup, AppShellItem, AppShellLink, AppShellFooter, AppShellMain, AppShellBack, AppShellTitle, AppShellHead, BottomNav, BottomNavLink, BottomNavButton } from \"@danitesler/ayywi/react\";",
+    "import": "import { AppShell, AppShellBack, AppShellTitle, AppShellHead, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellLink, AppShellGroup, AppShellItem, AppShellSublist, AppShellCollapse, AppShellFooter, AppShellMain, AppShellDetail, AppShellResize } from \"@danitesler/ayywi/react\";",
     "components": {
       "AppShell": {
         "renders": "<div class=\"ayy-app-shell\">; wires the phone drawer when it holds an AppShellToggle (in the AppShellBar) or a BottomNavButton with className=\"ayy-app-shell__toggle\"",
@@ -156,7 +156,7 @@
   "element": {
     "tag": "ayy-app-shell",
     "attributes": {
-      "size": "\"md\" | \"sm\" — Big (default) or Small (sets ayy-app-shell--sm). Leave it out to keep a hand-written ayy-app-shell--sm.",
+      "size": "lg | md | sm — Big (default), Medium (sets ayy-app-shell--md) or Small (sets ayy-app-shell--sm).",
       "collapsed": "boolean — collapse the sidebar to an icon rail on wide screens (sets ayy-app-shell--collapsed).",
       "hover-preview": "On by default: when collapsed, hovering or focusing the sidebar expands it as an overlay preview (sets ayy-app-shell--hover-preview). hover-preview=\"false\" keeps the icon rail until the toggle opens it."
     },
