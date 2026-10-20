@@ -9,6 +9,11 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Fixed
+
+- **[Toast](#/toast)**
+  Hovering a toast that was still sliding in cut off its lower edge, made the stack flicker open and shut, and could drop a click; an open stack also cut off the front toast's shadow → the open stack now only clips the edge it scrolls past.
+
 ## 0.1.0 — 2026-10-17
 
 ### Added

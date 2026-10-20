@@ -224,6 +224,7 @@ function region(): HTMLElement {
       if (toaster.matches(":hover") || toaster.contains(document.activeElement)) return;
       toaster.removeAttribute("data-expanded");
       toaster.removeAttribute("data-scrolling");
+      toaster.removeAttribute("data-scrolled");
       toastScrollY = 0;
       toaster.style.removeProperty("--_toast-scroll-y");
       syncIndices(toaster);
@@ -262,6 +263,7 @@ function region(): HTMLElement {
         const delta = isTop ? e.deltaY : -e.deltaY;
         toastScrollY = Math.max(0, Math.min(maxScroll, toastScrollY + delta));
         toaster.style.setProperty("--_toast-scroll-y", `${toastScrollY}px`);
+        toaster.toggleAttribute("data-scrolled", toastScrollY > 0);
       },
       { passive: false },
     );
@@ -279,6 +281,7 @@ function region(): HTMLElement {
         const dir = e.key === "ArrowUp" ? (isTop ? -1 : 1) : (isTop ? 1 : -1);
         toastScrollY = Math.max(0, Math.min(maxScroll, toastScrollY + dir * step));
         toaster.style.setProperty("--_toast-scroll-y", `${toastScrollY}px`);
+        toaster.toggleAttribute("data-scrolled", toastScrollY > 0);
       }
     });
 
