@@ -38,4 +38,4 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 - Don't add a Save button for settings that apply at once.
 
 ---
-A pattern of @danitesler/ayywi 0.1.0. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).
+A pattern of @danitesler/ayywi 0.1.1. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).
