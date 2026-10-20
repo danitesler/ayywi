@@ -11,6 +11,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **AI kit**
+  Nothing told agents how to install or update ayywi, so apps vendored copies or linked local checkouts → AGENTS.md, the Cursor rule, the skill, llms-full.txt and MCP `get_rules` have an "Installing and updating" section: npm only, `@danitesler/ayywi` imports, no vendoring, `init --force` after an upgrade, local checkouts through `AYYWI_DIR` only.
+- **Linter**
+  Setup mistakes went unnoticed → `unscoped-import` (error) flags imports from `"ayywi/…"`, and `vendored-ayywi` (warning) flags a `file:`/`link:`/`.tgz` ayywi dependency or a copy under `vendor/`.
+- **Packaging**
+  Font files could only be reached by a path into `node_modules` → `@danitesler/ayywi/fonts/*` exports them.
 - **[Action bar](#/action-bar)**
   Action bars with many actions had no square icon-only modifier → added `.ayy-action-bar__button--icon` (`icon` prop on `ActionBarButton`) for common bulk actions separated from unique labelled actions with a divider, paired with mandatory tooltips and a showcase example.
 - **[Button](#/button)**
@@ -33,6 +39,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Fixed
 
+- **AI kit**
+  The rules said class helpers come from `"ayywi"` (the CLI package) → `"@danitesler/ayywi"`.
 - **[Command palette](#/command)**
   `<ayy-command>` pulled items out of wrapper elements when sorting matches, and items added later jumped up the list → only direct children move, and a new item keeps the place it was added at. React `Command` filters without moving React's nodes (moving them unmounted the app on its next update).
 - **[Date & time picker](#/date-time-picker)**

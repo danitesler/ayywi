@@ -43,6 +43,8 @@ A raw native control is never right in an ayywi project: it renders as the brows
 
 Check `package.json` and existing components before choosing. Match what's there.
 
+Adding or upgrading ayywi itself: install `@danitesler/ayywi` from npm and import only from that name (never `"ayywi"`, never a path into `node_modules`). Don't vendor it: no copied `dist/`, no `.tgz`, no committed `file:`/`link:` dependency. After an upgrade, run `npx @danitesler/ayywi init --force`. To develop ayywi next to an app, alias it to a local checkout through an `AYYWI_DIR` environment variable and keep that out of git. The full list is "Installing and updating" in the AGENTS.md section or `get_rules`, and `ayywi lint` checks it.
+
 ## 3. Rules (the full list: the ayywi section of AGENTS.md, or `get_rules`)
 
 1. Reuse ayywi components and their variants before writing custom CSS. ayywi is self-contained — never add another CSS framework or UI kit.
@@ -120,7 +122,7 @@ Compose it from existing components, utilities and tokens in the app's own code.
 
 ## 8. Before you finish
 
-- Run `npx @danitesler/ayywi lint <changed files>` (or the MCP `lint` tool) and fix every finding, warnings included. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size, other icon sets, and skipped components: raw native controls (`raw-control`), hand-styled ones (`bare-control`), clickable divs (`clickable-element`), look-alike classes (`rebuilt-component`) and restyled components (`component-override`). In Claude Code, `npx @danitesler/ayywi init` runs it after every file you write and hands you the findings.
+- Run `npx @danitesler/ayywi lint <changed files>` (or the MCP `lint` tool) and fix every finding, warnings included. It catches invented classes, unknown tokens and variants, raw and named colours (inline styles too), `left/right`, unlabeled icon buttons, images without a size, other icon sets, and skipped components: raw native controls (`raw-control`), hand-styled ones (`bare-control`), clickable divs (`clickable-element`), look-alike classes (`rebuilt-component`) and restyled components (`component-override`), plus imports from the unscoped `"ayywi"` (`unscoped-import`) and a vendored or `file:`-linked ayywi (`vendored-ayywi`). In Claude Code, `npx @danitesler/ayywi init` runs it after every file you write and hands you the findings.
 - Built or changed a whole screen? Have the `ayywi-ui-reviewer` agent (installed by `npx @danitesler/ayywi init`) review it, and fix what it reports.
 - Look at the screen below 48rem: an app shows its bottom nav, a site's navbar folds into a menu, nothing scrolls sideways.
 - If the app has a theme switch, check dark and light (and dark-contrast, light-gray). If it supports RTL, check with `dir="rtl"`.

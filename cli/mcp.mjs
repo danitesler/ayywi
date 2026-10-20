@@ -150,10 +150,13 @@ export function createServer(contract = loadContract()) {
           .join("\n"),
     },
     get_rules: {
-      description: "The rules every ayywi UI must follow, the patterns (whole screens such as Settings, with their recipe and specs), plus conventions, global attributes (theme, density, dir), layout and typography utility classes, and the custom properties you may set (--ayy-gap, --ayy-spot…).",
+      description: "How to install, import and update ayywi in a project, the rules every ayywi UI must follow, the patterns (whole screens such as Settings, with their recipe and specs), plus conventions, global attributes (theme, density, dir), layout and typography utility classes, and the custom properties you may set (--ayy-gap, --ayy-spot…).",
       inputSchema: { type: "object", properties: {} },
       run: () =>
         [
+          "Installing and updating ayywi:",
+          ...(manifest.setup ?? []).map((s) => `- ${s}`),
+          "",
           "Rules:",
           ...manifest.rules.map((r, i) => `${i + 1}. ${r}`),
           "",

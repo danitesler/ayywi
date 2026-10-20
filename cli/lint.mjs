@@ -22,6 +22,8 @@ export const DEFAULT_RULES = {
   "bare-control": "warn",
   "raw-control": "warn",
   "clickable-element": "warn",
+  "unscoped-import": "error",
+  "vendored-ayywi": "warn",
 };
 
 const CSS_EXT = new Set([".css", ".scss", ".sass", ".less", ".pcss"]);
@@ -541,10 +543,27 @@ function clickableElementFindings(source, push) {
   }
 }
 
+// "ayywi" on npm is only the CLI; the design system is "@danitesler/ayywi". Catches import/from/require/import() in code
+// and @import in stylesheets.
+const UNSCOPED_IMPORT = /(?:\bfrom\s*|\bimport\s*\(?\s*|\brequire\s*\(\s*|@import\s+(?:url\(\s*)?)(["'])(ayywi(?:\/[^"']*)?)\1/g;
+
+function unscopedImportFindings(text, pos, offset = { line: 0 }) {
+  return [...text.matchAll(UNSCOPED_IMPORT)].map((m) => {
+    const p = pos(m.index + m[0].indexOf(m[2]));
+    return {
+      rule: "unscoped-import",
+      message: `import "@danitesler/${m[2]}", not "${m[2]}": the unscoped "ayywi" package is only the CLI`,
+      line: p.line + offset.line,
+      column: p.column,
+    };
+  });
+}
+
 function lintCss(css, contract, offset = { line: 0 }, coUse = new Map()) {
   const out = [...cssRuleFindings(css), ...structureFindings(css, contract, coUse)].map((f) => ({ ...f, line: f.line + offset.line }));
   const pos = lineIndex(css);
   const clean = stripCssComments(css);
+  out.push(...unscopedImportFindings(clean, pos, offset));
   for (const m of clean.matchAll(/var\((--ayy-[\w-]+)/g)) {
     if (contract.tokens.has(m[1]) || contract.hooks.has(m[1])) continue;
     const s = suggest(m[1], [...contract.tokens, ...contract.hooks]);
@@ -572,6 +591,7 @@ function lintMarkup(text, contract, coUse = new Map()) {
   const pos = lineIndex(text);
   const push = (rule, message, index) => out.push({ rule, message, ...pos(index) });
   const knownClasses = [...contract.classes.keys()];
+  out.push(...unscopedImportFindings(text, pos));
 
   const checkClassTokens = (value, baseIndex) => {
     for (const m of value.matchAll(CLASS_TOKEN)) {
@@ -774,6 +794,50 @@ function* walk(path, cwd, config, seen) {
   }
 }
 
+const LOCAL_SPEC = /^(?:file|link|portal):|\.tgz$/;
+
+/** Project-level: ayywi copied into the repo or wired to a local path instead of installed from npm. */
+function vendoredFindings(cwd) {
+  const out = [];
+  const pkgFile = join(cwd, "package.json");
+  if (existsSync(pkgFile)) {
+    const text = readFileSync(pkgFile, "utf8");
+    let pkg = {};
+    try {
+      pkg = JSON.parse(text);
+    } catch {}
+    const lines = text.split("\n");
+    for (const field of ["dependencies", "devDependencies", "optionalDependencies"]) {
+      for (const name of ["@danitesler/ayywi", "ayywi"]) {
+        const spec = pkg[field]?.[name];
+        if (typeof spec !== "string" || !LOCAL_SPEC.test(spec)) continue;
+        const line = lines.findIndex((l) => l.includes(`"${name}"`) && l.includes(spec)) + 1 || 1;
+        out.push({
+          file: "package.json",
+          rule: "vendored-ayywi",
+          message: `"${name}": "${spec}" installs ayywi from a local path — use "@danitesler/ayywi" from npm, and point at a local checkout only through AYYWI_DIR, uncommitted`,
+          line,
+          column: 1,
+        });
+      }
+    }
+  }
+  const vendor = join(cwd, "vendor");
+  if (existsSync(vendor) && statSync(vendor).isDirectory()) {
+    for (const name of readdirSync(vendor)) {
+      if (!/^(?:danitesler-)?ayywi(?:\b|-|$)/.test(name)) continue;
+      out.push({
+        file: `vendor/${name}`,
+        rule: "vendored-ayywi",
+        message: "a copy of ayywi in the repo goes stale — delete it and install @danitesler/ayywi from npm",
+        line: 1,
+        column: 1,
+      });
+    }
+  }
+  return out;
+}
+
 /** Lint files/directories. Returns { findings, files }. */
 export function lintPaths(paths, { cwd = process.cwd(), contract = loadContract(), config = loadConfig(cwd) } = {}) {
   const texts = [];
@@ -787,6 +851,8 @@ export function lintPaths(paths, { cwd = process.cwd(), contract = loadContract(
   const coUse = new Map();
   for (const [file, text] of texts) collectCoUse(text, file, contract, coUse);
   const findings = texts.flatMap(([file, text]) => lintText(text, file, contract, config, coUse));
+  const severity = config.rules["vendored-ayywi"] ?? "warn";
+  if (severity !== "off") findings.push(...vendoredFindings(cwd).map((f) => ({ ...f, severity })));
   return { findings, files: texts.length };
 }
 

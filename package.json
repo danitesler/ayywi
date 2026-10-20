@@ -65,6 +65,7 @@
     "./css/*": "./dist/css/*",
     "./brands/*": "./dist/brands/*",
     "./fonts.css": "./dist/fonts.css",
+    "./fonts/*": "./dist/fonts/*",
     "./fonts-google.css": "./dist/fonts-google.css",
     "./theme-init.js": "./dist/theme-init.js",
     "./tokens.json": "./tokens/tokens.json",

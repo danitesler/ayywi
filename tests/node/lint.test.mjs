@@ -237,3 +237,33 @@ test("structure: --_* private property overrides in app CSS are flagged", () => 
   assert.equal(overrides.length, 2);
 });
 
+
+test("unscoped-import: the unscoped \"ayywi\" name in code and stylesheets, never the scoped one", () => {
+  const tsx = `import { Button } from "ayywi/react";
+import "ayywi/css";
+const m = await import("ayywi");
+const r = require('ayywi/elements');
+import { toast } from "@danitesler/ayywi";
+import "ayywi-other";`;
+  assert.deepEqual(rules(tsx, "a.tsx"), ["unscoped-import", "unscoped-import", "unscoped-import", "unscoped-import"]);
+  assert.deepEqual(rules(`@import "ayywi/fonts.css";\n@import url("@danitesler/ayywi/css");\n/* @import "ayywi/css"; */`, "a.css"), ["unscoped-import"]);
+  const [f] = lintText(`import "ayywi/css";`, "a.ts", contract);
+  assert.match(f.message, /@danitesler\/ayywi\/css/);
+});
+
+test("vendored-ayywi: local-path dependencies and copies under vendor/, not npm ranges", () => {
+  const lint = (dir) => lintPaths(["."], { cwd: dir, contract, config: { rules: DEFAULT_RULES, ignore: [] } }).findings.filter((f) => f.rule === "vendored-ayywi");
+  const dir = mkdtempSync(join(tmpdir(), "ayywi-lint-vendored-"));
+  writeFileSync(join(dir, "package.json"), JSON.stringify({ dependencies: { "@danitesler/ayywi": "file:../ayywi" }, devDependencies: { ayywi: "link:vendor/ayywi" } }, null, 2));
+  mkdirSync(join(dir, "vendor/ayywi"), { recursive: true });
+  writeFileSync(join(dir, "vendor/danitesler-ayywi-0.1.0.tgz"), "");
+  writeFileSync(join(dir, "vendor/other-lib.tgz"), "");
+  const found = lint(dir);
+  assert.deepEqual(found.map((f) => f.file).sort(), ["package.json", "package.json", "vendor/ayywi", "vendor/danitesler-ayywi-0.1.0.tgz"]);
+  assert.equal(found[0].severity, "warn");
+  assert.equal(found.find((f) => f.message.includes("file:../ayywi")).line, 3);
+
+  const clean = mkdtempSync(join(tmpdir(), "ayywi-lint-npm-"));
+  writeFileSync(join(clean, "package.json"), JSON.stringify({ dependencies: { "@danitesler/ayywi": "^0.1.0" } }));
+  assert.deepEqual(lint(clean), []);
+});

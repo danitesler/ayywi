@@ -24,6 +24,8 @@ const HELP = `ayywi ${version}
         <button>, <select>, <input>, <table>, <details>… with no class at all), clickable-element (a <div> or
         <span> with a click handler). Class names are matched across every file linted together, so lint the
         whole UI in one run.
+      Setup: unscoped-import (error: "ayywi/…" instead of "@danitesler/ayywi/…"), vendored-ayywi (warning: a
+        file:/link:/.tgz dependency on ayywi in package.json, or a copy under vendor/).
       Default path: current directory. Exits 1 on errors, or on more than N warnings.
       Configure rules in ayywi.config.json: { "rules": { "physical-property": "off" }, "ignore": ["legacy/**"] }.
       Silence a line with a comment containing ayywi-lint-disable-line (or -next-line); a whole file with

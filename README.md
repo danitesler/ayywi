@@ -77,6 +77,8 @@ This sets up the agent skill, Cursor rules, AGENTS.md guide, and MCP server auto
 - **A lint hook** (Claude Code): after every UI file the agent writes, `ayywi lint` runs on it and hands the findings back, so a raw `<select>`, a clickable `<div>` or a hand-built card gets fixed before the agent moves on.
 - **A reviewer agent** (`ayywi-ui-reviewer`): checks a finished screen piece by piece against the "need → component" map and lists every place an ayywi component was skipped.
 
+Install and update it like any other npm package: `pnpm add @danitesler/ayywi`, and after `pnpm up @danitesler/ayywi` run `init --force` again so the agent files match the new version. Don't copy ayywi into the repo or commit a `file:` link to a local checkout; `ayywi lint` flags both. To work on ayywi and an app together, alias the package to your checkout in the app's dev server only (an `AYYWI_DIR` environment variable read by `vite.config.ts`).
+
 The MCP server's `pick_component` tool answers "what do I use for this?" (`"choose a theme"` → Select or Segmented control, never a raw `<select>`).
 
 ### 3. Interactive prompt generator
