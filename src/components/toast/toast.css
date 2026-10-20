@@ -34,6 +34,18 @@
   z-index: 2000;
 }
 
+/* Clear all sits on the stack's side: end, start, or centred over a centred stack. */
+.ayy-toaster[data-position$="start"] .ayy-toaster__clear {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+
+.ayy-toaster[data-position$="center"] .ayy-toaster__clear {
+  inset-inline: 0;
+  inline-size: fit-content;
+  margin-inline: auto;
+}
+
 .ayy-toaster[data-position^="top"] .ayy-toaster__clear {
   inset-block-start: auto;
   inset-block-end: var(--ayy-space-3);

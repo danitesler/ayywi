@@ -1717,10 +1717,24 @@ test("toast stack: toasts behind line up with the front one on the stack's side;
     return edges();
   };
 
+  // Clear all sits on the same side as the stack.
+  const clear = page.locator(".ayy-toaster__clear");
+  const clearAt = async () => {
+    await toaster.hover();
+    await expect(clear).toBeVisible();
+    const c = (await clear.boundingBox())!;
+    const s = (await toaster.boundingBox())!;
+    await page.mouse.move(0, 0);
+    return { left: c.x - s.x, right: s.x + s.width - (c.x + c.width), center: c.x + c.width / 2 - (s.x + s.width / 2) };
+  };
+  expect((await clearAt()).right).toBeLessThan(1);
+
   e = await pick("Left");
   for (const x of e) expect(Math.abs(x.left - e[e.length - 1].left)).toBeLessThan(1);
+  expect((await clearAt()).left).toBeLessThan(1);
   e = await pick("Center");
   for (const x of e) expect(Math.abs(x.center - e[e.length - 1].center)).toBeLessThan(1);
+  expect(Math.abs((await clearAt()).center)).toBeLessThan(1);
 });
 
 test("every toast type's close button is the same component at the same size", async ({ page }) => {
