@@ -232,6 +232,23 @@ export {
   type GridItemFooterProps,
 } from "../components/grid/grid.react";
 export {
+  ViewCard,
+  ViewCardMedia,
+  ViewCardImage,
+  ViewCardBadge,
+  ViewCardPlay,
+  ViewCardBody,
+  ViewCardText,
+  ViewCardTitle,
+  ViewCardMeta,
+  ViewCardBadges,
+  type ViewCardProps,
+  type ViewCardMediaProps,
+  type ViewCardImageProps,
+  type ViewCardBadgeProps,
+} from "../components/view-card/view-card.react";
+export { HoverActions, HoverAction, type HoverActionsProps, type HoverActionProps } from "../components/hover-actions/hover-actions.react";
+export {
   BarChart,
   LineChart,
   Sparkline,

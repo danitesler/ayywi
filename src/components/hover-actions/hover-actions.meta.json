@@ -1,0 +1,82 @@
+{
+  "name": "Hover actions",
+  "slug": "hover-actions",
+  "category": "Actions",
+  "description": "Icon buttons that float over a picture, a video frame or a card — a capture's Copy, Annotate, Pin and ⋯. Each button has its own frosted background so it reads over any image, or the buttons share one glass bar (group). Reveal keeps them out of the way until the picture is hovered or focused; every button names itself in a tooltip.",
+  "aka": ["hover-actions", "hover-action", "overlay-actions", "media-actions", "quick-actions"],
+  "classes": {
+    "ayy-hover-actions": "Row of hover actions. In the normal flow unless a position modifier floats it in a corner of the positioned parent.",
+    "ayy-hover-actions--top-start": "Floats in the top start corner of the positioned parent.",
+    "ayy-hover-actions--top-end": "Floats in the top end corner.",
+    "ayy-hover-actions--bottom-start": "Floats in the bottom start corner.",
+    "ayy-hover-actions--bottom-end": "Floats in the bottom end corner.",
+    "ayy-hover-actions--group": "One glass bar (blurred, hairline border, pill corners) holds the buttons, which drop their own backgrounds.",
+    "ayy-hover-actions--reveal": "Hidden until the element it sits directly in is hovered, has focus inside, carries data-hover or holds an open menu. Always shown on touch screens.",
+    "ayy-hover-action": "Icon button at the small control size, frosted so it reads over a picture. Put an icon inside and an aria-label on it."
+  },
+  "variants": {
+    "position": { "values": ["top-start", "top-end", "bottom-start", "bottom-end"], "default": "none", "component": "HoverActions" },
+    "group": { "values": [false, true], "default": false, "component": "HoverActions" },
+    "reveal": { "values": [false, true], "default": false, "component": "HoverActions" }
+  },
+  "states": {
+    "default": { "looks": "Each button is a frosted square (surface at 55% over a 10px blur) with a 16px icon in the text colour. Grouped, the bar is frosted instead and the buttons are clear." },
+    "hover": { "when": ".ayy-hover-action:hover (pointer devices)", "looks": "The frosting thickens to 85% surface; in a group the button gets the wash-hover fill." },
+    "pressed": { "when": ".ayy-hover-action:active", "looks": "Shrinks to 94% for a moment." },
+    "focus": { "when": ".ayy-hover-action:focus-visible", "looks": "2px --ayy-color-ring outline, 2px offset. Focus inside also reveals a --reveal row." },
+    "disabled": { "when": ":disabled on the button", "looks": "45% opacity and a not-allowed cursor." },
+    "selected": { "none": "Hover actions run something once; they have no on state. Use a Toolbar toggle (aria-pressed) for one that stays on." },
+    "error": { "none": "Report a failed action in a toast or the card's status, not on the button." },
+    "loading": { "none": "Show progress where the result appears (a card toast status, a Spinner); keep the button as it is." },
+    "revealed": { "when": ".ayy-hover-actions--reveal inside a parent that is :hover, :focus-within, [data-hover] or :has([aria-expanded=\"true\"])", "looks": "Fades in and settles from 4px above (below for bottom corners). Hidden rows ignore the pointer." }
+  },
+  "sizes": {
+    "density": "Buttons are --ayy-size-control-sm square: 28px compact, 32px comfortable, 40px touch. Icons stay 16px.",
+    "width": "As wide as its buttons. Positioned rows sit 8px in from the corner of their parent."
+  },
+  "js": "hoverActionsClass({ position?, group?, reveal?, className? }) → string; hoverActionClass({ className? }) → string",
+  "react": {
+    "import": "import { HoverActions, HoverAction } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "HoverActions": {
+        "renders": "<div class=\"ayy-hover-actions\">",
+        "props": {
+          "position": "\"top-start\" | \"top-end\" | \"bottom-start\" | \"bottom-end\" — corner of the positioned parent",
+          "group": "boolean — one glass bar for all the buttons",
+          "reveal": "boolean — hidden until the parent is hovered or focused"
+        }
+      },
+      "HoverAction": {
+        "renders": "<button class=\"ayy-hover-action\"> inside a Tooltip",
+        "props": {
+          "label": "string (required) — accessible name and tooltip text",
+          "hint": "ReactNode — after the label in the tooltip, e.g. <Shortcut keys=\"Mod+C\" />",
+          "tooltip": "boolean — false drops the tooltip (the label stays the accessible name). Default true",
+          "side": "\"top\" | \"bottom\" | \"start\" | \"end\" — tooltip side. Default \"bottom\"",
+          "children": "ReactNode — the icon"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Every button needs an aria-label (React's label sets it); the icon is decorative.",
+    "Revealed rows are still in the tab order: focusing a button shows the row, so keyboard users reach every action.",
+    "Touch screens have no hover, so --reveal rows always show there; never hide the only way to do something behind hover."
+  ],
+  "do": [
+    "Use hover actions for the few icon actions on a picture, a video frame or a media card: Copy, Annotate, Pin, Trim, and a ⋯ menu for the rest.",
+    "Group them on one bar (group) when there are three or more in one corner; keep them separate when each corner holds one or two.",
+    "Put a --reveal row directly inside the element whose hover should show it (the card, the picture's box).",
+    "End a group with a ⋯ DropdownMenu for anything that doesn't earn its own button."
+  ],
+  "dont": [
+    "Don't use hover actions for a page's or a toolbar's buttons — use Button, or a Toolbar for a row of tools.",
+    "Don't put text buttons in a hover-actions row; they're icon-only. A card toast's centre buttons (Copy, Save) are regular Buttons.",
+    "Don't use title=\"\" for their names; the label is the tooltip.",
+    "Don't put more than five in one corner — move the rest into the ⋯ menu."
+  ],
+  "examples": [
+    { "id": "corners", "title": "Separate, in the corners" },
+    { "id": "group", "title": "Grouped on a glass bar" }
+  ]
+}

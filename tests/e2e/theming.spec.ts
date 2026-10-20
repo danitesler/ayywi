@@ -207,6 +207,19 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
       await expect(page.locator(".pv-page h1").first(), `/#/${route}`).toBeVisible();
+      // Let entrance fades finish (toasts fade in from opacity 0): axe blends a fading element's colours with the page
+      // under it and reports contrast that never shows at rest. Endless animations (spinners, pulses) are skipped.
+      await page.evaluate(() =>
+        Promise.race([
+          Promise.all(
+            document
+              .getAnimations()
+              .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity)
+              .map((a) => a.finished.catch(() => undefined)),
+          ),
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+        ]),
+      );
       const disabledRules = ["region"];
       if (route === "grid") disabledRules.push("aria-allowed-attr");
       const results = await new AxeBuilder({ page })

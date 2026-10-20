@@ -88,6 +88,8 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Group content in a box | Card with CardHeader / CardTitle / CardDescription, CardContent, CardFooter; CardLink when the whole card opens something. | a <div> with a border, radius and padding |
 | Rows of things (members, files, threads, settings) | List (ListLink for clickable rows, divided for settings-style rows); Settings for preference rows; Swipe actions on phones. | <ul>/<div> rows with your own borders and hover, <li onClick> |
 | Records compared across columns | Table (sortable headers, a select column, TableRowActions with inline quick buttons and a ⋯ DropdownMenu), ActionBar when rows are selected, Pagination under it. | a raw <table>, a CSS grid of divs |
+| Captures, recordings or pictures to open, with their details and actions on hover (a screenshot history, a media library) | View cards in a .ayy-grid: ViewCardMedia (a button or link that opens it) with ViewCardImage letterboxed over a blurred copy, ViewCardBadge for a recording's length, ViewCardBody for title, details and badges, and grouped HoverActions with a ⋯ DropdownMenu. Use Grid instead when people select several. | a Card with an <img>, a hand-built gradient caption, absolutely positioned buttons that appear on hover |
+| Icon actions over a picture, a video frame or a card (copy, annotate, pin, delete) | HoverActions in a corner (position) of the picture's box, reveal to show them on hover and focus, group to put them on one glass bar; each HoverAction has a label that is also its tooltip. | ghost buttons restyled with a translucent background, title="" tooltips, buttons that only appear on :hover with no keyboard way to reach them |
 | Selectable cards of media assets, screenshots, social posts, projects or user records | Grid of GridItems (GridItemSelect checkbox, GridItemActions with inline quick actions and a ⋯ DropdownMenu, GridItemMedia for previews), ActionBar when items are selected. | Cards with custom onClick selection state or hand-built floating checkboxes |
 | Run bulk actions on selected table rows or grid items (edit, duplicate, copy, archive, delete) | ActionBar (open when selection count > 0) with ActionBarSelection, ActionBarCount, ActionBarClose and ActionBarActions of ActionBarButtons (destructive last). | a hand-built fixed bottom bar or static buttons above the table |
 | A number that matters (KPI) | Card + Stat + a status Badge, a Sparkline beside it. | big bold text in a div |
@@ -460,6 +462,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - `--ayy-swipe-bg`: Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).
 - `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.
 - `--ayy-min`: Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).
+- `--ayy-ratio`: A picture's shape, width ÷ height (1.6, or 1440 / 900), set on a card toast or a .ayy-view-card__media: the card follows it, within its own minimum and maximum height. Default 16 / 10.
 - `--ayy-slide`: Width of each carousel slide (default min(22rem, 85%)).
 
 ## Utility classes
@@ -513,13 +516,13 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 ## Components by category
 
-- **Actions** (Things people click to do something.): Button, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
+- **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents
 - **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Select, Combobox, Tag input, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart
+- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, View card, Chart
 
 ## Button
 
@@ -584,6 +587,55 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - Don't use destructive for non-destructive emphasis.
 
 **Examples**: Variants, Sizes, With icon & icon-only, Loading with spinner, Wide button alignment, Link styled as a button, Ring call to action. Copy-ready HTML and React in llms/button.md.
+
+## Hover actions
+
+Category: Actions. Icon buttons that float over a picture, a video frame or a card — a capture's Copy, Annotate, Pin and ⋯. Each button has its own frosted background so it reads over any image, or the buttons share one glass bar (group). Reveal keeps them out of the way until the picture is hovered or focused; every button names itself in a tooltip. Also called: hover-actions, hover-action, overlay-actions, media-actions, quick-actions.
+
+**Classes**
+- `.ayy-hover-actions` — Row of hover actions. In the normal flow unless a position modifier floats it in a corner of the positioned parent.
+- `.ayy-hover-actions--top-start` — Floats in the top start corner of the positioned parent.
+- `.ayy-hover-actions--top-end` — Floats in the top end corner.
+- `.ayy-hover-actions--bottom-start` — Floats in the bottom start corner.
+- `.ayy-hover-actions--bottom-end` — Floats in the bottom end corner.
+- `.ayy-hover-actions--group` — One glass bar (blurred, hairline border, pill corners) holds the buttons, which drop their own backgrounds.
+- `.ayy-hover-actions--reveal` — Hidden until the element it sits directly in is hovered, has focus inside, carries data-hover or holds an open menu. Always shown on touch screens.
+- `.ayy-hover-action` — Icon button at the small control size, frosted so it reads over a picture. Put an icon inside and an aria-label on it.
+
+**States**
+- `default` — Each button is a frosted square (surface at 55% over a 10px blur) with a 16px icon in the text colour. Grouped, the bar is frosted instead and the buttons are clear.
+- `hover` (`.ayy-hover-action:hover (pointer devices)`) — The frosting thickens to 85% surface; in a group the button gets the wash-hover fill.
+- `pressed` (`.ayy-hover-action:active`) — Shrinks to 94% for a moment.
+- `focus` (`.ayy-hover-action:focus-visible`) — 2px --ayy-color-ring outline, 2px offset. Focus inside also reveals a --reveal row.
+- `disabled` (`:disabled on the button`) — 45% opacity and a not-allowed cursor.
+- `revealed` (`.ayy-hover-actions--reveal inside a parent that is :hover, :focus-within, [data-hover] or :has([aria-expanded="true"])`) — Fades in and settles from 4px above (below for bottom corners). Hidden rows ignore the pointer.
+
+**Sizes**
+- Density — Buttons are --ayy-size-control-sm square: 28px compact, 32px comfortable, 40px touch. Icons stay 16px.
+- Width — As wide as its buttons. Positioned rows sit 8px in from the corner of their parent.
+
+**React** — `import { HoverActions, HoverAction } from "@danitesler/ayywi/react";`
+- `<HoverActions>` renders <div class="ayy-hover-actions">. Props: `position` "top-start" | "top-end" | "bottom-start" | "bottom-end" — corner of the positioned parent; `group` boolean — one glass bar for all the buttons; `reveal` boolean — hidden until the parent is hovered or focused
+- `<HoverAction>` renders <button class="ayy-hover-action"> inside a Tooltip. Props: `label` string (required) — accessible name and tooltip text; `hint` ReactNode — after the label in the tooltip, e.g. <Shortcut keys="Mod+C" />; `tooltip` boolean — false drops the tooltip (the label stays the accessible name). Default true; `side` "top" | "bottom" | "start" | "end" — tooltip side. Default "bottom"; `children` ReactNode — the icon
+
+**Accessibility**
+- Every button needs an aria-label (React's label sets it); the icon is decorative.
+- Revealed rows are still in the tab order: focusing a button shows the row, so keyboard users reach every action.
+- Touch screens have no hover, so --reveal rows always show there; never hide the only way to do something behind hover.
+
+**Do**
+- Use hover actions for the few icon actions on a picture, a video frame or a media card: Copy, Annotate, Pin, Trim, and a ⋯ menu for the rest.
+- Group them on one bar (group) when there are three or more in one corner; keep them separate when each corner holds one or two.
+- Put a --reveal row directly inside the element whose hover should show it (the card, the picture's box).
+- End a group with a ⋯ DropdownMenu for anything that doesn't earn its own button.
+
+**Don't**
+- Don't use hover actions for a page's or a toolbar's buttons — use Button, or a Toolbar for a row of tools.
+- Don't put text buttons in a hover-actions row; they're icon-only. A card toast's centre buttons (Copy, Save) are regular Buttons.
+- Don't use title="" for their names; the label is the tooltip.
+- Don't put more than five in one corner — move the rest into the ⋯ menu.
+
+**Examples**: Separate, in the corners, Grouped on a glass bar. Copy-ready HTML and React in llms/hover-actions.md.
 
 ## Toolbar
 
@@ -3184,7 +3236,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 - `<NotificationToast>` renders div.ayy-toast. Props: `variant` "default" | "success" | "warning" | "destructive" | "info" | "card" | "long"; `title` ReactNode — message text; `description` ReactNode — optional second line; `icon` ReactNode — leading icon; `action` { label: string, onClick?: () => void }; `copyable` boolean — show copy button (default true for long variant); `copyText` string — custom text to copy; `onClose` () => void — dismiss handler; `closeLabel` string — accessible dismiss name
 - `<Toast>` renders div.ayy-toast — alias of NotificationToast. Props: 
 - `<InlineToast>` renders div.ayy-toast--inline. Props: `tone` "default" | "success" | "busy" | "error"; `icon` ReactNode — leading icon
-- `<CardToast>` renders div.ayy-toast.ayy-toast--card. Props: `split` boolean | "horizontal" | "vertical"
+- `<CardToast>` renders div.ayy-toast.ayy-toast--card. Props: `split` boolean | "horizontal" | "vertical"; `ratio` number | string — the picture's shape, width ÷ height (1.6, or "1440 / 900"): the card follows it between 6.75rem and 14rem tall (sets --ayy-ratio). Default 16 / 10
 - `<CardToastThumb>` renders div.ayy-toast__thumb. Props: 
 - `<CardToastBackdrop>` renders img.ayy-toast__backdrop. Props: 
 - `<CardToastImage>` renders img.ayy-toast__image. Props: 
@@ -3193,7 +3245,7 @@ Category: Feedback. Short, temporary notification. One framework-free toast() fu
 - `<CardToastClose>` renders button.ayy-toast__close. Props: `label` string — accessible name
 - `<CardToastCorner>` renders div.ayy-toast__corner. Props: `position` "top" | "top-start" | "bottom-start" | "bottom-end"
 - `<CardToastCenter>` renders div.ayy-toast__center. Props: 
-- `<CardToastAction>` renders button.ayy-toast__action. Props: `label` string — accessible name
+- `<CardToastAction>` renders button.ayy-hover-action.ayy-toast__action inside a Tooltip (a Hover action). Props: `label` string — accessible name and tooltip; `hint` ReactNode — after the label in the tooltip, e.g. <Shortcut keys="Mod+C" />; `tooltip` boolean — false drops the tooltip (the label stays the accessible name). Default true; `side` "top" | "bottom" | "start" | "end" — tooltip side. Default "bottom"
 - `<CardToastStatus>` renders div.ayy-toast--inline. Props: `tone` "default" | "success" | "busy" | "error"; `icon` ReactNode — status icon
 
 **Accessibility**
@@ -4225,6 +4277,66 @@ Category: Data display. Multi-select card grid for media assets, project cards, 
 - Don't hide the selection checkbox on selected cards.
 
 **Examples**: Media assets, screenshots and social posts, Project cards and user records. Copy-ready HTML and React in llms/grid.md.
+
+## View card
+
+Category: Data display. A capture, a recording or a picture to open, as a card: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and actions revealed on hover. For a screenshot history, a media library or a gallery of exports. Also called: view-card, media-card, shot-card, capture-card, thumbnail-card.
+
+**Classes**
+- `.ayy-view-card` — Root: a card frame that clips the picture to its corners. Positioned, so Hover actions can float in its corners.
+- `.ayy-view-card__media` — The picture's box at --ayy-ratio (default 16 / 10). A <button> or <a> when opening it is the card's main action.
+- `.ayy-view-card__backdrop` — A blurred copy of the picture filling the box around the letterboxed picture (aria-hidden).
+- `.ayy-view-card__image` — The picture itself, letterboxed (object-fit: contain), never cropped.
+- `.ayy-view-card__badge` — Frosted pill in the top start corner: a recording's kind and length ("0:42").
+- `.ayy-view-card__play` — Frosted round play glyph in the top end corner. Fades when the card is hovered so the actions can take the corner.
+- `.ayy-view-card__body` — Title, details and badges on a gradient over the bottom of the picture. Revealed on hover; clicks go through to the picture.
+- `.ayy-view-card__text` — Column of the title and the details; truncates.
+- `.ayy-view-card__title` — The card's name in sm semibold, one line.
+- `.ayy-view-card__meta` — Details in xs soft text with tabular figures: size, length, age.
+- `.ayy-view-card__badges` — Row of Badges at the end of the body (Edited, Uploaded).
+
+**States**
+- `default` — The picture, letterboxed over its blurred copy, in a card with a hairline border. Only the badge and the play glyph show.
+- `hover` (`.ayy-view-card:hover (pointer devices); [data-hover] does the same when hover is tracked elsewhere`) — The border darkens and the card lifts to the raised shadow. The body fades up from 6px below, a --reveal Hover actions row fades in, and the play glyph fades out.
+- `focus` (`.ayy-view-card__media:focus-visible; :focus-within on the card`) — 2px --ayy-color-ring outline inside the picture's edge. Focus anywhere in the card reveals the body and actions, like hover.
+- `menu-open` (`:has([aria-expanded="true"]), a menu inside it is open`) — Stays revealed while its ⋯ menu is open.
+
+**Sizes**
+- Density — Fixed card layout; the badge, play glyph and Hover actions follow --ayy-size-control-sm (28px compact, 32px comfortable, 40px touch).
+- Width — Fills its column: put View cards in .ayy-grid with --ayy-min (14–16rem). The picture's box is --ayy-ratio of that width.
+
+**React** — `import { ViewCard, ViewCardMedia, ViewCardImage, ViewCardBadge, ViewCardPlay, ViewCardBody, ViewCardText, ViewCardTitle, ViewCardMeta, ViewCardBadges } from "@danitesler/ayywi/react";`
+- `<ViewCard>` renders <article class="ayy-view-card">. Props: 
+- `<ViewCardMedia>` renders <button class="ayy-view-card__media"> when given onClick, <a> with href, otherwise <div>. Props: `ratio` number | string — the box's shape, width ÷ height (1.6, or "1440 / 900"); default 16 / 10 so a grid lines up; `href` string — renders a link; `target` string — the link's target; `rel` string — the link's rel
+- `<ViewCardImage>` renders <img class="ayy-view-card__backdrop"> + <img class="ayy-view-card__image"> (src, alt, width and height go on the picture). Props: `backdrop` string — a smaller copy for the blurred fill; default src
+- `<ViewCardBadge>` renders <span class="ayy-view-card__badge">. Props: `icon` ReactNode — leading icon (video, GIF)
+- `<ViewCardPlay>` renders <span class="ayy-view-card__play" aria-hidden="true"> with a play icon. Props: 
+- `<ViewCardBody>` renders <div class="ayy-view-card__body">. Props: 
+- `<ViewCardText>` renders <div class="ayy-view-card__text">. Props: 
+- `<ViewCardTitle>` renders <p class="ayy-view-card__title">. Props: 
+- `<ViewCardMeta>` renders <p class="ayy-view-card__meta">. Props: 
+- `<ViewCardBadges>` renders <div class="ayy-view-card__badges">. Props: 
+
+**Accessibility**
+- When the picture opens something, ViewCardMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"): the body is decoration on top of it.
+- The body and actions are revealed by focus as well as hover, and always shown on touch screens, so nothing is hover-only.
+- Give the picture's <img> an alt only when the card has no label that already names it; the backdrop is aria-hidden.
+- Every Hover action needs a label (it's also the tooltip).
+
+**Do**
+- Use View cards for captures, recordings and pictures people open: a screenshot history, a media library, exported files.
+- Put them in .ayy-grid with --ayy-min so columns follow the window.
+- Pass the picture's real width and height to its <img>; keep the box at 16 / 10 in a grid so rows line up — portrait pictures letterbox over the blur.
+- Group three or more actions in one Hover actions bar (top end, group, reveal) and end it with a ⋯ DropdownMenu.
+- Show a recording's length in ViewCardBadge and add ViewCardPlay so it reads as playable before hover.
+
+**Don't**
+- Don't use a View card for records people select in bulk — use Grid with GridItemSelect and an Action bar.
+- Don't use it for text content (articles, projects) — use Card.
+- Don't crop the picture (object-fit: cover) — captures must show whole; the blurred copy fills the gap.
+- Don't put essential information only in the body: it hides until hover on pointer devices. Name the item in the media's aria-label too.
+
+**Examples**: Capture history. Copy-ready HTML and React in llms/view-card.md.
 
 ## Chart
 

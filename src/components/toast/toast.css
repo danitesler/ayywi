@@ -23,6 +23,7 @@
   pointer-events: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  transition: block-size var(--ayy-duration-base) var(--ayy-ease-standard);
 }
 
 /* "Clear all": sits in the room JS adds above the open stack (below it for top positions) */
@@ -128,7 +129,8 @@
   transform: translateY(calc(-1 * var(--_toast-peek) + var(--_toast-swipe-y))) scale(var(--_toast-scale));
   transition:
     transform var(--ayy-duration-base) var(--ayy-ease-standard),
-    opacity var(--ayy-duration-base) var(--ayy-ease-menu);
+    opacity var(--ayy-duration-base) var(--ayy-ease-menu),
+    block-size var(--ayy-duration-base) var(--ayy-ease-standard);
   will-change: transform;
 }
 
@@ -190,6 +192,26 @@
 }
 
 .ayy-toaster[data-scrolling] .ayy-toast {
+  transition: none !important;
+}
+
+/* In the stack every toast has an explicit height, so a change of height animates: its own, measured once as it
+   arrives (--_toast-h)… */
+.ayy-toaster .ayy-toast {
+  block-size: var(--_toast-h, auto);
+}
+
+/* …or, behind the front toast while the stack is closed, the front toast's. Every toast behind then shows the same
+   even strip, whatever its type, and they all resize together when a bigger or smaller toast comes to the front. */
+.ayy-toaster:not([data-expanded]) .ayy-toast[data-behind]:not([data-measuring]) {
+  block-size: var(--_toast-front-height);
+  min-block-size: 0;
+  max-block-size: none;
+}
+
+/* Set for a moment while the script reads a toast's natural height. */
+.ayy-toaster .ayy-toast[data-measuring] {
+  block-size: auto !important;
   transition: none !important;
 }
 
@@ -382,8 +404,8 @@
 .ayy-toast--card {
   position: relative;
   inline-size: min(17.5rem, calc(100vw - 2rem));
-  aspect-ratio: 16 / 10;
-  min-block-size: 9rem;
+  aspect-ratio: var(--ayy-ratio, 16 / 10);
+  min-block-size: 6.75rem;
   max-block-size: 14rem;
   padding: 0;
   overflow: hidden;
@@ -563,15 +585,18 @@
   inset-inline-end: var(--ayy-space-2);
   inset-inline-start: auto;
   z-index: 4;
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  border-radius: var(--ayy-radius-button);
   color: var(--ayy-color-text);
-  background-color: color-mix(in srgb, var(--ayy-color-surface) 50%, transparent);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background-color: color-mix(in srgb, var(--ayy-color-surface) 55%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 @media (hover: hover) {
   .ayy-toast--card .ayy-toast__close:hover {
-    background-color: color-mix(in srgb, var(--ayy-color-surface) 80%, transparent);
+    background-color: color-mix(in srgb, var(--ayy-color-surface) 85%, transparent);
     color: var(--ayy-color-text);
   }
 }
@@ -580,22 +605,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: var(--ayy-size-icon-lg);
-  block-size: var(--ayy-size-icon-lg);
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
   padding: 0;
   border: 0;
-  border-radius: var(--ayy-radius-control);
-  background-color: color-mix(in srgb, var(--ayy-color-surface) 50%, transparent);
+  border-radius: var(--ayy-radius-button);
+  background-color: color-mix(in srgb, var(--ayy-color-surface) 55%, transparent);
   color: var(--ayy-color-text);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   cursor: pointer;
   transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
 }
 
 @media (hover: hover) {
   .ayy-toast__action:hover {
-    background-color: color-mix(in srgb, var(--ayy-color-surface) 80%, transparent);
+    background-color: color-mix(in srgb, var(--ayy-color-surface) 85%, transparent);
     color: var(--ayy-color-text);
   }
 }
@@ -647,7 +672,8 @@
 
 .ayy-toast--card-split--vertical .ayy-toast__thumb {
   inline-size: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: var(--ayy-ratio, 16 / 10);
+  max-block-size: 14rem;
   border: 0;
   border-radius: 0;
   border-block-end: 1px solid var(--ayy-color-line);

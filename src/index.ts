@@ -24,6 +24,7 @@ export * from "./components/dialog/dialog";
 export * from "./components/popover/popover";
 export * from "./components/menu/menu";
 export * from "./components/tooltip/tooltip";
+export * from "./components/hover-actions/hover-actions";
 export * from "./components/toast/toast";
 export * from "./components/alert/alert";
 export * from "./components/progress/progress";
@@ -79,6 +80,7 @@ export * from "./components/code-block/code-block";
 export * from "./components/text-highlight/text-highlight";
 export * from "./components/action-bar/action-bar";
 export * from "./components/grid/grid";
+export * from "./components/view-card/view-card";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */
 export function cssVar(name: TokenName): string {

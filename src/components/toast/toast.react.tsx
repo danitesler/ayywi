@@ -1,7 +1,9 @@
-import { forwardRef, useEffect, useState, type ButtonHTMLAttributes, type HTMLAttributes, type ImgHTMLAttributes, type MouseEvent, type ReactNode } from "react";
+import { forwardRef, useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ImgHTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { Alert02Icon, Cancel01Icon, CancelCircleIcon, CheckmarkCircle02Icon, Copy01Icon, InformationCircleIcon, Tick02Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
+import { HoverAction } from "../hover-actions/hover-actions.react";
+import type { TooltipSide } from "../tooltip/tooltip";
 import { configureToaster, inlineToastClass, type ToastPosition } from "./toast";
 
 export interface ToasterProps {
@@ -143,10 +145,13 @@ export const Toast = NotificationToast;
 
 export interface CardToastProps extends HTMLAttributes<HTMLDivElement> {
   split?: boolean | "horizontal" | "vertical";
+  /** The picture's shape, width ÷ height (1.6, or "1440 / 900"). The card follows it between 6.75rem and 14rem
+      tall, with the blurred backdrop filling the rest. Default 16 / 10. */
+  ratio?: number | string;
 }
 
 export const CardToast = forwardRef<HTMLDivElement, CardToastProps>(function CardToast(
-  { split, className, children, ...props },
+  { split, ratio, className, style, children, ...props },
   ref,
 ) {
   const classes = cx(
@@ -155,8 +160,10 @@ export const CardToast = forwardRef<HTMLDivElement, CardToastProps>(function Car
     className,
   );
 
+  const merged = (ratio === undefined ? style : { ...style, "--ayy-ratio": String(ratio) }) as CSSProperties | undefined;
+
   return (
-    <div ref={ref} className={classes} {...props}>
+    <div ref={ref} className={classes} style={merged} {...props}>
       {children}
     </div>
   );
@@ -291,24 +298,31 @@ export const CardToastCenter = forwardRef<HTMLDivElement, CardToastCenterProps>(
 });
 
 export interface CardToastActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** What it does: the accessible name and the tooltip. */
   label?: string;
+  /** Extra tooltip content after the label, such as <Shortcut keys="Mod+C" />. */
+  hint?: ReactNode;
+  /** false: no tooltip (the label stays the accessible name). */
+  tooltip?: boolean;
+  side?: TooltipSide;
 }
 
+/** An icon button in a card toast's corner: a Hover action, sized and frosted the same way. */
 export const CardToastAction = forwardRef<HTMLButtonElement, CardToastActionProps>(function CardToastAction(
-  { className, label, children, ...props },
+  { className, label, hint, tooltip = true, side, children, ...props },
   ref,
 ) {
+  if (!label) {
+    return (
+      <button ref={ref} type="button" className={cx("ayy-hover-action ayy-toast__action", className)} {...props}>
+        {children}
+      </button>
+    );
+  }
   return (
-    <button
-      ref={ref}
-      type="button"
-      className={cx("ayy-toast__action", className)}
-      aria-label={label}
-      title={label}
-      {...props}
-    >
+    <HoverAction ref={ref} className={cx("ayy-toast__action", className)} label={label} hint={hint} tooltip={tooltip} side={side} {...props}>
       {children}
-    </button>
+    </HoverAction>
   );
 });
 

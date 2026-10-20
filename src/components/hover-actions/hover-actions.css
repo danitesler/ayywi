@@ -1,0 +1,144 @@
+/* Hover actions: icon buttons that float over a picture, a video frame or a card (a capture's Copy, Annotate, Pin).
+   Each button carries its own frosted background so it reads over any image; --group puts them on one glass bar
+   instead. --reveal keeps them out of the way until the element they sit in is hovered or focused. */
+
+.ayy-hover-actions {
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+}
+
+.ayy-hover-actions--top-start,
+.ayy-hover-actions--top-end,
+.ayy-hover-actions--bottom-start,
+.ayy-hover-actions--bottom-end {
+  position: absolute;
+}
+
+.ayy-hover-actions--top-start {
+  inset-block-start: var(--ayy-space-2);
+  inset-inline-start: var(--ayy-space-2);
+}
+
+.ayy-hover-actions--top-end {
+  inset-block-start: var(--ayy-space-2);
+  inset-inline-end: var(--ayy-space-2);
+}
+
+.ayy-hover-actions--bottom-start {
+  inset-block-end: var(--ayy-space-2);
+  inset-inline-start: var(--ayy-space-2);
+}
+
+.ayy-hover-actions--bottom-end {
+  inset-block-end: var(--ayy-space-2);
+  inset-inline-end: var(--ayy-space-2);
+}
+
+/* Grouped: one glass bar holds the buttons, which drop their own backgrounds. */
+.ayy-hover-actions--group {
+  gap: var(--ayy-space-0-5);
+  padding: var(--ayy-space-0-5);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Revealed while the element it sits in is hovered, focused, marked data-hover (hover driven from outside, as in a
+   separate window), or holds an open menu. Touch screens have no hover, so they always show it. */
+@media (hover: hover) {
+  .ayy-hover-actions--reveal {
+    transition:
+      opacity var(--ayy-duration-fast) ease,
+      transform var(--ayy-duration-base) var(--ayy-ease-spring);
+  }
+
+  :not(:hover, :focus-within, [data-hover], :has([aria-expanded="true"])) > .ayy-hover-actions--reveal {
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+  }
+
+  :not(:hover, :focus-within, [data-hover], :has([aria-expanded="true"])) > :is(.ayy-hover-actions--bottom-start, .ayy-hover-actions--bottom-end).ayy-hover-actions--reveal {
+    transform: translateY(4px);
+  }
+}
+
+.ayy-hover-action {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-button);
+  background-color: color-mix(in srgb, var(--ayy-color-surface) 55%, transparent);
+  color: var(--ayy-color-text);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    transform var(--ayy-duration-fast) var(--ayy-ease-standard);
+}
+
+.ayy-hover-action > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+@media (hover: hover) {
+  .ayy-hover-action:hover {
+    background-color: color-mix(in srgb, var(--ayy-color-surface) 85%, transparent);
+  }
+}
+
+.ayy-hover-action:active {
+  transform: scale(0.94);
+}
+
+.ayy-hover-action:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-hover-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* In a group the bar is the frosted surface: buttons are clear until hovered. */
+.ayy-hover-actions--group .ayy-hover-action {
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (hover: hover) {
+  .ayy-hover-actions--group .ayy-hover-action:hover {
+    background-color: var(--ayy-color-wash-hover);
+  }
+}
+
+@media (forced-colors: active) {
+  .ayy-hover-action {
+    border: 1px solid ButtonText;
+  }
+
+  .ayy-hover-actions--group {
+    border-color: CanvasText;
+  }
+
+  .ayy-hover-action:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

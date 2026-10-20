@@ -28,6 +28,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 ### Actions
 
 - [Button](llms/button.md): Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
+- [Hover actions](llms/hover-actions.md): Icon buttons that float over a picture, a video frame or a card — a capture's Copy, Annotate, Pin and ⋯. Each button has its own frosted background so it reads over any image, or the buttons share one glass bar (group). Reveal keeps them out of the way until the picture is hovered or focused; every button names itself in a tooltip.
 - [Toolbar](llms/toolbar.md): A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role="toolbar" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.
 - [Action bar](llms/action-bar.md): Floating bottom multi-select bar that animates into view when one or more rows or cards are selected in a Table, Grid or List. Shows the selected count, a clear button (Esc), and bulk actions such as Edit, Duplicate, Copy, Archive and Delete.
 - [Dropdown menu](llms/menu.md): List of actions that opens from a button. Native popover + WAI-ARIA menu keyboard model (arrows, Home/End, type-ahead, Esc/Tab), submenus and inline expandable sections.
@@ -116,6 +117,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Code block](llms/code-block.md): Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.
 - [Table](llms/table.md): Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.
 - [Grid](llms/grid.md): Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar.
+- [View card](llms/view-card.md): A capture, a recording or a picture to open, as a card: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and actions revealed on hover. For a screenshot history, a media library or a gallery of exports.
 - [Chart](llms/chart.md): Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
 
 ## Optional

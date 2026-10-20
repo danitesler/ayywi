@@ -60,6 +60,7 @@
 @import "../components/steps/steps.css" layer(ayywi.components);
 @import "../components/toc/toc.css" layer(ayywi.components);
 @import "../components/tooltip/tooltip.css" layer(ayywi.components);
+@import "../components/hover-actions/hover-actions.css" layer(ayywi.components);
 @import "../components/toast/toast.css" layer(ayywi.components);
 @import "../components/alert/alert.css" layer(ayywi.components);
 @import "../components/progress/progress.css" layer(ayywi.components);
@@ -79,4 +80,5 @@
 @import "../components/code-block/code-block.css" layer(ayywi.components);
 @import "../components/table/table.css" layer(ayywi.components);
 @import "../components/grid/grid.css" layer(ayywi.components);
+@import "../components/view-card/view-card.css" layer(ayywi.components);
 @import "../components/chart/chart.css" layer(ayywi.components);

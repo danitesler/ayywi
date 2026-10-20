@@ -11,6 +11,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[View card](#/view-card)**
+  New component — a capture, recording or picture to open, letterboxed over a blurred copy of itself, with a length badge, a play glyph, and its title, details, badges and actions revealed on hover or focus.
+- **[Hover actions](#/hover-actions)**
+  New component — frosted icon buttons over a picture or card, separate in its corners or grouped on one glass bar, revealed on hover or focus, each named in a tooltip.
+- **[Toast](#/toast)**
+  Card toasts were always 16:10 → `ratio` (`toast.card({ ratio })`, `<CardToast ratio>` or `--ayy-ratio`) gives a card its picture's shape, between 6.75rem and 14rem tall, with the blurred copy filling the rest.
 - **AI kit**
   Nothing told agents how to install or update ayywi, so apps vendored copies or linked local checkouts → AGENTS.md, the Cursor rule, the skill, llms-full.txt and MCP `get_rules` have an "Installing and updating" section: npm only, `@danitesler/ayywi` imports, no vendoring, `init --force` after an upgrade, local checkouts through `AYYWI_DIR` only.
 - **Linter**
@@ -24,6 +30,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 
+- **[Toast](#/toast)**
+  Toasts behind the front one kept their own height, so a taller one stuck out further and a shorter one vanished → while the stack is closed each toast behind takes the front one's height, and heights animate as toasts arrive, leave and the stack opens.
+- **[Toast](#/toast)**
+  Card toast corner buttons and close were 24px with a native title → the small control size (28px compact, 32px comfortable, 40px touch), and React `CardToastAction` is a Hover action with an ayywi tooltip (`hint`, `tooltip`, `side`).
 - **[Action bar](#/action-bar)**
   Buttons had a 1px hover lift clipped by the scrolling actions row and lost padding → removed hover `translateY(-1px)`, reduced actions gap to `0`, and removed `:has(> svg:only-child)`.
 - **[Table](#/table)**

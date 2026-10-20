@@ -104,7 +104,8 @@
       "CardToast": {
         "renders": "div.ayy-toast.ayy-toast--card",
         "props": {
-          "split": "boolean | \"horizontal\" | \"vertical\""
+          "split": "boolean | \"horizontal\" | \"vertical\"",
+          "ratio": "number | string — the picture's shape, width ÷ height (1.6, or \"1440 / 900\"): the card follows it between 6.75rem and 14rem tall (sets --ayy-ratio). Default 16 / 10"
         }
       },
       "CardToastThumb": {
@@ -144,9 +145,12 @@
         "props": {}
       },
       "CardToastAction": {
-        "renders": "button.ayy-toast__action",
+        "renders": "button.ayy-hover-action.ayy-toast__action inside a Tooltip (a Hover action)",
         "props": {
-          "label": "string — accessible name"
+          "label": "string — accessible name and tooltip",
+          "hint": "ReactNode — after the label in the tooltip, e.g. <Shortcut keys=\"Mod+C\" />",
+          "tooltip": "boolean — false drops the tooltip (the label stays the accessible name). Default true",
+          "side": "\"top\" | \"bottom\" | \"start\" | \"end\" — tooltip side. Default \"bottom\""
         }
       },
       "CardToastStatus": {

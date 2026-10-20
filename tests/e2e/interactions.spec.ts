@@ -1486,3 +1486,110 @@ test("page-header mobile preview sizes to its content without empty bottom space
   expect(box?.height).toBeGreaterThan(100);
 });
 
+
+for (const renderer of ["react", "html"] as const) {
+  test.describe(`view card and hover actions (${renderer})`, () => {
+    const opacity = (l: import("@playwright/test").Locator) => l.evaluate((el) => getComputedStyle(el).opacity);
+
+    test("view card: details and grouped actions wait for hover or focus, the play badge gives way, an open menu keeps them", async ({ page }) => {
+      await open(page, "view-card", { renderer });
+      const cards = example(page, "captures").locator(".ayy-view-card");
+      const video = cards.nth(2);
+      const body = video.locator(".ayy-view-card__body");
+      const actions = video.locator(".ayy-hover-actions");
+      const play = video.locator(".ayy-view-card__play");
+
+      await page.mouse.move(0, 0);
+      await expect.poll(() => opacity(body)).toBe("0");
+      await expect.poll(() => opacity(actions)).toBe("0");
+      await expect.poll(() => opacity(play)).toBe("1");
+
+      await video.hover();
+      await expect.poll(() => opacity(body)).toBe("1");
+      await expect.poll(() => opacity(actions)).toBe("1");
+      await expect.poll(() => opacity(play)).toBe("0");
+
+      // Every action names itself in a tooltip.
+      await actions.getByRole("button", { name: "Trim" }).hover();
+      await expect(page.getByRole("tooltip", { name: "Trim" })).toBeVisible();
+
+      // Keyboard: focus on the picture reveals the same things.
+      await page.mouse.move(0, 0);
+      await expect.poll(() => opacity(body)).toBe("0");
+      await video.locator(".ayy-view-card__media").focus();
+      await expect.poll(() => opacity(body)).toBe("1");
+      await expect.poll(() => opacity(actions)).toBe("1");
+
+      // The ⋯ menu keeps the row up after the pointer leaves.
+      await video.hover();
+      await actions.getByRole("button", { name: "More actions" }).click();
+      await expect(page.getByRole("menuitem", { name: "Delete" })).toBeVisible();
+      await page.mouse.move(0, 0);
+      await expect.poll(() => opacity(actions)).toBe("1");
+      await page.keyboard.press("Escape");
+
+      // A portrait capture keeps the 16 / 10 box: it letterboxes over its blurred copy.
+      const box = (await cards.nth(1).locator(".ayy-view-card__media").boundingBox())!;
+      expect(box.width / box.height).toBeCloseTo(1.6, 1);
+    });
+
+    test("hover actions: control-size buttons with tooltips; a group puts clear buttons on one glass bar", async ({ page }) => {
+      await open(page, "hover-actions", { renderer });
+      const separate = example(page, "corners").locator(".ayy-hover-action").first();
+      const size = await separate.evaluate((el) => {
+        const probe = document.createElement("div");
+        probe.style.blockSize = "var(--ayy-size-control-sm)";
+        el.parentElement!.append(probe);
+        const want = probe.getBoundingClientRect().height;
+        probe.remove();
+        const box = el.getBoundingClientRect();
+        return { want, w: box.width, h: box.height, bg: getComputedStyle(el).backgroundColor };
+      });
+      expect(size.w).toBeCloseTo(size.want, 0);
+      expect(size.h).toBeCloseTo(size.want, 0);
+      expect(size.bg).not.toBe("rgba(0, 0, 0, 0)");
+
+      await separate.hover();
+      await expect(page.getByRole("tooltip", { name: "Annotate" })).toBeVisible();
+
+      const grouped = example(page, "group").locator(".ayy-hover-actions--group .ayy-hover-action").first();
+      await page.mouse.move(0, 0);
+      expect(await grouped.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
+    });
+  });
+}
+
+test("toast stack: toasts behind share the front one's height, get their own back when it opens; card toasts follow ratio", async ({ page }) => {
+  await open(page, "toast");
+  const src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350'></svg>";
+  await page.evaluate((src) => {
+    document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+    const w = window as unknown as { ayywi: { toast: { (m: string, o?: object): void; card: (o: object) => void } } };
+    w.ayywi.toast.card({ src, ratio: "3 / 4", duration: Infinity, id: "tall" });
+    w.ayywi.toast("Saved to Desktop", { duration: Infinity, id: "text" });
+  }, src);
+  const toaster = page.locator(".ayy-toaster");
+  const tall = toaster.locator('[data-toast-id="tall"]');
+  const text = toaster.locator('[data-toast-id="text"]');
+  const height = (l: import("@playwright/test").Locator) => l.evaluate((el) => (el as HTMLElement).offsetHeight);
+
+  await page.mouse.move(0, 0);
+  const front = await height(text);
+  expect(front).toBeLessThan(80);
+  // Behind the short text toast, the tall card shrinks to the same height, so only an even strip peeks out.
+  await expect.poll(() => height(tall)).toBe(front);
+
+  // Opening the stack gives the card its own height back: 3 / 4 at 17.5rem wide is past the 14rem cap.
+  await toaster.hover();
+  await expect(toaster).toHaveAttribute("data-expanded", "");
+  await expect.poll(() => height(tall)).toBe(224);
+
+  // ratio sets the card's shape; very wide pictures stop at 6.75rem.
+  await page.evaluate((src) => {
+    const w = window as unknown as { ayywi: { toast: { card: (o: object) => void } } };
+    w.ayywi.toast.card({ src, ratio: 1440 / 900, duration: Infinity, id: "desktop" });
+    w.ayywi.toast.card({ src, ratio: 4, duration: Infinity, id: "wide" });
+  }, src);
+  await expect.poll(() => height(toaster.locator('[data-toast-id="desktop"]'))).toBe(175);
+  await expect.poll(() => height(toaster.locator('[data-toast-id="wide"]'))).toBe(108);
+});

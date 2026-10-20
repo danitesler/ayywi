@@ -7,7 +7,7 @@ Global attributes: `data-theme`, `data-density`, `data-brand`, `dir` (theme, den
 
 Utilities: `.ayy-h1`, `.ayy-h2`, `.ayy-h3`, `.ayy-h4`, `.ayy-h5`, `.ayy-h6`, `.ayy-lede`, `.ayy-lead`, `.ayy-body`, `.ayy-small`, `.ayy-xs`, `.ayy-muted`, `.ayy-faint`, `.ayy-eyebrow`, `.ayy-signature`, `.ayy-mono`, `.ayy-tabular`, `.ayy-display`, `.ayy-text-outline`, `.ayy-accent-text`, `.ayy-gradient-text`, `.ayy-link`, `.ayy-text-highlight`, `.ayy-prose`, `.ayy-container`, `.ayy-grid`, `.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-split`, `.ayy-center`, `.ayy-bleed`, `.ayy-divider`, `.ayy-surface`, `.ayy-glass`, `.ayy-dot-grid`, `.ayy-glow`, `.ayy-sr-only`, `.ayy-truncate`, `.ayy-clamp-2`, `.ayy-clamp-3`, `.ayy-scroll`, `.ayy-skip-link`, `.ayy-bg-grid`, `.ayy-scroll-progress`, `.ayy-reveal`.
 
-Public custom properties: `--ayy-spot`, `--ayy-mx`, `--ayy-my`, `--ayy-dot`, `--ayy-value`, `--ayy-chart-color`, `--ayy-chart-height`, `--ayy-from`, `--ayy-to`, `--ayy-sidebar-w`, `--ayy-detail-w`, `--ayy-check-color`, `--ayy-check-fg`, `--ayy-progress-color`, `--ayy-swatch`, `--ayy-swipe-bg`, `--ayy-gap`, `--ayy-min`, `--ayy-slide`.
+Public custom properties: `--ayy-spot`, `--ayy-mx`, `--ayy-my`, `--ayy-dot`, `--ayy-value`, `--ayy-chart-color`, `--ayy-chart-height`, `--ayy-from`, `--ayy-to`, `--ayy-sidebar-w`, `--ayy-detail-w`, `--ayy-check-color`, `--ayy-check-fg`, `--ayy-progress-color`, `--ayy-swatch`, `--ayy-swipe-bg`, `--ayy-gap`, `--ayy-min`, `--ayy-ratio`, `--ayy-slide`.
 
 States lists the ones a component has besides default; what each looks like, how to reach it, and what to use where one doesn't apply are in llms/<slug>.md or get_component.
 
@@ -18,6 +18,13 @@ Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.
 - Sizes: `sm` `md` `lg` `icon` `icon-sm` `icon-lg`
 - JS: buttonClass({ variant?, size?, block?, align?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 - A11y: Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus. Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both). Visible focus ring on :focus-visible is built in — never remove it. While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
+
+## Hover actions (Actions)
+Icon buttons that float over a picture, a video frame or a card — a capture's Copy, Annotate, Pin and ⋯. Each button has its own frosted background so it reads over any image, or the buttons share one glass bar (group). Reveal keeps them out of the way until the picture is hovered or focused; every button names itself in a tooltip.
+- Classes: `.ayy-hover-actions` `.ayy-hover-actions--top-start` `.ayy-hover-actions--top-end` `.ayy-hover-actions--bottom-start` `.ayy-hover-actions--bottom-end` `.ayy-hover-actions--group` `.ayy-hover-actions--reveal` `.ayy-hover-action`
+- States: hover, pressed, focus, disabled, revealed
+- JS: hoverActionsClass({ position?, group?, reveal?, className? }) → string; hoverActionClass({ className? }) → string
+- A11y: Every button needs an aria-label (React's label sets it); the icon is decorative. Revealed rows are still in the tab order: focusing a button shows the row, so keyboard users reach every action. Touch screens have no hover, so --reveal rows always show there; never hide the only way to do something behind hover.
 
 ## Toolbar (Actions)
 A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role="toolbar" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.
@@ -555,6 +562,13 @@ Multi-select card grid for media assets, project cards, social media posts, scre
 - Element: `<ayy-grid>`, events `ayy-selection-change`
 - JS: gridClass({ compact?, className? }) → string; gridItemActionsClass({ reveal?, className? }) → string; gridWrapClass, gridToolbarClass, gridSelectAllClass, gridItemClass, gridMediaClass, gridHeaderClass, gridSelectClass, gridActionsClass, gridTitleClass, gridDescriptionClass, gridBodyClass, gridFooterClass constants; connectGrid(root, { onSelectionChange? }) wires select-all, card checkboxes, card-body click selection and Shift+click range selection (used by <ayy-grid>).
 - A11y: Each selectable card contains a native Checkbox in GridItemSelect with an aria-label naming the item ("Select Hero screenshot"). Selected cards carry aria-selected="true" and a 2px border (Highlight outline in High Contrast mode), never colour alone. Per-card icon buttons and ⋯ DropdownMenu triggers carry an aria-label naming the item ("More actions for Hero screenshot"). GridItemActions with reveal uses opacity so controls remain in the Tab order and become visible on :focus-within.
+
+## View card (Data display)
+A capture, a recording or a picture to open, as a card: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and actions revealed on hover. For a screenshot history, a media library or a gallery of exports.
+- Classes: `.ayy-view-card` `.ayy-view-card__media` `.ayy-view-card__backdrop` `.ayy-view-card__image` `.ayy-view-card__badge` `.ayy-view-card__play` `.ayy-view-card__body` `.ayy-view-card__text` `.ayy-view-card__title` `.ayy-view-card__meta` `.ayy-view-card__badges`
+- States: hover, focus, menu-open
+- JS: viewCardClass({ className? }) → string; viewCardPlayIcon (the play glyph's SVG markup)
+- A11y: When the picture opens something, ViewCardMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"): the body is decoration on top of it. The body and actions are revealed by focus as well as hover, and always shown on touch screens, so nothing is hover-only. Give the picture's <img> an alt only when the card has no label that already names it; the backdrop is aria-hidden. Every Hover action needs a label (it's also the tooltip).
 
 ## Chart (Data display)
 Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.

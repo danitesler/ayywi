@@ -66,6 +66,9 @@ export interface CardToastOptions {
   alt?: string;
   /** Optional blurred backdrop url (defaults to src). */
   backdrop?: string;
+  /** The picture's shape, width ÷ height (1.6, or "1440 / 900"). The card follows it between 6.75rem and 14rem tall,
+      with a blurred copy filling the rest. Default 16 / 10. */
+  ratio?: number | string;
   /** Media type and duration badge, e.g. { type: "video", duration: "0:42" }. */
   media?: CardToastMedia;
   /** Split card layout with media preview thumbnail and text details side-by-side or stacked. */
@@ -142,7 +145,20 @@ interface LiveToastEntry {
 const live = new Map<string, LiveToastEntry>();
 let counter = 0;
 
-function syncIndices(host: HTMLElement): void {
+/** A toast's height with nothing forcing it (behind the front toast, CSS gives it the front one's height). */
+function naturalHeight(el: HTMLElement): number {
+  el.setAttribute("data-measuring", "");
+  const h = el.offsetHeight;
+  el.removeAttribute("data-measuring");
+  return h || 56;
+}
+
+/**
+ * Every toast in the stack gets an explicit height (--_toast-h), measured once as it arrives, so CSS can animate
+ * height: toasts behind the front take its height while the stack is closed, and each grows back to its own when it
+ * opens. Measuring again would cut short a running animation, so only `remeasure` (a window resize) does.
+ */
+function syncIndices(host: HTMLElement, remeasure = false): void {
   // Elements are in order of creation. We assign reverse index: newest = 0, older = 1, 2...
   const toasts = Array.from(host.querySelectorAll<HTMLElement>(".ayy-toast:not([data-leaving])"));
   const count = toasts.length;
@@ -151,8 +167,15 @@ function syncIndices(host: HTMLElement): void {
   const peek = 14;
   const scaleStep = 0.05;
 
-  const front = count > 0 ? toasts[count - 1] : null;
-  const frontH = front ? (front.offsetHeight || 56) : 56;
+  const heights = toasts.map((el) => {
+    const stored = Number.parseFloat(el.style.getPropertyValue("--_toast-h"));
+    if (stored > 0 && !remeasure) return stored;
+    const h = naturalHeight(el);
+    el.style.setProperty("--_toast-h", `${h}px`);
+    return h;
+  });
+
+  const frontH = count > 0 ? heights[count - 1] : 56;
   host.style.setProperty("--_toast-front-height", `${frontH}px`);
 
   const isExpanded = host.hasAttribute("data-expanded");
@@ -160,13 +183,12 @@ function syncIndices(host: HTMLElement): void {
   for (let i = count - 1; i >= 0; i--) {
     const el = toasts[i];
     const revIndex = count - 1 - i;
-    const h = el.offsetHeight || frontH;
+    const h = heights[i];
 
     el.style.setProperty("--_toast-index", String(revIndex));
     el.style.setProperty("--_toast-offset-y", `${accumulatedHeight}px`);
     el.style.setProperty("--_toast-peek", `${revIndex * peek}px`);
     el.style.setProperty("--_toast-scale", String(Math.max(0, 1 - revIndex * scaleStep)));
-    el.style.setProperty("--_toast-h", `${h}px`);
     el.style.setProperty("z-index", String(1000 - revIndex));
 
     if (revIndex === 0 || isExpanded) {
@@ -292,6 +314,13 @@ function region(): HTMLElement {
       for (const entry of [...live.values()]) entry.dismiss();
     });
     toaster.append(clear);
+
+    // A new width rewraps text and resizes cards: measure every toast again.
+    let resizeFrame = 0;
+    window.addEventListener("resize", () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => syncIndices(toaster, true));
+    });
 
     document.body.append(el);
   }
@@ -553,6 +582,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
     isVertical && "ayy-toast--card-split--vertical",
   );
   toast.setAttribute("data-toast-id", id);
+  if (options.ratio !== undefined) toast.style.setProperty("--ayy-ratio", String(options.ratio));
   if (options.onDoubleClick) {
     toast.addEventListener("dblclick", () => options.onDoubleClick?.());
   }

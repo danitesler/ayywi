@@ -20,6 +20,7 @@ export const PUBLIC_HOOKS = {
   "--ayy-swipe-bg": "Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).",
   "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
   "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
+  "--ayy-ratio": "A picture's shape, width ÷ height (1.6, or 1440 / 900), set on a card toast or a .ayy-view-card__media: the card follows it, within its own minimum and maximum height. Default 16 / 10.",
   "--ayy-slide": "Width of each carousel slide (default min(22rem, 85%)).",
 };
 
@@ -87,13 +88,13 @@ export const CATEGORIES = {
 /** Component order within a category (categories themselves follow CATEGORIES), for the manifest and llms*.txt
     (the preview sidebar sorts each category alphabetically). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
-  "button", "toolbar", "action-bar", "menu", "command", "fab",
+  "button", "hover-actions", "toolbar", "action-bar", "menu", "command", "fab",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc",
   "field", "input", "search-bar", "filter-bar", "sorting", "textarea", "select", "combobox", "tag-input", "date-time-picker", "color-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "dropzone", "switch", "shortcut", "settings",
   "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
-  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
+  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "view-card", "chart",
 ];
 
 /** Screens built from several components that every app should build the same way. Each is rendered into the manifest
@@ -268,6 +269,8 @@ export const NEEDS = [
   { need: "Group content in a box", use: ["card"], how: "Card with CardHeader / CardTitle / CardDescription, CardContent, CardFooter; CardLink when the whole card opens something.", not: "a <div> with a border, radius and padding" },
   { need: "Rows of things (members, files, threads, settings)", use: ["list", "settings", "swipe"], how: "List (ListLink for clickable rows, divided for settings-style rows); Settings for preference rows; Swipe actions on phones.", not: "<ul>/<div> rows with your own borders and hover, <li onClick>" },
   { need: "Records compared across columns", use: ["table", "action-bar", "menu", "pagination"], how: "Table (sortable headers, a select column, TableRowActions with inline quick buttons and a ⋯ DropdownMenu), ActionBar when rows are selected, Pagination under it.", not: "a raw <table>, a CSS grid of divs" },
+  { need: "Captures, recordings or pictures to open, with their details and actions on hover (a screenshot history, a media library)", use: ["view-card", "hover-actions", "menu"], how: "View cards in a .ayy-grid: ViewCardMedia (a button or link that opens it) with ViewCardImage letterboxed over a blurred copy, ViewCardBadge for a recording's length, ViewCardBody for title, details and badges, and grouped HoverActions with a ⋯ DropdownMenu. Use Grid instead when people select several.", not: "a Card with an <img>, a hand-built gradient caption, absolutely positioned buttons that appear on hover" },
+  { need: "Icon actions over a picture, a video frame or a card (copy, annotate, pin, delete)", use: ["hover-actions"], how: "HoverActions in a corner (position) of the picture's box, reveal to show them on hover and focus, group to put them on one glass bar; each HoverAction has a label that is also its tooltip.", not: "ghost buttons restyled with a translucent background, title=\"\" tooltips, buttons that only appear on :hover with no keyboard way to reach them" },
   { need: "Selectable cards of media assets, screenshots, social posts, projects or user records", use: ["grid", "action-bar", "menu"], how: "Grid of GridItems (GridItemSelect checkbox, GridItemActions with inline quick actions and a ⋯ DropdownMenu, GridItemMedia for previews), ActionBar when items are selected.", not: "Cards with custom onClick selection state or hand-built floating checkboxes" },
   { need: "Run bulk actions on selected table rows or grid items (edit, duplicate, copy, archive, delete)", use: ["action-bar", "table", "grid"], how: "ActionBar (open when selection count > 0) with ActionBarSelection, ActionBarCount, ActionBarClose and ActionBarActions of ActionBarButtons (destructive last).", not: "a hand-built fixed bottom bar or static buttons above the table" },
   { need: "A number that matters (KPI)", use: ["stat", "card", "badge", "chart"], how: "Card + Stat + a status Badge, a Sparkline beside it.", not: "big bold text in a div" },
