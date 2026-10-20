@@ -100,7 +100,6 @@
   --_toast-swipe-y: 0px;
   --_toast-peek: calc(var(--_toast-index) * 14px);
   --_toast-scale: calc(max(0, 1 - (var(--_toast-index) * 0.05)));
-  --_toast-leave-x: 28px;
   --_icon-color: var(--ayy-color-text);
   position: absolute;
   inset-block-end: 0;
@@ -124,7 +123,7 @@
   z-index: calc(1000 - var(--_toast-index));
   /* Scale from top edge so --_toast-peek is the exact strip showing above the card in front,
      even when toasts/cards have different heights */
-  transform-origin: top center;
+  transform-origin: var(--_toast-origin-x, 50%) 0;
   transform: translateY(calc(-1 * var(--_toast-peek) + var(--_toast-swipe-y))) scale(var(--_toast-scale));
   transition:
     transform var(--ayy-duration-base) var(--ayy-ease-standard),
@@ -170,7 +169,7 @@
 .ayy-toaster[data-position^="top"] .ayy-toast {
   inset-block-end: auto;
   inset-block-start: 0;
-  transform-origin: bottom center;
+  transform-origin: var(--_toast-origin-x, 50%) 100%;
   transform: translateY(calc(var(--_toast-peek) + var(--_toast-swipe-y))) scale(var(--_toast-scale));
 }
 
@@ -329,11 +328,12 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  inline-size: var(--ayy-size-icon-lg);
-  block-size: var(--ayy-size-icon-lg);
+  /* One size for every toast's close and copy button, text or card: the small control size, like Hover actions. */
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
   padding: 0;
   border: 0;
-  border-radius: var(--ayy-radius-control);
+  border-radius: var(--ayy-radius-button);
   background: transparent;
   color: var(--ayy-color-muted);
   cursor: pointer;
@@ -367,9 +367,44 @@
 @keyframes ayy-toast-out {
   to {
     opacity: 0;
-    translate: var(--_toast-leave-x, 28px) 0;
-    scale: 0.95;
+    translate: var(--_toast-leave, 28px 0);
   }
+}
+
+/* A dismissed toast slides off through the nearest edge of the screen: the side the stack sits on (mirrored in right
+   to left), or down or up for a centred stack. */
+.ayy-toaster {
+  --_toast-leave: calc(var(--_ayy-dir, 1) * (100% + var(--ayy-space-8))) 0;
+}
+
+.ayy-toaster[data-position$="start"] {
+  --_toast-leave: calc(var(--_ayy-dir, 1) * -1 * (100% + var(--ayy-space-8))) 0;
+}
+
+.ayy-toaster[data-position="bottom-center"] {
+  --_toast-leave: 0 calc(100% + var(--ayy-space-8));
+}
+
+.ayy-toaster[data-position="top-center"] {
+  --_toast-leave: 0 calc(-1 * (100% + var(--ayy-space-8)));
+}
+
+/* Toasts behind shrink toward the stack's side, so their edges line up with the front toast's on that side. */
+.ayy-toaster {
+  --_toast-origin-x: calc(50% + 50% * var(--_ayy-dir, 1));
+}
+
+.ayy-toaster[data-position$="start"] {
+  --_toast-origin-x: calc(50% - 50% * var(--_ayy-dir, 1));
+}
+
+.ayy-toaster[data-position$="center"] {
+  --_toast-origin-x: 50%;
+}
+
+/* Clear all: every toast leaves together, a little slower than one dismissed on its own. */
+.ayy-toaster[data-clearing] .ayy-toast[data-leaving] {
+  animation-duration: var(--ayy-duration-slow);
 }
 
 /* Long text toast variant (supports long text, normal font size, and copy button) */
@@ -603,9 +638,6 @@
   inset-inline-end: var(--ayy-space-2);
   inset-inline-start: auto;
   z-index: 4;
-  inline-size: var(--ayy-size-control-sm);
-  block-size: var(--ayy-size-control-sm);
-  border-radius: var(--ayy-radius-button);
   color: var(--ayy-color-text);
   background-color: color-mix(in srgb, var(--ayy-color-surface) 55%, transparent);
   -webkit-backdrop-filter: blur(10px);

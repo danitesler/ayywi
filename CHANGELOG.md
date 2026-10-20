@@ -31,6 +31,14 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ### Changed
 
 - **[Toast](#/toast)**
+  A dismissed toast slid 28px to the right whatever side the stack was on → it slides off through the nearest edge of the screen (the stack's side, mirrored in right to left; down or up for a centred stack), and Clear all sends every toast off together, a little slower.
+- **[Toast](#/toast)**
+  Toasts behind the front one shrank toward the middle → they shrink toward the stack's side, so their edges line up with the front toast's (right, left or centre).
+- **[Toast](#/toast)**
+  Close and copy buttons were 24px on text toasts and 28px on card toasts → one size everywhere, the small control size, and React's notification toast uses the same `CardToastClose`.
+- **[Toast](#/toast)**
+  A dismissed toast slid 28px to the right, whatever side the stack was on, and Clear all dropped every toast at once → it slides off through the nearest edge of the screen (the stack's side, mirrored in right to left; down or up for a centred stack), and Clear all takes them quickly one by one, front first.
+- **[Toast](#/toast)**
   Toasts behind the front one kept their own size, so a taller one stuck out further, a shorter one vanished and a narrower card left a gap → while the stack is closed each toast behind takes the front one's height and width, and sizes animate as toasts arrive, leave and the stack opens.
 - **[Toast](#/toast)**
   Card toast corner buttons and close were 24px with a native title → the small control size (28px compact, 32px comfortable, 40px touch), and React `CardToastAction` is a Hover action with an ayywi tooltip (`hint`, `tooltip`, `side`).

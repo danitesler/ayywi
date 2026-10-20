@@ -161,6 +161,8 @@ function naturalHeight(el: HTMLElement): number {
 function syncIndices(host: HTMLElement, remeasure = false): void {
   // Elements are in order of creation. We assign reverse index: newest = 0, older = 1, 2...
   const toasts = Array.from(host.querySelectorAll<HTMLElement>(".ayy-toast:not([data-leaving])"));
+  // While Clear all runs, the stack keeps its layout so every toast slides off from where it is.
+  if (host.hasAttribute("data-clearing")) return;
   const count = toasts.length;
   let accumulatedHeight = 0;
   const gap = 10;
@@ -322,8 +324,14 @@ function region(): HTMLElement {
     const clear = document.createElement("button");
     clear.type = "button";
     clear.className = "ayy-button ayy-button--secondary ayy-button--sm ayy-toaster__clear";
+    // Clear all: every toast leaves at once, from where it is (the stack keeps its layout until they're gone).
     clear.addEventListener("click", () => {
+      toaster.setAttribute("data-clearing", "");
       for (const entry of [...live.values()]) entry.dismiss();
+      window.setTimeout(() => {
+        toaster.removeAttribute("data-clearing");
+        syncIndices(toaster);
+      }, 600);
     });
     toaster.append(clear);
 
@@ -435,7 +443,7 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
       }
     };
     toast.addEventListener("animationend", (e) => { if (e.target === toast) remove(); });
-    window.setTimeout(remove, 400);
+    window.setTimeout(remove, 600);
   };
 
   if (options.action) {
@@ -621,7 +629,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
       }
     };
     toast.addEventListener("animationend", (e) => { if (e.target === toast) remove(); });
-    window.setTimeout(remove, 400);
+    window.setTimeout(remove, 600);
   };
 
   if (isSplit) {

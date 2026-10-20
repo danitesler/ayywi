@@ -125,17 +125,7 @@ export const NotificationToast = forwardRef<HTMLDivElement, NotificationToastPro
           <Icon icon={copied ? Tick02Icon : Copy01Icon} />
         </button>
       )}
-      {onClose && (
-        <button
-          type="button"
-          className="ayy-toast__close"
-          aria-label={closeLabel}
-          title={closeLabel}
-          onClick={onClose}
-        >
-          <Icon icon={Cancel01Icon} />
-        </button>
-      )}
+      {onClose && <CardToastClose label={closeLabel} onClick={onClose} />}
       {children}
     </div>
   );

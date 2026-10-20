@@ -1630,3 +1630,121 @@ test("toast stack: hovering a toast behind opens the stack once, without blinkin
   await expect(toaster).not.toHaveAttribute("data-expanded", "");
   expect(await page.evaluate(() => (window as unknown as { __flips: number }).__flips)).toBe(2);
 });
+
+test("toast stack: a dismissed toast slides off toward its side of the screen; Clear all sends them all at once", async ({ page }) => {
+  await open(page, "toast");
+  await page.evaluate(() => {
+    document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+    const w = window as unknown as { ayywi: { toast: (m: string, o?: object) => void } };
+    for (const m of ["One", "Two", "Three", "Four"]) w.ayywi.toast(m, { duration: Infinity, id: m });
+  });
+  const toaster = page.locator(".ayy-toaster");
+  const toast = (id: string) => toaster.locator(`[data-toast-id="${id}"]`);
+  await page.mouse.move(0, 0);
+
+  // Bottom end in left to right: the front toast leaves to the right, not down or to the left.
+  const before = (await toast("Four").boundingBox())!;
+  await toast("Four").locator(".ayy-toast__close").evaluate((el) => (el as HTMLElement).click());
+  await page.waitForTimeout(150);
+  const during = await toast("Four").boundingBox();
+  if (during) {
+    expect(during.x).toBeGreaterThan(before.x + 20);
+    expect(Math.abs(during.y - before.y)).toBeLessThan(4);
+  }
+  await expect(toast("Four")).toHaveCount(0);
+
+  // Clear all: every toast starts leaving in the same moment, from where it is, toward the right.
+  await toaster.hover();
+  await expect(toaster).toHaveAttribute("data-expanded", "");
+  await page.waitForTimeout(400);
+  const result = await page.evaluate(async () => {
+    const host = document.querySelector<HTMLElement>(".ayy-toaster")!;
+    const boxes = () => Object.fromEntries([...host.querySelectorAll<HTMLElement>(".ayy-toast")].map((el) => [el.dataset.toastId, el.getBoundingClientRect()]));
+    const first = boxes();
+    const start = performance.now();
+    const seen: number[] = [];
+    new MutationObserver((records) => {
+      for (const r of records) if (r.attributeName === "data-leaving" && (r.target as HTMLElement).hasAttribute("data-leaving")) seen.push(performance.now() - start);
+    }).observe(host, { attributes: true, subtree: true });
+    host.querySelector<HTMLButtonElement>(".ayy-toaster__clear")!.click();
+    await new Promise((r) => setTimeout(r, 150));
+    const mid = boxes();
+    const moves = Object.keys(first).map((id) => ({ dx: mid[id].x - first[id].x, dy: Math.abs(mid[id].y - first[id].y) }));
+    return { seen, moves };
+  });
+  expect(result.seen).toHaveLength(3);
+  expect(Math.max(...result.seen) - Math.min(...result.seen)).toBeLessThan(20);
+  for (const m of result.moves) {
+    expect(m.dx).toBeGreaterThan(10);
+    expect(m.dy).toBeLessThan(4);
+  }
+  await expect(toaster.locator(".ayy-toast")).toHaveCount(0);
+});
+
+test("toast stack: toasts behind line up with the front one on the stack's side; the example's Props pick the side", async ({ page }) => {
+  await open(page, "toast", { renderer: "react" });
+  const toaster = page.locator(".ayy-toaster");
+  const edges = () =>
+    page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>(".ayy-toaster .ayy-toast")].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { left: r.left, right: r.right, center: r.left + r.width / 2 };
+      }),
+    );
+  const fill = () =>
+    page.evaluate(() => {
+      document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+      const w = window as unknown as { ayywi: { toast: (m: string, o?: object) => void } };
+      for (const m of ["One", "Two", "Three"]) w.ayywi.toast(m, { duration: Infinity });
+    });
+
+  await fill();
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(500);
+  let e = await edges();
+  // Right: the strips behind are smaller but share the front toast's right edge.
+  for (const x of e) expect(Math.abs(x.right - e[e.length - 1].right)).toBeLessThan(1);
+  expect(e[0].left).toBeGreaterThan(e[e.length - 1].left + 2);
+
+  const pick = async (side: string) => {
+    await page.locator('.pv-example[aria-labelledby="ex-basic"]').getByRole("button", { name: "Props" }).click();
+    await page.getByRole("radio", { name: side }).click();
+    await page.keyboard.press("Escape");
+    await expect(toaster).toHaveAttribute("data-position", side === "Left" ? "bottom-start" : "bottom-center");
+    await fill();
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(500);
+    return edges();
+  };
+
+  e = await pick("Left");
+  for (const x of e) expect(Math.abs(x.left - e[e.length - 1].left)).toBeLessThan(1);
+  e = await pick("Center");
+  for (const x of e) expect(Math.abs(x.center - e[e.length - 1].center)).toBeLessThan(1);
+});
+
+test("every toast type's close button is the same component at the same size", async ({ page }) => {
+  await open(page, "toast");
+  const src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350'></svg>";
+  await page.evaluate((src) => {
+    document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+    const w = window as unknown as { ayywi: { toast: { (m: string, o?: object): void; long: (m: string, o?: object) => void; card: (o: object) => void } } };
+    w.ayywi.toast("Saved", { duration: Infinity });
+    w.ayywi.toast.long("whsec_9b2e8a1f4c7d0e3b5a6f", { duration: Infinity });
+    w.ayywi.toast.card({ src, duration: Infinity });
+    w.ayywi.toast.card({ src, split: true, title: "Screenshot.png", duration: Infinity });
+  }, src);
+  await page.locator(".ayy-toaster").hover();
+  const sizes = await page.evaluate(() => {
+    const probe = document.createElement("div");
+    probe.style.blockSize = "var(--ayy-size-control-sm)";
+    document.querySelector(".ayy-toaster")!.append(probe);
+    const want = Math.round(probe.getBoundingClientRect().height);
+    probe.remove();
+    // Every close button on the page: the stack's and the static examples' (React renders those).
+    const all = [...document.querySelectorAll<HTMLElement>(".ayy-toast__close")].map((el) => `${el.offsetWidth}x${el.offsetHeight}`);
+    return { want, all };
+  });
+  expect(sizes.all.length).toBeGreaterThan(5);
+  expect(new Set(sizes.all)).toEqual(new Set([`${sizes.want}x${sizes.want}`]));
+});

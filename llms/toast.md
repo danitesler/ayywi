@@ -143,7 +143,18 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Button, toast, type CardToastHandle } from "@danitesler/ayywi/react";
+import { useEffect, useState, type ReactNode } from "react";
+import { configureToaster } from "@danitesler/ayywi";
+import {
+  Button,
+  Label,
+  SegmentedControl,
+  SegmentedControlItem,
+  Toaster,
+  toast,
+  type CardToastHandle,
+  type ToasterProps,
+} from "@danitesler/ayywi/react";
 
 const SAMPLE_CAPTURE =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350' viewBox='0 0 560 350'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23ec4899'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/><rect x='40' y='40' width='480' height='270' rx='12' fill='%23ffffff' fill-opacity='0.15'/></svg>";
@@ -185,16 +196,41 @@ const TOAST_TRIGGERS = [
     }),
 ];
 
-export default function Example() {
+type Position = NonNullable<ToasterProps["position"]>;
+
+export default function Example({ setControls }: { setControls?: (node: ReactNode) => void } = {}) {
+  const [position, setPosition] = useState<Position>("bottom-end");
+
+  // The preview's Props popover: where the stack sits. Leaving the page puts it back in the bottom end corner.
+  useEffect(() => {
+    setControls?.(
+      <div className="ayy-stack">
+        <Label id="toast-position">Position</Label>
+        <SegmentedControl size="sm" aria-labelledby="toast-position" value={position} onValueChange={(v) => setPosition(v as Position)}>
+          <SegmentedControlItem value="bottom-start">Left</SegmentedControlItem>
+          <SegmentedControlItem value="bottom-center">Center</SegmentedControlItem>
+          <SegmentedControlItem value="bottom-end">Right</SegmentedControlItem>
+        </SegmentedControl>
+      </div>,
+    );
+  }, [setControls, position]);
+  useEffect(() => () => {
+    setControls?.(null);
+    configureToaster({ position: "bottom-end" });
+  }, [setControls]);
+
   const triggerRandom = () => {
     const fn = TOAST_TRIGGERS[Math.floor(Math.random() * TOAST_TRIGGERS.length)];
     fn();
   };
 
   return (
-    <Button variant="outline" onClick={triggerRandom}>
-      Trigger random toast
-    </Button>
+    <>
+      <Toaster position={position} />
+      <Button variant="outline" onClick={triggerRandom}>
+        Trigger random toast
+      </Button>
+    </>
   );
 }
 ```
