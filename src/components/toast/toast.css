@@ -79,9 +79,19 @@
 .ayy-toaster[data-expanded] {
   block-size: var(--_toast-expanded-height, auto);
   max-block-size: calc(100dvh - 2 * var(--ayy-space-4));
-  overflow-y: clip;
-  overflow-x: visible;
+  /* Clip only the far edge, where a tall stack runs out of room. A new toast slides in across the near edge, and
+     clipping it there pulls the toast out from under the pointer, so the stack collapses and a click misses. */
+  clip-path: inset(0 -100vmax -100vmax);
   pointer-events: auto;
+}
+
+.ayy-toaster[data-position^="top"][data-expanded] {
+  clip-path: inset(-100vmax -100vmax 0);
+}
+
+/* Once scrolled, toasts move past the near edge too */
+.ayy-toaster[data-expanded][data-scrolled] {
+  clip-path: inset(0 -100vmax);
 }
 
 .ayy-toast {

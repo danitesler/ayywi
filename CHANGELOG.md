@@ -53,6 +53,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Right to left, the handle and slider thumbs sat mirrored away from their colour; typed hex such as `#fff` or `#12345g` went out as typed; changing alpha nudged the colour → the area and sliders run left to right, the value is always `#rrggbb` (`#rrggbbaa` with alpha), invalid hex is ignored, and alpha changes keep the colour.
 - **[Toast](#/toast)**
   `toast.card()` read `media.duration` as HTML → as text.
+- **[Toast](#/toast)**
+  Hovering a toast that was still sliding in cut off its lower edge, made the stack flicker open and shut, and could drop a click; an open stack also cut off the front toast's shadow → the open stack now only clips the edge it scrolls past.
 - **MCP server**
   `create_brand` read a `.json` file when given a path as the colour, and a `null` message stopped the server → it takes a hex colour only and answers bad messages with an error.
 - **Packaging**

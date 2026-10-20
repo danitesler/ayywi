@@ -727,6 +727,9 @@ for (const renderer of ["react", "html"] as const) {
       });
       const toast = page.locator(".ayy-toaster .ayy-toast", { hasText: "Project archived" });
       await expect(toast).toBeVisible();
+      // While the page is still busy loading, Chrome can hold the entry transition at its first frame, which passes
+      // Playwright's stability check. The toast then lands between mousedown and mouseup, and the click is lost.
+      await settle(toast);
       await toast.getByRole("button", { name: "Undo" }).click();
       await expect(page.locator(".ayy-toaster .ayy-toast", { hasText: "Project restored" })).toBeVisible();
 
