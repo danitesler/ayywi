@@ -470,15 +470,16 @@ ayy-app-shell {
 
 /* ---- Sizes: lg (default), md (.ayy-app-shell--md) and sm (.ayy-app-shell--sm), matching Button's sm/md/lg scale ----
    Every rule goes through "> .ayy-app-shell__sidebar" so a shell placed inside a smaller one's main area keeps its own size.
-   Action buttons placed in the sidebar (outside __head) automatically match the sidebar's size step. */
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]),
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]) {
+   Action buttons placed in the sidebar (outside __head) automatically match the sidebar's size step; one set to a small
+   size (sm or icon-sm) keeps it, so a button and its icon-only neighbour always come out the same height. */
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) {
   block-size: var(--ayy-size-control-lg);
   font-size: var(--ayy-control-text-lg);
 }
 
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]) > svg,
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--link, [tabindex="-1"]) > svg {
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
+.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg {
   inline-size: var(--ayy-size-icon-md);
   block-size: var(--ayy-size-icon-md);
 }

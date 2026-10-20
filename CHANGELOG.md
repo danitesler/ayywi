@@ -61,6 +61,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Fixed
 
+- **[App shell](#/app-shell)**
+  In a big sidebar a `size="sm"` button stayed small while an `icon-sm` button next to it grew to the sidebar size → both keep their small size, so a split button lines up.
 - **AI kit**
   The rules said class helpers come from `"ayywi"` (the CLI package) → `"@danitesler/ayywi"`.
 - **[Command palette](#/command)**
