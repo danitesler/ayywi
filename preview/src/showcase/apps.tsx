@@ -548,7 +548,7 @@ const PULSE_SETTINGS: AppSettings = {
 function DashboardApp() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortDirection>("descending");
-  const pages = [...PAGES].sort((a, b) => (sort === "ascending" ? 1 : -1) * compareValues(a.views, b.views));
+  const pages = [...PAGES].sort((a, b) => compareValues(a.views, b.views, sort));
   return (
     <AppFrame
       brand={{ name: "Pulse", icon: ChartLineData01Icon, href: "#overview" }}

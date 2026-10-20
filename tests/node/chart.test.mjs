@@ -48,3 +48,13 @@ test("TableChart supports compact variant and custom format", { skip }, async ()
   assert.match(markup, /<table class="ayy-table ayy-table--compact">/);
   assert.match(markup, /<td class="ayy-table__num">\$50,000<\/td>/);
 });
+
+test("scales and paths take series longer than the engine's argument limit", { skip }, async () => {
+  const { chartScale, chartPath, Sparkline } = await import(dist("react.js"));
+  const values = Array.from({ length: 300_000 }, (_, i) => i % 1000);
+  values[123_456] = 1840;
+  assert.equal(chartScale(values).max, 2000);
+  const { line } = chartPath(values);
+  assert.match(line, /^M0,100 /);
+  assert.match(renderToStaticMarkup(createElement(Sparkline, { values, label: "Requests" })), /<path/);
+});

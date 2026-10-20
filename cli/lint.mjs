@@ -1,6 +1,6 @@
 // ayywi lint — checks a project's UI code against the ayywi contract (manifest/components.json).
 // No dependencies; regex/scan based on purpose so it works on any template language.
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -755,14 +755,19 @@ export function lintText(text, file, contract, config = { rules: DEFAULT_RULES }
     .sort((a, b) => a.line - b.line || a.column - b.column);
 }
 
-function* walk(path, cwd, config) {
+function* walk(path, cwd, config, seen) {
   const rel = relative(cwd, path).split("\\").join("/");
   if (rel && config.ignore.some((re) => re.test(rel))) return;
-  const stat = statSync(path);
+  const stat = statSync(path, { throwIfNoEntry: false });
+  if (!stat) return; // a symlink to nothing
   if (stat.isDirectory()) {
+    // Each folder once, so a symlink back up the tree doesn't loop.
+    const real = realpathSync(path);
+    if (seen.has(real)) return;
+    seen.add(real);
     for (const name of readdirSync(path)) {
       if (SKIP_DIRS.has(name) || name.startsWith(".")) continue;
-      yield* walk(join(path, name), cwd, config);
+      yield* walk(join(path, name), cwd, config, seen);
     }
   } else if (CSS_EXT.has(extname(path).toLowerCase()) || MARKUP_EXT.has(extname(path).toLowerCase())) {
     yield path;
@@ -772,10 +777,11 @@ function* walk(path, cwd, config) {
 /** Lint files/directories. Returns { findings, files }. */
 export function lintPaths(paths, { cwd = process.cwd(), contract = loadContract(), config = loadConfig(cwd) } = {}) {
   const texts = [];
+  const seen = new Set();
   for (const p of paths.length ? paths : ["."]) {
     const abs = resolve(cwd, p);
     if (!existsSync(abs)) throw new Error(`No such file or directory: ${p}`);
-    for (const file of walk(abs, cwd, config)) texts.push([relative(cwd, file) || file, readFileSync(file, "utf8")]);
+    for (const file of walk(abs, cwd, config, seen)) texts.push([relative(cwd, file) || file, readFileSync(file, "utf8")]);
   }
   // Classes are matched across files: a stylesheet's .qa-card is fine when some template writes class="ayy-card qa-card".
   const coUse = new Map();

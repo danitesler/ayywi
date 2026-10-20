@@ -35,7 +35,7 @@ const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD
 export default function Example() {
   const [sort, setSort] = useState<{ key: Key; direction: SortDirection }>({ key: "due", direction: "ascending" });
   const [selected, setSelected] = useState<string[]>(["INV-1043"]);
-  const rows = [...invoices].sort((a, b) => (sort.direction === "ascending" ? 1 : -1) * compareValues(a[sort.key], b[sort.key]));
+  const rows = [...invoices].sort((a, b) => compareValues(a[sort.key], b[sort.key], sort.direction));
   const all = selected.length === invoices.length;
   const toggle = (id: string, on: boolean) => setSelected((list) => (on ? [...list, id] : list.filter((x) => x !== id)));
 

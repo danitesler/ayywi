@@ -63,6 +63,26 @@ test("fonts keep ayywi's fallbacks, shapes set the corners, bad input throws", {
   assert.throws(() => createBrand({ name: "a", color: "#000", font: { body: "x}body{color:red" } }), /family name/);
 });
 
+test("brandCss and setBrand check a ready-made Brand the way createBrand checks its input", { skip }, async () => {
+  const { brandCss, createBrand, setBrand } = await import(dist("index.js"));
+  const good = createBrand({ name: "acme", color: "#0ea5e9", font: { heading: ["Inter Display", "Inter"] }, radius: { button: "6px" } });
+  const stored = JSON.parse(JSON.stringify(good));
+  assert.match(brandCss(stored), /--ayy-radius-button: 6px;/);
+  for (const bad of [
+    { ...stored, name: 'x"], * { color: red } [x="' },
+    { ...stored, font: { body: "Inter; } * { display: none } .x {" } },
+    { ...stored, radius: { ...stored.radius, card: "1px; background: url(https://example.com)" } },
+    { ...stored, scale: { ...stored.scale, 500: "red; x: y" } },
+    { ...stored, dark: { ...stored.dark, primary: "expression(alert(1))" } },
+    { ...stored, seed: "#000 */ * { color: red } /*" },
+  ]) {
+    assert.throws(() => brandCss(bad), /isn't one createBrand\(\) makes/);
+  }
+  // setBrand checks before it looks the name up in a selector.
+  const page = { ownerDocument: { head: { querySelector: () => assert.fail("looked up an unchecked name") } }, setAttribute() {} };
+  assert.throws(() => setBrand({ ...stored, name: 'a"]' }, page), /isn't one createBrand\(\) makes/);
+});
+
 test("brandCss: layered for [data-brand], repeated on nested themes, unlayered on request", { skip }, async () => {
   const { brandCss } = await import(dist("index.js"));
   const css = brandCss({ name: "acme", color: "#7c3aed" });

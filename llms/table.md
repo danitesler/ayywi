@@ -38,7 +38,7 @@ Category: Data display. Data table with quiet hairlines, uppercase headers, hove
 - `<TableBody>` renders <tbody>.
 - `<TableFooter>` renders <tfoot>.
 - `<TableRow>` renders <tr>. Props: `selected` boolean — aria-selected
-- `<TableHead>` renders <th scope="col">, with a <button class="ayy-table__sort"> inside when sortable. Props: `numeric` boolean; `select` boolean — the checkbox column; `actions` boolean — the trailing row actions column; `sort` "ascending" | "descending" | "none" — makes the header a sort button; "none" for a sortable column that isn't sorted; `onSort` () => void — flip with nextSortDirection() and sort your rows (compareValues helps)
+- `<TableHead>` renders <th scope="col">, with a <button class="ayy-table__sort"> inside when sortable. Props: `numeric` boolean; `select` boolean — the checkbox column; `actions` boolean — the trailing row actions column; `sort` "ascending" | "descending" | "none" — makes the header a sort button; "none" for a sortable column that isn't sorted; `onSort` () => void — flip with nextSortDirection() and sort your rows (compareValues(a, b, direction) helps)
 - `<TableCell>` renders <td>. Props: `numeric` boolean; `select` boolean — the checkbox column; `actions` boolean — the trailing row actions column
 - `<TableRowActions>` renders <div class="ayy-table__row-actions">. Props: `reveal` boolean — reveal on row hover, focus-within or selection (stays visible on touch)
 - `<TableCaption>` renders <caption>.
@@ -303,7 +303,7 @@ const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD
 export default function Example() {
   const [sort, setSort] = useState<{ key: Key; direction: SortDirection }>({ key: "due", direction: "ascending" });
   const [selected, setSelected] = useState<string[]>(["INV-1043"]);
-  const rows = [...invoices].sort((a, b) => (sort.direction === "ascending" ? 1 : -1) * compareValues(a[sort.key], b[sort.key]));
+  const rows = [...invoices].sort((a, b) => compareValues(a[sort.key], b[sort.key], sort.direction));
   const all = selected.length === invoices.length;
   const toggle = (id: string, on: boolean) => setSelected((list) => (on ? [...list, id] : list.filter((x) => x !== id)));
 

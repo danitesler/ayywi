@@ -51,7 +51,7 @@ pnpm build          # generate + dist/ (layered + unlayered CSS, ESM, CJS, .d.ts
 pnpm typecheck      # library + preview + every example file + tests
 pnpm check          # design rules, docs ↔ CSS ↔ props ↔ elements, generated files up to date, lints examples
 pnpm test           # node tests (linter, MCP, init, token exports, eval scorer) — needs a build
-pnpm test:e2e       # Playwright + axe against the built preview
+pnpm test:e2e       # Playwright + axe against the built preview, in Playwright's Chromium (E2E_CHROME=1: the installed Chrome)
 scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
 pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme from the theme button, density from the menu beside it
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too

@@ -75,7 +75,7 @@ export interface ChartScale {
  */
 export function chartScale(values: readonly number[], { ticks = 3, min = 0, max }: { ticks?: number; min?: number; max?: number } = {}): ChartScale {
   const count = Math.max(2, Math.round(ticks));
-  const step = max !== undefined ? (max - min) / (count - 1) : niceStep((Math.max(min, ...values) - min) / (count - 1));
+  const step = max !== undefined ? (max - min) / (count - 1) : niceStep((values.reduce((a, b) => Math.max(a, b), min) - min) / (count - 1));
   return { min, max: tidy(min + step * (count - 1)), ticks: Array.from({ length: count }, (_, i) => tidy(min + step * i)) };
 }
 
@@ -100,7 +100,8 @@ export interface ChartPathOptions {
  */
 export function chartPath(values: readonly number[], { min = 0, max, smooth = false }: ChartPathOptions = {}): { line: string; area: string } {
   if (!values.length) return { line: "", area: "" };
-  const top = max ?? Math.max(...values);
+  // reduce, not Math.max(...values): spreading a long series overflows the call stack.
+  const top = max ?? values.reduce((a, b) => Math.max(a, b), -Infinity);
   const span = top - min || 1;
   const n = values.length;
   const xs = values.map((_, i) => (n === 1 ? 50 : (i / (n - 1)) * 100));

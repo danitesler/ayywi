@@ -34,7 +34,7 @@
     "density": "Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter. Text size follows data-density via --ayy-text-s.",
     "width": "Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit."
   },
-  "js": "tableClass({ compact?, className? }); tableRowActionsClass({ reveal?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass, tableActionsClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
+  "js": "tableClass({ compact?, className? }); tableRowActionsClass({ reveal?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass, tableActionsClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b, direction?) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers, empty values last either way; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
   "element": {
     "tag": "ayy-table",
     "description": "Wraps an .ayy-table (or its .ayy-table-wrap). Header .ayy-table__sort buttons set aria-sort and reorder the body rows by that column (a cell's data-sort-value wins over its text); .ayy-table__select checkboxes set aria-selected on their row, and a checkbox in the header's select cell selects all and shows some as indeterminate.",
@@ -59,7 +59,7 @@
           "select": "boolean — the checkbox column",
           "actions": "boolean — the trailing row actions column",
           "sort": "\"ascending\" | \"descending\" | \"none\" — makes the header a sort button; \"none\" for a sortable column that isn't sorted",
-          "onSort": "() => void — flip with nextSortDirection() and sort your rows (compareValues helps)"
+          "onSort": "() => void — flip with nextSortDirection() and sort your rows (compareValues(a, b, direction) helps)"
         }
       },
       "TableCell": {

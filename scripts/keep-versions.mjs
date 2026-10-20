@@ -8,7 +8,7 @@
 // The first deploy has no versions.json yet (404): nothing to keep. Any other failure stops the deploy, because
 // going ahead would silently break every app linked to an older release.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -29,14 +29,26 @@ if (response.status === 404) {
 if (!response.ok) throw new Error(`keep-versions: ${response.status} fetching ${base}versions.json`);
 const live = await response.json();
 
+// versions.json comes over the network, so every path it names has to stay inside v/<release>/.
+const inside = (dir, path) => {
+  const rel = relative(dir, path);
+  return rel !== "" && !rel.startsWith("..") && !isAbsolute(rel);
+};
+
 let kept = 0;
 for (const release of live.versions ?? []) {
   if (current.versions.some((v) => v.id === release.id)) continue;
-  for (const file of release.files) {
+  const dir = join(out, "v", String(release.id));
+  const files = (release.files ?? []).map(String);
+  const targets = files.map((file) => join(dir, file));
+  if (!/^[\w.+-]+$/.test(release.id) || !inside(join(out, "v"), dir) || !targets.every((target) => inside(dir, target))) {
+    throw new Error(`keep-versions: release ${JSON.stringify(release.id)} names a path outside v/<release>/`);
+  }
+  for (const [i, file] of files.entries()) {
     const url = new URL(`v/${release.id}/${file}`, base);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`keep-versions: ${res.status} fetching ${url}`);
-    const target = join(out, "v", release.id, file);
+    const target = targets[i];
     mkdirSync(dirname(target), { recursive: true });
     writeFileSync(target, Buffer.from(await res.arrayBuffer()));
   }
