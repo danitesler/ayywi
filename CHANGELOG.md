@@ -11,8 +11,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
-- **[View card](#/view-card)**
-  New component — a capture, recording or picture to open, letterboxed over a blurred copy of itself, with a length badge, a play glyph, and its title, details, badges and actions revealed on hover or focus.
+- **[Card](#/card)**
+  New view type (`view`, `.ayy-card--view` with `CardView*` parts) — a capture, recording or picture to open, letterboxed over a blurred copy of itself, with a length badge, a play glyph, and its title, details, badges and actions revealed on hover or focus.
 - **[Hover actions](#/hover-actions)**
   New component — frosted icon buttons over a picture or card, separate in its corners or grouped on one glass bar, revealed on hover or focus, each named in a tooltip.
 - **[Toast](#/toast)**

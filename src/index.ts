@@ -80,7 +80,6 @@ export * from "./components/code-block/code-block";
 export * from "./components/text-highlight/text-highlight";
 export * from "./components/action-bar/action-bar";
 export * from "./components/grid/grid";
-export * from "./components/view-card/view-card";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */
 export function cssVar(name: TokenName): string {

@@ -7,11 +7,20 @@ export interface CardClassOptions {
   spotlight?: boolean;
   /** The one to pick: the recommended plan, the option you chose. A border in the text colour. */
   featured?: boolean;
+  /** A capture, recording or picture to open: the picture fills the card, details and actions show on hover. */
+  view?: boolean;
   className?: string;
 }
 
-export function cardClass({ interactive, spotlight, featured, className }: CardClassOptions = {}): string {
-  return cx("ayy-card", interactive && "ayy-card--interactive", spotlight && "ayy-card--spotlight", featured && "ayy-card--featured", className);
+export function cardClass({ interactive, spotlight, featured, view, className }: CardClassOptions = {}): string {
+  return cx(
+    "ayy-card",
+    interactive && "ayy-card--interactive",
+    spotlight && "ayy-card--spotlight",
+    featured && "ayy-card--featured",
+    view && "ayy-card--view",
+    className,
+  );
 }
 
 export const cardHeaderClass = "ayy-card__header";

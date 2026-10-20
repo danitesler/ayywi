@@ -2,8 +2,8 @@
   "name": "Card",
   "slug": "card",
   "category": "Layout",
-  "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.",
-  "aka": ["card", "panel-card"],
+  "description": "Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. The view type (view) is a capture, recording or picture to open: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and Hover actions revealed on hover.",
+  "aka": ["card", "panel-card", "view-card", "media-card", "shot-card", "capture-card", "thumbnail-card"],
   "classes": {
     "ayy-card": "Root surface.",
     "ayy-card--interactive": "Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.",
@@ -15,30 +15,43 @@
     "ayy-card__content": "Body.",
     "ayy-card__footer": "Actions row, pinned to the bottom.",
     "ayy-card__media": "Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly when an interactive card is hovered with a mouse.",
-    "ayy-card__link": "Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable."
+    "ayy-card__link": "Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable.",
+    "ayy-card--view": "View type: a capture, recording or picture to open. The picture fills the card and clips to its corners; Hover actions float in its corners.",
+    "ayy-card__view-media": "View: the picture's box at --ayy-ratio (default 16 / 10). A <button> or <a> when opening it is the card's main action.",
+    "ayy-card__view-backdrop": "View: a blurred copy of the picture filling the box around the letterboxed picture (aria-hidden).",
+    "ayy-card__view-image": "View: the picture itself, letterboxed (object-fit: contain), never cropped.",
+    "ayy-card__view-badge": "View: frosted pill in the top start corner — a recording's kind and length (\"0:42\").",
+    "ayy-card__view-play": "View: frosted round play glyph in the top end corner. Fades when the card is hovered so the actions can take the corner.",
+    "ayy-card__view-body": "View: title, details and badges on a gradient over the bottom of the picture. Revealed on hover; clicks go through to the picture.",
+    "ayy-card__view-text": "View: column of the title and the details; truncates.",
+    "ayy-card__view-title": "View: the card's name in sm semibold, one line.",
+    "ayy-card__view-meta": "View: details in xs soft text with tabular figures — size, length, age.",
+    "ayy-card__view-badges": "View: row of Badges at the end of the body (Edited, Uploaded)."
   },
   "variants": {
     "interactive": { "values": [true, false], "default": false },
     "spotlight": { "values": [true, false], "default": false },
-    "featured": { "values": [false, true], "default": false, "component": "Card" }
+    "featured": { "values": [false, true], "default": false, "component": "Card" },
+    "view": { "values": [false, true], "default": false, "component": "Card" }
   },
   "states": {
     "default": { "looks": "Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5." },
-    "hover": { "when": ":hover", "looks": "Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer." },
+    "hover": { "when": ":hover; on a view card also [data-hover] (hover tracked elsewhere)", "looks": "Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer. A view card takes the lift shadow, its body fades up from 6px below, a --reveal Hover actions row fades in and the play glyph fades out." },
     "pressed": { "none": "No pressed look, even when interactive." },
-    "focus": { "when": ".ayy-card__link:focus-visible", "looks": "The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus." },
+    "focus": { "when": ".ayy-card__link:focus-visible; .ayy-card__view-media:focus-visible", "looks": "The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus. On a view card the ring sits inside the picture's edge, and focus anywhere in it reveals the body and actions like hover." },
     "disabled": { "none": "Cards aren't disabled; dim nothing. For an unavailable option use a Choice card with a disabled input." },
     "selected": { "when": "featured (ayy-card--featured)", "looks": "Text-colour border plus a 1px ring, so it reads as 2px without moving. For a picked option use a Choice card instead. Forced colours: Highlight outline." },
     "error": { "none": "Put an Alert inside the card's content." },
-    "loading": { "none": "No loading look; show Skeletons in the card's content shape (aria-busy on the region)." }
+    "loading": { "none": "No loading look; show Skeletons in the card's content shape (aria-busy on the region) — 16 / 10 for view cards." },
+    "menu-open": { "when": "view card :has([aria-expanded=\"true\"]), a menu inside it is open", "looks": "Stays revealed while its ⋯ menu is open." }
   },
   "sizes": {
     "density": "Padding and text don't follow data-density.",
-    "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card."
+    "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem)."
   },
-  "js": "cardClass({ interactive?, spotlight?, featured?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
+  "js": "cardClass({ interactive?, spotlight?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
   "react": {
-    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from \"@danitesler/ayywi/react\";",
+    "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from \"@danitesler/ayywi/react\";",
     "components": {
       "Card": {
         "renders": "<div>",
@@ -46,7 +59,8 @@
           "interactive": "boolean",
           "spotlight": "boolean — tracks the pointer for you",
           "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"",
-          "featured": "boolean — the recommended or chosen card (ayy-card--featured)."
+          "featured": "boolean — the recommended or chosen card (ayy-card--featured).",
+          "view": "boolean — the view type (ayy-card--view): a capture, recording or picture to open"
         }
       },
       "CardHeader": { "renders": "<div>" },
@@ -55,30 +69,54 @@
       "CardContent": { "renders": "<div>" },
       "CardFooter": { "renders": "<div>" },
       "CardMedia": { "renders": "<div>", "props": { "children": "An <img>, <picture>, <video> or <svg>. Give images width and height." } },
-      "CardLink": { "renders": "<a class=\"ayy-card__link\">", "props": { "...rest": "All native <a> attributes (href…)." } }
+      "CardLink": { "renders": "<a class=\"ayy-card__link\">", "props": { "...rest": "All native <a> attributes (href…)." } },
+      "CardViewMedia": {
+        "renders": "<button class=\"ayy-card__view-media\"> when given onClick, <a> with href, otherwise <div>",
+        "props": {
+          "ratio": "number | string — the box's shape, width ÷ height (1.6, or \"1440 / 900\"); default 16 / 10 so a grid lines up",
+          "href": "string — renders a link",
+          "target": "string — the link's target",
+          "rel": "string — the link's rel"
+        }
+      },
+      "CardViewImage": { "renders": "<img class=\"ayy-card__view-backdrop\"> + <img class=\"ayy-card__view-image\"> (src, alt, width and height go on the picture)", "props": { "backdrop": "string — a smaller copy for the blurred fill; default src" } },
+      "CardViewBadge": { "renders": "<span class=\"ayy-card__view-badge\">", "props": { "icon": "ReactNode — leading icon (video, GIF)" } },
+      "CardViewPlay": { "renders": "<span class=\"ayy-card__view-play\" aria-hidden=\"true\"> with a play icon" },
+      "CardViewBody": { "renders": "<div class=\"ayy-card__view-body\">" },
+      "CardViewText": { "renders": "<div class=\"ayy-card__view-text\">" },
+      "CardViewTitle": { "renders": "<p class=\"ayy-card__view-title\">" },
+      "CardViewMeta": { "renders": "<p class=\"ayy-card__view-meta\">" },
+      "CardViewBadges": { "renders": "<div class=\"ayy-card__view-badges\">" }
     }
   },
   "a11y": [
     "If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card.",
     "Media images are content: give them alt text, or alt=\"\" when the title already says it all.",
-    "Spotlight layers are pseudo-elements, invisible to assistive tech."
+    "Spotlight layers are pseudo-elements, invisible to assistive tech.",
+    "View cards: when the picture opens something, CardViewMedia is a <button> or <a> with an aria-label that names the item and the action (\"Annotate the pricing page capture from 2 minutes ago\"); the body is decoration on top of it.",
+    "View cards reveal their body and actions on focus as well as hover, and always show them on touch screens, so nothing is hover-only. The backdrop is aria-hidden."
   ],
   "do": [
     "Use a card to group a unit of content: a project, a person, a plan, a stat.",
     "Add interactive for clickable tiles in a grid.",
     "Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.",
     "Keep one level of cards; use hairline dividers inside.",
-    "Mark the recommended plan in a pricing grid with featured (and a Badge that says why), not a coloured background."
+    "Mark the recommended plan in a pricing grid with featured (and a Badge that says why), not a coloured background.",
+    "Use the view type (view) for captures, recordings and pictures people open — a screenshot history, a media library — in .ayy-grid; pass the picture's real width and height, and keep the box at 16 / 10 so rows line up (portrait pictures letterbox over the blur).",
+    "On a view card, group three or more actions in one Hover actions bar (top end, group, reveal) ending in a ⋯ DropdownMenu; show a recording's length in CardViewBadge and add CardViewPlay."
   ],
   "dont": [
     "Don't wrap page sections in a card — use plain layout.",
     "Don't nest cards inside cards.",
     "Don't set background colours on cards; the surface token keeps both themes correct.",
-    "Don't use spotlight on dense lists — it's for showcase grids."
+    "Don't use spotlight on dense lists — it's for showcase grids.",
+    "Don't use view cards for records people select in bulk — use Grid with GridItemSelect and an Action bar.",
+    "Don't crop a view card's picture (object-fit: cover) — captures must show whole; the blurred copy fills the gap. Don't put essential information only in its body: it hides until hover on pointer devices."
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
     { "id": "spotlight", "title": "Interactive with spotlight" },
-    { "id": "media", "title": "Linked card with media" }
+    { "id": "media", "title": "Linked card with media" },
+    { "id": "view", "title": "View cards: capture history" }
   ]
 }

@@ -330,11 +330,11 @@ An interactive container for previewing UI across viewports (desktop, tablet, mo
 - A11y: Give the Showcase an aria-labelledby pointing to its ShowcaseTitle. Device switchers must have accessible labels describing the active viewport.
 
 ## Card (Layout)
-Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
-- Classes: `.ayy-card` `.ayy-card--interactive` `.ayy-card--spotlight` `.ayy-card--featured` `.ayy-card__header` `.ayy-card__title` `.ayy-card__description` `.ayy-card__content` `.ayy-card__footer` `.ayy-card__media` `.ayy-card__link`
-- States: hover, focus, selected
-- JS: cardClass({ interactive?, spotlight?, featured?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.
-- A11y: If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card. Media images are content: give them alt text, or alt="" when the title already says it all. Spotlight layers are pseudo-elements, invisible to assistive tech.
+Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. The view type (view) is a capture, recording or picture to open: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and Hover actions revealed on hover.
+- Classes: `.ayy-card` `.ayy-card--interactive` `.ayy-card--spotlight` `.ayy-card--featured` `.ayy-card__header` `.ayy-card__title` `.ayy-card__description` `.ayy-card__content` `.ayy-card__footer` `.ayy-card__media` `.ayy-card__link` `.ayy-card--view` `.ayy-card__view-media` `.ayy-card__view-backdrop` `.ayy-card__view-image` `.ayy-card__view-badge` `.ayy-card__view-play` `.ayy-card__view-body` `.ayy-card__view-text` `.ayy-card__view-title` `.ayy-card__view-meta` `.ayy-card__view-badges`
+- States: hover, focus, selected, menu-open
+- JS: cardClass({ interactive?, spotlight?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.
+- A11y: If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card. Media images are content: give them alt text, or alt="" when the title already says it all. Spotlight layers are pseudo-elements, invisible to assistive tech. View cards: when the picture opens something, CardViewMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"); the body is decoration on top of it. View cards reveal their body and actions on focus as well as hover, and always show them on touch screens, so nothing is hover-only. The backdrop is aria-hidden.
 
 ## Tabs (Layout)
 Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
@@ -562,13 +562,6 @@ Multi-select card grid for media assets, project cards, social media posts, scre
 - Element: `<ayy-grid>`, events `ayy-selection-change`
 - JS: gridClass({ compact?, className? }) → string; gridItemActionsClass({ reveal?, className? }) → string; gridWrapClass, gridToolbarClass, gridSelectAllClass, gridItemClass, gridMediaClass, gridHeaderClass, gridSelectClass, gridActionsClass, gridTitleClass, gridDescriptionClass, gridBodyClass, gridFooterClass constants; connectGrid(root, { onSelectionChange? }) wires select-all, card checkboxes, card-body click selection and Shift+click range selection (used by <ayy-grid>).
 - A11y: Each selectable card contains a native Checkbox in GridItemSelect with an aria-label naming the item ("Select Hero screenshot"). Selected cards carry aria-selected="true" and a 2px border (Highlight outline in High Contrast mode), never colour alone. Per-card icon buttons and ⋯ DropdownMenu triggers carry an aria-label naming the item ("More actions for Hero screenshot"). GridItemActions with reveal uses opacity so controls remain in the Tab order and become visible on :focus-within.
-
-## View card (Data display)
-A capture, a recording or a picture to open, as a card: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and actions revealed on hover. For a screenshot history, a media library or a gallery of exports.
-- Classes: `.ayy-view-card` `.ayy-view-card__media` `.ayy-view-card__backdrop` `.ayy-view-card__image` `.ayy-view-card__badge` `.ayy-view-card__play` `.ayy-view-card__body` `.ayy-view-card__text` `.ayy-view-card__title` `.ayy-view-card__meta` `.ayy-view-card__badges`
-- States: hover, focus, menu-open
-- JS: viewCardClass({ className? }) → string; viewCardPlayIcon (the play glyph's SVG markup)
-- A11y: When the picture opens something, ViewCardMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"): the body is decoration on top of it. The body and actions are revealed by focus as well as hover, and always shown on touch screens, so nothing is hover-only. Give the picture's <img> an alt only when the card has no label that already names it; the backdrop is aria-hidden. Every Hover action needs a label (it's also the tooltip).
 
 ## Chart (Data display)
 Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.

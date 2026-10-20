@@ -88,7 +88,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Group content in a box | Card with CardHeader / CardTitle / CardDescription, CardContent, CardFooter; CardLink when the whole card opens something. | a <div> with a border, radius and padding |
 | Rows of things (members, files, threads, settings) | List (ListLink for clickable rows, divided for settings-style rows); Settings for preference rows; Swipe actions on phones. | <ul>/<div> rows with your own borders and hover, <li onClick> |
 | Records compared across columns | Table (sortable headers, a select column, TableRowActions with inline quick buttons and a ⋯ DropdownMenu), ActionBar when rows are selected, Pagination under it. | a raw <table>, a CSS grid of divs |
-| Captures, recordings or pictures to open, with their details and actions on hover (a screenshot history, a media library) | View cards in a .ayy-grid: ViewCardMedia (a button or link that opens it) with ViewCardImage letterboxed over a blurred copy, ViewCardBadge for a recording's length, ViewCardBody for title, details and badges, and grouped HoverActions with a ⋯ DropdownMenu. Use Grid instead when people select several. | a Card with an <img>, a hand-built gradient caption, absolutely positioned buttons that appear on hover |
+| Captures, recordings or pictures to open, with their details and actions on hover (a screenshot history, a media library) | Cards of the view type (Card view) in a .ayy-grid: CardViewMedia (a button or link that opens it) with CardViewImage letterboxed over a blurred copy, CardViewBadge for a recording's length, CardViewBody for title, details and badges, and grouped HoverActions with a ⋯ DropdownMenu. Use Grid instead when people select several. | a plain Card with CardMedia and an <img>, a hand-built gradient caption, absolutely positioned buttons that appear on hover |
 | Icon actions over a picture, a video frame or a card (copy, annotate, pin, delete) | HoverActions in a corner (position) of the picture's box, reveal to show them on hover and focus, group to put them on one glass bar; each HoverAction has a label that is also its tooltip. | ghost buttons restyled with a translucent background, title="" tooltips, buttons that only appear on :hover with no keyboard way to reach them |
 | Selectable cards of media assets, screenshots, social posts, projects or user records | Grid of GridItems (GridItemSelect checkbox, GridItemActions with inline quick actions and a ⋯ DropdownMenu, GridItemMedia for previews), ActionBar when items are selected. | Cards with custom onClick selection state or hand-built floating checkboxes |
 | Run bulk actions on selected table rows or grid items (edit, duplicate, copy, archive, delete) | ActionBar (open when selection count > 0) with ActionBarSelection, ActionBarCount, ActionBarClose and ActionBarActions of ActionBarButtons (destructive last). | a hand-built fixed bottom bar or static buttons above the table |
@@ -462,7 +462,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - `--ayy-swipe-bg`: Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).
 - `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.
 - `--ayy-min`: Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).
-- `--ayy-ratio`: A picture's shape, width ÷ height (1.6, or 1440 / 900), set on a card toast or a .ayy-view-card__media: the card follows it, within its own minimum and maximum height. Default 16 / 10.
+- `--ayy-ratio`: A picture's shape, width ÷ height (1.6, or 1440 / 900), set on a card toast or a view Card's .ayy-card__view-media: the card follows it, within its own minimum and maximum height. Default 16 / 10.
 - `--ayy-slide`: Width of each carousel slide (default min(22rem, 85%)).
 
 ## Utility classes
@@ -522,7 +522,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, View card, Chart
+- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart
 
 ## Button
 
@@ -2737,7 +2737,7 @@ Category: Layout. An interactive container for previewing UI across viewports (d
 
 ## Card
 
-Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. Also called: card, panel-card.
+Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. The view type (view) is a capture, recording or picture to open: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and Hover actions revealed on hover. Also called: card, panel-card, view-card, media-card, shot-card, capture-card, thumbnail-card.
 
 **Classes**
 - `.ayy-card` — Root surface.
@@ -2751,19 +2751,31 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - `.ayy-card__footer` — Actions row, pinned to the bottom.
 - `.ayy-card__media` — Edge-to-edge image, screenshot or video. Rounds the card corners it touches (first or last child); zooms slightly when an interactive card is hovered with a mouse.
 - `.ayy-card__link` — Put on the title's <a>: it stretches over the whole card, so the card is one link and one tab stop. Other links and buttons inside stay clickable.
+- `.ayy-card--view` — View type: a capture, recording or picture to open. The picture fills the card and clips to its corners; Hover actions float in its corners.
+- `.ayy-card__view-media` — View: the picture's box at --ayy-ratio (default 16 / 10). A <button> or <a> when opening it is the card's main action.
+- `.ayy-card__view-backdrop` — View: a blurred copy of the picture filling the box around the letterboxed picture (aria-hidden).
+- `.ayy-card__view-image` — View: the picture itself, letterboxed (object-fit: contain), never cropped.
+- `.ayy-card__view-badge` — View: frosted pill in the top start corner — a recording's kind and length ("0:42").
+- `.ayy-card__view-play` — View: frosted round play glyph in the top end corner. Fades when the card is hovered so the actions can take the corner.
+- `.ayy-card__view-body` — View: title, details and badges on a gradient over the bottom of the picture. Revealed on hover; clicks go through to the picture.
+- `.ayy-card__view-text` — View: column of the title and the details; truncates.
+- `.ayy-card__view-title` — View: the card's name in sm semibold, one line.
+- `.ayy-card__view-meta` — View: details in xs soft text with tabular figures — size, length, age.
+- `.ayy-card__view-badges` — View: row of Badges at the end of the body (Edited, Uploaded).
 
 **States**
 - `default` — Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5.
-- `hover` (`:hover`) — Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer.
-- `focus` (`.ayy-card__link:focus-visible`) — The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus.
+- `hover` (`:hover; on a view card also [data-hover] (hover tracked elsewhere)`) — Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer. A view card takes the lift shadow, its body fades up from 6px below, a --reveal Hover actions row fades in and the play glyph fades out.
+- `focus` (`.ayy-card__link:focus-visible; .ayy-card__view-media:focus-visible`) — The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus. On a view card the ring sits inside the picture's edge, and focus anywhere in it reveals the body and actions like hover.
 - `selected` (`featured (ayy-card--featured)`) — Text-colour border plus a 1px ring, so it reads as 2px without moving. For a picked option use a Choice card instead. Forced colours: Highlight outline.
+- `menu-open` (`view card :has([aria-expanded="true"]), a menu inside it is open`) — Stays revealed while its ⋯ menu is open.
 
 **Sizes**
 - Density — Padding and text don't follow data-density.
-- Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card.
+- Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem).
 
-**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink } from "@danitesler/ayywi/react";`
-- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).
+**React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from "@danitesler/ayywi/react";`
+- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
 - `<CardDescription>` renders <p>.
@@ -2771,11 +2783,22 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - `<CardFooter>` renders <div>.
 - `<CardMedia>` renders <div>. Props: `children` An <img>, <picture>, <video> or <svg>. Give images width and height.
 - `<CardLink>` renders <a class="ayy-card__link">. Props: `...rest` All native <a> attributes (href…).
+- `<CardViewMedia>` renders <button class="ayy-card__view-media"> when given onClick, <a> with href, otherwise <div>. Props: `ratio` number | string — the box's shape, width ÷ height (1.6, or "1440 / 900"); default 16 / 10 so a grid lines up; `href` string — renders a link; `target` string — the link's target; `rel` string — the link's rel
+- `<CardViewImage>` renders <img class="ayy-card__view-backdrop"> + <img class="ayy-card__view-image"> (src, alt, width and height go on the picture). Props: `backdrop` string — a smaller copy for the blurred fill; default src
+- `<CardViewBadge>` renders <span class="ayy-card__view-badge">. Props: `icon` ReactNode — leading icon (video, GIF)
+- `<CardViewPlay>` renders <span class="ayy-card__view-play" aria-hidden="true"> with a play icon.
+- `<CardViewBody>` renders <div class="ayy-card__view-body">.
+- `<CardViewText>` renders <div class="ayy-card__view-text">.
+- `<CardViewTitle>` renders <p class="ayy-card__view-title">.
+- `<CardViewMeta>` renders <p class="ayy-card__view-meta">.
+- `<CardViewBadges>` renders <div class="ayy-card__view-badges">.
 
 **Accessibility**
 - If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card.
 - Media images are content: give them alt text, or alt="" when the title already says it all.
 - Spotlight layers are pseudo-elements, invisible to assistive tech.
+- View cards: when the picture opens something, CardViewMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"); the body is decoration on top of it.
+- View cards reveal their body and actions on focus as well as hover, and always show them on touch screens, so nothing is hover-only. The backdrop is aria-hidden.
 
 **Do**
 - Use a card to group a unit of content: a project, a person, a plan, a stat.
@@ -2783,14 +2806,18 @@ Category: Layout. Surface that groups related content. Flat at rest with an inse
 - Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.
 - Keep one level of cards; use hairline dividers inside.
 - Mark the recommended plan in a pricing grid with featured (and a Badge that says why), not a coloured background.
+- Use the view type (view) for captures, recordings and pictures people open — a screenshot history, a media library — in .ayy-grid; pass the picture's real width and height, and keep the box at 16 / 10 so rows line up (portrait pictures letterbox over the blur).
+- On a view card, group three or more actions in one Hover actions bar (top end, group, reveal) ending in a ⋯ DropdownMenu; show a recording's length in CardViewBadge and add CardViewPlay.
 
 **Don't**
 - Don't wrap page sections in a card — use plain layout.
 - Don't nest cards inside cards.
 - Don't set background colours on cards; the surface token keeps both themes correct.
 - Don't use spotlight on dense lists — it's for showcase grids.
+- Don't use view cards for records people select in bulk — use Grid with GridItemSelect and an Action bar.
+- Don't crop a view card's picture (object-fit: cover) — captures must show whole; the blurred copy fills the gap. Don't put essential information only in its body: it hides until hover on pointer devices.
 
-**Examples**: Basic, Interactive with spotlight, Linked card with media. Copy-ready HTML and React in llms/card.md.
+**Examples**: Basic, Interactive with spotlight, Linked card with media, View cards: capture history. Copy-ready HTML and React in llms/card.md.
 
 ## Tabs
 
@@ -4277,66 +4304,6 @@ Category: Data display. Multi-select card grid for media assets, project cards, 
 - Don't hide the selection checkbox on selected cards.
 
 **Examples**: Media assets, screenshots and social posts, Project cards and user records. Copy-ready HTML and React in llms/grid.md.
-
-## View card
-
-Category: Data display. A capture, a recording or a picture to open, as a card: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and actions revealed on hover. For a screenshot history, a media library or a gallery of exports. Also called: view-card, media-card, shot-card, capture-card, thumbnail-card.
-
-**Classes**
-- `.ayy-view-card` — Root: a card frame that clips the picture to its corners. Positioned, so Hover actions can float in its corners.
-- `.ayy-view-card__media` — The picture's box at --ayy-ratio (default 16 / 10). A <button> or <a> when opening it is the card's main action.
-- `.ayy-view-card__backdrop` — A blurred copy of the picture filling the box around the letterboxed picture (aria-hidden).
-- `.ayy-view-card__image` — The picture itself, letterboxed (object-fit: contain), never cropped.
-- `.ayy-view-card__badge` — Frosted pill in the top start corner: a recording's kind and length ("0:42").
-- `.ayy-view-card__play` — Frosted round play glyph in the top end corner. Fades when the card is hovered so the actions can take the corner.
-- `.ayy-view-card__body` — Title, details and badges on a gradient over the bottom of the picture. Revealed on hover; clicks go through to the picture.
-- `.ayy-view-card__text` — Column of the title and the details; truncates.
-- `.ayy-view-card__title` — The card's name in sm semibold, one line.
-- `.ayy-view-card__meta` — Details in xs soft text with tabular figures: size, length, age.
-- `.ayy-view-card__badges` — Row of Badges at the end of the body (Edited, Uploaded).
-
-**States**
-- `default` — The picture, letterboxed over its blurred copy, in a card with a hairline border. Only the badge and the play glyph show.
-- `hover` (`.ayy-view-card:hover (pointer devices); [data-hover] does the same when hover is tracked elsewhere`) — The border darkens and the card lifts to the raised shadow. The body fades up from 6px below, a --reveal Hover actions row fades in, and the play glyph fades out.
-- `focus` (`.ayy-view-card__media:focus-visible; :focus-within on the card`) — 2px --ayy-color-ring outline inside the picture's edge. Focus anywhere in the card reveals the body and actions, like hover.
-- `menu-open` (`:has([aria-expanded="true"]), a menu inside it is open`) — Stays revealed while its ⋯ menu is open.
-
-**Sizes**
-- Density — Fixed card layout; the badge, play glyph and Hover actions follow --ayy-size-control-sm (28px compact, 32px comfortable, 40px touch).
-- Width — Fills its column: put View cards in .ayy-grid with --ayy-min (14–16rem). The picture's box is --ayy-ratio of that width.
-
-**React** — `import { ViewCard, ViewCardMedia, ViewCardImage, ViewCardBadge, ViewCardPlay, ViewCardBody, ViewCardText, ViewCardTitle, ViewCardMeta, ViewCardBadges } from "@danitesler/ayywi/react";`
-- `<ViewCard>` renders <article class="ayy-view-card">. Props: 
-- `<ViewCardMedia>` renders <button class="ayy-view-card__media"> when given onClick, <a> with href, otherwise <div>. Props: `ratio` number | string — the box's shape, width ÷ height (1.6, or "1440 / 900"); default 16 / 10 so a grid lines up; `href` string — renders a link; `target` string — the link's target; `rel` string — the link's rel
-- `<ViewCardImage>` renders <img class="ayy-view-card__backdrop"> + <img class="ayy-view-card__image"> (src, alt, width and height go on the picture). Props: `backdrop` string — a smaller copy for the blurred fill; default src
-- `<ViewCardBadge>` renders <span class="ayy-view-card__badge">. Props: `icon` ReactNode — leading icon (video, GIF)
-- `<ViewCardPlay>` renders <span class="ayy-view-card__play" aria-hidden="true"> with a play icon. Props: 
-- `<ViewCardBody>` renders <div class="ayy-view-card__body">. Props: 
-- `<ViewCardText>` renders <div class="ayy-view-card__text">. Props: 
-- `<ViewCardTitle>` renders <p class="ayy-view-card__title">. Props: 
-- `<ViewCardMeta>` renders <p class="ayy-view-card__meta">. Props: 
-- `<ViewCardBadges>` renders <div class="ayy-view-card__badges">. Props: 
-
-**Accessibility**
-- When the picture opens something, ViewCardMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"): the body is decoration on top of it.
-- The body and actions are revealed by focus as well as hover, and always shown on touch screens, so nothing is hover-only.
-- Give the picture's <img> an alt only when the card has no label that already names it; the backdrop is aria-hidden.
-- Every Hover action needs a label (it's also the tooltip).
-
-**Do**
-- Use View cards for captures, recordings and pictures people open: a screenshot history, a media library, exported files.
-- Put them in .ayy-grid with --ayy-min so columns follow the window.
-- Pass the picture's real width and height to its <img>; keep the box at 16 / 10 in a grid so rows line up — portrait pictures letterbox over the blur.
-- Group three or more actions in one Hover actions bar (top end, group, reveal) and end it with a ⋯ DropdownMenu.
-- Show a recording's length in ViewCardBadge and add ViewCardPlay so it reads as playable before hover.
-
-**Don't**
-- Don't use a View card for records people select in bulk — use Grid with GridItemSelect and an Action bar.
-- Don't use it for text content (articles, projects) — use Card.
-- Don't crop the picture (object-fit: cover) — captures must show whole; the blurred copy fills the gap.
-- Don't put essential information only in the body: it hides until hover on pointer devices. Name the item in the media's aria-label too.
-
-**Examples**: Capture history. Copy-ready HTML and React in llms/view-card.md.
 
 ## Chart
 

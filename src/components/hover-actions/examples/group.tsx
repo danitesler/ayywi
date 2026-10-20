@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { Copy01Icon, Edit02Icon, MoreHorizontalIcon, PinIcon } from "@hugeicons/core-free-icons";
 import {
+  Card,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -10,9 +11,8 @@ import {
   HoverActions,
   Icon,
   Shortcut,
-  ViewCard,
-  ViewCardImage,
-  ViewCardMedia,
+  CardViewImage,
+  CardViewMedia,
 } from "@danitesler/ayywi/react";
 
 const CAPTURE =
@@ -20,10 +20,10 @@ const CAPTURE =
 
 export default function Example() {
   return (
-    <ViewCard style={{ inlineSize: "min(100%, 20rem)" } as CSSProperties}>
-      <ViewCardMedia>
-        <ViewCardImage src={CAPTURE} alt="Dashboard capture" width={1440} height={900} />
-      </ViewCardMedia>
+    <Card view style={{ inlineSize: "min(100%, 20rem)" } as CSSProperties}>
+      <CardViewMedia>
+        <CardViewImage src={CAPTURE} alt="Dashboard capture" width={1440} height={900} />
+      </CardViewMedia>
       <HoverActions position="top-end" group>
         <HoverAction label="Copy" hint={<Shortcut keys="Mod+C" />}>
           <Icon icon={Copy01Icon} />
@@ -47,6 +47,6 @@ export default function Example() {
           </DropdownMenuContent>
         </DropdownMenu>
       </HoverActions>
-    </ViewCard>
+    </Card>
   );
 }

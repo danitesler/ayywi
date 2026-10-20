@@ -1488,16 +1488,16 @@ test("page-header mobile preview sizes to its content without empty bottom space
 
 
 for (const renderer of ["react", "html"] as const) {
-  test.describe(`view card and hover actions (${renderer})`, () => {
+  test.describe(`card view type and hover actions (${renderer})`, () => {
     const opacity = (l: import("@playwright/test").Locator) => l.evaluate((el) => getComputedStyle(el).opacity);
 
-    test("view card: details and grouped actions wait for hover or focus, the play badge gives way, an open menu keeps them", async ({ page }) => {
-      await open(page, "view-card", { renderer });
-      const cards = example(page, "captures").locator(".ayy-view-card");
+    test("card view type: details and grouped actions wait for hover or focus, the play badge gives way, an open menu keeps them", async ({ page }) => {
+      await open(page, "card", { renderer });
+      const cards = example(page, "view").locator(".ayy-card--view");
       const video = cards.nth(2);
-      const body = video.locator(".ayy-view-card__body");
+      const body = video.locator(".ayy-card__view-body");
       const actions = video.locator(".ayy-hover-actions");
-      const play = video.locator(".ayy-view-card__play");
+      const play = video.locator(".ayy-card__view-play");
 
       await page.mouse.move(0, 0);
       await expect.poll(() => opacity(body)).toBe("0");
@@ -1516,7 +1516,7 @@ for (const renderer of ["react", "html"] as const) {
       // Keyboard: focus on the picture reveals the same things.
       await page.mouse.move(0, 0);
       await expect.poll(() => opacity(body)).toBe("0");
-      await video.locator(".ayy-view-card__media").focus();
+      await video.locator(".ayy-card__view-media").focus();
       await expect.poll(() => opacity(body)).toBe("1");
       await expect.poll(() => opacity(actions)).toBe("1");
 
@@ -1529,7 +1529,7 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Escape");
 
       // A portrait capture keeps the 16 / 10 box: it letterboxes over its blurred copy.
-      const box = (await cards.nth(1).locator(".ayy-view-card__media").boundingBox())!;
+      const box = (await cards.nth(1).locator(".ayy-card__view-media").boundingBox())!;
       expect(box.width / box.height).toBeCloseTo(1.6, 1);
     });
 

@@ -77,7 +77,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 
 - [Page header](llms/page-header.md): The top of an app screen: an optional breadcrumb or eyebrow, the page title (the h1), one line of description, and the page's actions at the end — below the title on phones.
 - [Showcase](llms/showcase.md): An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets.
-- [Card](llms/card.md): Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight.
+- [Card](llms/card.md): Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. The view type (view) is a capture, recording or picture to open: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and Hover actions revealed on hover.
 - [Tabs](llms/tabs.md): Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.
 - [Accordion](llms/accordion.md): Questions and answers, or sections people open one at a time: native <details> in a stack with hairlines between them. Same name attribute on each and opening one closes the others.
 - [Carousel](llms/carousel.md): A strip of slides that scrolls sideways and snaps, with previous/next buttons that disable at the ends. Native scrolling: swipe, trackpad and arrow keys work without JS.
@@ -117,7 +117,6 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Code block](llms/code-block.md): Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.
 - [Table](llms/table.md): Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.
 - [Grid](llms/grid.md): Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar.
-- [View card](llms/view-card.md): A capture, a recording or a picture to open, as a card: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and actions revealed on hover. For a screenshot history, a media library or a gallery of exports.
 - [Chart](llms/chart.md): Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
 
 ## Optional

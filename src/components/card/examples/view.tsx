@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { Copy01Icon, Edit02Icon, MoreHorizontalIcon, PinIcon, ScissorIcon, Video01Icon } from "@hugeicons/core-free-icons";
 import {
   Badge,
+  Card,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -10,16 +11,15 @@ import {
   HoverAction,
   HoverActions,
   Icon,
-  ViewCard,
-  ViewCardBadge,
-  ViewCardBadges,
-  ViewCardBody,
-  ViewCardImage,
-  ViewCardMedia,
-  ViewCardMeta,
-  ViewCardPlay,
-  ViewCardText,
-  ViewCardTitle,
+  CardViewBadge,
+  CardViewBadges,
+  CardViewBody,
+  CardViewImage,
+  CardViewMedia,
+  CardViewMeta,
+  CardViewPlay,
+  CardViewText,
+  CardViewTitle,
 } from "@danitesler/ayywi/react";
 
 const DESKTOP =
@@ -70,52 +70,52 @@ function Actions({ media }: { media?: boolean }) {
 export default function Example() {
   return (
     <div className="ayy-grid" style={{ "--ayy-min": "14rem" } as CSSProperties}>
-      <ViewCard data-hover>
-        <ViewCardMedia aria-label="Annotate the pricing page capture from 2 minutes ago" onClick={() => {}}>
-          <ViewCardImage src={DESKTOP} width={1440} height={900} />
-        </ViewCardMedia>
-        <ViewCardBody>
-          <ViewCardText>
-            <ViewCardTitle>Pricing page</ViewCardTitle>
-            <ViewCardMeta>1440 × 900 · 2 min ago</ViewCardMeta>
-          </ViewCardText>
-          <ViewCardBadges>
+      <Card view data-hover>
+        <CardViewMedia aria-label="Annotate the pricing page capture from 2 minutes ago" onClick={() => {}}>
+          <CardViewImage src={DESKTOP} width={1440} height={900} />
+        </CardViewMedia>
+        <CardViewBody>
+          <CardViewText>
+            <CardViewTitle>Pricing page</CardViewTitle>
+            <CardViewMeta>1440 × 900 · 2 min ago</CardViewMeta>
+          </CardViewText>
+          <CardViewBadges>
             <Badge variant="muted">Edited</Badge>
-          </ViewCardBadges>
-        </ViewCardBody>
+          </CardViewBadges>
+        </CardViewBody>
         <Actions />
-      </ViewCard>
+      </Card>
 
-      <ViewCard>
-        <ViewCardMedia aria-label="Annotate the onboarding capture from 1 hour ago" onClick={() => {}}>
-          <ViewCardImage src={PHONE} width={390} height={844} />
-        </ViewCardMedia>
-        <ViewCardBody>
-          <ViewCardText>
-            <ViewCardTitle>Onboarding, step 2</ViewCardTitle>
-            <ViewCardMeta>390 × 844 · 1 hour ago</ViewCardMeta>
-          </ViewCardText>
-        </ViewCardBody>
+      <Card view>
+        <CardViewMedia aria-label="Annotate the onboarding capture from 1 hour ago" onClick={() => {}}>
+          <CardViewImage src={PHONE} width={390} height={844} />
+        </CardViewMedia>
+        <CardViewBody>
+          <CardViewText>
+            <CardViewTitle>Onboarding, step 2</CardViewTitle>
+            <CardViewMeta>390 × 844 · 1 hour ago</CardViewMeta>
+          </CardViewText>
+        </CardViewBody>
         <Actions />
-      </ViewCard>
+      </Card>
 
-      <ViewCard>
-        <ViewCardMedia aria-label="Play the checkout recording from yesterday" onClick={() => {}}>
-          <ViewCardImage src={VIDEO} width={1920} height={1080} />
-          <ViewCardBadge icon={<Icon icon={Video01Icon} />}>0:42</ViewCardBadge>
-          <ViewCardPlay />
-        </ViewCardMedia>
-        <ViewCardBody>
-          <ViewCardText>
-            <ViewCardTitle>Checkout flow</ViewCardTitle>
-            <ViewCardMeta>0:42 · 8.4 MB · Yesterday</ViewCardMeta>
-          </ViewCardText>
-          <ViewCardBadges>
+      <Card view>
+        <CardViewMedia aria-label="Play the checkout recording from yesterday" onClick={() => {}}>
+          <CardViewImage src={VIDEO} width={1920} height={1080} />
+          <CardViewBadge icon={<Icon icon={Video01Icon} />}>0:42</CardViewBadge>
+          <CardViewPlay />
+        </CardViewMedia>
+        <CardViewBody>
+          <CardViewText>
+            <CardViewTitle>Checkout flow</CardViewTitle>
+            <CardViewMeta>0:42 · 8.4 MB · Yesterday</CardViewMeta>
+          </CardViewText>
+          <CardViewBadges>
             <Badge variant="info">Uploaded</Badge>
-          </ViewCardBadges>
-        </ViewCardBody>
+          </CardViewBadges>
+        </CardViewBody>
         <Actions media />
-      </ViewCard>
+      </Card>
     </div>
   );
 }
