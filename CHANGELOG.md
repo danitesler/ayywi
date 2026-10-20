@@ -292,6 +292,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Redundant native date and time picker examples removed → use [Date & time picker](#/date-time-picker).
 - **Tokens** (**Breaking**)
   `--ayy-text-2xs` (11px) removed → use `--ayy-text-xs` (12px), and all components that used 2xs updated to xs.
+- **Calendar** (**Breaking**)
+  `Calendar` and the `.ayy-calendar*` classes removed → use `DatePickerGrid` from [Date & time picker](#/date-time-picker) (same props) and `.ayy-date-picker-grid*`. (Added to these notes after the release; 0.1.0 shipped without it.)
 
 ## 0.0.3 — 2026-10-13
 
