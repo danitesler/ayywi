@@ -1762,3 +1762,50 @@ test("every toast type's close button is the same component at the same size", a
   expect(sizes.all.length).toBeGreaterThan(5);
   expect(new Set(sizes.all)).toEqual(new Set([`${sizes.want}x${sizes.want}`]));
 });
+
+test("every toast icon button names itself in an ayywi tooltip, never title", async ({ page }) => {
+  await open(page, "toast");
+  const src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350'></svg>";
+  await page.evaluate((src) => {
+    document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+    const icon = "<svg viewBox='0 0 24 24' width='16' height='16'><path d='M4 4h16v16H4z' stroke='currentColor' fill='none'/></svg>";
+    const w = window as unknown as { ayywi: { toast: { (m: string, o?: object): void; long: (m: string, o?: object) => void; card: (o: object) => void } } };
+    w.ayywi.toast("Saved", { duration: Infinity, id: "text" });
+    w.ayywi.toast.long("whsec_9b2e8a1f4c7d0e3b5a6f", { duration: Infinity, id: "long" });
+    w.ayywi.toast.card({ src, duration: Infinity, id: "card", topActions: [{ label: "Annotate", icon, onClick() {} }], bottomEndActions: [{ label: "Show in folder", icon, onClick() {} }] });
+    w.ayywi.toast.card({ src, split: true, title: "Screenshot.png", duration: Infinity, id: "split" });
+  }, src);
+  const toaster = page.locator(".ayy-toaster");
+  await toaster.hover();
+  await expect(toaster).toHaveAttribute("data-expanded", "");
+  await page.waitForTimeout(400);
+  expect(await toaster.locator("[title]").count()).toBe(0);
+
+  const check = async (id: string, name: string) => {
+    const toast = toaster.locator(`[data-toast-id="${id}"]`);
+    await toast.hover();
+    const button = toast.getByRole("button", { name, exact: true });
+    await button.hover();
+    // Its own bubble (the one before may still be fading out).
+    const tip = button.locator("xpath=../*[@role='tooltip']");
+    await expect(tip).toHaveText(name);
+    await expect(tip).toBeVisible();
+  };
+  await check("text", "Dismiss");
+  await check("long", "Copy");
+  await check("long", "Dismiss");
+  await check("card", "Annotate");
+  await check("card", "Show in folder");
+  await check("card", "Dismiss");
+  await check("split", "Dismiss");
+
+  // The card's close still sits in its top end corner, now through its tooltip wrapper.
+  const card = (await toaster.locator('[data-toast-id="card"]').boundingBox())!;
+  const close = (await toaster.locator('[data-toast-id="card"] .ayy-toast__close').boundingBox())!;
+  expect(card.x + card.width - (close.x + close.width)).toBeLessThan(14);
+  expect(close.y - card.y).toBeLessThan(14);
+
+  // React's static toasts too.
+  expect(await page.locator(".pv-stage .ayy-toast__close[title], .pv-stage .ayy-toast__action[title], .pv-stage .ayy-toast__copy[title]").count()).toBe(0);
+  expect(await page.locator(".pv-stage .ayy-tooltip > .ayy-toast__close").count()).toBeGreaterThan(3);
+});

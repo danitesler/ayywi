@@ -2,6 +2,7 @@ import { cx } from "../../lib/cx";
 import { Alert02Icon, Cancel01Icon, CancelCircleIcon, CheckmarkCircle02Icon, Copy01Icon, InformationCircleIcon, PlayIcon, Tick02Icon } from "../../lib/icons";
 import { supportsPopover } from "../../lib/position";
 import { iconSvg } from "../icon/icon";
+import { enhanceTooltip, tooltipClass, tooltipContentClass } from "../tooltip/tooltip";
 
 export const toastVariants = ["default", "success", "warning", "destructive", "info", "card", "long"] as const;
 export type ToastVariant = (typeof toastVariants)[number];
@@ -158,6 +159,24 @@ function naturalHeight(el: HTMLElement): number {
  * height: toasts behind the front take its height while the stack is closed, and each grows back to its own when it
  * opens. Measuring again would cut short a running animation, so only `remeasure` (a window resize) does.
  */
+/**
+ * Wrap a toast's icon button in an ayywi tooltip (top layer, so a card's overflow can't clip it) that names it.
+ * `cleanups` collects the teardown for when the toast is removed. Returns the element to append.
+ */
+function withTooltip(button: HTMLElement, label: string, cleanups: (() => void)[], side?: "top" | "bottom"): HTMLElement {
+  button.removeAttribute("title");
+  const host = document.createElement("span");
+  host.className = tooltipClass;
+  const tip = document.createElement("span");
+  tip.className = tooltipContentClass;
+  tip.setAttribute("role", "tooltip");
+  if (side) tip.setAttribute("data-side", side);
+  tip.textContent = label;
+  host.append(button, tip);
+  cleanups.push(enhanceTooltip(host));
+  return host;
+}
+
 function syncIndices(host: HTMLElement, remeasure = false): void {
   // Elements are in order of creation. We assign reverse index: newest = 0, older = 1, 2...
   const toasts = Array.from(host.querySelectorAll<HTMLElement>(".ayy-toast:not([data-leaving])"));
@@ -427,6 +446,7 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
   let timer = 0;
   let remaining = options.duration ?? 5000;
   let startedAt = 0;
+  const cleanups: (() => void)[] = [];
 
   const dismiss = () => {
     if (!live.has(id) || live.get(id)?.el !== toast) return;
@@ -436,6 +456,7 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
     const host = document.querySelector<HTMLElement>(".ayy-toaster[data-ayy-toaster]");
     if (host) syncIndices(host);
     const remove = () => {
+      for (const cleanup of cleanups.splice(0)) cleanup();
       toast.remove();
       if (host) {
         syncIndices(host);
@@ -468,7 +489,6 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
     copyBtn.type = "button";
     copyBtn.className = "ayy-toast__copy";
     copyBtn.setAttribute("aria-label", "Copy");
-    copyBtn.setAttribute("title", "Copy");
     copyBtn.innerHTML = toastCopyIcon;
     let copyResetTimer = 0;
     copyBtn.addEventListener("click", (e) => {
@@ -480,16 +500,17 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
       copyBtn.innerHTML = toastCopiedIcon;
       copyBtn.setAttribute("data-copied", "");
       copyBtn.setAttribute("aria-label", "Copied");
-      copyBtn.setAttribute("title", "Copied");
+      copyTip.lastElementChild!.textContent = "Copied";
       if (copyResetTimer) window.clearTimeout(copyResetTimer);
       copyResetTimer = window.setTimeout(() => {
         copyBtn.innerHTML = toastCopyIcon;
         copyBtn.removeAttribute("data-copied");
         copyBtn.setAttribute("aria-label", "Copy");
-        copyBtn.setAttribute("title", "Copy");
+        copyTip.lastElementChild!.textContent = "Copy";
       }, 1500);
     });
-    toast.append(copyBtn);
+    const copyTip = withTooltip(copyBtn, "Copy", cleanups);
+    toast.append(copyTip);
   }
 
   const close = document.createElement("button");
@@ -498,7 +519,7 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
   close.setAttribute("aria-label", config.closeLabel);
   close.innerHTML = toastCloseIcon;
   close.addEventListener("click", dismiss);
-  toast.append(close);
+  toast.append(withTooltip(close, config.closeLabel, cleanups));
 
   const start = () => {
     if (!Number.isFinite(remaining)) return;
@@ -610,6 +631,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
   let timer = 0;
   let remaining = options.duration ?? 6000;
   let startedAt = 0;
+  const cleanups: (() => void)[] = [];
   let statusTimer = 0;
   let statusEl: HTMLElement | null = null;
 
@@ -622,6 +644,7 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
     const host = document.querySelector<HTMLElement>(".ayy-toaster[data-ayy-toaster]");
     if (host) syncIndices(host);
     const remove = () => {
+      for (const cleanup of cleanups.splice(0)) cleanup();
       toast.remove();
       if (host) {
         syncIndices(host);
@@ -714,13 +737,12 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
     close.type = "button";
     close.className = "ayy-toast__close";
     close.setAttribute("aria-label", options.closeLabel ?? config.closeLabel);
-    close.title = options.closeLabel ?? config.closeLabel;
     close.innerHTML = toastCloseIcon;
     close.addEventListener("click", (e) => {
       e.stopPropagation();
       dismiss();
     });
-    toast.append(close);
+    toast.append(withTooltip(close, options.closeLabel ?? config.closeLabel, cleanups, "bottom"));
   } else {
     // Blurred backdrop image behind the thumbnail
     const backdrop = document.createElement("img");
@@ -760,13 +782,12 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
     close.type = "button";
     close.className = "ayy-toast__close";
     close.setAttribute("aria-label", options.closeLabel ?? config.closeLabel);
-    close.title = options.closeLabel ?? config.closeLabel;
     close.innerHTML = toastCloseIcon;
     close.addEventListener("click", (e) => {
       e.stopPropagation();
       dismiss();
     });
-    scrim.append(close);
+    scrim.append(withTooltip(close, options.closeLabel ?? config.closeLabel, cleanups, "bottom"));
 
     if (options.topActions && options.topActions.length > 0) {
       const topCorner = document.createElement("div");
@@ -776,13 +797,12 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
         btn.type = "button";
         btn.className = cx("ayy-toast__action", act.className);
         btn.setAttribute("aria-label", act.label);
-        btn.title = act.label;
         btn.innerHTML = act.icon;
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
           act.onClick(e);
         });
-        topCorner.append(btn);
+        topCorner.append(withTooltip(btn, act.label, cleanups, "bottom"));
       }
       scrim.append(topCorner);
     }
@@ -817,13 +837,12 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
         btn.type = "button";
         btn.className = cx("ayy-toast__action", act.className);
         btn.setAttribute("aria-label", act.label);
-        btn.title = act.label;
         btn.innerHTML = act.icon;
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
           act.onClick(e);
         });
-        bsCorner.append(btn);
+        bsCorner.append(withTooltip(btn, act.label, cleanups));
       }
       scrim.append(bsCorner);
     }
@@ -836,13 +855,12 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
         btn.type = "button";
         btn.className = cx("ayy-toast__action", act.className);
         btn.setAttribute("aria-label", act.label);
-        btn.title = act.label;
         btn.innerHTML = act.icon;
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
           act.onClick(e);
         });
-        beCorner.append(btn);
+        beCorner.append(withTooltip(btn, act.label, cleanups));
       }
       scrim.append(beCorner);
     }

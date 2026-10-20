@@ -30,6 +30,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 
+- **[App shell](#/app-shell)**
+  Settings opened with a cramped top: "Settings" sat right on the first group, and the section's Top bar had a divider under it → on wide screens both titles are xl, sit on one line with room above, and the divider is gone. The playground's settings dialog has a Props button beside its close button for sidebar size (Big, Medium, Small), grouped or flat sections, and search.
+- **[Toast](#/toast)**
+  Toast icon buttons named themselves with a native title → every close, copy and card corner button has an ayywi Tooltip (top layer, so a card can't clip it); `CardToastClose` takes `tooltip` and `side`.
 - **[Toast](#/toast)**
   A dismissed toast slid 28px to the right whatever side the stack was on → it slides off through the nearest edge of the screen (the stack's side, mirrored in right to left; down or up for a centred stack), and Clear all sends every toast off together, a little slower.
 - **[Toast](#/toast)**

@@ -12,6 +12,7 @@ import {
   Settings01Icon,
   Settings02Icon,
   SidebarLeftIcon,
+  SlidersHorizontalIcon,
   UserCircleIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
@@ -42,6 +43,10 @@ import {
   Field,
   Icon,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  SearchBar,
   Select,
   Settings,
   SettingsRow,
@@ -51,6 +56,25 @@ import {
   type AppShellSize,
   type BottomNavSize,
 } from "@danitesler/ayywi/react";
+
+const SETTINGS_GROUPS = [
+  {
+    label: "Account",
+    links: [
+      { href: "#profile", icon: UserCircleIcon, name: "Profile" },
+      { href: "#preferences", icon: PaintBoardIcon, name: "Preferences" },
+      { href: "#notifications", icon: Notification03Icon, name: "Notifications" },
+    ],
+  },
+  {
+    label: "Workspace",
+    links: [
+      { href: "#members", icon: UserGroupIcon, name: "Members" },
+      { href: "#shortcuts", icon: KeyboardIcon, name: "Shortcuts" },
+      { href: "#data", icon: Database01Icon, name: "Data and sync" },
+    ],
+  },
+];
 
 export default function Example({
   device = "desktop",
@@ -71,6 +95,11 @@ export default function Example({
   const [navSize, setNavSize] = useState<BottomNavSize>("lg");
   const [navCompact, setNavCompact] = useState(false);
   const [navIconOnly, setNavIconOnly] = useState(false);
+  // The settings dialog's own options, set from its Props button next to the close button.
+  const [settingsSize, setSettingsSize] = useState<AppShellSize>("lg");
+  const [settingsGrouped, setSettingsGrouped] = useState(true);
+  const [settingsSearch, setSettingsSearch] = useState(false);
+  const [settingsQuery, setSettingsQuery] = useState("");
 
   const activeDevice = setControls ? device : standaloneDevice;
 
@@ -453,51 +482,73 @@ export default function Example({
           Settings
         </DialogTrigger>
         <DialogContent size="full" aria-labelledby="settings-title">
-          <AppShell settings>
+          {/* Props for the settings shell, beside the dialog's close button. */}
+          <div
+            style={{
+              position: "absolute",
+              zIndex: "calc(var(--ayy-z-sticky) + 1)",
+              insetBlockStart: "var(--ayy-space-4)",
+              insetInlineEnd: "calc(var(--ayy-space-4) + var(--ayy-size-control-sm) + var(--ayy-space-1))",
+            }}
+          >
+            <Popover>
+              <PopoverTrigger variant="ghost" size="icon-sm" aria-label="Props">
+                <Icon icon={SlidersHorizontalIcon} />
+              </PopoverTrigger>
+              <PopoverContent side="bottom" align="end" aria-label="Settings shell props">
+                <div className="ayy-stack" style={{ inlineSize: "15rem" }}>
+                  <div className="ayy-spread">
+                    <Label htmlFor="st-size">Sidebar size</Label>
+                    <div style={{ inlineSize: "7.5rem" }}>
+                      <Select id="st-size" size="sm" value={settingsSize} onChange={(e) => setSettingsSize(e.target.value as AppShellSize)}>
+                        <option value="lg">Big</option>
+                        <option value="md">Medium</option>
+                        <option value="sm">Small</option>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="ayy-spread">
+                    <Label htmlFor="st-grouped">Grouped sections</Label>
+                    <Switch id="st-grouped" checked={settingsGrouped} onCheckedChange={setSettingsGrouped} />
+                  </div>
+                  <div className="ayy-spread">
+                    <Label htmlFor="st-search">Search</Label>
+                    <Switch id="st-search" checked={settingsSearch} onCheckedChange={setSettingsSearch} />
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+          <AppShell settings size={settingsSize}>
             <AppShellSidebar>
               <AppShellTitle id="settings-title">Settings</AppShellTitle>
-              <AppShellNav aria-label="Settings">
-                <AppShellGroup label="Account">
-                  <AppShellItem>
-                    <AppShellLink href="#profile">
-                      <Icon icon={UserCircleIcon} />
-                      Profile
-                    </AppShellLink>
-                  </AppShellItem>
-                  <AppShellItem>
-                    <AppShellLink href="#preferences" current>
-                      <Icon icon={PaintBoardIcon} />
-                      Preferences
-                    </AppShellLink>
-                  </AppShellItem>
-                  <AppShellItem>
-                    <AppShellLink href="#notifications">
-                      <Icon icon={Notification03Icon} />
-                      Notifications
-                    </AppShellLink>
-                  </AppShellItem>
-                </AppShellGroup>
-                <AppShellGroup label="Workspace">
-                  <AppShellItem>
-                    <AppShellLink href="#members">
-                      <Icon icon={UserGroupIcon} />
-                      Members
-                    </AppShellLink>
-                  </AppShellItem>
-                  <AppShellItem>
-                    <AppShellLink href="#shortcuts">
-                      <Icon icon={KeyboardIcon} />
-                      Shortcuts
-                    </AppShellLink>
-                  </AppShellItem>
-                  <AppShellItem>
-                    <AppShellLink href="#data">
-                      <Icon icon={Database01Icon} />
-                      Data and sync
-                    </AppShellLink>
-                  </AppShellItem>
-                </AppShellGroup>
-              </AppShellNav>
+              {settingsSearch ? (
+                <SearchBar label="Search settings" placeholder="Search settings" value={settingsQuery} onValueChange={setSettingsQuery} />
+              ) : null}
+              {(() => {
+                const query = settingsSearch ? settingsQuery.trim().toLowerCase() : "";
+                const groups = SETTINGS_GROUPS.map((g) => ({ ...g, links: g.links.filter((l) => l.name.toLowerCase().includes(query)) })).filter((g) => g.links.length);
+                const link = (l: (typeof SETTINGS_GROUPS)[number]["links"][number]) => (
+                  <AppShellLink key={l.href} href={l.href} current={l.href === "#preferences"}>
+                    <Icon icon={l.icon} />
+                    {l.name}
+                  </AppShellLink>
+                );
+                if (!groups.length) return <p className="ayy-muted ayy-small" style={{ paddingInline: "var(--ayy-space-3)" }}>No settings match “{settingsQuery}”.</p>;
+                return (
+                  <AppShellNav aria-label="Settings">
+                    {settingsGrouped
+                      ? groups.map((g) => (
+                          <AppShellGroup key={g.label} label={g.label}>
+                            {g.links.map((l) => (
+                              <AppShellItem key={l.href}>{link(l)}</AppShellItem>
+                            ))}
+                          </AppShellGroup>
+                        ))
+                      : groups.flatMap((g) => g.links).map(link)}
+                  </AppShellNav>
+                );
+              })()}
             </AppShellSidebar>
             <AppShellMain as="div">
               <TopBar backHref="#settings" backLabel="Settings" title="Preferences" />

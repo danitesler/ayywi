@@ -3,6 +3,7 @@ import { cx } from "../../lib/cx";
 import { Alert02Icon, Cancel01Icon, CancelCircleIcon, CheckmarkCircle02Icon, Copy01Icon, InformationCircleIcon, Tick02Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
 import { HoverAction } from "../hover-actions/hover-actions.react";
+import { Tooltip } from "../tooltip/tooltip.react";
 import type { TooltipSide } from "../tooltip/tooltip";
 import { configureToaster, inlineToastClass, type ToastPosition } from "./toast";
 
@@ -114,16 +115,17 @@ export const NotificationToast = forwardRef<HTMLDivElement, NotificationToastPro
         </div>
       )}
       {showCopy && (
-        <button
-          type="button"
-          className="ayy-toast__copy"
-          aria-label={copied ? "Copied" : "Copy"}
-          title={copied ? "Copied" : "Copy"}
-          data-copied={copied ? "" : undefined}
-          onClick={handleCopy}
-        >
-          <Icon icon={copied ? Tick02Icon : Copy01Icon} />
-        </button>
+        <Tooltip content={copied ? "Copied" : "Copy"}>
+          <button
+            type="button"
+            className="ayy-toast__copy"
+            aria-label={copied ? "Copied" : "Copy"}
+            data-copied={copied ? "" : undefined}
+            onClick={handleCopy}
+          >
+            <Icon icon={copied ? Tick02Icon : Copy01Icon} />
+          </button>
+        </Tooltip>
       )}
       {onClose && <CardToastClose label={closeLabel} onClick={onClose} />}
       {children}
@@ -238,24 +240,29 @@ export const CardToastScrim = forwardRef<HTMLDivElement, CardToastScrimProps>(fu
 });
 
 export interface CardToastCloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Accessible name and tooltip. Default "Dismiss". */
   label?: string;
+  /** false: no tooltip (the label stays the accessible name). */
+  tooltip?: boolean;
+  /** Tooltip side. Default "bottom". */
+  side?: TooltipSide;
 }
 
 export const CardToastClose = forwardRef<HTMLButtonElement, CardToastCloseProps>(function CardToastClose(
-  { className, label = "Dismiss", ...props },
+  { className, label = "Dismiss", tooltip = true, side = "bottom", ...props },
   ref,
 ) {
-  return (
-    <button
-      ref={ref}
-      type="button"
-      className={cx("ayy-toast__close", className)}
-      aria-label={label}
-      title={label}
-      {...props}
-    >
+  const button = (
+    <button ref={ref} type="button" className={cx("ayy-toast__close", className)} aria-label={label} {...props}>
       <Icon icon={Cancel01Icon} />
     </button>
+  );
+  return tooltip ? (
+    <Tooltip side={side} content={label}>
+      {button}
+    </Tooltip>
+  ) : (
+    button
   );
 });
 

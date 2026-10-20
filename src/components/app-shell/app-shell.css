@@ -790,17 +790,31 @@ ayy-app-shell {
   min-block-size: 0;
 }
 
-/* Wide screens: the sidebar's title and the section's, larger, line up at the top of the dialog. */
+/* Wide screens: a roomy top. The sidebar's "Settings" and the section's title, the same size, sit on one line with
+   space above them, and the section's header has no divider: the space separates it from the rows. */
 @media (min-width: 48.001rem) {
-  .ayy-dialog .ayy-app-shell--settings > .ayy-app-shell__sidebar {
-    padding-block-start: var(--ayy-space-5);
+  .ayy-app-shell--settings > .ayy-app-shell__sidebar {
+    padding-block-start: var(--ayy-space-8);
   }
 
-  .ayy-dialog .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child {
-    padding-block: var(--ayy-space-5) var(--ayy-space-3);
+  .ayy-app-shell--settings > .ayy-app-shell__sidebar > .ayy-app-shell__title {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--ayy-size-control-lg);
+    margin-block-end: var(--ayy-space-4);
+    font-size: var(--ayy-text-xl);
   }
 
-  .ayy-dialog .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child .ayy-top-bar__title {
+  .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child {
+    min-block-size: 0;
+    padding-block: var(--ayy-space-8) var(--ayy-space-6);
+    border-block-end: 0;
+  }
+
+  .ayy-app-shell--settings > .ayy-app-shell__main > .ayy-top-bar:first-child .ayy-top-bar__title {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--ayy-size-control-lg);
     font-size: var(--ayy-text-xl);
   }
 }

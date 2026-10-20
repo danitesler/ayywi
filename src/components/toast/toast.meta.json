@@ -129,9 +129,11 @@
         "props": {}
       },
       "CardToastClose": {
-        "renders": "button.ayy-toast__close",
+        "renders": "button.ayy-toast__close inside a Tooltip",
         "props": {
-          "label": "string — accessible name"
+          "label": "string — accessible name and tooltip. Default \"Dismiss\"",
+          "tooltip": "boolean — false drops the tooltip (the label stays the accessible name). Default true",
+          "side": "\"top\" | \"bottom\" | \"start\" | \"end\" — tooltip side. Default \"bottom\""
         }
       },
       "CardToastCorner": {

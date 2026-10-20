@@ -804,6 +804,18 @@
   margin-block-start: var(--ayy-space-1);
 }
 
+/* A card's close button wrapped in its Tooltip: the wrapper takes the corner and the button sits in it. */
+.ayy-toast--card .ayy-tooltip:has(> .ayy-toast__close) {
+  position: absolute;
+  z-index: 4;
+  inset-block-start: var(--ayy-space-2);
+  inset-inline-end: var(--ayy-space-2);
+}
+
+.ayy-toast--card .ayy-tooltip > .ayy-toast__close {
+  position: static;
+}
+
 .ayy-toast--card-split .ayy-toast__close {
   position: absolute;
   inset-block-start: var(--ayy-space-2);
