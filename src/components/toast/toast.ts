@@ -177,6 +177,8 @@ function syncIndices(host: HTMLElement, remeasure = false): void {
 
   const frontH = count > 0 ? heights[count - 1] : 56;
   host.style.setProperty("--_toast-front-height", `${frontH}px`);
+  // The front toast is never forced to another size, so its width is always its own.
+  if (count > 0) host.style.setProperty("--_toast-front-width", `${toasts[count - 1].offsetWidth}px`);
 
   const isExpanded = host.hasAttribute("data-expanded");
 
@@ -217,6 +219,7 @@ function syncIndices(host: HTMLElement, remeasure = false): void {
   } else {
     host.removeAttribute("data-expanded");
     host.style.removeProperty("--_toast-front-height");
+    host.style.removeProperty("--_toast-front-width");
     host.style.removeProperty("--_toast-collapsed-height");
     host.style.removeProperty("--_toast-expanded-height");
   }
@@ -237,12 +240,21 @@ function region(): HTMLElement {
     let scrollingTimer = 0;
 
     // Hover and focus expand the deck and pause countdowns across all toasts in the stack
+    // Closing waits a beat: while the stack opens, cards move and grow, and the pointer can cross a gap for a frame.
+    // Closing at once would move the cards back under it, open the stack again, and loop (the stack blinks).
+    let collapseTimer = 0;
     const expand = () => {
+      window.clearTimeout(collapseTimer);
+      if (toaster.hasAttribute("data-expanded")) return;
       toaster.setAttribute("data-expanded", "");
       syncIndices(toaster);
       for (const entry of live.values()) entry.pause();
     };
     const collapse = () => {
+      window.clearTimeout(collapseTimer);
+      collapseTimer = window.setTimeout(close, 120);
+    };
+    const close = () => {
       if (toaster.matches(":hover") || toaster.contains(document.activeElement)) return;
       toaster.removeAttribute("data-expanded");
       toaster.removeAttribute("data-scrolling");

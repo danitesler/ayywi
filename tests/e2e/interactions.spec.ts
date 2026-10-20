@@ -1559,7 +1559,7 @@ for (const renderer of ["react", "html"] as const) {
   });
 }
 
-test("toast stack: toasts behind share the front one's height, get their own back when it opens; card toasts follow ratio", async ({ page }) => {
+test("toast stack: toasts behind share the front one's size, get their own back when it opens; card toasts follow ratio", async ({ page }) => {
   await open(page, "toast");
   const src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350'></svg>";
   await page.evaluate((src) => {
@@ -1572,17 +1572,20 @@ test("toast stack: toasts behind share the front one's height, get their own bac
   const tall = toaster.locator('[data-toast-id="tall"]');
   const text = toaster.locator('[data-toast-id="text"]');
   const height = (l: import("@playwright/test").Locator) => l.evaluate((el) => (el as HTMLElement).offsetHeight);
+  const width = (l: import("@playwright/test").Locator) => l.evaluate((el) => (el as HTMLElement).offsetWidth);
 
   await page.mouse.move(0, 0);
   const front = await height(text);
   expect(front).toBeLessThan(80);
-  // Behind the short text toast, the tall card shrinks to the same height, so only an even strip peeks out.
+  // Behind the text toast, the tall card takes its height and width, so only an even strip peeks out.
   await expect.poll(() => height(tall)).toBe(front);
+  await expect.poll(() => width(tall)).toBe(await width(text));
 
-  // Opening the stack gives the card its own height back: 3 / 4 at 17.5rem wide is past the 14rem cap.
+  // Opening the stack gives the card its own size back: 3 / 4 at 17.5rem wide is past the 14rem cap.
   await toaster.hover();
   await expect(toaster).toHaveAttribute("data-expanded", "");
   await expect.poll(() => height(tall)).toBe(224);
+  await expect.poll(() => width(tall)).toBe(280);
 
   // ratio sets the card's shape; very wide pictures stop at 6.75rem.
   await page.evaluate((src) => {
@@ -1592,4 +1595,38 @@ test("toast stack: toasts behind share the front one's height, get their own bac
   }, src);
   await expect.poll(() => height(toaster.locator('[data-toast-id="desktop"]'))).toBe(175);
   await expect.poll(() => height(toaster.locator('[data-toast-id="wide"]'))).toBe(108);
+});
+
+test("toast stack: hovering a toast behind opens the stack once, without blinking", async ({ page }) => {
+  await open(page, "toast");
+  const src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='350'></svg>";
+  await page.evaluate((src) => {
+    document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
+    const w = window as unknown as { ayywi: { toast: { (m: string, o?: object): void; card: (o: object) => void } } };
+    w.ayywi.toast("Saved to Desktop", { duration: Infinity, id: "oldest" });
+    w.ayywi.toast.card({ src, ratio: 390 / 844, duration: Infinity });
+    w.ayywi.toast.card({ src, ratio: 2560 / 800, duration: Infinity });
+    w.ayywi.toast("Copied to clipboard", { description: "pricing-page.png", duration: Infinity });
+  }, src);
+  const toaster = page.locator(".ayy-toaster");
+  await page.mouse.move(0, 0);
+  await page.evaluate(() => {
+    const w = window as unknown as { __flips: number };
+    w.__flips = 0;
+    new MutationObserver((records) => {
+      for (const r of records) if (r.attributeName === "data-expanded") w.__flips++;
+    }).observe(document.querySelector(".ayy-toaster")!, { attributes: true });
+  });
+  // The strip of the oldest toast, peeking out at the top of the closed stack.
+  const strip = (await toaster.locator('[data-toast-id="oldest"]').boundingBox())!;
+  await page.mouse.move(strip.x + strip.width / 2, strip.y + 4);
+  await expect(toaster).toHaveAttribute("data-expanded", "");
+  await page.waitForTimeout(800);
+  expect(await page.evaluate(() => (window as unknown as { __flips: number }).__flips)).toBe(1);
+  await expect(toaster).toHaveAttribute("data-expanded", "");
+
+  // Leaving closes it once.
+  await page.mouse.move(0, 0);
+  await expect(toaster).not.toHaveAttribute("data-expanded", "");
+  expect(await page.evaluate(() => (window as unknown as { __flips: number }).__flips)).toBe(2);
 });

@@ -31,7 +31,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ### Changed
 
 - **[Toast](#/toast)**
-  Toasts behind the front one kept their own height, so a taller one stuck out further and a shorter one vanished → while the stack is closed each toast behind takes the front one's height, and heights animate as toasts arrive, leave and the stack opens.
+  Toasts behind the front one kept their own size, so a taller one stuck out further, a shorter one vanished and a narrower card left a gap → while the stack is closed each toast behind takes the front one's height and width, and sizes animate as toasts arrive, leave and the stack opens.
 - **[Toast](#/toast)**
   Card toast corner buttons and close were 24px with a native title → the small control size (28px compact, 32px comfortable, 40px touch), and React `CardToastAction` is a Hover action with an ayywi tooltip (`hint`, `tooltip`, `side`).
 - **[Action bar](#/action-bar)**
