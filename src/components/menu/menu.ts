@@ -95,6 +95,7 @@ export function connectMenu(
   const updateVirtualAnchor = (pt: { x: number; y: number }) => {
     if (!virtualAnchor) {
       virtualAnchor = document.createElement("div");
+      virtualAnchor.setAttribute("aria-hidden", "true");
       virtualAnchor.style.position = "fixed";
       virtualAnchor.style.pointerEvents = "none";
       virtualAnchor.style.opacity = "0";
@@ -106,7 +107,9 @@ export function connectMenu(
     virtualAnchor.style.top = `${pt.y}px`;
   };
 
-  if (atPoint) updateVirtualAnchor(atPoint);
+  // Without a trigger (a context menu) the point is the anchor from the start. The menu itself must never be its own
+  // trigger: it would be placed next to itself, and every click inside it would toggle it shut.
+  if (atPoint || (!trigger && !isStatic)) updateVirtualAnchor(atPoint ?? { x: 0, y: 0 });
 
   const effectiveTrigger = trigger ?? virtualAnchor ?? content;
 
@@ -164,7 +167,8 @@ export function connectMenu(
 
   const popoverOpts: PopoverControllerOptions = {
     align: "start",
-    offset: options.offset ?? (options.parentMenu ? 4 : 6),
+    // Right at the point for a context menu; a gap from a trigger button.
+    offset: options.offset ?? (options.parentMenu ? 4 : trigger ? 6 : 0),
     side: options.side ?? (options.parentMenu ? (options.subSide ?? "end") : "bottom"),
     boundary: options.boundary,
     ...options,
@@ -177,6 +181,8 @@ export function connectMenu(
         focusLastOnOpen = false;
       } else {
         closeActiveSubmenu();
+        // Opened at a point: the next open from the trigger goes back next to the trigger.
+        if (trigger && virtualAnchor) controller.update({ anchor: trigger, offset: popoverOpts.offset });
       }
       options.onToggle?.(open);
     },
@@ -546,6 +552,7 @@ export function connectMenu(
       updateVirtualAnchor(atPoint);
       if (virtualAnchor) {
         if (!isStatic) {
+          controller.update({ anchor: virtualAnchor, offset: 0 });
           controller.open();
           place(content, virtualAnchor, {
             side: "bottom",

@@ -8,6 +8,7 @@ import {
   formatDateRange,
   formatDateTime,
   formatTimeString,
+  toTime24,
   type DatePickerController,
   type DateRangeController,
   type DateTimePickerController,
@@ -422,7 +423,8 @@ export class AyyDateTimePickerElement extends ElementBase {
   #picked(date: string, time: string): void {
     this.#dateVal = date || null;
     this.#timeVal = time || null;
-    const combined = date && time ? `${date}T${time}` : null;
+    // ISO date-time: the time part is always 24-hour, whatever the clock shows.
+    const combined = date && time ? `${date}T${toTime24(time)}` : null;
     this.#syncing = true;
     this.value = combined;
     this.#syncing = false;

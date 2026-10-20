@@ -35,7 +35,7 @@
     "density": "Input height (md control height, 32px compact, 40 comfortable, 44 touch) and options (sm control height, 28px compact, 32 comfortable, 40 touch) follow data-density.",
     "width": "Fills its container; the list is at most 28rem wide."
   },
-  "js": "connectCombobox(input, listbox, { onSelect?, filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",
+  "js": "connectCombobox(input, listbox, { onSelect?(option | null), filter? }) → { open, close, refresh, destroy } wires the pattern on plain markup; comboboxOptionLabel(option) and comboboxOptionByValue(listbox, value) read options; comboboxChevronIcon (SVG markup) and part class constants.",
   "element": {
     "tag": "ayy-combobox",
     "description": "Wraps an .ayy-combobox and wires typing, filtering, the arrow keys, Enter and Esc on its input and listbox.",
@@ -54,7 +54,7 @@
         "props": {
           "options": "({ value, label, meta?, icon?, keywords?, disabled? } | string)[]",
           "value / defaultValue": "The chosen option's value.",
-          "onValueChange": "(value: string, option) => void",
+          "onValueChange": "(value: string, option: ComboboxOption | null) => void — (\"\", null) once when the field is cleared",
           "onInputChange": "(text: string) => void — every keystroke, e.g. to fetch options",
           "filter": "boolean, default true; false when you fetch the options yourself",
           "emptyText": "ReactNode, default \"No matches\"",

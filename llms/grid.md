@@ -281,7 +281,6 @@ export default function Example() {
             <Icon icon={Archive02Icon} />
             Archive
           </ActionBarButton>
-          <ActionBarSeparator />
           <ActionBarButton
             destructive
             onClick={() => {
@@ -511,7 +510,6 @@ export default function Example() {
             <Icon icon={Archive02Icon} />
             Archive
           </ActionBarButton>
-          <ActionBarSeparator />
           <ActionBarButton
             destructive
             onClick={() => {

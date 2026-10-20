@@ -205,7 +205,9 @@ export function createServer(contract = loadContract()) {
       },
       run: ({ color, radius, ...options }) => {
         if (!brandLib) throw new Error("create_brand needs the built package (dist/). Run the build, or use createBrand() from \"@danitesler/ayywi\".");
-        const input = brandInput([String(color)], options);
+        // A seed colour only: the CLI's brandInput also reads a .json path, which an MCP call must never make it do.
+        if (!/^#?(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(color ?? "").trim())) throw new Error(`color must be a hex colour like #7c3aed, not "${color}"`);
+        const input = brandInput([String(color).trim()], options);
         if (radius) input.radius = radius;
         const b = brandLib.createBrand(input);
         return `${brandReport(b)}\n\nApply: load this CSS after ayywi's, then set data-brand="${b.name}" on <html> (or call setBrand("${b.name}")).\n\n\`\`\`css\n${brandLib.brandCss(b)}\`\`\``;
@@ -229,6 +231,8 @@ export function createServer(contract = loadContract()) {
 
   /** Handle one JSON-RPC message; returns a response object or null for notifications. */
   return function handle(msg) {
+    // Anything but a request object (null, a number, a batch array) is an invalid request, not a crash.
+    if (msg === null || typeof msg !== "object" || Array.isArray(msg)) return { jsonrpc: "2.0", id: null, error: { code: -32600, message: "Invalid Request" } };
     const reply = (result) => ({ jsonrpc: "2.0", id: msg.id, result });
     const fail = (code, message) => ({ jsonrpc: "2.0", id: msg.id ?? null, error: { code, message } });
     if (msg.id === undefined) return null; // notification (e.g. notifications/initialized)

@@ -210,7 +210,7 @@
         "props": {
           "value": "[string, string] | null — start and end ISO dates",
           "defaultValue": "[string, string] | null — initial range",
-          "onValueChange": "(range: [string, string]) => void",
+          "onValueChange": "(range: [string, string] | null) => void — null when Clear empties it",
           "months": "number — number of months shown side-by-side",
           "min": "string — earliest pickable day",
           "max": "string — latest pickable day",
@@ -232,7 +232,7 @@
         "props": {
           "value": "[string, string] | null — start and end ISO dates",
           "defaultValue": "[string, string] | null — initial range",
-          "onValueChange": "(range: [string, string]) => void",
+          "onValueChange": "(range: [string, string] | null) => void — null when Clear empties it",
           "placeholder": "string — shown while empty",
           "format": "(range: [string, string]) => string — trigger text formatter",
           "months": "number — number of months shown side-by-side",

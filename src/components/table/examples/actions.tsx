@@ -21,7 +21,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Icon,
@@ -33,6 +32,7 @@ import {
   TableHeader,
   TableRow,
   TableRowActions,
+  Tooltip,
   toast,
 } from "@danitesler/ayywi/react";
 
@@ -90,32 +90,37 @@ export default function Example() {
               <TableCell className="ayy-muted">{item.updated}</TableCell>
               <TableCell actions>
                 <TableRowActions>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Edit ${item.name}`}
-                    onClick={() => toast(`Edit ${item.name}`)}
-                  >
-                    <Icon icon={PencilEdit02Icon} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Copy link to ${item.name}`}
-                    onClick={() => toast.success(`Copied link to ${item.name}`)}
-                  >
-                    <Icon icon={CopyLinkIcon} />
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
+                  <Tooltip content="Edit">
+                    <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label={`More actions for ${item.name}`}
+                      aria-label={`Edit ${item.name}`}
+                      onClick={() => toast(`Edit ${item.name}`)}
                     >
-                      <Icon icon={MoreHorizontalIcon} />
-                    </DropdownMenuTrigger>
+                      <Icon icon={PencilEdit02Icon} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Copy link">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={`Copy link to ${item.name}`}
+                      onClick={() => toast.success(`Copied link to ${item.name}`)}
+                    >
+                      <Icon icon={CopyLinkIcon} />
+                    </Button>
+                  </Tooltip>
+                  <DropdownMenu>
+                    <Tooltip content="More actions">
+                      <DropdownMenuTrigger
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`More actions for ${item.name}`}
+                      >
+                        <Icon icon={MoreHorizontalIcon} />
+                      </DropdownMenuTrigger>
+                    </Tooltip>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{item.name}</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => toast(`Edit ${item.name}`)}>
                         <Icon icon={PencilEdit02Icon} />
                         Edit
@@ -169,7 +174,6 @@ export default function Example() {
             <Icon icon={Archive02Icon} />
             Archive
           </ActionBarButton>
-          <ActionBarSeparator />
           <ActionBarButton
             destructive
             onClick={() => {

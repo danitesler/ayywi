@@ -142,38 +142,14 @@ export function rgbToHex({ r, g, b, a }: RGB): string {
 
 /** Parse a hex colour string (#rgb, #rgba, #rrggbb, #rrggbbaa) to RGB (r: 0–255, g: 0–255, b: 0–255, a?: 0–1). */
 export function hexToRgb(hex: string): RGB | null {
-  const clean = hex.replace(/^#/, "").trim();
-  if (clean.length === 3) {
-    const r = parseInt(clean[0] + clean[0], 16);
-    const g = parseInt(clean[1] + clean[1], 16);
-    const b = parseInt(clean[2] + clean[2], 16);
-    if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
-    return { r, g, b };
-  }
-  if (clean.length === 4) {
-    const r = parseInt(clean[0] + clean[0], 16);
-    const g = parseInt(clean[1] + clean[1], 16);
-    const b = parseInt(clean[2] + clean[2], 16);
-    const a = parseInt(clean[3] + clean[3], 16) / 255;
-    if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b) || Number.isNaN(a)) return null;
-    return { r, g, b, a: Math.round(a * 100) / 100 };
-  }
-  if (clean.length === 6) {
-    const r = parseInt(clean.slice(0, 2), 16);
-    const g = parseInt(clean.slice(2, 4), 16);
-    const b = parseInt(clean.slice(4, 6), 16);
-    if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
-    return { r, g, b };
-  }
-  if (clean.length === 8) {
-    const r = parseInt(clean.slice(0, 2), 16);
-    const g = parseInt(clean.slice(2, 4), 16);
-    const b = parseInt(clean.slice(4, 6), 16);
-    const a = parseInt(clean.slice(6, 8), 16) / 255;
-    if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b) || Number.isNaN(a)) return null;
-    return { r, g, b, a: Math.round(a * 100) / 100 };
-  }
-  return null;
+  // Strict: parseInt would read "#12345g" as #123405.
+  const clean = hex.trim().replace(/^#/, "");
+  if (!/^(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(clean)) return null;
+  const full = clean.length <= 4 ? [...clean].map((c) => c + c).join("") : clean;
+  const byte = (i: number) => parseInt(full.slice(i, i + 2), 16);
+  const rgb: RGB = { r: byte(0), g: byte(2), b: byte(4) };
+  if (full.length === 8) rgb.a = Math.round((byte(6) / 255) * 100) / 100;
+  return rgb;
 }
 
 const HUE_TRACK_GRADIENT =
@@ -215,6 +191,8 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
   };
 
   let hsv: HSV = parseHsv(currentHex);
+  // The colour as last set, so an alpha-only change keeps it exactly (HSV is rounded to whole numbers).
+  let rgbNow: RGB = hexToRgb(currentHex) ?? hsvToRgb(hsv);
 
   const area = root.querySelector<HTMLElement>(`.${colorPickerAreaClass}`);
   const hueInput = root.querySelector<HTMLInputElement>(`.${colorPickerHueClass}`);
@@ -278,6 +256,7 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
   const commitHsv = (next: HSV, updateHex = true) => {
     hsv = next;
     const rgb = hsvToRgb(hsv);
+    rgbNow = { r: rgb.r, g: rgb.g, b: rgb.b };
     if (!alpha) delete rgb.a;
     currentHex = rgbToHex(rgb);
     syncDom(updateHex);
@@ -326,7 +305,10 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
   const onAlphaInput = () => {
     if (!alphaInput) return;
     alpha = true;
-    commitHsv({ ...hsv, a: alphaInput.valueAsNumber / 100 });
+    hsv = { ...hsv, a: alphaInput.valueAsNumber / 100 };
+    currentHex = rgbToHex({ ...rgbNow, a: hsv.a });
+    syncDom();
+    onChange?.(currentHex);
   };
 
   const onHexInput = () => {
@@ -336,7 +318,10 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
     const nextHsv = rgbToHsv(rgb);
     const h = nextHsv.s === 0 || nextHsv.v === 0 ? hsv.h : nextHsv.h;
     hsv = { h, s: nextHsv.s, v: nextHsv.v, a: rgb.a ?? (hsv.a ?? 1) };
-    currentHex = hexInput.value.startsWith("#") ? hexInput.value : `#${hexInput.value}`;
+    rgbNow = { r: rgb.r, g: rgb.g, b: rgb.b };
+    // What's emitted is always #rrggbb (or #rrggbbaa): "#FFF" or " #fff" as typed isn't, and <input type=color> turns
+    // anything else into black.
+    currentHex = rgbToHex(alpha ? { ...rgbNow, a: hsv.a } : rgbNow);
     syncDom(false);
     onChange?.(currentHex);
   };
@@ -355,6 +340,7 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
       const nextHsv = rgbToHsv(rgb);
       const h = nextHsv.s === 0 || nextHsv.v === 0 ? hsv.h : nextHsv.h;
       hsv = { h, s: nextHsv.s, v: nextHsv.v, a: rgb.a ?? 1 };
+      rgbNow = { r: rgb.r, g: rgb.g, b: rgb.b };
       currentHex = c;
       syncDom();
       onChange?.(currentHex);
@@ -403,6 +389,7 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
       const nextHsv = rgbToHsv(rgb);
       const h = nextHsv.s === 0 || nextHsv.v === 0 ? hsv.h : nextHsv.h;
       hsv = { h, s: nextHsv.s, v: nextHsv.v, a: rgb.a ?? (hsv.a ?? 1) };
+      rgbNow = { r: rgb.r, g: rgb.g, b: rgb.b };
       currentHex = color;
       syncDom();
     },

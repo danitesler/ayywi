@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import {
   Button,
@@ -10,9 +10,58 @@ import {
   type ButtonVariant,
 } from "@danitesler/ayywi/react";
 
-export default function Example() {
-  const [size, setSize] = useState<ButtonSize>("md");
+export default function Example({
+  setControls,
+}: {
+  setControls?: (node: ReactNode) => void;
+} = {}) {
+  const [size, setSize] = useState<ButtonSize>("sm");
   const [variant, setVariant] = useState<ButtonVariant>("secondary");
+
+  useEffect(() => {
+    return () => setControls?.(null);
+  }, [setControls]);
+
+  useEffect(() => {
+    if (!setControls) return;
+    setControls(
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="btn-align-size">Size</Label>
+            <div style={{ inlineSize: "8rem" }}>
+              <Select
+                id="btn-align-size"
+                size="sm"
+                value={size}
+                onChange={(e) => setSize(e.target.value as ButtonSize)}
+              >
+                <option value="sm">Small (sm)</option>
+                <option value="md">Medium (md)</option>
+                <option value="lg">Large (lg)</option>
+              </Select>
+            </div>
+          </div>
+          <div className="ayy-spread">
+            <Label htmlFor="btn-align-variant">Variant</Label>
+            <div style={{ inlineSize: "8rem" }}>
+              <Select
+                id="btn-align-variant"
+                size="sm"
+                value={variant}
+                onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+              >
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="outline">Outline</option>
+                <option value="ghost">Ghost</option>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }, [setControls, size, variant]);
 
   return (
     <div
@@ -23,41 +72,44 @@ export default function Example() {
         "--ayy-gap": "var(--ayy-space-4)",
       } as CSSProperties}
     >
-      <div
-        className="ayy-cluster"
-        style={{
-          "--ayy-gap": "var(--ayy-space-3)",
-          justifyContent: "center",
-        } as CSSProperties}
-      >
-        <Field inline>
-          <Label htmlFor="btn-align-size-inline">Size</Label>
-          <Select
-            id="btn-align-size-inline"
-            size="sm"
-            value={size}
-            onChange={(e) => setSize(e.target.value as ButtonSize)}
-          >
-            <option value="sm">Small (sm)</option>
-            <option value="md">Medium (md)</option>
-            <option value="lg">Large (lg)</option>
-          </Select>
-        </Field>
-        <Field inline>
-          <Label htmlFor="btn-align-variant-inline">Variant</Label>
-          <Select
-            id="btn-align-variant-inline"
-            size="sm"
-            value={variant}
-            onChange={(e) => setVariant(e.target.value as ButtonVariant)}
-          >
-            <option value="primary">Primary</option>
-            <option value="secondary">Secondary</option>
-            <option value="outline">Outline</option>
-            <option value="ghost">Ghost</option>
-          </Select>
-        </Field>
-      </div>
+      {/* Fallback inline controls when rendered standalone outside Showcase */}
+      {!setControls ? (
+        <div
+          className="ayy-cluster"
+          style={{
+            "--ayy-gap": "var(--ayy-space-3)",
+            justifyContent: "center",
+          } as CSSProperties}
+        >
+          <Field inline>
+            <Label htmlFor="btn-align-size-inline">Size</Label>
+            <Select
+              id="btn-align-size-inline"
+              size="sm"
+              value={size}
+              onChange={(e) => setSize(e.target.value as ButtonSize)}
+            >
+              <option value="sm">Small (sm)</option>
+              <option value="md">Medium (md)</option>
+              <option value="lg">Large (lg)</option>
+            </Select>
+          </Field>
+          <Field inline>
+            <Label htmlFor="btn-align-variant-inline">Variant</Label>
+            <Select
+              id="btn-align-variant-inline"
+              size="sm"
+              value={variant}
+              onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+            >
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="outline">Outline</option>
+              <option value="ghost">Ghost</option>
+            </Select>
+          </Field>
+        </div>
+      ) : null}
 
       <div
         className="ayy-stack"

@@ -10,15 +10,15 @@ import {
   Undo02Icon,
 } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Icon, Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer } from "@danitesler/ayywi/react";
+import { Icon, Shortcut, Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, Tooltip } from "@danitesler/ayywi/react";
 
 const TOOLS = [
-  { id: "select", label: "Select", icon: Cursor01Icon },
-  { id: "arrow", label: "Arrow", icon: ArrowUpRight01Icon },
-  { id: "rectangle", label: "Rectangle", icon: SquareIcon },
-  { id: "text", label: "Text", icon: TextIcon },
-  { id: "highlight", label: "Highlight", icon: HighlighterIcon },
-  { id: "blur", label: "Blur", icon: BlurIcon },
+  { id: "select", label: "Select", icon: Cursor01Icon, shortcut: "V" },
+  { id: "arrow", label: "Arrow", icon: ArrowUpRight01Icon, shortcut: "A" },
+  { id: "rectangle", label: "Rectangle", icon: SquareIcon, shortcut: "R" },
+  { id: "text", label: "Text", icon: TextIcon, shortcut: "T" },
+  { id: "highlight", label: "Highlight", icon: HighlighterIcon, shortcut: "H" },
+  { id: "blur", label: "Blur", icon: BlurIcon, shortcut: "B" },
 ];
 
 export default function Example() {
@@ -27,23 +27,56 @@ export default function Example() {
     <Toolbar aria-label="Annotate" style={{ inlineSize: "100%" }}>
       <ToolbarGroup aria-label="Tools">
         {TOOLS.map((t) => (
-          <ToolbarButton key={t.id} aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
-            <Icon icon={t.icon} />
-          </ToolbarButton>
+          <Tooltip
+            key={t.id}
+            content={
+              <>
+                {t.label} <Shortcut keys={t.shortcut} />
+              </>
+            }
+          >
+            <ToolbarButton aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
+              <Icon icon={t.icon} />
+            </ToolbarButton>
+          </Tooltip>
         ))}
       </ToolbarGroup>
       <ToolbarSeparator />
-      <ToolbarButton aria-label="Undo">
-        <Icon icon={Undo02Icon} />
-      </ToolbarButton>
-      <ToolbarButton aria-label="Redo" disabled>
-        <Icon icon={Redo02Icon} />
-      </ToolbarButton>
+      <Tooltip
+        content={
+          <>
+            Undo <Shortcut keys="Mod+Z" />
+          </>
+        }
+      >
+        <ToolbarButton aria-label="Undo">
+          <Icon icon={Undo02Icon} />
+        </ToolbarButton>
+      </Tooltip>
+      <Tooltip
+        content={
+          <>
+            Redo <Shortcut keys="Mod+Shift+Z" />
+          </>
+        }
+      >
+        <ToolbarButton aria-label="Redo" disabled>
+          <Icon icon={Redo02Icon} />
+        </ToolbarButton>
+      </Tooltip>
       <ToolbarSpacer />
-      <ToolbarButton>
-        <Icon icon={Copy01Icon} />
-        Copy
-      </ToolbarButton>
+      <Tooltip
+        content={
+          <>
+            Copy <Shortcut keys="Mod+C" />
+          </>
+        }
+      >
+        <ToolbarButton>
+          <Icon icon={Copy01Icon} />
+          Copy
+        </ToolbarButton>
+      </Tooltip>
     </Toolbar>
   );
 }

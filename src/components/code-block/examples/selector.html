@@ -53,4 +53,134 @@ export function Counter() {
 <span class="ayy-code-block__line">    &lt;/Button&gt;</span>
 <span class="ayy-code-block__line">  <span class="ayy-token-punctuation">)</span><span class="ayy-token-punctuation">;</span></span>
 <span class="ayy-code-block__line"><span class="ayy-token-punctuation">}</span></span></code></pre>
+  <!-- The code for each language in the selector: <ayy-menu> swaps it in (and the file name) when one is chosen. -->
+  <template data-language="tsx" data-filename="example.tsx">import { useState } from "react";
+import { Button } from "@danitesler/ayywi/react";
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;Button size="sm" onClick={() =&gt; setCount(count + 1)}&gt;
+      Count: {count}
+    &lt;/Button&gt;
+  );
+}</template>
+  <template data-language="html" data-filename="example.html">&lt;!-- Notification card --&gt;
+&lt;div class="ayy-card" role="region" aria-label="Announcement"&gt;
+  &lt;div class="ayy-card__header"&gt;
+    &lt;h3 class="ayy-h3"&gt;Release 2.0&lt;/h3&gt;
+  &lt;/div&gt;
+  &lt;p class="ayy-muted"&gt;Zero runtime dependencies.&lt;/p&gt;
+&lt;/div&gt;</template>
+  <template data-language="css" data-filename="example.css">/* Button primary state */
+.ayy-button--primary {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--ayy-space-4);
+  background-color: var(--ayy-color-primary);
+  color: var(--ayy-color-primary-fg);
+  font-weight: var(--ayy-weight-medium);
+}</template>
+  <template data-language="json" data-filename="example.json">{
+  "name": "@danitesler/ayywi",
+  "version": "0.1.0",
+  "private": false,
+  "features": ["tokens", "elements", "highlighter"],
+  "license": "MIT"
+}</template>
+  <template data-language="md" data-filename="example.md"># Design System
+
+A **framework-agnostic** design system driven by tokens.
+
+- Zero dependencies
+- Logical properties only
+- WCAG AA contrast
+
+See [documentation](https://ayywi.com) for setup.</template>
+  <template data-language="bash" data-filename="example.sh">#!/bin/bash
+# Install ayywi design system
+pnpm add "@danitesler/ayywi"
+
+# Start the interactive component preview
+pnpm preview --port 5173</template>
+  <template data-language="python" data-filename="example.py"># Theme configuration
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class ThemeConfig:
+    name: str = "dark"
+    contrast: bool = True
+
+    def get_theme(self) -&gt; str:
+        return f"{self.name}-contrast" if self.contrast else self.name</template>
+  <template data-language="sql" data-filename="example.sql">-- Query active users with role
+SELECT id, username, email, created_at
+FROM users
+WHERE status = 'active' AND role IN ('admin', 'editor')
+ORDER BY created_at DESC
+LIMIT 50;</template>
+  <template data-language="yaml" data-filename="example.yaml"># CI verification workflow
+name: CI
+on:
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pnpm check</template>
+  <template data-language="graphql" data-filename="example.graphql"># Fetch user profile and repositories
+query GetUserProfile($login: String!) {
+  user(login: $login) {
+    id
+    name
+    bio
+    repositories(first: 10) {
+      nodes {
+        name
+        stargazerCount
+      }
+    }
+  }
+}</template>
+  <template data-language="dockerfile" data-filename="Dockerfile"># Production container
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY . .
+RUN pnpm build
+
+EXPOSE 3000
+CMD ["node", "dist/server.js"]</template>
+  <template data-language="toml" data-filename="example.toml">[package]
+name = "ayywi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }</template>
+  <template data-language="rust" data-filename="example.rs">// Token parser implementation
+#[derive(Debug, Clone)]
+pub struct Token {
+    pub kind: String,
+    pub text: String,
+}
+
+pub fn parse_input(source: &amp;str) -&gt; Vec&lt;Token&gt; {
+    vec![Token { kind: "ident".into(), text: source.to_string() }]
+}</template>
+  <template data-language="go" data-filename="example.go">package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "status: ok")
+}</template>
 </div>

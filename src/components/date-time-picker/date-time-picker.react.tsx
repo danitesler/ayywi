@@ -44,7 +44,7 @@ import {
   generateMinutes,
   localeWeekStart,
   pad2,
-  parseTimeString,
+  parseTime,
   resolveDatePickerDate,
   startOfMonth,
   timePeriods,
@@ -62,6 +62,7 @@ import {
   todayIso,
   to12Hour,
   to24Hour,
+  toTime24,
   type DatePickerView,
   type TimePeriod,
   type TimePickerFormat,
@@ -603,8 +604,7 @@ export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(functio
           clearLabel={clearLabel}
           todayLabel={todayLabel}
           onClear={() => {
-            if (value === undefined) setUncontrolled(null);
-            onValueChange?.("");
+            // The picker's Clear has already reported the empty value through onValueChange.
             onClear?.();
             controller.current?.close();
           }}
@@ -631,7 +631,8 @@ export interface DateRangeProps extends Omit<HTMLAttributes<HTMLDivElement>, "on
   /** The picked range: ["2026-10-12", "2026-10-18"], or null. */
   value?: [string, string] | null;
   defaultValue?: [string, string] | null;
-  onValueChange?: (range: [string, string]) => void;
+  /** Called with the picked range, and with null when Clear empties it. */
+  onValueChange?: (range: [string, string] | null) => void;
   /** Number of months shown side-by-side. Default 2. */
   months?: number;
   /** Earliest and latest day that can be picked (ISO). Days outside are disabled. */
@@ -1043,7 +1044,7 @@ export const DateRange = forwardRef<HTMLDivElement, DateRangeProps>(function Dat
                   if (value === undefined) setUncontrolled(null);
                   setPendingStart(null);
                   setHoverDate(null);
-                  onValueChange?.(null as any);
+                  onValueChange?.(null);
                   onClear?.();
                 }}
               >
@@ -1084,7 +1085,8 @@ export interface DateRangePickerProps extends Omit<ButtonHTMLAttributes<HTMLButt
   /** The picked range: ["2026-10-12", "2026-10-18"], or null. */
   value?: [string, string] | null;
   defaultValue?: [string, string] | null;
-  onValueChange?: (range: [string, string]) => void;
+  /** Called with the picked range, and with null when Clear empties it. */
+  onValueChange?: (range: [string, string] | null) => void;
   /** Shown while no range is picked. Default "Pick date range". */
   placeholder?: string;
   /** Format function for the trigger's label. Default uses the locale. */
@@ -1198,8 +1200,7 @@ export const DateRangePicker = forwardRef<HTMLButtonElement, DateRangePickerProp
           clearLabel={clearLabel}
           todayLabel={todayLabel}
           onClear={() => {
-            if (value === undefined) setUncontrolled(null);
-            onValueChange?.(null as any);
+            // The picker's Clear has already reported the empty value through onValueChange.
             onClear?.();
             controller.current?.close();
           }}
@@ -1255,23 +1256,18 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function T
   const hourInputRef = useRef<HTMLInputElement>(null);
   const minuteInputRef = useRef<HTMLInputElement>(null);
 
-  const parsed = useMemo(() => parseTimeString(selected), [selected]);
+  const parsed = useMemo(() => parseTime(selected), [selected]);
 
   let selectedHour: string | null = null;
   let selectedMinute: string | null = null;
   let selectedPeriod: TimePeriod = "AM";
 
   if (parsed) {
-    if (format === "12h") {
-      const { hours: h12, period } = to12Hour(parsed.hours);
-      selectedHour = pad2(h12);
-      selectedMinute = pad2(parsed.minutes);
-      selectedPeriod = period;
-    } else {
-      selectedHour = pad2(parsed.hours);
-      selectedMinute = pad2(parsed.minutes);
-      selectedPeriod = parsed.period;
-    }
+    // parsed.hours is 0–23 whichever clock the value was written in.
+    const { hours: h12, period } = to12Hour(parsed.hours);
+    selectedHour = pad2(format === "12h" ? h12 : parsed.hours);
+    selectedMinute = pad2(parsed.minutes);
+    selectedPeriod = period;
   }
 
   const [inputHour, setInputHour] = useState(selectedHour ?? "");
@@ -1730,7 +1726,8 @@ export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(fu
 
   const handleTimeChange = (newTime: string) => {
     const date = datePart || (today ?? todayIso());
-    const combined = `${date}T${newTime}`;
+    // ISO date-time: the time part is always 24-hour, whatever the clock shows.
+    const combined = `${date}T${toTime24(newTime)}`;
     if (value === undefined) setUncontrolled(combined);
     onValueChange?.(combined);
   };
@@ -1925,8 +1922,7 @@ export const DateTimePickerTrigger = forwardRef<HTMLButtonElement, DateTimePicke
           clearLabel={clearLabel}
           todayLabel={todayLabel}
           onClear={() => {
-            if (value === undefined) setUncontrolled("");
-            onValueChange?.("");
+            // The picker's Clear has already reported the empty value through onValueChange.
             onClear?.();
             controller.current?.close();
           }}

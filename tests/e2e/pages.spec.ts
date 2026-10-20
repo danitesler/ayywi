@@ -140,6 +140,13 @@ test("search bar opens command palette, filters results and jumps to a page", as
   await box.fill("ayy-menu__item"); // class names match via keywords
   await expect(dialog.getByRole("option", { name: /Dropdown menu/ })).toBeVisible();
 
+  await box.fill("table");
+  const visibleOptions = dialog.locator('.ayy-command__item:not([hidden])');
+  await expect(visibleOptions.first()).toHaveAttribute("data-value", "table");
+
+  await box.fill("button");
+  await expect(visibleOptions.first()).toHaveAttribute("data-value", "button");
+
   await box.fill("surface-raised"); // token names match via keywords
   await expect(dialog.getByRole("option", { name: /Colors/ })).toBeVisible();
 

@@ -106,7 +106,7 @@
 .ayy-action-bar__actions {
   display: flex;
   align-items: center;
-  gap: var(--ayy-space-2);
+  gap: 0;
   min-inline-size: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -136,14 +136,13 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    transform var(--ayy-duration-base) var(--ayy-ease-spring),
     background-color var(--ayy-duration-base) ease,
     border-color var(--ayy-duration-base) ease,
     color var(--ayy-duration-base) ease,
     opacity var(--ayy-duration-base) ease;
 }
 
-.ayy-action-bar__button:has(> svg:only-child) {
+.ayy-action-bar__button--icon {
   aspect-ratio: 1;
   padding-inline: 0;
 }
@@ -192,7 +191,6 @@
   .ayy-action-bar__button:hover:not(:disabled):not([aria-disabled="true"]) {
     background-color: var(--ayy-color-wash);
     color: var(--ayy-color-text);
-    transform: translateY(-1px);
   }
 
   .ayy-action-bar__button:hover:not(:disabled):not([aria-disabled="true"]) > svg {
@@ -204,7 +202,6 @@
     border-color: transparent;
     color: var(--ayy-color-primary-fg);
     opacity: 0.9;
-    transform: translateY(-1px);
   }
 
   .ayy-action-bar__button--primary:hover:not(:disabled):not([aria-disabled="true"]) > svg {
@@ -214,14 +211,12 @@
   .ayy-action-bar__button--secondary:hover:not(:disabled):not([aria-disabled="true"]) {
     background-color: var(--ayy-color-wash-hover);
     border-color: var(--ayy-color-line-hover);
-    transform: translateY(-1px);
   }
 
   .ayy-action-bar__button--destructive:hover:not(:disabled):not([aria-disabled="true"]) {
     background-color: color-mix(in srgb, var(--ayy-color-destructive) 18%, transparent);
     border-color: color-mix(in srgb, var(--ayy-color-destructive) 40%, transparent);
     color: var(--ayy-color-destructive);
-    transform: translateY(-1px);
   }
 
   .ayy-action-bar__button--destructive:hover:not(:disabled):not([aria-disabled="true"]) > svg {
@@ -230,7 +225,7 @@
 }
 
 .ayy-action-bar__button:active:not(:disabled):not([aria-disabled="true"]) {
-  transform: none;
+  opacity: 0.85;
 }
 
 .ayy-action-bar__close:focus-visible,

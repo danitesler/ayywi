@@ -3,7 +3,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Icon,
@@ -15,7 +14,6 @@ export default function Example() {
     <DropdownMenu>
       <DropdownMenuTrigger variant="outline">Project actions</DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Marketing site</DropdownMenuLabel>
         <DropdownMenuItem onSelect={() => toast("Rename")} shortcut="Mod+R">
           <Icon icon={PencilEdit02Icon} />
           Rename

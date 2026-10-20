@@ -50,6 +50,13 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   copyable?: boolean;
 }
 
+/** Do two strings name the same colour ("#fff" and "#FFFFFF")? */
+function sameColor(a: string, b: string): boolean {
+  const x = hexToRgb(a);
+  const y = hexToRgb(b);
+  return Boolean(x && y && rgbToHex(x) === rgbToHex(y));
+}
+
 function parseToHsv(colorStr: string): HSV {
   const rgb = hexToRgb(colorStr);
   if (!rgb) return { h: 217, s: 85, v: 92, a: 1 };
@@ -109,7 +116,8 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
         const h = nextHsv.s === 0 || nextHsv.v === 0 ? prev.h : nextHsv.h;
         return { h, s: nextHsv.s, v: nextHsv.v, a: parsed.a ?? (prev.a ?? 1) };
       });
-      setInputText(currentHex);
+      // Keep what's being typed ("#fff") while it's the same colour as the value ("#ffffff").
+      setInputText((text) => (sameColor(text, currentHex) ? text : currentHex));
     }
   }, [currentHex]);
 
@@ -196,10 +204,12 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
         delete finalHsv.a;
       }
       setInternalHsv(finalHsv);
+      // Emit #rrggbb (#rrggbbaa with alpha), not the text as typed: "#FFF" isn't a value <input type=color> accepts.
+      const nextHex = rgbToHex(alpha ? { ...rgb, a: finalHsv.a } : { r: rgb.r, g: rgb.g, b: rgb.b });
       if (controlled === undefined) {
-        setUncontrolled(val);
+        setUncontrolled(nextHex);
       }
-      onValueChange?.(val);
+      onValueChange?.(nextHex);
     }
   };
 
@@ -261,7 +271,16 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
               value={Math.round((internalHsv.a ?? 1) * 100)}
               className={colorPickerAlphaClass}
               aria-label="Opacity"
-              onChange={(e) => updateColor({ ...internalHsv, a: e.currentTarget.valueAsNumber / 100 })}
+              onChange={(e) => {
+                // Only the alpha changes: keep the RGB exactly (rebuilding it from the rounded HSV shifts it).
+                const a = e.currentTarget.valueAsNumber / 100;
+                const rgb = hexToRgb(currentHex) ?? hsvToRgb(internalHsv);
+                setInternalHsv({ ...internalHsv, a });
+                const nextHex = rgbToHex({ r: rgb.r, g: rgb.g, b: rgb.b, a });
+                setInputText(nextHex);
+                if (controlled === undefined) setUncontrolled(nextHex);
+                onValueChange?.(nextHex);
+              }}
             />
           )}
         </div>

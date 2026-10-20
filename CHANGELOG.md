@@ -9,6 +9,53 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Added
+
+- **[Action bar](#/action-bar)**
+  Action bars with many actions had no square icon-only modifier → added `.ayy-action-bar__button--icon` (`icon` prop on `ActionBarButton`) for common bulk actions separated from unique labelled actions with a divider, paired with mandatory tooltips and a showcase example.
+- **[Button](#/button)**
+  Icon-only buttons had no explicit tooltip requirement in design rules → added requirement to always pair icon-only buttons with a visible `Tooltip`, and updated examples.
+
+### Changed
+
+- **[Action bar](#/action-bar)**
+  Buttons had a 1px hover lift clipped by the scrolling actions row and lost padding → removed hover `translateY(-1px)`, reduced actions gap to `0`, and removed `:has(> svg:only-child)`.
+- **[Table](#/table)**
+  Icon buttons in row actions lacked tooltips → wrapped table row icon buttons in `Tooltip` ("Edit", "Copy link", "More actions").
+- **[Dropdown menu](#/menu)**
+  Menu examples showed redundant title headers → removed title labels from dropdown menu examples.
+- **[Combobox](#/combobox)**, **[Date & time picker](#/date-time-picker)** (**Breaking**)
+  Clearing passed `null` to callbacks typed as never null → the types say so: `Combobox` `onValueChange(value, option: ComboboxOption | null)`, `DateRange`/`DateRangePicker` `onValueChange(range: [string, string] | null)`, `connectCombobox` `onSelect(option: HTMLElement | null)`.
+- **[Code block](#/code-block)**
+  The HTML language selector swapped in ayywi's own sample code → it switches to the block's `<template data-language="…" data-filename="…">` for that language, and leaves the code alone without one.
+- **[Date & time picker](#/date-time-picker)**
+  The `<ayy-date-time-picker>` and `DateTimePicker` value used the 12-hour time when `format="12h"` (`2026-10-14T02:30 PM`) → always ISO (`2026-10-14T14:30`).
+
+### Fixed
+
+- **[Command palette](#/command)**
+  `<ayy-command>` pulled items out of wrapper elements when sorting matches, and items added later jumped up the list → only direct children move, and a new item keeps the place it was added at. React `Command` filters without moving React's nodes (moving them unmounted the app on its next update).
+- **[Date & time picker](#/date-time-picker)**
+  The 24-hour `<ayy-time-picker>` kept the old half of the day when the hour changed (09 after 14:30 gave 21:30) → the hour is what you pick.
+- **[Date & time picker](#/date-time-picker)**
+  React `TimePicker` with `format="12h"` turned PM into AM on the next pick, and 12-hour labels read "02:30 AM" or "02:30 PM AM" for 2:30 PM → PM stays and labels read "02:30 PM".
+- **[Date & time picker](#/date-time-picker)**
+  Any footer button other than Today (a "Done") cleared the date, and the React pickers reported Clear twice → only Clear clears, once.
+- **[Tag input](#/tag-input)**
+  With suggestions, clearing the field after picking one, or Esc twice, threw an error and left the list open → nothing is added and the list closes.
+- **[Dropdown menu](#/menu)**
+  Context menus (`DropdownMenu anchorPoint`, `<ayy-menu>.openAt()` with no trigger) opened in the top corner and closed on any click inside → they open at the point and checkbox items keep them open.
+- **[Combobox](#/combobox)**
+  A list opened above its input drifted away from it as filtering shortened it → popovers, menus and lists follow their own size and their anchor's.
+- **[Table of contents](#/toc)**
+  The bar `<ayy-toc>` adds read the first link's text as HTML, and a `%` in a link's id stopped the scrollspy → the text stays text and such ids work.
+- **[Color picker](#/color-picker)**
+  Right to left, the handle and slider thumbs sat mirrored away from their colour; typed hex such as `#fff` or `#12345g` went out as typed; changing alpha nudged the colour → the area and sliders run left to right, the value is always `#rrggbb` (`#rrggbbaa` with alpha), invalid hex is ignored, and alpha changes keep the colour.
+- **[Toast](#/toast)**
+  `toast.card()` read `media.duration` as HTML → as text.
+- **MCP server**
+  `create_brand` read a `.json` file when given a path as the colour, and a `null` message stopped the server → it takes a hex colour only and answers bad messages with an error.
+
 ## 0.1.0 — 2026-10-17
 
 ### Added

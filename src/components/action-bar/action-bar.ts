@@ -18,6 +18,7 @@ export interface ActionBarButtonClassOptions {
   primary?: boolean;
   secondary?: boolean;
   destructive?: boolean;
+  icon?: boolean;
   className?: string;
 }
 
@@ -26,10 +27,16 @@ export function actionBarButtonClass({
   primary,
   secondary,
   destructive,
+  icon,
   className,
 }: ActionBarButtonClassOptions = {}): string {
   const resolved = destructive ? "destructive" : primary ? "primary" : secondary ? "secondary" : variant;
-  return cx("ayy-action-bar__button", resolved !== "default" && `ayy-action-bar__button--${resolved}`, className);
+  return cx(
+    "ayy-action-bar__button",
+    resolved !== "default" && `ayy-action-bar__button--${resolved}`,
+    icon && "ayy-action-bar__button--icon",
+    className,
+  );
 }
 
 export const actionBarSelectionClass = "ayy-action-bar__selection";

@@ -190,7 +190,10 @@ export function connectTagInput(root: HTMLElement, options: TagInputControllerOp
   // Suggestions first, so Enter on a highlighted one picks it rather than adding the typed text.
   if (listbox) {
     combobox = connectCombobox(input, listbox, {
-      onSelect: (option) => add(option.dataset.value ?? option.textContent?.trim() ?? ""),
+      // null: the field was cleared, nothing to add.
+      onSelect: (option) => {
+        if (option) add(option.dataset.value ?? option.textContent?.trim() ?? "");
+      },
     });
   }
   input.addEventListener("keydown", onKeyDown);

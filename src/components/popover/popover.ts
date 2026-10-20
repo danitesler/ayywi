@@ -8,6 +8,8 @@ export interface PopoverControllerOptions {
   offset?: number;
   crossAxisOffset?: number;
   boundary?: PlaceBoundary;
+  /** What to place it next to, when that isn't the trigger (a point for a context menu). Default: the trigger. */
+  anchor?: Element;
   /** Called after every open/close (including light dismiss and Esc). */
   onToggle?: (open: boolean) => void;
 }
@@ -17,7 +19,7 @@ export interface PopoverController {
   close(): void;
   isOpen(): boolean;
   /** Change placement options while mounted. */
-  update(options: Pick<PopoverControllerOptions, "side" | "align" | "offset">): void;
+  update(options: Pick<PopoverControllerOptions, "side" | "align" | "offset" | "anchor">): void;
   destroy(): void;
 }
 
@@ -42,7 +44,7 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
     const open = (event as ToggleEvent).newState === "open";
     trigger.setAttribute("aria-expanded", String(open));
     stopPlacing?.();
-    stopPlacing = open ? autoPlace(content, trigger, opts) : null;
+    stopPlacing = open ? autoPlace(content, opts.anchor ?? trigger, opts) : null;
     if (!open && (content.contains(document.activeElement) || document.activeElement === document.body)) trigger.focus();
     opts.onToggle?.(open);
   };
@@ -65,7 +67,7 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
       content.hidden = false;
       trigger.setAttribute("aria-expanded", "true");
       stopPlacing?.();
-      stopPlacing = autoPlace(content, trigger, opts);
+      stopPlacing = autoPlace(content, opts.anchor ?? trigger, opts);
       opts.onToggle?.(true);
     }
   }
@@ -91,7 +93,7 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
       opts = { ...opts, ...next };
       if (isOpen()) {
         stopPlacing?.();
-        stopPlacing = autoPlace(content, trigger, opts);
+        stopPlacing = autoPlace(content, opts.anchor ?? trigger, opts);
       }
     },
     destroy() {

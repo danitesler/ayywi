@@ -1,14 +1,14 @@
 import { ArrowUpRight01Icon, CircleIcon, Cursor01Icon, PencilEdit02Icon, SquareIcon, TextIcon } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Icon, Toolbar, ToolbarButton, ToolbarGroup } from "@danitesler/ayywi/react";
+import { Icon, Shortcut, Toolbar, ToolbarButton, ToolbarGroup, Tooltip } from "@danitesler/ayywi/react";
 
 const TOOLS = [
-  { id: "select", label: "Select", icon: Cursor01Icon },
-  { id: "pen", label: "Pen", icon: PencilEdit02Icon },
-  { id: "arrow", label: "Arrow", icon: ArrowUpRight01Icon },
-  { id: "rectangle", label: "Rectangle", icon: SquareIcon },
-  { id: "ellipse", label: "Ellipse", icon: CircleIcon },
-  { id: "text", label: "Text", icon: TextIcon },
+  { id: "select", label: "Select", icon: Cursor01Icon, shortcut: "V" },
+  { id: "pen", label: "Pen", icon: PencilEdit02Icon, shortcut: "P" },
+  { id: "arrow", label: "Arrow", icon: ArrowUpRight01Icon, shortcut: "A" },
+  { id: "rectangle", label: "Rectangle", icon: SquareIcon, shortcut: "R" },
+  { id: "ellipse", label: "Ellipse", icon: CircleIcon, shortcut: "O" },
+  { id: "text", label: "Text", icon: TextIcon, shortcut: "T" },
 ];
 
 export default function Example() {
@@ -17,9 +17,19 @@ export default function Example() {
     <Toolbar aria-label="Drawing tools" vertical floating>
       <ToolbarGroup>
         {TOOLS.map((t) => (
-          <ToolbarButton key={t.id} aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
-            <Icon icon={t.icon} />
-          </ToolbarButton>
+          <Tooltip
+            key={t.id}
+            side="end"
+            content={
+              <>
+                {t.label} <Shortcut keys={t.shortcut} />
+              </>
+            }
+          >
+            <ToolbarButton key={t.id} aria-label={t.label} pressed={tool === t.id} onClick={() => setTool(t.id)}>
+              <Icon icon={t.icon} />
+            </ToolbarButton>
+          </Tooltip>
         ))}
       </ToolbarGroup>
     </Toolbar>

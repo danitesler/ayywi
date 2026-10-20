@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -71,4 +72,39 @@ test("MCP handshake and tools", async (t) => {
 
   const bad = await s.request("tools/call", { name: "nope", arguments: {} });
   assert.ok(bad.error);
+});
+
+test("MCP: a malformed message gets an error reply instead of killing the server", async (t) => {
+  const child = spawn(process.execPath, [cli, "mcp"], { stdio: ["pipe", "pipe", "inherit"] });
+  t.after(() => child.kill());
+  const lines = [];
+  const got = new Promise((resolve) => {
+    let buffer = "";
+    child.stdout.on("data", (chunk) => {
+      buffer += chunk;
+      let i;
+      while ((i = buffer.indexOf("\n")) >= 0) {
+        lines.push(JSON.parse(buffer.slice(0, i)));
+        buffer = buffer.slice(i + 1);
+        if (lines.length === 3) resolve(lines);
+      }
+    });
+  });
+  child.stdin.write("null\n[]\n");
+  child.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", id: 7, method: "ping" })}\n`);
+  const [a, b, pong] = await got;
+  assert.equal(a.error.code, -32600);
+  assert.equal(b.error.code, -32600);
+  assert.deepEqual(pong, { jsonrpc: "2.0", id: 7, result: {} });
+});
+
+test("MCP create_brand takes a colour, never a file path", { skip: !existsSync(new URL("../../dist/index.js", import.meta.url)) && "run pnpm build first" }, async (t) => {
+  const s = session();
+  t.after(s.close);
+  const res = await s.request("tools/call", { name: "create_brand", arguments: { color: "package.json" } });
+  assert.equal(res.result.isError, true);
+  assert.match(res.result.content[0].text, /hex colour/);
+  assert.doesNotMatch(res.result.content[0].text, /@danitesler\/ayywi/);
+  const ok = await s.request("tools/call", { name: "create_brand", arguments: { color: "#7c3aed", name: "acme" } });
+  assert.notEqual(ok.result.isError, true);
 });

@@ -605,7 +605,11 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
       const mediaBadge = document.createElement("span");
       mediaBadge.className = "ayy-toast__media";
       mediaBadge.setAttribute("aria-hidden", "true");
-      mediaBadge.innerHTML = `${toastPlayIcon}<span>${options.media.duration}</span>`;
+      mediaBadge.innerHTML = toastPlayIcon;
+      // Text, not markup: a duration that came from a file name or an API must not become HTML.
+      const duration = document.createElement("span");
+      duration.textContent = options.media.duration;
+      mediaBadge.append(duration);
       thumb.append(mediaBadge);
     }
     toast.append(thumb);
@@ -687,7 +691,11 @@ function showCardToast(options: CardToastOptions): CardToastHandle {
       const mediaBadge = document.createElement("span");
       mediaBadge.className = "ayy-toast__media";
       mediaBadge.setAttribute("aria-hidden", "true");
-      mediaBadge.innerHTML = `${toastPlayIcon}<span>${options.media.duration}</span>`;
+      mediaBadge.innerHTML = toastPlayIcon;
+      // Text, not markup: a duration that came from a file name or an API must not become HTML.
+      const duration = document.createElement("span");
+      duration.textContent = options.media.duration;
+      mediaBadge.append(duration);
       toast.append(mediaBadge);
     }
 

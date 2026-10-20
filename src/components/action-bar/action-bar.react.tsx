@@ -135,12 +135,14 @@ export interface ActionBarButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
   primary?: boolean;
   secondary?: boolean;
   destructive?: boolean;
+  /** Square icon-only button without label padding. Must have aria-label. */
+  icon?: boolean;
   /** Sets aria-expanded when used as a DropdownMenuTrigger. */
   open?: boolean;
 }
 
 export const ActionBarButton = forwardRef<HTMLButtonElement, ActionBarButtonProps>(function ActionBarButton(
-  { variant, primary, secondary, destructive, open, className, type = "button", ...props },
+  { variant, primary, secondary, destructive, icon, open, className, type = "button", ...props },
   ref,
 ) {
   return (
@@ -148,7 +150,7 @@ export const ActionBarButton = forwardRef<HTMLButtonElement, ActionBarButtonProp
       ref={ref}
       type={type}
       aria-expanded={open}
-      className={actionBarButtonClass({ variant, primary, secondary, destructive, className })}
+      className={actionBarButtonClass({ variant, primary, secondary, destructive, icon, className })}
       {...props}
     />
   );

@@ -69,7 +69,7 @@
     }
   },
   "a11y": [
-    "Icon-only buttons need aria-label.",
+    "Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.",
     "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
     "Visible focus ring on :focus-visible is built in — never remove it.",
     "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away."
@@ -77,6 +77,7 @@
   "do": [
     "Use a button for any action the user can take: submit, open, save, delete.",
     "Apply buttonClass() to an <a> when a link should look like an action.",
+    "Always pair icon-only buttons (size=\"icon*\", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.",
     "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
     "On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.",
     "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg)."

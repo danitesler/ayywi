@@ -43,7 +43,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
 
 **Accessibility**
-- Icon-only buttons need aria-label.
+- Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.
 - Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both).
 - Visible focus ring on :focus-visible is built in — never remove it.
 - While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
@@ -51,6 +51,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 **Do**
 - Use a button for any action the user can take: submit, open, save, delete.
 - Apply buttonClass() to an <a> when a link should look like an action.
+- Always pair icon-only buttons (size="icon*", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.
 - Keep one primary button per view or section; make everything else secondary, outline or ghost.
 - On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
 - Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).
@@ -142,22 +143,31 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 20.5002C3.28417 16.8058 6.3 13.7193 10.0008 13.5379C10.3134 13.5226 10.6446 13.5097 11 13.5L11.995 13.5663C12.6939 13.6129 13.3665 13.7543 14 13.9777" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M18 15.5V21.5M21 18.5L15 18.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="11" cy="6.5" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
   Invite member
 </button>
-<button type="button" class="ayy-button ayy-button--outline ayy-button--icon-lg" aria-label="Add">
-  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
-</button>
-<button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-label="Add">
-  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
-</button>
-<button type="button" class="ayy-button ayy-button--ghost ayy-button--icon-sm" aria-label="Add">
-  <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
-</button>
+<span class="ayy-tooltip">
+  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-lg" aria-label="Add item">
+    <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+  </button>
+  <span role="tooltip" class="ayy-tooltip__content">Add item (large)</span>
+</span>
+<span class="ayy-tooltip">
+  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-label="Add item">
+    <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+  </button>
+  <span role="tooltip" class="ayy-tooltip__content">Add item</span>
+</span>
+<span class="ayy-tooltip">
+  <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon-sm" aria-label="Add item">
+    <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+  </button>
+  <span role="tooltip" class="ayy-tooltip__content">Add item (compact)</span>
+</span>
 ```
 
 React:
 
 ```tsx
 import { PlusSignIcon, UserAdd01Icon } from "@hugeicons/core-free-icons";
-import { Button, Icon } from "@danitesler/ayywi/react";
+import { Button, Icon, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -170,15 +180,21 @@ export default function Example() {
         <Icon icon={UserAdd01Icon} />
         Invite member
       </Button>
-      <Button variant="outline" size="icon-lg" aria-label="Add">
-        <Icon icon={PlusSignIcon} />
-      </Button>
-      <Button variant="outline" size="icon" aria-label="Add">
-        <Icon icon={PlusSignIcon} />
-      </Button>
-      <Button variant="ghost" size="icon-sm" aria-label="Add">
-        <Icon icon={PlusSignIcon} />
-      </Button>
+      <Tooltip content="Add item (large)">
+        <Button variant="outline" size="icon-lg" aria-label="Add item">
+          <Icon icon={PlusSignIcon} />
+        </Button>
+      </Tooltip>
+      <Tooltip content="Add item">
+        <Button variant="outline" size="icon" aria-label="Add item">
+          <Icon icon={PlusSignIcon} />
+        </Button>
+      </Tooltip>
+      <Tooltip content="Add item (compact)">
+        <Button variant="ghost" size="icon-sm" aria-label="Add item">
+          <Icon icon={PlusSignIcon} />
+        </Button>
+      </Tooltip>
     </>
   );
 }
@@ -244,7 +260,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import {
   Button,
@@ -256,9 +272,58 @@ import {
   type ButtonVariant,
 } from "@danitesler/ayywi/react";
 
-export default function Example() {
-  const [size, setSize] = useState<ButtonSize>("md");
+export default function Example({
+  setControls,
+}: {
+  setControls?: (node: ReactNode) => void;
+} = {}) {
+  const [size, setSize] = useState<ButtonSize>("sm");
   const [variant, setVariant] = useState<ButtonVariant>("secondary");
+
+  useEffect(() => {
+    return () => setControls?.(null);
+  }, [setControls]);
+
+  useEffect(() => {
+    if (!setControls) return;
+    setControls(
+      <div className="ayy-stack">
+        <div className="ayy-stack">
+          <div className="ayy-spread">
+            <Label htmlFor="btn-align-size">Size</Label>
+            <div style={{ inlineSize: "8rem" }}>
+              <Select
+                id="btn-align-size"
+                size="sm"
+                value={size}
+                onChange={(e) => setSize(e.target.value as ButtonSize)}
+              >
+                <option value="sm">Small (sm)</option>
+                <option value="md">Medium (md)</option>
+                <option value="lg">Large (lg)</option>
+              </Select>
+            </div>
+          </div>
+          <div className="ayy-spread">
+            <Label htmlFor="btn-align-variant">Variant</Label>
+            <div style={{ inlineSize: "8rem" }}>
+              <Select
+                id="btn-align-variant"
+                size="sm"
+                value={variant}
+                onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+              >
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="outline">Outline</option>
+                <option value="ghost">Ghost</option>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }, [setControls, size, variant]);
 
   return (
     <div
@@ -269,41 +334,44 @@ export default function Example() {
         "--ayy-gap": "var(--ayy-space-4)",
       } as CSSProperties}
     >
-      <div
-        className="ayy-cluster"
-        style={{
-          "--ayy-gap": "var(--ayy-space-3)",
-          justifyContent: "center",
-        } as CSSProperties}
-      >
-        <Field inline>
-          <Label htmlFor="btn-align-size-inline">Size</Label>
-          <Select
-            id="btn-align-size-inline"
-            size="sm"
-            value={size}
-            onChange={(e) => setSize(e.target.value as ButtonSize)}
-          >
-            <option value="sm">Small (sm)</option>
-            <option value="md">Medium (md)</option>
-            <option value="lg">Large (lg)</option>
-          </Select>
-        </Field>
-        <Field inline>
-          <Label htmlFor="btn-align-variant-inline">Variant</Label>
-          <Select
-            id="btn-align-variant-inline"
-            size="sm"
-            value={variant}
-            onChange={(e) => setVariant(e.target.value as ButtonVariant)}
-          >
-            <option value="primary">Primary</option>
-            <option value="secondary">Secondary</option>
-            <option value="outline">Outline</option>
-            <option value="ghost">Ghost</option>
-          </Select>
-        </Field>
-      </div>
+      {/* Fallback inline controls when rendered standalone outside Showcase */}
+      {!setControls ? (
+        <div
+          className="ayy-cluster"
+          style={{
+            "--ayy-gap": "var(--ayy-space-3)",
+            justifyContent: "center",
+          } as CSSProperties}
+        >
+          <Field inline>
+            <Label htmlFor="btn-align-size-inline">Size</Label>
+            <Select
+              id="btn-align-size-inline"
+              size="sm"
+              value={size}
+              onChange={(e) => setSize(e.target.value as ButtonSize)}
+            >
+              <option value="sm">Small (sm)</option>
+              <option value="md">Medium (md)</option>
+              <option value="lg">Large (lg)</option>
+            </Select>
+          </Field>
+          <Field inline>
+            <Label htmlFor="btn-align-variant-inline">Variant</Label>
+            <Select
+              id="btn-align-variant-inline"
+              size="sm"
+              value={variant}
+              onChange={(e) => setVariant(e.target.value as ButtonVariant)}
+            >
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="outline">Outline</option>
+              <option value="ghost">Ghost</option>
+            </Select>
+          </Field>
+        </div>
+      ) : null}
 
       <div
         className="ayy-stack"

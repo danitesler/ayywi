@@ -36,7 +36,15 @@ export interface TocOptions {
   onChange?: (id: string) => void;
 }
 
-const hashOf = (link: HTMLAnchorElement) => decodeURIComponent(link.hash.slice(1));
+// The id a link points at. A bare "%" in it (#save-20%-now) isn't valid percent-encoding: use it as written.
+const hashOf = (link: HTMLAnchorElement) => {
+  const raw = link.hash.slice(1);
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+};
 
 function extractLinkText(link: HTMLAnchorElement): string {
   const num = link.querySelector(".ayy-toc__number");
@@ -70,7 +78,21 @@ export function connectToc(root: HTMLElement, options: TocOptions = {}): () => v
     const label = firstLink ? extractLinkText(firstLink) : "Table of contents";
     injectedBar = doc.createElement("div");
     injectedBar.className = tocBarClass;
-    injectedBar.innerHTML = `<button type="button" class="${tocToggleClass}" aria-expanded="false"><span class="${tocToggleIconClass}">${tocMenuIcon}</span><span class="${tocToggleCurrentClass}">${label}</span><span class="${tocToggleCaretClass}">${tocChevronIcon}</span></button>`;
+    const button = doc.createElement("button");
+    button.type = "button";
+    button.className = tocToggleClass;
+    button.setAttribute("aria-expanded", "false");
+    const part = (className: string, icon?: string) => {
+      const span = doc.createElement("span");
+      span.className = className;
+      if (icon) span.innerHTML = icon;
+      return span;
+    };
+    const current = part(tocToggleCurrentClass);
+    // The link's text is text: as HTML, a heading written "<img onerror=…>" would run.
+    current.textContent = label;
+    button.append(part(tocToggleIconClass, tocMenuIcon), current, part(tocToggleCaretClass, tocChevronIcon));
+    injectedBar.append(button);
     host.prepend(injectedBar);
   }
 

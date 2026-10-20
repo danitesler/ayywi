@@ -83,7 +83,7 @@
   block-size: var(--ayy-size-control-md);
   margin: 0;
   padding-block: 0;
-  padding-inline: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-3);
   border: 0;
   border-radius: var(--ayy-radius-md);
   background: none;
@@ -100,7 +100,7 @@
     color var(--ayy-duration-fast) ease;
 }
 
-.ayy-toolbar__button:has(> svg:only-child) {
+.ayy-toolbar__button[aria-label]:has(> svg:only-child) {
   padding-inline: 0;
 }
 
@@ -114,7 +114,7 @@
   justify-content: flex-start;
 }
 
-.ayy-toolbar--vertical .ayy-toolbar__button:has(> svg:only-child) {
+.ayy-toolbar--vertical .ayy-toolbar__button[aria-label]:has(> svg:only-child) {
   justify-content: center;
 }
 

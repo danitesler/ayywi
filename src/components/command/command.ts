@@ -17,11 +17,16 @@ export interface CommandControllerOptions {
   filter?: boolean;
   /** Called when the search query changes, including when reset() clears it. */
   onSearchChange?: (text: string) => void;
+  /**
+   * Move better matches up (title matches first) by reordering the groups and items in the DOM. Default true.
+   * Pass false when a framework owns the items (React Command does): moving its nodes breaks its updates.
+   */
+  reorder?: boolean;
 }
 
 export interface CommandController {
-  /** Re-read the items after you change them. */
-  refresh(): void;
+  /** Re-read the items after you change them. Pass true to highlight the first match (the list was just re-ranked). */
+  refresh(activateFirst?: boolean): void;
   /** Empty the field and show every item again (call it when a palette dialog closes). */
   reset(): void;
   destroy(): void;
@@ -162,23 +167,36 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
   input.setAttribute("spellcheck", "false");
   list.setAttribute("role", "listbox");
 
-  const initialGroupOrder = new Map<HTMLElement, number>();
-  const initialItemOrder = new Map<HTMLElement, number>();
+  // Where each group and item first sat among its siblings, so an empty query puts them back. Only direct children
+  // move (items straight inside a group or the list, groups straight inside the list): an item inside a wrapper stays
+  // where its author or framework put it.
+  const reorder = options.reorder ?? true;
+  const position = new WeakMap<HTMLElement, number>();
+  const groupsIn = () => Array.from(list.querySelectorAll<HTMLElement>(":scope > .ayy-command__group"));
+  const itemsIn = (parent: HTMLElement) => Array.from(parent.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`));
 
-  const initOrder = () => {
-    let gIdx = 0;
-    for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
-      if (!initialGroupOrder.has(group)) initialGroupOrder.set(group, gIdx++);
-      let iIdx = 0;
-      for (const item of group.querySelectorAll<HTMLElement>(ITEM)) {
-        if (!initialItemOrder.has(item)) initialItemOrder.set(item, iIdx++);
+  // A newcomer takes a place between the known siblings around it (appended last, inserted where it was inserted).
+  const learn = (siblings: HTMLElement[]) => {
+    let i = 0;
+    while (i < siblings.length) {
+      if (position.has(siblings[i])) {
+        i++;
+        continue;
       }
-    }
-    let directIdx = 0;
-    for (const item of list.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`)) {
-      if (!initialItemOrder.has(item)) initialItemOrder.set(item, directIdx++);
+      let j = i;
+      while (j < siblings.length && !position.has(siblings[j])) j++;
+      const before = i > 0 ? position.get(siblings[i - 1])! : -1;
+      const after = j < siblings.length ? position.get(siblings[j])! : before + j - i + 1;
+      for (let k = i; k < j; k++) position.set(siblings[k], before + ((after - before) * (k - i + 1)) / (j - i + 1));
+      i = j;
     }
   };
+  const initOrder = () => {
+    learn(groupsIn());
+    for (const group of groupsIn()) learn(itemsIn(group));
+    learn(itemsIn(list));
+  };
+  const byPosition = (a: HTMLElement, b: HTMLElement) => (position.get(a) ?? 0) - (position.get(b) ?? 0);
 
   initOrder();
 
@@ -194,123 +212,55 @@ export function connectCommand(root: HTMLElement, options: CommandControllerOpti
     } else input.removeAttribute("aria-activedescendant");
   };
 
+  /** Put `nodes` in `order` inside `parent`, touching only the ones out of place. */
+  const arrange = (parent: HTMLElement, nodes: HTMLElement[], order: (a: HTMLElement, b: HTMLElement) => number) => {
+    const sorted = [...nodes].sort(order);
+    if (sorted.every((node, i) => node === nodes[i])) return;
+    for (const node of sorted) parent.appendChild(node);
+  };
+
   const applyFilter = () => {
-    initOrder();
-    const query = input.value.trim();
-    const isReact =
-      Object.keys(root).some((k) => k.startsWith("__reactFiber") || k.startsWith("__reactProps")) ||
-      Object.keys(list).some((k) => k.startsWith("__reactFiber") || k.startsWith("__reactProps"));
-
-    if (!filter || !query) {
-      if (!isReact) {
-        // Restore initial order when empty
-        const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
-        groups.sort((a, b) => (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0));
-        for (const group of groups) {
-          list.appendChild(group);
-          const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
-          items.sort((a, b) => (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0));
-          for (const item of items) {
-            ensureId(item, "ayy-command-item");
-            item.setAttribute("role", "option");
-            item.hidden = false;
-            group.appendChild(item);
-          }
-          group.hidden = false;
-        }
-        const directItems = Array.from(list.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`));
-        directItems.sort((a, b) => (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0));
-        for (const item of directItems) {
-          ensureId(item, "ayy-command-item");
-          item.setAttribute("role", "option");
-          item.hidden = false;
-          list.appendChild(item);
-        }
-      } else {
-        for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
-          group.hidden = false;
-        }
-        for (const item of all()) {
-          ensureId(item, "ayy-command-item");
-          item.setAttribute("role", "option");
-          item.hidden = false;
-        }
-      }
-      for (const item of all()) item.hidden = false;
-      const empty = list.querySelector<HTMLElement>(".ayy-command__empty");
-      if (empty) {
-        empty.hidden = true;
-        if (!isReact) list.appendChild(empty);
-      }
-      return;
-    }
-
+    if (reorder) initOrder();
+    const query = filter ? input.value.trim() : "";
+    const scores = new Map<HTMLElement, number>();
     let shown = 0;
-    const itemScores = new Map<HTMLElement, number>();
-    const groupScores = new Map<HTMLElement, number>();
-
     for (const item of all()) {
       ensureId(item, "ayy-command-item");
       item.setAttribute("role", "option");
-      const details = commandItemDetails(item);
-      const score = commandScore(details.title, details.description, details.keywords, query);
-      itemScores.set(item, score);
-      item.hidden = score === 0;
+      if (query) {
+        const details = commandItemDetails(item);
+        scores.set(item, commandScore(details.title, details.description, details.keywords, query));
+      }
+      item.hidden = Boolean(query) && !scores.get(item);
       if (!item.hidden) shown++;
     }
+    const score = (el: HTMLElement) => scores.get(el) ?? 0;
+    // Best title matches first, ties (and an empty query) in their original order.
+    const ranked = (a: HTMLElement, b: HTMLElement) => score(b) - score(a) || byPosition(a, b);
 
-    if (!isReact) {
-      const groups = Array.from(list.querySelectorAll<HTMLElement>(".ayy-command__group"));
-      for (const group of groups) {
-        const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
-        items.sort((a, b) => {
-          const diff = (itemScores.get(b) ?? 0) - (itemScores.get(a) ?? 0);
-          if (diff !== 0) return diff;
-          return (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0);
-        });
-        for (const item of items) group.appendChild(item);
-
-        const visibleInGroup = items.filter((o) => !o.hidden);
-        group.hidden = visibleInGroup.length === 0;
-        const maxScore = visibleInGroup.reduce((m, o) => Math.max(m, itemScores.get(o) ?? 0), 0);
-        groupScores.set(group, maxScore);
-      }
-
-      // Reorder groups by their highest score so groups with title matches float to top
-      groups.sort((a, b) => {
-        const diff = (groupScores.get(b) ?? 0) - (groupScores.get(a) ?? 0);
-        if (diff !== 0) return diff;
-        return (initialGroupOrder.get(a) ?? 0) - (initialGroupOrder.get(b) ?? 0);
-      });
-
-      for (const group of groups) list.appendChild(group);
-
-      const directItems = Array.from(list.querySelectorAll<HTMLElement>(`:scope > ${ITEM}`));
-      directItems.sort((a, b) => {
-        const diff = (itemScores.get(b) ?? 0) - (itemScores.get(a) ?? 0);
-        if (diff !== 0) return diff;
-        return (initialItemOrder.get(a) ?? 0) - (initialItemOrder.get(b) ?? 0);
-      });
-      for (const item of directItems) list.appendChild(item);
-    } else {
-      for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
-        const items = Array.from(group.querySelectorAll<HTMLElement>(ITEM));
-        const visibleInGroup = items.filter((o) => !o.hidden);
-        group.hidden = visibleInGroup.length === 0;
-      }
+    const groupScore = new Map<HTMLElement, number>();
+    for (const group of list.querySelectorAll<HTMLElement>(".ayy-command__group")) {
+      const inGroup = Array.from(group.querySelectorAll<HTMLElement>(ITEM)).filter((o) => !o.hidden);
+      group.hidden = inGroup.length === 0;
+      groupScore.set(group, inGroup.reduce((m, o) => Math.max(m, score(o)), 0));
+      if (reorder) arrange(group, itemsIn(group), ranked);
+    }
+    if (reorder) {
+      arrange(list, groupsIn(), (a, b) => (groupScore.get(b) ?? 0) - (groupScore.get(a) ?? 0) || byPosition(a, b));
+      arrange(list, itemsIn(list), ranked);
     }
 
     const empty = list.querySelector<HTMLElement>(".ayy-command__empty");
     if (empty) {
       empty.hidden = shown > 0;
-      if (!isReact) list.appendChild(empty);
+      if (reorder && empty.parentElement === list && list.lastElementChild !== empty) list.appendChild(empty);
     }
   };
 
-  const refresh = () => {
-    const current = active();
+  const refresh = (activateFirst = false) => {
+    const current = activateFirst ? null : active();
     applyFilter();
-    setActive(current && !current.hidden ? current : (visible()[0] ?? null), false);
+    setActive(current && !current.hidden ? current : (visible()[0] ?? null), activateFirst);
   };
 
   const run = (item: HTMLElement) => {

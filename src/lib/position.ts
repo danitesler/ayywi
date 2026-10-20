@@ -100,7 +100,10 @@ export function place(floating: HTMLElement, anchor: Element, options: PlaceOpti
   return logical;
 }
 
-/** Keep `floating` placed while the page scrolls or resizes. Returns a cleanup function. */
+/**
+ * Keep `floating` placed while the page scrolls or resizes, and while it or its anchor changes size (a list placed
+ * above its input that shrinks as you filter must stay against the input). Returns a cleanup function.
+ */
 export function autoPlace(floating: HTMLElement, anchor: Element, options: PlaceOptions = {}): () => void {
   let frame = 0;
   const update = () => {
@@ -110,8 +113,12 @@ export function autoPlace(floating: HTMLElement, anchor: Element, options: Place
   place(floating, anchor, options);
   window.addEventListener("scroll", update, { capture: true, passive: true });
   window.addEventListener("resize", update, { passive: true });
+  const sizes = typeof ResizeObserver === "function" ? new ResizeObserver(update) : null;
+  sizes?.observe(floating);
+  sizes?.observe(anchor);
   return () => {
     cancelAnimationFrame(frame);
+    sizes?.disconnect();
     window.removeEventListener("scroll", update, { capture: true });
     window.removeEventListener("resize", update);
   };

@@ -33,7 +33,8 @@ export interface ComboboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   /** The chosen option's value. */
   value?: string;
   defaultValue?: string;
-  onValueChange?: (value: string, option: ComboboxOption) => void;
+  /** Called with the chosen option, and with ("", null) once when the field is cleared. */
+  onValueChange?: (value: string, option: ComboboxOption | null) => void;
   /** Called on every keystroke with the typed text, e.g. to fetch options (pair with filter={false}). */
   onInputChange?: (text: string) => void;
   /** Filter the options by the typed text. Default true. */
@@ -66,9 +67,9 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     const c = connectCombobox(input.current, listbox.current, {
       filter,
       onSelect: (element) => {
+        // Cleared: the input event that emptied the field (typed, or Esc's) reports it, once, below.
         if (!element) {
           if (hidden.current) hidden.current.value = "";
-          handlers.current.onValueChange?.("" as any, null as any);
           return;
         }
         const option = handlers.current.list.find((o) => o.value === element.dataset.value);
@@ -112,7 +113,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         onInput={(event) => {
           if (!event.currentTarget.value) {
             if (hidden.current) hidden.current.value = "";
-            handlers.current.onValueChange?.("" as any, null as any);
+            handlers.current.onValueChange?.("", null);
           }
           handlers.current.onInputChange?.(event.currentTarget.value);
         }}

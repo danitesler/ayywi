@@ -1,11 +1,25 @@
-import { forwardRef, isValidElement, useEffect, useId, useRef, useState, type HTMLAttributes, type InputHTMLAttributes, type ReactNode } from "react";
+import {
+  Children,
+  createContext,
+  forwardRef,
+  isValidElement,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type HTMLAttributes,
+  type InputHTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { cx } from "../../lib/cx";
 import { Search01Icon } from "../../lib/icons";
 import { Dialog, DialogContent } from "../dialog/dialog.react";
 import { Icon } from "../icon/icon.react";
 import { matchShortcut } from "../shortcut/shortcut";
 import { Shortcut } from "../shortcut/shortcut.react";
-import { connectCommand, type CommandController } from "./command";
+import { commandScore, connectCommand, type CommandController } from "./command";
 
 interface CommandPartsProps {
   /** The field's accessible name. Default "Search commands". */
@@ -26,6 +40,39 @@ interface CommandPartsProps {
   children?: ReactNode;
 }
 
+// The typed text, for ranking (null while the palette doesn't filter: then results come in the app's order).
+const RankContext = createContext<string | null>(null);
+
+/** Plain text of a title or description: a string, or an element with a string `text` prop (TextHighlight). */
+function plainText(node: ReactNode): string | undefined {
+  if (typeof node === "string") return node;
+  if (isValidElement(node) && typeof node.props === "object" && node.props !== null && typeof (node.props as { text?: unknown }).text === "string") {
+    return (node.props as { text: string }).text;
+  }
+  return undefined;
+}
+
+/** How well a CommandItem element matches: the same score <ayy-command> sorts by. */
+function itemScore(element: ReactElement<CommandItemProps>, query: string): number {
+  const { children, description, keywords } = element.props;
+  return commandScore(plainText(children) ?? "", plainText(description) ?? "", keywords ?? "", query);
+}
+
+/**
+ * Children with the elements of `type` sorted by `score` (best first, ties in their order), each in a slot one of
+ * them held, so anything else (a wrapper, a separator) stays where it was. React moves its own nodes, so keyed
+ * children reorder safely, which moving them in the DOM behind React's back did not.
+ */
+function ranked<P>(children: ReactNode[], type: unknown, score: (element: ReactElement<P>) => number): ReactNode[] {
+  const all = [...children];
+  const slots = all.flatMap((child, i) => (isValidElement(child) && child.type === type ? [i] : []));
+  const order = slots
+    .map((i, n) => ({ child: all[i] as ReactElement<P>, n, score: score(all[i] as ReactElement<P>) }))
+    .sort((a, b) => b.score - a.score || a.n - b.n);
+  slots.forEach((slot, n) => (all[slot] = order[n].child));
+  return all;
+}
+
 /** The search field, the list and the footer, wired to their parent element (a div or the dialog). */
 function CommandParts({ label = "Search commands", placeholder = "Type a command or search…", emptyText = "No results", footer, filter = true, onSearchChange, onRun, inputProps, autoFocus, children }: CommandPartsProps) {
   const search = useRef<HTMLDivElement>(null);
@@ -33,14 +80,19 @@ function CommandParts({ label = "Search commands", placeholder = "Type a command
   const handlers = useRef({ onRun, onSearchChange });
   handlers.current = { onRun, onSearchChange };
   const listId = useId();
+  const [query, setQuery] = useState("");
+  const rankedFor = useRef("");
 
   useEffect(() => {
     const root = search.current?.parentElement;
     if (!root) return;
     const c = connectCommand(root, {
       filter,
+      // React owns the items: moving its nodes would make its next update misplace or lose them.
+      reorder: false,
       onSelect: (item) => handlers.current.onRun?.(item.dataset.value),
-      onSearchChange: (text) => handlers.current.onSearchChange?.(text),
+      // No onSearchChange here: the input's own onInput below reports the text (reset() fires an input event too).
+      // State set from this native listener would re-render before React's onChange and undo a controlled value.
     });
     controller.current = c;
     return () => {
@@ -49,10 +101,15 @@ function CommandParts({ label = "Search commands", placeholder = "Type a command
     };
   }, [filter]);
 
-  // Items change with the app (and with a search API's results): re-read them after every render.
+  // Items change with the app (and with a search API's results): re-read them after every render. A new query was
+  // ranked by this render, so its best match is highlighted.
   useEffect(() => {
-    controller.current?.refresh();
+    const changed = rankedFor.current !== query;
+    rankedFor.current = query;
+    controller.current?.refresh(changed);
   });
+
+  const rank = filter && query.trim() ? query : null;
 
   return (
     <>
@@ -73,12 +130,27 @@ function CommandParts({ label = "Search commands", placeholder = "Type a command
           {...inputProps}
           onInput={(event) => {
             inputProps?.onInput?.(event);
+            setQuery(event.currentTarget.value);
             onSearchChange?.(event.currentTarget.value);
           }}
         />
       </div>
       <div id={listId} className="ayy-command__list" role="listbox" aria-label={label}>
-        {children}
+        <RankContext.Provider value={rank}>
+          {rank === null
+            ? Children.toArray(children)
+            : ranked<CommandGroupProps>(
+                ranked<CommandItemProps>(Children.toArray(children), CommandItem, (item) => itemScore(item, rank)),
+                CommandGroup,
+                (group) =>
+                  Math.max(
+                    0,
+                    ...Children.toArray(group.props.children).map((child) =>
+                      isValidElement(child) && child.type === CommandItem ? itemScore(child as ReactElement<CommandItemProps>, rank) : 0,
+                    ),
+                  ),
+              )}
+        </RankContext.Provider>
         <div className="ayy-command__empty" role="presentation" hidden>
           {emptyText}
         </div>
@@ -207,6 +279,7 @@ export interface CommandGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 
 export const CommandGroup = forwardRef<HTMLDivElement, CommandGroupProps>(function CommandGroup({ heading, className, children, ...props }, ref) {
   const id = useId();
+  const rank = useContext(RankContext);
   return (
     <div ref={ref} className={cx("ayy-command__group", className)} role="group" aria-labelledby={heading ? id : undefined} {...props}>
       {heading && (
@@ -214,7 +287,7 @@ export const CommandGroup = forwardRef<HTMLDivElement, CommandGroupProps>(functi
           {heading}
         </div>
       )}
-      {children}
+      {rank === null ? Children.toArray(children) : ranked<CommandItemProps>(Children.toArray(children), CommandItem, (item) => itemScore(item, rank))}
     </div>
   );
 });
@@ -242,18 +315,8 @@ export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(function
   ref,
 ) {
   const id = useId();
-  const titleText =
-    typeof children === "string"
-      ? children
-      : (isValidElement(children) && typeof children.props === "object" && children.props !== null && typeof (children.props as { text?: unknown }).text === "string")
-        ? (children.props as { text: string }).text
-        : undefined;
-  const descText =
-    typeof description === "string"
-      ? description
-      : (isValidElement(description) && typeof description.props === "object" && description.props !== null && typeof (description.props as { text?: unknown }).text === "string")
-        ? (description.props as { text: string }).text
-        : undefined;
+  const titleText = plainText(children);
+  const descText = plainText(description);
 
   return (
     <div

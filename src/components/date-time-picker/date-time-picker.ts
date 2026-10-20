@@ -281,19 +281,30 @@ export function generateMinutes(step = 5): string[] {
 
 export const timePeriods: TimePeriod[] = ["AM", "PM"];
 
+/** The parts of a time as written: "14:30" → 14, 30, PM; "2:30 pm" → 2, 30, PM. Null unless it's a real time. */
 export function parseTimeString(str: string): { hours: number; minutes: number; period: TimePeriod } | null {
   if (!str) return null;
   const match = str.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i);
   if (!match) return null;
   const hours = parseInt(match[1]!, 10);
   const minutes = parseInt(match[2]!, 10);
-  let period: TimePeriod = "AM";
-  if (match[3]) {
-    period = match[3].toUpperCase() as TimePeriod;
-  } else {
-    period = hours >= 12 ? "PM" : "AM";
-  }
+  if (minutes > 59 || (match[3] ? hours < 1 || hours > 12 : hours > 23)) return null;
+  const period = match[3] ? (match[3].toUpperCase() as TimePeriod) : hours >= 12 ? "PM" : "AM";
   return { hours, minutes, period };
+}
+
+/** A time in either clock ("14:30", "02:30 PM") as hours 0–23 and minutes, or null if it isn't one. */
+export function parseTime(str: string): { hours: number; minutes: number } | null {
+  const parts = parseTimeString(str);
+  if (!parts) return null;
+  const twelveHour = /[ap]m\s*$/i.test(str);
+  return { hours: twelveHour ? to24Hour(parts.hours, parts.period) : parts.hours, minutes: parts.minutes };
+}
+
+/** A time in either clock as "HH:mm" (24-hour), the form ISO date-times use; other text comes back unchanged. */
+export function toTime24(str: string): string {
+  const time = parseTime(str);
+  return time ? `${pad2(time.hours)}:${pad2(time.minutes)}` : str;
 }
 
 export function to12Hour(hours24: number): { hours: number; period: TimePeriod } {
@@ -309,16 +320,14 @@ export function to24Hour(hours12: number, period: TimePeriod): number {
   return hours;
 }
 
+/**
+ * formatTime(14, 30, "12h") → "02:30 PM". Also takes a time string in either clock: formatTime("02:30 PM", false) →
+ * "14:30" (the second argument says whether to show the 12-hour clock).
+ */
 export function formatTime(hours: number | string, minutesOrTwelveHour?: number | boolean, format: TimePickerFormat = "24h"): string {
   if (typeof hours === "string") {
-    const is12 = Boolean(minutesOrTwelveHour);
-    const [hStr, mStr] = hours.split(":");
-    let h = Number(hStr);
-    const m = mStr ?? "00";
-    if (!is12) return `${String(h).padStart(2, "0")}:${m}`;
-    const period = h >= 12 ? "PM" : "AM";
-    h = h % 12 || 12;
-    return `${String(h).padStart(2, "0")}:${m} ${period}`;
+    const time = parseTime(hours);
+    return time ? formatTime(time.hours, time.minutes, minutesOrTwelveHour ? "12h" : "24h") : hours;
   }
   const minutes = typeof minutesOrTwelveHour === "number" ? minutesOrTwelveHour : 0;
   if (format === "12h") {
@@ -328,10 +337,11 @@ export function formatTime(hours: number | string, minutesOrTwelveHour?: number 
   return `${pad2(hours)}:${pad2(minutes)}`;
 }
 
+/** A time string in either clock, shown in `format`: formatTimeString("14:30", "12h") → "02:30 PM". */
 export function formatTimeString(timeIso: string, format: TimePickerFormat = "24h"): string {
-  const parsed = parseTimeString(timeIso);
-  if (!parsed) return timeIso;
-  return formatTime(parsed.hours, parsed.minutes, format);
+  const time = parseTime(timeIso);
+  if (!time) return timeIso;
+  return formatTime(time.hours, time.minutes, format);
 }
 
 export function formatDateTime(dateIso: string, timeIso: string, locale?: string, formatOrTwelveHour: TimePickerFormat | boolean = "24h"): string {
@@ -699,6 +709,18 @@ export function centerTimePickerSelection(el: HTMLElement): void {
 // 7. Vanilla Controllers
 // ==========================================
 
+/**
+ * What a footer button does: its data-action, else "today" or "clear" when its text is that label. Any other button
+ * (a "Done" the author added) is left alone.
+ */
+function footerAction(button: HTMLElement, labels: { todayLabel?: string; clearLabel?: string }): string | undefined {
+  if (button.dataset.action) return button.dataset.action;
+  const text = button.textContent?.trim().toLowerCase();
+  if (text === (labels.todayLabel ?? "Today").toLowerCase()) return "today";
+  if (text === (labels.clearLabel ?? "Clear").toLowerCase()) return "clear";
+  return undefined;
+}
+
 export interface DatePickerControllerOptions {
   value?: string | null;
   today?: string;
@@ -992,7 +1014,7 @@ export function connectDatePicker(root: HTMLElement, options: DatePickerControll
 
     const footerBtn = (event.target as Element | null)?.closest?.<HTMLButtonElement>(`.${datePickerFooterClass} button`);
     if (footerBtn && root.contains(footerBtn)) {
-      const action = footerBtn.dataset.action || (footerBtn.textContent?.trim().toLowerCase() === (opts.todayLabel ?? "Today").toLowerCase() ? "today" : "clear");
+      const action = footerAction(footerBtn, opts);
       if (action === "clear") {
         value = null;
         cursor = today;
@@ -1135,7 +1157,8 @@ export interface DateRangeControllerOptions {
   todayLabel?: string;
   onClear?: () => void;
   onToday?: () => void;
-  onSelect?: (range: [string, string]) => void;
+  /** Called with the picked range, and with null when Clear empties it. */
+  onSelect?: (range: [string, string] | null) => void;
 }
 
 export interface DateRangeController {
@@ -1485,7 +1508,7 @@ export function connectDateRange(root: HTMLElement, options: DateRangeController
 
     const footerBtn = (event.target as Element | null)?.closest?.<HTMLButtonElement>(`.${dateRangeFooterClass} button`);
     if (footerBtn && root.contains(footerBtn)) {
-      const action = footerBtn.dataset.action || (footerBtn.textContent?.trim().toLowerCase() === (opts.todayLabel ?? "Today").toLowerCase() ? "today" : "clear");
+      const action = footerAction(footerBtn, opts);
       if (action === "clear") {
         range = null;
         pendingStart = null;
@@ -1493,7 +1516,7 @@ export function connectDateRange(root: HTMLElement, options: DateRangeController
         cursor = today;
         render();
         opts.onClear?.();
-        opts.onSelect?.(null as any);
+        opts.onSelect?.(null);
       } else if (action === "today") {
         const todayRange: [string, string] = [today, today];
         range = todayRange;
@@ -1671,31 +1694,18 @@ export function connectTimePicker(root: HTMLElement, options: TimePickerControll
   let value = opts.value ?? "";
   const isTwelveHour = () => Boolean(opts.twelveHour);
 
+  // The value's hour as the columns show it (0–23, or 1–12 with its period).
   const getSplit = () => {
-    if (!value) return { hour: "", minute: "", period: "AM" as TimePeriod };
-    const parsed = parseTimeString(value);
-    if (!parsed) return { hour: "", minute: "", period: "AM" as TimePeriod };
-    if (!isTwelveHour()) {
-      let h24 = parsed.hours;
-      if (parsed.period === "PM" && h24 < 12) h24 += 12;
-      if (parsed.period === "AM" && h24 === 12) h24 = 0;
-      return { hour: pad2(h24), minute: pad2(parsed.minutes), period: parsed.period };
-    }
-    const { hours: h12, period } = to12Hour(parsed.hours);
-    const finalPeriod = parsed.period ?? period;
-    return { hour: pad2(h12), minute: pad2(parsed.minutes), period: finalPeriod };
+    const time = parseTime(value);
+    if (!time) return { hour: "", minute: "", period: "AM" as TimePeriod };
+    if (!isTwelveHour()) return { hour: pad2(time.hours), minute: pad2(time.minutes), period: (time.hours >= 12 ? "PM" : "AM") as TimePeriod };
+    const { hours, period } = to12Hour(time.hours);
+    return { hour: pad2(hours), minute: pad2(time.minutes), period };
   };
 
-  const formatEmit = (h: number, m: number, p: TimePeriod): string => {
-    if (isTwelveHour()) {
-      const h12 = h % 12 || 12;
-      return `${pad2(h12)}:${pad2(m)} ${p}`;
-    }
-    let h24 = h;
-    if (p === "PM" && h24 < 12) h24 += 12;
-    if (p === "AM" && h24 === 12) h24 = 0;
-    return `${pad2(h24)}:${pad2(m)}`;
-  };
+  // `h` is the hour as shown: 0–23 on the 24-hour clock (the period plays no part), 1–12 with `p` on the 12-hour one.
+  const formatEmit = (h: number, m: number, p: TimePeriod): string =>
+    isTwelveHour() ? formatTime(to24Hour(h, p), m, "12h") : `${pad2(h)}:${pad2(m)}`;
 
   let hourInput: HTMLInputElement;
   let minuteInput: HTMLInputElement;
@@ -2092,7 +2102,7 @@ export function connectDateTimePicker(root: HTMLElement, options: DateTimePicker
   const onRootClick = (event: MouseEvent) => {
     const footerBtn = (event.target as Element | null)?.closest?.<HTMLButtonElement>(`.${dateTimePickerFooterClass} button`);
     if (footerBtn && root.contains(footerBtn)) {
-      const action = footerBtn.dataset.action || (footerBtn.textContent?.trim().toLowerCase() === (opts.todayLabel ?? "Today").toLowerCase() ? "today" : "clear");
+      const action = footerAction(footerBtn, opts);
       if (action === "clear") {
         dateVal = "";
         timeVal = "";

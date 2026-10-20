@@ -188,15 +188,19 @@ test("SUPPORTED_LANGUAGES and LANGUAGE_SNIPPETS cover all common languages with 
   }
 });
 
-test("syncCodeBlockSelector updates filename and highlights code", () => {
+// A code block stand-in: its file name, its code, and the <template data-language> blocks it carries.
+function fakeCodeBlock(templates) {
   const container = {
     querySelector(selector) {
       if (selector === ".ayy-code-block__filename") return this.filename;
       if (selector === ".ayy-code-block__code, code") return this.code;
       return null;
     },
-    filename: { textContent: "" },
-    code: { dataset: {}, innerHTML: "" },
+    querySelectorAll(selector) {
+      return selector === "template[data-language]" ? templates : [];
+    },
+    filename: { textContent: "install.sh" },
+    code: { dataset: { language: "bash" }, innerHTML: "pip install my-package" },
   };
   const select = {
     value: "python",
@@ -204,9 +208,24 @@ test("syncCodeBlockSelector updates filename and highlights code", () => {
       return selector === ".ayy-code-block" ? container : null;
     },
   };
+  return { container, select };
+}
+
+test("syncCodeBlockSelector switches to the block's own template: file name, language and highlighted code", () => {
+  const python = { dataset: { language: "python", filename: "install.py" }, content: { textContent: "import my_package\nprint(True)" } };
+  const { container, select } = fakeCodeBlock([python]);
   syncCodeBlockSelector(select);
-  assert.equal(container.filename.textContent, "example.py");
+  assert.equal(container.filename.textContent, "install.py");
   assert.equal(container.code.dataset.language, "python");
-  assert.match(container.code.innerHTML, /class="ayy-token-keyword"/);
+  assert.match(container.code.innerHTML, /class="ayy-token-keyword">import</);
+  assert.match(container.code.innerHTML, /my_package/);
+});
+
+test("syncCodeBlockSelector never puts ayywi's sample code in a block that has no template for the language", () => {
+  const { container, select } = fakeCodeBlock([]);
+  syncCodeBlockSelector(select);
+  assert.equal(container.filename.textContent, "install.sh");
+  assert.equal(container.code.dataset.language, "bash");
+  assert.equal(container.code.innerHTML, "pip install my-package");
 });
 

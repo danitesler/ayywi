@@ -13,8 +13,8 @@ export const comboboxEmptyClass = "ayy-combobox__empty";
 export const comboboxChevronIcon = /* @__PURE__ */ iconSvg(ArrowDown01Icon);
 
 export interface ComboboxControllerOptions {
-  /** Called when an option is chosen (click, Enter). The input already shows its label. */
-  onSelect?: (option: HTMLElement) => void;
+  /** Called when an option is chosen (click, Enter), and with null when the field is cleared. The input already shows its label. */
+  onSelect?: (option: HTMLElement | null) => void;
   /** Hide options that don't contain the typed text. Default true; false when you filter them yourself (a search API). */
   filter?: boolean;
 }
@@ -142,7 +142,7 @@ export function connectCombobox(input: HTMLInputElement, listbox: HTMLElement, o
     if (!input.value) {
       if (chosen !== null) {
         chosen = null;
-        options.onSelect?.(null as any);
+        options.onSelect?.(null);
       }
     }
     applyFilter();
@@ -189,7 +189,7 @@ export function connectCombobox(input: HTMLInputElement, listbox: HTMLElement, o
           event.preventDefault();
           input.value = "";
           chosen = null;
-          options.onSelect?.(null as any);
+          options.onSelect?.(null);
           applyFilter();
           input.dispatchEvent(new Event("input", { bubbles: true }));
           input.dispatchEvent(new Event("change", { bubbles: true }));

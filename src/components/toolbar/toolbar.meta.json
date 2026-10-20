@@ -80,13 +80,14 @@
     "Use a toolbar for the tools of one surface: an image or canvas editor, a text selection, a media viewer, a table's bulk actions.",
     "Put the tools that switch modes in a group where one is pressed (the current tool), then separators, then one-off actions (Undo, Redo), then a ToolbarSpacer and the labelled actions (Copy, Save).",
     "Use vertical for a side rail on wide screens and scroll on phones; floating over a canvas or next to a selection.",
-    "Put a Swatch group (size sm, track) in it for colours, and a DropdownMenu trigger (a ToolbarButton) for overflow."
+    "Put a Swatch group (size sm, track) in it for colours, and a DropdownMenu trigger (a ToolbarButton) for overflow.",
+    "Wrap toolbar items in a Tooltip with a keyboard hint element (<Shortcut keys=\"...\" /> in React, .ayy-shortcut in HTML) to show their action and shortcut on hover and focus."
   ],
   "dont": [
     "Don't use a toolbar for page navigation — use Tabs, the App shell or a Bottom nav — or for a page's one or two actions — use Buttons in a Page header.",
     "Don't wrap a toolbar onto several lines; scroll it, or move rare tools into a menu.",
     "Don't make every tool icon-only when there's room: the main action reads better with a label (\"Copy\").",
-    "Don't give toolbar buttons title tooltips on touch screens; the aria-label is the name."
+    "Don't use native title=\"\" tooltips on toolbar buttons — use Tooltip with a keyboard hint element (<Shortcut keys=\"...\" /> / .ayy-shortcut) instead."
   ],
   "examples": [
     { "id": "editor", "title": "Editor tools, undo and a labelled action" },

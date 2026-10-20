@@ -63,6 +63,8 @@ test("actionBarClass and actionBarButtonClass produce expected classes", () => {
   assert.equal(actionBarButtonClass({ secondary: true }), "ayy-action-bar__button ayy-action-bar__button--secondary");
   assert.equal(actionBarButtonClass({ variant: "primary" }), "ayy-action-bar__button ayy-action-bar__button--primary");
   assert.equal(actionBarButtonClass({ variant: "destructive" }), "ayy-action-bar__button ayy-action-bar__button--destructive");
+  assert.equal(actionBarButtonClass({ icon: true }), "ayy-action-bar__button ayy-action-bar__button--icon");
+  assert.equal(actionBarButtonClass({ variant: "destructive", icon: true }), "ayy-action-bar__button ayy-action-bar__button--destructive ayy-action-bar__button--icon");
 });
 
 test("action-bar and table row action class constants match the CSS contract", () => {

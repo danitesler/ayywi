@@ -22,6 +22,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Theme with data-theme="dark|light|dark-contrast|light-gray" (or nothing = follow OS). Never write separate dark-mode colours; tokens already switch. To restyle, override semantic tokens rather than editing components.
 - Brand a product with a generated brand, never hand-picked colours: `npx @danitesler/ayywi brand <#seed> --name <name>` (or createBrand()/setBrand() from "@danitesler/ayywi", or the MCP create_brand tool) makes the colour scale, primary, primary-fg and ring for every theme with contrast checked, plus fonts and corners (--shape pill|round|soft|sharp). Load its CSS and set data-brand. Colour beyond primary comes from --ayy-brand-50…950 (the scale) for illustrations and brand moments, never on navigation or page backgrounds.
 - Every interactive element keeps its visible :focus-visible ring. Icon-only buttons need aria-label. Form controls need a label. State lives in native/ARIA attributes (disabled, checked, aria-selected, aria-current, aria-expanded, aria-invalid, aria-busy, open).
+- Toolbar items and icon-only buttons get a Tooltip explaining their action on hover and keyboard focus, paired with a keyboard hint element (<Shortcut keys="..." /> in React, .ayy-shortcut in HTML) whenever a shortcut exists. Never use native title="" attributes.
 - Every component's spec lists its states (default, hover, pressed, focus, disabled, selected, error, loading, plus its own such as open) and its sizes, in manifest/components.json, llms/<slug>.md and get_component. Reach a state only through the attribute or prop its spec names. Where a state says it doesn't apply, do what it says instead; never style a state a component doesn't have.
 - Stateful styles need a @media (forced-colors: active) fallback (Windows High Contrast erases fills).
 - Prefer animating transform and opacity (use a logical property like inset-inline-start only when the motion must follow text direction). Everything must still work under prefers-reduced-motion — base.css collapses ayy animations. Scroll-in motion comes from .ayy-reveal, not a script; nothing loops unless it shows a live state. Movement on :hover (lifts, zooms, spins) goes inside @media (hover: hover), because a tap leaves :hover stuck on touch screens.
@@ -70,7 +71,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | A side panel, drawer or bottom sheet | Dialog with side="end", "start" or "bottom". | a custom fixed div that slides in |
 | Settings for an app | The Settings pattern: a full-size Dialog holding the App shell in settings mode, Settings groups of SettingsRow / SettingsLink. | a settings page with Tabs, a small dialog, rows built from divs |
 | Small extra content on click (details, a mini form) | Popover. | a hand-positioned div |
-| Explain an icon button on hover or focus | Tooltip (the button keeps its aria-label). | title="" or a CSS-only bubble |
+| Explain an icon button on hover or focus | Tooltip (the button keeps its aria-label); add a Shortcut inside for its keyboard hint. | title="" or a CSS-only bubble |
 | Confirm something happened, or offer undo | toast.success() / toast() with an action. | a hand-built fixed banner |
 | Show a capture, video or file preview with quick corner actions | toast.card() or CardToast for screen captures, video thumbnails and quick actions. | a custom corner popup, fixed floating card without a toaster stack |
 | Tell people about a problem or a state on the page | Alert (destructive with a retry for a failed load or save). | a coloured <div> |
@@ -555,7 +556,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
 
 **Accessibility**
-- Icon-only buttons need aria-label.
+- Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.
 - Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both).
 - Visible focus ring on :focus-visible is built in — never remove it.
 - While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
@@ -563,6 +564,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 **Do**
 - Use a button for any action the user can take: submit, open, save, delete.
 - Apply buttonClass() to an <a> when a link should look like an action.
+- Always pair icon-only buttons (size="icon*", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.
 - Keep one primary button per view or section; make everything else secondary, outline or ghost.
 - On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
 - Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).
@@ -625,12 +627,13 @@ Category: Actions. A row or column of tools and actions for one surface: an edit
 - Put the tools that switch modes in a group where one is pressed (the current tool), then separators, then one-off actions (Undo, Redo), then a ToolbarSpacer and the labelled actions (Copy, Save).
 - Use vertical for a side rail on wide screens and scroll on phones; floating over a canvas or next to a selection.
 - Put a Swatch group (size sm, track) in it for colours, and a DropdownMenu trigger (a ToolbarButton) for overflow.
+- Wrap toolbar items in a Tooltip with a keyboard hint element (<Shortcut keys="..." /> in React, .ayy-shortcut in HTML) to show their action and shortcut on hover and focus.
 
 **Don't**
 - Don't use a toolbar for page navigation — use Tabs, the App shell or a Bottom nav — or for a page's one or two actions — use Buttons in a Page header.
 - Don't wrap a toolbar onto several lines; scroll it, or move rare tools into a menu.
 - Don't make every tool icon-only when there's room: the main action reads better with a label ("Copy").
-- Don't give toolbar buttons title tooltips on touch screens; the aria-label is the name.
+- Don't use native title="" tooltips on toolbar buttons — use Tooltip with a keyboard hint element (<Shortcut keys="..." /> / .ayy-shortcut) instead.
 
 **Examples**: Editor tools, undo and a labelled action, Floating formatting bar, Vertical rail. Copy-ready HTML and React in llms/toolbar.md.
 
@@ -650,11 +653,12 @@ Category: Actions. Floating bottom multi-select bar that animates into view when
 - `.ayy-action-bar__button--primary` — Primary bulk action button filled with the primary token.
 - `.ayy-action-bar__button--secondary` — Secondary bulk action button with a wash fill and subtle border.
 - `.ayy-action-bar__button--destructive` — Destructive bulk action button (e.g. Delete) in the destructive colour.
+- `.ayy-action-bar__button--icon` — Square icon-only action button for common bulk actions (e.g. Copy, Archive, Delete).
 
 **States**
 - `default` — Hidden until [open] is set; when open, a blurred glass pill with a line-strong border, overlay shadow, semibold count, clear button and standard action buttons.
-- `hover` (`.ayy-action-bar__button:hover:not(:disabled), .ayy-action-bar__close:hover (devices that hover)`) — Buttons lift by 1px with a wash fill; primary dims; destructive gets a 18% tint and border; close button turns text colour.
-- `pressed` (`.ayy-action-bar__button:active:not(:disabled)`) — Lifting transform resets on click.
+- `hover` (`.ayy-action-bar__button:hover:not(:disabled), .ayy-action-bar__close:hover (devices that hover)`) — Buttons tint with a wash fill; primary dims; destructive gets a 18% tint and border; close button turns text colour.
+- `pressed` (`.ayy-action-bar__button:active:not(:disabled)`) — Button dims slightly (opacity 0.85).
 - `focus` (`.ayy-action-bar__button:focus-visible, .ayy-action-bar__close:focus-visible`) — 2px ring, 2px offset. The bar is one Tab stop; Left/Right arrows move between buttons.
 - `disabled` (`.ayy-action-bar__button:disabled`) — --ayy-opacity-disabled, not-allowed cursor; arrow keys skip it.
 - `open` (`.ayy-action-bar[open]; .ayy-action-bar__button[aria-expanded="true"]`) — The bar smoothly lifts and fades in with spring easing, and plays the same animation in reverse on close; a menu trigger button keeps the wash-hover fill and line-strong border.
@@ -673,25 +677,28 @@ Category: Actions. Floating bottom multi-select bar that animates into view when
 - `<ActionBarClose>` renders <button type="button" class="ayy-action-bar__close">. Props: `label` string — accessible label for the clear button (default "Clear selection")
 - `<ActionBarSeparator>` renders <div role="separator" class="ayy-action-bar__separator">. Props: 
 - `<ActionBarActions>` renders <div role="group" class="ayy-action-bar__actions">. Props: 
-- `<ActionBarButton>` renders <button type="button" class="ayy-action-bar__button">. Props: `variant` "default" | "primary" | "secondary" | "destructive"; `primary` boolean — shorthand for variant="primary"; `secondary` boolean — shorthand for variant="secondary"; `destructive` boolean — shorthand for variant="destructive"; `open` boolean — aria-expanded when used as a DropdownMenuTrigger
+- `<ActionBarButton>` renders <button type="button" class="ayy-action-bar__button">. Props: `variant` "default" | "primary" | "secondary" | "destructive"; `primary` boolean — shorthand for variant="primary"; `secondary` boolean — shorthand for variant="secondary"; `destructive` boolean — shorthand for variant="destructive"; `icon` boolean — square icon-only button without label padding (must provide aria-label); `open` boolean — aria-expanded when used as a DropdownMenuTrigger
 
 **Accessibility**
 - role="toolbar" with an aria-label ("Bulk actions"): one Tab stop, Left/Right arrow keys (mirrored in RTL) and Home/End move between the clear button and actions.
 - Pressing Escape or clicking ActionBarClose clears the selection and dismisses the bar.
-- Icon-only overflow buttons inside the bar need an aria-label ("More actions").
+- Icon-only buttons inside the bar must have an aria-label (e.g. aria-label="Delete selected") and always be wrapped in a Tooltip.
 - High Contrast mode borders the bar in CanvasText and highlights primary or open buttons with Highlight.
 
 **Do**
-- Use an Action bar with a selectable Table or Grid so bulk actions (Edit, Duplicate, Copy, Archive, Delete) appear at the bottom as soon as one or more items are selected.
-- Show the selected count first, followed by the clear button, a separator, the frequent actions, and a destructive Delete action last.
+- Use an Action bar with a selectable Table or Grid so bulk actions appear at the bottom as soon as one or more items are selected.
+- Show the selected count first, followed by the clear button, a separator, and the actions with destructive Delete last.
+- When an Action bar has many actions, keep text labels for unique or context-specific actions (e.g. "Assign reviewer", "Change status") and use icon-only buttons (`icon`, `aria-label`) for universally recognized bulk actions (Duplicate, Copy link, Archive, Delete).
+- Place an ActionBarSeparator between labelled buttons and icon buttons to visually divide distinct action groups.
+- Always pair icon-only action buttons with a Tooltip so users can identify the action on hover and keyboard focus.
 - Fold less common bulk actions into a DropdownMenu triggered from a trailing ActionBarButton.
 
 **Don't**
 - Don't leave an Action bar visible with 0 selected items — hide it by omitting open (open={selected.length > 0}) instead of disabling every button.
 - Don't use an Action bar for permanent page actions or navigation — use PageHeader actions, Toolbar or BottomNav.
-- Don't cram more than five labelled actions into the bar; move extras into a ⋯ DropdownMenu.
+- Don't cram more than five labelled actions into the bar without switching common actions to icon-only buttons or moving extras into a ⋯ DropdownMenu.
 
-**Examples**: Multi-select bulk actions. Copy-ready HTML and React in llms/action-bar.md.
+**Examples**: Multi-select bulk actions, Many actions with icon buttons. Copy-ready HTML and React in llms/action-bar.md.
 
 ## Dropdown menu
 
@@ -1754,7 +1761,7 @@ Category: Forms. An input that filters a list as you type and picks one option: 
 - event `ayy-select`: { value, label, option } when an option is chosen — value is its data-value, else its label.
 
 **React** — `import { Combobox } from "@danitesler/ayywi/react";`
-- `<Combobox>` renders <div class="ayy-combobox"><input role="combobox" class="ayy-input"><svg><ul role="listbox" class="ayy-combobox__listbox">. Props: `options` ({ value, label, meta?, icon?, keywords?, disabled? } | string)[]; `value / defaultValue` The chosen option's value.; `onValueChange` (value: string, option) => void; `onInputChange` (text: string) => void — every keystroke, e.g. to fetch options; `filter` boolean, default true; false when you fetch the options yourself; `emptyText` ReactNode, default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input carries the chosen value in forms
+- `<Combobox>` renders <div class="ayy-combobox"><input role="combobox" class="ayy-input"><svg><ul role="listbox" class="ayy-combobox__listbox">. Props: `options` ({ value, label, meta?, icon?, keywords?, disabled? } | string)[]; `value / defaultValue` The chosen option's value.; `onValueChange` (value: string, option: ComboboxOption | null) => void — ("", null) once when the field is cleared; `onInputChange` (text: string) => void — every keystroke, e.g. to fetch options; `filter` boolean, default true; false when you fetch the options yourself; `emptyText` ReactNode, default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input carries the chosen value in forms
 
 **Accessibility**
 - Focus stays in the input: Down opens the list and moves through it, Up goes back, Enter picks, Esc closes (and a second Esc clears), Alt+Down opens without moving. Screen readers follow aria-activedescendant.
@@ -1939,8 +1946,8 @@ Category: Forms. Pick a single date, date range, time, or combined date and time
 **React** — `import { DatePicker, DatePickerGrid, DateRangePicker, DateRange, TimePicker, TimePickerTrigger, DateTimePicker, DateTimePickerTrigger } from "@danitesler/ayywi/react";`
 - `<DatePickerGrid>` renders <div class="ayy-date-picker-grid">…<div class="ayy-date-picker-grid__grid" role="group">. Props: `value` string | null — the picked ISO day; `defaultValue` string | null — initial picked day; `onValueChange` (date: string) => void; `min` string — earliest pickable day; `max` string — latest pickable day; `today` string — override today; `weekStart` Weekday — first day of the week (0 = Sunday); `locale` string — locale for month and day names; `full` boolean — fill container width; `previousLabel` string — accessible name of previous month arrow; `nextLabel` string — accessible name of next month arrow; `presets` DatePickerPreset[] — shortcuts above the month; `presetsLabel` string — accessible name of the presets group; `showActions` boolean — whether to show Clear and Today action buttons in a footer; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the month
 - `<DatePicker>` renders <button class="ayy-input ayy-date-picker" aria-haspopup="dialog"> + <div class="ayy-popover" popover> with DatePickerGrid. Props: `value` string | null — the ISO day; `defaultValue` string | null — initial ISO day; `onValueChange` (date: string) => void — popover closes after it; `placeholder` string — shown while empty. Default "Pick a date"; `format` (date: string) => string — trigger's text formatter; `min` string — earliest pickable day; `max` string — latest pickable day; `today` string — override today; `weekStart` Weekday — first day of the week; `locale` string — locale for month and day names; `size` "sm" | "md" | "lg" — trigger button size; `name` string — a hidden input carries the ISO day; `presets` DatePickerPreset[] — shortcuts above the month; `showActions` boolean — whether to show Clear and Today action buttons in the popover footer. Default true; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the month
-- `<DateRange>` renders <div class="ayy-date-range"> with side-by-side month grids. Props: `value` [string, string] | null — start and end ISO dates; `defaultValue` [string, string] | null — initial range; `onValueChange` (range: [string, string]) => void; `months` number — number of months shown side-by-side; `min` string — earliest pickable day; `max` string — latest pickable day; `today` string — override today; `weekStart` Weekday — first day of the week; `locale` string — locale for month and day names; `previousLabel` string — accessible name of previous month arrow; `nextLabel` string — accessible name of next month arrow; `showActions` boolean — whether to show Clear and Today action buttons in a footer; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the range months
-- `<DateRangePicker>` renders <button class="ayy-input ayy-date-range-picker" aria-haspopup="dialog"> + <div class="ayy-popover" popover> with DateRange. Props: `value` [string, string] | null — start and end ISO dates; `defaultValue` [string, string] | null — initial range; `onValueChange` (range: [string, string]) => void; `placeholder` string — shown while empty; `format` (range: [string, string]) => string — trigger text formatter; `months` number — number of months shown side-by-side; `min` string — earliest pickable day; `max` string — latest pickable day; `today` string — override today; `weekStart` Weekday — first day of the week; `locale` string — locale for month and day names; `size` "sm" | "md" | "lg" — trigger button size; `name` string — hidden inputs carry start and end dates; `showActions` boolean — whether to show Clear and Today action buttons in the popover footer. Default true; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the range months
+- `<DateRange>` renders <div class="ayy-date-range"> with side-by-side month grids. Props: `value` [string, string] | null — start and end ISO dates; `defaultValue` [string, string] | null — initial range; `onValueChange` (range: [string, string] | null) => void — null when Clear empties it; `months` number — number of months shown side-by-side; `min` string — earliest pickable day; `max` string — latest pickable day; `today` string — override today; `weekStart` Weekday — first day of the week; `locale` string — locale for month and day names; `previousLabel` string — accessible name of previous month arrow; `nextLabel` string — accessible name of next month arrow; `showActions` boolean — whether to show Clear and Today action buttons in a footer; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the range months
+- `<DateRangePicker>` renders <button class="ayy-input ayy-date-range-picker" aria-haspopup="dialog"> + <div class="ayy-popover" popover> with DateRange. Props: `value` [string, string] | null — start and end ISO dates; `defaultValue` [string, string] | null — initial range; `onValueChange` (range: [string, string] | null) => void — null when Clear empties it; `placeholder` string — shown while empty; `format` (range: [string, string]) => string — trigger text formatter; `months` number — number of months shown side-by-side; `min` string — earliest pickable day; `max` string — latest pickable day; `today` string — override today; `weekStart` Weekday — first day of the week; `locale` string — locale for month and day names; `size` "sm" | "md" | "lg" — trigger button size; `name` string — hidden inputs carry start and end dates; `showActions` boolean — whether to show Clear and Today action buttons in the popover footer. Default true; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the range months
 - `<TimePicker>` renders <div class="ayy-time-picker"> with scrollable columns of hours and minutes. Props: `value` string — time string ("14:30" or "02:30 PM"); `defaultValue` string — initial time string; `onValueChange` (time: string) => void; `format` "12h" | "24h" — clock format; `step` number — minute step between options; `manualInput` boolean — whether to show manual numeric inputs at the top
 - `<TimePickerTrigger>` renders <button class="ayy-input ayy-time-picker-trigger" aria-haspopup="dialog"> + <div class="ayy-popover" popover> with TimePicker. Props: `value` string — time string; `defaultValue` string — initial time string; `onValueChange` (time: string) => void; `placeholder` string — shown while empty; `format` "12h" | "24h" — clock format; `step` number — minute step between options; `size` "sm" | "md" | "lg" — trigger button size; `name` string — hidden input carries time string
 - `<DateTimePicker>` renders <div class="ayy-date-time-picker"> with DatePickerGrid and TimePicker side-by-side. Props: `value` string — ISO date-time ("2026-10-14T14:30"); `defaultValue` string — initial date-time string; `onValueChange` (dateTime: string) => void; `format` "12h" | "24h" — time format; `step` number — minute step; `min` string — earliest pickable date; `max` string — latest pickable date; `today` string — override today; `weekStart` Weekday — first day of the week; `locale` string — locale for formatting; `showActions` boolean — whether to show Clear and Today action buttons in a footer; `clearLabel` string — label for Clear button; `todayLabel` string — label for Today button; `onClear` () => void — callback when Clear is clicked; `onToday` () => void — callback when Today is clicked; `footer` ReactNode — content under the compound picker

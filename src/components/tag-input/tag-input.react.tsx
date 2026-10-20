@@ -86,7 +86,10 @@ export const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function Tag
   useEffect(() => {
     if (!hasSuggestions || !input.current || !listbox.current) return;
     const c = connectCombobox(input.current, listbox.current, {
-      onSelect: (option) => latest.current.add(option.dataset.value ?? ""),
+      // null: the field was cleared, nothing to add.
+      onSelect: (option) => {
+        if (option) latest.current.add(option.dataset.value ?? "");
+      },
     });
     combobox.current = c;
     return () => {

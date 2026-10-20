@@ -559,7 +559,7 @@ for (const renderer of ["react", "html"] as const) {
       const captureTrigger = stage(page, 1).getByRole("button", { name: "Capture options" });
       await captureTrigger.click();
 
-      const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Screenshot" });
+      const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Capture area" });
       await expect(main).toBeVisible();
 
       // Submenu trigger keyboard navigation
@@ -610,7 +610,7 @@ for (const renderer of ["react", "html"] as const) {
       const captureTrigger = stage(page, 1).getByRole("button", { name: "Capture options" });
       await captureTrigger.click();
 
-      const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Screenshot" });
+      const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Capture area" });
       const timerTrigger = main.getByRole("menuitem", { name: /Self-timer/ });
       await timerTrigger.hover();
 

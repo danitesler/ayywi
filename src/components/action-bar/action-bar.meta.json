@@ -15,16 +15,18 @@
     "ayy-action-bar__button": "Compact action button inside the bar, with an optional leading icon and label.",
     "ayy-action-bar__button--primary": "Primary bulk action button filled with the primary token.",
     "ayy-action-bar__button--secondary": "Secondary bulk action button with a wash fill and subtle border.",
-    "ayy-action-bar__button--destructive": "Destructive bulk action button (e.g. Delete) in the destructive colour."
+    "ayy-action-bar__button--destructive": "Destructive bulk action button (e.g. Delete) in the destructive colour.",
+    "ayy-action-bar__button--icon": "Square icon-only action button for common bulk actions (e.g. Copy, Archive, Delete)."
   },
   "variants": {
     "fixed": { "values": [false, true], "default": false, "component": "ActionBar" },
-    "variant": { "values": ["default", "primary", "secondary", "destructive"], "default": "default", "component": "ActionBarButton" }
+    "variant": { "values": ["default", "primary", "secondary", "destructive"], "default": "default", "component": "ActionBarButton" },
+    "icon": { "values": [false, true], "default": false, "component": "ActionBarButton" }
   },
   "states": {
     "default": { "looks": "Hidden until [open] is set; when open, a blurred glass pill with a line-strong border, overlay shadow, semibold count, clear button and standard action buttons." },
-    "hover": { "when": ".ayy-action-bar__button:hover:not(:disabled), .ayy-action-bar__close:hover (devices that hover)", "looks": "Buttons lift by 1px with a wash fill; primary dims; destructive gets a 18% tint and border; close button turns text colour." },
-    "pressed": { "when": ".ayy-action-bar__button:active:not(:disabled)", "looks": "Lifting transform resets on click." },
+    "hover": { "when": ".ayy-action-bar__button:hover:not(:disabled), .ayy-action-bar__close:hover (devices that hover)", "looks": "Buttons tint with a wash fill; primary dims; destructive gets a 18% tint and border; close button turns text colour." },
+    "pressed": { "when": ".ayy-action-bar__button:active:not(:disabled)", "looks": "Button dims slightly (opacity 0.85)." },
     "focus": { "when": ".ayy-action-bar__button:focus-visible, .ayy-action-bar__close:focus-visible", "looks": "2px ring, 2px offset. The bar is one Tab stop; Left/Right arrows move between buttons." },
     "disabled": { "when": ".ayy-action-bar__button:disabled", "looks": "--ayy-opacity-disabled, not-allowed cursor; arrow keys skip it." },
     "selected": { "none": "Bulk actions execute on click; use open for a button whose overflow menu is open." },
@@ -36,7 +38,7 @@
     "density": "Buttons and the clear control follow --ayy-size-control-sm (28px compact, 32px comfortable, 40px touch) and --ayy-control-text-sm.",
     "width": "Hugs its buttons (fit-content) up to 100% of its container (or viewport when fixed), scrolling sideways if actions overflow on a phone."
   },
-  "js": "actionBarClass({ fixed?, className? }) → string; actionBarButtonClass({ variant?, primary?, secondary?, destructive?, className? }) → string; actionBarSelectionClass, actionBarCountClass, actionBarCloseClass, actionBarSeparatorClass, actionBarActionsClass constants; connectActionBar(bar, { onClear? }) → { refresh, syncCount, destroy } wires keyboard navigation, Escape/close clearing, and count updates.",
+  "js": "actionBarClass({ fixed?, className? }) → string; actionBarButtonClass({ variant?, primary?, secondary?, destructive?, icon?, className? }) → string; actionBarSelectionClass, actionBarCountClass, actionBarCloseClass, actionBarSeparatorClass, actionBarActionsClass constants; connectActionBar(bar, { onClear? }) → { refresh, syncCount, destroy } wires keyboard navigation, Escape/close clearing, and count updates.",
   "element": {
     "tag": "ayy-action-bar",
     "description": "Wraps an .ayy-action-bar and wires toolbar keyboard navigation (one Tab stop, Left/Right arrows, Home/End), Escape and close button selection clearing, and automatic count syncing when a sibling <ayy-table> or <ayy-grid> fires ayy-selection-change.",
@@ -74,6 +76,7 @@
           "primary": "boolean — shorthand for variant=\"primary\"",
           "secondary": "boolean — shorthand for variant=\"secondary\"",
           "destructive": "boolean — shorthand for variant=\"destructive\"",
+          "icon": "boolean — square icon-only button without label padding (must provide aria-label)",
           "open": "boolean — aria-expanded when used as a DropdownMenuTrigger"
         }
       }
@@ -82,20 +85,24 @@
   "a11y": [
     "role=\"toolbar\" with an aria-label (\"Bulk actions\"): one Tab stop, Left/Right arrow keys (mirrored in RTL) and Home/End move between the clear button and actions.",
     "Pressing Escape or clicking ActionBarClose clears the selection and dismisses the bar.",
-    "Icon-only overflow buttons inside the bar need an aria-label (\"More actions\").",
+    "Icon-only buttons inside the bar must have an aria-label (e.g. aria-label=\"Delete selected\") and always be wrapped in a Tooltip.",
     "High Contrast mode borders the bar in CanvasText and highlights primary or open buttons with Highlight."
   ],
   "do": [
-    "Use an Action bar with a selectable Table or Grid so bulk actions (Edit, Duplicate, Copy, Archive, Delete) appear at the bottom as soon as one or more items are selected.",
-    "Show the selected count first, followed by the clear button, a separator, the frequent actions, and a destructive Delete action last.",
+    "Use an Action bar with a selectable Table or Grid so bulk actions appear at the bottom as soon as one or more items are selected.",
+    "Show the selected count first, followed by the clear button, a separator, and the actions with destructive Delete last.",
+    "When an Action bar has many actions, keep text labels for unique or context-specific actions (e.g. \"Assign reviewer\", \"Change status\") and use icon-only buttons (`icon`, `aria-label`) for universally recognized bulk actions (Duplicate, Copy link, Archive, Delete).",
+    "Place an ActionBarSeparator between labelled buttons and icon buttons to visually divide distinct action groups.",
+    "Always pair icon-only action buttons with a Tooltip so users can identify the action on hover and keyboard focus.",
     "Fold less common bulk actions into a DropdownMenu triggered from a trailing ActionBarButton."
   ],
   "dont": [
     "Don't leave an Action bar visible with 0 selected items — hide it by omitting open (open={selected.length > 0}) instead of disabling every button.",
     "Don't use an Action bar for permanent page actions or navigation — use PageHeader actions, Toolbar or BottomNav.",
-    "Don't cram more than five labelled actions into the bar; move extras into a ⋯ DropdownMenu."
+    "Don't cram more than five labelled actions into the bar without switching common actions to icon-only buttons or moving extras into a ⋯ DropdownMenu."
   ],
   "examples": [
-    { "id": "basic", "title": "Multi-select bulk actions" }
+    { "id": "basic", "title": "Multi-select bulk actions" },
+    { "id": "compact", "title": "Many actions with icon buttons" }
   ]
 }

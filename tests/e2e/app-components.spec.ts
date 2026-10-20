@@ -137,6 +137,12 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("ArrowDown");
       await page.keyboard.press("Enter");
       await expect(dialog).toBeHidden();
+
+      const searchBox = stage(page, 2).getByRole("combobox", { name: "Search commands" });
+      await searchBox.fill("highlight");
+      const items = stage(page, 2).locator(".ayy-command__item:not([hidden])");
+      await expect(items.first()).toHaveAttribute("data-value", "text-highlight");
+      await expect(items.last()).toHaveAttribute("data-value", "code-block");
     });
 
     test("tag input: Enter and commas add tags, Backspace and × remove them, suggestions add with Enter", async ({ page }) => {

@@ -11,7 +11,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -32,7 +31,6 @@ export default function Example() {
     <DropdownMenu>
       <DropdownMenuTrigger variant="outline">Capture options</DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Screenshot</DropdownMenuLabel>
         <DropdownMenuItem
           icon={<Icon icon={CropIcon} />}
           description="Drag to select part of the screen"

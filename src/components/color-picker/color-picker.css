@@ -21,6 +21,14 @@
   pointer-events: none;
 }
 
+/* Saturation, hue and alpha run left to right in every language, like the gradients that draw them and the pointer
+   maths. Under dir="rtl" the handle's inline offset and the range thumbs would otherwise mirror away from their colour. */
+.ayy-color-picker__area,
+.ayy-color-picker__hue,
+.ayy-color-picker__alpha {
+  direction: ltr;
+}
+
 .ayy-color-picker__area {
   position: relative;
   inline-size: 100%;

@@ -160,7 +160,8 @@ export const SUPPORTED_LANGUAGES: LanguagePreset[] = [
   { id: "go", label: "Go", extension: ".go" },
 ];
 
-export const LANGUAGE_SNIPPETS: Record<string, string> = {
+/** Sample code for each language (the preview's demos). Built in a pure call so bundles that don't use it drop it. */
+export const LANGUAGE_SNIPPETS: Record<string, string> = /* @__PURE__ */ withAliases({
   tsx: `import { useState } from "react";
 import { Button } from "@danitesler/ayywi/react";
 
@@ -290,16 +291,22 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "status: ok")
 }`,
-};
+});
 
-LANGUAGE_SNIPPETS.js = LANGUAGE_SNIPPETS.tsx;
-LANGUAGE_SNIPPETS.ts = LANGUAGE_SNIPPETS.tsx;
-LANGUAGE_SNIPPETS.jsx = LANGUAGE_SNIPPETS.tsx;
-LANGUAGE_SNIPPETS.sh = LANGUAGE_SNIPPETS.bash;
-LANGUAGE_SNIPPETS.md = LANGUAGE_SNIPPETS.markdown;
-LANGUAGE_SNIPPETS.py = LANGUAGE_SNIPPETS.python;
-LANGUAGE_SNIPPETS.yml = LANGUAGE_SNIPPETS.yaml;
-LANGUAGE_SNIPPETS.rs = LANGUAGE_SNIPPETS.rust;
+/** The snippets under their short names too (js, ts, sh, md…). */
+function withAliases(snippets: Record<string, string>): Record<string, string> {
+  return {
+    ...snippets,
+    js: snippets.tsx,
+    ts: snippets.tsx,
+    jsx: snippets.tsx,
+    sh: snippets.bash,
+    md: snippets.markdown,
+    py: snippets.python,
+    yml: snippets.yaml,
+    rs: snippets.rust,
+  };
+}
 
 
 const TOKEN_CLASSES: Record<TokenType, string | undefined> = {
@@ -715,7 +722,11 @@ export function highlightCodeBlocks(root: ParentNode = document): void {
   }
 }
 
-/** Update a code block element based on its selector dropdown value. */
+/**
+ * Switch a code block to another language from its selector: the selector shows the language's name, and the code
+ * becomes the block's own `<template data-language="…">` for it (its data-filename, if any, names the file). Without a
+ * template for that language the code stays as it is: the library never puts its own sample code in your page.
+ */
 export function syncCodeBlockSelector(
   selectOrTriggerOrLang: HTMLElement | any | string,
   codeBlockOrLang?: HTMLElement | any | string,
@@ -749,7 +760,11 @@ export function syncCodeBlockSelector(
 
   const lang = normalizeLanguage(rawLang);
   const preset = SUPPORTED_LANGUAGES.find((l) => l.id === lang || normalizeLanguage(l.id) === lang || l.id === rawLang);
-  const snippet = LANGUAGE_SNIPPETS[lang] ?? (preset ? LANGUAGE_SNIPPETS[preset.id] : undefined) ?? LANGUAGE_SNIPPETS[rawLang];
+  const templates = Array.from(container.querySelectorAll?.("template[data-language]") ?? []) as HTMLTemplateElement[];
+  const template = templates.find(
+    (t) => [rawLang, lang, preset?.id].includes(t.dataset.language) || (lang !== "fallback" && normalizeLanguage(t.dataset.language) === lang),
+  );
+  const snippet = template ? (template.content.textContent ?? "").replace(/^\n/, "") : undefined;
 
   if (triggerEl && preset) {
     const labelSpan = triggerEl.querySelector?.("span");
@@ -760,14 +775,8 @@ export function syncCodeBlockSelector(
     }
   }
 
-  if (preset) {
-    const filenameEl = container.querySelector?.(".ayy-code-block__filename");
-    if (filenameEl) {
-      filenameEl.textContent = preset.extension?.startsWith(".")
-        ? `example${preset.extension}`
-        : preset.extension ?? `example.${preset.id}`;
-    }
-  }
+  const filenameEl = container.querySelector?.(".ayy-code-block__filename");
+  if (filenameEl && template?.dataset.filename) filenameEl.textContent = template.dataset.filename;
 
   const codeEl = container.querySelector?.(".ayy-code-block__code, code");
   if (codeEl && snippet) {
