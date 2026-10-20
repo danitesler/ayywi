@@ -59,3 +59,21 @@ test("keep-versions: nothing to keep on a first deploy, and a missing file stops
   t.after(() => broken.close());
   await assert.rejects(run(process.execPath, [script], { env: { ...process.env, AYYWI_SITE: `http://127.0.0.1:${broken.address().port}/`, AYYWI_OUT: out } }), /404/);
 });
+
+test("keep-versions refuses a versions.json entry that would write outside v/<release>/", async (t) => {
+  const tmp = mkdtempSync(join(tmpdir(), "ayywi-pages-"));
+  t.after(() => rmSync(tmp, { recursive: true, force: true }));
+  const out = join(tmp, "site");
+  mkdirSync(out);
+  writeFileSync(join(out, "versions.json"), JSON.stringify({ latest: "0.5.0-bbbb", versions: [] }));
+  for (const [release, written] of [
+    [{ id: "0.4.0-aaaa", files: ["../../../pwned.txt"] }, join(tmp, "pwned.txt")],
+    [{ id: "../..", files: ["pwned.txt"] }, join(tmp, "pwned.txt")],
+  ]) {
+    const server = await liveSite({ "/ayywi/versions.json": JSON.stringify({ versions: [release] }), "/pwned.txt": "owned", "/ayywi/pwned.txt": "owned" });
+    t.after(() => server.close());
+    const site = `http://127.0.0.1:${server.address().port}/ayywi/`;
+    await assert.rejects(run(process.execPath, [script], { env: { ...process.env, AYYWI_SITE: site, AYYWI_OUT: out } }), /outside/);
+    assert.ok(!existsSync(written), `${release.id}: nothing written outside the site`);
+  }
+});

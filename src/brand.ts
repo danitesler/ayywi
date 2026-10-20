@@ -226,6 +226,32 @@ function fontStack(value: string | readonly string[], fallback: readonly string[
 }
 
 const LENGTH = /^(0|\d+(\.\d+)?(px|rem|em))$/;
+const BRAND_NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+
+// A Brand made elsewhere (stored, sent over the wire) lands in CSS and selectors as is, so it has to hold only what
+// createBrand() writes: a kebab-case name, #rrggbb colours, lengths or ayywi radii, and fontStack() lists.
+const HEX6 = /^#[0-9a-f]{6}$/i;
+const RADIUS = /^(0|\d+(\.\d+)?(px|rem|em)|var\(--ayy-radius-[a-z0-9-]+\))$/;
+const FAMILY = String.raw`(?:"[\w\- .]+"|[\w\-.]+)`;
+const FONT_LIST = new RegExp(`^${FAMILY}(?:, ${FAMILY})*$`);
+
+function checkBrand(b: Brand): Brand {
+  const fail = (what: string, value: unknown) => new Error(`brand ${what} ${JSON.stringify(value)} isn't one createBrand() makes`);
+  if (!BRAND_NAME.test(String(b.name))) throw fail("name", b.name);
+  if (!HEX6.test(String(b.seed))) throw fail("seed", b.seed);
+  for (const step of BRAND_STEPS) if (!HEX6.test(String(b.scale?.[step]))) throw fail(`scale.${step}`, b.scale?.[step]);
+  for (const scheme of ["dark", "light"] as const) {
+    for (const key of ["primary", "primaryFg", "ring"] as const) {
+      if (!HEX6.test(String(b[scheme]?.[key]))) throw fail(`${scheme}.${key}`, b[scheme]?.[key]);
+    }
+  }
+  for (const key of ["control", "card", "button"] as const) if (!RADIUS.test(String(b.radius?.[key]))) throw fail(`radius.${key}`, b.radius?.[key]);
+  for (const key of ["heading", "body", "mono"] as const) {
+    const value = b.font?.[key];
+    if (value !== undefined && !FONT_LIST.test(String(value))) throw fail(`font.${key}`, value);
+  }
+  return b;
+}
 
 // ---- Public API ----
 
@@ -235,7 +261,7 @@ const LENGTH = /^(0|\d+(\.\d+)?(px|rem|em))$/;
  * theme. Fonts get ayywi's fallbacks; shape and radius set the corner tokens. Throws on invalid input.
  */
 export function createBrand(input: BrandInput): Brand {
-  if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(input.name ?? "")) throw new Error(`brand name "${input.name}" must be kebab-case (e.g. "acme")`);
+  if (!BRAND_NAME.test(input.name ?? "")) throw new Error(`brand name "${input.name}" must be kebab-case (e.g. "acme")`);
   const seed = toHex(parseHex(input.color));
   const { scale, seedStep } = brandScale(seed);
   const dark = pick("dark", scale, seedStep);
@@ -286,7 +312,7 @@ export interface BrandCssOptions {
 
 /** The stylesheet for a brand (or a BrandInput, generated on the way). light-dark() serves both schemes and nested themes. */
 export function brandCss(brand: Brand | BrandInput, options: BrandCssOptions = {}): string {
-  const b = "scale" in brand ? brand : createBrand(brand);
+  const b = "scale" in brand ? checkBrand(brand) : createBrand(brand);
   const sel = options.selector ?? `[data-brand="${b.name}"]`;
   const ld = (light: string, dark: string) => (light === dark ? dark : `light-dark(${light}, ${dark})`);
   const decls = [
@@ -356,7 +382,7 @@ export function setBrand(brand: string | BrandInput | Brand | null, target?: HTM
     el.setAttribute("data-brand", brand);
     return undefined;
   }
-  const b = "scale" in brand ? brand : createBrand(brand);
+  const b = "scale" in brand ? checkBrand(brand) : createBrand(brand);
   const doc = el.ownerDocument;
   let style = doc.head.querySelector<HTMLStyleElement>(`style[data-ayy-brand="${b.name}"]`);
   if (!style) {

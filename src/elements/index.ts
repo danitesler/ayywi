@@ -129,6 +129,50 @@ function onSwatchOpen(event: MouseEvent | KeyboardEvent): void {
   if (target?.closest?.(".ayy-swatch--custom")) openColorPickerFrom(event);
 }
 
+// The setup that needs <body>: controls already on the page, then a watch for ones added later.
+function watchPage(): void {
+  // Images that failed before this script ran.
+  for (const img of document.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) {
+    if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+      img.setAttribute("data-error", "");
+      img.hidden = true;
+    }
+  }
+  // Controls already on the page: fill sliders from their values, mark number fields at their limits, colour custom swatches.
+  for (const slider of document.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
+  for (const field of document.querySelectorAll(".ayy-number-field")) syncNumberField(field);
+  for (const input of document.querySelectorAll<HTMLInputElement>(".ayy-swatch--custom > input")) syncSwatch(input);
+  syncShortcuts();
+  highlightCodeBlocks();
+  if (typeof MutationObserver === "function") {
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        for (const node of m.addedNodes) {
+          if (node instanceof HTMLElement) {
+            if (node.matches?.(".ayy-swatch--custom > input")) syncSwatch(node as HTMLInputElement);
+            for (const input of node.querySelectorAll<HTMLInputElement>(".ayy-swatch--custom > input")) syncSwatch(input);
+            if (node.matches?.("input.ayy-slider")) syncSlider(node as HTMLInputElement);
+            for (const slider of node.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
+            if (node.matches?.(".ayy-number-field")) syncNumberField(node);
+            for (const field of node.querySelectorAll(".ayy-number-field")) syncNumberField(field);
+            syncShortcuts(node);
+            highlightCodeBlocks(node);
+            const checkAvatar = (img: HTMLImageElement) => {
+              if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+                img.setAttribute("data-error", "");
+                img.hidden = true;
+              }
+            };
+            if (node.matches?.("img.ayy-avatar__image")) checkAvatar(node as HTMLImageElement);
+            for (const img of node.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) checkAvatar(img);
+          }
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+}
+
 /** Register every <ayy-*> element and the page-wide helpers: card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, select option lists, custom swatch color pickers, drop zones. Safe to call twice. */
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
@@ -169,46 +213,9 @@ export function defineElements(): void {
     document.addEventListener("click", onSwatchOpen);
     document.addEventListener("keydown", onSwatchOpen);
     trackDropzones(document);
-    // Images that failed before this script ran.
-    for (const img of document.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) {
-      if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
-        img.setAttribute("data-error", "");
-        img.hidden = true;
-      }
-    }
-    // Controls already on the page: fill sliders from their values, mark number fields at their limits, colour custom swatches.
-    for (const slider of document.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
-    for (const field of document.querySelectorAll(".ayy-number-field")) syncNumberField(field);
-    for (const input of document.querySelectorAll<HTMLInputElement>(".ayy-swatch--custom > input")) syncSwatch(input);
-    syncShortcuts();
-    highlightCodeBlocks();
-    if (typeof MutationObserver === "function" && document.body) {
-      const observer = new MutationObserver((mutations) => {
-        for (const m of mutations) {
-          for (const node of m.addedNodes) {
-            if (node instanceof HTMLElement) {
-              if (node.matches?.(".ayy-swatch--custom > input")) syncSwatch(node as HTMLInputElement);
-              for (const input of node.querySelectorAll<HTMLInputElement>(".ayy-swatch--custom > input")) syncSwatch(input);
-              if (node.matches?.("input.ayy-slider")) syncSlider(node as HTMLInputElement);
-              for (const slider of node.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
-              if (node.matches?.(".ayy-number-field")) syncNumberField(node);
-              for (const field of node.querySelectorAll(".ayy-number-field")) syncNumberField(field);
-              syncShortcuts(node);
-              highlightCodeBlocks(node);
-              const checkAvatar = (img: HTMLImageElement) => {
-                if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
-                  img.setAttribute("data-error", "");
-                  img.hidden = true;
-                }
-              };
-              if (node.matches?.("img.ayy-avatar__image")) checkAvatar(node as HTMLImageElement);
-              for (const img of node.querySelectorAll<HTMLImageElement>("img.ayy-avatar__image")) checkAvatar(img);
-            }
-          }
-        }
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
+    // A plain <script> in <head> runs before the body exists: scan and watch it once it's parsed.
+    if (document.body) watchPage();
+    else document.addEventListener("DOMContentLoaded", watchPage, { once: true });
   }
 }
 

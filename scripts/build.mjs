@@ -119,8 +119,23 @@ await build({
 });
 // "use client" only on the React entry: RSC bundlers treat it as the client boundary; "ayywi" stays server-safe.
 writeFileSync(join(dist, "react.js"), `${useClient.js}\n${readFileSync(join(dist, "react.js"), "utf8")}`);
-await build({ ...shared, entryPoints: libEntries, format: "cjs", outdir: dist, outExtension: { ".js": ".cjs" } });
-await build({ ...shared, entryPoints: reactEntry, format: "cjs", outdir: dist, outExtension: { ".js": ".cjs" }, banner: useClient });
+// CJS from that same graph: every ESM file (entries and chunks) converted one to one, requiring its siblings as .cjs, so
+// require("@danitesler/ayywi").toast is require("@danitesler/ayywi/react").toast too. esbuild can't split CJS itself.
+const esmOut = ["index.js", "react.js", "elements.js", ...readdirSync(join(dist, "chunks")).map((f) => `chunks/${f}`)];
+await build({
+  ...shared,
+  entryPoints: esmOut.map((f) => join(dist, f)),
+  outbase: dist,
+  outdir: dist,
+  format: "cjs",
+  outExtension: { ".js": ".cjs" },
+  plugins: [{
+    name: "cjs-siblings",
+    setup: (b) => b.onResolve({ filter: /^\.\.?\// }, (args) => ({ path: args.path.replace(/\.js$/, ".cjs"), external: true })),
+  }],
+});
+// esbuild keeps the directive but after its own "use strict"; put it first, where the ESM build has it.
+writeFileSync(join(dist, "react.cjs"), `${useClient.js}\n${readFileSync(join(dist, "react.cjs"), "utf8").replace(`${useClient.js}\n`, "")}`);
 await build({
   ...shared,
   entryPoints: [src("elements/global.ts")],
@@ -164,7 +179,7 @@ const rows = [];
 for (const f of ["ayywi.min.css", "ayywi.unlayered.min.css", "index.js", "react.js", "elements.js", "elements.global.js"]) {
   rows.push([f, ...(await gz(join(dist, f)))]);
 }
-for (const f of readdirSync(join(dist, "chunks"))) rows.push([`chunks/${f}`, ...(await gz(join(dist, "chunks", f)))]);
+for (const f of readdirSync(join(dist, "chunks")).filter((f) => f.endsWith(".js"))) rows.push([`chunks/${f}`, ...(await gz(join(dist, "chunks", f)))]);
 const fontBytes = readdirSync(join(dist, "fonts")).filter((f) => f.endsWith(".woff2")).reduce((n, f) => n + statSync(join(dist, "fonts", f)).size, 0);
 console.log("\nfile                               raw     gzip (minified)");
 for (const [f, raw, g] of rows) console.log(`${f.padEnd(34)} ${raw.padStart(8)} ${g.padStart(10)}`);

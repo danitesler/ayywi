@@ -250,8 +250,8 @@ export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(function Spar
   ref,
 ) {
   const uid = svgId(useId());
-  const low = min ?? Math.min(...values);
-  const path = chartPath(values, { min: low, max: max ?? Math.max(...values), smooth: true });
+  const low = min ?? values.reduce((a, b) => Math.min(a, b), Infinity);
+  const path = chartPath(values, { min: low, max, smooth: true });
   return (
     <svg
       ref={ref}
@@ -298,7 +298,7 @@ export const BarList = forwardRef<HTMLOListElement, BarListProps>(function BarLi
   { items, max, format = (value) => grouped.format(value), color, className, style, ...props },
   ref,
 ) {
-  const top = max ?? Math.max(0, ...items.map((item) => item.value));
+  const top = max ?? items.reduce((most, item) => Math.max(most, item.value), 0);
   return (
     <ol ref={ref} className={cx(barListClass, className)} style={vars({ "--ayy-chart-color": color }, style)} {...props}>
       {items.map((item, i) => (

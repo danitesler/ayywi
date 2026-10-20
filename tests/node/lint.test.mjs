@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DEFAULT_RULES, collectCoUse, componentNamed, lintPaths, loadContract, lintText } from "../../cli/lint.mjs";
@@ -181,6 +181,17 @@ test("structure: lintPaths matches classes across files", () => {
   writeFileSync(join(dir, "App.tsx"), `export const A = () => <Card className="qa-card" />;\n`);
   const { findings } = lintPaths(["."], { cwd: dir, contract, config: { rules: DEFAULT_RULES, ignore: [] } });
   assert.deepEqual(findings.map((f) => [f.file, f.rule, f.line]), [["app.css", "rebuilt-component", 2]]);
+});
+
+test("lintPaths skips dangling symlinks and doesn't follow a folder link back into itself", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ayywi-lint-"));
+  mkdirSync(join(dir, "src"));
+  writeFileSync(join(dir, "src/app.css"), ".a { margin-left: 0; }\n");
+  symlinkSync(join(dir, "src/missing.css"), join(dir, "src/gone.css"));
+  symlinkSync(dir, join(dir, "src/loop"));
+  const { findings, files } = lintPaths(["."], { cwd: dir, contract, config: { rules: DEFAULT_RULES, ignore: [] } });
+  assert.equal(files, 1);
+  assert.deepEqual(findings.map((f) => [f.file, f.rule]), [["src/app.css", "physical-property"]]);
 });
 
 test("every alias names its component", () => {

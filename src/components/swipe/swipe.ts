@@ -74,6 +74,8 @@ export function connectSwipe(row: HTMLElement, options: SwipeControllerOptions =
 
   const onPointerMove = (event: PointerEvent) => {
     if (!start || event.pointerId !== start.id) return;
+    // Released outside the row before the drag began (no capture yet), so its pointerup never came here.
+    if (event.buttons === 0) return onPointerUp(event);
     const dx = (event.clientX - start.x) * (rtl() ? -1 : 1);
     const dy = event.clientY - start.y;
     if (!dragging) {

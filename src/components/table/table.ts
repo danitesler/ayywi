@@ -44,17 +44,19 @@ function asNumber(value: string): number | null {
 
 /**
  * Compare two cell values the way people expect: numbers (also "1,204", "$48.20", "12 GB") by value, other text
- * alphabetically with digits read as numbers ("Item 2" before "Item 10"). Empty values sort last.
+ * alphabetically with digits read as numbers ("Item 2" before "Item 10"). Pass the direction rather than negating
+ * the result, so empty values sort last both ways.
  */
-export function compareValues(a: unknown, b: unknown): number {
-  if (typeof a === "number" && typeof b === "number") return a - b;
+export function compareValues(a: unknown, b: unknown, direction: SortDirection = "ascending"): number {
+  const sign = direction === "descending" ? -1 : 1;
+  if (typeof a === "number" && typeof b === "number") return sign * (a - b);
   const x = a == null ? "" : String(a);
   const y = b == null ? "" : String(b);
   if (!x || !y) return x ? -1 : y ? 1 : 0;
   const nx = asNumber(x);
   const ny = asNumber(y);
-  if (nx !== null && ny !== null) return nx - ny;
-  return collator ? collator.compare(x, y) : x < y ? -1 : x > y ? 1 : 0;
+  if (nx !== null && ny !== null) return sign * (nx - ny);
+  return sign * (collator ? collator.compare(x, y) : x < y ? -1 : x > y ? 1 : 0);
 }
 
 export interface TableSortDetail {
@@ -115,9 +117,8 @@ export function connectTable(table: HTMLTableElement, options: TableControllerOp
     if (options.onSort?.({ column, key: th.dataset.sortKey, direction }) === false) return;
     const tbody = body();
     if (!tbody) return;
-    const sign = direction === "ascending" ? 1 : -1;
     const rows = Array.from(tbody.rows);
-    rows.sort((a, b) => sign * compareValues(cellValue(a, column), cellValue(b, column)));
+    rows.sort((a, b) => compareValues(cellValue(a, column), cellValue(b, column), direction));
     tbody.append(...rows);
   };
 

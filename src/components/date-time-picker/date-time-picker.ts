@@ -171,13 +171,19 @@ export const dateTimePickerIcon = datePickerIcon;
 export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Sunday, 1 = Monday ... 6 = Saturday
 export type DatePickerView = "days" | "months" | "years";
 
+/** UTC midnight on the date an ISO string starts with ("2026-10-19", "2026-10-19T10:00"); an invalid Date if there's none. */
 export function parseIsoDate(iso: string): Date {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(Date.UTC(y, m - 1, d));
+  const match = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ]|$)/.exec(iso);
+  if (!match) return new Date(NaN);
+  const [y, m, d] = match.slice(1).map(Number);
+  // setUTCFullYear, unlike Date.UTC, keeps years 0–99 as written.
+  const date = new Date(0);
+  date.setUTCFullYear(y, m - 1, d);
+  return date.getUTCMonth() === m - 1 && date.getUTCDate() === d ? date : new Date(NaN);
 }
 
 export function toIsoDate(d: Date): string {
-  const y = d.getUTCFullYear();
+  const y = String(d.getUTCFullYear()).padStart(4, "0");
   const m = String(d.getUTCMonth() + 1).padStart(2, "0");
   const day = String(d.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;

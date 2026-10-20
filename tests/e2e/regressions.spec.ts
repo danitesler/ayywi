@@ -458,3 +458,69 @@ test.describe("content and colour", () => {
     await expect(page.locator(".ayy-toast__media img")).toHaveCount(0);
   });
 });
+
+test.describe("page setup", () => {
+  test("elements.global.js in <head> without defer still syncs controls once the body is parsed", async ({ page }) => {
+    const errors = await serve(
+      page,
+      `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>t</title><link rel="stylesheet" href="/regress/ayywi.min.css">
+<script src="/regress/elements.global.js"></script></head><body>
+<input class="ayy-slider" type="range" min="0" max="100" value="30" aria-label="Volume"></body></html>`,
+    );
+    const slider = page.locator("input.ayy-slider").first();
+    await expect(slider).toHaveAttribute("style", /--ayy-value:\s*30/);
+    // Controls added later are watched too.
+    await page.evaluate(() => {
+      const added = Object.assign(document.createElement("input"), { className: "ayy-slider", type: "range", value: "70" });
+      added.setAttribute("aria-label", "Added");
+      document.body.append(added);
+    });
+    await expect(page.getByLabel("Added")).toHaveAttribute("style", /--ayy-value:\s*70/);
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("gestures", () => {
+  test("swipe: a mouse press released outside the row doesn't leave a drag behind for the next hover", async ({ page }) => {
+    await htmlPage(
+      page,
+      `<ayy-swipe style="display: block; inline-size: 20rem"><div class="ayy-swipe">
+  <div class="ayy-swipe__content">Buy milk</div>
+  <div class="ayy-swipe__actions ayy-swipe__actions--end"><button type="button" class="ayy-swipe__action">Delete</button></div>
+</div></ayy-swipe>`,
+    );
+    const row = page.locator(".ayy-swipe");
+    const box = (await row.locator(".ayy-swipe__content").boundingBox())!;
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x, y + 200);
+    await page.mouse.up();
+    // Back over the row with no button held, sideways.
+    await page.mouse.move(x, y);
+    for (let i = 1; i <= 8; i++) await page.mouse.move(x - 20 * i, y);
+    await expect(row).not.toHaveAttribute("data-dragging");
+    expect(await row.evaluate((el) => el.style.getPropertyValue("--_x"))).toMatch(/^(0px)?$/);
+  });
+});
+
+test.describe("data", () => {
+  test("<ayy-table> keeps empty cells last when sorting descending", async ({ page }) => {
+    const row = (name: string, amount: string) => `<tr><td>${name}</td><td class="ayy-table__num">${amount}</td></tr>`;
+    await htmlPage(
+      page,
+      `<ayy-table><table class="ayy-table"><thead><tr><th scope="col">Name</th>
+<th scope="col" class="ayy-table__num"><button type="button" class="ayy-table__sort">Amount</button></th></tr></thead>
+<tbody>${row("A", "$40")}${row("B", "")}${row("C", "$1,200")}${row("D", "$7")}</tbody></table></ayy-table>`,
+    );
+    const names = () => page.locator("tbody tr td:first-child").allTextContents();
+    const sort = page.getByRole("button", { name: "Amount" });
+    await sort.click();
+    await expect(page.locator("th").nth(1)).toHaveAttribute("aria-sort", "ascending");
+    expect(await names()).toEqual(["D", "A", "C", "B"]);
+    await sort.click();
+    await expect(page.locator("th").nth(1)).toHaveAttribute("aria-sort", "descending");
+    expect(await names()).toEqual(["C", "A", "D", "B"]);
+  });
+});

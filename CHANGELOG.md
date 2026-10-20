@@ -55,6 +55,27 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   `toast.card()` read `media.duration` as HTML → as text.
 - **MCP server**
   `create_brand` read a `.json` file when given a path as the colour, and a `null` message stopped the server → it takes a hex colour only and answers bad messages with an error.
+- **Packaging**
+  `require("@danitesler/ayywi")` and `require("@danitesler/ayywi/react")` loaded separate copies, so a toast from one never reached the other's Toaster → CommonJS builds share one copy, like the ESM builds.
+- **Elements**
+  `elements.global.js` in `<head>` without `defer` never filled sliders, number fields or swatches, then or later → it finishes that setup once the page body is parsed.
+- **[Swipe actions](#/swipe)**
+  A mouse press released outside the row left a drag pending, so moving over the row later dragged it with no button held → the press ends when the button is up.
+- **[Date & time picker](#/date-time-picker)**
+  `parseIsoDate("2026-10-19T10:00")` gave an invalid date ("NaN-NaN-NaN" after `addDays`) and years 0–99 turned into 1900–1999 → it reads the date part of a date-time, keeps every year as written, and `toIsoDate` pads years to four digits.
+- **[Table](#/table)**
+  Sorting descending put empty cells first → empty cells stay last both ways; `compareValues(a, b, direction)` takes the direction so React tables get the same order.
+- **[Chart](#/chart)**
+  `chartScale`, `chartPath`, Sparkline and Bar list threw a RangeError on series longer than about 100,000 values → they take any length.
+- **Linter**
+  `ayywi lint` crashed on a symlink to a missing file and on a folder symlink pointing back up the tree → it skips the first and walks each folder once.
+- **Tests**
+  E2E tests ran in the installed Google Chrome whenever a Mac had one, so results depended on its version → they run in Playwright's pinned Chromium; `E2E_CHROME=1` opts into the installed Chrome.
+- **Brand System**
+  `brandCss()` and `setBrand()` wrote a ready-made Brand object (one loaded from storage or an API) into CSS unchecked → they check its name, colours, radii and fonts the way `createBrand()` checks its input, and throw on anything else.
+- **Releases**
+  Deploying copied earlier releases to whatever paths the live `versions.json` named → a release id or file that points outside `v/<release>/` stops the deploy.
+
 
 ## 0.1.0 — 2026-10-17
 

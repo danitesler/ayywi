@@ -4123,7 +4123,7 @@ Category: Data display. Data table with quiet hairlines, uppercase headers, hove
 - `<TableBody>` renders <tbody>.
 - `<TableFooter>` renders <tfoot>.
 - `<TableRow>` renders <tr>. Props: `selected` boolean — aria-selected
-- `<TableHead>` renders <th scope="col">, with a <button class="ayy-table__sort"> inside when sortable. Props: `numeric` boolean; `select` boolean — the checkbox column; `actions` boolean — the trailing row actions column; `sort` "ascending" | "descending" | "none" — makes the header a sort button; "none" for a sortable column that isn't sorted; `onSort` () => void — flip with nextSortDirection() and sort your rows (compareValues helps)
+- `<TableHead>` renders <th scope="col">, with a <button class="ayy-table__sort"> inside when sortable. Props: `numeric` boolean; `select` boolean — the checkbox column; `actions` boolean — the trailing row actions column; `sort` "ascending" | "descending" | "none" — makes the header a sort button; "none" for a sortable column that isn't sorted; `onSort` () => void — flip with nextSortDirection() and sort your rows (compareValues(a, b, direction) helps)
 - `<TableCell>` renders <td>. Props: `numeric` boolean; `select` boolean — the checkbox column; `actions` boolean — the trailing row actions column
 - `<TableRowActions>` renders <div class="ayy-table__row-actions">. Props: `reveal` boolean — reveal on row hover, focus-within or selection (stays visible on touch)
 - `<TableCaption>` renders <caption>.

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import * as sass from "sass";
@@ -54,4 +55,13 @@ test("CSS bundles: layered and unlayered, React build marked use client", { skip
   assert.match(readFileSync(dist("react.js"), "utf8"), /^"use client";/);
   assert.match(readFileSync(dist("react.cjs"), "utf8"), /^"use client";/);
   assert.doesNotMatch(readFileSync(dist("index.js"), "utf8"), /use client/);
+});
+
+test("require() gets one copy of stateful modules across entries", { skip: !existsSync(dist("index.cjs")) && "run pnpm build first" }, () => {
+  const require = createRequire(import.meta.url);
+  const main = require(dist("index.cjs"));
+  const react = require(dist("react.cjs"));
+  assert.equal(typeof main.toast, "function");
+  assert.equal(react.toast, main.toast, "one toast queue, whichever entry a CJS app requires");
+  assert.equal(typeof react.Toaster, "function");
 });
