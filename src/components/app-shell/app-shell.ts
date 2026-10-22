@@ -8,6 +8,7 @@ export const appShellBrandClass = "ayy-app-shell__brand";
 export const appShellNavClass = "ayy-app-shell__nav";
 export const appShellLinkClass = "ayy-app-shell__link";
 export const appShellGroupClass = "ayy-app-shell__group";
+export const appShellGroupCollapsibleClass = "ayy-app-shell__group--collapsible";
 export const appShellGroupLabelClass = "ayy-app-shell__group-label";
 export const appShellListClass = "ayy-app-shell__list";
 export const appShellSublistClass = "ayy-app-shell__sublist";

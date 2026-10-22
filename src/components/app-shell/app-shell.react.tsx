@@ -15,6 +15,7 @@ import {
   appShellDrawerClass,
   appShellFooterClass,
   appShellGroupClass,
+  appShellGroupCollapsibleClass,
   appShellGroupLabelClass,
   appShellHeadClass,
   appShellHoverPreviewClass,
@@ -248,22 +249,39 @@ export const AppShellLink = forwardRef<HTMLAnchorElement, AppShellLinkProps>(fun
 export interface AppShellGroupProps extends HTMLAttributes<HTMLDivElement> {
   /** The heading over the group. The list is named by it. */
   label: ReactNode;
+  /** The heading toggles the list (a native <details>); a chevron shows on hover. Off by default. */
+  collapsible?: boolean;
+  /** With `collapsible`: whether the group starts open. Default true. Open it yourself when it holds the current page. */
+  defaultOpen?: boolean;
 }
 
 /** A headed section of the nav: a label over a list of AppShellItem. */
 export const AppShellGroup = forwardRef<HTMLDivElement, AppShellGroupProps>(function AppShellGroup(
-  { label, className, children, ...props },
+  { label, collapsible, defaultOpen = true, className, children, ...props },
   ref,
 ) {
   const labelId = useId();
+  const list = (
+    <ul className={appShellListClass} aria-labelledby={labelId}>
+      {children}
+    </ul>
+  );
+  if (collapsible) {
+    return (
+      <details ref={ref as never} className={cx(appShellGroupClass, appShellGroupCollapsibleClass, className)} open={defaultOpen} {...(props as object)}>
+        <summary className={appShellGroupLabelClass} id={labelId}>
+          {label}
+        </summary>
+        {list}
+      </details>
+    );
+  }
   return (
     <div ref={ref} className={cx(appShellGroupClass, className)} {...props}>
       <p className={appShellGroupLabelClass} id={labelId}>
         {label}
       </p>
-      <ul className={appShellListClass} aria-labelledby={labelId}>
-        {children}
-      </ul>
+      {list}
     </div>
   );
 });

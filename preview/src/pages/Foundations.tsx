@@ -290,7 +290,7 @@ function SpacingPage() {
           <CardContent className="ayy-stack">
             <div>
               <strong>Large</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>40 / 48 / 52px height</p>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>36 / 44 / 48px height</p>
             </div>
             <Input aria-label="Large project name" placeholder="Project name" size="lg" />
             <Select aria-label="Large project status" size="lg" defaultValue="active">

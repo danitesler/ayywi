@@ -19,7 +19,7 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 
 **Specs** (don't restyle these)
 - **Site header (.ayy-navbar)**: Sticky top 0, --ayy-size-header (72px) tall, --ayy-color-glass backdrop with 16px blur, 1px --ayy-color-hairline bottom border. Inner row centred at --ayy-size-container (1400px) with 24px gutter (16px below 64rem).
-- **Hero & section typography**: Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (12px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).
+- **Hero & section typography**: Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (13px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).
 - **Primary call to action (.ayy-button--ring)**: Marketing pages use the ring variant for the primary CTA in the hero and repeat it (size sm) in NavbarActions; supporting actions use outline or ghost.
 - **Footer (.ayy-footer)**: 1px --ayy-color-hairline top border, --ayy-space-12 block padding, inner content at --ayy-size-container width.
 

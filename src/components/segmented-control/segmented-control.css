@@ -60,7 +60,7 @@
 }
 
 @media (hover: hover) {
-  .ayy-segmented-control__option:not(:has(> input:disabled)):hover {
+  .ayy-segmented-control__option:not(:has(> input:disabled, > input:checked)):hover {
     color: var(--ayy-color-text);
   }
 }

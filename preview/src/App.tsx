@@ -1,5 +1,5 @@
-import { useEffect, useState, type CSSProperties } from "react";
-import { ALargeSmallIcon, ColorsIcon, Moon02Icon, Search01Icon, Settings01Icon, SidebarLeftIcon, Sun03Icon } from "@hugeicons/core-free-icons";
+import { useEffect, useState, type ComponentProps, type CSSProperties } from "react";
+import { ALargeSmallIcon, AppStoreIcon, ColorsIcon, Megaphone01Icon, Rocket01Icon, Moon02Icon, Search01Icon, Settings01Icon, SidebarLeftIcon, Sun03Icon } from "@hugeicons/core-free-icons";
 import {
   AppShell,
   AppShellBar,
@@ -46,6 +46,7 @@ interface NavItem {
   route: string;
   title: string;
   description?: string;
+  icon?: ComponentProps<typeof Icon>["icon"];
   /** Everything the search matches against. */
   text: string;
 }
@@ -68,9 +69,9 @@ const SECTIONS: NavSection[] = [
   {
     title: "Start",
     items: [
-      { route: getStarted.route, title: getStarted.title, description: "Interactive prompt generator and setup guide for AI tools", text: getStarted.text },
-      { route: showcase.route, title: showcase.title, description: "Full production app examples built with ayywi", text: showcase.text },
-      { route: changelogPage.route, title: changelogPage.title, description: "Release notes and design system updates", text: changelogPage.text },
+      { route: getStarted.route, title: getStarted.title, description: "Interactive prompt generator and setup guide for AI tools", text: getStarted.text, icon: Rocket01Icon },
+      { route: showcase.route, title: showcase.title, description: "Full production app examples built with ayywi", text: showcase.text, icon: AppStoreIcon },
+      { route: changelogPage.route, title: changelogPage.title, description: "Release notes and design system updates", text: changelogPage.text, icon: Megaphone01Icon },
     ],
   },
   {
@@ -343,6 +344,7 @@ export function App() {
         current={current}
         aria-current={current ? "page" : undefined}
       >
+        {item.icon && <Icon icon={item.icon} />}
         {item.title}
       </AppShellLink>
     );
@@ -410,7 +412,7 @@ export function App() {
         </div>
         <AppShellNav id="pv-nav" className="pv-nav" aria-label="Design system">
           {SECTIONS.map((s) => (
-            <AppShellGroup key={s.title} label={s.title}>
+            <AppShellGroup key={s.title} label={s.title} collapsible={s.title !== "Start"}>
               {s.items.map((item) => (
                 <AppShellItem key={item.route || "overview"}>{link(item)}</AppShellItem>
               ))}

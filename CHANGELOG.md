@@ -9,6 +9,35 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Added
+
+- **[App shell](#/app-shell)**
+  Nav groups always showed their links → a group can collapse (`ayy-app-shell__group--collapsible`, `collapsible` on `AppShellGroup`), with a chevron that shows on hover.
+- **[App shell](#/app-shell)**
+  Settings sections could not fold → the Settings example has a Collapsible sections switch in its Props button, so the section headings fold like the sidebar's.
+- **[App shell](#/app-shell)**
+  Icon links could not show an action row or a badge → `ayy-app-shell__link--action` puts a link's icon in a circle (for "New"), a `Badge` after a label ("Beta") keeps its size, and a new Nav example shows both with foldable groups.
+
+### Fixed
+
+- **[Segmented control](#/segmented-control)**
+  Hovering the selected option turned its label the fill colour, so it vanished → the selected label keeps its colour on hover (same guard on **[Tabs](#/tabs)**).
+
+### Changed
+
+- **Tokens**
+  Small text and control text were 12px in compact density (and `--ayy-text-xs` 12px everywhere) → 13px, so compact and comfortable now share 13px (touch stays 14px; `--ayy-control-text-field` is 13px on both, 16px on touch).
+- **Tokens**
+  Large control height was 40 / 48 / 52px (compact / comfortable / touch) → 36 / 44 / 48px (`--ayy-size-control-lg`).
+- **Preview**
+  The Brand page's Scale had a line describing the steps → the line is gone.
+- **[App shell](#/app-shell)**
+  Examples started with the Big sidebar → they start with Medium (the component's default is still Big).
+- **Preview**
+  Sidebar sections could not fold, and Start had no icons → every section but Start folds, and Start links have icons.
+- **[App shell](#/app-shell)**
+  Group headings were small uppercase with a divider between groups, and links were muted → headings are dim sentence case with no divider, links read at full text colour in regular weight, and the current page is a medium-weight tint.
+
 ## 0.1.2 — 2026-10-22
 
 ### Added

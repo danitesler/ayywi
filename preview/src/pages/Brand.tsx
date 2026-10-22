@@ -365,11 +365,6 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <h2 className="pv-h pv-h--section" id="brand-scale">
           Scale
         </h2>
-        <p className="pv-note">
-          {current && brand
-            ? `Eleven steps in the seed hue, seed at step ${brand.seedStep}. Use --ayy-brand-50 … 950 for illustrations and brand moments.`
-            : "Eleven steps, light to dark (var(--ayy-brand-50) … var(--ayy-brand-950)). Neutral grey until you pick a seed."}
-        </p>
         <Scale brand={current ? brand : null} />
       </div>
     </article>

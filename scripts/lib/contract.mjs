@@ -41,7 +41,7 @@ export const UTILITIES = {
   "ayy-lead": "Intro paragraph (alias of .ayy-lede), 18px soft text.",
   "ayy-body": "Body paragraph style (14px).",
   "ayy-small": "Small text style (13px).",
-  "ayy-xs": "Extra-small text style (12px).",
+  "ayy-xs": "Extra-small text style (13px).",
   "ayy-muted": "Muted text colour.",
   "ayy-faint": "Soft text colour (var(--ayy-color-text-soft)).",
   "ayy-eyebrow": "Small uppercase label above a heading.",
@@ -218,7 +218,7 @@ export const PATTERNS = [
       "Site header (.ayy-navbar)":
         "Sticky top 0, --ayy-size-header (72px) tall, --ayy-color-glass backdrop with 16px blur, 1px --ayy-color-hairline bottom border. Inner row centred at --ayy-size-container (1400px) with 24px gutter (16px below 64rem).",
       "Hero & section typography":
-        "Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (12px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).",
+        "Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (13px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).",
       "Primary call to action (.ayy-button--ring)":
         "Marketing pages use the ring variant for the primary CTA in the hero and repeat it (size sm) in NavbarActions; supporting actions use outline or ghost.",
       "Footer (.ayy-footer)":

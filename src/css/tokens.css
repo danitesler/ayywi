@@ -66,8 +66,8 @@
   --ayy-font-body: Sora, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
   --ayy-font-signature: Caveat, "Segoe Script", cursive;
   --ayy-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Noto Sans Mono", monospace;
-  --ayy-text-xs: 0.75rem;
-  --ayy-text-s: 0.75rem;
+  --ayy-text-xs: 0.8125rem;
+  --ayy-text-s: 0.8125rem;
   --ayy-text-sm: 0.875rem;
   --ayy-text-md: 1rem;
   --ayy-text-lg: 1.125rem;
@@ -106,7 +106,7 @@
   --ayy-space-1-5: 0.375rem;
   --ayy-size-control-sm: 1.75rem;
   --ayy-size-control-md: 2rem;
-  --ayy-size-control-lg: 2.5rem;
+  --ayy-size-control-lg: 2.25rem;
   --ayy-size-switch: 1.25rem;
   --ayy-size-check: 1rem;
   --ayy-size-touch: 2.75rem;
@@ -117,9 +117,9 @@
   --ayy-size-icon-md: 1.25rem;
   --ayy-size-icon-lg: 1.5rem;
   --ayy-size-icon-xl: 2rem;
-  --ayy-control-text-sm: 0.75rem;
-  --ayy-control-text-md: 0.75rem;
-  --ayy-control-text-field: 0.75rem;
+  --ayy-control-text-sm: 0.8125rem;
+  --ayy-control-text-md: 0.8125rem;
+  --ayy-control-text-field: 0.8125rem;
   --ayy-control-text-lg: 0.875rem;
   --ayy-control-pad-sm: 0.75rem;
   --ayy-control-pad-md: 1rem;
@@ -335,7 +335,7 @@
     --ayy-text-s: 0.875rem;
     --ayy-size-control-sm: 2.5rem;
     --ayy-size-control-md: 2.75rem;
-    --ayy-size-control-lg: 3.25rem;
+    --ayy-size-control-lg: 3rem;
     --ayy-size-switch: 1.625rem;
     --ayy-size-check: 1.25rem;
     --ayy-control-text-sm: 0.875rem;
@@ -349,15 +349,15 @@
 }
 
 [data-density="compact"] {
-  --ayy-text-s: 0.75rem;
+  --ayy-text-s: 0.8125rem;
   --ayy-size-control-sm: 1.75rem;
   --ayy-size-control-md: 2rem;
-  --ayy-size-control-lg: 2.5rem;
+  --ayy-size-control-lg: 2.25rem;
   --ayy-size-switch: 1.25rem;
   --ayy-size-check: 1rem;
-  --ayy-control-text-sm: 0.75rem;
-  --ayy-control-text-md: 0.75rem;
-  --ayy-control-text-field: 0.75rem;
+  --ayy-control-text-sm: 0.8125rem;
+  --ayy-control-text-md: 0.8125rem;
+  --ayy-control-text-field: 0.8125rem;
   --ayy-control-text-lg: 0.875rem;
   --ayy-control-pad-sm: 0.75rem;
   --ayy-control-pad-md: 1rem;
@@ -368,7 +368,7 @@
   --ayy-text-s: 0.8125rem;
   --ayy-size-control-sm: 2rem;
   --ayy-size-control-md: 2.5rem;
-  --ayy-size-control-lg: 3rem;
+  --ayy-size-control-lg: 2.75rem;
   --ayy-size-switch: 1.375rem;
   --ayy-size-check: 1.125rem;
   --ayy-control-text-sm: 0.8125rem;
@@ -384,7 +384,7 @@
   --ayy-text-s: 0.875rem;
   --ayy-size-control-sm: 2.5rem;
   --ayy-size-control-md: 2.75rem;
-  --ayy-size-control-lg: 3.25rem;
+  --ayy-size-control-lg: 3rem;
   --ayy-size-switch: 1.625rem;
   --ayy-size-check: 1.25rem;
   --ayy-control-text-sm: 0.875rem;

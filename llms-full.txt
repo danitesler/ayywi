@@ -207,7 +207,7 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 
 **Specs** (don't restyle these)
 - **Site header (.ayy-navbar)**: Sticky top 0, --ayy-size-header (72px) tall, --ayy-color-glass backdrop with 16px blur, 1px --ayy-color-hairline bottom border. Inner row centred at --ayy-size-container (1400px) with 24px gutter (16px below 64rem).
-- **Hero & section typography**: Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (12px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).
+- **Hero & section typography**: Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (13px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).
 - **Primary call to action (.ayy-button--ring)**: Marketing pages use the ring variant for the primary CTA in the hero and repeat it (size sm) in NavbarActions; supporting actions use outline or ghost.
 - **Footer (.ayy-footer)**: 1px --ayy-color-hairline top border, --ayy-space-12 block padding, inner content at --ayy-size-container width.
 
@@ -343,8 +343,8 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 | font.body | `--ayy-font-body` | Sora, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Helvetica Neue, Arial, sans-serif |  | Body and UI text. Always ends in system fonts so CJK, Arabic, Cyrillic, Devanagari etc. render natively. |
 | font.signature | `--ayy-font-signature` | Caveat, Segoe Script, cursive |  | Handwritten accent. Decorative only. |
 | font.mono | `--ayy-font-mono` | ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Noto Sans Mono, monospace |  |  |
-| text.xs | `--ayy-text-xs` | 0.75rem |  | 12px in every density. Prefer s, which grows with density. |
-| text.s | `--ayy-text-s` | 0.75rem |  | Small UI text that follows density: 12px compact, 13px comfortable, 14px touch. Badges, table text, menus, captions, group labels. · density: comfortable 0.8125rem, touch 0.875rem |
+| text.xs | `--ayy-text-xs` | 0.8125rem |  | 13px in every density. Prefer s, which grows with density. |
+| text.s | `--ayy-text-s` | 0.8125rem |  | Small UI text that follows density: 13px compact and comfortable, 14px touch. Badges, table text, menus, captions, group labels. · density: comfortable 0.8125rem, touch 0.875rem |
 | text.sm | `--ayy-text-sm` | 0.875rem |  | 14px in every density — descriptions, body in dense UIs. |
 | text.md | `--ayy-text-md` | 1rem |  | 16px — body. |
 | text.lg | `--ayy-text-lg` | 1.125rem |  | 18px — lede. |
@@ -383,7 +383,7 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 | space.1-5 | `--ayy-space-1-5` | 0.375rem |  |  |
 | size.control-sm | `--ayy-size-control-sm` | 1.75rem |  | Small control height. · density: comfortable 2rem, touch 2.5rem |
 | size.control-md | `--ayy-size-control-md` | 2rem |  | Default control height. · density: comfortable 2.5rem, touch 2.75rem |
-| size.control-lg | `--ayy-size-control-lg` | 2.5rem |  | Large control height. · density: comfortable 3rem, touch 3.25rem |
+| size.control-lg | `--ayy-size-control-lg` | 2.25rem |  | Large control height. · density: comfortable 2.75rem, touch 3rem |
 | size.switch | `--ayy-size-switch` | 1.25rem |  | Switch track height (width is 1.8×). · density: comfortable 1.375rem, touch 1.625rem |
 | size.check | `--ayy-size-check` | 1rem |  | Checkbox and radio box size. · density: comfortable 1.125rem, touch 1.25rem |
 | size.touch | `--ayy-size-touch` | 2.75rem |  | 44px minimum touch target. |
@@ -394,9 +394,9 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 | size.icon-md | `--ayy-size-icon-md` | 1.25rem |  | 20px icon: list rows, headings, next to body text. |
 | size.icon-lg | `--ayy-size-icon-lg` | 1.5rem |  | 24px icon: Hugeicons' native grid. |
 | size.icon-xl | `--ayy-size-icon-xl` | 2rem |  | 32px icon: feature tiles and empty states. |
-| control.text-sm | `--ayy-control-text-sm` | 0.75rem |  | density: comfortable 0.8125rem, touch 0.875rem |
-| control.text-md | `--ayy-control-text-md` | 0.75rem |  | density: comfortable 0.8125rem, touch 0.875rem |
-| control.text-field | `--ayy-control-text-field` | 0.75rem |  | Inputs, textareas, select triggers: control-text-md, but 16px on touch so iOS doesn't zoom on focus. · density: comfortable 0.8125rem, touch 1rem |
+| control.text-sm | `--ayy-control-text-sm` | 0.8125rem |  | density: comfortable 0.8125rem, touch 0.875rem |
+| control.text-md | `--ayy-control-text-md` | 0.8125rem |  | density: comfortable 0.8125rem, touch 0.875rem |
+| control.text-field | `--ayy-control-text-field` | 0.8125rem |  | Inputs, textareas, select triggers: control-text-md, but 16px on touch so iOS doesn't zoom on focus. · density: comfortable 0.8125rem, touch 1rem |
 | control.text-lg | `--ayy-control-text-lg` | 0.875rem |  | density: comfortable 0.9375rem, touch 1rem |
 | control.pad-sm | `--ayy-control-pad-sm` | 0.75rem |  | density: comfortable 0.875rem, touch 1rem |
 | control.pad-md | `--ayy-control-pad-md` | 1rem |  | density: comfortable 1.125rem, touch 1.25rem |
@@ -483,7 +483,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - `.ayy-lead`: Intro paragraph (alias of .ayy-lede), 18px soft text.
 - `.ayy-body`: Body paragraph style (14px).
 - `.ayy-small`: Small text style (13px).
-- `.ayy-xs`: Extra-small text style (12px).
+- `.ayy-xs`: Extra-small text style (13px).
 - `.ayy-muted`: Muted text colour.
 - `.ayy-faint`: Soft text colour (var(--ayy-color-text-soft)).
 - `.ayy-eyebrow`: Small uppercase label above a heading.
@@ -560,12 +560,12 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
-- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (12/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
-- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
+- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (13/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
+- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (13/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
 - `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/15/16px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
 - `icon` — Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).
 - `icon-sm` — Square at the sm control height (28/32/40px) with a 16px icon.
-- `icon-lg` — Square at the lg control height (40/48/52px) with a 20px icon.
+- `icon-lg` — Square at the lg control height (36/44/48px) with a 20px icon.
 - Density — Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
@@ -1024,7 +1024,9 @@ Category: Navigation. The frame of a web app: a sidebar beside a main area, each
 - `.ayy-app-shell__nav` — <nav> holding the links, stacked vertically (side by side in the phone row).
 - `.ayy-app-shell__link` — Destination link. aria-current="page" marks the page you're on: it gets a tint and a heavier weight.
 - `.ayy-app-shell__group` — A headed section of the nav: a __group-label over a __list. Groups after the first get a hairline above them.
-- `.ayy-app-shell__group-label` — The group's heading: a small uppercase <p>. Give it an id and point the list's aria-labelledby at it.
+- `.ayy-app-shell__group-label` — The group's heading: a small muted <p>. Give it an id and point the list's aria-labelledby at it.
+- `.ayy-app-shell__group--collapsible` — Makes a group optional to collapse: the group is a <details> and its label a <summary class="ayy-app-shell__group-label"> (give it an id; the list's aria-labelledby points at it). A chevron follows the label on hover and focus, and stays while the group is closed (always on touch screens). Add `open` to start open, and open it when it holds the current page. In the rail a closed group's links stay hidden.
+- `.ayy-app-shell__link--action` — An action row such as "New": the link's icon sits in a filled circle (a spread shadow, so it stays in the icon column).
 - `.ayy-app-shell__list` — The <ul> of a group. Each <li> holds a link, a link followed by a __sublist, or a __collapse.
 - `.ayy-app-shell__sublist` — A nested <ul> of child links, indented along a guide line. One level only. Follows a parent link, or sits inside a __collapse. Give it an aria-label when it follows a link.
 - `.ayy-app-shell__collapse` — A native <details> for a group of child links that opens and closes. Its <summary class="ayy-app-shell__link"> is the toggle, with a chevron at the inline end; put the links in a __sublist inside it. Add `open` when it holds the current page.
@@ -1077,7 +1079,7 @@ Category: Navigation. The frame of a web app: a sidebar beside a main area, each
 - `<AppShellBrand>` renders <a class="ayy-app-shell__brand">. Props: `children` A mark (an Icon, img, svg or Avatar) and the name in a <span>, or a mark and a className="ayy-app-shell__logotype" element.
 - `<AppShellNav>` renders <nav class="ayy-app-shell__nav">. Props: `aria-label` Defaults to "Main" (translate it).
 - `<AppShellLink>` renders <a class="ayy-app-shell__link">. Props: `current` boolean — sets aria-current="page".; `sub` boolean — a child link (ayy-app-shell__link--sub).
-- `<AppShellGroup>` renders <div class="ayy-app-shell__group"> with a label <p> and a <ul>. Props: `label` The heading. Names the list.
+- `<AppShellGroup>` renders <div class="ayy-app-shell__group"> (a <details> with collapsible) with a label <p> and a <ul>. Props: `label` The heading. Names the list.; `collapsible` boolean — renders a <details> with the label as its <summary> (ayy-app-shell__group--collapsible); a chevron shows on hover.; `defaultOpen` boolean — with collapsible, whether it starts open. Default true.
 - `<AppShellItem>` renders <li>.
 - `<AppShellSublist>` renders <ul class="ayy-app-shell__sublist">. Props: `aria-label` Required. Names the list.
 - `<AppShellCollapse>` renders <details class="ayy-app-shell__collapse"> with a link-styled <summary> and a <ul>. Props: `label` The toggle row: an icon and a short label.; `open` Start open. Set it when the group holds the current page.
@@ -1127,7 +1129,7 @@ Category: Navigation. The frame of a web app: a sidebar beside a main area, each
 - Don't scroll the page body as well, or cap the main width.
 - Don't put settings in Tabs or a small Dialog.
 
-**Examples**: Playground — one shell, every variation. Copy-ready HTML and React in llms/app-shell.md.
+**Examples**: Playground — one shell, every variation, Nav — action row, icon links, a badge and foldable groups. Copy-ready HTML and React in llms/app-shell.md.
 
 ## Bottom nav
 

@@ -85,7 +85,7 @@ export default function Example({
   setControls?: (node: ReactNode) => void;
 } = {}) {
   const [standaloneDevice, setStandaloneDevice] = useState<"desktop" | "tablet" | "mobile">((device as any) || "desktop");
-  const [size, setSize] = useState<AppShellSize>("lg");
+  const [size, setSize] = useState<AppShellSize>("md");
   const [collapsed, setCollapsed] = useState(false);
   const [hover, setHover] = useState(true);
   const [showBar, setShowBar] = useState(true);
@@ -98,8 +98,9 @@ export default function Example({
   const [navCompact, setNavCompact] = useState(false);
   const [navIconOnly, setNavIconOnly] = useState(false);
   // The settings dialog's own options, set from its Props button next to the close button.
-  const [settingsSize, setSettingsSize] = useState<AppShellSize>("lg");
+  const [settingsSize, setSettingsSize] = useState<AppShellSize>("md");
   const [settingsGrouped, setSettingsGrouped] = useState(true);
+  const [settingsFold, setSettingsFold] = useState(false);
   const [settingsSearch, setSettingsSearch] = useState(false);
   const [settingsQuery, setSettingsQuery] = useState("");
 
@@ -529,6 +530,10 @@ export default function Example({
                     <Switch id="st-grouped" checked={settingsGrouped} onCheckedChange={setSettingsGrouped} />
                   </div>
                   <div className="ayy-spread">
+                    <Label htmlFor="st-fold">Collapsible sections</Label>
+                    <Switch id="st-fold" checked={settingsFold} onCheckedChange={setSettingsFold} disabled={!settingsGrouped} />
+                  </div>
+                  <div className="ayy-spread">
                     <Label htmlFor="st-search">Search</Label>
                     <Switch id="st-search" checked={settingsSearch} onCheckedChange={setSettingsSearch} />
                   </div>
@@ -556,7 +561,7 @@ export default function Example({
                   <AppShellNav aria-label="Settings">
                     {settingsGrouped
                       ? groups.map((g) => (
-                          <AppShellGroup key={g.label} label={g.label}>
+                          <AppShellGroup key={g.label} label={g.label} collapsible={settingsFold}>
                             {g.links.map((l) => (
                               <AppShellItem key={l.href}>{link(l)}</AppShellItem>
                             ))}

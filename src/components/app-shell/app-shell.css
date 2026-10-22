@@ -84,9 +84,9 @@
   padding-block: var(--ayy-space-1);
   padding-inline: var(--_pad);
   border-radius: var(--_radius);
-  color: var(--ayy-color-muted);
+  color: var(--ayy-color-text);
   font-size: var(--_text);
-  font-weight: var(--ayy-weight-medium);
+  font-weight: var(--ayy-weight-regular);
   line-height: var(--ayy-leading-snug);
   text-decoration: none;
   transition:
@@ -105,16 +105,27 @@
   color: var(--ayy-color-text);
 }
 
-/* The current page is more than a colour: a tint and a heavier weight. */
+/* Items read at full text colour; the current page is a quiet tint, the way group headings are the dim ones. */
 .ayy-app-shell__link[aria-current="page"] {
   background-color: var(--ayy-color-wash-hover);
   color: var(--ayy-color-text);
-  font-weight: var(--ayy-weight-semibold);
+  font-weight: var(--ayy-weight-medium);
 }
 
 .ayy-app-shell__link:focus-visible {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 2px;
+}
+
+/* An action row ("New"): its icon sits in a filled circle. A spread shadow, so the icon keeps its place in the column. */
+.ayy-app-shell__link--action > :is(svg, .ayy-icon):first-child {
+  border-radius: var(--ayy-radius-pill);
+  box-shadow: 0 0 0 0.3em var(--ayy-color-wash-hover);
+}
+
+/* A badge ("Beta") sits after the label, never squeezed. */
+.ayy-app-shell__link > .ayy-badge {
+  flex: none;
 }
 
 /* Groups: a heading over a list of links. Bare links in the nav still work; use groups once the nav has sections. */
@@ -125,20 +136,89 @@
 }
 
 .ayy-app-shell__group + .ayy-app-shell__group {
-  margin-block-start: var(--ayy-space-4);
-  padding-block-start: var(--ayy-space-5);
-  border-block-start: 1px solid var(--ayy-color-hairline);
+  margin-block-start: var(--ayy-space-5);
 }
 
 .ayy-app-shell__group-label {
   margin: 0;
   padding-inline: var(--_pad);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-eyebrow);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
   line-height: var(--ayy-leading-normal);
-  text-transform: uppercase;
+}
+
+/* Collapsible group: a native <details> whose <summary> is the label. The chevron follows the label text and shows on hover,
+   on focus, or while the group is closed; on touch screens it always shows. */
+.ayy-app-shell__group--collapsible {
+  display: block;
+}
+
+.ayy-app-shell__group--collapsible > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  padding-block: var(--ayy-space-1);
+  border-radius: var(--ayy-radius-control);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--ayy-duration-base) ease;
+}
+
+.ayy-app-shell__group--collapsible > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ayy-app-shell__group--collapsible > summary:hover {
+  color: var(--ayy-color-text);
+}
+
+.ayy-app-shell__group--collapsible > summary:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-app-shell__group--collapsible > summary::after {
+  content: "";
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  border-inline-end: 1.5px solid currentColor;
+  border-block-end: 1.5px solid currentColor;
+  opacity: 0;
+  transform: translateY(-0.125em) rotate(45deg);
+  transition:
+    opacity var(--ayy-duration-base) ease,
+    transform var(--ayy-duration-base) ease;
+}
+
+.ayy-app-shell__group--collapsible:not([open]) > summary::after {
+  transform: rotate(calc(var(--_ayy-dir, 1) * -45deg));
+}
+
+.ayy-app-shell__group--collapsible > summary:is(:hover, :focus-visible)::after,
+.ayy-app-shell__group--collapsible:not([open]) > summary::after {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .ayy-app-shell__group--collapsible > summary::after {
+    opacity: 1;
+  }
+}
+
+.ayy-app-shell__group--collapsible > .ayy-app-shell__list {
+  margin-block-start: var(--ayy-space-1);
+}
+
+.ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__group--collapsible > .ayy-app-shell__list {
+  margin-block-start: 0;
+}
+
+/* A closed group that holds the current page still says so. */
+.ayy-app-shell__group--collapsible:not([open]):has(.ayy-app-shell__link[aria-current="page"]) > summary {
+  color: var(--ayy-color-text);
 }
 
 .ayy-app-shell__list,
@@ -647,13 +727,12 @@ ayy-app-shell {
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__group + .ayy-app-shell__group {
-  margin-block-start: var(--ayy-space-3);
-  padding-block-start: var(--ayy-space-4);
+  margin-block-start: var(--ayy-space-4);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__group-label {
   padding-block: var(--ayy-space-1);
-  font-size: var(--ayy-text-s);
+  font-size: var(--ayy-text-sm);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__list {

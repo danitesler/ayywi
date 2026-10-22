@@ -12,7 +12,9 @@
     "ayy-app-shell__nav": "<nav> holding the links, stacked vertically (side by side in the phone row).",
     "ayy-app-shell__link": "Destination link. aria-current=\"page\" marks the page you're on: it gets a tint and a heavier weight.",
     "ayy-app-shell__group": "A headed section of the nav: a __group-label over a __list. Groups after the first get a hairline above them.",
-    "ayy-app-shell__group-label": "The group's heading: a small uppercase <p>. Give it an id and point the list's aria-labelledby at it.",
+    "ayy-app-shell__group-label": "The group's heading: a small muted <p>. Give it an id and point the list's aria-labelledby at it.",
+    "ayy-app-shell__group--collapsible": "Makes a group optional to collapse: the group is a <details> and its label a <summary class=\"ayy-app-shell__group-label\"> (give it an id; the list's aria-labelledby points at it). A chevron follows the label on hover and focus, and stays while the group is closed (always on touch screens). Add `open` to start open, and open it when it holds the current page. In the rail a closed group's links stay hidden.",
+    "ayy-app-shell__link--action": "An action row such as \"New\": the link's icon sits in a filled circle (a spread shadow, so it stays in the icon column).",
     "ayy-app-shell__list": "The <ul> of a group. Each <li> holds a link, a link followed by a __sublist, or a __collapse.",
     "ayy-app-shell__sublist": "A nested <ul> of child links, indented along a guide line. One level only. Follows a parent link, or sits inside a __collapse. Give it an aria-label when it follows a link.",
     "ayy-app-shell__collapse": "A native <details> for a group of child links that opens and closes. Its <summary class=\"ayy-app-shell__link\"> is the toggle, with a chevron at the inline end; put the links in a __sublist inside it. Add `open` when it holds the current page.",
@@ -62,7 +64,7 @@
     "density": "Big links are at least the lg control height (40px compact, 48 comfortable, 52 touch) with lg control text, Medium ones md (32, 40, 44) with md control text, Small ones sm (28, 32, 40) with sm control text; sub-links one step down. Grows with data-density. Links, sidebar buttons, the logo row and the toggle share one row height, and every icon sits centred in a square that wide at the start of the row, so icons, the brand's mark and the toggle's icon line up in a column, in the full sidebar and in the rail alike. The sub-list's guide line runs down that column too.",
     "width": "Fills the viewport (100dvh) or its box (block-size: 100%). Wide screens: 15rem sidebar or collapsed icon rail. Below 48rem: a top __bar, a Bottom nav and a drawer, or one scrolling row when it holds neither."
   },
-  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass, appShellMdClass, appShellDrawerClass, appShellDetailClass, appShellResizeClass, appShellResizeDetailClass, appShellResizingClass, appShellSizes constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass, appShellLogotypeClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
+  "js": "appShellClass, appShellSidebarClass, appShellBrandClass, appShellNavClass, appShellLinkClass, appShellFooterClass, appShellMainClass, appShellGroupClass, appShellGroupLabelClass, appShellGroupCollapsibleClass, appShellListClass, appShellSublistClass, appShellCollapseClass, appShellLinkSubClass, appShellBarClass, appShellToggleClass, appShellCollapsedClass, appShellHoverPreviewClass, appShellSmClass, appShellMdClass, appShellDrawerClass, appShellDetailClass, appShellResizeClass, appShellResizeDetailClass, appShellResizingClass, appShellSizes constants; appShellSettingsClass, appShellBackClass, appShellTitleClass, appShellHeadClass, appShellLogotypeClass constants; connectAppShell(shell, options) wires the phone drawer, desktop sidebar collapse and hover preview, and Esc in settings, and returns a cleanup; appShellMenuIcon (the Hugeicons menu icon as SVG markup); appShellBackIcon (the settings back arrow, mirrored in RTL).",
   "react": {
     "import": "import { AppShell, AppShellBack, AppShellTitle, AppShellHead, AppShellBar, AppShellToggle, AppShellSidebar, AppShellBrand, AppShellNav, AppShellLink, AppShellGroup, AppShellItem, AppShellSublist, AppShellCollapse, AppShellFooter, AppShellMain, AppShellDetail, AppShellResize } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -91,7 +93,7 @@
         "renders": "<a class=\"ayy-app-shell__link\">",
         "props": { "current": "boolean — sets aria-current=\"page\".", "sub": "boolean — a child link (ayy-app-shell__link--sub)." }
       },
-      "AppShellGroup": { "renders": "<div class=\"ayy-app-shell__group\"> with a label <p> and a <ul>", "props": { "label": "The heading. Names the list." } },
+      "AppShellGroup": { "renders": "<div class=\"ayy-app-shell__group\"> (a <details> with collapsible) with a label <p> and a <ul>", "props": { "label": "The heading. Names the list.", "collapsible": "boolean — renders a <details> with the label as its <summary> (ayy-app-shell__group--collapsible); a chevron shows on hover.", "defaultOpen": "boolean — with collapsible, whether it starts open. Default true." } },
       "AppShellItem": { "renders": "<li>" },
       "AppShellSublist": { "renders": "<ul class=\"ayy-app-shell__sublist\">", "props": { "aria-label": "Required. Names the list." } },
       "AppShellCollapse": {
@@ -152,7 +154,8 @@
     "Don't put settings in Tabs or a small Dialog."
   ],
   "examples": [
-    { "id": "playground", "title": "Playground — one shell, every variation" }
+    { "id": "playground", "title": "Playground — one shell, every variation" },
+    { "id": "nav", "title": "Nav — action row, icon links, a badge and foldable groups" }
   ],
   "element": {
     "tag": "ayy-app-shell",

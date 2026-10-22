@@ -30,12 +30,12 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
-- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (12/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
-- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (12/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
+- `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (13/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
+- `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (13/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
 - `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/15/16px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
 - `icon` — Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).
 - `icon-sm` — Square at the sm control height (28/32/40px) with a 16px icon.
-- `icon-lg` — Square at the lg control height (40/48/52px) with a 20px icon.
+- `icon-lg` — Square at the lg control height (36/44/48px) with a 20px icon.
 - Density — Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
