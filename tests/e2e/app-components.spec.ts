@@ -321,8 +321,6 @@ test("app shell sizes: Small and Medium rows are denser than Big, and the docs' 
   const link = demo.locator(".ayy-app-shell").first().getByRole("link", { name: "Spacing" });
   const height = () => link.evaluate((el) => (el as HTMLElement).offsetHeight);
   const radius = () => link.evaluate((el) => getComputedStyle(el).borderTopLeftRadius);
-  const big = await height();
-  const bigRadius = await radius();
   const ex = page.locator('.pv-example[aria-labelledby="ex-playground"]');
   const propsBtn = ex.getByRole("button", { name: "Props" });
   if (await propsBtn.isVisible()) {
@@ -339,9 +337,15 @@ test("app shell sizes: Small and Medium rows are denser than Big, and the docs' 
       await demo.locator("#pg-size").selectOption(size);
     }
   };
+  // The example starts at Medium; Big is the taller one.
+  const startMed = await height();
+  await setSize("lg");
+  await expect.poll(height).toBeGreaterThan(startMed);
+  const big = await height();
+  const bigRadius = await radius();
   await setSize("md");
-  await expect.poll(height).toBeLessThan(big);
-  const med = await height();
+  await expect.poll(height).toBe(startMed);
+  const med = startMed;
   await setSize("sm");
   await expect.poll(height).toBeLessThan(med);
   expect(await radius()).not.toBe(bigRadius);

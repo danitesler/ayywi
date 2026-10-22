@@ -237,10 +237,10 @@ test("the docs sidebar collapses to a rail, previews on hover, and remembers it"
   await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
   await page.locator(".pv-content").hover();
   await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
-  // The rail: the toggle and a search button. The nav's links (no icons) are out of the way, with nothing to scroll.
+  // The rail: the toggle, a search button and the links that have icons (Start). The rest are out of the way.
   await expect(sidebar.getByRole("button", { name: "Search", exact: true })).toBeVisible();
+  await expect(sidebar.getByRole("link", { name: "Get started", exact: true })).toBeVisible();
   await expect(sidebar.getByRole("link", { name: "Button", exact: true })).toBeHidden();
-  await expect(sidebar).toHaveCSS("overflow-y", "hidden");
   // The App shell examples on the page keep their own sidebars.
   expect(Math.round((await page.locator(".pv-content .ayy-app-shell:not(.ayy-app-shell--collapsed) > .ayy-app-shell__sidebar").first().boundingBox())!.width)).toBe(240);
 
