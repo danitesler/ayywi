@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { example, open, rtl, settle, stage } from "./helpers";
+import { example, keyboardFocus, open, rtl, settle, stage } from "./helpers";
 
 /** The app shell playground's toolbar switch. Inert in the HTML renderer: use pgSetup() there instead. */
 async function pgSwitch(page: Page, name: string, on: boolean) {
@@ -206,6 +206,60 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
       await main.hover();
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+    });
+
+    test("app shell logo: mark, link icons and toggle share one axis; in the rail the pointer on the mark swaps in the toggle", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await open(page, "app-shell", { renderer });
+      if (renderer === "react") {
+        await pgSwitch(page, "Collapsed sidebar", true);
+        await pgSwitch(page, "Hover preview", false);
+      } else {
+        await pgShell(page).evaluate((el) => el.classList.add("ayy-app-shell--collapsed"));
+        await pgShell(page).evaluate((el) => el.classList.remove("ayy-app-shell--hover-preview"));
+      }
+      const shell = pgShell(page);
+      const sidebar = shell.locator(".ayy-app-shell__sidebar");
+      const main = shell.locator(".ayy-app-shell__main");
+      const mark = sidebar.locator(".ayy-app-shell__head .ayy-app-shell__brand > svg");
+      const toggle = sidebar.locator(".ayy-app-shell__head > .ayy-app-shell__toggle");
+      const centre = async (loc: ReturnType<typeof sidebar.locator>) => {
+        const box = (await loc.boundingBox())!;
+        return box.x + box.width / 2;
+      };
+      const axes = async () => {
+        const icons = sidebar.locator(".ayy-app-shell__link:has(> svg) > svg");
+        const xs = [await centre(mark), await centre(toggle.locator("svg"))];
+        for (let i = 0; i < Math.min(await icons.count(), 3); i++) xs.push(await centre(icons.nth(i)));
+        return xs;
+      };
+      const flat = (xs: number[]) => Math.max(...xs) - Math.min(...xs);
+
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+      await expect.poll(async () => flat(await axes())).toBeLessThan(0.75);
+      // At rest the rail shows the mark; the toggle waits underneath.
+      await expect(toggle).toHaveCSS("opacity", "0");
+      await expect(mark).toHaveCSS("opacity", "1");
+      // Resting on the mark swaps it for the toggle; the rail stays narrow (no hover preview here).
+      await sidebar.locator(".ayy-app-shell__head").hover();
+      await expect(toggle).toHaveCSS("opacity", "1");
+      await expect(mark).toHaveCSS("opacity", "0");
+      expect(Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+      // Clicking it expands the sidebar; the axis holds, and the toggle is now at the inline end of the row.
+      await toggle.click();
+      await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
+      await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
+      await main.hover();
+      await expect(mark).toHaveCSS("opacity", "1");
+      await expect
+        .poll(async () => {
+          const xs = await axes();
+          return flat([xs[0], ...xs.slice(2)]);
+        })
+        .toBeLessThan(0.75);
+      const sideBox = (await sidebar.boundingBox())!;
+      const toggleBox = (await toggle.boundingBox())!;
+      expect(toggleBox.x).toBeGreaterThan(sideBox.x + sideBox.width / 2);
     });
 
     test("app shell workspace: drag and keys resize the sidebar, a double click resets", async ({ page }) => {
@@ -503,8 +557,11 @@ for (const renderer of ["react", "html"] as const) {
     test("tooltip shows on focus in the top layer and hides on Esc", async ({ page }) => {
       await open(page, "tooltip", { renderer });
       const trigger = stage(page).getByRole("button", { name: "Top" });
+      // After pointer use focus alone doesn't open it; a keyboard user's focus does.
       await trigger.focus();
       const tip = page.getByRole("tooltip", { name: /Save changes/ });
+      await expect(tip).toBeHidden();
+      await keyboardFocus(trigger);
       await expect(tip).toBeVisible();
       await expect(trigger).toHaveAttribute("aria-describedby", (await tip.getAttribute("id"))!);
       if (await tip.evaluate((el) => el.hasAttribute("popover"))) {
@@ -630,7 +687,7 @@ for (const renderer of ["react", "html"] as const) {
         const input = stage(page, 2).locator("#ig-password");
         const toggleBtn = stage(page, 2).getByRole("button", { name: "Show password" });
         await expect(input).toHaveAttribute("type", "password");
-        await toggleBtn.focus();
+        await keyboardFocus(toggleBtn);
         await expect(page.getByRole("tooltip", { name: "Show password" })).toBeVisible();
         await toggleBtn.click();
         await expect(input).toHaveAttribute("type", "text");
@@ -642,7 +699,7 @@ for (const renderer of ["react", "html"] as const) {
         await expect(page.locator(".ayy-toast").filter({ hasText: "Password hidden" })).toBeVisible();
 
         const copyTokenBtn = stage(page, 2).getByRole("button", { name: "Copy token" });
-        await copyTokenBtn.focus();
+        await keyboardFocus(copyTokenBtn);
         await expect(page.getByRole("tooltip", { name: "Copy token" })).toBeVisible();
         await copyTokenBtn.click();
         await expect(page.locator(".ayy-toast").filter({ hasText: "Access token copied to clipboard" })).toBeVisible();
@@ -962,6 +1019,70 @@ for (const renderer of ["react", "html"] as const) {
       expect(strokes[0]).not.toBe(strokes[1]);
       await rtl(line);
       expect(await line.locator(".ayy-chart__svg").evaluate((svg) => getComputedStyle(svg).scale)).toBe("-1 1");
+    });
+
+    test("chart types: bars along rows, lines over column centres, floating bars, slices, a meter, dots, cells, a funnel", async ({ page }) => {
+      await open(page, "chart", { renderer });
+      const box = (l: import("@playwright/test").Locator) => l.evaluate((el) => el.getBoundingClientRect().toJSON() as DOMRect);
+
+      // Horizontal: each label sits on its row; Technical in October (5.8h on an 8h scale) is 72.5% of the plot.
+      const horizontal = example(page, "horizontal");
+      const rows = horizontal.locator(".ayy-chart__column");
+      const labels = horizontal.locator(".ayy-chart__labels > *");
+      for (const i of [0, 4]) expect(Math.round((await box(rows.nth(i))).top)).toBe(Math.round((await box(labels.nth(i))).top));
+      // Polled, plot and bar together: the bars grow in, settle() only waits for the stage's own animations, and the
+      // page's layout can still shift.
+      const technical = rows.nth(1).locator(".ayy-chart__bar").first();
+      const share = async () => ((await box(technical)).width / (await box(horizontal.locator(".ayy-chart__plot"))).width) * 100;
+      await expect.poll(async () => Math.abs((await share()) - 72.5)).toBeLessThan(1);
+
+      // Combo: the line's first point is over the first column's centre.
+      const combo = example(page, "combo");
+      const comboPlot = await box(combo.locator(".ayy-chart__plot"));
+      const column = await box(combo.locator(".ayy-chart__column").first());
+      const startX = await combo.locator(".ayy-chart__line").evaluate((p) => (p as SVGPathElement).getPointAtLength(0).x);
+      expect(Math.abs(startX - ((column.left + column.width / 2 - comboPlot.left) / comboPlot.width) * 100)).toBeLessThan(0.5);
+
+      // Waterfall: the first change starts where the opening total ends, and drops aren't coloured like rises.
+      const bars = example(page, "waterfall").locator(".ayy-chart__bar");
+      await expect.poll(async () => Math.abs((await box(bars.nth(0))).top - (await box(bars.nth(1))).bottom)).toBeLessThan(1.5);
+      const fill = (i: number) => bars.nth(i).evaluate((el) => getComputedStyle(el).backgroundColor);
+      expect(await fill(1)).not.toBe(await fill(3));
+
+      // Donut: one slice per part, each its own colour, starting where the one before ends.
+      const donut = example(page, "donut");
+      const slices = donut.locator(".ayy-chart__slice");
+      await expect(slices).toHaveCount(4);
+      expect(new Set(await slices.evaluateAll((all) => all.map((s) => getComputedStyle(s).stroke))).size).toBe(4);
+      // Chrome keeps the offset in a calc(): calc(-43.7px).
+      const offset = await slices.nth(1).evaluate((s) => getComputedStyle(s).strokeDashoffset);
+      expect(Number(offset.match(/-?[\d.]+/)?.[0])).toBeCloseTo(-43.7, 1);
+
+      // Gauge: a meter with its value in words.
+      const meter = example(page, "gauge").getByRole("meter", { name: "Ad spend this month" });
+      await expect(meter).toHaveAttribute("aria-valuenow", "7240");
+      await expect(meter).toHaveAttribute("aria-valuetext", "$7.2K of $10K ad spend");
+
+      // Scatter: the biggest deal is at the end side, and moves to the start side's mirror in RTL.
+      const scatter = example(page, "scatter");
+      const lost = scatter.locator(".ayy-chart__series").nth(1).locator(".ayy-chart__dot");
+      const farthest = lost.last();
+      const nearest = lost.first();
+      expect((await box(farthest)).left).toBeGreaterThan((await box(nearest)).left);
+      await rtl(scatter);
+      expect((await box(farthest)).left).toBeLessThan((await box(nearest)).left);
+
+      // Heatmap: the busiest cell takes the full series colour, like the key's darkest cell.
+      const heatmap = example(page, "heatmap");
+      await expect(heatmap.locator(".ayy-heatmap .ayy-heatmap__cell")).toHaveCount(84);
+      const shade = (l: import("@playwright/test").Locator) => l.evaluate((el) => getComputedStyle(el).backgroundColor);
+      expect(await shade(heatmap.locator('.ayy-heatmap__cell[data-value="Mon, 12pm: 46"]'))).toBe(await shade(heatmap.locator(".ayy-heatmap__key .ayy-heatmap__cell").last()));
+      await expect(heatmap.getByRole("table", { name: "Support tickets by day and time, last four weeks" })).toHaveCount(1);
+
+      // Funnel: readable as a list, each rate saying what it's a share of.
+      const funnel = example(page, "funnel").getByRole("list", { name: "Signup funnel, last 30 days" });
+      await expect(funnel.getByRole("listitem")).toHaveCount(5);
+      for (const text of ["Started signup", "4,830", "39% of the step before"]) await expect(funnel.getByRole("listitem").nth(1)).toContainText(text);
     });
 
     test("table: header buttons sort the rows, the header checkbox selects them all", async ({ page }) => {

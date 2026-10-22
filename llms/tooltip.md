@@ -10,7 +10,7 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 - `default` — Hidden. The bubble is a raised surface with a line-strong border and s text.
 - `hover` (`.ayy-tooltip:hover`) — The bubble fades and slides in after 200ms.
 - `pressed` — doesn't apply: No pressed look; the trigger keeps its own.
-- `focus` (`.ayy-tooltip:is(:has(:focus-visible), :focus-visible)`) — The bubble shows at once (no delay) while the trigger has keyboard focus.
+- `focus` (`.ayy-tooltip:is(:has(:focus-visible), :focus-visible), unless data-ayy-input="pointer"`) — The bubble shows at once (no delay) while the trigger has keyboard focus. After mouse or touch use (trackInputModality()) only hover shows it.
 - `disabled` — doesn't apply: A disabled button gets no focus and shows no tooltip; explain why it's disabled in visible text instead.
 - `selected` — doesn't apply: No selected state.
 - `error` — doesn't apply: Never put errors in a tooltip; use a FieldError.

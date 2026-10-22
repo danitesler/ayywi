@@ -158,7 +158,10 @@ export const AppShellTitle = forwardRef<HTMLHeadingElement, AppShellTitleProps>(
 
 export interface AppShellHeadProps extends HTMLAttributes<HTMLDivElement> {}
 
-/** The sidebar's top row: an AppShellToggle that collapses the sidebar, then the AppShellBrand. The toggle stays in place in the rail. */
+/**
+ * The sidebar's top row: the AppShellBrand (a logo mark, with a name or a logotype beside it), then the AppShellToggle that
+ * collapses the sidebar, at the inline end. In the rail only the mark shows; resting the pointer on it swaps in the toggle.
+ */
 export const AppShellHead = forwardRef<HTMLDivElement, AppShellHeadProps>(function AppShellHead({ className, children, ...props }, ref) {
   return (
     <InHeadContext.Provider value={true}>

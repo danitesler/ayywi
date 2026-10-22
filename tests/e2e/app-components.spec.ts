@@ -350,3 +350,30 @@ test("app shell sizes: Small and Medium rows are denser than Big, and the docs' 
   await setSize("lg");
   await expect.poll(height).toBe(big);
 });
+
+test("collapsed docs sidebar: a menu opened from the previewed sidebar keeps it open until the menu closes", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 760 });
+  await page.goto("/#/app-shell");
+  const sidebar = page.locator(".pv-sidebar");
+  const width = async () => Math.round((await sidebar.boundingBox())!.width);
+  await page.locator(".pv-sidebar__toggle").click();
+  await page.mouse.move(700, 500);
+  await expect.poll(width).toBeLessThan(70);
+  // Rest on the rail so the preview opens, then open the appearance menu.
+  await page.mouse.move(25, 300, { steps: 4 });
+  await expect.poll(width, { timeout: 10_000 }).toBeGreaterThan(240);
+  await sidebar.locator(".pv-sidebar__actions button").first().click();
+  const menu = page.locator(".pv-sidebar [role=menu]:popover-open").first();
+  await expect(menu).toBeVisible();
+  // The pointer leaves for the page: the sidebar and the menu stay put, and the menu still takes clicks.
+  await page.mouse.move(900, 400, { steps: 8 });
+  await page.waitForTimeout(700);
+  expect(await width()).toBeGreaterThan(200);
+  await expect(menu).toBeVisible();
+  await expect(menu).toHaveCSS("pointer-events", "auto");
+  await expect(menu).toHaveCSS("visibility", "visible");
+  // Clicking away closes the menu, and the sidebar goes back to the rail.
+  await page.mouse.click(900, 400);
+  await expect(menu).toBeHidden();
+  await expect.poll(width).toBeLessThan(70);
+});

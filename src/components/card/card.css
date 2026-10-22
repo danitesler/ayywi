@@ -140,6 +140,11 @@
   outline-offset: 2px;
 }
 
+/* The card's ring is on ::after, which base.css's pointer-mode rule can't reach. */
+:root[data-ayy-input="pointer"] .ayy-card__link:focus-visible::after {
+  outline-color: transparent;
+}
+
 .ayy-card:has(.ayy-card__link) :is(a, button, input, select, textarea, summary, [tabindex]):not(.ayy-card__link) {
   position: relative;
   z-index: 2;

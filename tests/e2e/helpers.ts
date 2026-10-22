@@ -54,3 +54,10 @@ export const settle = (l: Locator) => l.evaluate((el) => Promise.all(el.getAnima
 
 /** Mirror a stage right-to-left, the way a page with dir="rtl" on an ancestor would. */
 export const rtl = (l: Locator) => l.evaluate((el) => el.setAttribute("dir", "rtl"));
+
+/** Focus as a keyboard user gets there: a Tab first puts the page in keyboard mode (trackInputModality), so the ring
+    and focus-only UI (tooltips) show. A bare locator.focus() counts as pointer use. */
+export async function keyboardFocus(l: Locator): Promise<void> {
+  await l.page().keyboard.press("Tab");
+  await l.focus();
+}

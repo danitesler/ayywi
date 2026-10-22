@@ -18,8 +18,8 @@
     "ayy-button--icon-sm": "Square at the sm control height (28px compact, 32 comfortable, 40 touch), for a single 16px icon.",
     "ayy-button--icon-lg": "Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.",
     "ayy-button--block": "Fills its container's width: a card footer, a phone form, a dialog's only action.",
-    "ayy-button--start": "Icon and label sit at the inline start of a wide button (like an App shell link). Use with block.",
-    "ayy-button--end": "Icon and label sit at the inline end of a wide button. Use with block. Centered is the default, no class."
+    "ayy-button--start": "Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.",
+    "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class."
   },
   "variants": {
     "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"], "default": "primary" },

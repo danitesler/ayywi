@@ -1042,6 +1042,11 @@
   border-color: transparent;
 }
 
+/* Pointer use hides the ring (base.css), so keep the border it replaces. */
+:root[data-ayy-input="pointer"] .ayy-time-picker-trigger:focus-visible {
+  border-color: var(--ayy-color-line-strong);
+}
+
 .ayy-time-picker-trigger:disabled,
 .ayy-time-picker-trigger[aria-disabled="true"] {
   opacity: var(--ayy-opacity-disabled);

@@ -69,6 +69,7 @@ const wrap = (layer, css) => `${LAYERS}\n@layer ${layer} {\n${css}}\n`;
 writeFileSync(join(dist, "tokens.css"), wrap("ayywi.tokens", readFileSync(src("css/tokens.css"), "utf8")));
 writeFileSync(join(dist, "css/tokens.css"), wrap("ayywi.tokens", readFileSync(src("css/tokens.css"), "utf8")));
 writeFileSync(join(dist, "css/base.css"), wrap("ayywi.base", readFileSync(src("css/base.css"), "utf8")));
+writeFileSync(join(dist, "css/focus.css"), wrap("ayywi.utilities", readFileSync(src("css/focus.css"), "utf8")));
 for (const name of readdirSync(src("components"))) {
   const cssPath = src(`components/${name}/${name}.css`);
   if (!existsSync(cssPath)) continue;

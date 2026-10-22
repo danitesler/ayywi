@@ -3,6 +3,7 @@ import {
   DashboardSquare01Icon,
   Database01Icon,
   Folder01Icon,
+  Layers01Icon,
   Invoice01Icon,
   KeyboardIcon,
   MoreHorizontalIcon,
@@ -91,6 +92,7 @@ export default function Example({
   const [showTabs, setShowTabs] = useState(true);
   const [drawer, setDrawer] = useState(false);
   const [grouped, setGrouped] = useState(true);
+  const [logotype, setLogotype] = useState(false);
   const [resizable, setResizable] = useState(true);
   const [navSize, setNavSize] = useState<BottomNavSize>("lg");
   const [navCompact, setNavCompact] = useState(false);
@@ -196,6 +198,10 @@ export default function Example({
               <Switch id="pg-grouped" checked={grouped} onCheckedChange={setGrouped} />
             </div>
             <div className="ayy-spread">
+              <Label htmlFor="pg-logotype">Logotype</Label>
+              <Switch id="pg-logotype" checked={logotype} onCheckedChange={setLogotype} />
+            </div>
+            <div className="ayy-spread">
               <Label htmlFor="pg-resize">Resize handles</Label>
               <Switch id="pg-resize" checked={resizable} onCheckedChange={setResizable} />
             </div>
@@ -213,6 +219,7 @@ export default function Example({
     showTabs,
     drawer,
     grouped,
+    logotype,
     resizable,
     navSize,
     navCompact,
@@ -314,6 +321,10 @@ export default function Example({
                 <Label htmlFor="pg-grouped">Grouped nav</Label>
               </Field>
               <Field inline>
+                <Switch id="pg-logotype" checked={logotype} onCheckedChange={setLogotype} />
+                <Label htmlFor="pg-logotype">Logotype</Label>
+              </Field>
+              <Field inline>
                 <Switch id="pg-resize" checked={resizable} onCheckedChange={setResizable} />
                 <Label htmlFor="pg-resize">Resize handles</Label>
               </Field>
@@ -344,12 +355,18 @@ export default function Example({
           ) : null}
           <AppShellSidebar>
             <AppShellHead>
+              {/* The logo: a mark, then a name (or a logotype that only shows while the sidebar is open). In the rail the mark stays and the pointer swaps it for the toggle. */}
+              <AppShellBrand href="#home">
+                <Icon icon={Layers01Icon} />
+                {logotype ? (
+                  <span className="ayy-app-shell__logotype">northwind</span>
+                ) : (
+                  <span>{grouped ? "Northwind Docs" : "Northwind"}</span>
+                )}
+              </AppShellBrand>
               <AppShellToggle aria-label="Sidebar">
                 <Icon icon={SidebarLeftIcon} directional />
               </AppShellToggle>
-              <AppShellBrand href="#home">
-                <span>{grouped ? "Northwind Docs" : "Northwind"}</span>
-              </AppShellBrand>
             </AppShellHead>
             {grouped ? (
               <>

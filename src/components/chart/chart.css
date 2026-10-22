@@ -1,5 +1,6 @@
-/* Charts drawn by CSS, so they need no library and work in any template: columns from --ayy-value (0–100, as in
-   Progress), lines and areas as SVG paths in a 0–100 box (chartPath() makes them), a ranked bar list, sparklines.
+/* Charts drawn by CSS, so they need no library and work in any template: columns and bars from --ayy-value (0–100, as
+   in Progress), lines and areas as SVG paths in a 0–100 box (chartPath() makes them), dots placed by --ayy-x/--ayy-y,
+   ring slices as dashes of a circle, heatmap cells, a funnel, a ranked bar list, sparklines.
    The drawing is decoration (aria-hidden); the numbers are a table, visually hidden or not. Series colours are the
    chart tokens in order, so a chart library can match them. */
 
@@ -72,6 +73,8 @@
 .ayy-chart__bar {
   --_c: var(--ayy-chart-color, var(--ayy-chart-1));
   position: relative;
+  /* A floating bar (waterfall, range) starts at --ayy-start instead of the floor. */
+  inset-block-end: calc(clamp(0, var(--ayy-start, 0), 100) * 1%);
   flex: 1 1 0;
   max-inline-size: 2.5rem;
   min-block-size: 1px;
@@ -146,6 +149,183 @@
   content: none;
 }
 
+/* ---- Horizontal: one row per label, the bars running along the reading direction and the labels beside them ---- */
+
+.ayy-chart--horizontal {
+  --_row: 2rem;
+  grid-template-columns: fit-content(40%) minmax(0, 1fr);
+  column-gap: var(--ayy-space-3);
+}
+
+.ayy-chart--horizontal > * {
+  grid-column: 1 / -1;
+}
+
+.ayy-chart--horizontal > .ayy-chart__labels {
+  grid-row: 1;
+  grid-column: 1;
+  flex-direction: column;
+  gap: 0;
+  margin-inline-start: 0;
+}
+
+.ayy-chart--horizontal > .ayy-chart__plot {
+  grid-row: 1;
+  grid-column: 2;
+  block-size: auto;
+  margin-inline-start: 0;
+}
+
+/* Room under the plot for the tick labels. */
+.ayy-chart--horizontal:has(.ayy-chart__tick) > .ayy-chart__plot {
+  margin-block-end: calc(1em + var(--ayy-space-2));
+}
+
+.ayy-chart--horizontal .ayy-chart__labels > * {
+  flex: none;
+  block-size: var(--_row);
+  line-height: var(--_row);
+  text-align: end;
+}
+
+/* A tick is a line down the plot at --ayy-value, its label under the plot. */
+.ayy-chart--horizontal .ayy-chart__tick {
+  inset-block: 0 calc(-1em - var(--ayy-space-2));
+  inset-inline: calc(clamp(0, var(--ayy-value, 0), 100) * 1%) auto;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  inline-size: 0;
+  translate: none;
+}
+
+.ayy-chart--horizontal .ayy-chart__tick::after {
+  flex: 1;
+  margin-inline-start: 0;
+  border-block-start: 0;
+  border-inline-start: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-chart--horizontal .ayy-chart__bars {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.ayy-chart--horizontal .ayy-chart__column {
+  flex: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  block-size: var(--_row);
+  padding-block: var(--ayy-space-1);
+}
+
+.ayy-chart--horizontal .ayy-chart__bar {
+  inset-block-end: 0;
+  inset-inline-start: calc(clamp(0, var(--ayy-start, 0), 100) * 1%);
+  inline-size: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
+  min-inline-size: 1px;
+  max-inline-size: none;
+  block-size: auto;
+  min-block-size: 0;
+  max-block-size: 1.25rem;
+  border-radius: 0;
+  border-start-end-radius: var(--ayy-radius-sm);
+  border-end-end-radius: var(--ayy-radius-sm);
+  /* Fades toward the start, its base. */
+  background-image: linear-gradient(
+    calc(-90deg * var(--_ayy-dir, 1)),
+    transparent,
+    color-mix(in srgb, var(--ayy-color-surface) 55%, transparent)
+  );
+  transition: inline-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+@starting-style {
+  .ayy-chart--horizontal .ayy-chart__bar {
+    inline-size: 0;
+  }
+}
+
+/* The value sits past the bar's end. */
+.ayy-chart--horizontal .ayy-chart__bar[data-value]::after {
+  inset-block: 0;
+  inset-inline: calc(100% + var(--ayy-space-1-5)) auto;
+  display: flex;
+  align-items: center;
+  margin-inline: 0;
+}
+
+.ayy-chart--horizontal.ayy-chart--stacked .ayy-chart__column {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1px;
+}
+
+.ayy-chart--horizontal.ayy-chart--stacked .ayy-chart__bar {
+  flex: none;
+  block-size: 100%;
+  border-radius: 0;
+  background-image: none;
+}
+
+.ayy-chart--horizontal.ayy-chart--stacked .ayy-chart__bar:last-child {
+  border-radius: 0;
+  border-start-end-radius: var(--ayy-radius-sm);
+  border-end-end-radius: var(--ayy-radius-sm);
+}
+
+/* ---- Histogram: neighbouring bins touch, so the columns read as one distribution ---- */
+
+.ayy-chart--histogram {
+  --_gap: 1px;
+}
+
+.ayy-chart--histogram .ayy-chart__bar {
+  max-inline-size: none;
+  border-start-start-radius: 2px;
+  border-start-end-radius: 2px;
+}
+
+/* Each label is its bin's start, so it sits at the start of its column. */
+.ayy-chart--histogram .ayy-chart__labels > * {
+  text-align: start;
+}
+
+/* ---- Combo: lines over the columns, their points at the columns' centres (chartPath's band option). The columns
+   split the width with no gap, each padded by half of one, so column i is centred at (i + 0.5) / n. ---- */
+
+.ayy-chart--combo .ayy-chart__bars,
+.ayy-chart--combo .ayy-chart__labels {
+  gap: 0;
+}
+
+.ayy-chart--combo .ayy-chart__column,
+.ayy-chart--combo .ayy-chart__labels > * {
+  padding-inline: calc(var(--_gap) / 2);
+}
+
+/* ---- Waterfall: each bar floats from --ayy-start (the running total before it) by --ayy-value, solid and rounded
+   at both ends. --up and --down colour the changes; totals keep chart-1. ---- */
+
+.ayy-chart--waterfall .ayy-chart__bar {
+  border-radius: var(--ayy-radius-sm);
+  background-image: none;
+}
+
+.ayy-chart__bar.ayy-chart__bar--up {
+  --_c: var(--ayy-chart-color, var(--ayy-color-success));
+}
+
+.ayy-chart__bar.ayy-chart__bar--down {
+  --_c: var(--ayy-chart-color, var(--ayy-color-destructive));
+}
+
 /* ---- Lines and areas: SVG paths in a 0 0 100 100 viewBox, stretched to the plot ---- */
 
 .ayy-chart__svg {
@@ -157,6 +337,11 @@
   overflow: visible;
   /* Time runs along the reading direction, like the columns and labels. */
   scale: var(--_ayy-dir, 1) 1;
+}
+
+/* A series: a <g> of an area and a line in an __svg, or a <div> of __dots in a scatter. */
+.ayy-chart__series {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
 }
 
 .ayy-chart__series:nth-of-type(2) { --_c: var(--ayy-chart-color, var(--ayy-chart-2)); }
@@ -202,6 +387,241 @@
   display: none;
 }
 
+/* Stacked areas fill the band between their line and the one below, so they take a stronger flat tint. */
+.ayy-chart--stacked .ayy-chart__area {
+  fill: color-mix(in srgb, var(--_c) 28%, transparent);
+}
+
+/* ---- Radar: closed shapes over spokes and rings (__grid) in a square plot; __labels name the spokes ---- */
+
+.ayy-chart--radar {
+  --_h: var(--ayy-chart-height, 16rem);
+  justify-items: center;
+}
+
+/* Square, with room around it for the spoke labels. */
+.ayy-chart--radar .ayy-chart__plot {
+  inline-size: min(var(--_h), 100% - 10rem);
+  min-inline-size: 8rem;
+  block-size: auto;
+  aspect-ratio: 1;
+  margin-block: calc(1em + var(--ayy-space-2));
+  margin-inline: auto;
+}
+
+.ayy-chart__grid {
+  fill: none;
+  stroke: var(--ayy-color-hairline);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* A label at --ayy-x / --ayy-y in the plot, set outward from the centre: at the start edge it ends there, at the
+   end edge it starts there, at the top it sits above, at the floor below. */
+.ayy-chart__label {
+  position: absolute;
+  inset-inline-start: calc(clamp(0, var(--ayy-x, 0), 100) * 1%);
+  inset-block-end: calc(clamp(0, var(--ayy-y, 0), 100) * 1%);
+  translate: calc((clamp(0, var(--ayy-x, 0), 100) - 100) * 1% * var(--_ayy-dir, 1)) calc((100 - clamp(0, var(--ayy-y, 0), 100)) * 1%);
+  padding: var(--ayy-space-1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---- Scatter and bubbles: dots placed by --ayy-x (0 = the start) and --ayy-y (0 = the floor), sized by --ayy-z ---- */
+
+.ayy-chart__dot {
+  --_d: calc(0.625rem + clamp(0, var(--ayy-z, 0), 100) * 0.024rem);
+  position: absolute;
+  inset-inline-start: calc(clamp(0, var(--ayy-x, 0), 100) * 1%);
+  inset-block-end: calc(clamp(0, var(--ayy-y, 0), 100) * 1%);
+  inline-size: var(--_d);
+  block-size: var(--_d);
+  margin-inline-start: calc(var(--_d) / -2);
+  margin-block-end: calc(var(--_d) / -2);
+  border: 1.5px solid var(--_c);
+  border-radius: var(--ayy-radius-pill);
+  background-color: color-mix(in srgb, var(--_c) 45%, transparent);
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-chart__dot:hover {
+  z-index: 1;
+  background-color: var(--_c);
+}
+
+/* A dot's or a heatmap cell's data-value on hover, on a raised surface so it reads over its neighbours. */
+.ayy-chart__dot[data-value]::after,
+.ayy-heatmap__cell[data-value]::after {
+  content: attr(data-value);
+  position: absolute;
+  z-index: 1;
+  inset-block-end: calc(100% + var(--ayy-space-1));
+  inset-inline: -8rem;
+  inline-size: max-content;
+  margin-inline: auto;
+  padding: var(--ayy-space-1) var(--ayy-space-1-5);
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-surface-raised);
+  box-shadow: var(--ayy-shadow-rest);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-s);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--ayy-leading-none);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--ayy-duration-fast) ease;
+  pointer-events: none;
+}
+
+.ayy-chart__dot:hover::after,
+.ayy-heatmap__cell:hover::after {
+  opacity: 1;
+}
+
+/* ---- Donut, pie and gauge: slices of a ring. Each __slice is a <circle pathLength="100">, so a slice is a dash
+   --ayy-value long that starts --ayy-start along the ring. They start at the top and run clockwise, like a clock,
+   in every direction (as Progress ring does). ---- */
+
+.ayy-chart:has(.ayy-chart__ring) .ayy-chart__plot {
+  inline-size: var(--_h);
+  max-inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
+  margin-inline-start: 0;
+}
+
+/* The legend sits beside a donut or pie, and wraps under it in a narrow box. */
+.ayy-chart:has(.ayy-chart__ring):not(.ayy-chart--gauge) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-4) var(--ayy-space-8);
+}
+
+.ayy-chart:has(.ayy-chart__ring):not(.ayy-chart--gauge) .ayy-chart__legend {
+  flex: 1 1 10rem;
+  max-inline-size: 18rem;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: var(--ayy-space-2);
+  margin-block-start: 0;
+}
+
+.ayy-chart__ring {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  rotate: -90deg;
+}
+
+.ayy-chart__track,
+.ayy-chart__slice {
+  fill: none;
+  stroke-width: 20;
+}
+
+.ayy-chart__track {
+  stroke: color-mix(in srgb, var(--ayy-color-text) 8%, transparent);
+}
+
+.ayy-chart__slice {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  stroke: var(--_c);
+  /* A hairline gap after each slice keeps neighbours apart. */
+  stroke-dasharray: max(0, clamp(0, var(--ayy-value, 0), 100) - 0.5) 100;
+  stroke-dashoffset: calc(-1 * clamp(0, var(--ayy-start, 0), 100));
+  transition:
+    stroke-dasharray var(--ayy-duration-slower) var(--ayy-ease-out-expo),
+    stroke-dashoffset var(--ayy-duration-slower) var(--ayy-ease-out-expo),
+    stroke var(--ayy-duration-fast) ease;
+}
+
+@starting-style {
+  .ayy-chart__slice {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.ayy-chart__slice:nth-child(2 of .ayy-chart__slice) { --_c: var(--ayy-chart-color, var(--ayy-chart-2)); }
+.ayy-chart__slice:nth-child(3 of .ayy-chart__slice) { --_c: var(--ayy-chart-color, var(--ayy-chart-3)); }
+.ayy-chart__slice:nth-child(4 of .ayy-chart__slice) { --_c: var(--ayy-chart-color, var(--ayy-chart-4)); }
+.ayy-chart__slice:nth-child(5 of .ayy-chart__slice) { --_c: var(--ayy-chart-color, var(--ayy-chart-5)); }
+.ayy-chart__slice:nth-child(6 of .ayy-chart__slice) { --_c: var(--ayy-chart-color, var(--ayy-chart-6)); }
+
+.ayy-chart__slice:hover {
+  stroke: color-mix(in srgb, var(--_c) 80%, var(--ayy-color-text));
+}
+
+/* Pie: the same slices on a circle of r="25" stroked to the centre. */
+.ayy-chart--pie .ayy-chart__track,
+.ayy-chart--pie .ayy-chart__slice {
+  stroke-width: 50;
+}
+
+/* Gauge: the top half of the ring (viewBox="0 0 100 50"), from the start side over the top. A dash of 50 is half the
+   ring, so the slices take half their --ayy-value and start half a ring in, at the start side. */
+.ayy-chart--gauge {
+  justify-items: center;
+}
+
+/* Two classes, to beat the square plot of every ring. Room under it for the caption. */
+.ayy-chart.ayy-chart--gauge .ayy-chart__plot {
+  aspect-ratio: 2;
+  margin-block-end: calc(var(--ayy-text-xs) * 1.5);
+}
+
+.ayy-chart--gauge .ayy-chart__ring {
+  rotate: none;
+  scale: var(--_ayy-dir, 1) 1;
+}
+
+.ayy-chart--gauge .ayy-chart__track,
+.ayy-chart--gauge .ayy-chart__slice {
+  stroke-width: 14;
+}
+
+.ayy-chart--gauge .ayy-chart__track {
+  stroke-dasharray: 50 100;
+  stroke-dashoffset: -50;
+}
+
+.ayy-chart--gauge .ayy-chart__slice {
+  stroke-dasharray: max(0, clamp(0, var(--ayy-value, 0), 100) / 2 - 0.25) 100;
+  stroke-dashoffset: calc(-50 - clamp(0, var(--ayy-start, 0), 100) / 2);
+}
+
+/* The number in the middle of a donut or under the arc of a gauge, with a caption under it. */
+.ayy-chart__total {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  line-height: var(--ayy-leading-snug);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* The value sits in the arc's opening, on its baseline; the caption under the arc. */
+.ayy-chart--gauge .ayy-chart__total {
+  inset-block-end: calc(var(--ayy-text-xs) * -1.5);
+  align-content: end;
+}
+
+.ayy-chart__total-value {
+  display: block;
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-xl);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-tight);
+}
+
 /* ---- Labels under the plot and the legend ---- */
 
 .ayy-chart__labels {
@@ -222,20 +642,36 @@
   white-space: nowrap;
 }
 
-/* Under a line the labels mark points from the first to the last, so they spread to both ends. */
-.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels {
+/* Under a line or a scatter the labels mark values from the first to the last, so they spread to both ends (not
+   under a combo, whose lines sit over the columns' centres). */
+.ayy-chart:has(.ayy-chart__svg, .ayy-chart__dot):not(.ayy-chart--combo) .ayy-chart__labels {
   justify-content: space-between;
 }
 
-.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels > * {
+.ayy-chart:has(.ayy-chart__svg, .ayy-chart__dot):not(.ayy-chart--combo) .ayy-chart__labels > * {
   flex: 0 1 auto;
 }
 
-.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels > :first-child {
+.ayy-chart:has(.ayy-chart__svg, .ayy-chart__dot):not(.ayy-chart--combo) .ayy-chart__labels > :first-child {
   text-align: start;
 }
 
-.ayy-chart:has(.ayy-chart__svg) .ayy-chart__labels > :last-child {
+.ayy-chart:has(.ayy-chart__svg, .ayy-chart__dot):not(.ayy-chart--combo) .ayy-chart__labels > :last-child {
+  text-align: end;
+}
+
+/* An axis name: before the plot it names the vertical axis, after the labels the horizontal one. */
+.ayy-chart__axis {
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-s);
+}
+
+.ayy-chart__axis:has(+ .ayy-chart__plot) {
+  margin-block-end: var(--ayy-space-1);
+}
+
+.ayy-chart__labels + .ayy-chart__axis {
+  margin-inline-start: var(--_axis, 0);
   text-align: end;
 }
 
@@ -276,11 +712,25 @@
   background-color: var(--_c);
 }
 
-.ayy-chart__legend-item--compare .ayy-chart__swatch {
+.ayy-chart__legend-item--compare .ayy-chart__swatch,
+.ayy-chart__legend-item--line .ayy-chart__swatch {
   block-size: 0;
   border-block-start: 2px dashed var(--_c);
   border-radius: 0;
   background: none;
+}
+
+.ayy-chart__legend-item--line .ayy-chart__swatch {
+  inline-size: 0.875rem;
+  border-block-start-style: solid;
+}
+
+/* A number after the name (a slice's share). Beside a donut the legend is a column, so it lines up at the end. */
+.ayy-chart__legend-value {
+  margin-inline-start: auto;
+  padding-inline-start: var(--ayy-space-2);
+  color: var(--ayy-color-text);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---- Bar list: ranked rows (top pages, sources) with the bar behind the text ---- */
@@ -350,23 +800,178 @@
   scale: var(--_ayy-dir, 1) 1;
 }
 
+/* ---- Heatmap: rows of cells, each taking --ayy-value % of the series colour (0 is a faint wash) ---- */
+
+.ayy-heatmap {
+  display: grid;
+  grid-template-columns: max-content repeat(var(--ayy-columns, 7), minmax(0, 1fr));
+  gap: 3px;
+  align-items: center;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+  line-height: var(--ayy-leading-none);
+}
+
+/* A row is the label and its cells, laid on the heatmap's columns. */
+.ayy-heatmap__row {
+  display: contents;
+}
+
+/* A column's name is centred under it and may spill into its neighbours (leave every other one empty when they're
+   narrow); a flex box, since overflowing text otherwise starts at the start edge. */
+.ayy-heatmap__label {
+  display: flex;
+  justify-content: center;
+  min-inline-size: 0;
+  white-space: nowrap;
+}
+
+.ayy-heatmap__row > .ayy-heatmap__label:first-child {
+  justify-content: flex-end;
+  padding-inline-end: var(--ayy-space-1-5);
+}
+
+.ayy-heatmap__cell {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  position: relative;
+  justify-self: center;
+  inline-size: 100%;
+  max-inline-size: 2rem;
+  min-block-size: 0.75rem;
+  aspect-ratio: 1;
+  border-radius: var(--ayy-radius-sm);
+  background-color: color-mix(
+    in srgb,
+    var(--_c) calc(clamp(0, var(--ayy-value, 0), 100) * 1%),
+    color-mix(in srgb, var(--ayy-color-text) 6%, transparent)
+  );
+}
+
+.ayy-heatmap__cell[data-value]:hover {
+  z-index: 1;
+  outline: 1px solid var(--ayy-color-text);
+  outline-offset: 1px;
+}
+
+/* "Less □□□□ More" under the heatmap: a few cells of the scale. */
+.ayy-heatmap__key {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+}
+
+.ayy-heatmap__key > .ayy-heatmap__cell {
+  flex: none;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  min-block-size: 0;
+}
+
+.ayy-heatmap__key > :first-child {
+  margin-inline-end: var(--ayy-space-1);
+}
+
+.ayy-heatmap__key > :last-child {
+  margin-inline-start: var(--ayy-space-1);
+}
+
+/* ---- Funnel: one row per step, its bar centred and as wide as its share of the first step ---- */
+
+.ayy-funnel {
+  --_c: var(--ayy-chart-color, var(--ayy-chart-1));
+  display: grid;
+  grid-template-columns: fit-content(35%) minmax(0, 1fr) auto auto;
+  gap: var(--ayy-space-1) var(--ayy-space-3);
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ayy-text-sm);
+}
+
+.ayy-funnel__step {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  color: var(--ayy-color-text);
+}
+
+.ayy-funnel__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-funnel__bar {
+  justify-self: center;
+  inline-size: calc(clamp(0, var(--ayy-value, 0), 100) * 1%);
+  min-inline-size: 2px;
+  block-size: var(--ayy-size-control-sm);
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--_c);
+  transition: inline-size var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+}
+
+@starting-style {
+  .ayy-funnel__bar {
+    inline-size: 0;
+  }
+}
+
+.ayy-funnel__value {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.ayy-funnel__rate {
+  min-inline-size: 3.5em;
+  color: var(--ayy-color-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
 /* High Contrast drops author colours: bars, swatches and bar-list bars become system colours, lines CanvasText. */
 @media (forced-colors: active) {
   .ayy-chart__bar,
-  .ayy-chart__swatch {
+  .ayy-chart__swatch,
+  .ayy-chart__dot,
+  .ayy-funnel__bar {
     forced-color-adjust: none;
+    border-color: CanvasText;
     background-color: CanvasText;
     background-image: none;
   }
+  /* forced-color-adjust is inherited, so the values on bars, dots and cells take system colours themselves. */
+  .ayy-chart__bar[data-value]::after,
+  .ayy-chart__dot[data-value]::after,
+  .ayy-heatmap__cell[data-value]::after {
+    background-color: Canvas;
+    color: CanvasText;
+  }
   .ayy-chart__bar:nth-child(even),
-  .ayy-chart__legend-item:nth-child(even) .ayy-chart__swatch {
+  .ayy-chart__bar.ayy-chart__bar--down,
+  .ayy-chart__legend-item:nth-child(even) .ayy-chart__swatch,
+  .ayy-chart__series:nth-of-type(even) .ayy-chart__dot {
+    border-color: Highlight;
     background-color: Highlight;
   }
-  .ayy-chart__line {
+  .ayy-chart__line,
+  .ayy-chart__slice {
     stroke: CanvasText;
   }
-  .ayy-chart__series:nth-of-type(even) .ayy-chart__line {
+  .ayy-chart__series:nth-of-type(even) .ayy-chart__line,
+  .ayy-chart__slice:nth-child(even of .ayy-chart__slice) {
     stroke: Highlight;
+  }
+  .ayy-chart__track,
+  .ayy-chart__grid {
+    stroke: GrayText;
   }
   .ayy-chart__area {
     fill: none;
@@ -374,5 +979,10 @@
   .ayy-bar-list__item::before {
     background: none;
     border-block-end: 2px solid CanvasText;
+  }
+  /* Cells keep their order of darkness: CanvasText mixed into Canvas as far as the value says. */
+  .ayy-heatmap__cell {
+    forced-color-adjust: none;
+    background-color: color-mix(in srgb, CanvasText calc(12% + clamp(0, var(--ayy-value, 0), 100) * 0.88%), Canvas);
   }
 }

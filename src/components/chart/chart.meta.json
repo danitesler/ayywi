@@ -2,57 +2,91 @@
   "name": "Chart",
   "slug": "chart",
   "category": "Data display",
-  "description": "Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
-  "aka": ["chart", "bar-chart", "line-chart", "sparkline", "graph"],
+  "description": "Charts drawn by CSS with no library: columns and bars (grouped, stacked, 100%, horizontal, with lines over them), histograms, waterfalls, lines and areas (stacked, stepped), scatters and bubbles, donuts, pies, gauges, radars, heatmaps, funnels, a ranked bar list and sparklines. Bars, slices, cells and ticks take --ayy-value (0–100), dots --ayy-x/--ayy-y, lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.",
+  "aka": ["chart", "bar-chart", "line-chart", "sparkline", "graph", "pie-chart", "donut-chart", "scatter-plot", "bubble-chart", "heatmap", "funnel-chart", "waterfall-chart", "histogram", "radar-chart", "gauge"],
   "classes": {
     "ayy-chart": "Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.",
     "ayy-chart--stacked": "A column's bars sit on top of each other; each bar's --ayy-value is its share of the top of the scale.",
     "ayy-chart--values": "Print every bar's data-value above it (otherwise only on hover).",
-    "ayy-chart__plot": "The drawing area (aria-hidden=\"true\"). Height from --ayy-chart-height (default 12rem). Holds ticks and either __bars or an __svg.",
+    "ayy-chart--horizontal": "One row per label with the bars along the reading direction: the __labels sit beside the plot, ticks become lines down it with their labels under it. Works with --stacked. Rows are 2rem.",
+    "ayy-chart--histogram": "Columns touch (1px apart) and fill their bins, so they read as one distribution. Label each column with its bin's start; the labels sit at the start of their column.",
+    "ayy-chart--combo": "Columns with lines over them: the columns split the width with no gap, so a line from chartPath(values, { band: true }) passes over their centres. Colour each line series with the next chart token (--ayy-chart-color on its __series).",
+    "ayy-chart--waterfall": "Floating bars, solid and rounded at both ends: each __bar starts at --ayy-start (the running total before it, 0–100) and is --ayy-value tall. Use with --values so the signed changes show.",
+    "ayy-chart--pie": "A solid pie: the __slice circles take r=\"25\" and are stroked to the centre. No __total.",
+    "ayy-chart--gauge": "A half ring over the top (viewBox=\"0 0 100 50\"), filled from the start side: a __track behind one __slice (or a few), with a __total under the arc. Put role=\"meter\" and its aria-value* on the __plot.",
+    "ayy-chart--radar": "A square plot of an __svg with __grid rings and spokes, a __series per shape (closed __area and __line paths from chartRadar()) and an __label per spoke.",
+    "ayy-chart__plot": "The drawing area (aria-hidden=\"true\"). Height from --ayy-chart-height (default 12rem); square for a donut, pie or radar, half as tall for a gauge. Holds ticks and __bars, an __svg, __series of __dots or a __ring.",
     "ayy-chart__tick": "A value line across the plot, its text the label in the gutter. --ayy-value places it: 0 is the floor, 100 the top. The gutter only appears when there are ticks.",
     "ayy-chart__bars": "Row of columns filling the plot.",
     "ayy-chart__column": "One label's bars, side by side (or stacked).",
-    "ayy-chart__bar": "A bar, fading toward its base (solid when stacked): --ayy-value is its height, data-value its text on hover. Its colour is chart-1, chart-2… by position in the column; --ayy-chart-color overrides.",
+    "ayy-chart__bar": "A bar, fading toward its base (solid when stacked): --ayy-value is its height, data-value its text on hover, --ayy-start lifts it off the floor (a floating bar). Its colour is chart-1, chart-2… by position in the column; --ayy-chart-color overrides.",
+    "ayy-chart__bar--up": "A waterfall's rise: the success colour.",
+    "ayy-chart__bar--down": "A waterfall's drop: the destructive colour.",
     "ayy-chart__svg": "<svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> stretched over the plot, for lines and areas. Mirrors in RTL.",
-    "ayy-chart__series": "<g> around one series' area and line. Coloured chart-1, chart-2… in order; --ayy-chart-color overrides.",
+    "ayy-chart__series": "One series: a <g> around its area and line in an __svg, or a <div> of its __dots in a scatter. Coloured chart-1, chart-2… in order; --ayy-chart-color overrides.",
     "ayy-chart__series--compare": "A comparison series (last period, a target): dashed, quiet, no fill.",
     "ayy-chart__line": "<path> of the line, 2px whatever the stretch (vector-effect: non-scaling-stroke).",
     "ayy-chart__area": "<path> of the area under the line: a 16% tint of the series colour, or fill=\"url(#…)\" an __gradient in its series to fade out toward the floor (React does).",
     "ayy-chart__gradient": "A <linearGradient x2=\"0\" y2=\"1\"> with two <stop>s, inside the series' <g> (in <defs>): its stops take the series colour, 32% at the top to none at the floor.",
-    "ayy-chart__labels": "The labels under the plot (aria-hidden=\"true\"), one per column; under a line they spread from the first point to the last.",
+    "ayy-chart__labels": "The labels under the plot (aria-hidden=\"true\"), one per column (beside it when horizontal); under a line or a scatter they spread from the first value to the last.",
+    "ayy-chart__axis": "An axis name (aria-hidden=\"true\"): before the plot it names the vertical axis, after the __labels the horizontal one, at the end.",
+    "ayy-chart__dot": "A scatter point (a <span> in a <div class=\"ayy-chart__series\">): --ayy-x and --ayy-y (0–100) place it, --ayy-z (0–100) makes it a bubble up to 3rem across, data-value is its text on hover.",
+    "ayy-chart__ring": "<svg viewBox=\"0 0 100 100\"> of a donut or pie (\"0 0 100 50\" for a gauge), filling the __plot. Turned so slices start at the top and run clockwise.",
+    "ayy-chart__track": "<circle cx=\"50\" cy=\"50\" r=\"40\" pathLength=\"100\"> behind a gauge's slices: the empty part, a faint wash.",
+    "ayy-chart__slice": "<circle cx=\"50\" cy=\"50\" r=\"40\" pathLength=\"100\"> (r=\"25\" in a pie): a dash --ayy-value long that starts --ayy-start along the ring (chartSlices() gives both), with a hairline gap after it. Coloured chart-1, chart-2… in order; --ayy-chart-color overrides.",
+    "ayy-chart__total": "The number in the middle of a donut, or under a gauge's arc: an __total-value and a caption after it.",
+    "ayy-chart__total-value": "The total itself, in the text colour and xl.",
+    "ayy-chart__grid": "<path> of a radar's rings and spokes, a hairline.",
+    "ayy-chart__label": "A label in the plot at --ayy-x / --ayy-y, set outward from the centre (a radar's spoke names).",
     "ayy-chart__legend": "List of the series, when there's more than one (aria-hidden=\"true\" when a data table names them).",
     "ayy-chart__legend-item": "A series name with its swatch, coloured in the same order as the series.",
     "ayy-chart__legend-item--compare": "Legend entry for a comparison series: a dashed swatch.",
+    "ayy-chart__legend-item--line": "Legend entry for a line over columns (a combo): a short solid line for a swatch.",
     "ayy-chart__swatch": "The colour square in a legend item.",
+    "ayy-chart__legend-value": "A number at the end of a legend item (a slice's share), tabular digits.",
     "ayy-bar-list": "<ol> of ranked rows (top pages, sources) with the bar behind the text. Readable as it is.",
     "ayy-bar-list__item": "A row; --ayy-value is the bar's length (100 = the largest). The bar fades along the row.",
     "ayy-bar-list__label": "The row's name (or a link), cut with an ellipsis.",
     "ayy-bar-list__value": "The row's number, tabular digits.",
-    "ayy-sparkline": "A small <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> line with no axes, for a stat or a table cell. Uses __line and __area paths."
+    "ayy-sparkline": "A small <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"> line with no axes, for a stat or a table cell. Uses __line and __area paths.",
+    "ayy-heatmap": "A grid of cells (aria-hidden=\"true\", in a figure.ayy-chart with a data table): --ayy-columns says how many columns. Its __rows hold a row label and the cells; a last row of an empty span and __labels names the columns.",
+    "ayy-heatmap__row": "A row: its first child is the row's __label, the rest are __cells (or column __labels). Lays its children on the heatmap's columns.",
+    "ayy-heatmap__label": "A row's name (first in its row, at the end of its column) or a column's name, centred under it and free to spill into empty neighbours: name every other column when they're narrow.",
+    "ayy-heatmap__cell": "A cell taking --ayy-value % of the series colour over a faint wash; data-value is its text on hover. --ayy-chart-color changes the colour.",
+    "ayy-heatmap__key": "\"Less □□□□□ More\" under the heatmap: two words around a few __cells (--ayy-value 0, 25, 50, 75, 100). aria-hidden=\"true\".",
+    "ayy-funnel": "<ol> of the steps people drop out of, readable as it is: label, a centred bar, the value and the rate.",
+    "ayy-funnel__step": "A step; --ayy-value is its bar's width (100 = the first, largest step).",
+    "ayy-funnel__label": "The step's name, cut with an ellipsis.",
+    "ayy-funnel__bar": "An empty <span>: the bar, centred, in the series colour.",
+    "ayy-funnel__value": "The step's count, tabular digits.",
+    "ayy-funnel__rate": "Its share of the step before (or of the first), muted. Add what it's a share of in an .ayy-sr-only span."
   },
   "variants": {
-    "stacked": { "values": [false, true], "default": false, "component": "BarChart" },
+    "stacked": { "values": [false, true, "percent"], "default": false, "component": "BarChart" },
     "showValues": { "values": [false, true], "default": false, "component": "BarChart" },
+    "horizontal": { "values": [false, true], "default": false, "component": "BarChart" },
     "area": { "values": [true, false], "default": true, "component": "LineChart" },
-    "smooth": { "values": [true, false], "default": true, "component": "LineChart" }
+    "smooth": { "values": [true, false], "default": true, "component": "LineChart" },
+    "step": { "values": [false, true], "default": false, "component": "LineChart" },
+    "pie": { "values": [false, true], "default": false, "component": "DonutChart" }
   },
   "states": {
-    "default": { "looks": "Bars, lines or areas in --ayy-chart-1… in order, muted s labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table." },
-    "hover": { "when": ".ayy-chart__column:hover", "looks": "Its bars mix 20% toward the text colour and show their data-value above them." },
+    "default": { "looks": "Bars, lines, areas, dots, slices or cells in --ayy-chart-1… in order, muted s labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table." },
+    "hover": { "when": ".ayy-chart__column:hover, .ayy-chart__dot:hover, .ayy-chart__slice:hover, .ayy-heatmap__cell:hover", "looks": "A column's bars and a slice mix 20% toward the text colour; bars show their data-value above them; a dot fills solid and a cell takes a text-colour outline, each with its data-value on a raised surface above it." },
     "pressed": { "none": "Not interactive." },
-    "focus": { "none": "Not focusable; the data table carries the numbers." },
+    "focus": { "none": "Not focusable; the data table (or the funnel's own text, or the gauge's meter) carries the numbers." },
     "disabled": { "none": "Not interactive." },
     "selected": { "none": "No selected bar or series." },
     "error": { "none": "No error look; show an Alert in its place." },
-    "loading": { "none": "Use a block Skeleton of the chart's height while data loads; bars grow from 0 when they appear." }
+    "loading": { "none": "Use a block Skeleton of the chart's height while data loads; bars, slices and funnel steps grow from 0 when they appear." }
   },
   "sizes": {
-    "density": "The plot is --ayy-chart-height (12rem) tall; bar-list rows are at least the sm control height; a sparkline is 6rem × 1.75rem. Chart labels and legend text follow data-density via --ayy-text-s.",
-    "width": "Fills its container; columns share the width (bars at most 2.5rem wide)."
+    "density": "The plot is --ayy-chart-height (12rem) tall; a donut or pie is that wide and square, a gauge that wide and half as tall, a radar 16rem square; horizontal rows are 2rem; bar-list rows and funnel bars are the sm control height; a sparkline is 6rem × 1.75rem. Chart labels and legend text follow data-density via --ayy-text-s.",
+    "width": "Fills its container; columns share the width (bars at most 2.5rem wide, histogram bins all of it). A donut's legend sits beside it and wraps under it in a narrow box; a radar leaves 5rem each side for its spoke names."
   },
-  "js": "chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth? }) → { line, area } path data for the 0 0 100 100 box; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, className? }), chartSeriesClass({ compare?, className? }), chartLegendItemClass({ compare?, className? }) and part class constants.",
+  "js": "chartScale(values, { ticks?, min?, max? }) → { min, max, ticks } with a round top; chartPercent(value, max, min?) → 0–100 for --ayy-value; chartPath(values, { min?, max?, smooth?, step?, band?, base? }) → { line, area } path data for the 0 0 100 100 box (step: steps; band: points over column centres; base: the area's floor, for stacking); chartStack(series, { percent? }) → each series' running top; chartBins(values, { bins?, min?, max? }) → { edges, counts } for a histogram; chartSlices(values, { total? }) → [{ start, value }] shares for ring slices; chartRadar(values, { min?, max? }) → a closed path and chartRadarPoint(index, count, share?, radius?) → { x, y } for spokes and labels; chartWaterfall(steps) → [{ from, to, change }]; chartColors(target?, count?) → resolved rgb() strings and chartTheme(target?) → { colors, text, muted, grid, surface, fontFamily } for canvas libraries (Chart.js, ECharts); chartClass({ stacked?, values?, horizontal?, type?, className? }) with type one of chartTypes (histogram, combo, waterfall, pie, gauge, radar), chartSeriesClass({ compare?, className? }), chartLegendItemClass({ compare?, line?, className? }) and part class constants.",
   "react": {
-    "import": "import { BarChart, LineChart, Sparkline, BarList, TableChart } from \"@danitesler/ayywi/react\";",
+    "import": "import { BarChart, LineChart, HistogramChart, WaterfallChart, ScatterChart, DonutChart, GaugeChart, RadarChart, HeatmapChart, FunnelChart, Sparkline, BarList, TableChart } from \"@danitesler/ayywi/react\";",
     "components": {
       "BarChart": {
         "renders": "<figure class=\"ayy-chart\"> with a plot of __column/__bar, labels, a legend and a visually hidden data table",
@@ -60,8 +94,10 @@
           "label": "string — what it shows (\"Signups per day\"); the data table's caption",
           "labels": "string[] — one per column",
           "series": "{ name, values: number[], color? }[]",
-          "stacked": "boolean",
+          "stacked": "boolean | \"percent\" — percent makes every column 100% (ticks read 0%–100%)",
           "showValues": "boolean — print values above the bars",
+          "horizontal": "boolean — one row per label, bars along the reading direction",
+          "lines": "{ name, values: number[], color?, compare? }[] — lines over the columns on the same scale (a combo); not with horizontal",
           "max": "number — top of the scale; rounded up from the data if omitted",
           "ticks": "number of value lines, default 3; 0 for none",
           "format": "(value: number) => string — ticks, hover values and the table; default compact (1.2K)",
@@ -79,10 +115,120 @@
           "max": "number",
           "area": "boolean, default true",
           "smooth": "boolean, default true (monotone: never overshoots a point)",
+          "step": "boolean — steps, each value held until halfway to the next",
+          "stacked": "boolean — each area on the series before it, the top line the total; compare series stay apart",
           "ticks": "number, default 3",
           "format": "(value: number) => string",
           "height": "CSS length",
           "legend": "boolean"
+        }
+      },
+      "HistogramChart": {
+        "renders": "<figure class=\"ayy-chart ayy-chart--histogram\"> of touching columns, one per bin, each bin's start under it, and a data table of bin ranges",
+        "props": {
+          "label": "string — the data table's caption",
+          "values": "number[] — the raw values, counted into bins",
+          "bins": "number — about how many; edges are rounded. Default about √n, at most 20",
+          "range": "[min, max] — the values the bins cover; default the data's",
+          "formatBin": "(value: number) => string — bin edges",
+          "name": "string — what's counted, the table's column header; default label",
+          "color": "CSS colour, default chart-1",
+          "max": "number — top of the count scale",
+          "ticks": "number, default 3",
+          "format": "(value: number) => string — counts",
+          "height": "CSS length"
+        }
+      },
+      "WaterfallChart": {
+        "renders": "<figure class=\"ayy-chart ayy-chart--values ayy-chart--waterfall\"> of floating bars, signed values above them, and a data table",
+        "props": {
+          "label": "string — the data table's caption",
+          "steps": "{ label, value, total? }[] — changes (negative for a drop) and totals (from zero)",
+          "name": "string — the table's column header; default label",
+          "min": "number — default 0, or the lowest running total below it",
+          "max": "number",
+          "ticks": "number, default 3",
+          "format": "(value: number) => string — the sign is added for changes",
+          "height": "CSS length"
+        }
+      },
+      "ScatterChart": {
+        "renders": "<figure class=\"ayy-chart\"> with axis names, a plot of __series of __dots, x labels, a legend and a data table of the points",
+        "props": {
+          "label": "string — the data table's caption",
+          "series": "{ name, points: { x, y, z?, label? }[], color? }[] — z sizes bubbles (by area)",
+          "xLabel": "string — the horizontal axis's name",
+          "yLabel": "string — the vertical axis's name",
+          "zLabel": "string — the bubble size's name in the table",
+          "xMin / xMax / yMin / yMax": "number — the scales' ends; the minimums default to 0, the tops are rounded up",
+          "ticks": "number of values along each axis, default 3; 0 for none",
+          "formatX / formatY / formatZ": "(value: number) => string, default compact",
+          "height": "CSS length",
+          "legend": "boolean — default: more than one series"
+        }
+      },
+      "DonutChart": {
+        "renders": "<figure class=\"ayy-chart\"> with a __ring of __slices, the __total in the middle, a legend of shares beside it and a data table",
+        "props": {
+          "label": "string — the data table's caption",
+          "items": "{ name, value, color? }[] — the parts; six at most",
+          "pie": "boolean — a solid pie, no total",
+          "total": "ReactNode — the number in the middle; default the formatted sum",
+          "totalLabel": "ReactNode — the words under it (\"tickets\")",
+          "name": "string — the table's column header; default label",
+          "format": "(value: number) => string, default grouped digits",
+          "size": "CSS length — the ring's width, default 12rem",
+          "legend": "boolean, default true"
+        }
+      },
+      "GaugeChart": {
+        "renders": "<figure class=\"ayy-chart ayy-chart--gauge\"> with a role=\"meter\" plot: a half __ring, its __track and a __slice, the value under it",
+        "props": {
+          "label": "string — the meter's name (\"Ad spend this month\")",
+          "value": "number",
+          "min": "number, default 0",
+          "max": "number, default 100",
+          "format": "(value: number) => string, default grouped digits",
+          "totalLabel": "string — under the value and in aria-valuetext (\"of $10K\")",
+          "color": "CSS colour, default chart-1 (warning past a limit)",
+          "size": "CSS length — the arc's width, default 12rem"
+        }
+      },
+      "RadarChart": {
+        "renders": "<figure class=\"ayy-chart ayy-chart--radar\"> with a square __svg of rings, spokes and __series shapes, spoke __labels, a legend and a data table",
+        "props": {
+          "label": "string — the data table's caption",
+          "axes": "string[] — one per spoke, clockwise from the top",
+          "series": "{ name, values: number[], color?, compare? }[] — compare: dashed, no fill",
+          "min": "number, default 0",
+          "max": "number — the outer ring; rounded up from the data",
+          "ticks": "number of rings counting the centre, default 5",
+          "format": "(value: number) => string",
+          "size": "CSS length — the plot's width, default 16rem",
+          "legend": "boolean — default: more than one series"
+        }
+      },
+      "HeatmapChart": {
+        "renders": "<figure class=\"ayy-chart\"> with an .ayy-heatmap of rows, a Less–More key and a data table",
+        "props": {
+          "label": "string — the data table's caption",
+          "rows": "string[] — row names",
+          "columns": "string[] — column names, every other one shown past eight",
+          "values": "number[][] — values[row][column]",
+          "max": "number — the darkest cell; default the largest value",
+          "format": "(value: number) => string, default grouped digits",
+          "color": "CSS colour, default chart-1",
+          "legend": "[less, more] | false — the key's words, default [\"Less\", \"More\"]"
+        }
+      },
+      "FunnelChart": {
+        "renders": "<ol class=\"ayy-funnel\"> of steps with centred bars, values and rates",
+        "props": {
+          "steps": "{ label: ReactNode, value }[]",
+          "format": "(value: number) => string, default grouped digits",
+          "rate": "\"previous\" | \"first\" — what each rate is a share of, default previous",
+          "rateLabel": "string — read after each rate by screen readers; default \"of the step before\" / \"of the first step\"",
+          "color": "CSS colour, default chart-1"
         }
       },
       "Sparkline": {
@@ -118,21 +264,25 @@
     }
   },
   "a11y": [
-    "The drawing is aria-hidden. The numbers go in a table (React renders one with .ayy-sr-only; add a visible Table if people need to compare values), with a <caption> saying what the chart shows.",
+    "The drawing is aria-hidden. The numbers go in a table with a <caption> saying what the chart shows, inside a <div class=\"ayy-sr-only\"> (as React renders it): a table can't be narrower than its content, so hiding the table itself lets a long caption widen the page. Add a visible Table if people need to compare values.",
     "Don't rely on colour alone: a legend names the series in the same order, the comparison series is dashed, and a title or a Stat states the takeaway (\"Up 12% on last week\").",
     "Series tokens keep 3:1 against every surface in every theme. In High Contrast bars and lines take system colours, alternating between CanvasText and Highlight.",
-    "A Sparkline with a label is an image with that name; give it the trend in words (\"Revenue, last 14 days, up 12%\")."
+    "A Sparkline with a label is an image with that name; give it the trend in words (\"Revenue, last 14 days, up 12%\").",
+    "A gauge is one value, so it's a meter: role=\"meter\" with aria-valuemin, aria-valuemax, aria-valuenow, an aria-valuetext in words (\"$7.2K of $10K\") and a name. A funnel and a bar list are text already and need no table.",
+    "Waterfall changes are signed (+$6.4K, −$1.3K) as well as coloured, and a donut's legend gives each share as a number."
   ],
   "do": [
     "Use a chart to show a trend or a comparison at a glance: signups per day, revenue against last month, traffic by source. Put it in a Card with the title and the key number (a Stat) above it.",
-    "Use a bar chart to compare amounts across a few categories or periods, a line chart for a trend over many points, a bar list for a ranking, a sparkline beside a number.",
+    "Pick the form from the question: columns to compare amounts across periods (horizontal bars when the labels are long), stacked or 100% columns for parts over time, a line for a trend over many points (stacked areas for a total and its parts, steps for values that jump), a combo for amounts with their average or target, a histogram for how values spread, a waterfall for how one total became another, a scatter for how two measures relate (bubbles for a third), a donut or pie for a few parts of one whole, a gauge for one value against its limit, a radar to compare a few profiles over five to eight measures, a heatmap for activity by two dimensions (day × hour), a funnel for the steps people drop out of, a bar list for a ranking, a sparkline beside a number.",
     "Colour series with the chart tokens in order (React does it). With a chart library, pass var(--ayy-chart-1)… (SVG) or chartColors() (canvas), and chartTheme() for its text, grid and tooltip.",
     "Mark the previous period as a compare series instead of a second bright colour.",
     "Keep the scale honest: bars start at 0; let chartScale() round the top."
   ],
   "dont": [
     "Don't use a chart when the exact numbers matter more than the shape — use a Table.",
-    "Don't use a pie or donut for parts of a whole — a Bar list or a stacked bar is easier to read.",
+    "Don't use a donut or pie for more than five or six parts, for parts that are close in size, or to compare wholes — a Bar list or stacked columns are easier to read.",
+    "Don't use a radar for more than three series or for measures on different scales — use columns or a Table.",
+    "Don't use a gauge for a value with no meaningful maximum — use a Stat with a Sparkline.",
     "Don't pick series colours from the status or accent tokens unless the colour means something (success for a goal line).",
     "Don't draw more than six series; group the rest as Other.",
     "Don't add a second chart library just for a simple bar or line — these cover dashboards. Reach for one (Recharts, Chart.js) for zoom, brushing or maps, themed with the tokens."
@@ -141,6 +291,21 @@
     { "id": "bars", "title": "Columns with two series" },
     { "id": "line", "title": "Line against last period" },
     { "id": "stacked", "title": "Stacked columns" },
+    { "id": "percent", "title": "100% stacked columns" },
+    { "id": "horizontal", "title": "Horizontal bars" },
+    { "id": "combo", "title": "Columns with a line" },
+    { "id": "histogram", "title": "Histogram" },
+    { "id": "waterfall", "title": "Waterfall" },
+    { "id": "stacked-area", "title": "Stacked areas" },
+    { "id": "step", "title": "Step line" },
+    { "id": "scatter", "title": "Scatter" },
+    { "id": "bubble", "title": "Bubbles" },
+    { "id": "donut", "title": "Donut" },
+    { "id": "pie", "title": "Pie" },
+    { "id": "gauge", "title": "Gauges" },
+    { "id": "radar", "title": "Radar" },
+    { "id": "heatmap", "title": "Heatmap" },
+    { "id": "funnel", "title": "Funnel" },
     { "id": "bar-list", "title": "Bar list: top pages" },
     { "id": "sparkline", "title": "Sparklines in stats" },
     { "id": "table", "title": "Table chart" }

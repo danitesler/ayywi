@@ -6,7 +6,19 @@
 .ayy-app-shell {
   --_sidebar-w: var(--ayy-sidebar-w, 15rem);
   --_detail-w: var(--ayy-detail-w, 22rem);
-  --_sidebar-w-collapsed: calc(var(--ayy-size-control-lg) + var(--ayy-space-3) * 2);
+  /* One measure for every row of the sidebar: a link, a button, the logo row and the collapse toggle are all --_row high,
+     and an icon (a link's, a button's, the logo mark, the toggle's) sits centred in a --_row-wide square at the start of
+     it. That centre, --_axis, is the same in the full sidebar and in the rail, so nothing shifts when it narrows. Each
+     size step below sets these five. */
+  --_row: var(--ayy-size-control-lg);
+  --_icon: var(--ayy-size-icon-md);
+  --_gap: var(--ayy-space-2);
+  --_text: var(--ayy-control-text-lg);
+  --_radius: var(--ayy-radius-pill);
+  --_axis: calc(var(--_row) / 2);
+  --_pad: calc((var(--_row) - var(--_icon)) / 2);
+  /* The rail is one row wide inside the sidebar's padding and its 1px edge. */
+  --_sidebar-w-collapsed: calc(var(--_row) + var(--ayy-space-3) * 2 + 1px);
   /* The sidebar column now (the rail when collapsed). Set on every shell so a shell inside another doesn't inherit it. */
   --_col: var(--_sidebar-w);
   position: relative;
@@ -67,13 +79,13 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: var(--ayy-space-2);
-  min-block-size: var(--ayy-size-control-lg);
+  gap: var(--_gap);
+  min-block-size: var(--_row);
   padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-3);
-  border-radius: var(--ayy-radius-pill);
+  padding-inline: var(--_pad);
+  border-radius: var(--_radius);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-control-text-lg);
+  font-size: var(--_text);
   font-weight: var(--ayy-weight-medium);
   line-height: var(--ayy-leading-snug);
   text-decoration: none;
@@ -84,8 +96,8 @@
 
 .ayy-app-shell__link > svg {
   flex: none;
-  inline-size: var(--ayy-size-icon-md);
-  block-size: var(--ayy-size-icon-md);
+  inline-size: var(--_icon);
+  block-size: var(--_icon);
 }
 
 .ayy-app-shell__link:hover {
@@ -120,7 +132,7 @@
 
 .ayy-app-shell__group-label {
   margin: 0;
-  padding-inline: var(--ayy-space-3);
+  padding-inline: var(--_pad);
   color: var(--ayy-color-muted);
   font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-semibold);
@@ -143,13 +155,14 @@
 .ayy-app-shell__sublist {
   gap: 1px;
   margin-block: var(--ayy-space-1);
-  margin-inline-start: var(--ayy-space-5);
+  margin-inline-start: calc(var(--_axis) - 0.5px);
   padding-inline-start: var(--ayy-space-2);
   border-inline-start: 1px solid var(--ayy-color-hairline);
 }
 
 .ayy-app-shell__link--sub {
   min-block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-space-3);
   font-size: var(--ayy-control-text-md);
   font-weight: var(--ayy-weight-regular);
 }
@@ -261,7 +274,7 @@ ayy-app-shell {
     transition: border-color var(--_t);
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__group + .ayy-app-shell__group {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__group + .ayy-app-shell__group {
     border-block-start-color: transparent;
   }
 
@@ -284,29 +297,44 @@ ayy-app-shell {
     flex: none;
   }
 
+  /* Whatever else sits in the head (an app's own actions) can't squeeze the brand below one row, so the mark is never clipped. */
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__brand {
+    min-inline-size: var(--_row);
+  }
+
   /* Labels fade as they're clipped. Wrap a link's label in a <span> to fade it; bare text is only clipped. */
-  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :not(svg, .ayy-icon, img, .ayy-avatar),
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :is(:not(svg, .ayy-icon, img, .ayy-avatar), .ayy-app-shell__logotype),
   .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__group-label,
   .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__collapse > summary::after {
     transition: opacity var(--_t);
   }
 
-  /* ---- The rail ---- */
-
-  /* The icon sits in the middle of the rail; the same padding animates back when it opens. */
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
-    padding-inline: calc((var(--ayy-size-control-lg) - var(--ayy-size-icon-md)) / 2);
+  /* Action buttons in the sidebar clip and fade like links do: a label in a <span> fades, bare text is only clipped. */
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]),
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) {
+    min-inline-size: 0;
+    overflow: hidden;
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :not(svg, .ayy-icon, img, .ayy-avatar),
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__group-label,
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__collapse > summary::after {
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > :not(svg, .ayy-icon, img, .ayy-avatar),
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > :not(svg, .ayy-icon, img, .ayy-avatar) {
+    transition: opacity var(--_t);
+  }
+
+  /* ---- The rail ---- */
+
+  /* Rows keep their padding, so each icon is already centred in the rail (see --_pad) and only the labels fade. */
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) > :is(:not(svg, .ayy-icon, img, .ayy-avatar), .ayy-app-shell__logotype),
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > :not(svg, .ayy-icon, img, .ayy-avatar),
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > :not(svg, .ayy-icon, img, .ayy-avatar),
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__group-label,
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__collapse > summary::after {
     opacity: 0;
   }
 
   /* A link with no icon has nothing to show in the rail: it fades out, then leaves the tab order. Its group keeps its
      height, so the icons around it don't move. */
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__link:not(:has(> svg, > .ayy-icon, > img)) {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__link:not(:has(> svg, > .ayy-icon, > img)) {
     opacity: 0;
     visibility: hidden;
     transition:
@@ -317,12 +345,12 @@ ayy-app-shell {
       visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .ayy-app-shell__sublist {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__sublist {
     display: none;
   }
 
   /* A nav with no icons has nothing to scroll to in the rail: don't show a scrollbar for its hidden links. */
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]):not(:has(.ayy-app-shell__nav .ayy-app-shell__link > :is(svg, .ayy-icon, img))) {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]):not(:has(.ayy-app-shell__nav .ayy-app-shell__link > :is(svg, .ayy-icon, img))) {
     overflow-y: hidden;
   }
 
@@ -337,7 +365,7 @@ ayy-app-shell {
     --_delay: 0s;
   }
 
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :has(:focus-visible)):not([data-ayy-hold]) {
+  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))):not([data-ayy-hold]) {
     --_col: var(--_sidebar-w);
     --_delay: 100ms;
     z-index: var(--ayy-z-overlay);
@@ -432,6 +460,11 @@ ayy-app-shell {
     background-color: var(--ayy-color-ring);
   }
 
+  /* Dragging focuses the handle; once it's let go after pointer use, the line fades like the ring (base.css). */
+  :root[data-ayy-input="pointer"] .ayy-app-shell__resize:focus-visible:not([data-dragging], :hover)::after {
+    background-color: transparent;
+  }
+
   .ayy-app-shell__resize:focus-visible {
     outline: 2px solid var(--ayy-color-ring);
     outline-offset: 0;
@@ -449,54 +482,125 @@ ayy-app-shell {
   }
 }
 
-/* The sidebar's top row: the collapse __toggle, then the brand (and any actions). The toggle lines up with the link
-   icons under it, so it stays put in the rail while the brand is clipped. */
+/* ---- The top row and the logo ----
+   The sidebar's first row holds the brand and, in a collapsible sidebar, the collapse __toggle in an __head. The brand is a
+   logo with or without its name: a mark (an svg, img or avatar that is a direct child) with a name beside it, or a mark
+   with a wide __logotype. Expanded, the toggle sits at the inline end. In the rail only the mark shows, centred on the
+   same axis as the link icons; resting the pointer on it (or focusing the toggle) swaps it for the toggle, which then
+   expands the sidebar. A brand with no mark has nothing to show in the rail, so the toggle stays there instead. ---- */
 .ayy-app-shell__head {
+  position: relative;
+  box-sizing: border-box;
   display: flex;
   flex: none;
   align-items: center;
   gap: var(--ayy-space-1);
   min-inline-size: 0;
+  min-block-size: var(--_row);
 }
 
-.ayy-app-shell__head > .ayy-app-shell__toggle:first-child {
-  flex: none;
-  margin-inline-start: calc((var(--ayy-size-control-lg) - var(--ayy-size-control-md)) / 2);
+/* Room for the toggle, which is placed over the end of the row. */
+.ayy-app-shell__head:has(> .ayy-app-shell__toggle) {
+  padding-inline-end: var(--_row);
 }
 
 .ayy-app-shell__head > .ayy-app-shell__brand {
   flex: 1 1 auto;
 }
 
+.ayy-app-shell__sidebar .ayy-app-shell__brand {
+  min-block-size: var(--_row);
+  padding-block: 0;
+  padding-inline: var(--_pad);
+  gap: var(--_gap);
+}
+
+/* The mark takes the icon's box so its centre is the axis; a wide logotype keeps its own shape. */
+.ayy-app-shell__sidebar .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype) {
+  flex: none;
+  inline-size: var(--_icon);
+  block-size: var(--_icon);
+  object-fit: contain;
+}
+
+/* A name too long for the room beside the toggle is cut with an ellipsis. */
+.ayy-app-shell__sidebar .ayy-app-shell__brand > :not(svg, .ayy-icon, img, .ayy-avatar, .ayy-app-shell__logotype) {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ayy-app-shell__logotype {
+  flex: none;
+  max-block-size: calc(var(--_row) - var(--ayy-space-3));
+}
+
+.ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  block-size: var(--_row);
+  border-radius: var(--_radius);
+}
+
+.ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle > svg {
+  inline-size: var(--_icon);
+  block-size: var(--_icon);
+}
+
+/* A hover lift would move the toggle off its mark. */
+@media (hover: hover) {
+  .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle.ayy-button:hover {
+    transform: none;
+  }
+}
+
+@media (min-width: 48.001rem) {
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__head {
+    transition: padding-inline var(--_t);
+  }
+
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle {
+    transition:
+      background-color var(--ayy-duration-base) ease,
+      border-color var(--ayy-duration-base) ease,
+      opacity var(--_t);
+  }
+
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype) {
+    transition: opacity var(--ayy-duration-fast) ease;
+  }
+
+  /* The rail: the toggle takes the whole row, so it replaces the mark (or, with no mark, stands in for it). */
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__toggle) {
+    padding-inline-end: 0;
+  }
+
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)) > .ayy-app-shell__toggle:not(:focus-visible) {
+    opacity: 0;
+  }
+
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)):is(:hover, :has(> .ayy-app-shell__toggle:focus-visible)) > .ayy-app-shell__toggle {
+    opacity: 1;
+    transition:
+      background-color var(--ayy-duration-base) ease,
+      border-color var(--ayy-duration-base) ease,
+      opacity var(--ayy-duration-fast) ease;
+  }
+
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:is(:hover, :has(> .ayy-app-shell__toggle:focus-visible)) > .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype) {
+    opacity: 0;
+  }
+}
+
 /* ---- Sizes: lg (default), md (.ayy-app-shell--md) and sm (.ayy-app-shell--sm), matching Button's sm/md/lg scale ----
-   Every rule goes through "> .ayy-app-shell__sidebar" so a shell placed inside a smaller one's main area keeps its own size.
-   Action buttons placed in the sidebar (outside __head) automatically match the sidebar's size step; one set to a small
-   size (sm or icon-sm) keeps it, so a button and its icon-only neighbour always come out the same height. */
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) {
-  block-size: var(--ayy-size-control-lg);
-  font-size: var(--ayy-control-text-lg);
-}
-
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
-.ayy-app-shell:not(.ayy-app-shell--md, .ayy-app-shell--sm) > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg {
-  inline-size: var(--ayy-size-icon-md);
-  block-size: var(--ayy-size-icon-md);
-}
-
+   A size is the five measures at the top of the shell (--_row, --_icon, --_gap, --_text, --_radius); everything that
+   lines up reads them. Every rule goes through "> .ayy-app-shell__sidebar" so a shell placed inside a smaller one's main
+   area keeps its own size. */
 .ayy-app-shell--md {
-  --_sidebar-w-collapsed: calc(var(--ayy-size-control-md) + var(--ayy-space-3) * 2);
-}
-
-.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__link {
-  min-block-size: var(--ayy-size-control-md);
-  font-size: var(--ayy-control-text-md);
-  gap: var(--ayy-space-2);
-}
-
-.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__link > :is(svg, .ayy-icon) {
-  inline-size: var(--ayy-size-icon-sm);
-  block-size: var(--ayy-size-icon-sm);
+  --_row: var(--ayy-size-control-md);
+  --_icon: var(--ayy-size-icon-sm);
+  --_text: var(--ayy-control-text-md);
 }
 
 .ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__link--sub {
@@ -507,12 +611,12 @@ ayy-app-shell {
   gap: var(--ayy-space-1-5);
 }
 
-.ayy-app-shell--md > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle:first-child {
-  margin-inline-start: 0;
-}
-
 .ayy-app-shell--sm {
-  --_sidebar-w-collapsed: calc(var(--ayy-size-control-sm) + var(--ayy-space-3) * 2);
+  --_row: var(--ayy-size-control-sm);
+  --_icon: var(--ayy-size-icon-sm);
+  --_gap: var(--ayy-space-1-5);
+  --_text: var(--ayy-control-text-sm);
+  --_radius: var(--ayy-radius-control);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar {
@@ -521,9 +625,6 @@ ayy-app-shell {
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__brand {
-  gap: var(--ayy-space-1-5);
-  padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-2);
   border-radius: var(--ayy-radius-control);
   font-size: var(--ayy-text-sm);
 }
@@ -533,18 +634,8 @@ ayy-app-shell {
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__link {
-  min-block-size: var(--ayy-size-control-sm);
   padding-block: var(--ayy-space-0-5);
-  padding-inline: var(--ayy-space-2);
-  border-radius: var(--ayy-radius-control);
-  font-size: var(--ayy-control-text-sm);
   font-weight: var(--ayy-weight-regular);
-  gap: var(--ayy-space-1-5);
-}
-
-.ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__link > :is(svg, .ayy-icon) {
-  inline-size: var(--ayy-size-icon-sm);
-  block-size: var(--ayy-size-icon-sm);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__link[aria-current="page"] {
@@ -562,7 +653,6 @@ ayy-app-shell {
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__group-label {
   padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-2);
   font-size: var(--ayy-text-s);
 }
 
@@ -573,8 +663,6 @@ ayy-app-shell {
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__sublist {
   gap: 1px;
   margin-block: var(--ayy-space-0-5);
-  margin-inline-start: var(--ayy-space-4);
-  padding-inline-start: var(--ayy-space-2);
 }
 
 .ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__link--sub {
@@ -590,32 +678,33 @@ ayy-app-shell {
   gap: 0;
 }
 
-.ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle:first-child {
-  block-size: var(--ayy-size-control-sm);
-  margin-inline-start: 0;
-}
-
+/* Action buttons placed in the sidebar (outside __head) are rows too: the size step's height, text and icon, and their
+   icon and label start where a link's do (the 1px border is taken off the padding). A button set to a small size (sm or
+   icon-sm) keeps it in a big or medium sidebar, so a button and its icon-only neighbour come out the same height; a
+   small sidebar sizes them all. Icon-only buttons are square rows and keep no padding. */
+.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
 .ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]),
 .ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) {
-  gap: var(--ayy-space-1-5);
-  block-size: var(--ayy-size-control-sm);
-  font-size: var(--ayy-control-text-sm);
+  gap: var(--_gap);
+  block-size: var(--_row);
+  font-size: var(--_text);
 }
 
+.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
+.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
 .ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > svg,
 .ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > svg {
-  inline-size: var(--ayy-size-icon-sm);
-  block-size: var(--ayy-size-icon-sm);
+  inline-size: var(--_icon);
+  block-size: var(--_icon);
 }
 
-@media (min-width: 48.001rem) {
-  .ayy-app-shell--md.ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
-    padding-inline: calc((var(--ayy-size-control-md) - var(--ayy-size-icon-sm)) / 2);
-  }
-
-  .ayy-app-shell--sm.ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.ayy-app-shell__link, .ayy-app-shell__brand) {
-    padding-inline: calc((var(--ayy-size-control-sm) - var(--ayy-size-icon-sm)) / 2);
-  }
+.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]) {
+  justify-content: flex-start;
+  padding-inline: calc(var(--_pad) - 1px);
 }
 
 /* ---- Phones (below 48rem). Three layouts, picked by what the shell holds:
@@ -829,7 +918,7 @@ ayy-app-shell {
   min-block-size: var(--ayy-size-control-md);
   margin: 0;
   padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-2) var(--ayy-space-3);
+  padding-inline: calc(var(--_axis) - var(--ayy-size-icon-sm) / 2) var(--ayy-space-3);
   border: 0;
   border-radius: var(--ayy-radius-pill);
   background: none;
@@ -868,7 +957,7 @@ ayy-app-shell {
 /* "Settings", over the sections. */
 .ayy-app-shell__title {
   margin: 0;
-  padding-inline: var(--ayy-space-3);
+  padding-inline: var(--_pad);
   color: var(--ayy-color-text);
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-lg);
@@ -968,7 +1057,7 @@ ayy-app-shell {
     background-color: Highlight;
     color: HighlightText;
   }
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :has(:focus-visible)):not([data-ayy-hold]) {
+  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar:is(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))):not([data-ayy-hold]) {
     border-inline-end: 2px solid CanvasText;
   }
 }

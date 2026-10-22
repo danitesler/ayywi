@@ -1,0 +1,10 @@
+/* Focus rings for keyboard use only. In the utilities layer, above components, so it outranks every component's ring.
+   trackInputModality() (started by @danitesler/ayywi/elements, or call it yourself) sets data-ayy-input on <html>.
+   After a mouse, pen or touch press, rings go transparent until the next Tab or arrow key, even where the browser
+   decides script-moved focus is :focus-visible (WebKit does after any click). Text fields keep theirs: they show where
+   typing goes. Without the attribute nothing changes. Rings drawn on ::before/::after are handled by their component. */
+
+:root[data-ayy-input="pointer"] :focus-visible:not(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"]), textarea, [contenteditable]:not([contenteditable="false"])),
+:root[data-ayy-input="pointer"] :has(> input:is([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]):focus-visible) {
+  outline-color: transparent;
+}

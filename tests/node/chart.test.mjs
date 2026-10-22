@@ -58,3 +58,35 @@ test("scales and paths take series longer than the engine's argument limit", { s
   assert.match(line, /^M0,100 /);
   assert.match(renderToStaticMarkup(createElement(Sparkline, { values, label: "Requests" })), /<path/);
 });
+
+test("chartBins counts values into round bins; the last bin takes the largest value", { skip }, async () => {
+  const { chartBins } = await import(dist("index.js"));
+  assert.deepEqual(chartBins([12, 48, 51, 97], { bins: 5 }), { edges: [0, 20, 40, 60, 80, 100], counts: [1, 0, 2, 0, 1] });
+  assert.deepEqual(chartBins([0, 10, 20], { bins: 2 }), { edges: [0, 10, 20], counts: [1, 2] });
+  assert.deepEqual(chartBins([]), { edges: [], counts: [] });
+});
+
+test("chartStack keeps running tops, and percent makes every point's total 100", { skip }, async () => {
+  const { chartStack } = await import(dist("index.js"));
+  assert.deepEqual(chartStack([[1, 2], [3, 4]]), [[1, 2], [4, 6]]);
+  assert.deepEqual(chartStack([[1, 3], [3, 1]], { percent: true }), [[25, 75], [100, 100]]);
+});
+
+test("chartSlices and chartWaterfall place ring slices and floating bars", { skip }, async () => {
+  const { chartSlices, chartWaterfall } = await import(dist("index.js"));
+  assert.deepEqual(chartSlices([1, 1, 2]), [{ start: 0, value: 25 }, { start: 25, value: 25 }, { start: 50, value: 50 }]);
+  assert.deepEqual(chartWaterfall([{ value: 10, total: true }, { value: 5 }, { value: -3 }, { value: 12, total: true }]), [
+    { from: 0, to: 10 },
+    { from: 10, to: 15, change: "up" },
+    { from: 15, to: 12, change: "down" },
+    { from: 0, to: 12 },
+  ]);
+});
+
+test("chartPath draws steps, points over column centres and areas on a base", { skip }, async () => {
+  const { chartPath, chartRadar } = await import(dist("index.js"));
+  assert.equal(chartPath([0, 100], { step: true }).line, "M0,100 L50,100 L50,0 L100,0");
+  assert.equal(chartPath([0, 100], { band: true }).line, "M25,100 L75,0");
+  assert.equal(chartPath([50, 100], { max: 100, base: [0, 50] }).area, "M0,50 L100,0 L100,50 L0,100 Z");
+  assert.equal(chartRadar([1, 1, 1, 1], { max: 1 }), "M50,10 L90,50 L50,90 L10,50 Z");
+});

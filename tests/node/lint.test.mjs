@@ -163,7 +163,8 @@ test("structure: native controls written raw, without any class", () => {
 <input type="hidden" name="id" />
 <button {...props}>Add</button>
 <Button>Add</Button>
-<Select><option>Dark</option></Select>`;
+<Select><option>Dark</option></Select>
+<div className="ayy-sr-only"><table><caption>Signups</caption></table></div>`;
   assert.deepEqual(rules(fine, "a.tsx"), []);
 });
 

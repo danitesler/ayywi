@@ -78,9 +78,10 @@
   inset-inline-start: calc(100% + var(--_gap));
 }
 
-/* ---- Visible ---- */
+/* ---- Visible ----
+   Focus shows the bubble only after keyboard use: in pointer mode (data-ayy-input, base.css) only hover does. */
 
-.ayy-tooltip:is(:hover, :has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content {
+.ayy-tooltip:is(:hover, :not(:root[data-ayy-input="pointer"] *):is(:has(:focus-visible), :focus-visible)):not([data-dismissed]) > .ayy-tooltip__content {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -88,12 +89,12 @@
   transition-delay: 200ms, 200ms, 200ms, 0s;
 }
 
-.ayy-tooltip:is(:hover, :has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content:not([data-side]),
-.ayy-tooltip:is(:hover, :has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content:is([data-side="top"], [data-side="bottom"]) {
+.ayy-tooltip:is(:hover, :not(:root[data-ayy-input="pointer"] *):is(:has(:focus-visible), :focus-visible)):not([data-dismissed]) > .ayy-tooltip__content:not([data-side]),
+.ayy-tooltip:is(:hover, :not(:root[data-ayy-input="pointer"] *):is(:has(:focus-visible), :focus-visible)):not([data-dismissed]) > .ayy-tooltip__content:is([data-side="top"], [data-side="bottom"]) {
   --_y: 0px;
 }
 
-.ayy-tooltip:is(:has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content {
+.ayy-tooltip:not(:root[data-ayy-input="pointer"] *):is(:has(:focus-visible), :focus-visible):not([data-dismissed]) > .ayy-tooltip__content {
   transition-delay: 0s;
 }
 

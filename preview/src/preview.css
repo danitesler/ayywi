@@ -91,18 +91,10 @@
 
 /* ayywi-lint-disable-next-line -- docs chrome: the wordmark, not an app brand */
 .pv-brand {
-  gap: var(--ayy-space-2);
   margin-block-end: var(--ayy-space-3);
-  padding-inline: var(--ayy-space-2);
 }
 
-.pv-brand__mark {
-  flex: none;
-  inline-size: 14px;
-  block-size: 14px;
-  border: 3px solid var(--ayy-color-text);
-  border-radius: 50%;
-}
+
 
 /* Search: an icon button beside the brand; "/" or Ctrl/⌘K opens the field. */
 /* The toggle, the brand, then the appearance controls at the end. */
@@ -115,7 +107,6 @@
 /* ayywi-lint-disable-next-line -- docs chrome: the wordmark, not an app brand */
 .pv-sidebar__head .pv-brand {
   margin-block-end: 0;
-  padding-inline: var(--ayy-space-1);
 }
 
 .pv-sidebar__actions {
@@ -147,10 +138,6 @@
     visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
 }
 
-.pv-shell:not(.ayy-app-shell--sm) .pv-finder__rail {
-  inset-inline-start: calc((var(--ayy-size-control-lg) - var(--ayy-size-control-md)) / 2);
-}
-
 .pv-finder .ayy-search-bar,
 .pv-sidebar__actions {
   transition:
@@ -159,7 +146,7 @@
 }
 
 @media (min-width: 48.001rem) {
-  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) .pv-finder__rail {
+  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .pv-finder__rail {
     opacity: 1;
     visibility: visible;
     transition:
@@ -167,7 +154,7 @@
       visibility 0s linear var(--_delay, 0s);
   }
 
-  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible)), [data-ayy-hold]) :is(.pv-finder .ayy-search-bar, .pv-sidebar__actions) {
+  .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) :is(.pv-finder .ayy-search-bar, .pv-sidebar__actions) {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;

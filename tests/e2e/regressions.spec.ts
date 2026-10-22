@@ -524,3 +524,83 @@ test.describe("data", () => {
     expect(await names()).toEqual(["C", "A", "D", "B"]);
   });
 });
+
+test.describe("focus rings", () => {
+  // WebKit (Safari, Tauri on macOS) never focuses a button on click, so focus that script moves afterwards (a dialog
+  // opening, focus going back to the opener) matches :focus-visible and drew a ring after mouse use. Chromium matches
+  // it the same way after a key that isn't navigation ("a" below), which stands in for WebKit here.
+  const ring = (page: Page, selector: string) => page.locator(selector).evaluate((el) => getComputedStyle(el).outlineColor);
+  const transparent = "rgba(0, 0, 0, 0)";
+
+  test("rings show after Tab or arrows, not after a click, and text fields keep theirs", async ({ page }) => {
+    await htmlPage(
+      page,
+      `<button type="button" class="ayy-button" id="open">Open</button>
+<input class="ayy-input" id="name" aria-label="Name">
+<label class="ayy-label"><input type="checkbox" class="ayy-checkbox" id="check"> Check</label>
+<ayy-tooltip class="ayy-tooltip"><button type="button" class="ayy-button ayy-button--outline" id="tip">Tip</button>
+<span class="ayy-tooltip__content" role="tooltip" id="tip-content">Save</span></ayy-tooltip>`,
+    );
+    const html = page.locator("html");
+    await expect(html).toHaveAttribute("data-ayy-input", "pointer");
+
+    await page.locator("#open").click();
+    await page.keyboard.press("a");
+    await page.locator("#tip").evaluate((el) => (el as HTMLElement).focus());
+    expect(await page.locator("#tip").evaluate((el) => el.matches(":focus-visible"))).toBe(true);
+    expect(await ring(page, "#tip")).toBe(transparent);
+    await expect(page.locator("#tip-content")).toBeHidden();
+    await page.locator("#check").evaluate((el) => (el as HTMLElement).focus());
+    expect(await ring(page, "#check")).toBe(transparent);
+
+    await page.locator("#name").click();
+    expect(await ring(page, "#name")).not.toBe(transparent);
+
+    await page.keyboard.press("Shift+Tab");
+    await expect(html).toHaveAttribute("data-ayy-input", "keyboard");
+    expect(await ring(page, "#open")).not.toBe(transparent);
+
+    await page.mouse.click(300, 300);
+    await expect(html).toHaveAttribute("data-ayy-input", "pointer");
+    // Shortcuts aren't navigation.
+    await page.keyboard.press("Meta+ArrowDown");
+    await page.keyboard.press("Control+Tab");
+    await expect(html).toHaveAttribute("data-ayy-input", "pointer");
+    await page.keyboard.press("ArrowDown");
+    await expect(html).toHaveAttribute("data-ayy-input", "keyboard");
+  });
+
+  test("React: the button a dialog focuses on open has no ring after a click", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+import { Button, Dialog, DialogContent, DialogTitle, DialogFooter, DialogClose, trackInputModality } from "ayywi";
+trackInputModality();
+export default function App() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Clear all</Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent size="sm">
+          <DialogTitle>Clear the history?</DialogTitle>
+          <DialogFooter><DialogClose>Cancel</DialogClose></DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}`,
+    );
+    // A click that doesn't focus the button, after a key that isn't navigation: what WebKit sees on every click.
+    await page.mouse.click(300, 300);
+    await page.keyboard.press("a");
+    await page.getByRole("button", { name: "Clear all" }).evaluate((el) => (el as HTMLElement).click());
+    const cancel = page.getByRole("button", { name: "Cancel" });
+    await expect(cancel).toBeFocused();
+    expect(await cancel.evaluate((el) => el.matches(":focus-visible"))).toBe(true);
+    expect(await cancel.evaluate((el) => getComputedStyle(el).outlineColor)).toBe(transparent);
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    expect(await page.locator(":focus").evaluate((el) => getComputedStyle(el).outlineColor)).not.toBe(transparent);
+  });
+});

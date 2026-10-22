@@ -508,8 +508,10 @@ function rawControlFindings(source, push) {
     const openTag = text.slice(m.index, end);
     const selfClosing = /\/\s*$/.test(openTag) || VOID_TAGS.has(name.toLowerCase());
     const parent = stack.at(-1);
+    // Inside a visually hidden box (a chart's data table) nothing shows the browser default.
+    const hidden = stack.some((t) => /(?<![\w-])ayy-sr-only(?![\w-])/.test(t.open));
     if (!selfClosing) stack.push({ name, open: openTag });
-    if (!/^(?:button|select|textarea|input|table|dialog|details|progress|meter)$/.test(name)) continue;
+    if (hidden || !/^(?:button|select|textarea|input|table|dialog|details|progress|meter)$/.test(name)) continue;
     if (/\{\s*\.\.\./.test(openTag) || /(?<![\w-])(?:class|className|:class|v-bind:class|class:list|\[class\]|\[ngClass\]|ngClass)\s*=/.test(openTag)) continue;
     // Inputs inside an ayywi label (Chip, Segmented control, Swatch, Drop zone) are that component's own part.
     if (name === "input" && parent && (/^ayy-/.test(parent.name) || /(?<![\w-])ayy-[\w-]+/.test(parent.open))) continue;

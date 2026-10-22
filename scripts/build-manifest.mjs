@@ -74,7 +74,7 @@ const manifest = {
   entrypoints: {
     "@danitesler/ayywi/css": "Full stylesheet (tokens + base + all components) in cascade layers ayywi.tokens < ayywi.base < ayywi.components < ayywi.utilities < ayywi.brand — any unlayered app CSS wins. @danitesler/ayywi/ayywi.min.css is the minified file.",
     "@danitesler/ayywi/ayywi.unlayered.css": "Same without cascade layers. Use it when an unlayered CSS reset would otherwise override components.",
-    "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, then one file per component (button.css, card.css…).",
+    "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, one file per component (button.css, card.css…), then focus.css (focus rings for keyboard use only, with trackInputModality()).",
     "@danitesler/ayywi/brands/<name>.css": `Ready-made brands (${brands.map((b) => b.name).join(", ") || "none"}), applied with data-brand="<name>" or setBrand("<name>"). Make your own with \`npx @danitesler/ayywi brand\`.`,
     "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
     ayywi: `Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (${controllers.join(", ")}), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.`,

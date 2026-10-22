@@ -353,7 +353,9 @@ export function App() {
       <AppShellBar className="pv-shell-bar">
         <AppShellToggle aria-label="Open navigation" />
         <AppShellBrand href="#/" className="pv-brand">
-          <span className="pv-brand__mark" aria-hidden="true" />
+          <svg className="ayy-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="3" />
+          </svg>
           ayywi
         </AppShellBrand>
         <div className="pv-shell-bar__actions">
@@ -363,12 +365,11 @@ export function App() {
       <AppShellSidebar className="pv-sidebar ayy-scroll">
         <div className="pv-sidebar__top">
           <AppShellHead className="pv-sidebar__head">
-            {/* Collapses the sidebar to a rail on wide screens; resting the pointer on the rail previews it (the App shell default). */}
-            <AppShellToggle aria-label="Sidebar" className="pv-sidebar__toggle">
-              <Icon icon={SidebarLeftIcon} directional />
-            </AppShellToggle>
+            {/* The logo: in the rail only the mark shows, and resting the pointer on it swaps in the toggle, which expands the sidebar (the App shell default also previews it in full). */}
             <AppShellBrand href="#/" className="pv-brand">
-              <span className="pv-brand__mark" aria-hidden="true" />
+              <svg className="ayy-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="3" />
+              </svg>
               <span>ayywi</span>
             </AppShellBrand>
             <div className="pv-sidebar__actions">
@@ -377,10 +378,13 @@ export function App() {
                 <AppearanceMenu {...appearance} />
               </span>
             </div>
+            <AppShellToggle aria-label="Sidebar" className="pv-sidebar__toggle">
+              <Icon icon={SidebarLeftIcon} directional />
+            </AppShellToggle>
           </AppShellHead>
           <div className="pv-finder">
             {/* The rail's stand-in for the search field. Mouse only: keyboard focus opens the full sidebar, field included. */}
-            <Button variant="ghost" size="icon" className="pv-finder__rail" aria-label="Search" tabIndex={-1} onClick={() => setCommandOpen(true)}>
+            <Button variant="ghost" size={sidebarSize === "lg" ? "icon-lg" : sidebarSize === "md" ? "icon" : "icon-sm"} className="pv-finder__rail" aria-label="Search" tabIndex={-1} onClick={() => setCommandOpen(true)}>
               <Icon icon={Search01Icon} />
             </Button>
             <SearchBar

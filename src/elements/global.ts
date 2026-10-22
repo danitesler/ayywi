@@ -2,6 +2,7 @@
 import "./index";
 
 export { toast, configureToaster } from "../components/toast/toast";
+export { trackInputModality, getInputModality } from "../lib/input-modality";
 export { setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity } from "../theme";
 export { setBrand, createBrand, brandCss } from "../brand";
 export { brandPresets } from "../tokens";

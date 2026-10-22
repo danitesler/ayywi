@@ -117,7 +117,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Code block](llms/code-block.md): Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.
 - [Table](llms/table.md): Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.
 - [Grid](llms/grid.md): Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar.
-- [Chart](llms/chart.md): Charts drawn by CSS with no library: columns (grouped or stacked), lines and areas, a ranked bar list and sparklines. Bars and ticks take --ayy-value (0–100), lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
+- [Chart](llms/chart.md): Charts drawn by CSS with no library: columns and bars (grouped, stacked, 100%, horizontal, with lines over them), histograms, waterfalls, lines and areas (stacked, stepped), scatters and bubbles, donuts, pies, gauges, radars, heatmaps, funnels, a ranked bar list and sparklines. Bars, slices, cells and ticks take --ayy-value (0–100), dots --ayy-x/--ayy-y, lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them.
 
 ## Optional
 

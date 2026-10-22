@@ -67,6 +67,11 @@
   border-color: transparent;
 }
 
+/* Pointer use hides the ring (base.css), so keep the border it replaces. */
+:root[data-ayy-input="pointer"] .ayy-select__control:focus-visible {
+  border-color: var(--ayy-color-line-strong);
+}
+
 .ayy-select__control:disabled {
   opacity: var(--ayy-opacity-disabled);
   cursor: not-allowed;

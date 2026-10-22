@@ -7,13 +7,16 @@
   --_weight: var(--ayy-weight-semibold);
   --_shadow-hover: var(--ayy-shadow-glow);
   --_opacity-hover: 0.9;
+  /* The height and icon size of this size step; --start and --end read them. */
+  --_h: var(--ayy-size-control-md);
+  --_ic: var(--ayy-size-icon-sm);
 
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--ayy-space-2);
-  block-size: var(--ayy-size-control-md);
+  block-size: var(--_h);
   margin: 0;
   padding-block: 0;
   padding-inline: var(--ayy-control-pad-md);
@@ -68,8 +71,8 @@
 
 .ayy-button > svg {
   flex: none;
-  inline-size: var(--ayy-size-icon-sm);
-  block-size: var(--ayy-size-icon-sm);
+  inline-size: var(--_ic);
+  block-size: var(--_ic);
 }
 
 /* Loading: aria-busy="true" with an .ayy-spinner first inside. It ignores the pointer until the work is done; keep the label
@@ -196,22 +199,23 @@
 /* ---- Sizes ---- */
 
 .ayy-button--sm {
+  --_h: var(--ayy-size-control-sm);
   gap: var(--ayy-space-1-5);
-  block-size: var(--ayy-size-control-sm);
+  block-size: var(--_h);
   padding-inline: var(--ayy-control-pad-sm);
   font-size: var(--ayy-control-text-sm);
 }
 
 .ayy-button--lg {
-  block-size: var(--ayy-size-control-lg);
+  --_h: var(--ayy-size-control-lg);
+  --_ic: var(--ayy-size-icon-md);
+  block-size: var(--_h);
   padding-inline: var(--ayy-control-pad-lg);
   font-size: var(--ayy-control-text-lg);
 }
 
-.ayy-button--lg > svg,
-.ayy-button--icon-lg > svg {
-  inline-size: var(--ayy-size-icon-md);
-  block-size: var(--ayy-size-icon-md);
+.ayy-button--icon-lg {
+  --_ic: var(--ayy-size-icon-md);
 }
 
 .ayy-button--icon,
@@ -235,13 +239,19 @@
   inline-size: 100%;
 }
 
-/* Align: where the icon and label sit in a button wider than its content (block, or a set width). Centered is the default;
-   start matches App shell links. Logical, so it flips in RTL. */
+/* Align: where the icon and label sit in a button wider than its content (block, or a set width). Centered is the default.
+   Start and end lay the button out like an App shell row at the same size: the edge icon is centred in a square as wide
+   as the button is high (the 1px border comes off the padding), so a sm, md or lg button lines up with a sm, md or lg
+   menu item. Logical, so it flips in RTL. */
 .ayy-button--start {
   justify-content: flex-start;
 }
 .ayy-button--end {
   justify-content: flex-end;
+}
+.ayy-button--start:not(.ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link),
+.ayy-button--end:not(.ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link) {
+  padding-inline: calc((var(--_h) - var(--_ic)) / 2 - 1px);
 }
 
 /* ---- Windows High Contrast / forced colors: fills are replaced by the system, so give every button an edge. ---- */

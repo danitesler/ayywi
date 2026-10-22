@@ -21,6 +21,7 @@ export const appShellSettingsClass = "ayy-app-shell--settings";
 export const appShellBackClass = "ayy-app-shell__back";
 export const appShellTitleClass = "ayy-app-shell__title";
 export const appShellHeadClass = "ayy-app-shell__head";
+export const appShellLogotypeClass = "ayy-app-shell__logotype";
 export const appShellCollapsedClass = "ayy-app-shell--collapsed";
 export const appShellHoverPreviewClass = "ayy-app-shell--hover-preview";
 export const appShellSmClass = "ayy-app-shell--sm";
@@ -65,10 +66,10 @@ export type AppShellEdge = "sidebar" | "detail";
 /** Set on the sidebar while the hover preview is held shut after a collapse. */
 const HOLD = "data-ayy-hold";
 
-/** The pointer is on the sidebar, or keyboard focus is in it: what opens the hover preview. */
+/** The pointer is on the sidebar, keyboard focus is in it, or a menu or popover inside it is open: what opens the hover preview. */
 function wouldPreview(aside: HTMLElement): boolean {
   try {
-    return aside.matches(":hover, :has(:focus-visible)");
+    return aside.matches(":hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))");
   } catch {
     return aside.matches(":hover");
   }

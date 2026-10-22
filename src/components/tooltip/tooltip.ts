@@ -1,3 +1,4 @@
+import { getInputModality } from "../../lib/input-modality";
 import { autoPlace, supportsPopover, type FloatingSide } from "../../lib/position";
 
 export const tooltipSides = ["top", "bottom", "start", "end"] as const;
@@ -91,7 +92,7 @@ export function enhanceTooltip(host: HTMLElement): () => void {
     window.addEventListener("pointerup", onPointerUp);
   };
   const onFocusIn = (event: FocusEvent) => {
-    if (pointerDown) return;
+    if (pointerDown || getInputModality() === "pointer") return;
     const target = (event.target as HTMLElement | null) ?? host;
     try {
       if (target.matches(":focus-visible") || host.matches(":focus-visible")) {

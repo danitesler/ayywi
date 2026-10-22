@@ -1,5 +1,5 @@
 // "@danitesler/ayywi/elements": custom elements for the interactive components, for any framework or plain HTML.
-// Importing registers them (idempotent, no-op during SSR) and starts the card spotlight listener.
+// Importing registers them (idempotent, no-op during SSR) and starts the card spotlight and input modality listeners.
 import { AyyActionBarElement } from "../components/action-bar/action-bar.element";
 import { AyyAppShellElement } from "../components/app-shell/app-shell.element";
 import {
@@ -35,6 +35,7 @@ import { openSelectListFrom } from "../components/select/select";
 import { syncShortcuts } from "../components/shortcut/shortcut";
 import { openColorPickerFrom, syncSwatch } from "../components/swatch/swatch";
 import { define } from "../lib/element";
+import { trackInputModality } from "../lib/input-modality";
 
 export {
   AyyActionBarElement,
@@ -173,7 +174,7 @@ function watchPage(): void {
   }
 }
 
-/** Register every <ayy-*> element and the page-wide helpers: card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, select option lists, custom swatch color pickers, drop zones. Safe to call twice. */
+/** Register every <ayy-*> element and the page-wide helpers: focus rings for keyboard use only (trackInputModality), card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, select option lists, custom swatch color pickers, drop zones. Safe to call twice. */
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
   define("ayy-table", AyyTableElement);
@@ -213,6 +214,7 @@ export function defineElements(): void {
     document.addEventListener("click", onSwatchOpen);
     document.addEventListener("keydown", onSwatchOpen);
     trackDropzones(document);
+    trackInputModality();
     // A plain <script> in <head> runs before the body exists: scan and watch it once it's parsed.
     if (document.body) watchPage();
     else document.addEventListener("DOMContentLoaded", watchPage, { once: true });

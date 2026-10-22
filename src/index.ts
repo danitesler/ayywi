@@ -4,6 +4,7 @@ import { tokens, type TokenName } from "./tokens";
 export { tokens, themes, themeBase, brands, brandPresets, type TokenName, type TokenDefinition, type ThemeName, type BrandName } from "./tokens";
 export { cx, type ClassValue } from "./lib/cx";
 export { place, autoPlace, supportsPopover, type FloatingSide, type FloatingAlign, type PlaceOptions, type PlaceBoundary, type PlaceBoundaryRect } from "./lib/position";
+export { trackInputModality, getInputModality, type InputModality } from "./lib/input-modality";
 export * from "./theme";
 export * from "./brand";
 

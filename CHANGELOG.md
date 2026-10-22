@@ -9,6 +9,35 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+### Added
+
+- **[App shell](#/app-shell)**
+  The sidebar's top row had a toggle first and a brand with no mark → the brand is now a logo (a mark with a name, or with a `__logotype`) and the toggle sits at the end; in the rail only the mark shows, and resting the pointer on it swaps in the toggle to expand the sidebar.
+- **[Chart](#/chart)**
+  New chart types — horizontal bars, 100% stacked columns, columns with a line, histogram, waterfall, stacked areas, step lines, scatter, bubbles, donut, pie, gauge, radar, heatmap and funnel, as CSS classes and React components (`HistogramChart`, `WaterfallChart`, `ScatterChart`, `DonutChart`, `GaugeChart`, `RadarChart`, `HeatmapChart`, `FunnelChart`).
+
+### Changed
+
+- **[App shell](#/app-shell)**
+  Link icons moved 2 to 4px as the sidebar narrowed to the rail, and the brand mark and toggle sat on their own axis → every icon (links, buttons, brand mark, toggle) is centred in a row-sized square at the start of the row, so they stay in one column in the sidebar and the rail, at every size and density.
+- **[Button](#/button)**
+  `start` and `end` alignment used the button's normal side padding → they now lay the edge icon out like an App shell row of the same size (sm, md, lg), so a button lines up with the menu items beside it.
+
+### Fixed
+
+- **Focus rings**
+  After a mouse click, the button a dialog or menu focused (and the opener focus went back to) showed a ring, in Safari and Tauri apps on macOS → `trackInputModality()` keeps rings and focus-opened tooltips for Tab and arrow-key use only; `@danitesler/ayywi/elements` starts it, React apps call it once at startup.
+- **[App shell](#/app-shell)**
+  A menu opened from the previewed sidebar of a collapsed shell flickered between clickable and dead once the pointer left the sidebar → the sidebar now stays open while a menu or popover inside it is open, and closes when that does.
+- **[App shell](#/app-shell)**
+  Buttons in the sidebar had wider padding than the links beside them → their icon and label now start at the same edge as the links, and their label clips and fades in the rail like a link's.
+- **[Chart](#/chart)**
+  A long caption on a chart's hidden data table widened the page on phones (`<table class="ayy-sr-only">`) → the table sits in a `<div class="ayy-sr-only">`, which clips it.
+- **[Chart](#/chart)**
+  Bar values printed with `--values` disappeared in High Contrast → they take the system text colour.
+- **Linter**
+  `raw-control` flagged a classless `<table>` inside an `.ayy-sr-only` box → controls inside a visually hidden box are skipped.
+
 ## 0.1.1 — 2026-10-20
 
 ### Added
