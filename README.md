@@ -36,13 +36,13 @@ Paste this into your chat when starting an app:
 
 ```markdown
 Style this project with the ayywi design system. Link these in <head>:
-<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.1/dist/theme-init.js" integrity="sha384-lGmWLHV63f2b1zy44y+untQnyYqkUy+4KcwBm+sfcXKIO/kWbNNpS4+F1cX4uGfz" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.1/dist/fonts.css" integrity="sha384-xlJC6P/OPjbl1PpLS8nyeR5McBXBvlbILZYs3NqxQ7FfDQXHvg7heYTa98Xsh1av" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.1/dist/ayywi.min.css" integrity="sha384-s2WI50PJRErS3/NxcGae54hQWxu82nFtk4qaYgCuxJpodf94cYwCMpHZMXwhuhLl" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.1/dist/elements.global.js" integrity="sha384-hCRL9UcxXd6Hdt6J/X2mSKYJBSDKRgwL49yN/szpHgYfxjWwCCcSf8qd8FyZ8FYn" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/theme-init.js" integrity="sha384-lGmWLHV63f2b1zy44y+untQnyYqkUy+4KcwBm+sfcXKIO/kWbNNpS4+F1cX4uGfz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/fonts.css" integrity="sha384-xlJC6P/OPjbl1PpLS8nyeR5McBXBvlbILZYs3NqxQ7FfDQXHvg7heYTa98Xsh1av" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/ayywi.min.css" integrity="sha384-5YsasIlSTAqud97Few3udM9xAUsWZ0+B3kxEE45H9Kmemw2hMuMEckS1W4eJ849H" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/elements.global.js" integrity="sha384-TfLWGfxgxeYM4nqikfSeAoVNuyMkIzxkfoLDIGlE9abFi+Od9gtTpis7Mlah3Z2c" crossorigin="anonymous" defer></script>
 
 Rules:
-- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.1/llms-full.txt for the rules, patterns and every component's API, and the page of each component you use for copy-ready HTML: llms/<component>.md in the same folder, like table.md (https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.1/llms/table.md).
+- Use only ayywi classes (ayy-*) and tokens (--ayy-*). Read https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/llms-full.txt for the rules, patterns and every component's API, and the page of each component you use for copy-ready HTML: llms/<component>.md in the same folder, like table.md (https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/llms/table.md).
 - ayywi is self-contained: use its layout utilities (.ayy-stack, .ayy-cluster, .ayy-spread, .ayy-grid, .ayy-split) and components directly without external CSS frameworks or UI kits.
 - An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
 - Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).

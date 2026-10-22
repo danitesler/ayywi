@@ -34,4 +34,4 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 - Don't put more than one ring CTA button in the Navbar or hero.
 
 ---
-A pattern of @danitesler/ayywi 0.1.1. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).
+A pattern of @danitesler/ayywi 0.1.2. Every pattern and rule: [llms-full.txt#patterns](../llms-full.txt#patterns).

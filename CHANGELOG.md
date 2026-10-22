@@ -9,6 +9,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ## Unreleased
 
+## 0.1.2 — 2026-10-22
+
 ### Added
 
 - **[App shell](#/app-shell)**
