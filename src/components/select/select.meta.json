@@ -2,7 +2,7 @@
   "name": "Select",
   "slug": "select",
   "category": "Forms",
-  "description": "Styled native <select>. With a mouse or trackpad its options open in ayywi's own list; touch screens keep the OS picker. Value, form behaviour and change events stay native.",
+  "description": "A dropdown for choosing one option from a list. It's the native select with a nicer list on desktop, and the system picker on touch devices.",
   "aka": ["select", "native-select", "picker", "listbox", "custom-select"],
   "classes": {
     "ayy-select": "Wrapper element. Draws the chevron and sets the height.",

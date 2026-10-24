@@ -2,7 +2,7 @@
   "name": "Toolbar",
   "slug": "toolbar",
   "category": "Actions",
-  "description": "A row or column of tools and actions for one surface: an editor's tools, a canvas rail, formatting over a selection. role=\"toolbar\" makes it one Tab stop with arrow keys between items; tools that stay on are aria-pressed. Square icon buttons (or icon and label), groups, separators and a spacer; plain, vertical, floating or scrolling.",
+  "description": "A row or column of tools for one surface, like an editor, a canvas or a text selection. It's a single tab stop with arrow keys between the tools, and can be fixed, floating or vertical.",
   "aka": ["toolbar", "tool-bar", "tool-rail", "toolrail", "tool-button", "tool-btn", "format-bar"],
   "classes": {
     "ayy-toolbar": "Root, role=\"toolbar\" with an aria-label (\"Annotate\"). A row of items with a small gap.",
@@ -63,7 +63,11 @@
       },
       "ToolbarButton": {
         "renders": "<button type=\"button\" class=\"ayy-toolbar__button\">",
-        "props": { "pressed": "boolean — aria-pressed, for tools that stay on; omit for one-off actions" }
+        "props": {
+          "pressed": "boolean — aria-pressed, for tools that stay on; omit for one-off actions",
+          "tooltip": "ReactNode | boolean — custom tooltip text or element; buttons with aria-label show their tooltip on hover by default",
+          "tooltipSide": "\"top\" | \"bottom\" | \"start\" | \"end\" — placement of the tooltip (default \"top\")"
+        }
       },
       "ToolbarGroup": { "renders": "<div role=\"group\" class=\"ayy-toolbar__group\">", "props": {} },
       "ToolbarSeparator": { "renders": "<div role=\"separator\" class=\"ayy-toolbar__separator\">", "props": {} },
@@ -80,6 +84,7 @@
     "Use a toolbar for the tools of one surface: an image or canvas editor, a text selection, a media viewer, a table's bulk actions.",
     "Put the tools that switch modes in a group where one is pressed (the current tool), then separators, then one-off actions (Undo, Redo), then a ToolbarSpacer and the labelled actions (Copy, Save).",
     "Use vertical for a side rail on wide screens and scroll on phones; floating over a canvas or next to a selection.",
+    "Use PopoverTrigger asChild around an icon-only ToolbarButton with aria-label to open a subtoolbar; its label also supplies the tooltip. Give the popup Toolbar its own aria-label and use side=end beside a vertical rail.",
     "Put a Swatch group (size sm, track) in it for colours, and a DropdownMenu trigger (a ToolbarButton) for overflow.",
     "Wrap toolbar items in a Tooltip with a keyboard hint element (<Shortcut keys=\"...\" /> in React, .ayy-shortcut in HTML) to show their action and shortcut on hover and focus."
   ],

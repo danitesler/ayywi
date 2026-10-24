@@ -11,6 +11,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <LineChart
+          toggle
           stacked
           label="Weekly sessions by source, July to September"
           labels={weeks}

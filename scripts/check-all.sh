@@ -22,8 +22,8 @@ step() {
   echo "━━ $name"
   if "$@"; then echo "✓ $name"; else echo "✗ $name"; failed+=("$name"); fi
 }
-# Playwright reuses whatever already answers on its port, which would test another app: use our own
-# (E2E_PORT, default 4184) and refuse to start if something holds it.
+# Playwright fails on a port that's already answering (E2E_REUSE=1 overrides), but check-all wants its own port
+# anyway so it never races a dev server: use E2E_PORT (default 4184) and refuse early with a clear message.
 e2e() {
   export E2E_PORT="${E2E_PORT:-4184}"
   if (exec 3<>/dev/tcp/127.0.0.1/"$E2E_PORT") 2>/dev/null; then

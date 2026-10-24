@@ -3,12 +3,12 @@ import { ChoiceCard, ChoiceGroup, Settings, SettingsRow } from "@danitesler/ayyw
 export default function Example() {
   return (
     <div style={{ inlineSize: "100%", maxInlineSize: "36rem" }}>
-      <Settings title="Appearance">
-        <SettingsRow label="Theme" hint="Follows your system unless you pick one." stack>
-          <ChoiceGroup aria-label="Theme" defaultValue="system" name="theme" min="8rem">
-            <ChoiceCard value="system" title="System" description="Match the device" />
-            <ChoiceCard value="light" title="Light" description="Bright surfaces" />
-            <ChoiceCard value="dark" title="Dark" description="Dim surfaces" />
+      <Settings title="Sharing">
+        <SettingsRow label="Default access" hint="Who can open new links before you invite anyone." stack>
+          <ChoiceGroup aria-label="Default access" defaultValue="team" name="access" min="8rem">
+            <ChoiceCard value="private" title="Only you" description="Invite people by email" />
+            <ChoiceCard value="team" title="Workspace" description="Anyone in your team" />
+            <ChoiceCard value="public" title="Anyone with link" description="View without signing in" />
           </ChoiceGroup>
         </SettingsRow>
       </Settings>

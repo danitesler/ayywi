@@ -1,6 +1,6 @@
 # Segmented control
 
-Category: Forms. Pick one of two to five options that change what you see or what you get: a date range, a view, a billing cycle. Native radios drawn as pill segments, like the tabs list. Also called: segmented-control, segmented, segment, seg, toggle-group.
+Category: Forms. A short row of options where one is always selected, for switching a view, a range or a setting that changes what you see. It looks like tabs but works like radio buttons. Also called: segmented-control, segmented, segment, seg, toggle-group.
 
 **Classes**
 - `.ayy-segmented-control` — Root, a role="radiogroup" with an aria-label. The pill track.

@@ -2,107 +2,217 @@
   "name": "Table",
   "slug": "table",
   "category": "Data display",
-  "description": "Data table with quiet hairlines, uppercase headers, hover rows, inline row actions and multi-select. Styles plain table elements under .ayy-table.",
+  "description": "Data table with quiet hairlines, muted sentence-case headers and hover rows, styled on plain table elements under .ayy-table. Optional frame with toolbar and pager; densities, column lines, sticky header, pinned and resizable columns; sortable, selectable (including drag-to-select across rows), expandable, grouped, linked and disabled rows; column menus with icons, insertion and wrapping; inline editable, empty, truncated and media cells; row actions. Cell content stays inside its column and ends in … unless the column wraps.",
   "aka": ["table", "data-table", "datagrid"],
   "classes": {
-    "ayy-table-wrap": "Scroll container around the table (horizontal overflow).",
+    "ayy-table-container": "Optional bordered frame on the page colour: .ayy-table__toolbar, the .ayy-table-wrap, a .ayy-table__pager. With a max-block-size its table scrolls inside.",
+    "ayy-table__toolbar": "Bar above the table: a __heading and __tools.",
+    "ayy-table__heading": "Stack of __title and __description.",
+    "ayy-table__title": "The table's <h2>.",
+    "ayy-table__description": "Muted line under the title.",
+    "ayy-table__tools": "Toolbar's end cluster: search, filters, a columns menu, a button.",
+    "ayy-table__pager": "Bar under the table: the range shown and a Pagination.",
+    "ayy-table-wrap": "Scroll container around the table.",
     "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
-    "ayy-table--compact": "Tighter rows.",
+    "ayy-table--compact": "Tighter rows (2rem headers).",
+    "ayy-table--spacious": "Roomier rows and columns.",
+    "ayy-table--bordered": "Lines between the columns too.",
+    "ayy-table--sticky": "Header and footer rows stick while the wrap or container scrolls.",
+    "ayy-table--fixed": "table-layout: fixed.",
+    "ayy-table--reorderable": "Draggable header cells that reorder columns on drop.",
+    "ayy-table__draggable": "On a th: indicates this column header can be dragged to reorder columns.",
+    "ayy-table__column-header": "Flex row holding the column label, optional icon and column menu.",
+    "ayy-table__column-label": "Column label or sort button; takes the room the menu leaves and ends in … when the column is narrower.",
+    "ayy-table__column-icon": "Optional icon before a column's label.",
+    "ayy-table__add-column": "Narrow trailing column with an accessible add-column button.",
+    "ayy-table__wrap": "On th/td: content wraps within the column instead of staying on one line and ending in ….",
     "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits.",
-    "ayy-table__sort": "A <button> inside a sortable <th>, with an arrow drawn after the text. aria-sort=\"ascending\" or \"descending\" on the <th> marks the sorted column; the others show both arrows, faint.",
-    "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box in the header): as narrow as the box.",
-    "ayy-table__actions": "On the trailing th/td holding a row's inline action buttons and ⋯ overflow menu trigger: end-aligned, as narrow as its controls.",
-    "ayy-table__row-actions": "Inline-flex cluster of row action buttons and overflow menu trigger inside an .ayy-table__actions cell.",
-    "ayy-table__row-actions--reveal": "Reveals quick actions when the row is hovered, focused within, selected or has an open menu (stays visible on touch screens)."
+    "ayy-table__sort": "A <button> inside a sortable <th>, its label in a __column-label, arrow after the text. aria-sort on the <th> marks the sorted column.",
+    "ayy-table__resize": "Column resize separator (<span tabindex=\"0\">) at a header cell's end: drag, arrow keys; double-click resets.",
+    "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box): as narrow as the box.",
+    "ayy-table__reorder": "On the th/td holding a row's .ayy-drag-handle: as narrow as the handle. The row drags by it; a primary line shows where it lands.",
+    "ayy-table__pin": "On a column's th/td: sticks to the inline start when scrolling sideways.",
+    "ayy-table__pin--end": "With __pin: sticks to the inline end.",
+    "ayy-table__truncate": "On a <span> in a cell: one line ending in …, at most --ayy-table-truncate (16rem).",
+    "ayy-table__edit": "On an <input> or <textarea> in a cell: inline editable text that reads like cell text at rest, outlines on hover/focus, commits on Enter or blur, and reverts on Escape.",
+    "ayy-table__media": "Flex row in a cell: an Avatar or icon, then text.",
+    "ayy-table__secondary": "Muted second line in a cell.",
+    "ayy-table__expand": "Chevron <button aria-expanded> that shows the __detail row after its row.",
+    "ayy-table__detail": "The <tr> after an expandable row; hidden while its __expand is aria-expanded=\"false\".",
+    "ayy-table__group": "A <tr> heading a group: one <th colspan scope=\"rowgroup\"> with its label in a <span>. One per <tbody>.",
+    "ayy-table__empty": "On the <td colspan> of a body's only row when nothing matches.",
+    "ayy-table__row-link": "The row's main <a>; its ::after covers the row. Other controls stay above it.",
+    "ayy-table__actions": "On the trailing th/td holding row actions: end-aligned, narrow.",
+    "ayy-table__row-actions": "Cluster of row action buttons and the ⋯ menu trigger.",
+    "ayy-table__row-actions--reveal": "Shows only on row hover, focus, selection or open menu (always on touch)."
   },
   "variants": {
     "compact": { "values": [true, false], "default": false, "component": "Table" },
+    "spacious": { "values": [true, false], "default": false, "component": "Table" },
+    "bordered": { "values": [true, false], "default": false, "component": "Table" },
+    "sticky": { "values": [true, false], "default": false, "component": "Table" },
+    "fixed": { "values": [true, false], "default": false, "component": "Table" },
+    "reorderable": { "values": [true, false], "default": false, "component": "Table" },
+    "pin": {
+      "values": [false, true, "start", "end"],
+      "default": false,
+      "component": "TableCell"
+    },
     "reveal": { "values": [false, true], "default": false, "component": "TableRowActions" }
   },
   "states": {
-    "default": { "looks": "Collapsed table, s text; header row on a wash fill with muted s uppercase labels; hairlines between rows." },
-    "hover": { "when": "tbody tr:hover; .ayy-table__sort:hover", "looks": "Row gets a wash fill and reveals .ayy-table__row-actions--reveal; a sort button's label turns text colour." },
-    "pressed": { "none": "No pressed look." },
-    "focus": { "when": ".ayy-table__sort:focus-visible", "looks": "2px ring on the sort button." },
-    "disabled": { "none": "Rows aren't disabled; disable the controls in them." },
-    "selected": { "when": "tr[aria-selected=\"true\"] (with a Checkbox in .ayy-table__select)", "looks": "Wash-hover row fill. Forced colours: Highlight." },
-    "error": { "none": "Show a failed load as an Alert with a retry instead of the rows." },
-    "loading": { "none": "No loading look; render Skeleton rows in the column layout with aria-busy on the table." },
-    "sorted": { "when": "th[aria-sort=\"ascending\" | \"descending\"]", "looks": "Header label turns text colour and only the arrow that applies shows, at full strength. Forced colours: underlined." }
+    "default": { "looks": "Collapsed table, s text; header row on a wash fill with muted sentence-case labels; hairlines between rows." },
+    "hover": {
+      "when": "tbody tr:hover; the sort, expand, resize and edit controls; a row link",
+      "looks": "Row gets a wash fill (not group, detail, empty or disabled rows) and reveals __row-actions--reveal; controls brighten, .ayy-table__edit gets a subtle line border and wash fill; a row link underlines."
+    },
+    "pressed": { "when": "th[data-reorderable]:active, .ayy-table__sort:active", "looks": "Draggable header switches to grabbing cursor." },
+    "focus": { "when": ":focus-visible on the sort button, expand button, resize handle or row link; :focus on .ayy-table__edit", "looks": "2px ring (.ayy-table__edit gets a ring border and surface fill); a row link rings the whole row." },
+    "disabled": { "when": "tr[aria-disabled=\"true\"]", "looks": "Muted text, no hover fill. Forced colours: GrayText." },
+    "selected": { "when": "tr[aria-selected=\"true\"] (set by ticking a checkbox, Shift+click, or dragging and holding the cursor across rows)", "looks": "Wash fill (under pinned cells too) and a 2px primary bar on the start edge. Forced colours: Highlight." },
+    "error": { "when": ".ayy-table__edit[aria-invalid=\"true\"]", "looks": "Destructive border on an invalid inline edit input." },
+    "loading": { "when": "aria-busy=\"true\" on the <table>", "looks": "Body rows fade to 50%; first loads use Skeleton rows." },
+    "sorted": { "when": "th[aria-sort]", "looks": "Label turns text colour; only the arrow that applies shows." },
+    "expanded": { "when": ".ayy-table__expand[aria-expanded=\"true\"]", "looks": "Chevron points up; the detail row shows." },
+    "resizing": { "when": ".ayy-table__resize[data-dragging]", "looks": "2px ring-colour line; col-resize cursor." },
+    "reordering": { "when": "th[data-dragging] or th[data-drop-edge]", "looks": "Dragged header dims to 40%; target header shows a 2px primary drop line and top pin marker on the landing edge." },
+    "row-reordering": { "when": "tr[data-dragging] or tr[data-drop-edge]", "looks": "Dragged row dims to 40%; the neighbour it will land beside gets a 2px primary line on that edge. Forced colours: Highlight border." }
   },
   "sizes": {
-    "density": "Header cells are 2.25rem tall, cells padded 12px; compact makes headers 2rem and cells tighter. Text size follows data-density via --ayy-text-s.",
-    "width": "Fills its .ayy-table-wrap, which scrolls sideways when the columns don't fit."
+    "density": "Headers 2.25rem, cells padded 12px; compact 2rem headers, tighter rows; spacious 2.75rem, 16px. Text follows data-density.",
+    "width": "Fills its wrap, which scrolls when columns don't fit. After a column resize it stays at least as wide as its wrap, even with no data columns."
   },
-  "js": "tableClass({ compact?, className? }); tableRowActionsClass({ reveal?, className? }); tableWrapClass, tableNumClass, tableSortClass, tableSelectClass, tableActionsClass constants; nextSortDirection(current) → \"ascending\" | \"descending\"; compareValues(a, b, direction?) sorts numbers (also \"$1,240\", \"12 GB\") by value and text with digits read as numbers, empty values last either way; connectTable(table, { onSort?, onSelectionChange? }) wires sort buttons and row checkboxes on plain markup (used by <ayy-table>).",
+  "js": "tableClass({ compact?, spacious?, bordered?, sticky?, fixed?, reorderable?, className? }); tableRowActionsClass({ reveal?, className? }); tablePinClassName(pin); a table…Class constant per class; nextSortDirection(current); compareValues(a, b, direction?) sorts numbers (\"$1,240\", \"12 GB\") by value, text naturally, empty last; connectTableResize(table, { onResize? }); connectTableDragSelect(table, { onRowChange? }); connectTableEdit(table, { onCellEdit? }); connectTableColumnReorder(table, { onColumnReorder?, selector? }); connectTableColumns(table, { onColumnAction? }); connectTable(table, { onColumnAction?, onSort?, onSelectionChange?, onExpandChange?, onResize?, onCellEdit?, onColumnReorder? }) wires plain markup (used by <ayy-table>).",
   "element": {
     "tag": "ayy-table",
-    "description": "Wraps an .ayy-table (or its .ayy-table-wrap). Header .ayy-table__sort buttons set aria-sort and reorder the body rows by that column (a cell's data-sort-value wins over its text); .ayy-table__select checkboxes set aria-selected on their row, and a checkbox in the header's select cell selects all and shows some as indeterminate.",
+    "description": "Column menus use data-column-action for freeze, wrap, icon, insertion and shared filter/group controls. Multiple pinned columns receive cumulative offsets. Wraps an .ayy-table (or its wrap or container). Sort buttons reorder each body's rows (data-sort-value wins over text; detail rows move with their row, group rows stay); row checkboxes set aria-selected, with select-all, Shift+click ranges, and drag-to-select by holding and moving across rows; expand buttons flip aria-expanded; resize handles resize columns; .ayy-table__edit inputs commit inline edits on Enter/blur and revert on Escape; column headers drag to reorder columns; rows with an .ayy-drag-handle in a .ayy-table__reorder cell drag to reorder rows, and a focused handle moves its row with the arrow keys (the detail row follows).",
     "attributes": {},
     "events": {
-      "ayy-sort": "{ column, key, direction } before the rows move — key is the <th>'s data-sort-key. Call preventDefault() to sort them yourself (on the server).",
-      "ayy-selection-change": "{ rows } — the selected <tr> elements."
+      "ayy-sort": "{ column, key, direction } before the rows move (key: data-sort-key). preventDefault() to sort them yourself.",
+      "ayy-selection-change": "{ rows } — the selected <tr>s.",
+      "ayy-expand-change": "{ row, expanded }",
+      "ayy-column-resize": "{ column, key, width } when a resize ends (width null after a reset).",
+      "ayy-cell-edit": "{ row, cell, column, key, value } when an inline edit input commits a change.",
+      "ayy-column-reorder": "{ from, to, key, targetKey } when a column is dragged to a new position.",
+      "ayy-row-reorder": "{ from, to, id } when a row is dropped, or moved with the arrow keys on its handle. from and to count rows with a handle; to is what Array.splice wants after removing the row. id is the row's data-id.",
+      "ayy-column-action": "{ action, column, key, value } before a column action. Cancel to handle it in application state. data-column-action: freeze, wrap, icon (data-column-value), insert-before/insert-after (logical order), insert-left/insert-right (physical direction), add, filter, group, group-by (data-column-value). Filter/group open the toolbar button with data-table-control=filters/groups."
     }
   },
   "react": {
-    "import": "import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableRowActions, TableCaption } from \"@danitesler/ayywi/react\";",
+    "import": "import { Table, TableContainer, TableToolbar, TableHeading, TableTitle, TableDescription, TableTools, TablePager, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableEdit, TableResize, TableExpand, TableGroup, TableEmpty, TableRowLink, TableMedia, TableSecondary, TableRowActions, TableCaption } from \"@danitesler/ayywi/react\";",
     "components": {
-      "Table": { "renders": "<div class=\"ayy-table-wrap\"><table>", "props": { "compact": "boolean" } },
+      "Table": {
+        "renders": "<div class=\"ayy-table-wrap\"><table>",
+        "props": {
+          "compact": "boolean",
+          "spacious": "boolean",
+          "bordered": "boolean",
+          "sticky": "boolean",
+          "fixed": "boolean",
+          "reorderable": "boolean",
+          "onColumnResize": "({ column, key, width }) => void",
+          "onCellEdit": "({ row, cell, column, key, value }) => void",
+          "onColumnReorder": "({ from, to, key, targetKey }) => boolean | void",
+        "onRowReorder": "({ from, to, id }) => boolean | void — a row's DragHandle was dropped or moved by key. React doesn't move rows itself: reorder your data and return false.",
+          "onColumnAction": "({ action, column, key, value }) => boolean | void — return false to update application state",
+          "wrapperProps": "props for the .ayy-table-wrap (a max-block-size for sticky)"
+        }
+      },
+      "TableContainer": { "renders": "<div class=\"ayy-table-container\">" },
+      "TableToolbar": { "renders": "<div class=\"ayy-table__toolbar\">" },
+      "TableHeading": { "renders": "<div class=\"ayy-table__heading\">" },
+      "TableTitle": { "renders": "<h2 class=\"ayy-table__title\">" },
+      "TableDescription": { "renders": "<p class=\"ayy-table__description\">" },
+      "TableTools": { "renders": "<div class=\"ayy-table__tools\">" },
+      "TablePager": { "renders": "<div class=\"ayy-table__pager\">" },
       "TableHeader": { "renders": "<thead>" },
       "TableBody": { "renders": "<tbody>" },
       "TableFooter": { "renders": "<tfoot>" },
-      "TableRow": { "renders": "<tr>", "props": { "selected": "boolean — aria-selected" } },
+      "TableRow": {
+        "renders": "<tr>",
+        "props": { "selected": "boolean", "disabled": "boolean — aria-disabled", "detail": "boolean — the row under an expandable row" }
+      },
       "TableHead": {
-        "renders": "<th scope=\"col\">, with a <button class=\"ayy-table__sort\"> inside when sortable",
+        "renders": "<th scope=\"col\">; a sort <button> when sortable; a TableResize when resizable",
         "props": {
           "numeric": "boolean",
-          "select": "boolean — the checkbox column",
-          "actions": "boolean — the trailing row actions column",
-          "sort": "\"ascending\" | \"descending\" | \"none\" — makes the header a sort button; \"none\" for a sortable column that isn't sorted",
-          "onSort": "() => void — flip with nextSortDirection() and sort your rows (compareValues(a, b, direction) helps)"
+          "select": "boolean",
+          "actions": "boolean",
+          "pin": "boolean | \"start\" | \"end\"",
+          "sort": "\"ascending\" | \"descending\" | \"none\"",
+          "onSort": "() => void — flip with nextSortDirection()",
+          "resizable": "boolean",
+          "reorderable": "boolean",
+          "icon": "ReactNode — before the label",
+          "menu": "ReactNode — a composed DropdownMenu beside the label",
+          "wrap": "boolean — wraps the header label instead of ending it in …"
         }
       },
       "TableCell": {
         "renders": "<td>",
         "props": {
           "numeric": "boolean",
-          "select": "boolean — the checkbox column",
-          "actions": "boolean — the trailing row actions column"
+          "select": "boolean",
+          "reorder": "boolean — the narrow column holding a row's DragHandle",
+          "actions": "boolean",
+          "pin": "boolean | \"start\" | \"end\"",
+          "truncate": "boolean — wraps content in a .ayy-table__truncate span",
+          "wrap": "boolean — wraps long cell content instead of ending it in …"
         }
       },
-      "TableRowActions": {
-        "renders": "<div class=\"ayy-table__row-actions\">",
+      "TableEdit": {
+        "renders": "<input class=\"ayy-table__edit\"> or <textarea class=\"ayy-table__edit\"> when multiline",
         "props": {
-          "reveal": "boolean — reveal on row hover, focus-within or selection (stays visible on touch)"
+          "value": "string — controlled cell text",
+          "defaultValue": "string — uncontrolled starting text",
+          "multiline": "boolean — textarea; Shift+Enter adds a line",
+          "onChange": "(event) => void",
+          "onFocus": "(event) => void",
+          "onBlur": "(event) => void",
+          "onKeyDown": "(event) => void",
+          "onValueCommit": "(value: string) => void — called on Enter or blur when the value changed"
         }
       },
+      "TableResize": { "renders": "<span class=\"ayy-table__resize\" role=\"separator\" aria-orientation=\"vertical\" tabindex=\"0\">" },
+      "TableExpand": { "renders": "<button type=\"button\" class=\"ayy-table__expand\" aria-expanded>", "props": { "expanded": "boolean" } },
+      "TableGroup": { "renders": "<tr class=\"ayy-table__group\"><th colspan scope=\"rowgroup\"><span>", "props": { "colSpan": "number" } },
+      "TableEmpty": { "renders": "<tr><td colspan class=\"ayy-table__empty\">", "props": { "colSpan": "number" } },
+      "TableRowLink": { "renders": "<a class=\"ayy-table__row-link\">" },
+      "TableMedia": { "renders": "<div class=\"ayy-table__media\">" },
+      "TableSecondary": { "renders": "<span class=\"ayy-table__secondary\">" },
+      "TableRowActions": { "renders": "<div class=\"ayy-table__row-actions\">", "props": { "reveal": "boolean" } },
       "TableCaption": { "renders": "<caption>" }
     }
   },
   "a11y": [
-    "Use real <th> header cells with scope (React sets scope=\"col\").",
-    "A <caption> or aria-label names the table for screen readers.",
-    "Sorting is a button inside the header, so it's reachable by Tab and announced with the column's aria-sort. Only the sorted column carries aria-sort.",
-    "Every row checkbox needs an aria-label naming its row (\"Select INV-1042\"); the select-all box is indeterminate when some rows are selected.",
-    "Row action icon buttons and ⋯ menu triggers need an aria-label that names the row (\"Edit Northwind\", \"More actions for Northwind\")."
+    "Use real <th> cells with scope (React sets scope=\"col\"); a cell naming its row can be <th scope=\"row\">.",
+    "Name the table: a <caption>, or aria-labelledby pointing at the .ayy-table__title.",
+    "Sort buttons are reachable by Tab and announced with aria-sort; only the sorted column carries it.",
+    "Row checkboxes, expand buttons and row action buttons need aria-labels naming their row (\"Select INV-1042\", \"Show details for INV-1042\"); point an expand button's aria-controls at its detail row.",
+    "Resize handles are focusable separators with aria-valuenow in px: arrow keys resize (Shift: bigger steps), Home/End jump to the limits.",
+    "Set aria-busy=\"true\" while rows load, and aria-disabled=\"true\" on rows that can't be acted on (disable their controls too)."
   ],
   "do": [
-    "Use a table to compare items across the same attributes (projects × status × builds).",
-    "End-align numbers with numeric/ayy-table__num.",
-    "Keep cell content short; truncate with a tooltip if needed.",
-    "Make the columns people scan sortable (names, dates, amounts), and start sorted by the most useful one. Put the real value in data-sort-value when the cell shows a formatted one (a date, a currency).",
-    "Put per-row quick actions (Edit, Copy) and a ⋯ DropdownMenu for secondary actions (Duplicate, Archive, Delete) in a trailing TableCell actions with TableRowActions.",
-    "Pair a selectable table with an ActionBar at the bottom for bulk actions on selected rows."
+    "Use a table to compare items across the same attributes.",
+    "End-align numbers with numeric; a cell keeps to one line, so put the full text in its title and add wrap to a column that must show it all.",
+    "Make scanned columns sortable; put the raw value in data-sort-value when the cell shows a formatted one.",
+    "Frame a working table with TableContainer: title, search and a columns menu above, Pagination below.",
+    "Compose a column menu with TableHead menu and icon; data-column-action wires freeze, wrap, icon, insert-before/after, add and shared filter/group controls. Return false from onColumnAction or cancel ayy-column-action to own the data changes.",
+    "Pin the name column on wide tables; use sticky with a max-block-size on long ones.",
+    "Use expandable rows for details that don't deserve a column, and group rows to split a list by status or date.",
+    "Put quick actions and a ⋯ DropdownMenu in a trailing actions cell; pair selection with an ActionBar for bulk actions.",
+    "Show TableEmpty with an EmptyState when a search matches nothing."
   ],
   "dont": [
-    "Don't use tables for layout.",
-    "Don't use a table for rows with one attribute — use a List.",
-    "Don't zebra-stripe; hairlines + hover are enough.",
-    "Don't nest interactive controls in every cell — one trailing actions column is plenty."
+    "Don't use tables for layout, or for rows with one attribute — use a List.",
+    "Don't zebra-stripe; hairlines and hover are enough.",
+    "Don't nest controls in every cell — one trailing actions column is plenty.",
+    "Don't put a row link in a pinned cell: its cover stays inside the sticky cell.",
+    "Don't resize columns under a header with more than one row."
   ],
   "examples": [
-    { "id": "basic", "title": "Basic" },
-    { "id": "sortable", "title": "Sortable columns and selectable rows" },
-    { "id": "actions", "title": "Row actions, secondary menu and bulk action bar" }
+    { "id": "simple", "title": "Simple" },
+    { "id": "medium", "title": "Medium" },
+    { "id": "playground", "title": "Playground" }
   ]
 }

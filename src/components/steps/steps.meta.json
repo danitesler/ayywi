@@ -2,7 +2,7 @@
   "name": "Steps",
   "slug": "steps",
   "category": "Navigation",
-  "description": "Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current=\"step\" is the only state.",
+  "description": "A progress indicator for a short flow like sign-up or checkout. It shows which step you're on, which are done and which are still to come.",
   "aka": ["steps", "wizard-steps", "progress-steps"],
   "classes": {
     "ayy-steps": "Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.",

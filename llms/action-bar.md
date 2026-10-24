@@ -1,6 +1,6 @@
 # Action bar
 
-Category: Actions. Floating bottom multi-select bar that animates into view when one or more rows or cards are selected in a Table, Grid or List. Shows the selected count, a clear button (Esc), and bulk actions such as Edit, Duplicate, Copy, Archive and Delete. Also called: action-bar, actionbar, bulk-actions, bulk-action-bar, selection-bar, batch-actions, multi-select-bar.
+Category: Actions. A bar that appears at the bottom of the screen once someone selects rows or cards in a table, grid or list. It shows how many are selected and offers actions that apply to all of them, such as archive or delete. It goes away when the selection is cleared. Also called: action-bar, actionbar, bulk-actions, bulk-action-bar, selection-bar, batch-actions, multi-select-bar.
 
 **Classes**
 - `.ayy-action-bar` — Root floating pill bar, role="toolbar". Hidden until the open attribute is present, then animates in with a spring lift, and plays the same animation in reverse on exit.
@@ -38,10 +38,10 @@ Category: Actions. Floating bottom multi-select bar that animates into view when
 - `<ActionBar>` renders <div role="toolbar" class="ayy-action-bar">. Props: `open` boolean — shows the bar with its entrance animation when true; `fixed` boolean — pins to the bottom center of the viewport; `label` string — aria-label for the toolbar (default "Bulk actions"); `onClear` () => void — called when the clear button or Escape is pressed
 - `<ActionBarSelection>` renders <div class="ayy-action-bar__selection">. Props: 
 - `<ActionBarCount>` renders <span class="ayy-action-bar__count">. Props: 
-- `<ActionBarClose>` renders <button type="button" class="ayy-action-bar__close">. Props: `label` string — accessible label for the clear button (default "Clear selection")
+- `<ActionBarClose>` renders <button type="button" class="ayy-action-bar__close">. Props: `label` string — accessible label for the clear button (default "Clear selection"); `tooltip` ReactNode | boolean — custom tooltip text or element (defaults to label); `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top")
 - `<ActionBarSeparator>` renders <div role="separator" class="ayy-action-bar__separator">. Props: 
 - `<ActionBarActions>` renders <div role="group" class="ayy-action-bar__actions">. Props: 
-- `<ActionBarButton>` renders <button type="button" class="ayy-action-bar__button">. Props: `variant` "default" | "primary" | "secondary" | "destructive"; `primary` boolean — shorthand for variant="primary"; `secondary` boolean — shorthand for variant="secondary"; `destructive` boolean — shorthand for variant="destructive"; `icon` boolean — square icon-only button without label padding (must provide aria-label); `open` boolean — aria-expanded when used as a DropdownMenuTrigger
+- `<ActionBarButton>` renders <button type="button" class="ayy-action-bar__button">. Props: `variant` "default" | "primary" | "secondary" | "destructive"; `primary` boolean — shorthand for variant="primary"; `secondary` boolean — shorthand for variant="secondary"; `destructive` boolean — shorthand for variant="destructive"; `icon` boolean — square icon-only button without label padding (must provide aria-label); `open` boolean — aria-expanded when used as a DropdownMenuTrigger; `tooltip` ReactNode | boolean — custom tooltip text or element; icon buttons show their aria-label on hover by default; `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top")
 
 **Accessibility**
 - role="toolbar" with an aria-label ("Bulk actions"): one Tab stop, Left/Right arrow keys (mirrored in RTL) and Home/End move between the clear button and actions.

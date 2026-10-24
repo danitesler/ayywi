@@ -2,7 +2,7 @@
   "name": "Progress",
   "slug": "progress",
   "category": "Feedback",
-  "description": "Thin progress bar. Determinate (--ayy-value 0–100) or indeterminate.",
+  "description": "A bar that shows how far along something is, or that work is happening when the end isn't known.",
   "aka": ["progress", "progress-bar", "progressbar", "meter"],
   "classes": {
     "ayy-progress": "Track. Set --ayy-value (0–100) on it.",

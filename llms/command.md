@@ -1,6 +1,6 @@
 # Command palette
 
-Category: Actions. A search field over a grouped list of actions and places: type to filter, arrows to move, Enter to run. Inline in a page or popover, or as a dialog near the top of the screen opened with ⌘K / Ctrl+K. Items can show an icon, a shortcut and a count. Also called: command, command-palette, command-menu, quick-switcher, quick-open.
+Category: Actions. A search box above a list of actions and places, so people can find and run things from the keyboard. It can sit inline on a page or in a popover, or open as a dialog from a shortcut. Also called: command, command-palette, command-menu, quick-switcher, quick-open.
 
 **Classes**
 - `.ayy-command` — Root: a card with the search field, the list and an optional footer. On a <div> inline, or with ayy-dialog on a <dialog> for the ⌘K palette (top-aligned, no padding).

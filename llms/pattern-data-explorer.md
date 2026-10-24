@@ -1,8 +1,8 @@
 # Data explorer
 
-A searchable, filterable, sortable view of records or media assets with multi-select and bulk actions: a Page header at the top, a Filter bar with status tabs, faceted dropdowns, search and sorting, a Table (for columns) or Grid (for cards and media) with inline quick actions and a ⋯ menu, a floating Action bar while items are selected, and Skeleton / Empty state / Alert states.
+A searchable, filterable, sortable view of records or media, with multi-select and bulk actions. It's built from a page header, a filter bar, a table or card grid with quick actions, and a floating action bar that appears while items are selected. It also covers the loading, empty and error states.
 
-Built from: Page header, Filter bar, Search bar, Sorting, Chip, Table, Grid, Action bar, Dropdown menu, Pagination, Skeleton, Empty state, Alert. Example: Table → "Row actions, secondary menu and bulk action bar" (`get_component table`, llms/table.md).
+Built from: Page header, Filter bar, Search bar, Sorting, Chip, Table, Grid, Action bar, Dropdown menu, Pagination, Skeleton, Empty state, Alert. Example: Table → "Playground" (`get_component table`, llms/table.md).
 
 **How**
 1. Header: start the screen with a PageHeader (PageHeaderTitle as the one <h1>, PageHeaderDescription, and PageHeaderActions with at most one primary create Button and optional export/view controls).

@@ -2,7 +2,7 @@
   "name": "Sorting",
   "slug": "sorting",
   "category": "Forms",
-  "description": "A dedicated dropdown trigger for ordering lists, tables, and feeds, styled to coordinate with filter bars and paired with dropdown menus.",
+  "description": "A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it.",
   "aka": ["sorting", "sort", "sort-menu", "sort-button", "sort-dropdown", "sort-select"],
   "classes": {
     "ayy-sorting": "Root inline-flex container for a sorting control.",

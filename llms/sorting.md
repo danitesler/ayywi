@@ -1,6 +1,6 @@
 # Sorting
 
-Category: Forms. A dedicated dropdown trigger for ordering lists, tables, and feeds, styled to coordinate with filter bars and paired with dropdown menus. Also called: sorting, sort, sort-menu, sort-button, sort-dropdown, sort-select.
+Category: Forms. A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it. Also called: sorting, sort, sort-menu, sort-button, sort-dropdown, sort-select.
 
 **Classes**
 - `.ayy-sorting` — Root inline-flex container for a sorting control.

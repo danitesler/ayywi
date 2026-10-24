@@ -81,16 +81,17 @@ function ColorsPage() {
   return (
     <article className="pv-page">
       <Header title="Colors">
-        Named colours only, never raw hex. They switch with the theme, so one design fits all. Try the theme button at the top of the
-        sidebar.
+        Every colour has a job: the page and its surfaces, text, lines, interactive elements and status. Components use these names
+        instead of raw values, so the whole interface changes together when the theme or brand does. Try the theme button at the top of
+        the sidebar.
       </Header>
 
       <h2 className="pv-h pv-h--section" id="colors-themes">
         Themes
       </h2>
       <p className="pv-note">
-        Dark contrast: a #000000 page, cards a step up, white text. Light gray: white cards on a grey page. All text passes WCAG AA in every
-        theme.
+        Dark and Light are the defaults. Dark contrast uses a pure black page with white text, and Light gray puts white cards on a grey
+        page. Text stays readable in every theme.
       </p>
       <div className="pv-themes">
         {themeOptions.map((th) => (
@@ -110,7 +111,7 @@ function ColorsPage() {
       <h2 className="pv-h pv-h--section" id="colors-accents">
         Accents
       </h2>
-      <p className="pv-note">Categories, spotlights, charts. Same in every theme.</p>
+      <p className="pv-note">Spot colours that give a category, a spotlight or an AI feature its own identity. They look the same in every theme. Charts use their own colours.</p>
       <Swatches entries={group("accent")} />
     </article>
   );
@@ -130,6 +131,8 @@ const TYPE_STYLES: { sample: ReactNode; use: string }[] = [
   { sample: <p className="ayy-h6">Heading 6</p>, use: "The smallest heading: table headers, inline group labels." },
   { sample: <p className="ayy-lede">Lede, a calm intro that sets up the page.</p>, use: "Intro under a page or section title. Two lines at most." },
   { sample: <p>Body text. 日本語、العربية، Ελληνικά, हिन्दी all render with the OS font.</p>, use: "Everything else: paragraphs, labels, table cells, form text. It is the default, so it needs no class." },
+  { sample: <p>Compact density runs <code className="ayy-code">--ayy-text-xs</code> a step smaller.</p>, use: "Token names, file paths and shortcuts inside running text. The border and wash keep it legible on any background." },
+  { sample: <p className="ayy-callout">Note: forms save on blur, so a slow network is forgiving.</p>, use: "A short note set apart from body text: a tip, a caveat, an aside. Two or three lines at most; for status messages with an icon, use Alert." },
   { sample: <p className="ayy-muted">Muted, for captions and secondary info.</p>, use: "Captions, hints, timestamps. Nothing critical." },
   { sample: <p className="ayy-signature" style={{ fontSize: "var(--ayy-text-2xl)" }}>Signature accent</p>, use: "A personal touch: a sign-off, a name, one highlighted word. Once per screen, and never for UI text." },
   { sample: <p>Text highlight (default): <mark className="ayy-text-highlight">search match</mark></p>, use: "Search hits and neutral inline callouts: subtle wash with clean underline." },
@@ -143,7 +146,10 @@ function TypographyPage() {
   const densityText = [...sizes.filter(([, t]) => t.density), ...group("control").filter(([name]) => short(name).startsWith("text-"))];
   return (
     <article className="pv-page">
-      <Header title="Typography">Four families, one size scale. Sizes follow the browser font size; every script falls back to the system font.</Header>
+      <Header title="Typography">
+        Headings, body text, a handwritten accent and code each have their own font, and they all share one size scale. Sizes follow the
+        browser's font size setting, and any language the fonts don't cover falls back to the system font.
+      </Header>
       <div className="pv-type">
         {TYPE_STYLES.map(({ sample, use }) => (
           <div key={use} className="pv-type__row">
@@ -168,13 +174,13 @@ function TypographyPage() {
 
       <h2 className="pv-h pv-h--section">Sizes that follow density</h2>
       <p className="pv-note">
-        UI chrome: buttons, menus, tables, the app shell. Compact / comfortable / touch. Each step is 1px; fields jump to 16px on touch so
-        iOS doesn't zoom on focus.
+        Text inside the interface itself: buttons, menus, tables and the app shell. It grows a little from compact to comfortable to touch,
+        and form fields get larger on touch screens so iOS doesn't zoom in when you focus them.
       </p>
       <ScaleRows entries={densityText} />
 
       <h2 className="pv-h pv-h--section">Fixed sizes</h2>
-      <p className="pv-note">Content: headings, body copy, descriptions. Same in every density.</p>
+      <p className="pv-note">Text for content: headings, body copy and descriptions. These sizes stay the same in every density.</p>
       <ScaleRows entries={sizes.filter(([, t]) => !t.density)} />
     </article>
   );
@@ -203,23 +209,30 @@ function ScaleRows({ entries }: { entries: Entry[] }) {
 // ---- Spacing & sizing ----
 
 const SIZES = [
-  { name: "sm", px: "28px", desc: "Small control height (32px comfortable, 40px touch)." },
-  { name: "md", px: "32px", desc: "Default control height (40px comfortable, 44px touch)." },
-  { name: "lg", px: "40px", desc: "Large control height (48px comfortable, 52px touch)." },
-  { name: "icon-sm", px: "16px", desc: "Dense rows, button icons." },
-  { name: "icon-md", px: "20px", desc: "List rows, headings, next to body text." },
-  { name: "icon-lg", px: "24px", desc: "Native icon grid." },
-  { name: "switch", px: "20px", desc: "Switch track height." },
-  { name: "check", px: "16px", desc: "Checkbox and radio box." },
-  { name: "touch", px: "44px", desc: "Minimum touch target." },
+  { name: "sm", px: "28px", desc: "Small control height. Grows with density." },
+  { name: "md", px: "32px", desc: "Default control height. Grows with density." },
+  { name: "lg", px: "40px", desc: "Large control height. Grows with density." },
+  { name: "icon-sm", px: "16px", desc: "Icons in dense rows and inside buttons." },
+  { name: "icon-md", px: "20px", desc: "Icons in list rows, headings and beside body text." },
+  { name: "icon-lg", px: "24px", desc: "Icons at their natural size." },
+  { name: "switch", px: "20px", desc: "Height of a switch." },
+  { name: "check", px: "16px", desc: "Size of a checkbox or radio." },
+  { name: "touch", px: "44px", desc: "The smallest comfortable target for a finger." },
 ];
 
 function SpacingPage() {
   return (
     <article className="pv-page">
-      <Header title="Spacing & sizing">Spacing on a 4px grid and standard control height scale.</Header>
+      <Header title="Spacing & sizing">
+        Spacing steps keep padding, gaps and margins consistent so layouts line up. Sizes cover the standard heights of controls, icons
+        and touch targets.
+      </Header>
 
       <h2 className="pv-h pv-h--section">Spacing</h2>
+      <p className="pv-note">
+        Every gap and padding comes from this scale, built on a 4px grid. The smallest steps are for dense interfaces, the largest for
+        generous space around page sections.
+      </p>
       <div className="pv-scale">
         {byValue(group("space")).map(([name, t]) => (
           <div key={name} className="pv-scale__row">
@@ -233,6 +246,7 @@ function SpacingPage() {
       </div>
 
       <h2 className="pv-h pv-h--section">Sizes</h2>
+      <p className="pv-note">Heights of controls, icons and touch targets. Control heights grow with density.</p>
       <div className="pv-scale">
         {SIZES.map(({ name, px, desc }) => (
           <div key={name} className="pv-scale__row">
@@ -246,7 +260,7 @@ function SpacingPage() {
       </div>
 
       <h2 className="pv-h pv-h--section">Components by size</h2>
-      <p className="pv-note">Controls at each size tier share identical block heights and vertical alignment.</p>
+      <p className="pv-note">Buttons, inputs and selects of the same size share one height, so they line up side by side.</p>
       <div className="pv-densities">
         <Card>
           <CardContent className="ayy-stack">
@@ -314,8 +328,15 @@ function SpacingPage() {
 function ElevationPage() {
   return (
     <article className="pv-page">
-      <Header title="Radius & elevation">Corner radii and shadows for cards, menus and dialogs.</Header>
+      <Header title="Radius & elevation">
+        Radius sets how round a corner is, and elevation sets how far a surface seems to float above the page. Picking them by what
+        the surface is keeps cards, menus and dialogs feeling like one family.
+      </Header>
       <h2 className="pv-h pv-h--section">Radius</h2>
+      <p className="pv-note">
+        Small radii suit small parts, large ones suit cards and dialogs. Buttons are fully round, and a brand can change the shape of
+        buttons, inputs and cards together.
+      </p>
       <div className="pv-tiles">
         {group("radius").map(([name, t]) => (
           <div key={name} className="pv-tile" style={{ borderRadius: `var(${t.cssVar})` }}>
@@ -324,6 +345,10 @@ function ElevationPage() {
         ))}
       </div>
       <h2 className="pv-h pv-h--section">Shadows</h2>
+      <p className="pv-note">
+        A card at rest has only a light edge along the top. Hovered cards lift, and anything that floats over the page, like menus and
+        dialogs, gets the deepest shadow.
+      </p>
       <div className="pv-tiles">
         {group("shadow").map(([name, t]) => (
           <div key={name} className="pv-tile" style={{ boxShadow: `var(${t.cssVar})` }}>
@@ -352,7 +377,7 @@ function MotionRow({ name, value, ease, duration, end }: { name: string; value: 
     <div className="pv-motion__row">
       <div className="pv-motion__label">
         <strong>{name}</strong>
-        <code>{value}</code>
+        <code className="ayy-code">{value}</code>
       </div>
       <div className="pv-motion__track" aria-hidden="true" data-end={end || undefined} style={{ "--pv-ease": ease, "--pv-duration": duration } as CSSProperties}>
         <span className="pv-motion__dot" />
@@ -387,10 +412,13 @@ function MotionPage() {
 
   return (
     <article className="pv-page">
-      <Header title="Motion">Only position and opacity animate. Reduced motion cuts it short.</Header>
+      <Header title="Motion">
+        Motion shows what just changed: a menu opening, a switch flipping, a number updating. Only position and opacity animate, so it
+        stays light, and people who ask for reduced motion get it cut short.
+      </Header>
 
       <h2 className="pv-h pv-h--section">Components in motion</h2>
-      <p className="pv-note">Real components on a loop through their active states.</p>
+      <p className="pv-note">Real components cycling through their states, each using the easing and duration that suits it.</p>
 
       <div className="pv-motion__controls">
         <div className="ayy-cluster">
@@ -422,7 +450,7 @@ function MotionPage() {
               </Label>
             </div>
           </div>
-          <p className="pv-note">Slight spring overshoot (<code>--ayy-ease-spring</code>) on thumb slide and checkmark scale.</p>
+          <p className="pv-note">The thumb slides and the check pops in with a slight overshoot (<code>--ayy-ease-spring</code>), so the switch feels physical.</p>
         </div>
 
         <div className="pv-motion__card">
@@ -442,7 +470,7 @@ function MotionPage() {
               <TabsContent value="settings" className="ayy-sr-only">Settings</TabsContent>
             </Tabs>
           </div>
-          <p className="pv-note">Pill indicator background glides between options with spring curve over base duration.</p>
+          <p className="pv-note">The highlight glides from one option to the next on a springy curve.</p>
         </div>
 
         <div className="pv-motion__card">
@@ -458,7 +486,7 @@ function MotionPage() {
               </ProgressRing>
             </div>
           </div>
-          <p className="pv-note">Decelerating <code>--ayy-ease-out-expo</code> over <code>--ayy-duration-slower</code> for value changes.</p>
+          <p className="pv-note">Values change with a quick start and a long, soft landing (<code>--ayy-ease-out-expo</code>).</p>
         </div>
 
         <div className="pv-motion__card">
@@ -473,7 +501,7 @@ function MotionPage() {
               </AccordionItem>
             </Accordion>
           </div>
-          <p className="pv-note">Menu easing (<code>--ayy-ease-menu</code>) animates block size and chevron rotation in lockstep.</p>
+          <p className="pv-note">The panel opens and the chevron turns together on the same curve (<code>--ayy-ease-menu</code>).</p>
         </div>
 
         <div className="pv-motion__card">
@@ -492,7 +520,7 @@ function MotionPage() {
               Workspace settings updated
             </InlineToast>
           </div>
-          <p className="pv-note">Menu easing curve for entrance translate and fade on sheets, menus, and toasts.</p>
+          <p className="pv-note">Sheets, menus and toasts slide in and fade on the menu curve (<code>--ayy-ease-menu</code>).</p>
         </div>
 
         <div className="pv-motion__card">
@@ -513,7 +541,7 @@ function MotionPage() {
               </CardContent>
             </Card>
           </div>
-          <p className="pv-note">Out-expo curve (<code>--ayy-ease-out-expo</code>) over slow duration (450ms) for card lifts.</p>
+          <p className="pv-note">Cards lift smoothly on hover (<code>--ayy-ease-out-expo</code>).</p>
         </div>
 
         <div className="pv-motion__card">
@@ -534,19 +562,19 @@ function MotionPage() {
               </div>
             </div>
           </div>
-          <p className="pv-note">Infinite keyframe loop running <code>--ayy-ease-standard</code> on indeterminate progress and shimmer.</p>
+          <p className="pv-note">Loops that run until the work is done, like indeterminate progress and shimmer, use the standard curve (<code>--ayy-ease-standard</code>).</p>
         </div>
       </div>
 
       <h2 className="pv-h pv-h--section">Easing</h2>
-      <p className="pv-note">Same distance over the slower duration (600ms); only the curve changes.</p>
+      <p className="pv-note">Easing is the shape of a movement: how it speeds up and slows down. Each row travels the same distance in the same time, so only the curve differs.</p>
       <div className="pv-motion">
         {group("ease").map(([name, t]) => (
           <MotionRow key={name} name={short(name)} value={Array.isArray(t.value) ? `cubic-bezier(${t.value.join(", ")})` : String(t.value)} ease={`var(${t.cssVar})`} duration="var(--ayy-duration-slower)" end={end} />
         ))}
       </div>
       <h2 className="pv-h pv-h--section">Duration</h2>
-      <p className="pv-note">Same curve (standard), different lengths.</p>
+      <p className="pv-note">Duration is how long a movement takes. Each row uses the same curve, so only the length differs. Short ones suit small controls, long ones suit big surfaces.</p>
       <div className="pv-motion">
         {group("duration").map(([name, t]) => (
           <MotionRow key={name} name={short(name)} value={String(t.value)} ease="var(--ayy-ease-standard)" duration={`var(${t.cssVar})`} end={end} />

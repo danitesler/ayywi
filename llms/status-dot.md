@@ -1,6 +1,6 @@
 # Status dot
 
-Category: Data display. A compact standalone status indicator dot for online presence, live event streaming, server health, and table row statuses. Also called: status-dot, status-indicator, presence-dot, live-dot, health-dot.
+Category: Data display. A small coloured dot that shows the state of something, like someone being online, a live stream or a server's health. Also called: status-dot, status-indicator, presence-dot, live-dot, health-dot.
 
 **Classes**
 - `.ayy-status-dot` — Root inline-flex dot.

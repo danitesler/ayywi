@@ -1,6 +1,6 @@
 # Color picker
 
-Category: Forms. A panel to pick any colour: a 2D saturation/brightness area with a crosshair handle, hue and alpha range sliders, a preview swatch, hex input, and preset swatches. Also called: color-selector, colour-selector, palette-picker, color-chooser, hsv-picker.
+Category: Forms. A panel for choosing any colour. It combines an area for shade and brightness, sliders for hue and transparency, a hex field and a row of preset colours. Also called: color-selector, colour-selector, palette-picker, color-chooser, hsv-picker.
 
 **Classes**
 - `.ayy-color-picker` — Panel container: flex column holding the 2D area, sliders, text input, and optional preset swatches.
@@ -36,7 +36,7 @@ Category: Forms. A panel to pick any colour: a 2D saturation/brightness area wit
 - event `ayy-change`: { value } when the colour changes.
 
 **React** — `import { ColorPicker } from "@danitesler/ayywi/react";`
-- `<ColorPicker>` renders <div class="ayy-color-picker">. Props: `value / defaultValue` string — hex colour code (e.g. "#2563eb"); `onValueChange` (color: string) => void — called when the colour changes; `alpha` boolean — whether to show the alpha slider and allow opacity changes; `swatches` string[] — list of preset colour hex codes; `addon` ReactNode — optional text or element beside the hex input (e.g. "HEX"); `addonPosition` "start" | "end" — placement of the addon beside the input (default "start"); `copyable` boolean — whether to show a copy button inside the hex input group; `...` HTMLAttributes<HTMLDivElement> props
+- `<ColorPicker>` renders <div class="ayy-color-picker">. Props: `value / defaultValue` string — hex colour code (e.g. "#2563eb"); `onValueChange` (color: string) => void — called when the colour changes; `alpha` boolean — whether to show the alpha slider and allow opacity changes; `swatches` string[] — list of preset colour hex codes; `addon` ReactNode — optional text or element beside the hex input (e.g. "HEX"); `addonPosition` "start" | "end" — placement of the addon beside the input (default "end"); `copyable` boolean — whether to show a copy button inside the hex input group; `...` HTMLAttributes<HTMLDivElement> props
 
 **Accessibility**
 - The 2D saturation/brightness area is a focusable role="slider" with aria-label, aria-valuetext, and arrow key navigation (Shift for 10% steps).
@@ -73,8 +73,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     </div>
     <div class="ayy-color-picker__inputs">
       <div class="ayy-input-group ayy-input-group--sm">
-        <span class="ayy-input-group__addon">HEX</span>
         <input type="text" class="ayy-input ayy-mono" value="#2563eb" aria-label="Hex color" spellcheck="false" />
+        <span class="ayy-input-group__addon">HEX</span>
         <ayy-tooltip class="ayy-tooltip">
           <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon-sm ayy-color-picker__copy" aria-label="Copy hex">
             <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
@@ -112,7 +112,7 @@ export default function Example() {
       onValueChange={setColor}
       alpha
       addon="HEX"
-      addonPosition="start"
+      addonPosition="end"
       copyable
       swatches={["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#2563eb", "#a855f7", "#ec4899"]}
     />

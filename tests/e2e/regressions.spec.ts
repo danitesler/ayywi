@@ -254,6 +254,15 @@ test.describe("combobox and tag input", () => {
 });
 
 test.describe("menus and command palettes", () => {
+  test("a menu finds its panel when its trigger's tooltip upgrades first", async ({ page }) => {
+    await htmlPage(page, `<ayy-menu>
+      <ayy-tooltip><button type="button">Column options</button><span class="ayy-tooltip__content">Column options</span></ayy-tooltip>
+      <div class="ayy-menu" role="menu" popover="auto"><button type="button" role="menuitem" class="ayy-menu__item">Freeze</button></div>
+    </ayy-menu>`);
+    await page.getByRole("button", { name: "Column options", exact: true }).click();
+    await expect(page.getByRole("menuitem", { name: "Freeze", exact: true })).toBeVisible();
+  });
+
   test("<ayy-menu> without a trigger opens at the point and keeps checkbox items open", async ({ page }) => {
     await htmlPage(
       page,

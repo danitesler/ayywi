@@ -2,6 +2,8 @@ import { cx } from "../../lib/cx";
 
 export const paginationClass = "ayy-pagination";
 export const paginationEllipsisClass = "ayy-pagination__ellipsis";
+export const paginationSizeClass = "ayy-pagination__size";
+export const paginationSizeLabelClass = "ayy-pagination__size-label";
 
 export interface PaginationLinkClassOptions {
   /** Previous / next: stays visible on phones, where the numbers hide. */

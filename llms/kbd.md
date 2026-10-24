@@ -1,6 +1,6 @@
 # Keyboard hint
 
-Category: Data display. A keyboard key or shortcut hint drawn as a small keycap: in help text, menus, tooltips and search fields, with platform-specific modifier adaptation (macOS ⌘/⌥, Windows Ctrl/Win, Linux Super) and international layout awareness. Also called: kbd, keyboard-hint, keycap, hotkey, shortcut-key.
+Category: Data display. A small keycap for showing a keyboard key or shortcut in help text, menus and tooltips. Shortcuts adapt to the platform, so Mac users see their own symbols. Also called: kbd, keyboard-hint, keycap, hotkey, shortcut-key.
 
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
@@ -35,7 +35,7 @@ Category: Data display. A keyboard key or shortcut hint drawn as a small keycap:
 - Listen to event.code (physical key like 'KeyE') or use matchShortcut(event, 'Mod+E') rather than event.key === 'e' so hotkeys work across keyboard layouts and languages (e.g. Russian Cyrillic Cmd+У).
 
 **Don't**
-- Don't use a kbd for code or file names — use .ayy-mono or <code>.
+- Don't use a kbd for code or file names — use .ayy-code or <code class="ayy-code">.
 - Don't use it as a badge or a tag — use Badge.
 - Don't show shortcuts on touch-first screens, where there's no keyboard.
 - Don't hardcode Mac-only symbols (⌘) or Windows-only names (Ctrl) when targeting multiple operating systems.

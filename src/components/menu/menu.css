@@ -54,7 +54,62 @@
   cursor: pointer;
 }
 
+/* Split row: the item runs its own action and a square icon button at its end opens a menu for that item.
+   Two targets, so each shows its own hover fill and focus ring. */
+.ayy-menu__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-menu__row > .ayy-menu__item {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  inline-size: auto;
+}
+
+.ayy-menu__more {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ayy-size-control-md);
+  block-size: var(--ayy-size-control-md);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-lg);
+  background: transparent;
+  color: var(--ayy-color-muted);
+  font-family: inherit;
+  font-size: var(--ayy-control-text-md);
+  cursor: pointer;
+}
+
+.ayy-menu__more > svg {
+  flex: none;
+  inline-size: 1.1em;
+  block-size: 1.1em;
+}
+
 /* Items take focus with the arrow keys and show it with the highlight; keyboard focus adds the ring, as everywhere else. */
+.ayy-menu__more:is(:hover, :focus-visible):not(:disabled):not([aria-disabled="true"]) {
+  color: var(--ayy-color-text);
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-menu__more:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.ayy-menu__more:is(:disabled, [aria-disabled="true"]) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
 .ayy-menu--sub {
   z-index: 1;
 }
@@ -174,6 +229,11 @@
   padding-inline-start: var(--ayy-space-4);
 }
 
+.ayy-menu__value + .ayy-menu__shortcut {
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+}
+
 .ayy-menu__item--sub {
   position: relative;
 }
@@ -218,10 +278,8 @@
 .ayy-menu__label {
   padding: var(--ayy-space-1-5) var(--ayy-space-2) var(--ayy-space-1);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-eyebrow);
-  text-transform: uppercase;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
 }
 
 .ayy-menu__separator {
@@ -254,6 +312,15 @@ ayy-menu {
   .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]):not(:disabled):not([aria-disabled="true"]) > svg,
   .ayy-menu__item:is(:hover, :focus-visible, :focus, [aria-expanded="true"]):not(:disabled):not([aria-disabled="true"]) > .ayy-menu__chevron {
     color: HighlightText;
+  }
+  .ayy-menu__more:is(:hover, :focus-visible):not(:disabled):not([aria-disabled="true"]) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-menu__more:is(:disabled, [aria-disabled="true"]) {
+    color: GrayText;
+    opacity: 1;
   }
   .ayy-menu__separator {
     background-color: CanvasText;

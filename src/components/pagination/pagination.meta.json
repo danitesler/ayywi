@@ -2,11 +2,13 @@
   "name": "Pagination",
   "slug": "pagination",
   "category": "Navigation",
-  "description": "Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.",
+  "description": "Controls for moving between the pages of a long table or list: previous, next and page numbers. On phones it shrinks to the essentials.",
   "aka": ["pagination", "pager"],
   "classes": {
     "ayy-pagination": "Root <nav aria-label=\"Pagination\">. A wrapping row.",
     "ayy-pagination__link": "A page: <a href> when pages have URLs, <button> otherwise. aria-current=\"page\" marks the current one (outlined tint, heavier). aria-disabled=\"true\" (a link without href) or disabled dims an end you can't go past.",
+    "ayy-pagination__size": "Optional page size picker: a <div> holding a <label> and a small Select. Goes first in the <nav>.",
+    "ayy-pagination__size-label": "The picker's <label for>, \"Rows per page\". Visually hidden below 48rem, still the select's name.",
     "ayy-pagination__link--step": "Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.",
     "ayy-pagination__ellipsis": "The \"…\" for skipped pages, aria-hidden."
   },
@@ -25,7 +27,7 @@
     "density": "Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.",
     "width": "Hugs its links and wraps. Below 48rem only previous, the current page and next show."
   },
-  "js": "paginationClass, paginationEllipsisClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
+  "js": "paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
   "react": {
     "import": "import { Pagination } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -37,7 +39,10 @@
           "siblings": "Pages either side of the current one. Default 1.",
           "href": "(page) => string — pages become links (?page=3).",
           "onPageChange": "(page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.",
-          "labels": "{ nav?, previous?, next? } — text for translation. Defaults \"Pagination\", \"Previous\", \"Next\"."
+          "pageSize": "How many items a page holds. Shows the picker when onPageSizeChange is also set.",
+          "pageSizeOptions": "number[] — the sizes the picker offers. Default [10, 25, 50]; pageSize is added if missing.",
+          "onPageSizeChange": "(pageSize) => void — set the size and go back to page 1.",
+          "labels": "{ nav?, previous?, next?, pageSize? } — text for translation. Defaults \"Pagination\", \"Previous\", \"Next\", \"Rows per page\"."
         }
       }
     }
@@ -52,6 +57,7 @@
   "do": [
     "Use pagination under a table or list that has more rows than fit, when people need to reach a specific page or share its URL.",
     "Give pages URLs (href) when you can, so back and reload work.",
+    "Offer a page size picker (pageSize, onPageSizeChange) on long tables so people choose how much they scan.",
     "Show the range next to it (\"41–60 of 1,280\") in muted text."
   ],
   "dont": [
@@ -59,5 +65,5 @@
     "Don't use it to step through a sign-up or checkout — use Steps.",
     "Don't show it when everything fits on one page."
   ],
-  "examples": [{ "id": "basic", "title": "Under a table" }]
+  "examples": [{ "id": "basic", "title": "Under a table" }, { "id": "page-size", "title": "With a page size picker" }]
 }

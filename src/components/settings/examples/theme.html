@@ -1,14 +1,14 @@
 <div style="inline-size: 100%; max-inline-size: 36rem">
-  <section class="ayy-settings" aria-labelledby="settings-theme-title">
-    <h2 id="settings-theme-title" class="ayy-settings__title">Appearance</h2>
+  <section class="ayy-settings" aria-labelledby="settings-sharing-title">
+    <h2 id="settings-sharing-title" class="ayy-settings__title">Sharing</h2>
     <div class="ayy-settings__list">
       <div class="ayy-settings__row ayy-settings__row--stack">
-        <div class="ayy-settings__text"><span class="ayy-settings__label">Theme</span><p class="ayy-settings__hint">Follows your system unless you pick one.</p></div>
+        <div class="ayy-settings__text"><span class="ayy-settings__label">Default access</span><p class="ayy-settings__hint">Who can open new links before you invite anyone.</p></div>
         <div class="ayy-settings__control">
-          <fieldset role="radiogroup" aria-label="Theme" class="ayy-choice-group" style="--ayy-min: 8rem">
-            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="theme" checked="" value="system"/><span class="ayy-choice-card__title">System</span><span class="ayy-choice-card__description">Match the device</span></label>
-            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="theme" value="light"/><span class="ayy-choice-card__title">Light</span><span class="ayy-choice-card__description">Bright surfaces</span></label>
-            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="theme" value="dark"/><span class="ayy-choice-card__title">Dark</span><span class="ayy-choice-card__description">Dim surfaces</span></label>
+          <fieldset role="radiogroup" aria-label="Default access" class="ayy-choice-group" style="--ayy-min: 8rem">
+            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="access" value="private"/><span class="ayy-choice-card__title">Only you</span><span class="ayy-choice-card__description">Invite people by email</span></label>
+            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="access" checked="" value="team"/><span class="ayy-choice-card__title">Workspace</span><span class="ayy-choice-card__description">Anyone in your team</span></label>
+            <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="access" value="public"/><span class="ayy-choice-card__title">Anyone with link</span><span class="ayy-choice-card__description">View without signing in</span></label>
           </fieldset>
         </div>
       </div>

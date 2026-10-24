@@ -1,6 +1,6 @@
 # Swipe actions
 
-Category: Data display. A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab. Also called: swipe, swipe-row, swipeable, swipe-actions, slide-actions.
+Category: Data display. A list row that slides sideways to reveal actions, the way phone mail and task apps do. It works with touch, mouse and keyboard, and follows the reading direction. Also called: swipe, swipe-row, swipeable, swipe-actions, slide-actions.
 
 **Classes**
 - `.ayy-swipe` — The row: clips its content and holds the trays. Vertical drags still scroll the page (touch-action: pan-y).

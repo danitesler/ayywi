@@ -2,7 +2,7 @@
   "name": "Icon tile",
   "slug": "icon-tile",
   "category": "Data display",
-  "description": "An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.",
+  "description": "A rounded app-icon tile that gives a product, plugin or service a recognisable mark, with the glyph tinted in its accent colour.",
   "aka": ["icon-tile", "app-icon"],
   "classes": {
     "ayy-icon-tile": "Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.",

@@ -1,6 +1,6 @@
 # Showcase
 
-Category: Layout. An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets. Also called: showcase, responsive-preview, device-preview, viewport-preview.
+Category: Layout. A container for previewing a design at different screen sizes. It has a toolbar for switching devices and can show the code behind the preview. Also called: showcase, responsive-preview, device-preview, viewport-preview.
 
 **Classes**
 - `.ayy-showcase` — Root container: flex column holding the header and preview stage.

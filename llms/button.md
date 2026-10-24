@@ -1,6 +1,6 @@
 # Button
 
-Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover. Also called: button, btn, icon-button, icon-btn, cta.
+Category: Actions. The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions. Also called: button, btn, icon-button, icon-btn, cta.
 
 **Classes**
 - `.ayy-button` — Root. Alone it is the primary button.
@@ -40,7 +40,7 @@ Category: Actions. Triggers an action. Pill-shaped, monochrome primary with a su
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
 **React** — `import { Button } from "@danitesler/ayywi/react";`
-- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `...rest` All native <button> attributes.
+- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `tooltip` ReactNode | boolean — custom tooltip text or element; icon-only buttons show their aria-label on hover by default (pass false to disable).; `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top").; `...rest` All native <button> attributes.
 
 **Accessibility**
 - Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.
@@ -209,7 +209,10 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <button type="button" class="ayy-button ayy-button--secondary" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Uploading…</button>
 <button type="button" class="ayy-button ayy-button--outline" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Refreshing</button>
 <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm" aria-busy="true"><span class="ayy-spinner" aria-hidden="true"></span>Syncing</button>
-<button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-busy="true" aria-label="Refreshing"><span class="ayy-spinner" aria-hidden="true"></span></button>
+<span class="ayy-tooltip">
+  <button type="button" class="ayy-button ayy-button--outline ayy-button--icon" aria-busy="true" aria-label="Refreshing"><span class="ayy-spinner" aria-hidden="true"></span></button>
+  <span role="tooltip" class="ayy-tooltip__content">Refreshing</span>
+</span>
 ```
 
 React:

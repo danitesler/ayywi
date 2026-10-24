@@ -1,6 +1,6 @@
 # Chip
 
-Category: Forms. Pill-shaped filters and choices: a label around a native checkbox or radio, a toggle button (aria-pressed) for apps that filter as you click, and removable chips for the filters in force. The on state is a border, a wash and a tick. Also called: chip, tag, token, filter-chip.
+Category: Forms. A compact pill for filters and choices. Chips can be switched on and off, work as single or multiple choice, or be removable when they stand for filters that are applied. Also called: chip, tag, token, filter-chip.
 
 **Classes**
 - `.ayy-chip` — A <label> around a native <input type="checkbox"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed="true".

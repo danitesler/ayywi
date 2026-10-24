@@ -1,10 +1,12 @@
 # Pagination
 
-Category: Navigation. Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay. Also called: pagination, pager.
+Category: Navigation. Controls for moving between the pages of a long table or list: previous, next and page numbers. On phones it shrinks to the essentials. Also called: pagination, pager.
 
 **Classes**
 - `.ayy-pagination` — Root <nav aria-label="Pagination">. A wrapping row.
 - `.ayy-pagination__link` — A page: <a href> when pages have URLs, <button> otherwise. aria-current="page" marks the current one (outlined tint, heavier). aria-disabled="true" (a link without href) or disabled dims an end you can't go past.
+- `.ayy-pagination__size` — Optional page size picker: a <div> holding a <label> and a small Select. Goes first in the <nav>.
+- `.ayy-pagination__size-label` — The picker's <label for>, "Rows per page". Visually hidden below 48rem, still the select's name.
 - `.ayy-pagination__link--step` — Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.
 - `.ayy-pagination__ellipsis` — The "…" for skipped pages, aria-hidden.
 
@@ -23,7 +25,7 @@ Category: Navigation. Previous, page numbers with gaps, and next, for a long tab
 - Width — Hugs its links and wraps. Below 48rem only previous, the current page and next show.
 
 **React** — `import { Pagination } from "@danitesler/ayywi/react";`
-- `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `labels` { nav?, previous?, next? } — text for translation. Defaults "Pagination", "Previous", "Next".
+- `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `pageSize` How many items a page holds. Shows the picker when onPageSizeChange is also set.; `pageSizeOptions` number[] — the sizes the picker offers. Default [10, 25, 50]; pageSize is added if missing.; `onPageSizeChange` (pageSize) => void — set the size and go back to page 1.; `labels` { nav?, previous?, next?, pageSize? } — text for translation. Defaults "Pagination", "Previous", "Next", "Rows per page".
 
 **Accessibility**
 - It's a <nav aria-label="Pagination">: give a second one on the page a different label.
@@ -35,6 +37,7 @@ Category: Navigation. Previous, page numbers with gaps, and next, for a long tab
 **Do**
 - Use pagination under a table or list that has more rows than fit, when people need to reach a specific page or share its URL.
 - Give pages URLs (href) when you can, so back and reload work.
+- Offer a page size picker (pageSize, onPageSizeChange) on long tables so people choose how much they scan.
 - Show the range next to it ("41–60 of 1,280") in muted text.
 
 **Don't**
@@ -73,6 +76,44 @@ export default function Example() {
     <div className="ayy-spread" style={{ inlineSize: "100%" }}>
       <p className="ayy-muted">41–60 of 1,280 invoices</p>
       <Pagination page={3} count={64} href={(page) => `?page=${page}`} />
+    </div>
+  );
+}
+```
+
+## Pagination — With a page size picker
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-spread" style="inline-size:100%"><p class="ayy-muted">1–10 of 1,280 invoices</p><nav class="ayy-pagination" aria-label="Pagination"><div class="ayy-pagination__size"><label class="ayy-pagination__size-label" for="_R_2_">Rows per page</label><div class="ayy-select ayy-select--sm"><select class="ayy-select__control" id="_R_2_"><option value="10" selected="">10</option><option value="25">25</option><option value="50">50</option></select></div></div><button class="ayy-pagination__link ayy-pagination__link--step" type="button" disabled=""><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Previous</button><button class="ayy-pagination__link" aria-current="page" type="button">1</button><button class="ayy-pagination__link" type="button">2</button><button class="ayy-pagination__link" type="button">3</button><button class="ayy-pagination__link" type="button">4</button><button class="ayy-pagination__link" type="button">5</button><span class="ayy-pagination__ellipsis" aria-hidden="true">…</span><button class="ayy-pagination__link" type="button">128</button><button class="ayy-pagination__link ayy-pagination__link--step" type="button">Next<svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></nav></div>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import { Pagination } from "@danitesler/ayywi/react";
+
+const TOTAL = 1280;
+
+export default function Example() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const first = (page - 1) * pageSize + 1;
+  return (
+    <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+      <p className="ayy-muted">{`${first}–${Math.min(page * pageSize, TOTAL)} of 1,280 invoices`}</p>
+      <Pagination
+        page={page}
+        count={Math.ceil(TOTAL / pageSize)}
+        onPageChange={setPage}
+        pageSize={pageSize}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setPage(1);
+        }}
+      />
     </div>
   );
 }

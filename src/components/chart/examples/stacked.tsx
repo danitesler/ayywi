@@ -3,6 +3,7 @@ import { BarChart } from "@danitesler/ayywi/react";
 export default function Example() {
   return (
     <BarChart
+      toggle
       label="Support tickets per weekday, by channel"
       labels={["Mon", "Tue", "Wed", "Thu", "Fri"]}
       stacked

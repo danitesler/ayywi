@@ -1,11 +1,11 @@
 # Table of contents
 
-Category: Navigation. On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content. Also called: toc, table-of-contents, contents.
+Category: Navigation. A table of contents for long pages. It lists links to the sections beside the content and highlights the one being read. Also called: toc, table-of-contents, contents.
 
 **Classes**
 - `.ayy-toc` — Root <nav>. Accent from --ayy-spot.
 - `.ayy-toc--sticky` — Stays in view below the navbar, scrolling on its own if it's taller than the screen. Put it before the content in a wrapping flex row (it takes 11rem) or give it its own grid column. Below 48rem it becomes a sticky pill bar showing the active section that opens the full table of contents in a dropdown menu.
-- `.ayy-toc__title` — Small uppercase heading ("Contents" or "Table of contents"). Point the nav's aria-labelledby at it.
+- `.ayy-toc__title` — Small muted heading ("Contents" or "Table of contents"). Point the nav's aria-labelledby at it.
 - `.ayy-toc__bar` — Mobile sticky bar holding the toggle pill (hidden above 48rem).
 - `.ayy-toc__toggle` — Pill button on mobile showing the active section title and caret, toggling the dropdown menu.
 - `.ayy-toc__toggle-icon` — Menu icon inside the mobile toggle pill.

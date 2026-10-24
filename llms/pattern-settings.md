@@ -1,6 +1,6 @@
 # Settings
 
-Settings open over the app in a near-full-screen dialog, as Notion's and Claude's do: a Settings title and the settings sections in its sidebar, one section in its main, a close button in the corner. Full screen on phones. Never a small or side dialog, never tabs inside a page.
+Settings open in a large dialog over the app, the way they do in Notion and Claude. The sidebar lists the sections, the main area shows the one you picked, and on phones it goes full screen. Don't use a small or side dialog, or tabs inside a page.
 
 Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Shortcut, Button, Dialog, Toast. Example: App shell → "Playground — one shell, every variation" (`get_component app-shell`, llms/app-shell.md).
 
@@ -10,8 +10,9 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 3. Sections: the open section's AppShellLink has current (aria-current="page"); a link click switches the section in place. On wide screens settings open on the first section; on phones on the section list.
 4. Section: the main starts with a TopBar (title = the section's name, its <h1>; onBack returns to the section list, backLabel = "Settings"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.
 5. Saving: switches, selects and segmented controls apply at once; confirm with a Toast only when the effect isn't visible. Free text (a name, a folder path) saves on blur or Enter. Anything that must be submitted together (a password change) is a Dialog opened from a SettingsLink.
-6. Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.
-7. Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.
+6. Appearance: an Appearance section uses the same controls in every product (see settings/appearance). Theme, Density, Corners and Font each open a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker of SettingsOptions: SettingsScreens for Theme (System, Light, Dark, Black, Light gray; setTheme()), Density (Auto, Compact, Comfortable, Touch; setDensity()) and Corners (each shape's radii), and "Aa" samples for Font. Text size: a Slider that sets the root font size. Brand colour: ColorSwatches (a none swatch for the default) and a ColorSwatchCustom, applied with setBrand(). Reduce motion: a Switch that sets data-motion="reduce". Language: a Select; Text direction: a SegmentedControl (Auto follows the language) that sets dir. Reset appearance: a destructive SettingsLink in its own group.
+7. Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.
+8. Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.
 
 **Phones**
 - Below 48rem the dialog fills the screen and the settings shell is two screens, picked by aria-current: with no section current, the sidebar is the screen (a large "Settings" title, the sections as rows with chevrons); with one current, the section fills it and its TopBar's back returns to the list. Move focus to the section when it opens and back to its link when it closes.
@@ -30,6 +31,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 - Use this pattern for every settings, preferences or account screen in an app, however few settings there are.
 - Name sections with one noun (General, Appearance, Notifications, Shortcuts, Data, About) and give each a Hugeicons icon in the sidebar.
 - Keep every setting's label short and put the why in its hint.
+- Use the Appearance controls above for theme, density, text size, brand colour, corners, font, motion, language and direction, so these settings look and work the same in every product.
 
 **Don't**
 - Don't put settings in a small or side Dialog, a Popover or Tabs inside a page: they can't hold a growing list of sections, and they end up looking different in every app.

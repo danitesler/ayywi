@@ -1,6 +1,6 @@
 # Alert
 
-Category: Feedback. Inline message box with optional icon, title, description and actions. Also called: alert, banner, callout, notice, admonition.
+Category: Feedback. A message placed in the flow of a page to tell someone something they should notice, like a warning, an error or a confirmation. It can carry a title, a short explanation and actions. Also called: alert, banner, callout, notice, admonition.
 
 **Classes**
 - `.ayy-alert` — Root. Neutral by default.

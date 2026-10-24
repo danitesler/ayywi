@@ -72,7 +72,7 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
     alpha = false,
     swatches,
     addon = "HEX",
-    addonPosition = "start",
+    addonPosition = "end",
     copyable = false,
     className,
     style,

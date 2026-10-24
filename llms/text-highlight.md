@@ -1,6 +1,6 @@
 # Text highlight
 
-Category: Data display. An inline text highlight for search matches or callout phrases. Subtle gray wash with clean underline by default, with warning (yellow), destructive (red), success (green), info (blue), and orange variants. Also called: text-highlight, highlight, mark, search-highlight.
+Category: Data display. A way to mark text inside a sentence, for search matches or phrases that need attention. It's subtle by default, with colour variants for warnings, errors, successes and info. Also called: text-highlight, highlight, mark, search-highlight.
 
 **Classes**
 - `.ayy-text-highlight` — Inline highlighted span or <mark>: subtle gray wash with clean underline.

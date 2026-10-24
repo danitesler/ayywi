@@ -28,6 +28,8 @@ import {
   menuGroupInlineClass,
   menuItemClass,
   menuLabelClass,
+  menuMoreClass,
+  menuRowClass,
   menuSeparatorClass,
   menuShortcutClass,
   menuValueClass,
@@ -195,6 +197,19 @@ export const DropdownMenuContent = forwardRef<HTMLDivElement, DropdownMenuConten
       {...props}
     />
   );
+});
+
+export interface DropdownMenuRowProps extends HTMLAttributes<HTMLDivElement> {}
+
+/**
+ * A split row: a DropdownMenuItem and a DropdownMenuMore side by side, so the item runs its action while the icon button
+ * opens a menu for that item. Wrap both in a DropdownMenuSub that holds the second menu's DropdownMenuSubContent.
+ */
+export const DropdownMenuRow = forwardRef<HTMLDivElement, DropdownMenuRowProps>(function DropdownMenuRow(
+  { className, ...props },
+  ref,
+) {
+  return <div ref={ref} role="presentation" className={cx(menuRowClass, className)} {...props} />;
 });
 
 export interface DropdownMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "value"> {
@@ -395,6 +410,37 @@ export const DropdownMenuSubTrigger = forwardRef<HTMLButtonElement, DropdownMenu
     );
   },
 );
+
+export interface DropdownMenuMoreProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** The button's icon, e.g. a MoreHorizontal <Icon>. Give the button an aria-label naming its row ("More options for Duplicate"). */
+  icon: ReactNode;
+}
+
+/**
+ * The square icon button at the end of a DropdownMenuRow. It's a second menuitem that opens the row's own menu: use it in a
+ * DropdownMenuSub, followed by its DropdownMenuSubContent.
+ */
+export const DropdownMenuMore = forwardRef<HTMLButtonElement, DropdownMenuMoreProps>(function DropdownMenuMore(
+  { icon, className, type = "button", ...props },
+  ref,
+) {
+  const sub = useSubmenu("DropdownMenuMore");
+  return (
+    <button
+      ref={mergeRefs(ref, sub.subTriggerRef)}
+      type={type}
+      role="menuitem"
+      tabIndex={-1}
+      aria-haspopup="menu"
+      aria-expanded={sub.open ? "true" : "false"}
+      aria-controls={sub.subContentId}
+      className={cx(menuMoreClass, className)}
+      {...props}
+    >
+      {icon}
+    </button>
+  );
+});
 
 export interface DropdownMenuSubContentProps extends HTMLAttributes<HTMLDivElement> {
   side?: FloatingSide;

@@ -1,4 +1,6 @@
 import {
+  ArrowDown01Icon,
+  CircleIcon,
   ArrowUpRight01Icon,
   BlurIcon,
   Copy01Icon,
@@ -10,7 +12,7 @@ import {
   Undo02Icon,
 } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Icon, Shortcut, Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, Tooltip } from "@danitesler/ayywi/react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, toast, Icon, Shortcut, Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, Tooltip } from "@danitesler/ayywi/react";
 
 const TOOLS = [
   { id: "select", label: "Select", icon: Cursor01Icon, shortcut: "V" },
@@ -25,7 +27,7 @@ export default function Example() {
   const [tool, setTool] = useState("arrow");
   return (
     <Toolbar aria-label="Annotate" style={{ inlineSize: "100%" }}>
-      <ToolbarGroup aria-label="Tools">
+      <ToolbarGroup aria-label="Tools" data-exclusive>
         {TOOLS.map((t) => (
           <Tooltip
             key={t.id}
@@ -64,6 +66,29 @@ export default function Example() {
           <Icon icon={Redo02Icon} />
         </ToolbarButton>
       </Tooltip>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <ToolbarButton>Insert <Icon icon={ArrowDown01Icon} /></ToolbarButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent aria-label="Insert">
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger icon={<Icon icon={SquareIcon} />}>Shapes</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent aria-label="Shapes">
+              <DropdownMenuItem icon={<Icon icon={SquareIcon} />} onSelect={() => toast("Rectangle inserted")}>Rectangle</DropdownMenuItem>
+              <DropdownMenuItem icon={<Icon icon={CircleIcon} />} onSelect={() => toast("Ellipse inserted")}>Ellipse</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuItem icon={<Icon icon={TextIcon} />} onSelect={() => toast("Text inserted")}>Text</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger icon={<Icon icon={Copy01Icon} />}>Templates</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent aria-label="Templates">
+              <DropdownMenuItem onSelect={() => toast("Note inserted")}>Note</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => toast("Checklist inserted")}>Checklist</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <ToolbarSpacer />
       <Tooltip
         content={

@@ -2,7 +2,7 @@
   "name": "Color picker",
   "slug": "color-picker",
   "category": "Forms",
-  "description": "A panel to pick any colour: a 2D saturation/brightness area with a crosshair handle, hue and alpha range sliders, a preview swatch, hex input, and preset swatches.",
+  "description": "A panel for choosing any colour. It combines an area for shade and brightness, sliders for hue and transparency, a hex field and a row of preset colours.",
   "aka": ["color-selector", "colour-selector", "palette-picker", "color-chooser", "hsv-picker"],
   "classes": {
     "ayy-color-picker": "Panel container: flex column holding the 2D area, sliders, text input, and optional preset swatches.",
@@ -56,7 +56,7 @@
           "alpha": "boolean — whether to show the alpha slider and allow opacity changes",
           "swatches": "string[] — list of preset colour hex codes",
           "addon": "ReactNode — optional text or element beside the hex input (e.g. \"HEX\")",
-          "addonPosition": "\"start\" | \"end\" — placement of the addon beside the input (default \"start\")",
+          "addonPosition": "\"start\" | \"end\" — placement of the addon beside the input (default \"end\")",
           "copyable": "boolean — whether to show a copy button inside the hex input group",
           "...": "HTMLAttributes<HTMLDivElement> props"
         }

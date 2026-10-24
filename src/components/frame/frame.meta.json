@@ -2,7 +2,7 @@
   "name": "Frame",
   "slug": "frame",
   "category": "Data display",
-  "description": "A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.",
+  "description": "A browser window drawn around a screenshot, a video or a demo, for showing a product in context on marketing pages and in docs.",
   "aka": ["browser-frame", "window-frame", "mockup"],
   "classes": {
     "ayy-frame": "Root: bordered, rounded, with the frame shadow.",

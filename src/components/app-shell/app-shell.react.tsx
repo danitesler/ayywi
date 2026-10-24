@@ -1,9 +1,11 @@
-import { createContext, forwardRef, useContext, useEffect, useId, useRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type DetailsHTMLAttributes, type HTMLAttributes, type LiHTMLAttributes, type ReactNode } from "react";
+import { createContext, forwardRef, useContext, useEffect, useId, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type DetailsHTMLAttributes, type HTMLAttributes, type LiHTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { ArrowLeft01Icon, Menu01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { buttonClass } from "../button/button";
 import { Icon } from "../icon/icon.react";
+import { generalActionLabel, type TooltipSide } from "../tooltip/tooltip";
+import { Tooltip, tooltipContext } from "../tooltip/tooltip.react";
 import {
   appShellBackClass,
   appShellBarClass,
@@ -23,6 +25,7 @@ import {
   appShellLinkSubClass,
   appShellListClass,
   appShellMainClass,
+  appShellMoreClass,
   appShellNavClass,
   appShellResizeClass,
   appShellResizeDetailClass,
@@ -88,18 +91,31 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
   ref,
 ) {
   const own = useRef<HTMLDivElement>(null);
-  useEffect(() => (own.current ? connectAppShell(own.current, { onCollapseChange, onResize }) : undefined), [onCollapseChange, onResize]);
+  // Collapsed is controlled when the prop is given; otherwise AppShell tracks what its toggles did, for the labels and
+  // the tooltip that follow the state.
+  const controlled = collapsed !== undefined;
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const isCollapsed = controlled ? Boolean(collapsed) : internalCollapsed;
   useEffect(() => {
     if (!own.current) return;
-    const isCollapsed = Boolean(collapsed);
+    return connectAppShell(own.current, {
+      onCollapseChange: (next) => {
+        if (!controlled) setInternalCollapsed(next);
+        onCollapseChange?.(next);
+      },
+      onResize,
+    });
+  }, [controlled, onCollapseChange, onResize]);
+  useEffect(() => {
+    if (!own.current) return;
     const toggles = own.current.querySelectorAll<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellToggleClass}`);
     for (const toggle of toggles) {
       toggle.setAttribute("aria-expanded", String(!isCollapsed));
     }
-  }, [collapsed]);
+  }, [isCollapsed]);
 
   return (
-    <AppShellContext.Provider value={{ collapsed }}>
+    <AppShellContext.Provider value={{ collapsed: isCollapsed }}>
       <div
         ref={mergeRefs(own, ref)}
         className={cx(
@@ -108,7 +124,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
           size === "md" && appShellMdClass,
           settings && appShellSettingsClass,
           drawer && appShellDrawerClass,
-          collapsed && appShellCollapsedClass,
+          isCollapsed && appShellCollapsedClass,
           hoverPreview && appShellHoverPreviewClass,
           className,
         )}
@@ -180,28 +196,49 @@ export const AppShellBar = forwardRef<HTMLElement, AppShellBarProps>(function Ap
   return <header ref={ref} className={cx(appShellBarClass, className)} {...props} />;
 });
 
-export interface AppShellToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface AppShellToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * Tooltip text. In an AppShellHead it defaults to the action ("Collapse" / "Expand") and follows the sidebar's state;
+   * the phone drawer's menu has none. Pass false to disable.
+   */
+  tooltip?: ReactNode | boolean;
+  /** Tooltip placement side (default "bottom" in an AppShellHead). */
+  tooltipSide?: TooltipSide;
+}
 
-/** The menu button that opens the sidebar as a drawer. AppShell manages aria-expanded; leave it uncontrolled. */
+/** The menu button that opens the sidebar as a drawer, or collapses and expands it in an AppShellHead (where it also gets a tooltip). AppShell manages aria-expanded; leave it uncontrolled. */
 export const AppShellToggle = forwardRef<HTMLButtonElement, AppShellToggleProps>(function AppShellToggle(
-  { className, "aria-label": label = "Menu", children, ...props },
+  { className, "aria-label": label, tooltip, tooltipSide = "bottom", children, ...props },
   ref,
 ) {
   const inHead = useContext(InHeadContext);
+  const hasParentTooltip = useContext(tooltipContext);
   const { collapsed } = useContext(AppShellContext);
+  const action = collapsed ? "Expand sidebar" : "Collapse sidebar";
+  const ariaLabel = label ?? (inHead ? action : "Menu");
   const ariaExpanded = props["aria-expanded"] ?? (inHead ? (!collapsed ? "true" : "false") : "false");
+  const tooltipContent =
+    !hasParentTooltip && tooltip !== false ? (tooltip ?? (inHead ? generalActionLabel(ariaLabel) : undefined)) : undefined;
 
-  return (
+  const toggle = (
     <button
       ref={ref}
       type="button"
       className={buttonClass({ variant: "ghost", size: "icon", className: cx(appShellToggleClass, className) })}
-      aria-label={label}
+      aria-label={ariaLabel}
       aria-expanded={ariaExpanded}
       {...props}
     >
       {children ?? <Icon icon={Menu01Icon} />}
     </button>
+  );
+
+  if (!tooltipContent) return toggle;
+
+  return (
+    <Tooltip side={tooltipSide} content={tooltipContent}>
+      {toggle}
+    </Tooltip>
   );
 });
 
@@ -290,6 +327,19 @@ export interface AppShellItemProps extends LiHTMLAttributes<HTMLLIElement> {}
 
 export const AppShellItem = forwardRef<HTMLLIElement, AppShellItemProps>(function AppShellItem(props, ref) {
   return <li ref={ref} {...props} />;
+});
+
+export interface AppShellMoreProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+
+/**
+ * The icon button at the end of an AppShellRow that opens the row's menu. A sibling of AppShellLink, never inside it:
+ * give it an aria-label naming the row ("Project options") and put a DropdownMenuTrigger around it (asChild).
+ */
+export const AppShellMore = forwardRef<HTMLButtonElement, AppShellMoreProps>(function AppShellMore(
+  { className, type = "button", ...props },
+  ref,
+) {
+  return <button ref={ref} type={type} className={cx(appShellMoreClass, className)} {...props} />;
 });
 
 export interface AppShellSublistProps extends HTMLAttributes<HTMLUListElement> {

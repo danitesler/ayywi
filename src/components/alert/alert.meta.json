@@ -2,7 +2,7 @@
   "name": "Alert",
   "slug": "alert",
   "category": "Feedback",
-  "description": "Inline message box with optional icon, title, description and actions.",
+  "description": "A message placed in the flow of a page to tell someone something they should notice, like a warning, an error or a confirmation. It can carry a title, a short explanation and actions.",
   "aka": ["alert", "banner", "callout", "notice", "admonition"],
   "classes": {
     "ayy-alert": "Root. Neutral by default.",

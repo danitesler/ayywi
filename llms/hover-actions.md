@@ -1,6 +1,6 @@
 # Hover actions
 
-Category: Actions. Icon buttons that float over a picture, a video frame or a card — a capture's Copy, Annotate, Pin and ⋯. Each button has its own frosted background so it reads over any image, or the buttons share one glass bar (group). Reveal keeps them out of the way until the picture is hovered or focused; every button names itself in a tooltip. Also called: hover-actions, hover-action, overlay-actions, media-actions, quick-actions.
+Category: Actions. Small buttons that appear over a picture, a video or a card when someone points at it, for quick actions like copy, annotate or pin. They stay out of the way until needed, and a tooltip names each one. Also called: hover-actions, hover-action, overlay-actions, media-actions, quick-actions.
 
 **Classes**
 - `.ayy-hover-actions` — Row of hover actions. In the normal flow unless a position modifier floats it in a corner of the positioned parent.

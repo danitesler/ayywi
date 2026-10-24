@@ -1,6 +1,6 @@
 # Timeline
 
-Category: Data display. Chronological list of events, milestones, or history with vertical connecting tracks, status markers, timestamps, and descriptions. Also called: timeline, event-log, activity-feed, history-feed, audit-trail.
+Category: Data display. A list of events in time order, like a history, a changelog or a project's milestones, joined by a vertical line with status markers and timestamps. Also called: timeline, event-log, activity-feed, history-feed, audit-trail.
 
 **Classes**
 - `.ayy-timeline` — Root <ol> or <ul> list container for ordered events or history.

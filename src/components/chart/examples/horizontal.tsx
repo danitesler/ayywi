@@ -9,6 +9,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           horizontal
           label="Median first response time in hours, by team, October and September"
           labels={["Billing", "Technical", "Onboarding", "Enterprise", "Partners"]}

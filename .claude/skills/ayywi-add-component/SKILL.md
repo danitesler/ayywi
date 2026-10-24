@@ -47,9 +47,13 @@ Never name a file with only a case difference from a sibling (`Dialog.tsx` next 
 11. **Tests**: interactive? Add a case to `tests/e2e/interactions.spec.ts` (both renderers). The page-render and axe tests pick new components up automatically.
 12. **Verify**:
     ```sh
-    pnpm build && pnpm typecheck && pnpm check && pnpm test && pnpm test:e2e
-    pnpm preview     # look at it in a dark and a light theme, each density, and a phone-width window; RTL via dir="rtl" on the stage
+    pnpm build && pnpm typecheck && pnpm check && pnpm test
+    export E2E_PORT=$((4200 + $$ % 300))                            # this shell only
+    pnpm preview --port "$E2E_PORT" --strictPort --host 127.0.0.1   # terminal 1
+    pnpm exec playwright test tests/e2e/interactions.spec.ts -g "<component>"   # iterate here
+    pnpm test:e2e    # whole suite, built preview: the final run (see AGENTS.md → Commands)
     ```
+    Then look at it in a dark and a light theme, each density, and a phone-width window; RTL via dir="rtl" on the stage.
 13. Add an entry to `CHANGELOG.md` under `## Unreleased` following the changelog rules in `AGENTS.md` (component link on row 1, 1-line summary on row 2 indented):
     ```markdown
     - **[Component](#/slug)**

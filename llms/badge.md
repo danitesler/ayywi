@@ -1,6 +1,6 @@
 # Badge
 
-Category: Data display. Small pill label for status, category or count. Optional pulsing status dot. Also called: badge, pill, status-pill, count-badge.
+Category: Data display. A small label that marks the status, category or count of something, like "New" or "Paid". It can include a status dot for things that are live. Also called: badge, pill, status-pill, count-badge.
 
 **Classes**
 - `.ayy-badge` — Root. Neutral by default.

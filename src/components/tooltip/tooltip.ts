@@ -7,6 +7,47 @@ export type TooltipSide = (typeof tooltipSides)[number];
 export const tooltipClass = "ayy-tooltip";
 export const tooltipContentClass = "ayy-tooltip__content";
 
+const ACTION_PREFIXES = [
+  "More actions",
+  "Show details",
+  "Hide details",
+  "Copy link",
+  "Edit",
+  "Delete",
+  "Remove",
+  "Copy",
+  "Duplicate",
+  "Archive",
+  "Download",
+  "Upload",
+  "Refresh",
+  "Save",
+  "Cancel",
+  "Close",
+  "Expand",
+  "Collapse",
+  "Search",
+  "Filter",
+  "Sort",
+  "View",
+  "Open",
+  "Share",
+  "Add",
+];
+const ACTION_RE = new RegExp(`^(${ACTION_PREFIXES.join("|")})\\b`, "i");
+
+/**
+ * Keep action tooltips general ("Edit", "Delete", "More actions"), leaving the item's specific name in aria-label
+ * for screen readers. If a label starts with a common action verb, returns that verb.
+ */
+export function generalActionLabel(label: string): string {
+  const match = label.trim().match(ACTION_RE);
+  if (!match) return label.trim();
+  const matched = match[1].toLowerCase();
+  const canonical = ACTION_PREFIXES.find((p) => p.toLowerCase() === matched);
+  return canonical ?? (match[1].charAt(0).toUpperCase() + match[1].slice(1));
+}
+
 /**
  * Upgrade a CSS-only `.ayy-tooltip` (host) so its bubble lives in the top layer: it can't be clipped by
  * overflow:hidden ancestors and flips at viewport edges. Also adds Esc-to-dismiss while hovered or focused.

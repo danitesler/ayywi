@@ -1,6 +1,6 @@
 # Dialog
 
-Category: Overlays. Modal dialog built on the native <dialog> element: top layer, inert background, focus handling and Esc for free. Centred, or a side modal (drawer, sheet) that slides in from the inline-start or inline-end edge, or a bottom sheet for phones. Also called: dialog, modal, sheet, bottom-sheet, drawer, lightbox.
+Category: Overlays. A window that opens over the page and asks for attention, for confirmations, forms and short tasks. It can be centred, slide in from the side as a drawer, or rise from the bottom on phones. It's built on the native dialog element, so focus and Esc work properly. Also called: dialog, modal, sheet, bottom-sheet, drawer, lightbox.
 
 **Classes**
 - `.ayy-dialog` — On the <dialog> element. Open with dialog.showModal().

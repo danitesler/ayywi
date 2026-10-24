@@ -2,7 +2,7 @@
   "name": "Tabs",
   "slug": "tabs",
   "category": "Layout",
-  "description": "Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support.",
+  "description": "Tabs for switching between panels of related content on the same page. They can be used fully from the keyboard.",
   "aka": ["tabs", "tab", "tab-list", "tablist"],
   "classes": {
     "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",

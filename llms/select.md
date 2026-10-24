@@ -1,6 +1,6 @@
 # Select
 
-Category: Forms. Styled native <select>. With a mouse or trackpad its options open in ayywi's own list; touch screens keep the OS picker. Value, form behaviour and change events stay native. Also called: select, native-select, picker, listbox, custom-select.
+Category: Forms. A dropdown for choosing one option from a list. It's the native select with a nicer list on desktop, and the system picker on touch devices. Also called: select, native-select, picker, listbox, custom-select.
 
 **Classes**
 - `.ayy-select` — Wrapper element. Draws the chevron and sets the height.

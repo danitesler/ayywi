@@ -59,6 +59,21 @@
     line-height: var(--ayy-leading-normal);
   }
 
+  /* A short note set apart from the text: a caveat, a tip, an aside. */
+  :where(.ayy-callout) {
+    margin: 0;
+    padding-block: var(--ayy-space-3);
+    padding-inline: var(--ayy-space-4);
+    border: 1px solid var(--ayy-color-hairline);
+    border-inline-start: 2px solid var(--ayy-spot, var(--ayy-color-line-hover));
+    border-radius: var(--ayy-radius-md);
+    background-color: var(--ayy-color-wash);
+    color: var(--ayy-color-text);
+    font-size: var(--ayy-text-sm);
+    line-height: var(--ayy-leading-normal);
+    text-wrap: pretty;
+  }
+
   .ayy-muted {
     color: var(--ayy-color-muted);
   }
@@ -69,11 +84,9 @@
 
   :where(.ayy-eyebrow) {
     font-family: var(--ayy-font-body);
-    font-size: var(--ayy-text-s);
-    font-weight: var(--ayy-weight-semibold);
+    font-size: var(--ayy-text-sm);
+    font-weight: var(--ayy-weight-regular);
     line-height: var(--ayy-leading-normal);
-    letter-spacing: var(--ayy-tracking-eyebrow);
-    text-transform: uppercase;
     color: var(--ayy-color-muted);
   }
 
@@ -157,6 +170,18 @@
     text-underline-offset: 0.22em;
   }
 
+  /* Inline code: a token name, a file path or a shortcut inside running text. */
+  :where(.ayy-code, .ayy-prose code) {
+    padding-block: 1px;
+    padding-inline: 6px;
+    border: 1px solid var(--ayy-color-hairline);
+    border-radius: var(--ayy-radius-md);
+    background-color: var(--ayy-color-wash);
+    font-family: var(--ayy-font-mono);
+    font-size: 0.85em;
+    overflow-wrap: anywhere;
+  }
+
   /* Long-form reading: case studies, articles, docs. Styles the plain HTML inside it. */
   :where(.ayy-prose) {
     max-inline-size: var(--ayy-size-measure);
@@ -222,14 +247,6 @@
     padding-inline-start: var(--ayy-space-5);
     border-inline-start: 2px solid var(--ayy-spot, var(--ayy-color-line-strong));
     color: var(--ayy-color-text);
-  }
-  :where(.ayy-prose code) {
-    padding-block: 0.1em;
-    padding-inline: 0.35em;
-    border-radius: var(--ayy-radius-sm);
-    background-color: var(--ayy-color-wash-hover);
-    font-family: var(--ayy-font-mono);
-    font-size: 0.875em;
   }
   :where(.ayy-prose :is(img, video)) {
     display: block;
@@ -507,4 +524,15 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* The same for an app's own Reduce motion setting: data-motion="reduce" on <html> or on any section.
+   Zeros the duration tokens on the container (every ayywi transition and animation reads --ayy-duration-*, so
+   descendants and ::before/::after inherit 0ms immediately without matching a subtree selector). */
+:where([data-motion="reduce"]) {
+  --ayy-duration-fast: 0ms;
+  --ayy-duration-base: 0ms;
+  --ayy-duration-slow: 0ms;
+  --ayy-duration-slower: 0ms;
+  scroll-behavior: auto;
 }

@@ -1,6 +1,6 @@
 # Choice card
 
-Category: Forms. A card-sized radio or checkbox for choices that need a sentence or a price: plans, delivery options, add-ons, and compact cards for time slots and sizes. The whole card is the label of a native input. Also called: choice-card, option-card, plan-card.
+Category: Forms. A large option for picking one or more things that need more explanation than a radio label, like plans, delivery methods or add-ons. The whole card is clickable and works as a normal radio or checkbox. Also called: choice-card, option-card, plan-card.
 
 **Classes**
 - `.ayy-choice-group` — Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role="radiogroup" for radio cards.

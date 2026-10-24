@@ -1,0 +1,81 @@
+{
+  "name": "Drag and drop",
+  "slug": "drag-drop",
+  "category": "Layout",
+  "description": "Standard drag and drop for reordering items and moving them between areas: a floating preview follows the pointer, drop targets show hover states (ready, over, reject), and a primary line indicates the exact drop position. Fully accessible with arrow keys.",
+  "aka": ["drag-and-drop", "dnd", "sortable", "drag-drop", "reorder", "draggable", "drop-target"],
+  "classes": {
+    "ayy-draggable": "An item that can be picked up: grab cursor, dims to 0.4 opacity while dragging ([data-dragging]).",
+    "ayy-drag-handle": "The six-dot grip button: control-sized square, touch-action: none, grab cursor, takes arrow keys.",
+    "ayy-sortable": "Flex column container for sortable items with standard gap.",
+    "ayy-sortable--horizontal": "Horizontal flex layout for sortable strips, toolbars or tabs.",
+    "ayy-sortable__item": "Row in a sortable list: surface background, line border, dashed when dragged.",
+    "ayy-drop-target": "An area items can be dropped into: reacts with [data-drop=\"ready|over|reject\"].",
+    "ayy-drag-preview": "Floating clone or element following the pointer in the top layer.",
+    "ayy-drag-preview--chip": "Compact pill-shaped preview showing the dragged item's name."
+  },
+  "variants": {
+    "orientation": { "values": ["vertical", "horizontal"], "default": "vertical" }
+  },
+  "states": {
+    "default": { "looks": "Hidden preview; items and drop targets sit at rest." },
+    "hover": { "when": ".ayy-drag-handle:hover", "looks": "Grip handle takes wash-hover and text colour." },
+    "pressed": { "when": ".ayy-drag-handle:active", "looks": "Grip handle switches to cursor: grabbing." },
+    "focus": { "when": ".ayy-drag-handle:focus-visible", "looks": "2px ring outline on the handle; takes arrow keys." },
+    "disabled": { "when": ".ayy-drag-handle:disabled, .ayy-draggable[aria-disabled=\"true\"]", "looks": "--ayy-opacity-disabled and cursor: not-allowed." },
+    "selected": { "none": "No selected state." },
+    "error": { "when": "[data-drop=\"reject\"], .ayy-drag-preview[data-invalid]", "looks": "Rejected target gets dashed destructive border and not-allowed cursor; preview gets dashed destructive outline." },
+    "loading": { "none": "No loading state." },
+    "dragging": { "when": "[data-dragging]", "looks": "Item is held: dims to 0.4 opacity with dashed line border." },
+    "ready": { "when": "[data-drop=\"ready\"]", "looks": "Target accepts the item: dashed text-soft border and wash fill." },
+    "over": { "when": "[data-drop=\"over\"]", "looks": "Pointer is over target: solid primary border, 8% primary tint and 3px glow ring." },
+    "edge": { "when": "[data-drop-edge]", "looks": "A 2px primary insertion line on the target edge (block-start/end, inline-start/end) showing where the item lands." }
+  },
+  "sizes": {
+    "density": "DragHandle sizes follow control size tokens (--ayy-size-control-sm); list items follow text and padding tokens.",
+    "width": "Fills its container. Horizontally oriented lists flow inline."
+  },
+  "js": "connectDragDrop(root, options) wires pointer and keyboard dragging; setDropState(target, state) sets data-drop; setDropEdge(item, edge) sets data-drop-edge; dragPreviewChip(label) creates a chip preview; dragHandleIcon (Hugeicons DragDropVertical SVG markup).",
+  "element": {
+    "tag": "ayy-drag-drop",
+    "attributes": {
+      "orientation": "vertical (default) | horizontal",
+      "handle": "Present to drag by .ayy-drag-handle only",
+      "areas": "CSS selector for drop areas, e.g. .ayy-drop-target"
+    },
+    "events": {
+      "ayy-move": "Fired on drop or arrow key move ({ item, from, to, fromIndex, toIndex, itemId, fromId, toId })"
+    },
+    "children": "Sortable items (.ayy-draggable, .ayy-sortable__item) and drop targets (.ayy-drop-target)."
+  },
+  "react": {
+    "import": "import { Sortable, SortableItem, DragHandle, DragDropArea, DropTarget } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Sortable": { "renders": "<ul class=\"ayy-sortable\">", "props": { "orientation": "\"vertical\" | \"horizontal\"", "handle": "boolean (default true)", "onMove": "(move: DragMove) => void", "canDrag": "(item: HTMLElement) => boolean", "describe": "(item: HTMLElement) => string", "as": "\"ul\" | \"ol\" | \"div\"" } },
+      "SortableItem": { "renders": "<li class=\"ayy-draggable ayy-sortable__item\">", "props": { "as": "\"li\" | \"div\"" } },
+      "DragHandle": { "renders": "<button class=\"ayy-drag-handle\"><Icon icon={DragDropVerticalIcon}/>", "props": { "tooltip": "ReactNode | false (default \"Drag to reorder\")", "...ButtonHTMLAttributes": "aria-label..." } },
+      "DragDropArea": { "renders": "<div>", "props": { "orientation": "\"vertical\" | \"horizontal\"", "handle": "boolean (default true)", "onMove": "(move: DragMove) => void", "accepts": "(item, area) => boolean", "canDrag": "(item: HTMLElement) => boolean", "describe": "(item: HTMLElement) => string" } },
+      "DropTarget": { "renders": "<ul class=\"ayy-drop-target\">", "props": { "as": "\"ul\" | \"ol\" | \"div\"", "list": "boolean (default true)" } }
+    }
+  },
+  "a11y": [
+    "Keyboard support: focused .ayy-drag-handle takes arrow keys (along the list to reorder, across to hop between areas); plain items take Alt + arrows.",
+    "Screen readers: announce polite status updates on each move (\"Item moved to position 2 of 4\").",
+    "DragHandle button requires an aria-label naming the specific item ('Move Revenue', 'Move Priority'); its tooltip remains general ('Drag to reorder')."
+  ],
+  "do": [
+    "Use drag and drop for user-driven reordering of lists, board columns, or table columns.",
+    "Always provide a DragHandle or keyboard alternative with visible focus ring.",
+    "Show clear drop indicators (ready, over, reject, and drop-edge line) so the user always knows what will happen on release.",
+    "Keep DragHandle tooltips general ('Drag to reorder'), naming the item in aria-label."
+  ],
+  "dont": [
+    "Don't rely on mouse drag as the only way to reorder — always support keyboard navigation or move actions.",
+    "Don't hide the original item completely while dragging — keep it dimmed at 0.4 opacity to maintain spatial context.",
+    "Don't make drop targets ambiguous: use data-drop='reject' when an area refuses an item."
+  ],
+  "examples": [
+    { "id": "sortable", "title": "Reorderable list" },
+    { "id": "board", "title": "Board with drop targets" }
+  ]
+}

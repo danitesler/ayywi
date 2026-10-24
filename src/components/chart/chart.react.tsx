@@ -1,4 +1,4 @@
-import { forwardRef, useId, type CSSProperties, type HTMLAttributes, type ReactNode, type SVGAttributes, type TableHTMLAttributes } from "react";
+import { forwardRef, useId, useState, type CSSProperties, type HTMLAttributes, type ReactNode, type SVGAttributes, type TableHTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
 import {
   barListClass,
@@ -42,13 +42,34 @@ const formatCompact = (value: number) => compact.format(value);
 const svgId = (id: string) => `ayy-${id.replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
 /** The vertical fade an __area fills with: inside the series' <g>, so its stops take the series colour. */
-function Fade({ id }: { id: string }) {
+function Fade({ id, radial }: { id: string; radial?: boolean }) {
   return (
     <defs>
-      <linearGradient id={id} className="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" />
-        <stop offset="1" />
-      </linearGradient>
+      {radial ? (
+        <radialGradient id={id} className="ayy-chart__gradient">
+          <stop offset="0" />
+          <stop offset="1" />
+        </radialGradient>
+      ) : (
+        <linearGradient id={id} className="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" />
+          <stop offset="1" />
+        </linearGradient>
+      )}
+    </defs>
+  );
+}
+
+/** The gradients a ring's slices are stroked with, one per colour: the slice's own colour fading along the ring. */
+function RingFades({ id, colors }: { id: string; colors: (string | undefined)[] }) {
+  return (
+    <defs>
+      {colors.map((color, i) => (
+        <linearGradient key={i} id={`${id}-${i}`} className="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style={vars({ "--ayy-chart-color": color ?? seriesColor(i) })}>
+          <stop offset="0" />
+          <stop offset="1" />
+        </linearGradient>
+      ))}
     </defs>
   );
 }
@@ -121,29 +142,146 @@ function ChartData({ label, labels, columns, rows }: DataTableProps) {
 const seriesRows = (labels: string[], series: { values: number[] }[], format: (value: number) => string) =>
   labels.map((_, i) => series.map((s) => (Number.isFinite(s.values[i]) ? format(s.values[i]) : "")));
 
-interface LegendEntry {
+export interface ChartLegendItem {
   name: string;
+  /** Any CSS colour instead of the next chart token. */
   color?: string;
+  /** A dashed swatch, for a comparison series. */
   compare?: boolean;
+  /** A line swatch, for a line drawn over columns. */
   line?: boolean;
+  /** A number at the end of the entry (a slice's share). */
   value?: string;
 }
 
-function Legend({ series }: { series: LegendEntry[] }) {
+export interface ChartLegendProps extends Omit<HTMLAttributes<HTMLUListElement>, "children" | "onToggle"> {
+  items: ChartLegendItem[];
+  /** Names of the entries switched off. Only with onToggle. */
+  hiddenItems?: string[];
+  /** Makes every entry a toggle button: called with the entry's name when it's clicked. The chart hides or shows that series. */
+  onToggle?: (name: string) => void;
+}
+
+/**
+ * The key of a chart: each series' colour and name. Give it onToggle and the entries become buttons (aria-pressed) that
+ * switch a series off and on; a chart's own `toggle` prop does that for you.
+ */
+export const ChartLegend = forwardRef<HTMLUListElement, ChartLegendProps>(function ChartLegend({ items, hiddenItems = [], onToggle, className, ...props }, ref) {
   return (
-    <ul className="ayy-chart__legend" aria-hidden="true">
-      {series.map((s, i) => (
-        <li key={`${s.name}-${i}`} className={chartLegendItemClass({ compare: s.compare, line: s.line })} style={vars({ "--ayy-chart-color": s.color })}>
-          <span className="ayy-chart__swatch" />
-          {s.name}
-          {s.value !== undefined && <span className="ayy-chart__legend-value">{s.value}</span>}
-        </li>
-      ))}
+    <ul ref={ref} className={cx("ayy-chart__legend", className)} {...(onToggle ? {} : { "aria-hidden": true })} {...props}>
+      {items.map((item, i) => {
+        const content = (
+          <>
+            <span className="ayy-chart__swatch" />
+            {item.name}
+            {item.value !== undefined && <span className="ayy-chart__legend-value">{item.value}</span>}
+          </>
+        );
+        return (
+          <li key={`${item.name}-${i}`} className={chartLegendItemClass({ compare: item.compare, line: item.line })} style={vars({ "--ayy-chart-color": item.color })}>
+            {onToggle ? (
+              <button
+                type="button"
+                className="ayy-chart__legend-toggle"
+                aria-pressed={!hiddenItems.includes(item.name)}
+                onClick={(event) => {
+                  // The page-wide helper in @danitesler/ayywi/elements flips plain-HTML legends; this one is ours.
+                  event.preventDefault();
+                  onToggle(item.name);
+                }}
+              >
+                {content}
+              </button>
+            ) : (
+              content
+            )}
+          </li>
+        );
+      })}
     </ul>
+  );
+});
+
+/** What a chart takes to let people switch series off from its legend. */
+export interface ChartToggleProps {
+  /** Make the legend's entries buttons that hide and show their series. The last visible one stays on. */
+  toggle?: boolean;
+  /** Names of the series switched off (controlled). */
+  hiddenSeries?: string[];
+  /** The series switched off at first (uncontrolled). */
+  defaultHiddenSeries?: string[];
+  onHiddenSeriesChange?: (hidden: string[]) => void;
+}
+
+/** The names switched off, and the legend's onToggle (undefined unless `toggle`). The scale stays put so the rest don't jump. */
+function useToggle({ toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange }: ChartToggleProps, names: string[]) {
+  const [own, setOwn] = useState(defaultHiddenSeries ?? []);
+  const current = (hiddenSeries ?? own).filter((name) => names.includes(name));
+  const off = new Set(current);
+  const onToggle = toggle
+    ? (name: string) => {
+        const next = off.has(name) ? current.filter((n) => n !== name) : [...current, name];
+        if (names.every((n) => next.includes(n))) return;
+        setOwn(next);
+        onHiddenSeriesChange?.(next);
+      }
+    : undefined;
+  return { off, hidden: current, onToggle };
+}
+
+export interface ChartTooltipRow {
+  /** What the number is ("Comments"); shown before it with a colon. */
+  name?: string;
+  value: string;
+  /** Any CSS colour for the swatch. */
+  color?: string;
+}
+
+/** A series' own colour: its `color`, quiet for a comparison, else the chart token for its position. */
+const tone = (s: { color?: string; compare?: boolean }, index: number) => s.color ?? (s.compare ? "var(--ayy-color-muted)" : seriesColor(index));
+
+export interface ChartTooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "title"> {
+  title?: ReactNode;
+  rows: ChartTooltipRow[];
+  /** Shown in place, always: a hover breakdown laid out on its own (a legend's key, a docs page) instead of opening over a chart part. */
+  static?: boolean;
+}
+
+/** The hover card of a chart: a title, then a row (swatch, name, value) for each series. The charts draw theirs; this is the same card on its own. */
+export const ChartTooltip = forwardRef<HTMLSpanElement, ChartTooltipProps>(function ChartTooltip({ title, rows, static: inPlace, className, ...props }, ref) {
+  return (
+    <span ref={ref} className={cx("ayy-chart__tooltip", inPlace && "ayy-chart__tooltip--static", className)} {...props}>
+      {title !== undefined && title !== "" && <span className="ayy-chart__tooltip-title">{title}</span>}
+      {rows.map((row, i) => (
+        <span key={i} className="ayy-chart__tooltip-row" style={vars({ "--ayy-chart-color": row.color })}>
+          <span className="ayy-chart__swatch" />
+          {row.name && <span className="ayy-chart__tooltip-name">{row.name}</span>}
+          <strong className="ayy-chart__tooltip-value">{row.value}</strong>
+        </span>
+      ))}
+    </span>
+  );
+});
+
+/** The card a hover opens over a column, point, slice or step. Sits inside the hovered part. */
+function Tip({ title, rows, at, end }: { title?: ReactNode; rows: ChartTooltipRow[]; at?: { x: number; y: number }; end?: boolean }) {
+  return (
+    <ChartTooltip
+      title={title}
+      rows={rows}
+      data-side={end ? "end" : undefined}
+      style={at ? vars({ "--ayy-x": Math.round(at.x * 100) / 100, "--ayy-y": Math.round(at.y * 100) / 100 }) : undefined}
+    />
   );
 }
 
-export interface ChartBaseProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+const cell = (value: number | undefined, format: (value: number) => string) => (value !== undefined && Number.isFinite(value) ? format(value) : "–");
+
+/** A series with every value zeroed when it's switched off, so a stack closes the gap. */
+const without = <T extends { name: string; values: number[] }>(series: T[], off: Set<string>): T[] =>
+  off.size ? series.map((s) => (off.has(s.name) ? { ...s, values: s.values.map(() => 0) } : s)) : series;
+
+export interface ChartBaseProps extends Omit<HTMLAttributes<HTMLElement>, "children">, ChartToggleProps {
   /** What the chart shows ("Signups per day"). Becomes the caption of the data table screen readers get. */
   label: string;
   /** One per point or column, along the bottom. */
@@ -192,13 +330,16 @@ interface ColumnChartProps extends BarChartProps {
 
 /** Columns or rows of bars: BarChart and HistogramChart. */
 const ColumnChart = forwardRef<HTMLElement, ColumnChartProps>(function ColumnChart(
-  { label, labels, series, stacked, showValues, horizontal, lines = [], max, ticks = 3, format = formatCompact, height, legend, type, rowLabels, className, style, ...props },
+  { label, labels, series, stacked, showValues, horizontal, lines = [], max, ticks = 3, format = formatCompact, height, legend, type, rowLabels, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
   const percent = stacked === "percent";
   const combo = !horizontal && lines.length > 0;
-  const tops = stacked ? chartStack(series.map((s) => s.values), { percent }) : [];
-  const scaled = stacked ? (tops[tops.length - 1] ?? []) : series.flatMap((s) => s.values);
+  const { off, hidden: hiddenNames, onToggle } = useToggle({ toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange }, [...series, ...lines].map((s) => s.name));
+  // The scale comes from everything, so switching a series off doesn't rescale the rest; the stack closes the gap.
+  const fullTops = stacked ? chartStack(series.map((s) => s.values), { percent }) : [];
+  const tops = stacked && off.size ? chartStack(without(series, off).map((s) => s.values), { percent }) : fullTops;
+  const scaled = stacked ? (fullTops[fullTops.length - 1] ?? []) : series.flatMap((s) => s.values);
   const scale = chartScale(combo ? [...scaled, ...lines.flatMap((s) => s.values)] : scaled, { ticks: Math.max(2, ticks), max: percent ? 100 : max });
   const shown = shownLabels(labels.length, horizontal ? labels.length : 8, false);
   // A stacked part's height: its share of the column (percent) or its own value.
@@ -220,10 +361,16 @@ const ColumnChart = forwardRef<HTMLElement, ColumnChartProps>(function ColumnCha
                 <span
                   key={s.name}
                   className="ayy-chart__bar"
+                  data-hidden={off.has(s.name) || undefined}
                   data-value={Number.isFinite(s.values[i]) ? format(s.values[i]) : undefined}
                   style={vars({ "--ayy-value": chartPercent(part(k, i), scale.max), "--ayy-chart-color": s.color })}
                 />
               ))}
+              <Tip
+                end={i >= labels.length / 2}
+                title={rowLabels?.[i] ?? name}
+                rows={all.flatMap((s, k) => (off.has(s.name) ? [] : [{ name: s.name, value: cell(s.values[i], format), color: tone(s, k) }]))}
+              />
             </div>
           ))}
         </div>
@@ -233,6 +380,7 @@ const ColumnChart = forwardRef<HTMLElement, ColumnChartProps>(function ColumnCha
               <g
                 key={s.name}
                 className={chartSeriesClass({ compare: s.compare })}
+                data-hidden={off.has(s.name) || undefined}
                 style={vars({ "--ayy-chart-color": s.color ?? (s.compare ? undefined : seriesColor(series.length + i)) })}
               >
                 <path className="ayy-chart__line" d={chartPath(s.values, { min: scale.min, max: scale.max, smooth: true, band: true }).line} />
@@ -246,7 +394,7 @@ const ColumnChart = forwardRef<HTMLElement, ColumnChartProps>(function ColumnCha
           <span key={`${name}-${i}`}>{shown.has(i) ? name : ""}</span>
         ))}
       </div>
-      {(legend ?? all.length > 1) && <Legend series={[...series, ...(combo ? lines.map((s) => ({ ...s, line: !s.compare })) : [])]} />}
+      {(legend ?? all.length > 1) && <ChartLegend items={[...series, ...(combo ? lines.map((s) => ({ ...s, line: !s.compare })) : [])]} hiddenItems={hiddenNames} onToggle={onToggle} />}
       <ChartData label={label} labels={rowLabels ?? labels} columns={all.map((s) => s.name)} rows={seriesRows(labels, all, format)} />
     </figure>
   );
@@ -257,7 +405,7 @@ export const BarChart = forwardRef<HTMLElement, BarChartProps>(function BarChart
   return <ColumnChart ref={ref} {...props} />;
 });
 
-export interface HistogramChartProps extends Omit<ChartBaseProps, "labels" | "legend"> {
+export interface HistogramChartProps extends Omit<ChartBaseProps, "labels" | "legend" | keyof ChartToggleProps> {
   /** The raw values: they're counted into bins. */
   values: number[];
   /** About how many bins; their edges are rounded. Default: about the square root of the count, at most 20. */
@@ -300,7 +448,7 @@ export interface WaterfallStep {
   total?: boolean;
 }
 
-export interface WaterfallChartProps extends Omit<ChartBaseProps, "labels" | "legend"> {
+export interface WaterfallChartProps extends Omit<ChartBaseProps, "labels" | "legend" | keyof ChartToggleProps> {
   steps: WaterfallStep[];
   /** Bottom of the scale. Default 0, or the lowest running total if it goes below. */
   min?: number;
@@ -341,6 +489,17 @@ export const WaterfallChart = forwardRef<HTMLElement, WaterfallChartProps>(funct
                   data-value={text(step)}
                   style={vars({ "--ayy-start": start, "--ayy-value": Math.round((end - start) * 10) / 10 })}
                 />
+                <Tip
+                  end={i >= steps.length / 2}
+                  title={step.label}
+                  rows={[
+                    {
+                      name: step.total ? "Total" : "Change",
+                      value: text(step),
+                      color: runs[i].change === "up" ? "var(--ayy-color-success)" : runs[i].change === "down" ? "var(--ayy-color-destructive)" : seriesColor(0),
+                    },
+                  ]}
+                />
               </div>
             );
           })}
@@ -377,12 +536,14 @@ export interface LineChartProps extends ChartBaseProps {
 
 /** Lines (and the area under them) over evenly spaced points, as SVG paths stretched to the plot. */
 export const LineChart = forwardRef<HTMLElement, LineChartProps>(function LineChart(
-  { label, labels, series, min = 0, max, ticks = 3, area = true, smooth = true, step, stacked, format = formatCompact, height, legend, className, style, ...props },
+  { label, labels, series, min = 0, max, ticks = 3, area = true, smooth = true, step, stacked, format = formatCompact, height, legend, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
+  const { off, hidden: hiddenNames, onToggle } = useToggle({ toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange }, series.map((s) => s.name));
   const layers = stacked ? series.filter((s) => !s.compare) : [];
-  const tops = chartStack(layers.map((s) => s.values));
-  const scaled = stacked ? [...(tops[tops.length - 1] ?? []), ...series.filter((s) => s.compare).flatMap((s) => s.values)] : series.flatMap((s) => s.values);
+  const fullTops = chartStack(layers.map((s) => s.values));
+  const tops = off.size ? chartStack(without(layers, off).map((s) => s.values)) : fullTops;
+  const scaled = stacked ? [...(fullTops[fullTops.length - 1] ?? []), ...series.filter((s) => s.compare).flatMap((s) => s.values)] : series.flatMap((s) => s.values);
   const scale = chartScale(scaled, { ticks: Math.max(2, ticks), min, max });
   const uid = svgId(useId());
   const shown = shownLabels(labels.length, 5, true);
@@ -401,9 +562,12 @@ export const LineChart = forwardRef<HTMLElement, LineChartProps>(function LineCh
               base: layer > 0 ? tops[layer - 1] : undefined,
             });
             return (
-              <g key={s.name} className={chartSeriesClass({ compare: s.compare })} style={vars({ "--ayy-chart-color": s.color })}>
+              <g key={s.name} className={chartSeriesClass({ compare: s.compare })} data-hidden={off.has(s.name) || undefined} style={vars({ "--ayy-chart-color": s.color })}>
                 {layer >= 0 ? (
-                  <path className="ayy-chart__area" d={path.area} />
+                  <>
+                    <Fade id={`${uid}-${i}`} />
+                    <path className="ayy-chart__area" d={path.area} style={{ fill: `url(#${uid}-${i})` }} />
+                  </>
                 ) : (
                   area &&
                   !s.compare && (
@@ -418,11 +582,26 @@ export const LineChart = forwardRef<HTMLElement, LineChartProps>(function LineCh
             );
           })}
         </svg>
+        <div className="ayy-chart__hits" style={vars({ "--ayy-count": labels.length })}>
+          {labels.map((name, i) => (
+            <div key={`${name}-${i}`} className="ayy-chart__hit" style={vars({ "--ayy-x": labels.length > 1 ? Math.round((i / (labels.length - 1)) * 10000) / 100 : 50 })}>
+              {series.map((s, k) => {
+                if (off.has(s.name)) return null;
+                const layer = layers.indexOf(s);
+                const at = layer < 0 ? s.values[i] : tops[layer][i];
+                return Number.isFinite(at) ? (
+                  <span key={s.name} className="ayy-chart__marker" style={vars({ "--ayy-y": chartPercent(at, scale.max, scale.min), "--ayy-chart-color": tone(s, k) })} />
+                ) : null;
+              })}
+              <Tip end={i >= labels.length / 2} title={name} rows={series.flatMap((s, k) => (off.has(s.name) ? [] : [{ name: s.name, value: cell(s.values[i], format), color: tone(s, k) }]))} />
+            </div>
+          ))}
+        </div>
       </div>
       <div className="ayy-chart__labels" aria-hidden="true">
         {labels.map((name, i) => (shown.has(i) ? <span key={`${name}-${i}`}>{name}</span> : null))}
       </div>
-      {(legend ?? series.length > 1) && <Legend series={series} />}
+      {(legend ?? series.length > 1) && <ChartLegend items={series} hiddenItems={hiddenNames} onToggle={onToggle} />}
       <ChartData label={label} labels={labels} columns={series.map((s) => s.name)} rows={seriesRows(labels, series, format)} />
     </figure>
   );
@@ -444,7 +623,7 @@ export interface ScatterSeries {
   color?: string;
 }
 
-export interface ScatterChartProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+export interface ScatterChartProps extends Omit<HTMLAttributes<HTMLElement>, "children">, ChartToggleProps {
   /** What the chart shows ("Deals by size and days to close"). Becomes the caption of the data table. */
   label: string;
   series: ScatterSeries[];
@@ -490,20 +669,23 @@ export const ScatterChart = forwardRef<HTMLElement, ScatterChartProps>(function 
     formatZ = formatCompact,
     height,
     legend,
+    toggle,
+    hiddenSeries,
+    defaultHiddenSeries,
+    onHiddenSeriesChange,
     className,
     style,
     ...props
   },
   ref,
 ) {
+  const { off, hidden: hiddenNames, onToggle } = useToggle({ toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange }, series.map((s) => s.name));
   const points = series.flatMap((s) => s.points);
   const count = Math.max(2, ticks);
   const xs = chartScale(points.map((p) => p.x), { ticks: count, min: xMin, max: xMax });
   const ys = chartScale(points.map((p) => p.y), { ticks: count, min: yMin, max: yMax });
   const sized = points.some((p) => p.z !== undefined);
   const zTop = Math.sqrt(points.reduce((most, p) => Math.max(most, p.z ?? 0), 0));
-  const describe = (p: ScatterPoint) =>
-    `${p.label ? `${p.label}: ` : ""}${formatX(p.x)}, ${formatY(p.y)}${p.z !== undefined ? `, ${formatZ(p.z)}` : ""}`;
   const rows = series.flatMap((s) =>
     s.points.map((p, i) => ({
       name: p.label ? (series.length > 1 ? `${p.label} (${s.name})` : p.label) : `${s.name} ${i + 1}`,
@@ -518,18 +700,26 @@ export const ScatterChart = forwardRef<HTMLElement, ScatterChartProps>(function 
       <div className="ayy-chart__plot" aria-hidden="true">
         {ticks > 0 && <Ticks scale={ys} format={formatY} />}
         {series.map((s) => (
-          <div key={s.name} className="ayy-chart__series" style={vars({ "--ayy-chart-color": s.color })}>
+          <div key={s.name} className="ayy-chart__series" data-hidden={off.has(s.name) || undefined} style={vars({ "--ayy-chart-color": s.color })}>
             {s.points.map((p, i) => (
               <span
                 key={i}
                 className="ayy-chart__dot"
-                data-value={describe(p)}
                 style={vars({
                   "--ayy-x": chartPercent(p.x, xs.max, xs.min),
                   "--ayy-y": chartPercent(p.y, ys.max, ys.min),
                   "--ayy-z": p.z !== undefined && zTop > 0 ? chartPercent(Math.sqrt(Math.max(0, p.z)), zTop) : undefined,
                 })}
-              />
+              >
+                <Tip
+                  title={p.label ?? s.name}
+                  rows={[
+                    { name: xLabel || "x", value: formatX(p.x), color: s.color ?? seriesColor(series.indexOf(s)) },
+                    { name: yLabel || "y", value: formatY(p.y), color: s.color ?? seriesColor(series.indexOf(s)) },
+                    ...(p.z !== undefined ? [{ name: zLabel || "Size", value: formatZ(p.z), color: s.color ?? seriesColor(series.indexOf(s)) }] : []),
+                  ]}
+                />
+              </span>
             ))}
           </div>
         ))}
@@ -544,7 +734,7 @@ export const ScatterChart = forwardRef<HTMLElement, ScatterChartProps>(function 
       <span className="ayy-chart__axis" aria-hidden="true">
         {xLabel}
       </span>
-      {(legend ?? series.length > 1) && <Legend series={series} />}
+      {(legend ?? series.length > 1) && <ChartLegend items={series} hiddenItems={hiddenNames} onToggle={onToggle} />}
       <ChartData
         label={label}
         labels={rows.map((row) => row.name)}
@@ -562,7 +752,7 @@ export interface DonutChartItem {
   color?: string;
 }
 
-export interface DonutChartProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+export interface DonutChartProps extends Omit<HTMLAttributes<HTMLElement>, "children">, ChartToggleProps {
   /** What the chart shows ("Support tickets by channel"). Becomes the caption of the data table. */
   label: string;
   /** The parts of the whole; at most six read well. */
@@ -585,16 +775,20 @@ export interface DonutChartProps extends Omit<HTMLAttributes<HTMLElement>, "chil
 
 /** Parts of one whole as slices of a ring (or a pie), with the total in the middle and the shares in the legend. */
 export const DonutChart = forwardRef<HTMLElement, DonutChartProps>(function DonutChart(
-  { label, items, pie, total, totalLabel, name, format = formatGrouped, size, legend = true, className, style, ...props },
+  { label, items, pie, total, totalLabel, name, format = formatGrouped, size, legend = true, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
-  const slices = chartSlices(items.map((item) => item.value));
-  const sum = items.reduce((all, item) => all + (item.value > 0 ? item.value : 0), 0);
+  const { off, hidden: hiddenNames, onToggle } = useToggle({ toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange }, items.map((item) => item.name));
+  const uid = svgId(useId());
+  const shown = items.map((item) => (off.has(item.name) ? 0 : item.value));
+  const slices = chartSlices(shown);
+  const sum = shown.reduce((all, value) => all + (value > 0 ? value : 0), 0);
   const share = (i: number) => percentFormat.format(slices[i].value / 100);
   return (
     <figure ref={ref} className={chartClass({ type: pie ? "pie" : undefined, className })} style={vars({ "--ayy-chart-height": size }, style)} {...props}>
       <div className="ayy-chart__plot" aria-hidden="true">
         <svg className="ayy-chart__ring" viewBox="0 0 100 100" focusable="false">
+          <RingFades id={uid} colors={items.map((item) => item.color)} />
           {items.map((item, i) => (
             <circle
               key={`${item.name}-${i}`}
@@ -603,10 +797,23 @@ export const DonutChart = forwardRef<HTMLElement, DonutChartProps>(function Donu
               cy="50"
               r={pie ? 25 : 40}
               pathLength="100"
-              style={vars({ "--ayy-start": slices[i].start, "--ayy-value": slices[i].value, "--ayy-chart-color": item.color })}
+              style={vars({ "--ayy-start": slices[i].start, "--ayy-value": slices[i].value, "--ayy-chart-color": item.color, stroke: `url(#${uid}-${i})` })}
             />
           ))}
         </svg>
+        {items.map((item, i) => {
+          // Over the middle of its slice, clockwise from the top.
+          const angle = ((slices[i].start + slices[i].value / 2) / 100) * Math.PI * 2;
+          const reach = pie ? 15 : 40;
+          return (
+            <Tip
+              key={`${item.name}-${i}`}
+              title={item.name}
+              at={{ x: 50 + reach * Math.sin(angle), y: 50 + reach * Math.cos(angle) }}
+              rows={[{ name, value: off.has(item.name) ? "–" : `${format(item.value)} · ${share(i)}`, color: item.color ?? seriesColor(i) }]}
+            />
+          );
+        })}
         {!pie && (
           <p className="ayy-chart__total">
             <span className="ayy-chart__total-value">{total ?? format(sum)}</span>
@@ -614,7 +821,7 @@ export const DonutChart = forwardRef<HTMLElement, DonutChartProps>(function Donu
           </p>
         )}
       </div>
-      {legend && <Legend series={items.map((item, i) => ({ name: item.name, color: item.color, value: share(i) }))} />}
+      {legend && <ChartLegend items={items.map((item, i) => ({ name: item.name, color: item.color, value: off.has(item.name) ? "–" : share(i) }))} hiddenItems={hiddenNames} onToggle={onToggle} />}
       <ChartData
         label={label}
         labels={items.map((item) => item.name)}
@@ -648,6 +855,7 @@ export const GaugeChart = forwardRef<HTMLElement, GaugeChartProps>(function Gaug
   { label, value, min = 0, max = 100, format = formatGrouped, totalLabel, color, size, className, style, ...props },
   ref,
 ) {
+  const uid = svgId(useId());
   return (
     <figure ref={ref} className={chartClass({ type: "gauge", className })} style={vars({ "--ayy-chart-height": size }, style)} {...props}>
       <div
@@ -660,6 +868,7 @@ export const GaugeChart = forwardRef<HTMLElement, GaugeChartProps>(function Gaug
         aria-valuetext={totalLabel ? `${format(value)} ${totalLabel}` : format(value)}
       >
         <svg className="ayy-chart__ring" viewBox="0 0 100 50" focusable="false" aria-hidden="true">
+          <RingFades id={uid} colors={[color]} />
           <circle className="ayy-chart__track" cx="50" cy="50" r="40" pathLength="100" />
           <circle
             className="ayy-chart__slice"
@@ -667,9 +876,10 @@ export const GaugeChart = forwardRef<HTMLElement, GaugeChartProps>(function Gaug
             cy="50"
             r="40"
             pathLength="100"
-            style={vars({ "--ayy-value": chartPercent(value, max, min), "--ayy-chart-color": color })}
+            style={vars({ "--ayy-value": chartPercent(value, max, min), "--ayy-chart-color": color, stroke: `url(#${uid}-0)` })}
           />
         </svg>
+        <Tip title={label} rows={[{ value: totalLabel ? `${format(value)} ${totalLabel}` : format(value), color: color ?? seriesColor(0) }]} />
         <p className="ayy-chart__total">
           <span className="ayy-chart__total-value">{format(value)}</span>
           {totalLabel}
@@ -679,7 +889,7 @@ export const GaugeChart = forwardRef<HTMLElement, GaugeChartProps>(function Gaug
   );
 });
 
-export interface RadarChartProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+export interface RadarChartProps extends Omit<HTMLAttributes<HTMLElement>, "children">, ChartToggleProps {
   /** What the chart shows ("Survey scores, this year and last"). Becomes the caption of the data table. */
   label: string;
   /** One per spoke, clockwise from the top. */
@@ -702,9 +912,11 @@ export interface RadarChartProps extends Omit<HTMLAttributes<HTMLElement>, "chil
 
 /** A few measures per series, one spoke each, as closed shapes: profiles to compare at a glance. */
 export const RadarChart = forwardRef<HTMLElement, RadarChartProps>(function RadarChart(
-  { label, axes, series, min = 0, max, ticks = 5, format = formatCompact, size, legend, className, style, ...props },
+  { label, axes, series, min = 0, max, ticks = 5, format = formatCompact, size, legend, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
+  const { off, hidden: hiddenNames, onToggle } = useToggle({ toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange }, series.map((s) => s.name));
+  const uid = svgId(useId());
   const scale = chartScale(series.flatMap((s) => s.values), { ticks: Math.max(2, ticks), min, max });
   const n = axes.length;
   const rings = scale.ticks.slice(1).map((tick) => chartRadar(new Array<number>(n).fill(tick), { min: scale.min, max: scale.max }));
@@ -717,11 +929,12 @@ export const RadarChart = forwardRef<HTMLElement, RadarChartProps>(function Rada
       <div className="ayy-chart__plot" aria-hidden="true">
         <svg className="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
           <path className="ayy-chart__grid" d={[...rings, ...spokes].join(" ")} />
-          {series.map((s) => {
+          {series.map((s, i) => {
             const d = chartRadar(s.values, { min: scale.min, max: scale.max });
             return (
-              <g key={s.name} className={chartSeriesClass({ compare: s.compare })} style={vars({ "--ayy-chart-color": s.color })}>
-                <path className="ayy-chart__area" d={d} />
+              <g key={s.name} className={chartSeriesClass({ compare: s.compare })} data-hidden={off.has(s.name) || undefined} style={vars({ "--ayy-chart-color": s.color })}>
+                <Fade id={`${uid}-${i}`} radial />
+                <path className="ayy-chart__area" d={d} style={{ fill: `url(#${uid}-${i})` }} />
                 <path className="ayy-chart__line" d={d} />
               </g>
             );
@@ -732,11 +945,12 @@ export const RadarChart = forwardRef<HTMLElement, RadarChartProps>(function Rada
           return (
             <span key={`${name}-${i}`} className="ayy-chart__label" style={vars({ "--ayy-x": p.x, "--ayy-y": Math.round((100 - p.y) * 100) / 100 })}>
               {name}
+              <Tip title={name} rows={series.flatMap((s, k) => (off.has(s.name) ? [] : [{ name: s.name, value: cell(s.values[i], format), color: tone(s, k) }]))} />
             </span>
           );
         })}
       </div>
-      {(legend ?? series.length > 1) && <Legend series={series} />}
+      {(legend ?? series.length > 1) && <ChartLegend items={series} hiddenItems={hiddenNames} onToggle={onToggle} />}
       <ChartData label={label} labels={axes} columns={series.map((s) => s.name)} rows={seriesRows(axes, series, format)} />
     </figure>
   );
@@ -854,6 +1068,13 @@ export const FunnelChart = forwardRef<HTMLOListElement, FunnelChartProps>(functi
               {percentFormat.format(base ? step.value / base : 0)}
               {i > 0 && <span className="ayy-sr-only"> {words}</span>}
             </span>
+            <Tip
+              title={step.label}
+              rows={[
+                { name: "Count", value: format(step.value), color: color ?? seriesColor(0) },
+                ...(i > 0 ? [{ name: rate === "first" ? "Of the first step" : "Of the step before", value: percentFormat.format(base ? step.value / base : 0), color: color ?? seriesColor(0) }] : []),
+              ]}
+            />
           </li>
         );
       })}

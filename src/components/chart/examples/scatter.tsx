@@ -11,6 +11,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <ScatterChart
+          toggle
           label="Deals closed this quarter, by size and days to close"
           xLabel="Deal size"
           yLabel="Days to close"

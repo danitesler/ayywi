@@ -1,7 +1,9 @@
 import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
 
-// E2E_PORT lets scripts/check-all.sh use its own port, so it never reuses another app's preview server.
+// E2E_PORT keeps two sessions off each other's port (and off another app's preview server): the preview and
+// Playwright's baseURL both read it. A busy port is an error, never a silent reuse of whatever is answering there —
+// E2E_REUSE=1 opts in when you know the running server serves this tree.
 const port = Number(process.env.E2E_PORT ?? 4173);
 
 // Playwright's own Chromium (`pnpm exec playwright install chromium`), pinned to its version, so results don't
@@ -23,7 +25,7 @@ export default defineConfig({
   webServer: {
     command: `pnpm preview:build && pnpm preview:serve --port ${port} --strictPort --host 127.0.0.1`,
     url: `http://127.0.0.1:${port}`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: Boolean(process.env.E2E_REUSE),
     timeout: 120_000,
   },
 });

@@ -197,10 +197,8 @@
 .ayy-select__label {
   padding: var(--ayy-space-1-5) var(--ayy-space-2) var(--ayy-space-1);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-eyebrow);
-  text-transform: uppercase;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
 }
 
 .ayy-select--sm {

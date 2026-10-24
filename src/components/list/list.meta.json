@@ -2,7 +2,7 @@
   "name": "List",
   "slug": "list",
   "category": "Data display",
-  "description": "Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.",
+  "description": "Rows of people, records or settings, each with an image or icon, a title, a description and something at the end like a value or a control. A row can be a link.",
   "aka": ["list-item", "list-row"],
   "classes": {
     "ayy-list": "Root <ul>. Rounded rows with a small gap between them.",

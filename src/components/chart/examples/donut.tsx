@@ -8,6 +8,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <DonutChart
+          toggle
           label="Support tickets by channel, September"
           name="Tickets"
           totalLabel="tickets"

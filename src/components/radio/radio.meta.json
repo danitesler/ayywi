@@ -2,7 +2,7 @@
   "name": "Radio",
   "slug": "radio",
   "category": "Forms",
-  "description": "Native radio buttons with a drawn dot, grouped in a fieldset with a legend.",
+  "description": "A set of options where exactly one can be chosen. It's built on native radio buttons, grouped under a legend.",
   "aka": ["radio", "radio-group"],
   "classes": {
     "ayy-radio": "On <input type=\"radio\">. Size follows density. aria-invalid=\"true\" tints the ring destructive (dashed in High Contrast).",

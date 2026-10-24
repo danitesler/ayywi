@@ -2,7 +2,7 @@
   "name": "Code block",
   "slug": "code-block",
   "category": "Data display",
-  "description": "Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting.",
+  "description": "A container for showing code, with a header, a file name, a copy button and optional line numbers. It styles syntax highlighting without tying you to a particular highlighter.",
   "aka": ["code-block", "codeblock", "syntax-highlighter", "code-snippet", "code-view", "code-box"],
   "classes": {
     "ayy-code-block": "Bordered container for code with rounded corners and surface background.",
@@ -117,7 +117,7 @@
     "Use numbered on multi-line snippets when referencing specific lines in accompanying text."
   ],
   "dont": [
-    "Don't use CodeBlock for short inline code references — use <code class=\"ayy-mono\"> or Kbd instead.",
+    "Don't use CodeBlock for short inline code references — use <code class=\"ayy-code\"> or Kbd instead.",
     "Don't bake line numbers into the text content — use the numbered variant with CSS counters.",
     "Don't hardcode syntax highlighting colors — use the semantic token classes (.ayy-token-keyword, .ayy-token-string, etc.)."
   ],

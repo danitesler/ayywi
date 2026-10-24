@@ -1,6 +1,6 @@
 # Radio
 
-Category: Forms. Native radio buttons with a drawn dot, grouped in a fieldset with a legend. Also called: radio, radio-group.
+Category: Forms. A set of options where exactly one can be chosen. It's built on native radio buttons, grouped under a legend. Also called: radio, radio-group.
 
 **Classes**
 - `.ayy-radio` — On <input type="radio">. Size follows density. aria-invalid="true" tints the ring destructive (dashed in High Contrast).

@@ -1,6 +1,6 @@
 # Tabs
 
-Category: Layout. Segmented pill tabs switching between panels of related content. Full WAI-ARIA tabs keyboard support. Also called: tabs, tab, tab-list, tablist.
+Category: Layout. Tabs for switching between panels of related content on the same page. They can be used fully from the keyboard. Also called: tabs, tab, tab-list, tablist.
 
 **Classes**
 - `.ayy-tabs` — Wrapper (block). Also put it on <ayy-tabs>.

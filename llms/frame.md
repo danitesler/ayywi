@@ -1,6 +1,6 @@
 # Frame
 
-Category: Data display. A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow. Also called: browser-frame, window-frame, mockup.
+Category: Data display. A browser window drawn around a screenshot, a video or a demo, for showing a product in context on marketing pages and in docs. Also called: browser-frame, window-frame, mockup.
 
 **Classes**
 - `.ayy-frame` — Root: bordered, rounded, with the frame shadow.

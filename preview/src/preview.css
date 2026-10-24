@@ -144,6 +144,7 @@
   margin-block: auto;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition:
     opacity var(--_t, var(--ayy-duration-base)),
     visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
@@ -160,6 +161,7 @@
   .pv-shell.ayy-app-shell--collapsed > .pv-sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .pv-finder__rail {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
     transition:
       opacity var(--_t),
       visibility 0s linear var(--_delay, 0s);
@@ -241,15 +243,15 @@
 .pv-h {
   margin: 0 0 var(--ayy-space-2);
   font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-eyebrow);
-  text-transform: uppercase;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
   color: var(--ayy-color-muted);
 }
 
 .pv-h--section {
   margin-block-start: var(--ayy-space-10);
+  margin-block-end: var(--ayy-space-3); /* 12px to the description under it */
+  line-height: var(--ayy-leading-tight); /* body's leading would add dead space under the title */
   scroll-margin-block-start: 88px; /* clear the sticky toolbar when jumped to */
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-xl);
@@ -257,6 +259,12 @@
   letter-spacing: var(--ayy-tracking-tight);
   text-transform: none;
   color: var(--ayy-color-text);
+}
+
+/* The page and its sections are flex columns with their own gap: take it back out, so the title still sits 12px above its description. */
+.pv-page > .pv-h--section,
+.pv-section > .pv-h--section {
+  margin-block-end: calc(var(--ayy-space-3) - var(--ayy-space-4));
 }
 
 .pv-usage {
@@ -315,10 +323,8 @@
 
 .pv-props-popover__title {
   font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
   color: var(--ayy-color-muted);
 }
 
@@ -371,10 +377,8 @@
 
 .pv-props-group__title {
   font-family: var(--ayy-font-body);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
   color: var(--ayy-color-muted);
   padding-inline: var(--ayy-space-2);
   margin-block-end: var(--ayy-space-1);
@@ -427,16 +431,6 @@
 
 .pv-code__pre.pv-code__pre--wrap > .ayy-code-block__code {
   white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.pv-inline-code {
-  padding: 1px 6px;
-  border: 1px solid var(--ayy-color-hairline);
-  border-radius: var(--ayy-radius-md);
-  background-color: var(--ayy-color-wash);
-  font-family: var(--ayy-font-mono);
-  font-size: 0.85em;
   overflow-wrap: anywhere;
 }
 
@@ -736,6 +730,7 @@
 
 .pv-page--compact .pv-h--section {
   margin-block-start: var(--ayy-space-10);
+  margin-block-end: calc(var(--ayy-space-3) - var(--ayy-space-6)); /* 12px, after its 24px gap */
   display: flex;
   align-items: center;
   gap: var(--ayy-space-2);
@@ -1122,11 +1117,6 @@
   padding-inline-end: calc(var(--ayy-space-2) + var(--ayy-size-icon-sm) + var(--ayy-space-2));
 }
 
-.pv-tool-note {
-  margin-block-start: var(--ayy-space-1);
-  margin-block-end: var(--ayy-space-2);
-}
-
 /* The long slot gets its own line and grows with what's typed. */
 /* ayywi-lint-disable-next-line -- the fill-in sentence */
 .pv-slot.pv-slot--long {
@@ -1146,11 +1136,6 @@
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--ayy-space-4);
   margin-block-end: var(--ayy-space-4);
-}
-
-.pv-brand__hex {
-  flex: 1;
-  min-inline-size: 0;
 }
 
 .pv-brand__presets-row {

@@ -8,7 +8,7 @@ Building an app *with* ayywi? Use `ai/` instead (see README → "AI setup").
 A framework-agnostic design system. The product is a **CSS class contract** (`.ayy-*`) driven by **design tokens** (`--ayy-*`), plus:
 - framework-free JS helpers (`buttonClass()` …, `toast()`, `setTheme()`),
 - thin React components that render the same markup,
-- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-date-picker>`, `<ayy-date-range>`, `<ayy-time-picker>`, `<ayy-date-time-picker>`, `<ayy-color-picker>`, `<ayy-toolbar>`, `<ayy-action-bar>`, `<ayy-shortcut-recorder>`, `<ayy-command>`, `<ayy-tag-input>`, `<ayy-swipe>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-grid>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, custom swatch colours, search bar clear buttons, code block copy buttons, select option lists, shortcuts drawn for Apple devices, drop zones),
+- light-DOM custom elements (`<ayy-app-shell>`, `<ayy-navbar>`, `<ayy-tabs>`, `<ayy-combobox>`, `<ayy-date-picker>`, `<ayy-date-range>`, `<ayy-time-picker>`, `<ayy-date-time-picker>`, `<ayy-color-picker>`, `<ayy-toolbar>`, `<ayy-action-bar>`, `<ayy-shortcut-recorder>`, `<ayy-command>`, `<ayy-tag-input>`, `<ayy-swipe>`, `<ayy-drag-drop>`, `<ayy-dialog>`, `<ayy-popover>`, `<ayy-menu>`, `<ayy-tooltip>`, `<ayy-toc>`, `<ayy-carousel>`, `<ayy-table>`, `<ayy-grid>`) for every other framework and plain HTML, plus page-wide helpers in `@danitesler/ayywi/elements` (slider fills, number field steps, custom swatch colours, search bar clear buttons, code block copy buttons, select option lists, shortcuts drawn for Apple devices, drop zones),
 - machine-readable docs, a linter and an MCP server for AI tools (`cli/`), plus what `ayywi init` installs in an app: the skill, a lint hook and the `ayywi-ui-reviewer` agent (`ai/`).
 
 Zero runtime dependencies. React is an optional peer.
@@ -58,7 +58,18 @@ pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, d
 scripts/deploy-pages.sh  # publish the preview to GitHub Pages (gh-pages branch, pushed from here); part of a release
 ```
 
-Run `pnpm build && pnpm typecheck && pnpm check && pnpm test` before every commit, and `pnpm test:e2e` for anything visual or interactive. All must pass.
+After a code change: `pnpm build && pnpm typecheck && pnpm check && pnpm test`. Docs-only changes (CHANGELOG, README, prose) need no build and no e2e — but run `pnpm check` when you edit docs, since it validates the README's component table and jsDelivr links.
+
+A visual or interactive change also needs e2e, at two speeds:
+
+```sh
+export E2E_PORT=$((4200 + $$ % 300))                            # this shell only; never share another session's
+pnpm preview --port "$E2E_PORT" --strictPort --host 127.0.0.1   # terminal 1
+pnpm exec playwright test tests/e2e/interactions.spec.ts -g "dialog"
+pnpm test:e2e                                                   # whole suite against the built preview
+```
+
+`E2E_PORT` drives the preview and Playwright's `baseURL`. A port that already answers is an error, not a reuse (`E2E_REUSE=1` opts in), so two sessions cannot test each other's code by accident. `-g` matches the whole test title, so pair it with a file and a lowercase term; `--list` shows what a filter hits without starting a server. Keep the full run before calling the work done: it is the only one that sees the built CSS, where `:dir()` becomes `:lang()`, and the only one that covers `pages`, `theming` (axe), `dist` and `app-components`, which can't be scoped to a component.
 
 `scripts/check-all.sh` runs all of them plus the preview build and e2e (`--quick` skips those two); run it before merging or publishing. **There is no hosted CI. Never add GitHub Actions workflows** (or any other `.github/` automation); every check runs locally.
 
@@ -76,6 +87,10 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 8. Docs are code: a component's `*.meta.json` must describe exactly the classes its CSS defines, every state in `STATES` (`scripts/lib/contract.mjs`) and its sizes. `pnpm check` fails otherwise.
 9. No file names that differ only by case (esbuild + macOS/Windows resolve them to the same file).
 
+## Preview examples
+
+When adding a component variation, extend an existing preview example whenever possible: add it as an item, option or state in the relevant example. Create a separate example only when the variation cannot be demonstrated clearly within an existing one. Do not add a standalone preview section just because a variation is new. Keep the React and HTML examples in sync.
+
 ## Gotchas learned the hard way
 
 - An author `display` on `<dialog>` overrides the UA's `display:none` when closed — keep `dialog.ayy-dialog:not([open]) { display: none }`.
@@ -89,7 +104,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - `light-dark()` only takes colours. To swap icons by scheme, switch their `color` between `currentColor` and `transparent`, and set `forced-color-adjust: none` so High Contrast doesn't paint both.
 - Playwright's `toBeEnabled()` treats `aria-disabled="true"` as disabled. To check a button is still focusable, read `el.disabled`.
 - The preview routes on the URL hash, so in-page anchors in examples (`href="#section"`) are intercepted in `preview/src/Example.tsx` and scrolled to instead.
-- Icons are Hugeicons (`@hugeicons/core-free-icons`, a dev dependency and optional peer). Examples use `<Icon>` in `.tsx` and the exact `iconSvg()` markup in `.html`; never hand-draw an SVG. Glyphs ayywi draws itself (close and menu buttons, pagination and carousel arrows, toast status icons) are copied into `src/lib/icons.ts` to keep zero runtime dependencies, and `tests/node/icons.test.mjs` fails if they drift from the package.
+- Icons are Hugeicons (`@hugeicons/core-free-icons`): `<Icon>` in `.tsx`, the `iconSvg()` markup in `.html`, never a hand-drawn SVG. The few glyphs ayywi draws itself live in `src/lib/icons.ts` for zero runtime deps; `tests/node/icons.test.mjs` fails when they drift from the package.
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
 - Mirroring a glyph or a chart line in RTL has no logical property. `.ayy-icon--directional`, `.ayy-chart__svg` and `.ayy-sparkline` read `--_ayy-dir`, which `base.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.
 - A selector list with a pseudo-element the browser doesn't know (`::-moz-range-thumb` in Chromium) is dropped whole. Give each vendor pseudo-element its own rule.
@@ -100,7 +115,7 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 - One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.
 - Example HTML should match what the React example renders. Write the `.tsx` first and render it to markup (react-dom/server) rather than retyping it; only custom-element wrappers (`<ayy-app-shell>`, `<ayy-navbar>`…) and comments differ.
 - JSON under `src/components/` and `tokens/` is hand-formatted (short objects on one line). Edit it as text or keep the existing layout; a full `JSON.stringify` rewrite buries the real change in the diff.
-- WebKit (Safari, Tauri on macOS) never focuses a button on click, so focus moved by script afterwards (a dialog opening, focus returned to an opener) matches `:focus-visible`. `src/css/focus.css` hides rings while `data-ayy-input="pointer"` (`trackInputModality()`); it sits in `ayywi.utilities`, since base.css's own `@layer ayywi.utilities` block nests inside `ayywi.base`, below components. Rings on `::before`/`::after` need their own pointer-mode rule in the component. In e2e, a bare `locator.focus()` counts as pointer use: use `keyboardFocus()` from helpers to test focus-only UI.
+- WebKit (Safari, Tauri on macOS) never focuses a button on click, so script-moved focus (a dialog opening, focus returning to its opener) matches `:focus-visible`. `src/css/focus.css` hides rings while `data-ayy-input="pointer"` (`trackInputModality()`); it lives in `ayywi.utilities`, because base.css's own `@layer ayywi.utilities` nests inside `ayywi.base`, under components. Rings on `::before`/`::after` need their own pointer-mode rule in the component. In e2e, a bare `locator.focus()` counts as pointer use — use `keyboardFocus()` from helpers to test focus-only UI.
 - A popover shown on `mousedown` is light-dismissed by the `pointerup` that follows. Select's list blocks the OS picker on mousedown and opens on `click`; it cleans up on `beforetoggle`, since `toggle` events coalesce and a quick reopen would find the old list.
 - The preview is built with ayywi and `pnpm check` lints `preview/src` like the examples. A deliberate docs-only restyle gets an `ayywi-lint-disable-next-line -- <why>` comment; anything else uses the component.
 - axe can't measure contrast over the preview stage's dotted background, so it silently skips most example text. The real guard is the contrast rule in `pnpm check` (every text colour × surface × theme, plus status text on its own tint). New text colours or surfaces belong in its lists.
@@ -109,23 +124,21 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 
 Semver: renaming or removing a class, token or prop is **breaking**.
 
-Record every change in `CHANGELOG.md` under `## Unreleased` (only a release renames it; see Releases below). Every changelog item must be short, specific, and easy for anyone on a cross-functional team to understand:
-- **Link actual components**: Bold and link the component to its preview route (`**[Button](#/button)**`, `**[Dialog](#/dialog)**`…). For non-component areas, bold the area name (`**Tokens**`, `**Brand System**`, `**Linter**`).
-- **Separate rows for title and description**: The title goes on the first bullet line, and the description goes on the next line indented with two spaces.
-- **Before → After**: Clearly state what it was before and what it is now (`<was X> → <now Y>`).
-- **No fluff or internal math**: Keep it to one short sentence without deep implementation mechanics, AST details, or math formulas.
-- **Categorize correctly**: Group under `### Added`, `### Changed`, `### Fixed`, or `### Removed`. Breaking changes note `(**Breaking**)` in the title.
+Record every change in `CHANGELOG.md` under `## Unreleased` (only a release renames it; see Releases below), grouped under `### Added`, `### Changed`, `### Fixed` or `### Removed`. Each item is one sentence a cross-functional reader understands — no implementation detail, no math — with the title on the first line and the description on the next, indented two spaces. Link the component to its preview route (`**[Dialog](#/dialog)**`); for non-component areas bold the name (`**Tokens**`, **Linter**). Say what it was before and what it is now, and put `(**Breaking**)` in the title of a rename or removal.
 
-Entry format:
-- Added:
-  - **[Component](#/slug)**
-    New component — <concise 1-line summary>.
-- Changed / Fixed:
-  - **[Component](#/slug)**
-    <was X> → <now Y>.
-- Removed:
-  - **[Component](#/slug)** (**Breaking**)
-    <was X> removed → <now use Y>.
+```markdown
+### Added
+- **[Component](#/slug)**
+  New component — <what it does, one line>.
+
+### Changed
+- **[Component](#/slug)**
+  <was X> → <now Y>.
+
+### Removed
+- **[Component](#/slug)** (**Breaking**)
+  <was X> removed → <now use Y>.
+```
 
 ### Releases: the maintainer decides
 

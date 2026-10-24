@@ -1,6 +1,6 @@
 # Filter bar
 
-Category: Forms. A coordinating bar for filtering lists, tables, and feeds. Combines quick filter tabs with count badges, faceted filter dropdown triggers with active counts, search, and active removable filter chips with a clear all action. Also called: filter-bar, filterbar, filters, filter-toolbar, filter-group, filter-strip, faceted-filter.
+Category: Forms. A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all. Also called: filter-bar, filterbar, filters, filter-toolbar, filter-group, filter-strip, faceted-filter.
 
 **Classes**
 - `.ayy-filter-bar` — Root container. A vertical stack grouping the main controls row and the active filter row.

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ChatGptIcon, ClaudeIcon } from "@hugeicons/core-free-icons";
 import type { DensityMode, ThemeMode } from "@danitesler/ayywi";
 import {
   buttonClass,
@@ -10,10 +9,7 @@ import {
   CardTitle,
   Carousel,
   CarouselSlide,
-  Chip,
-  ChipGroup,
   Combobox,
-  Icon,
   SegmentedControl,
   SegmentedControlItem,
   Select,
@@ -24,7 +20,7 @@ import {
   Textarea,
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
-import { buildPrompt, headTags, links, request, STARTERS, TOOLS, type Links, type StarterId, type Tool } from "../prompts";
+import { buildPrompt, headTags, links, request, STARTERS, type Links, type StarterId } from "../prompts";
 import { showcaseApps } from "../showcase/apps";
 import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
@@ -33,7 +29,7 @@ const ROUTE = "";
 
 type Setup = "package" | "files";
 
-/** For a codebase: the agent sets ayywi up. Chat and AI builders are covered by the tool picker above. */
+/** For a codebase: the agent sets ayywi up. Chat and AI builders are covered by the prompt above. */
 const SETUPS: Record<Setup, { label: string; prompt: (l: Links) => string }> = {
   package: {
     label: "npm package",
@@ -96,8 +92,8 @@ function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
   );
 }
 
-/** The showcase apps, each with the prompt that builds it in the chosen tool. */
-function Examples({ tool }: { tool: Tool }) {
+/** The showcase apps, each with the prompt that builds it. */
+function Examples() {
   return (
     <Carousel label="Example apps" slideWidth="min(20rem, 85%)" className="pv-examples">
       {showcaseApps.map((app) => (
@@ -112,7 +108,7 @@ function Examples({ tool }: { tool: Tool }) {
               </CardTitle>
             </CardHeader>
             <CardFooter>
-              <CopyButton text={buildPrompt(app.prompt, tool)} label="Copy prompt to build this" variant="outline" />
+              <CopyButton text={buildPrompt(app.prompt)} label="Copy prompt to build this" variant="outline" />
               <a className={buttonClass({ variant: "ghost", size: "sm" })} href={`#/apps/${app.id}`}>
                 See it
               </a>
@@ -123,79 +119,6 @@ function Examples({ tool }: { tool: Tool }) {
     </Carousel>
   );
 }
-
-const TOOL_LOGOS: { id: Tool; name: string; svg: React.ReactNode }[] = [
-  {
-    id: "lovable",
-    name: "Lovable",
-    svg: (
-      <svg className="ayy-icon" viewBox="0 0 122 122" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M36.07 0C55.99 0 72.14 16.16 72.14 36.08v13.72h12C104.06 49.8 120.21 65.95 120.21 85.88c0 19.93-16.15 36.08-36.07 36.08H0V36.08C0 16.16 16.15 0 36.07 0Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "bolt",
-    name: "Bolt",
-    svg: (
-      <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M10.797 14.182H3.635L16.728 0l-3.525 9.818h7.162L7.272 24l3.524-9.818Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "v0",
-    name: "v0",
-    svg: (
-      <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M14.066 6.028v2.22h5.729q.075-.001.148.005l-5.853 5.752a2 2 0 0 1-.024-.309V8.247h-2.353v5.45c0 2.322 1.935 4.222 4.258 4.222h5.675v-2.22h-5.675q-.03 0-.059-.003l5.729-5.629q.006.082.006.166v5.465H24v-5.465a4.204 4.204 0 0 0-4.205-4.205zM0 8.245l8.28 9.266c.839.94 2.396.346 2.396-.914V8.245H8.19v5.44l-4.86-5.44Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "cursor",
-    name: "Cursor",
-    svg: (
-      <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "claude-code",
-    name: "Claude Code",
-    svg: <Icon icon={ClaudeIcon} aria-hidden />,
-  },
-  {
-    id: "replit",
-    name: "Replit",
-    svg: (
-      <svg className="ayy-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7A1.5 1.5 0 0 1 12 1.5V8H3.5A1.5 1.5 0 0 1 2 6.5ZM12 8h8.5A1.5 1.5 0 0 1 22 9.5v5a1.5 1.5 0 0 1-1.5 1.5H12ZM2 17.5A1.5 1.5 0 0 1 3.5 16H12v6.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 2 22.5Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "chat",
-    name: "ChatGPT",
-    svg: <Icon icon={ChatGptIcon} aria-hidden />,
-  },
-];
 
 const MCP_CONFIG = JSON.stringify(
   {
@@ -210,13 +133,8 @@ const MCP_CONFIG = JSON.stringify(
   2,
 );
 
-interface BuilderGuideProps {
-  tool: Tool;
-  onToolChange: (tool: Tool) => void;
-}
-
-/** For people who build with Lovable, Bolt, v0, Cursor or a chat: copy one prompt, no code. */
-function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
+/** For people who build with Lovable, Bolt, v0, Replit or a chat: copy one prompt, no code. */
+function BuilderGuide() {
   const [starter, setStarter] = useState<StarterId>("booking");
   const first = STARTERS.find((s) => s.id === starter)!;
   const [what, setWhat] = useState<string>(first.what);
@@ -230,8 +148,7 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
     setNeeds(s.needs);
   };
   const ask = request(what, who, needs);
-  const prompt = buildPrompt(ask, tool);
-  const example = showcaseApps.find((a) => a.id === first.showcase);
+  const prompt = buildPrompt(ask);
   const article = /^[aeiou]/i.test(what.trim()) ? "an" : "a";
 
   return (
@@ -267,33 +184,6 @@ function BuilderGuide({ tool, onToolChange }: BuilderGuideProps) {
           onChange={(e) => setNeeds(e.target.value)}
         />
       </div>
-      {example ? (
-        <p className="pv-note">
-          Something like it:{" "}
-          <a className="ayy-link" href={`#/apps/${example.id}`}>
-            {example.name}, {example.kind.toLowerCase()}
-          </a>
-          .
-        </p>
-      ) : null}
-
-      <div className="ayy-cluster">
-        <span className="ayy-label" id="pv-tool-label">
-          Pick your AI tool:
-        </span>
-        <ChipGroup role="radiogroup" aria-labelledby="pv-tool-label">
-          {TOOL_LOGOS.map((t) => (
-            <Chip key={t.id} type="radio" name="pv-tool" value={t.id} checked={tool === t.id} onCheckedChange={(on) => on && onToolChange(t.id)}>
-              {t.svg}
-              {t.name}
-            </Chip>
-          ))}
-        </ChipGroup>
-      </div>
-
-      <p className="pv-note pv-tool-note">
-        {TOOLS[tool].where}
-      </p>
 
       <CodeBlock code={prompt} label="prompt" copyLabel="Copy prompt" wrap />
     </>
@@ -339,21 +229,20 @@ function DeveloperGuide() {
 }
 
 export function GetStartedPage(appearance: Appearance) {
-  const [tool, setTool] = useState<Tool>("lovable");
   return (
     <article className="pv-page pv-page--compact">
       <header className="pv-hero">
         <div className="pv-hero__main">
           <h1 className="ayy-display">ayywi</h1>
           <p className="pv-tagline">Make your app look designed, in one paste</p>
-          <p className="ayy-lede">Describe your app, pick your AI tool, paste one prompt. Dark mode and phones included.</p>
+          <p className="ayy-lede">Describe your app and paste one prompt. Dark mode and phones included.</p>
         </div>
         <TryIt {...appearance} />
       </header>
 
-      <Examples tool={tool} />
+      <Examples />
 
-      <BuilderGuide tool={tool} onToolChange={setTool} />
+      <BuilderGuide />
 
       <DeveloperGuide />
     </article>

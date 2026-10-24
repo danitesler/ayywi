@@ -365,7 +365,7 @@ export default function Example({
                   <span>{grouped ? "Northwind Docs" : "Northwind"}</span>
                 )}
               </AppShellBrand>
-              <AppShellToggle aria-label="Sidebar">
+              <AppShellToggle>
                 <Icon icon={SidebarLeftIcon} directional />
               </AppShellToggle>
             </AppShellHead>

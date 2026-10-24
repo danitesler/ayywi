@@ -2,7 +2,7 @@
   "name": "Combobox",
   "slug": "combobox",
   "category": "Forms",
-  "description": "An input that filters a list as you type and picks one option: a city, a customer, a time zone, a product. The WAI-ARIA combobox pattern, with the list as a popover under the input.",
+  "description": "A text field that filters a list as you type, for picking one option from a long set like a city, a customer or a time zone. The options open under the field and follow the standard accessible pattern.",
   "aka": ["combobox", "autocomplete", "typeahead", "suggest", "suggestions"],
   "classes": {
     "ayy-combobox": "Wrapper: the .ayy-input (role=\"combobox\"), a chevron <svg> and the listbox.",

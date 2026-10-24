@@ -2,7 +2,7 @@
   "name": "Textarea",
   "slug": "textarea",
   "category": "Forms",
-  "description": "Multi-line text field. Optional auto-grow and monospace modes.",
+  "description": "A multi-line text field for longer text like comments and descriptions. It can grow as you type.",
   "aka": ["textarea", "text-area"],
   "classes": {
     "ayy-textarea": "Root, on the <textarea>.",

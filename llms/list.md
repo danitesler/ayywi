@@ -1,6 +1,6 @@
 # List
 
-Category: Data display. Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable. Also called: list-item, list-row.
+Category: Data display. Rows of people, records or settings, each with an image or icon, a title, a description and something at the end like a value or a control. A row can be a link. Also called: list-item, list-row.
 
 **Classes**
 - `.ayy-list` — Root <ul>. Rounded rows with a small gap between them.

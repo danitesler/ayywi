@@ -2,7 +2,7 @@
   "name": "Footer",
   "slug": "footer",
   "category": "Navigation",
-  "description": "The site footer at the end of every website page: brand and a line about the product, columns of links, and a bottom row for copyright and legal links. Centred at page width like the navbar.",
+  "description": "The bottom of a website page: the brand with a short line about the product, groups of links, and copyright and legal links.",
   "aka": ["footer", "site-footer"],
   "classes": {
     "ayy-footer": "Root <footer>, a hairline above it.",
@@ -10,7 +10,7 @@
     "ayy-footer__brand": "Brand link (first <a>) and a short line (<p>) under it.",
     "ayy-footer__nav": "<nav aria-label=\"Footer\">: link columns, as many as fit (9rem minimum).",
     "ayy-footer__group": "One column: a __heading over a __list.",
-    "ayy-footer__heading": "The column heading, a small uppercase <p> that names the list (aria-labelledby).",
+    "ayy-footer__heading": "The column heading, a small muted <p> that names the list (aria-labelledby).",
     "ayy-footer__list": "The <ul> of links in a column.",
     "ayy-footer__link": "A footer link: soft text, underline on hover, focus ring.",
     "ayy-footer__bottom": "The last row across the whole footer, above a hairline: copyright at the start, legal links or a theme menu at the end."

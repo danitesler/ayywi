@@ -1,0 +1,117 @@
+<div style="inline-size:100%;max-inline-size:42rem;font-family:var(--ayy-font-body)">
+  <section class="ayy-settings" aria-labelledby="set-appearance-html">
+    <h2 id="set-appearance-html" class="ayy-settings__title">Appearance</h2>
+    <p class="ayy-settings__description">Theme, density, brand colour, corners and font for the whole interface.</p>
+    <div class="ayy-settings__list">
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-theme-html">Theme</label>
+          <p class="ayy-settings__hint" id="set-theme-hint-html">System follows your device's light or dark setting.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-theme-popover-html" aria-haspopup="dialog" id="set-theme-html" aria-describedby="set-theme-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>System<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-theme-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Theme"><div role="radiogroup" class="ayy-settings__picker" aria-label="Theme"><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" checked="" value="system"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span><span class="ayy-settings__caption">System</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="light"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span></span><span class="ayy-settings__caption">Light</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="dark"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span><span class="ayy-settings__caption">Dark</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="dark-contrast"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark-contrast" aria-hidden="true"></span></span><span class="ayy-settings__caption">Black</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="light-gray"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light-gray" aria-hidden="true"></span></span><span class="ayy-settings__caption">Light gray</span></label></div></div></ayy-popover>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-density-html">Density</label>
+          <p class="ayy-settings__hint" id="set-density-hint-html">Auto: compact with a mouse, touch on a touch screen.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-density-popover-html" aria-haspopup="dialog" id="set-density-html" aria-describedby="set-density-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-density="compact" aria-hidden="true"></span><span class="ayy-settings__screen" data-density="touch" aria-hidden="true"></span></span>Auto<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-density-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Density"><div role="radiogroup" class="ayy-settings__picker" aria-label="Density"><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" checked="" value="auto"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-density="compact" aria-hidden="true"></span><span class="ayy-settings__screen" data-density="touch" aria-hidden="true"></span></span><span class="ayy-settings__caption">Auto</span></label><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" value="compact"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-density="compact" aria-hidden="true"></span></span><span class="ayy-settings__caption">Compact</span></label><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" value="comfortable"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-density="comfortable" aria-hidden="true"></span></span><span class="ayy-settings__caption">Comfortable</span></label><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" value="touch"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-density="touch" aria-hidden="true"></span></span><span class="ayy-settings__caption">Touch</span></label></div></div></ayy-popover>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-text-size-html">Text size</label>
+          <p class="ayy-settings__hint" id="set-text-size-hint-html">Sets the root font size, so all text and spacing scale with it.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <input type="range" class="ayy-slider" min="75" max="150" step="12.5" style="--ayy-value:33.33" id="set-text-size-html" aria-describedby="set-text-size-hint-html" aria-valuetext="100%" value="100"/>
+          <output for="set-text-size-html" class="ayy-muted ayy-tabular">100%</output>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <span class="ayy-settings__label"><span id="set-brand-colour-html">Brand colour</span></span>
+          <p class="ayy-settings__hint">Default is monochrome. Contrast is checked in every theme.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <div role="radiogroup" class="ayy-swatch-group" aria-labelledby="set-brand-colour-html">
+            <label class="ayy-swatch ayy-swatch--none"><input type="radio" aria-label="Default" name="set-brand-colour-html" checked="" value="default"/></label>
+            <label class="ayy-swatch" style="--ayy-swatch:var(--ayy-palette-blue-53)"><input type="radio" aria-label="Blue" name="set-brand-colour-html" value="blue"/></label>
+            <label class="ayy-swatch" style="--ayy-swatch:var(--ayy-palette-violet-58)"><input type="radio" aria-label="Violet" name="set-brand-colour-html" value="violet"/></label>
+            <label class="ayy-swatch" style="--ayy-swatch:var(--ayy-palette-green-24)"><input type="radio" aria-label="Green" name="set-brand-colour-html" value="green"/></label>
+            <label class="ayy-swatch" style="--ayy-swatch:var(--ayy-palette-orange-40)"><input type="radio" aria-label="Orange" name="set-brand-colour-html" value="orange"/></label>
+            <label class="ayy-swatch" style="--ayy-swatch:var(--ayy-palette-pink-42)"><input type="radio" aria-label="Pink" name="set-brand-colour-html" value="pink"/></label>
+            <label class="ayy-swatch ayy-swatch--custom"><input type="color" aria-label="Custom colour" value="#7c3aed"/></label>
+          </div>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-corners-html">Corners</label>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-corners-popover-html" aria-haspopup="dialog" id="set-corners-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-pill)"></span></span>Pill<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-corners-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Corners"><div role="radiogroup" class="ayy-settings__picker" aria-label="Corners"><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" checked="" value="pill"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-pill)"></span></span><span class="ayy-settings__caption">Pill</span></label><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" value="round"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-xl)"></span></span><span class="ayy-settings__caption">Round</span></label><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" value="soft"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-xl);--ayy-radius-button:var(--ayy-radius-lg)"></span></span><span class="ayy-settings__caption">Soft</span></label><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" value="sharp"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-md);--ayy-radius-button:var(--ayy-radius-sm)"></span></span><span class="ayy-settings__caption">Sharp</span></label></div></div></ayy-popover>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-font-html">Font</label>
+        </div>
+        <div class="ayy-settings__control">
+          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-font-popover-html" aria-haspopup="dialog" id="set-font-html"><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>Sora<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-font-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Font"><div role="radiogroup" class="ayy-settings__picker" aria-label="Font"><label class="ayy-settings__option"><input type="radio" name="set-font-radio-html" checked="" value="default"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span><span class="ayy-settings__caption">Sora</span></label><label class="ayy-settings__option"><input type="radio" name="set-font-radio-html" value="system"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span><span class="ayy-settings__caption">System</span></label><label class="ayy-settings__option"><input type="radio" name="set-font-radio-html" value="mono"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Noto Sans Mono&quot;, monospace, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span><span class="ayy-settings__caption">Mono</span></label></div></div></ayy-popover>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="ayy-settings" aria-labelledby="set-a11y-html">
+    <h2 id="set-a11y-html" class="ayy-settings__title">Accessibility and language</h2>
+    <div class="ayy-settings__list">
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-motion-html">Reduce motion</label>
+          <p class="ayy-settings__hint" id="set-motion-hint-html">Turns animations off, whatever the device is set to.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <input type="checkbox" role="switch" class="ayy-switch" id="set-motion-html" aria-describedby="set-motion-hint-html"/>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-language-html">Language</label>
+        </div>
+        <div class="ayy-settings__control">
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-language-html">
+              <option value="en" lang="en" selected="">English</option>
+              <option value="de" lang="de">Deutsch</option>
+              <option value="he" lang="he">עברית</option>
+              <option value="ar" lang="ar">العربية</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <span class="ayy-settings__label">Text direction</span>
+          <p class="ayy-settings__hint">Auto follows the language.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <div role="radiogroup" class="ayy-segmented-control" aria-label="Text direction">
+            <label class="ayy-segmented-control__option"><input type="radio" name="set-dir-html" checked="" value="auto"/>Auto</label>
+            <label class="ayy-segmented-control__option"><input type="radio" name="set-dir-html" value="ltr"/>Left to right</label>
+            <label class="ayy-segmented-control__option"><input type="radio" name="set-dir-html" value="rtl"/>Right to left</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="ayy-settings" aria-labelledby="set-reset-html">
+    <h2 id="set-reset-html" class="ayy-settings__title">Reset</h2>
+    <div class="ayy-settings__list">
+      <button type="button" class="ayy-settings__row ayy-settings__link ayy-settings__link--destructive"><span class="ayy-settings__text"><span class="ayy-settings__label">Reset appearance</span><span class="ayy-settings__hint">Theme, density, brand, motion and language go back to their defaults.</span></span></button>
+    </div>
+  </section>
+</div>

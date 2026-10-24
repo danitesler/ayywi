@@ -13,22 +13,87 @@
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2.4h" style="--ayy-value: 30"></span>
             <span class="ayy-chart__bar" data-value="3.1h" style="--ayy-value: 38.8"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Billing</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">2.4h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">3.1h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="5.8h" style="--ayy-value: 72.5"></span>
             <span class="ayy-chart__bar" data-value="6.4h" style="--ayy-value: 80"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Technical</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">5.8h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">6.4h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="1.6h" style="--ayy-value: 20"></span>
             <span class="ayy-chart__bar" data-value="2.2h" style="--ayy-value: 27.5"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Onboarding</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">1.6h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">2.2h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="3.1h" style="--ayy-value: 38.8"></span>
             <span class="ayy-chart__bar" data-value="2.9h" style="--ayy-value: 36.3"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Enterprise</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">3.1h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">2.9h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="4.2h" style="--ayy-value: 52.5"></span>
             <span class="ayy-chart__bar" data-value="5h" style="--ayy-value: 62.5"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Partners</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">4.2h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">5h</strong>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -39,9 +104,13 @@
         <span>Enterprise</span>
         <span>Partners</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>October</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>September</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>October</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>September</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>

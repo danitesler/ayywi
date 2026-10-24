@@ -1,7 +1,30 @@
-import { forwardRef, useId, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useId,
+  useState,
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type ChangeEvent,
+  type HTMLAttributes,
+  type InputHTMLAttributes,
+  type LabelHTMLAttributes,
+  type ReactNode,
+} from "react";
+import { cx } from "../../lib/cx";
 import { ArrowRight01Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
-import { settingsClass, settingsRowClass } from "./settings";
+import type { DensityMode, ThemeMode } from "../../theme";
+import {
+  settingsCaptionClass,
+  settingsClass,
+  settingsOptionClass,
+  settingsPickerClass,
+  settingsPreviewClass,
+  settingsRowClass,
+  settingsScreenClass,
+} from "./settings";
 
 export interface SettingsProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   /** The group's heading ("Notifications"). Rendered as an <h2>; the section is labelled by it. */
@@ -114,4 +137,115 @@ export const SettingsLink = forwardRef<HTMLAnchorElement & HTMLButtonElement, Se
       {content}
     </button>
   );
+});
+
+interface PickerContextValue {
+  name: string;
+  value: string | undefined;
+  disabled?: boolean;
+  select: (value: string) => void;
+}
+
+const PickerContext = createContext<PickerContextValue | null>(null);
+
+export interface SettingsPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+  /** Shared radio name (for forms). Generated if omitted. */
+  name?: string;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  disabled?: boolean;
+}
+
+/** Appearance choices as pictures (theme, corners, font): a role="radiogroup" of SettingsOptions. Give it an aria-label. */
+export const SettingsPicker = forwardRef<HTMLDivElement, SettingsPickerProps>(function SettingsPicker(
+  { name, value: controlled, defaultValue, onValueChange, disabled, className, children, ...props },
+  ref,
+) {
+  const generated = useId();
+  const [uncontrolled, setUncontrolled] = useState(defaultValue);
+  const value = controlled ?? uncontrolled;
+  const select = (next: string) => {
+    if (controlled === undefined) setUncontrolled(next);
+    onValueChange?.(next);
+  };
+  return (
+    <PickerContext.Provider value={{ name: name ?? generated, value, disabled, select }}>
+      <div ref={ref} role="radiogroup" aria-disabled={disabled || undefined} className={cx(settingsPickerClass, className)} {...props}>
+        {children}
+      </div>
+    </PickerContext.Provider>
+  );
+});
+
+export interface SettingsOptionProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, "onChange"> {
+  value: string;
+  /** The caption under the picture ("Dark"). Also the radio's name. */
+  label: ReactNode;
+  /** What goes in the picture: a SettingsScreen (the default) or a short sample ("Aa" in a font). */
+  preview?: ReactNode;
+  disabled?: boolean;
+  /** Props for the native radio. */
+  inputProps?: Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "name" | "checked" | "disabled">;
+}
+
+/** One picture in a SettingsPicker: a <label> around a hidden native radio, the picture and its caption. */
+export const SettingsOption = forwardRef<HTMLLabelElement, SettingsOptionProps>(function SettingsOption(
+  { value, label, preview, disabled, inputProps, className, ...props },
+  ref,
+) {
+  const group = useContext(PickerContext);
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    inputProps?.onChange?.(event);
+    if (event.currentTarget.checked) {
+      group?.select(value);
+      try {
+        event.currentTarget.closest<HTMLElement>(":popover-open")?.hidePopover();
+      } catch {
+        // Not in an open popover.
+      }
+    }
+  };
+  return (
+    <label ref={ref} className={cx(settingsOptionClass, className)} {...props}>
+      <input
+        {...inputProps}
+        type="radio"
+        name={group?.name}
+        value={value}
+        checked={group ? group.value === value : undefined}
+        disabled={disabled ?? group?.disabled}
+        onChange={onChange}
+      />
+      <span className={settingsPreviewClass} aria-hidden="true">
+        {preview ?? <SettingsScreen />}
+      </span>
+      <span className={settingsCaptionClass}>{label}</span>
+    </label>
+  );
+});
+
+export interface SettingsScreenProps extends HTMLAttributes<HTMLSpanElement> {
+  /** The theme it's drawn in. "system": half light, half dark. Omit to use the one it sits in. */
+  theme?: ThemeMode;
+  /** The density it's drawn in. "auto": half compact, half touch. Omit to use the one it sits in. */
+  density?: DensityMode;
+}
+
+/** A miniature app drawn from tokens, for a SettingsOption's picture. Brand and corner tokens around it show too. */
+export const SettingsScreen = forwardRef<HTMLSpanElement, SettingsScreenProps>(function SettingsScreen({ theme, density, className, ...props }, ref) {
+  const screen = (t: ThemeMode | undefined, d: DensityMode | undefined, key?: string) => (
+    <span
+      key={key}
+      ref={key === "second" ? undefined : ref}
+      className={cx(settingsScreenClass, className)}
+      data-theme={t === "system" ? undefined : t}
+      data-density={d === "auto" ? undefined : d}
+      aria-hidden="true"
+      {...props}
+    />
+  );
+  if (theme === "system") return <>{[screen("light", density, "first"), screen("dark", density, "second")]}</>;
+  if (density === "auto") return <>{[screen(theme, "compact", "first"), screen(theme, "touch", "second")]}</>;
+  return screen(theme, density);
 });

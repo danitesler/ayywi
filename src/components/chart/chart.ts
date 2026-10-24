@@ -60,6 +60,15 @@ export const chartLineClass = "ayy-chart__line";
 export const chartAreaClass = "ayy-chart__area";
 export const chartLabelsClass = "ayy-chart__labels";
 export const chartLegendClass = "ayy-chart__legend";
+export const chartLegendToggleClass = "ayy-chart__legend-toggle";
+export const chartTooltipClass = "ayy-chart__tooltip";
+export const chartTooltipTitleClass = "ayy-chart__tooltip-title";
+export const chartTooltipRowClass = "ayy-chart__tooltip-row";
+export const chartTooltipNameClass = "ayy-chart__tooltip-name";
+export const chartTooltipValueClass = "ayy-chart__tooltip-value";
+export const chartHitsClass = "ayy-chart__hits";
+export const chartHitClass = "ayy-chart__hit";
+export const chartMarkerClass = "ayy-chart__marker";
 export const chartSwatchClass = "ayy-chart__swatch";
 export const chartLegendValueClass = "ayy-chart__legend-value";
 export const chartAxisClass = "ayy-chart__axis";
@@ -344,4 +353,34 @@ function resolveColors(target: Element, colors: string[]): string[] {
   });
   probe.remove();
   return out;
+}
+
+/**
+ * Page-wide behaviour for a legend that switches series off (the HTML twin of a chart's `toggle` prop): flips the entry's
+ * aria-pressed and hides or shows the same-numbered series (data-hidden). The last one that's on stays on. Rings and stacked
+ * areas need their shares worked out again, so they're left to the React charts.
+ */
+export function toggleChartLegend(button: Element): void {
+  const item = button.closest(".ayy-chart__legend-item");
+  const chart = button.closest(".ayy-chart");
+  if (!item?.parentElement) return;
+  if (!chart) {
+    // A legend on its own: it only keeps the buttons' state, for the page to read.
+    const pressedAlone = button.getAttribute("aria-pressed") === "true";
+    if (!pressedAlone || [...item.parentElement.children].filter((li) => li.querySelector('[aria-pressed="true"]')).length > 1) button.setAttribute("aria-pressed", String(!pressedAlone));
+    return;
+  }
+  if (chart.querySelector(".ayy-chart__ring") || chart.matches(".ayy-chart--stacked:has(.ayy-chart__svg)")) return;
+  const items = [...item.parentElement.children];
+  const pressed = button.getAttribute("aria-pressed") === "true";
+  if (pressed && items.filter((li) => li.querySelector('[aria-pressed="true"]')).length < 2) return;
+  button.setAttribute("aria-pressed", String(!pressed));
+  const index = items.indexOf(item);
+  const columns = [...chart.querySelectorAll(".ayy-chart__column")];
+  const bars = columns[0]?.children.length ?? 0;
+  const targets = index < bars ? columns.map((column) => column.children[index]) : [chart.querySelectorAll(".ayy-chart__plot .ayy-chart__series")[index - bars]];
+  for (const target of targets) {
+    if (pressed) target?.setAttribute("data-hidden", "");
+    else target?.removeAttribute("data-hidden");
+  }
 }

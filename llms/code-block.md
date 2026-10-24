@@ -1,6 +1,6 @@
 # Code block
 
-Category: Data display. Formatted code container with header, filename, copy button, line numbers, and token styling for syntax highlighting. Also called: code-block, codeblock, syntax-highlighter, code-snippet, code-view, code-box.
+Category: Data display. A container for showing code, with a header, a file name, a copy button and optional line numbers. It styles syntax highlighting without tying you to a particular highlighter. Also called: code-block, codeblock, syntax-highlighter, code-snippet, code-view, code-box.
 
 **Classes**
 - `.ayy-code-block` — Bordered container for code with rounded corners and surface background.
@@ -65,7 +65,7 @@ Category: Data display. Formatted code container with header, filename, copy but
 - Use numbered on multi-line snippets when referencing specific lines in accompanying text.
 
 **Don't**
-- Don't use CodeBlock for short inline code references — use <code class="ayy-mono"> or Kbd instead.
+- Don't use CodeBlock for short inline code references — use <code class="ayy-code"> or Kbd instead.
 - Don't bake line numbers into the text content — use the numbered variant with CSS counters.
 - Don't hardcode syntax highlighting colors — use the semantic token classes (.ayy-token-keyword, .ayy-token-string, etc.).
 

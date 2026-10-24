@@ -13,7 +13,7 @@ export const changelogPage = {
 /** `code`, **bold** and [links](url) inside one line of the changelog. Supports nesting (e.g. bold links). */
 function inline(text: string): ReactNode[] {
   return text.split(/(`[^`]+`|\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*)/g).filter(Boolean).map((part, i) => {
-    if (part.startsWith("`")) return <code key={i} className="pv-inline-code">{part.slice(1, -1)}</code>;
+    if (part.startsWith("`")) return <code key={i} className="ayy-code">{part.slice(1, -1)}</code>;
     const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
     if (link) return <a key={i} className="ayy-link" href={link[2]}>{inline(link[1])}</a>;
     if (part.startsWith("**")) return <strong key={i}>{inline(part.slice(2, -2))}</strong>;

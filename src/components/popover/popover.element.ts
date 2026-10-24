@@ -24,7 +24,7 @@ export class AyyPopoverElement extends ElementBase {
   }
 
   protected parts(): { trigger: HTMLElement | null; content: HTMLElement | null } {
-    const content = this.querySelector<HTMLElement>("[popover]");
+    const content = this.querySelector<HTMLElement>("[popover]:not(.ayy-tooltip__content)");
     const find = (selector: string) =>
       Array.from(this.querySelectorAll<HTMLElement>(selector)).find((el) => !content?.contains(el));
     const trigger = find("[data-ayy-trigger]") ?? find("[popovertarget]") ?? find("button") ?? null;

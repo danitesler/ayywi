@@ -1,6 +1,6 @@
 # Grid
 
-Category: Data display. Multi-select card grid for media assets, project cards, social media posts, screenshots and user records. Pairs card selection checkboxes, inline and ⋯ secondary item actions, a select-all toolbar and the floating bottom Action bar. Also called: data-grid, card-grid, media-grid, asset-grid, gallery-grid, tile-grid.
+Category: Data display. A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar. Also called: data-grid, card-grid, media-grid, asset-grid, gallery-grid, tile-grid.
 
 **Classes**
 - `.ayy-grid-wrap` — Stack wrapper grouping the grid toolbar, the card grid and the floating Action bar.

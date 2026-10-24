@@ -1,7 +1,9 @@
-import { cloneElement, forwardRef, isValidElement, useEffect, useId, useRef, type HTMLAttributes, type ReactElement, type ReactNode } from "react";
+import { cloneElement, createContext, forwardRef, isValidElement, useEffect, useId, useRef, type HTMLAttributes, type ReactElement, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { mergeRefs } from "../../lib/refs";
 import { enhanceTooltip, tooltipClass, tooltipContentClass, type TooltipSide } from "./tooltip";
+
+export const tooltipContext = createContext<boolean>(false);
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "content"> {
   /** Tooltip text. Keep it short; it's a hint, not content. */
@@ -22,11 +24,13 @@ export const Tooltip = forwardRef<HTMLSpanElement, TooltipProps>(function Toolti
   useEffect(() => (hostRef.current ? enhanceTooltip(hostRef.current) : undefined), []);
 
   return (
-    <span ref={mergeRefs(hostRef, ref)} className={cx(tooltipClass, className)} {...props}>
-      {isValidElement(children) ? cloneElement(children, { "aria-describedby": cx(children.props["aria-describedby"], id) }) : children}
-      <span role="tooltip" id={id} className={tooltipContentClass} data-side={side}>
-        {content}
+    <tooltipContext.Provider value={true}>
+      <span ref={mergeRefs(hostRef, ref)} className={cx(tooltipClass, className)} {...props}>
+        {isValidElement(children) ? cloneElement(children, { "aria-describedby": cx(children.props["aria-describedby"], id) }) : children}
+        <span role="tooltip" id={id} className={tooltipContentClass} data-side={side}>
+          {content}
+        </span>
       </span>
-    </span>
+    </tooltipContext.Provider>
   );
 });

@@ -48,10 +48,12 @@ export interface ToolbarController {
 export function connectToolbar(toolbar: HTMLElement): ToolbarController {
   if (!toolbar.hasAttribute("role")) toolbar.setAttribute("role", "toolbar");
   let last: HTMLElement | null = null;
+  const popover = toolbar.closest<HTMLElement>("[popover]");
 
   const items = () =>
     Array.from(toolbar.querySelectorAll<HTMLElement>(ITEMS)).filter((el) => {
-      if ((el as HTMLButtonElement).disabled || el.getAttribute("aria-disabled") === "true" || el.closest("[popover]")) return false;
+      if ((el as HTMLButtonElement).disabled || el.getAttribute("aria-disabled") === "true") return false;
+      if (el.closest('[role="toolbar"]') !== toolbar || el.closest("[popover]") !== popover) return false;
       if (el.getClientRects().length === 0) return false;
       if (el instanceof HTMLInputElement && el.type === "radio") {
         const group = Array.from(toolbar.querySelectorAll<HTMLInputElement>(`input[type="radio"][name="${CSS.escape(el.name)}"]`));
@@ -93,15 +95,18 @@ export function connectToolbar(toolbar: HTMLElement): ToolbarController {
     const item = (event.target as Element).closest<HTMLElement>(ITEMS);
     if (item && items().includes(item)) roam(item);
   };
+  const onToggle = () => roam();
 
   toolbar.addEventListener("keydown", onKeyDown);
   toolbar.addEventListener("focusin", onFocusIn);
+  popover?.addEventListener("toggle", onToggle);
   roam();
   return {
     refresh: () => roam(),
     destroy() {
       toolbar.removeEventListener("keydown", onKeyDown);
       toolbar.removeEventListener("focusin", onFocusIn);
+      popover?.removeEventListener("toggle", onToggle);
     },
   };
 }

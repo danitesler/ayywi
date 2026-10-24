@@ -27,11 +27,9 @@ ayy-toc {
 .ayy-toc__title {
   margin-block: 0 var(--ayy-space-4);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-eyebrow);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
   line-height: var(--ayy-leading-normal);
-  text-transform: uppercase;
 }
 
 .ayy-toc__list {

@@ -10,7 +10,7 @@ export default function Example() {
       onValueChange={setColor}
       alpha
       addon="HEX"
-      addonPosition="start"
+      addonPosition="end"
       copyable
       swatches={["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#2563eb", "#a855f7", "#ec4899"]}
     />

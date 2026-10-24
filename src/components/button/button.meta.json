@@ -2,7 +2,7 @@
   "name": "Button",
   "slug": "button",
   "category": "Actions",
-  "description": "Triggers an action. Pill-shaped, monochrome primary with a subtle lift on hover.",
+  "description": "The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions.",
   "aka": ["button", "btn", "icon-button", "icon-btn", "cta"],
   "classes": {
     "ayy-button": "Root. Alone it is the primary button.",
@@ -63,6 +63,8 @@
           "block": "boolean — full width (ayy-button--block).",
           "align": "\"start\" | \"center\" | \"end\" — where the icon and label sit in a wide button; center is the default.",
           "loading": "boolean — a Spinner before the label and aria-busy=\"true\"; clicks and form submits are ignored while it's set. Stays focusable.",
+          "tooltip": "ReactNode | boolean — custom tooltip text or element; icon-only buttons show their aria-label on hover by default (pass false to disable).",
+          "tooltipSide": "\"top\" | \"bottom\" | \"start\" | \"end\" — placement of the tooltip (default \"top\").",
           "...rest": "All native <button> attributes."
         }
       }

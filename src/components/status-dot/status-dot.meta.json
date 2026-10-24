@@ -2,7 +2,7 @@
   "name": "Status dot",
   "slug": "status-dot",
   "category": "Data display",
-  "description": "A compact standalone status indicator dot for online presence, live event streaming, server health, and table row statuses.",
+  "description": "A small coloured dot that shows the state of something, like someone being online, a live stream or a server's health.",
   "aka": ["status-dot", "status-indicator", "presence-dot", "live-dot", "health-dot"],
   "classes": {
     "ayy-status-dot": "Root inline-flex dot.",

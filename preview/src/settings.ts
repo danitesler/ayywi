@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getDensity, getTheme, setBrand, setDensity, setTheme, type AppShellSize, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
+import { getDensity, getTheme, setBrand, setDensity, setTheme, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 
 export type Renderer = "react" | "html";
 
@@ -26,11 +26,6 @@ export function useSidebarCollapsed() {
   const [value, setValue] = usePersisted("ayy-preview-sidebar", ["open", "collapsed"] as const, "open");
   const set = useCallback((collapsed: boolean) => setValue(collapsed ? "collapsed" : "open"), [setValue]);
   return [value === "collapsed", set] as const;
-}
-
-/** The docs sidebar's App shell size: Small, Medium, or Big (lg). */
-export function useSidebarSize() {
-  return usePersisted<AppShellSize>("ayy-preview-sidebar-size", ["sm", "md", "lg"] as const, "sm");
 }
 
 function usePersisted<T extends string>(key: string, allowed: readonly T[], fallback: T) {

@@ -1,6 +1,6 @@
 # Breadcrumb
 
-Category: Navigation. Trail from the top level down to the current page (Home / Case studies / Oktopost). Plain, or a blurred pill for heroes. Also called: breadcrumb, breadcrumbs, crumbs.
+Category: Navigation. A trail of links that shows where the current page sits in the site, from the top level down. It lets people jump back to any page above it. Also called: breadcrumb, breadcrumbs, crumbs.
 
 **Classes**
 - `.ayy-breadcrumb` — Root <nav aria-label="Breadcrumb">.

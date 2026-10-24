@@ -1,14 +1,18 @@
 import {
   forwardRef,
+  useContext,
   useEffect,
   useRef,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
+  type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
 import { Cancel01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { Icon } from "../icon/icon.react";
+import { Tooltip, tooltipContext } from "../tooltip/tooltip.react";
+import type { TooltipSide } from "../tooltip/tooltip";
 import {
   actionBarActionsClass,
   actionBarButtonClass,
@@ -93,13 +97,16 @@ export const ActionBarCount = forwardRef<HTMLSpanElement, ActionBarCountProps>(f
 export interface ActionBarCloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Accessible label for the clear selection button (default "Clear selection"). */
   label?: string;
+  tooltip?: ReactNode | boolean;
+  tooltipSide?: TooltipSide;
 }
 
 export const ActionBarClose = forwardRef<HTMLButtonElement, ActionBarCloseProps>(function ActionBarClose(
-  { label = "Clear selection", className, children, ...props },
+  { label = "Clear selection", tooltip = true, tooltipSide = "top", className, children, ...props },
   ref,
 ) {
-  return (
+  const hasParentTooltip = useContext(tooltipContext);
+  const button = (
     <button
       ref={ref}
       type="button"
@@ -109,6 +116,12 @@ export const ActionBarClose = forwardRef<HTMLButtonElement, ActionBarCloseProps>
     >
       {children ?? <Icon icon={Cancel01Icon} />}
     </button>
+  );
+  if (hasParentTooltip || tooltip === false) return button;
+  return (
+    <Tooltip side={tooltipSide} content={typeof tooltip === "boolean" ? label : tooltip}>
+      {button}
+    </Tooltip>
   );
 });
 
@@ -139,13 +152,21 @@ export interface ActionBarButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
   icon?: boolean;
   /** Sets aria-expanded when used as a DropdownMenuTrigger. */
   open?: boolean;
+  tooltip?: ReactNode | boolean;
+  tooltipSide?: TooltipSide;
 }
 
 export const ActionBarButton = forwardRef<HTMLButtonElement, ActionBarButtonProps>(function ActionBarButton(
-  { variant, primary, secondary, destructive, icon, open, className, type = "button", ...props },
+  { variant, primary, secondary, destructive, icon, open, tooltip, tooltipSide = "top", className, type = "button", ...props },
   ref,
 ) {
-  return (
+  const hasParentTooltip = useContext(tooltipContext);
+  const tooltipContent =
+    !hasParentTooltip && tooltip !== false
+      ? (tooltip ?? (icon ? props["aria-label"] : undefined))
+      : undefined;
+
+  const button = (
     <button
       ref={ref}
       type={type}
@@ -153,5 +174,13 @@ export const ActionBarButton = forwardRef<HTMLButtonElement, ActionBarButtonProp
       className={actionBarButtonClass({ variant, primary, secondary, destructive, icon, className })}
       {...props}
     />
+  );
+
+  if (!tooltipContent) return button;
+
+  return (
+    <Tooltip side={tooltipSide} content={tooltipContent}>
+      {button}
+    </Tooltip>
   );
 });

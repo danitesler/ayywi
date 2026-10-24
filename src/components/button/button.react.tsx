@@ -1,5 +1,7 @@
-import { forwardRef, type ButtonHTMLAttributes, type MouseEvent } from "react";
+import { forwardRef, useContext, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { Spinner } from "../spinner/spinner.react";
+import { Tooltip, tooltipContext } from "../tooltip/tooltip.react";
+import { generalActionLabel, type TooltipSide } from "../tooltip/tooltip";
 import { buttonClass, type ButtonAlign, type ButtonSize, type ButtonVariant } from "./button";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,28 +13,70 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   block?: boolean;
   /** Working on it: a spinner before the label, aria-busy="true", and clicks (and form submits) are ignored. It stays focusable. */
   loading?: boolean;
+  /** Tooltip text or element. By default, icon-only buttons show their aria-label on hover. Pass false to disable. */
+  tooltip?: ReactNode | boolean;
+  /** Tooltip placement side (default "top"). */
+  tooltipSide?: TooltipSide;
 }
 
 /** Defaults to type="button" so it never submits a form by accident. Pass type="submit" explicitly. */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant, size, block, align, loading, className, type = "button", onClick, children, ...props },
+  {
+    variant,
+    size,
+    block,
+    align,
+    loading,
+    tooltip,
+    tooltipSide = "top",
+    className,
+    type = "button",
+    onClick,
+    children,
+    ...props
+  },
   ref,
 ) {
   const click = (event: MouseEvent<HTMLButtonElement>) => {
     if (loading) return event.preventDefault();
     onClick?.(event);
   };
-  return (
+
+  const hasParentTooltip = useContext(tooltipContext);
+  const isIconOnly =
+    size === "icon" ||
+    size === "icon-sm" ||
+    size === "icon-lg" ||
+    (Boolean(className) && /\bayy-button--icon(?:-sm|-lg)?\b/.test(className!));
+
+  const ariaLabel = props["aria-label"];
+  const defaultLabel = ariaLabel ? generalActionLabel(ariaLabel) : props.title;
+  const tooltipContent =
+    !hasParentTooltip && tooltip !== false
+      ? (tooltip ?? (isIconOnly ? defaultLabel : undefined))
+      : undefined;
+
+  const buttonProps = tooltipContent && props.title ? { ...props, title: undefined } : props;
+
+  const button = (
     <button
       ref={ref}
       type={type}
       className={buttonClass({ variant, size, block, align, className })}
       aria-busy={loading || undefined}
       onClick={click}
-      {...props}
+      {...buttonProps}
     >
       {loading ? <Spinner label="" /> : null}
       {children}
     </button>
+  );
+
+  if (!tooltipContent) return button;
+
+  return (
+    <Tooltip side={tooltipSide} content={tooltipContent}>
+      {button}
+    </Tooltip>
   );
 });

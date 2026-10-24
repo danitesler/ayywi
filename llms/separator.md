@@ -1,6 +1,6 @@
 # Separator
 
-Category: Layout. A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items). Also called: separator, divider, sep, hr.
+Category: Layout. A thin line that divides blocks of content, between sections of a page or between items in a row. Also called: separator, divider, sep, hr.
 
 **Classes**
 - `.ayy-separator` — Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).

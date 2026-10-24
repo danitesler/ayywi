@@ -1,6 +1,6 @@
 # Icon tile
 
-Category: Data display. An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services. Also called: icon-tile, app-icon.
+Category: Data display. A rounded app-icon tile that gives a product, plugin or service a recognisable mark, with the glyph tinted in its accent colour. Also called: icon-tile, app-icon.
 
 **Classes**
 - `.ayy-icon-tile` — Root, usually a <span> around one <svg> drawn in currentColor. 48px. Accent from --ayy-spot.

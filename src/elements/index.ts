@@ -20,6 +20,7 @@ import { AyyNavbarElement } from "../components/navbar/navbar.element";
 import { AyyPopoverElement } from "../components/popover/popover.element";
 import { AyyShortcutRecorderElement } from "../components/shortcut/shortcut.element";
 import { AyyTableElement } from "../components/table/table.element";
+import { AyyDragDropElement } from "../components/drag-drop/drag-drop.element";
 import { AyyTabsElement } from "../components/tabs/tabs.element";
 import { AyyToolbarElement } from "../components/toolbar/toolbar.element";
 import { AyyCommandElement } from "../components/command/command.element";
@@ -28,10 +29,12 @@ import { AyySwipeElement } from "../components/swipe/swipe.element";
 import { AyyTocElement } from "../components/toc/toc.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { trackDropzones } from "../components/dropzone/dropzone";
+import { toggleChartLegend } from "../components/chart/chart";
 import { stepNumberField, syncNumberField } from "../components/number-field/number-field";
 import { syncSlider } from "../components/slider/slider";
 import { clearSearchBar } from "../components/search-bar/search-bar";
 import { openSelectListFrom } from "../components/select/select";
+import { syncSettingsPicker } from "../components/settings/settings";
 import { syncShortcuts } from "../components/shortcut/shortcut";
 import { openColorPickerFrom, syncSwatch } from "../components/swatch/swatch";
 import { define } from "../lib/element";
@@ -97,6 +100,9 @@ function onChange(event: Event): void {
   if (target instanceof HTMLSelectElement && target.classList.contains("ayy-code-block__selector")) {
     syncCodeBlockSelector(target);
   }
+  if (target instanceof HTMLInputElement && target.type === "radio" && target.closest(".ayy-settings__option")) {
+    syncSettingsPicker(target);
+  }
 }
 
 function onAyySelect(event: Event): void {
@@ -117,6 +123,8 @@ function onClick(event: MouseEvent): void {
   if (clear) clearSearchBar(clear);
   const copy = (event.target as Element | null)?.closest?.(".ayy-code-block__copy");
   if (copy) void copyCodeBlock(copy);
+  const legend = (event.target as Element | null)?.closest?.(".ayy-chart__legend-toggle");
+  if (legend) toggleChartLegend(legend);
 }
 
 // Selects open ayywi's options list with a mouse or trackpad (React Select does it itself and calls preventDefault).
@@ -174,10 +182,11 @@ function watchPage(): void {
   }
 }
 
-/** Register every <ayy-*> element and the page-wide helpers: focus rings for keyboard use only (trackInputModality), card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, select option lists, custom swatch color pickers, drop zones. Safe to call twice. */
+/** Register every <ayy-*> element and the page-wide helpers: focus rings for keyboard use only (trackInputModality), card spotlight, avatar fallbacks, slider fills, custom swatch colours, number field steps, search bar clear buttons, chart legend toggles, select option lists, custom swatch color pickers, drop zones. Safe to call twice. */
 export function defineElements(): void {
   define("ayy-tabs", AyyTabsElement);
   define("ayy-table", AyyTableElement);
+  define("ayy-drag-drop", AyyDragDropElement);
   define("ayy-grid", AyyGridElement);
   define("ayy-action-bar", AyyActionBarElement);
   define("ayy-app-shell", AyyAppShellElement);

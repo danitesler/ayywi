@@ -1,6 +1,6 @@
 # Chart
 
-Category: Data display. Charts drawn by CSS with no library: columns and bars (grouped, stacked, 100%, horizontal, with lines over them), histograms, waterfalls, lines and areas (stacked, stepped), scatters and bubbles, donuts, pies, gauges, radars, heatmaps, funnels, a ranked bar list and sparklines. Bars, slices, cells and ticks take --ayy-value (0–100), dots --ayy-x/--ayy-y, lines are SVG paths from chartPath(). Series colours are the chart tokens in order, so a chart library can match them. Also called: chart, bar-chart, line-chart, sparkline, graph, pie-chart, donut-chart, scatter-plot, bubble-chart, heatmap, funnel-chart, waterfall-chart, histogram, radar-chart, gauge.
+Category: Data display. Charts for reading data at a glance: bars, lines, areas, pies and donuts, scatters, gauges and more. They're drawn with plain markup and CSS instead of a charting library, and each comes with a data table for screen readers. Colours, hover details and a switchable legend are built in. Also called: chart, bar-chart, line-chart, sparkline, graph, pie-chart, donut-chart, scatter-plot, bubble-chart, heatmap, funnel-chart, waterfall-chart, histogram, radar-chart, gauge.
 
 **Classes**
 - `.ayy-chart` — Root, usually a <figure>. A grid of the plot, the labels, the legend and the data table.
@@ -9,7 +9,7 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 - `.ayy-chart--horizontal` — One row per label with the bars along the reading direction: the __labels sit beside the plot, ticks become lines down it with their labels under it. Works with --stacked. Rows are 2rem.
 - `.ayy-chart--histogram` — Columns touch (1px apart) and fill their bins, so they read as one distribution. Label each column with its bin's start; the labels sit at the start of their column.
 - `.ayy-chart--combo` — Columns with lines over them: the columns split the width with no gap, so a line from chartPath(values, { band: true }) passes over their centres. Colour each line series with the next chart token (--ayy-chart-color on its __series).
-- `.ayy-chart--waterfall` — Floating bars, solid and rounded at both ends: each __bar starts at --ayy-start (the running total before it, 0–100) and is --ayy-value tall. Use with --values so the signed changes show.
+- `.ayy-chart--waterfall` — Floating bars, rounded at both ends and fading like any bar: each __bar starts at --ayy-start (the running total before it, 0–100) and is --ayy-value tall. Use with --values so the signed changes show.
 - `.ayy-chart--pie` — A solid pie: the __slice circles take r="25" and are stroked to the centre. No __total.
 - `.ayy-chart--gauge` — A half ring over the top (viewBox="0 0 100 50"), filled from the start side: a __track behind one __slice (or a few), with a __total under the arc. Put role="meter" and its aria-value* on the __plot.
 - `.ayy-chart--radar` — A square plot of an __svg with __grid rings and spokes, a __series per shape (closed __area and __line paths from chartRadar()) and an __label per spoke.
@@ -17,7 +17,7 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 - `.ayy-chart__tick` — A value line across the plot, its text the label in the gutter. --ayy-value places it: 0 is the floor, 100 the top. The gutter only appears when there are ticks.
 - `.ayy-chart__bars` — Row of columns filling the plot.
 - `.ayy-chart__column` — One label's bars, side by side (or stacked).
-- `.ayy-chart__bar` — A bar, fading toward its base (solid when stacked): --ayy-value is its height, data-value its text on hover, --ayy-start lifts it off the floor (a floating bar). Its colour is chart-1, chart-2… by position in the column; --ayy-chart-color overrides.
+- `.ayy-chart__bar` — A bar, fading toward its base (a lighter fade when stacked): --ayy-value is its height, data-value its text on hover, --ayy-start lifts it off the floor (a floating bar). Its colour is chart-1, chart-2… by position in the column; --ayy-chart-color overrides.
 - `.ayy-chart__bar--up` — A waterfall's rise: the success colour.
 - `.ayy-chart__bar--down` — A waterfall's drop: the destructive colour.
 - `.ayy-chart__svg` — <svg viewBox="0 0 100 100" preserveAspectRatio="none"> stretched over the plot, for lines and areas. Mirrors in RTL.
@@ -25,10 +25,10 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 - `.ayy-chart__series--compare` — A comparison series (last period, a target): dashed, quiet, no fill.
 - `.ayy-chart__line` — <path> of the line, 2px whatever the stretch (vector-effect: non-scaling-stroke).
 - `.ayy-chart__area` — <path> of the area under the line: a 16% tint of the series colour, or fill="url(#…)" an __gradient in its series to fade out toward the floor (React does).
-- `.ayy-chart__gradient` — A <linearGradient x2="0" y2="1"> with two <stop>s, inside the series' <g> (in <defs>): its stops take the series colour, 32% at the top to none at the floor.
+- `.ayy-chart__gradient` — A gradient with two <stop>s in a <defs>, taking the series colour: a <linearGradient x2="0" y2="1"> inside a line or area series fades 32% at the top to none at the floor (50% to 18% when stacked); a <radialGradient> in a radar runs 6% at the centre to 42% at the rim; in a ring, a <linearGradient x2="1" y2="1"> given the slice's colour as --ayy-chart-color is the circle's stroke="url(#…)", full strength to 55% across the ring (React draws all of these).
 - `.ayy-chart__labels` — The labels under the plot (aria-hidden="true"), one per column (beside it when horizontal); under a line or a scatter they spread from the first value to the last.
 - `.ayy-chart__axis` — An axis name (aria-hidden="true"): before the plot it names the vertical axis, after the __labels the horizontal one, at the end.
-- `.ayy-chart__dot` — A scatter point (a <span> in a <div class="ayy-chart__series">): --ayy-x and --ayy-y (0–100) place it, --ayy-z (0–100) makes it a bubble up to 3rem across, data-value is its text on hover.
+- `.ayy-chart__dot` — A scatter point (a <span> in a <div class="ayy-chart__series">): --ayy-x and --ayy-y (0–100) place it, --ayy-z (0–100) makes it a bubble up to 3rem across, filled with a fading tint of the series colour, a __tooltip inside it is its card on hover (data-value alone still prints a one-line label).
 - `.ayy-chart__ring` — <svg viewBox="0 0 100 100"> of a donut or pie ("0 0 100 50" for a gauge), filling the __plot. Turned so slices start at the top and run clockwise.
 - `.ayy-chart__track` — <circle cx="50" cy="50" r="40" pathLength="100"> behind a gauge's slices: the empty part, a faint wash.
 - `.ayy-chart__slice` — <circle cx="50" cy="50" r="40" pathLength="100"> (r="25" in a pie): a dash --ayy-value long that starts --ayy-start along the ring (chartSlices() gives both), with a hairline gap after it. Coloured chart-1, chart-2… in order; --ayy-chart-color overrides.
@@ -36,7 +36,17 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 - `.ayy-chart__total-value` — The total itself, in the text colour and xl.
 - `.ayy-chart__grid` — <path> of a radar's rings and spokes, a hairline.
 - `.ayy-chart__label` — A label in the plot at --ayy-x / --ayy-y, set outward from the centre (a radar's spoke names).
-- `.ayy-chart__legend` — List of the series, when there's more than one (aria-hidden="true" when a data table names them).
+- `.ayy-chart__tooltip` — The card a hover opens over its parent: a __column, a __hit, a __dot, a radar's __label, a funnel step, a gauge's __plot, or (after a ring, with --ayy-x / --ayy-y over its slice) a donut or pie slice. A __tooltip-title, then a __tooltip-row for each series. data-side="end" puts it on the other side of a column or point, for the later half. Hover only: the drawing is aria-hidden and the data table carries the numbers.
+- `.ayy-chart__tooltip--static` — A card laid out in the flow and always shown (a ChartTooltip with `static`), for a key or a docs page instead of opening over a chart part.
+- `.ayy-chart__tooltip-title` — The card's heading (a label, a slice's name): semibold over a hairline.
+- `.ayy-chart__tooltip-row` — One series in the card: an __swatch, an optional __tooltip-name and a __tooltip-value. --ayy-chart-color sets the swatch.
+- `.ayy-chart__tooltip-name` — What the number is ("Comments"), followed by a colon.
+- `.ayy-chart__tooltip-value` — The number, semibold with tabular digits.
+- `.ayy-chart__hits` — Over a line or area chart's plot: a row of invisible __hit strips, one per label. --ayy-count says how many.
+- `.ayy-chart__hit` — A strip centred on one label's point (--ayy-x: 0 at the start, 100 at the end): on hover it draws a hairline, shows a __marker per series and opens its __tooltip.
+- `.ayy-chart__marker` — A ring on a series' line at a hovered __hit, --ayy-y high (0–100), in the series colour.
+- `.ayy-chart__legend` — List of the series, when there's more than one (aria-hidden="true" when a data table names them, and when its entries aren't buttons).
+- `.ayy-chart__legend-toggle` — A <button aria-pressed> inside a legend item, in place of its bare content: pressed means the series is on, aria-pressed="false" dims it, strikes its name through and hollows its swatch. Switch the same-numbered series off with data-hidden (React's `toggle` prop and the helper in @danitesler/ayywi/elements do).
 - `.ayy-chart__legend-item` — A series name with its swatch, coloured in the same order as the series.
 - `.ayy-chart__legend-item--compare` — Legend entry for a comparison series: a dashed swatch.
 - `.ayy-chart__legend-item--line` — Legend entry for a line over columns (a combo): a short solid line for a swatch.
@@ -61,11 +71,11 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 
 **States**
 - `default` — Bars, lines, areas, dots, slices or cells in --ayy-chart-1… in order, muted s labels, hairline ticks; the drawing is aria-hidden and the numbers live in a table.
-- `hover` (`.ayy-chart__column:hover, .ayy-chart__dot:hover, .ayy-chart__slice:hover, .ayy-heatmap__cell:hover`) — A column's bars and a slice mix 20% toward the text colour; bars show their data-value above them; a dot fills solid and a cell takes a text-colour outline, each with its data-value on a raised surface above it.
+- `hover` (`.ayy-chart__column:hover, .ayy-chart__hit:hover, .ayy-chart__dot:hover, .ayy-chart__slice:hover, .ayy-funnel__step:hover, .ayy-heatmap__cell:hover`) — A column's bars and a slice mix 20% toward the text colour; a column takes a wash, opens its card and its bars stop printing their data-value; a point on a line shows a hairline and a marker per series; a dot fills solid and a cell takes a text-colour outline; each opens its __tooltip card (a cell, its data-value) on a raised surface.
 - `pressed` — doesn't apply: Not interactive.
-- `focus` — doesn't apply: Not focusable; the data table (or the funnel's own text, or the gauge's meter) carries the numbers.
+- `focus` (`.ayy-chart__legend-toggle:focus-visible`) — A 2px outline in --ayy-color-ring around a legend entry that switches a series off; the plot itself isn't focusable (the data table, the funnel's own text or the gauge's meter carries the numbers).
 - `disabled` — doesn't apply: Not interactive.
-- `selected` — doesn't apply: No selected bar or series.
+- `selected` (`.ayy-chart__legend-toggle[aria-pressed="false"]`) — A series switched off from the legend: its name in --ayy-color-muted, struck through, with a hollow swatch; the series carries data-hidden and leaves the plot while the scale stays.
 - `error` — doesn't apply: No error look; show an Alert in its place.
 - `loading` — doesn't apply: Use a block Skeleton of the chart's height while data loads; bars, slices and funnel steps grow from 0 when they appear.
 
@@ -73,15 +83,17 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 - Density — The plot is --ayy-chart-height (12rem) tall; a donut or pie is that wide and square, a gauge that wide and half as tall, a radar 16rem square; horizontal rows are 2rem; bar-list rows and funnel bars are the sm control height; a sparkline is 6rem × 1.75rem. Chart labels and legend text follow data-density via --ayy-text-s.
 - Width — Fills its container; columns share the width (bars at most 2.5rem wide, histogram bins all of it). A donut's legend sits beside it and wraps under it in a narrow box; a radar leaves 5rem each side for its spoke names.
 
-**React** — `import { BarChart, LineChart, HistogramChart, WaterfallChart, ScatterChart, DonutChart, GaugeChart, RadarChart, HeatmapChart, FunnelChart, Sparkline, BarList, TableChart } from "@danitesler/ayywi/react";`
-- `<BarChart>` renders <figure class="ayy-chart"> with a plot of __column/__bar, labels, a legend and a visually hidden data table. Props: `label` string — what it shows ("Signups per day"); the data table's caption; `labels` string[] — one per column; `series` { name, values: number[], color? }[]; `stacked` boolean | "percent" — percent makes every column 100% (ticks read 0%–100%); `showValues` boolean — print values above the bars; `horizontal` boolean — one row per label, bars along the reading direction; `lines` { name, values: number[], color?, compare? }[] — lines over the columns on the same scale (a combo); not with horizontal; `max` number — top of the scale; rounded up from the data if omitted; `ticks` number of value lines, default 3; 0 for none; `format` (value: number) => string — ticks, hover values and the table; default compact (1.2K); `height` CSS length, default 12rem; `legend` boolean — default: more than one series
-- `<LineChart>` renders <figure class="ayy-chart"> with an __svg of __series paths, labels, a legend and a visually hidden data table. Props: `label` string — the data table's caption; `labels` string[] — one per point; `series` { name, values: number[], color?, compare? }[] — compare draws a dashed comparison line; `min` number, default 0; `max` number; `area` boolean, default true; `smooth` boolean, default true (monotone: never overshoots a point); `step` boolean — steps, each value held until halfway to the next; `stacked` boolean — each area on the series before it, the top line the total; compare series stay apart; `ticks` number, default 3; `format` (value: number) => string; `height` CSS length; `legend` boolean
+**React** — `import { BarChart, LineChart, HistogramChart, WaterfallChart, ScatterChart, DonutChart, GaugeChart, RadarChart, ChartLegend, ChartTooltip, HeatmapChart, FunnelChart, Sparkline, BarList, TableChart } from "@danitesler/ayywi/react";`
+- `<BarChart>` renders <figure class="ayy-chart"> with a plot of __column/__bar, labels, a legend and a visually hidden data table. Props: `label` string — what it shows ("Signups per day"); the data table's caption; `labels` string[] — one per column; `series` { name, values: number[], color? }[]; `stacked` boolean | "percent" — percent makes every column 100% (ticks read 0%–100%); `showValues` boolean — print values above the bars; `horizontal` boolean — one row per label, bars along the reading direction; `lines` { name, values: number[], color?, compare? }[] — lines over the columns on the same scale (a combo); not with horizontal; `max` number — top of the scale; rounded up from the data if omitted; `ticks` number of value lines, default 3; 0 for none; `format` (value: number) => string — ticks, hover values and the table; default compact (1.2K); `height` CSS length, default 12rem; `legend` boolean — default: more than one series; `toggle` boolean — make the legend's entries buttons that hide and show their series (the last one on stays on); the scale keeps its range so the rest don't jump; `hiddenSeries` string[] — names switched off (controlled); with onHiddenSeriesChange; `defaultHiddenSeries` string[] — names switched off at first; `onHiddenSeriesChange` (hidden: string[]) => void
+- `<LineChart>` renders <figure class="ayy-chart"> with an __svg of __series paths, labels, a legend and a visually hidden data table. Props: `label` string — the data table's caption; `labels` string[] — one per point; `series` { name, values: number[], color?, compare? }[] — compare draws a dashed comparison line; `min` number, default 0; `max` number; `area` boolean, default true; `smooth` boolean, default true (monotone: never overshoots a point); `step` boolean — steps, each value held until halfway to the next; `stacked` boolean — each area on the series before it, the top line the total; compare series stay apart; `ticks` number, default 3; `format` (value: number) => string; `height` CSS length; `legend` boolean; `toggle` boolean — make the legend's entries buttons that hide and show their series (the last one on stays on); the scale keeps its range so the rest don't jump; `hiddenSeries` string[] — names switched off (controlled); with onHiddenSeriesChange; `defaultHiddenSeries` string[] — names switched off at first; `onHiddenSeriesChange` (hidden: string[]) => void
 - `<HistogramChart>` renders <figure class="ayy-chart ayy-chart--histogram"> of touching columns, one per bin, each bin's start under it, and a data table of bin ranges. Props: `label` string — the data table's caption; `values` number[] — the raw values, counted into bins; `bins` number — about how many; edges are rounded. Default about √n, at most 20; `range` [min, max] — the values the bins cover; default the data's; `formatBin` (value: number) => string — bin edges; `name` string — what's counted, the table's column header; default label; `color` CSS colour, default chart-1; `max` number — top of the count scale; `ticks` number, default 3; `format` (value: number) => string — counts; `height` CSS length
 - `<WaterfallChart>` renders <figure class="ayy-chart ayy-chart--values ayy-chart--waterfall"> of floating bars, signed values above them, and a data table. Props: `label` string — the data table's caption; `steps` { label, value, total? }[] — changes (negative for a drop) and totals (from zero); `name` string — the table's column header; default label; `min` number — default 0, or the lowest running total below it; `max` number; `ticks` number, default 3; `format` (value: number) => string — the sign is added for changes; `height` CSS length
-- `<ScatterChart>` renders <figure class="ayy-chart"> with axis names, a plot of __series of __dots, x labels, a legend and a data table of the points. Props: `label` string — the data table's caption; `series` { name, points: { x, y, z?, label? }[], color? }[] — z sizes bubbles (by area); `xLabel` string — the horizontal axis's name; `yLabel` string — the vertical axis's name; `zLabel` string — the bubble size's name in the table; `xMin / xMax / yMin / yMax` number — the scales' ends; the minimums default to 0, the tops are rounded up; `ticks` number of values along each axis, default 3; 0 for none; `formatX / formatY / formatZ` (value: number) => string, default compact; `height` CSS length; `legend` boolean — default: more than one series
-- `<DonutChart>` renders <figure class="ayy-chart"> with a __ring of __slices, the __total in the middle, a legend of shares beside it and a data table. Props: `label` string — the data table's caption; `items` { name, value, color? }[] — the parts; six at most; `pie` boolean — a solid pie, no total; `total` ReactNode — the number in the middle; default the formatted sum; `totalLabel` ReactNode — the words under it ("tickets"); `name` string — the table's column header; default label; `format` (value: number) => string, default grouped digits; `size` CSS length — the ring's width, default 12rem; `legend` boolean, default true
+- `<ScatterChart>` renders <figure class="ayy-chart"> with axis names, a plot of __series of __dots, x labels, a legend and a data table of the points. Props: `label` string — the data table's caption; `series` { name, points: { x, y, z?, label? }[], color? }[] — z sizes bubbles (by area); `xLabel` string — the horizontal axis's name; `yLabel` string — the vertical axis's name; `zLabel` string — the bubble size's name in the table; `xMin / xMax / yMin / yMax` number — the scales' ends; the minimums default to 0, the tops are rounded up; `ticks` number of values along each axis, default 3; 0 for none; `formatX / formatY / formatZ` (value: number) => string, default compact; `height` CSS length; `legend` boolean — default: more than one series; `toggle` boolean — make the legend's entries buttons that hide and show their series (the last one on stays on); the scale keeps its range so the rest don't jump; `hiddenSeries` string[] — names switched off (controlled); with onHiddenSeriesChange; `defaultHiddenSeries` string[] — names switched off at first; `onHiddenSeriesChange` (hidden: string[]) => void
+- `<DonutChart>` renders <figure class="ayy-chart"> with a __ring of __slices, the __total in the middle, a legend of shares beside it and a data table. Props: `label` string — the data table's caption; `items` { name, value, color? }[] — the parts; six at most; `pie` boolean — a solid pie, no total; `total` ReactNode — the number in the middle; default the formatted sum; `totalLabel` ReactNode — the words under it ("tickets"); `name` string — the table's column header; default label; `format` (value: number) => string, default grouped digits; `size` CSS length — the ring's width, default 12rem; `legend` boolean, default true; `toggle` boolean — make the legend's entries buttons that hide and show their parts (the last one on stays on); the ring, the shares and the total are worked out again from what's on; `hiddenSeries` string[] — names switched off (controlled); with onHiddenSeriesChange; `defaultHiddenSeries` string[] — names switched off at first; `onHiddenSeriesChange` (hidden: string[]) => void
 - `<GaugeChart>` renders <figure class="ayy-chart ayy-chart--gauge"> with a role="meter" plot: a half __ring, its __track and a __slice, the value under it. Props: `label` string — the meter's name ("Ad spend this month"); `value` number; `min` number, default 0; `max` number, default 100; `format` (value: number) => string, default grouped digits; `totalLabel` string — under the value and in aria-valuetext ("of $10K"); `color` CSS colour, default chart-1 (warning past a limit); `size` CSS length — the arc's width, default 12rem
-- `<RadarChart>` renders <figure class="ayy-chart ayy-chart--radar"> with a square __svg of rings, spokes and __series shapes, spoke __labels, a legend and a data table. Props: `label` string — the data table's caption; `axes` string[] — one per spoke, clockwise from the top; `series` { name, values: number[], color?, compare? }[] — compare: dashed, no fill; `min` number, default 0; `max` number — the outer ring; rounded up from the data; `ticks` number of rings counting the centre, default 5; `format` (value: number) => string; `size` CSS length — the plot's width, default 16rem; `legend` boolean — default: more than one series
+- `<RadarChart>` renders <figure class="ayy-chart ayy-chart--radar"> with a square __svg of rings, spokes and __series shapes, spoke __labels, a legend and a data table. Props: `label` string — the data table's caption; `axes` string[] — one per spoke, clockwise from the top; `series` { name, values: number[], color?, compare? }[] — compare: dashed, no fill; `min` number, default 0; `max` number — the outer ring; rounded up from the data; `ticks` number of rings counting the centre, default 5; `format` (value: number) => string; `size` CSS length — the plot's width, default 16rem; `legend` boolean — default: more than one series; `toggle` boolean — make the legend's entries buttons that hide and show their series (the last one on stays on); the scale keeps its range so the rest don't jump; `hiddenSeries` string[] — names switched off (controlled); with onHiddenSeriesChange; `defaultHiddenSeries` string[] — names switched off at first; `onHiddenSeriesChange` (hidden: string[]) => void
+- `<ChartLegend>` renders <ul class="ayy-chart__legend"> of <li class="ayy-chart__legend-item">: a swatch and a name, a button around them (aria-pressed) when onToggle is given. Props: `items` { name, color?, compare?, line?, value? }[] — the entries; colours follow the chart tokens in order; `hiddenItems` string[] — names shown as switched off; only with onToggle; `onToggle` (name: string) => void — makes every entry a toggle button; a chart's own `toggle` prop wires this to its series for you
+- `<ChartTooltip>` renders <span class="ayy-chart__tooltip"> with a __tooltip-title and a __tooltip-row (swatch, name, value) for each series. Props: `title` ReactNode — the card's heading (a label, a slice's name); `rows` { name?, value, color? }[] — one per series; color is any CSS colour for the swatch; `static` boolean — show it in place, always, instead of only over a hovered chart part
 - `<HeatmapChart>` renders <figure class="ayy-chart"> with an .ayy-heatmap of rows, a Less–More key and a data table. Props: `label` string — the data table's caption; `rows` string[] — row names; `columns` string[] — column names, every other one shown past eight; `values` number[][] — values[row][column]; `max` number — the darkest cell; default the largest value; `format` (value: number) => string, default grouped digits; `color` CSS colour, default chart-1; `legend` [less, more] | false — the key's words, default ["Less", "More"]
 - `<FunnelChart>` renders <ol class="ayy-funnel"> of steps with centred bars, values and rates. Props: `steps` { label: ReactNode, value }[]; `format` (value: number) => string, default grouped digits; `rate` "previous" | "first" — what each rate is a share of, default previous; `rateLabel` string — read after each rate by screen readers; default "of the step before" / "of the first step"; `color` CSS colour, default chart-1
 - `<Sparkline>` renders <svg class="ayy-sparkline">. Props: `values` number[]; `label` string — makes it role="img" with this name; without it the sparkline is aria-hidden; `area` boolean; `color` CSS colour, default chart-1; `min` number, default the smallest value; `max` number, default the largest value
@@ -112,6 +124,142 @@ Category: Data display. Charts drawn by CSS with no library: columns and bars (g
 - Don't draw more than six series; group the rest as Other.
 - Don't add a second chart library just for a simple bar or line — these cover dashboards. Reach for one (Recharts, Chart.js) for zoom, brushing or maps, themed with the tokens.
 
+## Chart — Colours, legend and hover card
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="--ayy-gap: var(--ayy-space-6); inline-size: 100%">
+  <div role="group" class="ayy-swatch-group" aria-label="Chart colours">
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Chart 1" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-chart-1)" aria-describedby="_R_5_"></button>
+      <span role="tooltip" id="_R_5_" class="ayy-tooltip__content" data-side="top">Chart 1 · --ayy-chart-1</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Chart 2" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-chart-2)" aria-describedby="_R_9_"></button>
+      <span role="tooltip" id="_R_9_" class="ayy-tooltip__content" data-side="top">Chart 2 · --ayy-chart-2</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Chart 3" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-chart-3)" aria-describedby="_R_d_"></button>
+      <span role="tooltip" id="_R_d_" class="ayy-tooltip__content" data-side="top">Chart 3 · --ayy-chart-3</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Chart 4" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-chart-4)" aria-describedby="_R_h_"></button>
+      <span role="tooltip" id="_R_h_" class="ayy-tooltip__content" data-side="top">Chart 4 · --ayy-chart-4</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Chart 5" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-chart-5)" aria-describedby="_R_l_"></button>
+      <span role="tooltip" id="_R_l_" class="ayy-tooltip__content" data-side="top">Chart 5 · --ayy-chart-5</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Chart 6" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-chart-6)" aria-describedby="_R_p_"></button>
+      <span role="tooltip" id="_R_p_" class="ayy-tooltip__content" data-side="top">Chart 6 · --ayy-chart-6</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Success" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-color-success)" aria-describedby="_R_t_"></button>
+      <span role="tooltip" id="_R_t_" class="ayy-tooltip__content" data-side="top">Success · --ayy-color-success</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Warning" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-color-warning)" aria-describedby="_R_11_"></button>
+      <span role="tooltip" id="_R_11_" class="ayy-tooltip__content" data-side="top">Warning · --ayy-color-warning</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Destructive" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-color-destructive)" aria-describedby="_R_15_"></button>
+      <span role="tooltip" id="_R_15_" class="ayy-tooltip__content" data-side="top">Destructive · --ayy-color-destructive</span>
+    </span>
+    <span class="ayy-tooltip">
+      <button type="button" aria-pressed="false" aria-label="Muted" class="ayy-swatch ayy-swatch--lg" style="--ayy-swatch: var(--ayy-color-muted)" aria-describedby="_R_19_"></button>
+      <span role="tooltip" id="_R_19_" class="ayy-tooltip__content" data-side="top">Muted · --ayy-color-muted</span>
+    </span>
+  </div>
+  <ul class="ayy-chart__legend" aria-label="Legend">
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Comments</button>
+    </li>
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Likes</button>
+    </li>
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Shares</button>
+    </li>
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Saved</button>
+    </li>
+  </ul>
+  <div>
+    <span class="ayy-chart__tooltip ayy-chart__tooltip--static">
+      <span class="ayy-chart__tooltip-title">Sep 2026</span>
+      <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-4)">
+        <span class="ayy-chart__swatch"></span>
+        <span class="ayy-chart__tooltip-name">Comments</span>
+        <strong class="ayy-chart__tooltip-value">17</strong>
+      </span>
+      <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+        <span class="ayy-chart__swatch"></span>
+        <span class="ayy-chart__tooltip-name">Likes</span>
+        <strong class="ayy-chart__tooltip-value">42</strong>
+      </span>
+      <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+        <span class="ayy-chart__swatch"></span>
+        <span class="ayy-chart__tooltip-name">Shares</span>
+        <strong class="ayy-chart__tooltip-value">9</strong>
+      </span>
+    </span>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { useState, type CSSProperties } from "react";
+import { ChartLegend, ChartTooltip, ColorSwatchButton, ColorSwatchGroup, Tooltip } from "@danitesler/ayywi/react";
+
+const colours = [
+  { name: "Chart 1", token: "--ayy-chart-1" },
+  { name: "Chart 2", token: "--ayy-chart-2" },
+  { name: "Chart 3", token: "--ayy-chart-3" },
+  { name: "Chart 4", token: "--ayy-chart-4" },
+  { name: "Chart 5", token: "--ayy-chart-5" },
+  { name: "Chart 6", token: "--ayy-chart-6" },
+  { name: "Success", token: "--ayy-color-success" },
+  { name: "Warning", token: "--ayy-color-warning" },
+  { name: "Destructive", token: "--ayy-color-destructive" },
+  { name: "Muted", token: "--ayy-color-muted" },
+];
+
+const series = ["Comments", "Likes", "Shares", "Saved"];
+
+export default function Example() {
+  const [hidden, setHidden] = useState<string[]>([]);
+  const toggle = (name: string) =>
+    setHidden((now) => (now.includes(name) ? now.filter((n) => n !== name) : now.length < series.length - 1 ? [...now, name] : now));
+  return (
+    <div className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-6)", inlineSize: "100%" } as CSSProperties}>
+      <ColorSwatchGroup role="group" aria-label="Chart colours">
+        {colours.map((colour) => (
+          <Tooltip key={colour.token} content={`${colour.name} · ${colour.token}`}>
+            <ColorSwatchButton size="lg" color={`var(${colour.token})`} label={colour.name} pressed={false} />
+          </Tooltip>
+        ))}
+      </ColorSwatchGroup>
+      <ChartLegend aria-label="Legend" items={series.map((name) => ({ name }))} hiddenItems={hidden} onToggle={toggle} />
+      <div>
+        <ChartTooltip
+          static
+          title="Sep 2026"
+          rows={[
+            { name: "Comments", value: "17", color: "var(--ayy-chart-4)" },
+            { name: "Likes", value: "42", color: "var(--ayy-chart-1)" },
+            { name: "Shares", value: "9", color: "var(--ayy-chart-2)" },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
 ## Chart — Columns with two series
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -132,26 +280,104 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="1.8K" style="--ayy-value: 61.3"></span>
             <span class="ayy-chart__bar" data-value="920" style="--ayy-value: 30.7"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Apr</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Desktop</span>
+                <strong class="ayy-chart__tooltip-value">1.8K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Mobile</span>
+                <strong class="ayy-chart__tooltip-value">920</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2.1K" style="--ayy-value: 70.7"></span>
             <span class="ayy-chart__bar" data-value="1.2K" style="--ayy-value: 39.3"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">May</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Desktop</span>
+                <strong class="ayy-chart__tooltip-value">2.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Mobile</span>
+                <strong class="ayy-chart__tooltip-value">1.2K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2K" style="--ayy-value: 65.3"></span>
             <span class="ayy-chart__bar" data-value="1.3K" style="--ayy-value: 44.7"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jun</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Desktop</span>
+                <strong class="ayy-chart__tooltip-value">2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Mobile</span>
+                <strong class="ayy-chart__tooltip-value">1.3K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2.4K" style="--ayy-value: 80.3"></span>
             <span class="ayy-chart__bar" data-value="1.2K" style="--ayy-value: 40.3"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Jul</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Desktop</span>
+                <strong class="ayy-chart__tooltip-value">2.4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Mobile</span>
+                <strong class="ayy-chart__tooltip-value">1.2K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2.3K" style="--ayy-value: 76"></span>
             <span class="ayy-chart__bar" data-value="1.5K" style="--ayy-value: 49.7"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Aug</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Desktop</span>
+                <strong class="ayy-chart__tooltip-value">2.3K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Mobile</span>
+                <strong class="ayy-chart__tooltip-value">1.5K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2.7K" style="--ayy-value: 89.7"></span>
             <span class="ayy-chart__bar" data-value="1.7K" style="--ayy-value: 57.7"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Desktop</span>
+                <strong class="ayy-chart__tooltip-value">2.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Mobile</span>
+                <strong class="ayy-chart__tooltip-value">1.7K</strong>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -163,9 +389,13 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>Aug</span>
         <span>Sep</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Desktop</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Mobile</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Desktop</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Mobile</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -230,6 +460,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           label="Signups by device, April to September"
           labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]}
           series={[
@@ -265,6 +496,246 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-chart__tick" style="--ayy-value: 50">$2.5K</span>
         <span class="ayy-chart__tick" style="--ayy-value: 100">$5K</span>
         <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><g class="ayy-chart__series"><defs><linearGradient id="ayy-chart-line-1-0" class="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><path class="ayy-chart__area" d="M0,42 C2.56,40.67 5.13,38 7.69,38 C10.26,38 12.82,39 15.38,39 C17.95,39 20.51,32 23.08,32 C25.64,32 28.21,34 30.77,34 C33.33,34 35.9,27 38.46,27 C41.03,27 43.59,36 46.15,36 C48.72,36 51.28,32 53.85,30 C56.41,28 58.97,24 61.54,24 C64.1,24 66.67,26 69.23,26 C71.79,26 74.36,21 76.92,21 C79.49,21 82.05,28 84.62,28 C87.18,28 89.74,18 92.31,18 C94.87,18 97.44,20 100,21 L100,100 L0,100 Z" style="fill: url(#ayy-chart-line-1-0)"></path><path class="ayy-chart__line" d="M0,42 C2.56,40.67 5.13,38 7.69,38 C10.26,38 12.82,39 15.38,39 C17.95,39 20.51,32 23.08,32 C25.64,32 28.21,34 30.77,34 C33.33,34 35.9,27 38.46,27 C41.03,27 43.59,36 46.15,36 C48.72,36 51.28,32 53.85,30 C56.41,28 58.97,24 61.54,24 C64.1,24 66.67,26 69.23,26 C71.79,26 74.36,21 76.92,21 C79.49,21 82.05,28 84.62,28 C87.18,28 89.74,18 92.31,18 C94.87,18 97.44,20 100,21"></path></g><g class="ayy-chart__series ayy-chart__series--compare"><path class="ayy-chart__line" d="M0,46 C2.56,45 5.13,43.67 7.69,43 C10.26,42.33 12.82,42 15.38,42 C17.95,42 20.51,44 23.08,44 C25.64,44 28.21,38 30.77,38 C33.33,38 35.9,39.5 38.46,40 C41.03,40.5 43.59,41 46.15,41 C48.72,41 51.28,36 53.85,36 C56.41,36 58.97,37 61.54,37 C64.1,37 66.67,34 69.23,34 C71.79,34 74.36,35 76.92,35 C79.49,35 82.05,32 84.62,32 C87.18,32 89.74,33 92.31,33 C94.87,33 97.44,31 100,30"></path></g></svg>
+        <div class="ayy-chart__hits" style="--ayy-count: 14">
+          <div class="ayy-chart__hit" style="--ayy-x: 0">
+            <span class="ayy-chart__marker" style="--ayy-y: 58; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 54; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 1</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$2.9K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$2.7K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 7.69">
+            <span class="ayy-chart__marker" style="--ayy-y: 62; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 57; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 2</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$2.9K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 15.38">
+            <span class="ayy-chart__marker" style="--ayy-y: 61; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 58; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 3</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$2.9K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 23.08">
+            <span class="ayy-chart__marker" style="--ayy-y: 68; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 56; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 4</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$2.8K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 30.77">
+            <span class="ayy-chart__marker" style="--ayy-y: 66; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 62; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 5</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.3K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.1K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 38.46">
+            <span class="ayy-chart__marker" style="--ayy-y: 73; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 60; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 6</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 46.15">
+            <span class="ayy-chart__marker" style="--ayy-y: 64; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 59; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 7</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 53.85">
+            <span class="ayy-chart__marker" style="--ayy-y: 70; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 64; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 8</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.5K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.2K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 61.54">
+            <span class="ayy-chart__marker" style="--ayy-y: 76; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 63; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 9</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.8K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.2K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 69.23">
+            <span class="ayy-chart__marker" style="--ayy-y: 74; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 66; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 10</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.3K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 76.92">
+            <span class="ayy-chart__marker" style="--ayy-y: 79; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 65; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 11</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.3K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 84.62">
+            <span class="ayy-chart__marker" style="--ayy-y: 72; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 68; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 12</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$3.6K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.4K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 92.31">
+            <span class="ayy-chart__marker" style="--ayy-y: 82; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 67; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 13</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$4.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.4K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 100">
+            <span class="ayy-chart__marker" style="--ayy-y: 79; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 70; --ayy-chart-color: var(--ayy-color-muted)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 14</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">This period</span>
+                <strong class="ayy-chart__tooltip-value">$4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Last period</span>
+                <strong class="ayy-chart__tooltip-value">$3.5K</strong>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="ayy-chart__labels" aria-hidden="true">
         <span>Sep 1</span>
@@ -273,9 +744,13 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>Sep 11</span>
         <span>Sep 14</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>This period</li>
-        <li class="ayy-chart__legend-item ayy-chart__legend-item--compare"><span class="ayy-chart__swatch"></span>Last period</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>This period</button>
+        </li>
+        <li class="ayy-chart__legend-item ayy-chart__legend-item--compare">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Last period</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -386,6 +861,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <LineChart
+          toggle
           label="Daily revenue in dollars, this period and the one before"
           labels={days}
           format={(value) => dollars.format(value)}
@@ -412,26 +888,116 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-chart__bar" data-value="42" style="--ayy-value: 42"></span>
         <span class="ayy-chart__bar" data-value="28" style="--ayy-value: 28"></span>
         <span class="ayy-chart__bar" data-value="9" style="--ayy-value: 9"></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Mon</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Email</span>
+            <strong class="ayy-chart__tooltip-value">42</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Chat</span>
+            <strong class="ayy-chart__tooltip-value">28</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Phone</span>
+            <strong class="ayy-chart__tooltip-value">9</strong>
+          </span>
+        </span>
       </div>
       <div class="ayy-chart__column">
         <span class="ayy-chart__bar" data-value="38" style="--ayy-value: 38"></span>
         <span class="ayy-chart__bar" data-value="34" style="--ayy-value: 34"></span>
         <span class="ayy-chart__bar" data-value="12" style="--ayy-value: 12"></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Tue</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Email</span>
+            <strong class="ayy-chart__tooltip-value">38</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Chat</span>
+            <strong class="ayy-chart__tooltip-value">34</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Phone</span>
+            <strong class="ayy-chart__tooltip-value">12</strong>
+          </span>
+        </span>
       </div>
       <div class="ayy-chart__column">
         <span class="ayy-chart__bar" data-value="51" style="--ayy-value: 51"></span>
         <span class="ayy-chart__bar" data-value="30" style="--ayy-value: 30"></span>
         <span class="ayy-chart__bar" data-value="8" style="--ayy-value: 8"></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Wed</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Email</span>
+            <strong class="ayy-chart__tooltip-value">51</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Chat</span>
+            <strong class="ayy-chart__tooltip-value">30</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Phone</span>
+            <strong class="ayy-chart__tooltip-value">8</strong>
+          </span>
+        </span>
       </div>
       <div class="ayy-chart__column">
         <span class="ayy-chart__bar" data-value="47" style="--ayy-value: 47"></span>
         <span class="ayy-chart__bar" data-value="41" style="--ayy-value: 41"></span>
         <span class="ayy-chart__bar" data-value="10" style="--ayy-value: 10"></span>
+        <span class="ayy-chart__tooltip" data-side="end">
+          <span class="ayy-chart__tooltip-title">Thu</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Email</span>
+            <strong class="ayy-chart__tooltip-value">47</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Chat</span>
+            <strong class="ayy-chart__tooltip-value">41</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Phone</span>
+            <strong class="ayy-chart__tooltip-value">10</strong>
+          </span>
+        </span>
       </div>
       <div class="ayy-chart__column">
         <span class="ayy-chart__bar" data-value="33" style="--ayy-value: 33"></span>
         <span class="ayy-chart__bar" data-value="26" style="--ayy-value: 26"></span>
         <span class="ayy-chart__bar" data-value="7" style="--ayy-value: 7"></span>
+        <span class="ayy-chart__tooltip" data-side="end">
+          <span class="ayy-chart__tooltip-title">Fri</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Email</span>
+            <strong class="ayy-chart__tooltip-value">33</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Chat</span>
+            <strong class="ayy-chart__tooltip-value">26</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Phone</span>
+            <strong class="ayy-chart__tooltip-value">7</strong>
+          </span>
+        </span>
       </div>
     </div>
   </div>
@@ -442,10 +1008,16 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <span>Thu</span>
     <span>Fri</span>
   </div>
-  <ul class="ayy-chart__legend" aria-hidden="true">
-    <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Email</li>
-    <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Chat</li>
-    <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Phone</li>
+  <ul class="ayy-chart__legend">
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Email</button>
+    </li>
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Chat</button>
+    </li>
+    <li class="ayy-chart__legend-item">
+      <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Phone</button>
+    </li>
   </ul>
   <div class="ayy-sr-only">
     <table>
@@ -503,6 +1075,7 @@ import { BarChart } from "@danitesler/ayywi/react";
 export default function Example() {
   return (
     <BarChart
+      toggle
       label="Support tickets per weekday, by channel"
       labels={["Mon", "Tue", "Wed", "Thu", "Fri"]}
       stacked
@@ -540,31 +1113,139 @@ HTML (also Vue/Svelte/Angular templates, server templates):
             <span class="ayy-chart__bar" data-value="6.2K" style="--ayy-value: 73.8"></span>
             <span class="ayy-chart__bar" data-value="1.8K" style="--ayy-value: 21.4"></span>
             <span class="ayy-chart__bar" data-value="400" style="--ayy-value: 4.8"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Apr</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Free</span>
+                <strong class="ayy-chart__tooltip-value">6.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Pro</span>
+                <strong class="ayy-chart__tooltip-value">1.8K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Team</span>
+                <strong class="ayy-chart__tooltip-value">400</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="6.5K" style="--ayy-value: 72.8"></span>
             <span class="ayy-chart__bar" data-value="2K" style="--ayy-value: 22"></span>
             <span class="ayy-chart__bar" data-value="460" style="--ayy-value: 5.2"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">May</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Free</span>
+                <strong class="ayy-chart__tooltip-value">6.5K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Pro</span>
+                <strong class="ayy-chart__tooltip-value">2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Team</span>
+                <strong class="ayy-chart__tooltip-value">460</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="6.6K" style="--ayy-value: 71"></span>
             <span class="ayy-chart__bar" data-value="2.2K" style="--ayy-value: 23.1"></span>
             <span class="ayy-chart__bar" data-value="540" style="--ayy-value: 5.8"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jun</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Free</span>
+                <strong class="ayy-chart__tooltip-value">6.6K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Pro</span>
+                <strong class="ayy-chart__tooltip-value">2.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Team</span>
+                <strong class="ayy-chart__tooltip-value">540</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="6.8K" style="--ayy-value: 70"></span>
             <span class="ayy-chart__bar" data-value="2.3K" style="--ayy-value: 23.7"></span>
             <span class="ayy-chart__bar" data-value="620" style="--ayy-value: 6.4"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Jul</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Free</span>
+                <strong class="ayy-chart__tooltip-value">6.8K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Pro</span>
+                <strong class="ayy-chart__tooltip-value">2.3K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Team</span>
+                <strong class="ayy-chart__tooltip-value">620</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="7K" style="--ayy-value: 67.5"></span>
             <span class="ayy-chart__bar" data-value="2.6K" style="--ayy-value: 25.2"></span>
             <span class="ayy-chart__bar" data-value="750" style="--ayy-value: 7.3"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Aug</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Free</span>
+                <strong class="ayy-chart__tooltip-value">7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Pro</span>
+                <strong class="ayy-chart__tooltip-value">2.6K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Team</span>
+                <strong class="ayy-chart__tooltip-value">750</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="7.1K" style="--ayy-value: 65.3"></span>
             <span class="ayy-chart__bar" data-value="2.9K" style="--ayy-value: 26.7"></span>
             <span class="ayy-chart__bar" data-value="880" style="--ayy-value: 8.1"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Free</span>
+                <strong class="ayy-chart__tooltip-value">7.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Pro</span>
+                <strong class="ayy-chart__tooltip-value">2.9K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Team</span>
+                <strong class="ayy-chart__tooltip-value">880</strong>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -576,10 +1257,16 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>Aug</span>
         <span>Sep</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Free</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Pro</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Team</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Free</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Pro</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Team</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -651,6 +1338,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           stacked="percent"
           label="Customers by plan, April to September"
           labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]}
@@ -686,22 +1374,87 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2.4h" style="--ayy-value: 30"></span>
             <span class="ayy-chart__bar" data-value="3.1h" style="--ayy-value: 38.8"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Billing</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">2.4h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">3.1h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="5.8h" style="--ayy-value: 72.5"></span>
             <span class="ayy-chart__bar" data-value="6.4h" style="--ayy-value: 80"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Technical</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">5.8h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">6.4h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="1.6h" style="--ayy-value: 20"></span>
             <span class="ayy-chart__bar" data-value="2.2h" style="--ayy-value: 27.5"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Onboarding</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">1.6h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">2.2h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="3.1h" style="--ayy-value: 38.8"></span>
             <span class="ayy-chart__bar" data-value="2.9h" style="--ayy-value: 36.3"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Enterprise</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">3.1h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">2.9h</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="4.2h" style="--ayy-value: 52.5"></span>
             <span class="ayy-chart__bar" data-value="5h" style="--ayy-value: 62.5"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Partners</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">October</span>
+                <strong class="ayy-chart__tooltip-value">4.2h</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">September</span>
+                <strong class="ayy-chart__tooltip-value">5h</strong>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -712,9 +1465,13 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>Enterprise</span>
         <span>Partners</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>October</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>September</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>October</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>September</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -774,6 +1531,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           horizontal
           label="Median first response time in hours, by team, October and September"
           labels={["Billing", "Technical", "Onboarding", "Enterprise", "Partners"]}
@@ -808,27 +1566,131 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <div class="ayy-chart__bars">
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="420" style="--ayy-value: 52.5"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Mar</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">420</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">420</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="510" style="--ayy-value: 63.7"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Apr</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">510</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">465</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="480" style="--ayy-value: 60"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">May</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">480</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">470</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="560" style="--ayy-value: 70"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jun</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">560</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">517</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="610" style="--ayy-value: 76.3"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Jul</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">610</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">550</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="590" style="--ayy-value: 73.8"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Aug</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">590</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">587</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="670" style="--ayy-value: 83.8"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">670</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">623</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="720" style="--ayy-value: 90"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Oct</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Orders</span>
+                <strong class="ayy-chart__tooltip-value">720</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">3-month average</span>
+                <strong class="ayy-chart__tooltip-value">660</strong>
+              </span>
+            </span>
           </div>
         </div>
         <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><g class="ayy-chart__series" style="--ayy-chart-color: var(--ayy-chart-2)"><path class="ayy-chart__line" d="M6.25,47.5 C10.42,45.63 14.58,42.31 18.75,41.87 C22.92,41.44 27.08,41.7 31.25,41.25 C35.42,40.8 39.58,37.04 43.75,35.38 C47.92,33.71 52.08,32.71 56.25,31.25 C60.42,29.79 64.58,28.15 68.75,26.63 C72.92,25.1 77.08,23.65 81.25,22.13 C85.42,20.6 89.58,19.04 93.75,17.5"></path></g></svg>
@@ -843,9 +1705,13 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>Sep</span>
         <span>Oct</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Orders</li>
-        <li class="ayy-chart__legend-item ayy-chart__legend-item--line"><span class="ayy-chart__swatch"></span>3-month average</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Orders</button>
+        </li>
+        <li class="ayy-chart__legend-item ayy-chart__legend-item--line">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>3-month average</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -920,6 +1786,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           label="Orders per month and their three-month average, March to October"
           labels={["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"]}
           series={[{ name: "Orders", values: [420, 510, 480, 560, 610, 590, 670, 720] }]}
@@ -950,30 +1817,102 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <div class="ayy-chart__bars">
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="6" style="--ayy-value: 30"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">40ms–80ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">6</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="13" style="--ayy-value: 65"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">80ms–120ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">13</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="17" style="--ayy-value: 85"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">120ms–160ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">17</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="14" style="--ayy-value: 70"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">160ms–200ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">14</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="16" style="--ayy-value: 80"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">200ms–240ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">16</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="6" style="--ayy-value: 30"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">240ms–280ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">6</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="5" style="--ayy-value: 25"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">280ms–320ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">5</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="2" style="--ayy-value: 10"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">320ms–360ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">2</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="1" style="--ayy-value: 5"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">360ms–400ms</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Requests</span>
+                <strong class="ayy-chart__tooltip-value">1</strong>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -1094,21 +2033,69 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <div class="ayy-chart__bars">
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="$48.2K" style="--ayy-start: 0; --ayy-value: 80.3"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sep 1</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Total</span>
+                <strong class="ayy-chart__tooltip-value">$48.2K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar ayy-chart__bar--up" data-value="+$6.4K" style="--ayy-start: 80.3; --ayy-value: 10.7"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">New</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-success)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Change</span>
+                <strong class="ayy-chart__tooltip-value">+$6.4K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar ayy-chart__bar--up" data-value="+$2.1K" style="--ayy-start: 91; --ayy-value: 3.5"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Expansion</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-success)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Change</span>
+                <strong class="ayy-chart__tooltip-value">+$2.1K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar ayy-chart__bar--down" data-value="−$1.3K" style="--ayy-start: 92.3; --ayy-value: 2.2"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Contraction</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-destructive)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Change</span>
+                <strong class="ayy-chart__tooltip-value">−$1.3K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar ayy-chart__bar--down" data-value="−$2.7K" style="--ayy-start: 87.8; --ayy-value: 4.5"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Churn</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-destructive)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Change</span>
+                <strong class="ayy-chart__tooltip-value">−$2.7K</strong>
+              </span>
+            </span>
           </div>
           <div class="ayy-chart__column">
             <span class="ayy-chart__bar" data-value="$52.7K" style="--ayy-start: 0; --ayy-value: 87.8"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 30</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Total</span>
+                <strong class="ayy-chart__tooltip-value">$52.7K</strong>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -1212,7 +2199,285 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-chart__tick" style="--ayy-value: 0">0</span>
         <span class="ayy-chart__tick" style="--ayy-value: 50">6K</span>
         <span class="ayy-chart__tick" style="--ayy-value: 100">12K</span>
-        <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><g class="ayy-chart__series"><path class="ayy-chart__area" d="M0,56.67 C3.03,56.11 6.06,55 9.09,55 C12.12,55 15.15,55.83 18.18,55.83 C21.21,55.83 24.24,53.33 27.27,52.5 C30.3,51.67 33.33,51.39 36.36,50.83 C39.39,50.28 42.42,49.17 45.45,49.17 C48.48,49.17 51.52,50 54.55,50 C57.58,50 60.61,47.64 63.64,46.67 C66.67,45.69 69.7,44.17 72.73,44.17 C75.76,44.17 78.79,45 81.82,45 C84.85,45 87.88,43.33 90.91,42.5 C93.94,41.67 96.97,40.83 100,40 L100,100 L0,100 Z"></path><path class="ayy-chart__line" d="M0,56.67 C3.03,56.11 6.06,55 9.09,55 C12.12,55 15.15,55.83 18.18,55.83 C21.21,55.83 24.24,53.33 27.27,52.5 C30.3,51.67 33.33,51.39 36.36,50.83 C39.39,50.28 42.42,49.17 45.45,49.17 C48.48,49.17 51.52,50 54.55,50 C57.58,50 60.61,47.64 63.64,46.67 C66.67,45.69 69.7,44.17 72.73,44.17 C75.76,44.17 78.79,45 81.82,45 C84.85,45 87.88,43.33 90.91,42.5 C93.94,41.67 96.97,40.83 100,40"></path></g><g class="ayy-chart__series"><path class="ayy-chart__area" d="M0,39.17 C3.03,38.33 6.06,36.67 9.09,36.67 C12.12,36.67 15.15,37.92 18.18,37.92 C21.21,37.92 24.24,34.31 27.27,33.33 C30.3,32.36 33.33,32.78 36.36,32.08 C39.39,31.39 42.42,29.17 45.45,29.17 C48.48,29.17 51.52,29.17 54.55,29.17 C57.58,29.17 60.61,27.36 63.64,26.25 C66.67,25.14 69.7,22.5 72.73,22.5 C75.76,22.5 78.79,22.5 81.82,22.5 C84.85,22.5 87.88,21.39 90.91,20.42 C93.94,19.44 96.97,17.92 100,16.67 L100,40 C96.97,40.83 93.94,41.67 90.91,42.5 C87.88,43.33 84.85,45 81.82,45 C78.79,45 75.76,44.17 72.73,44.17 C69.7,44.17 66.67,45.69 63.64,46.67 C60.61,47.64 57.58,50 54.55,50 C51.52,50 48.48,49.17 45.45,49.17 C42.42,49.17 39.39,50.28 36.36,50.83 C33.33,51.39 30.3,51.67 27.27,52.5 C24.24,53.33 21.21,55.83 18.18,55.83 C15.15,55.83 12.12,55 9.09,55 C6.06,55 3.03,56.11 0,56.67 Z"></path><path class="ayy-chart__line" d="M0,39.17 C3.03,38.33 6.06,36.67 9.09,36.67 C12.12,36.67 15.15,37.92 18.18,37.92 C21.21,37.92 24.24,34.31 27.27,33.33 C30.3,32.36 33.33,32.78 36.36,32.08 C39.39,31.39 42.42,29.17 45.45,29.17 C48.48,29.17 51.52,29.17 54.55,29.17 C57.58,29.17 60.61,27.36 63.64,26.25 C66.67,25.14 69.7,22.5 72.73,22.5 C75.76,22.5 78.79,22.5 81.82,22.5 C84.85,22.5 87.88,21.39 90.91,20.42 C93.94,19.44 96.97,17.92 100,16.67"></path></g><g class="ayy-chart__series"><path class="ayy-chart__area" d="M0,31.67 C3.03,30.28 6.06,27.5 9.09,27.5 C12.12,27.5 15.15,29.58 18.18,29.58 C21.21,29.58 24.24,22.07 27.27,21.67 C30.3,21.27 33.33,21.37 36.36,21.25 C39.39,21.13 42.42,19.93 45.45,19.17 C48.48,18.4 51.52,17.85 54.55,16.67 C57.58,15.49 60.61,13.33 63.64,12.08 C66.67,10.83 69.7,9.17 72.73,9.17 C75.76,9.17 78.79,10 81.82,10 C84.85,10 87.88,6.94 90.91,5.42 C93.94,3.89 96.97,2.36 100,0.83 L100,16.67 C96.97,17.92 93.94,19.44 90.91,20.42 C87.88,21.39 84.85,22.5 81.82,22.5 C78.79,22.5 75.76,22.5 72.73,22.5 C69.7,22.5 66.67,25.14 63.64,26.25 C60.61,27.36 57.58,29.17 54.55,29.17 C51.52,29.17 48.48,29.17 45.45,29.17 C42.42,29.17 39.39,31.39 36.36,32.08 C33.33,32.78 30.3,32.36 27.27,33.33 C24.24,34.31 21.21,37.92 18.18,37.92 C15.15,37.92 12.12,36.67 9.09,36.67 C6.06,36.67 3.03,38.33 0,39.17 Z"></path><path class="ayy-chart__line" d="M0,31.67 C3.03,30.28 6.06,27.5 9.09,27.5 C12.12,27.5 15.15,29.58 18.18,29.58 C21.21,29.58 24.24,22.07 27.27,21.67 C30.3,21.27 33.33,21.37 36.36,21.25 C39.39,21.13 42.42,19.93 45.45,19.17 C48.48,18.4 51.52,17.85 54.55,16.67 C57.58,15.49 60.61,13.33 63.64,12.08 C66.67,10.83 69.7,9.17 72.73,9.17 C75.76,9.17 78.79,10 81.82,10 C84.85,10 87.88,6.94 90.91,5.42 C93.94,3.89 96.97,2.36 100,0.83"></path></g></svg>
+        <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><g class="ayy-chart__series"><defs><linearGradient id="ayy-chart-stacked-area-1-0" class="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><path class="ayy-chart__area" d="M0,56.67 C3.03,56.11 6.06,55 9.09,55 C12.12,55 15.15,55.83 18.18,55.83 C21.21,55.83 24.24,53.33 27.27,52.5 C30.3,51.67 33.33,51.39 36.36,50.83 C39.39,50.28 42.42,49.17 45.45,49.17 C48.48,49.17 51.52,50 54.55,50 C57.58,50 60.61,47.64 63.64,46.67 C66.67,45.69 69.7,44.17 72.73,44.17 C75.76,44.17 78.79,45 81.82,45 C84.85,45 87.88,43.33 90.91,42.5 C93.94,41.67 96.97,40.83 100,40 L100,100 L0,100 Z" style="fill: url(#ayy-chart-stacked-area-1-0)"></path><path class="ayy-chart__line" d="M0,56.67 C3.03,56.11 6.06,55 9.09,55 C12.12,55 15.15,55.83 18.18,55.83 C21.21,55.83 24.24,53.33 27.27,52.5 C30.3,51.67 33.33,51.39 36.36,50.83 C39.39,50.28 42.42,49.17 45.45,49.17 C48.48,49.17 51.52,50 54.55,50 C57.58,50 60.61,47.64 63.64,46.67 C66.67,45.69 69.7,44.17 72.73,44.17 C75.76,44.17 78.79,45 81.82,45 C84.85,45 87.88,43.33 90.91,42.5 C93.94,41.67 96.97,40.83 100,40"></path></g><g class="ayy-chart__series"><defs><linearGradient id="ayy-chart-stacked-area-1-1" class="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><path class="ayy-chart__area" d="M0,39.17 C3.03,38.33 6.06,36.67 9.09,36.67 C12.12,36.67 15.15,37.92 18.18,37.92 C21.21,37.92 24.24,34.31 27.27,33.33 C30.3,32.36 33.33,32.78 36.36,32.08 C39.39,31.39 42.42,29.17 45.45,29.17 C48.48,29.17 51.52,29.17 54.55,29.17 C57.58,29.17 60.61,27.36 63.64,26.25 C66.67,25.14 69.7,22.5 72.73,22.5 C75.76,22.5 78.79,22.5 81.82,22.5 C84.85,22.5 87.88,21.39 90.91,20.42 C93.94,19.44 96.97,17.92 100,16.67 L100,40 C96.97,40.83 93.94,41.67 90.91,42.5 C87.88,43.33 84.85,45 81.82,45 C78.79,45 75.76,44.17 72.73,44.17 C69.7,44.17 66.67,45.69 63.64,46.67 C60.61,47.64 57.58,50 54.55,50 C51.52,50 48.48,49.17 45.45,49.17 C42.42,49.17 39.39,50.28 36.36,50.83 C33.33,51.39 30.3,51.67 27.27,52.5 C24.24,53.33 21.21,55.83 18.18,55.83 C15.15,55.83 12.12,55 9.09,55 C6.06,55 3.03,56.11 0,56.67 Z" style="fill: url(#ayy-chart-stacked-area-1-1)"></path><path class="ayy-chart__line" d="M0,39.17 C3.03,38.33 6.06,36.67 9.09,36.67 C12.12,36.67 15.15,37.92 18.18,37.92 C21.21,37.92 24.24,34.31 27.27,33.33 C30.3,32.36 33.33,32.78 36.36,32.08 C39.39,31.39 42.42,29.17 45.45,29.17 C48.48,29.17 51.52,29.17 54.55,29.17 C57.58,29.17 60.61,27.36 63.64,26.25 C66.67,25.14 69.7,22.5 72.73,22.5 C75.76,22.5 78.79,22.5 81.82,22.5 C84.85,22.5 87.88,21.39 90.91,20.42 C93.94,19.44 96.97,17.92 100,16.67"></path></g><g class="ayy-chart__series"><defs><linearGradient id="ayy-chart-stacked-area-1-2" class="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><path class="ayy-chart__area" d="M0,31.67 C3.03,30.28 6.06,27.5 9.09,27.5 C12.12,27.5 15.15,29.58 18.18,29.58 C21.21,29.58 24.24,22.07 27.27,21.67 C30.3,21.27 33.33,21.37 36.36,21.25 C39.39,21.13 42.42,19.93 45.45,19.17 C48.48,18.4 51.52,17.85 54.55,16.67 C57.58,15.49 60.61,13.33 63.64,12.08 C66.67,10.83 69.7,9.17 72.73,9.17 C75.76,9.17 78.79,10 81.82,10 C84.85,10 87.88,6.94 90.91,5.42 C93.94,3.89 96.97,2.36 100,0.83 L100,16.67 C96.97,17.92 93.94,19.44 90.91,20.42 C87.88,21.39 84.85,22.5 81.82,22.5 C78.79,22.5 75.76,22.5 72.73,22.5 C69.7,22.5 66.67,25.14 63.64,26.25 C60.61,27.36 57.58,29.17 54.55,29.17 C51.52,29.17 48.48,29.17 45.45,29.17 C42.42,29.17 39.39,31.39 36.36,32.08 C33.33,32.78 30.3,32.36 27.27,33.33 C24.24,34.31 21.21,37.92 18.18,37.92 C15.15,37.92 12.12,36.67 9.09,36.67 C6.06,36.67 3.03,38.33 0,39.17 Z" style="fill: url(#ayy-chart-stacked-area-1-2)"></path><path class="ayy-chart__line" d="M0,31.67 C3.03,30.28 6.06,27.5 9.09,27.5 C12.12,27.5 15.15,29.58 18.18,29.58 C21.21,29.58 24.24,22.07 27.27,21.67 C30.3,21.27 33.33,21.37 36.36,21.25 C39.39,21.13 42.42,19.93 45.45,19.17 C48.48,18.4 51.52,17.85 54.55,16.67 C57.58,15.49 60.61,13.33 63.64,12.08 C66.67,10.83 69.7,9.17 72.73,9.17 C75.76,9.17 78.79,10 81.82,10 C84.85,10 87.88,6.94 90.91,5.42 C93.94,3.89 96.97,2.36 100,0.83"></path></g></svg>
+        <div class="ayy-chart__hits" style="--ayy-count: 12">
+          <div class="ayy-chart__hit" style="--ayy-x: 0">
+            <span class="ayy-chart__marker" style="--ayy-y: 43.3; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 60.8; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 68.3; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jul 7</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">5.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">900</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 9.09">
+            <span class="ayy-chart__marker" style="--ayy-y: 45; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 63.3; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 72.5; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jul 14</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">5.4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.1K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 18.18">
+            <span class="ayy-chart__marker" style="--ayy-y: 44.2; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 62.1; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 70.4; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jul 21</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">5.3K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 27.27">
+            <span class="ayy-chart__marker" style="--ayy-y: 47.5; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 66.7; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 78.3; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jul 28</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">5.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.3K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.4K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 36.36">
+            <span class="ayy-chart__marker" style="--ayy-y: 49.2; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 67.9; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 78.8; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Aug 4</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">5.9K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.3K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.3K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 45.45">
+            <span class="ayy-chart__marker" style="--ayy-y: 50.8; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 70.8; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 80.8; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Aug 11</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">6.1K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.2K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 54.55">
+            <span class="ayy-chart__marker" style="--ayy-y: 50; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 70.8; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 83.3; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Aug 18</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">6K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.5K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.5K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 63.64">
+            <span class="ayy-chart__marker" style="--ayy-y: 53.3; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 73.8; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 87.9; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Aug 25</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">6.4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.5K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.7K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 72.73">
+            <span class="ayy-chart__marker" style="--ayy-y: 55.8; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 77.5; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 90.8; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 1</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">6.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.6K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.6K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 81.82">
+            <span class="ayy-chart__marker" style="--ayy-y: 55; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 77.5; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 90; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 8</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">6.6K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.5K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 90.91">
+            <span class="ayy-chart__marker" style="--ayy-y: 57.5; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 79.6; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 94.6; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 15</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">6.9K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.8K</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 100">
+            <span class="ayy-chart__marker" style="--ayy-y: 60; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 83.3; --ayy-chart-color: var(--ayy-chart-2)"></span>
+            <span class="ayy-chart__marker" style="--ayy-y: 99.2; --ayy-chart-color: var(--ayy-chart-3)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep 22</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Organic</span>
+                <strong class="ayy-chart__tooltip-value">7.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Direct</span>
+                <strong class="ayy-chart__tooltip-value">2.8K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Referral</span>
+                <strong class="ayy-chart__tooltip-value">1.9K</strong>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="ayy-chart__labels" aria-hidden="true">
         <span>Jul 7</span>
@@ -1221,10 +2486,16 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>Sep 1</span>
         <span>Sep 22</span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Organic</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Direct</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Referral</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Organic</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Direct</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Referral</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -1334,6 +2605,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <LineChart
+          toggle
           stacked
           label="Weekly sessions by source, July to September"
           labels={weeks}
@@ -1366,6 +2638,140 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-chart__tick" style="--ayy-value: 50">25</span>
         <span class="ayy-chart__tick" style="--ayy-value: 100">50</span>
         <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><g class="ayy-chart__series"><defs><linearGradient id="ayy-chart-step-1-0" class="ayy-chart__gradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><path class="ayy-chart__area" d="M0,80 L4.55,80 L4.55,80 L13.64,80 L13.64,70 L22.73,70 L22.73,70 L31.82,70 L31.82,70 L40.91,70 L40.91,50 L50,50 L50,50 L59.09,50 L59.09,50 L68.18,50 L68.18,50 L77.27,50 L77.27,20 L86.36,20 L86.36,20 L95.45,20 L95.45,0 L100,0 L100,100 L0,100 Z" style="fill: url(#ayy-chart-step-1-0)"></path><path class="ayy-chart__line" d="M0,80 L4.55,80 L4.55,80 L13.64,80 L13.64,70 L22.73,70 L22.73,70 L31.82,70 L31.82,70 L40.91,70 L40.91,50 L50,50 L50,50 L59.09,50 L59.09,50 L68.18,50 L68.18,50 L77.27,50 L77.27,20 L86.36,20 L86.36,20 L95.45,20 L95.45,0 L100,0"></path></g></svg>
+        <div class="ayy-chart__hits" style="--ayy-count: 12">
+          <div class="ayy-chart__hit" style="--ayy-x: 0">
+            <span class="ayy-chart__marker" style="--ayy-y: 20; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Nov</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">10</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 9.09">
+            <span class="ayy-chart__marker" style="--ayy-y: 20; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Dec</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">10</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 18.18">
+            <span class="ayy-chart__marker" style="--ayy-y: 30; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Jan</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">15</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 27.27">
+            <span class="ayy-chart__marker" style="--ayy-y: 30; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Feb</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">15</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 36.36">
+            <span class="ayy-chart__marker" style="--ayy-y: 30; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Mar</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">15</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 45.45">
+            <span class="ayy-chart__marker" style="--ayy-y: 50; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Apr</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">25</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 54.55">
+            <span class="ayy-chart__marker" style="--ayy-y: 50; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">May</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">25</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 63.64">
+            <span class="ayy-chart__marker" style="--ayy-y: 50; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Jun</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">25</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 72.73">
+            <span class="ayy-chart__marker" style="--ayy-y: 50; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Jul</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">25</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 81.82">
+            <span class="ayy-chart__marker" style="--ayy-y: 80; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Aug</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">40</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 90.91">
+            <span class="ayy-chart__marker" style="--ayy-y: 80; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Sep</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">40</strong>
+              </span>
+            </span>
+          </div>
+          <div class="ayy-chart__hit" style="--ayy-x: 100">
+            <span class="ayy-chart__marker" style="--ayy-y: 100; --ayy-chart-color: var(--ayy-chart-1)"></span>
+            <span class="ayy-chart__tooltip" data-side="end">
+              <span class="ayy-chart__tooltip-title">Oct</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Paid seats</span>
+                <strong class="ayy-chart__tooltip-value">50</strong>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="ayy-chart__labels" aria-hidden="true">
         <span>Nov</span>
@@ -1483,25 +2889,263 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-chart__tick" style="--ayy-value: 50">50</span>
         <span class="ayy-chart__tick" style="--ayy-value: 100">100</span>
         <div class="ayy-chart__series">
-          <span class="ayy-chart__dot" data-value="$8K, 12" style="--ayy-x: 10; --ayy-y: 12"></span>
-          <span class="ayy-chart__dot" data-value="$12K, 18" style="--ayy-x: 15; --ayy-y: 18"></span>
-          <span class="ayy-chart__dot" data-value="$15K, 15" style="--ayy-x: 18.8; --ayy-y: 15"></span>
-          <span class="ayy-chart__dot" data-value="$22K, 26" style="--ayy-x: 27.5; --ayy-y: 26"></span>
-          <span class="ayy-chart__dot" data-value="$26K, 31" style="--ayy-x: 32.5; --ayy-y: 31"></span>
-          <span class="ayy-chart__dot" data-value="$31K, 28" style="--ayy-x: 38.8; --ayy-y: 28"></span>
-          <span class="ayy-chart__dot" data-value="$38K, 42" style="--ayy-x: 47.5; --ayy-y: 42"></span>
-          <span class="ayy-chart__dot" data-value="$44K, 39" style="--ayy-x: 55; --ayy-y: 39"></span>
-          <span class="ayy-chart__dot" data-value="$52K, 55" style="--ayy-x: 65; --ayy-y: 55"></span>
-          <span class="ayy-chart__dot" data-value="$61K, 48" style="--ayy-x: 76.3; --ayy-y: 48"></span>
+          <span class="ayy-chart__dot" style="--ayy-x: 10; --ayy-y: 12">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$8K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">12</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 15; --ayy-y: 18">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$12K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">18</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 18.8; --ayy-y: 15">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$15K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">15</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 27.5; --ayy-y: 26">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$22K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">26</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 32.5; --ayy-y: 31">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$26K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">31</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 38.8; --ayy-y: 28">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$31K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">28</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 47.5; --ayy-y: 42">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$38K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">42</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 55; --ayy-y: 39">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$44K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">39</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 65; --ayy-y: 55">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$52K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">55</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 76.3; --ayy-y: 48">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Won</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$61K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">48</strong>
+              </span>
+            </span>
+          </span>
         </div>
         <div class="ayy-chart__series">
-          <span class="ayy-chart__dot" data-value="$9K, 34" style="--ayy-x: 11.3; --ayy-y: 34"></span>
-          <span class="ayy-chart__dot" data-value="$18K, 47" style="--ayy-x: 22.5; --ayy-y: 47"></span>
-          <span class="ayy-chart__dot" data-value="$24K, 58" style="--ayy-x: 30; --ayy-y: 58"></span>
-          <span class="ayy-chart__dot" data-value="$35K, 66" style="--ayy-x: 43.8; --ayy-y: 66"></span>
-          <span class="ayy-chart__dot" data-value="$47K, 72" style="--ayy-x: 58.8; --ayy-y: 72"></span>
-          <span class="ayy-chart__dot" data-value="$58K, 81" style="--ayy-x: 72.5; --ayy-y: 81"></span>
-          <span class="ayy-chart__dot" data-value="$72K, 64" style="--ayy-x: 90; --ayy-y: 64"></span>
+          <span class="ayy-chart__dot" style="--ayy-x: 11.3; --ayy-y: 34">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$9K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">34</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 22.5; --ayy-y: 47">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$18K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">47</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 30; --ayy-y: 58">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$24K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">58</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 43.8; --ayy-y: 66">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$35K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">66</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 58.8; --ayy-y: 72">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$47K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">72</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 72.5; --ayy-y: 81">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$58K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">81</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 90; --ayy-y: 64">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Lost</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Deal size</span>
+                <strong class="ayy-chart__tooltip-value">$72K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Days to close</span>
+                <strong class="ayy-chart__tooltip-value">64</strong>
+              </span>
+            </span>
+          </span>
         </div>
       </div>
       <div class="ayy-chart__labels" aria-hidden="true">
@@ -1510,9 +3154,13 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span>$80K</span>
       </div>
       <span class="ayy-chart__axis" aria-hidden="true">Deal size</span>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Won</li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Lost</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Won</button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Lost</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -1634,6 +3282,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <ScatterChart
+          toggle
           label="Deals closed this quarter, by size and days to close"
           xLabel="Deal size"
           yLabel="Days to close"
@@ -1679,13 +3328,146 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-chart__tick" style="--ayy-value: 50">$2K</span>
         <span class="ayy-chart__tick" style="--ayy-value: 100">$4K</span>
         <div class="ayy-chart__series">
-          <span class="ayy-chart__dot" data-value="Germany: $210, $2.9K, 4.2K" style="--ayy-x: 42; --ayy-y: 72.5; --ayy-z: 100"></span>
-          <span class="ayy-chart__dot" data-value="France: $260, $2.4K, 2.6K" style="--ayy-x: 52; --ayy-y: 60; --ayy-z: 78.7"></span>
-          <span class="ayy-chart__dot" data-value="Spain: $150, $1.5K, 1.4K" style="--ayy-x: 30; --ayy-y: 37.5; --ayy-z: 57.7"></span>
-          <span class="ayy-chart__dot" data-value="Italy: $190, $1.7K, 900" style="--ayy-x: 38; --ayy-y: 42.5; --ayy-z: 46.3"></span>
-          <span class="ayy-chart__dot" data-value="Netherlands: $320, $3.2K, 1.1K" style="--ayy-x: 64; --ayy-y: 80; --ayy-z: 51.2"></span>
-          <span class="ayy-chart__dot" data-value="Poland: $110, $950, 600" style="--ayy-x: 22; --ayy-y: 23.8; --ayy-z: 37.8"></span>
-          <span class="ayy-chart__dot" data-value="Sweden: $410, $2.7K, 450" style="--ayy-x: 82; --ayy-y: 67.5; --ayy-z: 32.7"></span>
+          <span class="ayy-chart__dot" style="--ayy-x: 42; --ayy-y: 72.5; --ayy-z: 100">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Germany</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$210</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$2.9K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">4.2K</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 52; --ayy-y: 60; --ayy-z: 78.7">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">France</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$260</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$2.4K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">2.6K</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 30; --ayy-y: 37.5; --ayy-z: 57.7">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Spain</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$150</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$1.5K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">1.4K</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 38; --ayy-y: 42.5; --ayy-z: 46.3">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Italy</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$190</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$1.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">900</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 64; --ayy-y: 80; --ayy-z: 51.2">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Netherlands</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$320</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$3.2K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">1.1K</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 22; --ayy-y: 23.8; --ayy-z: 37.8">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Poland</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$110</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$950</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">600</strong>
+              </span>
+            </span>
+          </span>
+          <span class="ayy-chart__dot" style="--ayy-x: 82; --ayy-y: 67.5; --ayy-z: 32.7">
+            <span class="ayy-chart__tooltip">
+              <span class="ayy-chart__tooltip-title">Sweden</span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Acquisition cost</span>
+                <strong class="ayy-chart__tooltip-value">$410</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Lifetime value</span>
+                <strong class="ayy-chart__tooltip-value">$2.7K</strong>
+              </span>
+              <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+                <span class="ayy-chart__swatch"></span>
+                <span class="ayy-chart__tooltip-name">Customers</span>
+                <strong class="ayy-chart__tooltip-value">450</strong>
+              </span>
+            </span>
+          </span>
         </div>
       </div>
       <div class="ayy-chart__labels" aria-hidden="true">
@@ -1811,14 +3593,54 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-card__content">
     <figure class="ayy-chart" style="--ayy-chart-height: 10rem">
       <div class="ayy-chart__plot" aria-hidden="true">
-        <svg class="ayy-chart__ring" viewBox="0 0 100 100" focusable="false"><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 0; --ayy-value: 43.7"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 43.7; --ayy-value: 30.3"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 74; --ayy-value: 14.8"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 88.8; --ayy-value: 11.3"></circle></svg>
+        <svg class="ayy-chart__ring" viewBox="0 0 100 100" focusable="false"><defs><linearGradient id="ayy-chart-donut-1-0" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-1)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient><linearGradient id="ayy-chart-donut-1-1" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-2)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient><linearGradient id="ayy-chart-donut-1-2" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-3)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient><linearGradient id="ayy-chart-donut-1-3" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-4)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 0; --ayy-value: 43.7; stroke: url(#ayy-chart-donut-1-0)"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 43.7; --ayy-value: 30.3; stroke: url(#ayy-chart-donut-1-1)"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 74; --ayy-value: 14.8; stroke: url(#ayy-chart-donut-1-2)"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-start: 88.8; --ayy-value: 11.3; stroke: url(#ayy-chart-donut-1-3)"></circle></svg>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 89.22; --ayy-y: 57.87">
+          <span class="ayy-chart__tooltip-title">Email</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Tickets</span>
+            <strong class="ayy-chart__tooltip-value">1,240 · 43.7%</strong>
+          </span>
+        </span>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 28.89; --ayy-y: 16.03">
+          <span class="ayy-chart__tooltip-title">Chat</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Tickets</span>
+            <strong class="ayy-chart__tooltip-value">860 · 30.3%</strong>
+          </span>
+        </span>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 13.19; --ayy-y: 65.65">
+          <span class="ayy-chart__tooltip-title">Phone</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Tickets</span>
+            <strong class="ayy-chart__tooltip-value">420 · 14.8%</strong>
+          </span>
+        </span>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 36.33; --ayy-y: 87.59">
+          <span class="ayy-chart__tooltip-title">Social</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-4)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Tickets</span>
+            <strong class="ayy-chart__tooltip-value">320 · 11.3%</strong>
+          </span>
+        </span>
         <p class="ayy-chart__total"><span class="ayy-chart__total-value">2,840</span>tickets</p>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Email<span class="ayy-chart__legend-value">43.7%</span></li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Chat<span class="ayy-chart__legend-value">30.3%</span></li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Phone<span class="ayy-chart__legend-value">14.8%</span></li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Social<span class="ayy-chart__legend-value">11.3%</span></li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Email<span class="ayy-chart__legend-value">43.7%</span></button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Chat<span class="ayy-chart__legend-value">30.3%</span></button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Phone<span class="ayy-chart__legend-value">14.8%</span></button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Social<span class="ayy-chart__legend-value">11.3%</span></button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -1867,6 +3689,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <DonutChart
+          toggle
           label="Support tickets by channel, September"
           name="Tickets"
           totalLabel="tickets"
@@ -1897,13 +3720,53 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-card__content">
     <figure class="ayy-chart ayy-chart--pie" style="--ayy-chart-height: 9rem">
       <div class="ayy-chart__plot" aria-hidden="true">
-        <svg class="ayy-chart__ring" viewBox="0 0 100 100" focusable="false"><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 0; --ayy-value: 48"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 48; --ayy-value: 31"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 79; --ayy-value: 12"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 91; --ayy-value: 9"></circle></svg>
+        <svg class="ayy-chart__ring" viewBox="0 0 100 100" focusable="false"><defs><linearGradient id="ayy-chart-pie-1-0" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-1)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient><linearGradient id="ayy-chart-pie-1-1" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-2)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient><linearGradient id="ayy-chart-pie-1-2" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-3)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient><linearGradient id="ayy-chart-pie-1-3" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-4)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 0; --ayy-value: 48; stroke: url(#ayy-chart-pie-1-0)"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 48; --ayy-value: 31; stroke: url(#ayy-chart-pie-1-1)"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 79; --ayy-value: 12; stroke: url(#ayy-chart-pie-1-2)"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="25" pathLength="100" style="--ayy-start: 91; --ayy-value: 9; stroke: url(#ayy-chart-pie-1-3)"></circle></svg>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 64.97; --ayy-y: 50.94">
+          <span class="ayy-chart__tooltip-title">Photos</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Storage</span>
+            <strong class="ayy-chart__tooltip-value">48 GB · 48%</strong>
+          </span>
+        </span>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 38.75; --ayy-y: 40.08">
+          <span class="ayy-chart__tooltip-title">Videos</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-2)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Storage</span>
+            <strong class="ayy-chart__tooltip-value">31 GB · 31%</strong>
+          </span>
+        </span>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 37.86; --ayy-y: 58.82">
+          <span class="ayy-chart__tooltip-title">Documents</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-3)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Storage</span>
+            <strong class="ayy-chart__tooltip-value">12 GB · 12%</strong>
+          </span>
+        </span>
+        <span class="ayy-chart__tooltip" style="--ayy-x: 45.82; --ayy-y: 64.4">
+          <span class="ayy-chart__tooltip-title">Other</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-4)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Storage</span>
+            <strong class="ayy-chart__tooltip-value">9 GB · 9%</strong>
+          </span>
+        </span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Photos<span class="ayy-chart__legend-value">48%</span></li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Videos<span class="ayy-chart__legend-value">31%</span></li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Documents<span class="ayy-chart__legend-value">12%</span></li>
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>Other<span class="ayy-chart__legend-value">9%</span></li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Photos<span class="ayy-chart__legend-value">48%</span></button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Videos<span class="ayy-chart__legend-value">31%</span></button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Documents<span class="ayy-chart__legend-value">12%</span></button>
+        </li>
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>Other<span class="ayy-chart__legend-value">9%</span></button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -1953,6 +3816,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <DonutChart
+          toggle
           pie
           label="Storage used by file type"
           name="Storage"
@@ -1984,13 +3848,27 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <div class="ayy-grid" style="--ayy-min: 10rem">
       <figure class="ayy-chart ayy-chart--gauge" style="--ayy-chart-height: 10rem">
         <div class="ayy-chart__plot" role="meter" aria-label="Ad spend this month" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="7240" aria-valuetext="$7.2K of $10K ad spend">
-          <svg class="ayy-chart__ring" viewBox="0 0 100 50" focusable="false" aria-hidden="true"><circle class="ayy-chart__track" cx="50" cy="50" r="40" pathLength="100"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-value: 72.4"></circle></svg>
+          <svg class="ayy-chart__ring" viewBox="0 0 100 50" focusable="false" aria-hidden="true"><defs><linearGradient id="ayy-chart-gauge-1-0" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-chart-1)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><circle class="ayy-chart__track" cx="50" cy="50" r="40" pathLength="100"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-value: 72.4; stroke: url(#ayy-chart-gauge-1-0)"></circle></svg>
+          <span class="ayy-chart__tooltip">
+            <span class="ayy-chart__tooltip-title">Ad spend this month</span>
+            <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+              <span class="ayy-chart__swatch"></span>
+              <strong class="ayy-chart__tooltip-value">$7.2K of $10K ad spend</strong>
+            </span>
+          </span>
           <p class="ayy-chart__total"><span class="ayy-chart__total-value">$7.2K</span>of $10K ad spend</p>
         </div>
       </figure>
       <figure class="ayy-chart ayy-chart--gauge" style="--ayy-chart-height: 10rem">
         <div class="ayy-chart__plot" role="meter" aria-label="API calls this month" aria-valuemin="0" aria-valuemax="100000" aria-valuenow="92000" aria-valuetext="92K of 100K API calls">
-          <svg class="ayy-chart__ring" viewBox="0 0 100 50" focusable="false" aria-hidden="true"><circle class="ayy-chart__track" cx="50" cy="50" r="40" pathLength="100"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-value: 92; --ayy-chart-color: var(--ayy-color-warning)"></circle></svg>
+          <svg class="ayy-chart__ring" viewBox="0 0 100 50" focusable="false" aria-hidden="true"><defs><linearGradient id="ayy-chart-gauge-2-0" class="ayy-chart__gradient" x1="0" y1="0" x2="1" y2="1" style="--ayy-chart-color: var(--ayy-color-warning)"><stop offset="0"></stop><stop offset="1"></stop></linearGradient></defs><circle class="ayy-chart__track" cx="50" cy="50" r="40" pathLength="100"></circle><circle class="ayy-chart__slice" cx="50" cy="50" r="40" pathLength="100" style="--ayy-value: 92; --ayy-chart-color: var(--ayy-color-warning); stroke: url(#ayy-chart-gauge-2-0)"></circle></svg>
+          <span class="ayy-chart__tooltip">
+            <span class="ayy-chart__tooltip-title">API calls this month</span>
+            <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-warning)">
+              <span class="ayy-chart__swatch"></span>
+              <strong class="ayy-chart__tooltip-value">92K of 100K API calls</strong>
+            </span>
+          </span>
           <p class="ayy-chart__total"><span class="ayy-chart__total-value">92K</span>of 100K API calls</p>
         </div>
       </figure>
@@ -2053,17 +3931,21 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-card__content">
     <figure class="ayy-chart ayy-chart--radar">
       <div class="ayy-chart__plot" aria-hidden="true">
-        <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><path class="ayy-chart__grid" d="M50,40 L58.66,45 L58.66,55 L50,60 L41.34,55 L41.34,45 Z M50,30 L67.32,40 L67.32,60 L50,70 L32.68,60 L32.68,40 Z M50,20 L75.98,35 L75.98,65 L50,80 L24.02,65 L24.02,35 Z M50,10 L84.64,30 L84.64,70 L50,90 L15.36,70 L15.36,30 Z M50,50 L50,10 M50,50 L84.64,30 M50,50 L84.64,70 M50,50 L50,90 M50,50 L15.36,70 M50,50 L15.36,30"></path><g class="ayy-chart__series"><path class="ayy-chart__area" d="M50,17.2 L76.33,34.8 L80.48,67.6 L50,77.6 L24.37,64.8 L28.87,37.8 Z"></path><path class="ayy-chart__line" d="M50,17.2 L76.33,34.8 L80.48,67.6 L50,77.6 L24.37,64.8 L28.87,37.8 Z"></path></g><g class="ayy-chart__series ayy-chart__series--compare"><path class="ayy-chart__area" d="M50,20.4 L74.6,35.8 L79.44,67 L50,80.4 L26.44,63.6 L31.99,39.6 Z"></path><path class="ayy-chart__line" d="M50,20.4 L74.6,35.8 L79.44,67 L50,80.4 L26.44,63.6 L31.99,39.6 Z"></path></g></svg>
-        <span class="ayy-chart__label" style="--ayy-x: 50; --ayy-y: 92">Ease of use</span>
-        <span class="ayy-chart__label" style="--ayy-x: 86.37; --ayy-y: 71">Speed</span>
-        <span class="ayy-chart__label" style="--ayy-x: 86.37; --ayy-y: 29">Reliability</span>
-        <span class="ayy-chart__label" style="--ayy-x: 50; --ayy-y: 8">Support</span>
-        <span class="ayy-chart__label" style="--ayy-x: 13.63; --ayy-y: 29">Value</span>
-        <span class="ayy-chart__label" style="--ayy-x: 13.63; --ayy-y: 71">Docs</span>
+        <svg class="ayy-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><path class="ayy-chart__grid" d="M50,40 L58.66,45 L58.66,55 L50,60 L41.34,55 L41.34,45 Z M50,30 L67.32,40 L67.32,60 L50,70 L32.68,60 L32.68,40 Z M50,20 L75.98,35 L75.98,65 L50,80 L24.02,65 L24.02,35 Z M50,10 L84.64,30 L84.64,70 L50,90 L15.36,70 L15.36,30 Z M50,50 L50,10 M50,50 L84.64,30 M50,50 L84.64,70 M50,50 L50,90 M50,50 L15.36,70 M50,50 L15.36,30"></path><g class="ayy-chart__series"><defs><radialGradient id="ayy-chart-radar-1-0" class="ayy-chart__gradient"><stop offset="0"></stop><stop offset="1"></stop></radialGradient></defs><path class="ayy-chart__area" d="M50,17.2 L76.33,34.8 L80.48,67.6 L50,77.6 L24.37,64.8 L28.87,37.8 Z" style="fill: url(#ayy-chart-radar-1-0)"></path><path class="ayy-chart__line" d="M50,17.2 L76.33,34.8 L80.48,67.6 L50,77.6 L24.37,64.8 L28.87,37.8 Z"></path></g><g class="ayy-chart__series ayy-chart__series--compare"><defs><radialGradient id="ayy-chart-radar-1-1" class="ayy-chart__gradient"><stop offset="0"></stop><stop offset="1"></stop></radialGradient></defs><path class="ayy-chart__area" d="M50,20.4 L74.6,35.8 L79.44,67 L50,80.4 L26.44,63.6 L31.99,39.6 Z" style="fill: url(#ayy-chart-radar-1-1)"></path><path class="ayy-chart__line" d="M50,20.4 L74.6,35.8 L79.44,67 L50,80.4 L26.44,63.6 L31.99,39.6 Z"></path></g></svg>
+        <span class="ayy-chart__label" style="--ayy-x: 50; --ayy-y: 92">Ease of use<span class="ayy-chart__tooltip"><span class="ayy-chart__tooltip-title">Ease of use</span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2026</span><strong class="ayy-chart__tooltip-value">8.2</strong></span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2025</span><strong class="ayy-chart__tooltip-value">7.4</strong></span></span></span>
+        <span class="ayy-chart__label" style="--ayy-x: 86.37; --ayy-y: 71">Speed<span class="ayy-chart__tooltip"><span class="ayy-chart__tooltip-title">Speed</span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2026</span><strong class="ayy-chart__tooltip-value">7.6</strong></span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2025</span><strong class="ayy-chart__tooltip-value">7.1</strong></span></span></span>
+        <span class="ayy-chart__label" style="--ayy-x: 86.37; --ayy-y: 29">Reliability<span class="ayy-chart__tooltip"><span class="ayy-chart__tooltip-title">Reliability</span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2026</span><strong class="ayy-chart__tooltip-value">8.8</strong></span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2025</span><strong class="ayy-chart__tooltip-value">8.5</strong></span></span></span>
+        <span class="ayy-chart__label" style="--ayy-x: 50; --ayy-y: 8">Support<span class="ayy-chart__tooltip"><span class="ayy-chart__tooltip-title">Support</span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2026</span><strong class="ayy-chart__tooltip-value">6.9</strong></span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2025</span><strong class="ayy-chart__tooltip-value">7.6</strong></span></span></span>
+        <span class="ayy-chart__label" style="--ayy-x: 13.63; --ayy-y: 29">Value<span class="ayy-chart__tooltip"><span class="ayy-chart__tooltip-title">Value</span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2026</span><strong class="ayy-chart__tooltip-value">7.4</strong></span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2025</span><strong class="ayy-chart__tooltip-value">6.8</strong></span></span></span>
+        <span class="ayy-chart__label" style="--ayy-x: 13.63; --ayy-y: 71">Docs<span class="ayy-chart__tooltip"><span class="ayy-chart__tooltip-title">Docs</span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2026</span><strong class="ayy-chart__tooltip-value">6.1</strong></span><span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-color-muted)"><span class="ayy-chart__swatch"></span><span class="ayy-chart__tooltip-name">2025</span><strong class="ayy-chart__tooltip-value">5.2</strong></span></span></span>
       </div>
-      <ul class="ayy-chart__legend" aria-hidden="true">
-        <li class="ayy-chart__legend-item"><span class="ayy-chart__swatch"></span>2026</li>
-        <li class="ayy-chart__legend-item ayy-chart__legend-item--compare"><span class="ayy-chart__swatch"></span>2025</li>
+      <ul class="ayy-chart__legend">
+        <li class="ayy-chart__legend-item">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>2026</button>
+        </li>
+        <li class="ayy-chart__legend-item ayy-chart__legend-item--compare">
+          <button type="button" class="ayy-chart__legend-toggle" aria-pressed="true"><span class="ayy-chart__swatch"></span>2025</button>
+        </li>
       </ul>
       <div class="ayy-sr-only">
         <table>
@@ -2128,6 +4010,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <RadarChart
+          toggle
           label="Customer survey scores out of 10, this year and last"
           axes={["Ease of use", "Speed", "Reliability", "Support", "Value", "Docs"]}
           max={10}
@@ -2470,30 +4353,90 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-funnel__bar"></span>
         <span class="ayy-funnel__value">12,400</span>
         <span class="ayy-funnel__rate">100%</span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Visited pricing</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Count</span>
+            <strong class="ayy-chart__tooltip-value">12,400</strong>
+          </span>
+        </span>
       </li>
       <li class="ayy-funnel__step" style="--ayy-value: 39">
         <span class="ayy-funnel__label">Started signup</span>
         <span class="ayy-funnel__bar"></span>
         <span class="ayy-funnel__value">4,830</span>
         <span class="ayy-funnel__rate">39%<span class="ayy-sr-only"> of the step before</span></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Started signup</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Count</span>
+            <strong class="ayy-chart__tooltip-value">4,830</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Of the step before</span>
+            <strong class="ayy-chart__tooltip-value">39%</strong>
+          </span>
+        </span>
       </li>
       <li class="ayy-funnel__step" style="--ayy-value: 29.1">
         <span class="ayy-funnel__label">Verified email</span>
         <span class="ayy-funnel__bar"></span>
         <span class="ayy-funnel__value">3,610</span>
         <span class="ayy-funnel__rate">74.7%<span class="ayy-sr-only"> of the step before</span></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Verified email</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Count</span>
+            <strong class="ayy-chart__tooltip-value">3,610</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Of the step before</span>
+            <strong class="ayy-chart__tooltip-value">74.7%</strong>
+          </span>
+        </span>
       </li>
       <li class="ayy-funnel__step" style="--ayy-value: 18.1">
         <span class="ayy-funnel__label">Created a workspace</span>
         <span class="ayy-funnel__bar"></span>
         <span class="ayy-funnel__value">2,240</span>
         <span class="ayy-funnel__rate">62%<span class="ayy-sr-only"> of the step before</span></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Created a workspace</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Count</span>
+            <strong class="ayy-chart__tooltip-value">2,240</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Of the step before</span>
+            <strong class="ayy-chart__tooltip-value">62%</strong>
+          </span>
+        </span>
       </li>
       <li class="ayy-funnel__step" style="--ayy-value: 9">
         <span class="ayy-funnel__label">Invited a teammate</span>
         <span class="ayy-funnel__bar"></span>
         <span class="ayy-funnel__value">1,120</span>
         <span class="ayy-funnel__rate">50%<span class="ayy-sr-only"> of the step before</span></span>
+        <span class="ayy-chart__tooltip">
+          <span class="ayy-chart__tooltip-title">Invited a teammate</span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Count</span>
+            <strong class="ayy-chart__tooltip-value">1,120</strong>
+          </span>
+          <span class="ayy-chart__tooltip-row" style="--ayy-chart-color: var(--ayy-chart-1)">
+            <span class="ayy-chart__swatch"></span>
+            <span class="ayy-chart__tooltip-name">Of the step before</span>
+            <strong class="ayy-chart__tooltip-value">50%</strong>
+          </span>
+        </span>
       </li>
     </ol>
   </div>

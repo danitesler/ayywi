@@ -1,6 +1,6 @@
 # Tooltip
 
-Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone; with React Tooltip or <ayy-tooltip> it moves to the top layer (never clipped) and flips at screen edges. Also called: tooltip, tip.
+Category: Overlays. A short hint that appears when someone hovers or focuses an element, for naming icon buttons or giving a little extra detail. It stays inside the screen and never gets clipped. Also called: tooltip, tip.
 
 **Classes**
 - `.ayy-tooltip` — Wrapper around the trigger. Shows the content on :hover and :focus-within.
@@ -35,12 +35,14 @@ Category: Overlays. Short hint on hover or keyboard focus. Works with CSS alone;
 
 **Do**
 - Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.
+- Keep action tooltips general ("Edit", "Delete", "More actions", "Copy"), never specific to an item ("Edit Lumen Labs") — leave the specific item in aria-label for screen readers.
 - Show a shortcut with <Shortcut keys="Mod+…" /> (or .ayy-shortcut in HTML) so Mac and Windows users each see their own keys as keycaps.
 - Keep it under ~60 characters.
 - Use side="start"/"end", not left/right, so RTL works.
 - Inside overflow:hidden containers, use the React component or <ayy-tooltip> — the CSS-only version can be clipped there.
 
 **Don't**
+- Don't put specific names or objects in action tooltips ("Edit Project X", "Delete Northwind") — use "Edit" or "Delete" so tooltips stay short and don't duplicate visible context.
 - Don't put essential information in a tooltip — tooltips are invisible on touch devices.
 - Don't put interactive content (links, buttons) in a tooltip — use a popover or dialog.
 - Don't wrap disabled buttons — they can't receive focus or hover events reliably.

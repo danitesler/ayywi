@@ -1,6 +1,8 @@
-import { forwardRef, useEffect, useRef, type ButtonHTMLAttributes, type HTMLAttributes } from "react";
+import { forwardRef, useContext, useEffect, useRef, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import { mergeRefs } from "../../lib/refs";
+import { Tooltip, tooltipContext } from "../tooltip/tooltip.react";
+import type { TooltipSide } from "../tooltip/tooltip";
 import {
   connectToolbar,
   toolbarButtonClass,
@@ -53,14 +55,32 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar
 export interface ToolbarButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** A tool that stays on (the current pen, bold): aria-pressed. Leave undefined for one-off actions. */
   pressed?: boolean;
+  /** Custom tooltip text or element; buttons with aria-label show their tooltip on hover by default. */
+  tooltip?: ReactNode | boolean;
+  tooltipSide?: TooltipSide;
 }
 
 /** A tool: an icon (give it aria-label) or an icon and a short label. */
 export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(function ToolbarButton(
-  { pressed, type = "button", className, ...props },
+  { pressed, type = "button", tooltip, tooltipSide = "top", className, ...props },
   ref,
 ) {
-  return <button ref={ref} type={type} aria-pressed={pressed} className={cx(toolbarButtonClass, className)} {...props} />;
+  const hasParentTooltip = useContext(tooltipContext);
+  const ariaLabel = props["aria-label"];
+  const tooltipContent =
+    !hasParentTooltip && tooltip !== false
+      ? (tooltip ?? ariaLabel)
+      : undefined;
+
+  const button = <button ref={ref} type={type} aria-pressed={pressed} className={cx(toolbarButtonClass, className)} {...props} />;
+
+  if (!tooltipContent) return button;
+
+  return (
+    <Tooltip side={tooltipSide} content={tooltipContent}>
+      {button}
+    </Tooltip>
+  );
 });
 
 export interface ToolbarGroupProps extends HTMLAttributes<HTMLDivElement> {}

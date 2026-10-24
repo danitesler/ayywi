@@ -11,24 +11,168 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Settings](#/settings)**
+  Appearance settings had no picture picker or reusable appearance rows → added `SettingsPicker`, `SettingsOption` and `SettingsScreen` (`ayy-settings__picker`, `ayy-settings__option`, `ayy-settings__preview`, `ayy-settings__caption`, `ayy-settings__screen`) for visual options with miniature token-drawn app screens (including split light/dark for System), `data-motion="reduce"` for app-level reduced motion, a live `appearance` example at the bottom of the Settings page, and a contract rule to use them for theme, density, text size, brand colour, corners, font, motion, language, direction and reset.
+
+- **[Chart](#/chart)**
+  Colours, legend and hover card — a new first example on the Chart page shows every colour a chart can use as a swatch, the legend that switches series and the hover card on its own (`ChartTooltip`).
+
+- **[Chart](#/chart)**
+  Legend that switches series — the legend entries in the Chart examples (columns, lines, areas, scatter, donut, pie, radar) are now buttons that hide and show their series, on any chart with `toggle` (`hiddenSeries` controls it), and `ChartLegend` can be used on its own. In plain HTML the same buttons work with the page-wide helpers.
+
+- **[Table](#/table)**
+  One feature-rich preview → Simple and Medium previews now come before the full Playground.
+
+- **[Table](#/table)**
+  Rows were fixed in place → drag a row by its handle (or use the arrow keys on it) to reorder; the demo now shows 10 rows per page.
+
+- **[Pagination](#/pagination)**
+  No way to change the page size → optional "Rows per page" picker (`pageSize`, `pageSizeOptions`, `onPageSizeChange`).
+
+- **[Toolbar](#/toolbar)**
+  Basic tool rows only → Editor tools include dropdowns with hoverable submenus, the formatting bar includes text options, and the vertical rail includes an icon-only shape subtoolbar.
+
+- **[Dropdown menu](#/menu)**
+  An item could only open a submenu from the whole row → `DropdownMenuRow` keeps the row's action and adds a trailing ⋯ (`DropdownMenuMore`) that opens the item's own menu.
+
+- **[App shell](#/app-shell)**
+  Sidebar rows were links only → `ayy-app-shell__row` adds a trailing ⋯ (`AppShellMore`) that opens a menu for that destination, revealed on hover and focus.
+
+- **[Table](#/table)**
+  Headers only sorted or resized → column menus now add icons, freeze columns, wrap content, open shared filters and groups, and insert editable columns on either side or at the end.
+
+- **Typography**
+  Inline code and callout paragraphs had no type style → `.ayy-code` sets a token name or file path apart inside running text, and `.ayy-callout` sets a short note apart from body text.
+
+- **[Table](#/table)**
+  Column order was fixed → dragging column headers reorders columns with a drop line indicator (`reorderable` on `Table` / `TableHead`, `<ayy-table>` column reordering).
+
+- **[Drag and drop](#/drag-drop)**
+  No standard drag and drop pattern → `Sortable`, `SortableItem`, `DragHandle`, `DropTarget`, `DragDropArea`, `<ayy-drag-drop>` and `connectDragDrop` with standard drop hover states and insertion lines.
+
+- **[Tooltip](#/tooltip)**
+  Icon button tooltips repeated full item names from `aria-label` → `generalActionLabel` keeps action tooltips general ("Edit", "Delete") while preserving full labels for screen readers.
+
+- **[Table](#/table)**
+  A table had no frame → `TableContainer` (`ayy-table-container`) holds a toolbar (title, description, search, column menu, actions) and a pager, and scrolls its table when given a max height.
+
+- **[Table](#/table)**
+  One look and one density only → `spacious`, `bordered` (column lines), `sticky` (header and footer stay in view) and `fixed` (column widths from the header) join `compact`.
+
+### Changed
+
+- **[Empty state](#/empty-state)**
+  Icon tile had a glowing gradient and a bright glyph → now a flat tile with a muted glyph, so it no longer competes with the title.
+
+- **[Drag and drop](#/drag-drop)**
+  Drag handle was control-sized (28px) → now 24px like the one in a Table row, and sits closer to the left edge of a sortable item.
+
+- **[Table](#/table)**
+  Drag handle and expand button were control-sized (28px) → now 24px (20px in compact tables), so they no longer add height to a row.
+
+- **[Dropdown menu](#/menu)**
+  Three separate examples → one Item actions preview showing submenus, inline options, split rows, and shortcuts beside text or counters.
+
+- **Contributor guidance**
+  New variations could get separate preview sections by default → reuse existing examples unless a separate example is necessary to demonstrate the variation clearly.
+
+- **[Table](#/table)**
+  Long cell text could run into the next column → cells and headers stay on one line and end in "…", and anything that doesn't fit is clipped at the column's edge; "Wrap content" (or `wrap`) opts a column back into wrapping.
+
+### Fixed
+
+- **[Drag and drop](#/drag-drop)**
+  Dragging large lists and tables felt sluggish and table labels could drift away → dragging uses fewer resources, labels stay beside the pointer, and highlighted rows make the drop position clearer.
+
+- **[Table](#/table)**
+  Row drag handles, collapse buttons, and checkboxes sat at different heights → all three share the row's vertical center.
+
+- **[Drag and drop](#/drag-drop)**
+  Dragging a table row caused neighboring column widths to expand and shift → drop edge pseudo-elements are excluded on table rows, rendering insertion markers via cell box-shadows.
+
+- **[Table](#/table)**
+  Narrow status badges let text spill outside their pills → labels stay on one line and truncate inside the badge, with column wrapping on or off.
+
+- **[Dropdown menu](#/menu)**
+  Hovering ⋯ opened its menu and could leave its highlight stuck → click opens the menu and moving away clears the pointer highlight.
+
+- **[Toolbar](#/toolbar)**
+  Tools inside popovers missed arrow navigation → popup subtoolbars now keep their own keyboard navigation and selected state.
+
+- **[Toolbar](#/toolbar)**
+  A vertical rail also stacked its popup's tool groups → nested subtoolbars keep their own orientation.
+
+- **[Dropdown menu](#/menu)**
+  A tooltip on a menu trigger could prevent the menu from opening → menus and popovers consistently find their own panel.
+
+- **[Table](#/table)**
+  Multiple frozen columns overlapped and resized tables could leave unused space → frozen columns stack correctly and tables fill their container, including when no data columns are visible.
+
+- **[App shell](#/app-shell)**
+  Sidebar closing lagged behind the content → both now move together smoothly.
+
+- **[App shell](#/app-shell)**
+  Collapsed rail at comfortable and touch showed a sliver of each item's label, and those icons no longer lined up with the icon-only rows → the rail shows only the icon, at every size and density.
+- **[Table](#/table)**
+  Wide tables scrolled every column away → `pin` keeps a column at the start or end (`ayy-table__pin`, `ayy-table__pin--end`), and `resizable` headers get a drag-or-arrow-keys resize handle (`ayy-table__resize`).
+- **[Table](#/table)**
+  Rows could only be plain or selected → rows can expand into a detail row (`TableExpand`, `TableRow detail`), head a group (`TableGroup`), open a link from anywhere in the row (`TableRowLink`), be disabled (`aria-disabled`), or show an empty message (`TableEmpty`); `aria-busy` on the table dims rows while they load.
+- **[Table](#/table)**
+  Long text and people columns needed custom markup → `truncate` ends text in "…" (`ayy-table__truncate`), and `TableMedia` / `TableSecondary` put an avatar, a name and a muted second line in a cell.
+- **[Table](#/table)**
+  `<ayy-table>` sorted and selected only → it also expands rows, resizes columns, ticks a range of rows on Shift+click, selects or clears rows by dragging across them (`connectTableDragSelect`), edits cells inline (`TableEdit`, `ayy-table__edit`, `connectTableEdit`), and keeps detail rows with their row and group rows in place when sorting.
 - **[App shell](#/app-shell)**
   Nav groups always showed their links → a group can collapse (`ayy-app-shell__group--collapsible`, `collapsible` on `AppShellGroup`), with a chevron that shows on hover.
 - **[App shell](#/app-shell)**
   Settings sections could not fold → the Settings example has a Collapsible sections switch in its Props button, so the section headings fold like the sidebar's.
 - **[App shell](#/app-shell)**
-  Icon links could not show an action row or a badge → `ayy-app-shell__link--action` puts a link's icon in a circle (for "New"), a `Badge` after a label ("Beta") keeps its size, and a new Nav example shows both with foldable groups.
+  Icon links could not show an action row or a badge → `ayy-app-shell__link--action` puts a link's icon in a circle (for "New"), and a `Badge` after a label ("Beta") keeps its size.
+- **[App shell](#/app-shell)**
+  The sidebar's collapse toggle had no hint → it shows a tooltip on hover and focus that follows the state ("Collapse" / "Expand"), and its default label names the action too (`tooltip` / `tooltipSide` on `AppShellToggle`).
+- **[Button](#/button)**
+  Icon-only buttons needed an author-wrapped `<Tooltip>` → `size="icon*" | "icon-sm" | "icon-lg"` buttons automatically display their `aria-label` or `tooltip` in a tooltip on hover and focus.
 
 ### Fixed
 
+- **[Table](#/table)**
+  Pinned columns lagged when hovering table rows due to a fade transition on rows → transitions removed so pinned and normal cells highlight simultaneously.
+- **[Table](#/table)**
+  A row header (`<th scope="row">`) in the body looked like a column header (uppercase, muted) → it reads like the other cells.
+- **[Table](#/table)**
+  Selected rows had an 8% tint that took muted text under 4.5:1 contrast in the light themes → a 4% tint and a 2px bar on the row's start edge.
 - **[Segmented control](#/segmented-control)**
   Hovering the selected option turned its label the fill colour, so it vanished → the selected label keeps its colour on hover (same guard on **[Tabs](#/tabs)**).
 
 ### Changed
 
+- **Docs**
+  Component and pattern descriptions were long and full of attributes, sizes and variable names → each is now a short overview of what the thing is and what it's for. The Foundations pages (Brand, Density, Colors, Typography, Spacing, Radius & elevation, Motion) and the token descriptions now say what each thing is for.
+
+- **Typography**
+  Small all-caps labels (table headers, menu and select group labels, footer headings, the contents title, eyebrows) → now regular-weight muted text in normal case, the same style as group names in the App shell.
+
+- **[Chart](#/chart)**
+  Hovering showed a one-line value on bars and dots only → every chart now opens a card with a title and a row per series (colour, name, value): columns, line and area points, scatter dots, slices, radar axes, gauges, funnel steps and waterfall steps. Lines also get a hairline and a marker on each series.
+
+- **[Chart](#/chart)**
+  Stacked areas, radars, donuts, pies, gauges, scatter dots, funnels, waterfalls and stacked columns were flat colour → they now fade like the other charts.
+
+- **[Color picker](#/color-picker)**
+  `addonPosition` defaulted to `"start"`, so the HEX label sat before the hex value → it defaults to `"end"`, after the value.
+- **[Table](#/table)**
+  Expand column was placed after the selection checkbox → moved before the checkbox so the order is Expand, Checkbox, then data columns.
+- **[App shell](#/app-shell)**
+  The collapsed rail scrolled, with a scrollbar beside its icons → it no longer scrolls.
+- **[Table](#/table)**
+  Multiple separate preview examples (Basic, Sortable, Actions, Parts) → consolidated into a single comprehensive Playground with toolbar filters next to columns, groups, footer totals, inline editing, and bulk actions.
+- **[App shell](#/app-shell)**
+  The docs page ended with the Playground and Nav examples → it now ends with a Parts example: one shell showing every piece (brand, logotype, toggle, groups and section titles, items, links, action, sublist, collapse, footer, resize, main, detail). The Nav example is removed.
 - **Tokens**
   Small text and control text were 12px in compact density (and `--ayy-text-xs` 12px everywhere) → 13px, so compact and comfortable now share 13px (touch stays 14px; `--ayy-control-text-field` is 13px on both, 16px on touch).
 - **Tokens**
   Large control height was 40 / 48 / 52px (compact / comfortable / touch) → 36 / 44 / 48px (`--ayy-size-control-lg`).
+- **Preview**
+  The Brand page had a separate hex text field and popover swatch for seed colour → replaced with native `<ColorSwatchCustom>` in the swatch group alongside preset themes.
 - **Preview**
   The Brand page's Scale had a line describing the steps → the line is gone.
 - **Preview**
@@ -39,6 +183,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Sidebar sections could not fold, and Start had no icons → every section but Start folds, and Start links have icons.
 - **[App shell](#/app-shell)**
   Group headings were small uppercase with a divider between groups, and links were muted → headings are dim sentence case with no divider, links read at full text colour in regular weight, and the current page is a medium-weight tint.
+- **Preview**
+  Get started asked people to pick an AI tool, then repeated a per-tool note → one short prompt that works in any AI builder (Lovable, Bolt, v0, Replit, a chat), with the tool picker and its notes removed.
+- **Preview**
+  Section titles sat 28px (36px on Get started) above their description → 12px.
 
 ## 0.1.2 — 2026-10-22
 

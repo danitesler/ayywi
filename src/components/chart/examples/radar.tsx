@@ -9,6 +9,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <RadarChart
+          toggle
           label="Customer survey scores out of 10, this year and last"
           axes={["Ease of use", "Speed", "Reliability", "Support", "Value", "Docs"]}
           max={10}

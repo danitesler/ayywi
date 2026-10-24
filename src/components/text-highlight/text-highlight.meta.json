@@ -2,7 +2,7 @@
   "name": "Text highlight",
   "slug": "text-highlight",
   "category": "Data display",
-  "description": "An inline text highlight for search matches or callout phrases. Subtle gray wash with clean underline by default, with warning (yellow), destructive (red), success (green), info (blue), and orange variants.",
+  "description": "A way to mark text inside a sentence, for search matches or phrases that need attention. It's subtle by default, with colour variants for warnings, errors, successes and info.",
   "aka": ["text-highlight", "highlight", "mark", "search-highlight"],
   "classes": {
     "ayy-text-highlight": "Inline highlighted span or <mark>: subtle gray wash with clean underline.",

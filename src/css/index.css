@@ -35,6 +35,7 @@
 @import "../components/slider/slider.css" layer(ayywi.components);
 @import "../components/number-field/number-field.css" layer(ayywi.components);
 @import "../components/dropzone/dropzone.css" layer(ayywi.components);
+@import "../components/drag-drop/drag-drop.css" layer(ayywi.components);
 @import "../components/field/field.css" layer(ayywi.components);
 @import "../components/settings/settings.css" layer(ayywi.components);
 @import "../components/switch/switch.css" layer(ayywi.components);

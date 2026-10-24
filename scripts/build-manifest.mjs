@@ -181,7 +181,7 @@ md.push(`## Utility classes\n\n${list(Object.entries(UTILITIES).map(([k, v]) => 
 md.push(`## Components by category\n\n${list(byCategory.map(([cat, list]) => `**${cat}** (${CATEGORIES[cat]}): ${list.map((c) => c.name).join(", ")}`))}`);
 /** One line per state: how to get it and what it looks like, or why it doesn't apply. Shared with the MCP server's wording. */
 const stateLines = (c, { naStates = true } = {}) =>
-  Object.entries(c.states).filter(([, s]) => naStates || !s.none).map(([k, s]) => (s.none ? `\`${k}\` — doesn't apply: ${s.none}` : `\`${k}\`${s.when ? ` (\`${s.when}\`)` : ""} — ${s.looks}`));
+  Object.entries(c.states).filter(([k, s]) => (naStates || !s.none) && (naStates || k !== "default")).map(([k, s]) => (s.none ? `\`${k}\` — doesn't apply: ${s.none}` : `\`${k}\`${s.when ? ` (\`${s.when}\`)` : ""}${naStates ? ` — ${s.looks}` : ""}`));
 const sizeLines = (c) => [
   ...Object.entries(c.sizes.scale ?? {}).map(([k, v]) => `\`${k}\`${k === String(c.variants.size?.default) ? " (default)" : ""} — ${v}`),
   `Density — ${c.sizes.density}`,
@@ -192,7 +192,8 @@ const sizeLines = (c) => [
 function componentMarkdown(c, h = "##", { full = true } = {}) {
   const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}${c.aka?.length ? ` Also called: ${c.aka.join(", ")}.` : ""}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
-  part.push(`**States**\n${list(stateLines(c, { naStates: full }))}`);
+  const states = stateLines(c, { naStates: full });
+  if (states.length) part.push(`**States**\n${list(states)}`);
   part.push(`**Sizes**\n${list(sizeLines(c))}`);
   const allElements = [
     ...(c.element ? [c.element] : []),
@@ -219,7 +220,7 @@ function componentMarkdown(c, h = "##", { full = true } = {}) {
   );
   if (c.a11y?.length) part.push(`**Accessibility**\n${list(c.a11y)}`);
   if (c.do?.length) part.push(`**Do**\n${list(c.do)}`);
-  if (c.dont?.length) part.push(`**Don't**\n${list(c.dont)}`);
+  if (full && c.dont?.length) part.push(`**Don't**\n${list(c.dont)}`);
   if (!full) {
     if (c.examples.length) part.push(`**Examples**: ${c.examples.map((ex) => ex.title).join(", ")}. Copy-ready HTML and React in llms/${c.slug}.md.`);
     return part.join("\n\n");

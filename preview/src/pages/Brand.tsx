@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BRAND_SHAPES, BRAND_STEPS, brandCss, createBrand, tokens, type Brand, type BrandInput, type BrandShape } from "@danitesler/ayywi";
 import {
   Alert,
@@ -7,13 +7,9 @@ import {
   Badge,
   Button,
   Checkbox,
-  ColorPicker,
   Field,
   Input,
   Label,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Progress,
   Radio,
   SegmentedControl,
@@ -21,6 +17,7 @@ import {
   Select,
   Slider,
   ColorSwatchButton,
+  ColorSwatchCustom,
   ColorSwatchGroup,
   Switch,
   Tooltip,
@@ -132,39 +129,6 @@ function Scale({ brand }: { brand?: Brand | null }) {
   );
 }
 
-function SwatchColorPicker({
-  value,
-  onValueChange,
-  presets,
-}: {
-  value: string;
-  onValueChange: (val: string) => void;
-  presets: string[];
-}) {
-  return (
-    <Popover>
-      <Tooltip content="Pick custom colour">
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            aria-label="Pick custom seed colour"
-            className="ayy-swatch ayy-swatch--lg"
-            style={{ "--ayy-swatch": value } as CSSProperties}
-          />
-        </PopoverTrigger>
-      </Tooltip>
-      <PopoverContent
-        side="bottom"
-        align="start"
-        aria-label="Colour picker"
-        style={{ padding: "var(--ayy-space-2)" }}
-      >
-        <ColorPicker value={value} onValueChange={onValueChange} swatches={presets} />
-      </PopoverContent>
-    </Popover>
-  );
-}
-
 export function BrandPage({ current, onUse }: { current: BrandInput | null; onUse: (brand: BrandInput | null) => void }) {
   const [input, setInput] = useState<BrandInput>(() => current ?? { name: "acme", color: "#0ea5e9", shape: "pill" });
   const [headingFont, setHeadingFont] = useState(typeof input.font?.heading === "string" ? input.font.heading : "");
@@ -273,23 +237,12 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Brand</h1>
         <p className="ayy-lede">
-          One colour plus fonts and shape make a brand: scale, primary, text-on-primary and focus ring for every theme, contrast-checked.
-          Tokens change, components stay the same.
+          A brand is one colour, a choice of fonts and a corner style. From the colour, ayywi builds a full set of shades and picks
+          readable button text and a focus ring for every theme. Components stay the same; only the tokens change.
         </p>
       </header>
 
       <div className="pv-brand__form">
-        <Field>
-          <Label htmlFor="pv-brand-color">Seed colour</Label>
-          <div className="ayy-cluster">
-            <SwatchColorPicker
-              value={hex}
-              onValueChange={updateCustomColor}
-              presets={BRAND_PRESETS.filter((p) => !p.isMono).map((p) => p.color)}
-            />
-            <Input id="pv-brand-color" className="pv-brand__hex ayy-mono" value={input.color} onChange={(e) => updateCustomColor(e.target.value)} spellCheck={false} />
-          </div>
-        </Field>
         <Field>
           <span className="ayy-label" id="pv-brand-shape">
             Shape
@@ -341,6 +294,15 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
                 </Tooltip>
               );
             })}
+            <Tooltip content="Custom colour">
+              <ColorSwatchCustom
+                size="sm"
+                label="Custom seed colour"
+                value={hex}
+                onChange={(e) => updateCustomColor(e.target.value)}
+                onInput={(e) => updateCustomColor(e.currentTarget.value)}
+              />
+            </Tooltip>
           </ColorSwatchGroup>
           <Button size="sm" variant="ghost" onClick={resetToDefault} disabled={!current}>
             Reset to default
@@ -356,6 +318,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
 
       {current && brand ? <style>{brandCss(brand, { selector: ".pv-brand-live" })}</style> : null}
       <div className="pv-brand-live">
+        <p className="pv-note">Your brand in each theme, so you can check it reads well in all of them.</p>
         <div className="pv-themes">
           {themeOptions.map((t) => (
             <Sample key={t.name} theme={t.name} label={t.label} />
@@ -365,6 +328,7 @@ export function BrandPage({ current, onUse }: { current: BrandInput | null; onUs
         <h2 className="pv-h pv-h--section" id="brand-scale">
           Scale
         </h2>
+        <p className="pv-note">The shade marked seed is the closest to your colour, and the rest are built around it. Primary buttons and the focus ring take their colours from here.</p>
         <Scale brand={current ? brand : null} />
       </div>
     </article>

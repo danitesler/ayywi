@@ -1,6 +1,6 @@
 # Date & time picker
 
-Category: Forms. Pick a single date, date range, time, or combined date and time, inline or in popovers (DatePicker, DateRangePicker, TimePicker, DateTimePicker). Six weeks month grids so height never jumps, one Tab stop with arrow keys, side-by-side or stacked month grids, connected ribbon wash bands for ranges, and scrollable hour/minute columns. Also called: date-time-picker, datetimepicker, date-picker, datepicker, date-range, daterange, time-picker, timepicker, calendar, month-grid.
+Category: Forms. Pickers for a date, a date range, a time, or a date with a time. They work inline or in a popover, and can be used fully from the keyboard. Also called: date-time-picker, datetimepicker, date-picker, datepicker, date-range, daterange, time-picker, timepicker, calendar, month-grid.
 
 **Classes**
 - `.ayy-date-picker` — The single date picker trigger button, styled like a field with a calendar icon and the date. Opens a popover with the DatePickerGrid.

@@ -58,6 +58,7 @@ export * from "./components/slider/slider";
 export * from "./components/number-field/number-field";
 export * from "./components/combobox/combobox";
 export * from "./components/dropzone/dropzone";
+export * from "./components/drag-drop/drag-drop";
 export * from "./components/pagination/pagination";
 export * from "./components/accordion/accordion";
 export * from "./components/steps/steps";

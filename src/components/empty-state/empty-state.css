@@ -12,8 +12,11 @@
   text-align: center;
 }
 
+/* A quiet tile: flat wash and a muted glyph, so the title and the action stay the loudest things. */
 .ayy-empty-state > .ayy-icon-tile {
   margin-block-end: var(--ayy-space-2);
+  background: var(--ayy-color-wash);
+  color: var(--ayy-color-muted);
 }
 
 .ayy-empty-state__title {

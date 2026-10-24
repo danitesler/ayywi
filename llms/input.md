@@ -1,6 +1,6 @@
 # Input
 
-Category: Forms. Single-line text field and input group. Works for every native input type (text, password, email, search, tel, url, file…) and supports inline addons, icons and action buttons. Also called: input, text-field, textbox, text-input, input-group, input-addon, input-adornment.
+Category: Forms. A single-line text field for names, emails, passwords, search and other short text. It can hold icons, addons and buttons inside the field. Also called: input, text-field, textbox, text-input, input-group, input-addon, input-adornment.
 
 **Classes**
 - `.ayy-input` — Root, on the <input> itself.

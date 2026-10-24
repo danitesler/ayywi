@@ -9,6 +9,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           label="Signups by device, April to September"
           labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]}
           series={[

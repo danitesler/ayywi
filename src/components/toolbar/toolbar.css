@@ -3,6 +3,8 @@
    stay on are aria-pressed; tools that open a menu are aria-expanded. Groups are split by separators. */
 
 .ayy-toolbar {
+  --_ayy-toolbar-group-direction: row;
+  --_ayy-toolbar-group-align: center;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -12,6 +14,8 @@
 }
 
 .ayy-toolbar--vertical {
+  --_ayy-toolbar-group-direction: column;
+  --_ayy-toolbar-group-align: stretch;
   flex-direction: column;
   align-items: stretch;
   inline-size: fit-content;
@@ -40,13 +44,9 @@
 .ayy-toolbar__group {
   display: flex;
   flex: none;
-  align-items: center;
+  flex-direction: var(--_ayy-toolbar-group-direction);
+  align-items: var(--_ayy-toolbar-group-align);
   gap: var(--ayy-space-0-5);
-}
-
-.ayy-toolbar--vertical .ayy-toolbar__group {
-  flex-direction: column;
-  align-items: stretch;
 }
 
 .ayy-toolbar__separator {

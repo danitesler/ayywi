@@ -9,6 +9,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <DonutChart
+          toggle
           pie
           label="Storage used by file type"
           name="Storage"

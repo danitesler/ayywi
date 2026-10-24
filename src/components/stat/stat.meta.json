@@ -2,7 +2,7 @@
   "name": "Stat",
   "slug": "stat",
   "category": "Data display",
-  "description": "A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.",
+  "description": "A big number with a short label, for headline figures like downloads, views or revenue.",
   "aka": ["stat", "metric", "kpi", "stat-card"],
   "classes": {
     "ayy-stat": "Root.",

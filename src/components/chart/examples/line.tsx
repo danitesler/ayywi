@@ -15,6 +15,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <LineChart
+          toggle
           label="Daily revenue in dollars, this period and the one before"
           labels={days}
           format={(value) => dollars.format(value)}

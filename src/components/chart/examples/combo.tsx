@@ -9,6 +9,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           label="Orders per month and their three-month average, March to October"
           labels={["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"]}
           series={[{ name: "Orders", values: [420, 510, 480, 560, 610, 590, 670, 720] }]}

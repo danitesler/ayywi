@@ -349,8 +349,8 @@ test("app shell sizes: Small and Medium rows are denser than Big, and the docs' 
   await setSize("sm");
   await expect.poll(height).toBeLessThan(med);
   expect(await radius()).not.toBe(bigRadius);
-  // The docs page's own shell is Small; flipping back proves the example keeps its own size.
-  await expect(page.locator(".pv-shell")).toHaveClass(/ayy-app-shell--sm/);
+  // The docs page's own shell is Medium; flipping back proves the example keeps its own size.
+  await expect(page.locator(".pv-shell")).toHaveClass(/ayy-app-shell--md/);
   await setSize("lg");
   await expect.poll(height).toBe(big);
 });

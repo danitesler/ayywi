@@ -7,11 +7,11 @@ export default function Example() {
         <SettingsRow label="Open at login" htmlFor="set-login" hint="Start in the menu bar when you sign in.">
           <Switch id="set-login" aria-describedby="set-login-hint" defaultChecked />
         </SettingsRow>
-        <SettingsRow label="Theme" htmlFor="set-theme">
-          <Select id="set-theme" defaultValue="system">
-            <option value="system">Match the system</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
+        <SettingsRow label="Startup page" htmlFor="set-startup">
+          <Select id="set-startup" defaultValue="inbox">
+            <option value="inbox">Inbox</option>
+            <option value="today">Today</option>
+            <option value="last">Last opened page</option>
           </Select>
         </SettingsRow>
         <SettingsRow label="Week starts on" htmlFor="set-week">

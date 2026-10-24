@@ -1,6 +1,6 @@
 # Field
 
-Category: Forms. Form field wrapper: Label + control + hint or error, stacked with consistent spacing. Also called: field, form-field, form-row.
+Category: Forms. A wrapper that ties a label, an input and its hint or error message together with consistent spacing. Use it around any form control. Also called: field, form-field, form-row.
 
 **Classes**
 - `.ayy-field` — Wrapper, vertical stack.

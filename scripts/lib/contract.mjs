@@ -8,7 +8,8 @@ export const PUBLIC_HOOKS = {
   "--ayy-dot": "Badge status-dot colour override.",
   "--ayy-value": "A unitless number 0–100: the Progress bar's or ring's value, a Slider's position, a chart bar's height or tick's position, a ring slice's length, a heatmap cell's shade, a funnel step's or bar-list row's length.",
   "--ayy-start": "Where a chart bar starts (a waterfall's floating bar) or a ring slice begins, 0–100 of the scale or the ring (default 0).",
-  "--ayy-x": "A scatter dot's or chart label's position along the plot, 0–100 from the inline start.",
+  "--ayy-x": "A scatter dot's, chart label's, line hover strip's or ring tooltip's position along the plot, 0–100 from the inline start.",
+  "--ayy-count": "How many hover strips a line or area chart has (one per label), on its __hits.",
   "--ayy-y": "A scatter dot's or chart label's height in the plot, 0–100 from the floor.",
   "--ayy-z": "A bubble's size, 0–100 (100 = the largest; pass the share of the square root so areas stay honest).",
   "--ayy-columns": "How many columns of cells a heatmap has (default 7).",
@@ -22,6 +23,8 @@ export const PUBLIC_HOOKS = {
   "--ayy-check-fg": "The tick on a checkbox with --ayy-check-color, when primary-fg doesn't read on that colour.",
   "--ayy-progress-color": "Progress bar and ring fill colour override.",
   "--ayy-swatch": "A swatch's colour, set on the .ayy-swatch (a token: var(--ayy-chart-1), var(--ayy-accent-brand)…).",
+  "--ayy-table-bg": "What a table sits on, which its pinned columns and sticky header paint so rows don't show through them. Default the page colour; set it on the table when it sits on another surface (var(--ayy-color-surface) in a card).",
+  "--ayy-table-truncate": "Widest a table's .ayy-table__truncate text gets before it ends in … (default 16rem).",
   "--ayy-swipe-bg": "Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).",
   "--ayy-gap": "Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.",
   "--ayy-min": "Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).",
@@ -42,9 +45,10 @@ export const UTILITIES = {
   "ayy-body": "Body paragraph style (14px).",
   "ayy-small": "Small text style (13px).",
   "ayy-xs": "Extra-small text style (13px).",
+  "ayy-callout": "A short note set apart from the text (a tip, caveat or aside): wash background, accent bar on the inline start, 14px.",
   "ayy-muted": "Muted text colour.",
   "ayy-faint": "Soft text colour (var(--ayy-color-text-soft)).",
-  "ayy-eyebrow": "Small uppercase label above a heading.",
+  "ayy-eyebrow": "Small muted label above a heading, in the same style as the app shell's group names.",
   "ayy-signature": "Handwritten accent font.",
   "ayy-mono": "Monospace font.",
   "ayy-tabular": "Tabular numbers (tabular-nums font variant).",
@@ -54,6 +58,7 @@ export const UTILITIES = {
   "ayy-gradient-text": "Text clipped to a gradient from text colour to accent/soft text.",
   "ayy-link": "Inline text link: underlined, text colour, focus ring.",
   "ayy-text-highlight": "Subtle inline text highlight with clean underline. Mark elements take this by default.",
+  "ayy-code": "Inline code: monospace at 0.85em, hairline border, wash background and tight padding. For token names, file paths and shortcuts in running text.",
   "ayy-prose": "Long-form reading (articles, case studies): 18px soft text at a readable measure; styles the headings, lists, links, quotes, code and images inside.",
   "ayy-container": "Centred page width (--ayy-size-container, 1400px) with a 24px gutter, 16px on tablets and phones.",
   "ayy-grid": "Responsive grid: as many columns of at least --ayy-min (16rem) as fit; gap via --ayy-gap (16px).",
@@ -96,7 +101,7 @@ export const ORDER = [
   "button", "hover-actions", "toolbar", "action-bar", "menu", "command", "fab",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc",
   "field", "input", "search-bar", "filter-bar", "sorting", "textarea", "select", "combobox", "tag-input", "date-time-picker", "color-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "dropzone", "switch", "shortcut", "settings",
-  "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator",
+  "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator", "drag-drop",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
   "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
@@ -110,7 +115,7 @@ export const PATTERNS = [
     name: "Settings",
     slug: "settings",
     summary:
-      "Settings open over the app in a near-full-screen dialog, as Notion's and Claude's do: a Settings title and the settings sections in its sidebar, one section in its main, a close button in the corner. Full screen on phones. Never a small or side dialog, never tabs inside a page.",
+      "Settings open in a large dialog over the app, the way they do in Notion and Claude. The sidebar lists the sections, the main area shows the one you picked, and on phones it goes full screen. Don't use a small or side dialog, or tabs inside a page.",
     components: ["app-shell", "top-bar", "settings", "switch", "select", "segmented-control", "shortcut", "button", "dialog", "toast"],
     example: "app-shell/playground",
     steps: [
@@ -119,6 +124,7 @@ export const PATTERNS = [
       "Sections: the open section's AppShellLink has current (aria-current=\"page\"); a link click switches the section in place. On wide screens settings open on the first section; on phones on the section list.",
       "Section: the main starts with a TopBar (title = the section's name, its <h1>; onBack returns to the section list, backLabel = \"Settings\"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.",
       "Saving: switches, selects and segmented controls apply at once; confirm with a Toast only when the effect isn't visible. Free text (a name, a folder path) saves on blur or Enter. Anything that must be submitted together (a password change) is a Dialog opened from a SettingsLink.",
+      "Appearance: an Appearance section uses the same controls in every product (see settings/appearance). Theme, Density, Corners and Font each open a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker of SettingsOptions: SettingsScreens for Theme (System, Light, Dark, Black, Light gray; setTheme()), Density (Auto, Compact, Comfortable, Touch; setDensity()) and Corners (each shape's radii), and \"Aa\" samples for Font. Text size: a Slider that sets the root font size. Brand colour: ColorSwatches (a none swatch for the default) and a ColorSwatchCustom, applied with setBrand(). Reduce motion: a Switch that sets data-motion=\"reduce\". Language: a Select; Text direction: a SegmentedControl (Auto follows the language) that sets dir. Reset appearance: a destructive SettingsLink in its own group.",
       "Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.",
       "Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.",
     ],
@@ -144,6 +150,7 @@ export const PATTERNS = [
       "Use this pattern for every settings, preferences or account screen in an app, however few settings there are.",
       "Name sections with one noun (General, Appearance, Notifications, Shortcuts, Data, About) and give each a Hugeicons icon in the sidebar.",
       "Keep every setting's label short and put the why in its hint.",
+      "Use the Appearance controls above for theme, density, text size, brand colour, corners, font, motion, language and direction, so these settings look and work the same in every product.",
     ],
     dont: [
       "Don't put settings in a small or side Dialog, a Popover or Tabs inside a page: they can't hold a growing list of sections, and they end up looking different in every app.",
@@ -156,9 +163,9 @@ export const PATTERNS = [
     name: "Data explorer",
     slug: "data-explorer",
     summary:
-      "A searchable, filterable, sortable view of records or media assets with multi-select and bulk actions: a Page header at the top, a Filter bar with status tabs, faceted dropdowns, search and sorting, a Table (for columns) or Grid (for cards and media) with inline quick actions and a ⋯ menu, a floating Action bar while items are selected, and Skeleton / Empty state / Alert states.",
+      "A searchable, filterable, sortable view of records or media, with multi-select and bulk actions. It's built from a page header, a filter bar, a table or card grid with quick actions, and a floating action bar that appears while items are selected. It also covers the loading, empty and error states.",
     components: ["page-header", "filter-bar", "search-bar", "sorting", "chip", "table", "grid", "action-bar", "menu", "pagination", "skeleton", "empty-state", "alert"],
-    example: "table/actions",
+    example: "table/playground",
     steps: [
       "Header: start the screen with a PageHeader (PageHeaderTitle as the one <h1>, PageHeaderDescription, and PageHeaderActions with at most one primary create Button and optional export/view controls).",
       "Controls: place a FilterBar below the header. Its FilterBarMain holds FilterBarTabs (quick status tabs with counts), a FilterBarGroup of faceted FilterBarTriggers (opening DropdownMenus with DropdownMenuSelectedItem checkboxes), a SearchBar to filter by text, and a Sorting trigger (opening a DropdownMenu of sort fields and directions). When faceted filters are active, render FilterBarActive with ChipRemovable pills and a FilterBarClear button.",
@@ -198,7 +205,7 @@ export const PATTERNS = [
     name: "Marketing page",
     slug: "marketing-page",
     summary:
-      "A public website, landing page or product site: a skip link, a sticky glass Navbar that folds into a menu on phones, sections at .ayy-container width separated by fading Separators (hero with .ayy-bg-grid, feature Cards with IconTiles, pricing Cards with a Segmented control, FAQ Accordion), and a multi-column Footer.",
+      "A public website or landing page: a sticky header, a hero, feature and pricing sections, an FAQ and a footer. Sections are divided by soft separators, and the header folds into a menu on phones.",
     components: ["navbar", "button", "badge", "card", "icon-tile", "frame", "segmented-control", "list", "accordion", "separator", "footer"],
     example: "navbar/site",
     steps: [
@@ -218,7 +225,7 @@ export const PATTERNS = [
       "Site header (.ayy-navbar)":
         "Sticky top 0, --ayy-size-header (72px) tall, --ayy-color-glass backdrop with 16px blur, 1px --ayy-color-hairline bottom border. Inner row centred at --ayy-size-container (1400px) with 24px gutter (16px below 64rem).",
       "Hero & section typography":
-        "Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (13px uppercase, tracked) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).",
+        "Hero title uses .ayy-display (fluid 2.75rem to 12.5rem, tight leading) or .ayy-h1 (3rem). Section titles use .ayy-eyebrow (14px, muted, sentence case) above .ayy-h2 (2.25rem) and .ayy-lede (1.125rem, --ayy-color-text-soft, max-inline-size --ayy-size-measure).",
       "Primary call to action (.ayy-button--ring)":
         "Marketing pages use the ring variant for the primary CTA in the hero and repeat it (size sm) in NavbarActions; supporting actions use outline or ghost.",
       "Footer (.ayy-footer)":
@@ -257,6 +264,7 @@ export const NEEDS = [
   { need: "Pick a colour", use: ["swatch", "color-picker"], how: "ColorSwatches for a fixed set of choices, ColorSwatchCustom or ColorPicker for any custom colour with hue/alpha/hex.", not: "a raw <input type=\"color\">, coloured buttons" },
   { need: "Set an amount or a range", use: ["slider", "number-field"], how: "Slider / SliderRange for a rough amount or a price range, Number field for exact small counts.", not: "a raw <input type=\"range\">" },
   { need: "Upload files", use: ["dropzone", "list", "progress"], how: "Dropzone (compact in a form), then a List divided of the files with a Progress each.", not: "a raw <input type=\"file\">, a dashed div" },
+  { need: "Drag and drop reordering, board or kanban", use: ["drag-drop"], how: "Sortable with SortableItem and DragHandle (or DragDropArea with DropTargets and <ayy-drag-drop> in HTML).", not: "a third-party dnd library, raw HTML5 dragstart handlers" },
   { need: "Record a keyboard shortcut or show one", use: ["shortcut", "kbd"], how: "Shortcut recorder to set one; Kbd / Shortcut to show one.", not: "a <kbd> or <span> styled by hand" },
   { need: "Show a code snippet, command or config file", use: ["code-block"], how: "CodeBlock with CodeBlockHeader, CodeBlockFilename, CodeBlockCopy, CodeBlockPre and CodeBlockCode (numbered for line numbers, .ayy-token-* for syntax tokens).", not: "a raw <pre> with custom background and copy button" },
   { need: "Show activity history, audit log or chronological events", use: ["timeline"], how: "Timeline of TimelineItems (TimelineMarker with pulse on live events, TimelineTime, TimelineTitle, TimelineBody; alternate for wide milestone pages).", not: "divs with a border-left line and absolute dots" },
@@ -291,7 +299,8 @@ export const NEEDS = [
   { need: "A screen pushed from a list on a phone", use: ["top-bar"], how: "Top bar (back, title, actions).", not: "a hand-built header with a back arrow" },
   { need: "A screenshot or picture of the product", use: ["frame"], how: "Frame around it.", not: "an <img> with a border and shadow" },
   { need: "Preview UI across responsive viewports with device switcher", use: ["showcase"], how: "Showcase with ShowcaseHeader, ShowcaseTitle, ShowcaseActions, ShowcaseStage, and ShowcaseViewport (desktop, tablet, mobile).", not: "hand-built iframe wrappers or ad-hoc responsive preview containers" },
-  { need: "Light/dark switch", use: ["menu"], how: "Dropdown menu of themes (radio items) that calls setTheme(); an icon trigger shows the current one.", not: "a button that flips a class" },
+  { need: "Light/dark switch", use: ["menu"], how: "Dropdown menu of themes (radio items) that calls setTheme(); an icon trigger shows the current one. Inside settings, use the theme picker of the Appearance need instead.", not: "a button that flips a class" },
+  { need: "Appearance settings: theme, density, text size, brand colour, corners, font, reduce motion, language or direction", use: ["settings", "popover", "segmented-control", "swatch", "slider", "switch", "select"], how: "In the Settings pattern's Appearance section: a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker of SettingsOptions with a SettingsScreen for Theme, Density and Corners, and \"Aa\" samples for Font; ColorSwatches + ColorSwatchCustom for brand colour; Slider for text size; Switch for reduce motion (data-motion=\"reduce\"); Select for language; SegmentedControl for text direction; a destructive SettingsLink to reset. Apply at once with setTheme(), setDensity(), setBrand().", not: "a theme Select or a plain radio list, hand-drawn theme thumbnails or screenshots, a raw <input type=\"color\">, Choice cards with only text" },
 ];
 
 /** Attributes ayywi reads on any element. */
@@ -300,6 +309,7 @@ export const ATTRIBUTES = {
   "data-density": "\"compact\" | \"comfortable\" | \"touch\" — control sizes for this subtree. None = compact, or touch on touch-first devices.",
   "data-brand": "A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx @danitesler/ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.",
   dir: "\"rtl\" mirrors every component (logical properties throughout).",
+  "data-motion": "\"reduce\" — turns ayywi's animations and transitions off for this subtree, as prefers-reduced-motion does; for an app's own Reduce motion setting. None = follow the OS.",
   "data-ayy-input": "\"keyboard\" | \"pointer\" on <html>, set by trackInputModality() (started by @danitesler/ayywi/elements; React apps call it once at startup). Pointer hides focus rings, except on text fields, until the next Tab or arrow key; a tooltip then opens on hover only. None = the browser's own :focus-visible.",
 };
 
@@ -351,6 +361,6 @@ export const RULES = [
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
+  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
   "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.",
 ];

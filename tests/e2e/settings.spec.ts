@@ -129,3 +129,54 @@ test("a top bar first in an app shell's main stays at the very top, edge to edge
   await main.evaluate((el) => el.scrollBy(0, 200));
   expect(Math.round((await main.locator(".ayy-top-bar").boundingBox())!.y)).toBe(Math.round(box.y));
 });
+
+test("appearance settings: theme picker opens in a popover with split system and themed screens, and picking updates the container", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await open(page, "settings", { renderer: "react" });
+  const app = example(page, "appearance");
+  const themeTrigger = app.getByRole("button", { name: "Theme", exact: true });
+  await expect(themeTrigger.locator(".ayy-settings__preview")).toBeVisible();
+  await themeTrigger.click();
+  const themeGroup = app.getByRole("radiogroup", { name: "Theme" });
+  await expect(themeGroup).toBeVisible();
+  const themeOptions = themeGroup.locator(".ayy-settings__option");
+  await expect(themeOptions).toHaveCount(5);
+
+  const systemScreens = themeOptions.first().locator(".ayy-settings__screen");
+  await expect(systemScreens).toHaveCount(2);
+  await expect(systemScreens.nth(0)).toHaveAttribute("data-theme", "light");
+  await expect(systemScreens.nth(1)).toHaveAttribute("data-theme", "dark");
+
+  // Picking Light updates data-theme on the example root and closes the popover.
+  await themeOptions.filter({ hasText: "Light" }).first().click();
+  await expect(app.locator("[data-theme='light']").first()).toBeVisible();
+  await expect(themeGroup).toBeHidden();
+
+  // Density opens in a popover with an inline preview on its trigger and updates data-density.
+  const densityTrigger = app.getByRole("button", { name: "Density", exact: true });
+  await expect(densityTrigger.locator(".ayy-settings__preview")).toBeVisible();
+  await densityTrigger.click();
+  const densityGroup = app.getByRole("radiogroup", { name: "Density" });
+  await expect(densityGroup).toBeVisible();
+  await densityGroup.locator(".ayy-settings__option", { hasText: "Comfortable" }).click();
+  await expect(app.locator("[data-density='comfortable']").first()).toBeVisible();
+  await expect(densityGroup).toBeHidden();
+
+  // Picking a swatch sets data-brand and picking Sharp in the Corners popover updates corners.
+  await app.getByRole("radio", { name: "Violet" }).dispatchEvent("click");
+  await expect(app.locator("[data-brand='settings-example']")).toBeVisible();
+  const cornersTrigger = app.getByRole("button", { name: "Corners", exact: true });
+  await expect(cornersTrigger.locator(".ayy-settings__preview")).toBeVisible();
+  await cornersTrigger.click();
+  const cornersGroup = app.getByRole("radiogroup", { name: "Corners" });
+  await expect(cornersGroup).toBeVisible();
+  await cornersGroup.locator(".ayy-settings__option", { hasText: "Sharp" }).click();
+  expect(await app.locator("[data-brand='settings-example']").evaluate((el) => (el as HTMLElement).style.getPropertyValue("--ayy-radius-button"))).toBe("var(--ayy-radius-sm)");
+  await expect(cornersGroup).toBeHidden();
+
+  // Reduce motion sets data-motion="reduce", and reset clears it.
+  await app.getByRole("switch", { name: "Reduce motion" }).click();
+  await expect(app.locator("[data-motion='reduce']")).toBeVisible();
+  await app.getByRole("button", { name: /Reset appearance/ }).click();
+  await expect(app.locator("[data-motion='reduce']")).toHaveCount(0);
+});

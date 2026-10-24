@@ -181,7 +181,7 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   const primary = (sel: string) => page.locator(sel).first().evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
   const before = await primary(".pv-theme[data-theme=\"light\"]");
   await page.goto("/#/brand");
-  await page.getByLabel("Seed colour", { exact: true }).fill("#dc2626");
+  await page.getByLabel("Custom seed colour", { exact: true }).fill("#dc2626");
   await page.goto("/#/colors");
   await expect(page.locator("html")).toHaveAttribute("data-brand", "acme");
   const button = page.locator(".pv-theme[data-theme=\"light\"] .ayy-button").first();

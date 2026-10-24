@@ -2,7 +2,7 @@
   "name": "Showcase",
   "slug": "showcase",
   "category": "Layout",
-  "description": "An interactive container for previewing UI across viewports (desktop, tablet, mobile), with a toolbar for device switching, custom controls, and code snippets.",
+  "description": "A container for previewing a design at different screen sizes. It has a toolbar for switching devices and can show the code behind the preview.",
   "aka": ["showcase", "responsive-preview", "device-preview", "viewport-preview"],
   "classes": {
     "ayy-showcase": "Root container: flex column holding the header and preview stage.",

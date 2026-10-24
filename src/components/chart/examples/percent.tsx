@@ -9,6 +9,7 @@ export default function Example() {
       </CardHeader>
       <CardContent>
         <BarChart
+          toggle
           stacked="percent"
           label="Customers by plan, April to September"
           labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]}

@@ -117,6 +117,69 @@
   outline-offset: 2px;
 }
 
+/* A row with its own menu: the link keeps the row and a trailing icon button opens the link's menu. The button is a
+   sibling of the link, never inside it: interactive elements can't nest. */
+.ayy-app-shell__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+}
+
+.ayy-app-shell__row > .ayy-app-shell__link {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.ayy-app-shell__more {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-control);
+  background: transparent;
+  color: var(--ayy-color-muted);
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-app-shell__more > svg {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-app-shell__more:is(:hover, [aria-expanded="true"]) {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-app-shell__more:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* Reveal on hover and focus, and while its menu is open; touch screens show it always. It stays in the tab order while
+   hidden, and focus-within brings it back. */
+@media (hover: hover) {
+  .ayy-app-shell__row:not(:hover, :focus-within, :has([aria-expanded="true"])) .ayy-app-shell__more {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 /* An action row ("New"): its icon sits in a filled circle. A spread shadow, so the icon keeps its place in the column. */
 .ayy-app-shell__link--action > :is(svg, .ayy-icon):first-child {
   border-radius: var(--ayy-radius-pill);
@@ -322,8 +385,8 @@ ayy-app-shell {
    A collapsible shell (collapsed, hover preview, or a __toggle in its sidebar) keeps every row on one line and in place,
    so narrowing the sidebar only clips and fades what no longer fits: icons stay put, nothing reflows or jumps. The
    sidebar's own width animates with the grid column. Hover preview widens the sidebar over the main area (the column
-   stays narrow), after a short pause so passing the pointer over it doesn't open it, and closes a moment after the
-   pointer leaves. Rail = collapsed and not previewing; --_delay times both. */
+   stays narrow), after a short pause so passing the pointer over it doesn't open it. Closing starts immediately so
+   the sidebar stays in step with the grid column. Rail = collapsed and not previewing. */
 @media (min-width: 48.001rem) {
   .ayy-app-shell--collapsed {
     --_col: var(--_sidebar-w-collapsed);
@@ -369,6 +432,7 @@ ayy-app-shell {
       color var(--ayy-duration-base) ease,
       background-color var(--ayy-duration-base) ease,
       padding-inline var(--_t),
+      gap var(--_t),
       opacity var(--_t),
       visibility 0s linear var(--_delay, 0s);
   }
@@ -425,23 +489,25 @@ ayy-app-shell {
       visibility 0s linear calc(var(--_delay, 0s) + var(--ayy-duration-base));
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__sublist {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__sublist,
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__more {
     display: none;
   }
 
-  /* A nav with no icons has nothing to scroll to in the rail: don't show a scrollbar for its hidden links. */
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]):not(:has(.ayy-app-shell__nav .ayy-app-shell__link > :is(svg, .ayy-icon, img))) {
+  /* The rail doesn't scroll: no scrollbar beside its icons. Focus moved by keyboard still scrolls a hidden link into view.
+     The clip is the row's end padding. A label starts after the icon plus --_gap, and at compact those match, so nothing
+     shows. Comfortable and touch grow the row (and that padding) without growing the icon or the gap, so a sliver of the
+     label painted beside the icon and the column looked uneven. Widen the gap past the padding: the icon is the first
+     item, so it stays put, and only the icon shows, at every size and density. */
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) {
     overflow-y: hidden;
+    --_gap: calc(var(--_pad) + 1px);
   }
 
   /* ---- Hover preview: the full sidebar over the main area. Pointer or keyboard focus opens it; a mouse click on a
      control inside doesn't keep it open, and right after the toggle collapses it, connectAppShell holds it shut
      (data-ayy-hold) until the pointer leaves or focus moves on. ---- */
   .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar {
-    --_delay: 150ms;
-  }
-
-  .ayy-app-shell--collapsed.ayy-app-shell--hover-preview > .ayy-app-shell__sidebar[data-ayy-hold] {
     --_delay: 0s;
   }
 
@@ -579,8 +645,8 @@ ayy-app-shell {
   min-block-size: var(--_row);
 }
 
-/* Room for the toggle, which is placed over the end of the row. */
-.ayy-app-shell__head:has(> .ayy-app-shell__toggle) {
+/* Room for the toggle, which is placed over the end of the row. A Tooltip around it takes its place. */
+.ayy-app-shell__head:has(> .ayy-app-shell__toggle, > .ayy-tooltip > .ayy-app-shell__toggle) {
   padding-inline-end: var(--_row);
 }
 
@@ -615,14 +681,19 @@ ayy-app-shell {
   max-block-size: calc(var(--_row) - var(--ayy-space-3));
 }
 
-.ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle {
+.ayy-app-shell__sidebar .ayy-app-shell__head > :is(.ayy-app-shell__toggle, .ayy-tooltip:has(> .ayy-app-shell__toggle)) {
   position: absolute;
   inset-block-start: 0;
   inset-inline-end: 0;
+}
+
+.ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-tooltip > .ayy-app-shell__toggle,
+.ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle {
   block-size: var(--_row);
   border-radius: var(--_radius);
 }
 
+.ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-tooltip > .ayy-app-shell__toggle > svg,
 .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle > svg {
   inline-size: var(--_icon);
   block-size: var(--_icon);
@@ -630,6 +701,7 @@ ayy-app-shell {
 
 /* A hover lift would move the toggle off its mark. */
 @media (hover: hover) {
+  .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-tooltip > .ayy-app-shell__toggle.ayy-button:hover,
   .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle.ayy-button:hover {
     transform: none;
   }
@@ -640,7 +712,7 @@ ayy-app-shell {
     transition: padding-inline var(--_t);
   }
 
-  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__head > .ayy-app-shell__toggle {
+  .ayy-app-shell:is(.ayy-app-shell--collapsed, .ayy-app-shell--hover-preview, :has(> .ayy-app-shell__sidebar .ayy-app-shell__toggle)) > .ayy-app-shell__sidebar .ayy-app-shell__head .ayy-app-shell__toggle {
     transition:
       background-color var(--ayy-duration-base) ease,
       border-color var(--ayy-duration-base) ease,
@@ -652,15 +724,15 @@ ayy-app-shell {
   }
 
   /* The rail: the toggle takes the whole row, so it replaces the mark (or, with no mark, stands in for it). */
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__toggle) {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__toggle, > .ayy-tooltip > .ayy-app-shell__toggle) {
     padding-inline-end: 0;
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)) > .ayy-app-shell__toggle:not(:focus-visible) {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)) .ayy-app-shell__toggle:not(:focus-visible) {
     opacity: 0;
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)):is(:hover, :has(> .ayy-app-shell__toggle:focus-visible)) > .ayy-app-shell__toggle {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)):is(:hover, :has(.ayy-app-shell__toggle:focus-visible)) .ayy-app-shell__toggle {
     opacity: 1;
     transition:
       background-color var(--ayy-duration-base) ease,
@@ -668,7 +740,7 @@ ayy-app-shell {
       opacity var(--ayy-duration-fast) ease;
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:is(:hover, :has(> .ayy-app-shell__toggle:focus-visible)) > .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype) {
+  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:is(:hover, :has(.ayy-app-shell__toggle:focus-visible)) > .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype) {
     opacity: 0;
   }
 }
@@ -871,7 +943,8 @@ ayy-app-shell {
 
   .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__group-label,
   .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__sublist,
-  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__collapse {
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__collapse,
+  .ayy-app-shell:not(.ayy-app-shell--settings, .ayy-app-shell--drawer, :has(> .ayy-app-shell__bar, > .ayy-bottom-nav)) .ayy-app-shell__more {
     display: none;
   }
 
@@ -1132,6 +1205,11 @@ ayy-app-shell {
     border-color: CanvasText;
   }
   .ayy-app-shell__link[aria-current="page"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-app-shell__more:is(:hover, [aria-expanded="true"]) {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;

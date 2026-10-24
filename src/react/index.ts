@@ -108,6 +108,8 @@ export {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuRow,
+  DropdownMenuMore,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -121,6 +123,8 @@ export {
   type DropdownMenuProps,
   type DropdownMenuTriggerProps,
   type DropdownMenuContentProps,
+  type DropdownMenuRowProps,
+  type DropdownMenuMoreProps,
   type DropdownMenuItemProps,
   type DropdownMenuSubProps,
   type DropdownMenuSubTriggerProps,
@@ -130,7 +134,7 @@ export {
   type DropdownMenuRadioGroupProps,
   type DropdownMenuRadioItemProps,
 } from "../components/menu/menu.react";
-export { Tooltip, type TooltipProps } from "../components/tooltip/tooltip.react";
+export { Tooltip, tooltipContext, type TooltipProps } from "../components/tooltip/tooltip.react";
 export {
   Toaster,
   NotificationToast,
@@ -181,6 +185,13 @@ export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps } from "..
 export { Icon, type IconProps } from "../components/icon/icon.react";
 export {
   Table,
+  TableContainer,
+  TableToolbar,
+  TableHeading,
+  TableTitle,
+  TableDescription,
+  TableTools,
+  TablePager,
   TableHeader,
   TableBody,
   TableFooter,
@@ -189,15 +200,38 @@ export {
   TableCell,
   TableCaption,
   TableRowActions,
+  TableResize,
+  TableExpand,
+  TableGroup,
+  TableEmpty,
+  TableRowLink,
+  TableMedia,
+  TableSecondary,
+  TableEdit,
   type TableProps,
+  type TableContainerProps,
+  type TableToolbarProps,
+  type TableHeadingProps,
+  type TableTitleProps,
+  type TableDescriptionProps,
+  type TableToolsProps,
+  type TablePagerProps,
   type TableHeaderProps,
   type TableBodyProps,
   type TableFooterProps,
   type TableRowProps,
-  type TableCellProps,
   type TableHeadProps,
-  type TableRowActionsProps,
+  type TableCellProps,
   type TableCaptionProps,
+  type TableRowActionsProps,
+  type TableResizeProps,
+  type TableExpandProps,
+  type TableGroupProps,
+  type TableEmptyProps,
+  type TableRowLinkProps,
+  type TableMediaProps,
+  type TableSecondaryProps,
+  type TableEditProps,
 } from "../components/table/table.react";
 export {
   ActionBar,
@@ -253,6 +287,8 @@ export {
   DonutChart,
   GaugeChart,
   RadarChart,
+  ChartLegend,
+  ChartTooltip,
   HeatmapChart,
   FunnelChart,
   Sparkline,
@@ -263,6 +299,11 @@ export {
   type LineChartSeries,
   type ChartSeries,
   type ChartBaseProps,
+  type ChartLegendProps,
+  type ChartLegendItem,
+  type ChartToggleProps,
+  type ChartTooltipProps,
+  type ChartTooltipRow,
   type HistogramChartProps,
   type WaterfallChartProps,
   type WaterfallStep,
@@ -305,6 +346,7 @@ export {
   AppShellMain,
   AppShellGroup,
   AppShellItem,
+  AppShellMore,
   AppShellSublist,
   AppShellCollapse,
   AppShellBar,
@@ -330,6 +372,7 @@ export {
   type AppShellLinkProps,
   type AppShellGroupProps,
   type AppShellItemProps,
+  type AppShellMoreProps,
   type AppShellSublistProps,
   type AppShellCollapseProps,
   type AppShellFooterProps,
@@ -420,6 +463,18 @@ export { Slider, SliderRange, type SliderProps, type SliderRangeProps } from "..
 export { NumberField, type NumberFieldProps } from "../components/number-field/number-field.react";
 export { Combobox, type ComboboxProps, type ComboboxOption } from "../components/combobox/combobox.react";
 export { Dropzone, type DropzoneProps } from "../components/dropzone/dropzone.react";
+export {
+  DragDropArea,
+  DragHandle,
+  DropTarget,
+  Sortable,
+  SortableItem,
+  type DragDropAreaProps,
+  type DragHandleProps,
+  type DropTargetProps,
+  type SortableItemProps,
+  type SortableProps,
+} from "../components/drag-drop/drag-drop.react";
 export { Pagination, type PaginationProps, type PaginationLabels } from "../components/pagination/pagination.react";
 export { Accordion, AccordionItem, type AccordionProps, type AccordionItemProps } from "../components/accordion/accordion.react";
 export { Steps, type StepsProps } from "../components/steps/steps.react";
@@ -495,7 +550,20 @@ export {
   type ShortcutRecorderProps,
   type ShortcutListItemProps,
 } from "../components/shortcut/shortcut.react";
-export { Settings, SettingsRow, SettingsLink, type SettingsProps, type SettingsRowProps, type SettingsLinkProps } from "../components/settings/settings.react";
+export {
+  Settings,
+  SettingsRow,
+  SettingsLink,
+  SettingsPicker,
+  SettingsOption,
+  SettingsScreen,
+  type SettingsProps,
+  type SettingsRowProps,
+  type SettingsLinkProps,
+  type SettingsPickerProps,
+  type SettingsOptionProps,
+  type SettingsScreenProps,
+} from "../components/settings/settings.react";
 export { Command, CommandDialog, CommandGroup, CommandItem, type CommandProps, type CommandDialogProps, type CommandGroupProps, type CommandItemProps } from "../components/command/command.react";
 export { TagInput, type TagInputProps } from "../components/tag-input/tag-input.react";
 export { Fab, type FabProps } from "../components/fab/fab.react";

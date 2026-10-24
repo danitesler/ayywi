@@ -1,6 +1,5 @@
 // Copy-paste prompts for people who build with AI tools. Every prompt is a short request the person can read and edit,
-// followed by a setup block for their tool and the ayywi rules, so the tool needs nothing else.
-import { components } from "./data";
+// followed by one setup block and the ayywi rules, so any AI builder (Lovable, Bolt, v0, Replit, a chat) needs nothing else.
 
 /** The public site, for prompts copied from a local preview: an AI tool can't reach localhost. The Pages build sets VITE_AYYWI_SITE. */
 const PUBLIC_SITE: string = (import.meta.env.VITE_AYYWI_SITE ?? "https://danitesler.github.io/ayywi/").replace(/\/*$/, "/");
@@ -30,101 +29,29 @@ export const headTags = ({ files }: Links, indent = "") =>
     .map((tag) => indent + tag)
     .join("\n");
 
-export type Tool = "lovable" | "bolt" | "v0" | "replit" | "cursor" | "claude-code" | "chat";
-
-/** Web app builders start from React: style with ayywi directly. */
-const webBuilder = (l: Links, entry: string) => `Style everything with the ayywi design system. Nothing to install: it's files on the web.
-- ${entry}
-${headTags(l, "  ")}
-- Build the UI from ayywi's class names (ayy-*) and tokens (--ayy-*). Do not add any external CSS framework or UI kit.
-- Dark and light mode come from data-theme on <html> (window.ayywi.setTheme("light")), not a .dark class.`;
-
-export const TOOLS: Record<Tool, { label: string; where: string; setup: (l: Links) => string }> = {
-  lovable: {
-    label: "Lovable",
-    where: "Paste it into the Lovable chat when you start a project, or into an existing one.",
-    setup: (l) => webBuilder(l, "Add these lines to index.html, inside <head>:"),
-  },
-  bolt: {
-    label: "Bolt",
-    where: "Paste it into Bolt's prompt box. It works for a new project and for an open one.",
-    setup: (l) => webBuilder(l, "Add these lines to index.html, inside <head>:"),
-  },
-  v0: {
-    label: "v0",
-    where: "Paste it into a new v0 chat.",
-    setup: (l) =>
-      webBuilder(
-        l,
-        'In app/layout.tsx, put the two stylesheet <link>s in <head>, load theme-init.js with next/script strategy="beforeInteractive" and elements.global.js with strategy="afterInteractive":',
-      ),
-  },
-  replit: {
-    label: "Replit",
-    where: "Paste it into Replit Agent when you create the app.",
-    setup: (l) => webBuilder(l, "Add these lines to the app's main HTML page, inside <head>:"),
-  },
-  cursor: {
-    label: "Cursor",
-    where: "Open your project in Cursor and paste it into the Agent chat.",
-    setup: (l) => `Set up the ayywi design system in this project. No package to install:
-- Load these once from the app's HTML entry, in <head> (or download them into the project, e.g. public/vendor/ayywi/, keeping the fonts/ folder next to fonts.css):
-${headTags(l, "  ")}
-- Save ${l.docs}ai/cursor/ayywi.mdc as .cursor/rules/ayywi.mdc, so every chat in this project follows the ayywi rules.
-- Before writing UI, read ${l.docs}llms.txt, then the page of each component you use (${l.docs}llms/<component>.md): classes, props and copy-ready HTML and React.`,
-  },
-  "claude-code": {
-    label: "Claude Code",
-    where: "Run Claude Code in your project folder and paste it in.",
-    setup: (l) => `Set up the ayywi design system in this project. No package to install:
-- Load these once from the app's HTML entry, in <head> (or download them into the project, e.g. public/vendor/ayywi/, keeping the fonts/ folder next to fonts.css):
-${headTags(l, "  ")}
-- Add the rules at ${l.docs}ai/AGENTS.snippet.md to CLAUDE.md, so later sessions follow them too.
-- Before writing UI, read ${l.docs}llms.txt, then the page of each component you use (${l.docs}llms/<component>.md): classes, props and copy-ready HTML and React.`,
-  },
-  chat: {
-    label: "ChatGPT or Claude",
-    where: "Paste it into a new chat. You'll get one HTML file: save it and open it in your browser.",
-    setup: (l) => `Answer with one self-contained HTML file that uses the ayywi design system. Put these in its <head>:
-${headTags(l, "  ")}
-Use only ayywi's class names (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No other CSS framework. If you can open links, read ${l.docs}llms.txt and the page of each component you use (${l.docs}llms/<component>.md) for copy-ready markup.`,
-  },
-};
-
+/** The rules that make an app look built with ayywi, short enough to sit in any prompt. */
 const RULES = `Rules:
-- Only ayywi components and tokens. No hardcoded colours (use var(--ayy-color-*)), no made-up ayy- classes, no left/right CSS (margin-inline-start, not margin-left).
-- An app gets a sidebar on wide screens, and a top bar plus a bottom tab bar on phones: .ayy-app-shell with a .ayy-app-shell__bar and a .ayy-bottom-nav inside. Each screen fills the main — don't wrap it in .ayy-container or a max-inline-size. A website gets an .ayy-navbar with a menu button for phones (.ayy-navbar__toggle), content at .ayy-container width, and an .ayy-footer.
-- Each screen starts with a page header (.ayy-page-header). Every list and table has a loading state (.ayy-skeleton), an empty state (.ayy-empty-state) and an error state (.ayy-alert--destructive with a Try again button).
-- One main button per screen (.ayy-button); everything else .ayy-button--outline or --ghost.
-- Charts are ayywi charts (.ayy-chart, .ayy-bar-list, .ayy-sparkline); with a chart library, colour series with var(--ayy-chart-1), var(--ayy-chart-2)…
-- Icons: Hugeicons (hugeicons.com) as inline SVG with class="ayy-icon".`;
+- Only ayywi classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No hardcoded colours, no made-up classes, no left/right CSS.
+- An app: .ayy-app-shell with a sidebar on wide screens and a top bar plus .ayy-bottom-nav on phones. A website: .ayy-navbar, content at .ayy-container width, and an .ayy-footer.
+- Every screen starts with .ayy-page-header. Every list and table has a loading (.ayy-skeleton), an empty (.ayy-empty-state) and an error state (.ayy-alert--destructive).
+- One main .ayy-button per screen; everything else outline or ghost. Icons: Hugeicons inline SVG with class="ayy-icon".`;
 
-/** Every component and its classes on one line each: the contract, for tools that can't open the docs. */
-const CLASSES = components
-  .map((c) => {
-    const aka = c.aka?.length ? ` (aka ${c.aka.join(", ")})` : "";
-    const tags = [
-      ...(c.element?.tag ? [c.element.tag] : []),
-      ...(c.elements?.map((e) => e.tag) ?? []),
-    ];
-    const elements = tags.length ? ` [${tags.map((t) => `<${t}>`).join(", ")}]` : "";
-    return `- ${c.name}${aka}${elements}: ${Object.keys(c.classes).join(" ")}`;
-  })
-  .join("\n");
+/** How to build with ayywi, for any AI tool that takes a prompt: the files to load, what to use, where the docs are. */
+const SETUP = (l: Links) => `Style everything with the ayywi design system. Nothing to install: load these in the app's HTML <head>.
+${headTags(l, "  ")}
+- Dark and light mode come from data-theme on <html>, never a .dark class.
+- Every component, with copy-ready HTML and React: ${l.docs}llms.txt (all of it in one file: ${l.docs}llms-full.txt).`;
 
-/** The whole prompt: the person's request, then how to build it in their tool. */
-export function buildPrompt(request: string, tool: Tool = "lovable", l = links()): string {
+/** The whole prompt: the person's request, then how to build it with ayywi. Short enough for any AI builder. */
+export function buildPrompt(request: string, l = links()): string {
   return `${request.trim()}
 
 ---
 How to build it (for the AI):
 
-${TOOLS[tool].setup(l)}
+${SETUP(l)}
 
-${RULES}
-
-ayywi classes (each component has a page with copy-ready examples: ${l.docs}llms/<component>.md, e.g. ${l.docs}llms/table.md):
-${CLASSES}`;
+${RULES}`;
 }
 
 /** What people build most, with a sentence to start from. */

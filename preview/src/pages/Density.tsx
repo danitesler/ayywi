@@ -54,12 +54,10 @@ function DensityCardSample({
   mode,
   title,
   subtitle,
-  badgeText,
 }: {
   mode: "compact" | "comfortable" | "touch";
   title: string;
   subtitle: string;
-  badgeText: string;
 }) {
   const [activeTab, setActiveTab] = useState("daily");
   const [notify, setNotify] = useState(true);
@@ -68,14 +66,11 @@ function DensityCardSample({
   return (
     <Card data-density={mode}>
       <CardHeader>
-        <div className="ayy-cluster" style={{ justifyContent: "space-between", alignItems: "baseline" }}>
-          <div>
-            <strong>{title}</strong>
-            <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>
-              {subtitle}
-            </p>
-          </div>
-          <Badge variant="muted">{badgeText}</Badge>
+        <div>
+          <strong>{title}</strong>
+          <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>
+            {subtitle}
+          </p>
         </div>
       </CardHeader>
       <CardContent className="ayy-stack">
@@ -154,14 +149,14 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
         <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Density</h1>
         <p className="ayy-lede">
-          Controls, padding and font sizes scale across three densities: compact for dense screens, comfortable for room to breathe, and touch for fingers.
+          Density changes how much room the interface takes. Compact fits the most on screen, comfortable gives things more space, and touch makes controls large enough for fingers. Control heights, padding and text sizes all follow it.
         </p>
       </header>
 
       {/* Interactive density showcase moved to top */}
       <h2 className="pv-h pv-h--section">Density</h2>
       <p className="pv-note">
-        Pick a density to see the controls, table and actions scale in real time.
+        Pick a density to see the controls, table and actions change size.
       </p>
 
       <Card data-density={activeDensity}>
@@ -245,7 +240,7 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
       {/* Side-by-side comparison */}
       <h2 className="pv-h pv-h--section">Comparison</h2>
       <p className="pv-note">
-        Same controls at each density.
+        The same controls at each density, side by side.
       </p>
 
       <div className="pv-densities">
@@ -253,26 +248,23 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
           mode="compact"
           title="Compact"
           subtitle="32px height · Desktop default"
-          badgeText="Compact"
         />
         <DensityCardSample
           mode="comfortable"
           title="Comfortable"
           subtitle="40px height · More room"
-          badgeText="Comfortable"
         />
         <DensityCardSample
           mode="touch"
           title="Touch"
           subtitle="44px height · Touch screens"
-          badgeText="Touch"
         />
       </div>
 
       {/* Sizes table */}
       <h2 className="pv-h pv-h--section">Sizes</h2>
       <p className="pv-note">
-        Control heights, text sizes and padding across each density.
+        How tall controls are, and how large their text and padding are, at each density.
       </p>
 
       <Table>

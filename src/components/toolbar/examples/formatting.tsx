@@ -1,4 +1,5 @@
 import {
+  ArrowDown01Icon,
   Comment01Icon,
   Delete02Icon,
   Link01Icon,
@@ -8,9 +9,11 @@ import {
   TextUnderlineIcon,
 } from "@hugeicons/core-free-icons";
 import { useState } from "react";
-import { Icon, Shortcut, Toolbar, ToolbarButton, ToolbarSeparator, Tooltip } from "@danitesler/ayywi/react";
+import { Popover, PopoverContent, PopoverTrigger, ToolbarGroup, Icon, Shortcut, Toolbar, ToolbarButton, ToolbarSeparator, Tooltip } from "@danitesler/ayywi/react";
 
 export default function Example() {
+  const [textStyle, setTextStyle] = useState("Normal");
+  const [textSize, setTextSize] = useState(14);
   const [bold, setBold] = useState(true);
   const [italic, setItalic] = useState(false);
   const [underline, setUnderline] = useState(false);
@@ -49,6 +52,31 @@ export default function Example() {
           <Icon icon={TextUnderlineIcon} />
         </ToolbarButton>
       </Tooltip>
+      <Popover>
+        <PopoverTrigger asChild>
+          <ToolbarButton>Text options <Icon icon={ArrowDown01Icon} /></ToolbarButton>
+        </PopoverTrigger>
+        <PopoverContent align="start" aria-label="Text options">
+          <div className="ayy-stack" style={{ gap: "var(--ayy-space-2)" }}>
+            <p className="ayy-muted">Text style</p>
+            <Toolbar aria-label="Text style" size="sm">
+              <ToolbarGroup aria-label="Text style" data-exclusive>
+                {["Normal", "Code", "Quote"].map((style) => (
+                  <ToolbarButton key={style} pressed={textStyle === style} onClick={() => setTextStyle(style)}>{style}</ToolbarButton>
+                ))}
+              </ToolbarGroup>
+            </Toolbar>
+            <p className="ayy-muted">Text size</p>
+            <Toolbar aria-label="Text size" size="sm">
+              <ToolbarGroup aria-label="Width" data-exclusive>
+                {[12, 14, 18].map((value) => (
+                  <ToolbarButton key={value} pressed={textSize === value} onClick={() => setTextSize(value)}>{value} px</ToolbarButton>
+                ))}
+              </ToolbarGroup>
+            </Toolbar>
+          </div>
+        </PopoverContent>
+      </Popover>
       <ToolbarSeparator />
       <Tooltip
         content={

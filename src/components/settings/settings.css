@@ -103,8 +103,18 @@
 }
 
 .ayy-settings__control > :is(.ayy-select, .ayy-input, .ayy-combobox, .ayy-date-picker),
-.ayy-settings__control > :is(ayy-combobox, ayy-date-picker) > :is(.ayy-combobox, .ayy-date-picker) {
+.ayy-settings__control > :is(ayy-combobox, ayy-date-picker) > :is(.ayy-combobox, .ayy-date-picker),
+.ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) {
   min-inline-size: 11rem;
+}
+
+.ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) {
+  min-inline-size: 11rem;
+  justify-content: flex-start;
+}
+
+.ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) > svg:last-child {
+  margin-inline-start: auto;
 }
 
 /* The control under the text, full width: a textarea, a radio list, a long select. */
@@ -190,6 +200,209 @@
 .ayy-settings__link--destructive,
 .ayy-settings__link--destructive .ayy-settings__label {
   color: var(--ayy-color-destructive);
+}
+
+/* ---- Appearance pickers: a grid of larger pictures (theme, corners, font), inside a Popover or in a stacked row. ---- */
+
+/* role="radiogroup" with an aria-label; a <fieldset> works too. */
+.ayy-settings__picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(8.5rem, 100%), 1fr));
+  gap: var(--ayy-space-3);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* A Popover holding a picker: wide enough for three 8.5rem pictures across. */
+.ayy-popover:has(> .ayy-settings__picker) {
+  inline-size: min(30rem, calc(100vw - 1rem));
+  max-inline-size: min(30rem, calc(100vw - 1rem));
+}
+
+/* A <label> around a visually hidden native radio, the picture and the caption. */
+.ayy-settings__option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+  min-inline-size: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+  line-height: var(--ayy-leading-snug);
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ayy-settings__option > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The picture's frame: a 16:10 tile. Holds a .ayy-settings__screen, or a short sample ("Aa" in a font). */
+.ayy-settings__preview {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-lg);
+  background-color: color-mix(in srgb, var(--ayy-color-text) 6%, var(--ayy-color-surface));
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-2xl);
+  line-height: var(--ayy-leading-none);
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    box-shadow var(--ayy-duration-fast) ease;
+}
+
+.ayy-settings__caption {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .ayy-settings__option:hover .ayy-settings__preview {
+    border-color: var(--ayy-color-line-hover);
+  }
+}
+
+.ayy-settings__option:has(> input:checked) {
+  color: var(--ayy-color-text);
+}
+
+.ayy-settings__option:has(> input:checked) .ayy-settings__preview {
+  border-color: var(--ayy-color-text);
+  box-shadow: 0 0 0 1px var(--ayy-color-text);
+}
+
+.ayy-settings__option:has(> input:focus-visible) .ayy-settings__preview {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+:root[data-ayy-input="pointer"] .ayy-settings__option:has(> input:focus-visible) .ayy-settings__preview {
+  outline-color: transparent;
+}
+
+.ayy-settings__option:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens of whatever it sits in, so
+   data-theme, data-density and data-brand on it (or around it) show what they change. Two in one preview split it
+   down the middle: System as half light, half dark. Decorative: aria-hidden. */
+.ayy-settings__screen {
+  --_row: calc((var(--ayy-size-control-sm) - 1rem) * 0.6);
+  --_line: 2px;
+  --_head: 4px;
+  --_gap: 10px;
+  --_side-top: 14px;
+  --_scale: 3;
+  --_ink: color-mix(in srgb, var(--ayy-color-text) 80%, transparent);
+  --_faint: color-mix(in srgb, var(--ayy-color-muted) 45%, transparent);
+  position: absolute;
+  inset-block-start: 16%;
+  inset-inline-start: 14%;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: calc(var(--ayy-radius-card) / var(--_scale));
+  background-color: var(--ayy-color-bg);
+  background-image:
+    linear-gradient(var(--_ink), var(--_ink)),
+    repeating-linear-gradient(to bottom, var(--_faint) 0 var(--_line), transparent var(--_line) var(--_row));
+  background-repeat: no-repeat;
+  background-size:
+    28% var(--_head),
+    46% calc(var(--_row) * 3);
+  background-position:
+    38% 16%,
+    55% calc(16% + var(--_gap));
+  box-shadow: var(--ayy-shadow-rest);
+  color: var(--ayy-color-text);
+  pointer-events: none;
+}
+
+/* The sidebar, with its own lines. */
+.ayy-settings__screen::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  inline-size: 24%;
+  border-inline-end: 1px solid var(--ayy-color-hairline);
+  background-color: var(--ayy-color-surface);
+  background-image: repeating-linear-gradient(to bottom, var(--_faint) 0 var(--_line), transparent var(--_line) var(--_row));
+  background-repeat: no-repeat;
+  background-size: 56% calc(var(--_row) * 4);
+  background-position: 50% var(--_side-top);
+}
+
+/* The primary button: the brand colour and the button corner. */
+.ayy-settings__screen::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(16% + var(--_gap) + 4px + var(--_row) * 3);
+  inset-inline-start: 32%;
+  inline-size: 18%;
+  block-size: calc(var(--_row) * 1.2);
+  border-radius: calc(var(--ayy-radius-button) / var(--_scale));
+  background-color: var(--ayy-color-primary);
+}
+
+/* A second screen shows only its inline-end half. */
+.ayy-settings__screen + .ayy-settings__screen {
+  clip-path: inset(0 calc(25% * (1 - var(--_ayy-dir, 1))) 0 calc(25% * (1 + var(--_ayy-dir, 1))));
+}
+
+/* A small inline preview icon at the start of a dropdown trigger button. */
+.ayy-button > .ayy-settings__preview {
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1rem;
+  aspect-ratio: auto;
+  border-radius: var(--ayy-radius-sm);
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-button > .ayy-settings__preview > .ayy-settings__screen {
+  --_row: calc((var(--ayy-size-control-sm) - 1rem) * 0.22);
+  --_line: 1px;
+  --_head: 1.5px;
+  --_gap: 2.5px;
+  --_side-top: 3px;
+  --_scale: 6;
+  inset-block-start: 14%;
+  inset-inline-start: 12%;
+}
+
+@media (forced-colors: active) {
+  .ayy-settings__option:has(> input:checked) .ayy-settings__preview {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+  .ayy-settings__option:has(> input:disabled) {
+    color: GrayText;
+  }
 }
 
 @media (forced-colors: active) {

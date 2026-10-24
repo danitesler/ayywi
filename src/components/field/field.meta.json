@@ -2,7 +2,7 @@
   "name": "Field",
   "slug": "field",
   "category": "Forms",
-  "description": "Form field wrapper: Label + control + hint or error, stacked with consistent spacing.",
+  "description": "A wrapper that ties a label, an input and its hint or error message together with consistent spacing. Use it around any form control.",
   "aka": ["field", "form-field", "form-row"],
   "classes": {
     "ayy-field": "Wrapper, vertical stack.",

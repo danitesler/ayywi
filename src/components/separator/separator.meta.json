@@ -2,7 +2,7 @@
   "name": "Separator",
   "slug": "separator",
   "category": "Layout",
-  "description": "A hairline between blocks: full, fading out at both ends (between page sections), or vertical (between inline items).",
+  "description": "A thin line that divides blocks of content, between sections of a page or between items in a row.",
   "aka": ["separator", "divider", "sep", "hr"],
   "classes": {
     "ayy-separator": "Root, on an <hr>. 1px hairline, no margins (spacing belongs to the layout).",

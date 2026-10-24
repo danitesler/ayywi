@@ -1,6 +1,6 @@
 # Card
 
-Category: Layout. Surface that groups related content. Flat at rest with an inset top highlight; optional lift and pointer-following spotlight. The view type (view) is a capture, recording or picture to open: the picture letterboxed over a blurred copy of itself, a recording's length in the corner, and its title, details, badges and Hover actions revealed on hover. Also called: card, panel-card, view-card, media-card, shot-card, capture-card, thumbnail-card.
+Category: Layout. A surface that groups related content so it reads as one unit, like a project, a summary or a block of settings. It can react to hover when it's clickable, and it has a media version for captures, recordings and pictures. Also called: card, panel-card, view-card, media-card, shot-card, capture-card, thumbnail-card.
 
 **Classes**
 - `.ayy-card` — Root surface.

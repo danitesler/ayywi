@@ -3,6 +3,8 @@ import { connectPopover, type PopoverController, type PopoverControllerOptions }
 import { place, type FloatingSide, type PlaceBoundary } from "../../lib/position";
 
 export const menuClass = "ayy-menu";
+export const menuRowClass = "ayy-menu__row";
+export const menuMoreClass = "ayy-menu__more";
 export const menuLabelClass = "ayy-menu__label";
 export const menuSeparatorClass = "ayy-menu__separator";
 export const menuShortcutClass = "ayy-menu__shortcut";
@@ -265,7 +267,7 @@ export function connectMenu(
   const initSubmenus = () => {
     const subTriggers = Array.from(
       content.querySelectorAll<HTMLElement>(
-        ".ayy-menu__item--sub, .ayy-menu__item[aria-haspopup='menu']:not(.ayy-menu__item--expand)",
+        ".ayy-menu__item--sub, .ayy-menu__more, .ayy-menu__item[aria-haspopup='menu']:not(.ayy-menu__item--expand)",
       ),
     );
 
@@ -316,6 +318,10 @@ export function connectMenu(
   const openSubmenuFor = (subTrigger: HTMLElement, focusFirst = false) => {
     const sub = submenus.get(subTrigger);
     if (!sub) return;
+    if (subTimer) {
+      clearTimeout(subTimer);
+      subTimer = null;
+    }
     if (activeSubmenu && activeSubmenu !== sub) closeActiveSubmenu();
     activeSubmenu = sub;
     sub.controller.open();
@@ -353,6 +359,8 @@ export function connectMenu(
       clearTimeout(subTimer);
       subTimer = null;
     }
+
+    if (target.classList.contains("ayy-menu__more")) return;
 
     if (submenus.has(target)) {
       subTimer = setTimeout(() => {
@@ -498,7 +506,10 @@ export function connectMenu(
     if (!item || !content.contains(item) || !items().includes(item)) return;
 
     if (submenus.has(item)) {
-      openSubmenuFor(item, false);
+      // The controller opens the panel; prevent the native invoker from toggling it closed again.
+      event.preventDefault();
+      if (item.classList.contains("ayy-menu__more") && submenus.get(item)!.controller.isOpen()) closeActiveSubmenu();
+      else openSubmenuFor(item, false);
       return;
     }
 

@@ -1,6 +1,6 @@
 # Slider
 
-Category: Forms. A native range input with a filled track and a round thumb, and a two-thumb range for a min and a max. Keyboard, forms and screen readers work as for any range input. Also called: slider, range, range-input.
+Category: Forms. A control for choosing a value, or a range between two values, by dragging a handle along a track. It's a native range input, so the keyboard, forms and screen readers work as usual. Also called: slider, range, range-input.
 
 **Classes**
 - `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.

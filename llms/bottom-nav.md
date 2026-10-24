@@ -1,6 +1,6 @@
 # Bottom nav
 
-Category: Navigation. A phone app's tab bar: top-level destinations, each an icon over a short label, pinned to the bottom of the screen within thumb reach and clear of the home indicator. Supports three sizes and compact mode for more items. Inside an App shell it replaces the sidebar on phones. Also called: bottom-nav, tab-bar, tabbar, bottom-bar.
+Category: Navigation. The tab bar of a phone app. It keeps the main destinations at the bottom of the screen where a thumb can reach them, each with an icon and a short label. Inside an App shell it replaces the sidebar on phones. Also called: bottom-nav, tab-bar, tabbar, bottom-bar.
 
 **Classes**
 - `.ayy-bottom-nav` — The <nav>. Equal-width columns, one per link. Sticky to the bottom of its scroll container (the page, or the box it scrolls in), with the safe-area inset added below. As a direct child of .ayy-app-shell it shows below 48rem only; from 48rem the sidebar carries the same links.

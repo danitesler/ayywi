@@ -1,12 +1,15 @@
 import { ensureId } from "../../lib/element";
 import { ArrowLeft01Icon, Menu01Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
+import { tooltipClass, tooltipContentClass } from "../tooltip/tooltip";
 
 export const appShellClass = "ayy-app-shell";
 export const appShellSidebarClass = "ayy-app-shell__sidebar";
 export const appShellBrandClass = "ayy-app-shell__brand";
 export const appShellNavClass = "ayy-app-shell__nav";
 export const appShellLinkClass = "ayy-app-shell__link";
+export const appShellRowClass = "ayy-app-shell__row";
+export const appShellMoreClass = "ayy-app-shell__more";
 export const appShellGroupClass = "ayy-app-shell__group";
 export const appShellGroupCollapsibleClass = "ayy-app-shell__group--collapsible";
 export const appShellGroupLabelClass = "ayy-app-shell__group-label";
@@ -64,6 +67,20 @@ const RESIZE_STEP_BIG = 64;
 
 export type AppShellEdge = "sidebar" | "detail";
 
+/**
+ * Keep a sidebar toggle in step with the sidebar: aria-expanded plus the state's label and tooltip text when the
+ * author gave data-ayy-label-expanded / data-ayy-label-collapsed (on the button and on its .ayy-tooltip__content).
+ */
+export function syncAppShellToggle(toggle: HTMLElement, collapsed: boolean): void {
+  const state = collapsed ? "data-ayy-label-collapsed" : "data-ayy-label-expanded";
+  const label = toggle.getAttribute(state);
+  if (label) toggle.setAttribute("aria-label", label);
+  const bubble = toggle.closest(`.${tooltipClass}`)?.querySelector<HTMLElement>(`.${tooltipContentClass}`);
+  const bubbleLabel = bubble?.getAttribute(state);
+  if (bubble && bubbleLabel) bubble.textContent = bubbleLabel;
+  toggle.setAttribute("aria-expanded", String(!collapsed));
+}
+
 /** Set on the sidebar while the hover preview is held shut after a collapse. */
 const HOLD = "data-ayy-hold";
 
@@ -105,6 +122,8 @@ export interface ConnectAppShellOptions {
  * Wires the phone drawer and desktop sidebar collapsing onto an `.ayy-app-shell`.
  * - On phones: a toggle in `.ayy-app-shell__bar` or `.ayy-bottom-nav` opens/closes the sidebar as a drawer.
  * - On wide screens: a toggle in the sidebar or shell collapses/expands the sidebar into an icon rail.
+ * - A sidebar toggle's data-ayy-label-expanded / data-ayy-label-collapsed (also on its .ayy-tooltip__content bubble)
+ *   update its aria-label and tooltip text with the state.
  * - On a settings shell (`.ayy-app-shell--settings`), Esc follows its `.ayy-app-shell__back` out of settings.
  * - A `.ayy-app-shell__resize` handle (a direct child of the shell) resizes the sidebar by dragging or with the arrow
  *   keys, and an `.ayy-app-shell__resize--detail` one the detail pane: they set `--ayy-sidebar-w` / `--ayy-detail-w` on
@@ -139,15 +158,13 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
 
   if (aside) {
     for (const st of sidebarToggles()) {
-      st.setAttribute("aria-expanded", String(!shell.classList.contains(appShellCollapsedClass)));
+      syncAppShellToggle(st, shell.classList.contains(appShellCollapsedClass));
       st.setAttribute("aria-controls", ensureId(aside, "ayy-sidebar"));
     }
   }
 
   const syncSidebarToggles = (collapsed: boolean) => {
-    for (const st of sidebarToggles()) {
-      st.setAttribute("aria-expanded", String(!collapsed));
-    }
+    for (const st of sidebarToggles()) syncAppShellToggle(st, collapsed);
   };
 
   // Collapsing from the sidebar's own toggle leaves the pointer (or focus) on the sidebar, which would open the hover

@@ -1,65 +1,235 @@
 /* Style lives on plain table elements under .ayy-table, so any template engine can output it. */
 
+/* Optional frame: a toolbar (title, description, search, filters, column menu), the scrolling table and a pager. */
+.ayy-table-container {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  inline-size: 100%;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-lg);
+  /* The page colour, not surface: muted text on a selected row's tint keeps 4.5:1 contrast in the light theme. */
+  background-color: var(--ayy-color-bg);
+  overflow: clip;
+}
+
+.ayy-table__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  padding-block: var(--ayy-space-3);
+  padding-inline: var(--ayy-space-4);
+  border-block-end: 1px solid var(--ayy-color-hairline);
+}
+
+.ayy-table__heading {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+}
+
+.ayy-table__title {
+  margin: 0;
+  font-size: var(--ayy-text-md);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-snug);
+  color: var(--ayy-color-text);
+}
+
+.ayy-table__description {
+  margin: 0;
+  font-size: var(--ayy-text-s);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-table__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  margin-inline-start: auto;
+}
+
+.ayy-table__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+  padding-block: var(--ayy-space-2);
+  padding-inline: var(--ayy-space-4);
+  border-block-start: 1px solid var(--ayy-color-hairline);
+  font-size: var(--ayy-text-s);
+  color: var(--ayy-color-muted);
+}
+
 .ayy-table-wrap {
   position: relative;
   inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
   overflow: auto;
 }
 
+/* A container with a max-block-size scrolls its table, under a --sticky header. */
+.ayy-table-container > .ayy-table-wrap {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
 .ayy-table {
+  /* What's under the table: pinned and sticky cells paint it so rows don't show through them. */
+  --_bg: var(--ayy-table-bg, var(--ayy-color-bg));
+  --_th: 2.25rem;
+  --_pad-block: var(--ayy-space-3);
+  --_pad-inline: var(--ayy-space-3);
   inline-size: 100%;
+  min-inline-size: 100%;
   border-collapse: collapse;
   caption-side: bottom;
   font-size: var(--ayy-text-s);
   color: var(--ayy-color-text);
 }
 
-.ayy-table thead {
-  background-color: var(--ayy-color-wash);
+.ayy-table--compact {
+  --_th: 2rem;
+  --_pad-block: var(--ayy-space-1-5);
+}
+
+.ayy-table--spacious {
+  --_th: 2.75rem;
+  --_pad-block: var(--ayy-space-4);
+  --_pad-inline: var(--ayy-space-4);
+}
+
+/* Columns take the widths set on the header cells (or share the row equally), not their content's. */
+.ayy-table--fixed {
+  table-layout: fixed;
+}
+
+/* Rows paint --_tint, so a pinned or sticky cell can lay the same tint over its own opaque background. */
+.ayy-table thead,
+.ayy-table tfoot {
+  --_tint: var(--ayy-color-wash);
+  background-color: var(--_tint);
 }
 
 .ayy-table tr {
   border-block-end: 1px solid var(--ayy-color-hairline);
 }
 
+/* No transition: a pinned or sticky cell paints --_tint over its own background and can't fade with the row,
+   so a fading row showed the pinned column lit before the rest. Every cell changes on the same frame. */
 .ayy-table tbody tr {
-  transition: background-color var(--ayy-duration-fast) ease;
+  background-color: var(--_tint, transparent);
 }
 
 .ayy-table tbody tr:last-child {
   border-block-end: 0;
 }
 
-.ayy-table tbody tr:hover {
-  background-color: var(--ayy-color-wash);
+.ayy-table tbody tr:not(.ayy-table__group, .ayy-table__detail, :has(> .ayy-table__empty), [aria-disabled="true"]):hover {
+  --_tint: var(--ayy-color-wash);
 }
 
-.ayy-table tr[aria-selected="true"] {
-  background-color: var(--ayy-color-wash-hover);
+/* Selected: the 4% wash (a stronger tint takes muted text under 4.5:1 in light themes) and a bar on the start edge.
+   An inset shadow, mirrored by --_ayy-dir, so the row doesn't shift as a border would. */
+.ayy-table tbody tr[aria-selected="true"] {
+  --_tint: var(--ayy-color-wash);
+}
+
+.ayy-table tbody tr[aria-selected="true"] > :first-child {
+  box-shadow: inset calc(2px * var(--_ayy-dir, 1)) 0 0 var(--ayy-color-primary);
+}
+
+.ayy-table[data-selecting] {
+  user-select: none;
+}
+
+.ayy-table tr[aria-disabled="true"] {
+  color: var(--ayy-color-muted);
 }
 
 .ayy-table th {
-  block-size: 2.25rem;
+  block-size: var(--_th);
   padding-block: 0;
-  padding-inline: var(--ayy-space-3);
+  padding-inline: var(--_pad-inline);
   vertical-align: middle;
   text-align: start;
-  font-size: var(--ayy-text-s);
-  font-weight: var(--ayy-weight-semibold);
-  letter-spacing: var(--ayy-tracking-wide);
-  text-transform: uppercase;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
   white-space: nowrap;
   color: var(--ayy-color-muted);
 }
 
+/* A header cell in a body row (the row's name, scope="row") reads like the other cells. */
+.ayy-table tbody th {
+  block-size: auto;
+  padding-block: var(--_pad-block);
+  font-weight: var(--ayy-weight-medium);
+  color: inherit;
+}
+
+/* Holds a column's resize handle. */
+.ayy-table thead th {
+  position: relative;
+}
+
 .ayy-table td {
-  padding: var(--ayy-space-3);
+  padding-block: var(--_pad-block);
+  padding-inline: var(--_pad-inline);
   vertical-align: middle;
+}
+
+/* Content stays inside its own column: one line ending in "…", or gone when the column is too narrow to show it.
+   Add .ayy-table__wrap to let a column wrap instead. */
+.ayy-table :is(th, td) {
+  overflow: hidden;
+  overflow: clip;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Inline flex cannot ellipsize its anonymous text item inside the pill. */
+.ayy-table .ayy-badge {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.ayy-table .ayy-badge__dot {
+  display: inline-block;
+  margin-inline-end: var(--ayy-space-1-5);
+  vertical-align: middle;
+}
+
+/* Header cells keep the 4px a dragged column's drop-edge dot straddles the column line with. */
+.ayy-table thead th {
+  overflow-clip-margin: 4px;
+}
+
+/* A detail row spans the table and an empty state has the whole width: their content may wrap. */
+.ayy-table .ayy-table__detail > td,
+.ayy-table .ayy-table__empty {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* In a container the outer columns line up with the toolbar and pager. */
+.ayy-table-container .ayy-table tr > :first-child {
+  padding-inline-start: var(--ayy-space-4);
+}
+
+.ayy-table-container .ayy-table tr > :last-child {
+  padding-inline-end: var(--ayy-space-4);
 }
 
 .ayy-table tfoot {
   border-block-start: 1px solid var(--ayy-color-hairline);
-  background-color: var(--ayy-color-wash);
   font-weight: var(--ayy-weight-medium);
 }
 
@@ -69,10 +239,142 @@
   color: var(--ayy-color-muted);
 }
 
+/* Lines between the columns too, for dense numbers people read across and down. */
+.ayy-table--bordered :is(th, td) + :is(th, td) {
+  border-inline-start: 1px solid var(--ayy-color-hairline);
+}
+
+/* Header row (and footer row) stay in view while the .ayy-table-wrap scrolls; give the wrap a max-block-size. */
+.ayy-table--sticky thead :is(th, td),
+.ayy-table--sticky tfoot :is(th, td) {
+  position: sticky;
+  z-index: 2;
+  background: linear-gradient(var(--_tint), var(--_tint)) var(--_bg);
+}
+
+.ayy-table--sticky thead :is(th, td) {
+  inset-block-start: 0;
+  box-shadow: inset 0 -1px var(--ayy-color-hairline);
+}
+
+.ayy-table--sticky tfoot :is(th, td) {
+  inset-block-end: 0;
+  box-shadow: inset 0 1px var(--ayy-color-hairline);
+}
+
+/* A pinned column stays at the inline start (or end) while the rest scrolls sideways under it. */
+.ayy-table .ayy-table__pin {
+  position: sticky;
+  inset-inline-start: var(--_pin-offset, 0px);
+  z-index: 1;
+  background: linear-gradient(var(--_tint, transparent), var(--_tint, transparent)) var(--_bg);
+}
+
+.ayy-table .ayy-table__pin--end {
+  inset-inline-start: auto;
+  inset-inline-end: var(--_pin-offset, 0px);
+}
+
+.ayy-table--sticky :is(thead, tfoot) .ayy-table__pin {
+  z-index: 3;
+}
+
+/* The pinned edge. A border would stay behind with the table grid (collapsed borders belong to the table). */
+.ayy-table .ayy-table__pin::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 1px;
+  background-color: var(--ayy-color-line);
+  pointer-events: none;
+}
+
+.ayy-table .ayy-table__pin--end::after {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+
 /* Numbers: end-aligned (right in LTR, left in RTL), fixed-width digits. */
 .ayy-table .ayy-table__num {
   text-align: end;
   font-variant-numeric: tabular-nums;
+}
+
+/* One line ending in "…": on a <span> in the cell, never on the cell itself. Put the full text in its title. */
+.ayy-table .ayy-table__truncate {
+  display: block;
+  max-inline-size: var(--ayy-table-truncate, 16rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-table__column-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+}
+
+/* The label takes the room the menu doesn't need. */
+.ayy-table__column-header > :first-child {
+  margin-inline-end: auto;
+}
+
+/* Ends in "…" when the column is narrower than the label. */
+.ayy-table__column-label {
+  display: block;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-table__column-icon {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-inline-end: var(--ayy-space-2);
+}
+
+.ayy-table__add-column {
+  inline-size: 1%;
+  white-space: nowrap;
+}
+
+.ayy-table .ayy-table__wrap,
+.ayy-table__wrap .ayy-table__truncate {
+  max-inline-size: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ayy-table__wrap .ayy-table__edit {
+  white-space: normal;
+  resize: vertical;
+  min-block-size: var(--ayy-size-control-sm);
+}
+
+/* A cell led by an Avatar or icon, with a name and a muted second line. */
+.ayy-table__media {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+}
+
+.ayy-table__media > :not(:first-child) {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ayy-table__secondary {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--ayy-text-xs);
+  color: var(--ayy-color-muted);
 }
 
 /* Sortable column: a button in the <th>; aria-sort on the <th> says which way (React TableHead sort, or <ayy-table>). */
@@ -80,6 +382,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--ayy-space-1);
+  max-inline-size: 100%;
+  min-inline-size: 0;
   margin: 0;
   margin-inline: calc(-1 * var(--ayy-space-1));
   padding: var(--ayy-space-1);
@@ -88,8 +392,6 @@
   background: none;
   color: inherit;
   font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
   cursor: pointer;
   transition: color var(--ayy-duration-fast) ease;
 }
@@ -134,10 +436,355 @@
   flex-direction: row-reverse;
 }
 
+/* Column resize: a separator at the header cell's inline end. Drag it, or focus it and use the arrow keys. */
+.ayy-table__resize {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 1;
+  inline-size: 0.5rem;
+  cursor: col-resize;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ayy-table__resize::after {
+  content: "";
+  position: absolute;
+  inset-block: 25%;
+  inset-inline-end: 0;
+  inline-size: 1px;
+  background-color: var(--ayy-color-line);
+  transition: background-color var(--ayy-duration-fast) ease, inset var(--ayy-duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .ayy-table__resize:hover::after {
+    inset-block: 0;
+    inline-size: 2px;
+    background-color: var(--ayy-color-line-hover);
+  }
+}
+
+.ayy-table__resize:focus-visible::after,
+.ayy-table__resize[data-dragging]::after {
+  inset-block: 0;
+  inline-size: 2px;
+  background-color: var(--ayy-color-ring);
+}
+
+.ayy-table__resize:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+/* Dragging focuses the handle; once it's let go after pointer use, the line fades like the ring (focus.css). */
+:root[data-ayy-input="pointer"] .ayy-table__resize:focus-visible:not([data-dragging], :hover)::after {
+  inset-block: 25%;
+  inline-size: 1px;
+  background-color: var(--ayy-color-line);
+}
+
+.ayy-table:has(.ayy-table__resize[data-dragging]) {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* Column drag-and-drop reordering: drag a header to reorder columns. */
+.ayy-table th[data-reorderable]:not([data-reorderable="false"]),
+.ayy-table th.ayy-table__draggable,
+.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]) {
+  cursor: grab;
+  user-select: none;
+}
+
+.ayy-table th[data-reorderable]:not([data-reorderable="false"]):active,
+.ayy-table th.ayy-table__draggable:active,
+.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]):active {
+  cursor: grabbing;
+}
+
+.ayy-table th[data-reorderable]:not([data-reorderable="false"]) .ayy-table__sort,
+.ayy-table th.ayy-table__draggable .ayy-table__sort,
+.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]) .ayy-table__sort {
+  cursor: grab;
+}
+
+.ayy-table th[data-reorderable]:not([data-reorderable="false"]) .ayy-table__sort:active,
+.ayy-table th.ayy-table__draggable .ayy-table__sort:active,
+.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]) .ayy-table__sort:active {
+  cursor: grabbing;
+}
+
+.ayy-table th[data-dragging] {
+  opacity: 0.4;
+}
+
+.ayy-table th[data-drop-edge]::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  inset-block-start: -3px;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-primary);
+  pointer-events: none;
+}
+
+.ayy-table th[data-drop-edge="inline-start"]::after {
+  inset-inline-start: -4px;
+}
+
+.ayy-table th[data-drop-edge="inline-end"]::after {
+  inset-inline-end: -4px;
+}
+
+/* Inline cell editing: a text input or button inside a cell that looks like text at rest and shows an outline on hover or focus. */
+.ayy-table td:has(> .ayy-table__edit) {
+  position: relative;
+}
+
+.ayy-table__edit {
+  display: block;
+  box-sizing: border-box;
+  inline-size: calc(100% + var(--ayy-space-3));
+  margin-block: calc(-1 * var(--ayy-space-1));
+  margin-inline: calc(-1 * var(--ayy-space-1-5));
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-1-5);
+  border: 1px solid transparent;
+  border-radius: var(--ayy-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  font-variant-numeric: inherit;
+  outline: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: border-color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease, box-shadow var(--ayy-duration-fast) ease;
+}
+
+.ayy-table__edit:hover:not(:disabled, :read-only, :focus) {
+  border-color: var(--ayy-color-line);
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-table__edit:focus {
+  border-color: var(--ayy-color-ring);
+  background-color: var(--ayy-color-surface);
+  box-shadow: 0 0 0 1px var(--ayy-color-ring);
+}
+
+.ayy-table__edit[aria-invalid="true"] {
+  border-color: var(--ayy-color-destructive);
+}
+
+.ayy-table__edit:disabled {
+  cursor: not-allowed;
+}
+
+/* Block grids avoid inline baselines shifting controls away from the cell's vertical center. */
+.ayy-table__reorder .ayy-drag-handle,
+.ayy-table__select .ayy-checkbox,
+.ayy-table .ayy-table__expand {
+  display: grid;
+}
+
 /* The checkbox column for selecting rows: as narrow as the box. Selected rows carry aria-selected="true". */
 .ayy-table .ayy-table__select {
   inline-size: 1%;
   padding-inline-end: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Row drag-and-drop: a .ayy-drag-handle in the first cell picks the row up; a line shows where it will land. */
+.ayy-table :is(th, td).ayy-table__reorder,
+.ayy-table-container .ayy-table tr > .ayy-table__reorder:first-child {
+  inline-size: 1%;
+  padding-inline: var(--ayy-space-1) 0;
+}
+
+/* The chevron sits right beside the handle; the header's chevron column has no class, so it's matched by position. */
+.ayy-table :is(th, td).ayy-table__reorder + :is(th, td):is(:has(> .ayy-table__expand), :not([class])) {
+  inline-size: 1%;
+  padding-inline: var(--ayy-space-0-5) 0;
+}
+
+/* The grip and the chevron stay small so they never make a row taller than its text. */
+.ayy-table__reorder .ayy-drag-handle {
+  margin-block: calc(-1 * var(--ayy-space-1));
+}
+
+.ayy-table--compact .ayy-table__reorder .ayy-drag-handle,
+.ayy-table--compact .ayy-table__expand {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+.ayy-table tr[data-dragging] {
+  opacity: 0.4;
+}
+
+.ayy-table tr[data-drop-edge] {
+  position: static;
+}
+
+.ayy-table tr[data-drop-edge]::before {
+  content: none;
+}
+
+.ayy-table tr[data-drop-edge] > td {
+  background-color: color-mix(in srgb, var(--ayy-color-primary) 8%, var(--ayy-color-surface));
+}
+
+.ayy-table tr[data-drop-edge="block-start"] > td {
+  box-shadow: inset 0 2px 0 0 var(--ayy-color-primary);
+}
+
+.ayy-table tr[data-drop-edge="block-end"] > td {
+  box-shadow: inset 0 -2px 0 0 var(--ayy-color-primary);
+}
+
+.ayy-table tr[data-drop-edge="block-start"][aria-selected="true"] > :first-child {
+  box-shadow: inset calc(2px * var(--_ayy-dir, 1)) 0 0 var(--ayy-color-primary), inset 0 2px 0 0 var(--ayy-color-primary);
+}
+
+.ayy-table tr[data-drop-edge="block-end"][aria-selected="true"] > :first-child {
+  box-shadow: inset calc(2px * var(--_ayy-dir, 1)) 0 0 var(--ayy-color-primary), inset 0 -2px 0 0 var(--ayy-color-primary);
+}
+
+/* Expandable rows: a chevron button in the row; the .ayy-table__detail row right after it shows while it's aria-expanded. */
+.ayy-table :is(th, td):has(> .ayy-table__expand) {
+  inline-size: 1%;
+  padding-inline-end: 0;
+}
+
+/* The checkbox column keeps a little room after the chevron, header and rows alike. */
+.ayy-table :is(th, td):is(:has(> .ayy-table__expand), :not([class])) + .ayy-table__select {
+  padding-inline-start: var(--ayy-space-2);
+}
+
+.ayy-table__expand {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-block: calc(-1 * var(--ayy-space-1));
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background: none;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+  transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-table__expand::before {
+  content: "";
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform var(--ayy-duration-base) var(--ayy-ease-standard);
+}
+
+.ayy-table__expand:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-table__expand:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+.ayy-table__expand[aria-expanded="true"] {
+  color: var(--ayy-color-text);
+}
+
+.ayy-table__expand[aria-expanded="true"]::before {
+  transform: rotate(180deg);
+}
+
+.ayy-table tr:has(.ayy-table__expand[aria-expanded="true"]) {
+  border-block-end-color: transparent;
+}
+
+.ayy-table tr:has(.ayy-table__expand[aria-expanded="false"]) + .ayy-table__detail,
+.ayy-table .ayy-table__detail[hidden] {
+  display: none;
+}
+
+.ayy-table .ayy-table__detail > td {
+  padding-block-start: 0;
+  padding-block-end: var(--ayy-space-4);
+  color: var(--ayy-color-text-soft);
+}
+
+/* A row that heads a group of rows: one <th colspan scope="rowgroup"> naming the group, its label in a <span>. */
+.ayy-table .ayy-table__group > * {
+  block-size: auto;
+  padding-block: var(--ayy-space-1-5);
+  background-color: var(--ayy-color-wash);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
+  color: var(--ayy-color-muted);
+}
+
+/* The group's label (a <span> in the cell) stays in view while the table scrolls sideways. */
+.ayy-table .ayy-table__group > * > span {
+  position: sticky;
+  inset-inline-start: var(--_pad-inline);
+}
+
+/* No rows: one cell spanning every column, holding a line of text or an Empty state. */
+.ayy-table .ayy-table__empty {
+  padding-block: var(--ayy-space-10);
+  text-align: center;
+  color: var(--ayy-color-muted);
+}
+
+/* The whole row opens this link: its ::after covers the row. Other controls in the row sit above it. */
+.ayy-table tr:has(.ayy-table__row-link) {
+  position: relative;
+  cursor: pointer;
+}
+
+.ayy-table__row-link {
+  color: inherit;
+  font-weight: var(--ayy-weight-medium);
+  text-decoration: none;
+  outline: none;
+}
+
+.ayy-table__row-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--ayy-radius-sm);
+}
+
+.ayy-table__row-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.ayy-table__row-link:focus-visible::after {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+:root[data-ayy-input="pointer"] .ayy-table__row-link:focus-visible::after {
+  outline-color: transparent;
+}
+
+.ayy-table tr:has(.ayy-table__row-link) :is(a, button, input, select, textarea, label, [tabindex]):not(.ayy-table__row-link) {
+  position: relative;
+  z-index: 1;
 }
 
 /* The actions column at the inline end of a row: hugs inline action buttons and a ⋯ overflow menu trigger. */
@@ -166,8 +813,29 @@
   }
 }
 
+/* Loading: aria-busy="true" on the table dims the rows it's about to replace. */
+.ayy-table tbody {
+  transition: opacity var(--ayy-duration-base) ease;
+}
+
+.ayy-table[aria-busy="true"] tbody {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: progress;
+}
+
 @media (forced-colors: active) {
-  .ayy-table__sort::after {
+  .ayy-table tr[data-drop-edge] > td {
+    box-shadow: none;
+  }
+  .ayy-table tr[data-drop-edge="block-start"] > td {
+    border-block-start: 2px solid Highlight;
+  }
+  .ayy-table tr[data-drop-edge="block-end"] > td {
+    border-block-end: 2px solid Highlight;
+  }
+  .ayy-table__sort::after,
+  .ayy-table__expand::before {
     forced-color-adjust: none;
     background-color: CanvasText;
   }
@@ -180,11 +848,14 @@
     background-color: Highlight;
     color: HighlightText;
   }
-}
-
-.ayy-table--compact td {
-  padding-block: var(--ayy-space-1-5);
-}
-.ayy-table--compact th {
-  block-size: 2rem;
+  .ayy-table tr[aria-selected="true"] .ayy-table__pin {
+    background: Highlight;
+  }
+  .ayy-table tr[aria-disabled="true"] {
+    color: GrayText;
+  }
+  .ayy-table .ayy-table__pin::after,
+  .ayy-table__resize::after {
+    background-color: CanvasText;
+  }
 }

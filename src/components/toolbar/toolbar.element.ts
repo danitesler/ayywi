@@ -12,7 +12,7 @@ export class AyyToolbarElement extends ElementBase {
 
   #onClick = (event: MouseEvent) => {
     const button = (event.target as Element | null)?.closest<HTMLButtonElement>("button[aria-pressed]");
-    if (!button || !this.contains(button) || button.disabled) return;
+    if (!button || button.closest("ayy-toolbar") !== this || button.disabled) return;
     const group = button.closest<HTMLElement>(".ayy-toolbar__group[data-exclusive]");
     const pressed = group ? true : button.getAttribute("aria-pressed") !== "true";
     if (!emit(this, "ayy-press", { button, pressed })) return;

@@ -169,6 +169,8 @@ for (const renderer of ["react", "html"] as const) {
       await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
       await expect(shell).toHaveClass(/ayy-app-shell--hover-preview/);
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+      // Measure the resting column, rather than the last few pixels of its collapse transition.
+      await shell.evaluate((el) => Promise.all(el.getAnimations().map((animation) => animation.finished)));
 
       // Collapsed: sidebar is icon rail width (~52px), text label is hidden
       const collapsedBox = (await sidebar.boundingBox())!;
@@ -208,6 +210,63 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
     });
 
+    test("app shell sidebar toggle names its action in a tooltip", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await open(page, "app-shell", { renderer });
+      const shell = pgShell(page);
+      const toggle = shell.locator(".ayy-app-shell__head .ayy-app-shell__toggle");
+      const tip = toggle.locator("xpath=..").getByRole("tooltip");
+
+      await toggle.hover();
+      await expect(tip).toBeVisible();
+      await expect(tip).toHaveText("Collapse");
+      await expect(toggle).toHaveAccessibleName("Collapse sidebar");
+
+      // The next click collapses, and the label and tooltip say so.
+      await shell.locator(".ayy-app-shell__main").hover();
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(toggle).toHaveAccessibleName("Expand sidebar");
+      await page.mouse.move(0, 0);
+      await toggle.hover();
+      await expect(tip).toHaveText("Expand");
+    });
+
+    test("app shell parts: a row's More button opens the row's menu", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await open(page, "app-shell", { renderer });
+      const shell = example(page, "parts").locator(".ayy-app-shell");
+      const row = shell.locator(".ayy-app-shell__row").first();
+      const more = row.getByRole("button", { name: "Project options" });
+      await expect(more).toHaveCSS("opacity", "0");
+      await row.hover();
+      await expect(more).toHaveCSS("opacity", "1");
+
+      await more.click();
+      const menu = page.getByRole("menu").filter({ hasText: "New project" });
+      await expect(menu).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(menu).toBeHidden();
+      await expect(more).toBeFocused();
+      // The link is still its own target: the menu came from the button beside it, not the row.
+      await expect(row.getByRole("link", { name: /Projects/ })).toBeVisible();
+    });
+
+    test("app shell parts: an uncontrolled shell's toggle follows the state too", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await open(page, "app-shell", { renderer });
+      const shell = example(page, "parts").locator(".ayy-app-shell");
+      const toggle = shell.locator(".ayy-app-shell__head .ayy-app-shell__toggle");
+      const tip = toggle.locator("xpath=..").getByRole("tooltip");
+
+      await toggle.click();
+      await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+      await expect(toggle).toHaveAccessibleName("Expand sidebar");
+      await page.mouse.move(0, 0);
+      await toggle.hover();
+      await expect(tip).toHaveText("Expand");
+    });
+
     test("app shell logo: mark, link icons and toggle share one axis; in the rail the pointer on the mark swaps in the toggle", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await open(page, "app-shell", { renderer });
@@ -222,7 +281,7 @@ for (const renderer of ["react", "html"] as const) {
       const sidebar = shell.locator(".ayy-app-shell__sidebar");
       const main = shell.locator(".ayy-app-shell__main");
       const mark = sidebar.locator(".ayy-app-shell__head .ayy-app-shell__brand > svg");
-      const toggle = sidebar.locator(".ayy-app-shell__head > .ayy-app-shell__toggle");
+      const toggle = sidebar.locator(".ayy-app-shell__head .ayy-app-shell__toggle");
       const centre = async (loc: ReturnType<typeof sidebar.locator>) => {
         const box = (await loc.boundingBox())!;
         return box.x + box.width / 2;
@@ -391,6 +450,25 @@ for (const renderer of ["react", "html"] as const) {
       expect(mid.width).toBeLessThan(230);
       expect(mid.opacity).toBeGreaterThan(0);
       expect(mid.opacity).toBeLessThan(1);
+
+      // Closing must keep the sidebar edge aligned with the moving content, with no hover-close delay.
+      await shell.evaluate((el) => {
+        for (const animation of el.getAnimations({ subtree: true })) animation.finish();
+        el.querySelector<HTMLButtonElement>(".ayy-app-shell__toggle")!.click();
+      });
+      const closing = await shell.evaluate((el) => {
+        const sidebar = el.querySelector<HTMLElement>(".ayy-app-shell__sidebar")!;
+        const main = el.querySelector<HTMLElement>(".ayy-app-shell__main")!;
+        void sidebar.offsetWidth;
+        for (const animation of el.getAnimations({ subtree: true })) {
+          animation.pause();
+          animation.currentTime = 1000;
+        }
+        return { width: sidebar.getBoundingClientRect().width, column: main.offsetLeft - sidebar.offsetLeft };
+      });
+      expect(closing.width).toBeGreaterThan(70);
+      expect(closing.width).toBeLessThan(230);
+      expect(Math.abs(closing.width - closing.column)).toBeLessThan(1);
     });
 
     test("navbar folds its links into a menu on phones", async ({ page }) => {
@@ -571,6 +649,14 @@ for (const renderer of ["react", "html"] as const) {
       await expect(tip).toBeHidden();
     });
 
+    test("icon-only buttons show tooltip on hover", async ({ page }) => {
+      await open(page, "button", { renderer });
+      const trigger = stage(page, 2).getByRole("button", { name: "Add item" }).first();
+      await trigger.hover();
+      const tip = page.getByRole("tooltip", { name: /Add item/ }).first();
+      await expect(tip).toBeVisible();
+    });
+
     test("popover opens next to its trigger and light-dismisses", async ({ page }) => {
       await open(page, "popover", { renderer });
       const trigger = stage(page).getByRole("button", { name: "Share" });
@@ -593,12 +679,12 @@ for (const renderer of ["react", "html"] as const) {
       const trigger = stage(page).getByRole("button", { name: "Project actions" });
       await trigger.focus();
       await page.keyboard.press("Enter");
-      const menu = page.getByRole("menu");
+      const menu = example(page, "actions").locator(".ayy-menu:not(.ayy-menu--sub)");
       await expect(menu).toBeVisible();
       await expect(trigger).toHaveAttribute("aria-expanded", "true");
       await expect(menu.getByRole("menuitem", { name: /Rename/ })).toBeFocused();
       await page.keyboard.press("ArrowDown");
-      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("End");
       await expect(menu.getByRole("menuitem", { name: "Delete project" })).toBeFocused();
       await page.keyboard.press("Home");
       await expect(menu.getByRole("menuitem", { name: /Rename/ })).toBeFocused();
@@ -607,13 +693,13 @@ for (const renderer of ["react", "html"] as const) {
       await expect(trigger).toBeFocused();
 
       await trigger.click();
-      await menu.getByRole("menuitem", { name: /Duplicate/ }).click();
+      await menu.getByRole("menuitem", { name: /^Duplicate/ }).click();
       await expect(menu).toBeHidden();
     });
 
     test("menu: submenus, radio/check items, inline expand, keyboard flyout", async ({ page }) => {
       await open(page, "menu", { renderer });
-      const captureTrigger = stage(page, 1).getByRole("button", { name: "Capture options" });
+      const captureTrigger = example(page, "actions").getByRole("button", { name: "Project actions" });
       await captureTrigger.click();
 
       const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Capture area" });
@@ -662,9 +748,54 @@ for (const renderer of ["react", "html"] as const) {
       await expect(timerSub).toBeHidden();
     });
 
+    test("menu: a split row's trailing button opens the item's own menu", async ({ page }) => {
+      await open(page, "menu", { renderer });
+      const ex = example(page, "actions");
+      await ex.getByRole("button", { name: "Project actions" }).click();
+      const menu = page.locator(".ayy-menu:not(.ayy-menu--sub)").filter({ hasText: "Archive project" });
+      await expect(menu).toBeVisible();
+
+      // The trailing button is the row's second menuitem: arrows reach it, and it opens a panel.
+      const more = menu.getByRole("menuitem", { name: "More options for Duplicate" });
+      await menu.getByRole("menuitem", { name: /^Duplicate/ }).focus();
+      await page.keyboard.press("ArrowDown");
+      await expect(more).toBeFocused();
+      await page.keyboard.press("ArrowRight");
+      const sub = page.locator(".ayy-menu--sub").filter({ hasText: "Without comments" });
+      await expect(sub).toBeVisible();
+      await expect(sub.getByRole("menuitem", { name: "Without comments" })).toBeFocused();
+
+      // Esc closes only the row's menu; choosing there closes both.
+      await page.keyboard.press("Escape");
+      await expect(sub).toBeHidden();
+      await expect(menu).toBeVisible();
+      await more.click();
+      await sub.getByRole("menuitem", { name: "Without comments" }).click();
+      await expect(menu).toBeHidden();
+    });
+
+    test("menu: split-row options open only on click and clear pointer highlight", async ({ page }) => {
+      await open(page, "menu", { renderer });
+      await example(page, "actions").getByRole("button", { name: "Project actions" }).click();
+      const more = page.getByRole("menuitem", { name: "More options for Duplicate" });
+      const sub = page.locator(".ayy-menu--sub").filter({ hasText: "Without comments" });
+      await more.hover();
+      await page.waitForTimeout(200);
+      await expect(sub).toBeHidden();
+      await more.click();
+      await expect(sub).toBeVisible();
+      await expect(sub.getByRole("menuitem", { name: "Without comments" })).toBeFocused();
+      await page.keyboard.press("Escape");
+      await page.mouse.move(5, 5);
+      await expect(more).toBeFocused();
+      await more.click();
+      await page.mouse.move(5, 5);
+      await expect(more).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    });
+
     test("menu: hovering the submenu panel keeps it open", async ({ page }) => {
       await open(page, "menu", { renderer });
-      const captureTrigger = stage(page, 1).getByRole("button", { name: "Capture options" });
+      const captureTrigger = example(page, "actions").getByRole("button", { name: "Project actions" });
       await captureTrigger.click();
 
       const main = page.locator("#capture-menu-html, .ayy-menu").filter({ hasText: "Capture area" });
@@ -707,6 +838,21 @@ for (const renderer of ["react", "html"] as const) {
         const copyPasswordBtn = stage(page, 2).getByRole("button", { name: "Copy password" });
         await copyPasswordBtn.click();
         await expect(page.locator(".ayy-toast").filter({ hasText: "Password copied to clipboard" })).toBeVisible();
+      });
+
+      test("preview header and table icon-only buttons show tooltip on hover", async ({ page }) => {
+        await open(page, "table", { renderer: "react" });
+        const appearanceBtn = page.getByRole("button", { name: "Appearance" });
+        await appearanceBtn.hover();
+        await expect(page.getByRole("tooltip", { name: "Appearance" })).toBeVisible();
+
+        const editBtn = page.getByRole("button", { name: "Edit Northwind Traders" });
+        await editBtn.hover();
+        await expect(page.getByRole("tooltip", { name: "Edit" })).toBeVisible();
+
+        const moreBtn = page.getByRole("button", { name: "More actions for Northwind Traders" });
+        await moreBtn.hover();
+        await expect(page.getByRole("tooltip", { name: "More actions" })).toBeVisible();
       });
     }
 
@@ -1001,7 +1147,7 @@ for (const renderer of ["react", "html"] as const) {
 
     test("charts: bars from --ayy-value, a data table for screen readers, lines mirror in RTL", async ({ page }) => {
       await open(page, "chart", { renderer });
-      const bars = stage(page);
+      const bars = example(page, "bars");
       await expect(bars.locator(".ayy-chart__column")).toHaveCount(6);
       await expect(bars.locator(".ayy-chart__bar")).toHaveCount(12);
       await expect(bars.locator(".ayy-chart__plot")).toHaveAttribute("aria-hidden", "true");
@@ -1013,7 +1159,7 @@ for (const renderer of ["react", "html"] as const) {
           return Math.round((tallest / (plot as HTMLElement).offsetHeight) * 100);
         });
       await expect.poll(ratio).toBe(90);
-      const line = stage(page, 1);
+      const line = example(page, "line");
       // The comparison series is quiet, not the next series colour.
       const strokes = await line.locator(".ayy-chart__line").evaluateAll((paths) => paths.map((p) => getComputedStyle(p).stroke));
       expect(strokes[0]).not.toBe(strokes[1]);
@@ -1087,28 +1233,129 @@ for (const renderer of ["react", "html"] as const) {
 
     test("table: header buttons sort the rows, the header checkbox selects them all", async ({ page }) => {
       await open(page, "table", { renderer });
-      const table = stage(page, 1).getByRole("table");
-      const firstAmount = () => table.locator("tbody tr").first().locator("td").nth(4);
-      const amount = table.getByRole("button", { name: "Amount" });
-      await amount.click();
-      const header = amount.locator("xpath=ancestor::th");
-      await expect(header).toHaveAttribute("aria-sort", "ascending");
-      await expect(firstAmount()).toHaveText("$420.00");
-      await expect(table.locator("th[aria-sort]")).toHaveCount(1);
-      await amount.click();
+      const table = example(page, "playground").getByRole("table");
+      const firstMRR = () => table.locator("tbody tr:not(.ayy-table__detail)").first().locator("td.ayy-table__num").last().locator("input, span").first();
+      const mrr = table.getByRole("button", { name: "MRR", exact: true });
+      const header = mrr.locator("xpath=ancestor::th");
       await expect(header).toHaveAttribute("aria-sort", "descending");
-      await expect(firstAmount()).toHaveText("$3,150.00");
-      const all = table.getByRole("checkbox", { name: "Select all invoices" });
+      await expect(firstMRR()).toHaveValue("$36,000");
+
+      await mrr.click();
+      await expect(header).toHaveAttribute("aria-sort", "ascending");
+      // React sorts every account; <ayy-table> only sorts the rows on the page.
+      await expect(firstMRR()).toHaveValue(renderer === "react" ? "$0" : "$1,920");
+
+      await mrr.click();
+      await expect(header).toHaveAttribute("aria-sort", "descending");
+      await expect(firstMRR()).toHaveValue("$36,000");
+
+      const all = table.getByRole("checkbox", { name: "Select all accounts on this page" });
       await all.check();
-      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(4);
-      await table.getByRole("checkbox", { name: "Select INV-1044" }).uncheck();
-      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(3);
+      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(10);
+      await table.getByRole("checkbox", { name: "Select Brightside Health" }).uncheck();
+      await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(9);
       await expect(all).toHaveJSProperty("indeterminate", true);
     });
 
-    test("table actions: inline buttons, per-row ⋯ menu, and bulk action bar", async ({ page }) => {
+    test("table playground: sticky header, pinned column, expanding rows and detail rows", async ({ page }) => {
       await open(page, "table", { renderer });
-      const s = example(page, "actions");
+      const table = example(page, "playground").getByRole("table", { name: "Accounts" });
+      const name = table.locator("tbody td.ayy-table__pin").first();
+      expect(await table.locator("thead th").first().evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
+      expect(await name.evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
+
+      // Northwind starts expanded; Brightside Health doesn't. The detail row follows its button's aria-expanded.
+      const northwind = table.getByRole("button", { name: "Show details for Northwind Traders" });
+      const lumen = table.getByRole("button", { name: "Show details for Brightside Health" });
+      await expect(northwind).toHaveAttribute("aria-expanded", "true");
+      await expect(table.locator("#ACC-201-detail")).toBeVisible();
+      await expect(table.locator("#ACC-204-detail")).toBeHidden();
+      await northwind.click();
+      await expect(northwind).toHaveAttribute("aria-expanded", "false");
+      await expect(table.locator("#ACC-201-detail")).toBeHidden();
+      await lumen.click();
+      await expect(table.locator("#ACC-204-detail")).toBeVisible();
+
+      if (renderer === "html") {
+        // <ayy-table>: Shift+click ticks every row between the last box ticked and this one.
+        await table.getByRole("checkbox", { name: "Select Nimbus Energy" }).check();
+        await table.getByRole("checkbox", { name: "Select Juniper Foods" }).click({ modifiers: ["Shift"] });
+        await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(10);
+        await expect(table.getByRole("checkbox", { name: "Select all accounts on this page" })).toBeChecked();
+        return;
+      }
+
+      // React: the Props popover groups the rows by status, and a search that matches nothing shows the empty row.
+      const ex = page.locator('.pv-example[aria-labelledby="ex-playground"]');
+      await ex.getByRole("button", { name: "Props" }).click();
+      await ex.locator(".pv-props-popover").getByRole("switch", { name: "Grouped by status" }).click();
+      await page.keyboard.press("Escape");
+      await expect(table.locator("tr.ayy-table__group")).toHaveText(["Past due · 1", "Active · 9"]);
+      await example(page, "playground").getByRole("searchbox", { name: "Search accounts" }).fill("zzz");
+      await expect(table.locator(".ayy-table__empty")).toContainText("No accounts match");
+    });
+
+    test("table parts: detail rows move with their row, resize handles take the arrow keys", async ({ page }) => {
+      await open(page, "table", { renderer });
+      const table = example(page, "playground").getByRole("table", { name: "Accounts" });
+
+      // Each detail row sits right after the row it belongs to.
+      const pairs = await table.locator("tbody").first().locator("tr.ayy-table__detail").evaluateAll((details) =>
+        details.map((d) => [d.id, d.previousElementSibling?.querySelector("[aria-controls]")?.getAttribute("aria-controls")]),
+      );
+      for (const [id, owner] of pairs) expect(owner).toBe(id);
+
+      const handle = table.getByRole("separator", { name: "Resize Last note" });
+      const header = handle.locator("xpath=ancestor::th");
+      const before = await header.evaluate((el) => (el as HTMLElement).offsetWidth);
+      await keyboardFocus(handle);
+      await page.keyboard.press("ArrowRight");
+      await expect.poll(() => header.evaluate((el) => (el as HTMLElement).offsetWidth)).toBe(before + 16);
+      await expect(handle).toHaveAttribute("aria-valuenow", String(before + 16));
+      await page.keyboard.press("Shift+ArrowRight");
+      await expect.poll(() => header.evaluate((el) => (el as HTMLElement).offsetWidth)).toBe(before + 16 + 64);
+      await handle.dblclick();
+      await expect.poll(() => header.evaluate((el) => (el as HTMLElement).style.inlineSize)).toBe("");
+
+      // Dragging a column's resize handle changes its width.
+      const handleBox = (await handle.boundingBox())!;
+      await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(handleBox.x + handleBox.width / 2 + 40, handleBox.y + handleBox.height / 2);
+      await page.mouse.up();
+      await expect.poll(() => header.evaluate((el) => (el as HTMLElement).offsetWidth)).toBeGreaterThanOrEqual(before + 35);
+
+      // Inline cell editing commits on Enter and reverts on Escape.
+      const noteInput = table.getByRole("textbox", { name: "Last note for Northwind Traders" });
+      await expect(noteInput).toHaveValue("Wants SSO for the Lisbon office before the March renewal.");
+      await noteInput.click();
+      await noteInput.fill("Temporary draft");
+      await page.keyboard.press("Escape");
+      await expect(noteInput).toHaveValue("Wants SSO for the Lisbon office before the March renewal.");
+      await noteInput.click();
+      await noteInput.fill("Updated terms · Net 15");
+      await page.keyboard.press("Enter");
+      await expect(noteInput).toHaveValue("Updated terms · Net 15");
+
+      // Dragging across rows selects them all in one stroke.
+      const firstRowBox = table.getByRole("checkbox", { name: "Select Brightside Health" });
+      const secondRowBox = table.getByRole("checkbox", { name: "Select Northwind Traders" });
+      const firstRowCell = firstRowBox.locator("xpath=ancestor::td");
+      const secondRowCell = secondRowBox.locator("xpath=ancestor::td");
+      await firstRowCell.scrollIntoViewIfNeeded();
+      const firstBox = (await firstRowCell.boundingBox())!;
+      const secondBox = (await secondRowCell.boundingBox())!;
+      await page.mouse.move(firstBox.x + firstBox.width / 2, firstBox.y + firstBox.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(secondBox.x + secondBox.width / 2, secondBox.y + secondBox.height / 2, { steps: 5 });
+      await page.mouse.up();
+      await expect(firstRowBox).toBeChecked();
+      await expect(secondRowBox).toBeChecked();
+    });
+
+    test("table actions: inline buttons, per-row ⋯ menu, filters, and bulk action bar", async ({ page }) => {
+      await open(page, "table", { renderer });
+      const s = example(page, "playground");
       const table = s.getByRole("table");
       const bar = s.locator(".ayy-action-bar");
 
@@ -1116,11 +1363,11 @@ for (const renderer of ["react", "html"] as const) {
       await expect(bar.locator(".ayy-action-bar__count")).toHaveText("1 selected");
 
       // Selecting another row updates the action bar count
-      await table.getByRole("checkbox", { name: "Select Mobile Onboarding Screenshots" }).check();
+      await table.getByRole("checkbox", { name: "Select Brightside Health" }).check();
       await expect(bar.locator(".ayy-action-bar__count")).toHaveText("2 selected");
 
       // Per-row ⋯ menu opens and lists targeted actions
-      const moreBtn = table.getByRole("button", { name: "More actions for Brand Kit 2026" });
+      const moreBtn = table.getByRole("button", { name: "More actions for Brightside Health" });
       await moreBtn.click();
       const menu = s.locator(".ayy-menu:popover-open");
       await expect(menu).toBeVisible();
@@ -1133,6 +1380,112 @@ for (const renderer of ["react", "html"] as const) {
       await bar.getByRole("button", { name: "Clear selection" }).click();
       await expect(bar).not.toHaveAttribute("open");
       await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(0);
+
+      if (renderer === "react") {
+        // Toolbar filter menu filters the rows by status
+        const filtersBtn = s.getByRole("button", { name: "Filters" });
+        await filtersBtn.click();
+        const filtersMenu = s.locator(".ayy-menu:popover-open");
+        await expect(filtersMenu).toBeVisible();
+        await filtersMenu.getByRole("menuitemcheckbox", { name: "Trial" }).click();
+        await page.keyboard.press("Escape");
+        await expect(table.locator("tbody tr:not(.ayy-table__detail)")).toHaveCount(5);
+        // Reset filters
+        await filtersBtn.click();
+        await s.locator(".ayy-menu:popover-open").getByRole("menuitem", { name: "Reset filters" }).click();
+        await expect(table.locator("tbody tr:not(.ayy-table__detail)")).toHaveCount(10);
+      }
+    });
+
+    test("table column reorder: dragging a header cell reorders columns and shows placement indicator", async ({ page }) => {
+      await open(page, "table", { renderer });
+      const table = example(page, "playground").getByRole("table", { name: "Accounts" });
+      const headers = table.locator("thead th");
+      const planHeader = headers.filter({ hasText: "Plan" });
+      const statusHeader = headers.filter({ hasText: "Status" });
+      await expect(planHeader).toHaveAttribute("data-reorderable", "");
+      await planHeader.scrollIntoViewIfNeeded();
+
+      const planBox = (await planHeader.boundingBox())!;
+      const statusBox = (await statusHeader.boundingBox())!;
+
+      // Drag Plan past Status
+      await page.mouse.move(planBox.x + planBox.width / 2, planBox.y + planBox.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(statusBox.x + statusBox.width * 0.8, statusBox.y + statusBox.height / 2, { steps: 5 });
+      await page.mouse.up();
+
+      // Column order updated
+      const updatedHeaders = await table.locator("thead th").allInnerTexts();
+      const planIndex = updatedHeaders.findIndex((t) => t.includes("Plan"));
+      const statusIndex = updatedHeaders.findIndex((t) => t.includes("Status"));
+      expect(planIndex).toBeGreaterThan(statusIndex);
+    });
+
+    test("table row reorder: dragging a row's handle drops it in a new place, the arrow keys move it too", async ({ page }) => {
+      await open(page, "table", { renderer });
+      const table = example(page, "playground").getByRole("table", { name: "Accounts" });
+      const names = () => table.locator('tbody tr[data-id] .ayy-drag-handle').evaluateAll((els) => els.map((el) => el.getAttribute("aria-label")));
+      const before = (await names()) as string[];
+      expect(before).toHaveLength(10);
+      const first = table.getByRole("button", { name: before[0], exact: true });
+      const third = table.getByRole("button", { name: before[2], exact: true });
+      await third.scrollIntoViewIfNeeded();
+      const from = (await first.boundingBox())!;
+      const to = (await third.boundingBox())!;
+            const beforeWidths = await table.locator("thead th").evaluateAll((ths) => ths.map((th) => (th as HTMLElement).offsetWidth));
+
+      await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(to.x + to.width / 2, to.y + to.height / 4, { steps: 8 });
+      const dropRow = table.locator("tr[data-drop-edge]");
+      await expect(dropRow).toHaveCount(1);
+      await expect(dropRow).toHaveAttribute("data-drop-edge", "block-start");
+
+      // Verify dropRow does NOT generate any ::before pseudo-element creating an extra column
+      const cellCount = await dropRow.locator("td").count();
+      const firstRowCellCount = await table.locator("tbody tr[data-id]").first().locator("td").count();
+      expect(cellCount).toBe(firstRowCellCount);
+
+      await page.mouse.up();
+      expect(await names()).toEqual([before[1], before[0], before[2], ...before.slice(3)]);
+      if (renderer === "react") await expect(table.locator("th[aria-sort]")).toHaveCount(0);
+
+      await table.getByRole("button", { name: before[0], exact: true }).focus();
+      await page.keyboard.press("ArrowDown");
+      expect(await names()).toEqual([before[1], before[2], before[0], ...before.slice(3)]);
+    });
+
+    test("pagination: the page size picker changes how many rows a page holds", async ({ page }) => {
+      test.skip(renderer !== "react", "the HTML example is static markup");
+      await open(page, "table", { renderer });
+      const demo = example(page, "playground");
+      const table = demo.getByRole("table", { name: "Accounts" });
+      await expect(table.locator("tbody tr[data-id]")).toHaveCount(10);
+      await expect(demo.getByText("1–10 of 24")).toBeVisible();
+      await demo.getByLabel("Rows per page").selectOption("5");
+      await expect(table.locator("tbody tr[data-id]")).toHaveCount(5);
+      await expect(demo.getByText("1–5 of 24")).toBeVisible();
+      await demo.getByRole("button", { name: "5", exact: true }).click();
+      await demo.getByLabel("Rows per page").selectOption("25");
+      await expect(table.locator("tbody tr[data-id]")).toHaveCount(24);
+      await expect(demo.getByRole("button", { name: "Next" })).toBeDisabled();
+    });
+
+    test("drag-drop: sortable items move between areas and drop targets react", async ({ page }) => {
+      await open(page, "drag-drop", { renderer });
+      const board = example(page, "board");
+      const featureCard = board.locator('[data-id="c-1"]');
+      const inProgressTarget = board.locator('[data-id="in-progress"]');
+
+      const handle = featureCard.locator(".ayy-drag-handle");
+      await expect(handle).toBeVisible();
+
+      // Keyboard navigation: moving across areas with ArrowRight on focused handle
+      await handle.focus();
+      await page.keyboard.press("ArrowRight");
+
+      await expect(inProgressTarget.locator('[data-id="c-1"]')).toBeVisible();
     });
 
     test("action bar: roving tabindex, arrow keys, and Escape clears selection", async ({ page }) => {

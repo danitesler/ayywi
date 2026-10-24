@@ -1,6 +1,6 @@
 # Navbar
 
-Category: Navigation. Sticky site header on translucent glass: brand at the start, links and actions at the end, content centred at page width. On phones a menu button folds the links into a panel under the bar. Also called: navbar, site-header, nav-bar, header-nav.
+Category: Navigation. The header at the top of a website, with the brand on one side and links and actions on the other. It stays in view as the page scrolls, and on phones the links fold into a menu. Also called: navbar, site-header, nav-bar, header-nav.
 
 **Classes**
 - `.ayy-navbar` — Root, usually a <header>. Sticky, 72px tall (--ayy-size-header), glass background with a hairline under it. Anchor jumps land below it.

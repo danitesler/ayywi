@@ -8,6 +8,7 @@ import {
   appShellSmClass,
   appShellToggleClass,
   connectAppShell,
+  syncAppShellToggle,
 } from "./app-shell";
 
 /**
@@ -99,8 +100,6 @@ export class AyyAppShellElement extends ElementBase {
       shell.classList.toggle(appShellMdClass, this.size === "md");
     }
     const toggles = shell.querySelectorAll<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellToggleClass}`);
-    for (const toggle of toggles) {
-      toggle.setAttribute("aria-expanded", String(!this.collapsed));
-    }
+    for (const toggle of toggles) syncAppShellToggle(toggle, this.collapsed);
   }
 }

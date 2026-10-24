@@ -2,7 +2,7 @@
   "name": "Skeleton",
   "slug": "skeleton",
   "category": "Feedback",
-  "description": "Placeholder shapes shown while content loads, with a subtle shimmer.",
+  "description": "A placeholder shaped like the content that's loading, so the page doesn't jump when the real content arrives.",
   "aka": ["skeleton", "shimmer"],
   "classes": {
     "ayy-skeleton": "Block placeholder. Set its size to match the content.",

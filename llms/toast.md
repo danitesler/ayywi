@@ -1,6 +1,6 @@
 # Toast
 
-Category: Feedback. Short, temporary notification. One framework-free toast() function renders into a shared region in the top layer (visible above dialogs). Supports text notifications, visual content previews (CardToast) for images, videos, and GIFs, and embedded in-place feedback (InlineToast). Also called: toast, snackbar, notification, card-toast, quick-access.
+Category: Feedback. A short message that appears briefly to confirm something happened. It shows above everything else on the page, including dialogs, and can carry images or previews as well as text. Also called: toast, snackbar, notification, card-toast, quick-access.
 
 **Classes**
 - `.ayy-toaster` — The shared region toast() creates (aria-live). Position via data-position; data-expanded on hover or focus.

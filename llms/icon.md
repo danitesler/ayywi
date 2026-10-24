@@ -1,6 +1,6 @@
 # Icon
 
-Category: Data display. Inline SVG icon from Hugeicons, ayywi's icon library: 6,000+ free Stroke Rounded icons on a 24px grid. It takes the text colour and follows the text size unless you pick one. Also called: svg-icon.
+Category: Data display. A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Also called: svg-icon.
 
 **Classes**
 - `.ayy-icon` — On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.

@@ -24,11 +24,8 @@ const FOUNDATIONS = { brand: "Brand", density: "Density", colors: "Colors", typo
 
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
-  // One flow: the sentence, the tool, the prompt; the codebase setup sits under it.
+  // One flow: the sentence, the prompt; the codebase setup sits under it.
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
-  await page.getByRole("radiogroup", { name: "Pick your AI tool:" }).getByText("Cursor", { exact: true }).click();
-  await expect(page.getByRole("radio", { name: "Cursor" })).toBeChecked();
-  await expect(page.getByText(".cursor/rules/ayywi.mdc")).toBeVisible();
   await page.getByRole("tab", { name: "No build (CDN)" }).click();
   await expect(page.getByRole("button", { name: "Copy setup prompt" })).toBeVisible();
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
@@ -73,7 +70,7 @@ test("example code is one click away", async ({ page }) => {
   await expect(code).toContainText("Build a Button component");
 });
 
-test("get started builds the prompt from the sentence and the tool", async ({ page, context }) => {
+test("get started builds the prompt from the sentence", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
   // A Select: ayywi's own options list opens under it.
@@ -88,7 +85,7 @@ test("get started builds the prompt from the sentence and the tool", async ({ pa
   // The fonts and the saved theme come along, so the app looks like the examples from the first paint.
   expect(copied).toContain("dist/fonts.css");
   expect(copied).toContain("dist/theme-init.js");
-  expect(copied).toContain("llms/table.md");
+  expect(copied).toContain("llms.txt");
   expect(copied).not.toMatch(/127\.0\.0\.1|localhost/);
 });
 
@@ -96,7 +93,6 @@ test("the site hosts each release's runtime files under v/<release>/; prompts fr
   // Served from a real host name (not localhost), the prompts point at this build's own v/<release>/ copies.
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  await page.getByRole("radio", { name: "ChatGPT" }).check();
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const local = await page.evaluate(() => navigator.clipboard.readText());
   expect(local).not.toContain("/v/");
