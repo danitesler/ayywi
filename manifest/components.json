@@ -9,9 +9,9 @@
     "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, one file per component (button.css, card.css…), then focus.css (focus rings for keyboard use only, with trackInputModality()).",
     "@danitesler/ayywi/brands/<name>.css": "Ready-made brands (violet), applied with data-brand=\"<name>\" or setBrand(\"<name>\"). Make your own with `npx @danitesler/ayywi brand`.",
     "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
-    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectGrid, connectInlineEdit, connectMenu, connectNavbar, connectPopover, connectShortcutRecorder, connectSwipe, connectTable, connectTagInput, connectTimePicker, connectToc, connectToolbar, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
+    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectGrid, connectInlineEdit, connectMenu, connectNavbar, connectPopover, connectRecordPicker, connectShortcutRecorder, connectSwipe, connectTable, connectTagInput, connectTimePicker, connectToc, connectToolbar, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
     "@danitesler/ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
+    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
     "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "@danitesler/ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-contrast.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "npx @danitesler/ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
@@ -59,7 +59,7 @@
     "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
     "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
     "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-    "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
+    "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
     "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped."
   ],
   "needs": [
@@ -6224,6 +6224,174 @@
         "react": "src/components/tag-input/tag-input.react.tsx",
         "meta": "src/components/tag-input/tag-input.meta.json",
         "element": "src/components/tag-input/tag-input.element.ts"
+      }
+    },
+    {
+      "name": "Record picker",
+      "slug": "record-picker",
+      "category": "Forms",
+      "description": "A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.",
+      "aka": [
+        "record-picker",
+        "record-select",
+        "record-field",
+        "people-picker",
+        "assignee-picker",
+        "entity-picker",
+        "multi-select-picker"
+      ],
+      "classes": {
+        "ayy-record-picker": "Root: an ayy-tag-input and ayy-combobox holding the chips, the input, the clear button and the listbox.",
+        "ayy-record-picker--multiple": "Several records: chips wrap, and the list stays open after each pick (aria-multiselectable).",
+        "ayy-record-picker__tag": "One picked record, an .ayy-chip--removable.ayy-tag-input__tag <span data-value> with a named .ayy-chip__remove button; one line, clipped when too long.",
+        "ayy-record-picker__input": "The borderless <input role=\"combobox\"> after the chips; the field's id, label and aria-describedby go on it.",
+        "ayy-record-picker__clear": "The icon button after the input that clears every chip, named by aria-label (\"Clear\"); hidden while nothing is picked.",
+        "ayy-record-picker__listbox": "The .ayy-combobox__listbox: records, the create row and the empty row. At least as wide as the field, at most 24rem.",
+        "ayy-record-picker__option": "One record, an .ayy-combobox__option[role=\"option\"] with data-value, data-label and data-keywords. Active: data-active=\"true\"; picked: aria-selected=\"true\" and a check.",
+        "ayy-record-picker__option-body": "The two lines after the icon: name and description. Takes the row's leftover width.",
+        "ayy-record-picker__option-label": "The record's name, one line with an ellipsis.",
+        "ayy-record-picker__description": "The muted second line (an email, a role, a key), one line with an ellipsis.",
+        "ayy-record-picker__create": "The last option: \"Create “Maya”\" when creatable, the query isn't empty and no record matches exactly.",
+        "ayy-record-picker__create-label": "The create row's text, written by the controller from createLabel.",
+        "ayy-record-picker__empty": "The muted, centred row when nothing matches (\"No people\")."
+      },
+      "variants": {
+        "multiple": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        },
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      },
+      "states": {
+        "default": {
+          "looks": "A Tag input wash field with the picked records as chips, a text box and the clear button; list closed."
+        },
+        "hover": {
+          "when": ".ayy-record-picker__clear:hover (hover devices) and a list option under the pointer",
+          "looks": "The clear button gets a --ayy-color-wash-hover circle; an option gets Combobox's wash-hover."
+        },
+        "pressed": {
+          "none": "No pressed look; the picked chip is the feedback."
+        },
+        "focus": {
+          "when": ".ayy-record-picker__clear:focus-visible and the field's input",
+          "looks": "2px --ayy-color-ring on the clear button, Tag input's ring around the field; each chip's × has its own."
+        },
+        "disabled": {
+          "when": "disabled on the input and on the chips' × and clear buttons",
+          "looks": "Tag input dims the field to --ayy-opacity-disabled; the buttons dim too."
+        },
+        "selected": {
+          "when": "aria-selected=\"true\" on an .ayy-record-picker__option",
+          "looks": "A check at the inline end, never colour alone. Picking it again removes it in multiple mode and replaces it in single."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on the input",
+          "looks": "Tag input's destructive border and focus ring; say why in a FieldError."
+        },
+        "loading": {
+          "none": "No loading look. With manual, show a Spinner or a \"Searching…\" row and call refresh()."
+        },
+        "open": {
+          "when": "input[aria-expanded=\"true\"]",
+          "looks": "The listbox opens under the field with the first match active and aria-activedescendant on the input."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Tag input's sm: at least --ayy-size-control-sm, sm text.",
+          "md": "Tag input's md: at least --ayy-size-control-md (32px compact, 40px comfortable, 44px touch).",
+          "lg": "Tag input's lg: at least --ayy-size-control-lg, more padding, lg text."
+        },
+        "density": "The field and chips follow data-density through Tag input; the clear button is --ayy-size-control-sm square and rows at least as high.",
+        "width": "Fills its container; chips wrap in multiple mode. The listbox matches the field's width, up to 24rem."
+      },
+      "js": "recordPickerClass({ multiple?, size?, className? }) → root classes; recordPickerChip(option, removeLabel?) → a chip with its × button; recordPickerClearIcon (SVG markup); defaultCreateLabel(label) → \"Create “Maya”\"; connectRecordPicker(root, { multiple?, creatable?, filter?, createLabel?, onSelect?, onCreate?, onRemoveLast?, onClear? }) → { open, close, refresh, destroy } wires plain markup (filtering, the active row, the create row, Escape, Backspace, clear and focus) and copies the input's aria-labelledby or aria-label onto an unnamed listbox. It never changes chips or aria-selected.",
+      "element": {
+        "tag": "ayy-record-picker",
+        "description": "Wraps an .ayy-record-picker and makes it work in plain HTML: it draws the chips, keeps aria-selected, one hidden input per picked id when name is set, and fires ayy-change. A created record gets a slug id and a chip; the app replaces the id from ayy-create. refresh() re-reads options a manual search replaced.",
+        "children": "An .ayy-record-picker with the picked records' chips, its input, the clear button and the .ayy-record-picker__listbox of .ayy-record-picker__option rows.",
+        "attributes": {
+          "multiple": "Pick several records; the list stays open after each pick.",
+          "creatable": "Offer a create row for the typed text when no record matches.",
+          "manual": "Don't filter: replace the options yourself (a search API), then call refresh().",
+          "name": "Form name: a hidden input per picked id carries it."
+        },
+        "events": {
+          "ayy-change": "{ ids, options: [{ id, label }] } — after every pick, removal and clear.",
+          "ayy-create": "{ id, label } — when the create row is picked; the chip already exists. Replace the slug id with the saved record's id."
+        }
+      },
+      "react": {
+        "import": "import { RecordPicker } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "RecordPicker": {
+            "renders": "<div class=\"ayy-record-picker ayy-tag-input ayy-combobox\"> chips + <input role=\"combobox\"> + clear button + <ul class=\"ayy-combobox__listbox\">; other props go on the input, className on the root",
+            "props": {
+              "options": "RecordPickerOption[] — id, label, description?, icon?, keywords?, disabled?",
+              "value / defaultValue": "string[] — the picked ids; value makes it controlled",
+              "onValueChange": "(ids: string[], options: RecordPickerOption[]) => void",
+              "multiple": "boolean — several records; the list stays open",
+              "creatable": "boolean — offer a create row",
+              "onCreate": "(label) => RecordPickerOption | void — return the new option to select it, or update options and value yourself",
+              "createLabel": "(label) => string — the create row's text. Default \"Create “<label>”\"",
+              "emptyText": "ReactNode — when nothing matches. Default \"No matches\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
+              "name": "string — a hidden input per picked id",
+              "clearable": "boolean — show the clear button. Default true",
+              "clearLabel": "string — its name. Default \"Clear\"",
+              "removeLabel": "(option) => string — a chip's × name. Default \"Remove <label>\"",
+              "className": "string — on the root"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Label the input with <Label htmlFor> or aria-label; the listbox takes the same name, so it reads as \"Assignee\".",
+        "The input keeps focus: arrows move aria-activedescendant, Enter picks, Escape closes and clears the query, and the pointer never moves focus into the list.",
+        "In multiple mode the list is aria-multiselectable: picked records carry aria-selected and a check, and picking one again removes it.",
+        "Each chip's × is named \"Remove Ada Lovelace\", and Backspace in the empty field removes the last chip."
+      ],
+      "do": [
+        "Use it to attach records to something: an assignee, labels, projects, reviewers.",
+        "Give options a description when names repeat, and keywords for what people type (an email, a project key).",
+        "Turn on creatable only when a new record is allowed, and save it in onCreate so its id is the real one."
+      ],
+      "dont": [
+        "Don't use it for free text — use a Tag input for tags or recipients, or an Input for one value.",
+        "Don't use it for a short known list — use a Select, a Segmented control or a Combobox.",
+        "Don't rely on colour for picked rows; keep the check."
+      ],
+      "examples": [
+        {
+          "id": "people",
+          "title": "Assignee, one person",
+          "html": "<!-- <ayy-record-picker> filters as you type; Enter picks the active record, and \"ayy-change\" carries { ids, options }. -->\n<div class=\"ayy-field\" style=\"inline-size: min(100%, 24rem)\">\n  <label class=\"ayy-label\" id=\"assignee-label-html\" for=\"assignee-html\">Assignee</label>\n  <ayy-record-picker>\n    <div class=\"ayy-record-picker ayy-tag-input ayy-combobox\">\n      <input type=\"text\" role=\"combobox\" aria-autocomplete=\"list\" aria-expanded=\"false\" aria-controls=\"assignee-listbox-html\" autocomplete=\"off\" class=\"ayy-tag-input__input ayy-record-picker__input\" id=\"assignee-html\" aria-labelledby=\"assignee-label-html\" aria-describedby=\"assignee-hint-html\" placeholder=\"Add a person\" />\n      <button type=\"button\" class=\"ayy-record-picker__clear\" aria-label=\"Clear\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.9994 15L9 9M9.00064 15L15 9\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <ul id=\"assignee-listbox-html\" class=\"ayy-combobox__listbox ayy-record-picker__listbox\" role=\"listbox\" popover=\"manual\">\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"ada\" data-label=\"Ada Lovelace\" data-keywords=\"engineering\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><circle cx=\"12\" cy=\"6.99988\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Ada Lovelace</span><span class=\"ayy-record-picker__description\">ada@example.com</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"grace\" data-label=\"Grace Hopper\" data-keywords=\"engineering\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><circle cx=\"12\" cy=\"6.99988\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Grace Hopper</span><span class=\"ayy-record-picker__description\">grace@example.com</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"alexandria\" data-label=\"Alexandria Ocasio-Cortez\" data-keywords=\"design\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><circle cx=\"12\" cy=\"6.99988\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Alexandria Ocasio-Cortez</span><span class=\"ayy-record-picker__description\">alexandria@example.com</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"alan\" data-label=\"Alan Turing\" data-keywords=\"research\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><circle cx=\"12\" cy=\"6.99988\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Alan Turing</span><span class=\"ayy-record-picker__description\">alan@example.com</span></span>\n        </li>\n        <li role=\"none\" class=\"ayy-combobox__empty ayy-record-picker__empty\" hidden>No people</li>\n      </ul>\n    </div>\n  </ayy-record-picker>\n  <p class=\"ayy-field__hint\" id=\"assignee-hint-html\">Type to find someone, then press Enter.</p>\n</div>",
+          "react": "import { UserIcon } from \"@hugeicons/core-free-icons\";\nimport { Field, FieldHint, Icon, Label, RecordPicker, type RecordPickerOption } from \"@danitesler/ayywi/react\";\n\nconst people: RecordPickerOption[] = [\n  { id: \"ada\", label: \"Ada Lovelace\", description: \"ada@example.com\", keywords: \"engineering\", icon: <Icon icon={UserIcon} /> },\n  { id: \"grace\", label: \"Grace Hopper\", description: \"grace@example.com\", keywords: \"engineering\", icon: <Icon icon={UserIcon} /> },\n  { id: \"alexandria\", label: \"Alexandria Ocasio-Cortez\", description: \"alexandria@example.com\", keywords: \"design\", icon: <Icon icon={UserIcon} /> },\n  { id: \"alan\", label: \"Alan Turing\", description: \"alan@example.com\", keywords: \"research\", icon: <Icon icon={UserIcon} /> },\n];\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <Label id=\"assignee-label\" htmlFor=\"assignee\">\n        Assignee\n      </Label>\n      <RecordPicker\n        id=\"assignee\"\n        aria-labelledby=\"assignee-label\"\n        aria-describedby=\"assignee-hint\"\n        options={people}\n        placeholder=\"Add a person\"\n        emptyText=\"No people\"\n      />\n      <FieldHint id=\"assignee-hint\">Type to find someone, then press Enter.</FieldHint>\n    </Field>\n  );\n}"
+        },
+        {
+          "id": "labels",
+          "title": "Labels, several and creatable",
+          "html": "<!-- <ayy-record-picker multiple creatable> keeps the list open, adds a chip per pick, and fires \"ayy-create\" ({ id, label }) for a new record. -->\n<div class=\"ayy-field\" style=\"inline-size: min(100%, 24rem)\">\n  <label class=\"ayy-label\" id=\"labels-label-html\" for=\"labels-input-html\">Labels</label>\n  <ayy-record-picker multiple creatable name=\"labels\">\n    <div class=\"ayy-record-picker ayy-tag-input ayy-combobox ayy-record-picker--multiple\">\n      <input type=\"text\" role=\"combobox\" aria-autocomplete=\"list\" aria-expanded=\"false\" aria-controls=\"labels-listbox-html\" autocomplete=\"off\" class=\"ayy-tag-input__input ayy-record-picker__input\" id=\"labels-input-html\" aria-labelledby=\"labels-label-html\" aria-describedby=\"labels-hint-html\" placeholder=\"Add a label\" />\n      <button type=\"button\" class=\"ayy-record-picker__clear\" aria-label=\"Clear\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.9994 15L9 9M9.00064 15L15 9\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <ul id=\"labels-listbox-html\" class=\"ayy-combobox__listbox ayy-record-picker__listbox\" role=\"listbox\" aria-multiselectable=\"true\" popover=\"manual\">\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"design\" data-label=\"Design\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"1.5\" cy=\"1.5\" r=\"1.5\" transform=\"matrix(1 0 0 -1 16 8.00024)\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.77423 11.1439C1.77108 12.2643 1.7495 13.9546 2.67016 15.1437C4.49711 17.5033 6.49674 19.5029 8.85633 21.3298C10.0454 22.2505 11.7357 22.2289 12.8561 21.2258C15.8979 18.5022 18.6835 15.6559 21.3719 12.5279C21.6377 12.2187 21.8039 11.8397 21.8412 11.4336C22.0062 9.63798 22.3452 4.46467 20.9403 3.05974C19.5353 1.65481 14.362 1.99377 12.5664 2.15876C12.1603 2.19608 11.7813 2.36233 11.472 2.62811C8.34412 5.31646 5.49781 8.10211 2.77423 11.1439Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M7.00002 14.0002L10 17.0002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Design</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"engineering\" data-label=\"Engineering\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"1.5\" cy=\"1.5\" r=\"1.5\" transform=\"matrix(1 0 0 -1 16 8.00024)\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.77423 11.1439C1.77108 12.2643 1.7495 13.9546 2.67016 15.1437C4.49711 17.5033 6.49674 19.5029 8.85633 21.3298C10.0454 22.2505 11.7357 22.2289 12.8561 21.2258C15.8979 18.5022 18.6835 15.6559 21.3719 12.5279C21.6377 12.2187 21.8039 11.8397 21.8412 11.4336C22.0062 9.63798 22.3452 4.46467 20.9403 3.05974C19.5353 1.65481 14.362 1.99377 12.5664 2.15876C12.1603 2.19608 11.7813 2.36233 11.472 2.62811C8.34412 5.31646 5.49781 8.10211 2.77423 11.1439Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M7.00002 14.0002L10 17.0002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Engineering</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"marketing\" data-label=\"Marketing\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"1.5\" cy=\"1.5\" r=\"1.5\" transform=\"matrix(1 0 0 -1 16 8.00024)\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.77423 11.1439C1.77108 12.2643 1.7495 13.9546 2.67016 15.1437C4.49711 17.5033 6.49674 19.5029 8.85633 21.3298C10.0454 22.2505 11.7357 22.2289 12.8561 21.2258C15.8979 18.5022 18.6835 15.6559 21.3719 12.5279C21.6377 12.2187 21.8039 11.8397 21.8412 11.4336C22.0062 9.63798 22.3452 4.46467 20.9403 3.05974C19.5353 1.65481 14.362 1.99377 12.5664 2.15876C12.1603 2.19608 11.7813 2.36233 11.472 2.62811C8.34412 5.31646 5.49781 8.10211 2.77423 11.1439Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M7.00002 14.0002L10 17.0002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Marketing</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"operations\" data-label=\"Operations\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"1.5\" cy=\"1.5\" r=\"1.5\" transform=\"matrix(1 0 0 -1 16 8.00024)\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.77423 11.1439C1.77108 12.2643 1.7495 13.9546 2.67016 15.1437C4.49711 17.5033 6.49674 19.5029 8.85633 21.3298C10.0454 22.2505 11.7357 22.2289 12.8561 21.2258C15.8979 18.5022 18.6835 15.6559 21.3719 12.5279C21.6377 12.2187 21.8039 11.8397 21.8412 11.4336C22.0062 9.63798 22.3452 4.46467 20.9403 3.05974C19.5353 1.65481 14.362 1.99377 12.5664 2.15876C12.1603 2.19608 11.7813 2.36233 11.472 2.62811C8.34412 5.31646 5.49781 8.10211 2.77423 11.1439Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M7.00002 14.0002L10 17.0002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Operations</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__option\" data-value=\"research\" data-label=\"Research\" data-active=\"false\" aria-selected=\"false\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"1.5\" cy=\"1.5\" r=\"1.5\" transform=\"matrix(1 0 0 -1 16 8.00024)\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.77423 11.1439C1.77108 12.2643 1.7495 13.9546 2.67016 15.1437C4.49711 17.5033 6.49674 19.5029 8.85633 21.3298C10.0454 22.2505 11.7357 22.2289 12.8561 21.2258C15.8979 18.5022 18.6835 15.6559 21.3719 12.5279C21.6377 12.2187 21.8039 11.8397 21.8412 11.4336C22.0062 9.63798 22.3452 4.46467 20.9403 3.05974C19.5353 1.65481 14.362 1.99377 12.5664 2.15876C12.1603 2.19608 11.7813 2.36233 11.472 2.62811C8.34412 5.31646 5.49781 8.10211 2.77423 11.1439Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M7.00002 14.0002L10 17.0002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          <span class=\"ayy-record-picker__option-body\"><span class=\"ayy-record-picker__option-label\">Research</span></span>\n        </li>\n        <li role=\"option\" class=\"ayy-combobox__option ayy-record-picker__create\" data-create hidden><span class=\"ayy-record-picker__create-label\"></span></li>\n        <li role=\"none\" class=\"ayy-combobox__empty ayy-record-picker__empty\" hidden>No labels</li>\n      </ul>\n    </div>\n  </ayy-record-picker>\n  <p class=\"ayy-field__hint\" id=\"labels-hint-html\">Type a new label and pick “Create” to add it.</p>\n</div>",
+          "react": "import { Tag01Icon } from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport { Field, FieldHint, Icon, Label, RecordPicker, type RecordPickerOption } from \"@danitesler/ayywi/react\";\n\nconst initial: RecordPickerOption[] = [\n  { id: \"design\", label: \"Design\", icon: <Icon icon={Tag01Icon} /> },\n  { id: \"engineering\", label: \"Engineering\", icon: <Icon icon={Tag01Icon} /> },\n  { id: \"marketing\", label: \"Marketing\", icon: <Icon icon={Tag01Icon} /> },\n  { id: \"operations\", label: \"Operations\", icon: <Icon icon={Tag01Icon} /> },\n  { id: \"research\", label: \"Research\", icon: <Icon icon={Tag01Icon} /> },\n];\n\nexport default function Example() {\n  const [options, setOptions] = useState(initial);\n  const [labels, setLabels] = useState<string[]>([]);\n  return (\n    <Field style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <Label id=\"labels-label\" htmlFor=\"labels-input\">\n        Labels\n      </Label>\n      <RecordPicker\n        id=\"labels-input\"\n        name=\"labels\"\n        multiple\n        creatable\n        aria-labelledby=\"labels-label\"\n        aria-describedby=\"labels-hint\"\n        options={options}\n        value={labels}\n        onValueChange={setLabels}\n        onCreate={(label) => {\n          const option = { id: label.toLocaleLowerCase().replace(/[^a-z0-9]+/g, \"-\"), label };\n          setOptions((current) => [...current, option]);\n          return option;\n        }}\n        placeholder=\"Add a label\"\n        emptyText=\"No labels\"\n      />\n      <FieldHint id=\"labels-hint\">Type a new label and pick “Create” to add it.</FieldHint>\n    </Field>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/record-picker/record-picker.css",
+        "js": "src/components/record-picker/record-picker.ts",
+        "react": "src/components/record-picker/record-picker.react.tsx",
+        "meta": "src/components/record-picker/record-picker.meta.json",
+        "element": "src/components/record-picker/record-picker.element.ts"
       }
     },
     {

@@ -27,6 +27,7 @@
 @import "../components/date-time-picker/date-time-picker.css" layer(ayywi.components);
 @import "../components/color-picker/color-picker.css" layer(ayywi.components);
 @import "../components/tag-input/tag-input.css" layer(ayywi.components);
+@import "../components/record-picker/record-picker.css" layer(ayywi.components);
 @import "../components/checkbox/checkbox.css" layer(ayywi.components);
 @import "../components/radio/radio.css" layer(ayywi.components);
 @import "../components/segmented-control/segmented-control.css" layer(ayywi.components);

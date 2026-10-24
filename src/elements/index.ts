@@ -25,6 +25,7 @@ import { AyyTabsElement } from "../components/tabs/tabs.element";
 import { AyyToolbarElement } from "../components/toolbar/toolbar.element";
 import { AyyCommandElement } from "../components/command/command.element";
 import { AyyTagInputElement } from "../components/tag-input/tag-input.element";
+import { AyyRecordPickerElement } from "../components/record-picker/record-picker.element";
 import { AyySwipeElement } from "../components/swipe/swipe.element";
 import { AyyTocElement } from "../components/toc/toc.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
@@ -54,6 +55,7 @@ export {
   AyyMenuElement,
   AyyNavbarElement,
   AyyPopoverElement,
+  AyyRecordPickerElement,
   AyyShortcutRecorderElement,
   AyySwipeElement,
   AyyTableElement,
@@ -200,6 +202,7 @@ export function defineElements(): void {
   define("ayy-shortcut-recorder", AyyShortcutRecorderElement);
   define("ayy-command", AyyCommandElement);
   define("ayy-tag-input", AyyTagInputElement);
+  define("ayy-record-picker", AyyRecordPickerElement);
   define("ayy-inline-edit", AyyInlineEditElement);
   define("ayy-swipe", AyySwipeElement);
   if (!spotlightListening && typeof document !== "undefined") {

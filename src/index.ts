@@ -68,6 +68,7 @@ export * from "./components/swatch/swatch";
 export * from "./components/toolbar/toolbar";
 export * from "./components/command/command";
 export * from "./components/tag-input/tag-input";
+export * from "./components/record-picker/record-picker";
 export * from "./components/swipe/swipe";
 export * from "./components/search-bar/search-bar";
 export * from "./components/filter-bar/filter-bar";

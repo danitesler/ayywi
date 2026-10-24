@@ -1,0 +1,30 @@
+<!-- <ayy-record-picker> filters as you type; Enter picks the active record, and "ayy-change" carries { ids, options }. -->
+<div class="ayy-field" style="inline-size: min(100%, 24rem)">
+  <label class="ayy-label" id="assignee-label-html" for="assignee-html">Assignee</label>
+  <ayy-record-picker>
+    <div class="ayy-record-picker ayy-tag-input ayy-combobox">
+      <input type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="assignee-listbox-html" autocomplete="off" class="ayy-tag-input__input ayy-record-picker__input" id="assignee-html" aria-labelledby="assignee-label-html" aria-describedby="assignee-hint-html" placeholder="Add a person" />
+      <button type="button" class="ayy-record-picker__clear" aria-label="Clear"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+      <ul id="assignee-listbox-html" class="ayy-combobox__listbox ayy-record-picker__listbox" role="listbox" popover="manual">
+        <li role="option" class="ayy-combobox__option ayy-record-picker__option" data-value="ada" data-label="Ada Lovelace" data-keywords="engineering" data-active="false" aria-selected="false">
+          <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg>
+          <span class="ayy-record-picker__option-body"><span class="ayy-record-picker__option-label">Ada Lovelace</span><span class="ayy-record-picker__description">ada@example.com</span></span>
+        </li>
+        <li role="option" class="ayy-combobox__option ayy-record-picker__option" data-value="grace" data-label="Grace Hopper" data-keywords="engineering" data-active="false" aria-selected="false">
+          <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg>
+          <span class="ayy-record-picker__option-body"><span class="ayy-record-picker__option-label">Grace Hopper</span><span class="ayy-record-picker__description">grace@example.com</span></span>
+        </li>
+        <li role="option" class="ayy-combobox__option ayy-record-picker__option" data-value="alexandria" data-label="Alexandria Ocasio-Cortez" data-keywords="design" data-active="false" aria-selected="false">
+          <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg>
+          <span class="ayy-record-picker__option-body"><span class="ayy-record-picker__option-label">Alexandria Ocasio-Cortez</span><span class="ayy-record-picker__description">alexandria@example.com</span></span>
+        </li>
+        <li role="option" class="ayy-combobox__option ayy-record-picker__option" data-value="alan" data-label="Alan Turing" data-keywords="research" data-active="false" aria-selected="false">
+          <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg>
+          <span class="ayy-record-picker__option-body"><span class="ayy-record-picker__option-label">Alan Turing</span><span class="ayy-record-picker__description">alan@example.com</span></span>
+        </li>
+        <li role="none" class="ayy-combobox__empty ayy-record-picker__empty" hidden>No people</li>
+      </ul>
+    </div>
+  </ayy-record-picker>
+  <p class="ayy-field__hint" id="assignee-hint-html">Type to find someone, then press Enter.</p>
+</div>

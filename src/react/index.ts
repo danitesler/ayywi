@@ -499,6 +499,7 @@ export {
 export { Settings, SettingsRow, SettingsLink, type SettingsProps, type SettingsRowProps, type SettingsLinkProps } from "../components/settings/settings.react";
 export { Command, CommandDialog, CommandGroup, CommandItem, type CommandProps, type CommandDialogProps, type CommandGroupProps, type CommandItemProps } from "../components/command/command.react";
 export { TagInput, type TagInputProps } from "../components/tag-input/tag-input.react";
+export { RecordPicker, type RecordPickerProps, type RecordPickerOption } from "../components/record-picker/record-picker.react";
 export { Fab, type FabProps } from "../components/fab/fab.react";
 export { TopBar, type TopBarProps } from "../components/top-bar/top-bar.react";
 export { SearchBar, type SearchBarProps } from "../components/search-bar/search-bar.react";

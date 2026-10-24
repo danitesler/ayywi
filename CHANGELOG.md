@@ -11,6 +11,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Record picker](#/record-picker)**
+  New component — a tag field whose chips are records picked from a list, for one assignee or several labels, with filtering, a create row and `<ayy-record-picker>`.
 - **[Inline edit](#/inline-edit)**
   New component — a value that becomes an input in place, saving on Enter, blur, or ⌘Enter in a growing textarea, with IME-safe Enter and a title variant.
 - **[App shell](#/app-shell)**

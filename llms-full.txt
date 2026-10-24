@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -46,7 +46,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -524,7 +524,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents
-- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
+- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
@@ -1952,6 +1952,70 @@ Category: Forms. A field that turns what you type into removable chips: tags, la
 - Don't colour tags by meaning without a word for it.
 
 **Examples**: Tags with suggestions, Recipients, large, at most 5. Copy-ready HTML and React in llms/tag-input.md.
+
+## Record picker
+
+Category: Forms. A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record. Also called: record-picker, record-select, record-field, people-picker, assignee-picker, entity-picker, multi-select-picker.
+
+**Classes**
+- `.ayy-record-picker` — Root: an ayy-tag-input and ayy-combobox holding the chips, the input, the clear button and the listbox.
+- `.ayy-record-picker--multiple` — Several records: chips wrap, and the list stays open after each pick (aria-multiselectable).
+- `.ayy-record-picker__tag` — One picked record, an .ayy-chip--removable.ayy-tag-input__tag <span data-value> with a named .ayy-chip__remove button; one line, clipped when too long.
+- `.ayy-record-picker__input` — The borderless <input role="combobox"> after the chips; the field's id, label and aria-describedby go on it.
+- `.ayy-record-picker__clear` — The icon button after the input that clears every chip, named by aria-label ("Clear"); hidden while nothing is picked.
+- `.ayy-record-picker__listbox` — The .ayy-combobox__listbox: records, the create row and the empty row. At least as wide as the field, at most 24rem.
+- `.ayy-record-picker__option` — One record, an .ayy-combobox__option[role="option"] with data-value, data-label and data-keywords. Active: data-active="true"; picked: aria-selected="true" and a check.
+- `.ayy-record-picker__option-body` — The two lines after the icon: name and description. Takes the row's leftover width.
+- `.ayy-record-picker__option-label` — The record's name, one line with an ellipsis.
+- `.ayy-record-picker__description` — The muted second line (an email, a role, a key), one line with an ellipsis.
+- `.ayy-record-picker__create` — The last option: "Create “Maya”" when creatable, the query isn't empty and no record matches exactly.
+- `.ayy-record-picker__create-label` — The create row's text, written by the controller from createLabel.
+- `.ayy-record-picker__empty` — The muted, centred row when nothing matches ("No people").
+
+**States**
+- `default` — A Tag input wash field with the picked records as chips, a text box and the clear button; list closed.
+- `hover` (`.ayy-record-picker__clear:hover (hover devices) and a list option under the pointer`) — The clear button gets a --ayy-color-wash-hover circle; an option gets Combobox's wash-hover.
+- `focus` (`.ayy-record-picker__clear:focus-visible and the field's input`) — 2px --ayy-color-ring on the clear button, Tag input's ring around the field; each chip's × has its own.
+- `disabled` (`disabled on the input and on the chips' × and clear buttons`) — Tag input dims the field to --ayy-opacity-disabled; the buttons dim too.
+- `selected` (`aria-selected="true" on an .ayy-record-picker__option`) — A check at the inline end, never colour alone. Picking it again removes it in multiple mode and replaces it in single.
+- `error` (`aria-invalid="true" on the input`) — Tag input's destructive border and focus ring; say why in a FieldError.
+- `open` (`input[aria-expanded="true"]`) — The listbox opens under the field with the first match active and aria-activedescendant on the input.
+
+**Sizes**
+- `sm` — Tag input's sm: at least --ayy-size-control-sm, sm text.
+- `md` (default) — Tag input's md: at least --ayy-size-control-md (32px compact, 40px comfortable, 44px touch).
+- `lg` — Tag input's lg: at least --ayy-size-control-lg, more padding, lg text.
+- Density — The field and chips follow data-density through Tag input; the clear button is --ayy-size-control-sm square and rows at least as high.
+- Width — Fills its container; chips wrap in multiple mode. The listbox matches the field's width, up to 24rem.
+
+**Custom element** `<ayy-record-picker>` (@danitesler/ayywi/elements) — An .ayy-record-picker with the picked records' chips, its input, the clear button and the .ayy-record-picker__listbox of .ayy-record-picker__option rows.
+- attribute `multiple`: Pick several records; the list stays open after each pick.
+- attribute `creatable`: Offer a create row for the typed text when no record matches.
+- attribute `manual`: Don't filter: replace the options yourself (a search API), then call refresh().
+- attribute `name`: Form name: a hidden input per picked id carries it.
+- event `ayy-change`: { ids, options: [{ id, label }] } — after every pick, removal and clear.
+- event `ayy-create`: { id, label } — when the create row is picked; the chip already exists. Replace the slug id with the saved record's id.
+
+**React** — `import { RecordPicker } from "@danitesler/ayywi/react";`
+- `<RecordPicker>` renders <div class="ayy-record-picker ayy-tag-input ayy-combobox"> chips + <input role="combobox"> + clear button + <ul class="ayy-combobox__listbox">; other props go on the input, className on the root. Props: `options` RecordPickerOption[] — id, label, description?, icon?, keywords?, disabled?; `value / defaultValue` string[] — the picked ids; value makes it controlled; `onValueChange` (ids: string[], options: RecordPickerOption[]) => void; `multiple` boolean — several records; the list stays open; `creatable` boolean — offer a create row; `onCreate` (label) => RecordPickerOption | void — return the new option to select it, or update options and value yourself; `createLabel` (label) => string — the create row's text. Default "Create “<label>”"; `emptyText` ReactNode — when nothing matches. Default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input per picked id; `clearable` boolean — show the clear button. Default true; `clearLabel` string — its name. Default "Clear"; `removeLabel` (option) => string — a chip's × name. Default "Remove <label>"; `className` string — on the root
+
+**Accessibility**
+- Label the input with <Label htmlFor> or aria-label; the listbox takes the same name, so it reads as "Assignee".
+- The input keeps focus: arrows move aria-activedescendant, Enter picks, Escape closes and clears the query, and the pointer never moves focus into the list.
+- In multiple mode the list is aria-multiselectable: picked records carry aria-selected and a check, and picking one again removes it.
+- Each chip's × is named "Remove Ada Lovelace", and Backspace in the empty field removes the last chip.
+
+**Do**
+- Use it to attach records to something: an assignee, labels, projects, reviewers.
+- Give options a description when names repeat, and keywords for what people type (an email, a project key).
+- Turn on creatable only when a new record is allowed, and save it in onCreate so its id is the real one.
+
+**Don't**
+- Don't use it for free text — use a Tag input for tags or recipients, or an Input for one value.
+- Don't use it for a short known list — use a Select, a Segmented control or a Combobox.
+- Don't rely on colour for picked rows; keep the check.
+
+**Examples**: Assignee, one person, Labels, several and creatable. Copy-ready HTML and React in llms/record-picker.md.
 
 ## Date & time picker
 

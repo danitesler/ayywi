@@ -704,3 +704,28 @@ test.describe("inline edit", () => {
     expect(await logs(page, "change")).toEqual([["2.0.0"], ["3.0.0-rejected"]]);
   });
 });
+
+test.describe("record picker", () => {
+  test("React RecordPicker follows a controlled value", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+    import { RecordPicker } from "ayywi";
+    const options = [
+      { id: "ada", label: "Ada Lovelace", description: "ada@example.com" },
+      { id: "grace", label: "Grace Hopper", description: "grace@example.com" },
+    ];
+    function App() {
+      const [value, setValue] = useState<string[]>([]);
+      return (
+        <div>
+          <button type="button" onClick={() => setValue(["grace"])}>Assign Grace</button>
+          <RecordPicker aria-label="Assignee" options={options} value={value} onValueChange={setValue} />
+        </div>
+      );
+    }`,
+    );
+    await page.getByRole("button", { name: "Assign Grace" }).click();
+    await expect(page.locator(".ayy-record-picker__tag")).toHaveText(["Grace Hopper"]);
+  });
+});
