@@ -1,0 +1,76 @@
+{
+  "name": "Property list",
+  "slug": "property-list",
+  "category": "Data display",
+  "description": "A record's attributes as a definition list: a muted term (an icon and a label) and its value, side by side, wrapping under each other when the value doesn't fit.",
+  "aka": ["property-list", "description-list", "key-value", "details-list", "metadata-list"],
+  "classes": {
+    "ayy-property-list": "Root <dl>. Rows stack with no gap; the rows own the padding.",
+    "ayy-property-list--compact": "Tight rows: 6px block padding instead of 12px and a 7rem term basis instead of 8rem.",
+    "ayy-property-list__row": "The <div> that holds one <dt> and one <dd>: a wrapping flex row with the term at an 8rem basis and the value taking the rest.",
+    "ayy-property-list__term": "The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. It shrinks before the value does.",
+    "ayy-property-list__label": "The label inside the term. Wraps inside the term's column.",
+    "ayy-property-list__icon": "An optional Icon before the label: 16px, muted, never shrinks. Decorative, so the label names the row.",
+    "ayy-property-list__value": "The <dd>: the value in --ayy-color-text. Long words wrap inside it (overflow-wrap: anywhere) instead of overflowing.",
+    "ayy-property-list__empty": "What an empty value reads (\"Not set\"): muted, in place of the value."
+  },
+  "variants": {
+    "compact": { "values": [false, true], "default": false, "component": "PropertyList" }
+  },
+  "states": {
+    "default": { "looks": "Muted, icon-led terms in an 8rem column and text-coloured values beside them, each row with 12px block padding and no hairline." },
+    "hover": { "none": "Rows aren't interactive; a value that is (an InlineEdit, a Chip) keeps its own hover." },
+    "pressed": { "none": "Rows aren't interactive; their nested controls keep their own pressed look." },
+    "focus": { "none": "Rows aren't focusable; their nested controls keep their focus rings." },
+    "disabled": { "none": "The list doesn't disable; disable the control in a value, or drop the row." },
+    "selected": { "none": "Not a choice control; use List or a Table with selected rows." },
+    "error": { "none": "No error look; a value that failed validation nests a FieldError or an InlineEdit with aria-invalid on its field." },
+    "loading": { "none": "No loading look; show Skeleton rows with aria-busy on the list." },
+    "empty": { "when": "PropertyRow empty (emptyText, default \"Not set\")", "looks": "The __empty span takes --ayy-color-muted instead of a blank value; forced colours draw it as GrayText." }
+  },
+  "sizes": {
+    "density": "Row text follows data-density through --ayy-text-s (13px compact and comfortable, 14px touch). compact swaps the 12px block padding for 6px.",
+    "width": "Fills its container. The term takes an 8rem basis (7rem compact) and the value 10rem; when they don't fit together the value wraps under its term. Long unbroken values wrap inside the value."
+  },
+  "js": "propertyListClass({ compact?, className? }) → string; propertyListRowClass, propertyListTermClass, propertyListLabelClass, propertyListIconClass, propertyListValueClass, propertyListEmptyClass constants.",
+  "react": {
+    "import": "import { PropertyList, PropertyRow } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "PropertyList": {
+        "renders": "<dl class=\"ayy-property-list\">",
+        "props": {
+          "compact": "boolean — tight rows with a shorter term column, for a dense summary."
+        }
+      },
+      "PropertyRow": {
+        "renders": "<div class=\"ayy-property-list__row\"> <dt class=\"ayy-property-list__term\"> (icon and label) <dd class=\"ayy-property-list__value\">",
+        "props": {
+          "label": "ReactNode (required) — the term's text.",
+          "icon": "ReactNode — an Icon before the label (give it className=\"ayy-property-list__icon\").",
+          "empty": "boolean — there is no value: show emptyText muted instead of children.",
+          "emptyText": "ReactNode — what an empty value reads. Default \"Not set\"."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "It's a real <dl>: screen readers announce a definition list and pair each term with its value.",
+    "Each row is a <div> inside the <dl> (valid HTML) with exactly one <dt> and one <dd>, so the rows can wrap and flex.",
+    "Icons in the term are decorative; the label names the row.",
+    "An empty value says \"Not set\" in text, not a dash or a blank cell.",
+    "A value edited in place keeps the nested InlineEdit's own label (\"Change the version\"); the term names the attribute, the control names the action."
+  ],
+  "do": [
+    "Use a property list for a record's attributes: a project, a server, an order, a person.",
+    "Keep terms short and values plain; nest a control only for a value edited in place.",
+    "Use PropertyRow empty and emptyText when there is no value, so the row stays and reads as empty.",
+    "Use compact inside a card header or a dense summary."
+  ],
+  "dont": [
+    "Don't use it for rows that open something or carry actions at the end — use List.",
+    "Don't use it for preferences with a control per row — use Settings.",
+    "Don't use it for values people compare across columns — use Table.",
+    "Don't hand-build the rows: the <dt>/<dd> pairing is what screen readers announce."
+  ],
+  "examples": [{ "id": "record", "title": "Record" }, { "id": "compact", "title": "Compact" }]
+}

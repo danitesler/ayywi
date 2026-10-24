@@ -76,6 +76,7 @@
 @import "../components/stat/stat.css" layer(ayywi.components);
 @import "../components/swipe/swipe.css" layer(ayywi.components);
 @import "../components/list/list.css" layer(ayywi.components);
+@import "../components/property-list/property-list.css" layer(ayywi.components);
 @import "../components/timeline/timeline.css" layer(ayywi.components);
 @import "../components/frame/frame.css" layer(ayywi.components);
 @import "../components/chat/chat.css" layer(ayywi.components);

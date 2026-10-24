@@ -8,7 +8,7 @@ When you ask an AI tool to build UI, you usually get five mismatched shades of g
 
 ![The Dashboard showcase app, built only from ayywi components](https://raw.githubusercontent.com/danitesler/ayywi/main/preview/src/showcase/screenshots/dashboard.png)
 
-- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 75 components.
+- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 76 components.
 - **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
 - **States and accessibility built in:** components ship empty, loading, and error states; interactive ones have focus rings, keyboard support, ARIA, RTL, and Windows High Contrast styles. axe runs on every component page and showcase app (no serious or critical violations), and `pnpm check` tests every text colour against every surface in every theme.
 - **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.
@@ -140,7 +140,7 @@ Densities include `compact` (desktop default), `comfortable` (looser spacing), a
 | Layout | Page header, Card (plus a view type for captures and recordings), Tabs, Accordion, Carousel, Separator, Showcase |
 | Overlays | Dialog (centred, side modal or bottom sheet), Popover, Tooltip |
 | Feedback | Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state |
-| Data display | Badge, Status dot, Keyboard hint, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart, Text highlight |
+| Data display | Badge, Status dot, Keyboard hint, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart, Text highlight |
 
 Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) and a marketing site kit (containers, hero type, scroll reveal) handle the structure between components.
 

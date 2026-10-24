@@ -112,6 +112,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Icon tile](llms/icon-tile.md): An app-icon squircle lit from below by the content's accent, with an SVG glyph in that accent. For products, plugins and services.
 - [Stat](llms/stat.md): A headline number in the heading font, with a muted unit beside it and a short label: downloads, views, results.
 - [List](llms/list.md): Rows of people, records, threads or settings: leading media (avatar, icon, icon tile), a title over a description, and trailing meta or a control. A link in the title makes the whole row clickable.
+- [Property list](llms/property-list.md): A record's attributes as a definition list: a muted term (an icon and a label) and its value, side by side, wrapping under each other when the value doesn't fit.
 - [Swipe actions](llms/swipe.md): A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.
 - [Timeline](llms/timeline.md): Chronological list of events, milestones, or history with vertical connecting tracks, status markers, timestamps, and descriptions.
 - [Frame](llms/frame.md): A browser window around a screenshot, video or coded mock-up: a bar with three dots and an optional address, and a long soft shadow.

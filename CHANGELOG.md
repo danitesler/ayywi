@@ -11,6 +11,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Property list](#/property-list)**
+  New component — a record's attributes as a definition list of muted terms and values, with a compact variant and a muted empty value.
 - **[Record picker](#/record-picker)**
   New component — a tag field whose chips are records picked from a list, for one assignee or several labels, with filtering, a create row and `<ayy-record-picker>`.
 - **[Inline edit](#/inline-edit)**

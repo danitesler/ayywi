@@ -99,7 +99,7 @@ export const ORDER = [
   "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
-  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
+  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "property-list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
 ];
 
 /** Screens built from several components that every app should build the same way. Each is rendered into the manifest

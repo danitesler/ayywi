@@ -389,6 +389,12 @@ export {
   type ListLinkProps,
 } from "../components/list/list.react";
 export {
+  PropertyList,
+  PropertyRow,
+  type PropertyListProps,
+  type PropertyRowProps,
+} from "../components/property-list/property-list.react";
+export {
   EmptyState,
   EmptyStateTitle,
   EmptyStateDescription,

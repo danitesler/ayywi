@@ -528,6 +528,13 @@ Rows of people, records, threads or settings: leading media (avatar, icon, icon 
 - JS: listClass({ divided?, compact?, className? }) → string; listItemClass, listContentClass, listTitleClass, listDescriptionClass, listMetaClass, listLinkClass constants.
 - A11y: It's a real list: screen readers announce how many rows there are. One link per row, in the title, so a row is one tab stop with a meaningful name. Buttons and switches in the row are separate tab stops after it. Mark the open row with aria-current="page" (it's a page) or "true" (a selection in a list-detail view); it gets a tint and a heavier title, not just colour. A switch or checkbox in a settings row needs its label: make the title a <label for> pointing at it. Avatars and icons in the leading slot are decorative when the title names the row.
 
+## Property list (Data display)
+A record's attributes as a definition list: a muted term (an icon and a label) and its value, side by side, wrapping under each other when the value doesn't fit.
+- Classes: `.ayy-property-list` `.ayy-property-list--compact` `.ayy-property-list__row` `.ayy-property-list__term` `.ayy-property-list__label` `.ayy-property-list__icon` `.ayy-property-list__value` `.ayy-property-list__empty`
+- States: empty
+- JS: propertyListClass({ compact?, className? }) → string; propertyListRowClass, propertyListTermClass, propertyListLabelClass, propertyListIconClass, propertyListValueClass, propertyListEmptyClass constants.
+- A11y: It's a real <dl>: screen readers announce a definition list and pair each term with its value. Each row is a <div> inside the <dl> (valid HTML) with exactly one <dt> and one <dd>, so the rows can wrap and flex. Icons in the term are decorative; the label names the row. An empty value says "Not set" in text, not a dash or a blank cell. A value edited in place keeps the nested InlineEdit's own label ("Change the version"); the term names the attribute, the control names the action.
+
 ## Swipe actions (Data display)
 A list row that slides sideways to show buttons underneath, as in phone mail and task apps: swipe toward the end for Done, toward the start for Snooze or Delete. Works with touch, pen and mouse, follows the reading direction, and keyboards reach the buttons with Tab.
 - Classes: `.ayy-swipe` `.ayy-swipe__content` `.ayy-swipe__actions` `.ayy-swipe__actions--start` `.ayy-swipe__actions--end` `.ayy-swipe__action` `.ayy-swipe__action--primary` `.ayy-swipe__action--success` `.ayy-swipe__action--warning` `.ayy-swipe__action--info` `.ayy-swipe__action--destructive`

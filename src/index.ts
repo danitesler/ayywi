@@ -49,6 +49,7 @@ export * from "./components/frame/frame";
 export * from "./components/chat/chat";
 export * from "./components/page-header/page-header";
 export * from "./components/list/list";
+export * from "./components/property-list/property-list";
 export * from "./components/empty-state/empty-state";
 export * from "./components/spinner/spinner";
 export * from "./components/kbd/kbd";
