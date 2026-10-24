@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tag-input>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -46,7 +46,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -533,12 +533,12 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 ## Components by category
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
-- **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents
-- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Select, Combobox, Tag input, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
+- **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
+- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart
+- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart
 
 ## Button
 
@@ -1372,6 +1372,54 @@ Category: Navigation. A table of contents for long pages. It lists links to the 
 
 **Examples**: Numbered, beside the content. Copy-ready HTML and React in llms/toc.md.
 
+## Tree
+
+Category: Navigation. A hierarchical list of folders, files or records: groups that open and close with a chevron, one selected row and arrow-key navigation. Use it to browse a folder or file structure, or as a picker inside a card. Also called: tree, tree-view, file-tree, folder-tree, treeitem.
+
+**Classes**
+- `.ayy-tree` — Root <ul role="tree">. Its aria-label names it ("Folders"). <ayy-tree> wraps it with display: contents.
+- `.ayy-tree__item` — One <li role="treeitem">. Carries aria-level, aria-selected on every node, aria-expanded only on parents, and a roving tabindex: exactly one visible item is 0, the rest -1. aria-disabled="true" makes it unselectable.
+- `.ayy-tree__row` — The clickable row inside the item: toggle, optional icon and label. Hover and selected washes sit here, and so does the focus ring.
+- `.ayy-tree__toggle` — The decorative <span aria-hidden="true"> holding the chevron. Clicking it opens or closes the group without selecting the row; the treeitem's aria-expanded carries the state.
+- `.ayy-tree__icon` — An optional decorative icon before the label (an <svg class="ayy-icon ayy-tree__icon"> drawn by Icon or iconSvg). Muted, and text colour on the selected row.
+- `.ayy-tree__label` — The node's label. It takes the leftover width, wraps anywhere so a long unbroken name never scrolls the tree sideways, and is not the accessible name: the item's aria-label is.
+- `.ayy-tree__group` — A nested <ul role="group"> of child items, indented by --ayy-space-5 (--ayy-space-4 with --compact). Put hidden on it while its parent is aria-expanded="false"; connectTree keeps the two in step.
+- `.ayy-tree--compact` — Tighter rows at the sm control height, small control text, a 16px indent and a 16px toggle.
+
+**States**
+- `hover` (`.ayy-tree__row:hover on a device that hovers`)
+- `focus` (`.ayy-tree__item:focus-visible`)
+- `disabled` (`aria-disabled="true" on the treeitem`)
+- `selected` (`aria-selected="true" on the treeitem, set by a click, Space, or your selectedId`)
+- `expanded` (`aria-expanded="true" on a parent treeitem`)
+
+**Sizes**
+- Density — Rows are at least the md control height (32px compact, 40px comfortable, 44px touch) with --ayy-control-text-md; --compact uses the sm height (28, 32, 40) and --ayy-control-text-sm. The toggle is 20px (16px compact), so touch density keeps a comfortable target.
+- Width — Fills its container. Child groups indent by --ayy-space-5 (--ayy-space-4 compact) using padding-inline-start, so they indent from the right in RTL. Labels take the leftover width and wrap anywhere.
+
+**Custom element** `<ayy-tree>` (@danitesler/ayywi/elements) — Wraps the <ul role="tree"> and makes it work: the toggle opens and closes a group, a row selects, double-click or Enter activates, and the arrow keys, Home and End move the roving tab stop. focus(id) moves to a node from code.
+- event `ayy-select`: { id } — a row was clicked or Space was pressed on it.
+- event `ayy-activate`: { id } — a row was double-clicked or Enter was pressed on it (open the file or folder).
+- event `ayy-toggle`: { id, expanded } — a group was opened (true) or closed (false).
+
+**React** — `import { Tree, type TreeNode } from "@danitesler/ayywi/react";`
+- `<Tree>` renders <ul class="ayy-tree" role="tree" aria-label> with a <li class="ayy-tree__item" role="treeitem"> per node, a __row inside it, and a nested <ul class="ayy-tree__group" role="group" hidden> for children. Props: `label` string — accessible name of the tree ("Folders"); `nodes` TreeNode[] — { id: string; label: string; icon?: ReactNode; children?: TreeNode[]; disabled?: boolean }, nested in display order; `expandedIds / defaultExpandedIds` string[] — open group ids; expandedIds makes it controlled, defaultExpandedIds sets the starting ones; `onExpandedChange` (ids: string[]) => void — a group opened or closed; `selectedId / defaultSelectedId` string — the selected node; selectedId makes it controlled, defaultSelectedId sets the starting one; `onSelectedChange` (id: string | null) => void — a row was selected; `onActivate` (id: string) => void — a row was double-clicked or Enter was pressed; `compact` boolean — tighter rows, a smaller indent and the small control text
+
+**Accessibility**
+- The tree is a <ul role="tree"> with a name (label in React, aria-label in HTML); each node is a <li role="treeitem"> with aria-level, and children sit in a <ul role="group">.
+- aria-expanded is only on parents and aria-selected is on every node, so the state is announced rather than drawn only as a wash. The toggle is decorative (aria-hidden) and the item's aria-label is the node label, never the toggle.
+- One visible item has tabindex="0" and the rest -1 (a roving tab stop). Tab enters the tree on the selected node, then the arrow keys, Home and End move through the visible nodes: Right closes an open group or opens a closed one and steps into its first child, Left closes an open group or moves to the parent.
+- Enter activates a node and Space selects it. Double-click activates too. A composing IME and fields inside a row (a rename input) keep their keys.
+- aria-disabled="true" keeps a node readable and reachable by the keyboard while it refuses selection and activation; colour is backed by opacity and, in High Contrast, GrayText.
+- Long labels wrap inside the row instead of scrolling the tree sideways, and touch density raises the rows to the 44px target.
+
+**Do**
+- Use a tree to browse a nested structure: folders and files, a page hierarchy, categories or a project's contents.
+- Keep ids stable and pass them as expandedIds/selectedId when the rest of the screen shows the same folder (a picker in a card, a split view).
+- Pair the chevron with the label on the same row and let the label wrap; never truncate a folder name to make a narrow tree fit.
+
+**Examples**: Project files, Choose a folder. Copy-ready HTML and React in llms/tree.md.
+
 ## Field
 
 Category: Forms. A wrapper that ties a label, an input and its hint or error message together with consistent spacing. Use it around any form control. Also called: field, form-field, form-row.
@@ -1622,6 +1670,48 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 
 **Examples**: Basic, autosize, mono. Copy-ready HTML and React in llms/textarea.md.
 
+## Inline edit
+
+Category: Forms. A value that becomes an input where it sits: a page or card title, a project name, a version, a due date. Click it or press Enter to edit, Enter saves, Esc cancels, blur saves, and a multiline field grows as you type and saves on Mod+Enter. Also called: inline-edit, inline-editor, editable, click-to-edit, edit-in-place.
+
+**Classes**
+- `.ayy-inline-edit` — Root: one grid cell shared by the display button and the field, both at least the control's height, so swapping them doesn't move the content for a one-line value. Put the raw value in data-value.
+- `.ayy-inline-edit__display` — The value at rest, as a <button type="button"> named by aria-label ("Rename the project"). It is hidden while the field is open.
+- `.ayy-inline-edit__text` — The value inside the display button. It may be formatted (24 Oct 2026 while data-value is 2026-10-24); when empty, data-placeholder shows as muted text.
+- `.ayy-inline-edit__input` — The field: .ayy-input for one line or .ayy-textarea with rows="1" for more. Hidden until editing starts.
+- `.ayy-inline-edit--title` — Title variant: the display and the field take --ayy-font-heading at --ayy-text-xl, semibold.
+
+**States**
+- `hover` (`.ayy-inline-edit__display:hover (devices that hover)`)
+- `focus` (`.ayy-inline-edit__display:focus-visible, and .ayy-inline-edit__input:focus-visible while editing`)
+- `disabled` (`disabled on the display button and the field`)
+- `error` (`aria-invalid="true" on the field (passed through inputProps or textareaProps)`)
+- `editing` (`editing / defaultEditing, or a click or Enter on the display button`)
+
+**Sizes**
+- Density — The display button and the field both keep --ayy-size-control-md (32px compact, 40px comfortable, 44px touch), so a one-line value doesn't move the row when an edit starts or ends; the field's text is --ayy-control-text-field. The title variant's --ayy-text-xl type stays the same at every density.
+- Width — Fills its container. The display text wraps long words, keeps the author's line breaks and never scrolls sideways; a multiline field grows to its content.
+
+**Custom element** `<ayy-inline-edit>` (@danitesler/ayywi/elements) — 
+- event `ayy-change`: { value } — after a commit, only when the value changed. Update any formatted display text from it.
+- event `ayy-edit`: { editing } — true when the field opens, false however it closes.
+
+**React** — `import { InlineEdit } from "@danitesler/ayywi/react";`
+- `<InlineEdit>` renders <div class="ayy-inline-edit" data-value> <button class="ayy-inline-edit__display"><span class="ayy-inline-edit__text"> + <input class="ayy-input ayy-inline-edit__input"> (or <textarea class="ayy-textarea ..." rows="1">). Props: `value / defaultValue` string — the raw value; value makes it controlled; `onValueChange` (value: string) => void — after a commit, only when the value changed; `label` string — the display button's and the field's aria-label, written as the action ("Rename the project"); `displayValue` ReactNode — what the display shows at rest; defaults to the value (a formatted date, a price); `placeholder` string — shown when the value is empty, in the display and in the field; `multiline` boolean — use a growing <textarea>; saves on ⌘Enter / Ctrl+Enter; `variant` "text" | "title"; `disabled` boolean — disables the display button and the field; `editing / defaultEditing` boolean — edit mode, controlled, or the starting one; `onEditingChange` (editing: boolean) => void — when edit mode starts or ends; `onCancel` () => void — Esc threw the draft away; `trim` boolean — trim the value on commit. Default true; `inputProps` props for the single-line <input> (id, aria-describedby, aria-invalid, autoComplete…); `textareaProps` props for the multiline <textarea> (rows, maxLength…); `className` string — on the root, never on the field
+
+**Accessibility**
+- The display is a real button and the field is a real input: give both the same aria-label (label in React), written as the action ("Rename the project"), and keep it when the value changes.
+- Enter saves, Esc cancels and puts focus back on the display button; blur and Tab save without pulling focus back.
+- Enter while an IME is composing is left to the IME, so a Japanese, Chinese or Korean word can be confirmed without saving.
+- The empty value shows the placeholder as text, not as the only name: the button keeps its aria-label.
+
+**Do**
+- Use inline edit for a short value people rename in place: a page title, a project or file name, a version, a due date.
+- Write the label as the action ("Rename the project"), and keep a formatted displayValue in React when the raw value isn't what people should read.
+- Keep the raw value in data-value (plain HTML) and format only the .ayy-inline-edit__text.
+
+**Examples**: Title, Description. Copy-ready HTML and React in llms/inline-edit.md.
+
 ## Select
 
 Category: Forms. A dropdown for choosing one option from a list. It's the native select with a nicer list on desktop, and the system picker on touch devices. Also called: select, native-select, picker, listbox, custom-select.
@@ -1760,6 +1850,65 @@ Category: Forms. A field that turns what you type into removable chips, for tags
 - Check each tag (an email address) in onValueChange and show a FieldError for a bad one.
 
 **Examples**: Tags with suggestions, Recipients, large, at most 5. Copy-ready HTML and React in llms/tag-input.md.
+
+## Record picker
+
+Category: Forms. A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record. Also called: record-picker, record-select, record-field, people-picker, assignee-picker, entity-picker, multi-select-picker.
+
+**Classes**
+- `.ayy-record-picker` — Root: an ayy-tag-input and ayy-combobox holding the chips, the input, the clear button and the listbox.
+- `.ayy-record-picker--multiple` — Several records: chips wrap, and the list stays open after each pick (aria-multiselectable).
+- `.ayy-record-picker__tag` — One picked record, an .ayy-chip--removable.ayy-tag-input__tag <span data-value> with a named .ayy-chip__remove button; the label shrinks so the × stays inside.
+- `.ayy-record-picker__tag-label` — The record's name inside a chip: it shrinks and ellipsises when the name is longer than the field, instead of pushing the × out.
+- `.ayy-record-picker__input` — The borderless <input role="combobox"> after the chips; the field's id, label and aria-describedby go on it.
+- `.ayy-record-picker__clear` — The icon button after the input that clears every chip, named by aria-label ("Clear"); hidden while nothing is picked.
+- `.ayy-record-picker__listbox` — The .ayy-combobox__listbox: records, the create row and the empty row. At least as wide as the field; at most 24rem unless the field is wider.
+- `.ayy-record-picker__option` — One record, an .ayy-combobox__option[role="option"] with data-value, data-label and data-keywords. Active: data-active="true"; picked: aria-selected="true" and a check.
+- `.ayy-record-picker__option-body` — The two lines after the icon: name and description. Takes the row's leftover width.
+- `.ayy-record-picker__option-label` — The record's name, one line with an ellipsis.
+- `.ayy-record-picker__description` — The muted second line (an email, a role, a key), one line with an ellipsis.
+- `.ayy-record-picker__create` — The last option: "Create “Maya”" when creatable, the query isn't empty and no record matches exactly.
+- `.ayy-record-picker__create-label` — The create row's text, written by the controller from createLabel.
+- `.ayy-record-picker__empty` — The muted, centred row when nothing matches ("No people").
+
+**States**
+- `hover` (`.ayy-record-picker__clear:hover (hover devices) and a list option under the pointer`)
+- `focus` (`.ayy-record-picker__clear:focus-visible and the field's input`)
+- `disabled` (`disabled on the input and on the chips' × and clear buttons`)
+- `selected` (`aria-selected="true" on an .ayy-record-picker__option`)
+- `error` (`aria-invalid="true" on the input`)
+- `open` (`input[aria-expanded="true"]`)
+
+**Sizes**
+- `sm` — Tag input's sm: at least --ayy-size-control-sm, sm text.
+- `md` (default) — Tag input's md: at least --ayy-size-control-md (32px compact, 40px comfortable, 44px touch).
+- `lg` — Tag input's lg: at least --ayy-size-control-lg, more padding, lg text.
+- Density — The field and chips follow data-density through Tag input; the clear button is as tall as the field's inner height, so the field keeps its size token.
+- Width — Fills its container; chips wrap in multiple mode. The listbox is at least the field's width, and no wider than 24rem unless the field is wider.
+
+**Custom element** `<ayy-record-picker>` (@danitesler/ayywi/elements) — An .ayy-record-picker with the picked records' chips, its input, the clear button and the .ayy-record-picker__listbox of .ayy-record-picker__option rows.
+- attribute `multiple`: Pick several records; the list stays open after each pick.
+- attribute `creatable`: Offer a create row for the typed text when no record matches.
+- attribute `manual`: Don't filter: replace the options yourself (a search API), then call refresh().
+- attribute `name`: Form name: a hidden input per picked id carries it.
+- event `ayy-change`: { ids, options: [{ id, label }] } — after every pick, removal and clear.
+- event `ayy-create`: { id, label } — when the create row is picked; the chip already exists. Replace the slug id with the saved record's id.
+
+**React** — `import { RecordPicker } from "@danitesler/ayywi/react";`
+- `<RecordPicker>` renders <div class="ayy-record-picker ayy-tag-input ayy-combobox"> chips + <input role="combobox"> + clear button + <ul class="ayy-combobox__listbox">; other props go on the input, className on the root. Props: `options` RecordPickerOption[] — id, label, description?, icon?, keywords?, disabled?; `value / defaultValue` string[] — the picked ids; value makes it controlled; `onValueChange` (ids: string[], options: RecordPickerOption[]) => void; `multiple` boolean — several records; the list stays open; `creatable` boolean — offer a create row; `onCreate` (label) => RecordPickerOption | void — return the new option to select it, or update options and value yourself; `createLabel` (label) => string — the create row's text. Default "Create “<label>”"; `emptyText` ReactNode — when nothing matches. Default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input per picked id; `clearable` boolean — show the clear button. Default true; `clearLabel` string — its name. Default "Clear"; `removeLabel` (option) => string — a chip's × name. Default "Remove <label>"; `className` string — on the root
+
+**Accessibility**
+- Label the input with <Label htmlFor> and aria-labelledby (or aria-label); the controller copies that name onto the listbox, so the list reads as "Assignee".
+- The input keeps focus: arrows move aria-activedescendant, Enter picks, Escape closes and clears the query, and the pointer never moves focus into the list.
+- In multiple mode the list is aria-multiselectable: picked records carry aria-selected and a check, and picking one again removes it.
+- Each chip's × is named "Remove Ada Lovelace", and Backspace in the empty field removes the last chip.
+
+**Do**
+- Use it to attach records to something: an assignee, labels, projects, reviewers.
+- Give options a description when names repeat, and keywords for what people type (an email, a project key).
+- Turn on creatable only when a new record is allowed, and save it in onCreate so its id is the real one.
+
+**Examples**: Assignee, one person, Labels, several and creatable. Copy-ready HTML and React in llms/record-picker.md.
 
 ## Date & time picker
 
@@ -3558,6 +3707,46 @@ Category: Data display. Rows of people, records or settings, each with an image 
 - Cut long descriptions to one line with .ayy-truncate in inboxes and pickers.
 
 **Examples**: Conversations, Settings rows. Copy-ready HTML and React in llms/list.md.
+
+## Property list
+
+Category: Data display. A record's attributes as a definition list: a muted term (an icon and a label) and its value, side by side, wrapping under each other when the value doesn't fit. Also called: property-list, description-list, key-value, details-list, metadata-list.
+
+**Classes**
+- `.ayy-property-list` — Root <dl>. Rows stack with no gap; the rows own the padding.
+- `.ayy-property-list--compact` — Tight rows: 6px block padding instead of 12px and a 7rem term basis instead of 8rem.
+- `.ayy-property-list__row` — The <div> that holds one <dt> and one <dd>: a wrapping flex row with the term at an 8rem basis and the value taking the rest.
+- `.ayy-property-list__term` — The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. The term never grows; the value takes the remaining width.
+- `.ayy-property-list__label` — The label inside the term. Wraps inside the term's column.
+- `.ayy-property-list__icon` — An optional Icon before the label: 16px, muted, never shrinks. Decorative, so the label names the row.
+- `.ayy-property-list__value` — The <dd>: the value in --ayy-color-text. Long words wrap inside it (overflow-wrap: anywhere) instead of overflowing.
+- `.ayy-property-list__empty` — What an empty value reads ("Not set"): muted, in place of the value.
+
+**States**
+- `empty` (`PropertyRow empty (emptyText, default "Not set")`)
+
+**Sizes**
+- Density — Row text follows data-density through --ayy-text-s (13px compact and comfortable, 14px touch). compact swaps the 12px block padding for 6px.
+- Width — Fills its container. The term takes an 8rem basis (7rem compact) and the value 10rem; when they don't fit together the value wraps under its term. Long unbroken values wrap inside the value.
+
+**React** — `import { PropertyList, PropertyRow } from "@danitesler/ayywi/react";`
+- `<PropertyList>` renders <dl class="ayy-property-list">. Props: `compact` boolean — tight rows with a shorter term column, for a dense summary.
+- `<PropertyRow>` renders <div class="ayy-property-list__row"> <dt class="ayy-property-list__term"> (icon and label) <dd class="ayy-property-list__value">. Props: `label` ReactNode (required) — the term's text.; `icon` ReactNode — an Icon before the label (give it className="ayy-property-list__icon").; `empty` boolean — there is no value: show emptyText muted instead of children.; `emptyText` ReactNode — what an empty value reads. Default "Not set".
+
+**Accessibility**
+- It's a real <dl>: screen readers announce a definition list and pair each term with its value.
+- Each row is a <div> inside the <dl> (valid HTML) with exactly one <dt> and one <dd>, so the rows can wrap and flex.
+- Icons in the term are decorative; the label names the row.
+- An empty value says "Not set" in text, not a dash or a blank cell.
+- A value edited in place keeps the nested InlineEdit's own label ("Change the version"); the term names the attribute, the control names the action.
+
+**Do**
+- Use a property list for a record's attributes: a project, a server, an order, a person.
+- Keep terms short and values plain; nest a control only for a value edited in place.
+- Use PropertyRow empty and emptyText when there is no value, so the row stays and reads as empty.
+- Use compact inside a card header or a dense summary.
+
+**Examples**: Record, Compact. Copy-ready HTML and React in llms/property-list.md.
 
 ## Swipe actions
 

@@ -1,0 +1,194 @@
+/* Record picker: a tag field whose chips are records picked from a list — people, labels, projects. The field, its
+   chips and the listbox reuse Tag input's and Combobox's classes; this file adds the record row (an icon, a name, a
+   description and a check when picked), the create row and the clear-all button. */
+
+.ayy-record-picker {
+  column-gap: var(--ayy-space-1-5);
+}
+
+/* Several records: chips wrap onto more rows, and the list stays open after each pick. */
+.ayy-record-picker--multiple {
+  flex-wrap: wrap;
+}
+
+/* One record's chip: one line, clipped when the name is longer than the field. */
+.ayy-record-picker__tag {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* The name, in its own box so a long one shrinks and the × stays inside the chip. */
+.ayy-record-picker__tag-label {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A shorter basis than Tag input's, so the input and the clear button fit beside a chip. */
+.ayy-record-picker__input {
+  flex: 1 0 4rem;
+}
+
+/* Clear every picked record. Hidden until there is one. As tall as the field's inner height, so it never makes the field
+   taller than its size token. */
+.ayy-record-picker__clear {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: calc(var(--ayy-size-control-md) - 2 * var(--_pad) - 2px);
+  block-size: calc(var(--ayy-size-control-md) - 2 * var(--_pad) - 2px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-tag-input--sm > .ayy-record-picker__clear {
+  inline-size: calc(var(--ayy-size-control-sm) - 2 * var(--_pad) - 2px);
+  block-size: calc(var(--ayy-size-control-sm) - 2 * var(--_pad) - 2px);
+}
+
+.ayy-tag-input--lg > .ayy-record-picker__clear {
+  inline-size: calc(var(--ayy-size-control-lg) - 2 * var(--_pad) - 2px);
+  block-size: calc(var(--ayy-size-control-lg) - 2 * var(--_pad) - 2px);
+}
+
+.ayy-record-picker__clear > svg {
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+}
+
+.ayy-record-picker:not(:has(> .ayy-record-picker__tag)) > .ayy-record-picker__clear {
+  display: none;
+}
+
+@media (hover: hover) {
+  .ayy-record-picker__clear:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-record-picker__clear:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 1px;
+}
+
+.ayy-record-picker__clear:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* The list: as wide as its records need, never narrower than the field (the controller sets the minimum) or wider than a
+   comfortable reading measure. */
+.ayy-record-picker__listbox {
+  inline-size: max-content;
+  max-inline-size: min(24rem, calc(100vw - 1rem));
+}
+
+.ayy-record-picker__option {
+  gap: var(--ayy-space-2);
+  padding-inline-end: var(--ayy-space-2);
+  overflow: hidden;
+}
+
+/* In a picker, aria-selected means "already picked": the check says so, and the wash stays for the active row. */
+.ayy-record-picker__option[aria-selected="true"] {
+  background-color: transparent;
+}
+
+.ayy-record-picker__option[data-active="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-record-picker__option[aria-selected="true"]::after {
+  content: "";
+  flex: none;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  margin-inline-start: auto;
+  background-color: currentColor;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.ayy-record-picker__option-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+}
+
+.ayy-record-picker__option-label,
+.ayy-record-picker__description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-record-picker__description {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+}
+
+/* The row that turns the typed text into a new record. */
+.ayy-record-picker__create {
+  color: var(--ayy-color-text-soft);
+}
+
+/* The create row is part of the arrow-key list, so it shows the same active wash as a record. */
+.ayy-record-picker__create[data-active="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-record-picker__create-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-record-picker__empty {
+  justify-content: center;
+}
+
+@media (forced-colors: active) {
+  .ayy-record-picker__option[aria-selected="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-record-picker__option[data-active="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-record-picker__create[data-active="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-record-picker__option[aria-selected="true"]::after {
+    forced-color-adjust: none;
+  }
+  .ayy-record-picker__clear {
+    color: CanvasText;
+  }
+  .ayy-record-picker__clear:disabled {
+    color: GrayText;
+  }
+}
+
+/* <ayy-record-picker> only adds behaviour; it has no box of its own. */
+ayy-record-picker {
+  display: contents;
+}

@@ -99,12 +99,12 @@ export const CATEGORIES = {
     (the preview sidebar sorts each category alphabetically). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
   "button", "hover-actions", "toolbar", "action-bar", "menu", "command", "fab",
-  "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc",
-  "field", "input", "search-bar", "filter-bar", "sorting", "textarea", "select", "combobox", "tag-input", "date-time-picker", "color-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "dropzone", "switch", "shortcut", "settings",
+  "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc", "tree",
+  "field", "input", "search-bar", "filter-bar", "sorting", "textarea", "inline-edit", "select", "combobox", "tag-input", "record-picker", "date-time-picker", "color-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "dropzone", "switch", "shortcut", "settings",
   "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator", "drag-drop",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
-  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
+  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "property-list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
 ];
 
 /** Screens built from several components that every app should build the same way. Each is rendered into the manifest
@@ -361,6 +361,6 @@ export const RULES = [
   "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
   "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
   "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
+  "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
   "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.",
 ];

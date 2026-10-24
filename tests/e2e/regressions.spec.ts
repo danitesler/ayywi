@@ -534,6 +534,36 @@ test.describe("data", () => {
   });
 });
 
+test.describe("tree", () => {
+  test("React Tree follows external selected and expanded ids", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { Tree } from "ayywi";
+      const nodes = [
+        { id: "projects", label: "Projects", children: [{ id: "q4", label: "Q4 launch" }] },
+        { id: "team", label: "Team" },
+      ];
+      function App() {
+        const [expanded, setExpanded] = useState(["projects"]);
+        const [selected, setSelected] = useState("q4");
+        return (
+          <div>
+            <button type="button" onClick={() => setSelected("team")}>Select Team</button>
+            <button type="button" onClick={() => setExpanded([])}>Collapse all</button>
+            <Tree label="Folders" nodes={nodes} expandedIds={expanded} onExpandedChange={setExpanded} selectedId={selected} onSelectedChange={(id) => setSelected(id ?? "")} />
+          </div>
+        );
+      }`,
+    );
+    const tree = page.getByRole("tree", { name: "Folders" });
+    await page.getByRole("button", { name: "Select Team" }).click();
+    await expect(tree.getByRole("treeitem", { name: "Team", exact: true })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("button", { name: "Collapse all" }).click();
+    await expect(tree.getByRole("treeitem", { name: "Projects", exact: true })).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
 test.describe("focus rings", () => {
   // WebKit (Safari, Tauri on macOS) never focuses a button on click, so focus that script moves afterwards (a dialog
   // opening, focus going back to the opener) matches :focus-visible and drew a ring after mouse use. Chromium matches
@@ -611,5 +641,145 @@ export default function App() {
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
     expect(await page.locator(":focus").evaluate((el) => getComputedStyle(el).outlineColor)).not.toBe(transparent);
+  });
+});
+
+test.describe("inline edit", () => {
+  test("React InlineEdit shows displayValue and edits the raw value", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { InlineEdit } from "ayywi";
+      function App() {
+        const [value, setValue] = useState("2026-10-24");
+        const [year, month, day] = value.split("-").map(Number);
+        const display = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(year, month - 1, day));
+        return <InlineEdit label="Change the due date" value={value} onValueChange={setValue} displayValue={display} />;
+      }`,
+    );
+    const display = page.getByRole("button", { name: "Change the due date" });
+    await expect(display).toHaveText("24 Oct 2026");
+    await display.click();
+    const input = page.getByRole("textbox", { name: "Change the due date" });
+    await expect(input).toHaveValue("2026-10-24");
+    await input.fill("2026-11-01");
+    await input.press("Enter");
+    await expect(display).toHaveText("1 Nov 2026");
+  });
+
+  test("React InlineEdit follows a controlled value and can reject a change", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { InlineEdit } from "ayywi";
+      function App() {
+        const [value, setValue] = useState("1.4.0");
+        return (
+          <div>
+            <InlineEdit label="Change the version" value={value} onValueChange={(next) => { if (!next.endsWith("-rejected")) setValue(next); }} />
+            <button type="button" onClick={() => setValue("3.0.0")}>Set 3.0.0</button>
+          </div>
+        );
+      }`,
+    );
+    await page.getByRole("button", { name: "Change the version" }).click();
+    const input = page.getByRole("textbox", { name: "Change the version" });
+    await input.fill("2.0.0-rejected");
+    await input.press("Enter");
+    await expect(page.getByRole("button", { name: "Change the version" })).toHaveText("1.4.0");
+    await page.getByRole("button", { name: "Set 3.0.0" }).click();
+    await expect(page.getByRole("button", { name: "Change the version" })).toHaveText("3.0.0");
+  });
+
+  test("React InlineEdit mounted with defaultEditing opens on its value", async ({ page }) => {
+    const errors = await reactPage(
+      page,
+      `import { InlineEdit } from "ayywi";
+      function App() {
+        return <InlineEdit label="Rename the project" defaultValue="Q4 launch" defaultEditing onValueChange={(next) => window.__log.push(["change", next])} />;
+      }`,
+    );
+    const display = page.getByRole("button", { name: "Rename the project" });
+    const input = page.getByRole("textbox", { name: "Rename the project" });
+    await expect(input).toBeVisible();
+    await expect(input).toBeFocused();
+    await expect(input).toHaveValue("Q4 launch");
+    await input.press("Enter");
+    await expect(display).toHaveText("Q4 launch");
+    expect(await logs(page, "change")).toEqual([]);
+    expect(errors).toEqual([]);
+  });
+
+  test("React InlineEdit with a controlled editing prop opens on the current value", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { InlineEdit } from "ayywi";
+      function App() {
+        const [editing, setEditing] = useState(false);
+        const [value, setValue] = useState("1.4.0");
+        return (
+          <div>
+            <InlineEdit label="Change the version" value={value} editing={editing} onEditingChange={setEditing} onValueChange={(next) => { window.__log.push(["change", next]); if (!next.endsWith("-rejected")) setValue(next); }} />
+            <button type="button" onClick={() => setEditing(true)}>Start editing</button>
+          </div>
+        );
+      }`,
+    );
+    const display = page.getByRole("button", { name: "Change the version" });
+    const start = page.getByRole("button", { name: "Start editing" });
+    const input = page.getByRole("textbox", { name: "Change the version" });
+    await start.click();
+    await expect(input).toBeVisible();
+    await expect(input).toHaveValue("1.4.0");
+    await input.fill("2.0.0");
+    await input.press("Enter");
+    await expect(display).toHaveText("2.0.0");
+    await start.click();
+    await expect(input).toHaveValue("2.0.0");
+    await input.fill("3.0.0-rejected");
+    await input.press("Enter");
+    await expect(display).toHaveText("2.0.0");
+    expect(await logs(page, "change")).toEqual([["2.0.0"], ["3.0.0-rejected"]]);
+  });
+});
+
+test.describe("record picker", () => {
+  test("React RecordPicker follows a controlled value", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+    import { RecordPicker } from "ayywi";
+    const options = [
+      { id: "ada", label: "Ada Lovelace", description: "ada@example.com" },
+      { id: "grace", label: "Grace Hopper", description: "grace@example.com" },
+    ];
+    function App() {
+      const [value, setValue] = useState<string[]>([]);
+      return (
+        <div>
+          <button type="button" onClick={() => setValue(["grace"])}>Assign Grace</button>
+          <RecordPicker aria-label="Assignee" options={options} value={value} onValueChange={setValue} />
+        </div>
+      );
+    }`,
+    );
+    await page.getByRole("button", { name: "Assign Grace" }).click();
+    await expect(page.locator(".ayy-record-picker__tag")).toHaveText(["Grace Hopper"]);
+  });
+
+  test("React RecordPicker with clearable={false} keeps its chip and offers no Clear", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { RecordPicker } from "ayywi";
+    const options = [{ id: "ada", label: "Ada Lovelace" }];
+    function App() {
+      return <RecordPicker aria-label="Assignee" options={options} defaultValue={["ada"]} clearable={false} />;
+    }`,
+    );
+    await expect(page.locator(".ayy-record-picker__tag")).toHaveText(["Ada Lovelace"]);
+    await expect(page.getByRole("button", { name: "Clear" })).toHaveCount(0);
+    await page.getByRole("combobox", { name: "Assignee" }).click();
+    await expect(page.getByRole("option", { name: "Ada Lovelace" })).toHaveAttribute("aria-selected", "true");
   });
 });

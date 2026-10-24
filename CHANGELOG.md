@@ -11,6 +11,15 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Tree](#/tree)**
+  New component — a folder, file or record hierarchy with expandable groups, one selected row, arrow-key navigation and `<ayy-tree>`.
+- **[Property list](#/property-list)**
+  New component — a record's attributes as a definition list of muted terms and values, with a compact variant and a muted empty value.
+- **[Record picker](#/record-picker)**
+  New component — a tag field whose chips are records picked from a list, for one assignee or several labels, with filtering, a create row and `<ayy-record-picker>`.
+- **[Inline edit](#/inline-edit)**
+  New component — a value that becomes an input in place, saving on Enter, blur, or ⌘Enter in a growing textarea, with IME-safe Enter and a title variant.
+
 - **[Settings](#/settings)**
   Appearance settings had no picture picker or reusable appearance rows → added `SettingsPicker`, `SettingsOption` and `SettingsScreen` (`ayy-settings__picker`, `ayy-settings__option`, `ayy-settings__preview`, `ayy-settings__caption`, `ayy-settings__screen`) for visual options with miniature token-drawn app screens (including split light/dark for System), `data-motion="reduce"` for app-level reduced motion, a live `appearance` example at the bottom of the Settings page, and a contract rule to use them for theme, density, text size, brand colour, corners, font, motion, language, direction and reset.
 

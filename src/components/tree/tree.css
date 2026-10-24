@@ -1,0 +1,156 @@
+/* A tree of folders, files or records: a row per node with a chevron that opens its group, a selection wash and a
+   roving tab stop. Put it in <ayy-tree> or call connectTree() for expansion, selection and keyboard movement. */
+ayy-tree {
+  display: contents;
+}
+
+.ayy-tree,
+.ayy-tree__group {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ayy-tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  min-inline-size: 0;
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-control-text-md);
+}
+
+.ayy-tree__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+  padding-inline-start: var(--ayy-space-5);
+}
+
+.ayy-tree__group[hidden] {
+  display: none;
+}
+
+.ayy-tree__item {
+  min-inline-size: 0;
+}
+
+.ayy-tree__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-block-size: var(--ayy-size-control-md);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-2);
+  border-radius: var(--ayy-radius-sm);
+  cursor: pointer;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-tree__toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ayy-space-5);
+  block-size: var(--ayy-space-5);
+  border-radius: var(--ayy-radius-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-tree__toggle > svg {
+  transition: transform var(--ayy-duration-fast) var(--ayy-ease-out-expo);
+}
+
+/* The chevron points down for an open group in either direction: 90° clockwise in LTR, the mirror in RTL. */
+.ayy-tree__item[aria-expanded="true"] > .ayy-tree__row .ayy-tree__toggle > svg {
+  transform: rotate(calc(90deg * var(--_ayy-dir, 1)));
+}
+
+.ayy-tree__icon {
+  flex: none;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-tree__label {
+  flex: 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  line-height: var(--ayy-leading-snug);
+}
+
+@media (hover: hover) {
+  .ayy-tree__item:not([aria-disabled="true"]) > .ayy-tree__row:hover {
+    background-color: var(--ayy-color-wash);
+  }
+
+  .ayy-tree__item[aria-selected="true"] > .ayy-tree__row:hover {
+    background-color: var(--ayy-color-wash-hover);
+  }
+
+  .ayy-tree__item:not([aria-disabled="true"]) > .ayy-tree__row:hover .ayy-tree__toggle {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-tree__item[aria-selected="true"] > .ayy-tree__row {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-tree__item[aria-selected="true"] > .ayy-tree__row .ayy-tree__icon {
+  color: var(--ayy-color-text);
+}
+
+.ayy-tree__item:focus-visible > .ayy-tree__row {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+/* The ring is on the row, so trackInputModality()'s pointer-mode rule in focus.css can't reach it. */
+:root[data-ayy-input="pointer"] .ayy-tree__item:focus-visible > .ayy-tree__row {
+  outline-color: transparent;
+}
+
+.ayy-tree__item[aria-disabled="true"] > .ayy-tree__row {
+  opacity: var(--ayy-opacity-disabled);
+  color: var(--ayy-color-muted);
+  cursor: not-allowed;
+}
+
+.ayy-tree--compact {
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-tree--compact .ayy-tree__row {
+  min-block-size: var(--ayy-size-control-sm);
+  padding-block: var(--ayy-space-0-5);
+  gap: var(--ayy-space-1-5);
+}
+
+.ayy-tree--compact .ayy-tree__group {
+  padding-inline-start: var(--ayy-space-4);
+}
+
+.ayy-tree--compact .ayy-tree__toggle {
+  inline-size: var(--ayy-space-4);
+  block-size: var(--ayy-space-4);
+}
+
+@media (forced-colors: active) {
+  .ayy-tree__item[aria-selected="true"] > .ayy-tree__row {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .ayy-tree__item[aria-disabled="true"] > .ayy-tree__row {
+    color: GrayText;
+  }
+
+  .ayy-tree__toggle {
+    color: ButtonText;
+  }
+}

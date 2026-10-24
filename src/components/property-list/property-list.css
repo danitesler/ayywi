@@ -1,0 +1,75 @@
+/* Property list: a record's attributes as a definition list — a muted term (an icon and a label) and its value. Rows
+   wrap, so a value that doesn't fit moves under its term instead of overflowing. --compact tightens the padding and the
+   term's column for dense summaries; an empty value is a muted PropertyRow instead of a blank <dd>. */
+
+.ayy-property-list {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.ayy-property-list__row {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ayy-space-1) var(--ayy-space-4);
+  min-inline-size: 0;
+  padding-block: var(--ayy-space-3);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-s);
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-property-list__term {
+  display: flex;
+  flex: 0 1 8rem;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-property-list__label {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.ayy-property-list__icon {
+  flex: none;
+  inline-size: var(--ayy-size-icon-sm);
+  block-size: var(--ayy-size-icon-sm);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-property-list__value {
+  flex: 1 1 10rem;
+  min-inline-size: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--ayy-color-text);
+}
+
+.ayy-property-list__empty {
+  color: var(--ayy-color-muted);
+}
+
+.ayy-property-list--compact .ayy-property-list__row {
+  padding-block: var(--ayy-space-1-5);
+}
+
+.ayy-property-list--compact .ayy-property-list__term {
+  flex-basis: 7rem;
+}
+
+@media (forced-colors: active) {
+  .ayy-property-list__term,
+  .ayy-property-list__icon {
+    color: CanvasText;
+  }
+  .ayy-property-list__empty {
+    color: GrayText;
+  }
+}

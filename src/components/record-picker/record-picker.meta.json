@@ -1,0 +1,107 @@
+{
+  "name": "Record picker",
+  "slug": "record-picker",
+  "category": "Forms",
+  "description": "A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.",
+  "aka": ["record-picker", "record-select", "record-field", "people-picker", "assignee-picker", "entity-picker", "multi-select-picker"],
+  "classes": {
+    "ayy-record-picker": "Root: an ayy-tag-input and ayy-combobox holding the chips, the input, the clear button and the listbox.",
+    "ayy-record-picker--multiple": "Several records: chips wrap, and the list stays open after each pick (aria-multiselectable).",
+    "ayy-record-picker__tag": "One picked record, an .ayy-chip--removable.ayy-tag-input__tag <span data-value> with a named .ayy-chip__remove button; the label shrinks so the × stays inside.",
+    "ayy-record-picker__tag-label": "The record's name inside a chip: it shrinks and ellipsises when the name is longer than the field, instead of pushing the × out.",
+    "ayy-record-picker__input": "The borderless <input role=\"combobox\"> after the chips; the field's id, label and aria-describedby go on it.",
+    "ayy-record-picker__clear": "The icon button after the input that clears every chip, named by aria-label (\"Clear\"); hidden while nothing is picked.",
+    "ayy-record-picker__listbox": "The .ayy-combobox__listbox: records, the create row and the empty row. At least as wide as the field; at most 24rem unless the field is wider.",
+    "ayy-record-picker__option": "One record, an .ayy-combobox__option[role=\"option\"] with data-value, data-label and data-keywords. Active: data-active=\"true\"; picked: aria-selected=\"true\" and a check.",
+    "ayy-record-picker__option-body": "The two lines after the icon: name and description. Takes the row's leftover width.",
+    "ayy-record-picker__option-label": "The record's name, one line with an ellipsis.",
+    "ayy-record-picker__description": "The muted second line (an email, a role, a key), one line with an ellipsis.",
+    "ayy-record-picker__create": "The last option: \"Create “Maya”\" when creatable, the query isn't empty and no record matches exactly.",
+    "ayy-record-picker__create-label": "The create row's text, written by the controller from createLabel.",
+    "ayy-record-picker__empty": "The muted, centred row when nothing matches (\"No people\")."
+  },
+  "variants": {
+    "multiple": { "values": [false, true], "default": false },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
+  "states": {
+    "default": { "looks": "A Tag input wash field with the picked records as chips, a text box and the clear button; list closed." },
+    "hover": { "when": ".ayy-record-picker__clear:hover (hover devices) and a list option under the pointer", "looks": "The clear button gets a --ayy-color-wash-hover circle; an option gets Combobox's wash-hover." },
+    "pressed": { "none": "No pressed look; the picked chip is the feedback." },
+    "focus": { "when": ".ayy-record-picker__clear:focus-visible and the field's input", "looks": "2px --ayy-color-ring on the clear button, Tag input's ring around the field; each chip's × has its own." },
+    "disabled": { "when": "disabled on the input and on the chips' × and clear buttons", "looks": "Tag input dims the field to --ayy-opacity-disabled; the buttons dim too." },
+    "selected": { "when": "aria-selected=\"true\" on an .ayy-record-picker__option", "looks": "A check at the inline end, never colour alone. Picking it again removes it in multiple mode and replaces it in single." },
+    "error": { "when": "aria-invalid=\"true\" on the input", "looks": "Tag input's destructive border and focus ring; say why in a FieldError." },
+    "loading": { "none": "No loading look. With manual, show a Spinner or a \"Searching…\" row and call refresh()." },
+    "open": { "when": "input[aria-expanded=\"true\"]", "looks": "The listbox opens under the field. Once there's a query the first match is active and aria-activedescendant points at it; a focused or clicked field opens the full list with no row active." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Tag input's sm: at least --ayy-size-control-sm, sm text.",
+      "md": "Tag input's md: at least --ayy-size-control-md (32px compact, 40px comfortable, 44px touch).",
+      "lg": "Tag input's lg: at least --ayy-size-control-lg, more padding, lg text."
+    },
+    "density": "The field and chips follow data-density through Tag input; the clear button is as tall as the field's inner height, so the field keeps its size token.",
+    "width": "Fills its container; chips wrap in multiple mode. The listbox is at least the field's width, and no wider than 24rem unless the field is wider."
+  },
+  "js": "recordPickerClass({ multiple?, size?, className? }) → root classes; recordPickerChip(option, removeLabel?) → a chip with its × button; recordPickerClearIcon (SVG markup); defaultCreateLabel(label) → \"Create “Maya”\"; connectRecordPicker(root, { multiple?, creatable?, filter?, createLabel?, onSelect?, onCreate?, onRemoveLast?, onClear? }) → { open, close, refresh, destroy } wires plain markup (filtering, the active row, the create row, Escape, Backspace, clear and focus) and copies the input's aria-labelledby or aria-label onto an unnamed listbox. It never changes chips or aria-selected.",
+  "element": {
+    "tag": "ayy-record-picker",
+    "description": "Wraps an .ayy-record-picker and makes it work in plain HTML: it draws the chips, keeps aria-selected, one hidden input per picked id when name is set, and fires ayy-change. A created record gets a slug id and a chip; the app replaces the id from ayy-create. refresh() re-reads options a manual search replaced.",
+    "children": "An .ayy-record-picker with the picked records' chips, its input, the clear button and the .ayy-record-picker__listbox of .ayy-record-picker__option rows.",
+    "attributes": {
+      "multiple": "Pick several records; the list stays open after each pick.",
+      "creatable": "Offer a create row for the typed text when no record matches.",
+      "manual": "Don't filter: replace the options yourself (a search API), then call refresh().",
+      "name": "Form name: a hidden input per picked id carries it."
+    },
+    "events": {
+      "ayy-change": "{ ids, options: [{ id, label }] } — after every pick, removal and clear.",
+      "ayy-create": "{ id, label } — when the create row is picked; the chip already exists. Replace the slug id with the saved record's id."
+    }
+  },
+  "react": {
+    "import": "import { RecordPicker } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "RecordPicker": {
+        "renders": "<div class=\"ayy-record-picker ayy-tag-input ayy-combobox\"> chips + <input role=\"combobox\"> + clear button + <ul class=\"ayy-combobox__listbox\">; other props go on the input, className on the root",
+        "props": {
+          "options": "RecordPickerOption[] — id, label, description?, icon?, keywords?, disabled?",
+          "value / defaultValue": "string[] — the picked ids; value makes it controlled",
+          "onValueChange": "(ids: string[], options: RecordPickerOption[]) => void",
+          "multiple": "boolean — several records; the list stays open",
+          "creatable": "boolean — offer a create row",
+          "onCreate": "(label) => RecordPickerOption | void — return the new option to select it, or update options and value yourself",
+          "createLabel": "(label) => string — the create row's text. Default \"Create “<label>”\"",
+          "emptyText": "ReactNode — when nothing matches. Default \"No matches\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "name": "string — a hidden input per picked id",
+          "clearable": "boolean — show the clear button. Default true",
+          "clearLabel": "string — its name. Default \"Clear\"",
+          "removeLabel": "(option) => string — a chip's × name. Default \"Remove <label>\"",
+          "className": "string — on the root"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Label the input with <Label htmlFor> and aria-labelledby (or aria-label); the controller copies that name onto the listbox, so the list reads as \"Assignee\".",
+    "The input keeps focus: arrows move aria-activedescendant, Enter picks, Escape closes and clears the query, and the pointer never moves focus into the list.",
+    "In multiple mode the list is aria-multiselectable: picked records carry aria-selected and a check, and picking one again removes it.",
+    "Each chip's × is named \"Remove Ada Lovelace\", and Backspace in the empty field removes the last chip."
+  ],
+  "do": [
+    "Use it to attach records to something: an assignee, labels, projects, reviewers.",
+    "Give options a description when names repeat, and keywords for what people type (an email, a project key).",
+    "Turn on creatable only when a new record is allowed, and save it in onCreate so its id is the real one."
+  ],
+  "dont": [
+    "Don't use it for free text — use a Tag input for tags or recipients, or an Input for one value.",
+    "Don't use it for a short known list — use a Select, a Segmented control or a Combobox.",
+    "Don't rely on colour for picked rows; keep the check."
+  ],
+  "examples": [
+    { "id": "people", "title": "Assignee, one person" },
+    { "id": "labels", "title": "Labels, several and creatable" }
+  ]
+}

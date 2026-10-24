@@ -46,6 +46,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Pagination](llms/pagination.md): Controls for moving between the pages of a long table or list: previous, next and page numbers. On phones it shrinks to the essentials.
 - [Steps](llms/steps.md): A progress indicator for a short flow like sign-up or checkout. It shows which step you're on, which are done and which are still to come.
 - [Table of contents](llms/toc.md): A table of contents for long pages. It lists links to the sections beside the content and highlights the one being read.
+- [Tree](llms/tree.md): A hierarchical list of folders, files or records: groups that open and close with a chevron, one selected row and arrow-key navigation. Use it to browse a folder or file structure, or as a picker inside a card.
 
 ### Forms
 
@@ -55,9 +56,11 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Filter bar](llms/filter-bar.md): A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all.
 - [Sorting](llms/sorting.md): A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it.
 - [Textarea](llms/textarea.md): A multi-line text field for longer text like comments and descriptions. It can grow as you type.
+- [Inline edit](llms/inline-edit.md): A value that becomes an input where it sits: a page or card title, a project name, a version, a due date. Click it or press Enter to edit, Enter saves, Esc cancels, blur saves, and a multiline field grows as you type and saves on Mod+Enter.
 - [Select](llms/select.md): A dropdown for choosing one option from a list. It's the native select with a nicer list on desktop, and the system picker on touch devices.
 - [Combobox](llms/combobox.md): A text field that filters a list as you type, for picking one option from a long set like a city, a customer or a time zone. The options open under the field and follow the standard accessible pattern.
 - [Tag input](llms/tag-input.md): A field that turns what you type into removable chips, for tags, labels or email recipients. It can also suggest options as you type.
+- [Record picker](llms/record-picker.md): A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.
 - [Date & time picker](llms/date-time-picker.md): Pickers for a date, a date range, a time, or a date with a time. They work inline or in a popover, and can be used fully from the keyboard.
 - [Color picker](llms/color-picker.md): A panel for choosing any colour. It combines an area for shade and brightness, sliders for hue and transparency, a hex field and a row of preset colours.
 - [Checkbox](llms/checkbox.md): A box for turning an option on or off, or for picking several items from a list. It's the native checkbox with a clearer look, and it can show a mixed state when only some of a group is selected.
@@ -111,6 +114,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Icon tile](llms/icon-tile.md): A rounded app-icon tile that gives a product, plugin or service a recognisable mark, with the glyph tinted in its accent colour.
 - [Stat](llms/stat.md): A big number with a short label, for headline figures like downloads, views or revenue.
 - [List](llms/list.md): Rows of people, records or settings, each with an image or icon, a title, a description and something at the end like a value or a control. A row can be a link.
+- [Property list](llms/property-list.md): A record's attributes as a definition list: a muted term (an icon and a label) and its value, side by side, wrapping under each other when the value doesn't fit.
 - [Swipe actions](llms/swipe.md): A list row that slides sideways to reveal actions, the way phone mail and task apps do. It works with touch, mouse and keyboard, and follows the reading direction.
 - [Timeline](llms/timeline.md): A list of events in time order, like a history, a changelog or a project's milestones, joined by a vertical line with status markers and timestamps.
 - [Frame](llms/frame.md): A browser window drawn around a screenshot, a video or a demo, for showing a product in context on marketing pages and in docs.

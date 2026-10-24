@@ -53,6 +53,7 @@ export { Badge, type BadgeProps } from "../components/badge/badge.react";
 export { StatusDot, type StatusDotProps } from "../components/status-dot/status-dot.react";
 export { Input, type InputProps, InputGroup, InputGroupAddon, type InputGroupProps } from "../components/input/input.react";
 export { Textarea, type TextareaProps } from "../components/textarea/textarea.react";
+export { InlineEdit, type InlineEditProps } from "../components/inline-edit/inline-edit.react";
 export { Select, type SelectProps } from "../components/select/select.react";
 export { Checkbox, type CheckboxProps } from "../components/checkbox/checkbox.react";
 export { RadioGroup, Radio, type RadioGroupProps, type RadioProps } from "../components/radio/radio.react";
@@ -389,6 +390,7 @@ export {
 } from "../components/bottom-nav/bottom-nav.react";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
+export { Tree, type TreeProps, type TreeNode } from "../components/tree/tree.react";
 export { Separator, type SeparatorProps } from "../components/separator/separator.react";
 export { Carousel, CarouselSlide, type CarouselProps, type CarouselSlideProps } from "../components/carousel/carousel.react";
 export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";
@@ -430,6 +432,12 @@ export {
   type ListMetaProps,
   type ListLinkProps,
 } from "../components/list/list.react";
+export {
+  PropertyList,
+  PropertyRow,
+  type PropertyListProps,
+  type PropertyRowProps,
+} from "../components/property-list/property-list.react";
 export {
   EmptyState,
   EmptyStateTitle,
@@ -566,6 +574,7 @@ export {
 } from "../components/settings/settings.react";
 export { Command, CommandDialog, CommandGroup, CommandItem, type CommandProps, type CommandDialogProps, type CommandGroupProps, type CommandItemProps } from "../components/command/command.react";
 export { TagInput, type TagInputProps } from "../components/tag-input/tag-input.react";
+export { RecordPicker, type RecordPickerProps, type RecordPickerOption } from "../components/record-picker/record-picker.react";
 export { Fab, type FabProps } from "../components/fab/fab.react";
 export { TopBar, type TopBarProps } from "../components/top-bar/top-bar.react";
 export { SearchBar, type SearchBarProps } from "../components/search-bar/search-bar.react";
