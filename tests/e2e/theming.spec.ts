@@ -187,10 +187,12 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   const button = page.locator(".pv-theme[data-theme=\"light\"] .ayy-button").first();
   await expect(button).toHaveCSS("background-color", "rgb(220, 38, 38)");
   await expect(page.locator(".pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
+  await expect(page.locator(".pv-sidebar .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(220, 38, 38)");
   expect(await primary(".pv-theme[data-theme=\"light\"]")).not.toBe(before);
   await page.goto("/#/brand");
   await page.getByRole("button", { name: "Reset to default" }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await expect(page.locator(".pv-sidebar .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(255, 255, 255)");
   await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
 });
 

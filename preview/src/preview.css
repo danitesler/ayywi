@@ -94,6 +94,17 @@
   margin-block-end: var(--ayy-space-3);
 }
 
+/* The ring follows the brand. The word stays text colour so it keeps reading. */
+.pv-brand > .ayy-icon {
+  color: var(--ayy-color-primary);
+}
+
+@media (forced-colors: active) {
+  .pv-brand > .ayy-icon {
+    color: CanvasText;
+  }
+}
+
 
 
 /* Search: an icon button beside the brand; "/" or Ctrl/⌘K opens the field. */

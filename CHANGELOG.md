@@ -31,6 +31,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   Large control height was 40 / 48 / 52px (compact / comfortable / touch) → 36 / 44 / 48px (`--ayy-size-control-lg`).
 - **Preview**
   The Brand page's Scale had a line describing the steps → the line is gone.
+- **Preview**
+  The ayywi mark stayed the text colour when a brand was applied → it takes the brand colour, in the sidebar and the phone bar.
 - **[App shell](#/app-shell)**
   Examples started with the Big sidebar → they start with Medium (the component's default is still Big).
 - **Preview**
