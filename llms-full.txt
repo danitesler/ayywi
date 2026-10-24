@@ -4048,7 +4048,7 @@ Category: Data display. A record's attributes as a definition list: a muted term
 - `.ayy-property-list` — Root <dl>. Rows stack with no gap; the rows own the padding.
 - `.ayy-property-list--compact` — Tight rows: 6px block padding instead of 12px and a 7rem term basis instead of 8rem.
 - `.ayy-property-list__row` — The <div> that holds one <dt> and one <dd>: a wrapping flex row with the term at an 8rem basis and the value taking the rest.
-- `.ayy-property-list__term` — The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. It shrinks before the value does.
+- `.ayy-property-list__term` — The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. The term never grows; the value takes the remaining width.
 - `.ayy-property-list__label` — The label inside the term. Wraps inside the term's column.
 - `.ayy-property-list__icon` — An optional Icon before the label: 16px, muted, never shrinks. Decorative, so the label names the row.
 - `.ayy-property-list__value` — The <dd>: the value in --ayy-color-text. Long words wrap inside it (overflow-wrap: anywhere) instead of overflowing.

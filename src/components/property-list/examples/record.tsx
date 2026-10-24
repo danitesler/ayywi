@@ -6,7 +6,7 @@ import {
   TextIcon,
   UserIcon,
 } from "@hugeicons/core-free-icons";
-import { Avatar, Badge, Chip, ChipGroup, Icon, InlineEdit, PropertyList, PropertyRow } from "@danitesler/ayywi/react";
+import { Avatar, Badge, Icon, InlineEdit, PropertyList, PropertyRow } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -17,7 +17,7 @@ export default function Example() {
         </PropertyRow>
         <PropertyRow label="Owner" icon={<Icon icon={UserIcon} className="ayy-property-list__icon" />}>
           <span className="ayy-cluster">
-            <Avatar name="Maya Chen" size="sm" />
+            <Avatar name="Maya Chen" size="sm" aria-hidden="true" />
             Maya Chen
           </span>
         </PropertyRow>
@@ -25,17 +25,15 @@ export default function Example() {
           <InlineEdit label="Change the version" defaultValue="1.4.0" />
         </PropertyRow>
         <PropertyRow label="Due date" icon={<Icon icon={Calendar03Icon} className="ayy-property-list__icon" />}>
-          24 Nov 2026
+          <bdi>
+            <time dateTime="2026-11-24">24 Nov 2026</time>
+          </bdi>
         </PropertyRow>
         <PropertyRow label="Tags" icon={<Icon icon={Tag01Icon} className="ayy-property-list__icon" />}>
-          <ChipGroup aria-label="Tags">
-            <Chip name="tags" value="design" defaultChecked>
-              Design
-            </Chip>
-            <Chip name="tags" value="engineering" defaultChecked>
-              Engineering
-            </Chip>
-          </ChipGroup>
+          <span className="ayy-cluster">
+            <Badge variant="muted">Design</Badge>
+            <Badge variant="muted">Engineering</Badge>
+          </span>
         </PropertyRow>
         <PropertyRow label="Description" icon={<Icon icon={TextIcon} className="ayy-property-list__icon" />}>
           Averyveryverylongunbrokendescriptionoftheworkspacewithoutspaces.

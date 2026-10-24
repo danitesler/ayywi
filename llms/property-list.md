@@ -6,7 +6,7 @@ Category: Data display. A record's attributes as a definition list: a muted term
 - `.ayy-property-list` — Root <dl>. Rows stack with no gap; the rows own the padding.
 - `.ayy-property-list--compact` — Tight rows: 6px block padding instead of 12px and a 7rem term basis instead of 8rem.
 - `.ayy-property-list__row` — The <div> that holds one <dt> and one <dd>: a wrapping flex row with the term at an 8rem basis and the value taking the rest.
-- `.ayy-property-list__term` — The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. It shrinks before the value does.
+- `.ayy-property-list__term` — The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. The term never grows; the value takes the remaining width.
 - `.ayy-property-list__label` — The label inside the term. Wraps inside the term's column.
 - `.ayy-property-list__icon` — An optional Icon before the label: 16px, muted, never shrinks. Decorative, so the label names the row.
 - `.ayy-property-list__value` — The <dd>: the value in --ayy-color-text. Long words wrap inside it (overflow-wrap: anywhere) instead of overflowing.
@@ -14,7 +14,7 @@ Category: Data display. A record's attributes as a definition list: a muted term
 
 **States**
 - `default` — Muted, icon-led terms in an 8rem column and text-coloured values beside them, each row with 12px block padding and no hairline.
-- `hover` — doesn't apply: Rows aren't interactive; a value that is (an InlineEdit, a Chip) keeps its own hover.
+- `hover` — doesn't apply: Rows aren't interactive; a nested InlineEdit keeps its own hover.
 - `pressed` — doesn't apply: Rows aren't interactive; their nested controls keep their own pressed look.
 - `focus` — doesn't apply: Rows aren't focusable; their nested controls keep their focus rings.
 - `disabled` — doesn't apply: The list doesn't disable; disable the control in a value, or drop the row.
@@ -74,7 +74,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-property-list__label">Owner</span>
       </dt>
       <dd class="ayy-property-list__value">
-        <span class="ayy-cluster"><span role="img" aria-label="Maya Chen" class="ayy-avatar ayy-avatar--sm"><span class="ayy-avatar__fallback" aria-hidden="true">MC</span></span>Maya Chen</span>
+        <span class="ayy-cluster"><span role="img" aria-label="Maya Chen" class="ayy-avatar ayy-avatar--sm" aria-hidden="true"><span class="ayy-avatar__fallback" aria-hidden="true">MC</span></span>Maya Chen</span>
       </dd>
     </div>
     <div class="ayy-property-list__row">
@@ -97,7 +97,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-property-list__label">Due date</span>
       </dt>
       <dd class="ayy-property-list__value">
-        24 Nov 2026
+        <bdi><time datetime="2026-11-24">24 Nov 2026</time></bdi>
       </dd>
     </div>
     <div class="ayy-property-list__row">
@@ -106,10 +106,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-property-list__label">Tags</span>
       </dt>
       <dd class="ayy-property-list__value">
-        <div role="group" class="ayy-chip-group" aria-label="Tags">
-          <label class="ayy-chip"><input type="checkbox" name="tags" checked="" value="design"/>Design</label>
-          <label class="ayy-chip"><input type="checkbox" name="tags" checked="" value="engineering"/>Engineering</label>
-        </div>
+        <span class="ayy-cluster"><span class="ayy-badge ayy-badge--muted">Design</span><span class="ayy-badge ayy-badge--muted">Engineering</span></span>
       </dd>
     </div>
     <div class="ayy-property-list__row">
@@ -136,7 +133,7 @@ import {
   TextIcon,
   UserIcon,
 } from "@hugeicons/core-free-icons";
-import { Avatar, Badge, Chip, ChipGroup, Icon, InlineEdit, PropertyList, PropertyRow } from "@danitesler/ayywi/react";
+import { Avatar, Badge, Icon, InlineEdit, PropertyList, PropertyRow } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
@@ -147,7 +144,7 @@ export default function Example() {
         </PropertyRow>
         <PropertyRow label="Owner" icon={<Icon icon={UserIcon} className="ayy-property-list__icon" />}>
           <span className="ayy-cluster">
-            <Avatar name="Maya Chen" size="sm" />
+            <Avatar name="Maya Chen" size="sm" aria-hidden="true" />
             Maya Chen
           </span>
         </PropertyRow>
@@ -155,17 +152,15 @@ export default function Example() {
           <InlineEdit label="Change the version" defaultValue="1.4.0" />
         </PropertyRow>
         <PropertyRow label="Due date" icon={<Icon icon={Calendar03Icon} className="ayy-property-list__icon" />}>
-          24 Nov 2026
+          <bdi>
+            <time dateTime="2026-11-24">24 Nov 2026</time>
+          </bdi>
         </PropertyRow>
         <PropertyRow label="Tags" icon={<Icon icon={Tag01Icon} className="ayy-property-list__icon" />}>
-          <ChipGroup aria-label="Tags">
-            <Chip name="tags" value="design" defaultChecked>
-              Design
-            </Chip>
-            <Chip name="tags" value="engineering" defaultChecked>
-              Engineering
-            </Chip>
-          </ChipGroup>
+          <span className="ayy-cluster">
+            <Badge variant="muted">Design</Badge>
+            <Badge variant="muted">Engineering</Badge>
+          </span>
         </PropertyRow>
         <PropertyRow label="Description" icon={<Icon icon={TextIcon} className="ayy-property-list__icon" />}>
           Averyveryverylongunbrokendescriptionoftheworkspacewithoutspaces.
@@ -181,7 +176,8 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
-<!-- Compact: tighter rows and a shorter term column. An empty value reads "Not set" instead of leaving the <dd> blank. -->
+<!-- Compact: tighter rows and a shorter term column. An empty value reads its text (or a custom one) instead of
+     leaving the <dd> blank. -->
 <div style="inline-size: min(100%, 32rem)">
   <dl class="ayy-property-list ayy-property-list--compact">
     <div class="ayy-property-list__row">
@@ -200,6 +196,15 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       </dt>
       <dd class="ayy-property-list__value">
         eu-west-1
+      </dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term">
+        <svg class="ayy-icon ayy-property-list__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg>
+        <span class="ayy-property-list__label">Assignee</span>
+      </dt>
+      <dd class="ayy-property-list__value">
+        <span class="ayy-property-list__empty">Unassigned</span>
       </dd>
     </div>
     <div class="ayy-property-list__row">
@@ -227,7 +232,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { Clock01Icon, CodeIcon, Globe02Icon, ServerStack01Icon } from "@hugeicons/core-free-icons";
+import { Clock01Icon, CodeIcon, Globe02Icon, ServerStack01Icon, UserIcon } from "@hugeicons/core-free-icons";
 import { Icon, PropertyList, PropertyRow } from "@danitesler/ayywi/react";
 
 export default function Example() {
@@ -240,6 +245,7 @@ export default function Example() {
         <PropertyRow label="Region" icon={<Icon icon={Globe02Icon} className="ayy-property-list__icon" />}>
           eu-west-1
         </PropertyRow>
+        <PropertyRow label="Assignee" icon={<Icon icon={UserIcon} className="ayy-property-list__icon" />} empty emptyText="Unassigned" />
         <PropertyRow label="Updated" icon={<Icon icon={Clock01Icon} className="ayy-property-list__icon" />} empty />
         <PropertyRow label="Checksum" icon={<Icon icon={CodeIcon} className="ayy-property-list__icon" />}>
           sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
