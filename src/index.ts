@@ -41,6 +41,7 @@ export * from "./components/app-shell/app-shell";
 export * from "./components/bottom-nav/bottom-nav";
 export * from "./components/breadcrumb/breadcrumb";
 export * from "./components/toc/toc";
+export * from "./components/tree/tree";
 export * from "./components/separator/separator";
 export * from "./components/carousel/carousel";
 export * from "./components/icon-tile/icon-tile";

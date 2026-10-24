@@ -11,6 +11,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Tree](#/tree)**
+  New component — a folder, file or record hierarchy with expandable groups, one selected row, arrow-key navigation and `<ayy-tree>`.
 - **[Property list](#/property-list)**
   New component — a record's attributes as a definition list of muted terms and values, with a compact variant and a muted empty value.
 - **[Record picker](#/record-picker)**

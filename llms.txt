@@ -46,6 +46,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Pagination](llms/pagination.md): Previous, page numbers with gaps, and next, for a long table or list. On phones only previous, the current page and next stay.
 - [Steps](llms/steps.md): Where you are in a short flow (sign-up, checkout, import): numbered steps with the current one filled, the done ones ticked and the rest waiting. Pure CSS: aria-current="step" is the only state.
 - [Table of contents](llms/toc.md): On-page table of contents with a scrollspy: a rail of section links where the one you're reading gets an accent bar. Optional numbers, one level of nesting, sticky beside long content.
+- [Tree](llms/tree.md): A hierarchical list of folders, files or records: groups that open and close with a chevron, one selected row and arrow-key navigation. Use it to browse a folder or file structure, or as a picker inside a card.
 
 ### Forms
 

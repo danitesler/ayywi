@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -46,7 +46,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -523,7 +523,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 ## Components by category
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
-- **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents
+- **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
 - **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
@@ -1458,6 +1458,61 @@ Category: Navigation. On-page table of contents with a scrollspy: a rail of sect
 - Don't list every heading — sections and their direct sub-sections only.
 
 **Examples**: Numbered, beside the content. Copy-ready HTML and React in llms/toc.md.
+
+## Tree
+
+Category: Navigation. A hierarchical list of folders, files or records: groups that open and close with a chevron, one selected row and arrow-key navigation. Use it to browse a folder or file structure, or as a picker inside a card. Also called: tree, tree-view, file-tree, folder-tree, treeitem.
+
+**Classes**
+- `.ayy-tree` — Root <ul role="tree">. Its aria-label names it ("Folders"). <ayy-tree> wraps it with display: contents.
+- `.ayy-tree__item` — One <li role="treeitem">. Carries aria-level, aria-selected on every node, aria-expanded only on parents, and a roving tabindex: exactly one visible item is 0, the rest -1. aria-disabled="true" makes it unselectable.
+- `.ayy-tree__row` — The clickable row inside the item: toggle, optional icon and label. Hover and selected washes sit here, and so does the focus ring.
+- `.ayy-tree__toggle` — The decorative <span aria-hidden="true"> holding the chevron. Clicking it opens or closes the group without selecting the row; the treeitem's aria-expanded carries the state.
+- `.ayy-tree__icon` — An optional decorative icon before the label (an <svg class="ayy-icon ayy-tree__icon"> drawn by Icon or iconSvg). Muted, and text colour on the selected row.
+- `.ayy-tree__label` — The node's label. It takes the leftover width, wraps anywhere so a long unbroken name never scrolls the tree sideways, and is not the accessible name: the item's aria-label is.
+- `.ayy-tree__group` — A nested <ul role="group"> of child items, indented by --ayy-space-5 (--ayy-space-4 with --compact). Put hidden on it while its parent is aria-expanded="false"; connectTree keeps the two in step.
+- `.ayy-tree--compact` — Tighter rows at the sm control height, small control text, a 16px indent and a 16px toggle.
+
+**States**
+- `default` — Rows at the md control height, with a muted chevron and icon, the label in the text colour, and --ayy-space-0-5 between rows.
+- `hover` (`.ayy-tree__row:hover on a device that hovers`) — A --ayy-color-wash behind the row and, over the chevron, a --ayy-color-wash-hover and the text colour. A selected row keeps its stronger wash.
+- `focus` (`.ayy-tree__item:focus-visible`) — A 2px --ayy-color-ring outline on the row, inset by 2px. Hidden after pointer use by trackInputModality()'s pointer mode.
+- `disabled` (`aria-disabled="true" on the treeitem`) — --ayy-opacity-disabled and a not-allowed cursor; clicking selects and activates nothing. Forced colours: GrayText.
+- `selected` (`aria-selected="true" on the treeitem, set by a click, Space, or your selectedId`) — A --ayy-color-wash-hover behind the row, the text colour and a medium weight; its icon takes the text colour. Forced colours: a Highlight outline.
+- `expanded` (`aria-expanded="true" on a parent treeitem`) — Its group is not hidden and the chevron turns down: rotate(90deg) in LTR, the mirror in RTL (--_ayy-dir). The treeitem's aria-expanded, not the decorative toggle, carries the state.
+
+**Sizes**
+- Density — Rows are at least the md control height (32px compact, 40px comfortable, 44px touch) with --ayy-control-text-md; --compact uses the sm height (28, 32, 40) and --ayy-control-text-sm. The toggle is 20px (16px compact), so touch density keeps a comfortable target.
+- Width — Fills its container. Child groups indent by --ayy-space-5 (--ayy-space-4 compact) using padding-inline-start, so they indent from the right in RTL. Labels take the leftover width and wrap anywhere.
+
+**Custom element** `<ayy-tree>` (@danitesler/ayywi/elements) — Wraps the <ul role="tree"> and makes it work: the toggle opens and closes a group, a row selects, double-click or Enter activates, and the arrow keys, Home and End move the roving tab stop. focus(id) moves to a node from code.
+- event `ayy-select`: { id } — a row was clicked or Space was pressed on it.
+- event `ayy-activate`: { id } — a row was double-clicked or Enter was pressed on it (open the file or folder).
+- event `ayy-toggle`: { id, expanded } — a group was opened (true) or closed (false).
+
+**React** — `import { Tree, type TreeNode } from "@danitesler/ayywi/react";`
+- `<Tree>` renders <ul class="ayy-tree" role="tree" aria-label> with a <li class="ayy-tree__item" role="treeitem"> per node, a __row inside it, and a nested <ul class="ayy-tree__group" role="group" hidden> for children. Props: `label` string — accessible name of the tree ("Folders"); `nodes` TreeNode[] — { id: string; label: string; icon?: ReactNode; children?: TreeNode[]; disabled?: boolean }, nested in display order; `expandedIds / defaultExpandedIds` string[] — open group ids; expandedIds makes it controlled, defaultExpandedIds sets the starting ones; `onExpandedChange` (ids: string[]) => void — a group opened or closed; `selectedId / defaultSelectedId` string — the selected node; selectedId makes it controlled, defaultSelectedId sets the starting one; `onSelectedChange` (id: string | null) => void — a row was selected; `onActivate` (id: string) => void — a row was double-clicked or Enter was pressed; `compact` boolean — tighter rows, a smaller indent and the small control text
+
+**Accessibility**
+- The tree is a <ul role="tree"> with a name (label in React, aria-label in HTML); each node is a <li role="treeitem"> with aria-level, and children sit in a <ul role="group">.
+- aria-expanded is only on parents and aria-selected is on every node, so the state is announced rather than drawn only as a wash. The toggle is decorative (aria-hidden) and the item's aria-label is the node label, never the toggle.
+- One visible item has tabindex="0" and the rest -1 (a roving tab stop). Tab enters the tree on the selected node, then the arrow keys, Home and End move through the visible nodes: Right closes an open group or opens a closed one and steps into its first child, Left closes an open group or moves to the parent.
+- Enter activates a node and Space selects it. Double-click activates too. A composing IME and fields inside a row (a rename input) keep their keys.
+- aria-disabled="true" keeps a node readable and reachable by the keyboard while it refuses selection and activation; colour is backed by opacity and, in High Contrast, GrayText.
+- Long labels wrap inside the row instead of scrolling the tree sideways, and touch density raises the rows to the 44px target.
+
+**Do**
+- Use a tree to browse a nested structure: folders and files, a page hierarchy, categories or a project's contents.
+- Keep ids stable and pass them as expandedIds/selectedId when the rest of the screen shows the same folder (a picker in a card, a split view).
+- Pair the chevron with the label on the same row and let the label wrap; never truncate a folder name to make a narrow tree fit.
+
+**Don't**
+- Don't use a tree for a flat list — use List; for sections that collapse in place use Accordion.
+- Don't use it as the app's main navigation — use App shell or Navbar.
+- Don't pack several controls into a row: the tree ignores clicks inside a button, link or field, but the row's job is selection. Put a bigger set of actions in a detail pane or a menu outside the tree.
+- Don't nest more than four or five levels; show a breadcrumb or a detail pane instead.
+
+**Examples**: Project files, Choose a folder. Copy-ready HTML and React in llms/tree.md.
 
 ## Field
 

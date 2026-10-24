@@ -28,6 +28,7 @@ import { AyyTagInputElement } from "../components/tag-input/tag-input.element";
 import { AyyRecordPickerElement } from "../components/record-picker/record-picker.element";
 import { AyySwipeElement } from "../components/swipe/swipe.element";
 import { AyyTocElement } from "../components/toc/toc.element";
+import { AyyTreeElement } from "../components/tree/tree.element";
 import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { trackDropzones } from "../components/dropzone/dropzone";
 import { stepNumberField, syncNumberField } from "../components/number-field/number-field";
@@ -63,6 +64,7 @@ export {
   AyyTagInputElement,
   AyyTimePickerElement,
   AyyTocElement,
+  AyyTreeElement,
   AyyToolbarElement,
   AyyTooltipElement,
   copyCodeBlock,
@@ -192,6 +194,7 @@ export function defineElements(): void {
   define("ayy-popover", AyyPopoverElement);
   define("ayy-menu", AyyMenuElement);
   define("ayy-toc", AyyTocElement);
+  define("ayy-tree", AyyTreeElement);
   define("ayy-carousel", AyyCarouselElement);
   define("ayy-date-picker", AyyDatePickerElement);
   define("ayy-date-range", AyyDateRangeElement);

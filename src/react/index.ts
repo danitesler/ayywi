@@ -347,6 +347,7 @@ export {
 } from "../components/bottom-nav/bottom-nav.react";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../components/breadcrumb/breadcrumb.react";
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
+export { Tree, type TreeProps, type TreeNode } from "../components/tree/tree.react";
 export { Separator, type SeparatorProps } from "../components/separator/separator.react";
 export { Carousel, CarouselSlide, type CarouselProps, type CarouselSlideProps } from "../components/carousel/carousel.react";
 export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";

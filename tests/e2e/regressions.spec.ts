@@ -525,6 +525,36 @@ test.describe("data", () => {
   });
 });
 
+test.describe("tree", () => {
+  test("React Tree follows external selected and expanded ids", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { Tree } from "ayywi";
+      const nodes = [
+        { id: "projects", label: "Projects", children: [{ id: "q4", label: "Q4 launch" }] },
+        { id: "team", label: "Team" },
+      ];
+      function App() {
+        const [expanded, setExpanded] = useState(["projects"]);
+        const [selected, setSelected] = useState("q4");
+        return (
+          <div>
+            <button type="button" onClick={() => setSelected("team")}>Select Team</button>
+            <button type="button" onClick={() => setExpanded([])}>Collapse all</button>
+            <Tree label="Folders" nodes={nodes} expandedIds={expanded} onExpandedChange={setExpanded} selectedId={selected} onSelectedChange={(id) => setSelected(id ?? "")} />
+          </div>
+        );
+      }`,
+    );
+    const tree = page.getByRole("tree", { name: "Folders" });
+    await page.getByRole("button", { name: "Select Team" }).click();
+    await expect(tree.getByRole("treeitem", { name: "Team", exact: true })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("button", { name: "Collapse all" }).click();
+    await expect(tree.getByRole("treeitem", { name: "Projects", exact: true })).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
 test.describe("focus rings", () => {
   // WebKit (Safari, Tauri on macOS) never focuses a button on click, so focus that script moves afterwards (a dialog
   // opening, focus going back to the opener) matches :focus-visible and drew a ring after mouse use. Chromium matches

@@ -61,6 +61,7 @@
 @import "../components/pagination/pagination.css" layer(ayywi.components);
 @import "../components/steps/steps.css" layer(ayywi.components);
 @import "../components/toc/toc.css" layer(ayywi.components);
+@import "../components/tree/tree.css" layer(ayywi.components);
 @import "../components/tooltip/tooltip.css" layer(ayywi.components);
 @import "../components/hover-actions/hover-actions.css" layer(ayywi.components);
 @import "../components/toast/toast.css" layer(ayywi.components);
