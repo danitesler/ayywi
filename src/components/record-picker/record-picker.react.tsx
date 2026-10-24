@@ -95,6 +95,8 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
   });
 
   const commit = (next: string[], extra: RecordPickerOption[] = []) => {
+    const current = latest.current.ids;
+    if (next.length === current.length && next.every((id, index) => id === current[index])) return;
     if (value === undefined) setUncontrolled(next);
     const all = [...pool, ...extra];
     latest.current.onValueChange?.(
@@ -163,7 +165,7 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
     <div className={recordPickerClass({ multiple, size, className })}>
       {chosen.map((option) => (
         <span key={option.id} className="ayy-chip ayy-chip--removable ayy-tag-input__tag ayy-record-picker__tag" data-value={option.id}>
-          {option.label}
+          <span className="ayy-record-picker__tag-label">{option.label}</span>
           <button type="button" className="ayy-chip__remove" aria-label={removeLabel(option)} disabled={disabled} onClick={() => remove(option.id)}>
             <Icon icon={Cancel01Icon} />
           </button>
@@ -171,6 +173,7 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
       ))}
       <input
         ref={mergeRefs(ref, input)}
+        {...props}
         type="text"
         role="combobox"
         aria-autocomplete="list"
@@ -179,7 +182,6 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
         autoComplete="off"
         disabled={disabled}
         className="ayy-tag-input__input ayy-record-picker__input"
-        {...props}
       />
       {clearable && (
         <button type="button" className="ayy-record-picker__clear" aria-label={clearLabel} disabled={disabled}>

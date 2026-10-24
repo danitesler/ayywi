@@ -728,4 +728,19 @@ test.describe("record picker", () => {
     await page.getByRole("button", { name: "Assign Grace" }).click();
     await expect(page.locator(".ayy-record-picker__tag")).toHaveText(["Grace Hopper"]);
   });
+
+  test("React RecordPicker with clearable={false} keeps its chip and offers no Clear", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { RecordPicker } from "ayywi";
+    const options = [{ id: "ada", label: "Ada Lovelace" }];
+    function App() {
+      return <RecordPicker aria-label="Assignee" options={options} defaultValue={["ada"]} clearable={false} />;
+    }`,
+    );
+    await expect(page.locator(".ayy-record-picker__tag")).toHaveText(["Ada Lovelace"]);
+    await expect(page.getByRole("button", { name: "Clear" })).toHaveCount(0);
+    await page.getByRole("combobox", { name: "Assignee" }).click();
+    await expect(page.getByRole("option", { name: "Ada Lovelace" })).toHaveAttribute("aria-selected", "true");
+  });
 });

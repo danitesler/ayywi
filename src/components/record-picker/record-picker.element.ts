@@ -1,4 +1,4 @@
-import { ElementBase, emit } from "../../lib/element";
+import { ElementBase, emit, own } from "../../lib/element";
 import { comboboxOptionLabel } from "../combobox/combobox";
 import { connectRecordPicker, recordPickerChip, type RecordPickerController } from "./record-picker";
 
@@ -48,30 +48,42 @@ export class AyyRecordPickerElement extends ElementBase {
   /** Re-read the options after a manual search replaced them. */
   refresh(): void {
     this.#controller?.refresh();
+    this.#sync();
   }
 
   #chips(): HTMLElement[] {
-    return Array.from(this.querySelectorAll<HTMLElement>(".ayy-record-picker__tag"));
+    return own<HTMLElement>(this, ".ayy-record-picker__tag");
   }
 
   #options(): HTMLElement[] {
-    return Array.from(this.querySelectorAll<HTMLElement>(".ayy-record-picker__option"));
+    return own<HTMLElement>(this, ".ayy-record-picker__option");
   }
 
   #input(): HTMLInputElement | null {
     return this.#root?.querySelector<HTMLInputElement>(".ayy-record-picker__input") ?? null;
   }
 
+  #disabled(): boolean {
+    return this.#input()?.disabled ?? false;
+  }
+
   #picked(): PickedRecord[] {
     return this.#chips().map((chip) => ({ id: chip.dataset.value ?? "", label: chip.textContent?.trim() ?? "" }));
   }
 
-  /** The chips, the options' aria-selected and the form's hidden inputs, from the picked records. */
+  /** The chips, the options' aria-selected, the buttons' disabled state and the form's hidden inputs. */
   #sync(): void {
     const root = this.#root;
     if (!root) return;
     const ids = new Set(this.#picked().map((record) => record.id));
     for (const option of this.#options()) option.setAttribute("aria-selected", String(ids.has(option.dataset.value ?? "")));
+    const disabled = this.#disabled();
+    for (const chip of this.#chips()) {
+      const remove = chip.querySelector<HTMLButtonElement>(".ayy-chip__remove");
+      if (remove) remove.disabled = disabled;
+    }
+    const clear = root.querySelector<HTMLButtonElement>(".ayy-record-picker__clear");
+    if (clear) clear.disabled = disabled;
     if (this.#name) {
       for (const hidden of root.querySelectorAll('input[type="hidden"][data-record]')) hidden.remove();
       for (const id of ids) {
@@ -131,7 +143,7 @@ export class AyyRecordPickerElement extends ElementBase {
   }
 
   #clear(): void {
-    if (!this.#picked().length) return;
+    if (this.#disabled() || !this.#picked().length) return;
     this.#render([]);
     this.#change();
   }
@@ -148,6 +160,7 @@ export class AyyRecordPickerElement extends ElementBase {
 
   /** A chip's × removes that record; the controller owns the clear button and the list. */
   #onClick = (event: MouseEvent): void => {
+    if (this.#disabled()) return;
     const button = (event.target as Element | null)?.closest(".ayy-chip__remove");
     if (!button || !this.contains(button)) return;
     const chip = button.closest<HTMLElement>(".ayy-record-picker__tag");

@@ -26,7 +26,10 @@ export function recordPickerChip(option: { id: string; label: string }, removeLa
   const chip = document.createElement("span");
   chip.className = "ayy-chip ayy-chip--removable ayy-tag-input__tag ayy-record-picker__tag";
   chip.dataset.value = option.id;
-  chip.append(option.label);
+  const text = document.createElement("span");
+  text.className = "ayy-record-picker__tag-label";
+  text.textContent = option.label;
+  chip.append(text);
   const button = document.createElement("button");
   button.type = "button";
   button.className = "ayy-chip__remove";
@@ -258,6 +261,12 @@ export function connectRecordPicker(root: HTMLElement, options: RecordPickerOpti
     options.onClear?.();
     input.focus();
   };
+  // The field's empty space and a chip's body put the caret back in the input; its buttons and the list keep their own.
+  const onRootClick = (event: MouseEvent) => {
+    const target = event.target as Element | null;
+    if (!target || target.closest("button, input, .ayy-record-picker__listbox")) return;
+    input.focus();
+  };
 
   const clear = root.querySelector<HTMLElement>(".ayy-record-picker__clear");
   input.addEventListener("input", onInput);
@@ -267,6 +276,7 @@ export function connectRecordPicker(root: HTMLElement, options: RecordPickerOpti
   input.addEventListener("blur", onBlur);
   listbox.addEventListener("pointerdown", onPointerDown);
   listbox.addEventListener("click", onOptionClick);
+  root.addEventListener("click", onRootClick);
   clear?.addEventListener("click", onClickClear);
   applyFilter();
 
@@ -287,6 +297,7 @@ export function connectRecordPicker(root: HTMLElement, options: RecordPickerOpti
       input.removeEventListener("blur", onBlur);
       listbox.removeEventListener("pointerdown", onPointerDown);
       listbox.removeEventListener("click", onOptionClick);
+      root.removeEventListener("click", onRootClick);
       clear?.removeEventListener("click", onClickClear);
     },
   };

@@ -5,10 +5,11 @@ Category: Forms. A tag field whose chips are records picked from a list: one per
 **Classes**
 - `.ayy-record-picker` — Root: an ayy-tag-input and ayy-combobox holding the chips, the input, the clear button and the listbox.
 - `.ayy-record-picker--multiple` — Several records: chips wrap, and the list stays open after each pick (aria-multiselectable).
-- `.ayy-record-picker__tag` — One picked record, an .ayy-chip--removable.ayy-tag-input__tag <span data-value> with a named .ayy-chip__remove button; one line, clipped when too long.
+- `.ayy-record-picker__tag` — One picked record, an .ayy-chip--removable.ayy-tag-input__tag <span data-value> with a named .ayy-chip__remove button; the label shrinks so the × stays inside.
+- `.ayy-record-picker__tag-label` — The record's name inside a chip: it shrinks and ellipsises when the name is longer than the field, instead of pushing the × out.
 - `.ayy-record-picker__input` — The borderless <input role="combobox"> after the chips; the field's id, label and aria-describedby go on it.
 - `.ayy-record-picker__clear` — The icon button after the input that clears every chip, named by aria-label ("Clear"); hidden while nothing is picked.
-- `.ayy-record-picker__listbox` — The .ayy-combobox__listbox: records, the create row and the empty row. At least as wide as the field, at most 24rem.
+- `.ayy-record-picker__listbox` — The .ayy-combobox__listbox: records, the create row and the empty row. At least as wide as the field; at most 24rem unless the field is wider.
 - `.ayy-record-picker__option` — One record, an .ayy-combobox__option[role="option"] with data-value, data-label and data-keywords. Active: data-active="true"; picked: aria-selected="true" and a check.
 - `.ayy-record-picker__option-body` — The two lines after the icon: name and description. Takes the row's leftover width.
 - `.ayy-record-picker__option-label` — The record's name, one line with an ellipsis.
@@ -26,14 +27,14 @@ Category: Forms. A tag field whose chips are records picked from a list: one per
 - `selected` (`aria-selected="true" on an .ayy-record-picker__option`) — A check at the inline end, never colour alone. Picking it again removes it in multiple mode and replaces it in single.
 - `error` (`aria-invalid="true" on the input`) — Tag input's destructive border and focus ring; say why in a FieldError.
 - `loading` — doesn't apply: No loading look. With manual, show a Spinner or a "Searching…" row and call refresh().
-- `open` (`input[aria-expanded="true"]`) — The listbox opens under the field with the first match active and aria-activedescendant on the input.
+- `open` (`input[aria-expanded="true"]`) — The listbox opens under the field. Once there's a query the first match is active and aria-activedescendant points at it; a focused or clicked field opens the full list with no row active.
 
 **Sizes**
 - `sm` — Tag input's sm: at least --ayy-size-control-sm, sm text.
 - `md` (default) — Tag input's md: at least --ayy-size-control-md (32px compact, 40px comfortable, 44px touch).
 - `lg` — Tag input's lg: at least --ayy-size-control-lg, more padding, lg text.
-- Density — The field and chips follow data-density through Tag input; the clear button is --ayy-size-control-sm square and rows at least as high.
-- Width — Fills its container; chips wrap in multiple mode. The listbox matches the field's width, up to 24rem.
+- Density — The field and chips follow data-density through Tag input; the clear button is as tall as the field's inner height, so the field keeps its size token.
+- Width — Fills its container; chips wrap in multiple mode. The listbox is at least the field's width, and no wider than 24rem unless the field is wider.
 
 **Custom element** `<ayy-record-picker>` (@danitesler/ayywi/elements) — An .ayy-record-picker with the picked records' chips, its input, the clear button and the .ayy-record-picker__listbox of .ayy-record-picker__option rows.
 - attribute `multiple`: Pick several records; the list stays open after each pick.
@@ -47,7 +48,7 @@ Category: Forms. A tag field whose chips are records picked from a list: one per
 - `<RecordPicker>` renders <div class="ayy-record-picker ayy-tag-input ayy-combobox"> chips + <input role="combobox"> + clear button + <ul class="ayy-combobox__listbox">; other props go on the input, className on the root. Props: `options` RecordPickerOption[] — id, label, description?, icon?, keywords?, disabled?; `value / defaultValue` string[] — the picked ids; value makes it controlled; `onValueChange` (ids: string[], options: RecordPickerOption[]) => void; `multiple` boolean — several records; the list stays open; `creatable` boolean — offer a create row; `onCreate` (label) => RecordPickerOption | void — return the new option to select it, or update options and value yourself; `createLabel` (label) => string — the create row's text. Default "Create “<label>”"; `emptyText` ReactNode — when nothing matches. Default "No matches"; `size` "sm" | "md" | "lg"; `name` string — a hidden input per picked id; `clearable` boolean — show the clear button. Default true; `clearLabel` string — its name. Default "Clear"; `removeLabel` (option) => string — a chip's × name. Default "Remove <label>"; `className` string — on the root
 
 **Accessibility**
-- Label the input with <Label htmlFor> or aria-label; the listbox takes the same name, so it reads as "Assignee".
+- Label the input with <Label htmlFor> and aria-labelledby (or aria-label); the controller copies that name onto the listbox, so the list reads as "Assignee".
 - The input keeps focus: arrows move aria-activedescendant, Enter picks, Escape closes and clears the query, and the pointer never moves focus into the list.
 - In multiple mode the list is aria-multiselectable: picked records carry aria-selected and a check, and picking one again removes it.
 - Each chip's × is named "Remove Ada Lovelace", and Backspace in the empty field removes the last chip.

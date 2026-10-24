@@ -19,18 +19,28 @@
   white-space: nowrap;
 }
 
+/* The name, in its own box so a long one shrinks and the × stays inside the chip. */
+.ayy-record-picker__tag-label {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* A shorter basis than Tag input's, so the input and the clear button fit beside a chip. */
 .ayy-record-picker__input {
   flex: 1 0 4rem;
 }
 
-/* Clear every picked record. Hidden until there is one. */
+/* Clear every picked record. Hidden until there is one. As tall as the field's inner height, so it never makes the field
+   taller than its size token. */
 .ayy-record-picker__clear {
   display: inline-grid;
   flex: none;
   place-items: center;
-  inline-size: var(--ayy-size-control-sm);
-  block-size: var(--ayy-size-control-sm);
+  inline-size: calc(var(--ayy-size-control-md) - 2 * var(--_pad) - 2px);
+  block-size: calc(var(--ayy-size-control-md) - 2 * var(--_pad) - 2px);
   margin: 0;
   padding: 0;
   border: 0;
@@ -41,6 +51,16 @@
   transition:
     background-color var(--ayy-duration-fast) ease,
     color var(--ayy-duration-fast) ease;
+}
+
+.ayy-tag-input--sm > .ayy-record-picker__clear {
+  inline-size: calc(var(--ayy-size-control-sm) - 2 * var(--_pad) - 2px);
+  block-size: calc(var(--ayy-size-control-sm) - 2 * var(--_pad) - 2px);
+}
+
+.ayy-tag-input--lg > .ayy-record-picker__clear {
+  inline-size: calc(var(--ayy-size-control-lg) - 2 * var(--_pad) - 2px);
+  block-size: calc(var(--ayy-size-control-lg) - 2 * var(--_pad) - 2px);
 }
 
 .ayy-record-picker__clear > svg {
@@ -126,6 +146,11 @@
   color: var(--ayy-color-text-soft);
 }
 
+/* The create row is part of the arrow-key list, so it shows the same active wash as a record. */
+.ayy-record-picker__create[data-active="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
 .ayy-record-picker__create-label {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -143,6 +168,11 @@
     color: HighlightText;
   }
   .ayy-record-picker__option[data-active="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .ayy-record-picker__create[data-active="true"] {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
