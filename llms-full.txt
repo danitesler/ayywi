@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-combobox>, <ayy-tag-input>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -46,7 +46,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-inline-edit>, <ayy-swipe>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -524,7 +524,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents
-- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Select, Combobox, Tag input, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
+- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
@@ -1745,6 +1745,54 @@ Category: Forms. Multi-line text field. Optional auto-grow and monospace modes. 
 - Don't disable resize on non-autosize textareas; users need it.
 
 **Examples**: Basic, autosize, mono. Copy-ready HTML and React in llms/textarea.md.
+
+## Inline edit
+
+Category: Forms. A value that becomes an input where it sits: a page or card title, a project name, a version, a due date. Click it or press Enter to edit, Enter saves, Esc cancels, blur saves, and a multiline field grows as you type and saves on Mod+Enter. Also called: inline-edit, inline-editor, editable, click-to-edit, edit-in-place.
+
+**Classes**
+- `.ayy-inline-edit` — Root: a grid cell shared by the display button and the field, so swapping them never moves the content around it. Put the raw value in data-value.
+- `.ayy-inline-edit__display` — The value at rest, as a <button type="button"> named by aria-label ("Rename the project"). It is hidden while the field is open.
+- `.ayy-inline-edit__text` — The value inside the display button. It may be formatted (24 Oct 2026 while data-value is 2026-10-24); when empty, data-placeholder shows as muted text.
+- `.ayy-inline-edit__input` — The field: .ayy-input for one line or .ayy-textarea with rows="1" for more. Hidden until editing starts.
+- `.ayy-inline-edit--title` — Title variant: the display and the field take --ayy-font-heading at --ayy-text-xl, semibold.
+
+**States**
+- `default` — The value as plain text on a transparent button; a small wash appears on hover. The field is hidden in the same grid cell.
+- `hover` (`.ayy-inline-edit__display:hover (devices that hover)`) — A --ayy-color-wash behind the value, so it reads as editable. The field keeps Input's or Textarea's own hover border.
+- `focus` (`.ayy-inline-edit__display:focus-visible, and .ayy-inline-edit__input:focus-visible while editing`) — The display gets the 2px --ayy-color-ring outline at 2px offset; the field uses Input's or Textarea's own ring.
+- `disabled` (`disabled on the display button and the field`) — --ayy-opacity-disabled and a not-allowed cursor. Forced colours: GrayText.
+- `error` (`aria-invalid="true" on the field (passed through inputProps or textareaProps)`) — Input's or Textarea's destructive border and focus ring. Say why in a FieldError.
+- `editing` (`editing / defaultEditing, or a click or Enter on the display button`) — The display is hidden and the field takes the same grid cell, focused with all its text selected (caret at the end on a textarea). A textarea grows with its content.
+
+**Sizes**
+- Density — The field follows Input or Textarea: --ayy-size-control-md (32px compact, 40px comfortable, 44px touch) and --ayy-control-text-field. The title variant's --ayy-text-xl type stays the same at every density.
+- Width — Fills its container. The display text wraps long words, keeps the author's line breaks and never scrolls sideways; a multiline field grows to its content.
+
+**Custom element** `<ayy-inline-edit>` (@danitesler/ayywi/elements) — 
+- event `ayy-change`: { value } — after a commit, only when the value changed. Update any formatted display text from it.
+- event `ayy-edit`: { editing } — true when the field opens, false however it closes.
+
+**React** — `import { InlineEdit } from "@danitesler/ayywi/react";`
+- `<InlineEdit>` renders <div class="ayy-inline-edit" data-value> <button class="ayy-inline-edit__display"><span class="ayy-inline-edit__text"> + <input class="ayy-input ayy-inline-edit__input"> (or <textarea class="ayy-textarea ..." rows="1">). Props: `value / defaultValue` string — the raw value; value makes it controlled; `onValueChange` (value: string) => void — after a commit, only when the value changed; `label` string — the display button's and the field's aria-label, written as the action ("Rename the project"); `displayValue` ReactNode — what the display shows at rest; defaults to the value (a formatted date, a price); `placeholder` string — shown when the value is empty, in the display and in the field; `multiline` boolean — use a growing <textarea>; saves on ⌘Enter / Ctrl+Enter; `variant` "text" | "title"; `disabled` boolean — disables the display button and the field; `editing / defaultEditing` boolean — edit mode, controlled, or the starting one; `onEditingChange` (editing: boolean) => void — when edit mode starts or ends; `onCancel` () => void — Esc threw the draft away; `trim` boolean — trim the value on commit. Default true; `inputProps` props for the single-line <input> (id, aria-describedby, aria-invalid, autoComplete…); `textareaProps` props for the multiline <textarea> (rows, maxLength…); `className` string — on the root, never on the field
+
+**Accessibility**
+- The display is a real button and the field is a real input: give both the same aria-label (label in React), written as the action ("Rename the project"), and keep it when the value changes.
+- Enter saves, Esc cancels and puts focus back on the display button; blur and Tab save without pulling focus back.
+- Enter while an IME is composing is left to the IME, so a Japanese, Chinese or Korean word can be confirmed without saving.
+- The empty value shows the placeholder as text, not as the only name: the button keeps its aria-label.
+
+**Do**
+- Use inline edit for a short value people rename in place: a page title, a project or file name, a version, a due date.
+- Write the label as the action ("Rename the project"), and keep a formatted displayValue in React when the raw value isn't what people should read.
+- Keep the raw value in data-value (plain HTML) and format only the .ayy-inline-edit__text.
+
+**Don't**
+- Don't use it for long-form content or a value filled once in a form — use Field + Label with a Textarea or Input.
+- Don't put formatted text in data-value: the field edits the raw value, and the app rewrites the display from ayy-change.
+- Don't use it for a value that needs more than one field — open a Dialog or use Settings rows.
+
+**Examples**: Title, Description. Copy-ready HTML and React in llms/inline-edit.md.
 
 ## Select
 

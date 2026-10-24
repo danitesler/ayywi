@@ -15,6 +15,7 @@ import { AyyColorPickerElement } from "../components/color-picker/color-picker.e
 import { AyyComboboxElement } from "../components/combobox/combobox.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyGridElement } from "../components/grid/grid.element";
+import { AyyInlineEditElement } from "../components/inline-edit/inline-edit.element";
 import { AyyMenuElement } from "../components/menu/menu.element";
 import { AyyNavbarElement } from "../components/navbar/navbar.element";
 import { AyyPopoverElement } from "../components/popover/popover.element";
@@ -49,6 +50,7 @@ export {
   AyyDateTimePickerElement,
   AyyDialogElement,
   AyyGridElement,
+  AyyInlineEditElement,
   AyyMenuElement,
   AyyNavbarElement,
   AyyPopoverElement,
@@ -198,6 +200,7 @@ export function defineElements(): void {
   define("ayy-shortcut-recorder", AyyShortcutRecorderElement);
   define("ayy-command", AyyCommandElement);
   define("ayy-tag-input", AyyTagInputElement);
+  define("ayy-inline-edit", AyyInlineEditElement);
   define("ayy-swipe", AyySwipeElement);
   if (!spotlightListening && typeof document !== "undefined") {
     spotlightListening = true;

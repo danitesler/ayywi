@@ -11,6 +11,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Inline edit](#/inline-edit)**
+  New component — a value that becomes an input in place, saving on Enter, blur, or ⌘Enter in a growing textarea, with IME-safe Enter and a title variant.
 - **[App shell](#/app-shell)**
   Nav groups always showed their links → a group can collapse (`ayy-app-shell__group--collapsible`, `collapsible` on `AppShellGroup`), with a chevron that shows on hover.
 - **[App shell](#/app-shell)**

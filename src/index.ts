@@ -15,6 +15,7 @@ export * from "./components/badge/badge";
 export * from "./components/status-dot/status-dot";
 export * from "./components/input/input";
 export * from "./components/textarea/textarea";
+export * from "./components/inline-edit/inline-edit";
 export * from "./components/select/select";
 export * from "./components/checkbox/checkbox";
 export * from "./components/radio/radio";

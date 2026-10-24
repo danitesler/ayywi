@@ -604,3 +604,51 @@ export default function App() {
     expect(await page.locator(":focus").evaluate((el) => getComputedStyle(el).outlineColor)).not.toBe(transparent);
   });
 });
+
+test.describe("inline edit", () => {
+  test("React InlineEdit shows displayValue and edits the raw value", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { InlineEdit } from "ayywi";
+      function App() {
+        const [value, setValue] = useState("2026-10-24");
+        const [year, month, day] = value.split("-").map(Number);
+        const display = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(year, month - 1, day));
+        return <InlineEdit label="Change the due date" value={value} onValueChange={setValue} displayValue={display} />;
+      }`,
+    );
+    const display = page.getByRole("button", { name: "Change the due date" });
+    await expect(display).toHaveText("24 Oct 2026");
+    await display.click();
+    const input = page.getByRole("textbox", { name: "Change the due date" });
+    await expect(input).toHaveValue("2026-10-24");
+    await input.fill("2026-11-01");
+    await input.press("Enter");
+    await expect(display).toHaveText("1 Nov 2026");
+  });
+
+  test("React InlineEdit follows a controlled value and can reject a change", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { InlineEdit } from "ayywi";
+      function App() {
+        const [value, setValue] = useState("1.4.0");
+        return (
+          <div>
+            <InlineEdit label="Change the version" value={value} onValueChange={(next) => { if (!next.endsWith("-rejected")) setValue(next); }} />
+            <button type="button" onClick={() => setValue("3.0.0")}>Set 3.0.0</button>
+          </div>
+        );
+      }`,
+    );
+    await page.getByRole("button", { name: "Change the version" }).click();
+    const input = page.getByRole("textbox", { name: "Change the version" });
+    await input.fill("2.0.0-rejected");
+    await input.press("Enter");
+    await expect(page.getByRole("button", { name: "Change the version" })).toHaveText("1.4.0");
+    await page.getByRole("button", { name: "Set 3.0.0" }).click();
+    await expect(page.getByRole("button", { name: "Change the version" })).toHaveText("3.0.0");
+  });
+});

@@ -53,6 +53,7 @@ export { Badge, type BadgeProps } from "../components/badge/badge.react";
 export { StatusDot, type StatusDotProps } from "../components/status-dot/status-dot.react";
 export { Input, type InputProps, InputGroup, InputGroupAddon, type InputGroupProps } from "../components/input/input.react";
 export { Textarea, type TextareaProps } from "../components/textarea/textarea.react";
+export { InlineEdit, type InlineEditProps } from "../components/inline-edit/inline-edit.react";
 export { Select, type SelectProps } from "../components/select/select.react";
 export { Checkbox, type CheckboxProps } from "../components/checkbox/checkbox.react";
 export { RadioGroup, Radio, type RadioGroupProps, type RadioProps } from "../components/radio/radio.react";
