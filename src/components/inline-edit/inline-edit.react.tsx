@@ -74,7 +74,9 @@ export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function I
 ) {
   const [localValue, setLocalValue] = useState(defaultValue);
   const [localEditing, setLocalEditing] = useState(defaultEditing);
-  const [draft, setDraft] = useState("");
+  // null until the user types: the field shows `current` for a session that starts without start() (defaultEditing, a
+  // controlled editing prop), so it never opens empty.
+  const [draft, setDraft] = useState<string | null>(null);
   const field = useRef<FieldElement | null>(null);
   const display = useRef<HTMLButtonElement>(null);
   const refocusDisplay = useRef(false);
@@ -84,6 +86,8 @@ export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function I
 
   // Focusing a hidden field does nothing, so this waits for the swap, then puts the caret where the user expects it.
   useLayoutEffect(() => {
+    // A session that didn't start through start() (defaultEditing, a controlled editing prop) seeds itself from current.
+    setDraft(null);
     if (!editingNow) {
       if (refocusDisplay.current) {
         refocusDisplay.current = false;
@@ -104,7 +108,7 @@ export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function I
 
   const start = () => {
     if (disabled || editingNow) return;
-    setDraft(current);
+    setDraft(null);
     if (editing === undefined) setLocalEditing(true);
     onEditingChange?.(true);
   };
@@ -144,7 +148,7 @@ export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function I
   // Blur saves without pulling focus back, so Tab moves on. Closing the field also blurs it: ignore that one.
   const onFieldBlur = () => {
     if (!editingNow) return;
-    finish(field.current?.value ?? draft, false);
+    finish(field.current?.value ?? draft ?? current, false);
   };
 
   const setField = (el: FieldElement | null) => {
@@ -174,7 +178,7 @@ export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function I
           ref={setField}
           className="ayy-textarea ayy-inline-edit__input"
           rows={textareaProps?.rows ?? 1}
-          value={editingNow ? draft : current}
+          value={editingNow ? (draft ?? current) : current}
           hidden={!editingNow}
           aria-label={label}
           placeholder={placeholder}
@@ -194,7 +198,7 @@ export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function I
           {...inputProps}
           ref={setField}
           className="ayy-input ayy-inline-edit__input"
-          value={editingNow ? draft : current}
+          value={editingNow ? (draft ?? current) : current}
           hidden={!editingNow}
           aria-label={label}
           placeholder={placeholder}

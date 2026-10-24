@@ -651,4 +651,56 @@ test.describe("inline edit", () => {
     await page.getByRole("button", { name: "Set 3.0.0" }).click();
     await expect(page.getByRole("button", { name: "Change the version" })).toHaveText("3.0.0");
   });
+
+  test("React InlineEdit mounted with defaultEditing opens on its value", async ({ page }) => {
+    const errors = await reactPage(
+      page,
+      `import { InlineEdit } from "ayywi";
+      function App() {
+        return <InlineEdit label="Rename the project" defaultValue="Q4 launch" defaultEditing onValueChange={(next) => window.__log.push(["change", next])} />;
+      }`,
+    );
+    const display = page.getByRole("button", { name: "Rename the project" });
+    const input = page.getByRole("textbox", { name: "Rename the project" });
+    await expect(input).toBeVisible();
+    await expect(input).toBeFocused();
+    await expect(input).toHaveValue("Q4 launch");
+    await input.press("Enter");
+    await expect(display).toHaveText("Q4 launch");
+    expect(await logs(page, "change")).toEqual([]);
+    expect(errors).toEqual([]);
+  });
+
+  test("React InlineEdit with a controlled editing prop opens on the current value", async ({ page }) => {
+    await reactPage(
+      page,
+      `import { useState } from "react";
+      import { InlineEdit } from "ayywi";
+      function App() {
+        const [editing, setEditing] = useState(false);
+        const [value, setValue] = useState("1.4.0");
+        return (
+          <div>
+            <InlineEdit label="Change the version" value={value} editing={editing} onEditingChange={setEditing} onValueChange={(next) => { window.__log.push(["change", next]); if (!next.endsWith("-rejected")) setValue(next); }} />
+            <button type="button" onClick={() => setEditing(true)}>Start editing</button>
+          </div>
+        );
+      }`,
+    );
+    const display = page.getByRole("button", { name: "Change the version" });
+    const start = page.getByRole("button", { name: "Start editing" });
+    const input = page.getByRole("textbox", { name: "Change the version" });
+    await start.click();
+    await expect(input).toBeVisible();
+    await expect(input).toHaveValue("1.4.0");
+    await input.fill("2.0.0");
+    await input.press("Enter");
+    await expect(display).toHaveText("2.0.0");
+    await start.click();
+    await expect(input).toHaveValue("2.0.0");
+    await input.fill("3.0.0-rejected");
+    await input.press("Enter");
+    await expect(display).toHaveText("2.0.0");
+    expect(await logs(page, "change")).toEqual([["2.0.0"], ["3.0.0-rejected"]]);
+  });
 });

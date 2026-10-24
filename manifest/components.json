@@ -5684,7 +5684,7 @@
         "edit-in-place"
       ],
       "classes": {
-        "ayy-inline-edit": "Root: a grid cell shared by the display button and the field, so swapping them never moves the content around it. Put the raw value in data-value.",
+        "ayy-inline-edit": "Root: one grid cell shared by the display button and the field, both at least the control's height, so swapping them doesn't move the content for a one-line value. Put the raw value in data-value.",
         "ayy-inline-edit__display": "The value at rest, as a <button type=\"button\"> named by aria-label (\"Rename the project\"). It is hidden while the field is open.",
         "ayy-inline-edit__text": "The value inside the display button. It may be formatted (24 Oct 2026 while data-value is 2026-10-24); when empty, data-placeholder shows as muted text.",
         "ayy-inline-edit__input": "The field: .ayy-input for one line or .ayy-textarea with rows=\"1\" for more. Hidden until editing starts.",
@@ -5737,17 +5737,17 @@
         },
         "editing": {
           "when": "editing / defaultEditing, or a click or Enter on the display button",
-          "looks": "The display is hidden and the field takes the same grid cell, focused with all its text selected (caret at the end on a textarea). A textarea grows with its content."
+          "looks": "The display is hidden and the field takes the same grid cell at the control's height, focused with all its text selected (caret at the end on a textarea). A textarea then grows with its content."
         }
       },
       "sizes": {
-        "density": "The field follows Input or Textarea: --ayy-size-control-md (32px compact, 40px comfortable, 44px touch) and --ayy-control-text-field. The title variant's --ayy-text-xl type stays the same at every density.",
+        "density": "The display button and the field both keep --ayy-size-control-md (32px compact, 40px comfortable, 44px touch), so a one-line value doesn't move the row when an edit starts or ends; the field's text is --ayy-control-text-field. The title variant's --ayy-text-xl type stays the same at every density.",
         "width": "Fills its container. The display text wraps long words, keeps the author's line breaks and never scrolls sideways; a multiline field grows to its content."
       },
       "js": "inlineEditClass({ variant?, className? }) → root classes; inlineEditVariants; isComposingEvent(event) → true during IME composition; commitsOnEnter(event, multiline?) → whether that Enter saves; growInlineEdit(textarea) → size a textarea to its content; connectInlineEdit(root, { onCommit?, onCancel?, onEditingChange?, trim? }) → { start, commit, cancel, isEditing, destroy } wires plain markup.",
       "element": {
         "tag": "ayy-inline-edit",
-        "description": "Wraps an .ayy-inline-edit and makes it work: the display button opens the field, Enter saves (Mod+Enter in a textarea), Esc cancels and blur saves. The markup decides whether the field is an <input> or a <textarea>. A commit writes the value back to data-value and .ayy-inline-edit__text; an app showing formatted text listens for ayy-change and rewrites the text itself. startEditing(), commit() and cancel() drive it from code.",
+        "description": "Wraps an .ayy-inline-edit and makes it work: the display button opens the field, Enter saves (Mod+Enter in a textarea), Esc cancels and blur saves. The markup decides whether the field is an <input> or a <textarea>. A commit writes the value back to data-value and .ayy-inline-edit__text only when it changed; an app showing formatted text listens for ayy-change and rewrites the text itself. startEditing(), commit() and cancel() drive it from code.",
         "attributes": {},
         "events": {
           "ayy-change": "{ value } — after a commit, only when the value changed. Update any formatted display text from it.",

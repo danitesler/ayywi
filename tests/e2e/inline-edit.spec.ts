@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { example, open } from "./helpers";
 
+declare global {
+  interface Window {
+    __editorLog: unknown[][];
+  }
+}
+
 for (const renderer of ["react", "html"] as const) {
   test.describe(`inline edit (${renderer})`, () => {
     test("title: click edits, Enter commits, Esc cancels, blur commits and Tab moves on", async ({ page }) => {
@@ -98,4 +104,41 @@ test("RTL aligns the display text from the right", async ({ page }) => {
   await ex.evaluate((el) => el.setAttribute("dir", "rtl"));
   const rtlBox = await displayBox();
   expect(await left() - rtlBox.x).toBeGreaterThan(rtlBox.x + rtlBox.width - (await right()));
+});
+
+test("element: ayy-edit and ayy-change payloads, startEditing, commit and cancel", async ({ page }) => {
+  await open(page, "inline-edit", { renderer: "html" });
+  const ex = example(page, "title");
+  const editor = ex.locator("ayy-inline-edit");
+  const display = ex.getByRole("button", { name: "Rename the project" });
+  const input = ex.getByRole("textbox", { name: "Rename the project" });
+  await editor.evaluate((el) => {
+    window.__editorLog = [];
+    el.addEventListener("ayy-edit", (event) => window.__editorLog.push(["edit", (event as CustomEvent<{ editing: boolean }>).detail.editing]));
+    el.addEventListener("ayy-change", (event) => window.__editorLog.push(["change", (event as CustomEvent<{ value: string }>).detail.value]));
+  });
+
+  await editor.evaluate((el) => (el as unknown as { startEditing(): void }).startEditing());
+  await expect(input).toBeVisible();
+  await expect(input).toBeFocused();
+  await expect(input).toHaveValue("Q4 launch");
+  await input.fill("Q3 launch");
+  await editor.evaluate((el) => (el as unknown as { commit(): void }).commit());
+  await expect(display).toHaveText("Q3 launch");
+  await expect(display).toBeFocused();
+  expect(await editor.evaluate(() => window.__editorLog)).toEqual([["edit", true], ["change", "Q3 launch"], ["edit", false]]);
+
+  await editor.evaluate((el) => (el as unknown as { startEditing(): void }).startEditing());
+  await expect(input).toBeFocused();
+  await input.fill("Throw this away");
+  await editor.evaluate((el) => (el as unknown as { cancel(): void }).cancel());
+  await expect(display).toHaveText("Q3 launch");
+  await expect(display).toBeFocused();
+  expect(await editor.evaluate(() => window.__editorLog)).toEqual([
+    ["edit", true],
+    ["change", "Q3 launch"],
+    ["edit", false],
+    ["edit", true],
+    ["edit", false],
+  ]);
 });

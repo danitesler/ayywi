@@ -1,5 +1,5 @@
-/* A value that turns into an input in place. The display button and the field share one grid cell, so swapping
-   between them never moves the content around it. */
+/* A value that turns into an input in place. The display button and the field share one grid cell and at least the
+   control's height, so swapping them doesn't move the content for a one-line value. */
 .ayy-inline-edit {
   display: grid;
   min-inline-size: 0;
@@ -9,9 +9,11 @@
 .ayy-inline-edit__display {
   grid-area: 1 / 1;
   box-sizing: border-box;
-  display: block;
+  display: flex;
+  align-items: center;
   inline-size: 100%;
   min-inline-size: 0;
+  min-block-size: var(--ayy-size-control-md);
   margin: 0;
   padding-block: var(--ayy-space-0-5);
   padding-inline: var(--ayy-space-1);
@@ -67,9 +69,9 @@
   display: none;
 }
 
-/* Multiline: one row until it has to grow (the field's height follows its content). */
+/* Multiline: one control row until it has to grow (the field's height follows its content). */
 .ayy-inline-edit > textarea.ayy-inline-edit__input {
-  min-block-size: 0;
+  min-block-size: var(--ayy-size-control-md);
   padding-block: var(--ayy-space-1);
   resize: none;
   overflow: hidden;
@@ -85,6 +87,7 @@
 .ayy-inline-edit--title .ayy-inline-edit__input {
   block-size: auto;
   min-block-size: var(--ayy-size-control-md);
+  padding-block: var(--ayy-space-0-5);
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-xl);
   font-weight: var(--ayy-weight-semibold);

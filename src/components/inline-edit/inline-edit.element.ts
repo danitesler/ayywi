@@ -4,8 +4,9 @@ import { connectInlineEdit, type InlineEditController } from "./inline-edit";
 /**
  * <ayy-inline-edit> — wraps an .ayy-inline-edit: click the __display button to edit, Enter saves, Esc cancels, blur saves;
  * a <textarea> field saves on Mod+Enter and grows with its content. The markup decides the field, and the raw value stays
- * in data-value. The controller writes the committed value back to data-value and .ayy-inline-edit__text; an app showing
- * formatted text listens for "ayy-change" and rewrites the text. startEditing(), commit() and cancel() drive it from code.
+ * in data-value. The controller writes a committed value back to data-value and .ayy-inline-edit__text only when it
+ * changed; an app showing formatted text listens for "ayy-change" and rewrites the text. startEditing(), commit() and
+ * cancel() drive it from code.
  */
 export class AyyInlineEditElement extends ElementBase {
   #controller: InlineEditController | null = null;
