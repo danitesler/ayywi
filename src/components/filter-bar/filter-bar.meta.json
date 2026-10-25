@@ -2,6 +2,7 @@
   "name": "Filter bar",
   "slug": "filter-bar",
   "category": "Forms",
+  "family": "table",
   "description": "A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all.",
   "aka": ["filter-bar", "filterbar", "filters", "filter-toolbar", "filter-group", "filter-strip", "faceted-filter"],
   "classes": {

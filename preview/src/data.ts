@@ -5,6 +5,8 @@ export interface ComponentMeta {
   name: string;
   slug: string;
   category: string;
+  /** The component this one is a variation of; the Components sidebar nests it there. */
+  family?: string;
   description: string;
   aka?: string[];
   classes: Record<string, string>;
@@ -13,7 +15,7 @@ export interface ComponentMeta {
   sizes: { scale?: Record<string, string>; density: string; width: string };
   js?: string;
   react: { import: string; components: Record<string, { renders: string; props?: Record<string, string> }> };
-  element?: { tag: string };
+  element?: { tag: string; children?: string; attributes?: Record<string, string>; events?: Record<string, string> };
   elements?: NonNullable<ComponentMeta["element"]>[];
   a11y: string[];
   do: string[];
@@ -60,3 +62,9 @@ export const components: ComponentEntry[] = Object.values(metas)
 export const componentGroups: { category: string; description: string; components: ComponentEntry[] }[] = [
   ...new Set(components.map((c) => c.category)),
 ].map((category) => ({ category, description: CATEGORIES[category] ?? "", components: components.filter((c) => c.category === category) }));
+
+/** The Components sidebar: every component A–Z, each with the variations that name it as their family, A–Z too. */
+export const componentFamilies: { parent: ComponentEntry; children: ComponentEntry[] }[] = components
+  .filter((c) => !c.family)
+  .map((parent) => ({ parent, children: components.filter((c) => c.family === parent.slug).sort((a, b) => a.name.localeCompare(b.name)) }))
+  .sort((a, b) => a.parent.name.localeCompare(b.parent.name));

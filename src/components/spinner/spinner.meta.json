@@ -2,6 +2,7 @@
   "name": "Spinner",
   "slug": "spinner",
   "category": "Feedback",
+  "family": "progress",
   "description": "A small loading indicator for short waits, like inside a button or beside some text. For loading a larger area, use a skeleton instead.",
   "aka": ["spinner", "loader", "throbber", "loading-ring"],
   "classes": {

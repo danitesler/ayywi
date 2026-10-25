@@ -11,6 +11,13 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **Preview**
+  No home page → a home page at the site root: what ayywi is, a collage of live components, what themes, components, agent setup and the example apps offer, and a footer.
+- **Preview**
+  Components had no overview → `#/components` shows every component as a live card, grouped by category.
+- **Components**
+  No way to say one component is a variation of another → an optional `family` in a component's meta.json (Textarea, Number field, Search bar and Inline edit name Input); the preview nests them under it and `pnpm check` rejects a family that doesn't exist.
+
 - **[Tree](#/tree)**
   New component — a folder, file or record hierarchy with expandable groups, one selected row, arrow-key navigation and `<ayy-tree>`.
 - **[Property list](#/property-list)**
@@ -71,6 +78,18 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   One look and one density only → `spacious`, `bordered` (column lines), `sticky` (header and footer stay in view) and `fixed` (column widths from the header) join `compact`.
 
 ### Changed
+- **Preview**
+  One sidebar holding Start, Foundations and every component category → a header with Docs, Components, Examples and Themes tabs, search and appearance; Docs and Components each have their own sidebar, and old links like `#/button` or `#/colors` still open the same page.
+- **Preview**
+  Components were grouped by category in the sidebar → listed A–Z with a filter, each family opening to its members.
+- **Preview**
+  A component page was one scroll of examples and do's and don'ts → Overview, Properties and Accessibility tabs; Properties shows the React props, variants, states, sizes, classes and custom element attributes.
+- **Preview**
+  The Brand page under Foundations → a Themes tab that tries a colour, corners, fonts and theme on a live example app, and applies them to the site only on "Use this theme".
+- **Preview**
+  What you can build → an Examples tab with Apps and Websites filters.
+- **Preview**
+  The sidebar could collapse to a rail of icons → removed; the header carries the logo and search instead.
 - **[Table](#/table)**
   The playground's Filter bar with separate Status and Plan menus → three icon buttons next to search: Filters (Status, Plan), Sort (a column and direction) and Table options (Group by, Columns), with no chip bar under the toolbar.
 
@@ -114,6 +133,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Fixed
 
+- **[Dropdown menu](#/menu)**
+  A key pressed right after a submenu panel opened (an arrow into an Icon picker's grid) could be undone, focus jumping back to the panel's first field → focus stays where the key moved it.
 - **[Inline edit](#/inline-edit)**
   The text jumped a few pixels and changed size when you clicked a value to edit it → the field keeps the same padding, font and line height as the value, so the text stays where it was.
 - **[Drag and drop](#/drag-drop)**

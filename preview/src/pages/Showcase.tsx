@@ -1,16 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft01Icon, ComputerIcon, LinkSquare01Icon, SmartPhone01Icon, Tablet01Icon } from "@hugeicons/core-free-icons";
-import { Badge, buttonClass, Card, CardDescription, CardFooter, CardHeader, CardLink, CardMedia, Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
+import { Badge, buttonClass, Card, Chip, CardDescription, CardFooter, CardHeader, CardLink, CardMedia, Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
+import type { BrandInput, ThemeMode } from "@danitesler/ayywi";
 import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
 import { showcaseApps, type ShowcaseApp } from "../showcase/apps";
 import { themeOptions } from "../themes";
 
-const ROUTE = "apps";
+const ROUTE = "examples";
 
 export const showcaseAppsPage = {
   route: ROUTE,
-  title: "What you can build",
+  title: "Examples",
   text: `examples showcase templates apps screens prompt dashboard landing inbox settings tracker desktop tablet mobile ${showcaseApps.map((a) => `${a.name} ${a.kind}`).join(" ")}`,
 };
 export const showcase = showcaseAppsPage;
@@ -22,13 +23,24 @@ const DEVICES = {
 } as const;
 type Device = keyof typeof DEVICES;
 
+/** A theme and brand for the app inside a ScaledFrame (the Themes page), instead of its own. */
+export interface Look {
+  theme: ThemeMode;
+  brand: BrandInput | null;
+}
+
 const frameSrc = (app: ShowcaseApp) => `?app=${app.id}`;
 const themeLabel = (app: ShowcaseApp) => themeOptions.find((t) => t.name === app.theme)?.label ?? app.theme;
 const densityLabel = (app: ShowcaseApp) => app.density.charAt(0).toUpperCase() + app.density.slice(1);
 
 /** The app at a real device size, scaled down to fit its box. `maxHeight` caps tall devices so they fit the window. */
-export function ScaledFrame({ app, width, height, maxHeight, lazy, title }: { app: ShowcaseApp; width: number; height: number; maxHeight?: number; lazy?: boolean; title?: string }) {
+export function ScaledFrame({ app, width, height, maxHeight, lazy, title, look }: { app: ShowcaseApp; width: number; height: number; maxHeight?: number; lazy?: boolean; title?: string; look?: Look }) {
   const box = useRef<HTMLDivElement>(null);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const post = useCallback(() => {
+    if (look) frame.current?.contentWindow?.postMessage({ type: "ayywi-look", ...look }, window.location.origin);
+  }, [look]);
+  useEffect(post, [post]);
   const [available, setAvailable] = useState(width);
   useEffect(() => {
     const el = box.current;
@@ -43,6 +55,8 @@ export function ScaledFrame({ app, width, height, maxHeight, lazy, title }: { ap
     <div ref={box} className="pv-scaled" dir="ltr">
       <div className="pv-scaled__viewport" style={{ inlineSize: width * scale, blockSize: height * scale }}>
         <iframe
+          ref={frame}
+          onLoad={post}
           className="pv-scaled__frame"
           src={frameSrc(app)}
           title={title ?? `${app.name}, ${app.kind}`}
@@ -63,19 +77,44 @@ function Modes({ app }: { app: ShowcaseApp }) {
   );
 }
 
+type Group = "all" | "apps" | "sites";
+const GROUPS: { id: Group; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "apps", label: "Apps" },
+  { id: "sites", label: "Websites" },
+];
+/** A website has a Navbar; an app has the App shell. */
+const groupOf = (app: ShowcaseApp): Group => (app.uses.includes("navbar") ? "sites" : "apps");
+
 function Gallery() {
+  const [group, setGroup] = useState<Group>("all");
+  const shown = showcaseApps.filter((app) => group === "all" || groupOf(app) === group);
   return (
     <article className="pv-page">
-      <header className="pv-page__header">
-        <p className="ayy-eyebrow">Start</p>
-        <h1 className="ayy-h2">What you can build</h1>
+      <header className="pv-page__header pv-page__header--center">
+        <h1 className="ayy-h1">Examples</h1>
         <p className="ayy-lede">
-          Seven screens, ayywi only, each its own theme and density. Same frame: sidebar on desktop, bar and tabs on phones; navbar on
-          sites. Open one for desktop, tablet and mobile, plus its build prompt.
+          {showcaseApps.length} screens built with ayywi only, each in its own theme and density. Open one to see it at desktop, tablet and
+          phone sizes, with the prompt that builds it.
         </p>
+        <div className="ayy-cluster pv-filter" role="radiogroup" aria-label="Show">
+          {GROUPS.map((g) => (
+            <Chip
+              key={g.id}
+              type="radio"
+              name="pv-example-group"
+              value={g.id}
+              checked={group === g.id}
+              onCheckedChange={(on) => on && setGroup(g.id)}
+              count={g.id === "all" ? showcaseApps.length : showcaseApps.filter((a) => groupOf(a) === g.id).length}
+            >
+              {g.label}
+            </Chip>
+          ))}
+        </div>
       </header>
       <ul className="pv-showcase">
-        {showcaseApps.map((app) => (
+        {shown.map((app) => (
           <li key={app.id}>
             <Card interactive spotlight className="pv-showcase__card" aria-describedby={`sc-${app.id}-desc`}>
               <CardMedia className="pv-showcase__thumb">
@@ -165,7 +204,7 @@ function Detail({ app }: { app: ShowcaseApp }) {
       <h2 className="pv-h pv-h--section">Built with</h2>
       <nav className="ayy-cluster pv-links" aria-label={`Components in ${app.name}`}>
         {used.map((c) => (
-          <a key={c.slug} href={`#/${c.slug}`} className={buttonClass({ variant: "outline", size: "sm" })}>
+          <a key={c.slug} href={`#/components/${c.slug}`} className={buttonClass({ variant: "outline", size: "sm" })}>
             {c.name}
           </a>
         ))}

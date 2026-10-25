@@ -2,6 +2,7 @@
   "name": "Textarea",
   "slug": "textarea",
   "category": "Forms",
+  "family": "input",
   "description": "A multi-line text field for longer text like comments and descriptions. It can grow as you type.",
   "aka": ["textarea", "text-area"],
   "classes": {

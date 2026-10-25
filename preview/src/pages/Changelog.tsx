@@ -52,7 +52,7 @@ export function ChangelogPage() {
   return (
     <article className="pv-page">
       <header className="pv-page__header">
-        <p className="ayy-eyebrow">Overview</p>
+        <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">Changelog</h1>
         <p className="ayy-lede">What changed in each release. Renaming or removing a class, token or prop is a breaking change.</p>
       </header>

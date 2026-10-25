@@ -2,6 +2,7 @@
   "name": "Progress ring",
   "slug": "progress-ring",
   "category": "Feedback",
+  "family": "progress",
   "description": "Progress shown as a ring that fills up, for goals, timers and uploads in small spaces. It can show a known amount or an unknown one, with a value or an icon in the middle.",
   "aka": ["progress-ring", "circular-progress", "progress-circle", "radial-progress", "ring-progress", "timer-ring"],
   "classes": {

@@ -2,6 +2,7 @@
   "name": "Search bar",
   "slug": "search-bar",
   "category": "Forms",
+  "family": "input",
   "description": "A rounded search field with a magnifier and a clear button, often used at the top of a phone list. It's a real search form, so phones show a search key on the keyboard.",
   "aka": ["search-bar", "searchbar", "search", "search-box", "searchbox", "search-field"],
   "classes": {

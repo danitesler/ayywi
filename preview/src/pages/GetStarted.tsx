@@ -14,7 +14,7 @@ import { buildPrompt, headTags, links, QUICK_START, type Links } from "../prompt
 import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
 
-const ROUTE = "";
+const ROUTE = "get-started";
 
 type Setup = "package" | "files";
 
@@ -215,12 +215,10 @@ function CliGuide() {
 export function GetStartedPage(appearance: Appearance) {
   return (
     <article className="pv-page pv-page--compact">
-      <header className="pv-hero">
-        <div className="pv-hero__main">
-          <h1 className="ayy-display">ayywi</h1>
-          <p className="pv-tagline">Make your app look designed, in one paste</p>
-          <p className="ayy-lede">Paste one prompt; your AI asks the rest. Dark mode and phones included.</p>
-        </div>
+      <header className="pv-page__header">
+        <p className="ayy-eyebrow">Start</p>
+        <h1 className="ayy-h2">Get started</h1>
+        <p className="ayy-lede">Paste one prompt; your AI asks the rest. Dark mode and phones included.</p>
         <TryIt {...appearance} />
       </header>
 

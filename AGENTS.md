@@ -37,7 +37,8 @@ manifest/components.json    generated — full machine-readable context
 llms.txt, llms-full.txt     generated
 llms/<slug>.md              generated: one page per component
 ai/                         consumer kit (skill, AGENTS snippet, Cursor rule) — partly generated
-preview/                    Vite + React component browser (discovers components automatically), the showcase apps
+preview/                    Vite + React component browser (discovers components automatically): a header with Docs, Components,
+                            Examples and Themes tabs (routes in preview/src/routes.ts), a home page, the showcase apps
                             (preview/src/showcase/apps.tsx) and Get started (prompts in preview/src/prompts.ts); its build also
                             hosts dist/, the llms files, the AI kit, and each release's runtime files
                             under v/<release>/ (scripts/keep-versions.mjs carries the earlier ones over on every deploy)
@@ -103,7 +104,7 @@ When adding a component variation, extend an existing preview example whenever p
 - base.css's reduced-motion rule shortens durations, which scroll-driven animations (`animation-timeline`) ignore. Wrap them in `@media (prefers-reduced-motion: no-preference)` instead.
 - `light-dark()` only takes colours. To swap icons by scheme, switch their `color` between `currentColor` and `transparent`, and set `forced-color-adjust: none` so High Contrast doesn't paint both.
 - Playwright's `toBeEnabled()` treats `aria-disabled="true"` as disabled. To check a button is still focusable, read `el.disabled`.
-- The preview routes on the URL hash, so in-page anchors in examples (`href="#section"`) are intercepted in `preview/src/Example.tsx` and scrolled to instead.
+- The preview routes on the URL hash, so in-page anchors in examples (`href="#section"`) are intercepted in `preview/src/Example.tsx` and scrolled to instead. Pages live under a tab (`#/docs/colors`, `#/components/button/properties`, `#/examples/inbox`, `#/themes`); `canonical()` in `preview/src/routes.ts` rewrites older links (`#/button`, `#/colors/status`, `#/apps/inbox`, `#/brand`) in place, so keep it in step when a page moves.
 - Icons are Hugeicons (`@hugeicons/core-free-icons`): `<Icon>` in `.tsx`, the `iconSvg()` markup in `.html`, never a hand-drawn SVG. The few glyphs ayywi draws itself live in `src/lib/icons.ts` for zero runtime deps; `tests/node/icons.test.mjs` fails when they drift from the package.
 - `.ayy-dialog` is a flex column so `.ayy-dialog__body` can take the leftover height and scroll. Side modals animate `inset-inline-*`, not `transform`, so they slide from the correct edge in RTL.
 - Mirroring a glyph or a chart line in RTL has no logical property. `.ayy-icon--directional`, `.ayy-chart__svg` and `.ayy-sparkline` read `--_ayy-dir`, which `base.css` sets on `[dir="rtl"]` and `[dir="ltr"]`; custom properties inherit, so the nearest `dir` attribute wins, as with `dir` itself. Direction set only through CSS `direction` or `dir="auto"` isn't seen.

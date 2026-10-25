@@ -751,7 +751,8 @@ for (const renderer of ["react", "html"] as const) {
     test("menu: a split row's trailing button opens the item's own menu", async ({ page }) => {
       await open(page, "menu", { renderer });
       const ex = example(page, "actions");
-      await ex.getByRole("button", { name: "Project actions" }).click();
+      // Open from the keyboard: a pointer resting where the menu opens would move focus by hovering an item.
+      await ex.getByRole("button", { name: "Project actions" }).press("Enter");
       const menu = page.locator(".ayy-menu:not(.ayy-menu--sub)").filter({ hasText: "Archive project" });
       await expect(menu).toBeVisible();
 
@@ -937,7 +938,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(page.locator(".ayy-toaster .ayy-toast", { hasText: "Project restored" })).toBeVisible();
 
       // Open a modal, then toast from inside it: the toast must still be clickable.
-      await page.goto("/#/dialog");
+      await page.goto("/#/components/dialog");
       await stage(page).getByRole("button", { name: "Delete project" }).click();
       await page.evaluate(() => (window as unknown as { ayywi: { toast: (m: string, o: object) => void } }).ayywi.toast("Over modal", { action: { label: "Act", onClick: () => {} } }));
       const act = page.locator(".ayy-toast", { hasText: "Over modal" }).getByRole("button", { name: "Act" });
@@ -1093,7 +1094,7 @@ for (const renderer of ["react", "html"] as const) {
 
       await nav.getByRole("link", { name: /Tokens/ }).click();
       await expect(nav.getByRole("link", { name: "Tokens" })).toHaveAttribute("aria-current", "location");
-      await expect(page).toHaveURL(/#\/toc$/); // in-page links don't change the preview route
+      await expect(page).toHaveURL(/#\/components\/toc$/); // in-page links don't change the preview route
     });
 
     test("table of contents shows a sticky pill bar on phones that opens a menu", async ({ page }) => {
@@ -1313,8 +1314,9 @@ for (const renderer of ["react", "html"] as const) {
 
       const handle = table.getByRole("separator", { name: "Resize Last note" });
       const header = handle.locator("xpath=ancestor::th");
-      const before = await header.evaluate((el) => (el as HTMLElement).offsetWidth);
       await keyboardFocus(handle);
+      // Read the width just before the key: an auto-width table can still settle by a few pixels until then.
+      const before = await header.evaluate((el) => (el as HTMLElement).offsetWidth);
       await page.keyboard.press("ArrowRight");
       await expect.poll(() => header.evaluate((el) => (el as HTMLElement).offsetWidth)).toBe(before + 16);
       await expect(handle).toHaveAttribute("aria-valuenow", String(before + 16));
@@ -1394,18 +1396,19 @@ for (const renderer of ["react", "html"] as const) {
       await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(0);
 
       if (renderer === "react") {
-        // The filter bar's Status menu filters the rows by status
-        const filtersBtn = s.locator(".ayy-filter-bar").getByRole("button", { name: "Status" });
-        await filtersBtn.click();
-        const filtersMenu = s.locator(".ayy-menu:popover-open");
+        // Filters → Status filters the rows by status, the button says how many filters are on, and Reset filters clears them
+        await s.getByRole("button", { name: "Filters", exact: true }).click();
+        const filtersMenu = page.getByRole("menu", { name: "Filter options" });
         await expect(filtersMenu).toBeVisible();
-        await filtersMenu.getByRole("menuitemcheckbox", { name: "Trial" }).click();
+        await filtersMenu.getByRole("menuitem", { name: /Status/ }).click();
+        await page.getByRole("menu", { name: "Status options" }).getByRole("menuitemcheckbox", { name: /Trial/ }).click();
+        await page.keyboard.press("Escape");
         await page.keyboard.press("Escape");
         await expect(table.locator("tbody tr:not(.ayy-table__detail)")).toHaveCount(5);
-        // The applied filter shows as a chip; Clear all resets it
-        await expect(s.locator(".ayy-filter-bar .ayy-chip")).toHaveText("Status: Trial");
-        await s.locator(".ayy-filter-bar").getByRole("button", { name: "Clear all" }).click();
+        await s.getByRole("button", { name: "Filters (1 active)" }).click();
+        await filtersMenu.getByRole("menuitem", { name: "Reset filters" }).click();
         await expect(table.locator("tbody tr:not(.ayy-table__detail)")).toHaveCount(10);
+        await expect(s.getByRole("button", { name: "Filters", exact: true })).toBeVisible();
       }
     });
 

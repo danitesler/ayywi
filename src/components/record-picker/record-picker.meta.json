@@ -2,6 +2,7 @@
   "name": "Record picker",
   "slug": "record-picker",
   "category": "Forms",
+  "family": "tag-input",
   "description": "A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.",
   "aka": ["record-picker", "record-select", "record-field", "people-picker", "assignee-picker", "entity-picker", "multi-select-picker"],
   "classes": {

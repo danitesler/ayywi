@@ -2,6 +2,7 @@
   "name": "Floating action button",
   "slug": "fab",
   "category": "Actions",
+  "family": "button",
   "description": "A round floating button for the main action of a phone screen, like composing or adding something. It stays in the corner over the content and can show a label when extended.",
   "aka": ["fab", "floating-action", "floating-button", "float-button"],
   "classes": {

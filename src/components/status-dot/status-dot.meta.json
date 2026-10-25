@@ -2,6 +2,7 @@
   "name": "Status dot",
   "slug": "status-dot",
   "category": "Data display",
+  "family": "badge",
   "description": "A small coloured dot that shows the state of something, like someone being online, a live stream or a server's health.",
   "aka": ["status-dot", "status-indicator", "presence-dot", "live-dot", "health-dot"],
   "classes": {

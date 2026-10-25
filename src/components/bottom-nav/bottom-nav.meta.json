@@ -2,6 +2,7 @@
   "name": "Bottom nav",
   "slug": "bottom-nav",
   "category": "Navigation",
+  "family": "app-shell",
   "description": "The tab bar of a phone app. It keeps the main destinations at the bottom of the screen where a thumb can reach them, each with an icon and a short label. Inside an App shell it replaces the sidebar on phones.",
   "aka": ["bottom-nav", "tab-bar", "tabbar", "bottom-bar"],
   "classes": {

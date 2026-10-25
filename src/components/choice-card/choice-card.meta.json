@@ -2,6 +2,7 @@
   "name": "Choice card",
   "slug": "choice-card",
   "category": "Forms",
+  "family": "card",
   "description": "A large option for picking one or more things that need more explanation than a radio label, like plans, delivery methods or add-ons. The whole card is clickable and works as a normal radio or checkbox.",
   "aka": ["choice-card", "option-card", "plan-card"],
   "classes": {

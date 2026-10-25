@@ -96,7 +96,7 @@ export const CATEGORIES = {
 };
 
 /** Component order within a category (categories themselves follow CATEGORIES), for the manifest and llms*.txt
-    (the preview sidebar sorts each category alphabetically). Unlisted slugs sort last, alphabetically. */
+    (the preview's Components sidebar lists them A–Z, families nested). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
   "button", "hover-actions", "toolbar", "action-bar", "menu", "command", "fab",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc", "tree",

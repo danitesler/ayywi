@@ -2,6 +2,7 @@
   "name": "Swipe actions",
   "slug": "swipe",
   "category": "Data display",
+  "family": "list",
   "description": "A list row that slides sideways to reveal actions, the way phone mail and task apps do. It works with touch, mouse and keyboard, and follows the reading direction.",
   "aka": ["swipe", "swipe-row", "swipeable", "swipe-actions", "slide-actions"],
   "classes": {

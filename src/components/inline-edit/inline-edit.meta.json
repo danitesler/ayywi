@@ -2,6 +2,7 @@
   "name": "Inline edit",
   "slug": "inline-edit",
   "category": "Forms",
+  "family": "input",
   "description": "A value that becomes an input where it sits: a page or card title, a project name, a version, a due date. Click it or press Enter to edit, Enter saves, Esc cancels, blur saves, and a multiline field grows as you type and saves on Mod+Enter.",
   "aka": ["inline-edit", "inline-editor", "editable", "click-to-edit", "edit-in-place"],
   "classes": {

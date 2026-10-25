@@ -1,11 +1,10 @@
-import { useEffect, useState, type ComponentProps, type CSSProperties } from "react";
-import { ALargeSmallIcon, AppStoreIcon, ColorsIcon, Megaphone01Icon, Rocket01Icon, Moon02Icon, Search01Icon, Settings01Icon, SidebarLeftIcon, Sun03Icon } from "@hugeicons/core-free-icons";
+import { useEffect, useState, type ReactNode } from "react";
+import { GithubIcon, Search01Icon, SidebarLeftIcon } from "@hugeicons/core-free-icons";
 import {
   AppShell,
   AppShellBar,
-  AppShellBrand,
+  AppShellCollapse,
   AppShellGroup,
-  AppShellHead,
   AppShellItem,
   AppShellLink,
   AppShellMain,
@@ -13,49 +12,49 @@ import {
   AppShellSidebar,
   AppShellToggle,
   Button,
-  ColorPicker,
+  buttonClass,
   CommandDialog,
   CommandGroup,
   CommandItem,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-  TextHighlight,
   Icon,
   Kbd,
+  Navbar,
+  NavbarActions,
+  NavbarBrand,
+  NavbarLink,
+  NavbarNav,
+  NavbarToggle,
   SearchBar,
   Shortcut,
+  TextHighlight,
   Tooltip,
 } from "@danitesler/ayywi/react";
-import { commandMatches, type BrandInput, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
-import { brandPage, BrandPage, BRAND_PRESETS } from "./pages/Brand";
+import { commandMatches } from "@danitesler/ayywi";
+import { AppearanceMenu } from "./Appearance";
+import { componentFamilies, components, type ComponentEntry } from "./data";
+import { brandPage } from "./pages/Brand";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
-import { densityPage, DensityPage } from "./pages/Density";
-import { componentGroups, components } from "./data";
 import { ComponentPage } from "./pages/ComponentPage";
+import { ComponentsOverview } from "./pages/Components";
+import { densityPage, DensityPage } from "./pages/Density";
 import { foundations, foundationText } from "./pages/Foundations";
 import { getStarted, GetStartedPage } from "./pages/GetStarted";
+import { Landing, SiteFooter } from "./pages/Landing";
+import { NotFound } from "./pages/NotFound";
 import { showcase, ShowcasePage } from "./pages/Showcase";
-import { useHashRoute, useSettings, useSidebarCollapsed } from "./settings";
+import { ThemesPage } from "./pages/Themes";
+import { showcaseApps } from "./showcase/apps";
+import { GITHUB, TABS, useRoute } from "./routes";
+import { useSettings } from "./settings";
 
 
 interface NavItem {
+  /** The hash path, without "#/". */
   route: string;
   title: string;
   description?: string;
-  icon?: ComponentProps<typeof Icon>["icon"];
   /** Everything the search matches against. */
   text: string;
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
 }
 
 const FOUNDATION_DESCRIPTIONS: Record<string, string> = {
@@ -67,444 +66,314 @@ const FOUNDATION_DESCRIPTIONS: Record<string, string> = {
   density: "Compact, comfortable and touch scales across controls, text and padding",
 };
 
-const SECTIONS: NavSection[] = [
+const DOCS: { title: string; items: NavItem[] }[] = [
   {
     title: "Start",
     items: [
-      { route: getStarted.route, title: getStarted.title, description: "Interactive prompt generator and setup guide for AI tools", text: getStarted.text, icon: Rocket01Icon },
-      { route: showcase.route, title: showcase.title, description: "Full production app examples built with ayywi", text: showcase.text, icon: AppStoreIcon },
-      { route: changelogPage.route, title: changelogPage.title, description: "Release notes and design system updates", text: changelogPage.text, icon: Megaphone01Icon },
+      { route: "docs/get-started", title: getStarted.title, description: "Prompts and setup for AI tools, a codebase or by hand", text: getStarted.text },
+      { route: "docs/changelog", title: changelogPage.title, description: "Release notes and design system updates", text: changelogPage.text },
     ],
   },
   {
     title: "Foundations",
     items: [
-      { route: brandPage.route, title: brandPage.title, description: "Theme seed colours, corner radius presets and brand generator", text: brandPage.text },
-      { route: densityPage.route, title: densityPage.title, description: FOUNDATION_DESCRIPTIONS.density, text: densityPage.text },
-      ...foundations.map((f) => ({ route: f.route, title: f.title, description: FOUNDATION_DESCRIPTIONS[f.route] ?? f.keywords, text: foundationText(f) })),
+      ...foundations.map((f) => ({ route: `docs/${f.route}`, title: f.title, description: FOUNDATION_DESCRIPTIONS[f.route] ?? f.keywords, text: foundationText(f) })),
+      { route: "docs/density", title: densityPage.title, description: FOUNDATION_DESCRIPTIONS.density, text: densityPage.text },
     ],
   },
-  ...componentGroups.map((g) => ({
-    title: g.category,
-    items: g.components
-      .map((c) => ({
-        route: c.slug,
-        title: c.name,
-        description: c.description,
-        text: [
-          c.slug,
-          c.description,
-          ...(c.aka ?? []),
-          ...Object.keys(c.classes),
-          ...Object.keys(c.react.components),
-          c.element?.tag ?? "",
-          ...(c.elements?.map((e) => e.tag) ?? []),
-        ].join(" "),
-      }))
-      .sort((a, b) => a.title.localeCompare(b.title)),
-  })),
 ];
 
+const componentText = (c: ComponentEntry) =>
+  [c.slug, c.description, ...(c.aka ?? []), ...Object.keys(c.classes), ...Object.keys(c.react.components), c.element?.tag ?? "", ...(c.elements?.map((e) => e.tag) ?? [])].join(" ");
 
-const DENSITY_OPTIONS: [DensityMode, string][] = [
-  ["auto", "Auto"],
-  ["compact", "Compact"],
-  ["comfortable", "Comfortable"],
-  ["touch", "Touch"],
+/** Everything the search (Mod+E) finds, grouped the way the header is. */
+const SEARCH: { title: string; items: NavItem[] }[] = [
+  ...DOCS,
+  {
+    title: "Components",
+    items: [...components]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((c) => ({ route: `components/${c.slug}`, title: c.name, description: c.description, text: componentText(c) })),
+  },
+  {
+    title: "Examples",
+    items: showcaseApps.map((a) => ({ route: `examples/${a.id}`, title: `${a.name}, ${a.kind.toLowerCase()}`, description: a.description, text: `${showcase.text} ${a.description}` })),
+  },
+  { title: "Themes", items: [{ route: "themes", title: "Themes", description: "Brand colours, corners and fonts on a real app", text: brandPage.text }] },
 ];
 
-const THEME_OPTIONS: [ThemeMode, string][] = [
-  ["system", "System"],
-  ["dark", "Dark"],
-  ["dark-contrast", "Dark contrast"],
-  ["light", "Light"],
-  ["light-gray", "Light gray"],
-];
-
-interface AppearanceProps {
-  theme: ThemeMode;
-  setTheme: (v: ThemeMode) => void;
-  density: DensityMode;
-  setDensity: (v: DensityMode) => void;
-  brand: BrandInput | null;
-  setBrand: (v: BrandInput | null) => void;
+function Brand() {
+  return (
+    <NavbarBrand href="#/" className="pv-brand">
+      <svg className="ayy-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="3" />
+      </svg>
+      ayywi
+    </NavbarBrand>
+  );
 }
 
-/** Theme, density, brand and sidebar in one menu with submenu flyouts. Same control in the sidebar and the phone bar. */
-function AppearanceMenu({ theme, setTheme, density, setDensity, brand, setBrand }: AppearanceProps) {
-  const isCustom = Boolean(brand && !BRAND_PRESETS.some((p) => !p.isMono && p.name === brand.name));
-  const customHex = isCustom && /^#[0-9a-f]{6}$/i.test(brand?.color ?? "") ? brand!.color : "#0ea5e9";
-  const currentBrandKey = !brand || brand.name === "mono" ? "mono" : isCustom ? "custom" : brand.name;
-
-  const pickBrand = (name: string) => {
-    if (name === "mono" || name === "") {
-      setBrand(null);
-      return;
-    }
-    if (name === "custom") {
-      pickCustomColor(customHex);
-      return;
-    }
-    const preset = BRAND_PRESETS.find((p) => p.name === name);
-    if (preset) {
-      if (preset.isMono) {
-        setBrand(null);
-      } else {
-        setBrand({ name: preset.name, color: preset.color, shape: preset.shape });
-      }
-    }
-  };
-
-  const pickCustomColor = (color: string) => {
-    const hex = /^#[0-9a-f]{6}$/i.test(color) ? color : "#0ea5e9";
-    setBrand({ name: "custom", color: hex, shape: brand?.shape ?? "pill" });
-  };
-
-  const themeLabel = THEME_OPTIONS.find(([key]) => key === theme)?.[1] ?? theme;
-  const densityLabel = DENSITY_OPTIONS.find(([key]) => key === density)?.[1] ?? density;
-  const brandLabel = isCustom ? "Custom" : (BRAND_PRESETS.find((p) => p.name === currentBrandKey)?.label ?? "Mono");
-  const isLight = theme === "light" || theme === "light-gray";
-
+function DocsNav({ path }: { path: string }) {
+  const page = path.split("/").slice(0, 2).join("/");
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger variant="outline" size="icon" aria-label="Appearance" tooltipSide="bottom">
-        <Icon icon={Settings01Icon} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" aria-label="Appearance">
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={isLight ? Sun03Icon : Moon02Icon} />} value={themeLabel}>Theme</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={theme} onValueChange={(v) => setTheme(v as ThemeMode)}>
-              {THEME_OPTIONS.map(([key, text]) => (
-                <DropdownMenuRadioItem key={key} value={key}>
-                  {text}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={ALargeSmallIcon} />} value={densityLabel}>Density</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={density} onValueChange={(v) => setDensity(v as DensityMode)}>
-              {DENSITY_OPTIONS.map(([key, text]) => (
-                <DropdownMenuRadioItem key={key} value={key}>
-                  {text}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={ColorsIcon} />} value={brandLabel}>Brand</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={currentBrandKey} onValueChange={pickBrand}>
-              {BRAND_PRESETS.map((p) => (
-                <DropdownMenuRadioItem
-                  key={p.name}
-                  value={p.name}
-                  icon={<span className="ayy-swatch ayy-swatch--sm" style={{ "--ayy-swatch": p.color } as CSSProperties} />}
-                >
-                  {p.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger
-                selected={isCustom}
-                onClick={() => pickCustomColor(customHex)}
-                icon={<span className="ayy-swatch ayy-swatch--sm" style={{ "--ayy-swatch": customHex } as CSSProperties} />}
+    <AppShellNav id="pv-nav" className="pv-nav" aria-label="Docs">
+      {DOCS.map((s) => (
+        <AppShellGroup key={s.title} label={s.title}>
+          {s.items.map((item) => (
+            <AppShellItem key={item.route}>
+              <AppShellLink href={`#/${item.route}`} data-route={item.route} current={page === item.route}>
+                {item.title}
+              </AppShellLink>
+            </AppShellItem>
+          ))}
+        </AppShellGroup>
+      ))}
+    </AppShellNav>
+  );
+}
+
+/** Every component A–Z; a family (Input › Textarea, Number field…) opens to show its members. */
+function ComponentsNav({ slug }: { slug?: string }) {
+  const [filter, setFilter] = useState("");
+  const q = filter.trim();
+  const matches = (c: ComponentEntry) => !q || commandMatches(c.name, q) || (c.aka ?? []).some((a) => commandMatches(a, q));
+  const link = (c: ComponentEntry, sub?: boolean) => (
+    <AppShellItem key={c.slug}>
+      <AppShellLink href={`#/components/${c.slug}`} data-route={`components/${c.slug}`} current={c.slug === slug} sub={sub}>
+        {c.name}
+      </AppShellLink>
+    </AppShellItem>
+  );
+  const shown = componentFamilies
+    .map(({ parent, children }) => ({ parent, family: children.length > 0, members: [parent, ...children].filter(matches) }))
+    .filter((f) => f.members.length);
+  return (
+    <>
+      <div className="pv-sidebar__top">
+        <SearchBar size="md" placeholder="Filter components" label="Filter components" value={filter} onValueChange={setFilter} />
+      </div>
+      <AppShellNav id="pv-nav" className="pv-nav" aria-label="Components">
+        <ul className="ayy-app-shell__list" aria-label="All components">
+          {!q && (
+            <AppShellItem>
+              <AppShellLink href="#/components" data-route="components" current={!slug}>
+                Overview
+              </AppShellLink>
+            </AppShellItem>
+          )}
+          {shown.map(({ parent, family, members }) =>
+            !family ? (
+              link(parent)
+            ) : (
+              <AppShellItem key={parent.slug}>
+                <AppShellCollapse label={parent.name} open={Boolean(q) || members.some((c) => c.slug === slug) || undefined}>
+                  {members.map((c) => link(c, true))}
+                </AppShellCollapse>
+              </AppShellItem>
+            ),
+          )}
+        </ul>
+        {!shown.length && <p className="pv-note pv-nav__empty">No component called “{q}”.</p>}
+      </AppShellNav>
+    </>
+  );
+}
+
+/** Keep the current link in view: centre it when it's outside the sidebar's visible part. */
+function useRevealCurrent(path: string) {
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const sidebar = document.querySelector<HTMLElement>(".pv-sidebar");
+      const link = sidebar?.querySelector<HTMLElement>('#pv-nav [aria-current="page"]');
+      if (!sidebar || !link) return;
+      const top = sidebar.querySelector<HTMLElement>(".pv-sidebar__top")?.offsetHeight ?? 0;
+      const s = sidebar.getBoundingClientRect();
+      const l = link.getBoundingClientRect();
+      if (l.top >= s.top + top && l.bottom <= s.bottom) return;
+      sidebar.scrollTop += l.top - s.top - top - (sidebar.clientHeight - top - l.height) / 2;
+    });
+    return () => cancelAnimationFrame(id);
+  }, [path]);
+}
+
+function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const [query, setQuery] = useState("");
+  const q = query.trim();
+  return (
+    <CommandDialog
+      open={open}
+      onOpenChange={(next) => {
+        onOpenChange(next);
+        if (!next) setQuery("");
+      }}
+      onSearchChange={setQuery}
+      shortcut="Mod+E"
+      label="Search the docs"
+      placeholder="Search components, docs and examples…"
+      onRun={(route) => {
+        if (route === undefined) return;
+        window.location.hash = `#/${route}`;
+        onOpenChange(false);
+        setQuery("");
+      }}
+      footer={
+        <>
+          <span>
+            <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move
+          </span>
+          <span>
+            <Kbd>↵</Kbd> to select
+          </span>
+          <span>
+            <Kbd>esc</Kbd> to close
+          </span>
+        </>
+      }
+    >
+      {SEARCH.map((section) => (
+        <CommandGroup key={section.title} heading={section.title}>
+          {section.items.map((item) => {
+            const showDescription = Boolean(q && item.description && !commandMatches(item.title, q) && commandMatches(item.description, q));
+            return (
+              <CommandItem
+                key={item.route}
+                value={item.route}
+                keywords={item.text}
+                description={showDescription ? <TextHighlight text={item.description!} query={query} /> : undefined}
+                meta={section.title}
               >
-                Custom
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent style={{ padding: "var(--ayy-space-2)" }}>
-                <ColorPicker
-                  value={customHex}
-                  onValueChange={pickCustomColor}
-                  swatches={BRAND_PRESETS.filter((p) => !p.isMono).map((p) => p.color)}
-                />
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                {q ? <TextHighlight text={item.title} query={query} /> : item.title}
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      ))}
+    </CommandDialog>
   );
 }
 
 export function App() {
-  const raw = useHashRoute();
-  const route = raw === "tokens" ? "colors" : raw === "get-started" ? "" : raw; // old links
-  const [page, part] = route.split("/");
-  const { theme, setTheme, density, setDensity, brand, setBrand, renderer } = useSettings();
-  const component = components.find((c) => c.slug === route);
-  const foundation = foundations.find((f) => f.route === page);
-
-  // #/colors/status → the Colors page, scrolled to its Status section.
-  useEffect(() => {
-    if (part) document.getElementById(`${page}-${part}`)?.scrollIntoView({ block: "start" });
-  }, [page, part]);
-
-  const [commandOpen, setCommandOpen] = useState(false);
-  const [commandQuery, setCommandQuery] = useState("");
-  const [collapsed, setCollapsed] = useSidebarCollapsed();
+  const { path, route } = useRoute();
+  const settings = useSettings();
+  const { theme, setTheme, density, setDensity, brand, setBrand, renderer } = settings;
   const appearance = { theme, setTheme, density, setDensity, brand, setBrand };
+  const [searchOpen, setSearchOpen] = useState(false);
+  const tab = route.tab;
+  useRevealCurrent(path);
 
-  const scrollNavTo = (targetRoute: string) => {
-    const base = targetRoute.split("/")[0] ?? targetRoute;
-    const linkEl =
-      document.querySelector<HTMLElement>(`#pv-nav [data-route="${CSS.escape(base)}"]`) ??
-      document.querySelector<HTMLElement>(`#pv-nav a[href="#/${base}"]`);
-    if (!linkEl) return;
+  // #/docs/colors/status → the Colors page, scrolled to its Status section.
+  const part = route.tab === "docs" ? route.part : undefined;
+  const docPage = route.tab === "docs" ? route.page : undefined;
+  useEffect(() => {
+    if (docPage && part) document.getElementById(`${docPage}-${part}`)?.scrollIntoView({ block: "start" });
+  }, [docPage, part]);
 
-    const sidebar = document.querySelector<HTMLElement>(".pv-sidebar");
-    if (!sidebar) return;
+  const component = route.tab === "components" && route.slug ? components.find((c) => c.slug === route.slug) : undefined;
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const topBar = sidebar.querySelector<HTMLElement>(".pv-sidebar__top");
-    const topOffset = topBar ? topBar.offsetHeight : 0;
-    const visibleHeight = sidebar.clientHeight - topOffset;
-    const visibleCenter = topOffset + visibleHeight / 2;
-
-    const linkRect = linkEl.getBoundingClientRect();
-    const sidebarRect = sidebar.getBoundingClientRect();
-    const relativeLinkTop = linkRect.top - sidebarRect.top;
-    const linkCenter = relativeLinkTop + linkEl.offsetHeight / 2;
-    const delta = linkCenter - visibleCenter;
-
-    const maxScroll = Math.max(0, sidebar.scrollHeight - sidebar.clientHeight);
-    const targetTop = Math.max(0, Math.min(sidebar.scrollTop + delta, maxScroll));
-
-    if (prefersReduced) {
-      sidebar.scrollTop = targetTop;
-      return;
+  let page: ReactNode;
+  let sidebar: ReactNode = null;
+  let title = "";
+  switch (route.tab) {
+    case "home":
+      page = <Landing onSearch={() => setSearchOpen(true)} />;
+      break;
+    case "docs": {
+      const foundation = foundations.find((f) => f.route === route.page);
+      sidebar = <DocsNav path={path} />;
+      title = DOCS.flatMap((s) => s.items).find((i) => i.route === `docs/${route.page}`)?.title ?? "Docs";
+      page =
+        route.page === "changelog" ? (
+          <ChangelogPage />
+        ) : route.page === "density" ? (
+          <DensityPage density={density} setDensity={setDensity} />
+        ) : foundation ? (
+          <foundation.Page key={foundation.route} />
+        ) : (
+          <GetStartedPage theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+        );
+      break;
     }
+    case "components":
+      sidebar = <ComponentsNav slug={route.slug} />;
+      title = component?.name ?? "Components";
+      page = component ? <ComponentPage key={component.slug} component={component} view={route.view} renderer={renderer} /> : <ComponentsOverview />;
+      break;
+    case "examples":
+      page = <ShowcasePage id={route.id} />;
+      break;
+    case "themes":
+      page = <ThemesPage current={brand} onUse={setBrand} theme={theme} setTheme={setTheme} />;
+      break;
+    case "missing":
+      page = <NotFound path={route.path} />;
+      break;
+  }
 
-    const startTop = sidebar.scrollTop;
-    const distance = targetTop - startTop;
-    if (Math.abs(distance) < 2) return;
-
-    const duration = Math.min(550, Math.max(350, Math.round(Math.abs(distance) * 0.4)));
-    const startTime = performance.now();
-    const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-    let rafId: number;
-    const onUserInterrupt = () => {
-      cancelAnimationFrame(rafId);
-      sidebar.removeEventListener("wheel", onUserInterrupt);
-      sidebar.removeEventListener("touchmove", onUserInterrupt);
-    };
-
-    sidebar.addEventListener("wheel", onUserInterrupt, { passive: true });
-    sidebar.addEventListener("touchmove", onUserInterrupt, { passive: true });
-
-    const step = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      sidebar.scrollTop = startTop + distance * easeInOutCubic(progress);
-
-      if (progress < 1) {
-        rafId = requestAnimationFrame(step);
-      } else {
-        sidebar.removeEventListener("wheel", onUserInterrupt);
-        sidebar.removeEventListener("touchmove", onUserInterrupt);
-      }
-    };
-
-    rafId = requestAnimationFrame(step);
-  };
-
-  const link = (item: NavItem) => {
-    const current = page === item.route;
-    return (
-      <AppShellLink
-        href={`#/${item.route}`}
-        data-route={item.route}
-        className="pv-nav__link"
-        current={current}
-        aria-current={current ? "page" : undefined}
-      >
-        {item.icon && <Icon icon={item.icon} />}
-        {item.title}
-      </AppShellLink>
-    );
-  };
+  const header = (
+    <Navbar className="pv-header">
+      <Brand />
+      <NavbarNav aria-label="Site" className="pv-header__nav">
+        {TABS.map((t) => (
+          <NavbarLink key={t.tab} href={t.href} current={tab === t.tab}>
+            {t.label}
+          </NavbarLink>
+        ))}
+      </NavbarNav>
+      <NavbarActions className="pv-header__actions">
+        <Tooltip
+          side="bottom"
+          content={
+            <>
+              Search <Shortcut keys="Mod+E" />
+            </>
+          }
+        >
+          <Button variant="ghost" size="icon" aria-label="Search" aria-haspopup="dialog" aria-expanded={searchOpen} tooltip={false} onClick={() => setSearchOpen(true)}>
+            <Icon icon={Search01Icon} />
+          </Button>
+        </Tooltip>
+        <AppearanceMenu {...appearance} />
+        <Tooltip side="bottom" content="GitHub">
+          <a className={buttonClass({ variant: "ghost", size: "icon", className: "pv-header__github" })} href={GITHUB} target="_blank" rel="noreferrer" aria-label="ayywi on GitHub">
+            <Icon icon={GithubIcon} />
+          </a>
+        </Tooltip>
+        <a className={buttonClass({ size: "sm", className: "pv-header__start" })} href="#/docs/get-started">
+          Get started
+        </a>
+      </NavbarActions>
+      <NavbarToggle aria-label="Menu" />
+    </Navbar>
+  );
 
   return (
-    <AppShell className="pv-shell" size="md" collapsed={collapsed} onCollapseChange={setCollapsed}>
-      <AppShellBar className="pv-shell-bar">
-        <AppShellToggle aria-label="Open navigation" />
-        <AppShellBrand href="#/" className="pv-brand">
-          <svg className="ayy-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="3" />
-          </svg>
-          ayywi
-        </AppShellBrand>
-        <div className="pv-shell-bar__actions">
-          <AppearanceMenu {...appearance} />
-        </div>
-      </AppShellBar>
-      <AppShellSidebar className="pv-sidebar ayy-scroll">
-        <div className="pv-sidebar__top">
-          <AppShellHead className="pv-sidebar__head">
-            {/* The logo: in the rail only the mark shows, and resting the pointer on it swaps in the toggle, which expands the sidebar (the App shell default also previews it in full). */}
-            <AppShellBrand href="#/" className="pv-brand">
-              <svg className="ayy-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="3" />
-              </svg>
-              <span>ayywi</span>
-            </AppShellBrand>
-            <div className="pv-sidebar__actions">
-              {/* On phones the bar carries this menu. */}
-              <span className="pv-sidebar__appearance">
-                <AppearanceMenu {...appearance} />
-              </span>
-            </div>
-            <AppShellToggle
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="pv-sidebar__toggle"
-            >
+    <div className="pv-site" data-tab={tab}>
+      {header}
+      {sidebar ? (
+        <AppShell className="pv-shell" size="md">
+          <AppShellBar className="pv-shell-bar">
+            {/* A sidebar icon, so it isn't mistaken for the header's menu button beside it. */}
+            <AppShellToggle aria-label="Open navigation">
               <Icon icon={SidebarLeftIcon} directional />
             </AppShellToggle>
-          </AppShellHead>
-          <div className="pv-finder">
-            {/* The rail's stand-in for the search field. Mouse only: keyboard focus opens the full sidebar, field included. */}
-            <Tooltip
-              className="pv-finder__rail"
-              side="end"
-              content={
-                <>
-                  Search <Shortcut keys="Mod+E" />
-                </>
-              }
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Search"
-                tabIndex={-1}
-                onClick={() => setCommandOpen(true)}
-              >
-                <Icon icon={Search01Icon} />
-              </Button>
-            </Tooltip>
-            <SearchBar
-              size="md"
-              placeholder="Search"
-              label="Search components and foundations"
-              shortcut="Mod+E"
-              readOnly
-              onClick={() => setCommandOpen(true)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  setCommandOpen(true);
-                }
-              }}
-              formProps={{
-                "aria-haspopup": "dialog",
-                "aria-expanded": commandOpen,
-                onClick: () => setCommandOpen(true),
-              }}
-            />
-          </div>
-        </div>
-        <AppShellNav id="pv-nav" className="pv-nav" aria-label="Design system">
-          {SECTIONS.map((s) => (
-            <AppShellGroup key={s.title} label={s.title} collapsible={s.title !== "Start"}>
-              {s.items.map((item) => (
-                <AppShellItem key={item.route || "overview"}>{link(item)}</AppShellItem>
-              ))}
-            </AppShellGroup>
-          ))}
-        </AppShellNav>
-      </AppShellSidebar>
-
-      <AppShellMain className="pv-main">
-        <main className="pv-content" id="main">
-          {component && (!part || component.slug !== "showcase") ? (
-            <ComponentPage key={component.slug} component={component} renderer={renderer} />
-          ) : page === showcase.route || page === "apps" || (page === "showcase" && part) ? (
-            <ShowcasePage id={part} />
-          ) : page === changelogPage.route ? (
-            <ChangelogPage />
-          ) : page === brandPage.route ? (
-            <BrandPage current={brand} onUse={setBrand} />
-          ) : page === densityPage.route ? (
-            <DensityPage density={density} setDensity={setDensity} />
-          ) : foundation ? (
-            <foundation.Page key={foundation.route} />
-          ) : (
-            <GetStartedPage theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
-          )}
-        </main>
-      </AppShellMain>
-
-      <CommandDialog
-        open={commandOpen}
-        onOpenChange={(next) => {
-          setCommandOpen(next);
-          if (!next) setCommandQuery("");
-        }}
-        onSearchChange={setCommandQuery}
-        shortcut="Mod+E"
-        label="Search components and foundations"
-        placeholder="Search components and foundations…"
-        onRun={(route) => {
-          if (route !== undefined) {
-            window.location.hash = `#/${route}`;
-            setCommandOpen(false);
-            setCommandQuery("");
-            requestAnimationFrame(() => {
-              scrollNavTo(route);
-            });
-          }
-        }}
-        footer={
-          <>
-            <span>
-              <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move
-            </span>
-            <span>
-              <Kbd>↵</Kbd> to select
-            </span>
-            <span>
-              <Kbd>esc</Kbd> to close
-            </span>
-          </>
-        }
-      >
-        {SECTIONS.map((section) => (
-          <CommandGroup key={section.title} heading={section.title}>
-            {section.items.map((item) => {
-              const q = commandQuery.trim();
-              const titleMatches = q ? commandMatches(item.title, q) : false;
-              const descMatches = q && item.description ? commandMatches(item.description, q) : false;
-              const showDescription = Boolean(q && !titleMatches && descMatches && item.description);
-
-              return (
-                <CommandItem
-                  key={item.route}
-                  value={item.route}
-                  keywords={item.text}
-                  description={
-                    showDescription && item.description ? (
-                      <TextHighlight text={item.description} query={commandQuery} />
-                    ) : undefined
-                  }
-                  meta={section.title}
-                >
-                  {commandQuery ? (
-                    <TextHighlight text={item.title} query={commandQuery} />
-                  ) : (
-                    item.title
-                  )}
-                </CommandItem>
-              );
-            })}
-          </CommandGroup>
-        ))}
-      </CommandDialog>
-    </AppShell>
+            <span className="pv-shell-bar__title">{title}</span>
+          </AppShellBar>
+          <AppShellSidebar className="pv-sidebar ayy-scroll">{sidebar}</AppShellSidebar>
+          <AppShellMain className="pv-main">
+            <main className="pv-content" id="main">
+              {page}
+            </main>
+          </AppShellMain>
+        </AppShell>
+      ) : (
+        <>
+          <main className={`pv-wide pv-wide--${tab}`} id="main">
+            {page}
+          </main>
+          <SiteFooter />
+        </>
+      )}
+      <Search open={searchOpen} onOpenChange={setSearchOpen} />
+    </div>
   );
 }

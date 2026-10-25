@@ -2,6 +2,7 @@
   "name": "Color swatch",
   "slug": "swatch",
   "category": "Forms",
+  "family": "color-picker",
   "description": "Round colour options for picking one colour, as for a tag, a list or a drawing tool. It can include a \"no colour\" option and an \"any colour\" option that opens the colour picker.",
   "aka": ["color-swatch", "swatch", "swatches", "color-dot", "colour-dot", "color-picker", "colour-picker"],
   "classes": {

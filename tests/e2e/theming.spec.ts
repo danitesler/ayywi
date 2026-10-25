@@ -121,14 +121,14 @@ test.describe("forced colors (Windows High Contrast)", () => {
     const bg = (l: typeof on) => l.evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(await bg(on)).not.toBe(await bg(off));
 
-    await page.goto("/#/progress");
+    await page.goto("/#/components/progress");
     const bar = stage(page).locator(".ayy-progress__bar").first();
     const track = stage(page).locator(".ayy-progress").first();
     expect(await bar.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe(
       await track.evaluate((el) => getComputedStyle(el).backgroundColor),
     );
 
-    await page.goto("/#/tabs");
+    await page.goto("/#/components/tabs");
     const selected = stage(page).getByRole("tab", { selected: true });
     const other = stage(page).getByRole("tab", { name: "Activity" });
     const look = (l: typeof selected) =>
@@ -139,7 +139,7 @@ test.describe("forced colors (Windows High Contrast)", () => {
     expect(await look(selected)).not.toBe(await look(other));
 
     // The current app shell link is filled with the opaque system Highlight colour, not the translucent wash it has otherwise.
-    await page.goto("/#/app-shell");
+    await page.goto("/#/components/app-shell");
     const current = stage(page).locator('.ayy-app-shell__link[aria-current="page"]');
     const highlight = await stage(page).evaluate((el) => {
       const probe = Object.assign(document.createElement("span"), { style: "forced-color-adjust: none; background-color: Highlight" });
@@ -169,7 +169,7 @@ test("dark is the near-black theme, dark-contrast is pure black, light-gray grey
 });
 
 test("a themed section inside another theme gets its own colours", async ({ page }) => {
-  await open(page, "colors", { theme: "dark" });
+  await open(page, "docs/colors", { theme: "dark" });
   const bg = (name: string) => page.locator(`.pv-theme[data-theme="${name}"]`).evaluate((el) => getComputedStyle(el).backgroundColor);
   expect(await bg("light-gray")).toBe("rgb(235, 235, 235)");
   expect(await bg("dark-contrast")).toBe("rgb(0, 0, 0)");
@@ -177,23 +177,39 @@ test("a themed section inside another theme gets its own colours", async ({ page
 });
 
 test("a generated brand colours buttons in every theme, nested themes included, and null undoes it", async ({ page }) => {
-  await open(page, "colors", { theme: "dark" });
+  await open(page, "docs/colors", { theme: "dark" });
   const primary = (sel: string) => page.locator(sel).first().evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
   const before = await primary(".pv-theme[data-theme=\"light\"]");
-  await page.goto("/#/brand");
+  await page.goto("/#/themes");
   await page.getByLabel("Custom seed colour", { exact: true }).fill("#dc2626");
-  await page.goto("/#/colors");
+  // Themes tries a brand on its own samples and app first; the site takes it on "Use this theme".
+  await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"light\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
+  await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await page.getByRole("button", { name: "Use this theme" }).click();
+  await page.goto("/#/docs/colors");
   await expect(page.locator("html")).toHaveAttribute("data-brand", "acme");
   const button = page.locator(".pv-theme[data-theme=\"light\"] .ayy-button").first();
   await expect(button).toHaveCSS("background-color", "rgb(220, 38, 38)");
   await expect(page.locator(".pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
-  await expect(page.locator(".pv-sidebar .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(220, 38, 38)");
+  await expect(page.locator(".pv-header .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(220, 38, 38)");
   expect(await primary(".pv-theme[data-theme=\"light\"]")).not.toBe(before);
-  await page.goto("/#/brand");
+  await page.goto("/#/themes");
   await page.getByRole("button", { name: "Reset to default" }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
-  await expect(page.locator(".pv-sidebar .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(255, 255, 255)");
+  await expect(page.locator(".pv-header .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(255, 255, 255)");
   await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
+});
+
+test("the Themes page restyles its showcase app without touching the site", async ({ page }) => {
+  await open(page, "themes", { theme: "dark" });
+  const frame = page.frameLocator(".pv-themer__stage iframe");
+  await expect(frame.locator(".pv-app")).toBeVisible();
+  await page.getByLabel("Theme", { exact: true }).selectOption("light");
+  await page.getByRole("button", { name: "Violet" }).click();
+  await expect(frame.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(frame.locator("html")).toHaveAttribute("data-brand", "violet");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
 });
 
 for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
@@ -203,8 +219,8 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     const failures: string[] = [];
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
-      ...slugs.map((slug: string): [string, string] => [slug, ".pv-stage"]),
-      ...["", "get-started", "apps", "apps/inbox", "colors", "typography", "spacing", "elevation", "motion", "brand", "density"].map((r): [string, string] => [r, ".pv-shell"]),
+      ...slugs.map((slug: string): [string, string] => [`components/${slug}`, ".pv-stage"]),
+      ...["", "docs/get-started", "docs/changelog", "examples", "examples/inbox", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
@@ -223,7 +239,7 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
         ]),
       );
       const disabledRules = ["region"];
-      if (route === "grid") disabledRules.push("aria-allowed-attr");
+      if (route === "components/grid") disabledRules.push("aria-allowed-attr");
       const results = await new AxeBuilder({ page })
         .include(scope)
         .disableRules(disabledRules) // examples are fragments, not full pages

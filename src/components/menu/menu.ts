@@ -184,7 +184,9 @@ export function connectMenu(
       if (open) {
         for (const item of content.querySelectorAll<HTMLElement>(ITEM)) item.tabIndex = -1;
         const list = items();
-        ((focusLastOnOpen ? list.at(-1) : list[0]) ?? (isDialog ? firstFocusable(content) : null))?.focus();
+        // The toggle event arrives after the open: focus already inside (a submenu opened from the keyboard, then an
+        // arrow key) stays where the user moved it.
+        if (!content.contains(document.activeElement)) ((focusLastOnOpen ? list.at(-1) : list[0]) ?? (isDialog ? firstFocusable(content) : null))?.focus();
         focusLastOnOpen = false;
       } else {
         closeActiveSubmenu();

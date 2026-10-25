@@ -2,6 +2,7 @@
   "name": "Sorting",
   "slug": "sorting",
   "category": "Forms",
+  "family": "table",
   "description": "A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it.",
   "aka": ["sorting", "sort", "sort-menu", "sort-button", "sort-dropdown", "sort-select"],
   "classes": {

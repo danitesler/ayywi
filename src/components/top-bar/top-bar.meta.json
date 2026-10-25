@@ -2,6 +2,7 @@
   "name": "Top bar",
   "slug": "top-bar",
   "category": "Navigation",
+  "family": "app-shell",
   "description": "The header of a phone screen, with a back button, the screen title and a few actions. It stays at the top, and can hold a search bar or a segmented control beneath it.",
   "aka": ["top-bar", "topbar", "app-bar", "appbar", "screen-header", "header-bar"],
   "classes": {

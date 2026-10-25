@@ -8,7 +8,7 @@ for (const renderer of ["react", "html"] as const) {
   test(`every component page renders without errors (${renderer})`, async ({ page }) => {
     const errors = await open(page, "", { renderer });
     for (const slug of slugs) {
-      await page.goto(`/#/${slug}`);
+      await page.goto(`/#/components/${slug}`);
       await expect(page.locator(".pv-page__header h1")).toBeVisible();
       const stages = page.locator(":is(.pv-stage, .ayy-showcase__stage)");
       expect(await stages.count(), slug).toBeGreaterThan(0);
@@ -20,43 +20,131 @@ for (const renderer of ["react", "html"] as const) {
   });
 }
 
-const FOUNDATIONS = { brand: "Brand", density: "Density", colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion" };
+const FOUNDATIONS = { density: "Density", colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion" };
 
-test("overview and foundation pages render", async ({ page }) => {
-  const errors = await open(page, "");
+test("get started and foundation pages render under Docs", async ({ page }) => {
+  const errors = await open(page, "docs/get-started");
   // One flow: the quick-start prompt; the codebase setup sits under it.
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
   await page.getByRole("tab", { name: "No build (CDN)" }).click();
   await expect(page.getByRole("button", { name: "Copy setup prompt" })).toBeVisible();
   for (const [route, title] of Object.entries(FOUNDATIONS)) {
-    await page.goto(`/#/${route}`);
+    await page.goto(`/#/docs/${route}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
   }
-  await page.goto("/#/colors");
+  await page.goto("/#/docs/colors");
   await expect(page.locator(".pv-theme")).toHaveCount(4);
   for (const category of manifest.tokens.map((t: { category?: string }) => t.category).filter(Boolean)) {
     await expect(page.getByRole("heading", { level: 2, name: category, exact: true })).toBeVisible();
   }
-  await page.goto("/#/tokens"); // old link
-  await expect(page.getByRole("heading", { level: 1, name: "Colors" })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test("sidebar groups every component under its category", async ({ page }) => {
+test("links from before the header tabs land on the same page", async ({ page }) => {
   await open(page, "");
-  const nav = page.getByRole("navigation", { name: "Design system" });
-  for (const title of Object.values(FOUNDATIONS)) {
-    await expect(nav.getByRole("list", { name: "Foundations" }).getByRole("link", { name: title, exact: true })).toBeVisible();
+  for (const [old, now, title] of [
+    ["tokens", "docs/colors", "Colors"],
+    ["colors", "docs/colors", "Colors"],
+    ["get-started", "docs/get-started", "Get started"],
+    ["changelog", "docs/changelog", "Changelog"],
+    ["button", "components/button", "Button"],
+    ["dialog", "components/dialog", "Dialog"],
+    ["brand", "themes", "Themes"],
+    ["apps", "examples", "Examples"],
+    ["apps/inbox", "examples/inbox", "Relay"],
+    ["showcase", "examples", "Examples"],
+  ]) {
+    await page.goto(`/#/${old}`);
+    await expect(page, old).toHaveURL(new RegExp(`#/${now}$`));
+    await expect(page.getByRole("heading", { level: 1, name: title, exact: true }), old).toBeVisible();
   }
-  for (const c of manifest.components as { name: string; category: string }[]) {
-    await expect(nav.getByRole("list", { name: c.category, exact: true }).getByRole("link", { name: c.name, exact: true })).toBeVisible();
+  await page.goto("/#/no-such-page");
+  await expect(page.getByRole("heading", { level: 1, name: "This page doesn't exist" })).toBeVisible();
+});
+
+test("the header's tabs mark where you are; Docs and Components have their own sidebar", async ({ page }) => {
+  await open(page, "");
+  const tabs = page.getByRole("navigation", { name: "Site" });
+  await expect(page.locator(".pv-sidebar")).toHaveCount(0);
+  for (const [name, path, nav] of [
+    ["Docs", "docs/get-started", "Docs"],
+    ["Components", "components", "Components"],
+    ["Examples", "examples", null],
+    ["Themes", "themes", null],
+  ] as const) {
+    await tabs.getByRole("link", { name, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`#/${path}$`));
+    await expect(tabs.getByRole("link", { name, exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(tabs.locator('[aria-current="page"]')).toHaveCount(1);
+    if (nav) await expect(page.getByRole("navigation", { name: nav, exact: true })).toBeVisible();
+    else await expect(page.locator(".pv-sidebar")).toHaveCount(0);
   }
+  await page.getByRole("link", { name: "ayywi", exact: true }).first().click();
+  await expect(page).toHaveURL(/#\/$/);
+  await expect(tabs.locator('[aria-current="page"]')).toHaveCount(0);
+});
+
+test("the components sidebar lists every component A–Z, with families nested and a filter", async ({ page }) => {
+  await open(page, "components");
+  const nav = page.getByRole("navigation", { name: "Components", exact: true });
+  for (const c of manifest.components as { name: string; slug: string }[]) {
+    await expect(nav.locator(`[data-route="components/${c.slug}"]`), c.slug).toHaveText(c.name);
+  }
+  // A family opens to its members: Input holds Textarea, Number field…
+  const input = nav.locator("details", { has: page.locator("summary", { hasText: /^Input$/ }) });
+  await expect(input.getByRole("link", { name: "Textarea", exact: true })).toBeHidden();
+  await input.locator("summary").click();
+  await expect(input.getByRole("link", { name: "Textarea", exact: true })).toBeVisible();
+  // The family holding the current page is open.
+  await page.goto("/#/components/combobox");
+  await expect(nav.locator("details", { has: page.locator("summary", { hasText: /^Select$/ }) })).toHaveAttribute("open", "");
+  await expect(nav.getByRole("link", { name: "Combobox", exact: true })).toHaveAttribute("aria-current", "page");
+
+  const filter = page.getByRole("searchbox", { name: "Filter components" });
+  await filter.fill("area");
+  await expect(nav.getByRole("link", { name: "Textarea", exact: true })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "Button", exact: true })).toHaveCount(0);
+  await filter.fill("zzzz");
+  await expect(nav).toContainText("No component called");
+});
+
+test("a component page has Overview, Properties and Accessibility tabs, each with its own address", async ({ page }) => {
+  await open(page, "components/tabs");
+  const tablist = page.getByRole("tablist", { name: "Tabs documentation" });
+  await expect(tablist.getByRole("tab", { name: "Overview" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator(".ayy-showcase").first()).toBeVisible();
+
+  await tablist.getByRole("tab", { name: "Properties" }).click();
+  await expect(page).toHaveURL(/#\/components\/tabs\/properties$/);
+  await expect(page.getByRole("heading", { level: 2, name: "<Tabs> renders <div>" })).toBeVisible();
+  await expect(page.getByRole("table", { name: "CSS classes" })).toContainText(".ayy-tabs");
+  await expect(page.getByRole("heading", { level: 2, name: /<ayy-tabs>/ })).toBeVisible();
+
+  await tablist.getByRole("tab", { name: "Accessibility" }).click();
+  await expect(page).toHaveURL(/#\/components\/tabs\/accessibility$/);
+  await expect(page.locator(".pv-a11y li").first()).toBeVisible();
+
+  await page.reload();
+  await expect(tablist.getByRole("tab", { name: "Accessibility" })).toHaveAttribute("aria-selected", "true");
+});
+
+test("the components overview shows every component as a live card", async ({ page }) => {
+  const errors = await open(page, "components");
+  await expect(page.getByRole("heading", { level: 1, name: "Browse the library" })).toBeVisible();
+  await expect(page.locator(".pv-comp-card")).toHaveCount(manifest.components.length);
+  // Thumbnails are drawn as they near the viewport, and are decorative.
+  const first = page.locator(".pv-comp-card .pv-thumb").first();
+  await expect(first.locator(".pv-thumb__inner > *")).not.toHaveCount(0);
+  await expect(first).toHaveAttribute("aria-hidden", "true");
+  await page.locator(".pv-comp-card").filter({ hasText: "Dialog" }).getByRole("link").click();
+  await expect(page).toHaveURL(/#\/components\/dialog$/);
+  expect(errors).toEqual([]);
 });
 
 test("a section link opens the page scrolled to that section", async ({ page }) => {
-  await open(page, "colors/status");
+  await open(page, "docs/colors/status");
   await expect(page.getByRole("heading", { level: 2, name: "Status", exact: true })).toBeInViewport();
-  const nav = page.getByRole("navigation", { name: "Design system" });
+  const nav = page.getByRole("navigation", { name: "Docs", exact: true });
   await expect(nav.getByRole("link", { name: "Colors", exact: true })).toHaveAttribute("aria-current", "page");
 });
 
@@ -72,7 +160,7 @@ test("example code is one click away", async ({ page }) => {
 
 test("get started's quick-start prompt asks first, brand included, then loads ayywi", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await open(page, "");
+  await open(page, "docs/get-started");
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toMatch(/^Build me an app with the ayywi design system\. Before you start, ask me/);
@@ -89,7 +177,7 @@ test("get started's quick-start prompt asks first, brand included, then loads ay
 test("the site hosts each release's runtime files under v/<release>/; prompts from a local preview use the public site", async ({ page, context, baseURL }) => {
   // Served from a real host name (not localhost), the prompts point at this build's own v/<release>/ copies.
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await open(page, "");
+  await open(page, "docs/get-started");
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const local = await page.evaluate(() => navigator.clipboard.readText());
   expect(local).not.toContain("/v/");
@@ -100,10 +188,10 @@ test("the site hosts each release's runtime files under v/<release>/; prompts fr
   for (const file of versions.versions[0].files) expect((await page.request.get(`${baseURL}/v/${versions.latest}/${file}`)).ok(), file).toBe(true);
 });
 
-test("search bar opens command palette, filters results and jumps to a page", async ({ page }) => {
-  await open(page, "");
+test("the header's search finds components, docs and examples and jumps to them", async ({ page }) => {
+  await open(page, "components");
   const dialog = page.locator(".ayy-dialog.ayy-command");
-  const box = dialog.getByRole("combobox", { name: "Search components and foundations" });
+  const box = dialog.getByRole("combobox", { name: "Search the docs" });
 
   // Mod+E opens command palette
   const isMac = await page.evaluate(() => /mac|iphone|ipad|ipod/i.test(navigator.userAgent));
@@ -115,7 +203,7 @@ test("search bar opens command palette, filters results and jumps to a page", as
   // Search "input": title match (Input) appears with highlight and no description;
   // secondary matches (Slider) show description with highlight
   await box.fill("input");
-  const inputOption = dialog.locator('.ayy-command__item[data-value="input"]');
+  const inputOption = dialog.locator('.ayy-command__item[data-value="components/input"]');
   await expect(inputOption).toBeVisible();
   await expect(inputOption.locator(".ayy-command__description")).toHaveCount(0);
   const mark = inputOption.locator("mark.ayy-text-highlight");
@@ -124,7 +212,7 @@ test("search bar opens command palette, filters results and jumps to a page", as
   await expect(mark).toHaveCSS("padding-inline-start", "0px");
 
   // Secondary match has description visible with highlighted term
-  const sliderOption = dialog.locator('.ayy-command__item[data-value="slider"]');
+  const sliderOption = dialog.locator('.ayy-command__item[data-value="components/slider"]');
   await expect(sliderOption).toBeVisible();
   const sliderDesc = sliderOption.locator(".ayy-command__description");
   await expect(sliderDesc).toBeVisible();
@@ -135,51 +223,50 @@ test("search bar opens command palette, filters results and jumps to a page", as
 
   await box.fill("table");
   const visibleOptions = dialog.locator('.ayy-command__item:not([hidden])');
-  await expect(visibleOptions.first()).toHaveAttribute("data-value", "table");
+  await expect(visibleOptions.first()).toHaveAttribute("data-value", "components/table");
 
   await box.fill("button");
-  await expect(visibleOptions.first()).toHaveAttribute("data-value", "button");
+  await expect(visibleOptions.first()).toHaveAttribute("data-value", "components/button");
 
   await box.fill("surface-raised"); // token names match via keywords
   await expect(dialog.getByRole("option", { name: /Colors/ })).toBeVisible();
 
+  await box.fill("relay"); // showcase apps
+  await expect(dialog.getByRole("option", { name: /Relay/ })).toBeVisible();
+
   await box.fill("dialog");
   await dialog.getByRole("option", { name: /^Dialog/ }).click();
-  await expect(page).toHaveURL(/#\/dialog$/);
+  await expect(page).toHaveURL(/#\/components\/dialog$/);
   await expect(dialog).toBeHidden();
   await expect(page.getByRole("heading", { level: 1, name: "Dialog" })).toBeVisible();
 
-  // Sidebar automatically scrolled to Dialog
+  // The sidebar scrolls to the page it opened.
   const sidebar = page.locator(".pv-sidebar");
-  const dialogLink = page.locator('#pv-nav [data-route="dialog"]');
-  await expect(dialogLink).toHaveAttribute("aria-current", "page");
-  await expect(async () => {
-    const linkBox = (await dialogLink.boundingBox())!;
-    const sidebarBox = (await sidebar.boundingBox())!;
-    expect(linkBox.y).toBeGreaterThanOrEqual(sidebarBox.y);
-    expect(linkBox.y + linkBox.height).toBeLessThanOrEqual(sidebarBox.y + sidebarBox.height);
-  }).toPass();
+  const inView = async (route: string) => {
+    const link = page.locator(`#pv-nav [data-route="${route}"]`);
+    await expect(link).toHaveAttribute("aria-current", "page");
+    await expect(async () => {
+      const linkBox = (await link.boundingBox())!;
+      const sidebarBox = (await sidebar.boundingBox())!;
+      expect(linkBox.y).toBeGreaterThanOrEqual(sidebarBox.y);
+      expect(linkBox.y + linkBox.height).toBeLessThanOrEqual(sidebarBox.y + sidebarBox.height);
+    }).toPass();
+  };
+  await inView("components/dialog");
 
-  // Clicking search bar in sidebar opens command palette
-  await page.locator(".pv-sidebar__top .ayy-search-bar").click();
+  // The header's search button opens it too.
+  const search = page.locator(".pv-header").getByRole("button", { name: "Search", exact: true });
+  await search.click();
   await expect(dialog).toBeVisible();
   await box.fill("tooltip");
   await dialog.getByRole("option", { name: /^Tooltip/ }).click();
-  await expect(page).toHaveURL(/#\/tooltip$/);
+  await expect(page).toHaveURL(/#\/components\/tooltip$/);
   await expect(dialog).toBeHidden();
   await expect(page.getByRole("heading", { level: 1, name: "Tooltip" })).toBeVisible();
-
-  const tooltipLink = page.locator('#pv-nav [data-route="tooltip"]');
-  await expect(tooltipLink).toHaveAttribute("aria-current", "page");
-  await expect(async () => {
-    const linkBox = (await tooltipLink.boundingBox())!;
-    const sidebarBox = (await sidebar.boundingBox())!;
-    expect(linkBox.y).toBeGreaterThanOrEqual(sidebarBox.y);
-    expect(linkBox.y + linkBox.height).toBeLessThanOrEqual(sidebarBox.y + sidebarBox.height);
-  }).toPass();
+  await inView("components/tooltip");
 
   // Pressing Escape closes command palette
-  await page.locator(".pv-sidebar__top .ayy-search-bar").click();
+  await search.click();
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
@@ -187,28 +274,47 @@ test("search bar opens command palette, filters results and jumps to a page", as
 
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["", "get-started", "apps", "apps/dashboard", "showcase", "colors", "typography", "spacing", "button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input", "segmented-control", "list", "empty-state", "accordion", "toc", "carousel", "chat"]) {
+  const components = ["button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input", "segmented-control", "list", "empty-state", "accordion", "toc", "carousel", "chat"];
+  for (const route of ["", "docs/get-started", "docs/colors", "docs/typography", "docs/spacing", "examples", "examples/dashboard", "themes", "components", "components/table/properties", ...components.map((c) => `components/${c}`)]) {
+    // Keep the pointer off the header: in RTL its buttons sit where the pointer rests, and a tooltip fading in or out
+    // isn't layout.
+    await page.mouse.move(195, 700);
     await open(page, route);
     for (const dir of ["ltr", "rtl"]) {
       await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
+      // Measure at rest: flipping the direction can start transitions (a drawer moving to the other edge).
+      await page.evaluate(() =>
+        Promise.race([
+          Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => undefined))),
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+        ]),
+      );
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, `/#/${route} (${dir})`).toBeLessThanOrEqual(0);
     }
   }
 });
 
-test("on a phone the preview's sidebar is a drawer opened from the top bar", async ({ page }) => {
+test("on a phone the header's tabs fold into a menu and the sidebar is a drawer", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await open(page, "button");
+  await open(page, "components/button");
+  const tabs = page.getByRole("navigation", { name: "Site" });
+  await expect(tabs).toBeHidden();
+  await page.locator(".pv-header").getByRole("button", { name: "Menu" }).click();
+  await expect(tabs.getByRole("link", { name: "Components", exact: true })).toBeVisible();
+  await page.locator(".pv-header").getByRole("button", { name: "Menu" }).click();
+  await expect(tabs).toBeHidden();
+
   const toggle = page.getByRole("button", { name: "Open navigation" });
-  const nav = page.getByRole("navigation", { name: "Design system" });
+  const nav = page.getByRole("navigation", { name: "Components", exact: true });
   await expect(nav).toBeHidden();
   await toggle.click();
   await expect(nav).toBeVisible();
   await nav.getByRole("link", { name: "Dialog", exact: true }).click();
-  await expect(page).toHaveURL(/#\/dialog$/);
+  await expect(page).toHaveURL(/#\/components\/dialog$/);
   await expect(nav).toBeHidden();
   await expect(page.locator(".pv-page h1")).toHaveText("Dialog");
+  await expect(page.locator(".pv-shell-bar")).toContainText("Dialog");
 });
 
 const SHOWCASE = [
@@ -221,79 +327,18 @@ const SHOWCASE = [
   { id: "booking", name: "Haven", theme: "light", density: "touch" },
 ];
 
-test("the docs sidebar collapses to a rail, previews on hover, and remembers it", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await open(page, "app-shell");
-  const shell = page.locator(".pv-shell");
-  const sidebar = page.locator(".pv-sidebar");
-  await page.locator(".pv-sidebar__toggle").click();
-  await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
-  await page.locator(".pv-content").hover();
-  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
-  // The rail: the toggle, a search button and the links that have icons (Start). The rest are out of the way.
-  await expect(sidebar.getByRole("button", { name: "Search", exact: true })).toBeVisible();
-  await expect(sidebar.getByRole("link", { name: "Get started", exact: true })).toBeVisible();
-  await expect(sidebar.getByRole("link", { name: "Button", exact: true })).toBeHidden();
-  // The App shell examples on the page keep their own sidebars.
-  expect(Math.round((await page.locator(".pv-content .ayy-app-shell:not(.ayy-app-shell--collapsed) > .ayy-app-shell__sidebar").first().boundingBox())!.width)).toBe(240);
-
-  await sidebar.hover({ position: { x: 30, y: 400 } });
-  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(256);
-  await expect(sidebar.getByRole("link", { name: "Button", exact: true })).toBeVisible();
-  await page.locator(".pv-content").hover({ position: { x: 600, y: 300 } });
-  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
-
-  await page.reload();
-  await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
-  await page.locator(".pv-sidebar__toggle").click();
-  await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
-});
-
-test("the docs sidebar's preview stays on top of the page while it closes, and its rail has no dividers", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await open(page, "");
-  await page.locator(".pv-sidebar__toggle").click();
-  const sidebar = page.locator(".pv-sidebar");
-  await page.locator(".pv-content").hover({ position: { x: 600, y: 300 } });
-  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
-  // In the rail, the groups' dividers are gone with their labels.
-  const dividers = await sidebar.locator(".ayy-app-shell__group + .ayy-app-shell__group").evaluateAll((els) => els.map((el) => getComputedStyle(el).borderBlockStartColor));
-  expect(dividers.every((c) => c === "rgba(0, 0, 0, 0)")).toBe(true);
-
-  // The example app cards (a carousel of positioned, spotlit cards) in view, beside the sidebar.
-  await page.locator(".pv-examples").scrollIntoViewIfNeeded();
-  const cards = (await page.locator(".pv-examples").boundingBox())!;
-  await sidebar.hover({ position: { x: 30, y: Math.round(cards.y + cards.height / 2) } });
-  await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBe(256);
-  // A long transition, so a busy machine still samples it mid-way.
-  await page.locator(".pv-shell").evaluate((el) => el.style.setProperty("--ayy-duration-base", "1500ms"));
-  await page.mouse.move(1200, Math.round(cards.y + cards.height / 2));
-  // Sample while it narrows: it keeps the overlay's z-index (so the cards never paint over it), and what's painted just
-  // inside its edge is the sidebar.
-  const samples = await sidebar.evaluate(async (el) => {
-    const seen: { width: number; z: string; onTop: boolean }[] = [];
-    const start = performance.now();
-    while (performance.now() - start < 2500) {
-      const r = el.getBoundingClientRect();
-      seen.push({ width: r.width, z: getComputedStyle(el).zIndex, onTop: el.contains(document.elementFromPoint(r.right - 6, r.top + r.height / 2)) });
-      await new Promise((done) => requestAnimationFrame(done));
-    }
-    return seen;
-  });
-  const narrowing = samples.filter((s) => s.width > 70 && s.width < 250);
-  expect(narrowing.length).toBeGreaterThan(2);
-  expect(narrowing.every((s) => Number(s.z) > 0 && s.onTop)).toBe(true);
-  expect(samples.at(-1)!.width).toBeLessThan(70);
-});
-
-test("what you can build: cards open a device preview", async ({ page }) => {
-  const errors = await open(page, "apps");
-  await expect(page.getByRole("heading", { level: 1, name: "What you can build" })).toBeVisible();
+test("examples: chips filter the gallery and cards open a device preview", async ({ page }) => {
+  const errors = await open(page, "examples");
+  await expect(page.getByRole("heading", { level: 1, name: "Examples" })).toBeVisible();
   const cards = page.locator(".pv-showcase__card");
   await expect(cards).toHaveCount(SHOWCASE.length);
+  await page.getByRole("radio", { name: /^Websites/ }).check();
+  await expect(cards).toHaveCount(2);
+  await page.getByRole("radio", { name: /^Apps/ }).check();
+  await expect(cards).toHaveCount(SHOWCASE.length - 2);
 
   await cards.filter({ hasText: "Relay" }).click();
-  await expect(page).toHaveURL(/#\/apps\/inbox$/);
+  await expect(page).toHaveURL(/#\/examples\/inbox$/);
   await expect(page.getByRole("heading", { level: 1, name: "Relay" })).toBeVisible();
 
   const frame = page.locator(".pv-device iframe");

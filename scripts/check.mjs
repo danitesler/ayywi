@@ -176,6 +176,13 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     }
   }
   if ("category" in meta && !(meta.category in CATEGORIES)) fail(files.meta, `category "${meta.category}" should be one of: ${Object.keys(CATEGORIES).join(", ")} (scripts/lib/contract.mjs)`);
+  // Family: the component this one is a variation of, one level deep (the preview nests it under that one).
+  if ("family" in meta) {
+    const parentFile = `src/components/${meta.family}/${meta.family}.meta.json`;
+    if (meta.family === slug) fail(files.meta, `family "${meta.family}" can't be the component itself`);
+    else if (!existsSync(join(root, parentFile))) fail(files.meta, `family "${meta.family}" isn't a component`);
+    else if ("family" in JSON.parse(read(parentFile))) fail(files.meta, `family "${meta.family}" has a family of its own — point at the top one`);
+  }
 
   // States: every one in STATES, each either { when, looks } or { none }; a state the CSS styles can't be "none".
   if (meta.states) {

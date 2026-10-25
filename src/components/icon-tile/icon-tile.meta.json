@@ -2,6 +2,7 @@
   "name": "Icon tile",
   "slug": "icon-tile",
   "category": "Data display",
+  "family": "icon",
   "description": "A rounded app-icon tile that gives a product, plugin or service a recognisable mark, with the glyph tinted in its accent colour.",
   "aka": ["icon-tile", "app-icon"],
   "classes": {
