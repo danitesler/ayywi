@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -40,13 +40,13 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - An app screen fills the main. Don't wrap it in .ayy-container or a max-inline-size — a max-inline-size on an example only sizes that example in the docs, it is not page layout. Long text (a description, .ayy-prose) may stop at --ayy-size-measure. Settings mode already centres its column; don't add a second cap.
 - Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).
 - Data views use ayywi's own pieces: Chart (BarChart, LineChart, DonutChart, ScatterChart, HeatmapChart, FunnelChart and the rest), Bar list and Sparkline for charts, coloured from --ayy-chart-1… in order; filters as Chips (with counts) above the results and the active ones as removable chips; sortable Table columns with a .ayy-table__sort button and aria-sort on the <th>. With a chart library, colour it with var(--ayy-chart-N) (SVG) or chartColors() and chartTheme() (canvas); never its default palette.
-- Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Number field for small counts, a Slider for a rough amount, a DatePicker or DatePickerGrid for a date near today (DateRange / DateRangePicker for a date span, TimePicker / TimePickerTrigger for stepped times, DateTimePicker / DateTimePickerTrigger for date and time, native type="date" for a birth date, type="time" for rapid typing), ColorSwatches for a fixed palette or ColorPicker for any custom colour, a Tag input for free-text tags or recipients, a Search bar to filter a list, a Shortcut recorder for key bindings, File upload for files.
+- Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Transfer list to move items between available and chosen lists, a PIN input for verification codes or PINs, Mentions for inline @mentions or #references inside a textarea, a Rating for 1–5 star scores, a Number field for small counts, a Slider for a rough amount, a DatePicker or DatePickerGrid for a date near today (DateRange / DateRangePicker for a date span, TimePicker / TimePickerTrigger for stepped times, DateTimePicker / DateTimePickerTrigger for date and time, native type="date" for a birth date, type="time" for rapid typing), ColorSwatches for a fixed palette or ColorPicker for any custom colour, a Tag input for free-text tags or recipients, a Search bar to filter a list, a Shortcut recorder for key bindings, File upload for files.
 - Don't write breakpoints for navigation or layout: App shell, Navbar and Pagination switch at 48rem on their own, and .ayy-grid and .ayy-split adapt to their container. If you truly need one, use 48rem (phone) or 64rem (tablet).
 - Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-pin-input>, <ayy-mentions>, <ayy-transfer-list>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -55,7 +55,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 
 | Need | Use | Not |
 |---|---|---|
-| Run an action (save, create, delete, open) | Button: one primary per view, outline/ghost for the rest, destructive for delete, size icon + aria-label for icon-only. | <button> with your own classes or none, a <div>/<span> with onClick, a link styled as a button for an action |
+| Run an action (save, create, delete, open) | Button: one primary per view, outline/ghost for the rest, destructive for delete, size icon + aria-label for icon-only; SplitButton + DropdownMenu when one default action has secondary alternatives. | <button> with your own classes or none, a <div>/<span> with onClick, a link styled as a button for an action |
 | Choose one value from a list (theme, country, role, sort order) | Select for a list (it opens ayywi's own options list; touch screens keep the OS picker), Segmented control for two to five short options shown at once, Combobox for many values people type to find. | a raw <select>, a button that opens a hand-built <div> of choices, a Dropdown menu used as a picker |
 | Choose between options that each need a sentence, an icon or a price (plans, delivery, time slots) | ChoiceGroup of ChoiceCards (compact for time slots, scroll for a day strip). | Cards with onClick and a selected class |
 | Switch between views or ranges of the same content (list/grid, 7d/30d) | SegmentedControl, two to five options. | a row of buttons with aria-pressed or an active class |
@@ -63,9 +63,13 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Turn a setting on or off (a toggle: notifications, dark mode, auto-save) | Switch when it applies at once; Checkbox in a form that's submitted, or to agree to something. | <input type="checkbox"> unstyled, a toggle drawn with divs |
 | Pick one of a few options in a form | Radio group; a Segmented control when the options are short. | raw <input type="radio"> |
 | Filter a list or tag things | Chips (checkbox, radio or ChipButton, with counts) above the results, the active ones as removable chips; Tag input for free-text tags or recipients. | pills built from <span>s or buttons with an active class |
+| Move items between two lists (available vs assigned permissions, columns or members) | TransferList (<ayy-transfer-list> in HTML) with searchable Available and Selected panes and Move selected / Move all buttons. | two custom list boxes with hand-wired state and arrow buttons |
 | Filter a list, table or feed (status tabs, faceted dropdowns, active chips) | FilterBar with quick filter tabs (FilterBarTabs), faceted dropdown triggers (FilterBarTrigger) with count badges, and active filter chips with a Clear all button. | a row of custom buttons with active classes, hand-built filter bars |
 | Sort a list, table or feed by field and direction | Sorting with SortingTrigger opening a DropdownMenu of sort options, or sortable Table column headers. | a button that flips a state with no accessible label, hand-drawn sort arrows |
 | Type text, an email, a number or a password | Field + Label + Input (Input group for an icon or a unit, Textarea for long text, Number field for small counts), FieldHint and FieldError under it. | a raw <input>/<textarea>, a placeholder instead of a label |
+| Enter a verification code, OTP or PIN | PinInput (<ayy-pin-input> in HTML) inside a Field, with group for a split 3+3 code and mask for secret PINs. | six separate <input maxlength="1"> elements wired by hand or a single plain text input |
+| Mention people or reference issues inline in a comment (@user, #issue) | Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox. | contenteditable rich-text hacks or an unanchored dropdown under a textarea |
+| Give or display a star rating or review score | Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores). | buttons or spans of ★ characters with custom click handlers |
 | Search or filter by typing | Search bar to filter what's on screen, Combobox to pick a value, Command palette (⌘K) to jump anywhere. | an <input> with a hand-drawn magnifier |
 | Pick a date or time | DatePicker or DatePickerGrid for one date near today; DateRange or DateRangePicker for a start and end span; TimePicker or TimePickerTrigger for discrete hours and minutes; DateTimePicker or DateTimePickerTrigger for combined date and time; Input type="date" for a birth date, type="time" for rapid keyboard entry. | a hand-built month grid or time dropdown |
 | Pick an icon or emoji | IconPicker (<ayy-icon-picker>) in a Popover or a menu's submenu panel: search, a grid of Hugeicons and emoji, and a remove button. | a menu with one item per icon, a hand-built emoji grid |
@@ -535,7 +539,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
-- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
+- **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Filter bar, Sorting, Textarea, Mentions, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
@@ -543,7 +547,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 ## Button
 
-Category: Actions. The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions. Also called: button, btn, icon-button, icon-btn, cta.
+Category: Actions. The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions. Also called: button, btn, icon-button, icon-btn, cta, split-button, button-group.
 
 **Classes**
 - `.ayy-button` — Root. Alone it is the primary button.
@@ -561,6 +565,8 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `.ayy-button--block` — Fills its container's width: a card footer, a phone form, a dialog's only action.
 - `.ayy-button--start` — Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.
 - `.ayy-button--end` — Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class.
+- `.ayy-button-split` — Group joining a main action .ayy-button and a trailing icon .ayy-button (opening a menu) into a single split button with a shared seam.
+- `.ayy-button-split--block` — Full-width split button: the main action stretches and the menu trigger stays square.
 
 **States**
 - `hover` (`:hover`)
@@ -579,24 +585,27 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - Density — Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
-**React** — `import { Button } from "@danitesler/ayywi/react";`
+**React** — `import { Button, SplitButton } from "@danitesler/ayywi/react";`
 - `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `tooltip` ReactNode | boolean — custom tooltip text or element; icon-only buttons show their aria-label on hover by default (pass false to disable).; `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top").; `...rest` All native <button> attributes.
+- `<SplitButton>` renders <div role="group" class="ayy-button-split">. Props: `block` boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.; `...rest` All native <div> attributes.
 
 **Accessibility**
 - Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.
+- In a SplitButton, give the trailing menu trigger an explicit aria-label naming what it opens ("More deploy options").
 - Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both).
 - Visible focus ring on :focus-visible is built in — never remove it.
 - While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
 
 **Do**
 - Use a button for any action the user can take: submit, open, save, delete.
+- Use a SplitButton when a primary action has closely related alternatives in a DropdownMenu ("Deploy" + "Deploy to preview").
 - Apply buttonClass() to an <a> when a link should look like an action.
 - Always pair icon-only buttons (size="icon*", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.
 - Keep one primary button per view or section; make everything else secondary, outline or ghost.
 - On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
 - Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).
 
-**Examples**: Variants, Sizes, With icon & icon-only, Loading with spinner, Wide button alignment, Link styled as a button, Ring call to action. Copy-ready HTML and React in llms/button.md.
+**Examples**: Variants, Sizes, With icon & icon-only, Split button, Loading with spinner, Wide button alignment, Link styled as a button, Ring call to action. Copy-ready HTML and React in llms/button.md.
 
 ## Hover actions
 
@@ -1502,6 +1511,53 @@ Category: Forms. A single-line text field for names, emails, passwords, search a
 
 **Examples**: Sizes, Input types, Input group & addons, Validation error. Copy-ready HTML and React in llms/input.md.
 
+## PIN input
+
+Category: Forms. One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once. Also called: pin-input, otp-input, otp, pin-field, verification-code, passcode-input.
+
+**Classes**
+- `.ayy-pin-input` — Root group (role="group", direction ltr so codes always read left to right).
+- `.ayy-pin-input--sm` — Small slots (--ayy-size-control-sm square, sm text).
+- `.ayy-pin-input--lg` — Large slots (--ayy-size-control-lg square, lg text).
+- `.ayy-pin-input__group` — Tighter cluster of slots when a code is split into halves (e.g. 3 + 3).
+- `.ayy-pin-input__separator` — Muted dash between slot groups (aria-hidden="true").
+- `.ayy-pin-input__slot` — Each character <input>: monospace, centred, tabular-nums.
+
+**States**
+- `hover` (`.ayy-pin-input__slot:hover (hover devices)`)
+- `focus` (`.ayy-pin-input__slot:focus-visible`)
+- `disabled` (`disabled on the slots`)
+- `error` (`aria-invalid="true" on .ayy-pin-input or .ayy-pin-input__slot (with a FieldError)`)
+
+**Sizes**
+- `sm` — Square at --ayy-size-control-sm (28px compact, 32 comfortable, 40 touch), sm text.
+- `md` (default) — Square at --ayy-size-control-md (32px compact, 40 comfortable, 44 touch), field text.
+- `lg` — Square at --ayy-size-control-lg (40px compact, 48 comfortable, 52 touch), lg text.
+- Density — Slot width, height and text size follow data-density across all steps.
+- Width — Hugs its slots and separators.
+
+**Custom element** `<ayy-pin-input>` (@danitesler/ayywi/elements) — An .ayy-pin-input containing .ayy-pin-input__slot <input> elements (optionally grouped in .ayy-pin-input__group with .ayy-pin-input__separator).
+- attribute `type`: numeric | alphanumeric
+- attribute `mask`: Render slots as password dots.
+- attribute `name`: Form field name: syncs a hidden input with the combined code.
+- event `ayy-change`: { value: string } — fired whenever the code changes.
+- event `ayy-complete`: { value: string } — fired once every slot is filled.
+
+**React** — `import { PinInput } from "@danitesler/ayywi/react";`
+- `<PinInput>` renders <div role="group" class="ayy-pin-input"> of .ayy-pin-input__slot <input> elements. Props: `length` number — total slots when groups is omitted (default 6).; `groups` number[] — split slots into groups with a dash between them, e.g. [3, 3].; `type` "numeric" | "alphanumeric" — allowed characters (default "numeric").; `mask` boolean — hide entered characters as password dots.; `size` "sm" | "md" | "lg"; `value / defaultValue` string — current or initial code.; `onValueChange` (value: string) => void; `onComplete` (value: string) => void — called once all slots are filled.; `disabled` boolean; `invalid` boolean — sets aria-invalid="true" on the group and slots.; `name` string — renders a hidden input carrying the combined code.; `autoFocus` boolean — focuses the first slot on mount.; `placeholder` string — placeholder character per empty slot.; `slotLabel` (index: number, total: number) => string — accessible label per slot.; `...rest` All native <div> attributes on the group.
+
+**Accessibility**
+- Wrap in a Field with a Label (or aria-labelledby on the group), and keep each slot's aria-label ("Digit 1 of 6").
+- The first slot carries autocomplete="one-time-code" so SMS and password-manager autofill populate the whole code.
+- Digits always read left to right even in RTL layouts; ArrowLeft and ArrowRight move visually between slots.
+
+**Do**
+- Use a PIN input for fixed-length verification codes, authenticator tokens, backup codes and numeric PINs.
+- Group 6- or 8-character codes as [3, 3] or [4, 4] so people can scan and compare them at a glance.
+- Accept pasted codes containing spaces or dashes — connectPinInput strips them automatically.
+
+**Examples**: Verification code & masked PIN. Copy-ready HTML and React in llms/pin-input.md.
+
 ## Search bar
 
 Category: Forms. A rounded search field with a magnifier and a clear button, often used at the top of a phone list. It's a real search form, so phones show a search key on the keyboard. Also called: search-bar, searchbar, search, search-box, searchbox, search-field.
@@ -1670,6 +1726,50 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 - Set rows for a sensible starting height.
 
 **Examples**: Basic, autosize, mono. Copy-ready HTML and React in llms/textarea.md.
+
+## Mentions
+
+Category: Forms. A multi-line text field that opens a floating suggestions list right at the caret when someone types @ or #, for tagging teammates, channels or issues inside comments and notes. Also called: mentions, mention-input, mention-field, at-mentions.
+
+**Classes**
+- `.ayy-mentions` — Root wrapper around the textarea, caret anchor and suggestions listbox.
+- `.ayy-mentions__textarea` — Placed alongside .ayy-textarea on the <textarea>.
+- `.ayy-mentions__anchor` — Hidden zero-width anchor placed at the trigger character to position the popup.
+- `.ayy-mentions__listbox` — Popover listbox (.ayy-combobox__listbox) of mention suggestions.
+- `.ayy-mentions__option` — One suggestion row (.ayy-combobox__option) with role="option".
+- `.ayy-mentions__body` — Name and handle row inside an option.
+- `.ayy-mentions__label` — Person or record display name, truncated on overflow.
+- `.ayy-mentions__handle` — Muted monospace @handle or #key at the inline end.
+
+**States**
+- `hover` (`:hover on the textarea or a suggestion option (hover devices)`)
+- `focus` (`:focus-visible on the textarea`)
+- `disabled` (`:disabled on the textarea, or aria-disabled="true" on an option`)
+- `selected` (`aria-selected="true" on the active .ayy-mentions__option`)
+- `error` (`aria-invalid="true" on the textarea (with a FieldError)`)
+- `open` (`:popover-open on .ayy-mentions__listbox`)
+
+**Sizes**
+- Density — Textarea and option rows follow control md text and data-density.
+- Width — Textarea fills its container; popup is 13rem to 20rem wide.
+
+**Custom element** `<ayy-mentions>` (@danitesler/ayywi/elements) — An .ayy-mentions holding a <textarea class="ayy-textarea ayy-mentions__textarea"> and an .ayy-mentions__listbox of [role="option"] items.
+- attribute `triggers`: Space-separated trigger characters (default "@", e.g. "@ #").
+- event `ayy-mention`: { trigger: string, value: string, label: string, text: string } — fired when a suggestion is inserted.
+
+**React** — `import { Mentions } from "@danitesler/ayywi/react";`
+- `<Mentions>` renders <div class="ayy-mentions"> wrapping <textarea>, caret anchor and <ul role="listbox">. Props: `options` MentionOption[] — id, label, value?, trigger?, icon?, keywords?, disabled?; `triggers` string[] — trigger characters (default ["@"]).; `onValueChange` (value: string) => void; `onMention` (option: MentionOption, detail: MentionInsertDetail) => void; `autosize` boolean — grow vertically with content.; `mono` boolean — monospace font.; `className` string — on the outer .ayy-mentions wrapper.; `...rest` All native <textarea> attributes (value, defaultValue, rows, placeholder…).
+
+**Accessibility**
+- Label the textarea with Field + Label (htmlFor/id), just like Textarea.
+- Focus stays inside the textarea: ArrowUp and ArrowDown update aria-activedescendant, Enter or Tab inserts, and Escape closes the popup without closing a parent Dialog.
+- Triggers only fire at the start of a line or after whitespace/punctuation, so typing email addresses never opens the popup.
+
+**Do**
+- Use Mentions for comments, review notes, chat composers and issue descriptions where people reference teammates (@) or records (#).
+- Pass keywords on options (such as role or full handle) so people find teammates either by name or username.
+
+**Examples**: Teammate @mentions & #issues. Copy-ready HTML and React in llms/mentions.md.
 
 ## Inline edit
 
@@ -1913,6 +2013,55 @@ Category: Forms. A tag field whose chips are records picked from a list: one per
 - Turn on creatable only when a new record is allowed, and save it in onCreate so its id is the real one.
 
 **Examples**: Assignee, one person, Labels, several and creatable. Copy-ready HTML and React in llms/record-picker.md.
+
+## Transfer list
+
+Category: Forms. A dual-list shuttle for moving items between an available column and a selected column, such as role permissions, export columns or team members. Each column supports live filtering, select-all and keyboard navigation. Also called: transfer-list, dual-list, dual-listbox, list-shuttle, shuttle.
+
+**Classes**
+- `.ayy-transfer-list` — Root 3-column grid (source pane, transfer actions, target pane); stacks vertically below 48rem.
+- `.ayy-transfer-list__pane` — One list column card (data-pane="source" or data-pane="target").
+- `.ayy-transfer-list__header` — Pane top row holding the select-all checkbox, title and item count.
+- `.ayy-transfer-list__title` — Clickable label wrapping the pane's select-all Checkbox and heading.
+- `.ayy-transfer-list__count` — Tabular item count at the inline end ("2 / 6" when items are checked).
+- `.ayy-transfer-list__search` — Optional filter row under the header with a magnifier icon and borderless input.
+- `.ayy-transfer-list__filter` — Per-pane <input type="search"> filter.
+- `.ayy-transfer-list__list` — Scrollable list body (14rem tall) of checkable item rows.
+- `.ayy-transfer-list__item` — One <label> row holding an .ayy-checkbox and the item's text.
+- `.ayy-transfer-list__item-body` — Text column inside an item row.
+- `.ayy-transfer-list__label` — Primary item name.
+- `.ayy-transfer-list__description` — Optional muted second line under the item name.
+- `.ayy-transfer-list__empty` — Centred muted empty or no-matches message inside a pane.
+- `.ayy-transfer-list__actions` — Middle column (row on phones) of transfer icon buttons.
+
+**States**
+- `hover` (`.ayy-transfer-list__item:hover (hover devices)`)
+- `focus` (`:focus-visible on a Checkbox, transfer Button or .ayy-transfer-list__filter`)
+- `disabled` (`disabled on item Checkboxes, the filter input or transfer Buttons`)
+- `selected` (`:checked on an item's Checkbox (pending transfer), or presence in the target pane (assigned)`)
+- `error` (`aria-invalid="true" on .ayy-transfer-list (with a FieldError)`)
+
+**Sizes**
+- Density — Header height, search bar height, checkboxes and transfer buttons follow data-density; list viewport stays 14rem tall.
+- Width — Fills its container across two equal columns; stacks into a single column with rotated arrows below 48rem.
+
+**Custom element** `<ayy-transfer-list>` (@danitesler/ayywi/elements) — An .ayy-transfer-list containing source and target .ayy-transfer-list__pane elements and .ayy-transfer-list__actions.
+- attribute `name`: Form field name: syncs one hidden input per item in the target pane.
+- event `ayy-change`: { value: string[] } — fired whenever items move between panes.
+
+**React** — `import { TransferList } from "@danitesler/ayywi/react";`
+- `<TransferList>` renders <div role="group" class="ayy-transfer-list"> with source pane, action buttons and target pane. Props: `options` TransferListOption[] — id, label, description?, keywords?, disabled?; `value / defaultValue` string[] — IDs in the target (selected) pane.; `onValueChange` (value: string[]) => void; `sourceTitle` string — heading of the available pane (default "Available").; `targetTitle` string — heading of the selected pane (default "Selected").; `searchable` boolean — show a filter input in each pane (default false).; `searchPlaceholder` string — placeholder for filter inputs (default "Filter…").; `showMoveAll` boolean — include Move all / Remove all buttons (default true).; `sourceEmptyText` string — empty message for source pane.; `targetEmptyText` string — empty message for target pane.; `disabled` boolean; `invalid` boolean — sets aria-invalid="true".; `name` string — renders hidden inputs for selected IDs.; `...rest` All native <div> attributes.
+
+**Accessibility**
+- Every item is a real Checkbox inside a <label>, so screen readers announce its label, description and checked state natively.
+- ArrowUp, ArrowDown, Home and End move focus between visible checkboxes in a pane; Space toggles.
+- Transfer icon buttons carry descriptive aria-labels ("Move selected to Assigned") and Tooltips, and disable when no items can move.
+
+**Do**
+- Use a Transfer list when users need to see both what is available and what is assigned side by side (role permissions, report columns).
+- Turn on searchable when either column can hold more than ~10 items.
+
+**Examples**: Role permissions with search. Copy-ready HTML and React in llms/transfer-list.md.
 
 ## Date & time picker
 
@@ -2454,6 +2603,50 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 - Use size sm in a cart line or a table row.
 
 **Examples**: Guests and quantity. Copy-ready HTML and React in llms/number-field.md.
+
+## Rating
+
+Category: Forms. Stars for picking a score in a review or feedback form, or displaying an existing average score with whole or half stars. Interactive ratings use native radio buttons, so arrow keys and forms work out of the box. Also called: rating, star-rating, stars, review-stars.
+
+**Classes**
+- `.ayy-rating` — Root container: role="radiogroup" when interactive, role="img" when read-only.
+- `.ayy-rating--sm` — Small stars (--ayy-size-icon-sm 16px, sm control tap height).
+- `.ayy-rating--lg` — Large stars (--ayy-size-icon-lg 24px, lg control tap height).
+- `.ayy-rating--half` — Interactive half-star increments: two half-width labels per star.
+- `.ayy-rating--readonly` — Read-only score display that hugs the icon height.
+- `.ayy-rating__item` — Each interactive <label> holding a native <input type="radio"> and an .ayy-icon star.
+- `.ayy-rating__star` — One read-only star slot inside .ayy-rating--readonly.
+- `.ayy-rating__star--full` — Whole filled star in read-only mode.
+- `.ayy-rating__fill` — Inline-start 50% overlay inside .ayy-rating__star for a read-only half star (mirrors in RTL).
+
+**States**
+- `hover` (`.ayy-rating__item:hover (hover devices, interactive only)`)
+- `focus` (`.ayy-rating__item:has(> input:focus-visible)`)
+- `disabled` (`disabled on the radio inputs`)
+- `selected` (`:checked on a star's radio input, or .ayy-rating__star--full / .ayy-rating__fill in read-only mode`)
+- `error` (`aria-invalid="true" on .ayy-rating (with a FieldError)`)
+
+**Sizes**
+- `sm` — 16px stars (--ayy-size-icon-sm), sm control hit height (28/32/40px) when interactive.
+- `md` (default) — 20px stars (--ayy-size-icon-md), md control hit height (32/40/44px) when interactive.
+- `lg` — 24px stars (--ayy-size-icon-lg), lg control hit height (40/48/52px) when interactive.
+- Density — Interactive hit height follows data-density so touch screens get 44px+ tap targets; read-only stars stay compact at the icon size.
+- Width — Hugs its stars.
+
+**React** — `import { Rating } from "@danitesler/ayywi/react";`
+- `<Rating>` renders <div role="radiogroup" class="ayy-rating"> when interactive, or <div role="img" class="ayy-rating ayy-rating--readonly"> when readOnly. Props: `value / defaultValue` number — current or initial score (0 to max).; `onValueChange` (value: number) => void; `max` number — total stars (default 5).; `half` boolean — 0.5-star increments when interactive.; `readOnly` boolean — non-interactive display mode.; `clearable` boolean — clicking the active star clears back to 0.; `size` "sm" | "md" | "lg"; `disabled` boolean; `invalid` boolean — sets aria-invalid="true".; `name` string — radio group name for form submission.; `itemLabel` (value: number, max: number) => string — accessible label per star option.; `...rest` All native <div> attributes.
+
+**Accessibility**
+- Name interactive ratings with aria-label or aria-labelledby on the radiogroup; each radio carries its own aria-label ("1 star", "2 stars"…).
+- Read-only ratings render role="img" with aria-label="4.5 out of 5 stars" and hide the individual SVGs from screen readers.
+- Arrow keys move between star values natively through the radio inputs.
+
+**Do**
+- Use Rating for 1–5 satisfaction scores, product reviews and read-only score summaries.
+- Pair a read-only Rating with tabular numeric text ("4.5 (128)") when exact numbers matter.
+- Enable clearable when a rating is optional in a form.
+
+**Examples**: Interactive, half-star & read-only. Copy-ready HTML and React in llms/rating.md.
 
 ## File upload
 

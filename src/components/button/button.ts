@@ -30,3 +30,14 @@ export function buttonClass({ variant = "primary", size = "md", block, align, cl
     className,
   );
 }
+
+export interface SplitButtonClassOptions {
+  /** Fill the container's width: the main action grows, the menu trigger stays square. */
+  block?: boolean;
+  className?: string;
+}
+
+/** Class string for a split button group holding a main action button and a trailing menu trigger button. */
+export function splitButtonClass({ block, className }: SplitButtonClassOptions = {}): string {
+  return cx("ayy-button-split", block && "ayy-button-split--block", className);
+}

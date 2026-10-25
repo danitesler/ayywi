@@ -254,9 +254,62 @@
   padding-inline: calc((var(--_h) - var(--_ic)) / 2 - 1px);
 }
 
+/* ---- Split button: a main action button joined with a trailing menu trigger button. ---- */
+.ayy-button-split {
+  display: inline-flex;
+  align-items: stretch;
+  vertical-align: middle;
+}
+
+.ayy-button-split--block {
+  display: flex;
+  inline-size: 100%;
+}
+
+.ayy-button-split--block > .ayy-button:first-child,
+.ayy-button-split--block > :first-child,
+.ayy-button-split--block > :first-child .ayy-button:not([popover] *) {
+  flex: 1 1 auto;
+}
+
+.ayy-button-split > .ayy-button:first-child,
+.ayy-button-split > :first-child .ayy-button:not([popover] *) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.ayy-button-split > .ayy-button:nth-child(2),
+.ayy-button-split > :nth-child(2) .ayy-button:not([popover] *) {
+  margin-inline-start: -1px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.ayy-button-split > .ayy-button:nth-child(2):not(.ayy-button--secondary, .ayy-button--outline, .ayy-button--ghost, .ayy-button--destructive, .ayy-button--link, .ayy-button--ring),
+.ayy-button-split > :nth-child(2) .ayy-button:not([popover] *, .ayy-button--secondary, .ayy-button--outline, .ayy-button--ghost, .ayy-button--destructive, .ayy-button--link, .ayy-button--ring) {
+  border-inline-start-color: color-mix(in srgb, var(--ayy-color-primary-fg) 24%, transparent);
+}
+
+.ayy-button-split > .ayy-button--ghost:nth-child(2),
+.ayy-button-split > :nth-child(2) .ayy-button--ghost:not([popover] *) {
+  border-inline-start-color: var(--ayy-color-line);
+}
+
+.ayy-button-split .ayy-button:not([popover] *):is(:hover, :focus-visible, [aria-expanded="true"]) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .ayy-button-split .ayy-button:not([popover] *):hover {
+    transform: none;
+  }
+}
+
 /* ---- Windows High Contrast / forced colors: fills are replaced by the system, so give every button an edge. ---- */
 @media (forced-colors: active) {
-  .ayy-button {
+  .ayy-button,
+  .ayy-button-split .ayy-button:not([popover] *, .ayy-button--link) {
     border-color: ButtonText;
   }
   .ayy-button--ghost,
@@ -267,7 +320,8 @@
     display: none;
   }
   .ayy-button:disabled,
-  .ayy-button[aria-disabled="true"] {
+  .ayy-button[aria-disabled="true"],
+  .ayy-button-split .ayy-button:is(:disabled, [aria-disabled="true"]) {
     border-color: GrayText;
     color: GrayText;
     opacity: 1;

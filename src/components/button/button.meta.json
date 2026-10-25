@@ -3,7 +3,7 @@
   "slug": "button",
   "category": "Actions",
   "description": "The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions.",
-  "aka": ["button", "btn", "icon-button", "icon-btn", "cta"],
+  "aka": ["button", "btn", "icon-button", "icon-btn", "cta", "split-button", "button-group"],
   "classes": {
     "ayy-button": "Root. Alone it is the primary button.",
     "ayy-button--secondary": "Quiet filled button for secondary actions.",
@@ -19,7 +19,9 @@
     "ayy-button--icon-lg": "Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.",
     "ayy-button--block": "Fills its container's width: a card footer, a phone form, a dialog's only action.",
     "ayy-button--start": "Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.",
-    "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class."
+    "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class.",
+    "ayy-button-split": "Group joining a main action .ayy-button and a trailing icon .ayy-button (opening a menu) into a single split button with a shared seam.",
+    "ayy-button-split--block": "Full-width split button: the main action stretches and the menu trigger stays square."
   },
   "variants": {
     "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"], "default": "primary" },
@@ -50,9 +52,9 @@
     "density": "Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).",
     "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action."
   },
-  "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
+  "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
   "react": {
-    "import": "import { Button } from \"@danitesler/ayywi/react\";",
+    "import": "import { Button, SplitButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "Button": {
         "renders": "<button>",
@@ -67,17 +69,26 @@
           "tooltipSide": "\"top\" | \"bottom\" | \"start\" | \"end\" — placement of the tooltip (default \"top\").",
           "...rest": "All native <button> attributes."
         }
+      },
+      "SplitButton": {
+        "renders": "<div role=\"group\" class=\"ayy-button-split\">",
+        "props": {
+          "block": "boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.",
+          "...rest": "All native <div> attributes."
+        }
       }
     }
   },
   "a11y": [
     "Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.",
+    "In a SplitButton, give the trailing menu trigger an explicit aria-label naming what it opens (\"More deploy options\").",
     "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
     "Visible focus ring on :focus-visible is built in — never remove it.",
     "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away."
   ],
   "do": [
     "Use a button for any action the user can take: submit, open, save, delete.",
+    "Use a SplitButton when a primary action has closely related alternatives in a DropdownMenu (\"Deploy\" + \"Deploy to preview\").",
     "Apply buttonClass() to an <a> when a link should look like an action.",
     "Always pair icon-only buttons (size=\"icon*\", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.",
     "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
@@ -94,6 +105,7 @@
     { "id": "variants", "title": "Variants" },
     { "id": "sizes", "title": "Sizes" },
     { "id": "icon", "title": "With icon & icon-only" },
+    { "id": "split", "title": "Split button" },
     { "id": "loading", "title": "Loading with spinner" },
     { "id": "align", "title": "Wide button alignment" },
     { "id": "as-link", "title": "Link styled as a button" },

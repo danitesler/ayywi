@@ -20,10 +20,12 @@
 @import "../components/text-highlight/text-highlight.css" layer(ayywi.components);
 @import "../components/shortcut/shortcut.css" layer(ayywi.components);
 @import "../components/input/input.css" layer(ayywi.components);
+@import "../components/pin-input/pin-input.css" layer(ayywi.components);
 @import "../components/textarea/textarea.css" layer(ayywi.components);
 @import "../components/inline-edit/inline-edit.css" layer(ayywi.components);
 @import "../components/select/select.css" layer(ayywi.components);
 @import "../components/combobox/combobox.css" layer(ayywi.components);
+@import "../components/mentions/mentions.css" layer(ayywi.components);
 @import "../components/date-time-picker/date-time-picker.css" layer(ayywi.components);
 @import "../components/color-picker/color-picker.css" layer(ayywi.components);
 @import "../components/icon-picker/icon-picker.css" layer(ayywi.components);
@@ -37,6 +39,8 @@
 @import "../components/choice-card/choice-card.css" layer(ayywi.components);
 @import "../components/slider/slider.css" layer(ayywi.components);
 @import "../components/number-field/number-field.css" layer(ayywi.components);
+@import "../components/rating/rating.css" layer(ayywi.components);
+@import "../components/transfer-list/transfer-list.css" layer(ayywi.components);
 @import "../components/dropzone/dropzone.css" layer(ayywi.components);
 @import "../components/drag-drop/drag-drop.css" layer(ayywi.components);
 @import "../components/field/field.css" layer(ayywi.components);

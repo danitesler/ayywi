@@ -1,0 +1,110 @@
+/* PIN input: one character per box for verification codes, 2FA tokens and passcodes. Digits always read left-to-right,
+   even inside right-to-left pages, so direction is fixed to ltr. React PinInput and <ayy-pin-input> handle auto-advance,
+   backspace, arrow keys and pasting a full code with spaces or dashes. */
+
+.ayy-pin-input {
+  --_size: var(--ayy-size-control-md);
+  --_font: var(--ayy-control-text-field);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  direction: ltr;
+}
+
+.ayy-pin-input--sm {
+  --_size: var(--ayy-size-control-sm);
+  --_font: var(--ayy-control-text-sm);
+  gap: var(--ayy-space-1-5);
+}
+
+.ayy-pin-input--lg {
+  --_size: var(--ayy-size-control-lg);
+  --_font: var(--ayy-control-text-lg);
+}
+
+.ayy-pin-input__group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-1-5);
+}
+
+.ayy-pin-input__separator {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  line-height: 1;
+  user-select: none;
+}
+
+.ayy-pin-input__slot {
+  box-sizing: border-box;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-control);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-mono);
+  font-size: var(--_font);
+  font-weight: var(--ayy-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: center;
+  caret-color: var(--ayy-color-text);
+  transition:
+    border-color var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-pin-input__slot::placeholder {
+  color: color-mix(in srgb, var(--ayy-color-muted) 60%, transparent);
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .ayy-pin-input__slot:not(:disabled):hover {
+    border-color: var(--ayy-color-line-hover);
+  }
+}
+
+.ayy-pin-input__slot:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.ayy-pin-input__slot:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-pin-input[aria-invalid="true"] .ayy-pin-input__slot,
+.ayy-pin-input__slot[aria-invalid="true"] {
+  border-color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+.ayy-pin-input[aria-invalid="true"] .ayy-pin-input__slot:focus-visible,
+.ayy-pin-input__slot[aria-invalid="true"]:focus-visible {
+  outline-color: var(--ayy-color-destructive);
+}
+
+@media (forced-colors: active) {
+  .ayy-pin-input__slot {
+    border-color: CanvasText;
+  }
+  .ayy-pin-input[aria-invalid="true"] .ayy-pin-input__slot,
+  .ayy-pin-input__slot[aria-invalid="true"] {
+    border-style: dashed;
+  }
+  .ayy-pin-input__slot:disabled {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+}
+
+/* <ayy-pin-input> only adds behaviour; it has no box of its own. */
+ayy-pin-input {
+  display: contents;
+}

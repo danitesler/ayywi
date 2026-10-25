@@ -1,0 +1,70 @@
+/* Mentions: a textarea that opens a floating listbox at the caret when a trigger character (@ or #) is typed.
+   Uses .ayy-textarea for the field and .ayy-combobox__listbox for the popup. */
+
+.ayy-mentions {
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+}
+
+.ayy-mentions__textarea {
+  display: block;
+}
+
+.ayy-mentions__anchor {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 0;
+  block-size: 1.25em;
+  pointer-events: none;
+}
+
+.ayy-mentions__listbox {
+  min-inline-size: 13rem;
+  max-inline-size: min(20rem, calc(100vw - 1rem));
+}
+
+.ayy-mentions__option {
+  gap: var(--ayy-space-2);
+}
+
+.ayy-mentions__option[aria-selected="true"] {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-mentions__body {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+  min-inline-size: 0;
+}
+
+.ayy-mentions__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-mentions__handle {
+  flex: none;
+  color: var(--ayy-color-muted);
+  font-family: var(--ayy-font-mono);
+  font-size: var(--ayy-text-xs);
+}
+
+@media (forced-colors: active) {
+  .ayy-mentions__option[aria-selected="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* <ayy-mentions> only adds behaviour; it has no box of its own. */
+ayy-mentions {
+  display: contents;
+}

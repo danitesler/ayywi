@@ -1,0 +1,97 @@
+{
+  "name": "PIN input",
+  "slug": "pin-input",
+  "category": "Forms",
+  "family": "input",
+  "description": "One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once.",
+  "aka": ["pin-input", "otp-input", "otp", "pin-field", "verification-code", "passcode-input"],
+  "classes": {
+    "ayy-pin-input": "Root group (role=\"group\", direction ltr so codes always read left to right).",
+    "ayy-pin-input--sm": "Small slots (--ayy-size-control-sm square, sm text).",
+    "ayy-pin-input--lg": "Large slots (--ayy-size-control-lg square, lg text).",
+    "ayy-pin-input__group": "Tighter cluster of slots when a code is split into halves (e.g. 3 + 3).",
+    "ayy-pin-input__separator": "Muted dash between slot groups (aria-hidden=\"true\").",
+    "ayy-pin-input__slot": "Each character <input>: monospace, centred, tabular-nums."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
+    "type": { "values": ["numeric", "alphanumeric"], "default": "numeric" },
+    "mask": { "values": [false, true], "default": false }
+  },
+  "states": {
+    "default": { "looks": "Square wash boxes with 1px line-strong borders, centred monospace digits." },
+    "hover": { "when": ".ayy-pin-input__slot:hover (hover devices)", "looks": "Slot border turns --ayy-color-line-hover." },
+    "pressed": { "none": "Text slots have no pressed look; clicking focuses and selects the slot." },
+    "focus": { "when": ".ayy-pin-input__slot:focus-visible", "looks": "2px --ayy-color-ring outline (-1px offset); the slot border goes transparent." },
+    "disabled": { "when": "disabled on the slots", "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText." },
+    "selected": { "none": "Not a choice control." },
+    "error": { "when": "aria-invalid=\"true\" on .ayy-pin-input or .ayy-pin-input__slot (with a FieldError)", "looks": "60% destructive border and destructive focus ring. Forced colours: dashed border." },
+    "loading": { "none": "Disable the slots and show a Spinner on the verify Button while checking the code." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "Square at --ayy-size-control-sm (28px compact, 32 comfortable, 40 touch), sm text.",
+      "md": "Square at --ayy-size-control-md (32px compact, 40 comfortable, 44 touch), field text.",
+      "lg": "Square at --ayy-size-control-lg (40px compact, 48 comfortable, 52 touch), lg text."
+    },
+    "density": "Slot width, height and text size follow data-density across all steps.",
+    "width": "Hugs its slots and separators."
+  },
+  "js": "pinInputClass({ size?, className? }) → string; pinInputGroupClass, pinInputSeparatorClass, pinInputSlotClass constants; connectPinInput(root, { type?, onChange?, onComplete? }) → { value, setValue, clear, focus, destroy }.",
+  "element": {
+    "tag": "ayy-pin-input",
+    "description": "Wires an .ayy-pin-input of .ayy-pin-input__slot inputs: auto-advance, Backspace, arrows, paste, SMS autofill, optional hidden form input, and change/complete events.",
+    "children": "An .ayy-pin-input containing .ayy-pin-input__slot <input> elements (optionally grouped in .ayy-pin-input__group with .ayy-pin-input__separator).",
+    "attributes": {
+      "type": "numeric | alphanumeric",
+      "mask": "Render slots as password dots.",
+      "name": "Form field name: syncs a hidden input with the combined code."
+    },
+    "events": {
+      "ayy-change": "{ value: string } — fired whenever the code changes.",
+      "ayy-complete": "{ value: string } — fired once every slot is filled."
+    }
+  },
+  "react": {
+    "import": "import { PinInput } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "PinInput": {
+        "renders": "<div role=\"group\" class=\"ayy-pin-input\"> of .ayy-pin-input__slot <input> elements",
+        "props": {
+          "length": "number — total slots when groups is omitted (default 6).",
+          "groups": "number[] — split slots into groups with a dash between them, e.g. [3, 3].",
+          "type": "\"numeric\" | \"alphanumeric\" — allowed characters (default \"numeric\").",
+          "mask": "boolean — hide entered characters as password dots.",
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "value / defaultValue": "string — current or initial code.",
+          "onValueChange": "(value: string) => void",
+          "onComplete": "(value: string) => void — called once all slots are filled.",
+          "disabled": "boolean",
+          "invalid": "boolean — sets aria-invalid=\"true\" on the group and slots.",
+          "name": "string — renders a hidden input carrying the combined code.",
+          "autoFocus": "boolean — focuses the first slot on mount.",
+          "placeholder": "string — placeholder character per empty slot.",
+          "slotLabel": "(index: number, total: number) => string — accessible label per slot.",
+          "...rest": "All native <div> attributes on the group."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Wrap in a Field with a Label (or aria-labelledby on the group), and keep each slot's aria-label (\"Digit 1 of 6\").",
+    "The first slot carries autocomplete=\"one-time-code\" so SMS and password-manager autofill populate the whole code.",
+    "Digits always read left to right even in RTL layouts; ArrowLeft and ArrowRight move visually between slots."
+  ],
+  "do": [
+    "Use a PIN input for fixed-length verification codes, authenticator tokens, backup codes and numeric PINs.",
+    "Group 6- or 8-character codes as [3, 3] or [4, 4] so people can scan and compare them at a glance.",
+    "Accept pasted codes containing spaces or dashes — connectPinInput strips them automatically."
+  ],
+  "dont": [
+    "Don't use a PIN input for variable-length passwords or API keys — use Input.",
+    "Don't auto-submit destructive actions on completion without a way to review or cancel."
+  ],
+  "examples": [
+    { "id": "verification", "title": "Verification code & masked PIN" }
+  ]
+}

@@ -52,15 +52,18 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 
 - [Field](llms/field.md): A wrapper that ties a label, an input and its hint or error message together with consistent spacing. Use it around any form control.
 - [Input](llms/input.md): A single-line text field for names, emails, passwords, search and other short text. It can hold icons, addons and buttons inside the field.
+- [PIN input](llms/pin-input.md): One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once.
 - [Search bar](llms/search-bar.md): A rounded search field with a magnifier and a clear button, often used at the top of a phone list. It's a real search form, so phones show a search key on the keyboard.
 - [Filter bar](llms/filter-bar.md): A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all.
 - [Sorting](llms/sorting.md): A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it.
 - [Textarea](llms/textarea.md): A multi-line text field for longer text like comments and descriptions. It can grow as you type.
+- [Mentions](llms/mentions.md): A multi-line text field that opens a floating suggestions list right at the caret when someone types @ or #, for tagging teammates, channels or issues inside comments and notes.
 - [Inline edit](llms/inline-edit.md): A value that becomes an input where it sits: a page or card title, a project name, a version, a due date. Click it or press Enter to edit, Enter saves, Esc cancels, blur saves, and a multiline field grows as you type and saves on Mod+Enter.
 - [Select](llms/select.md): A dropdown for choosing one option from a list. It's the native select with a nicer list on desktop, and the system picker on touch devices.
 - [Combobox](llms/combobox.md): A text field that filters a list as you type, for picking one option from a long set like a city, a customer or a time zone. The options open under the field and follow the standard accessible pattern.
 - [Tag input](llms/tag-input.md): A field that turns what you type into removable chips, for tags, labels or email recipients. It can also suggest options as you type.
 - [Record picker](llms/record-picker.md): A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.
+- [Transfer list](llms/transfer-list.md): A dual-list shuttle for moving items between an available column and a selected column, such as role permissions, export columns or team members. Each column supports live filtering, select-all and keyboard navigation.
 - [Date & time picker](llms/date-time-picker.md): Pickers for a date, a date range, a time, or a date with a time. They work inline or in a popover, and can be used fully from the keyboard.
 - [Color picker](llms/color-picker.md): A panel for choosing any colour. It combines an area for shade and brightness, sliders for hue and transparency, a hex field and a row of preset colours.
 - [Icon picker](llms/icon-picker.md): A searchable grid of icons and emoji with a remove button, for marking a column, project, page or label with a symbol. It sits in a Popover or as the submenu panel of a Menu.
@@ -72,6 +75,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Choice card](llms/choice-card.md): A large option for picking one or more things that need more explanation than a radio label, like plans, delivery methods or add-ons. The whole card is clickable and works as a normal radio or checkbox.
 - [Slider](llms/slider.md): A control for choosing a value, or a range between two values, by dragging a handle along a track. It's a native range input, so the keyboard, forms and screen readers work as usual.
 - [Number field](llms/number-field.md): A number input with minus and plus buttons, for small quantities like seats, guests or items. Typing and arrow keys work as in any number field.
+- [Rating](llms/rating.md): Stars for picking a score in a review or feedback form, or displaying an existing average score with whole or half stars. Interactive ratings use native radio buttons, so arrow keys and forms work out of the box.
 - [File upload](llms/dropzone.md): An area for dropping files or clicking to choose them. It's a real file input underneath, so it works without extra code, and it pairs with a list to show what was picked.
 - [Switch](llms/switch.md): An on/off control for a setting that takes effect right away. It's a native checkbox with a switch look and the right accessible role.
 - [Shortcut](llms/shortcut.md): Keyboard shortcuts written once and shown correctly for each device. It also includes a recorder that lets people set their own shortcut, and a list for help screens.

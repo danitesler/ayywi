@@ -1,8 +1,8 @@
-import { forwardRef, useContext, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from "react";
+import { forwardRef, useContext, type ButtonHTMLAttributes, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { Spinner } from "../spinner/spinner.react";
 import { Tooltip, tooltipContext } from "../tooltip/tooltip.react";
 import { generalActionLabel, type TooltipSide } from "../tooltip/tooltip";
-import { buttonClass, type ButtonAlign, type ButtonSize, type ButtonVariant } from "./button";
+import { buttonClass, splitButtonClass, type ButtonAlign, type ButtonSize, type ButtonVariant } from "./button";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -79,4 +79,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {button}
     </Tooltip>
   );
+});
+
+export interface SplitButtonProps extends HTMLAttributes<HTMLDivElement> {
+  /** Fill the container's width: the main action grows, the menu trigger stays square. */
+  block?: boolean;
+}
+
+/** Joins a main action Button with a trailing DropdownMenu trigger Button into a single split button. */
+export const SplitButton = forwardRef<HTMLDivElement, SplitButtonProps>(function SplitButton(
+  { block, className, role = "group", ...props },
+  ref,
+) {
+  return <div ref={ref} role={role} className={splitButtonClass({ block, className })} {...props} />;
 });

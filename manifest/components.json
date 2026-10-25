@@ -9,9 +9,9 @@
     "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, one file per component (button.css, card.css…), then focus.css (focus rings for keyboard use only, with trackInputModality()).",
     "@danitesler/ayywi/brands/<name>.css": "Ready-made brands (violet), applied with data-brand=\"<name>\" or setBrand(\"<name>\"). Make your own with `npx @danitesler/ayywi brand`.",
     "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
-    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectDragDrop, connectGrid, connectIconPicker, connectInlineEdit, connectMenu, connectNavbar, connectPopover, connectRecordPicker, connectShortcutRecorder, connectSwipe, connectTable, connectTableColumnReorder, connectTableColumns, connectTableDragSelect, connectTableEdit, connectTableResize, connectTableRowReorder, connectTagInput, connectTimePicker, connectToc, connectToolbar, connectTree, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
+    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectDragDrop, connectGrid, connectIconPicker, connectInlineEdit, connectMentions, connectMenu, connectNavbar, connectPinInput, connectPopover, connectRecordPicker, connectShortcutRecorder, connectSwipe, connectTable, connectTableColumnReorder, connectTableColumns, connectTableDragSelect, connectTableEdit, connectTableResize, connectTableRowReorder, connectTagInput, connectTimePicker, connectToc, connectToolbar, connectTransferList, connectTree, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
     "@danitesler/ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
+    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
     "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "@danitesler/ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-contrast.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "npx @danitesler/ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
@@ -53,22 +53,23 @@
     "An app screen fills the main. Don't wrap it in .ayy-container or a max-inline-size — a max-inline-size on an example only sizes that example in the docs, it is not page layout. Long text (a description, .ayy-prose) may stop at --ayy-size-measure. Settings mode already centres its column; don't add a second cap.",
     "Every list, table and page has three more states: loading (Skeleton in the shape of the content with aria-busy; a Spinner or <Button loading> for an action), empty (an Empty state with the action that fills it) and error (an Alert with a retry for a failed load or save; FieldError next to a field).",
     "Data views use ayywi's own pieces: Chart (BarChart, LineChart, DonutChart, ScatterChart, HeatmapChart, FunnelChart and the rest), Bar list and Sparkline for charts, coloured from --ayy-chart-1… in order; filters as Chips (with counts) above the results and the active ones as removable chips; sortable Table columns with a .ayy-table__sort button and aria-sort on the <th>. With a chart library, colour it with var(--ayy-chart-N) (SVG) or chartColors() and chartTheme() (canvas); never its default palette.",
-    "Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Number field for small counts, a Slider for a rough amount, a DatePicker or DatePickerGrid for a date near today (DateRange / DateRangePicker for a date span, TimePicker / TimePickerTrigger for stepped times, DateTimePicker / DateTimePickerTrigger for date and time, native type=\"date\" for a birth date, type=\"time\" for rapid typing), ColorSwatches for a fixed palette or ColorPicker for any custom colour, a Tag input for free-text tags or recipients, a Search bar to filter a list, a Shortcut recorder for key bindings, File upload for files.",
+    "Pick form controls by the choice: a Segmented control for two to five short options, Choice cards when each option needs a sentence or a price (compact for time slots), a Select for a short list, a Combobox for many known values, a Transfer list to move items between available and chosen lists, a PIN input for verification codes or PINs, Mentions for inline @mentions or #references inside a textarea, a Rating for 1–5 star scores, a Number field for small counts, a Slider for a rough amount, a DatePicker or DatePickerGrid for a date near today (DateRange / DateRangePicker for a date span, TimePicker / TimePickerTrigger for stepped times, DateTimePicker / DateTimePickerTrigger for date and time, native type=\"date\" for a birth date, type=\"time\" for rapid typing), ColorSwatches for a fixed palette or ColorPicker for any custom colour, a Tag input for free-text tags or recipients, a Search bar to filter a list, a Shortcut recorder for key bindings, File upload for files.",
     "Don't write breakpoints for navigation or layout: App shell, Navbar and Pagination switch at 48rem on their own, and .ayy-grid and .ayy-split adapt to their container. If you truly need one, use 48rem (phone) or 64rem (tablet).",
     "Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.",
     "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
     "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
     "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-    "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
+    "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-pin-input>, <ayy-mentions>, <ayy-transfer-list>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
     "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped."
   ],
   "needs": [
     {
       "need": "Run an action (save, create, delete, open)",
       "use": [
-        "button"
+        "button",
+        "menu"
       ],
-      "how": "Button: one primary per view, outline/ghost for the rest, destructive for delete, size icon + aria-label for icon-only.",
+      "how": "Button: one primary per view, outline/ghost for the rest, destructive for delete, size icon + aria-label for icon-only; SplitButton + DropdownMenu when one default action has secondary alternatives.",
       "not": "<button> with your own classes or none, a <div>/<span> with onClick, a link styled as a button for an action"
     },
     {
@@ -133,6 +134,14 @@
       "not": "pills built from <span>s or buttons with an active class"
     },
     {
+      "need": "Move items between two lists (available vs assigned permissions, columns or members)",
+      "use": [
+        "transfer-list"
+      ],
+      "how": "TransferList (<ayy-transfer-list> in HTML) with searchable Available and Selected panes and Move selected / Move all buttons.",
+      "not": "two custom list boxes with hand-wired state and arrow buttons"
+    },
+    {
       "need": "Filter a list, table or feed (status tabs, faceted dropdowns, active chips)",
       "use": [
         "filter-bar",
@@ -160,6 +169,33 @@
       ],
       "how": "Field + Label + Input (Input group for an icon or a unit, Textarea for long text, Number field for small counts), FieldHint and FieldError under it.",
       "not": "a raw <input>/<textarea>, a placeholder instead of a label"
+    },
+    {
+      "need": "Enter a verification code, OTP or PIN",
+      "use": [
+        "pin-input",
+        "field"
+      ],
+      "how": "PinInput (<ayy-pin-input> in HTML) inside a Field, with group for a split 3+3 code and mask for secret PINs.",
+      "not": "six separate <input maxlength=\"1\"> elements wired by hand or a single plain text input"
+    },
+    {
+      "need": "Mention people or reference issues inline in a comment (@user, #issue)",
+      "use": [
+        "mentions",
+        "field"
+      ],
+      "how": "Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox.",
+      "not": "contenteditable rich-text hacks or an unanchored dropdown under a textarea"
+    },
+    {
+      "need": "Give or display a star rating or review score",
+      "use": [
+        "rating",
+        "field"
+      ],
+      "how": "Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores).",
+      "not": "buttons or spans of ★ characters with custom click handlers"
     },
     {
       "need": "Search or filter by typing",
@@ -2309,7 +2345,9 @@
         "btn",
         "icon-button",
         "icon-btn",
-        "cta"
+        "cta",
+        "split-button",
+        "button-group"
       ],
       "classes": {
         "ayy-button": "Root. Alone it is the primary button.",
@@ -2326,7 +2364,9 @@
         "ayy-button--icon-lg": "Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.",
         "ayy-button--block": "Fills its container's width: a card footer, a phone form, a dialog's only action.",
         "ayy-button--start": "Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.",
-        "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class."
+        "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class.",
+        "ayy-button-split": "Group joining a main action .ayy-button and a trailing icon .ayy-button (opening a menu) into a single split button with a shared seam.",
+        "ayy-button-split--block": "Full-width split button: the main action stretches and the menu trigger stays square."
       },
       "variants": {
         "variant": {
@@ -2421,9 +2461,9 @@
         "density": "Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).",
         "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action."
       },
-      "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
+      "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
       "react": {
-        "import": "import { Button } from \"@danitesler/ayywi/react\";",
+        "import": "import { Button, SplitButton } from \"@danitesler/ayywi/react\";",
         "components": {
           "Button": {
             "renders": "<button>",
@@ -2438,17 +2478,26 @@
               "tooltipSide": "\"top\" | \"bottom\" | \"start\" | \"end\" — placement of the tooltip (default \"top\").",
               "...rest": "All native <button> attributes."
             }
+          },
+          "SplitButton": {
+            "renders": "<div role=\"group\" class=\"ayy-button-split\">",
+            "props": {
+              "block": "boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.",
+              "...rest": "All native <div> attributes."
+            }
           }
         }
       },
       "a11y": [
         "Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.",
+        "In a SplitButton, give the trailing menu trigger an explicit aria-label naming what it opens (\"More deploy options\").",
         "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
         "Visible focus ring on :focus-visible is built in — never remove it.",
         "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away."
       ],
       "do": [
         "Use a button for any action the user can take: submit, open, save, delete.",
+        "Use a SplitButton when a primary action has closely related alternatives in a DropdownMenu (\"Deploy\" + \"Deploy to preview\").",
         "Apply buttonClass() to an <a> when a link should look like an action.",
         "Always pair icon-only buttons (size=\"icon*\", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.",
         "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
@@ -2479,6 +2528,12 @@
           "title": "With icon & icon-only",
           "html": "<button type=\"button\" class=\"ayy-button\">\n  <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n  New project\n</button>\n<button type=\"button\" class=\"ayy-button ayy-button--secondary\">\n  <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M3 20.5002C3.28417 16.8058 6.3 13.7193 10.0008 13.5379C10.3134 13.5226 10.6446 13.5097 11 13.5L11.995 13.5663C12.6939 13.6129 13.3665 13.7543 14 13.9777\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M18 15.5V21.5M21 18.5L15 18.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><circle cx=\"11\" cy=\"6.5\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n  Invite member\n</button>\n<span class=\"ayy-tooltip\">\n  <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon-lg\" aria-label=\"Add item\">\n    <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n  </button>\n  <span role=\"tooltip\" class=\"ayy-tooltip__content\">Add item (large)</span>\n</span>\n<span class=\"ayy-tooltip\">\n  <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon\" aria-label=\"Add item\">\n    <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n  </button>\n  <span role=\"tooltip\" class=\"ayy-tooltip__content\">Add item</span>\n</span>\n<span class=\"ayy-tooltip\">\n  <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--icon-sm\" aria-label=\"Add item\">\n    <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n  </button>\n  <span role=\"tooltip\" class=\"ayy-tooltip__content\">Add item (compact)</span>\n</span>",
           "react": "import { PlusSignIcon, UserAdd01Icon } from \"@hugeicons/core-free-icons\";\nimport { Button, Icon, Tooltip } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <Button>\n        <Icon icon={PlusSignIcon} />\n        New project\n      </Button>\n      <Button variant=\"secondary\">\n        <Icon icon={UserAdd01Icon} />\n        Invite member\n      </Button>\n      <Tooltip content=\"Add item (large)\">\n        <Button variant=\"outline\" size=\"icon-lg\" aria-label=\"Add item\">\n          <Icon icon={PlusSignIcon} />\n        </Button>\n      </Tooltip>\n      <Tooltip content=\"Add item\">\n        <Button variant=\"outline\" size=\"icon\" aria-label=\"Add item\">\n          <Icon icon={PlusSignIcon} />\n        </Button>\n      </Tooltip>\n      <Tooltip content=\"Add item (compact)\">\n        <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Add item\">\n          <Icon icon={PlusSignIcon} />\n        </Button>\n      </Tooltip>\n    </>\n  );\n}"
+        },
+        {
+          "id": "split",
+          "title": "Split button",
+          "html": "<!-- .ayy-button-split fuses a primary action button with an <ayy-menu> trigger button. -->\n<div class=\"ayy-cluster\">\n  <div role=\"group\" class=\"ayy-button-split\">\n    <button type=\"button\" class=\"ayy-button\">\n      <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M6.21875 11.618L3.31189 11.2378C2.71644 11.1606 2.31883 10.5841 2.58348 10.0458C3.42523 8.33365 5.6195 6.35437 9.73988 6.68079M6.21875 11.618C7.27445 9.85426 8.57175 8.00435 9.73988 6.68079M6.21875 11.618L11.882 17.2812M9.73988 6.68079C13.4105 2.58986 17.1745 1.728 19.5937 2.06685C20.5508 2.2009 21.2991 2.94917 21.4332 3.90626C21.772 6.32551 20.9101 10.0895 16.8192 13.7601M11.882 17.2812L12.2622 20.1881C12.3394 20.7836 12.9159 21.1812 13.4542 20.9165C15.1664 20.0748 17.1456 17.8805 16.8192 13.7601M11.882 17.2812C13.6457 16.2255 15.4956 14.9282 16.8192 13.7601\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M17.5 8C17.5 6.89543 16.6046 6 15.5 6C14.3954 6 13.5 6.89543 13.5 8C13.5 9.10457 14.3954 10 15.5 10C16.6046 10 17.5 9.10457 17.5 8Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M4 22L8 18M4 17L5.5 15.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      Deploy\n    </button>\n    <ayy-menu align=\"end\">\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--icon\" aria-haspopup=\"menu\" popovertarget=\"split-deploy-menu\" aria-label=\"More deploy options\" aria-describedby=\"split-deploy-tip\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"split-deploy-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">More deploy options</span>\n      </ayy-tooltip>\n      <div id=\"split-deploy-menu\" role=\"menu\" class=\"ayy-menu\" popover=\"auto\">\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M6.21875 11.618L3.31189 11.2378C2.71644 11.1606 2.31883 10.5841 2.58348 10.0458C3.42523 8.33365 5.6195 6.35437 9.73988 6.68079M6.21875 11.618C7.27445 9.85426 8.57175 8.00435 9.73988 6.68079M6.21875 11.618L11.882 17.2812M9.73988 6.68079C13.4105 2.58986 17.1745 1.728 19.5937 2.06685C20.5508 2.2009 21.2991 2.94917 21.4332 3.90626C21.772 6.32551 20.9101 10.0895 16.8192 13.7601M11.882 17.2812L12.2622 20.1881C12.3394 20.7836 12.9159 21.1812 13.4542 20.9165C15.1664 20.0748 17.1456 17.8805 16.8192 13.7601M11.882 17.2812C13.6457 16.2255 15.4956 14.9282 16.8192 13.7601\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M17.5 8C17.5 6.89543 16.6046 6 15.5 6C14.3954 6 13.5 6.89543 13.5 8C13.5 9.10457 14.3954 10 15.5 10C16.6046 10 17.5 9.10457 17.5 8Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M4 22L8 18M4 17L5.5 15.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          Deploy to preview\n        </button>\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 2V6M8 2V6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 10H21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          Schedule deploy\n        </button>\n        <div role=\"separator\" class=\"ayy-menu__separator\"></div>\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          Copy build command\n        </button>\n      </div>\n    </ayy-menu>\n  </div>\n\n  <div role=\"group\" class=\"ayy-button-split\">\n    <button type=\"button\" class=\"ayy-button ayy-button--outline\">Save changes</button>\n    <ayy-menu align=\"end\">\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon\" aria-haspopup=\"menu\" popovertarget=\"split-save-menu\" aria-label=\"More save options\" aria-describedby=\"split-save-tip\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"split-save-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">More save options</span>\n      </ayy-tooltip>\n      <div id=\"split-save-menu\" role=\"menu\" class=\"ayy-menu\" popover=\"auto\">\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"1.5\"></circle><path d=\"M12 8V12L14 14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          Save as draft\n        </button>\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n          Save as template\n        </button>\n      </div>\n    </ayy-menu>\n  </div>\n\n  <div role=\"group\" class=\"ayy-button-split\">\n    <button type=\"button\" class=\"ayy-button ayy-button--secondary ayy-button--sm\">Export CSV</button>\n    <ayy-menu align=\"end\">\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--secondary ayy-button--icon-sm\" aria-haspopup=\"menu\" popovertarget=\"split-export-menu\" aria-label=\"More export formats\" aria-describedby=\"split-export-tip\">\n          <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"split-export-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">More export formats</span>\n      </ayy-tooltip>\n      <div id=\"split-export-menu\" role=\"menu\" class=\"ayy-menu\" popover=\"auto\">\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">Export JSON</button>\n        <button type=\"button\" role=\"menuitem\" tabindex=\"-1\" class=\"ayy-menu__item\">Export Parquet</button>\n      </div>\n    </ayy-menu>\n  </div>\n</div>",
+          "react": "import { ArrowDown01Icon, Calendar03Icon, Clock01Icon, Copy01Icon, Rocket01Icon } from \"@hugeicons/core-free-icons\";\nimport {\n  Button,\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n  Icon,\n  SplitButton,\n  toast,\n} from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-cluster\">\n      <SplitButton>\n        <Button onClick={() => toast.success(\"Deployed to production\")}>\n          <Icon icon={Rocket01Icon} />\n          Deploy\n        </Button>\n        <DropdownMenu>\n          <DropdownMenuTrigger size=\"icon\" aria-label=\"More deploy options\">\n            <Icon icon={ArrowDown01Icon} />\n          </DropdownMenuTrigger>\n          <DropdownMenuContent align=\"end\">\n            <DropdownMenuItem icon={<Icon icon={Rocket01Icon} />} onSelect={() => toast(\"Deploying preview…\")}>\n              Deploy to preview\n            </DropdownMenuItem>\n            <DropdownMenuItem icon={<Icon icon={Calendar03Icon} />} onSelect={() => toast(\"Scheduled for 09:00\")}>\n              Schedule deploy\n            </DropdownMenuItem>\n            <DropdownMenuSeparator />\n            <DropdownMenuItem icon={<Icon icon={Copy01Icon} />} onSelect={() => toast(\"Build command copied\")}>\n              Copy build command\n            </DropdownMenuItem>\n          </DropdownMenuContent>\n        </DropdownMenu>\n      </SplitButton>\n\n      <SplitButton>\n        <Button variant=\"outline\" onClick={() => toast(\"Saved\")}>\n          Save changes\n        </Button>\n        <DropdownMenu>\n          <DropdownMenuTrigger variant=\"outline\" size=\"icon\" aria-label=\"More save options\">\n            <Icon icon={ArrowDown01Icon} />\n          </DropdownMenuTrigger>\n          <DropdownMenuContent align=\"end\">\n            <DropdownMenuItem icon={<Icon icon={Clock01Icon} />} onSelect={() => toast(\"Saved as draft\")}>\n              Save as draft\n            </DropdownMenuItem>\n            <DropdownMenuItem icon={<Icon icon={Copy01Icon} />} onSelect={() => toast(\"Saved as template\")}>\n              Save as template\n            </DropdownMenuItem>\n          </DropdownMenuContent>\n        </DropdownMenu>\n      </SplitButton>\n\n      <SplitButton>\n        <Button variant=\"secondary\" size=\"sm\" onClick={() => toast(\"Exported CSV\")}>\n          Export CSV\n        </Button>\n        <DropdownMenu>\n          <DropdownMenuTrigger variant=\"secondary\" size=\"icon-sm\" aria-label=\"More export formats\">\n            <Icon icon={ArrowDown01Icon} />\n          </DropdownMenuTrigger>\n          <DropdownMenuContent align=\"end\">\n            <DropdownMenuItem onSelect={() => toast(\"Exported JSON\")}>Export JSON</DropdownMenuItem>\n            <DropdownMenuItem onSelect={() => toast(\"Exported Parquet\")}>Export Parquet</DropdownMenuItem>\n          </DropdownMenuContent>\n        </DropdownMenu>\n      </SplitButton>\n    </div>\n  );\n}"
         },
         {
           "id": "loading",
@@ -5367,6 +5422,161 @@
       }
     },
     {
+      "name": "PIN input",
+      "slug": "pin-input",
+      "category": "Forms",
+      "family": "input",
+      "description": "One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once.",
+      "aka": [
+        "pin-input",
+        "otp-input",
+        "otp",
+        "pin-field",
+        "verification-code",
+        "passcode-input"
+      ],
+      "classes": {
+        "ayy-pin-input": "Root group (role=\"group\", direction ltr so codes always read left to right).",
+        "ayy-pin-input--sm": "Small slots (--ayy-size-control-sm square, sm text).",
+        "ayy-pin-input--lg": "Large slots (--ayy-size-control-lg square, lg text).",
+        "ayy-pin-input__group": "Tighter cluster of slots when a code is split into halves (e.g. 3 + 3).",
+        "ayy-pin-input__separator": "Muted dash between slot groups (aria-hidden=\"true\").",
+        "ayy-pin-input__slot": "Each character <input>: monospace, centred, tabular-nums."
+      },
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        "type": {
+          "values": [
+            "numeric",
+            "alphanumeric"
+          ],
+          "default": "numeric"
+        },
+        "mask": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        }
+      },
+      "states": {
+        "default": {
+          "looks": "Square wash boxes with 1px line-strong borders, centred monospace digits."
+        },
+        "hover": {
+          "when": ".ayy-pin-input__slot:hover (hover devices)",
+          "looks": "Slot border turns --ayy-color-line-hover."
+        },
+        "pressed": {
+          "none": "Text slots have no pressed look; clicking focuses and selects the slot."
+        },
+        "focus": {
+          "when": ".ayy-pin-input__slot:focus-visible",
+          "looks": "2px --ayy-color-ring outline (-1px offset); the slot border goes transparent."
+        },
+        "disabled": {
+          "when": "disabled on the slots",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText."
+        },
+        "selected": {
+          "none": "Not a choice control."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on .ayy-pin-input or .ayy-pin-input__slot (with a FieldError)",
+          "looks": "60% destructive border and destructive focus ring. Forced colours: dashed border."
+        },
+        "loading": {
+          "none": "Disable the slots and show a Spinner on the verify Button while checking the code."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "Square at --ayy-size-control-sm (28px compact, 32 comfortable, 40 touch), sm text.",
+          "md": "Square at --ayy-size-control-md (32px compact, 40 comfortable, 44 touch), field text.",
+          "lg": "Square at --ayy-size-control-lg (40px compact, 48 comfortable, 52 touch), lg text."
+        },
+        "density": "Slot width, height and text size follow data-density across all steps.",
+        "width": "Hugs its slots and separators."
+      },
+      "js": "pinInputClass({ size?, className? }) → string; pinInputGroupClass, pinInputSeparatorClass, pinInputSlotClass constants; connectPinInput(root, { type?, onChange?, onComplete? }) → { value, setValue, clear, focus, destroy }.",
+      "element": {
+        "tag": "ayy-pin-input",
+        "description": "Wires an .ayy-pin-input of .ayy-pin-input__slot inputs: auto-advance, Backspace, arrows, paste, SMS autofill, optional hidden form input, and change/complete events.",
+        "children": "An .ayy-pin-input containing .ayy-pin-input__slot <input> elements (optionally grouped in .ayy-pin-input__group with .ayy-pin-input__separator).",
+        "attributes": {
+          "type": "numeric | alphanumeric",
+          "mask": "Render slots as password dots.",
+          "name": "Form field name: syncs a hidden input with the combined code."
+        },
+        "events": {
+          "ayy-change": "{ value: string } — fired whenever the code changes.",
+          "ayy-complete": "{ value: string } — fired once every slot is filled."
+        }
+      },
+      "react": {
+        "import": "import { PinInput } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "PinInput": {
+            "renders": "<div role=\"group\" class=\"ayy-pin-input\"> of .ayy-pin-input__slot <input> elements",
+            "props": {
+              "length": "number — total slots when groups is omitted (default 6).",
+              "groups": "number[] — split slots into groups with a dash between them, e.g. [3, 3].",
+              "type": "\"numeric\" | \"alphanumeric\" — allowed characters (default \"numeric\").",
+              "mask": "boolean — hide entered characters as password dots.",
+              "size": "\"sm\" | \"md\" | \"lg\"",
+              "value / defaultValue": "string — current or initial code.",
+              "onValueChange": "(value: string) => void",
+              "onComplete": "(value: string) => void — called once all slots are filled.",
+              "disabled": "boolean",
+              "invalid": "boolean — sets aria-invalid=\"true\" on the group and slots.",
+              "name": "string — renders a hidden input carrying the combined code.",
+              "autoFocus": "boolean — focuses the first slot on mount.",
+              "placeholder": "string — placeholder character per empty slot.",
+              "slotLabel": "(index: number, total: number) => string — accessible label per slot.",
+              "...rest": "All native <div> attributes on the group."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Wrap in a Field with a Label (or aria-labelledby on the group), and keep each slot's aria-label (\"Digit 1 of 6\").",
+        "The first slot carries autocomplete=\"one-time-code\" so SMS and password-manager autofill populate the whole code.",
+        "Digits always read left to right even in RTL layouts; ArrowLeft and ArrowRight move visually between slots."
+      ],
+      "do": [
+        "Use a PIN input for fixed-length verification codes, authenticator tokens, backup codes and numeric PINs.",
+        "Group 6- or 8-character codes as [3, 3] or [4, 4] so people can scan and compare them at a glance.",
+        "Accept pasted codes containing spaces or dashes — connectPinInput strips them automatically."
+      ],
+      "dont": [
+        "Don't use a PIN input for variable-length passwords or API keys — use Input.",
+        "Don't auto-submit destructive actions on completion without a way to review or cancel."
+      ],
+      "examples": [
+        {
+          "id": "verification",
+          "title": "Verification code & masked PIN",
+          "html": "<!-- <ayy-pin-input> wires auto-advance, Backspace and paste across .ayy-pin-input__slot inputs. -->\n<div class=\"ayy-stack\" style=\"--ayy-gap: var(--ayy-space-5); max-inline-size: 24rem\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" id=\"otp-label-html\" for=\"otp-code-html\">Authenticator code</label>\n    <ayy-pin-input>\n      <div role=\"group\" class=\"ayy-pin-input\" aria-labelledby=\"otp-label-html\">\n        <div class=\"ayy-pin-input__group\">\n          <input id=\"otp-code-html\" type=\"text\" inputmode=\"numeric\" autocomplete=\"one-time-code\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"6\" aria-label=\"Digit 1 of 6\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 2 of 6\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 3 of 6\" class=\"ayy-pin-input__slot\" value=\"\" />\n        </div>\n        <span class=\"ayy-pin-input__separator\" aria-hidden=\"true\">–</span>\n        <div class=\"ayy-pin-input__group\">\n          <input type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 4 of 6\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 5 of 6\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 6 of 6\" class=\"ayy-pin-input__slot\" value=\"\" />\n        </div>\n      </div>\n    </ayy-pin-input>\n    <p class=\"ayy-field__hint\">Enter or paste the 6-digit code (try 482910).</p>\n  </div>\n\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" id=\"pin-mask-label-html\" for=\"card-pin-html\">Card PIN</label>\n    <ayy-pin-input mask>\n      <div role=\"group\" class=\"ayy-pin-input\" aria-labelledby=\"pin-mask-label-html\">\n        <input id=\"card-pin-html\" type=\"password\" inputmode=\"numeric\" autocomplete=\"one-time-code\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"4\" aria-label=\"Digit 1 of 4\" class=\"ayy-pin-input__slot\" value=\"1\" />\n        <input type=\"password\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 2 of 4\" class=\"ayy-pin-input__slot\" value=\"9\" />\n        <input type=\"password\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 3 of 4\" class=\"ayy-pin-input__slot\" value=\"8\" />\n        <input type=\"password\" inputmode=\"numeric\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" aria-label=\"Digit 4 of 4\" class=\"ayy-pin-input__slot\" value=\"4\" />\n      </div>\n    </ayy-pin-input>\n  </div>\n\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" id=\"backup-label-html\" for=\"invite-code-html\">Invite code (alphanumeric)</label>\n    <ayy-pin-input type=\"alphanumeric\">\n      <div role=\"group\" class=\"ayy-pin-input ayy-pin-input--sm\" aria-labelledby=\"backup-label-html\">\n        <div class=\"ayy-pin-input__group\">\n          <input id=\"invite-code-html\" type=\"text\" inputmode=\"text\" autocomplete=\"one-time-code\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"8\" placeholder=\"·\" aria-label=\"Character 1 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 2 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 3 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 4 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n        </div>\n        <span class=\"ayy-pin-input__separator\" aria-hidden=\"true\">–</span>\n        <div class=\"ayy-pin-input__group\">\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 5 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 6 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 7 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n          <input type=\"text\" inputmode=\"text\" autocomplete=\"off\" autocapitalize=\"characters\" spellcheck=\"false\" maxlength=\"1\" placeholder=\"·\" aria-label=\"Character 8 of 8\" class=\"ayy-pin-input__slot\" value=\"\" />\n        </div>\n      </div>\n    </ayy-pin-input>\n  </div>\n</div>",
+          "react": "import { useState } from \"react\";\nimport { Field, FieldError, FieldHint, Label, PinInput, toast } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [code, setCode] = useState(\"\");\n  const invalid = code.length === 6 && code !== \"482910\";\n\n  return (\n    <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-5)\", maxInlineSize: \"24rem\" } as React.CSSProperties}>\n      <Field>\n        <Label id=\"otp-label\" htmlFor=\"otp-code\">\n          Authenticator code\n        </Label>\n        <PinInput\n          id=\"otp-code\"\n          aria-labelledby=\"otp-label\"\n          groups={[3, 3]}\n          value={code}\n          invalid={invalid}\n          onValueChange={setCode}\n          onComplete={(next) => {\n            if (next === \"482910\") toast.success(\"Code verified\");\n          }}\n        />\n        {invalid ? (\n          <FieldError>That code didn’t match. Try 482910.</FieldError>\n        ) : (\n          <FieldHint>Enter or paste the 6-digit code (try 482910).</FieldHint>\n        )}\n      </Field>\n\n      <Field>\n        <Label id=\"pin-mask-label\" htmlFor=\"card-pin\">\n          Card PIN\n        </Label>\n        <PinInput id=\"card-pin\" aria-labelledby=\"pin-mask-label\" length={4} mask defaultValue=\"1984\" />\n      </Field>\n\n      <Field>\n        <Label id=\"backup-label\" htmlFor=\"invite-code\">\n          Invite code (alphanumeric)\n        </Label>\n        <PinInput id=\"invite-code\" aria-labelledby=\"backup-label\" groups={[4, 4]} type=\"alphanumeric\" size=\"sm\" placeholder=\"·\" />\n      </Field>\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/pin-input/pin-input.css",
+        "js": "src/components/pin-input/pin-input.ts",
+        "react": "src/components/pin-input/pin-input.react.tsx",
+        "meta": "src/components/pin-input/pin-input.meta.json",
+        "element": "src/components/pin-input/pin-input.element.ts"
+      }
+    },
+    {
       "name": "Search bar",
       "slug": "search-bar",
       "category": "Forms",
@@ -5918,6 +6128,142 @@
         "js": "src/components/textarea/textarea.ts",
         "react": "src/components/textarea/textarea.react.tsx",
         "meta": "src/components/textarea/textarea.meta.json"
+      }
+    },
+    {
+      "name": "Mentions",
+      "slug": "mentions",
+      "category": "Forms",
+      "family": "input",
+      "description": "A multi-line text field that opens a floating suggestions list right at the caret when someone types @ or #, for tagging teammates, channels or issues inside comments and notes.",
+      "aka": [
+        "mentions",
+        "mention-input",
+        "mention-field",
+        "at-mentions"
+      ],
+      "classes": {
+        "ayy-mentions": "Root wrapper around the textarea, caret anchor and suggestions listbox.",
+        "ayy-mentions__textarea": "Placed alongside .ayy-textarea on the <textarea>.",
+        "ayy-mentions__anchor": "Hidden zero-width anchor placed at the trigger character to position the popup.",
+        "ayy-mentions__listbox": "Popover listbox (.ayy-combobox__listbox) of mention suggestions.",
+        "ayy-mentions__option": "One suggestion row (.ayy-combobox__option) with role=\"option\".",
+        "ayy-mentions__body": "Name and handle row inside an option.",
+        "ayy-mentions__label": "Person or record display name, truncated on overflow.",
+        "ayy-mentions__handle": "Muted monospace @handle or #key at the inline end."
+      },
+      "variants": {
+        "autosize": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        },
+        "mono": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        }
+      },
+      "states": {
+        "default": {
+          "looks": "Like Textarea: wash fill, 1px line-strong border, resizable vertically; suggestions hidden."
+        },
+        "hover": {
+          "when": ":hover on the textarea or a suggestion option (hover devices)",
+          "looks": "Textarea border turns line-hover; hovered option gets Combobox's wash-hover."
+        },
+        "pressed": {
+          "none": "No pressed look; choosing an option inserts the mention at the caret."
+        },
+        "focus": {
+          "when": ":focus-visible on the textarea",
+          "looks": "2px --ayy-color-ring outline (-1px offset); focus stays in the textarea while arrows move through suggestions."
+        },
+        "disabled": {
+          "when": ":disabled on the textarea, or aria-disabled=\"true\" on an option",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor."
+        },
+        "selected": {
+          "when": "aria-selected=\"true\" on the active .ayy-mentions__option",
+          "looks": "--ayy-color-wash-hover fill on the active suggestion. Forced colours: Highlight fill."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on the textarea (with a FieldError)",
+          "looks": "Textarea's 60% destructive border and destructive focus ring."
+        },
+        "loading": {
+          "none": "No loading look; disable while submitting and show a Spinner on the send Button."
+        },
+        "open": {
+          "when": ":popover-open on .ayy-mentions__listbox",
+          "looks": "Floating surface-raised list anchored directly under the @ or # character, flipping above near the bottom edge."
+        }
+      },
+      "sizes": {
+        "density": "Textarea and option rows follow control md text and data-density.",
+        "width": "Textarea fills its container; popup is 13rem to 20rem wide."
+      },
+      "js": "mentionsClass({ className? }) → string; mentionsTextareaClass({ autosize?, mono?, className? }) → string; part class constants; connectMentions(root, { triggers?, onMention? }) → { close, refresh, destroy }.",
+      "element": {
+        "tag": "ayy-mentions",
+        "description": "Wires inline mention autocomplete onto an .ayy-mentions wrapper containing a <textarea> and .ayy-mentions__listbox.",
+        "children": "An .ayy-mentions holding a <textarea class=\"ayy-textarea ayy-mentions__textarea\"> and an .ayy-mentions__listbox of [role=\"option\"] items.",
+        "attributes": {
+          "triggers": "Space-separated trigger characters (default \"@\", e.g. \"@ #\")."
+        },
+        "events": {
+          "ayy-mention": "{ trigger: string, value: string, label: string, text: string } — fired when a suggestion is inserted."
+        }
+      },
+      "react": {
+        "import": "import { Mentions } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "Mentions": {
+            "renders": "<div class=\"ayy-mentions\"> wrapping <textarea>, caret anchor and <ul role=\"listbox\">",
+            "props": {
+              "options": "MentionOption[] — id, label, value?, trigger?, icon?, keywords?, disabled?",
+              "triggers": "string[] — trigger characters (default [\"@\"]).",
+              "onValueChange": "(value: string) => void",
+              "onMention": "(option: MentionOption, detail: MentionInsertDetail) => void",
+              "autosize": "boolean — grow vertically with content.",
+              "mono": "boolean — monospace font.",
+              "className": "string — on the outer .ayy-mentions wrapper.",
+              "...rest": "All native <textarea> attributes (value, defaultValue, rows, placeholder…)."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Label the textarea with Field + Label (htmlFor/id), just like Textarea.",
+        "Focus stays inside the textarea: ArrowUp and ArrowDown update aria-activedescendant, Enter or Tab inserts, and Escape closes the popup without closing a parent Dialog.",
+        "Triggers only fire at the start of a line or after whitespace/punctuation, so typing email addresses never opens the popup."
+      ],
+      "do": [
+        "Use Mentions for comments, review notes, chat composers and issue descriptions where people reference teammates (@) or records (#).",
+        "Pass keywords on options (such as role or full handle) so people find teammates either by name or username."
+      ],
+      "dont": [
+        "Don't use Mentions to pick a list of assignees without prose — use Record picker.",
+        "Don't use Mentions for single-value autocomplete — use Combobox."
+      ],
+      "examples": [
+        {
+          "id": "comment",
+          "title": "Teammate @mentions & #issues",
+          "html": "<!-- <ayy-mentions> opens the suggestion listbox at the caret when @ or # is typed; Enter inserts the active option. -->\n<div style=\"max-inline-size: 30rem\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"review-comment-html\">Release note</label>\n    <ayy-mentions triggers=\"@ #\">\n      <div class=\"ayy-mentions\">\n        <textarea aria-autocomplete=\"list\" aria-controls=\"mentions-listbox-html\" class=\"ayy-textarea ayy-textarea--autosize ayy-mentions__textarea\" id=\"review-comment-html\" rows=\"3\" placeholder=\"Type @ to mention someone or # to link an issue…\">Looping in @ada to review #142 before Friday’s release. </textarea>\n        <span class=\"ayy-mentions__anchor\" aria-hidden=\"true\"></span>\n        <ul id=\"mentions-listbox-html\" role=\"listbox\" aria-label=\"Suggestions\" popover=\"manual\" class=\"ayy-combobox__listbox ayy-mentions__listbox\">\n          <li role=\"option\" class=\"ayy-combobox__option ayy-mentions__option\" data-value=\"ada\" data-label=\"Ada Lovelace\" data-trigger=\"@\" data-keywords=\"engineering lead\" aria-selected=\"false\">\n            <span role=\"img\" aria-label=\"Ada Lovelace\" class=\"ayy-avatar ayy-avatar--sm\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">AL</span></span>\n            <span class=\"ayy-mentions__body\"><span class=\"ayy-mentions__label\">Ada Lovelace</span><span class=\"ayy-mentions__handle\">@ada</span></span>\n          </li>\n          <li role=\"option\" class=\"ayy-combobox__option ayy-mentions__option\" data-value=\"grace\" data-label=\"Grace Hopper\" data-trigger=\"@\" data-keywords=\"compiler infra\" aria-selected=\"false\">\n            <span role=\"img\" aria-label=\"Grace Hopper\" class=\"ayy-avatar ayy-avatar--sm\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">GH</span></span>\n            <span class=\"ayy-mentions__body\"><span class=\"ayy-mentions__label\">Grace Hopper</span><span class=\"ayy-mentions__handle\">@grace</span></span>\n          </li>\n          <li role=\"option\" class=\"ayy-combobox__option ayy-mentions__option\" data-value=\"alan\" data-label=\"Alan Turing\" data-trigger=\"@\" data-keywords=\"security\" aria-selected=\"false\">\n            <span role=\"img\" aria-label=\"Alan Turing\" class=\"ayy-avatar ayy-avatar--sm\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">AT</span></span>\n            <span class=\"ayy-mentions__body\"><span class=\"ayy-mentions__label\">Alan Turing</span><span class=\"ayy-mentions__handle\">@alan</span></span>\n          </li>\n          <li role=\"option\" class=\"ayy-combobox__option ayy-mentions__option\" data-value=\"margaret\" data-label=\"Margaret Hamilton\" data-trigger=\"@\" data-keywords=\"flight systems\" aria-selected=\"false\">\n            <span role=\"img\" aria-label=\"Margaret Hamilton\" class=\"ayy-avatar ayy-avatar--sm\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MH</span></span>\n            <span class=\"ayy-mentions__body\"><span class=\"ayy-mentions__label\">Margaret Hamilton</span><span class=\"ayy-mentions__handle\">@margaret</span></span>\n          </li>\n          <li role=\"option\" class=\"ayy-combobox__option ayy-mentions__option\" data-value=\"142\" data-label=\"Auth token refresh race\" data-trigger=\"#\" aria-selected=\"false\">\n            <span class=\"ayy-mentions__body\"><span class=\"ayy-mentions__label\">Auth token refresh race</span><span class=\"ayy-mentions__handle\">#142</span></span>\n          </li>\n          <li role=\"option\" class=\"ayy-combobox__option ayy-mentions__option\" data-value=\"158\" data-label=\"RTL sidebar resize handle\" data-trigger=\"#\" aria-selected=\"false\">\n            <span class=\"ayy-mentions__body\"><span class=\"ayy-mentions__label\">RTL sidebar resize handle</span><span class=\"ayy-mentions__handle\">#158</span></span>\n          </li>\n        </ul>\n      </div>\n    </ayy-mentions>\n    <p class=\"ayy-field__hint\">Type @ for teammates or # for issues; arrows and Enter insert.</p>\n  </div>\n</div>",
+          "react": "import { useState } from \"react\";\nimport { Avatar, Field, FieldHint, Label, Mentions, type MentionOption } from \"@danitesler/ayywi/react\";\n\nconst SUGGESTIONS: MentionOption[] = [\n  { id: \"ada\", label: \"Ada Lovelace\", icon: <Avatar name=\"Ada Lovelace\" size=\"sm\" />, keywords: \"engineering lead\" },\n  { id: \"grace\", label: \"Grace Hopper\", icon: <Avatar name=\"Grace Hopper\" size=\"sm\" />, keywords: \"compiler infra\" },\n  { id: \"alan\", label: \"Alan Turing\", icon: <Avatar name=\"Alan Turing\" size=\"sm\" />, keywords: \"security\" },\n  { id: \"margaret\", label: \"Margaret Hamilton\", icon: <Avatar name=\"Margaret Hamilton\" size=\"sm\" />, keywords: \"flight systems\" },\n  { id: \"142\", label: \"Auth token refresh race\", trigger: \"#\" },\n  { id: \"158\", label: \"RTL sidebar resize handle\", trigger: \"#\" },\n];\n\nexport default function Example() {\n  const [comment, setComment] = useState(\"Looping in @ada to review #142 before Friday’s release. \");\n\n  return (\n    <div style={{ maxInlineSize: \"30rem\" }}>\n      <Field>\n        <Label htmlFor=\"review-comment\">Release note</Label>\n        <Mentions\n          id=\"review-comment\"\n          rows={3}\n          autosize\n          triggers={[\"@\", \"#\"]}\n          options={SUGGESTIONS}\n          value={comment}\n          onValueChange={setComment}\n          placeholder=\"Type @ to mention someone or # to link an issue…\"\n        />\n        <FieldHint>Type @ for teammates or # for issues; arrows and Enter insert.</FieldHint>\n      </Field>\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/mentions/mentions.css",
+        "js": "src/components/mentions/mentions.ts",
+        "react": "src/components/mentions/mentions.react.tsx",
+        "meta": "src/components/mentions/mentions.meta.json",
+        "element": "src/components/mentions/mentions.element.ts"
       }
     },
     {
@@ -6650,6 +6996,150 @@
         "react": "src/components/record-picker/record-picker.react.tsx",
         "meta": "src/components/record-picker/record-picker.meta.json",
         "element": "src/components/record-picker/record-picker.element.ts"
+      }
+    },
+    {
+      "name": "Transfer list",
+      "slug": "transfer-list",
+      "category": "Forms",
+      "description": "A dual-list shuttle for moving items between an available column and a selected column, such as role permissions, export columns or team members. Each column supports live filtering, select-all and keyboard navigation.",
+      "aka": [
+        "transfer-list",
+        "dual-list",
+        "dual-listbox",
+        "list-shuttle",
+        "shuttle"
+      ],
+      "classes": {
+        "ayy-transfer-list": "Root 3-column grid (source pane, transfer actions, target pane); stacks vertically below 48rem.",
+        "ayy-transfer-list__pane": "One list column card (data-pane=\"source\" or data-pane=\"target\").",
+        "ayy-transfer-list__header": "Pane top row holding the select-all checkbox, title and item count.",
+        "ayy-transfer-list__title": "Clickable label wrapping the pane's select-all Checkbox and heading.",
+        "ayy-transfer-list__count": "Tabular item count at the inline end (\"2 / 6\" when items are checked).",
+        "ayy-transfer-list__search": "Optional filter row under the header with a magnifier icon and borderless input.",
+        "ayy-transfer-list__filter": "Per-pane <input type=\"search\"> filter.",
+        "ayy-transfer-list__list": "Scrollable list body (14rem tall) of checkable item rows.",
+        "ayy-transfer-list__item": "One <label> row holding an .ayy-checkbox and the item's text.",
+        "ayy-transfer-list__item-body": "Text column inside an item row.",
+        "ayy-transfer-list__label": "Primary item name.",
+        "ayy-transfer-list__description": "Optional muted second line under the item name.",
+        "ayy-transfer-list__empty": "Centred muted empty or no-matches message inside a pane.",
+        "ayy-transfer-list__actions": "Middle column (row on phones) of transfer icon buttons."
+      },
+      "variants": {
+        "searchable": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        },
+        "showMoveAll": {
+          "values": [
+            true,
+            false
+          ],
+          "default": true
+        }
+      },
+      "states": {
+        "default": {
+          "looks": "Two surface cards with hairline headers and 14rem scrollable lists, flanking outline icon-sm transfer buttons."
+        },
+        "hover": {
+          "when": ".ayy-transfer-list__item:hover (hover devices)",
+          "looks": "Row gets --ayy-color-wash; transfer buttons get Button's outline hover."
+        },
+        "pressed": {
+          "none": "Rows toggle their Checkbox on click; double-clicking a row transfers it right away."
+        },
+        "focus": {
+          "when": ":focus-visible on a Checkbox, transfer Button or .ayy-transfer-list__filter",
+          "looks": "Checkboxes and buttons show their 2px --ayy-color-ring; the search row shows a 2px inset ring."
+        },
+        "disabled": {
+          "when": "disabled on item Checkboxes, the filter input or transfer Buttons",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor; transfer buttons disable automatically when nothing can move."
+        },
+        "selected": {
+          "when": ":checked on an item's Checkbox (pending transfer), or presence in the target pane (assigned)",
+          "looks": "Checked rows get --ayy-color-wash-hover and a checked Checkbox; the header Checkbox shows indeterminate when some are checked. Forced colours: 1px Highlight outline."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on .ayy-transfer-list (with a FieldError)",
+          "looks": "Both pane borders tint to 60% destructive. Forced colours: dashed border."
+        },
+        "loading": {
+          "none": "Render Skeleton rows inside the panes while options load."
+        }
+      },
+      "sizes": {
+        "density": "Header height, search bar height, checkboxes and transfer buttons follow data-density; list viewport stays 14rem tall.",
+        "width": "Fills its container across two equal columns; stacks into a single column with rotated arrows below 48rem."
+      },
+      "js": "transferListClass({ className? }) → string; part class & icon SVG constants; connectTransferList(root, { onTransfer? }) → { sync, destroy }.",
+      "element": {
+        "tag": "ayy-transfer-list",
+        "description": "Wires an .ayy-transfer-list in plain HTML: moves checked rows between [data-pane=\"source\"] and [data-pane=\"target\"], updates counts and select-all mixed states, syncs hidden inputs when name is set, and fires ayy-change.",
+        "children": "An .ayy-transfer-list containing source and target .ayy-transfer-list__pane elements and .ayy-transfer-list__actions.",
+        "attributes": {
+          "name": "Form field name: syncs one hidden input per item in the target pane."
+        },
+        "events": {
+          "ayy-change": "{ value: string[] } — fired whenever items move between panes."
+        }
+      },
+      "react": {
+        "import": "import { TransferList } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "TransferList": {
+            "renders": "<div role=\"group\" class=\"ayy-transfer-list\"> with source pane, action buttons and target pane",
+            "props": {
+              "options": "TransferListOption[] — id, label, description?, keywords?, disabled?",
+              "value / defaultValue": "string[] — IDs in the target (selected) pane.",
+              "onValueChange": "(value: string[]) => void",
+              "sourceTitle": "string — heading of the available pane (default \"Available\").",
+              "targetTitle": "string — heading of the selected pane (default \"Selected\").",
+              "searchable": "boolean — show a filter input in each pane (default false).",
+              "searchPlaceholder": "string — placeholder for filter inputs (default \"Filter…\").",
+              "showMoveAll": "boolean — include Move all / Remove all buttons (default true).",
+              "sourceEmptyText": "string — empty message for source pane.",
+              "targetEmptyText": "string — empty message for target pane.",
+              "disabled": "boolean",
+              "invalid": "boolean — sets aria-invalid=\"true\".",
+              "name": "string — renders hidden inputs for selected IDs.",
+              "...rest": "All native <div> attributes."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Every item is a real Checkbox inside a <label>, so screen readers announce its label, description and checked state natively.",
+        "ArrowUp, ArrowDown, Home and End move focus between visible checkboxes in a pane; Space toggles.",
+        "Transfer icon buttons carry descriptive aria-labels (\"Move selected to Assigned\") and Tooltips, and disable when no items can move."
+      ],
+      "do": [
+        "Use a Transfer list when users need to see both what is available and what is assigned side by side (role permissions, report columns).",
+        "Turn on searchable when either column can hold more than ~10 items."
+      ],
+      "dont": [
+        "Don't use a Transfer list to pick one or two tags in a compact form — use Record picker or Checkbox.",
+        "Don't use it for thousands of remote records — use a Data explorer table or async Record picker."
+      ],
+      "examples": [
+        {
+          "id": "permissions",
+          "title": "Role permissions with search",
+          "html": "<!-- <ayy-transfer-list> moves checked items between Available and Assigned and keeps counts and empty states in sync. -->\n<ayy-transfer-list>\n  <div role=\"group\" class=\"ayy-transfer-list\" aria-label=\"Role permissions\">\n    <div class=\"ayy-transfer-list__pane\" data-pane=\"source\">\n      <div class=\"ayy-transfer-list__header\">\n        <label class=\"ayy-transfer-list__title\"><input type=\"checkbox\" class=\"ayy-checkbox\" /><span>Available</span></label>\n        <span class=\"ayy-transfer-list__count\">4</span>\n      </div>\n      <div class=\"ayy-transfer-list__search\">\n        <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        <input type=\"search\" class=\"ayy-transfer-list__filter\" placeholder=\"Filter…\" aria-label=\"Filter Available\" />\n      </div>\n      <div class=\"ayy-transfer-list__list\" role=\"group\" aria-label=\"Available\">\n        <label class=\"ayy-transfer-list__item\" data-value=\"billing:read\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"billing:read\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">View billing</span><span class=\"ayy-transfer-list__description\">Download invoices and inspect seat usage</span></span></label>\n        <label class=\"ayy-transfer-list__item\" data-value=\"billing:manage\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"billing:manage\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">Manage billing</span><span class=\"ayy-transfer-list__description\">Update payment methods and plan tiers</span></span></label>\n        <label class=\"ayy-transfer-list__item\" data-value=\"members:invite\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"members:invite\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">Invite members</span><span class=\"ayy-transfer-list__description\">Send workspace invitations and assign roles</span></span></label>\n        <label class=\"ayy-transfer-list__item\" data-value=\"audit:export\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"audit:export\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">Export audit log</span><span class=\"ayy-transfer-list__description\">Download security events as CSV or JSON</span></span></label>\n        <div class=\"ayy-transfer-list__empty\" data-empty-default=\"No items available\" data-empty-filter=\"No matches\" hidden>No items available</div>\n      </div>\n    </div>\n\n    <div class=\"ayy-transfer-list__actions\">\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon-sm\" data-action=\"add\" aria-label=\"Move selected to Assigned\" aria-describedby=\"transfer-add-tip\" disabled>\n          <svg class=\"ayy-icon ayy-icon--directional\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"transfer-add-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">Move selected</span>\n      </ayy-tooltip>\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon-sm\" data-action=\"add-all\" aria-label=\"Move all to Assigned\" aria-describedby=\"transfer-add-all-tip\">\n          <svg class=\"ayy-icon ayy-icon--directional\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.5 18C12.5 18 18.5 13.5811 18.5 12C18.5 10.4188 12.5 6 12.5 6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M5.50005 18C5.50005 18 11.5 13.5811 11.5 12C11.5 10.4188 5.5 6 5.5 6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"transfer-add-all-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">Move all</span>\n      </ayy-tooltip>\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon-sm\" data-action=\"remove\" aria-label=\"Move selected to Available\" aria-describedby=\"transfer-remove-tip\" disabled>\n          <svg class=\"ayy-icon ayy-icon--directional\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"transfer-remove-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">Remove selected</span>\n      </ayy-tooltip>\n      <ayy-tooltip class=\"ayy-tooltip\">\n        <button type=\"button\" class=\"ayy-button ayy-button--outline ayy-button--icon-sm\" data-action=\"remove-all\" aria-label=\"Move all to Available\" aria-describedby=\"transfer-remove-all-tip\">\n          <svg class=\"ayy-icon ayy-icon--directional\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M11.5 18C11.5 18 5.50001 13.5811 5.5 12C5.49999 10.4188 11.5 6 11.5 6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M18.5 18C18.5 18 12.5 13.5811 12.5 12C12.5 10.4188 18.5 6 18.5 6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        </button>\n        <span role=\"tooltip\" id=\"transfer-remove-all-tip\" class=\"ayy-tooltip__content\" data-side=\"top\">Remove all</span>\n      </ayy-tooltip>\n    </div>\n\n    <div class=\"ayy-transfer-list__pane\" data-pane=\"target\">\n      <div class=\"ayy-transfer-list__header\">\n        <label class=\"ayy-transfer-list__title\"><input type=\"checkbox\" class=\"ayy-checkbox\" /><span>Assigned</span></label>\n        <span class=\"ayy-transfer-list__count\">3</span>\n      </div>\n      <div class=\"ayy-transfer-list__search\">\n        <svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n        <input type=\"search\" class=\"ayy-transfer-list__filter\" placeholder=\"Filter…\" aria-label=\"Filter Assigned\" />\n      </div>\n      <div class=\"ayy-transfer-list__list\" role=\"group\" aria-label=\"Assigned\">\n        <label class=\"ayy-transfer-list__item\" data-value=\"projects:read\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"projects:read\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">View projects</span><span class=\"ayy-transfer-list__description\">Read project boards, roadmaps and status updates</span></span></label>\n        <label class=\"ayy-transfer-list__item\" data-value=\"projects:write\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"projects:write\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">Edit projects</span><span class=\"ayy-transfer-list__description\">Create, archive and rename workspace projects</span></span></label>\n        <label class=\"ayy-transfer-list__item\" data-value=\"deploys:trigger\"><input type=\"checkbox\" class=\"ayy-checkbox\" value=\"deploys:trigger\" /><span class=\"ayy-transfer-list__item-body\"><span class=\"ayy-transfer-list__label\">Trigger deployments</span><span class=\"ayy-transfer-list__description\">Promote builds to preview and production</span></span></label>\n        <div class=\"ayy-transfer-list__empty\" data-empty-default=\"None selected\" data-empty-filter=\"No matches\" hidden>None selected</div>\n      </div>\n    </div>\n  </div>\n</ayy-transfer-list>",
+          "react": "import { useState } from \"react\";\nimport { TransferList, type TransferListOption } from \"@danitesler/ayywi/react\";\n\nconst PERMISSIONS: TransferListOption[] = [\n  { id: \"projects:read\", label: \"View projects\", description: \"Read project boards, roadmaps and status updates\" },\n  { id: \"projects:write\", label: \"Edit projects\", description: \"Create, archive and rename workspace projects\" },\n  { id: \"deploys:trigger\", label: \"Trigger deployments\", description: \"Promote builds to preview and production\" },\n  { id: \"billing:read\", label: \"View billing\", description: \"Download invoices and inspect seat usage\" },\n  { id: \"billing:manage\", label: \"Manage billing\", description: \"Update payment methods and plan tiers\" },\n  { id: \"members:invite\", label: \"Invite members\", description: \"Send workspace invitations and assign roles\" },\n  { id: \"audit:export\", label: \"Export audit log\", description: \"Download security events as CSV or JSON\" },\n];\n\nexport default function Example() {\n  const [assigned, setAssigned] = useState<string[]>([\"projects:read\", \"projects:write\", \"deploys:trigger\"]);\n\n  return (\n    <TransferList\n      aria-label=\"Role permissions\"\n      options={PERMISSIONS}\n      value={assigned}\n      onValueChange={setAssigned}\n      sourceTitle=\"Available\"\n      targetTitle=\"Assigned\"\n      searchable\n    />\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/transfer-list/transfer-list.css",
+        "js": "src/components/transfer-list/transfer-list.ts",
+        "react": "src/components/transfer-list/transfer-list.react.tsx",
+        "meta": "src/components/transfer-list/transfer-list.meta.json",
+        "element": "src/components/transfer-list/transfer-list.element.ts"
       }
     },
     {
@@ -8407,6 +8897,144 @@
         "js": "src/components/number-field/number-field.ts",
         "react": "src/components/number-field/number-field.react.tsx",
         "meta": "src/components/number-field/number-field.meta.json"
+      }
+    },
+    {
+      "name": "Rating",
+      "slug": "rating",
+      "category": "Forms",
+      "description": "Stars for picking a score in a review or feedback form, or displaying an existing average score with whole or half stars. Interactive ratings use native radio buttons, so arrow keys and forms work out of the box.",
+      "aka": [
+        "rating",
+        "star-rating",
+        "stars",
+        "review-stars"
+      ],
+      "classes": {
+        "ayy-rating": "Root container: role=\"radiogroup\" when interactive, role=\"img\" when read-only.",
+        "ayy-rating--sm": "Small stars (--ayy-size-icon-sm 16px, sm control tap height).",
+        "ayy-rating--lg": "Large stars (--ayy-size-icon-lg 24px, lg control tap height).",
+        "ayy-rating--half": "Interactive half-star increments: two half-width labels per star.",
+        "ayy-rating--readonly": "Read-only score display that hugs the icon height.",
+        "ayy-rating__item": "Each interactive <label> holding a native <input type=\"radio\"> and an .ayy-icon star.",
+        "ayy-rating__star": "One read-only star slot inside .ayy-rating--readonly.",
+        "ayy-rating__star--full": "Whole filled star in read-only mode.",
+        "ayy-rating__fill": "Inline-start 50% overlay inside .ayy-rating__star for a read-only half star (mirrors in RTL)."
+      },
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        "half": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        },
+        "readOnly": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        }
+      },
+      "states": {
+        "default": {
+          "looks": "Stroked outline stars in 75% muted."
+        },
+        "hover": {
+          "when": ".ayy-rating__item:hover (hover devices, interactive only)",
+          "looks": "Fills the hovered star and every star before it in --ayy-color-warning, dimming any higher stars, and gently scales whole stars by 1.1."
+        },
+        "pressed": {
+          "none": "No separate pressed look; selecting fills the stars immediately."
+        },
+        "focus": {
+          "when": ".ayy-rating__item:has(> input:focus-visible)",
+          "looks": "2px --ayy-color-ring outline (2px offset) around the focused star."
+        },
+        "disabled": {
+          "when": "disabled on the radio inputs",
+          "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText."
+        },
+        "selected": {
+          "when": ":checked on a star's radio input, or .ayy-rating__star--full / .ayy-rating__fill in read-only mode",
+          "looks": "Chosen star and every preceding star fill solid in --ayy-color-warning. Forced colours: Highlight."
+        },
+        "error": {
+          "when": "aria-invalid=\"true\" on .ayy-rating (with a FieldError)",
+          "looks": "Unfilled star outlines tint to 60% destructive."
+        },
+        "loading": {
+          "none": "No loading look; use a Skeleton while scores load."
+        }
+      },
+      "sizes": {
+        "scale": {
+          "sm": "16px stars (--ayy-size-icon-sm), sm control hit height (28/32/40px) when interactive.",
+          "md": "20px stars (--ayy-size-icon-md), md control hit height (32/40/44px) when interactive.",
+          "lg": "24px stars (--ayy-size-icon-lg), lg control hit height (40/48/52px) when interactive."
+        },
+        "density": "Interactive hit height follows data-density so touch screens get 44px+ tap targets; read-only stars stay compact at the icon size.",
+        "width": "Hugs its stars."
+      },
+      "js": "ratingClass({ size?, half?, readOnly?, className? }) → string; ratingItemClass, ratingStarClass, ratingFillClass constants; ratingStarIcon (SVG markup); recordRatingPointerDown / toggleClearableRating (wired by @danitesler/ayywi/elements for [data-clearable]).",
+      "react": {
+        "import": "import { Rating } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "Rating": {
+            "renders": "<div role=\"radiogroup\" class=\"ayy-rating\"> when interactive, or <div role=\"img\" class=\"ayy-rating ayy-rating--readonly\"> when readOnly",
+            "props": {
+              "value / defaultValue": "number — current or initial score (0 to max).",
+              "onValueChange": "(value: number) => void",
+              "max": "number — total stars (default 5).",
+              "half": "boolean — 0.5-star increments when interactive.",
+              "readOnly": "boolean — non-interactive display mode.",
+              "clearable": "boolean — clicking the active star clears back to 0.",
+              "size": "\"sm\" | \"md\" | \"lg\"",
+              "disabled": "boolean",
+              "invalid": "boolean — sets aria-invalid=\"true\".",
+              "name": "string — radio group name for form submission.",
+              "itemLabel": "(value: number, max: number) => string — accessible label per star option.",
+              "...rest": "All native <div> attributes."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Name interactive ratings with aria-label or aria-labelledby on the radiogroup; each radio carries its own aria-label (\"1 star\", \"2 stars\"…).",
+        "Read-only ratings render role=\"img\" with aria-label=\"4.5 out of 5 stars\" and hide the individual SVGs from screen readers.",
+        "Arrow keys move between star values natively through the radio inputs."
+      ],
+      "do": [
+        "Use Rating for 1–5 satisfaction scores, product reviews and read-only score summaries.",
+        "Pair a read-only Rating with tabular numeric text (\"4.5 (128)\") when exact numbers matter.",
+        "Enable clearable when a rating is optional in a form."
+      ],
+      "dont": [
+        "Don't use more than 5 stars for a general score — use a Slider or Segmented control for 0–10 NPS scales.",
+        "Don't use interactive stars when no score is saved — pass readOnly."
+      ],
+      "examples": [
+        {
+          "id": "stars",
+          "title": "Interactive, half-star & read-only",
+          "html": "<!-- CSS :has() fills stars up to the checked or hovered radio; @danitesler/ayywi/elements handles data-clearable. -->\n<div class=\"ayy-stack\" style=\"--ayy-gap: var(--ayy-space-4)\">\n  <div class=\"ayy-cluster\" style=\"--ayy-gap: var(--ayy-space-3)\">\n    <div role=\"radiogroup\" aria-label=\"Overall rating\" data-clearable class=\"ayy-rating\">\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"1 star\" name=\"rating-demo-html\" value=\"1\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"2 stars\" name=\"rating-demo-html\" value=\"2\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"3 stars\" name=\"rating-demo-html\" value=\"3\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"4 stars\" name=\"rating-demo-html\" value=\"4\" checked /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"5 stars\" name=\"rating-demo-html\" value=\"5\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n    </div>\n    <span class=\"ayy-small ayy-muted ayy-tabular\">4 of 5</span>\n  </div>\n\n  <div class=\"ayy-cluster\" style=\"--ayy-gap: var(--ayy-space-3)\">\n    <div role=\"radiogroup\" aria-label=\"Half-star rating\" class=\"ayy-rating ayy-rating--half\">\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"0.5 stars\" name=\"rating-half-demo-html\" value=\"0.5\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"1 star\" name=\"rating-half-demo-html\" value=\"1\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"1.5 stars\" name=\"rating-half-demo-html\" value=\"1.5\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"2 stars\" name=\"rating-half-demo-html\" value=\"2\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"2.5 stars\" name=\"rating-half-demo-html\" value=\"2.5\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"3 stars\" name=\"rating-half-demo-html\" value=\"3\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"3.5 stars\" name=\"rating-half-demo-html\" value=\"3.5\" checked /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"4 stars\" name=\"rating-half-demo-html\" value=\"4\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"4.5 stars\" name=\"rating-half-demo-html\" value=\"4.5\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n      <label class=\"ayy-rating__item\"><input type=\"radio\" aria-label=\"5 stars\" name=\"rating-half-demo-html\" value=\"5\" /><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></label>\n    </div>\n    <span class=\"ayy-small ayy-muted ayy-tabular\">3.5 of 5</span>\n  </div>\n\n  <div class=\"ayy-cluster\" style=\"--ayy-gap: var(--ayy-space-2)\">\n    <div role=\"img\" aria-label=\"4.5 out of 5 stars\" class=\"ayy-rating ayy-rating--sm ayy-rating--readonly\">\n      <span class=\"ayy-rating__star ayy-rating__star--full\" aria-hidden=\"true\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>\n      <span class=\"ayy-rating__star ayy-rating__star--full\" aria-hidden=\"true\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>\n      <span class=\"ayy-rating__star ayy-rating__star--full\" aria-hidden=\"true\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>\n      <span class=\"ayy-rating__star ayy-rating__star--full\" aria-hidden=\"true\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>\n      <span class=\"ayy-rating__star\" aria-hidden=\"true\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-rating__fill\"><svg class=\"ayy-icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span></span>\n    </div>\n    <span class=\"ayy-small ayy-tabular\">4.5</span>\n    <span class=\"ayy-small ayy-muted\">(128 reviews)</span>\n  </div>\n</div>",
+          "react": "import { useState } from \"react\";\nimport { Rating } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [score, setScore] = useState(4);\n  const [halfScore, setHalfScore] = useState(3.5);\n\n  return (\n    <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-4)\" } as React.CSSProperties}>\n      <div className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-3)\" } as React.CSSProperties}>\n        <Rating aria-label=\"Overall rating\" name=\"rating-demo\" value={score} onValueChange={setScore} clearable />\n        <span className=\"ayy-small ayy-muted ayy-tabular\">{score ? `${score} of 5` : \"No rating\"}</span>\n      </div>\n\n      <div className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-3)\" } as React.CSSProperties}>\n        <Rating aria-label=\"Half-star rating\" name=\"rating-half-demo\" half value={halfScore} onValueChange={setHalfScore} />\n        <span className=\"ayy-small ayy-muted ayy-tabular\">{halfScore.toFixed(1)} of 5</span>\n      </div>\n\n      <div className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-2)\" } as React.CSSProperties}>\n        <Rating value={4.5} readOnly size=\"sm\" />\n        <span className=\"ayy-small ayy-tabular\">4.5</span>\n        <span className=\"ayy-small ayy-muted\">(128 reviews)</span>\n      </div>\n    </div>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/rating/rating.css",
+        "js": "src/components/rating/rating.ts",
+        "react": "src/components/rating/rating.react.tsx",
+        "meta": "src/components/rating/rating.meta.json"
       }
     },
     {

@@ -17,14 +17,17 @@ import { AyyComboboxElement } from "../components/combobox/combobox.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyGridElement } from "../components/grid/grid.element";
 import { AyyInlineEditElement } from "../components/inline-edit/inline-edit.element";
+import { AyyMentionsElement } from "../components/mentions/mentions.element";
 import { AyyMenuElement } from "../components/menu/menu.element";
 import { AyyNavbarElement } from "../components/navbar/navbar.element";
+import { AyyPinInputElement } from "../components/pin-input/pin-input.element";
 import { AyyPopoverElement } from "../components/popover/popover.element";
 import { AyyShortcutRecorderElement } from "../components/shortcut/shortcut.element";
 import { AyyTableElement } from "../components/table/table.element";
 import { AyyDragDropElement } from "../components/drag-drop/drag-drop.element";
 import { AyyTabsElement } from "../components/tabs/tabs.element";
 import { AyyToolbarElement } from "../components/toolbar/toolbar.element";
+import { AyyTransferListElement } from "../components/transfer-list/transfer-list.element";
 import { AyyCommandElement } from "../components/command/command.element";
 import { AyyTagInputElement } from "../components/tag-input/tag-input.element";
 import { AyyRecordPickerElement } from "../components/record-picker/record-picker.element";
@@ -35,6 +38,7 @@ import { AyyTooltipElement } from "../components/tooltip/tooltip.element";
 import { trackDropzones } from "../components/dropzone/dropzone";
 import { toggleChartLegend } from "../components/chart/chart";
 import { stepNumberField, syncNumberField } from "../components/number-field/number-field";
+import { recordRatingPointerDown, toggleClearableRating } from "../components/rating/rating";
 import { syncSlider } from "../components/slider/slider";
 import { clearSearchBar } from "../components/search-bar/search-bar";
 import { openSelectListFrom, syncSelectPicture } from "../components/select/select";
@@ -58,8 +62,10 @@ export {
   AyyDialogElement,
   AyyGridElement,
   AyyInlineEditElement,
+  AyyMentionsElement,
   AyyMenuElement,
   AyyNavbarElement,
+  AyyPinInputElement,
   AyyPopoverElement,
   AyyRecordPickerElement,
   AyyShortcutRecorderElement,
@@ -72,6 +78,7 @@ export {
   AyyTreeElement,
   AyyToolbarElement,
   AyyTooltipElement,
+  AyyTransferListElement,
   copyCodeBlock,
   highlightCodeBlocks,
   syncCodeBlockSelector,
@@ -143,6 +150,7 @@ function onClick(event: MouseEvent): void {
   if (copy) void copyCodeBlock(copy);
   const legend = (event.target as Element | null)?.closest?.(".ayy-chart__legend-toggle");
   if (legend) toggleChartLegend(legend);
+  toggleClearableRating(event);
 }
 
 // Selects open ayywi's options list with a mouse or trackpad (React Select does it itself and calls preventDefault).
@@ -233,11 +241,15 @@ export function defineElements(): void {
   define("ayy-command", AyyCommandElement);
   define("ayy-tag-input", AyyTagInputElement);
   define("ayy-record-picker", AyyRecordPickerElement);
+  define("ayy-pin-input", AyyPinInputElement);
+  define("ayy-mentions", AyyMentionsElement);
+  define("ayy-transfer-list", AyyTransferListElement);
   define("ayy-inline-edit", AyyInlineEditElement);
   define("ayy-swipe", AyySwipeElement);
   if (!spotlightListening && typeof document !== "undefined") {
     spotlightListening = true;
     document.addEventListener("pointermove", onPointerMove, { passive: true });
+    document.addEventListener("pointerdown", recordRatingPointerDown);
     document.addEventListener("error", onError, true);
     document.addEventListener("input", onInput);
     document.addEventListener("change", onChange);

@@ -1,0 +1,93 @@
+{
+  "name": "Transfer list",
+  "slug": "transfer-list",
+  "category": "Forms",
+  "description": "A dual-list shuttle for moving items between an available column and a selected column, such as role permissions, export columns or team members. Each column supports live filtering, select-all and keyboard navigation.",
+  "aka": ["transfer-list", "dual-list", "dual-listbox", "list-shuttle", "shuttle"],
+  "classes": {
+    "ayy-transfer-list": "Root 3-column grid (source pane, transfer actions, target pane); stacks vertically below 48rem.",
+    "ayy-transfer-list__pane": "One list column card (data-pane=\"source\" or data-pane=\"target\").",
+    "ayy-transfer-list__header": "Pane top row holding the select-all checkbox, title and item count.",
+    "ayy-transfer-list__title": "Clickable label wrapping the pane's select-all Checkbox and heading.",
+    "ayy-transfer-list__count": "Tabular item count at the inline end (\"2 / 6\" when items are checked).",
+    "ayy-transfer-list__search": "Optional filter row under the header with a magnifier icon and borderless input.",
+    "ayy-transfer-list__filter": "Per-pane <input type=\"search\"> filter.",
+    "ayy-transfer-list__list": "Scrollable list body (14rem tall) of checkable item rows.",
+    "ayy-transfer-list__item": "One <label> row holding an .ayy-checkbox and the item's text.",
+    "ayy-transfer-list__item-body": "Text column inside an item row.",
+    "ayy-transfer-list__label": "Primary item name.",
+    "ayy-transfer-list__description": "Optional muted second line under the item name.",
+    "ayy-transfer-list__empty": "Centred muted empty or no-matches message inside a pane.",
+    "ayy-transfer-list__actions": "Middle column (row on phones) of transfer icon buttons."
+  },
+  "variants": {
+    "searchable": { "values": [false, true], "default": false },
+    "showMoveAll": { "values": [true, false], "default": true }
+  },
+  "states": {
+    "default": { "looks": "Two surface cards with hairline headers and 14rem scrollable lists, flanking outline icon-sm transfer buttons." },
+    "hover": { "when": ".ayy-transfer-list__item:hover (hover devices)", "looks": "Row gets --ayy-color-wash; transfer buttons get Button's outline hover." },
+    "pressed": { "none": "Rows toggle their Checkbox on click; double-clicking a row transfers it right away." },
+    "focus": { "when": ":focus-visible on a Checkbox, transfer Button or .ayy-transfer-list__filter", "looks": "Checkboxes and buttons show their 2px --ayy-color-ring; the search row shows a 2px inset ring." },
+    "disabled": { "when": "disabled on item Checkboxes, the filter input or transfer Buttons", "looks": "--ayy-opacity-disabled, not-allowed cursor; transfer buttons disable automatically when nothing can move." },
+    "selected": { "when": ":checked on an item's Checkbox (pending transfer), or presence in the target pane (assigned)", "looks": "Checked rows get --ayy-color-wash-hover and a checked Checkbox; the header Checkbox shows indeterminate when some are checked. Forced colours: 1px Highlight outline." },
+    "error": { "when": "aria-invalid=\"true\" on .ayy-transfer-list (with a FieldError)", "looks": "Both pane borders tint to 60% destructive. Forced colours: dashed border." },
+    "loading": { "none": "Render Skeleton rows inside the panes while options load." }
+  },
+  "sizes": {
+    "density": "Header height, search bar height, checkboxes and transfer buttons follow data-density; list viewport stays 14rem tall.",
+    "width": "Fills its container across two equal columns; stacks into a single column with rotated arrows below 48rem."
+  },
+  "js": "transferListClass({ className? }) → string; part class & icon SVG constants; connectTransferList(root, { onTransfer? }) → { sync, destroy }.",
+  "element": {
+    "tag": "ayy-transfer-list",
+    "description": "Wires an .ayy-transfer-list in plain HTML: moves checked rows between [data-pane=\"source\"] and [data-pane=\"target\"], updates counts and select-all mixed states, syncs hidden inputs when name is set, and fires ayy-change.",
+    "children": "An .ayy-transfer-list containing source and target .ayy-transfer-list__pane elements and .ayy-transfer-list__actions.",
+    "attributes": {
+      "name": "Form field name: syncs one hidden input per item in the target pane."
+    },
+    "events": {
+      "ayy-change": "{ value: string[] } — fired whenever items move between panes."
+    }
+  },
+  "react": {
+    "import": "import { TransferList } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "TransferList": {
+        "renders": "<div role=\"group\" class=\"ayy-transfer-list\"> with source pane, action buttons and target pane",
+        "props": {
+          "options": "TransferListOption[] — id, label, description?, keywords?, disabled?",
+          "value / defaultValue": "string[] — IDs in the target (selected) pane.",
+          "onValueChange": "(value: string[]) => void",
+          "sourceTitle": "string — heading of the available pane (default \"Available\").",
+          "targetTitle": "string — heading of the selected pane (default \"Selected\").",
+          "searchable": "boolean — show a filter input in each pane (default false).",
+          "searchPlaceholder": "string — placeholder for filter inputs (default \"Filter…\").",
+          "showMoveAll": "boolean — include Move all / Remove all buttons (default true).",
+          "sourceEmptyText": "string — empty message for source pane.",
+          "targetEmptyText": "string — empty message for target pane.",
+          "disabled": "boolean",
+          "invalid": "boolean — sets aria-invalid=\"true\".",
+          "name": "string — renders hidden inputs for selected IDs.",
+          "...rest": "All native <div> attributes."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Every item is a real Checkbox inside a <label>, so screen readers announce its label, description and checked state natively.",
+    "ArrowUp, ArrowDown, Home and End move focus between visible checkboxes in a pane; Space toggles.",
+    "Transfer icon buttons carry descriptive aria-labels (\"Move selected to Assigned\") and Tooltips, and disable when no items can move."
+  ],
+  "do": [
+    "Use a Transfer list when users need to see both what is available and what is assigned side by side (role permissions, report columns).",
+    "Turn on searchable when either column can hold more than ~10 items."
+  ],
+  "dont": [
+    "Don't use a Transfer list to pick one or two tags in a compact form — use Record picker or Checkbox.",
+    "Don't use it for thousands of remote records — use a Data explorer table or async Record picker."
+  ],
+  "examples": [
+    { "id": "permissions", "title": "Role permissions with search" }
+  ]
+}

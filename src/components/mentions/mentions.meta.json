@@ -1,0 +1,83 @@
+{
+  "name": "Mentions",
+  "slug": "mentions",
+  "category": "Forms",
+  "family": "input",
+  "description": "A multi-line text field that opens a floating suggestions list right at the caret when someone types @ or #, for tagging teammates, channels or issues inside comments and notes.",
+  "aka": ["mentions", "mention-input", "mention-field", "at-mentions"],
+  "classes": {
+    "ayy-mentions": "Root wrapper around the textarea, caret anchor and suggestions listbox.",
+    "ayy-mentions__textarea": "Placed alongside .ayy-textarea on the <textarea>.",
+    "ayy-mentions__anchor": "Hidden zero-width anchor placed at the trigger character to position the popup.",
+    "ayy-mentions__listbox": "Popover listbox (.ayy-combobox__listbox) of mention suggestions.",
+    "ayy-mentions__option": "One suggestion row (.ayy-combobox__option) with role=\"option\".",
+    "ayy-mentions__body": "Name and handle row inside an option.",
+    "ayy-mentions__label": "Person or record display name, truncated on overflow.",
+    "ayy-mentions__handle": "Muted monospace @handle or #key at the inline end."
+  },
+  "variants": {
+    "autosize": { "values": [false, true], "default": false },
+    "mono": { "values": [false, true], "default": false }
+  },
+  "states": {
+    "default": { "looks": "Like Textarea: wash fill, 1px line-strong border, resizable vertically; suggestions hidden." },
+    "hover": { "when": ":hover on the textarea or a suggestion option (hover devices)", "looks": "Textarea border turns line-hover; hovered option gets Combobox's wash-hover." },
+    "pressed": { "none": "No pressed look; choosing an option inserts the mention at the caret." },
+    "focus": { "when": ":focus-visible on the textarea", "looks": "2px --ayy-color-ring outline (-1px offset); focus stays in the textarea while arrows move through suggestions." },
+    "disabled": { "when": ":disabled on the textarea, or aria-disabled=\"true\" on an option", "looks": "--ayy-opacity-disabled, not-allowed cursor." },
+    "selected": { "when": "aria-selected=\"true\" on the active .ayy-mentions__option", "looks": "--ayy-color-wash-hover fill on the active suggestion. Forced colours: Highlight fill." },
+    "error": { "when": "aria-invalid=\"true\" on the textarea (with a FieldError)", "looks": "Textarea's 60% destructive border and destructive focus ring." },
+    "loading": { "none": "No loading look; disable while submitting and show a Spinner on the send Button." },
+    "open": { "when": ":popover-open on .ayy-mentions__listbox", "looks": "Floating surface-raised list anchored directly under the @ or # character, flipping above near the bottom edge." }
+  },
+  "sizes": {
+    "density": "Textarea and option rows follow control md text and data-density.",
+    "width": "Textarea fills its container; popup is 13rem to 20rem wide."
+  },
+  "js": "mentionsClass({ className? }) → string; mentionsTextareaClass({ autosize?, mono?, className? }) → string; part class constants; connectMentions(root, { triggers?, onMention? }) → { close, refresh, destroy }.",
+  "element": {
+    "tag": "ayy-mentions",
+    "description": "Wires inline mention autocomplete onto an .ayy-mentions wrapper containing a <textarea> and .ayy-mentions__listbox.",
+    "children": "An .ayy-mentions holding a <textarea class=\"ayy-textarea ayy-mentions__textarea\"> and an .ayy-mentions__listbox of [role=\"option\"] items.",
+    "attributes": {
+      "triggers": "Space-separated trigger characters (default \"@\", e.g. \"@ #\")."
+    },
+    "events": {
+      "ayy-mention": "{ trigger: string, value: string, label: string, text: string } — fired when a suggestion is inserted."
+    }
+  },
+  "react": {
+    "import": "import { Mentions } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Mentions": {
+        "renders": "<div class=\"ayy-mentions\"> wrapping <textarea>, caret anchor and <ul role=\"listbox\">",
+        "props": {
+          "options": "MentionOption[] — id, label, value?, trigger?, icon?, keywords?, disabled?",
+          "triggers": "string[] — trigger characters (default [\"@\"]).",
+          "onValueChange": "(value: string) => void",
+          "onMention": "(option: MentionOption, detail: MentionInsertDetail) => void",
+          "autosize": "boolean — grow vertically with content.",
+          "mono": "boolean — monospace font.",
+          "className": "string — on the outer .ayy-mentions wrapper.",
+          "...rest": "All native <textarea> attributes (value, defaultValue, rows, placeholder…)."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Label the textarea with Field + Label (htmlFor/id), just like Textarea.",
+    "Focus stays inside the textarea: ArrowUp and ArrowDown update aria-activedescendant, Enter or Tab inserts, and Escape closes the popup without closing a parent Dialog.",
+    "Triggers only fire at the start of a line or after whitespace/punctuation, so typing email addresses never opens the popup."
+  ],
+  "do": [
+    "Use Mentions for comments, review notes, chat composers and issue descriptions where people reference teammates (@) or records (#).",
+    "Pass keywords on options (such as role or full handle) so people find teammates either by name or username."
+  ],
+  "dont": [
+    "Don't use Mentions to pick a list of assignees without prose — use Record picker.",
+    "Don't use Mentions for single-value autocomplete — use Combobox."
+  ],
+  "examples": [
+    { "id": "comment", "title": "Teammate @mentions & #issues" }
+  ]
+}

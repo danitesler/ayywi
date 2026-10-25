@@ -1,0 +1,55 @@
+<!-- <ayy-pin-input> wires auto-advance, Backspace and paste across .ayy-pin-input__slot inputs. -->
+<div class="ayy-stack" style="--ayy-gap: var(--ayy-space-5); max-inline-size: 24rem">
+  <div class="ayy-field">
+    <label class="ayy-label" id="otp-label-html" for="otp-code-html">Authenticator code</label>
+    <ayy-pin-input>
+      <div role="group" class="ayy-pin-input" aria-labelledby="otp-label-html">
+        <div class="ayy-pin-input__group">
+          <input id="otp-code-html" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="6" aria-label="Digit 1 of 6" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 2 of 6" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 3 of 6" class="ayy-pin-input__slot" value="" />
+        </div>
+        <span class="ayy-pin-input__separator" aria-hidden="true">–</span>
+        <div class="ayy-pin-input__group">
+          <input type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 4 of 6" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 5 of 6" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 6 of 6" class="ayy-pin-input__slot" value="" />
+        </div>
+      </div>
+    </ayy-pin-input>
+    <p class="ayy-field__hint">Enter or paste the 6-digit code (try 482910).</p>
+  </div>
+
+  <div class="ayy-field">
+    <label class="ayy-label" id="pin-mask-label-html" for="card-pin-html">Card PIN</label>
+    <ayy-pin-input mask>
+      <div role="group" class="ayy-pin-input" aria-labelledby="pin-mask-label-html">
+        <input id="card-pin-html" type="password" inputmode="numeric" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="4" aria-label="Digit 1 of 4" class="ayy-pin-input__slot" value="1" />
+        <input type="password" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 2 of 4" class="ayy-pin-input__slot" value="9" />
+        <input type="password" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 3 of 4" class="ayy-pin-input__slot" value="8" />
+        <input type="password" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" aria-label="Digit 4 of 4" class="ayy-pin-input__slot" value="4" />
+      </div>
+    </ayy-pin-input>
+  </div>
+
+  <div class="ayy-field">
+    <label class="ayy-label" id="backup-label-html" for="invite-code-html">Invite code (alphanumeric)</label>
+    <ayy-pin-input type="alphanumeric">
+      <div role="group" class="ayy-pin-input ayy-pin-input--sm" aria-labelledby="backup-label-html">
+        <div class="ayy-pin-input__group">
+          <input id="invite-code-html" type="text" inputmode="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="·" aria-label="Character 1 of 8" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 2 of 8" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 3 of 8" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 4 of 8" class="ayy-pin-input__slot" value="" />
+        </div>
+        <span class="ayy-pin-input__separator" aria-hidden="true">–</span>
+        <div class="ayy-pin-input__group">
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 5 of 8" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 6 of 8" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 7 of 8" class="ayy-pin-input__slot" value="" />
+          <input type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="1" placeholder="·" aria-label="Character 8 of 8" class="ayy-pin-input__slot" value="" />
+        </div>
+      </div>
+    </ayy-pin-input>
+  </div>
+</div>

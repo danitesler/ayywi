@@ -5,18 +5,15 @@ import { example, keyboardFocus, open, rtl, settle, stage } from "./helpers";
 async function pgSwitch(page: Page, name: string, on: boolean) {
   const ex = page.locator('.pv-example[aria-labelledby="ex-playground"]');
   const propsBtn = ex.getByRole("button", { name: "Props" });
-  if (await propsBtn.isVisible()) {
-    const popover = ex.locator(".pv-props-popover");
-    if (!(await popover.isVisible())) await propsBtn.click();
-    const sw = popover.getByRole("switch", { name });
-    if ((await sw.count()) > 0) {
-      if ((await sw.isChecked()) !== on) await sw.click();
-    }
-    return;
-  }
-  const sw = example(page, "playground").getByRole("switch", { name });
-  if ((await sw.count()) > 0) {
-    if ((await sw.isChecked()) !== on) await sw.click();
+  await expect(propsBtn).toBeVisible();
+  const popover = ex.locator(".pv-props-popover");
+  if (!(await popover.isVisible())) await propsBtn.click();
+  await expect(popover).toBeVisible();
+  const sw = popover.getByRole("switch", { name });
+  await expect(sw).toBeVisible();
+  if ((await sw.isChecked()) !== on) {
+    await sw.click();
+    await expect(sw).toBeChecked({ checked: on });
   }
 }
 
@@ -1920,6 +1917,147 @@ for (const renderer of ["react", "html"] as const) {
       await copyBtn.click();
       await expect(example(page, "basic").locator(".ayy-code-block__copy")).toHaveAttribute("data-copied", "true");
       await expect(example(page, "basic").locator(".ayy-code-block__copy")).toHaveAttribute("aria-label", "Copied!");
+    });
+
+    test("split button joins the main button and menu trigger seamlessly in LTR and RTL", async ({ page }) => {
+      await open(page, "button", { renderer });
+      const s = example(page, "split");
+      const firstSplit = s.locator(".ayy-button-split").first();
+      const deployBtn = firstSplit.getByRole("button", { name: "Deploy", exact: true });
+      const moreBtn = firstSplit.getByRole("button", { name: "More deploy options" });
+
+      const mainBox = (await deployBtn.boundingBox())!;
+      const moreBox = (await moreBtn.boundingBox())!;
+      expect(Math.abs(mainBox.x + mainBox.width - moreBox.x)).toBeLessThanOrEqual(2);
+      expect(Math.round(mainBox.height)).toBe(Math.round(moreBox.height));
+
+      await moreBtn.click();
+      await expect(moreBtn).toHaveAttribute("aria-expanded", "true");
+      const menu = s.locator(".ayy-menu:popover-open");
+      await expect(menu.getByRole("menuitem", { name: "Deploy to preview" })).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(menu).toBeHidden();
+
+      await rtl(s);
+      const rtlMain = (await deployBtn.boundingBox())!;
+      const rtlMore = (await moreBtn.boundingBox())!;
+      expect(Math.abs(rtlMore.x + rtlMore.width - rtlMain.x)).toBeLessThanOrEqual(2);
+      await s.evaluate((el) => el.removeAttribute("dir"));
+    });
+
+    test("pin input auto-advances on typing, steps back on Backspace, and distributes pasted codes", async ({ page }) => {
+      await open(page, "pin-input", { renderer });
+      const s = example(page, "verification");
+      const s1 = s.getByRole("textbox", { name: "Digit 1 of 6" });
+      const s2 = s.getByRole("textbox", { name: "Digit 2 of 6" });
+      const s3 = s.getByRole("textbox", { name: "Digit 3 of 6" });
+      const s4 = s.getByRole("textbox", { name: "Digit 4 of 6" });
+      const s6 = s.getByRole("textbox", { name: "Digit 6 of 6" });
+
+      await s1.click();
+      await page.keyboard.type("482");
+      await expect(s1).toHaveValue("4");
+      await expect(s2).toHaveValue("8");
+      await expect(s3).toHaveValue("2");
+      await expect(s4).toBeFocused();
+
+      // Backspace in an empty slot moves back and clears the previous slot.
+      await page.keyboard.press("Backspace");
+      await expect(s3).toBeFocused();
+      await expect(s3).toHaveValue("");
+
+      // Pasting a formatted code strips non-digits and fills every slot.
+      await s1.evaluate((el) => {
+        const dt = new DataTransfer();
+        dt.setData("text/plain", "482-910");
+        el.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+      });
+      await expect(s1).toHaveValue("4");
+      await expect(s6).toHaveValue("0");
+      await expect(s6).toBeFocused();
+
+      // Masked PIN renders password inputs.
+      await expect(s.locator('#card-pin, #card-pin-html')).toHaveAttribute("type", "password");
+    });
+
+    test("rating selects stars, clears when clearable is clicked again, and exposes read-only scores", async ({ page }) => {
+      await open(page, "rating", { renderer });
+      const s = example(page, "stars");
+      const overall = s.getByRole("radiogroup", { name: "Overall rating" });
+      const star4 = overall.getByRole("radio", { name: "4 stars" });
+      const star5 = overall.getByRole("radio", { name: "5 stars" });
+
+      await expect(star4).toBeChecked();
+      await star5.click();
+      await expect(star5).toBeChecked();
+
+      // Clicking the already-checked star on a clearable rating resets it to 0.
+      await star5.click();
+      await expect(star5).not.toBeChecked();
+      await expect(overall.locator("input:checked")).toHaveCount(0);
+
+      // Read-only fractional rating is exposed as a single image with its label.
+      await expect(s.getByRole("img", { name: "4.5 out of 5 stars" })).toBeVisible();
+    });
+
+    test("transfer list moves checked items, updates counts and indeterminate state, and filters panes", async ({ page }) => {
+      await open(page, "transfer-list", { renderer });
+      const s = example(page, "permissions");
+      const source = s.locator('.ayy-transfer-list__pane[data-pane="source"]');
+      const target = s.locator('.ayy-transfer-list__pane[data-pane="target"]');
+      const addBtn = s.getByRole("button", { name: "Move selected to Assigned" });
+      const sourceAll = source.locator(".ayy-transfer-list__title input");
+
+      await expect(source.locator(".ayy-transfer-list__count")).toHaveText("4");
+      await expect(target.locator(".ayy-transfer-list__count")).toHaveText("3");
+      await expect(addBtn).toBeDisabled();
+
+      await source.getByRole("checkbox", { name: /View billing/ }).check();
+      await expect(sourceAll).toHaveJSProperty("indeterminate", true);
+      await expect(addBtn).toBeEnabled();
+
+      await addBtn.click();
+      await expect(source.locator(".ayy-transfer-list__count")).toHaveText("3");
+      await expect(target.locator(".ayy-transfer-list__count")).toHaveText("4");
+      await expect(target.getByRole("checkbox", { name: /View billing/ })).toBeVisible();
+
+      const filter = source.getByRole("searchbox", { name: "Filter Available" });
+      await filter.fill("audit");
+      await expect(source.locator(".ayy-transfer-list__count")).toHaveText("1 of 3");
+      await expect(source.locator(".ayy-transfer-list__item:not([hidden])")).toHaveCount(1);
+
+      await filter.fill("zzz");
+      await expect(source.locator(".ayy-transfer-list__empty")).toBeVisible();
+      await expect(source.locator(".ayy-transfer-list__empty")).toHaveText("No matches");
+    });
+
+    test("mentions opens at @ or # triggers, inserts the chosen handle on Enter, and ignores email addresses", async ({ page }) => {
+      await open(page, "mentions", { renderer });
+      const s = example(page, "comment");
+      const textarea = s.getByRole("textbox", { name: "Release note" });
+      const listbox = s.locator(".ayy-mentions__listbox");
+
+      await textarea.click();
+      await textarea.press("End");
+      await page.keyboard.type("@gr");
+      await expect(listbox).toBeVisible();
+      const grace = listbox.getByRole("option", { name: /Grace Hopper/ });
+      await expect(grace).toHaveAttribute("aria-selected", "true");
+
+      await page.keyboard.press("Enter");
+      await expect(listbox).toBeHidden();
+      await expect(textarea).toHaveValue(/Looping in @ada to review #142 before Friday’s release\. @grace $/);
+
+      // Issue trigger (#) filters # options; Escape dismisses without inserting.
+      await page.keyboard.type("#15");
+      await expect(listbox).toBeVisible();
+      await expect(listbox.getByRole("option", { name: /RTL sidebar resize handle/ })).toHaveAttribute("aria-selected", "true");
+      await page.keyboard.press("Escape");
+      await expect(listbox).toBeHidden();
+
+      // A trigger preceded by non-whitespace (like an email address) does not open mentions.
+      await textarea.fill("ops@ada");
+      await expect(listbox).toBeHidden();
     });
   });
 }

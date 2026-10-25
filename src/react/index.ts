@@ -2,7 +2,7 @@
 // The build prepends "use client" so these work from React Server Components (Next.js App Router).
 export * from "../index";
 
-export { Button, type ButtonProps } from "../components/button/button.react";
+export { Button, SplitButton, type ButtonProps, type SplitButtonProps } from "../components/button/button.react";
 export {
   Card,
   CardHeader,
@@ -646,3 +646,7 @@ export {
   type CodeBlockCodeProps,
 } from "../components/code-block/code-block.react";
 export { TextHighlight, type TextHighlightProps } from "../components/text-highlight/text-highlight.react";
+export { PinInput, type PinInputProps } from "../components/pin-input/pin-input.react";
+export { Rating, type RatingProps } from "../components/rating/rating.react";
+export { TransferList, type TransferListProps, type TransferListOption } from "../components/transfer-list/transfer-list.react";
+export { Mentions, type MentionsProps, type MentionOption } from "../components/mentions/mentions.react";

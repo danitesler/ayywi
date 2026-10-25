@@ -322,7 +322,7 @@ const subjects = (selector) => withoutParens(selector).split(",").map((s) => s.t
 const classesIn = (compound) => [...compound.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)].map((m) => m[1]);
 
 // Words that end in an alias by accident.
-const NOT_ALIASES = new Set(["discard", "standard", "orange", "arrange", "strange", "exchange", "stage", "postcard", "wildcard", "scorecard"]);
+const NOT_ALIASES = new Set(["discard", "standard", "orange", "arrange", "strange", "exchange", "stage", "postcard", "wildcard", "scorecard", "operating", "decorating", "generating", "separating", "migrating", "iterating"]);
 
 /** The ayywi component a class name says it is (".dooduu-chip", ".qa-spinner", ".hpill"), from the components' "aka" lists. */
 export function componentNamed(cls, contract) {

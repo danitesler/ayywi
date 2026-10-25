@@ -1,0 +1,82 @@
+{
+  "name": "Rating",
+  "slug": "rating",
+  "category": "Forms",
+  "description": "Stars for picking a score in a review or feedback form, or displaying an existing average score with whole or half stars. Interactive ratings use native radio buttons, so arrow keys and forms work out of the box.",
+  "aka": ["rating", "star-rating", "stars", "review-stars"],
+  "classes": {
+    "ayy-rating": "Root container: role=\"radiogroup\" when interactive, role=\"img\" when read-only.",
+    "ayy-rating--sm": "Small stars (--ayy-size-icon-sm 16px, sm control tap height).",
+    "ayy-rating--lg": "Large stars (--ayy-size-icon-lg 24px, lg control tap height).",
+    "ayy-rating--half": "Interactive half-star increments: two half-width labels per star.",
+    "ayy-rating--readonly": "Read-only score display that hugs the icon height.",
+    "ayy-rating__item": "Each interactive <label> holding a native <input type=\"radio\"> and an .ayy-icon star.",
+    "ayy-rating__star": "One read-only star slot inside .ayy-rating--readonly.",
+    "ayy-rating__star--full": "Whole filled star in read-only mode.",
+    "ayy-rating__fill": "Inline-start 50% overlay inside .ayy-rating__star for a read-only half star (mirrors in RTL)."
+  },
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
+    "half": { "values": [false, true], "default": false },
+    "readOnly": { "values": [false, true], "default": false }
+  },
+  "states": {
+    "default": { "looks": "Stroked outline stars in 75% muted." },
+    "hover": { "when": ".ayy-rating__item:hover (hover devices, interactive only)", "looks": "Fills the hovered star and every star before it in --ayy-color-warning, dimming any higher stars, and gently scales whole stars by 1.1." },
+    "pressed": { "none": "No separate pressed look; selecting fills the stars immediately." },
+    "focus": { "when": ".ayy-rating__item:has(> input:focus-visible)", "looks": "2px --ayy-color-ring outline (2px offset) around the focused star." },
+    "disabled": { "when": "disabled on the radio inputs", "looks": "--ayy-opacity-disabled, not-allowed cursor. Forced colours: GrayText." },
+    "selected": { "when": ":checked on a star's radio input, or .ayy-rating__star--full / .ayy-rating__fill in read-only mode", "looks": "Chosen star and every preceding star fill solid in --ayy-color-warning. Forced colours: Highlight." },
+    "error": { "when": "aria-invalid=\"true\" on .ayy-rating (with a FieldError)", "looks": "Unfilled star outlines tint to 60% destructive." },
+    "loading": { "none": "No loading look; use a Skeleton while scores load." }
+  },
+  "sizes": {
+    "scale": {
+      "sm": "16px stars (--ayy-size-icon-sm), sm control hit height (28/32/40px) when interactive.",
+      "md": "20px stars (--ayy-size-icon-md), md control hit height (32/40/44px) when interactive.",
+      "lg": "24px stars (--ayy-size-icon-lg), lg control hit height (40/48/52px) when interactive."
+    },
+    "density": "Interactive hit height follows data-density so touch screens get 44px+ tap targets; read-only stars stay compact at the icon size.",
+    "width": "Hugs its stars."
+  },
+  "js": "ratingClass({ size?, half?, readOnly?, className? }) → string; ratingItemClass, ratingStarClass, ratingFillClass constants; ratingStarIcon (SVG markup); recordRatingPointerDown / toggleClearableRating (wired by @danitesler/ayywi/elements for [data-clearable]).",
+  "react": {
+    "import": "import { Rating } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Rating": {
+        "renders": "<div role=\"radiogroup\" class=\"ayy-rating\"> when interactive, or <div role=\"img\" class=\"ayy-rating ayy-rating--readonly\"> when readOnly",
+        "props": {
+          "value / defaultValue": "number — current or initial score (0 to max).",
+          "onValueChange": "(value: number) => void",
+          "max": "number — total stars (default 5).",
+          "half": "boolean — 0.5-star increments when interactive.",
+          "readOnly": "boolean — non-interactive display mode.",
+          "clearable": "boolean — clicking the active star clears back to 0.",
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "disabled": "boolean",
+          "invalid": "boolean — sets aria-invalid=\"true\".",
+          "name": "string — radio group name for form submission.",
+          "itemLabel": "(value: number, max: number) => string — accessible label per star option.",
+          "...rest": "All native <div> attributes."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Name interactive ratings with aria-label or aria-labelledby on the radiogroup; each radio carries its own aria-label (\"1 star\", \"2 stars\"…).",
+    "Read-only ratings render role=\"img\" with aria-label=\"4.5 out of 5 stars\" and hide the individual SVGs from screen readers.",
+    "Arrow keys move between star values natively through the radio inputs."
+  ],
+  "do": [
+    "Use Rating for 1–5 satisfaction scores, product reviews and read-only score summaries.",
+    "Pair a read-only Rating with tabular numeric text (\"4.5 (128)\") when exact numbers matter.",
+    "Enable clearable when a rating is optional in a form."
+  ],
+  "dont": [
+    "Don't use more than 5 stars for a general score — use a Slider or Segmented control for 0–10 NPS scales.",
+    "Don't use interactive stars when no score is saved — pass readOnly."
+  ],
+  "examples": [
+    { "id": "stars", "title": "Interactive, half-star & read-only" }
+  ]
+}

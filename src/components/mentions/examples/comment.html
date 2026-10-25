@@ -1,0 +1,37 @@
+<!-- <ayy-mentions> opens the suggestion listbox at the caret when @ or # is typed; Enter inserts the active option. -->
+<div style="max-inline-size: 30rem">
+  <div class="ayy-field">
+    <label class="ayy-label" for="review-comment-html">Release note</label>
+    <ayy-mentions triggers="@ #">
+      <div class="ayy-mentions">
+        <textarea aria-autocomplete="list" aria-controls="mentions-listbox-html" class="ayy-textarea ayy-textarea--autosize ayy-mentions__textarea" id="review-comment-html" rows="3" placeholder="Type @ to mention someone or # to link an issue…">Looping in @ada to review #142 before Friday’s release. </textarea>
+        <span class="ayy-mentions__anchor" aria-hidden="true"></span>
+        <ul id="mentions-listbox-html" role="listbox" aria-label="Suggestions" popover="manual" class="ayy-combobox__listbox ayy-mentions__listbox">
+          <li role="option" class="ayy-combobox__option ayy-mentions__option" data-value="ada" data-label="Ada Lovelace" data-trigger="@" data-keywords="engineering lead" aria-selected="false">
+            <span role="img" aria-label="Ada Lovelace" class="ayy-avatar ayy-avatar--sm"><span class="ayy-avatar__fallback" aria-hidden="true">AL</span></span>
+            <span class="ayy-mentions__body"><span class="ayy-mentions__label">Ada Lovelace</span><span class="ayy-mentions__handle">@ada</span></span>
+          </li>
+          <li role="option" class="ayy-combobox__option ayy-mentions__option" data-value="grace" data-label="Grace Hopper" data-trigger="@" data-keywords="compiler infra" aria-selected="false">
+            <span role="img" aria-label="Grace Hopper" class="ayy-avatar ayy-avatar--sm"><span class="ayy-avatar__fallback" aria-hidden="true">GH</span></span>
+            <span class="ayy-mentions__body"><span class="ayy-mentions__label">Grace Hopper</span><span class="ayy-mentions__handle">@grace</span></span>
+          </li>
+          <li role="option" class="ayy-combobox__option ayy-mentions__option" data-value="alan" data-label="Alan Turing" data-trigger="@" data-keywords="security" aria-selected="false">
+            <span role="img" aria-label="Alan Turing" class="ayy-avatar ayy-avatar--sm"><span class="ayy-avatar__fallback" aria-hidden="true">AT</span></span>
+            <span class="ayy-mentions__body"><span class="ayy-mentions__label">Alan Turing</span><span class="ayy-mentions__handle">@alan</span></span>
+          </li>
+          <li role="option" class="ayy-combobox__option ayy-mentions__option" data-value="margaret" data-label="Margaret Hamilton" data-trigger="@" data-keywords="flight systems" aria-selected="false">
+            <span role="img" aria-label="Margaret Hamilton" class="ayy-avatar ayy-avatar--sm"><span class="ayy-avatar__fallback" aria-hidden="true">MH</span></span>
+            <span class="ayy-mentions__body"><span class="ayy-mentions__label">Margaret Hamilton</span><span class="ayy-mentions__handle">@margaret</span></span>
+          </li>
+          <li role="option" class="ayy-combobox__option ayy-mentions__option" data-value="142" data-label="Auth token refresh race" data-trigger="#" aria-selected="false">
+            <span class="ayy-mentions__body"><span class="ayy-mentions__label">Auth token refresh race</span><span class="ayy-mentions__handle">#142</span></span>
+          </li>
+          <li role="option" class="ayy-combobox__option ayy-mentions__option" data-value="158" data-label="RTL sidebar resize handle" data-trigger="#" aria-selected="false">
+            <span class="ayy-mentions__body"><span class="ayy-mentions__label">RTL sidebar resize handle</span><span class="ayy-mentions__handle">#158</span></span>
+          </li>
+        </ul>
+      </div>
+    </ayy-mentions>
+    <p class="ayy-field__hint">Type @ for teammates or # for issues; arrows and Enter insert.</p>
+  </div>
+</div>

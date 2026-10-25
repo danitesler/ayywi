@@ -18,6 +18,17 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **Components**
   No way to say one component is a variation of another → an optional `family` in a component's meta.json (Textarea, Number field, Search bar and Inline edit name Input); the preview nests them under it and `pnpm check` rejects a family that doesn't exist.
 
+- **[PIN input](#/pin-input)**
+  New component — a row of single-character slots for OTP, two-factor and verification codes, with paste distribution, Backspace navigation, masked PIN mode and `<ayy-pin-input>`.
+- **[Rating](#/rating)**
+  New component — a 1–5 star score picker built on native radio inputs (with optional half-star steps and click-to-clear) plus a read-only fractional star display.
+- **[Transfer list](#/transfer-list)**
+  New component — two searchable, selectable lists (available and chosen) with buttons to move checked or all items across, plus `<ayy-transfer-list>`.
+- **[Mentions](#/mentions)**
+  New component — a textarea that opens a caret-anchored suggestion list when `@` or `#` is typed, with keyboard navigation and `<ayy-mentions>`.
+- **[Button](#/button)**
+  No split button variant → added `SplitButton` (`.ayy-button-split`, `.ayy-button-split--block`) to fuse a primary action button with a trailing dropdown menu trigger.
+
 - **[Tree](#/tree)**
   New component — a folder, file or record hierarchy with expandable groups, one selected row, arrow-key navigation and `<ayy-tree>`.
 - **[Property list](#/property-list)**

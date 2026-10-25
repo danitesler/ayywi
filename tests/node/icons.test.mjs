@@ -22,6 +22,9 @@ import CheckmarkCircle02Icon from "@hugeicons/core-free-icons/CheckmarkCircle02I
 import Alert02Icon from "@hugeicons/core-free-icons/Alert02Icon";
 import InformationCircleIcon from "@hugeicons/core-free-icons/InformationCircleIcon";
 import CancelCircleIcon from "@hugeicons/core-free-icons/CancelCircleIcon";
+import ArrowLeftDoubleIcon from "@hugeicons/core-free-icons/ArrowLeftDoubleIcon";
+import ArrowRightDoubleIcon from "@hugeicons/core-free-icons/ArrowRightDoubleIcon";
+import StarIcon from "@hugeicons/core-free-icons/StarIcon";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -120,4 +123,10 @@ test("the date picker, date range, time picker, settings, top bar, command palet
   assert.equal(m.toastErrorIcon, m.iconSvg(CancelCircleIcon));
   assert.equal(m.toastCopyIcon, m.iconSvg(Copy01Icon));
   assert.equal(m.toastCopiedIcon, m.iconSvg(Tick02Icon));
+  assert.equal(m.ratingStarIcon, m.iconSvg(StarIcon));
+  assert.equal(m.transferListSearchIcon, m.iconSvg(Search01Icon));
+  assert.equal(m.transferListAddIcon, m.iconSvg(ArrowRight01Icon, { directional: true }));
+  assert.equal(m.transferListAddAllIcon, m.iconSvg(ArrowRightDoubleIcon, { directional: true }));
+  assert.equal(m.transferListRemoveIcon, m.iconSvg(ArrowLeft01Icon, { directional: true }));
+  assert.equal(m.transferListRemoveAllIcon, m.iconSvg(ArrowLeftDoubleIcon, { directional: true }));
 });

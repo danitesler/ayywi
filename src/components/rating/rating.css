@@ -1,0 +1,191 @@
+/* Rating: 1–N stars built on native radio inputs (interactive whole or half steps) or role="img" (read-only scores).
+   CSS :has() lights every star up to the checked or hovered one with zero JavaScript; logical properties mirror half
+   stars automatically in RTL. */
+
+.ayy-rating {
+  --_box: var(--ayy-size-control-md);
+  --_icon: var(--ayy-size-icon-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+  vertical-align: middle;
+}
+
+.ayy-rating--sm {
+  --_box: var(--ayy-size-control-sm);
+  --_icon: var(--ayy-size-icon-sm);
+}
+
+.ayy-rating--lg {
+  --_box: var(--ayy-size-control-lg);
+  --_icon: var(--ayy-size-icon-lg);
+}
+
+.ayy-rating--readonly {
+  --_box: var(--_icon);
+}
+
+.ayy-rating__item {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_box);
+  block-size: var(--_box);
+  border-radius: var(--ayy-radius-sm);
+  color: color-mix(in srgb, var(--ayy-color-muted) 75%, transparent);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--ayy-duration-fast) ease,
+    transform var(--ayy-duration-fast) var(--ayy-ease-spring);
+}
+
+.ayy-rating__item > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+  z-index: 1;
+}
+
+.ayy-rating__item > svg,
+.ayy-rating__star > svg,
+.ayy-rating__fill > svg {
+  flex: none;
+  inline-size: var(--_icon);
+  block-size: var(--_icon);
+  pointer-events: none;
+}
+
+/* Checked: the chosen star and every star before it fill with warning gold. */
+.ayy-rating__item:has(> input:checked),
+.ayy-rating__item:has(~ .ayy-rating__item > input:checked) {
+  color: var(--ayy-color-warning);
+}
+
+.ayy-rating__item:has(> input:checked) > svg,
+.ayy-rating__item:has(~ .ayy-rating__item > input:checked) > svg {
+  fill: currentColor;
+}
+
+/* Hover preview on pointer devices: preview the hovered score, dimming higher stars while hovering. */
+@media (hover: hover) {
+  .ayy-rating:not(.ayy-rating--readonly):has(.ayy-rating__item:not(:has(> input:disabled)):hover) .ayy-rating__item {
+    color: color-mix(in srgb, var(--ayy-color-muted) 75%, transparent);
+  }
+  .ayy-rating:not(.ayy-rating--readonly):has(.ayy-rating__item:not(:has(> input:disabled)):hover) .ayy-rating__item > svg {
+    fill: none;
+  }
+  .ayy-rating:not(.ayy-rating--readonly) .ayy-rating__item:not(:has(> input:disabled)):hover,
+  .ayy-rating:not(.ayy-rating--readonly) .ayy-rating__item:has(~ .ayy-rating__item:not(:has(> input:disabled)):hover) {
+    color: var(--ayy-color-warning);
+  }
+  .ayy-rating:not(.ayy-rating--readonly) .ayy-rating__item:not(:has(> input:disabled)):hover > svg,
+  .ayy-rating:not(.ayy-rating--readonly) .ayy-rating__item:has(~ .ayy-rating__item:not(:has(> input:disabled)):hover) > svg {
+    fill: currentColor;
+  }
+  .ayy-rating:not(.ayy-rating--half) .ayy-rating__item:not(:has(> input:disabled)):hover {
+    transform: scale(1.1);
+  }
+}
+
+.ayy-rating__item:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-rating__item:has(> input:disabled) {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-rating[aria-invalid="true"] .ayy-rating__item:not(:has(> input:checked)):not(:has(~ .ayy-rating__item > input:checked)) {
+  color: color-mix(in srgb, var(--ayy-color-destructive) 60%, transparent);
+}
+
+/* Interactive half-star mode: two half-width labels per star that meet seamlessly at the star's centre. */
+.ayy-rating--half {
+  gap: 0;
+}
+
+.ayy-rating--half .ayy-rating__item {
+  inline-size: calc(var(--_icon) / 2);
+  overflow: hidden;
+}
+
+.ayy-rating--half .ayy-rating__item:nth-child(even):not(:last-child) {
+  margin-inline-end: var(--ayy-space-1);
+}
+
+.ayy-rating--half .ayy-rating__item > svg {
+  position: absolute;
+  inset-block: 0;
+  margin-block: auto;
+}
+
+.ayy-rating--half .ayy-rating__item:nth-child(odd) > svg {
+  inset-inline-start: 0;
+}
+
+.ayy-rating--half .ayy-rating__item:nth-child(even) > svg {
+  inset-inline-end: 0;
+}
+
+/* Read-only display: whole and half stars inside role="img". */
+.ayy-rating__star {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_icon);
+  block-size: var(--_icon);
+  color: color-mix(in srgb, var(--ayy-color-muted) 75%, transparent);
+}
+
+.ayy-rating__star--full {
+  color: var(--ayy-color-warning);
+}
+
+.ayy-rating__star--full > svg {
+  fill: currentColor;
+}
+
+.ayy-rating__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 50%;
+  overflow: hidden;
+  color: var(--ayy-color-warning);
+  pointer-events: none;
+}
+
+.ayy-rating__fill > svg {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  fill: currentColor;
+}
+
+@media (forced-colors: active) {
+  .ayy-rating__item,
+  .ayy-rating__star {
+    color: CanvasText;
+  }
+  .ayy-rating__item:has(> input:checked),
+  .ayy-rating__item:has(~ .ayy-rating__item > input:checked),
+  .ayy-rating__star--full,
+  .ayy-rating__fill {
+    forced-color-adjust: none;
+    color: Highlight;
+  }
+  .ayy-rating__item:has(> input:disabled) {
+    color: GrayText;
+    opacity: 1;
+  }
+}
