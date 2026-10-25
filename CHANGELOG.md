@@ -31,12 +31,16 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 - **[Settings](#/settings)**
   Appearance settings had no picture picker or reusable appearance rows → added `SettingsPicker`, `SettingsOption` and `SettingsScreen` (`ayy-settings__picker`, `ayy-settings__option`, `ayy-settings__preview`, `ayy-settings__caption`, `ayy-settings__screen`) for visual options with miniature token-drawn screens (including split light/dark for System), `data-motion="reduce"` for app-level reduced motion, a live `appearance` example at the bottom of the Settings page, and a contract rule to use them for theme, density, text size, brand colour, corners, font, motion, language, direction and reset.
+- **[Select](#/select)**
+  Options were text only → options can have pictures (`pictures` in React, `.ayy-select__picture` in HTML): the chosen one shows before the text, and the list shows each one larger next to its option.
+- **[Select](#/select)**
+  Choosing the option that was already chosen did nothing → it fires an `ayy-choose` event (`onChoose` in React), so an option like Custom colour can act every time.
 - **[Settings](#/settings)**
-  Appearance pickers opened as a grid of large pictures → in a popover they're now a list like a menu, a small picture and the name per row with a check on the chosen one.
+  Appearance choices opened from a button as a grid of large pictures → each one (Theme, Density, Text size, Brand colour, Corners, Font, Text direction) is a Select with pictures, lined up with the Language select.
 - **[Settings](#/settings)**
   Density and brand colour previewed the same miniature app as Theme → Density draws a list whose rows grow with the density (`variant="rows"`), and Brand colour shows where the colour lands: the chosen sidebar item, a progress bar, a checkbox and a button (`variant="brand"`).
 - **[Settings](#/settings)**
-  Text size was a slider, Brand colour a row of swatches and Text direction a segmented control → each is now a dropdown picker like Theme, with "Aa" samples, colour previews (plus a custom colour) and left-to-right / right-to-left screens; the screens also mirror correctly on right-to-left pages.
+  Text size was a slider, Brand colour a row of swatches and Text direction a segmented control → each is a Select with "Aa" samples, colour previews and left-to-right / right-to-left screens; choosing Custom opens the colour picker straight away. The screens also mirror correctly on right-to-left pages.
 
 - **[Chart](#/chart)**
   Colours, legend and hover card — a new first example on the Chart page shows every colour a chart can use as a swatch, the legend that switches series and the hover card on its own (`ChartTooltip`).
@@ -139,6 +143,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Fixed
 
+- **Linter**
+  A `hidden` input or other control was reported as a raw browser control → hidden ones are skipped, since they never show.
 - **[Dropdown menu](#/menu)**
   A key pressed right after a submenu panel opened (an arrow into an Icon picker's grid) could be undone, focus jumping back to the panel's first field → focus stays where the key moved it.
 - **[Inline edit](#/inline-edit)**

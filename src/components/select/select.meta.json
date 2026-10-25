@@ -10,6 +10,7 @@
     "ayy-select__list": "The options list (role=\"listbox\" popover) that React Select and \"@danitesler/ayywi/elements\" build from the <option>s while it's open. Don't write it yourself.",
     "ayy-select__option": "One option in the list (role=\"option\"); aria-selected=\"true\" on the chosen one, aria-disabled for a disabled <option>.",
     "ayy-select__label": "An <optgroup>'s label in the list.",
+    "ayy-select__picture": "A picture for one option (a theme thumbnail, \"Aa\" in a font, a colour): a <span aria-hidden=\"true\" data-value=\"<the option's value>\"> after the <select> in the wrapper, one per option, all but the chosen one hidden. The chosen one shows at the control's inline start (32×20px); the list shows each before its option's text (88px wide, 16:10). It's a frame (border, tint, rounded) and a size container, so what's inside can size itself in container units.",
     "ayy-select--sm": "Small.",
     "ayy-select--lg": "Large."
   },
@@ -22,7 +23,7 @@
     "pressed": { "none": "Pressing opens the options list (the OS picker on touch screens); the list shows the state." },
     "focus": { "when": ".ayy-select__control:focus-visible; .ayy-select__option:focus-visible", "looks": "2px ring just inside the edge; the border goes transparent. In the list the focused option gets the wash-hover background, plus a 2px ring inset by 2px from the keyboard. Forced colours: Highlight fill." },
     "disabled": { "when": ".ayy-select__control:disabled; a disabled <option> (aria-disabled on its list option)", "looks": "Control and chevron dim to --ayy-opacity-disabled, not-allowed cursor; a disabled option dims the same way and the arrow keys skip it." },
-    "selected": { "when": ".ayy-select__option[aria-selected=\"true\"] (the <option> that's selected)", "looks": "The chosen option shows as the control's text; in the list it's semibold with a check at the inline end." },
+    "selected": { "when": ".ayy-select__option[aria-selected=\"true\"] (the <option> that's selected)", "looks": "The chosen option shows as the control's text (and its picture, when the select has pictures); in the list it's semibold with a check at the inline end." },
     "error": { "when": ".ayy-select__control[aria-invalid=\"true\"]", "looks": "Border 60% destructive, destructive focus ring. Forced colours: dashed border." },
     "loading": { "none": "No loading look; disable it with a \"Loading…\" option until the options arrive, or use a Skeleton for the form." },
     "open": { "when": ".ayy-select__control[aria-expanded=\"true\"] while the list shows", "looks": "Border turns line-hover and the chevron points up; the list fades in and scales up from 97% under the select (above it when there's no room), at least as wide, at most 20rem tall with its own scroll." },
@@ -35,9 +36,9 @@
       "lg": "Control lg height (40px compact, 48 comfortable, 52 touch), lg text."
     },
     "density": "Height and text follow data-density.",
-    "width": "Fills its container; long option text is cut with an ellipsis. The list is at least the select's width and at most 24rem; its options are the md control height."
+    "width": "Fills its container; long option text is cut with an ellipsis. The list is at least the select's width and at most 24rem; its options are the md control height, or as tall as their picture (up to 32rem of list) with pictures."
   },
-  "js": "selectClass({ size?, className? }) → string for the wrapper; selectControlClass, selectListClass, selectOptionClass, selectLabelClass constants; openSelectListFrom(event) opens the list from a mousedown or keydown on a select (what React Select and \"@danitesler/ayywi/elements\" call); openSelectList(select) opens it directly; usesSelectList(select) says whether a select gets the list here",
+  "js": "selectClass({ size?, className? }) → string for the wrapper; selectControlClass, selectListClass, selectOptionClass, selectLabelClass constants; openSelectListFrom(event) opens the list from a mousedown or keydown on a select (what React Select and \"@danitesler/ayywi/elements\" call); openSelectList(select) opens it directly; usesSelectList(select) says whether a select gets the list here; selectPictureClass, selectPicture(select, value) and syncSelectPicture(select) (shows the chosen option's picture; @danitesler/ayywi/elements calls it on change). Choosing from ayywi's list fires input and change when the value changes, then a bubbling ayy-choose event (detail.value) on the select for every choice, the option already chosen included",
   "react": {
     "import": "import { Select } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -45,6 +46,8 @@
         "renders": "<div class=\"ayy-select\"><select class=\"ayy-select__control\">",
         "props": {
           "size": "\"sm\" | \"md\" | \"lg\"",
+          "pictures": "Record<string, ReactNode> — a picture per option value: rendered as .ayy-select__picture spans after the <select>; the chosen one shows before the text and the list shows each",
+          "onChoose": "(value: string) => void — every choice from ayywi's list, the option already chosen included (onChange only fires for a new one), for an option that acts each time, such as Custom colour",
           "wrapperProps": "Props for the wrapper <div>",
           "...rest": "All native <select> attributes and events (onChange fires when an option is chosen from the list too); className goes to the <select>."
         }
@@ -54,12 +57,14 @@
   "a11y": [
     "Label it like any input (Field + Label with for/id); the list takes the same name.",
     "The list is a role=\"listbox\" of role=\"option\"s: arrows, Home/End and type-ahead move, Enter, Space or a click chooses, Esc, Tab or a click outside closes, and focus goes back to the select.",
-    "Touch screens keep the OS picker, which suits them better. Don't build your own dropdown for choosing a value: this is it."
+    "Touch screens keep the OS picker, which suits them better. Don't build your own dropdown for choosing a value: this is it.",
+    "Pictures are aria-hidden: an option's text names it, in the list and in the OS picker."
   ],
   "do": [
     "Use a select to choose one option from a longer list (country, time zone, role).",
     "Put a sensible default first, or a disabled placeholder option.",
-    "Write a plain <select> with <option>s (or React Select): the list comes with it. In plain HTML load elements.global.js (or import \"@danitesler/ayywi/elements\")."
+    "Write a plain <select> with <option>s (or React Select): the list comes with it. In plain HTML load elements.global.js (or import \"@danitesler/ayywi/elements\").",
+    "Give options pictures when the choice is visual (a theme, a font, a colour): one .ayy-select__picture per option (React: pictures). Phones keep the OS picker with text only, so the option text must still say what it is."
   ],
   "dont": [
     "Don't use a select for 2–5 options that should all be visible — use Radio, or a Segmented control when the choice changes a view.",
@@ -68,5 +73,5 @@
     "Don't use a select to search thousands of options — put a search Input group above a List of results instead.",
     "Don't use a select for yes/no — use a Switch or Checkbox."
   ],
-  "examples": [{ "id": "basic", "title": "Sizes and states" }]
+  "examples": [{ "id": "basic", "title": "Sizes, states and pictures" }]
 }

@@ -18,8 +18,28 @@ export const selectControlClass = "ayy-select__control";
 export const selectListClass = "ayy-select__list";
 export const selectOptionClass = "ayy-select__option";
 export const selectLabelClass = "ayy-select__label";
+/** A picture for one option: a sibling of the <select> in its wrapper, with data-value set to the option's value. */
+export const selectPictureClass = "ayy-select__picture";
 
 const OPTION = `.${selectOptionClass}`;
+
+/** The picture for an option value, if the select has pictures. */
+export function selectPicture(select: HTMLSelectElement, value: string): HTMLElement | null {
+  const wrapper = select.parentElement;
+  if (!wrapper) return null;
+  for (const picture of wrapper.querySelectorAll<HTMLElement>(`:scope > .${selectPictureClass}`)) {
+    if (picture.dataset.value === value) return picture;
+  }
+  return null;
+}
+
+/** Show the chosen option's picture at the start of the select and hide the others (React Select does it itself). */
+export function syncSelectPicture(select: HTMLSelectElement): void {
+  for (const picture of select.parentElement?.querySelectorAll<HTMLElement>(`:scope > .${selectPictureClass}`) ?? []) {
+    picture.hidden = picture.dataset.value !== select.value;
+  }
+}
+
 let listCount = 0;
 // Selects whose open list a press on the select itself just dismissed: that click mustn't reopen it.
 const dismissedBy = new WeakSet<HTMLSelectElement>();
@@ -70,9 +90,10 @@ export function openSelectListFrom(event: MouseEvent | KeyboardEvent): boolean {
 }
 
 /**
- * Show ayywi's options list under a native <select>: a listbox popover built from its <option>s and <optgroup>s,
- * with arrows, Home/End and type-ahead, Enter/Space or a click to choose, Esc, Tab or a click outside to close.
- * Choosing sets the select's value and fires `input` and `change` on it, so forms and frameworks see a normal select.
+ * Show ayywi's options list under a native <select>: a listbox popover built from its <option>s and <optgroup>s (and
+ * their pictures), with arrows, Home/End and type-ahead, Enter/Space or a click to choose, Esc, Tab or a click outside
+ * to close. Choosing sets the select's value and fires `input` and `change` on it, so forms and frameworks see a normal
+ * select, then `ayy-choose` (detail.value), which fires for the option that was already chosen too.
  * The list is removed again when it closes. Returns a function that closes it.
  */
 export function openSelectList(
@@ -93,8 +114,16 @@ export function openSelectList(
     item.setAttribute("role", "option");
     item.setAttribute("aria-selected", String(option.selected));
     item.tabIndex = -1;
-    item.textContent = option.label || option.text;
+    const text = option.label || option.text;
     item.dataset.index = String(option.index);
+    item.dataset.label = text;
+    const picture = selectPicture(select, option.value)?.cloneNode(true) as HTMLElement | undefined;
+    if (picture) {
+      picture.hidden = false;
+      picture.removeAttribute("data-value");
+      picture.setAttribute("aria-hidden", "true");
+      item.append(picture, text);
+    } else item.textContent = text;
     if (option.disabled) item.setAttribute("aria-disabled", "true");
     return item;
   };
@@ -149,6 +178,8 @@ export function openSelectList(
       select.dispatchEvent(new Event("input", { bubbles: true }));
       select.dispatchEvent(new Event("change", { bubbles: true }));
     }
+    // Every choice, the chosen option again included, for options that act each time (a Custom colour…).
+    select.dispatchEvent(new CustomEvent("ayy-choose", { bubbles: true, detail: { value: select.value } }));
     select.focus();
     close();
   };
@@ -194,7 +225,7 @@ export function openSelectList(
       const start = typed.length > 1 ? Math.max(index, 0) : index + 1;
       for (let step = 0; step < all.length; step++) {
         const item = all[(start + step) % all.length];
-        if (item.textContent?.trim().toLocaleLowerCase().startsWith(typed)) {
+        if ((item.dataset.label ?? item.textContent ?? "").trim().toLocaleLowerCase().startsWith(typed)) {
           focusItem(item);
           break;
         }

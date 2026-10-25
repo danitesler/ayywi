@@ -161,6 +161,7 @@ test("structure: native controls written raw, without any class", () => {
 <label class="ayy-chip"><input type="checkbox" name="tag" />Design</label>
 <label className="ayy-segmented-control__option"><input type="radio" name="v" />List</label>
 <input type="hidden" name="id" />
+<input type="color" hidden tabIndex={-1} data-value="custom" />
 <button {...props}>Add</button>
 <Button>Add</Button>
 <Select><option>Dark</option></Select>

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { example, open, rtl } from "./helpers";
 
 // The Settings pattern: the App shell in settings mode, in a near-full-screen dialog (the playground's settings demo).
@@ -130,78 +130,96 @@ test("a top bar first in an app shell's main stays at the very top, edge to edge
   expect(Math.round((await main.locator(".ayy-top-bar").boundingBox())!.y)).toBe(Math.round(box.y));
 });
 
-test("appearance settings: pickers open in popovers as lists of pictures, and picking updates the container", async ({ page }) => {
+test("appearance settings: selects with pictures, and picking updates the container", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await open(page, "settings", { renderer: "react" });
   const app = example(page, "appearance");
-  const themeTrigger = app.getByRole("button", { name: "Theme", exact: true });
-  await expect(themeTrigger.locator(".ayy-settings__preview")).toBeVisible();
-  await themeTrigger.click();
-  const themeGroup = app.getByRole("radiogroup", { name: "Theme" });
-  await expect(themeGroup).toBeVisible();
-  const themeOptions = themeGroup.locator(".ayy-settings__option");
-  await expect(themeOptions).toHaveCount(5);
+  const shownPicture = (select: Locator) => select.locator("xpath=..").locator(".ayy-select__picture:not([hidden])");
 
-  const systemScreens = themeOptions.first().locator(".ayy-settings__screen");
-  await expect(systemScreens).toHaveCount(2);
-  await expect(systemScreens.nth(0)).toHaveAttribute("data-theme", "light");
-  await expect(systemScreens.nth(1)).toHaveAttribute("data-theme", "dark");
-
-  // Picking Light updates data-theme on the example root and closes the popover.
-  await themeOptions.filter({ hasText: "Light" }).first().click();
+  // Theme: the chosen option's picture shows in the select (System: a light and a dark screen), and the list shows one per option.
+  const theme = app.getByLabel("Theme", { exact: true });
+  await expect(shownPicture(theme)).toHaveCount(1);
+  await expect(shownPicture(theme).locator(".ayy-settings__screen")).toHaveCount(2);
+  await theme.click();
+  const themeList = page.getByRole("listbox", { name: "Theme" });
+  await expect(themeList.locator(".ayy-select__picture")).toHaveCount(5);
+  await themeList.getByRole("option", { name: "Light", exact: true }).click();
+  await expect(themeList).toBeHidden();
   await expect(app.locator("[data-theme='light']").first()).toBeVisible();
-  await expect(themeGroup).toBeHidden();
+  await expect(shownPicture(theme).locator(".ayy-settings__screen")).toHaveAttribute("data-theme", "light");
 
-  // Density opens in a popover with an inline preview on its trigger and updates data-density.
-  const densityTrigger = app.getByRole("button", { name: "Density", exact: true });
-  await expect(densityTrigger.locator(".ayy-settings__preview")).toBeVisible();
-  await densityTrigger.click();
-  const densityGroup = app.getByRole("radiogroup", { name: "Density" });
-  await expect(densityGroup).toBeVisible();
-  await densityGroup.locator(".ayy-settings__option", { hasText: "Comfortable" }).click();
+  // Density draws rows and updates data-density.
+  const density = app.getByLabel("Density", { exact: true });
+  await density.click();
+  const densityList = page.getByRole("listbox", { name: "Density" });
+  await expect(densityList.locator(".ayy-settings__screen--rows").first()).toBeVisible();
+  await densityList.getByRole("option", { name: "Comfortable" }).click();
   await expect(app.locator("[data-density='comfortable']").first()).toBeVisible();
-  await expect(densityGroup).toBeHidden();
 
-  // Density options draw rows; the pickers in popovers are lists, one option per row.
-  await densityTrigger.click();
-  await expect(densityGroup.locator(".ayy-settings__screen--rows").first()).toBeVisible();
-  expect(await densityGroup.evaluate((el) => getComputedStyle(el).flexDirection)).toBe("column");
-  await page.keyboard.press("Escape");
+  // Text size: "Aa" samples.
+  const size = app.getByLabel("Text size", { exact: true });
+  await size.selectOption("125");
+  await expect(shownPicture(size)).toHaveText("Aa");
 
-  // Text size opens in a popover of "Aa" samples.
-  await app.getByRole("button", { name: "Text size", exact: true }).click();
-  const sizeGroup = app.getByRole("radiogroup", { name: "Text size" });
-  await sizeGroup.locator(".ayy-settings__option", { hasText: "125%" }).click();
-  await expect(sizeGroup).toBeHidden();
-  await expect(app.getByRole("button", { name: "Text size", exact: true })).toContainText("125%");
-
-  // Picking Violet in the Brand colour popover sets data-brand, and its options draw the brand screen.
-  await app.getByRole("button", { name: "Brand colour", exact: true }).click();
-  const colourGroup = app.getByRole("radiogroup", { name: "Brand colour" });
-  await expect(colourGroup.locator(".ayy-settings__screen--brand")).toHaveCount(7);
-  await colourGroup.locator(".ayy-settings__option", { hasText: "Violet" }).click();
-  await expect(colourGroup).toBeHidden();
+  // Brand colour: brand screens; Violet sets data-brand.
+  const colour = app.getByLabel("Brand colour", { exact: true });
+  await colour.click();
+  const colourList = page.getByRole("listbox", { name: "Brand colour" });
+  await expect(colourList.locator(".ayy-settings__screen--brand")).toHaveCount(7);
+  await colourList.getByRole("option", { name: "Violet" }).click();
   await expect(app.locator("[data-brand='settings-example']")).toBeVisible();
 
+  // Custom closes the list and opens the colour picker under the select; the colour shows in its picture, and focus
+  // goes back to the select. Choosing Custom again opens it again.
+  for (const round of [1, 2]) {
+    await colour.click();
+    await colourList.getByRole("option", { name: "Custom" }).click();
+    await expect(colourList).toBeHidden();
+    const picker = page.locator(".ayy-swatch-popover:popover-open");
+    await expect(picker).toBeVisible();
+    const hex = picker.getByRole("textbox", { name: "Hex color" });
+    await hex.fill(round === 1 ? "#16a34a" : "#dc2626");
+    await hex.press("Enter");
+    await expect(picker).toHaveCount(0);
+    await expect(colour).toHaveValue("custom");
+    await expect(colour).toBeFocused();
+  }
+  expect(await shownPicture(colour).locator(".ayy-settings__screen").evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary"))).toBe("#dc2626");
+
   // Text direction: Right to left sets dir on the example.
-  await app.getByRole("button", { name: "Text direction", exact: true }).click();
-  const directionGroup = app.getByRole("radiogroup", { name: "Text direction" });
-  await directionGroup.locator(".ayy-settings__option", { hasText: "Right to left" }).click();
+  await app.getByLabel("Text direction", { exact: true }).selectOption("rtl");
   await expect(app.locator("[data-brand='settings-example']")).toHaveAttribute("dir", "rtl");
 
-  // Picking Sharp in the Corners popover updates corners.
-  const cornersTrigger = app.getByRole("button", { name: "Corners", exact: true });
-  await expect(cornersTrigger.locator(".ayy-settings__preview")).toBeVisible();
-  await cornersTrigger.click();
-  const cornersGroup = app.getByRole("radiogroup", { name: "Corners" });
-  await expect(cornersGroup).toBeVisible();
-  await cornersGroup.locator(".ayy-settings__option", { hasText: "Sharp" }).click();
+  // Corners: Sharp sets the button radius.
+  await app.getByLabel("Corners", { exact: true }).selectOption("sharp");
   expect(await app.locator("[data-brand='settings-example']").evaluate((el) => (el as HTMLElement).style.getPropertyValue("--ayy-radius-button"))).toBe("var(--ayy-radius-sm)");
-  await expect(cornersGroup).toBeHidden();
 
   // Reduce motion sets data-motion="reduce", and reset clears it.
   await app.getByRole("switch", { name: "Reduce motion" }).click();
   await expect(app.locator("[data-motion='reduce']")).toBeVisible();
   await app.getByRole("button", { name: /Reset appearance/ }).click();
   await expect(app.locator("[data-motion='reduce']")).toHaveCount(0);
+});
+
+test("appearance settings in plain HTML: pictures follow the choice and Custom opens the colour picker", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await open(page, "settings", { renderer: "html" });
+  const app = example(page, "appearance");
+  const theme = app.getByLabel("Theme", { exact: true });
+  await theme.click();
+  await page.getByRole("listbox", { name: "Theme" }).getByRole("option", { name: "Dark", exact: true }).click();
+  await expect(theme.locator("xpath=..").locator(".ayy-select__picture:not([hidden]) .ayy-settings__screen")).toHaveAttribute("data-theme", "dark");
+
+  const colour = app.getByLabel("Brand colour", { exact: true });
+  await colour.click();
+  await page.getByRole("listbox", { name: "Brand colour" }).getByRole("option", { name: "Custom" }).click();
+  const picker = page.locator(".ayy-swatch-popover:popover-open");
+  await expect(picker).toBeVisible();
+  const hex = picker.getByRole("textbox", { name: "Hex color" });
+  await hex.fill("#16a34a");
+  await hex.press("Enter");
+  await expect(colour).toBeFocused();
+  expect(
+    await colour.locator("xpath=..").locator(".ayy-select__picture:not([hidden]) .ayy-settings__screen").evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary")),
+  ).toBe("#16a34a");
 });

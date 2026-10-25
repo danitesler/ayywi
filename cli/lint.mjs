@@ -513,6 +513,8 @@ function rawControlFindings(source, push) {
     if (!selfClosing) stack.push({ name, open: openTag });
     if (hidden || !/^(?:button|select|textarea|input|table|dialog|details|progress|meter)$/.test(name)) continue;
     if (/\{\s*\.\.\./.test(openTag) || /(?<![\w-])(?:class|className|:class|v-bind:class|class:list|\[class\]|\[ngClass\]|ngClass)\s*=/.test(openTag)) continue;
+    // hidden (a custom colour's input that only holds the value) renders nothing.
+    if (/\shidden(?=[\s=/>])/.test(openTag)) continue;
     // Inputs inside an ayywi label (Chip, Segmented control, Swatch, Drop zone) are that component's own part.
     if (name === "input" && parent && (/^ayy-/.test(parent.name) || /(?<![\w-])ayy-[\w-]+/.test(parent.open))) continue;
     const role = openTag.match(/\srole=["']([\w-]+)["']/)?.[1];

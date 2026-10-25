@@ -17,28 +17,28 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - `.ayy-settings__link` — On an .ayy-settings__row that is an <a href> (opens a sub-page) or a <button> (runs an action): the whole row is the target, with a chevron icon at the end.
 - `.ayy-settings__value` — The current value in a link row, muted, before the chevron ("English", "System").
 - `.ayy-settings__link--destructive` — Sign out, Delete account: red text and no chevron.
-- `.ayy-settings__picker` — Appearance choices shown as pictures (theme, density, text size, brand colour, corners, font, direction): role="radiogroup" with an aria-label. In a Popover it's a list, one option per row as in a menu; in a stacked row, a grid of larger pictures.
-- `.ayy-settings__option` — One picture to choose: a <label> around a visually hidden native radio, a .ayy-settings__preview and a .ayy-settings__caption. In a Popover: a row with the small picture at the start, the caption, and a check at the end when chosen. In a grid: the picture over its caption; chosen, the picture gets a text-colour border and the caption turns the text colour.
-- `.ayy-settings__preview` — The picture's 16:10 frame (72px wide in a Popover's list, a small 24×16px inline icon inside a trigger .ayy-button before its label). Holds a .ayy-settings__screen, or a short sample such as "Aa" in a font or at a text size. aria-hidden: the caption names the option.
+- `.ayy-settings__picker` — A grid of larger pictures to choose from in a stacked row (an appearance setting that should show every choice at once): role="radiogroup" with an aria-label. For a dropdown, use a Select with pictures.
+- `.ayy-settings__option` — One picture to choose: a <label> around a visually hidden native radio, a .ayy-settings__preview and a .ayy-settings__caption. Chosen: the picture gets a text-colour border and the caption turns the text colour.
+- `.ayy-settings__preview` — The picture's 16:10 frame in a SettingsOption. Holds a .ayy-settings__screen, or a short sample such as "Aa" in a font. aria-hidden: the caption names the option. (In a Select, the screen goes straight in its .ayy-select__picture.)
 - `.ayy-settings__caption` — The option's name under the picture ("Dark", "Sharp").
-- `.ayy-settings__screen` — A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens around it, for Theme, Corners and Text direction. Set data-theme, data-density or dir on it, or brand and corner tokens on or around it, to preview them; it mirrors in RTL. Two in one preview split it, the second showing the right half: System as light then dark, Auto density as compact then touch, Auto direction as dir="ltr" then dir="rtl".
+- `.ayy-settings__screen` — A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens around it, for Theme, Corners and Text direction: in a Select's pictures (.ayy-select__picture) or a SettingsOption's. Set data-theme, data-density or dir on it, or brand and corner tokens on or around it, to preview them; it mirrors in RTL. Two in one picture split it, the second showing the right half: System as light then dark, Auto density as compact then touch, Auto direction as dir="ltr" then dir="rtl".
 - `.ayy-settings__screen--rows` — For Density: a list of rows, each a line of text and a control, divided by hairlines; rows are as tall as data-density makes them (exaggerated), so Compact shows about two and a half times the rows Touch does.
 - `.ayy-settings__screen--brand` — For Brand colour: where the primary colour shows (the chosen sidebar item tinted, a filled progress bar, a ticked checkbox, the primary button). Set --ayy-color-primary on it to preview a colour (a palette token; var(--ayy-color-text) for the monochrome default).
 
 **States**
 - `default` — A semibold heading and a muted description over a bordered card of rows split by hairlines: a medium label and a small muted hint at the start, the control at the end.
-- `hover` (`.ayy-settings__link:hover, .ayy-settings__option:hover (devices that hover)`) — A wash over the link row; an option's picture gets the line-hover border, and in a Popover's list the option's row gets the hover wash.
+- `hover` (`.ayy-settings__link:hover, .ayy-settings__option:hover (devices that hover)`) — A wash over the link row; an option's picture gets the line-hover border.
 - `pressed` — doesn't apply: No pressed look; a link row opens its page at once.
-- `focus` (`.ayy-settings__link:focus-visible; .ayy-settings__option:has(> input:focus-visible); the row's own control`) — Link rows get the ring inside the row's edge (outside in plain groups); an option's picture gets the ring 2px outside (in a Popover's list, the option's row gets it inside its edge, with the hover wash); controls keep their own ring.
+- `focus` (`.ayy-settings__link:focus-visible; .ayy-settings__option:has(> input:focus-visible); the row's own control`) — Link rows get the ring inside the row's edge (outside in plain groups); an option's picture gets the ring 2px outside; controls keep their own ring.
 - `disabled` (`.ayy-settings__link:disabled, .ayy-settings__link[aria-disabled="true"], .ayy-settings__option:has(> input:disabled)`) — Reduced opacity and not-allowed cursor on link rows and options.
-- `selected` (`.ayy-settings__option:has(> input:checked)`) — In a Popover's list: a check at the row's end and a semibold caption. In a grid: the picture gets a text-colour border plus a 1px ring, and the caption turns the text colour; forced colours, a Highlight outline. Rows themselves aren't selectable: a link row shows its current value (.ayy-settings__value).
+- `selected` (`.ayy-settings__option:has(> input:checked)`) — The picture gets a text-colour border plus a 1px ring, and the caption turns the text colour. Forced colours: a Highlight outline. Rows themselves aren't selectable: a link row shows its current value (.ayy-settings__value).
 - `error` (`.ayy-settings__hint.ayy-field__error, with aria-invalid on the control`) — The hint becomes the error, in the destructive colour.
 - `loading` — doesn't apply: Settings apply at once. While they load, show a Skeleton in the shape of the rows.
 - `destructive` (`.ayy-settings__link--destructive`) — Sign out, delete the account: red label, no chevron.
 
 **Sizes**
 - Density — Rows are at least the lg control height (40px compact, 48 comfortable, 52 touch); their controls follow data-density.
-- Width — Fills its container. A row wraps its control under the label when there's no room; stack does it always. Selects, inputs and popover triggers in a row are at least 11rem. In a Popover a picker is a list at least 13rem wide, each row a 72px 16:10 picture and the caption; in a stacked row it's a grid of 8.5rem-minimum columns. A screen's parts are sized in container units of its picture, so one drawing fits a grid tile, a list row and a trigger icon.
+- Width — Fills its container. A row wraps its control under the label when there's no room; stack does it always. Inputs and popover triggers in a row are at least 11rem, selects 12.5rem (room for a picture). A picker is a grid of 8.5rem-minimum columns with 16:10 pictures. A screen's parts are sized in container units of its picture, so one drawing fits a grid tile and both of a Select's pictures.
 
 **React** — `import { Settings, SettingsRow, SettingsLink, SettingsPicker, SettingsOption, SettingsScreen } from "@danitesler/ayywi/react";`
 - `<Settings>` renders <section class="ayy-settings" aria-labelledby> <h2 class="ayy-settings__title"> … <div class="ayy-settings__list">{children}</div>. Props: `title` ReactNode — the heading; the section is labelled by it; `description` ReactNode — a line under the heading; `plain` boolean — no card around the rows
@@ -55,6 +55,7 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - A link row is one <a> or <button>: its whole text, value included, is its name. Use <a href> when it opens a page, <button> when it does something.
 - Controls wrap under the label on narrow screens instead of shrinking below a usable size.
 - A picker is a radiogroup of native radios: arrow keys move between options, and each option is named by its caption. The pictures are aria-hidden.
+- A custom colour's <input type="color"> is hidden and out of the tab order: choosing Custom opens the colour picker as a labelled dialog under the select with focus in it, and Esc or Enter closes it and puts focus back on the select.
 
 **Do**
 - Use it for any settings or preferences screen: group related rows under short headings (General, Notifications, Shortcuts). They open in a near-full-screen Dialog (size="full") holding the App shell in settings mode (the Settings pattern): a sidebar of sections and one section's groups in the main.
@@ -62,14 +63,14 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.
 - On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.
 - Put Sign out or Delete account last, in its own group, as a destructive link row.
-- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker, which a Popover shows as a list: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (plus a Custom option and a ColorSwatchCustom under the list), and "Aa" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
+- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type="color" data-value="custom"> after the select), and "Aa" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
 
 **Don't**
 - Don't add a Save button for switches and selects that apply at once; save as they change and confirm with a Toast if needed.
 - Don't put two controls in one row; split the setting.
 - Don't use a checkbox for a setting that applies at once — that's what a Switch says.
 - Don't nest a card inside the list; use another group.
-- Don't draw your own theme thumbnails or use a plain Select for the theme: a SettingsScreen draws each theme from its real tokens.
+- Don't draw your own theme thumbnails, or use a Select without pictures or a button opening a popover for an appearance setting: a Select whose pictures are SettingsScreens draws each choice from its real tokens.
 - Don't open settings in a small or side Dialog, or switch sections with Tabs; use a size="full" Dialog with the App shell's settings mode. --plain is for a sheet with a couple of quick options.
 
 ## Settings — Preferences with switches and selects
@@ -302,7 +303,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div style="inline-size:100%;max-inline-size:42rem;font-family:var(--ayy-font-body)">
   <section class="ayy-settings" aria-labelledby="set-appearance-html">
     <h2 id="set-appearance-html" class="ayy-settings__title">Appearance</h2>
-    <p class="ayy-settings__description">Theme, density, brand colour, corners and font for the whole interface.</p>
+    <p class="ayy-settings__description">Theme, density, text size, brand colour, corners and font for the whole interface.</p>
     <div class="ayy-settings__list">
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
@@ -310,7 +311,20 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <p class="ayy-settings__hint" id="set-theme-hint-html">System follows your device's light or dark setting.</p>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-theme-popover-html" aria-haspopup="dialog" id="set-theme-html" aria-describedby="set-theme-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>System<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-theme-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Theme"><div role="radiogroup" class="ayy-settings__picker" aria-label="Theme"><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" checked="" value="system"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span><span class="ayy-settings__caption">System</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="light"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span></span><span class="ayy-settings__caption">Light</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="dark"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span><span class="ayy-settings__caption">Dark</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="dark-contrast"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark-contrast" aria-hidden="true"></span></span><span class="ayy-settings__caption">Black</span></label><label class="ayy-settings__option"><input type="radio" name="set-theme-radio-html" value="light-gray"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light-gray" aria-hidden="true"></span></span><span class="ayy-settings__caption">Light gray</span></label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-theme-html" aria-describedby="set-theme-hint-html">
+              <option value="system" selected>System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="dark-contrast">Black</option>
+              <option value="light-gray">Light gray</option>
+            </select>
+            <span class="ayy-select__picture" data-value="system" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="light" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="dark" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="dark-contrast" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark-contrast" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="light-gray" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light-gray" aria-hidden="true"></span></span>
+          </div>
         </div>
       </div>
       <div class="ayy-settings__row">
@@ -319,7 +333,18 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <p class="ayy-settings__hint" id="set-density-hint-html">Auto: compact with a mouse, touch on a touch screen.</p>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-density-popover-html" aria-haspopup="dialog" id="set-density-html" aria-describedby="set-density-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span>Auto<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-density-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Density"><div role="radiogroup" class="ayy-settings__picker" aria-label="Density"><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" checked="" value="auto"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span><span class="ayy-settings__caption">Auto</span></label><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" value="compact"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span></span><span class="ayy-settings__caption">Compact</span></label><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" value="comfortable"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="comfortable" aria-hidden="true"></span></span><span class="ayy-settings__caption">Comfortable</span></label><label class="ayy-settings__option"><input type="radio" name="set-density-radio-html" value="touch"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span><span class="ayy-settings__caption">Touch</span></label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-density-html" aria-describedby="set-density-hint-html">
+              <option value="auto" selected>Auto</option>
+              <option value="compact">Compact</option>
+              <option value="comfortable">Comfortable</option>
+              <option value="touch">Touch</option>
+            </select>
+            <span class="ayy-select__picture" data-value="auto" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="compact" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="comfortable" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="comfortable" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="touch" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span>
+          </div>
         </div>
       </div>
       <div class="ayy-settings__row">
@@ -328,7 +353,22 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <p class="ayy-settings__hint" id="set-text-size-hint-html">Sets the root font size, so all text and spacing scale with it.</p>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-text-size-popover-html" aria-haspopup="dialog" id="set-text-size-html" aria-describedby="set-text-size-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:100%">Aa</span></span>100%<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-text-size-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Text size"><div role="radiogroup" class="ayy-settings__picker" aria-label="Text size"><label class="ayy-settings__option"><input type="radio" name="set-text-size-radio-html" value="75"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:75%">Aa</span></span><span class="ayy-settings__caption">75%</span></label><label class="ayy-settings__option"><input type="radio" name="set-text-size-radio-html" value="87.5"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:87.5%">Aa</span></span><span class="ayy-settings__caption">87.5%</span></label><label class="ayy-settings__option"><input type="radio" name="set-text-size-radio-html" checked="" value="100"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:100%">Aa</span></span><span class="ayy-settings__caption">100%</span></label><label class="ayy-settings__option"><input type="radio" name="set-text-size-radio-html" value="112.5"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:112.5%">Aa</span></span><span class="ayy-settings__caption">112.5%</span></label><label class="ayy-settings__option"><input type="radio" name="set-text-size-radio-html" value="125"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:125%">Aa</span></span><span class="ayy-settings__caption">125%</span></label><label class="ayy-settings__option"><input type="radio" name="set-text-size-radio-html" value="150"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-size:150%">Aa</span></span><span class="ayy-settings__caption">150%</span></label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-text-size-html" aria-describedby="set-text-size-hint-html">
+              <option value="75">75%</option>
+              <option value="87.5">87.5%</option>
+              <option value="100" selected>100%</option>
+              <option value="112.5">112.5%</option>
+              <option value="125">125%</option>
+              <option value="150">150%</option>
+            </select>
+            <span class="ayy-select__picture" data-value="75" hidden="" aria-hidden="true"><span style="font-size:75%">Aa</span></span>
+            <span class="ayy-select__picture" data-value="87.5" hidden="" aria-hidden="true"><span style="font-size:87.5%">Aa</span></span>
+            <span class="ayy-select__picture" data-value="100" aria-hidden="true"><span style="font-size:100%">Aa</span></span>
+            <span class="ayy-select__picture" data-value="112.5" hidden="" aria-hidden="true"><span style="font-size:112.5%">Aa</span></span>
+            <span class="ayy-select__picture" data-value="125" hidden="" aria-hidden="true"><span style="font-size:125%">Aa</span></span>
+            <span class="ayy-select__picture" data-value="150" hidden="" aria-hidden="true"><span style="font-size:150%">Aa</span></span>
+          </div>
         </div>
       </div>
       <div class="ayy-settings__row">
@@ -337,7 +377,25 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <p class="ayy-settings__hint" id="set-brand-colour-hint-html">Default is monochrome. Contrast is checked in every theme.</p>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-brand-colour-popover-html" aria-haspopup="dialog" id="set-brand-colour-html" aria-describedby="set-brand-colour-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-color-text)"></span></span>Default<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-brand-colour-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Brand colour"><div role="radiogroup" class="ayy-settings__picker" aria-label="Brand colour"><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" checked="" value="default"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-color-text)"></span></span><span class="ayy-settings__caption">Default</span></label><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" value="blue"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-palette-blue-53)"></span></span><span class="ayy-settings__caption">Blue</span></label><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" value="violet"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-palette-violet-58)"></span></span><span class="ayy-settings__caption">Violet</span></label><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" value="green"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-palette-green-24)"></span></span><span class="ayy-settings__caption">Green</span></label><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" value="orange"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-palette-orange-40)"></span></span><span class="ayy-settings__caption">Orange</span></label><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" value="pink"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-palette-pink-42)"></span></span><span class="ayy-settings__caption">Pink</span></label><label class="ayy-settings__option"><input type="radio" name="set-brand-colour-radio-html" value="custom"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" aria-hidden="true" style="--ayy-color-primary:var(--ayy-palette-violet-58)"></span></span><span class="ayy-settings__caption">Custom</span></label></div><hr class="ayy-separator"/><div class="ayy-cluster" style="--ayy-gap:var(--ayy-space-3);padding-inline:var(--ayy-space-2);padding-block-end:var(--ayy-space-1)"><label class="ayy-swatch ayy-swatch--custom"><input type="color" id="set-brand-custom-html" aria-label="Custom colour" value="#7c3aed"/></label><label for="set-brand-custom-html">Pick a custom colour</label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-brand-colour-html" aria-describedby="set-brand-colour-hint-html">
+              <option value="default" selected>Default</option>
+              <option value="blue">Blue</option>
+              <option value="violet">Violet</option>
+              <option value="green">Green</option>
+              <option value="orange">Orange</option>
+              <option value="pink">Pink</option>
+              <option value="custom">Custom</option>
+            </select>
+            <span class="ayy-select__picture" data-value="default" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-color-text)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="blue" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-blue-53)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="violet" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-violet-58)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="green" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-green-24)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="orange" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-orange-40)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="pink" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-pink-42)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="custom" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-violet-58)" aria-hidden="true"></span></span>
+          </div>
+          <input type="color" hidden="" tabindex="-1" aria-label="Custom colour" data-value="custom" value="#7c3aed"/>
         </div>
       </div>
       <div class="ayy-settings__row">
@@ -345,7 +403,18 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <label class="ayy-settings__label" for="set-corners-html">Corners</label>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-corners-popover-html" aria-haspopup="dialog" id="set-corners-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-pill)"></span></span>Pill<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-corners-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Corners"><div role="radiogroup" class="ayy-settings__picker" aria-label="Corners"><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" checked="" value="pill"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-pill)"></span></span><span class="ayy-settings__caption">Pill</span></label><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" value="round"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-xl)"></span></span><span class="ayy-settings__caption">Round</span></label><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" value="soft"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-xl);--ayy-radius-button:var(--ayy-radius-lg)"></span></span><span class="ayy-settings__caption">Soft</span></label><label class="ayy-settings__option"><input type="radio" name="set-corners-radio-html" value="sharp"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-md);--ayy-radius-button:var(--ayy-radius-sm)"></span></span><span class="ayy-settings__caption">Sharp</span></label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-corners-html">
+              <option value="pill" selected>Pill</option>
+              <option value="round">Round</option>
+              <option value="soft">Soft</option>
+              <option value="sharp">Sharp</option>
+            </select>
+            <span class="ayy-select__picture" data-value="pill" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-pill)"></span></span>
+            <span class="ayy-select__picture" data-value="round" hidden="" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-xl)"></span></span>
+            <span class="ayy-select__picture" data-value="soft" hidden="" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-xl);--ayy-radius-button:var(--ayy-radius-lg)"></span></span>
+            <span class="ayy-select__picture" data-value="sharp" hidden="" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-md);--ayy-radius-button:var(--ayy-radius-sm)"></span></span>
+          </div>
         </div>
       </div>
       <div class="ayy-settings__row">
@@ -353,7 +422,16 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <label class="ayy-settings__label" for="set-font-html">Font</label>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-font-popover-html" aria-haspopup="dialog" id="set-font-html"><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>Sora<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-font-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Font"><div role="radiogroup" class="ayy-settings__picker" aria-label="Font"><label class="ayy-settings__option"><input type="radio" name="set-font-radio-html" checked="" value="default"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span><span class="ayy-settings__caption">Sora</span></label><label class="ayy-settings__option"><input type="radio" name="set-font-radio-html" value="system"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span><span class="ayy-settings__caption">System</span></label><label class="ayy-settings__option"><input type="radio" name="set-font-radio-html" value="mono"/><span class="ayy-settings__preview" aria-hidden="true"><span style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Noto Sans Mono&quot;, monospace, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span><span class="ayy-settings__caption">Mono</span></label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-font-html">
+              <option value="default" selected>Sora</option>
+              <option value="system">System</option>
+              <option value="mono">Mono</option>
+            </select>
+            <span class="ayy-select__picture" data-value="default" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
+            <span class="ayy-select__picture" data-value="system" hidden="" aria-hidden="true"><span style="font-family:system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
+            <span class="ayy-select__picture" data-value="mono" hidden="" aria-hidden="true"><span style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Noto Sans Mono&quot;, monospace, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
+          </div>
         </div>
       </div>
     </div>
@@ -391,7 +469,16 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           <p class="ayy-settings__hint" id="set-direction-hint-html">Auto follows the language.</p>
         </div>
         <div class="ayy-settings__control">
-          <ayy-popover align="end"><button type="button" class="ayy-button ayy-button--outline" popovertarget="set-direction-popover-html" aria-haspopup="dialog" id="set-direction-html" aria-describedby="set-direction-hint-html"><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" dir="ltr" aria-hidden="true"></span><span class="ayy-settings__screen" dir="rtl" aria-hidden="true"></span></span>Auto<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><div id="set-direction-popover-html" role="dialog" class="ayy-popover" popover="auto" aria-label="Text direction"><div role="radiogroup" class="ayy-settings__picker" aria-label="Text direction"><label class="ayy-settings__option"><input type="radio" name="set-direction-radio-html" checked="" value="auto"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" dir="ltr" aria-hidden="true"></span><span class="ayy-settings__screen" dir="rtl" aria-hidden="true"></span></span><span class="ayy-settings__caption">Auto</span></label><label class="ayy-settings__option"><input type="radio" name="set-direction-radio-html" value="ltr"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" dir="ltr" aria-hidden="true"></span></span><span class="ayy-settings__caption">Left to right</span></label><label class="ayy-settings__option"><input type="radio" name="set-direction-radio-html" value="rtl"/><span class="ayy-settings__preview" aria-hidden="true"><span class="ayy-settings__screen" dir="rtl" aria-hidden="true"></span></span><span class="ayy-settings__caption">Right to left</span></label></div></div></ayy-popover>
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-direction-html" aria-describedby="set-direction-hint-html">
+              <option value="auto" selected>Auto</option>
+              <option value="ltr">Left to right</option>
+              <option value="rtl">Right to left</option>
+            </select>
+            <span class="ayy-select__picture" data-value="auto" aria-hidden="true"><span class="ayy-settings__screen" dir="ltr" aria-hidden="true"></span><span class="ayy-settings__screen" dir="rtl" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="ltr" hidden="" aria-hidden="true"><span class="ayy-settings__screen" dir="ltr" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="rtl" hidden="" aria-hidden="true"><span class="ayy-settings__screen" dir="rtl" aria-hidden="true"></span></span>
+          </div>
         </div>
       </div>
     </div>
@@ -408,25 +495,9 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 React:
 
 ```tsx
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { BRAND_SHAPES, setBrand, setDensity, setTheme, tokens, type BrandShape, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
-import {
-  ColorSwatchCustom,
-  Icon,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Select,
-  Separator,
-  Settings,
-  SettingsLink,
-  SettingsOption,
-  SettingsPicker,
-  SettingsRow,
-  SettingsScreen,
-  Switch,
-} from "@danitesler/ayywi/react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { BRAND_SHAPES, openSettingsColor, setBrand, setDensity, setTheme, tokens, type BrandShape, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
+import { Select, Settings, SettingsLink, SettingsRow, SettingsScreen, Switch } from "@danitesler/ayywi/react";
 
 const THEMES: { value: ThemeMode; label: string }[] = [
   { value: "system", label: "System" },
@@ -456,11 +527,6 @@ const seed = (token: (typeof COLOURS)[number]["token"]) => tokens[token].value;
 const cssVar = (token: string) => `var(--ayy-${token.replace(/\./g, "-")})`;
 // A brand screen in one colour; the default is monochrome, where primary is the text colour.
 const colourStyle = (color: string) => ({ "--ayy-color-primary": color }) as CSSProperties;
-const colourOf = (value: string, custom: string) => {
-  if (value === "custom") return custom;
-  const picked = COLOURS.find((c) => c.value === value);
-  return picked ? cssVar(picked.token) : "var(--ayy-color-text)";
-};
 
 const TEXT_SIZES = [75, 87.5, 100, 112.5, 125, 150];
 
@@ -496,6 +562,22 @@ const FONTS = [
   { value: "system", label: "System", family: stack(tokens["font.body"].value.slice(1)) },
   { value: "mono", label: "Mono", family: stack([...tokens["font.mono"].value, ...tokens["font.body"].value.slice(1)]) },
 ];
+
+// One picture per option value, for a Select's pictures.
+const picturesOf = <T extends { value: string }>(options: readonly T[], picture: (option: T) => ReactNode) =>
+  Object.fromEntries(options.map((option) => [option.value, picture(option)]));
+
+const THEME_PICTURES = picturesOf(THEMES, (t) => <SettingsScreen theme={t.value} />);
+const DENSITY_PICTURES = picturesOf(DENSITIES, (d) => <SettingsScreen variant="rows" density={d.value} />);
+const SIZE_PICTURES = picturesOf(
+  TEXT_SIZES.map((size) => ({ value: String(size) })),
+  (size) => <span style={{ fontSize: `${size.value}%` }}>Aa</span>,
+);
+const SHAPE_PICTURES = picturesOf(SHAPES, (s) => (
+  <SettingsScreen style={{ "--ayy-radius-card": BRAND_SHAPES[s.value].card, "--ayy-radius-button": BRAND_SHAPES[s.value].button } as CSSProperties} />
+));
+const FONT_PICTURES = picturesOf(FONTS, (f) => <span style={{ fontFamily: f.family }}>Aa</span>);
+const DIRECTION_PICTURES = picturesOf(DIRECTIONS, (d) => <DirectionScreen direction={d.value} />);
 
 const LANGUAGES = [
   { value: "en", label: "English", dir: "ltr" },
@@ -552,139 +634,103 @@ export default function Example() {
     el.dir = direction === "auto" ? (lang?.dir ?? "ltr") : direction;
   }, [theme, density, colour, custom, shape, font, language, direction]);
 
-  const themeLabel = THEMES.find((t) => t.value === theme)?.label ?? "System";
-  const colourLabel = colour === "custom" ? "Custom" : (COLOURS.find((c) => c.value === colour)?.label ?? "Default");
-  const directionLabel = DIRECTIONS.find((d) => d.value === direction)?.label ?? "Auto";
-  const densityLabel = DENSITIES.find((d) => d.value === density)?.label ?? "Auto";
-  const shapeLabel = SHAPES.find((s) => s.value === shape)?.label ?? "Pill";
-  const fontOption = FONTS.find((f) => f.value === font) ?? FONTS[0];
-  const cornerStyle = (s: BrandShape) => ({ "--ayy-radius-card": BRAND_SHAPES[s].card, "--ayy-radius-button": BRAND_SHAPES[s].button }) as CSSProperties;
+  // Choosing Custom (again) opens the colour picker under the select, once the list has closed.
+  const colourSelect = useRef<HTMLSelectElement>(null);
+  const editCustom = () => setTimeout(() => colourSelect.current && openSettingsColor(colourSelect.current));
+  const colourPictures = {
+    default: <SettingsScreen variant="brand" style={colourStyle("var(--ayy-color-text)")} />,
+    ...picturesOf(COLOURS, (c) => <SettingsScreen variant="brand" style={colourStyle(cssVar(c.token))} />),
+    custom: <SettingsScreen variant="brand" style={colourStyle(custom)} />,
+  };
 
   return (
     <div ref={root} style={{ inlineSize: "100%", maxInlineSize: "42rem", fontFamily: "var(--ayy-font-body)" }}>
-      <Settings title="Appearance" description="Theme, density, brand colour, corners and font for the whole interface.">
+      <Settings title="Appearance" description="Theme, density, text size, brand colour, corners and font for the whole interface.">
         <SettingsRow label="Theme" htmlFor="set-theme" hint="System follows your device's light or dark setting.">
-          <Popover>
-            <PopoverTrigger id="set-theme" aria-describedby="set-theme-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen theme={theme} />
-              </span>
-              {themeLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Theme">
-              <SettingsPicker aria-label="Theme" value={theme} onValueChange={(value) => setThemeState(value as ThemeMode)}>
-                {THEMES.map((t) => (
-                  <SettingsOption key={t.value} value={t.value} label={t.label} preview={<SettingsScreen theme={t.value} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-theme"
+            aria-describedby="set-theme-hint"
+            value={theme}
+            onChange={(event) => setThemeState(event.currentTarget.value as ThemeMode)}
+            pictures={THEME_PICTURES}
+          >
+            {THEMES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Density" htmlFor="set-density" hint="Auto: compact with a mouse, touch on a touch screen.">
-          <Popover>
-            <PopoverTrigger id="set-density" aria-describedby="set-density-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen variant="rows" density={density} />
-              </span>
-              {densityLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Density">
-              <SettingsPicker aria-label="Density" value={density} onValueChange={(value) => setDensityState(value as DensityMode)}>
-                {DENSITIES.map((d) => (
-                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<SettingsScreen variant="rows" density={d.value} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-density"
+            aria-describedby="set-density-hint"
+            value={density}
+            onChange={(event) => setDensityState(event.currentTarget.value as DensityMode)}
+            pictures={DENSITY_PICTURES}
+          >
+            {DENSITIES.map((d) => (
+              <option key={d.value} value={d.value}>
+                {d.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Text size" htmlFor="set-text-size" hint="Sets the root font size, so all text and spacing scale with it.">
-          <Popover>
-            <PopoverTrigger id="set-text-size" aria-describedby="set-text-size-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <span style={{ fontSize: `${textSize}%` }}>Aa</span>
-              </span>
-              {textSize}%
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Text size">
-              <SettingsPicker aria-label="Text size" value={String(textSize)} onValueChange={(value) => setTextSize(Number(value))}>
-                {TEXT_SIZES.map((size) => (
-                  <SettingsOption key={size} value={String(size)} label={`${size}%`} preview={<span style={{ fontSize: `${size}%` }}>Aa</span>} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-text-size"
+            aria-describedby="set-text-size-hint"
+            value={String(textSize)}
+            onChange={(event) => setTextSize(Number(event.currentTarget.value))}
+            pictures={SIZE_PICTURES}
+          >
+            {TEXT_SIZES.map((size) => (
+              <option key={size} value={String(size)}>
+                {size}%
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Brand colour" htmlFor="set-brand-colour" hint="Default is monochrome. Contrast is checked in every theme.">
-          <Popover>
-            <PopoverTrigger id="set-brand-colour" aria-describedby="set-brand-colour-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen variant="brand" style={colourStyle(colourOf(colour, custom))} />
-              </span>
-              {colourLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Brand colour">
-              <SettingsPicker aria-label="Brand colour" value={colour} onValueChange={setColour}>
-                <SettingsOption value="default" label="Default" preview={<SettingsScreen variant="brand" style={colourStyle(colourOf("default", custom))} />} />
-                {COLOURS.map((c) => (
-                  <SettingsOption key={c.value} value={c.value} label={c.label} preview={<SettingsScreen variant="brand" style={colourStyle(cssVar(c.token))} />} />
-                ))}
-                <SettingsOption value="custom" label="Custom" preview={<SettingsScreen variant="brand" style={colourStyle(custom)} />} />
-              </SettingsPicker>
-              <Separator />
-              <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-3)", paddingInline: "var(--ayy-space-2)", paddingBlockEnd: "var(--ayy-space-1)" } as CSSProperties}>
-                <ColorSwatchCustom
-                  id="set-brand-custom"
-                  label="Custom colour"
-                  value={custom}
-                  onChange={(event) => {
-                    setCustom(event.currentTarget.value);
-                    setColour("custom");
-                  }}
-                />
-                <label htmlFor="set-brand-custom">Pick a custom colour</label>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Select
+            ref={colourSelect}
+            id="set-brand-colour"
+            aria-describedby="set-brand-colour-hint"
+            value={colour}
+            onChange={(event) => {
+              setColour(event.currentTarget.value);
+              if (event.currentTarget.value === "custom") editCustom();
+            }}
+            onChoose={(value) => value === "custom" && editCustom()}
+            pictures={colourPictures}
+          >
+            <option value="default">Default</option>
+            {COLOURS.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+            <option value="custom">Custom</option>
+          </Select>
+          <input type="color" hidden tabIndex={-1} aria-label="Custom colour" data-value="custom" value={custom} onChange={(event) => setCustom(event.currentTarget.value)} />
         </SettingsRow>
         <SettingsRow label="Corners" htmlFor="set-corners">
-          <Popover>
-            <PopoverTrigger id="set-corners" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen style={cornerStyle(shape)} />
-              </span>
-              {shapeLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Corners">
-              <SettingsPicker aria-label="Corners" value={shape} onValueChange={(value) => setShape(value as BrandShape)}>
-                {SHAPES.map((s) => (
-                  <SettingsOption key={s.value} value={s.value} label={s.label} preview={<SettingsScreen style={cornerStyle(s.value)} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select id="set-corners" value={shape} onChange={(event) => setShape(event.currentTarget.value as BrandShape)} pictures={SHAPE_PICTURES}>
+            {SHAPES.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Font" htmlFor="set-font">
-          <Popover>
-            <PopoverTrigger id="set-font" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <span style={{ fontFamily: fontOption.family }}>Aa</span>
-              </span>
-              {fontOption.label}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Font">
-              <SettingsPicker aria-label="Font" value={font} onValueChange={setFont}>
-                {FONTS.map((f) => (
-                  <SettingsOption key={f.value} value={f.value} label={f.label} preview={<span style={{ fontFamily: f.family }}>Aa</span>} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select id="set-font" value={font} onChange={(event) => setFont(event.currentTarget.value)} pictures={FONT_PICTURES}>
+            {FONTS.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
       </Settings>
       <Settings title="Accessibility and language">
@@ -712,22 +758,19 @@ export default function Example() {
           </Select>
         </SettingsRow>
         <SettingsRow label="Text direction" htmlFor="set-direction" hint="Auto follows the language.">
-          <Popover>
-            <PopoverTrigger id="set-direction" aria-describedby="set-direction-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <DirectionScreen direction={direction} />
-              </span>
-              {directionLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Text direction">
-              <SettingsPicker aria-label="Text direction" value={direction} onValueChange={setDirection}>
-                {DIRECTIONS.map((d) => (
-                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<DirectionScreen direction={d.value} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-direction"
+            aria-describedby="set-direction-hint"
+            value={direction}
+            onChange={(event) => setDirection(event.currentTarget.value)}
+            pictures={DIRECTION_PICTURES}
+          >
+            {DIRECTIONS.map((d) => (
+              <option key={d.value} value={d.value}>
+                {d.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
       </Settings>
       <Settings title="Reset">

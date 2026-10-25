@@ -1,22 +1,6 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { BRAND_SHAPES, setBrand, setDensity, setTheme, tokens, type BrandShape, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
-import {
-  ColorSwatchCustom,
-  Icon,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Select,
-  Separator,
-  Settings,
-  SettingsLink,
-  SettingsOption,
-  SettingsPicker,
-  SettingsRow,
-  SettingsScreen,
-  Switch,
-} from "@danitesler/ayywi/react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { BRAND_SHAPES, openSettingsColor, setBrand, setDensity, setTheme, tokens, type BrandShape, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
+import { Select, Settings, SettingsLink, SettingsRow, SettingsScreen, Switch } from "@danitesler/ayywi/react";
 
 const THEMES: { value: ThemeMode; label: string }[] = [
   { value: "system", label: "System" },
@@ -46,11 +30,6 @@ const seed = (token: (typeof COLOURS)[number]["token"]) => tokens[token].value;
 const cssVar = (token: string) => `var(--ayy-${token.replace(/\./g, "-")})`;
 // A brand screen in one colour; the default is monochrome, where primary is the text colour.
 const colourStyle = (color: string) => ({ "--ayy-color-primary": color }) as CSSProperties;
-const colourOf = (value: string, custom: string) => {
-  if (value === "custom") return custom;
-  const picked = COLOURS.find((c) => c.value === value);
-  return picked ? cssVar(picked.token) : "var(--ayy-color-text)";
-};
 
 const TEXT_SIZES = [75, 87.5, 100, 112.5, 125, 150];
 
@@ -86,6 +65,22 @@ const FONTS = [
   { value: "system", label: "System", family: stack(tokens["font.body"].value.slice(1)) },
   { value: "mono", label: "Mono", family: stack([...tokens["font.mono"].value, ...tokens["font.body"].value.slice(1)]) },
 ];
+
+// One picture per option value, for a Select's pictures.
+const picturesOf = <T extends { value: string }>(options: readonly T[], picture: (option: T) => ReactNode) =>
+  Object.fromEntries(options.map((option) => [option.value, picture(option)]));
+
+const THEME_PICTURES = picturesOf(THEMES, (t) => <SettingsScreen theme={t.value} />);
+const DENSITY_PICTURES = picturesOf(DENSITIES, (d) => <SettingsScreen variant="rows" density={d.value} />);
+const SIZE_PICTURES = picturesOf(
+  TEXT_SIZES.map((size) => ({ value: String(size) })),
+  (size) => <span style={{ fontSize: `${size.value}%` }}>Aa</span>,
+);
+const SHAPE_PICTURES = picturesOf(SHAPES, (s) => (
+  <SettingsScreen style={{ "--ayy-radius-card": BRAND_SHAPES[s.value].card, "--ayy-radius-button": BRAND_SHAPES[s.value].button } as CSSProperties} />
+));
+const FONT_PICTURES = picturesOf(FONTS, (f) => <span style={{ fontFamily: f.family }}>Aa</span>);
+const DIRECTION_PICTURES = picturesOf(DIRECTIONS, (d) => <DirectionScreen direction={d.value} />);
 
 const LANGUAGES = [
   { value: "en", label: "English", dir: "ltr" },
@@ -142,139 +137,103 @@ export default function Example() {
     el.dir = direction === "auto" ? (lang?.dir ?? "ltr") : direction;
   }, [theme, density, colour, custom, shape, font, language, direction]);
 
-  const themeLabel = THEMES.find((t) => t.value === theme)?.label ?? "System";
-  const colourLabel = colour === "custom" ? "Custom" : (COLOURS.find((c) => c.value === colour)?.label ?? "Default");
-  const directionLabel = DIRECTIONS.find((d) => d.value === direction)?.label ?? "Auto";
-  const densityLabel = DENSITIES.find((d) => d.value === density)?.label ?? "Auto";
-  const shapeLabel = SHAPES.find((s) => s.value === shape)?.label ?? "Pill";
-  const fontOption = FONTS.find((f) => f.value === font) ?? FONTS[0];
-  const cornerStyle = (s: BrandShape) => ({ "--ayy-radius-card": BRAND_SHAPES[s].card, "--ayy-radius-button": BRAND_SHAPES[s].button }) as CSSProperties;
+  // Choosing Custom (again) opens the colour picker under the select, once the list has closed.
+  const colourSelect = useRef<HTMLSelectElement>(null);
+  const editCustom = () => setTimeout(() => colourSelect.current && openSettingsColor(colourSelect.current));
+  const colourPictures = {
+    default: <SettingsScreen variant="brand" style={colourStyle("var(--ayy-color-text)")} />,
+    ...picturesOf(COLOURS, (c) => <SettingsScreen variant="brand" style={colourStyle(cssVar(c.token))} />),
+    custom: <SettingsScreen variant="brand" style={colourStyle(custom)} />,
+  };
 
   return (
     <div ref={root} style={{ inlineSize: "100%", maxInlineSize: "42rem", fontFamily: "var(--ayy-font-body)" }}>
-      <Settings title="Appearance" description="Theme, density, brand colour, corners and font for the whole interface.">
+      <Settings title="Appearance" description="Theme, density, text size, brand colour, corners and font for the whole interface.">
         <SettingsRow label="Theme" htmlFor="set-theme" hint="System follows your device's light or dark setting.">
-          <Popover>
-            <PopoverTrigger id="set-theme" aria-describedby="set-theme-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen theme={theme} />
-              </span>
-              {themeLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Theme">
-              <SettingsPicker aria-label="Theme" value={theme} onValueChange={(value) => setThemeState(value as ThemeMode)}>
-                {THEMES.map((t) => (
-                  <SettingsOption key={t.value} value={t.value} label={t.label} preview={<SettingsScreen theme={t.value} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-theme"
+            aria-describedby="set-theme-hint"
+            value={theme}
+            onChange={(event) => setThemeState(event.currentTarget.value as ThemeMode)}
+            pictures={THEME_PICTURES}
+          >
+            {THEMES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Density" htmlFor="set-density" hint="Auto: compact with a mouse, touch on a touch screen.">
-          <Popover>
-            <PopoverTrigger id="set-density" aria-describedby="set-density-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen variant="rows" density={density} />
-              </span>
-              {densityLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Density">
-              <SettingsPicker aria-label="Density" value={density} onValueChange={(value) => setDensityState(value as DensityMode)}>
-                {DENSITIES.map((d) => (
-                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<SettingsScreen variant="rows" density={d.value} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-density"
+            aria-describedby="set-density-hint"
+            value={density}
+            onChange={(event) => setDensityState(event.currentTarget.value as DensityMode)}
+            pictures={DENSITY_PICTURES}
+          >
+            {DENSITIES.map((d) => (
+              <option key={d.value} value={d.value}>
+                {d.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Text size" htmlFor="set-text-size" hint="Sets the root font size, so all text and spacing scale with it.">
-          <Popover>
-            <PopoverTrigger id="set-text-size" aria-describedby="set-text-size-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <span style={{ fontSize: `${textSize}%` }}>Aa</span>
-              </span>
-              {textSize}%
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Text size">
-              <SettingsPicker aria-label="Text size" value={String(textSize)} onValueChange={(value) => setTextSize(Number(value))}>
-                {TEXT_SIZES.map((size) => (
-                  <SettingsOption key={size} value={String(size)} label={`${size}%`} preview={<span style={{ fontSize: `${size}%` }}>Aa</span>} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-text-size"
+            aria-describedby="set-text-size-hint"
+            value={String(textSize)}
+            onChange={(event) => setTextSize(Number(event.currentTarget.value))}
+            pictures={SIZE_PICTURES}
+          >
+            {TEXT_SIZES.map((size) => (
+              <option key={size} value={String(size)}>
+                {size}%
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Brand colour" htmlFor="set-brand-colour" hint="Default is monochrome. Contrast is checked in every theme.">
-          <Popover>
-            <PopoverTrigger id="set-brand-colour" aria-describedby="set-brand-colour-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen variant="brand" style={colourStyle(colourOf(colour, custom))} />
-              </span>
-              {colourLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Brand colour">
-              <SettingsPicker aria-label="Brand colour" value={colour} onValueChange={setColour}>
-                <SettingsOption value="default" label="Default" preview={<SettingsScreen variant="brand" style={colourStyle(colourOf("default", custom))} />} />
-                {COLOURS.map((c) => (
-                  <SettingsOption key={c.value} value={c.value} label={c.label} preview={<SettingsScreen variant="brand" style={colourStyle(cssVar(c.token))} />} />
-                ))}
-                <SettingsOption value="custom" label="Custom" preview={<SettingsScreen variant="brand" style={colourStyle(custom)} />} />
-              </SettingsPicker>
-              <Separator />
-              <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-3)", paddingInline: "var(--ayy-space-2)", paddingBlockEnd: "var(--ayy-space-1)" } as CSSProperties}>
-                <ColorSwatchCustom
-                  id="set-brand-custom"
-                  label="Custom colour"
-                  value={custom}
-                  onChange={(event) => {
-                    setCustom(event.currentTarget.value);
-                    setColour("custom");
-                  }}
-                />
-                <label htmlFor="set-brand-custom">Pick a custom colour</label>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Select
+            ref={colourSelect}
+            id="set-brand-colour"
+            aria-describedby="set-brand-colour-hint"
+            value={colour}
+            onChange={(event) => {
+              setColour(event.currentTarget.value);
+              if (event.currentTarget.value === "custom") editCustom();
+            }}
+            onChoose={(value) => value === "custom" && editCustom()}
+            pictures={colourPictures}
+          >
+            <option value="default">Default</option>
+            {COLOURS.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+            <option value="custom">Custom</option>
+          </Select>
+          <input type="color" hidden tabIndex={-1} aria-label="Custom colour" data-value="custom" value={custom} onChange={(event) => setCustom(event.currentTarget.value)} />
         </SettingsRow>
         <SettingsRow label="Corners" htmlFor="set-corners">
-          <Popover>
-            <PopoverTrigger id="set-corners" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen style={cornerStyle(shape)} />
-              </span>
-              {shapeLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Corners">
-              <SettingsPicker aria-label="Corners" value={shape} onValueChange={(value) => setShape(value as BrandShape)}>
-                {SHAPES.map((s) => (
-                  <SettingsOption key={s.value} value={s.value} label={s.label} preview={<SettingsScreen style={cornerStyle(s.value)} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select id="set-corners" value={shape} onChange={(event) => setShape(event.currentTarget.value as BrandShape)} pictures={SHAPE_PICTURES}>
+            {SHAPES.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
         <SettingsRow label="Font" htmlFor="set-font">
-          <Popover>
-            <PopoverTrigger id="set-font" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <span style={{ fontFamily: fontOption.family }}>Aa</span>
-              </span>
-              {fontOption.label}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Font">
-              <SettingsPicker aria-label="Font" value={font} onValueChange={setFont}>
-                {FONTS.map((f) => (
-                  <SettingsOption key={f.value} value={f.value} label={f.label} preview={<span style={{ fontFamily: f.family }}>Aa</span>} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select id="set-font" value={font} onChange={(event) => setFont(event.currentTarget.value)} pictures={FONT_PICTURES}>
+            {FONTS.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
       </Settings>
       <Settings title="Accessibility and language">
@@ -302,22 +261,19 @@ export default function Example() {
           </Select>
         </SettingsRow>
         <SettingsRow label="Text direction" htmlFor="set-direction" hint="Auto follows the language.">
-          <Popover>
-            <PopoverTrigger id="set-direction" aria-describedby="set-direction-hint" variant="outline">
-              <span className="ayy-settings__preview" aria-hidden="true">
-                <DirectionScreen direction={direction} />
-              </span>
-              {directionLabel}
-              <Icon icon={ArrowDown01Icon} />
-            </PopoverTrigger>
-            <PopoverContent align="end" aria-label="Text direction">
-              <SettingsPicker aria-label="Text direction" value={direction} onValueChange={setDirection}>
-                {DIRECTIONS.map((d) => (
-                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<DirectionScreen direction={d.value} />} />
-                ))}
-              </SettingsPicker>
-            </PopoverContent>
-          </Popover>
+          <Select
+            id="set-direction"
+            aria-describedby="set-direction-hint"
+            value={direction}
+            onChange={(event) => setDirection(event.currentTarget.value)}
+            pictures={DIRECTION_PICTURES}
+          >
+            {DIRECTIONS.map((d) => (
+              <option key={d.value} value={d.value}>
+                {d.label}
+              </option>
+            ))}
+          </Select>
         </SettingsRow>
       </Settings>
       <Settings title="Reset">

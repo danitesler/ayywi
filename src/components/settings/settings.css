@@ -108,6 +108,11 @@
   min-inline-size: 11rem;
 }
 
+/* Selects line up, with room for a picture before the longest appearance label ("Right to left"). */
+.ayy-settings__control > .ayy-select {
+  min-inline-size: 12.5rem;
+}
+
 .ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) {
   min-inline-size: 11rem;
   justify-content: flex-start;
@@ -202,8 +207,8 @@
   color: var(--ayy-color-destructive);
 }
 
-/* ---- Appearance pickers: pictures to choose from (theme, density, colour, corners, font, text size, direction). In a
-   Popover they're a list, one option per row as in a menu; in a stacked row, a grid of larger pictures. ---- */
+/* ---- Appearance pictures: miniature screens drawn from tokens, shown in a Select's pictures (theme, density, colour,
+   corners, direction) or, in a stacked row, as a grid of larger pictures to choose from. ---- */
 
 /* role="radiogroup" with an aria-label; a <fieldset> works too. */
 .ayy-settings__picker {
@@ -300,94 +305,12 @@
   cursor: not-allowed;
 }
 
-/* In a Popover: a list, as a menu is. Each option is a row (a small picture, then the caption) with a check at the end
-   when it's chosen; hover and focus light the whole row. */
-.ayy-popover:has(> .ayy-settings__picker) {
-  min-inline-size: 13rem;
-  padding: var(--ayy-space-1);
-}
-
-.ayy-popover > .ayy-settings__picker {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-0-5);
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option {
-  flex-direction: row;
-  gap: var(--ayy-space-3);
-  padding: var(--ayy-space-1);
-  padding-inline-end: var(--ayy-space-3);
-  border-radius: var(--ayy-radius-lg);
-  color: var(--ayy-color-text);
-  font-size: var(--ayy-control-text-md);
-  text-align: start;
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option > .ayy-settings__preview {
-  flex: none;
-  inline-size: 4.5rem;
-  border-radius: var(--ayy-radius-md);
-  font-size: var(--ayy-text-lg);
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option > .ayy-settings__caption {
-  flex: 1 1 auto;
-}
-
-/* The check, drawn like a menu's. */
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option::after {
-  content: "";
-  flex: none;
-  box-sizing: border-box;
-  inline-size: 0.35em;
-  block-size: 0.65em;
-  margin-block-end: 0.15em;
-  border-right: 2px solid currentColor; /* ayy-allow-physical: a check is a glyph, it doesn't mirror in RTL */
-  border-bottom: 2px solid currentColor;
-  transform: rotate(45deg);
-  opacity: 0;
-}
-
-@media (hover: hover) {
-  .ayy-popover > .ayy-settings__picker > .ayy-settings__option:hover {
-    background-color: var(--ayy-color-wash-hover);
-  }
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:checked) > .ayy-settings__caption {
-  font-weight: var(--ayy-weight-semibold);
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:checked)::after {
-  opacity: 1;
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:checked) > .ayy-settings__preview {
-  border-color: var(--ayy-color-line-strong);
-  box-shadow: none;
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:focus-visible) {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: -2px;
-  background-color: var(--ayy-color-wash-hover);
-}
-
-.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:focus-visible) > .ayy-settings__preview {
-  outline: none;
-}
-
-:root[data-ayy-input="pointer"] .ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:focus-visible) {
-  outline-color: transparent;
-}
-
 /* A miniature screen drawn from the tokens of whatever it sits in, so data-theme, data-density and data-brand on it (or
    around it) show what they change. Three drawings:
    - the app (default): a sidebar, a heading, lines and a primary button, for theme, corners and direction;
    - --rows: a list of rows, each with a line of text and a control, as tall as the density makes them;
    - --brand: where the primary colour shows: the chosen sidebar item, a progress bar, a ticked checkbox, a button.
-   Lengths are in container units of the picture, so one drawing fits a grid tile, a list row and a trigger icon; only
+   Lengths are in container units of the picture, so one drawing fits a grid tile and both of a Select's pictures; only
    --_k, how much of the density's row height shows, is set per size. Its parts are placed physically and the whole
    screen is mirrored in RTL, as a picture is. Two in one preview split it down the middle: System as half light,
    half dark. Decorative: aria-hidden. */
@@ -543,30 +466,20 @@
   clip-path: inset(0 calc(25% * (1 - var(--_ayy-dir, 1))) 0 calc(25% * (1 + var(--_ayy-dir, 1))));
 }
 
-/* In a list row's small picture: less of the density shows. */
-.ayy-popover > .ayy-settings__picker .ayy-settings__screen {
-  --_k: 0.32;
-  --_scale: 4.5;
-}
-
-/* A small inline preview icon at the start of a dropdown trigger button. */
-.ayy-button > .ayy-settings__preview {
-  flex: none;
-  inline-size: 1.5rem;
-  block-size: 1rem;
-  aspect-ratio: auto;
-  border-radius: var(--ayy-radius-sm);
-  font-size: var(--ayy-text-xs);
-  font-weight: var(--ayy-weight-semibold);
-}
-
-.ayy-button > .ayy-settings__preview > .ayy-settings__screen {
-  --_k: 0.14;
+/* In a Select (ayy-select__picture): small before the chosen option's text, larger in the list. Less of the density
+   shows in a smaller picture. */
+.ayy-select > .ayy-select__picture > .ayy-settings__screen {
+  --_k: 0.16;
   --_line: 1px;
   --_head: 1.5px;
   --_scale: 6;
   inset-block-start: 14%;
   inset-inline-start: 12%;
+}
+
+.ayy-select__option > .ayy-select__picture > .ayy-settings__screen {
+  --_k: 0.38;
+  --_scale: 4;
 }
 
 @media (forced-colors: active) {

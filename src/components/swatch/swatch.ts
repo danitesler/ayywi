@@ -99,12 +99,13 @@ export function openColorPickerFrom(event: MouseEvent | KeyboardEvent): boolean 
 }
 
 /**
- * Show ayywi's ColorPicker in a popover anchored to a custom swatch's <input type="color">.
+ * Show ayywi's ColorPicker in a popover anchored to a custom swatch's <input type="color">, or to `anchor` (a hidden
+ * input's button, as for a settings colour option), where focus also returns when it closes.
  * Updates the input's value and fires `input` and `change` events as the colour changes.
  * Esc, Enter or a click outside closes it. Returns a function that closes the popover.
  */
-export function openSwatchColorPicker(input: HTMLInputElement): () => void {
-  const swatch = input.closest<HTMLElement>(".ayy-swatch--custom") ?? input;
+export function openSwatchColorPicker(input: HTMLInputElement, { anchor }: { anchor?: HTMLElement } = {}): () => void {
+  const swatch = anchor ?? input.closest<HTMLElement>(".ayy-swatch--custom") ?? input;
 
   const popover = document.createElement("div");
   popover.id = `ayy-swatch-popover-${++popoverCount}`;
@@ -249,7 +250,7 @@ export function openSwatchColorPicker(input: HTMLInputElement): () => void {
     input.removeAttribute("aria-expanded");
     input.removeAttribute("aria-controls");
     swatch.removeAttribute("aria-expanded");
-    if (popover.contains(document.activeElement) || document.activeElement === document.body) input.focus();
+    if (popover.contains(document.activeElement) || document.activeElement === document.body) (anchor ?? input).focus();
     queueMicrotask(() => popover.remove());
   });
 

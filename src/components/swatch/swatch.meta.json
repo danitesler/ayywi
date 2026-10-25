@@ -39,7 +39,7 @@
     "density": "Dot size follows data-density (above); the hit area always reaches the sm control height.",
     "width": "Square. A group wraps onto more lines; track (ayy-swatch-group--track) puts them on a pill."
   },
-  "js": "colorSwatchClass({ size?, none?, custom?, className? }), colorSwatchGroupClass({ track?, className? }) → string; syncColorSwatch(input) shows a custom swatch's colour; usesColorPicker(input) checks Popover API support; openSwatchColorPicker(input) opens ayywi's ColorPicker in a popover; openColorPickerFrom(event) intercepts mousedown/click/keydown on custom swatches.",
+  "js": "colorSwatchClass({ size?, none?, custom?, className? }), colorSwatchGroupClass({ track?, className? }) → string; syncColorSwatch(input) shows a custom swatch's colour; usesColorPicker(input) checks Popover API support; openSwatchColorPicker(input, { anchor? }) opens ayywi's ColorPicker in a popover (under anchor when given, where focus returns); openColorPickerFrom(event) intercepts mousedown/click/keydown on custom swatches.",
   "react": {
     "import": "import { ColorSwatch, ColorSwatchButton, ColorSwatchCustom, ColorSwatchGroup } from \"@danitesler/ayywi/react\";",
     "components": {

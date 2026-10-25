@@ -1,6 +1,7 @@
 import { cx } from "../../lib/cx";
 import { ArrowRight01Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
+import { openSwatchColorPicker } from "../swatch/swatch";
 
 export function settingsClass({ plain, className }: { plain?: boolean; className?: string } = {}): string {
   return cx("ayy-settings", plain && "ayy-settings--plain", className);
@@ -21,28 +22,28 @@ export const settingsScreenClass = "ayy-settings__screen";
 export const settingsScreenVariants = ["app", "rows", "brand"] as const;
 export type SettingsScreenVariant = (typeof settingsScreenVariants)[number];
 
-/** When a SettingsOption is chosen inside a Popover, update the trigger's label and close the popover. */
-export function syncSettingsPicker(input: HTMLInputElement): void {
-  if (!input.checked) return;
-  const option = input.closest(".ayy-settings__option");
-  if (!option) return;
-  const popover = option.closest<HTMLElement>("[popover]");
-  if (!popover) return;
-  const caption = option.querySelector(".ayy-settings__caption")?.textContent?.trim();
-  const preview = option.querySelector(".ayy-settings__preview");
-  const trigger =
-    (popover.id &&
-      (document.querySelector<HTMLElement>(`[aria-controls="${popover.id}"]`) ??
-        document.querySelector<HTMLElement>(`[popovertarget="${popover.id}"]`))) ||
-    popover.closest("ayy-popover")?.querySelector<HTMLElement>("button");
-  const triggerPreview = trigger?.querySelector(".ayy-settings__preview");
-  if (preview && triggerPreview) triggerPreview.replaceWith(preview.cloneNode(true));
-  const textNode = trigger && Array.from(trigger.childNodes).find((n) => n.nodeType === 3 && n.textContent?.trim());
-  if (textNode && caption) textNode.textContent = caption;
-  try {
-    if (popover.matches(":popover-open")) popover.hidePopover();
-  } catch {
-    // Ignore when not open.
+/** A custom colour Select's <input type="color">: the hidden one right after the select's wrapper, if there is one. Its
+    data-value names the option it holds the colour of ("custom"). */
+export function settingsColorInput(select: HTMLSelectElement): HTMLInputElement | null {
+  const next = select.parentElement?.nextElementSibling;
+  return next instanceof HTMLInputElement && next.type === "color" && next.dataset.value !== undefined ? next : null;
+}
+
+/** When the custom colour option is the chosen one, open ayywi's colour picker under the select. Call it once the
+    options list has closed (on change, and on ayy-choose for choosing it again). */
+export function openSettingsColor(select: HTMLSelectElement): void {
+  const input = settingsColorInput(select);
+  if (!input || select.value !== input.dataset.value || input.getAttribute("aria-expanded") === "true") return;
+  openSwatchColorPicker(input, { anchor: select });
+}
+
+/** A custom colour changed: the brand screens in its option's picture show it. */
+export function syncSettingsColor(input: HTMLInputElement): void {
+  const wrapper = input.previousElementSibling;
+  if (input.type !== "color" || !wrapper?.classList.contains("ayy-select")) return;
+  for (const picture of wrapper.querySelectorAll<HTMLElement>(":scope > .ayy-select__picture")) {
+    if (picture.dataset.value !== input.dataset.value) continue;
+    for (const screen of picture.querySelectorAll<HTMLElement>(".ayy-settings__screen")) screen.style.setProperty("--ayy-color-primary", input.value);
   }
 }
 

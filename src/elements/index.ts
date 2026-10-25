@@ -37,8 +37,8 @@ import { toggleChartLegend } from "../components/chart/chart";
 import { stepNumberField, syncNumberField } from "../components/number-field/number-field";
 import { syncSlider } from "../components/slider/slider";
 import { clearSearchBar } from "../components/search-bar/search-bar";
-import { openSelectListFrom } from "../components/select/select";
-import { syncSettingsPicker } from "../components/settings/settings";
+import { openSelectListFrom, syncSelectPicture } from "../components/select/select";
+import { openSettingsColor, syncSettingsColor } from "../components/settings/settings";
 import { syncShortcuts } from "../components/shortcut/shortcut";
 import { openColorPickerFrom, syncSwatch } from "../components/swatch/swatch";
 import { define } from "../lib/element";
@@ -98,7 +98,10 @@ function onInput(event: Event): void {
   const target = event.target;
   if (!(target instanceof HTMLInputElement)) return;
   if (target.classList.contains("ayy-slider")) syncSlider(target);
-  if (target.type === "color") syncSwatch(target);
+  if (target.type === "color") {
+    syncSwatch(target);
+    syncSettingsColor(target);
+  }
   const field = target.closest(".ayy-number-field");
   if (field) syncNumberField(field);
 }
@@ -108,9 +111,16 @@ function onChange(event: Event): void {
   if (target instanceof HTMLSelectElement && target.classList.contains("ayy-code-block__selector")) {
     syncCodeBlockSelector(target);
   }
-  if (target instanceof HTMLInputElement && target.type === "radio" && target.closest(".ayy-settings__option")) {
-    syncSettingsPicker(target);
+  if (target instanceof HTMLSelectElement && target.classList.contains("ayy-select__control")) {
+    syncSelectPicture(target);
+    setTimeout(() => openSettingsColor(target));
   }
+}
+
+// ayywi's select list chose an option, maybe the one already chosen: a custom colour opens its picker again.
+function onChoose(event: Event): void {
+  const target = event.target;
+  if (target instanceof HTMLSelectElement) setTimeout(() => openSettingsColor(target));
 }
 
 function onAyySelect(event: Event): void {
@@ -159,6 +169,11 @@ function watchPage(): void {
   for (const slider of document.querySelectorAll<HTMLInputElement>("input.ayy-slider")) syncSlider(slider);
   for (const field of document.querySelectorAll(".ayy-number-field")) syncNumberField(field);
   for (const input of document.querySelectorAll<HTMLInputElement>(".ayy-swatch--custom > input")) syncSwatch(input);
+  // Selects with pictures show the chosen option's (a restored form may not have the one the markup hides).
+  for (const picture of document.querySelectorAll(".ayy-select > .ayy-select__picture")) {
+    const select = picture.parentElement?.querySelector<HTMLSelectElement>(":scope > .ayy-select__control");
+    if (select) syncSelectPicture(select);
+  }
   syncShortcuts();
   highlightCodeBlocks();
   if (typeof MutationObserver === "function") {
@@ -226,6 +241,7 @@ export function defineElements(): void {
     document.addEventListener("error", onError, true);
     document.addEventListener("input", onInput);
     document.addEventListener("change", onChange);
+    document.addEventListener("ayy-choose", onChoose);
     document.addEventListener("ayy-select", onAyySelect);
     document.addEventListener("click", onClick);
     document.addEventListener("mousedown", onSelectOpen);

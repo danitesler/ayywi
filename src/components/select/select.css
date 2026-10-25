@@ -193,6 +193,64 @@
   cursor: not-allowed;
 }
 
+/* Pictures: one .ayy-select__picture per option, after the <select> in the wrapper, with data-value set to the option's
+   value (a theme thumbnail, a colour, "Aa" in a font). The chosen one shows at the control's inline start (the others
+   are hidden), and the list shows each before its option's text. aria-hidden: the text names the option. */
+.ayy-select__picture {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 1.25rem;
+  overflow: hidden;
+  container-type: size;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-sm);
+  background-color: color-mix(in srgb, var(--ayy-color-text) 6%, var(--ayy-color-surface));
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: var(--ayy-leading-none);
+  pointer-events: none;
+}
+
+.ayy-select__picture[hidden] {
+  display: none;
+}
+
+.ayy-select > .ayy-select__picture {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--ayy-space-2);
+  transform: translateY(-50%);
+}
+
+.ayy-select:has(> .ayy-select__picture) > .ayy-select__control {
+  padding-inline-start: calc(var(--ayy-space-2) * 2 + 2rem);
+}
+
+/* In the list: a larger 16:10 picture, then the text, then the check. */
+.ayy-select__option:has(> .ayy-select__picture) {
+  gap: var(--ayy-space-3);
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-1) var(--ayy-space-3);
+}
+
+.ayy-select__option > .ayy-select__picture {
+  inline-size: 5.5rem;
+  block-size: auto;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--ayy-radius-md);
+  font-size: var(--ayy-text-lg);
+  font-weight: var(--ayy-weight-regular);
+}
+
+.ayy-select__list:has(.ayy-select__picture) {
+  max-block-size: min(32rem, calc(100vh - 2rem));
+}
+
 /* An <optgroup>'s label. */
 .ayy-select__label {
   padding: var(--ayy-space-1-5) var(--ayy-space-2) var(--ayy-space-1);
@@ -235,7 +293,8 @@
   .ayy-select:has(> .ayy-select__control:disabled)::after {
     color: GrayText;
   }
-  .ayy-select__list {
+  .ayy-select__list,
+  .ayy-select__picture {
     border-color: CanvasText;
   }
   .ayy-select__option[aria-disabled="true"] {

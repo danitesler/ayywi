@@ -19,11 +19,11 @@
     "ayy-settings__link": "On an .ayy-settings__row that is an <a href> (opens a sub-page) or a <button> (runs an action): the whole row is the target, with a chevron icon at the end.",
     "ayy-settings__value": "The current value in a link row, muted, before the chevron (\"English\", \"System\").",
     "ayy-settings__link--destructive": "Sign out, Delete account: red text and no chevron.",
-    "ayy-settings__picker": "Appearance choices shown as pictures (theme, density, text size, brand colour, corners, font, direction): role=\"radiogroup\" with an aria-label. In a Popover it's a list, one option per row as in a menu; in a stacked row, a grid of larger pictures.",
-    "ayy-settings__option": "One picture to choose: a <label> around a visually hidden native radio, a .ayy-settings__preview and a .ayy-settings__caption. In a Popover: a row with the small picture at the start, the caption, and a check at the end when chosen. In a grid: the picture over its caption; chosen, the picture gets a text-colour border and the caption turns the text colour.",
-    "ayy-settings__preview": "The picture's 16:10 frame (72px wide in a Popover's list, a small 24×16px inline icon inside a trigger .ayy-button before its label). Holds a .ayy-settings__screen, or a short sample such as \"Aa\" in a font or at a text size. aria-hidden: the caption names the option.",
+    "ayy-settings__picker": "A grid of larger pictures to choose from in a stacked row (an appearance setting that should show every choice at once): role=\"radiogroup\" with an aria-label. For a dropdown, use a Select with pictures.",
+    "ayy-settings__option": "One picture to choose: a <label> around a visually hidden native radio, a .ayy-settings__preview and a .ayy-settings__caption. Chosen: the picture gets a text-colour border and the caption turns the text colour.",
+    "ayy-settings__preview": "The picture's 16:10 frame in a SettingsOption. Holds a .ayy-settings__screen, or a short sample such as \"Aa\" in a font. aria-hidden: the caption names the option. (In a Select, the screen goes straight in its .ayy-select__picture.)",
     "ayy-settings__caption": "The option's name under the picture (\"Dark\", \"Sharp\").",
-    "ayy-settings__screen": "A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens around it, for Theme, Corners and Text direction. Set data-theme, data-density or dir on it, or brand and corner tokens on or around it, to preview them; it mirrors in RTL. Two in one preview split it, the second showing the right half: System as light then dark, Auto density as compact then touch, Auto direction as dir=\"ltr\" then dir=\"rtl\".",
+    "ayy-settings__screen": "A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens around it, for Theme, Corners and Text direction: in a Select's pictures (.ayy-select__picture) or a SettingsOption's. Set data-theme, data-density or dir on it, or brand and corner tokens on or around it, to preview them; it mirrors in RTL. Two in one picture split it, the second showing the right half: System as light then dark, Auto density as compact then touch, Auto direction as dir=\"ltr\" then dir=\"rtl\".",
     "ayy-settings__screen--rows": "For Density: a list of rows, each a line of text and a control, divided by hairlines; rows are as tall as data-density makes them (exaggerated), so Compact shows about two and a half times the rows Touch does.",
     "ayy-settings__screen--brand": "For Brand colour: where the primary colour shows (the chosen sidebar item tinted, a filled progress bar, a ticked checkbox, the primary button). Set --ayy-color-primary on it to preview a colour (a palette token; var(--ayy-color-text) for the monochrome default)."
   },
@@ -35,20 +35,20 @@
   },
   "states": {
     "default": { "looks": "A semibold heading and a muted description over a bordered card of rows split by hairlines: a medium label and a small muted hint at the start, the control at the end." },
-    "hover": { "when": ".ayy-settings__link:hover, .ayy-settings__option:hover (devices that hover)", "looks": "A wash over the link row; an option's picture gets the line-hover border, and in a Popover's list the option's row gets the hover wash." },
+    "hover": { "when": ".ayy-settings__link:hover, .ayy-settings__option:hover (devices that hover)", "looks": "A wash over the link row; an option's picture gets the line-hover border." },
     "pressed": { "none": "No pressed look; a link row opens its page at once." },
-    "focus": { "when": ".ayy-settings__link:focus-visible; .ayy-settings__option:has(> input:focus-visible); the row's own control", "looks": "Link rows get the ring inside the row's edge (outside in plain groups); an option's picture gets the ring 2px outside (in a Popover's list, the option's row gets it inside its edge, with the hover wash); controls keep their own ring." },
+    "focus": { "when": ".ayy-settings__link:focus-visible; .ayy-settings__option:has(> input:focus-visible); the row's own control", "looks": "Link rows get the ring inside the row's edge (outside in plain groups); an option's picture gets the ring 2px outside; controls keep their own ring." },
     "disabled": { "when": ".ayy-settings__link:disabled, .ayy-settings__link[aria-disabled=\"true\"], .ayy-settings__option:has(> input:disabled)", "looks": "Reduced opacity and not-allowed cursor on link rows and options." },
-    "selected": { "when": ".ayy-settings__option:has(> input:checked)", "looks": "In a Popover's list: a check at the row's end and a semibold caption. In a grid: the picture gets a text-colour border plus a 1px ring, and the caption turns the text colour; forced colours, a Highlight outline. Rows themselves aren't selectable: a link row shows its current value (.ayy-settings__value)." },
+    "selected": { "when": ".ayy-settings__option:has(> input:checked)", "looks": "The picture gets a text-colour border plus a 1px ring, and the caption turns the text colour. Forced colours: a Highlight outline. Rows themselves aren't selectable: a link row shows its current value (.ayy-settings__value)." },
     "error": { "when": ".ayy-settings__hint.ayy-field__error, with aria-invalid on the control", "looks": "The hint becomes the error, in the destructive colour." },
     "loading": { "none": "Settings apply at once. While they load, show a Skeleton in the shape of the rows." },
     "destructive": { "when": ".ayy-settings__link--destructive", "looks": "Sign out, delete the account: red label, no chevron." }
   },
   "sizes": {
     "density": "Rows are at least the lg control height (40px compact, 48 comfortable, 52 touch); their controls follow data-density.",
-    "width": "Fills its container. A row wraps its control under the label when there's no room; stack does it always. Selects, inputs and popover triggers in a row are at least 11rem. In a Popover a picker is a list at least 13rem wide, each row a 72px 16:10 picture and the caption; in a stacked row it's a grid of 8.5rem-minimum columns. A screen's parts are sized in container units of its picture, so one drawing fits a grid tile, a list row and a trigger icon."
+    "width": "Fills its container. A row wraps its control under the label when there's no room; stack does it always. Inputs and popover triggers in a row are at least 11rem, selects 12.5rem (room for a picture). A picker is a grid of 8.5rem-minimum columns with 16:10 pictures. A screen's parts are sized in container units of its picture, so one drawing fits a grid tile and both of a Select's pictures."
   },
-  "js": "settingsClass({ plain?, className? }), settingsRowClass({ stack?, link?, destructive?, className? }) → class strings; settingsChevronIcon (SVG markup for a link row's chevron, mirrored in RTL); settingsPickerClass, settingsOptionClass, settingsPreviewClass, settingsCaptionClass, settingsScreenClass constants; settingsScreenVariants (\"app\", \"rows\", \"brand\": add ayy-settings__screen--rows or --brand). Apply the picks with setTheme(), setDensity() and setBrand(); data-motion=\"reduce\" and dir for motion and direction.",
+  "js": "settingsClass({ plain?, className? }), settingsRowClass({ stack?, link?, destructive?, className? }) → class strings; settingsChevronIcon (SVG markup for a link row's chevron, mirrored in RTL); settingsPickerClass, settingsOptionClass, settingsPreviewClass, settingsCaptionClass, settingsScreenClass constants; settingsScreenVariants (\"app\", \"rows\", \"brand\": add ayy-settings__screen--rows or --brand). A custom colour Select: settingsColorInput(select) finds the hidden <input type=\"color\" data-value> right after its wrapper, openSettingsColor(select) opens ayywi's colour picker under the select when that option is chosen (call it on change and on ayy-choose, after the list closes), syncSettingsColor(input) shows the colour in that option's picture; @danitesler/ayywi/elements does all three page-wide. Apply the picks with setTheme(), setDensity() and setBrand(); data-motion=\"reduce\" and dir for motion and direction.",
   "react": {
     "import": "import { Settings, SettingsRow, SettingsLink, SettingsPicker, SettingsOption, SettingsScreen } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -116,7 +116,8 @@
     "Point the control's aria-describedby at the hint (`${htmlFor}-hint`) so the explanation is read with it.",
     "A link row is one <a> or <button>: its whole text, value included, is its name. Use <a href> when it opens a page, <button> when it does something.",
     "Controls wrap under the label on narrow screens instead of shrinking below a usable size.",
-    "A picker is a radiogroup of native radios: arrow keys move between options, and each option is named by its caption. The pictures are aria-hidden."
+    "A picker is a radiogroup of native radios: arrow keys move between options, and each option is named by its caption. The pictures are aria-hidden.",
+    "A custom colour's <input type=\"color\"> is hidden and out of the tab order: choosing Custom opens the colour picker as a labelled dialog under the select with focus in it, and Esc or Enter closes it and puts focus back on the select."
   ],
   "do": [
     "Use it for any settings or preferences screen: group related rows under short headings (General, Notifications, Shortcuts). They open in a near-full-screen Dialog (size=\"full\") holding the App shell in settings mode (the Settings pattern): a sidebar of sections and one section's groups in the main.",
@@ -124,14 +125,14 @@
     "Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.",
     "On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.",
     "Put Sign out or Delete account last, in its own group, as a destructive link row.",
-    "For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker, which a Popover shows as a list: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant=\"rows\" for Density, variant=\"brand\" with --ayy-color-primary for Brand colour (plus a Custom option and a ColorSwatchCustom under the list), and \"Aa\" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir."
+    "For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant=\"rows\" for Density, variant=\"brand\" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type=\"color\" data-value=\"custom\"> after the select), and \"Aa\" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir."
   ],
   "dont": [
     "Don't add a Save button for switches and selects that apply at once; save as they change and confirm with a Toast if needed.",
     "Don't put two controls in one row; split the setting.",
     "Don't use a checkbox for a setting that applies at once — that's what a Switch says.",
     "Don't nest a card inside the list; use another group.",
-    "Don't draw your own theme thumbnails or use a plain Select for the theme: a SettingsScreen draws each theme from its real tokens.",
+    "Don't draw your own theme thumbnails, or use a Select without pictures or a button opening a popover for an appearance setting: a Select whose pictures are SettingsScreens draws each choice from its real tokens.",
     "Don't open settings in a small or side Dialog, or switch sections with Tabs; use a size=\"full\" Dialog with the App shell's settings mode. --plain is for a sheet with a couple of quick options."
   ],
   "examples": [

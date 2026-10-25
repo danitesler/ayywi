@@ -108,7 +108,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | A screenshot or picture of the product | Frame around it. | an <img> with a border and shadow |
 | Preview UI across responsive viewports with device switcher | Showcase with ShowcaseHeader, ShowcaseTitle, ShowcaseActions, ShowcaseStage, and ShowcaseViewport (desktop, tablet, mobile). | hand-built iframe wrappers or ad-hoc responsive preview containers |
 | Light/dark switch | Dropdown menu of themes (radio items) that calls setTheme(); an icon trigger shows the current one. Inside settings, use the theme picker of the Appearance need instead. | a button that flips a class |
-| Appearance settings: theme, density, text size, brand colour, corners, font, reduce motion, language or direction | In the Settings pattern's Appearance section: a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker of SettingsOptions, shown as a list: a SettingsScreen for Theme, Corners and Text direction, variant="rows" for Density, variant="brand" for Brand colour (with a ColorSwatchCustom under the list), and "Aa" samples for Font and Text size; Switch for reduce motion (data-motion="reduce"); Select for language; a destructive SettingsLink to reset. Apply at once with setTheme(), setDensity(), setBrand(). | a theme Select or a plain radio list, hand-drawn theme thumbnails or screenshots, a raw <input type="color">, Choice cards with only text, a Slider for text size, a SegmentedControl for direction, swatches in the row for brand colour |
+| Appearance settings: theme, density, text size, brand colour, corners, font, reduce motion, language or direction | In the Settings pattern's Appearance section: a Select with pictures for each choice: a SettingsScreen for Theme, Corners and Text direction, variant="rows" for Density, variant="brand" for Brand colour (a Custom option opens the colour picker), and "Aa" samples for Font and Text size; Switch for reduce motion (data-motion="reduce"); Select for language; a destructive SettingsLink to reset. Apply at once with setTheme(), setDensity(), setBrand(). | a theme Select or a plain radio list, hand-drawn theme thumbnails or screenshots, a raw <input type="color">, Choice cards with only text, a button opening a popover of choices, a Slider for text size, a SegmentedControl for direction, swatches in the row for brand colour |
 
 ## Patterns
 
@@ -126,7 +126,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 3. Sections: the open section's AppShellLink has current (aria-current="page"); a link click switches the section in place. On wide screens settings open on the first section; on phones on the section list.
 4. Section: the main starts with a TopBar (title = the section's name, its <h1>; onBack returns to the section list, backLabel = "Settings"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.
 5. Saving: switches, selects and segmented controls apply at once; confirm with a Toast only when the effect isn't visible. Free text (a name, a folder path) saves on blur or Enter. Anything that must be submitted together (a password change) is a Dialog opened from a SettingsLink.
-6. Appearance: an Appearance section uses the same controls in every product (see settings/appearance). Theme, Density, Text size, Brand colour, Corners, Font and Text direction each open a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker of SettingsOptions, which the Popover lists one per row: SettingsScreens for Theme (System, Light, Dark, Black, Light gray; setTheme()), Corners (each shape's radii) and Text direction (Auto, which follows the language, Left to right, Right to left; dir on the screen and on the app); SettingsScreen variant="rows" for Density (Auto, Compact, Comfortable, Touch; setDensity()); SettingsScreen variant="brand" with --ayy-color-primary for Brand colour (Default, a few palette colours and Custom, with a ColorSwatchCustom under the list; setBrand()); and "Aa" samples for Font and for Text size (75% to 150%, setting the root font size). Reduce motion: a Switch that sets data-motion="reduce". Language: a Select. Reset appearance: a destructive SettingsLink in its own group.
+6. Appearance: an Appearance section uses the same controls in every product (see settings/appearance). Theme, Density, Text size, Brand colour, Corners, Font and Text direction are each a Select with pictures (one per option, the chosen one before the text, each in the list): SettingsScreens for Theme (System, Light, Dark, Black, Light gray; setTheme()), Corners (each shape's radii) and Text direction (Auto, which follows the language, Left to right, Right to left; dir on the screen and on the app); SettingsScreen variant="rows" for Density (Auto, Compact, Comfortable, Touch; setDensity()); SettingsScreen variant="brand" with --ayy-color-primary for Brand colour (Default, a few palette colours and Custom, which opens the colour picker on a hidden <input type="color" data-value="custom"> after the select; setBrand()); and "Aa" samples for Font and for Text size (75% to 150%, setting the root font size). Reduce motion: a Switch that sets data-motion="reduce". Language: a Select. Reset appearance: a destructive SettingsLink in its own group.
 7. Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.
 8. Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.
 
@@ -1723,6 +1723,7 @@ Category: Forms. A dropdown for choosing one option from a list. It's the native
 - `.ayy-select__list` — The options list (role="listbox" popover) that React Select and "@danitesler/ayywi/elements" build from the <option>s while it's open. Don't write it yourself.
 - `.ayy-select__option` — One option in the list (role="option"); aria-selected="true" on the chosen one, aria-disabled for a disabled <option>.
 - `.ayy-select__label` — An <optgroup>'s label in the list.
+- `.ayy-select__picture` — A picture for one option (a theme thumbnail, "Aa" in a font, a colour): a <span aria-hidden="true" data-value="<the option's value>"> after the <select> in the wrapper, one per option, all but the chosen one hidden. The chosen one shows at the control's inline start (32×20px); the list shows each before its option's text (88px wide, 16:10). It's a frame (border, tint, rounded) and a size container, so what's inside can size itself in container units.
 - `.ayy-select--sm` — Small.
 - `.ayy-select--lg` — Large.
 
@@ -1740,22 +1741,24 @@ Category: Forms. A dropdown for choosing one option from a list. It's the native
 - `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
 - `lg` — Control lg height (40px compact, 48 comfortable, 52 touch), lg text.
 - Density — Height and text follow data-density.
-- Width — Fills its container; long option text is cut with an ellipsis. The list is at least the select's width and at most 24rem; its options are the md control height.
+- Width — Fills its container; long option text is cut with an ellipsis. The list is at least the select's width and at most 24rem; its options are the md control height, or as tall as their picture (up to 32rem of list) with pictures.
 
 **React** — `import { Select } from "@danitesler/ayywi/react";`
-- `<Select>` renders <div class="ayy-select"><select class="ayy-select__control">. Props: `size` "sm" | "md" | "lg"; `wrapperProps` Props for the wrapper <div>; `...rest` All native <select> attributes and events (onChange fires when an option is chosen from the list too); className goes to the <select>.
+- `<Select>` renders <div class="ayy-select"><select class="ayy-select__control">. Props: `size` "sm" | "md" | "lg"; `pictures` Record<string, ReactNode> — a picture per option value: rendered as .ayy-select__picture spans after the <select>; the chosen one shows before the text and the list shows each; `onChoose` (value: string) => void — every choice from ayywi's list, the option already chosen included (onChange only fires for a new one), for an option that acts each time, such as Custom colour; `wrapperProps` Props for the wrapper <div>; `...rest` All native <select> attributes and events (onChange fires when an option is chosen from the list too); className goes to the <select>.
 
 **Accessibility**
 - Label it like any input (Field + Label with for/id); the list takes the same name.
 - The list is a role="listbox" of role="option"s: arrows, Home/End and type-ahead move, Enter, Space or a click chooses, Esc, Tab or a click outside closes, and focus goes back to the select.
 - Touch screens keep the OS picker, which suits them better. Don't build your own dropdown for choosing a value: this is it.
+- Pictures are aria-hidden: an option's text names it, in the list and in the OS picker.
 
 **Do**
 - Use a select to choose one option from a longer list (country, time zone, role).
 - Put a sensible default first, or a disabled placeholder option.
 - Write a plain <select> with <option>s (or React Select): the list comes with it. In plain HTML load elements.global.js (or import "@danitesler/ayywi/elements").
+- Give options pictures when the choice is visual (a theme, a font, a colour): one .ayy-select__picture per option (React: pictures). Phones keep the OS picker with text only, so the option text must still say what it is.
 
-**Examples**: Sizes and states. Copy-ready HTML and React in llms/select.md.
+**Examples**: Sizes, states and pictures. Copy-ready HTML and React in llms/select.md.
 
 ## Combobox
 
@@ -2589,11 +2592,11 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - `.ayy-settings__link` — On an .ayy-settings__row that is an <a href> (opens a sub-page) or a <button> (runs an action): the whole row is the target, with a chevron icon at the end.
 - `.ayy-settings__value` — The current value in a link row, muted, before the chevron ("English", "System").
 - `.ayy-settings__link--destructive` — Sign out, Delete account: red text and no chevron.
-- `.ayy-settings__picker` — Appearance choices shown as pictures (theme, density, text size, brand colour, corners, font, direction): role="radiogroup" with an aria-label. In a Popover it's a list, one option per row as in a menu; in a stacked row, a grid of larger pictures.
-- `.ayy-settings__option` — One picture to choose: a <label> around a visually hidden native radio, a .ayy-settings__preview and a .ayy-settings__caption. In a Popover: a row with the small picture at the start, the caption, and a check at the end when chosen. In a grid: the picture over its caption; chosen, the picture gets a text-colour border and the caption turns the text colour.
-- `.ayy-settings__preview` — The picture's 16:10 frame (72px wide in a Popover's list, a small 24×16px inline icon inside a trigger .ayy-button before its label). Holds a .ayy-settings__screen, or a short sample such as "Aa" in a font or at a text size. aria-hidden: the caption names the option.
+- `.ayy-settings__picker` — A grid of larger pictures to choose from in a stacked row (an appearance setting that should show every choice at once): role="radiogroup" with an aria-label. For a dropdown, use a Select with pictures.
+- `.ayy-settings__option` — One picture to choose: a <label> around a visually hidden native radio, a .ayy-settings__preview and a .ayy-settings__caption. Chosen: the picture gets a text-colour border and the caption turns the text colour.
+- `.ayy-settings__preview` — The picture's 16:10 frame in a SettingsOption. Holds a .ayy-settings__screen, or a short sample such as "Aa" in a font. aria-hidden: the caption names the option. (In a Select, the screen goes straight in its .ayy-select__picture.)
 - `.ayy-settings__caption` — The option's name under the picture ("Dark", "Sharp").
-- `.ayy-settings__screen` — A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens around it, for Theme, Corners and Text direction. Set data-theme, data-density or dir on it, or brand and corner tokens on or around it, to preview them; it mirrors in RTL. Two in one preview split it, the second showing the right half: System as light then dark, Auto density as compact then touch, Auto direction as dir="ltr" then dir="rtl".
+- `.ayy-settings__screen` — A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens around it, for Theme, Corners and Text direction: in a Select's pictures (.ayy-select__picture) or a SettingsOption's. Set data-theme, data-density or dir on it, or brand and corner tokens on or around it, to preview them; it mirrors in RTL. Two in one picture split it, the second showing the right half: System as light then dark, Auto density as compact then touch, Auto direction as dir="ltr" then dir="rtl".
 - `.ayy-settings__screen--rows` — For Density: a list of rows, each a line of text and a control, divided by hairlines; rows are as tall as data-density makes them (exaggerated), so Compact shows about two and a half times the rows Touch does.
 - `.ayy-settings__screen--brand` — For Brand colour: where the primary colour shows (the chosen sidebar item tinted, a filled progress bar, a ticked checkbox, the primary button). Set --ayy-color-primary on it to preview a colour (a palette token; var(--ayy-color-text) for the monochrome default).
 
@@ -2607,7 +2610,7 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 
 **Sizes**
 - Density — Rows are at least the lg control height (40px compact, 48 comfortable, 52 touch); their controls follow data-density.
-- Width — Fills its container. A row wraps its control under the label when there's no room; stack does it always. Selects, inputs and popover triggers in a row are at least 11rem. In a Popover a picker is a list at least 13rem wide, each row a 72px 16:10 picture and the caption; in a stacked row it's a grid of 8.5rem-minimum columns. A screen's parts are sized in container units of its picture, so one drawing fits a grid tile, a list row and a trigger icon.
+- Width — Fills its container. A row wraps its control under the label when there's no room; stack does it always. Inputs and popover triggers in a row are at least 11rem, selects 12.5rem (room for a picture). A picker is a grid of 8.5rem-minimum columns with 16:10 pictures. A screen's parts are sized in container units of its picture, so one drawing fits a grid tile and both of a Select's pictures.
 
 **React** — `import { Settings, SettingsRow, SettingsLink, SettingsPicker, SettingsOption, SettingsScreen } from "@danitesler/ayywi/react";`
 - `<Settings>` renders <section class="ayy-settings" aria-labelledby> <h2 class="ayy-settings__title"> … <div class="ayy-settings__list">{children}</div>. Props: `title` ReactNode — the heading; the section is labelled by it; `description` ReactNode — a line under the heading; `plain` boolean — no card around the rows
@@ -2624,6 +2627,7 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - A link row is one <a> or <button>: its whole text, value included, is its name. Use <a href> when it opens a page, <button> when it does something.
 - Controls wrap under the label on narrow screens instead of shrinking below a usable size.
 - A picker is a radiogroup of native radios: arrow keys move between options, and each option is named by its caption. The pictures are aria-hidden.
+- A custom colour's <input type="color"> is hidden and out of the tab order: choosing Custom opens the colour picker as a labelled dialog under the select with focus in it, and Esc or Enter closes it and puts focus back on the select.
 
 **Do**
 - Use it for any settings or preferences screen: group related rows under short headings (General, Notifications, Shortcuts). They open in a near-full-screen Dialog (size="full") holding the App shell in settings mode (the Settings pattern): a sidebar of sections and one section's groups in the main.
@@ -2631,7 +2635,7 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.
 - On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.
 - Put Sign out or Delete account last, in its own group, as a destructive link row.
-- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Popover (with a small .ayy-settings__preview icon in front of the trigger's label) holding a SettingsPicker, which a Popover shows as a list: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (plus a Custom option and a ColorSwatchCustom under the list), and "Aa" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
+- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type="color" data-value="custom"> after the select), and "Aa" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
 
 **Examples**: Preferences with switches and selects, Phone settings with link rows, Choice cards in a stacked row, Appearance, brand, language and reset. Copy-ready HTML and React in llms/settings.md.
 
