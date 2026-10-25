@@ -202,7 +202,8 @@
   color: var(--ayy-color-destructive);
 }
 
-/* ---- Appearance pickers: a grid of larger pictures (theme, corners, font), inside a Popover or in a stacked row. ---- */
+/* ---- Appearance pickers: pictures to choose from (theme, density, colour, corners, font, text size, direction). In a
+   Popover they're a list, one option per row as in a menu; in a stacked row, a grid of larger pictures. ---- */
 
 /* role="radiogroup" with an aria-label; a <fieldset> works too. */
 .ayy-settings__picker {
@@ -213,12 +214,6 @@
   margin: 0;
   padding: 0;
   border: 0;
-}
-
-/* A Popover holding a picker: wide enough for three 8.5rem pictures across. */
-.ayy-popover:has(> .ayy-settings__picker) {
-  inline-size: min(30rem, calc(100vw - 1rem));
-  max-inline-size: min(30rem, calc(100vw - 1rem));
 }
 
 /* A <label> around a visually hidden native radio, the picture and the caption. */
@@ -247,7 +242,8 @@
   pointer-events: none;
 }
 
-/* The picture's frame: a 16:10 tile. Holds a .ayy-settings__screen, or a short sample ("Aa" in a font). */
+/* The picture's frame: a 16:10 tile. Holds a .ayy-settings__screen, or a short sample ("Aa" in a font). Its size is
+   the container the screen inside is drawn against. */
 .ayy-settings__preview {
   position: relative;
   box-sizing: border-box;
@@ -256,6 +252,7 @@
   inline-size: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+  container-type: size;
   border: 1px solid var(--ayy-color-line);
   border-radius: var(--ayy-radius-lg);
   background-color: color-mix(in srgb, var(--ayy-color-text) 6%, var(--ayy-color-surface));
@@ -303,18 +300,108 @@
   cursor: not-allowed;
 }
 
-/* A miniature app (sidebar, heading, lines, a primary button) drawn from the tokens of whatever it sits in, so
-   data-theme, data-density and data-brand on it (or around it) show what they change. Two in one preview split it
-   down the middle: System as half light, half dark. Decorative: aria-hidden. */
+/* In a Popover: a list, as a menu is. Each option is a row (a small picture, then the caption) with a check at the end
+   when it's chosen; hover and focus light the whole row. */
+.ayy-popover:has(> .ayy-settings__picker) {
+  min-inline-size: 13rem;
+  padding: var(--ayy-space-1);
+}
+
+.ayy-popover > .ayy-settings__picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option {
+  flex-direction: row;
+  gap: var(--ayy-space-3);
+  padding: var(--ayy-space-1);
+  padding-inline-end: var(--ayy-space-3);
+  border-radius: var(--ayy-radius-lg);
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-control-text-md);
+  text-align: start;
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option > .ayy-settings__preview {
+  flex: none;
+  inline-size: 4.5rem;
+  border-radius: var(--ayy-radius-md);
+  font-size: var(--ayy-text-lg);
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option > .ayy-settings__caption {
+  flex: 1 1 auto;
+}
+
+/* The check, drawn like a menu's. */
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option::after {
+  content: "";
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 0.35em;
+  block-size: 0.65em;
+  margin-block-end: 0.15em;
+  border-right: 2px solid currentColor; /* ayy-allow-physical: a check is a glyph, it doesn't mirror in RTL */
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+
+@media (hover: hover) {
+  .ayy-popover > .ayy-settings__picker > .ayy-settings__option:hover {
+    background-color: var(--ayy-color-wash-hover);
+  }
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:checked) > .ayy-settings__caption {
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:checked)::after {
+  opacity: 1;
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:checked) > .ayy-settings__preview {
+  border-color: var(--ayy-color-line-strong);
+  box-shadow: none;
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:focus-visible) {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:focus-visible) > .ayy-settings__preview {
+  outline: none;
+}
+
+:root[data-ayy-input="pointer"] .ayy-popover > .ayy-settings__picker > .ayy-settings__option:has(> input:focus-visible) {
+  outline-color: transparent;
+}
+
+/* A miniature screen drawn from the tokens of whatever it sits in, so data-theme, data-density and data-brand on it (or
+   around it) show what they change. Three drawings:
+   - the app (default): a sidebar, a heading, lines and a primary button, for theme, corners and direction;
+   - --rows: a list of rows, each with a line of text and a control, as tall as the density makes them;
+   - --brand: where the primary colour shows: the chosen sidebar item, a progress bar, a ticked checkbox, a button.
+   Lengths are in container units of the picture, so one drawing fits a grid tile, a list row and a trigger icon; only
+   --_k, how much of the density's row height shows, is set per size. Its parts are placed physically and the whole
+   screen is mirrored in RTL, as a picture is. Two in one preview split it down the middle: System as half light,
+   half dark. Decorative: aria-hidden. */
 .ayy-settings__screen {
-  --_row: calc((var(--ayy-size-control-sm) - 1rem) * 0.6);
-  --_line: 2px;
-  --_head: 4px;
-  --_gap: 10px;
-  --_side-top: 14px;
+  --_k: 0.6;
+  --_row: calc((var(--ayy-size-control-sm) - 1rem) * var(--_k));
+  --_line: max(1px, 2.4cqb);
+  --_head: max(1px, 4.6cqb);
+  --_gap: 12cqb;
+  --_side-top: 16cqb;
   --_scale: 3;
   --_ink: color-mix(in srgb, var(--ayy-color-text) 80%, transparent);
   --_faint: color-mix(in srgb, var(--ayy-color-muted) 45%, transparent);
+  --_lines: repeating-linear-gradient(to bottom, var(--_faint) 0 var(--_line), transparent var(--_line) var(--_row));
   position: absolute;
   inset-block-start: 16%;
   inset-inline-start: 14%;
@@ -325,9 +412,7 @@
   border: 1px solid var(--ayy-color-line);
   border-radius: calc(var(--ayy-radius-card) / var(--_scale));
   background-color: var(--ayy-color-bg);
-  background-image:
-    linear-gradient(var(--_ink), var(--_ink)),
-    repeating-linear-gradient(to bottom, var(--_faint) 0 var(--_line), transparent var(--_line) var(--_row));
+  background-image: linear-gradient(var(--_ink), var(--_ink)), var(--_lines);
   background-repeat: no-repeat;
   background-size:
     28% var(--_head),
@@ -337,6 +422,7 @@
     55% calc(16% + var(--_gap));
   box-shadow: var(--ayy-shadow-rest);
   color: var(--ayy-color-text);
+  transform: scaleX(var(--_ayy-dir, 1));
   pointer-events: none;
 }
 
@@ -345,12 +431,12 @@
   content: "";
   position: absolute;
   inset-block: 0;
-  inset-inline-start: 0;
+  left: 0; /* ayy-allow-physical: the screen is a picture, mirrored as a whole in RTL */
   box-sizing: border-box;
   inline-size: 24%;
-  border-inline-end: 1px solid var(--ayy-color-hairline);
+  border-right: 1px solid var(--ayy-color-hairline); /* ayy-allow-physical: mirrored with the screen */
   background-color: var(--ayy-color-surface);
-  background-image: repeating-linear-gradient(to bottom, var(--_faint) 0 var(--_line), transparent var(--_line) var(--_row));
+  background-image: var(--_lines);
   background-repeat: no-repeat;
   background-size: 56% calc(var(--_row) * 4);
   background-position: 50% var(--_side-top);
@@ -360,17 +446,107 @@
 .ayy-settings__screen::after {
   content: "";
   position: absolute;
-  inset-block-start: calc(16% + var(--_gap) + 4px + var(--_row) * 3);
-  inset-inline-start: 32%;
+  inset-block-start: calc(16% + var(--_gap) + 4cqb + var(--_row) * 3);
+  left: 32%; /* ayy-allow-physical: mirrored with the screen */
   inline-size: 18%;
   block-size: calc(var(--_row) * 1.2);
   border-radius: calc(var(--ayy-radius-button) / var(--_scale));
   background-color: var(--ayy-color-primary);
 }
 
-/* A second screen shows only its inline-end half. */
+/* Rows: no sidebar, a list from the top, each row a line of text at the start and a control at the end, divided by
+   hairlines. A row's height follows the density's controls, exaggerated so the steps read: Compact fits two and a
+   half times the rows Touch does. */
+.ayy-settings__screen--rows {
+  --_pitch: calc((var(--ayy-size-control-sm) - 1.25rem) * var(--_k) * 2.4);
+  --_box: calc(var(--_pitch) * 0.46);
+  --_mid: calc(var(--_pitch) / 2);
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--_mid) - var(--_line) / 2),
+      var(--_ink) 0 calc(var(--_mid) + var(--_line) / 2),
+      transparent 0 var(--_pitch)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--_mid) - var(--_box) / 2),
+      color-mix(in srgb, var(--ayy-color-text) 22%, transparent) 0 calc(var(--_mid) + var(--_box) / 2),
+      transparent 0 var(--_pitch)
+    ),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--_pitch) - 1px), var(--ayy-color-line) 0 var(--_pitch));
+  background-repeat: repeat-y;
+  background-size:
+    30cqi 100%,
+    14cqi 100%,
+    100% 100%;
+  background-position:
+    8cqi 4cqb,
+    58cqi 4cqb,
+    0 4cqb;
+}
+
+.ayy-settings__screen--rows::before,
+.ayy-settings__screen--rows::after {
+  content: none;
+}
+
+/* Brand: the chosen sidebar item tinted, a heading, a progress bar filled, a ticked checkbox and its label, and the
+   primary button. */
+.ayy-settings__screen--brand {
+  --_tint: color-mix(in srgb, var(--ayy-color-primary) 22%, transparent);
+  --_bar: max(2px, 5cqb);
+  --_tick: 8cqb;
+  background-image:
+    linear-gradient(var(--_ink), var(--_ink)),
+    linear-gradient(var(--ayy-color-primary), var(--ayy-color-primary)),
+    linear-gradient(var(--_faint), var(--_faint)),
+    linear-gradient(var(--ayy-color-primary), var(--ayy-color-primary)),
+    linear-gradient(var(--_faint), var(--_faint));
+  background-size:
+    28cqi var(--_head),
+    30cqi var(--_bar),
+    46cqi var(--_bar),
+    var(--_tick) var(--_tick),
+    26cqi var(--_line);
+  background-position:
+    30cqi 13cqb,
+    30cqi 27cqb,
+    30cqi 27cqb,
+    30cqi 41cqb,
+    calc(30cqi + var(--_tick) + 3cqi) calc(41cqb + var(--_tick) / 2 - var(--_line) / 2);
+}
+
+.ayy-settings__screen--brand::before {
+  background-image:
+    var(--_lines),
+    linear-gradient(var(--_tint), var(--_tint));
+  background-size:
+    56% calc(var(--_row) * 4),
+    84% calc(var(--_row) + var(--_line) * 2);
+  background-position:
+    50% var(--_side-top),
+    50% calc(var(--_side-top) + var(--_row) / 2 - var(--_line) / 2);
+}
+
+.ayy-settings__screen--brand::after {
+  inset-block-start: 56cqb;
+  left: 30cqi; /* ayy-allow-physical: mirrored with the screen */
+  inline-size: 20cqi;
+  block-size: 11cqb;
+}
+
+/* A second screen shows only the right half of the picture, in either direction: System is light then dark, Auto
+   density compact then touch, Auto direction left to right then right to left. A mirrored screen keeps its local
+   left half, which the mirror puts on the right. */
 .ayy-settings__screen + .ayy-settings__screen {
   clip-path: inset(0 calc(25% * (1 - var(--_ayy-dir, 1))) 0 calc(25% * (1 + var(--_ayy-dir, 1))));
+}
+
+/* In a list row's small picture: less of the density shows. */
+.ayy-popover > .ayy-settings__picker .ayy-settings__screen {
+  --_k: 0.32;
+  --_scale: 4.5;
 }
 
 /* A small inline preview icon at the start of a dropdown trigger button. */
@@ -385,11 +561,9 @@
 }
 
 .ayy-button > .ayy-settings__preview > .ayy-settings__screen {
-  --_row: calc((var(--ayy-size-control-sm) - 1rem) * 0.22);
+  --_k: 0.14;
   --_line: 1px;
   --_head: 1.5px;
-  --_gap: 2.5px;
-  --_side-top: 3px;
   --_scale: 6;
   inset-block-start: 14%;
   inset-inline-start: 12%;

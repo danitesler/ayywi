@@ -17,6 +17,9 @@ export const settingsPreviewClass = "ayy-settings__preview";
 export const settingsCaptionClass = "ayy-settings__caption";
 /** A miniature app drawn from tokens; set data-theme / data-density on it to preview one. */
 export const settingsScreenClass = "ayy-settings__screen";
+/** What a SettingsScreen draws: the app (theme, corners, direction), rows (density) or brand (the primary colour's places). */
+export const settingsScreenVariants = ["app", "rows", "brand"] as const;
+export type SettingsScreenVariant = (typeof settingsScreenVariants)[number];
 
 /** When a SettingsOption is chosen inside a Popover, update the trigger's label and close the popover. */
 export function syncSettingsPicker(input: HTMLInputElement): void {

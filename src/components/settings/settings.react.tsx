@@ -24,6 +24,7 @@ import {
   settingsPreviewClass,
   settingsRowClass,
   settingsScreenClass,
+  type SettingsScreenVariant,
 } from "./settings";
 
 export interface SettingsProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
@@ -226,19 +227,22 @@ export const SettingsOption = forwardRef<HTMLLabelElement, SettingsOptionProps>(
 });
 
 export interface SettingsScreenProps extends HTMLAttributes<HTMLSpanElement> {
+  /** What it draws: "app" (the default; theme, corners, direction), "rows" (a list as tall as the density makes it) or
+   *  "brand" (where the primary colour shows). */
+  variant?: SettingsScreenVariant;
   /** The theme it's drawn in. "system": half light, half dark. Omit to use the one it sits in. */
   theme?: ThemeMode;
   /** The density it's drawn in. "auto": half compact, half touch. Omit to use the one it sits in. */
   density?: DensityMode;
 }
 
-/** A miniature app drawn from tokens, for a SettingsOption's picture. Brand and corner tokens around it show too. */
-export const SettingsScreen = forwardRef<HTMLSpanElement, SettingsScreenProps>(function SettingsScreen({ theme, density, className, ...props }, ref) {
+/** A miniature screen drawn from tokens, for a SettingsOption's picture. Brand and corner tokens around it show too. */
+export const SettingsScreen = forwardRef<HTMLSpanElement, SettingsScreenProps>(function SettingsScreen({ variant, theme, density, className, ...props }, ref) {
   const screen = (t: ThemeMode | undefined, d: DensityMode | undefined, key?: string) => (
     <span
       key={key}
       ref={key === "second" ? undefined : ref}
-      className={cx(settingsScreenClass, className)}
+      className={cx(settingsScreenClass, variant && variant !== "app" && `${settingsScreenClass}--${variant}`, className)}
       data-theme={t === "system" ? undefined : t}
       data-density={d === "auto" ? undefined : d}
       aria-hidden="true"

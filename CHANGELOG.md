@@ -30,7 +30,13 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   New component — a value that becomes an input in place, saving on Enter, blur, or ⌘Enter in a growing textarea, with IME-safe Enter and a title variant.
 
 - **[Settings](#/settings)**
-  Appearance settings had no picture picker or reusable appearance rows → added `SettingsPicker`, `SettingsOption` and `SettingsScreen` (`ayy-settings__picker`, `ayy-settings__option`, `ayy-settings__preview`, `ayy-settings__caption`, `ayy-settings__screen`) for visual options with miniature token-drawn app screens (including split light/dark for System), `data-motion="reduce"` for app-level reduced motion, a live `appearance` example at the bottom of the Settings page, and a contract rule to use them for theme, density, text size, brand colour, corners, font, motion, language, direction and reset.
+  Appearance settings had no picture picker or reusable appearance rows → added `SettingsPicker`, `SettingsOption` and `SettingsScreen` (`ayy-settings__picker`, `ayy-settings__option`, `ayy-settings__preview`, `ayy-settings__caption`, `ayy-settings__screen`) for visual options with miniature token-drawn screens (including split light/dark for System), `data-motion="reduce"` for app-level reduced motion, a live `appearance` example at the bottom of the Settings page, and a contract rule to use them for theme, density, text size, brand colour, corners, font, motion, language, direction and reset.
+- **[Settings](#/settings)**
+  Appearance pickers opened as a grid of large pictures → in a popover they're now a list like a menu, a small picture and the name per row with a check on the chosen one.
+- **[Settings](#/settings)**
+  Density and brand colour previewed the same miniature app as Theme → Density draws a list whose rows grow with the density (`variant="rows"`), and Brand colour shows where the colour lands: the chosen sidebar item, a progress bar, a checkbox and a button (`variant="brand"`).
+- **[Settings](#/settings)**
+  Text size was a slider, Brand colour a row of swatches and Text direction a segmented control → each is now a dropdown picker like Theme, with "Aa" samples, colour previews (plus a custom colour) and left-to-right / right-to-left screens; the screens also mirror correctly on right-to-left pages.
 
 - **[Chart](#/chart)**
   Colours, legend and hover card — a new first example on the Chart page shows every colour a chart can use as a swatch, the legend that switches series and the hover card on its own (`ChartTooltip`).

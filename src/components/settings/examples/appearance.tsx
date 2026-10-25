@@ -2,23 +2,19 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { BRAND_SHAPES, setBrand, setDensity, setTheme, tokens, type BrandShape, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
 import {
-  ColorSwatch,
   ColorSwatchCustom,
-  ColorSwatchGroup,
   Icon,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  SegmentedControl,
-  SegmentedControlItem,
   Select,
+  Separator,
   Settings,
   SettingsLink,
   SettingsOption,
   SettingsPicker,
   SettingsRow,
   SettingsScreen,
-  Slider,
   Switch,
 } from "@danitesler/ayywi/react";
 
@@ -48,6 +44,33 @@ const COLOURS = [
 
 const seed = (token: (typeof COLOURS)[number]["token"]) => tokens[token].value;
 const cssVar = (token: string) => `var(--ayy-${token.replace(/\./g, "-")})`;
+// A brand screen in one colour; the default is monochrome, where primary is the text colour.
+const colourStyle = (color: string) => ({ "--ayy-color-primary": color }) as CSSProperties;
+const colourOf = (value: string, custom: string) => {
+  if (value === "custom") return custom;
+  const picked = COLOURS.find((c) => c.value === value);
+  return picked ? cssVar(picked.token) : "var(--ayy-color-text)";
+};
+
+const TEXT_SIZES = [75, 87.5, 100, 112.5, 125, 150];
+
+const DIRECTIONS = [
+  { value: "auto", label: "Auto" },
+  { value: "ltr", label: "Left to right" },
+  { value: "rtl", label: "Right to left" },
+];
+
+// Auto shows both halves: left to right, then right to left.
+function DirectionScreen({ direction }: { direction: string }) {
+  if (direction === "auto")
+    return (
+      <>
+        <SettingsScreen dir="ltr" />
+        <SettingsScreen dir="rtl" />
+      </>
+    );
+  return <SettingsScreen dir={direction} />;
+}
 
 const SHAPES: { value: BrandShape; label: string }[] = [
   { value: "pill", label: "Pill" },
@@ -120,6 +143,8 @@ export default function Example() {
   }, [theme, density, colour, custom, shape, font, language, direction]);
 
   const themeLabel = THEMES.find((t) => t.value === theme)?.label ?? "System";
+  const colourLabel = colour === "custom" ? "Custom" : (COLOURS.find((c) => c.value === colour)?.label ?? "Default");
+  const directionLabel = DIRECTIONS.find((d) => d.value === direction)?.label ?? "Auto";
   const densityLabel = DENSITIES.find((d) => d.value === density)?.label ?? "Auto";
   const shapeLabel = SHAPES.find((s) => s.value === shape)?.label ?? "Pill";
   const fontOption = FONTS.find((f) => f.value === font) ?? FONTS[0];
@@ -150,7 +175,7 @@ export default function Example() {
           <Popover>
             <PopoverTrigger id="set-density" aria-describedby="set-density-hint" variant="outline">
               <span className="ayy-settings__preview" aria-hidden="true">
-                <SettingsScreen density={density} />
+                <SettingsScreen variant="rows" density={density} />
               </span>
               {densityLabel}
               <Icon icon={ArrowDown01Icon} />
@@ -158,50 +183,62 @@ export default function Example() {
             <PopoverContent align="end" aria-label="Density">
               <SettingsPicker aria-label="Density" value={density} onValueChange={(value) => setDensityState(value as DensityMode)}>
                 {DENSITIES.map((d) => (
-                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<SettingsScreen density={d.value} />} />
+                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<SettingsScreen variant="rows" density={d.value} />} />
                 ))}
               </SettingsPicker>
             </PopoverContent>
           </Popover>
         </SettingsRow>
         <SettingsRow label="Text size" htmlFor="set-text-size" hint="Sets the root font size, so all text and spacing scale with it.">
-          <Slider
-            id="set-text-size"
-            aria-describedby="set-text-size-hint"
-            aria-valuetext={`${textSize}%`}
-            min={75}
-            max={150}
-            step={12.5}
-            value={textSize}
-            onValueChange={setTextSize}
-          />
-          <output htmlFor="set-text-size" className="ayy-muted ayy-tabular">
-            {textSize}%
-          </output>
+          <Popover>
+            <PopoverTrigger id="set-text-size" aria-describedby="set-text-size-hint" variant="outline">
+              <span className="ayy-settings__preview" aria-hidden="true">
+                <span style={{ fontSize: `${textSize}%` }}>Aa</span>
+              </span>
+              {textSize}%
+              <Icon icon={ArrowDown01Icon} />
+            </PopoverTrigger>
+            <PopoverContent align="end" aria-label="Text size">
+              <SettingsPicker aria-label="Text size" value={String(textSize)} onValueChange={(value) => setTextSize(Number(value))}>
+                {TEXT_SIZES.map((size) => (
+                  <SettingsOption key={size} value={String(size)} label={`${size}%`} preview={<span style={{ fontSize: `${size}%` }}>Aa</span>} />
+                ))}
+              </SettingsPicker>
+            </PopoverContent>
+          </Popover>
         </SettingsRow>
-        <SettingsRow label={<span id="set-brand-colour">Brand colour</span>} hint="Default is monochrome. Contrast is checked in every theme.">
-          <ColorSwatchGroup aria-labelledby="set-brand-colour">
-            <ColorSwatch none label="Default" name="set-brand-colour" value="default" checked={colour === "default"} onCheckedChange={() => setColour("default")} />
-            {COLOURS.map((c) => (
-              <ColorSwatch
-                key={c.value}
-                color={cssVar(c.token)}
-                label={c.label}
-                name="set-brand-colour"
-                value={c.value}
-                checked={colour === c.value}
-                onCheckedChange={() => setColour(c.value)}
-              />
-            ))}
-            <ColorSwatchCustom
-              label="Custom colour"
-              value={custom}
-              onChange={(event) => {
-                setCustom(event.currentTarget.value);
-                setColour("custom");
-              }}
-            />
-          </ColorSwatchGroup>
+        <SettingsRow label="Brand colour" htmlFor="set-brand-colour" hint="Default is monochrome. Contrast is checked in every theme.">
+          <Popover>
+            <PopoverTrigger id="set-brand-colour" aria-describedby="set-brand-colour-hint" variant="outline">
+              <span className="ayy-settings__preview" aria-hidden="true">
+                <SettingsScreen variant="brand" style={colourStyle(colourOf(colour, custom))} />
+              </span>
+              {colourLabel}
+              <Icon icon={ArrowDown01Icon} />
+            </PopoverTrigger>
+            <PopoverContent align="end" aria-label="Brand colour">
+              <SettingsPicker aria-label="Brand colour" value={colour} onValueChange={setColour}>
+                <SettingsOption value="default" label="Default" preview={<SettingsScreen variant="brand" style={colourStyle(colourOf("default", custom))} />} />
+                {COLOURS.map((c) => (
+                  <SettingsOption key={c.value} value={c.value} label={c.label} preview={<SettingsScreen variant="brand" style={colourStyle(cssVar(c.token))} />} />
+                ))}
+                <SettingsOption value="custom" label="Custom" preview={<SettingsScreen variant="brand" style={colourStyle(custom)} />} />
+              </SettingsPicker>
+              <Separator />
+              <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-3)", paddingInline: "var(--ayy-space-2)", paddingBlockEnd: "var(--ayy-space-1)" } as CSSProperties}>
+                <ColorSwatchCustom
+                  id="set-brand-custom"
+                  label="Custom colour"
+                  value={custom}
+                  onChange={(event) => {
+                    setCustom(event.currentTarget.value);
+                    setColour("custom");
+                  }}
+                />
+                <label htmlFor="set-brand-custom">Pick a custom colour</label>
+              </div>
+            </PopoverContent>
+          </Popover>
         </SettingsRow>
         <SettingsRow label="Corners" htmlFor="set-corners">
           <Popover>
@@ -264,12 +301,23 @@ export default function Example() {
             ))}
           </Select>
         </SettingsRow>
-        <SettingsRow label="Text direction" hint="Auto follows the language.">
-          <SegmentedControl aria-label="Text direction" value={direction} onValueChange={setDirection}>
-            <SegmentedControlItem value="auto">Auto</SegmentedControlItem>
-            <SegmentedControlItem value="ltr">Left to right</SegmentedControlItem>
-            <SegmentedControlItem value="rtl">Right to left</SegmentedControlItem>
-          </SegmentedControl>
+        <SettingsRow label="Text direction" htmlFor="set-direction" hint="Auto follows the language.">
+          <Popover>
+            <PopoverTrigger id="set-direction" aria-describedby="set-direction-hint" variant="outline">
+              <span className="ayy-settings__preview" aria-hidden="true">
+                <DirectionScreen direction={direction} />
+              </span>
+              {directionLabel}
+              <Icon icon={ArrowDown01Icon} />
+            </PopoverTrigger>
+            <PopoverContent align="end" aria-label="Text direction">
+              <SettingsPicker aria-label="Text direction" value={direction} onValueChange={setDirection}>
+                {DIRECTIONS.map((d) => (
+                  <SettingsOption key={d.value} value={d.value} label={d.label} preview={<DirectionScreen direction={d.value} />} />
+                ))}
+              </SettingsPicker>
+            </PopoverContent>
+          </Popover>
         </SettingsRow>
       </Settings>
       <Settings title="Reset">

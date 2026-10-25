@@ -130,7 +130,7 @@ test("a top bar first in an app shell's main stays at the very top, edge to edge
   expect(Math.round((await main.locator(".ayy-top-bar").boundingBox())!.y)).toBe(Math.round(box.y));
 });
 
-test("appearance settings: theme picker opens in a popover with split system and themed screens, and picking updates the container", async ({ page }) => {
+test("appearance settings: pickers open in popovers as lists of pictures, and picking updates the container", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await open(page, "settings", { renderer: "react" });
   const app = example(page, "appearance");
@@ -162,9 +162,34 @@ test("appearance settings: theme picker opens in a popover with split system and
   await expect(app.locator("[data-density='comfortable']").first()).toBeVisible();
   await expect(densityGroup).toBeHidden();
 
-  // Picking a swatch sets data-brand and picking Sharp in the Corners popover updates corners.
-  await app.getByRole("radio", { name: "Violet" }).dispatchEvent("click");
+  // Density options draw rows; the pickers in popovers are lists, one option per row.
+  await densityTrigger.click();
+  await expect(densityGroup.locator(".ayy-settings__screen--rows").first()).toBeVisible();
+  expect(await densityGroup.evaluate((el) => getComputedStyle(el).flexDirection)).toBe("column");
+  await page.keyboard.press("Escape");
+
+  // Text size opens in a popover of "Aa" samples.
+  await app.getByRole("button", { name: "Text size", exact: true }).click();
+  const sizeGroup = app.getByRole("radiogroup", { name: "Text size" });
+  await sizeGroup.locator(".ayy-settings__option", { hasText: "125%" }).click();
+  await expect(sizeGroup).toBeHidden();
+  await expect(app.getByRole("button", { name: "Text size", exact: true })).toContainText("125%");
+
+  // Picking Violet in the Brand colour popover sets data-brand, and its options draw the brand screen.
+  await app.getByRole("button", { name: "Brand colour", exact: true }).click();
+  const colourGroup = app.getByRole("radiogroup", { name: "Brand colour" });
+  await expect(colourGroup.locator(".ayy-settings__screen--brand")).toHaveCount(7);
+  await colourGroup.locator(".ayy-settings__option", { hasText: "Violet" }).click();
+  await expect(colourGroup).toBeHidden();
   await expect(app.locator("[data-brand='settings-example']")).toBeVisible();
+
+  // Text direction: Right to left sets dir on the example.
+  await app.getByRole("button", { name: "Text direction", exact: true }).click();
+  const directionGroup = app.getByRole("radiogroup", { name: "Text direction" });
+  await directionGroup.locator(".ayy-settings__option", { hasText: "Right to left" }).click();
+  await expect(app.locator("[data-brand='settings-example']")).toHaveAttribute("dir", "rtl");
+
+  // Picking Sharp in the Corners popover updates corners.
   const cornersTrigger = app.getByRole("button", { name: "Corners", exact: true });
   await expect(cornersTrigger.locator(".ayy-settings__preview")).toBeVisible();
   await cornersTrigger.click();
