@@ -25,6 +25,6 @@ for (const renderer of ["react", "html"] as const) {
     await expect(medium.locator('tbody tr[aria-selected="true"]')).toHaveCount(5);
     await expect(all).toHaveJSProperty("indeterminate", true);
 
-    await expect(example(page, "playground").getByRole("button", { name: "Column options for Plan" })).toBeVisible();
+    await expect(example(page, "playground").getByRole("table").getByRole("button", { name: "Plan", exact: true })).toBeVisible();
   });
 }

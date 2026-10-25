@@ -65,6 +65,9 @@ export interface MenuController extends PopoverController {
 }
 
 const ITEM = '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]';
+/** Where focus starts in a role="dialog" submenu panel (an Icon picker): its first field or button. */
+const firstFocusable = (panel: HTMLElement) =>
+  panel.querySelector<HTMLElement>('input:not([disabled]), button:not([disabled]), [tabindex="0"]');
 
 function pointInTriangle(
   p: { x: number; y: number },
@@ -128,8 +131,10 @@ export function connectMenu(
     });
 
   let focusLastOnOpen = false;
-  content.setAttribute("role", "menu");
-  if (trigger) trigger.setAttribute("aria-haspopup", "menu");
+  // A submenu panel holding something other than items (an Icon picker) is a dialog, not a menu.
+  const isDialog = content.getAttribute("role") === "dialog";
+  if (!isDialog) content.setAttribute("role", "menu");
+  if (trigger) trigger.setAttribute("aria-haspopup", isDialog ? "dialog" : "menu");
   for (const item of content.querySelectorAll<HTMLElement>(ITEM)) item.tabIndex = -1;
 
   // Submenus management
@@ -179,7 +184,7 @@ export function connectMenu(
       if (open) {
         for (const item of content.querySelectorAll<HTMLElement>(ITEM)) item.tabIndex = -1;
         const list = items();
-        (focusLastOnOpen ? list.at(-1) : list[0])?.focus();
+        ((focusLastOnOpen ? list.at(-1) : list[0]) ?? (isDialog ? firstFocusable(content) : null))?.focus();
         focusLastOnOpen = false;
       } else {
         closeActiveSubmenu();
@@ -281,7 +286,6 @@ export function connectMenu(
 
       if (!panel || submenus.has(subTrigger)) continue;
 
-      subTrigger.setAttribute("aria-haspopup", "menu");
       if (!subTrigger.hasAttribute("aria-expanded")) subTrigger.setAttribute("aria-expanded", "false");
 
       // Cross-axis offset: -5px so the first item lines up with the parent row (offset by padding & border)
@@ -330,7 +334,7 @@ export function connectMenu(
       const subItems = Array.from(sub.panel.querySelectorAll<HTMLElement>(ITEM)).filter(
         (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-disabled") !== "true",
       );
-      subItems[0]?.focus();
+      (subItems[0] ?? (sub.panel.getAttribute("role") === "dialog" ? firstFocusable(sub.panel) : null))?.focus();
     }
   };
 
@@ -509,7 +513,8 @@ export function connectMenu(
       // The controller opens the panel; prevent the native invoker from toggling it closed again.
       event.preventDefault();
       if (item.classList.contains("ayy-menu__more") && submenus.get(item)!.controller.isOpen()) closeActiveSubmenu();
-      else openSubmenuFor(item, false);
+      // A dialog panel (an Icon picker) takes focus on click, even when hover opened it first: typing should search.
+      else openSubmenuFor(item, submenus.get(item)!.panel.getAttribute("role") === "dialog");
       return;
     }
 

@@ -1,5 +1,7 @@
 import { cx } from "../../lib/cx";
 import { connectDragDrop, dragPreviewChip } from "../drag-drop/drag-drop";
+import { iconPickerClassConstant, type IconPickerChange } from "../icon-picker/icon-picker";
+import { connectInlineEdit, type InlineEditController } from "../inline-edit/inline-edit";
 
 export interface TableClassOptions {
   /** Tighter rows. */
@@ -183,7 +185,7 @@ export interface TableControllerOptions {
   onColumnReorder?: (detail: TableColumnReorderDetail) => boolean | void;
 }
 
-export type TableColumnAction = "freeze" | "wrap" | "icon" | "insert-before" | "insert-after" | "add" | "filter" | "group" | "group-by";
+export type TableColumnAction = "sort-ascending" | "sort-descending" | "duplicate" | "hide" | "delete" | "freeze" | "wrap" | "icon" | "insert-before" | "insert-after" | "add" | "filter" | "group" | "group-by";
 
 export interface TableColumnActionDetail {
   action: TableColumnAction;
@@ -196,8 +198,8 @@ const cellValue = (row: HTMLTableRowElement, column: number) => {
   const cell = row.cells[column] as HTMLElement | undefined;
   if (!cell) return "";
   if (cell.dataset.sortValue !== undefined) return cell.dataset.sortValue;
-  const edit = cell.querySelector<HTMLInputElement | HTMLTextAreaElement>(`.${tableEditClass}`);
-  return edit ? edit.value.trim() : (cell.textContent?.trim() ?? "");
+  const edit = cell.querySelector<HTMLElement>(`.${tableEditClass}`);
+  return edit ? (edit.dataset.value ?? "").trim() : (cell.textContent?.trim() ?? "");
 };
 
 /**
@@ -517,79 +519,113 @@ export function connectTableDragSelect(
   };
 }
 
+interface CellEditSpec {
+  label: string;
+  value: string;
+  /** What the display shows when it isn't the raw value (a formatted price). */
+  text?: string;
+  multiline?: boolean;
+  disabled?: boolean;
+}
+
+const cellEditControllers = new WeakMap<HTMLElement, InlineEditController>();
+
+/** Read back what a cell's inline edit (.ayy-table__edit) was built from, so a copy or a switch to a textarea keeps it. */
+function readCellEdit(root: HTMLElement): CellEditSpec {
+  const display = root.querySelector<HTMLButtonElement>(".ayy-inline-edit__display");
+  const field = root.querySelector<HTMLElement>(".ayy-inline-edit__input");
+  return {
+    label: display?.getAttribute("aria-label") ?? "",
+    value: root.dataset.value ?? "",
+    text: root.querySelector(".ayy-inline-edit__text")?.textContent ?? undefined,
+    multiline: field instanceof HTMLTextAreaElement,
+    disabled: !!display?.disabled,
+  };
+}
+
+/** A cell's inline edit built from plain DOM and wired to Inline edit; a commit bubbles as "ayy-change" for connectTableEdit. */
+function createCellEdit({ label, value, text, multiline, disabled }: CellEditSpec): HTMLElement {
+  const root = document.createElement("div");
+  root.className = `ayy-inline-edit ${tableEditClass}`;
+  root.dataset.value = value;
+  const display = document.createElement("button");
+  display.type = "button";
+  display.className = "ayy-inline-edit__display";
+  display.setAttribute("aria-label", label);
+  display.disabled = !!disabled;
+  const span = document.createElement("span");
+  span.className = "ayy-inline-edit__text";
+  span.textContent = text ?? value;
+  display.append(span);
+  const field = document.createElement(multiline ? "textarea" : "input");
+  field.className = `${multiline ? "ayy-textarea" : "ayy-input"} ayy-inline-edit__input`;
+  if (field instanceof HTMLTextAreaElement) field.rows = 1;
+  else field.type = "text";
+  field.value = value;
+  field.hidden = true;
+  field.disabled = !!disabled;
+  field.setAttribute("aria-label", label);
+  root.append(display, field);
+  cellEditControllers.set(root, connectInlineEdit(root, {
+    onCommit: (next) => root.dispatchEvent(new CustomEvent("ayy-change", { detail: { value: next }, bubbles: true })),
+  }));
+  return root;
+}
+
+/** Rebuild every inline edit in a cell (a duplicated column, or a column that starts or stops wrapping). */
+function rebuildCellEdits(cell: HTMLElement, label?: (old: string) => string, multiline?: boolean) {
+  for (const root of Array.from(cell.querySelectorAll<HTMLElement>(`.${tableEditClass}`))) {
+    const spec = readCellEdit(root);
+    if (multiline !== undefined && spec.multiline === multiline) continue;
+    cellEditControllers.get(root)?.destroy();
+    const next = createCellEdit({ ...spec, label: label ? label(spec.label) : spec.label, multiline: multiline ?? spec.multiline });
+    (root.parentElement?.localName === "ayy-inline-edit" ? root.parentElement : root).replaceWith(next);
+  }
+}
+
 /**
- * Wire inline cell inputs (.ayy-table__edit) in a table: focusing remembers the initial value, pressing Enter commits
- * and blurs, pressing Escape reverts to the value before focus and blurs, and blurring commits when changed.
+ * Report cell edits in a table: an inline edit inside a cell (.ayy-table__edit on an .ayy-inline-edit, in React a TableEdit)
+ * bubbles "ayy-change" when a value is saved, and onCellEdit gets the row, cell, column and new value.
  */
 export function connectTableEdit(
   table: HTMLTableElement,
   options: Pick<TableControllerOptions, "onCellEdit"> = {},
 ): { destroy(): void } {
-  const initial = new WeakMap<HTMLInputElement | HTMLTextAreaElement, string>();
-
-  const inputOf = (target: EventTarget | null) => {
-    const el = (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) && target.classList.contains(tableEditClass) ? target : null;
-    return el && table.contains(el) ? el : null;
-  };
-
-  const commit = (input: HTMLInputElement | HTMLTextAreaElement) => {
-    const before = initial.get(input);
-    const next = input.value;
-    if (before === undefined || before === next) return;
-    initial.set(input, next);
-    const cell = input.closest<HTMLTableCellElement>("td, th");
+  const onChange = (event: Event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const root = target.closest<HTMLElement>(`.${tableEditClass}`) ?? target.querySelector<HTMLElement>(`.${tableEditClass}`);
+    if (!root || !table.contains(root)) return;
+    const cell = root.closest<HTMLTableCellElement>("td, th");
     const row = cell?.closest("tr");
     if (!cell || !row) return;
     const th = table.tHead?.rows[0]?.cells[cell.cellIndex] as HTMLElement | undefined;
     const key = cell.dataset.key ?? cell.dataset.sortKey ?? th?.dataset.key ?? th?.dataset.sortKey;
-    options.onCellEdit?.({ row, cell, column: cell.cellIndex, key, value: next });
+    const value = (event as CustomEvent<{ value?: string }>).detail?.value ?? root.dataset.value ?? "";
+    options.onCellEdit?.({ row, cell, column: cell.cellIndex, key, value });
   };
 
-  const onFocusIn = (event: FocusEvent) => {
-    const input = inputOf(event.target);
-    if (input) initial.set(input, input.value);
-  };
-
-  const onFocusOut = (event: FocusEvent) => {
-    const input = inputOf(event.target);
-    if (input) commit(input);
-  };
-
-  const onKeyDown = (event: KeyboardEvent) => {
-    const input = inputOf(event.target);
-    if (!input) return;
-    if (event.key === "Enter" && !(input instanceof HTMLTextAreaElement && event.shiftKey)) {
-      event.preventDefault();
-      commit(input);
-      input.blur();
-    } else if (event.key === "Escape") {
-      event.preventDefault();
-      const before = initial.get(input);
-      if (before !== undefined && input.value !== before) {
-        input.value = before;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-      input.blur();
-    }
-  };
-
-  table.addEventListener("focusin", onFocusIn);
-  table.addEventListener("focusout", onFocusOut);
-  table.addEventListener("keydown", onKeyDown);
+  table.addEventListener("ayy-change", onChange);
 
   return {
     destroy() {
-      table.removeEventListener("focusin", onFocusIn);
-      table.removeEventListener("focusout", onFocusOut);
-      table.removeEventListener("keydown", onKeyDown);
+      table.removeEventListener("ayy-change", onChange);
     },
   };
+}
+
+/** Mark a header as the sorted column and reorder every body by it; onSort can return false to sort the rows yourself. */
+function sortByHeader(table: HTMLTableElement, th: HTMLTableCellElement, direction: SortDirection, onSort: TableControllerOptions["onSort"]) {
+  for (const other of th.parentElement?.querySelectorAll("th[aria-sort]") ?? []) if (other !== th) other.removeAttribute("aria-sort");
+  th.setAttribute("aria-sort", direction);
+  if (onSort?.({ column: th.cellIndex, key: th.dataset.sortKey, direction }) === false) return;
+  for (const tbody of Array.from(table.tBodies)) sortBody(tbody, th.cellIndex, direction);
 }
 
 /** Column menu actions and cumulative offsets for multiple frozen columns. */
 export function connectTableColumns(
   table: HTMLTableElement,
-  options: Pick<TableControllerOptions, "onColumnAction"> = {},
+  options: Pick<TableControllerOptions, "onColumnAction" | "onSort"> = {},
 ): { destroy(): void } {
   const root = table.closest<HTMLElement>(`.${tableContainerClass}`) ?? table.parentElement!;
   let frame = 0;
@@ -704,12 +740,8 @@ export function connectTableColumns(
         } else cell.textContent = label;
         cell.scope = "col";
       } else if (row.parentElement !== table.tFoot) {
-        const input = document.createElement("input");
-        input.className = tableEditClass;
         const rowName = row.querySelector(`.${tableMediaClass} > :last-child > :first-child`)?.textContent?.trim() || `row ${row.sectionRowIndex + 1}`;
-        input.disabled = row.getAttribute("aria-disabled") === "true";
-        input.setAttribute("aria-label", `${label} for ${rowName}`);
-        cell.append(input);
+        cell.append(createCellEdit({ label: `${label} for ${rowName}`, value: "", disabled: row.getAttribute("aria-disabled") === "true" }));
       }
       row.insertBefore(cell, row.cells[index] ?? null);
     }
@@ -718,20 +750,95 @@ export function connectTableColumns(
     schedule();
   };
 
-  const onClick = (event: MouseEvent) => {
-    const item = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-column-action]") : null;
-    if (!item || !root.contains(item)) return;
-    const head = item.closest<HTMLTableCellElement>("thead th");
+  const duplicate = (head: HTMLTableCellElement) => {
+    const index = head.cellIndex;
+    let key: string;
+    do { key = `column-${++nextColumn}`; } while (headers().some((cell) => cell.dataset.key === key));
+    const name = head.querySelector(`.${tableColumnLabelClass}`)?.textContent?.trim() || head.textContent?.trim() || "Column";
+    const label = `${name} copy`;
+    for (const row of Array.from(table.rows)) {
+      const spanning = Array.from(row.cells).find((cell) => cell.colSpan > 1 || cell.classList.contains(tableEmptyClass));
+      if (spanning) { spanning.colSpan += 1; continue; }
+      const source = row.cells[index];
+      if (!source) continue;
+      const cell = source.cloneNode(true) as HTMLTableCellElement;
+      cell.dataset.key = key;
+      cell.removeAttribute("aria-sort");
+      cell.classList.remove(tablePinClass);
+      cell.style.removeProperty("--_pin-offset");
+      cell.style.removeProperty("inline-size");
+      rebuildCellEdits(cell, (text) => text.replace(name, label));
+      if (row.parentElement === table.tHead) {
+        for (const tip of cell.querySelectorAll(".ayy-tooltip__content")) {
+          tip.removeAttribute("popover");
+          tip.removeAttribute("data-floating");
+          tip.removeAttribute("style");
+        }
+        for (const menu of cell.querySelectorAll("ayy-menu[open]")) menu.removeAttribute("open");
+        for (const trigger of cell.querySelectorAll("[aria-expanded]")) trigger.setAttribute("aria-expanded", "false");
+        for (const el of cell.querySelectorAll<HTMLElement>("[id]")) {
+          const old = el.id;
+          el.id = `${key}-${old}`;
+          for (const target of cell.querySelectorAll<HTMLElement>("[aria-controls], [aria-labelledby], [aria-describedby], [popovertarget]")) {
+            for (const attr of ["aria-controls", "aria-labelledby", "aria-describedby", "popovertarget"]) if (target.getAttribute(attr) === old) target.setAttribute(attr, el.id);
+          }
+        }
+        const title = cell.querySelector(`.${tableColumnLabelClass}`);
+        const textNode = title && Array.from(title.childNodes).reverse().find((node) => node.nodeType === Node.TEXT_NODE);
+        if (textNode) textNode.textContent = label;
+        else if (title) title.textContent = label;
+        const menuLabel = cell.querySelector(".ayy-menu__label");
+        if (menuLabel) menuLabel.textContent = label;
+        for (const handle of cell.querySelectorAll(`.${tableResizeClass}`)) handle.setAttribute("aria-label", `Resize ${label}`);
+      }
+      row.insertBefore(cell, source.nextElementSibling);
+    }
+    table.style.removeProperty("inline-size");
+    table.style.removeProperty("table-layout");
+    schedule();
+  };
+
+  const hide = (head: HTMLTableCellElement) => {
+    for (const row of Array.from(table.rows)) {
+      const cell = row.cells[head.cellIndex];
+      if (cell?.colSpan === 1) cell.hidden = true;
+    }
+    schedule();
+  };
+
+  const remove = (head: HTMLTableCellElement) => {
+    const index = head.cellIndex;
+    for (const row of Array.from(table.rows)) {
+      const spanning = Array.from(row.cells).find((cell) => cell.colSpan > 1);
+      if (spanning) { spanning.colSpan -= 1; continue; }
+      row.cells[index]?.remove();
+    }
+    schedule();
+  };
+
+  // item: the clicked [data-column-action] element, or an Icon picker carrying one. picked: what the picker chose.
+  const run = (item: HTMLElement, picked?: IconPickerChange) => {
+    // A control outside the header (a toolbar sort menu) names its column with data-column-key.
+    const head = item.closest<HTMLTableCellElement>("thead th")
+      ?? (item.dataset.columnKey ? Array.from(table.tHead?.querySelectorAll<HTMLTableCellElement>("th[data-key]") ?? []).find((cell) => cell.dataset.key === item.dataset.columnKey) ?? null : null);
     if (head && head.closest("table") !== table) return;
     const requested = item.dataset.columnAction;
     const rtl = getComputedStyle(table).direction === "rtl";
     const action: TableColumnAction = requested === "insert-left" ? (rtl ? "insert-after" : "insert-before")
       : requested === "insert-right" ? (rtl ? "insert-before" : "insert-after") : requested as TableColumnAction;
-    const detail: TableColumnActionDetail = { action, column: head?.cellIndex ?? -1, key: head?.dataset.key, value: item.dataset.columnValue };
+    const detail: TableColumnActionDetail = { action, column: head?.cellIndex ?? -1, key: head?.dataset.key, value: picked ? picked.value : item.dataset.columnValue };
     if (options.onColumnAction?.(detail) === false) return;
     if (!table.dispatchEvent(new CustomEvent("ayy-column-action", { detail, bubbles: true, cancelable: true }))) return;
-    if (action === "filter" || action === "group") {
-      controlTimer = setTimeout(() => root.querySelector<HTMLButtonElement>(`[data-table-control="${action === "filter" ? "filters" : "groups"}"]`)?.click(), 0);
+    if (head && (action === "sort-ascending" || action === "sort-descending")) {
+      sortByHeader(table, head, action === "sort-ascending" ? "ascending" : "descending", options.onSort);
+    } else if (head && action === "duplicate") {
+      duplicate(head);
+    } else if (head && action === "hide") {
+      hide(head);
+    } else if (head && action === "delete") {
+      remove(head);
+    } else if (action === "filter" || action === "group") {
+      controlTimer = setTimeout(() => root.querySelector<HTMLButtonElement>(`[data-table-control~="${action === "filter" ? "filters" : "groups"}"]`)?.click(), 0);
     } else if (action === "group-by") {
       groupBy(detail.value ?? "");
     } else if (action === "add" || action === "insert-before" || action === "insert-after") {
@@ -745,14 +852,7 @@ export function connectTableColumns(
         if (cell?.colSpan === 1) {
           cell.classList.toggle(cls, enabled);
           if (action === "wrap") {
-            const edit = cell.querySelector<HTMLInputElement | HTMLTextAreaElement>(`.${tableEditClass}`);
-            if (edit) {
-              const replacement = document.createElement(enabled ? "textarea" : "input");
-              for (const attr of Array.from(edit.attributes)) if (attr.name !== "type" && attr.name !== "rows") replacement.setAttribute(attr.name, attr.value);
-              replacement.value = edit.value;
-              if (replacement instanceof HTMLTextAreaElement) replacement.rows = 2;
-              edit.replaceWith(replacement);
-            }
+            rebuildCellEdits(cell, undefined, enabled);
           }
         }
       }
@@ -760,19 +860,35 @@ export function connectTableColumns(
     } else if (head && action === "icon") {
       const label = head.querySelector(`.${tableColumnLabelClass}`);
       label?.querySelector(`.${tableColumnIconClass}`)?.remove();
-      const svg = item.querySelector("svg");
-      if (label && svg) {
+      // An Icon picker's option (an SVG or an emoji), or a plain menu item holding an SVG; "" or "none" removes it.
+      const source = picked ? picked.option : item;
+      const svg = source?.querySelector("svg");
+      const emoji = picked?.kind === "emoji" ? picked.value : "";
+      if (label && (svg || emoji) && detail.value !== "none") {
         const icon = document.createElement("span");
         icon.className = tableColumnIconClass;
-        icon.append(svg.cloneNode(true));
+        icon.setAttribute("aria-hidden", "true");
+        if (svg) icon.append(svg.cloneNode(true));
+        else icon.textContent = emoji;
         label.prepend(icon);
       }
     }
     schedule();
   };
+  const onClick = (event: MouseEvent) => {
+    const item = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-column-action]") : null;
+    // Clicks inside an Icon picker are its own (search, arrow keys); its pick arrives as ayy-pick.
+    if (item && root.contains(item) && !item.classList.contains(iconPickerClassConstant)) run(item);
+  };
+  const onPick = (event: Event) => {
+    const picker = event.target instanceof Element ? event.target.closest<HTMLElement>(`.${iconPickerClassConstant}[data-column-action]`) : null;
+    if (picker && root.contains(picker)) run(picker, (event as CustomEvent<IconPickerChange>).detail);
+  };
   root.addEventListener("click", onClick);
+  root.addEventListener("ayy-pick", onPick);
   return { destroy() {
     root.removeEventListener("click", onClick);
+    root.removeEventListener("ayy-pick", onPick);
     resize.disconnect();
     mutations.disconnect();
     cancelAnimationFrame(frame);
@@ -803,7 +919,7 @@ export function connectTableColumnReorder(
   return connectDragDrop(table, {
     items: columnSelector,
     orientation: "horizontal",
-    ignore: `input, textarea, select, [aria-haspopup="menu"], [role^="menuitem"], [contenteditable="true"], [role="separator"], .${tableResizeClass}`,
+    ignore: `input, textarea, select, [aria-haspopup="menu"]:not(.${tableSortClass}), [role^="menuitem"], [contenteditable="true"], [role="separator"], .${tableResizeClass}`,
     preview: (th) => dragPreviewChip(th.querySelector(`.${tableColumnLabelClass}`)?.textContent?.trim() || th.textContent?.trim() || "Column"),
     applyMove(move) {
       const fromTh = move.item as HTMLTableCellElement;
@@ -948,15 +1064,11 @@ export function connectTable(table: HTMLTableElement, options: TableControllerOp
       }
       return;
     }
-    const button = target?.closest<HTMLButtonElement>(`.${tableSortClass}`);
+    // A title that opens a column menu (aria-haspopup) sorts from the menu, not on click.
+    const button = target?.closest<HTMLButtonElement>(`.${tableSortClass}:not([aria-haspopup])`);
     const th = button?.closest("th");
     if (!button || !th || !table.contains(th) || !th.closest("thead")) return;
-    const direction = nextSortDirection(th.getAttribute("aria-sort"));
-    const column = th.cellIndex;
-    for (const other of th.parentElement?.querySelectorAll("th[aria-sort]") ?? []) if (other !== th) other.removeAttribute("aria-sort");
-    th.setAttribute("aria-sort", direction);
-    if (options.onSort?.({ column, key: th.dataset.sortKey, direction }) === false) return;
-    for (const tbody of Array.from(table.tBodies)) sortBody(tbody, column, direction);
+    sortByHeader(table, th, nextSortDirection(th.getAttribute("aria-sort")), options.onSort);
   };
 
   const onChange = (event: Event) => {
@@ -993,7 +1105,7 @@ export function connectTable(table: HTMLTableElement, options: TableControllerOp
   const edit = connectTableEdit(table, { onCellEdit: options.onCellEdit });
   const columnReorder = connectTableColumnReorder(table, { onColumnReorder: options.onColumnReorder });
   const rowReorder = connectTableRowReorder(table, { onRowReorder: options.onRowReorder });
-  const columns = connectTableColumns(table, { onColumnAction: options.onColumnAction });
+  const columns = connectTableColumns(table, { onColumnAction: options.onColumnAction, onSort: options.onSort });
   table.addEventListener("pointerdown", onPointer, true);
   table.addEventListener("keydown", onPointer, true);
   table.addEventListener("click", onClick);

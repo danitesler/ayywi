@@ -1,0 +1,28 @@
+import { useState } from "react";
+import { Icon, IconPicker, Popover, PopoverContent, PopoverTrigger, type IconPickerIcon } from "@danitesler/ayywi/react";
+import { Folder01Icon, Rocket01Icon, StarIcon, Target02Icon } from "@hugeicons/core-free-icons";
+
+const icons: IconPickerIcon[] = [
+  { value: "folder", label: "Folder", icon: Folder01Icon },
+  { value: "rocket", label: "Rocket", icon: Rocket01Icon, keywords: ["launch"] },
+  { value: "target", label: "Target", icon: Target02Icon, keywords: ["goal"] },
+  { value: "star", label: "Star", icon: StarIcon },
+];
+
+export default function Example() {
+  const [icon, setIcon] = useState("🚀");
+  const picked = icons.find((item) => item.value === icon);
+  return (
+    <div className="ayy-cluster">
+      <Popover>
+        <PopoverTrigger variant="outline" size="icon" aria-label="Project icon">
+          {picked ? <Icon icon={picked.icon as typeof StarIcon} /> : icon || <Icon icon={Folder01Icon} />}
+        </PopoverTrigger>
+        <PopoverContent align="start" aria-label="Project icon">
+          <IconPicker value={icon} onValueChange={setIcon} icons={icons} />
+        </PopoverContent>
+      </Popover>
+      <span className="ayy-h6">Q3 launch</span>
+    </div>
+  );
+}

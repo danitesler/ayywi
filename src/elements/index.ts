@@ -12,6 +12,7 @@ import { trackSpotlight } from "../components/card/card";
 import { AyyCarouselElement } from "../components/carousel/carousel.element";
 import { copyCodeBlock, highlightCodeBlocks, syncCodeBlockSelector } from "../components/code-block/code-block";
 import { AyyColorPickerElement } from "../components/color-picker/color-picker.element";
+import { AyyIconPickerElement } from "../components/icon-picker/icon-picker.element";
 import { AyyComboboxElement } from "../components/combobox/combobox.element";
 import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyGridElement } from "../components/grid/grid.element";
@@ -48,6 +49,7 @@ export {
   AyyAppShellElement,
   AyyCarouselElement,
   AyyColorPickerElement,
+  AyyIconPickerElement,
   AyyComboboxElement,
   AyyCommandElement,
   AyyDatePickerElement,
@@ -210,6 +212,7 @@ export function defineElements(): void {
   define("ayy-time-picker", AyyTimePickerElement);
   define("ayy-date-time-picker", AyyDateTimePickerElement);
   define("ayy-color-picker", AyyColorPickerElement);
+  define("ayy-icon-picker", AyyIconPickerElement);
   define("ayy-toolbar", AyyToolbarElement);
   define("ayy-shortcut-recorder", AyyShortcutRecorderElement);
   define("ayy-command", AyyCommandElement);

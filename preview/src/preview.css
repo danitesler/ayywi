@@ -1044,15 +1044,6 @@
   font-size: var(--ayy-text-sm);
 }
 
-.pv-examples {
-  margin-block-start: var(--ayy-space-6);
-}
-
-.pv-example-card {
-  block-size: 100%;
-}
-
-
 /* Rows of links to components: outline buttons, packed tight. */
 .pv-links {
   --ayy-gap: var(--ayy-space-2);
@@ -1060,74 +1051,6 @@
 
 
 
-
-/* The fill-in sentence: dropdowns and inputs as wide as their words. */
-.pv-madlib {
-  margin: 0;
-  font-family: var(--ayy-font-heading);
-  font-size: var(--ayy-text-xl);
-  line-height: 2.1;
-  text-wrap: pretty;
-}
-
-.pv-slot:is(.ayy-input, .ayy-textarea) {
-  display: inline-block;
-  inline-size: auto;
-  min-inline-size: 6ch;
-  max-inline-size: calc(100% - 1ch);
-  block-size: auto;
-  padding-block: 0;
-  padding-inline: var(--ayy-space-2);
-  border-style: dashed;
-  border-color: var(--ayy-color-line-hover);
-  background-color: var(--ayy-color-wash-hover);
-  font: inherit;
-  line-height: 1.5;
-  vertical-align: baseline;
-  field-sizing: content;
-}
-
-/* The dropdowns sit in the sentence like the slots: dashed, heading type. */
-.pv-madlib .ayy-select,
-.pv-madlib .ayy-combobox {
-  display: inline-block;
-  inline-size: auto;
-  max-inline-size: 100%;
-  vertical-align: baseline;
-}
-
-/* ayywi-lint-disable-next-line -- the fill-in sentence: controls drawn as dashed blanks in the heading type */
-.pv-madlib .ayy-select__control {
-  inline-size: auto;
-  field-sizing: content;
-  max-inline-size: 100%;
-  block-size: auto;
-  padding-block: 0;
-  padding-inline: var(--ayy-space-2) calc(var(--ayy-space-2) + 1.25rem);
-  border-style: dashed;
-  border-color: var(--ayy-color-line-hover);
-  background-color: var(--ayy-color-wash-hover);
-  font: inherit;
-  line-height: 1.5;
-}
-
-/* The slot padding would cover the combobox chevron: keep its room. */
-/* ayywi-lint-disable-next-line -- the fill-in sentence */
-.pv-madlib .ayy-combobox > .ayy-input {
-  padding-inline-end: calc(var(--ayy-space-2) + var(--ayy-size-icon-sm) + var(--ayy-space-2));
-}
-
-/* The long slot gets its own line and grows with what's typed. */
-/* ayywi-lint-disable-next-line -- the fill-in sentence */
-.pv-slot.pv-slot--long {
-  display: block;
-  inline-size: 100%;
-  max-inline-size: none;
-  min-block-size: 0;
-  margin-block-start: var(--ayy-space-1);
-  padding-block: var(--ayy-space-1);
-  resize: none;
-}
 
 /* ---- Brand page ---- */
 

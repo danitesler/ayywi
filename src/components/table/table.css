@@ -322,6 +322,11 @@
   margin-inline-end: auto;
 }
 
+/* Above the sort button's stretched ::before, so the menu keeps its own clicks. */
+.ayy-table__column-header > :not(:first-child) {
+  position: relative;
+}
+
 /* Ends in "…" when the column is narrower than the label. */
 .ayy-table__column-label {
   display: block;
@@ -349,12 +354,6 @@
   overflow-wrap: anywhere;
 }
 
-.ayy-table__wrap .ayy-table__edit {
-  white-space: normal;
-  resize: vertical;
-  min-block-size: var(--ayy-size-control-sm);
-}
-
 /* A cell led by an Avatar or icon, with a name and a muted second line. */
 .ayy-table__media {
   display: flex;
@@ -377,7 +376,8 @@
   color: var(--ayy-color-muted);
 }
 
-/* Sortable column: a button in the <th>; aria-sort on the <th> says which way (React TableHead sort, or <ayy-table>). */
+/* Sortable column: a button in the <th>; aria-sort on the <th> says which way (React TableHead sort, or <ayy-table>).
+   Its ::before stretches over the whole header cell, so the cell is the click target. */
 .ayy-table__sort {
   display: inline-flex;
   align-items: center;
@@ -396,15 +396,21 @@
   transition: color var(--ayy-duration-fast) ease;
 }
 
-/* Both arrows when unsorted; the one that applies, at full strength, when sorted. */
+.ayy-table__sort::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* No arrow until the column is sorted, then the one for its direction. */
 .ayy-table__sort::after {
   content: "";
+  display: none;
   flex: none;
   inline-size: 0.5rem;
   block-size: 0.75rem;
   background-color: currentColor;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 12'%3E%3Cpath d='M4 0l4 5H0zM0 7h8l-4 5z'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.45;
 }
 
 .ayy-table__sort:hover {
@@ -422,12 +428,12 @@
 }
 
 .ayy-table th[aria-sort="ascending"] .ayy-table__sort::after {
-  opacity: 1;
+  display: block;
   clip-path: inset(0 0 55% 0);
 }
 
 .ayy-table th[aria-sort="descending"] .ayy-table__sort::after {
-  opacity: 1;
+  display: block;
   clip-path: inset(55% 0 0 0);
 }
 
@@ -493,27 +499,21 @@
 /* Column drag-and-drop reordering: drag a header to reorder columns. */
 .ayy-table th[data-reorderable]:not([data-reorderable="false"]),
 .ayy-table th.ayy-table__draggable,
-.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]) {
-  cursor: grab;
+.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]),
+.ayy-table thead th:has(.ayy-table__sort) {
+  cursor: pointer;
   user-select: none;
 }
 
-.ayy-table th[data-reorderable]:not([data-reorderable="false"]):active,
-.ayy-table th.ayy-table__draggable:active,
-.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]):active {
-  cursor: grabbing;
-}
-
-.ayy-table th[data-reorderable]:not([data-reorderable="false"]) .ayy-table__sort,
-.ayy-table th.ayy-table__draggable .ayy-table__sort,
-.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]) .ayy-table__sort {
-  cursor: grab;
-}
-
-.ayy-table th[data-reorderable]:not([data-reorderable="false"]) .ayy-table__sort:active,
-.ayy-table th.ayy-table__draggable .ayy-table__sort:active,
-.ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]) .ayy-table__sort:active {
-  cursor: grabbing;
+/* A clickable or draggable header title lights up under the pointer. */
+@media (hover: hover) {
+  .ayy-table th[data-reorderable]:not([data-reorderable="false"]):hover,
+  .ayy-table th.ayy-table__draggable:hover,
+  .ayy-table--reorderable thead th:not(.ayy-table__select, .ayy-table__expand, .ayy-table__actions, .ayy-table__add-column, .ayy-table__pin, [data-reorderable="false"]):hover,
+  .ayy-table thead th:has(.ayy-table__sort):hover {
+    background-image: linear-gradient(var(--ayy-color-wash-hover), var(--ayy-color-wash-hover));
+    color: var(--ayy-color-text);
+  }
 }
 
 .ayy-table th[data-dragging] {
@@ -540,50 +540,86 @@
   inset-inline-end: -4px;
 }
 
-/* Inline cell editing: a text input or button inside a cell that looks like text at rest and shows an outline on hover or focus. */
-.ayy-table td:has(> .ayy-table__edit) {
+/* Inline cell editing: an Inline edit (.ayy-inline-edit.ayy-table__edit) in a cell. It reads like cell text at rest, outlines
+   on hover, and swaps to the field in place with the text where it was. Its padding is pulled back out with margins, so the
+   text lines up with the cell's other text. */
+.ayy-table td:has(> .ayy-table__edit),
+.ayy-table td:has(> ayy-inline-edit > .ayy-table__edit) {
   position: relative;
 }
 
 .ayy-table__edit {
-  display: block;
-  box-sizing: border-box;
-  inline-size: calc(100% + var(--ayy-space-3));
-  margin-block: calc(-1 * var(--ayy-space-1));
-  margin-inline: calc(-1 * var(--ayy-space-1-5));
-  padding-block: var(--ayy-space-1);
-  padding-inline: var(--ayy-space-1-5);
-  border: 1px solid transparent;
-  border-radius: var(--ayy-radius-sm);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: inherit;
+  inline-size: calc(100% + 2 * var(--ayy-space-1));
+  margin-block: calc(-1 * var(--ayy-space-0-5));
+  margin-inline: calc(-1 * var(--ayy-space-1));
   font-variant-numeric: inherit;
-  outline: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: border-color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease, box-shadow var(--ayy-duration-fast) ease;
 }
 
-.ayy-table__edit:hover:not(:disabled, :read-only, :focus) {
-  border-color: var(--ayy-color-line);
-  background-color: var(--ayy-color-wash);
+.ayy-table__edit .ayy-inline-edit__display,
+.ayy-table__edit .ayy-inline-edit__input {
+  min-block-size: calc(1lh + var(--ayy-space-1));
+  block-size: auto;
+  border-radius: var(--ayy-radius-sm);
 }
 
-.ayy-table__edit:focus {
-  border-color: var(--ayy-color-ring);
+.ayy-table__edit .ayy-inline-edit__display {
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .ayy-table__edit .ayy-inline-edit__display:not(:disabled):hover {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--ayy-color-line);
+  }
+}
+
+.ayy-table__edit .ayy-inline-edit__input {
+  font: inherit;
   background-color: var(--ayy-color-surface);
+}
+
+.ayy-table__edit .ayy-inline-edit__input:focus-visible {
+  outline: none;
+  border-color: var(--ayy-color-ring);
   box-shadow: 0 0 0 1px var(--ayy-color-ring);
 }
 
-.ayy-table__edit[aria-invalid="true"] {
+.ayy-table__edit .ayy-inline-edit__input[aria-invalid="true"] {
   border-color: var(--ayy-color-destructive);
 }
 
-.ayy-table__edit:disabled {
-  cursor: not-allowed;
+/* A cell that doesn't wrap keeps one line and ends in …; a wrapping column shows the whole value. */
+.ayy-table__edit .ayy-inline-edit__text {
+  display: block;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-table__wrap .ayy-table__edit .ayy-inline-edit__text {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ayy-table__num .ayy-table__edit .ayy-inline-edit__display {
+  justify-content: flex-end;
+  text-align: end;
+}
+
+.ayy-table__num .ayy-table__edit .ayy-inline-edit__input {
+  text-align: end;
+}
+
+@media (forced-colors: active) {
+  .ayy-table__edit .ayy-inline-edit__display:hover {
+    box-shadow: inset 0 0 0 1px CanvasText;
+  }
+  .ayy-table__edit .ayy-inline-edit__input:focus-visible {
+    border-color: Highlight;
+    box-shadow: 0 0 0 1px Highlight;
+  }
 }
 
 /* Block grids avoid inline baselines shifting controls away from the cell's vertical center. */
@@ -794,6 +830,11 @@
   padding-inline-start: 0;
   text-align: end;
   white-space: nowrap;
+}
+
+/* In the header the cell's own block-size sets the height; padding would add to it. */
+.ayy-table thead .ayy-table__actions {
+  padding-block: 0;
 }
 
 .ayy-table__row-actions {

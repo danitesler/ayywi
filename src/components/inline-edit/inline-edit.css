@@ -63,6 +63,11 @@
 .ayy-inline-edit__input {
   grid-area: 1 / 1;
   min-inline-size: 0;
+  /* The field's 1px border comes out of its padding, so its text sits exactly where the display's text was. */
+  padding-block: calc(var(--ayy-space-0-5) - 1px);
+  padding-inline: calc(var(--ayy-space-1) - 1px);
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .ayy-inline-edit__input[hidden] {
@@ -72,7 +77,6 @@
 /* Multiline: one control row until it has to grow (the field's height follows its content). */
 .ayy-inline-edit > textarea.ayy-inline-edit__input {
   min-block-size: var(--ayy-size-control-md);
-  padding-block: var(--ayy-space-1);
   resize: none;
   overflow: hidden;
 }
@@ -87,7 +91,6 @@
 .ayy-inline-edit--title .ayy-inline-edit__input {
   block-size: auto;
   min-block-size: var(--ayy-size-control-md);
-  padding-block: var(--ayy-space-0-5);
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-xl);
   font-weight: var(--ayy-weight-semibold);

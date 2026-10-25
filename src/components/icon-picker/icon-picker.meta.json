@@ -1,0 +1,84 @@
+{
+  "name": "Icon picker",
+  "slug": "icon-picker",
+  "category": "Forms",
+  "description": "A searchable grid of icons and emoji with a remove button, for marking a column, project, page or label with a symbol. It sits in a Popover or as the submenu panel of a Menu.",
+  "aka": ["emoji-picker", "icon-selector", "icon-chooser", "emoji-selector"],
+  "classes": {
+    "ayy-icon-picker": "Root: a flex column, 17rem wide at most, holding the header, the scrolling body and the empty message.",
+    "ayy-icon-picker__header": "Row with the search field and the remove button.",
+    "ayy-icon-picker__search": "The <input type=\"search\" class=\"ayy-input ayy-input--sm\"> that filters options by aria-label, data-keywords and data-value. ArrowDown moves into the grid, Enter picks the first match.",
+    "ayy-icon-picker__remove": "A ghost sm Button that clears the icon (picks \"\").",
+    "ayy-icon-picker__body": "The scrolling area (15rem tall at most) holding the sections.",
+    "ayy-icon-picker__section": "One <div role=\"group\" aria-labelledby> per kind (icons, emoji). Hidden while a search leaves it no options.",
+    "ayy-icon-picker__label": "The section's muted heading (\"Icons\", \"Emoji\").",
+    "ayy-icon-picker__grid": "The grid of options: as many sm-control-sized columns as fit.",
+    "ayy-icon-picker__option": "One <button type=\"button\" aria-label aria-pressed data-value> holding an Icon SVG or an emoji character. data-keywords adds search words.",
+    "ayy-icon-picker__empty": "The <p role=\"status\" hidden> shown when a search matches nothing."
+  },
+  "variants": {},
+  "states": {
+    "default": { "looks": "Options are transparent squares at the sm control height, icons and emoji in --ayy-color-text-soft, under muted section labels." },
+    "hover": { "when": ".ayy-icon-picker__option:hover on a device that hovers", "looks": "A --ayy-color-wash-hover fill and the text colour." },
+    "pressed": { "when": ".ayy-icon-picker__option:active", "looks": "The --ayy-color-wash-hover fill, also on touch screens." },
+    "focus": { "when": ".ayy-icon-picker__option:focus-visible; the search field and remove button use Input's and Button's", "looks": "A 2px --ayy-color-ring outline with a 2px offset." },
+    "disabled": { "when": ":disabled on an option", "looks": "--ayy-opacity-disabled and a not-allowed cursor; skipped by the arrow keys. GrayText in High Contrast." },
+    "selected": { "when": "aria-pressed=\"true\" on the picked option", "looks": "A --ayy-color-primary tint at 16% with a 1px primary ring at 60%, and the text colour. A Highlight outline in High Contrast." },
+    "error": { "none": "Picking can't fail; a search with no matches shows the empty message instead." },
+    "loading": { "none": "Options are local; nothing to wait for." }
+  },
+  "sizes": {
+    "density": "Options are the sm control height (28px compact, 32px comfortable, 40px touch) and the search field is an sm Input, so data-density grows the targets.",
+    "width": "17rem at most (shrinks with its container); the grid fits as many columns as the width allows and the body scrolls past 15rem."
+  },
+  "js": "iconPickerClass({ className? }) → string; iconPickerOptionClass and the other part constants; iconPickerEmojis (a starter set of { value, label, keywords }); connectIconPicker(root, { onChange?, manageSelection? }) → { setValue, filter, refresh, destroy } wires search, the roving tab stop, arrow keys and picking. Every pick dispatches a bubbling \"ayy-pick\" event ({ value, kind, option }) from the root; a Menu around the picker closes on it.",
+  "element": {
+    "tag": "ayy-icon-picker",
+    "description": "Wraps an .ayy-icon-picker: search filters the options, the arrow keys, Home and End move through the grid, and clicking an option or the remove button picks it and sets aria-pressed.",
+    "attributes": {
+      "value": "The picked option's data-value (\"\" for none). Updated on pick.",
+      "name": "Form name: a hidden input inside carries the value."
+    },
+    "events": {
+      "ayy-change": "{ value, kind } — kind is \"icon\", \"emoji\", or null when removed."
+    }
+  },
+  "react": {
+    "import": "import { IconPicker } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "IconPicker": {
+        "renders": "<div class=\"ayy-icon-picker\"> with a search Input, a remove Button and a section per kind",
+        "props": {
+          "value / defaultValue": "string — the picked icon value or emoji; \"\" for none",
+          "onValueChange": "(value: string, change: { value, kind, option }) => void",
+          "icons": "{ value: string; label: string; icon: IconData | ReactNode; keywords?: string[] }[] — the Icons section; omit for emoji only",
+          "emojis": "{ value: string; label: string; keywords?: string[] }[] — the Emoji section (iconPickerEmojis by default; [] hides it)",
+          "searchable": "boolean — show the search field (default true)",
+          "removable": "boolean — show the remove button (default true)",
+          "iconsLabel / emojisLabel / searchLabel / removeLabel / emptyLabel": "string — the visible and accessible text",
+          "...": "HTMLAttributes<HTMLDivElement> props"
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Every option is a <button> with an aria-label naming the icon or emoji (an emoji character alone is read inconsistently) and aria-pressed for the picked one, so the choice is announced, not only tinted.",
+    "Each section is a role=\"group\" labelled by its heading. One option is the tab stop (the picked one, or the first): Tab moves search → grid → remove, and the arrow keys, Home and End move inside the grid, mirrored in RTL.",
+    "ArrowDown from the search field enters the grid and ArrowUp from the first row returns to it; Enter in the search field picks the first match. A no-match search announces the role=\"status\" empty message.",
+    "Keys stay inside the picker except Esc, so a Menu or Popover around it still closes on Esc and returns focus. As a menu's submenu panel, give the panel role=\"dialog\" and an aria-label, and the trigger aria-haspopup=\"dialog\"."
+  ],
+  "do": [
+    "Use an icon picker to let people mark a column, project, page or label with an icon or emoji of their choice.",
+    "Offer a short, relevant icon set (the same Hugeicons the app uses) and keep the emoji section for personal flair.",
+    "Give every option a plain label and keywords, so search finds \"money\" under Dollar and 💰."
+  ],
+  "dont": [
+    "Don't use an icon picker to choose a status, category or other fixed value with meaning — use Select, Segmented control or Swatch.",
+    "Don't list icons as one menu item each once there are more than a handful — the grid and search scale, a menu doesn't.",
+    "Don't show the picked icon without its label elsewhere when the icon carries meaning; icons are a hint, not the name."
+  ],
+  "examples": [
+    { "id": "basic", "title": "Icons and emoji with search" },
+    { "id": "popover", "title": "From a button in a popover" }
+  ]
+}

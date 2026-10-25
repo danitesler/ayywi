@@ -1,14 +1,22 @@
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Add01Icon,
+  ArrowDown01Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
+  ArrowUp01Icon,
+  ArrowUpDownIcon,
   Calendar03Icon,
+  Clock01Icon,
+  DollarCircleIcon,
+  Flag01Icon,
+  UserIcon,
   GroupItemsIcon,
   PinIcon,
   SmileIcon,
   StarIcon,
   Tag01Icon,
+  ViewOffIcon,
   TextIcon,
   TextWrapIcon,
   Archive02Icon,
@@ -39,6 +47,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSelectedItem,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
@@ -48,6 +57,8 @@ import {
   DragHandle,
   EmptyStateTitle,
   Icon,
+  IconPicker,
+  type IconPickerIcon,
   Label,
   Pagination,
   SearchBar,
@@ -69,6 +80,7 @@ import {
   TableHeading,
   TableMedia,
   TablePager,
+  TableResize,
   TableRow,
   TableRowActions,
   TableRowLink,
@@ -77,7 +89,6 @@ import {
   TableToolbar,
   TableTools,
   compareValues,
-  nextSortDirection,
   toast,
   type SortDirection,
   type TableColumnActionDetail,
@@ -130,15 +141,29 @@ const GROUP_ORDER: Status[] = ["Past due", "Trial", "Active", "Closed"];
 
 type Key = "name" | "plan" | "status" | "seats" | "mrr" | "renews" | "note";
 type ColumnKey = Key | `column-${number}`;
-const COLUMN_ICONS = { Star: StarIcon, Tag: Tag01Icon, Calendar: Calendar03Icon, Text: TextIcon };
-interface Column { key: ColumnKey; label: string; numeric?: boolean; sortable?: boolean; icon?: keyof typeof COLUMN_ICONS }
+const COLUMN_ICONS: IconPickerIcon[] = [
+  { value: "star", label: "Star", icon: StarIcon },
+  { value: "tag", label: "Tag", icon: Tag01Icon, keywords: ["label", "plan"] },
+  { value: "calendar", label: "Calendar", icon: Calendar03Icon, keywords: ["date", "renews"] },
+  { value: "text", label: "Text", icon: TextIcon, keywords: ["note"] },
+  { value: "money", label: "Money", icon: DollarCircleIcon, keywords: ["revenue", "mrr", "price"] },
+  { value: "user", label: "User", icon: UserIcon, keywords: ["person", "seats", "owner"] },
+  { value: "flag", label: "Flag", icon: Flag01Icon, keywords: ["status", "priority"] },
+  { value: "clock", label: "Clock", icon: Clock01Icon, keywords: ["time", "due"] },
+];
+// A picked icon's value is in COLUMN_ICONS; anything else is an emoji, shown as text.
+const columnIcon = (value: string) => {
+  const found = COLUMN_ICONS.find((item) => item.value === value);
+  return found ? <Icon icon={found.icon as typeof StarIcon} /> : value;
+};
+interface Column { key: ColumnKey; label: string; numeric?: boolean; icon?: string }
 const COLUMNS: Column[] = [
-  { key: "name", label: "Account", sortable: true },
+  { key: "name", label: "Account" },
   { key: "plan", label: "Plan" },
   { key: "status", label: "Status" },
-  { key: "seats", label: "Seats", numeric: true, sortable: true },
-  { key: "mrr", label: "MRR", numeric: true, sortable: true },
-  { key: "renews", label: "Renews", sortable: true },
+  { key: "seats", label: "Seats", numeric: true },
+  { key: "mrr", label: "MRR", numeric: true },
+  { key: "renews", label: "Renews" },
   { key: "note", label: "Last note" },
 ];
 
@@ -247,6 +272,10 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
   const isPinned = (key: ColumnKey) => key === "name" ? pinName : frozen.includes(key);
   const columnProps = (key: ColumnKey) => ({ "data-key": key, pin: isPinned(key), wrap: wrapped.includes(key) });
   const valueOf = (account: Account, key: ColumnKey) => key in account ? account[key as Key] : values[account.id]?.[key] ?? "";
+  const shownValue = (account: Account, key: ColumnKey) => {
+    const value = valueOf(account, key);
+    return key === "mrr" ? money.format(account.mrr) : key === "renews" && account.renews !== "—" ? day.format(new Date(`${account.renews}T00:00:00`)) : String(value ?? "");
+  };
   const insertColumn = (key?: ColumnKey, after = false) => {
     const column: Column = { key: `column-${++nextColumn.current}`, label: `Column ${nextColumn.current}` };
     setColumns((list) => [...list, column]);
@@ -260,12 +289,29 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
   const onColumnAction = ({ action, key, value }: TableColumnActionDetail) => {
     const columnKey = key as ColumnKey | undefined;
     if (action === "add") insertColumn();
-    else if (action === "insert-before" || action === "insert-after") insertColumn(columnKey, action === "insert-after");
+    else if ((action === "sort-ascending" || action === "sort-descending") && columnKey) setSort({ key: columnKey, direction: action === "sort-ascending" ? "ascending" : "descending" });
+    else if (action === "duplicate" && columnKey) {
+      const source = columns.find((c) => c.key === columnKey)!;
+      const copy: Column = { ...source, key: `column-${++nextColumn.current}`, label: `${source.label} copy` };
+      setColumns((list) => [...list, copy]);
+      setColumnOrder((list) => {
+        const next = [...list];
+        next.splice(next.indexOf(columnKey) + 1, 0, copy.key);
+        return next;
+      });
+      setValues((all) => Object.fromEntries(accounts.map((a) => [a.id, { ...all[a.id], [copy.key]: shownValue(a, columnKey) }])));
+    } else if (action === "hide" && columnKey) {
+      setHidden((list) => [...list, columnKey]);
+    } else if (action === "delete" && columnKey) {
+      setColumns((list) => list.filter((c) => c.key !== columnKey));
+      setColumnOrder((list) => list.filter((k) => k !== columnKey));
+      setSort((current) => (current?.key === columnKey ? null : current));
+    } else if (action === "insert-before" || action === "insert-after") insertColumn(columnKey, action === "insert-after");
     else if (action === "freeze" && columnKey) {
       if (columnKey === "name") setPinName((on) => !on);
       else setFrozen((list) => list.includes(columnKey) ? list.filter((k) => k !== columnKey) : [...list, columnKey]);
     } else if (action === "wrap" && columnKey) setWrapped((list) => list.includes(columnKey) ? list.filter((k) => k !== columnKey) : [...list, columnKey]);
-    else if (action === "icon" && columnKey) setColumns((list) => list.map((c) => c.key === columnKey ? { ...c, icon: value === "none" ? undefined : value as Column["icon"] } : c));
+    else if (action === "icon" && columnKey) setColumns((list) => list.map((c) => c.key === columnKey ? { ...c, icon: value || undefined } : c));
     else if (action === "filter" || action === "group") setTimeout(() => (action === "filter" ? filterTrigger : groupTrigger).current?.click(), 0);
     else if (action === "group-by") {
       setGrouped(value !== "none");
@@ -275,26 +321,41 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
   };
   const columnMenu = (column: Column) => (
     <DropdownMenu>
-      <DropdownMenuTrigger variant="ghost" size="icon-sm" aria-label={`Column options for ${column.label}`}>
-        <Icon icon={MoreHorizontalIcon} />
+      <DropdownMenuTrigger asChild>
+        <button type="button" className="ayy-table__sort">
+          <span className="ayy-table__column-label">
+            {column.icon ? <span className="ayy-table__column-icon" aria-hidden="true">{columnIcon(column.icon)}</span> : null}
+            {column.label}
+          </span>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>{column.label}</DropdownMenuLabel>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={SmileIcon} />}>{column.icon ? "Change icon" : "Add icon"}</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {Object.entries(COLUMN_ICONS).map(([label, icon]) => <DropdownMenuItem key={label} data-column-action="icon" data-column-value={label}><Icon icon={icon} />{label}</DropdownMenuItem>)}
-            <DropdownMenuItem data-column-action="icon" data-column-value="none">Remove icon</DropdownMenuItem>
+          <DropdownMenuSubTrigger icon={<Icon icon={SmileIcon} />} aria-haspopup="dialog">{column.icon ? "Change icon" : "Add icon"}</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent role="dialog" aria-label={`${column.label} icon`}>
+            <IconPicker data-column-action="icon" value={column.icon ?? ""} icons={COLUMN_ICONS} />
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled={!frame} data-column-action="filter"><Icon icon={FilterHorizontalIcon} />Filter</DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger icon={<Icon icon={ArrowUpDownIcon} />}>Sort</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem data-column-action="sort-ascending"><Icon icon={ArrowUp01Icon} />Sort ascending</DropdownMenuItem>
+            <DropdownMenuItem data-column-action="sort-descending"><Icon icon={ArrowDown01Icon} />Sort descending</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuItem disabled={!frame} data-column-action="group"><Icon icon={GroupItemsIcon} />Group</DropdownMenuItem>
         <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action="freeze"><Icon icon={PinIcon} />Freeze</DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action="wrap"><Icon icon={TextWrapIcon} />Wrap content</DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem data-column-action="insert-left"><Icon icon={ArrowLeft01Icon} />Insert left</DropdownMenuItem>
         <DropdownMenuItem data-column-action="insert-right"><Icon icon={ArrowRight01Icon} />Insert right</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem data-column-action="duplicate"><Icon icon={Copy01Icon} />Duplicate</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="hide"><Icon icon={ViewOffIcon} />Hide</DropdownMenuItem>
+        <DropdownMenuItem destructive data-column-action="delete"><Icon icon={Delete02Icon} />Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -325,6 +386,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
     const matchesPlan = planFilter.length === 0 || planFilter.includes(a.plan);
     return matchesQuery && matchesStatus && matchesPlan;
   });
+  const filterCount = statusFilter.length + planFilter.length;
   const sorted = sort ? [...matches].sort((a, b) => compareValues(valueOf(a, sort.key), valueOf(b, sort.key), sort.direction)) : matches;
   const pages = Math.max(1, Math.ceil(sorted.length / pageSize));
   const current = Math.min(page, pages);
@@ -359,9 +421,6 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
     return false;
   };
   const flip = (list: string[], id: string, on: boolean) => (on ? [...list, id] : list.filter((x) => x !== id));
-  const sortBy = (key: ColumnKey) =>
-    setSort((s) => ({ key, direction: s?.key === key ? nextSortDirection(s.direction) : key === "name" ? "ascending" : "descending" }));
-
   const cell = (account: Account, key: ColumnKey, closed: boolean) => {
     switch (key) {
       case "name":
@@ -452,7 +511,6 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
                 multiline={wrapped.includes(key)}
                 aria-label={`Last note for ${account.name}`}
                 value={account.note}
-                title={account.note}
                 onValueCommit={(v) => updateAccount(account.id, { note: v })}
               />
             ) : (
@@ -585,15 +643,12 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
               numeric={c.numeric}
               pin={isPinned(c.key)}
               wrap={wrapped.includes(c.key)}
-              icon={c.icon ? <Icon icon={COLUMN_ICONS[c.icon]} /> : undefined}
-              menu={columnMenu(c)}
-              resizable={resizable}
+              aria-sort={sort?.key === c.key ? sort.direction : undefined}
               reorderable={reorderable && !isPinned(c.key)}
               data-key={c.key}
-              sort={c.sortable ? (sort?.key === c.key ? sort.direction : "none") : undefined}
-              onSort={c.sortable ? () => sortBy(c.key) : undefined}
             >
-              {c.label}
+              {columnMenu(c)}
+              {resizable ? <TableResize aria-label={`Resize ${c.label}`} /> : null}
             </TableHead>
           ))}
           <TableHead className="ayy-table__add-column">
@@ -738,79 +793,102 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
               />
             </div>
             <DropdownMenu>
-              <DropdownMenuTrigger ref={filterTrigger} variant="outline" size="icon" aria-label="Filters" data-table-control="filters">
+              <DropdownMenuTrigger ref={filterTrigger} variant={filterCount ? "secondary" : "outline"} size="icon" aria-label={filterCount ? `Filters (${filterCount} active)` : "Filters"} data-table-control="filters">
                 <Icon icon={FilterHorizontalIcon} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Status</DropdownMenuLabel>
-                {(["Active", "Trial", "Past due", "Closed"] as Status[]).map((st) => (
-                  <DropdownMenuCheckboxItem
-                    key={st}
-                    checked={statusFilter.includes(st)}
-                    onCheckedChange={(on) => {
-                      setStatusFilter((list) => (on ? [...list, st] : list.filter((s) => s !== st)));
-                      setPage(1);
-                    }}
-                  >
-                    {st}
-                  </DropdownMenuCheckboxItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Plan</DropdownMenuLabel>
-                {["Enterprise", "Team", "Starter"].map((pl) => (
-                  <DropdownMenuCheckboxItem
-                    key={pl}
-                    checked={planFilter.includes(pl)}
-                    onCheckedChange={(on) => {
-                      setPlanFilter((list) => (on ? [...list, pl] : list.filter((p) => p !== pl)));
-                      setPage(1);
-                    }}
-                  >
-                    {pl}
-                  </DropdownMenuCheckboxItem>
-                ))}
-                {statusFilter.length > 0 || planFilter.length > 0 ? (
+              <DropdownMenuContent align="end" aria-label="Filter options" style={{ minInlineSize: "13rem" }}>
+                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger icon={<Icon icon={Flag01Icon} />} value={statusFilter.length || undefined}>Status</DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent aria-label="Status options">
+                    {(["Active", "Trial", "Past due", "Closed"] as Status[]).map((st) => (
+                      <DropdownMenuSelectedItem
+                        key={st}
+                        selected={statusFilter.includes(st)}
+                        onSelectedChange={(on) => {
+                          setStatusFilter((list) => (on ? [...list, st] : list.filter((s) => s !== st)));
+                          setPage(1);
+                        }}
+                        value={accounts.filter((a) => a.status === st).length}
+                      >
+                        {st}
+                      </DropdownMenuSelectedItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger icon={<Icon icon={Tag01Icon} />} value={planFilter.length || undefined}>Plan</DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent aria-label="Plan options">
+                    {["Enterprise", "Team", "Starter"].map((pl) => (
+                      <DropdownMenuSelectedItem
+                        key={pl}
+                        selected={planFilter.includes(pl)}
+                        onSelectedChange={(on) => {
+                          setPlanFilter((list) => (on ? [...list, pl] : list.filter((p) => p !== pl)));
+                          setPage(1);
+                        }}
+                        value={accounts.filter((a) => a.plan === pl).length}
+                      >
+                        {pl}
+                      </DropdownMenuSelectedItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                {filterCount ? (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      destructive
-                      onSelect={() => {
-                        setStatusFilter([]);
-                        setPlanFilter([]);
-                        setPage(1);
-                      }}
-                    >
-                      Reset filters
-                    </DropdownMenuItem>
+                    <DropdownMenuItem destructive onSelect={() => { setStatusFilter([]); setPlanFilter([]); setPage(1); }}>Reset filters</DropdownMenuItem>
                   </>
                 ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
-              <DropdownMenuTrigger ref={groupTrigger} variant="outline" size="icon" aria-label="Groups" data-table-control="groups"><Icon icon={GroupItemsIcon} /></DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Group by</DropdownMenuLabel>
-                <DropdownMenuRadioGroup value={grouped ? groupKey : "none"}>
-                  <DropdownMenuRadioItem value="none" data-column-action="group-by" data-column-value="none">No groups</DropdownMenuRadioItem>
-                  {columns.map((c) => <DropdownMenuRadioItem key={c.key} value={c.key} data-column-action="group-by" data-column-value={c.key}>{c.label}</DropdownMenuRadioItem>)}
-                </DropdownMenuRadioGroup>
+              <DropdownMenuTrigger variant={sort ? "secondary" : "outline"} size="icon" aria-label={sort ? `Sort (${columns.find((c) => c.key === sort.key)?.label ?? sort.key}, ${sort.direction})` : "Sort"} data-table-control="sort">
+                <Icon icon={ArrowUpDownIcon} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" aria-label="Sort options" style={{ minInlineSize: "13rem" }}>
+                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                {columns.map((c) => (
+                  <DropdownMenuSub key={c.key}>
+                    <DropdownMenuSubTrigger>{c.label}</DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent aria-label={`Sort ${c.label}`}>
+                      <DropdownMenuRadioGroup value={sort?.key === c.key ? sort.direction : ""}>
+                        <DropdownMenuRadioItem value="ascending" data-column-action="sort-ascending" data-column-key={c.key}>{c.numeric ? "Low to high" : "A to Z"}</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="descending" data-column-action="sort-descending" data-column-key={c.key}>{c.numeric ? "High to low" : "Z to A"}</DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
-              <DropdownMenuTrigger variant="outline" size="icon" aria-label="Columns">
+              <DropdownMenuTrigger ref={groupTrigger} variant="outline" size="icon" aria-label="Table options" data-table-control="groups">
                 <Icon icon={LayoutTable01Icon} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Columns</DropdownMenuLabel>
-                {columns.map((c) => (
-                  <DropdownMenuCheckboxItem
-                    key={c.key}
-                    checked={!hidden.includes(c.key)}
-                    onCheckedChange={(on) => setHidden((list) => (on ? list.filter((k) => k !== c.key) : [...list, c.key]))}
-                  >
-                    {c.label}
-                  </DropdownMenuCheckboxItem>
-                ))}
+              <DropdownMenuContent align="end" aria-label="Table options" style={{ minInlineSize: "13rem" }}>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger icon={<Icon icon={GroupItemsIcon} />}>Group by</DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent aria-label="Group by">
+                    <DropdownMenuRadioGroup value={grouped ? groupKey : "none"}>
+                      <DropdownMenuRadioItem value="none" data-column-action="group-by" data-column-value="none">No groups</DropdownMenuRadioItem>
+                      {columns.map((c) => <DropdownMenuRadioItem key={c.key} value={c.key} data-column-action="group-by" data-column-value={c.key}>{c.label}</DropdownMenuRadioItem>)}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger icon={<Icon icon={LayoutTable01Icon} />}>Columns</DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent aria-label="Columns">
+                    {columns.map((c) => (
+                      <DropdownMenuCheckboxItem
+                        key={c.key}
+                        checked={!hidden.includes(c.key)}
+                        onCheckedChange={(on) => setHidden((list) => (on ? list.filter((k) => k !== c.key) : [...list, c.key]))}
+                      >
+                        {c.label}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button onClick={() => toast("New account")}>

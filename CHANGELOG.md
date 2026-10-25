@@ -17,6 +17,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   New component — a record's attributes as a definition list of muted terms and values, with a compact variant and a muted empty value.
 - **[Record picker](#/record-picker)**
   New component — a tag field whose chips are records picked from a list, for one assignee or several labels, with filtering, a create row and `<ayy-record-picker>`.
+- **[Icon picker](#/icon-picker)**
+  New component — a searchable grid of icons and emoji with a remove button, for marking a column, project or page, with `<ayy-icon-picker>`.
 - **[Inline edit](#/inline-edit)**
   New component — a value that becomes an input in place, saving on Enter, blur, or ⌘Enter in a growing textarea, with IME-safe Enter and a title variant.
 
@@ -69,6 +71,25 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   One look and one density only → `spacious`, `bordered` (column lines), `sticky` (header and footer stay in view) and `fixed` (column widths from the header) join `compact`.
 
 ### Changed
+- **[Table](#/table)**
+  The playground's Filter bar with separate Status and Plan menus → three icon buttons next to search: Filters (Status, Plan), Sort (a column and direction) and Table options (Group by, Columns), with no chip bar under the toolbar.
+
+- **[Get started](#/)**
+  A fill-in sentence ("Build me a … for …") and a codebase prompt → a step-by-step page: one quick-start prompt where the AI asks what you're building, who it's for and your brand colour, the codebase prompt (which now asks for the brand too), a four-step setup by hand and a CLI cheat sheet.
+- **README**
+  Three setup sections and an out-of-date prompt generator list → the same steps as Get started: a quick-start prompt that asks for your app and brand colour first, codebase install with a first component, MCP only, and the CLI.
+- **[Table](#/table)**
+  The column menu's "Add icon" listed four icons as menu items → it opens an Icon picker with search, more icons and emoji; `<ayy-table>` takes the pick as the `icon` column action.
+- **[Menu](#/menu)**
+  A submenu could only hold menu items → a submenu panel with `role="dialog"` can hold an Icon picker (or another control): focus lands on its first field, and picking closes the whole menu.
+- **[Popover](#/popover)**
+  An Icon picker inside a popover left it open → picking an icon or emoji closes it.
+- **[Table](#/table)**
+  Sortable and draggable column headers showed a grab cursor and a faint up/down arrow on every column → the whole header cell is clickable with a pointer cursor, the header title lights up under the pointer, and the arrow appears only on the column that is sorted.
+- **[Table](#/table)**
+  The playground's column menu opened from a three-dot button and sort was a click on the title → clicking the column title opens the menu, which now has a Sort submenu (ascending, descending) for every column, plus Duplicate, Hide and Delete; dragging the title still reorders. `<ayy-table>` handles `sort-ascending`, `sort-descending`, `duplicate`, `hide` and `delete` as column actions.
+- **[Table](#/table)**
+  A header with a pinned actions column was 12px taller than the other tables' headers → the header is the same height as in the simple table.
 
 - **[Empty state](#/empty-state)**
   Icon tile had a glowing gradient and a bright glyph → now a flat tile with a muted glyph, so it no longer competes with the title.
@@ -88,8 +109,13 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **[Table](#/table)**
   Long cell text could run into the next column → cells and headers stay on one line and end in "…", and anything that doesn't fit is clipped at the column's edge; "Wrap content" (or `wrap`) opts a column back into wrapping.
 
+- **[Table](#/table)** (**Breaking**)
+  Editable cells were always-on text inputs (`.ayy-table__edit` on an `<input>`) → they are Inline edit: the value reads as cell text, a click turns it into a field with the text in the same place, and Enter or blur saves. `TableEdit` now renders an Inline edit (`aria-label` names it, no `onChange`/`onFocus`/`onBlur`/`onKeyDown`), and HTML cells use `<ayy-inline-edit>` with `class="ayy-inline-edit ayy-table__edit"`; `ayy-cell-edit` and `onCellEdit` still report each save.
+
 ### Fixed
 
+- **[Inline edit](#/inline-edit)**
+  The text jumped a few pixels and changed size when you clicked a value to edit it → the field keeps the same padding, font and line height as the value, so the text stays where it was.
 - **[Drag and drop](#/drag-drop)**
   Dragging large lists and tables felt sluggish and table labels could drift away → dragging uses fewer resources, labels stay beside the pointer, and highlighted rows make the drop position clearer.
 

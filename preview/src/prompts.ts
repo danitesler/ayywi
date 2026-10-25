@@ -54,21 +54,13 @@ ${SETUP(l)}
 ${RULES}`;
 }
 
-/** What people build most, with a sentence to start from. */
-export const STARTERS = [
-  { id: "dashboard", label: "Dashboard", hint: "Numbers, charts and tables", what: "dashboard", who: "a small marketing team", needs: "traffic and revenue numbers, a table of top pages, and goals with progress bars", showcase: "dashboard" },
-  { id: "landing", label: "Landing page", hint: "Sell a product or an idea", what: "landing page", who: "a new note-taking app", needs: "a hero, three features, pricing with a monthly and yearly switch, an FAQ and an email signup", showcase: "landing" },
-  { id: "booking", label: "Booking app", hint: "Schedules and sign-ups", what: "booking app", who: "a yoga studio", needs: "a weekly class schedule, a sign-up form with confirmation, and a page for my bookings", showcase: "booking" },
-  { id: "internal", label: "Internal tool", hint: "Lists, details, actions", what: "support tool", who: "our customer support team", needs: "a list of tickets with status, a ticket view with the conversation and a reply box, and customer details", showcase: "inbox" },
-  { id: "store", label: "Online store", hint: "Products, cart, checkout", what: "online store", who: "a small coffee roaster", needs: "a product grid with filters, a product page, a cart and a checkout form", showcase: "store" },
-  { id: "settings", label: "Account pages", hint: "Profile, billing, settings", what: "account section", who: "my app's customers", needs: "a profile form, notification switches, a plan and billing page with invoices", showcase: "settings" },
-] as const;
+/** The quick-start request: the AI asks what to build, then builds it. The brand is one of its questions. */
+export const QUICK_START = `Build me an app with the ayywi design system. Before you start, ask me these one at a time:
+1. What are we building, and who is it for?
+2. What does it need: the main screens or features?
+3. Which brand colour and corners (pill, round, soft or sharp)? If I have no preference, keep ayywi's monochrome default.
 
-export type StarterId = (typeof STARTERS)[number]["id"];
-
-/** "Build me a … for … It needs …" from the three slots. */
-export const request = (what: string, who: string, needs: string) =>
-  `Build me ${/^[aeiou]/i.test(what.trim()) ? "an" : "a"} ${what.trim() || "app"}${who.trim() ? ` for ${who.trim()}` : ""}.${needs.trim() ? ` It needs ${needs.trim().replace(/\.$/, "")}.` : ""} Make it look finished: dark and light themes, phones, and every empty, loading and error state.`;
+Then build it and make it look finished: dark and light themes, phones, and every empty, loading and error state. Apply the brand with ayywi.setBrand({ name, color, shape }) on DOMContentLoaded, never as hardcoded colours.`;
 
 /** Follow-ups for when something looks off, after the first prompt. */
 export const FIXES = [

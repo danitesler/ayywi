@@ -1231,23 +1231,29 @@ for (const renderer of ["react", "html"] as const) {
       for (const text of ["Started signup", "4,830", "39% of the step before"]) await expect(funnel.getByRole("listitem").nth(1)).toContainText(text);
     });
 
-    test("table: header buttons sort the rows, the header checkbox selects them all", async ({ page }) => {
+    test("table: column titles sort from their menu, the header checkbox selects them all", async ({ page }) => {
       await open(page, "table", { renderer });
-      const table = example(page, "playground").getByRole("table");
-      const firstMRR = () => table.locator("tbody tr:not(.ayy-table__detail)").first().locator("td.ayy-table__num").last().locator("input, span").first();
+      const demo = example(page, "playground");
+      const table = demo.getByRole("table");
+      const firstMRR = () => table.locator("tbody tr:not(.ayy-table__detail)").first().locator("td.ayy-table__num").last().locator(".ayy-inline-edit__text, span").first();
       const mrr = table.getByRole("button", { name: "MRR", exact: true });
       const header = mrr.locator("xpath=ancestor::th");
+      const sortBy = async (name: string) => {
+        await mrr.click();
+        await demo.getByRole("menuitem", { name: "Sort", exact: true }).click();
+        await demo.getByRole("menuitem", { name, exact: true }).click();
+      };
       await expect(header).toHaveAttribute("aria-sort", "descending");
-      await expect(firstMRR()).toHaveValue("$36,000");
+      await expect(firstMRR()).toHaveText("$36,000");
 
-      await mrr.click();
+      await sortBy("Sort ascending");
       await expect(header).toHaveAttribute("aria-sort", "ascending");
       // React sorts every account; <ayy-table> only sorts the rows on the page.
-      await expect(firstMRR()).toHaveValue(renderer === "react" ? "$0" : "$1,920");
+      await expect(firstMRR()).toHaveText(renderer === "react" ? "$0" : "$1,920");
 
-      await mrr.click();
+      await sortBy("Sort descending");
       await expect(header).toHaveAttribute("aria-sort", "descending");
-      await expect(firstMRR()).toHaveValue("$36,000");
+      await expect(firstMRR()).toHaveText("$36,000");
 
       const all = table.getByRole("checkbox", { name: "Select all accounts on this page" });
       await all.check();
@@ -1326,16 +1332,22 @@ for (const renderer of ["react", "html"] as const) {
       await expect.poll(() => header.evaluate((el) => (el as HTMLElement).offsetWidth)).toBeGreaterThanOrEqual(before + 35);
 
       // Inline cell editing commits on Enter and reverts on Escape.
+      const noteButton = table.getByRole("button", { name: "Last note for Northwind Traders" });
       const noteInput = table.getByRole("textbox", { name: "Last note for Northwind Traders" });
+      await expect(noteButton).toHaveText("Wants SSO for the Lisbon office before the March renewal.");
+      const textLeft = () => noteButton.locator(".ayy-inline-edit__text").evaluate((el) => el.getBoundingClientRect().left);
+      const restLeft = await textLeft();
+      await noteButton.click();
       await expect(noteInput).toHaveValue("Wants SSO for the Lisbon office before the March renewal.");
-      await noteInput.click();
+      // The field keeps the text where it was.
+      expect(await noteInput.evaluate((el) => el.getBoundingClientRect().left + parseFloat(getComputedStyle(el).paddingLeft) + 1)).toBeCloseTo(restLeft, 0);
       await noteInput.fill("Temporary draft");
       await page.keyboard.press("Escape");
-      await expect(noteInput).toHaveValue("Wants SSO for the Lisbon office before the March renewal.");
-      await noteInput.click();
+      await expect(noteButton).toHaveText("Wants SSO for the Lisbon office before the March renewal.");
+      await noteButton.click();
       await noteInput.fill("Updated terms · Net 15");
       await page.keyboard.press("Enter");
-      await expect(noteInput).toHaveValue("Updated terms · Net 15");
+      await expect(noteButton).toHaveText("Updated terms · Net 15");
 
       // Dragging across rows selects them all in one stroke.
       const firstRowBox = table.getByRole("checkbox", { name: "Select Brightside Health" });
@@ -1382,17 +1394,17 @@ for (const renderer of ["react", "html"] as const) {
       await expect(table.locator('tbody tr[aria-selected="true"]')).toHaveCount(0);
 
       if (renderer === "react") {
-        // Toolbar filter menu filters the rows by status
-        const filtersBtn = s.getByRole("button", { name: "Filters" });
+        // The filter bar's Status menu filters the rows by status
+        const filtersBtn = s.locator(".ayy-filter-bar").getByRole("button", { name: "Status" });
         await filtersBtn.click();
         const filtersMenu = s.locator(".ayy-menu:popover-open");
         await expect(filtersMenu).toBeVisible();
         await filtersMenu.getByRole("menuitemcheckbox", { name: "Trial" }).click();
         await page.keyboard.press("Escape");
         await expect(table.locator("tbody tr:not(.ayy-table__detail)")).toHaveCount(5);
-        // Reset filters
-        await filtersBtn.click();
-        await s.locator(".ayy-menu:popover-open").getByRole("menuitem", { name: "Reset filters" }).click();
+        // The applied filter shows as a chip; Clear all resets it
+        await expect(s.locator(".ayy-filter-bar .ayy-chip")).toHaveText("Status: Trial");
+        await s.locator(".ayy-filter-bar").getByRole("button", { name: "Clear all" }).click();
         await expect(table.locator("tbody tr:not(.ayy-table__detail)")).toHaveCount(10);
       }
     });
@@ -1850,6 +1862,53 @@ for (const renderer of ["react", "html"] as const) {
       await area.focus();
       await page.keyboard.press("Shift+ArrowDown");
       await expect(hex).not.toHaveValue("#ef4444");
+    });
+
+    test("icon picker searches, moves with arrow keys, picks and removes", async ({ page }) => {
+      await open(page, "icon-picker", { renderer });
+      const picker = example(page, "basic").locator(".ayy-icon-picker");
+      const star = picker.getByRole("button", { name: "Star", exact: true }).first();
+      await expect(star).toHaveAttribute("aria-pressed", "true");
+      await expect(star).toHaveAttribute("tabindex", "0");
+
+      await keyboardFocus(star);
+      await page.keyboard.press("ArrowRight");
+      const tag = picker.getByRole("button", { name: "Tag", exact: true });
+      await expect(tag).toBeFocused();
+      await page.keyboard.press("ArrowDown");
+      await expect(tag).not.toBeFocused();
+      await page.keyboard.press("ArrowUp");
+      await expect(tag).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect(tag).toHaveAttribute("aria-pressed", "true");
+      await expect(star).toHaveAttribute("aria-pressed", "false");
+
+      const search = picker.getByRole("searchbox", { name: "Search icons" });
+      await search.fill("money");
+      await expect(picker.getByRole("button", { name: "Dollar" })).toBeVisible();
+      await expect(picker.getByRole("button", { name: "Money bag" })).toBeVisible();
+      await expect(tag).toBeHidden();
+      await search.fill("zzz");
+      await expect(picker.getByRole("status")).toHaveText("No icons found");
+      await search.fill("");
+
+      await rtl(picker);
+      await keyboardFocus(tag);
+      await page.keyboard.press("ArrowLeft");
+      await expect(picker.getByRole("button", { name: "Calendar", exact: true }).first()).toBeFocused();
+
+      await picker.getByRole("button", { name: "Remove" }).click();
+      await expect(picker.locator('[aria-pressed="true"]')).toHaveCount(0);
+    });
+
+    test("icon picker in a popover closes it on pick", async ({ page }) => {
+      await open(page, "icon-picker", { renderer });
+      const demo = example(page, "popover");
+      await demo.getByRole("button", { name: "Project icon" }).click();
+      const dialog = demo.getByRole("dialog", { name: "Project icon" });
+      await expect(dialog).toBeVisible();
+      await dialog.getByRole("button", { name: "Target", exact: true }).first().click();
+      await expect(dialog).toBeHidden();
     });
 
     test("code block copy button enters copied state on click", async ({ page }) => {

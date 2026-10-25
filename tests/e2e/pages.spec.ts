@@ -24,7 +24,7 @@ const FOUNDATIONS = { brand: "Brand", density: "Density", colors: "Colors", typo
 
 test("overview and foundation pages render", async ({ page }) => {
   const errors = await open(page, "");
-  // One flow: the sentence, the prompt; the codebase setup sits under it.
+  // One flow: the quick-start prompt; the codebase setup sits under it.
   await expect(page.getByRole("button", { name: "Copy prompt", exact: true })).toBeVisible();
   await page.getByRole("tab", { name: "No build (CDN)" }).click();
   await expect(page.getByRole("button", { name: "Copy setup prompt" })).toBeVisible();
@@ -70,17 +70,14 @@ test("example code is one click away", async ({ page }) => {
   await expect(code).toContainText("Build a Button component");
 });
 
-test("get started builds the prompt from the sentence", async ({ page, context }) => {
+test("get started's quick-start prompt asks first, brand included, then loads ayywi", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "");
-  // A Select: ayywi's own options list opens under it.
-  await page.getByLabel("What you're building").click();
-  await page.getByRole("listbox", { name: "What you're building" }).getByRole("option", { name: "online store" }).click();
-  await expect(page.locator(".pv-madlib")).toContainText("Build me an");
-  await page.getByRole("combobox", { name: "Who it's for" }).fill("a bakery in Lisbon");
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied).toMatch(/^Build me an online store for a bakery in Lisbon\./);
+  expect(copied).toMatch(/^Build me an app with the ayywi design system\. Before you start, ask me/);
+  expect(copied).toContain("Which brand colour and corners");
+  expect(copied).toContain("ayywi.setBrand(");
   expect(copied).toContain("dist/ayywi.min.css");
   // The fonts and the saved theme come along, so the app looks like the examples from the first paint.
   expect(copied).toContain("dist/fonts.css");

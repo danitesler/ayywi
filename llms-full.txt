@@ -8,7 +8,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
-- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
+- Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
 - Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
@@ -46,7 +46,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
 - Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
-- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
+- In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
 ## Need → component
@@ -68,6 +68,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Type text, an email, a number or a password | Field + Label + Input (Input group for an icon or a unit, Textarea for long text, Number field for small counts), FieldHint and FieldError under it. | a raw <input>/<textarea>, a placeholder instead of a label |
 | Search or filter by typing | Search bar to filter what's on screen, Combobox to pick a value, Command palette (⌘K) to jump anywhere. | an <input> with a hand-drawn magnifier |
 | Pick a date or time | DatePicker or DatePickerGrid for one date near today; DateRange or DateRangePicker for a start and end span; TimePicker or TimePickerTrigger for discrete hours and minutes; DateTimePicker or DateTimePickerTrigger for combined date and time; Input type="date" for a birth date, type="time" for rapid keyboard entry. | a hand-built month grid or time dropdown |
+| Pick an icon or emoji | IconPicker (<ayy-icon-picker>) in a Popover or a menu's submenu panel: search, a grid of Hugeicons and emoji, and a remove button. | a menu with one item per icon, a hand-built emoji grid |
 | Pick a colour | ColorSwatches for a fixed set of choices, ColorSwatchCustom or ColorPicker for any custom colour with hue/alpha/hex. | a raw <input type="color">, coloured buttons |
 | Set an amount or a range | Slider / SliderRange for a rough amount or a price range, Number field for exact small counts. | a raw <input type="range"> |
 | Upload files | Dropzone (compact in a form), then a List divided of the files with a Progress each. | a raw <input type="file">, a dashed div |
@@ -534,7 +535,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
-- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
+- **Forms** (Inputs, choices and their labels.): Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
@@ -2090,6 +2091,54 @@ Category: Forms. A panel for choosing any colour. It combines an area for shade 
 - Enable alpha only when transparency is supported by the underlying target.
 
 **Examples**: Color picker with alpha and presets, Compact color picker without alpha. Copy-ready HTML and React in llms/color-picker.md.
+
+## Icon picker
+
+Category: Forms. A searchable grid of icons and emoji with a remove button, for marking a column, project, page or label with a symbol. It sits in a Popover or as the submenu panel of a Menu. Also called: emoji-picker, icon-selector, icon-chooser, emoji-selector.
+
+**Classes**
+- `.ayy-icon-picker` — Root: a flex column, 17rem wide at most, holding the header, the scrolling body and the empty message.
+- `.ayy-icon-picker__header` — Row with the search field and the remove button.
+- `.ayy-icon-picker__search` — The <input type="search" class="ayy-input ayy-input--sm"> that filters options by aria-label, data-keywords and data-value. ArrowDown moves into the grid, Enter picks the first match.
+- `.ayy-icon-picker__remove` — A ghost sm Button that clears the icon (picks "").
+- `.ayy-icon-picker__body` — The scrolling area (15rem tall at most) holding the sections.
+- `.ayy-icon-picker__section` — One <div role="group" aria-labelledby> per kind (icons, emoji). Hidden while a search leaves it no options.
+- `.ayy-icon-picker__label` — The section's muted heading ("Icons", "Emoji").
+- `.ayy-icon-picker__grid` — The grid of options: as many sm-control-sized columns as fit.
+- `.ayy-icon-picker__option` — One <button type="button" aria-label aria-pressed data-value> holding an Icon SVG or an emoji character. data-keywords adds search words.
+- `.ayy-icon-picker__empty` — The <p role="status" hidden> shown when a search matches nothing.
+
+**States**
+- `hover` (`.ayy-icon-picker__option:hover on a device that hovers`)
+- `pressed` (`.ayy-icon-picker__option:active`)
+- `focus` (`.ayy-icon-picker__option:focus-visible; the search field and remove button use Input's and Button's`)
+- `disabled` (`:disabled on an option`)
+- `selected` (`aria-pressed="true" on the picked option`)
+
+**Sizes**
+- Density — Options are the sm control height (28px compact, 32px comfortable, 40px touch) and the search field is an sm Input, so data-density grows the targets.
+- Width — 17rem at most (shrinks with its container); the grid fits as many columns as the width allows and the body scrolls past 15rem.
+
+**Custom element** `<ayy-icon-picker>` (@danitesler/ayywi/elements) — 
+- attribute `value`: The picked option's data-value ("" for none). Updated on pick.
+- attribute `name`: Form name: a hidden input inside carries the value.
+- event `ayy-change`: { value, kind } — kind is "icon", "emoji", or null when removed.
+
+**React** — `import { IconPicker } from "@danitesler/ayywi/react";`
+- `<IconPicker>` renders <div class="ayy-icon-picker"> with a search Input, a remove Button and a section per kind. Props: `value / defaultValue` string — the picked icon value or emoji; "" for none; `onValueChange` (value: string, change: { value, kind, option }) => void; `icons` { value: string; label: string; icon: IconData | ReactNode; keywords?: string[] }[] — the Icons section; omit for emoji only; `emojis` { value: string; label: string; keywords?: string[] }[] — the Emoji section (iconPickerEmojis by default; [] hides it); `searchable` boolean — show the search field (default true); `removable` boolean — show the remove button (default true); `iconsLabel / emojisLabel / searchLabel / removeLabel / emptyLabel` string — the visible and accessible text; `...` HTMLAttributes<HTMLDivElement> props
+
+**Accessibility**
+- Every option is a <button> with an aria-label naming the icon or emoji (an emoji character alone is read inconsistently) and aria-pressed for the picked one, so the choice is announced, not only tinted.
+- Each section is a role="group" labelled by its heading. One option is the tab stop (the picked one, or the first): Tab moves search → grid → remove, and the arrow keys, Home and End move inside the grid, mirrored in RTL.
+- ArrowDown from the search field enters the grid and ArrowUp from the first row returns to it; Enter in the search field picks the first match. A no-match search announces the role="status" empty message.
+- Keys stay inside the picker except Esc, so a Menu or Popover around it still closes on Esc and returns focus. As a menu's submenu panel, give the panel role="dialog" and an aria-label, and the trigger aria-haspopup="dialog".
+
+**Do**
+- Use an icon picker to let people mark a column, project, page or label with an icon or emoji of their choice.
+- Offer a short, relevant icon set (the same Hugeicons the app uses) and keep the emoji section for personal flair.
+- Give every option a plain label and keywords, so search finds "money" under Dollar and 💰.
+
+**Examples**: Icons and emoji with search, From a button in a popover. Copy-ready HTML and React in llms/icon-picker.md.
 
 ## Checkbox
 
@@ -3998,14 +4047,14 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - `.ayy-table__add-column` — Narrow trailing column with an accessible add-column button.
 - `.ayy-table__wrap` — On th/td: content wraps within the column instead of staying on one line and ending in ….
 - `.ayy-table__num` — On th/td with numbers: end-aligned, tabular digits.
-- `.ayy-table__sort` — A <button> inside a sortable <th>, its label in a __column-label, arrow after the text. aria-sort on the <th> marks the sorted column.
+- `.ayy-table__sort` — A <button> inside a sortable <th> (or, with aria-haspopup="menu", the title that opens the column menu), its label in a __column-label, the whole header cell clickable, an arrow after the text only once sorted. aria-sort on the <th> marks the sorted column.
 - `.ayy-table__resize` — Column resize separator (<span tabindex="0">) at a header cell's end: drag, arrow keys; double-click resets.
 - `.ayy-table__select` — On the th/td holding a row's checkbox (and the select-all box): as narrow as the box.
 - `.ayy-table__reorder` — On the th/td holding a row's .ayy-drag-handle: as narrow as the handle. The row drags by it; a primary line shows where it lands.
 - `.ayy-table__pin` — On a column's th/td: sticks to the inline start when scrolling sideways.
 - `.ayy-table__pin--end` — With __pin: sticks to the inline end.
 - `.ayy-table__truncate` — On a <span> in a cell: one line ending in …, at most --ayy-table-truncate (16rem).
-- `.ayy-table__edit` — On an <input> or <textarea> in a cell: inline editable text that reads like cell text at rest, outlines on hover/focus, commits on Enter or blur, and reverts on Escape.
+- `.ayy-table__edit` — On an Inline edit (.ayy-inline-edit) in a cell: editable text that reads like cell text at rest, outlines on hover, turns into a field in place with the text where it was, saves on Enter or blur and reverts on Escape.
 - `.ayy-table__media` — Flex row in a cell: an Avatar or icon, then text.
 - `.ayy-table__secondary` — Muted second line in a cell.
 - `.ayy-table__expand` — Chevron <button aria-expanded> that shows the __detail row after its row.
@@ -4019,8 +4068,7 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 
 **States**
 - `hover` (`tbody tr:hover; the sort, expand, resize and edit controls; a row link`)
-- `pressed` (`th[data-reorderable]:active, .ayy-table__sort:active`)
-- `focus` (`:focus-visible on the sort button, expand button, resize handle or row link; :focus on .ayy-table__edit`)
+- `focus` (`:focus-visible on the sort button, expand button, resize handle or row link; :focus-visible on the .ayy-table__edit field`)
 - `disabled` (`tr[aria-disabled="true"]`)
 - `selected` (`tr[aria-selected="true"] (set by ticking a checkbox, Shift+click, or dragging and holding the cursor across rows)`)
 - `error` (`.ayy-table__edit[aria-invalid="true"]`)
@@ -4040,10 +4088,10 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - event `ayy-selection-change`: { rows } — the selected <tr>s.
 - event `ayy-expand-change`: { row, expanded }
 - event `ayy-column-resize`: { column, key, width } when a resize ends (width null after a reset).
-- event `ayy-cell-edit`: { row, cell, column, key, value } when an inline edit input commits a change.
+- event `ayy-cell-edit`: { row, cell, column, key, value } when an inline edit in a cell saves a change.
 - event `ayy-column-reorder`: { from, to, key, targetKey } when a column is dragged to a new position.
 - event `ayy-row-reorder`: { from, to, id } when a row is dropped, or moved with the arrow keys on its handle. from and to count rows with a handle; to is what Array.splice wants after removing the row. id is the row's data-id.
-- event `ayy-column-action`: { action, column, key, value } before a column action. Cancel to handle it in application state. data-column-action: freeze, wrap, icon (data-column-value), insert-before/insert-after (logical order), insert-left/insert-right (physical direction), add, filter, group, group-by (data-column-value). Filter/group open the toolbar button with data-table-control=filters/groups.
+- event `ayy-column-action`: { action, column, key, value } before a column action. Cancel to handle it in application state. data-column-action: sort-ascending, sort-descending, duplicate, hide, delete, freeze, wrap, icon (data-column-value), insert-before/insert-after (logical order), insert-left/insert-right (physical direction), add, filter, group, group-by (data-column-value). Filter/group open the toolbar button with data-table-control=filters/groups.
 
 **React** — `import { Table, TableContainer, TableToolbar, TableHeading, TableTitle, TableDescription, TableTools, TablePager, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableEdit, TableResize, TableExpand, TableGroup, TableEmpty, TableRowLink, TableMedia, TableSecondary, TableRowActions, TableCaption } from "@danitesler/ayywi/react";`
 - `<Table>` renders <div class="ayy-table-wrap"><table>. Props: `compact` boolean; `spacious` boolean; `bordered` boolean; `sticky` boolean; `fixed` boolean; `reorderable` boolean; `onColumnResize` ({ column, key, width }) => void; `onCellEdit` ({ row, cell, column, key, value }) => void; `onColumnReorder` ({ from, to, key, targetKey }) => boolean | void; `onRowReorder` ({ from, to, id }) => boolean | void — a row's DragHandle was dropped or moved by key. React doesn't move rows itself: reorder your data and return false.; `onColumnAction` ({ action, column, key, value }) => boolean | void — return false to update application state; `wrapperProps` props for the .ayy-table-wrap (a max-block-size for sticky)
@@ -4060,7 +4108,7 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - `<TableRow>` renders <tr>. Props: `selected` boolean; `disabled` boolean — aria-disabled; `detail` boolean — the row under an expandable row
 - `<TableHead>` renders <th scope="col">; a sort <button> when sortable; a TableResize when resizable. Props: `numeric` boolean; `select` boolean; `actions` boolean; `pin` boolean | "start" | "end"; `sort` "ascending" | "descending" | "none"; `onSort` () => void — flip with nextSortDirection(); `resizable` boolean; `reorderable` boolean; `icon` ReactNode — before the label; `menu` ReactNode — a composed DropdownMenu beside the label; `wrap` boolean — wraps the header label instead of ending it in …
 - `<TableCell>` renders <td>. Props: `numeric` boolean; `select` boolean; `reorder` boolean — the narrow column holding a row's DragHandle; `actions` boolean; `pin` boolean | "start" | "end"; `truncate` boolean — wraps content in a .ayy-table__truncate span; `wrap` boolean — wraps long cell content instead of ending it in …
-- `<TableEdit>` renders <input class="ayy-table__edit"> or <textarea class="ayy-table__edit"> when multiline. Props: `value` string — controlled cell text; `defaultValue` string — uncontrolled starting text; `multiline` boolean — textarea; Shift+Enter adds a line; `onChange` (event) => void; `onFocus` (event) => void; `onBlur` (event) => void; `onKeyDown` (event) => void; `onValueCommit` (value: string) => void — called on Enter or blur when the value changed
+- `<TableEdit>` renders <InlineEdit className="ayy-table__edit"> — a display button and an <input>, or a <textarea> when multiline. Props: `value` string — controlled cell text; `defaultValue` string — uncontrolled starting text; `aria-label` string — names the button and the field: "Plan for Northwind"; `displayValue` ReactNode — what the cell shows at rest when it isn't the value (a formatted price); `multiline` boolean — textarea; Shift+Enter adds a line, ⌘Enter or Ctrl+Enter saves; `disabled` boolean; `placeholder` string — shown when the cell is empty; `className` string — extra classes on the root; `inputMode` string — the input's virtual keyboard; `onValueCommit` (value: string) => void — called on Enter or blur when the value changed
 - `<TableResize>` renders <span class="ayy-table__resize" role="separator" aria-orientation="vertical" tabindex="0">.
 - `<TableExpand>` renders <button type="button" class="ayy-table__expand" aria-expanded>. Props: `expanded` boolean
 - `<TableGroup>` renders <tr class="ayy-table__group"><th colspan scope="rowgroup"><span>. Props: `colSpan` number
@@ -4084,7 +4132,7 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - End-align numbers with numeric; a cell keeps to one line, so put the full text in its title and add wrap to a column that must show it all.
 - Make scanned columns sortable; put the raw value in data-sort-value when the cell shows a formatted one.
 - Frame a working table with TableContainer: title, search and a columns menu above, Pagination below.
-- Compose a column menu with TableHead menu and icon; data-column-action wires freeze, wrap, icon, insert-before/after, add and shared filter/group controls. Return false from onColumnAction or cancel ayy-column-action to own the data changes.
+- Compose a column menu with TableHead menu and icon, or make the title itself the trigger (a .ayy-table__sort button with aria-haspopup="menu" as the TableHead child, set aria-sort on the th): clicking the title opens the menu, which holds a Sort submenu, Duplicate, Hide and Delete, and dragging it still reorders. data-column-action wires sort-ascending/sort-descending (a Sort submenu), duplicate, hide, delete, freeze, wrap, icon, insert-before/after, add and shared filter/group controls. Return false from onColumnAction or cancel ayy-column-action to own the data changes.
 - Pin the name column on wide tables; use sticky with a max-block-size on long ones.
 - Use expandable rows for details that don't deserve a column, and group rows to split a list by status or date.
 - Put quick actions and a ⋯ DropdownMenu in a trailing actions cell; pair selection with an ActionBar for bulk actions.

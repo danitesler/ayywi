@@ -63,6 +63,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Record picker](llms/record-picker.md): A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.
 - [Date & time picker](llms/date-time-picker.md): Pickers for a date, a date range, a time, or a date with a time. They work inline or in a popover, and can be used fully from the keyboard.
 - [Color picker](llms/color-picker.md): A panel for choosing any colour. It combines an area for shade and brightness, sliders for hue and transparency, a hex field and a row of preset colours.
+- [Icon picker](llms/icon-picker.md): A searchable grid of icons and emoji with a remove button, for marking a column, project, page or label with a symbol. It sits in a Popover or as the submenu panel of a Menu.
 - [Checkbox](llms/checkbox.md): A box for turning an option on or off, or for picking several items from a list. It's the native checkbox with a clearer look, and it can show a mixed state when only some of a group is selected.
 - [Radio](llms/radio.md): A set of options where exactly one can be chosen. It's built on native radio buttons, grouped under a legend.
 - [Segmented control](llms/segmented-control.md): A short row of options where one is always selected, for switching a view, a range or a setting that changes what you see. It looks like tabs but works like radio buttons.

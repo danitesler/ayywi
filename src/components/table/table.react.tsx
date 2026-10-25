@@ -1,15 +1,7 @@
 import {
   forwardRef,
-  createElement,
-  type ChangeEvent,
-  type FocusEvent,
-  type KeyboardEvent,
-  type ChangeEventHandler,
-  type FocusEventHandler,
-  type KeyboardEventHandler,
   useEffect,
   useRef,
-  useState,
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
@@ -21,6 +13,7 @@ import {
 } from "react";
 import { cx } from "../../lib/cx";
 import { mergeRefs } from "../../lib/refs";
+import { InlineEdit } from "../inline-edit/inline-edit.react";
 import {
   connectTableColumnReorder,
   connectTableRowReorder,
@@ -429,76 +422,49 @@ export const TableRowActions = forwardRef<HTMLDivElement, TableRowActionsProps>(
   return <div ref={ref} className={tableRowActionsClass({ reveal, className })} {...props} />;
 });
 
-export interface TableEditProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "onFocus" | "onBlur" | "onKeyDown"> {
-  /** A wrapping textarea. Shift+Enter adds a line; Enter commits. */
+export interface TableEditProps {
+  /** The raw value. Controlled when set. */
+  value?: string;
+  /** Starting value when uncontrolled. */
+  defaultValue?: string;
+  /** A wrapping textarea that grows with its content. Shift+Enter adds a line; ⌘Enter or Ctrl+Enter saves. */
   multiline?: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  onFocus?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  onKeyDown?: KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  /** Called when the user commits a new value (on Enter or blur). */
+  /** What the cell shows at rest when it isn't the value itself (a formatted price). */
+  displayValue?: ReactNode;
+  /** Accessible name of the cell's button and field: "Plan for Northwind". */
+  "aria-label": string;
+  disabled?: boolean;
+  placeholder?: string;
+  inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
+  className?: string;
+  /** Called with the new value when the user saves a change (Enter or blur). */
   onValueCommit?: (value: string) => void;
 }
 
-/** An inline editable cell input (.ayy-table__edit): looks like cell text at rest, commits on Enter or blur, reverts on Escape. */
-export const TableEdit = forwardRef<HTMLInputElement | HTMLTextAreaElement, TableEditProps>(function TableEdit(
-  { value, defaultValue, onChange, onValueCommit, onFocus, onBlur, onKeyDown, className, type = "text", multiline, ...props },
+/**
+ * An inline editable cell (.ayy-table__edit on an Inline edit): reads like cell text at rest, turns into a field in place
+ * on click with the text where it was, saves on Enter or blur and reverts on Escape. A save also bubbles "ayy-change", so
+ * the Table's onCellEdit hears it.
+ */
+export const TableEdit = forwardRef<HTMLDivElement, TableEditProps>(function TableEdit(
+  { "aria-label": label, inputMode, className, onValueCommit, multiline, ...props },
   ref,
 ) {
-  const controlled = value !== undefined;
-  const [draft, setDraft] = useState(() => String(value ?? defaultValue ?? ""));
-  const startRef = useRef<string>(String(value ?? defaultValue ?? ""));
-  const focusedRef = useRef(false);
-  const revertingRef = useRef(false);
-
-  useEffect(() => {
-    if (controlled && !focusedRef.current) {
-      setDraft(String(value ?? ""));
-      startRef.current = String(value ?? "");
-    }
-  }, [controlled, value]);
-
-  return createElement(multiline ? "textarea" : "input", {
-    ...props,
-    ref,
-    type: multiline ? undefined : type,
-    rows: multiline ? 2 : undefined,
-    className: cx(tableEditClass, className),
-    value: controlled ? draft : undefined,
-    defaultValue: controlled ? undefined : defaultValue,
-    onFocus: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      focusedRef.current = true;
-      revertingRef.current = false;
-      startRef.current = event.currentTarget.value;
-      onFocus?.(event);
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (controlled) setDraft(event.currentTarget.value);
-      onChange?.(event);
-    },
-    onBlur: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      focusedRef.current = false;
-      if (revertingRef.current) {
-        revertingRef.current = false;
-        if (controlled) setDraft(startRef.current);
-        onBlur?.(event);
-        return;
-      }
-      const next = event.currentTarget.value;
-      if (next !== startRef.current) {
-        startRef.current = next;
+  const own = useRef<HTMLDivElement>(null);
+  return (
+    <InlineEdit
+      {...props}
+      ref={mergeRefs(own, ref)}
+      label={label}
+      multiline={multiline}
+      className={cx(tableEditClass, className)}
+      inputProps={inputMode ? { inputMode } : undefined}
+      onValueChange={(next) => {
+        own.current?.dispatchEvent(new CustomEvent("ayy-change", { detail: { value: next }, bubbles: true }));
         onValueCommit?.(next);
-      }
-      onBlur?.(event);
-    },
-    onKeyDown: (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      onKeyDown?.(event);
-      if (event.key === "Escape") {
-        revertingRef.current = true;
-        if (controlled) setDraft(startRef.current);
-      }
-    },
-  });
+      }}
+    />
+  );
 });
 
 export interface TableCaptionProps extends HTMLAttributes<HTMLTableCaptionElement> {

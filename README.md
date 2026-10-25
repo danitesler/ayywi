@@ -8,7 +8,7 @@ When you ask an AI tool to build UI, you usually get five mismatched shades of g
 
 ![The Dashboard showcase app, built only from ayywi components](https://raw.githubusercontent.com/danitesler/ayywi/main/preview/src/showcase/screenshots/dashboard.png)
 
-- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 78 components.
+- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 79 components.
 - **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
 - **States and accessibility built in:** components ship empty, loading, and error states; interactive ones have focus rings, keyboard support, ARIA, RTL, and Windows High Contrast styles. axe runs on every component page and showcase app (no serious or critical violations), and `pnpm check` tests every text colour against every surface in every theme.
 - **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.
@@ -26,16 +26,19 @@ Anyone who builds UI by asking an AI tool. You describe the product, your agent 
 | hand-build controls that fail with a keyboard or screen reader | Native-first components with focus rings, ARIA, RTL and High Contrast. |
 | drift from screen to screen | One contract, read through `llms.txt` or MCP, and a reviewer agent that checks finished screens. |
 
-## Start building in one prompt
+## Get started
 
-You don't need manual npm installs or complex framework configurations. Your AI agent sets up and builds everything from a single prompt.
+### Quick start with AI
 
-### 1. Web app builders (Lovable, Bolt, v0, Replit)
-
-Paste this into your chat when starting an app:
+Paste this into Lovable, Bolt, v0, Replit or any AI chat. It asks what you're building, who it's for and your brand colour, then builds it:
 
 ```markdown
-Style this project with the ayywi design system. Link these in <head>:
+Build me an app with the ayywi design system. Before you start, ask me these one at a time:
+1. What are we building, and who is it for?
+2. What does it need: the main screens or features?
+3. Which brand colour and corners (pill, round, soft or sharp)? If I have no preference, keep ayywi's monochrome default.
+
+Link these in <head>:
 <script src="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/theme-init.js" integrity="sha384-lGmWLHV63f2b1zy44y+untQnyYqkUy+4KcwBm+sfcXKIO/kWbNNpS4+F1cX4uGfz" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/fonts.css" integrity="sha384-xlJC6P/OPjbl1PpLS8nyeR5McBXBvlbILZYs3NqxQ7FfDQXHvg7heYTa98Xsh1av" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@danitesler/ayywi@0.1.2/dist/ayywi.min.css" integrity="sha384-5YsasIlSTAqud97Few3udM9xAUsWZ0+B3kxEE45H9Kmemw2hMuMEckS1W4eJ849H" crossorigin="anonymous">
@@ -47,13 +50,44 @@ Rules:
 - An app uses .ayy-app-shell (sidebar on wide screens, top bar + bottom nav on phones).
 - Every list and table must include a loading state (.ayy-skeleton), an empty state (.ayy-empty-state), and an error state (.ayy-alert--destructive with retry).
 - No hardcoded colours. Dark and light themes follow data-theme on <html>.
+- Apply the brand with ayywi.setBrand({ name, color, shape }) on DOMContentLoaded.
 ```
 
 The links are pinned to one release with [SRI](https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity) hashes, so a later release can't restyle a shipped app and a tampered file won't load. To upgrade, change the version and the hashes together.
 
-### 2. Coding agents (Cursor, Claude Code, Windsurf)
+### In your codebase
 
-Connect ayywi's Model Context Protocol (MCP) server so your agent can inspect components, search tokens, and lint its own UI:
+For coding agents (Cursor, Claude Code, Windsurf…). Install the package and set up your agent:
+
+```sh
+npm install @danitesler/ayywi
+npx @danitesler/ayywi init
+```
+
+`init` adds the ayywi skill, Cursor rules, an AGENTS.md section and the MCP server, plus two things that keep agents on the components:
+
+- **A lint hook** (Claude Code): after every UI file the agent writes, `ayywi lint` runs on it and hands the findings back, so a raw `<select>`, a clickable `<div>` or a hand-built card gets fixed before the agent moves on.
+- **A reviewer agent** (`ayywi-ui-reviewer`): checks a finished screen piece by piece against the "need → component" map and lists every place an ayywi component was skipped.
+
+Load the CSS once at the app entry, then use the components:
+
+```tsx
+import "@danitesler/ayywi/fonts.css";
+import "@danitesler/ayywi/css";
+import { Button } from "@danitesler/ayywi/react";
+
+export function App() {
+  return <Button onClick={() => alert("Hi!")}>Hello ayywi</Button>;
+}
+```
+
+Not using React? Import `@danitesler/ayywi/elements` and write the same markup (`<button class="ayy-button">`) in any framework or plain HTML; the `<ayy-*>` elements add the behaviour.
+
+Update like any other npm package, then run `npx @danitesler/ayywi init --force` so the agent files match the new version. Don't copy ayywi into the repo or commit a `file:` link to a local checkout; `ayywi lint` flags both. To work on ayywi and an app together, alias the package to your checkout in the app's dev server only (an `AYYWI_DIR` environment variable read by `vite.config.ts`).
+
+### MCP only
+
+Connect the MCP server without installing anything, so your agent can look up components, search tokens and lint its own UI:
 
 ```json
 {
@@ -66,28 +100,17 @@ Connect ayywi's Model Context Protocol (MCP) server so your agent can inspect co
 }
 ```
 
-Or ask your agent to initialize ayywi in an existing codebase:
+Its `pick_component` tool answers "what do I use for this?" (`"choose a theme"` → Select or Segmented control, never a raw `<select>`).
+
+### Explore the CLI
 
 ```sh
-npx @danitesler/ayywi init
+npx @danitesler/ayywi lint              # check UI code against the contract
+npx @danitesler/ayywi brand "#0ea5e9"   # a brand from one colour
+npx @danitesler/ayywi init              # agent skill, rules, lint hook and MCP server
+npx @danitesler/ayywi mcp               # the MCP server, for any MCP client
+npx @danitesler/ayywi help              # every command and flag
 ```
-
-This sets up the agent skill, Cursor rules, AGENTS.md guide, and MCP server automatically, plus two things that keep agents on the components:
-
-- **A lint hook** (Claude Code): after every UI file the agent writes, `ayywi lint` runs on it and hands the findings back, so a raw `<select>`, a clickable `<div>` or a hand-built card gets fixed before the agent moves on.
-- **A reviewer agent** (`ayywi-ui-reviewer`): checks a finished screen piece by piece against the "need → component" map and lists every place an ayywi component was skipped.
-
-Install and update it like any other npm package: `pnpm add @danitesler/ayywi`, and after `pnpm up @danitesler/ayywi` run `init --force` again so the agent files match the new version. Don't copy ayywi into the repo or commit a `file:` link to a local checkout; `ayywi lint` flags both. To work on ayywi and an app together, alias the package to your checkout in the app's dev server only (an `AYYWI_DIR` environment variable read by `vite.config.ts`).
-
-The MCP server's `pick_component` tool answers "what do I use for this?" (`"choose a theme"` → Select or Segmented control, never a raw `<select>`).
-
-### 3. Interactive prompt generator
-
-Visit the live **[Get Started](https://danitesler.github.io/ayywi/#/)** page in the preview:
-- Pick your product type (Dashboard, Booking, Store, Support Inbox, Settings, Landing Page).
-- Customize who it's for and what it needs.
-- Select your target AI tool (Lovable, Bolt, v0, Cursor, Claude Code, Replit, ChatGPT) to get a tailored prompt.
-- Copy one-click refinement prompts for mobile polish, dark mode, button consistency, and missing states.
 
 ## Product shells & responsive layouts
 
@@ -136,7 +159,7 @@ Densities include `compact` (desktop default), `comfortable` (looser spacing), a
 |---|---|
 | Actions | Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button |
 | Navigation | Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree |
-| Forms | Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut (keys and recorder), Settings |
+| Forms | Field, Input, Search bar, Filter bar, Sorting, Textarea, Inline edit, Select, Combobox, Tag input, Record picker, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, File upload, Switch, Shortcut (keys and recorder), Settings |
 | Layout | Page header, Card (plus a view type for captures and recordings), Tabs, Accordion, Carousel, Separator, Drag and drop, Showcase |
 | Overlays | Dialog (centred, side modal or bottom sheet), Popover, Tooltip |
 | Feedback | Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state |

@@ -81,6 +81,7 @@ export * from "./components/fab/fab";
 export * from "./components/shortcut/shortcut";
 export * from "./components/settings/settings";
 export * from "./components/color-picker/color-picker";
+export * from "./components/icon-picker/icon-picker";
 export * from "./components/timeline/timeline";
 export * from "./components/code-block/code-block";
 export * from "./components/text-highlight/text-highlight";

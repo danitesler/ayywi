@@ -1,0 +1,134 @@
+/* Icon picker: a searchable grid of icons and emoji to mark something with (a column, a project, a page). Options are
+   <button aria-pressed>; the picked one gets a tinted fill and a ring, not colour alone. Sits on its own, in a Popover,
+   or as a submenu panel of a Menu. */
+
+.ayy-icon-picker {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  inline-size: min(100%, 17rem);
+  min-inline-size: 0;
+}
+
+.ayy-icon-picker__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-1);
+}
+
+.ayy-icon-picker__search {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.ayy-icon-picker__remove {
+  flex: none;
+}
+
+.ayy-icon-picker__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  max-block-size: 15rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.ayy-icon-picker__section[hidden],
+.ayy-icon-picker__option[hidden],
+.ayy-icon-picker__empty[hidden] {
+  display: none;
+}
+
+.ayy-icon-picker__label {
+  margin: 0;
+  padding-block: 0 var(--ayy-space-1);
+  padding-inline: var(--ayy-space-1);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-regular);
+}
+
+.ayy-icon-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--ayy-size-control-sm), 1fr));
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-icon-picker__option {
+  appearance: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  block-size: var(--ayy-size-control-sm);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-md);
+  background: transparent;
+  color: var(--ayy-color-text-soft);
+  font-family: inherit;
+  /* Emoji are drawn as text; one control-text step up so they read as icons, not letters. */
+  font-size: var(--ayy-control-text-lg);
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--ayy-duration-fast) ease,
+    color var(--ayy-duration-fast) ease;
+}
+
+.ayy-icon-picker__option > .ayy-icon {
+  inline-size: 1.125em;
+  block-size: 1.125em;
+  font-size: var(--ayy-control-text-md);
+}
+
+@media (hover: hover) {
+  .ayy-icon-picker__option:not(:disabled):hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-icon-picker__option:not(:disabled):active {
+  background-color: var(--ayy-color-wash-hover);
+}
+
+.ayy-icon-picker__option[aria-pressed="true"] {
+  background-color: color-mix(in srgb, var(--ayy-color-primary) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-primary) 60%, transparent);
+  color: var(--ayy-color-text);
+}
+
+.ayy-icon-picker__option:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-icon-picker__option:disabled {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.ayy-icon-picker__empty {
+  margin: 0;
+  padding: var(--ayy-space-4) var(--ayy-space-2);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  text-align: center;
+}
+
+@media (forced-colors: active) {
+  .ayy-icon-picker__option[aria-pressed="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .ayy-icon-picker__option:disabled {
+    color: GrayText;
+  }
+}

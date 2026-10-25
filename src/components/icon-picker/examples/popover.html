@@ -1,0 +1,78 @@
+<!-- Picking closes the popover (the picker fires ayy-pick). Listen for ayy-change on <ayy-icon-picker> to redraw the trigger. -->
+<div class="ayy-cluster">
+  <ayy-popover align="start">
+    <ayy-tooltip class="ayy-tooltip">
+      <button type="button" class="ayy-button ayy-button--outline ayy-button--icon" popovertarget="icon-picker-popover" aria-haspopup="dialog" aria-label="Project icon">🚀</button>
+      <span class="ayy-tooltip__content" role="tooltip">Project icon</span>
+    </ayy-tooltip>
+    <div class="ayy-popover" id="icon-picker-popover" popover role="dialog" aria-label="Project icon">
+      <ayy-icon-picker value="🚀">
+        <div class="ayy-icon-picker">
+          <div class="ayy-icon-picker__header">
+            <input type="search" class="ayy-input ayy-input--sm ayy-icon-picker__search" aria-label="Search icons" placeholder="Search icons" autocomplete="off" spellcheck="false"/>
+            <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm ayy-icon-picker__remove">Remove</button>
+          </div>
+          <div class="ayy-icon-picker__body">
+            <div class="ayy-icon-picker__section" role="group" aria-labelledby="icon-picker-popover-icons">
+              <p id="icon-picker-popover-icons" class="ayy-icon-picker__label">Icons</p>
+              <div class="ayy-icon-picker__grid">
+                <button type="button" class="ayy-icon-picker__option" data-value="folder" aria-label="Folder" aria-pressed="false" title="Folder"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></button>
+                <button type="button" class="ayy-icon-picker__option" data-value="rocket" data-keywords="launch" aria-label="Rocket" aria-pressed="false" title="Rocket"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.21875 11.618L3.31189 11.2378C2.71644 11.1606 2.31883 10.5841 2.58348 10.0458C3.42523 8.33365 5.6195 6.35437 9.73988 6.68079M6.21875 11.618C7.27445 9.85426 8.57175 8.00435 9.73988 6.68079M6.21875 11.618L11.882 17.2812M9.73988 6.68079C13.4105 2.58986 17.1745 1.728 19.5937 2.06685C20.5508 2.2009 21.2991 2.94917 21.4332 3.90626C21.772 6.32551 20.9101 10.0895 16.8192 13.7601M11.882 17.2812L12.2622 20.1881C12.3394 20.7836 12.9159 21.1812 13.4542 20.9165C15.1664 20.0748 17.1456 17.8805 16.8192 13.7601M11.882 17.2812C13.6457 16.2255 15.4956 14.9282 16.8192 13.7601" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M17.5 8C17.5 6.89543 16.6046 6 15.5 6C14.3954 6 13.5 6.89543 13.5 8C13.5 9.10457 14.3954 10 15.5 10C16.6046 10 17.5 9.10457 17.5 8Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M4 22L8 18M4 17L5.5 15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+                <button type="button" class="ayy-icon-picker__option" data-value="target" data-keywords="goal" aria-label="Target" aria-pressed="false" title="Target"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M14 2.20004C13.3538 2.06886 12.6849 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 11.3151 21.9311 10.6462 21.8 10" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M12.0303 11.9625L16.5832 7.4096M19.7404 4.34462L19.1872 2.35748C19.0853 2.03011 18.6914 1.89965 18.4259 2.11662C16.9898 3.29018 15.4254 4.87091 16.703 7.36419C19.2771 8.56455 20.7466 6.94584 21.8733 5.5853C22.0975 5.3146 21.9623 4.90767 21.6247 4.81005L19.7404 4.34462Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+                <button type="button" class="ayy-icon-picker__option" data-value="star" aria-label="Star" aria-pressed="false" title="Star"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+              </div>
+            </div>
+            <div class="ayy-icon-picker__section" role="group" aria-labelledby="icon-picker-popover-emoji">
+              <p id="icon-picker-popover-emoji" class="ayy-icon-picker__label">Emoji</p>
+              <div class="ayy-icon-picker__grid">
+                <button type="button" class="ayy-icon-picker__option" data-value="⭐" data-keywords="favourite favorite important" aria-label="Star" aria-pressed="false" title="Star">⭐</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🔥" data-keywords="hot trending" aria-label="Fire" aria-pressed="false" title="Fire">🔥</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🚀" data-keywords="launch ship release" aria-label="Rocket" aria-pressed="true" title="Rocket">🚀</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🎯" data-keywords="goal aim" aria-label="Target" aria-pressed="false" title="Target">🎯</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="💡" data-keywords="idea tip" aria-label="Light bulb" aria-pressed="false" title="Light bulb">💡</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📌" data-keywords="pinned" aria-label="Pin" aria-pressed="false" title="Pin">📌</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📅" data-keywords="date schedule" aria-label="Calendar" aria-pressed="false" title="Calendar">📅</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="⏰" data-keywords="time deadline due" aria-label="Alarm clock" aria-pressed="false" title="Alarm clock">⏰</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="✅" data-keywords="done complete yes" aria-label="Check mark" aria-pressed="false" title="Check mark">✅</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="❌" data-keywords="no cancel wrong" aria-label="Cross mark" aria-pressed="false" title="Cross mark">❌</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="⚠️" data-keywords="alert caution risk" aria-label="Warning" aria-pressed="false" title="Warning">⚠️</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="❓" data-keywords="help unknown" aria-label="Question mark" aria-pressed="false" title="Question mark">❓</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="💰" data-keywords="revenue price cost budget" aria-label="Money bag" aria-pressed="false" title="Money bag">💰</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📈" data-keywords="growth trend up" aria-label="Chart increasing" aria-pressed="false" title="Chart increasing">📈</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📉" data-keywords="decline trend down" aria-label="Chart decreasing" aria-pressed="false" title="Chart decreasing">📉</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📊" data-keywords="stats report analytics" aria-label="Bar chart" aria-pressed="false" title="Bar chart">📊</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🏷️" data-keywords="tag category" aria-label="Label" aria-pressed="false" title="Label">🏷️</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📝" data-keywords="note text write" aria-label="Memo" aria-pressed="false" title="Memo">📝</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📁" data-keywords="files project" aria-label="Folder" aria-pressed="false" title="Folder">📁</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📎" data-keywords="attachment file" aria-label="Paperclip" aria-pressed="false" title="Paperclip">📎</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🔗" data-keywords="url chain" aria-label="Link" aria-pressed="false" title="Link">🔗</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🔒" data-keywords="private secure" aria-label="Lock" aria-pressed="false" title="Lock">🔒</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="👤" data-keywords="user owner contact" aria-label="Person" aria-pressed="false" title="Person">👤</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="👥" data-keywords="team users group" aria-label="People" aria-pressed="false" title="People">👥</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🏢" data-keywords="company account business" aria-label="Office building" aria-pressed="false" title="Office building">🏢</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🌍" data-keywords="world region country" aria-label="Globe" aria-pressed="false" title="Globe">🌍</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📍" data-keywords="place address map" aria-label="Location" aria-pressed="false" title="Location">📍</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📧" data-keywords="mail message" aria-label="Email" aria-pressed="false" title="Email">📧</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📞" data-keywords="call contact" aria-label="Phone" aria-pressed="false" title="Phone">📞</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="💬" data-keywords="comment chat message" aria-label="Speech bubble" aria-pressed="false" title="Speech bubble">💬</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🔔" data-keywords="notification reminder" aria-label="Bell" aria-pressed="false" title="Bell">🔔</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🎉" data-keywords="celebrate win" aria-label="Party popper" aria-pressed="false" title="Party popper">🎉</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="❤️" data-keywords="love like" aria-label="Red heart" aria-pressed="false" title="Red heart">❤️</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="👍" data-keywords="approve like yes" aria-label="Thumbs up" aria-pressed="false" title="Thumbs up">👍</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🐛" data-keywords="issue defect" aria-label="Bug" aria-pressed="false" title="Bug">🐛</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🛠️" data-keywords="settings build fix" aria-label="Tools" aria-pressed="false" title="Tools">🛠️</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🧪" data-keywords="experiment test beta" aria-label="Test tube" aria-pressed="false" title="Test tube">🧪</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="📦" data-keywords="box product shipping" aria-label="Package" aria-pressed="false" title="Package">📦</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🟢" data-keywords="status active ok" aria-label="Green circle" aria-pressed="false" title="Green circle">🟢</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🟡" data-keywords="status pending" aria-label="Yellow circle" aria-pressed="false" title="Yellow circle">🟡</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="🔴" data-keywords="status blocked error" aria-label="Red circle" aria-pressed="false" title="Red circle">🔴</button>
+                <button type="button" class="ayy-icon-picker__option" data-value="⚪" data-keywords="status empty" aria-label="White circle" aria-pressed="false" title="White circle">⚪</button>
+              </div>
+            </div>
+            <p class="ayy-icon-picker__empty" role="status" hidden>No icons found</p>
+          </div>
+      </ayy-icon-picker>
+    </div>
+  </ayy-popover>
+  <span class="ayy-h6">Q3 launch</span>
+</div>

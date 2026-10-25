@@ -49,6 +49,9 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
     opts.onToggle?.(open);
   };
   content.addEventListener("toggle", onToggle);
+  // A picker inside (Icon picker) fires ayy-pick once something is chosen: that ends the popover's job.
+  const onPick = () => close();
+  content.addEventListener("ayy-pick", onPick);
 
   // When popoverTargetElement cannot be set (no native API or trigger is not a button e.g. asChild),
   // attach a click listener to trigger the popover.
@@ -98,6 +101,7 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
     },
     destroy() {
       content.removeEventListener("toggle", onToggle);
+      content.removeEventListener("ayy-pick", onPick);
       if (needsClickTrigger) trigger.removeEventListener("click", toggleClick);
       stopPlacing?.();
       if (native && trigger instanceof HTMLButtonElement && trigger.popoverTargetElement === content) trigger.popoverTargetElement = null;

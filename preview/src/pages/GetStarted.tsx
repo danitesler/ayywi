@@ -2,26 +2,15 @@ import { useState } from "react";
 import type { DensityMode, ThemeMode } from "@danitesler/ayywi";
 import {
   buttonClass,
-  Card,
-  CardFooter,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  Carousel,
-  CarouselSlide,
-  Combobox,
   SegmentedControl,
   SegmentedControlItem,
-  Select,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-  Textarea,
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
-import { buildPrompt, headTags, links, request, STARTERS, type Links, type StarterId } from "../prompts";
-import { showcaseApps } from "../showcase/apps";
+import { buildPrompt, headTags, links, QUICK_START, type Links } from "../prompts";
 import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
 
@@ -38,8 +27,9 @@ const SETUPS: Record<Setup, { label: string; prompt: (l: Links) => string }> = {
 1. Run npx -y @danitesler/ayywi init. That configures the ayywi agent skill, Cursor rules, AGENTS.md instructions, and the MCP server (with get_component, search, get_tokens, get_rules, create_brand and lint tools).
 2. Load ayywi once at the app entry: import "@danitesler/ayywi/css" (React: use "@danitesler/ayywi/react"; other frameworks: import "@danitesler/ayywi/elements" and use <ayy-*> elements).
 3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
-4. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, .ayy-container content and Footer. Include empty, loading and error states.
-5. Run npx @danitesler/ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
+4. Ask me which brand colour and corners (pill, round, soft or sharp) to use, then run npx @danitesler/ayywi brand "<colour>" --name <app-name> --shape <corners> --out src/brand.css, load it after ayywi's CSS and set data-brand="<app-name>" on <html>. No preference: keep the monochrome default.
+5. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, .ayy-container content and Footer. Include empty, loading and error states.
+6. Run npx @danitesler/ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
   },
   files: {
     label: "No build (CDN)",
@@ -49,15 +39,35 @@ const SETUPS: Record<Setup, { label: string; prompt: (l: Links) => string }> = {
 ${headTags(l, "   ")}
 2. Before writing any UI, read ${l.docs}llms-full.txt: the rules, the patterns, the tokens and every component's API. For copy-ready HTML and React, read the page of each component you use: ${l.docs}llms/<component>.md (all listed in ${l.docs}llms.txt). Use only its classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No hardcoded colours, no made-up classes, no left/right CSS.
 3. Save the rules at ${l.docs}ai/AGENTS.snippet.md into AGENTS.md (or CLAUDE.md, or .cursorrules) so later sessions follow them too.
-4. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, content at .ayy-container width and a Footer. Include its empty, loading and error states.
-5. Tell me which files you changed and how to open the screen.`,
+4. Ask me which brand colour and corners (pill, round, soft or sharp) to use, and apply them with ayywi.setBrand({ name, color, shape }) on DOMContentLoaded. No preference: keep the monochrome default.
+5. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, content at .ayy-container width and a Footer. Include its empty, loading and error states.
+6. Tell me which files you changed and how to open the screen.`,
   },
 };
+
+/** Set up by hand: each step is one short block. */
+const MANUAL = {
+  install: "npm install @danitesler/ayywi",
+  css: `import "@danitesler/ayywi/fonts.css";
+import "@danitesler/ayywi/css";`,
+  component: `import { Button } from "@danitesler/ayywi/react";
+
+export function App() {
+  return <Button onClick={() => alert("Hi!")}>Hello ayywi</Button>;
+}`,
+  agent: "npx @danitesler/ayywi init",
+};
+
+const CLI = `npx @danitesler/ayywi lint              # check UI code against the contract
+npx @danitesler/ayywi brand "#0ea5e9"   # a brand from one colour
+npx @danitesler/ayywi init              # agent skill, rules, lint hook and MCP server
+npx @danitesler/ayywi mcp               # the MCP server, for any MCP client
+npx @danitesler/ayywi help              # every command and flag`;
 
 export const getStarted = {
   route: ROUTE,
   title: "Get started",
-  text: "start begin home overview setup install copy paste prompt no code vibe lovable bolt v0 replit cursor claude chatgpt no install cdn files link ai agent mcp llms use cases lint review",
+  text: "start begin home overview setup install copy paste prompt no code vibe lovable bolt v0 replit cursor claude chatgpt no install cdn files link ai agent mcp llms use cases lint review quick start brand npm by hand cli",
 };
 
 export interface Appearance {
@@ -66,9 +76,6 @@ export interface Appearance {
   density: DensityMode;
   setDensity: (density: DensityMode) => void;
 }
-
-/** Audiences to suggest in the sentence; anything typed works too. */
-const WHO_OPTIONS = STARTERS.map((s) => ({ value: s.who, label: s.who, meta: s.label }));
 
 /** Change the theme and density of this whole page, right in the hero. */
 function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
@@ -92,34 +99,6 @@ function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
   );
 }
 
-/** The showcase apps, each with the prompt that builds it. */
-function Examples() {
-  return (
-    <Carousel label="Example apps" slideWidth="min(20rem, 85%)" className="pv-examples">
-      {showcaseApps.map((app) => (
-        <CarouselSlide key={app.id}>
-          <Card interactive spotlight className="pv-example-card">
-            <CardMedia className="pv-showcase__thumb">
-              <img src={app.screenshot} alt={`${app.name}, ${app.kind}`} loading="lazy" width={1280} height={800} />
-            </CardMedia>
-            <CardHeader>
-              <CardTitle>
-                {app.name} <span className="ayy-muted">· {app.kind}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardFooter>
-              <CopyButton text={buildPrompt(app.prompt)} label="Copy prompt to build this" variant="outline" />
-              <a className={buttonClass({ variant: "ghost", size: "sm" })} href={`#/apps/${app.id}`}>
-                See it
-              </a>
-            </CardFooter>
-          </Card>
-        </CarouselSlide>
-      ))}
-    </Carousel>
-  );
-}
-
 const MCP_CONFIG = JSON.stringify(
   {
     mcpServers: {
@@ -133,59 +112,18 @@ const MCP_CONFIG = JSON.stringify(
   2,
 );
 
-/** For people who build with Lovable, Bolt, v0, Replit or a chat: copy one prompt, no code. */
-function BuilderGuide() {
-  const [starter, setStarter] = useState<StarterId>("booking");
-  const first = STARTERS.find((s) => s.id === starter)!;
-  const [what, setWhat] = useState<string>(first.what);
-  const [who, setWho] = useState<string>(first.who);
-  const [needs, setNeeds] = useState<string>(first.needs);
-  const pick = (id: StarterId) => {
-    const s = STARTERS.find((x) => x.id === id)!;
-    setStarter(id);
-    setWhat(s.what);
-    setWho(s.who);
-    setNeeds(s.needs);
-  };
-  const ask = request(what, who, needs);
-  const prompt = buildPrompt(ask);
-  const article = /^[aeiou]/i.test(what.trim()) ? "an" : "a";
-
+/** For people who build with Lovable, Bolt, v0, Replit or a chat: one prompt, and the AI asks the rest. */
+function QuickStart() {
   return (
     <>
-      <div className="pv-madlib">
-        Build me {article}{" "}
-        <Select aria-label="What you're building" value={starter} onChange={(e) => pick(e.target.value as StarterId)}>
-          {STARTERS.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.what}
-            </option>
-          ))}
-        </Select>{" "}
-        for{" "}
-        <Combobox
-          aria-label="Who it's for"
-          key={starter}
-          options={WHO_OPTIONS}
-          defaultValue={who}
-          placeholder="a yoga studio"
-          onInputChange={setWho}
-          onValueChange={(v) => setWho(v)}
-          className="pv-slot"
-        />
-        . It needs:
-        <Textarea
-          autosize
-          className="pv-slot pv-slot--long"
-          aria-label="What it needs"
-          rows={1}
-          value={needs}
-          placeholder="a schedule and a sign-up form"
-          onChange={(e) => setNeeds(e.target.value)}
-        />
-      </div>
-
-      <CodeBlock code={prompt} label="prompt" copyLabel="Copy prompt" wrap />
+      <h2 className="pv-h pv-h--section" id="quick-start">
+        Quick start with AI
+      </h2>
+      <p className="pv-note">
+        Paste this into Lovable, Bolt, v0, Replit or any AI chat. It asks what you're building, who it's for and your brand colour,
+        then builds it.
+      </p>
+      <CodeBlock code={buildPrompt(QUICK_START)} label="prompt" copyLabel="Copy prompt" wrap />
     </>
   );
 }
@@ -215,6 +153,52 @@ function DeveloperGuide() {
           </TabsContent>
         ))}
       </Tabs>
+    </>
+  );
+}
+
+/** The same setup without an agent: four short steps. */
+function ManualGuide() {
+  return (
+    <>
+      <h2 className="pv-h pv-h--section" id="by-hand">
+        Or set it up by hand
+      </h2>
+      <div className="ayy-stack">
+        <p className="pv-note">1. Install the package. It has no runtime dependencies; React is optional.</p>
+        <CodeBlock code={MANUAL.install} label="terminal" language="sh" />
+      </div>
+      <div className="ayy-stack">
+        <p className="pv-note">2. Load the CSS once, at the app entry.</p>
+        <CodeBlock code={MANUAL.css} label="main.tsx" language="tsx" />
+      </div>
+      <div className="ayy-stack">
+        <p className="pv-note">
+          3. Add your first component. Not using React? Import <code>@danitesler/ayywi/elements</code> and write the same markup (
+          <code>class="ayy-button"</code>) in any framework or plain HTML.
+        </p>
+        <CodeBlock code={MANUAL.component} label="App.tsx" language="tsx" />
+      </div>
+      <div className="ayy-stack">
+        <p className="pv-note">
+          4. Set up your coding agent: the ayywi skill, rules for AGENTS.md and Cursor, a hook that lints every UI file it writes,
+          and the MCP server.
+        </p>
+        <CodeBlock code={MANUAL.agent} label="terminal" language="sh" />
+      </div>
+    </>
+  );
+}
+
+/** What the CLI does, and the raw files for anything else. */
+function CliGuide() {
+  return (
+    <>
+      <h2 className="pv-h pv-h--section" id="cli">
+        Explore the CLI
+      </h2>
+      <p className="pv-note">The same commands your agent runs, plus the raw files for any other tool.</p>
+      <CodeBlock code={CLI} label="terminal" language="sh" />
       <div className="pv-files">
         <CopyButton text={MCP_CONFIG} label="Copy MCP config" variant="outline" />
         <CopyButton text={agentsSnippet} label="Copy rules for AGENTS.md" variant="outline" />
@@ -235,16 +219,18 @@ export function GetStartedPage(appearance: Appearance) {
         <div className="pv-hero__main">
           <h1 className="ayy-display">ayywi</h1>
           <p className="pv-tagline">Make your app look designed, in one paste</p>
-          <p className="ayy-lede">Describe your app and paste one prompt. Dark mode and phones included.</p>
+          <p className="ayy-lede">Paste one prompt; your AI asks the rest. Dark mode and phones included.</p>
         </div>
         <TryIt {...appearance} />
       </header>
 
-      <Examples />
-
-      <BuilderGuide />
+      <QuickStart />
 
       <DeveloperGuide />
+
+      <ManualGuide />
+
+      <CliGuide />
     </article>
   );
 }

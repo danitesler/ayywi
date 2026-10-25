@@ -27,14 +27,14 @@
     "ayy-table__add-column": "Narrow trailing column with an accessible add-column button.",
     "ayy-table__wrap": "On th/td: content wraps within the column instead of staying on one line and ending in ….",
     "ayy-table__num": "On th/td with numbers: end-aligned, tabular digits.",
-    "ayy-table__sort": "A <button> inside a sortable <th>, its label in a __column-label, arrow after the text. aria-sort on the <th> marks the sorted column.",
+    "ayy-table__sort": "A <button> inside a sortable <th> (or, with aria-haspopup=\"menu\", the title that opens the column menu), its label in a __column-label, the whole header cell clickable, an arrow after the text only once sorted. aria-sort on the <th> marks the sorted column.",
     "ayy-table__resize": "Column resize separator (<span tabindex=\"0\">) at a header cell's end: drag, arrow keys; double-click resets.",
     "ayy-table__select": "On the th/td holding a row's checkbox (and the select-all box): as narrow as the box.",
     "ayy-table__reorder": "On the th/td holding a row's .ayy-drag-handle: as narrow as the handle. The row drags by it; a primary line shows where it lands.",
     "ayy-table__pin": "On a column's th/td: sticks to the inline start when scrolling sideways.",
     "ayy-table__pin--end": "With __pin: sticks to the inline end.",
     "ayy-table__truncate": "On a <span> in a cell: one line ending in …, at most --ayy-table-truncate (16rem).",
-    "ayy-table__edit": "On an <input> or <textarea> in a cell: inline editable text that reads like cell text at rest, outlines on hover/focus, commits on Enter or blur, and reverts on Escape.",
+    "ayy-table__edit": "On an Inline edit (.ayy-inline-edit) in a cell: editable text that reads like cell text at rest, outlines on hover, turns into a field in place with the text where it was, saves on Enter or blur and reverts on Escape.",
     "ayy-table__media": "Flex row in a cell: an Avatar or icon, then text.",
     "ayy-table__secondary": "Muted second line in a cell.",
     "ayy-table__expand": "Chevron <button aria-expanded> that shows the __detail row after its row.",
@@ -64,13 +64,13 @@
     "default": { "looks": "Collapsed table, s text; header row on a wash fill with muted sentence-case labels; hairlines between rows." },
     "hover": {
       "when": "tbody tr:hover; the sort, expand, resize and edit controls; a row link",
-      "looks": "Row gets a wash fill (not group, detail, empty or disabled rows) and reveals __row-actions--reveal; controls brighten, .ayy-table__edit gets a subtle line border and wash fill; a row link underlines."
+      "looks": "Row gets a wash fill (not group, detail, empty or disabled rows) and reveals __row-actions--reveal; a sortable or draggable header shows a pointer cursor and gets a wash fill; controls brighten, .ayy-table__edit gets a subtle line outline; a row link underlines."
     },
-    "pressed": { "when": "th[data-reorderable]:active, .ayy-table__sort:active", "looks": "Draggable header switches to grabbing cursor." },
-    "focus": { "when": ":focus-visible on the sort button, expand button, resize handle or row link; :focus on .ayy-table__edit", "looks": "2px ring (.ayy-table__edit gets a ring border and surface fill); a row link rings the whole row." },
+    "pressed": { "none": "A sort or drag header keeps its pointer cursor; use the dragging state for a header being moved." },
+    "focus": { "when": ":focus-visible on the sort button, expand button, resize handle or row link; :focus-visible on the .ayy-table__edit field", "looks": "2px ring (an editing field gets a ring border and surface fill); a row link rings the whole row." },
     "disabled": { "when": "tr[aria-disabled=\"true\"]", "looks": "Muted text, no hover fill. Forced colours: GrayText." },
     "selected": { "when": "tr[aria-selected=\"true\"] (set by ticking a checkbox, Shift+click, or dragging and holding the cursor across rows)", "looks": "Wash fill (under pinned cells too) and a 2px primary bar on the start edge. Forced colours: Highlight." },
-    "error": { "when": ".ayy-table__edit[aria-invalid=\"true\"]", "looks": "Destructive border on an invalid inline edit input." },
+    "error": { "when": ".ayy-table__edit[aria-invalid=\"true\"]", "looks": "Destructive border on an invalid inline edit field." },
     "loading": { "when": "aria-busy=\"true\" on the <table>", "looks": "Body rows fade to 50%; first loads use Skeleton rows." },
     "sorted": { "when": "th[aria-sort]", "looks": "Label turns text colour; only the arrow that applies shows." },
     "expanded": { "when": ".ayy-table__expand[aria-expanded=\"true\"]", "looks": "Chevron points up; the detail row shows." },
@@ -85,17 +85,17 @@
   "js": "tableClass({ compact?, spacious?, bordered?, sticky?, fixed?, reorderable?, className? }); tableRowActionsClass({ reveal?, className? }); tablePinClassName(pin); a table…Class constant per class; nextSortDirection(current); compareValues(a, b, direction?) sorts numbers (\"$1,240\", \"12 GB\") by value, text naturally, empty last; connectTableResize(table, { onResize? }); connectTableDragSelect(table, { onRowChange? }); connectTableEdit(table, { onCellEdit? }); connectTableColumnReorder(table, { onColumnReorder?, selector? }); connectTableColumns(table, { onColumnAction? }); connectTable(table, { onColumnAction?, onSort?, onSelectionChange?, onExpandChange?, onResize?, onCellEdit?, onColumnReorder? }) wires plain markup (used by <ayy-table>).",
   "element": {
     "tag": "ayy-table",
-    "description": "Column menus use data-column-action for freeze, wrap, icon, insertion and shared filter/group controls. Multiple pinned columns receive cumulative offsets. Wraps an .ayy-table (or its wrap or container). Sort buttons reorder each body's rows (data-sort-value wins over text; detail rows move with their row, group rows stay); row checkboxes set aria-selected, with select-all, Shift+click ranges, and drag-to-select by holding and moving across rows; expand buttons flip aria-expanded; resize handles resize columns; .ayy-table__edit inputs commit inline edits on Enter/blur and revert on Escape; column headers drag to reorder columns; rows with an .ayy-drag-handle in a .ayy-table__reorder cell drag to reorder rows, and a focused handle moves its row with the arrow keys (the detail row follows).",
+    "description": "Column menus use data-column-action for sort-ascending/sort-descending (a Sort submenu), duplicate, hide, delete, freeze, wrap, icon, insertion and shared filter/group controls. Multiple pinned columns receive cumulative offsets. Wraps an .ayy-table (or its wrap or container). Sort buttons reorder each body's rows (data-sort-value wins over text; detail rows move with their row, group rows stay); row checkboxes set aria-selected, with select-all, Shift+click ranges, and drag-to-select by holding and moving across rows; expand buttons flip aria-expanded; resize handles resize columns; .ayy-table__edit inputs commit inline edits on Enter/blur and revert on Escape; column headers drag to reorder columns; rows with an .ayy-drag-handle in a .ayy-table__reorder cell drag to reorder rows, and a focused handle moves its row with the arrow keys (the detail row follows).",
     "attributes": {},
     "events": {
       "ayy-sort": "{ column, key, direction } before the rows move (key: data-sort-key). preventDefault() to sort them yourself.",
       "ayy-selection-change": "{ rows } — the selected <tr>s.",
       "ayy-expand-change": "{ row, expanded }",
       "ayy-column-resize": "{ column, key, width } when a resize ends (width null after a reset).",
-      "ayy-cell-edit": "{ row, cell, column, key, value } when an inline edit input commits a change.",
+      "ayy-cell-edit": "{ row, cell, column, key, value } when an inline edit in a cell saves a change.",
       "ayy-column-reorder": "{ from, to, key, targetKey } when a column is dragged to a new position.",
       "ayy-row-reorder": "{ from, to, id } when a row is dropped, or moved with the arrow keys on its handle. from and to count rows with a handle; to is what Array.splice wants after removing the row. id is the row's data-id.",
-      "ayy-column-action": "{ action, column, key, value } before a column action. Cancel to handle it in application state. data-column-action: freeze, wrap, icon (data-column-value), insert-before/insert-after (logical order), insert-left/insert-right (physical direction), add, filter, group, group-by (data-column-value). Filter/group open the toolbar button with data-table-control=filters/groups."
+      "ayy-column-action": "{ action, column, key, value } before a column action. Cancel to handle it in application state. data-column-action: sort-ascending, sort-descending, duplicate, hide, delete, freeze, wrap, icon (data-column-value), insert-before/insert-after (logical order), insert-left/insert-right (physical direction), add, filter, group, group-by (data-column-value). Filter/group open the toolbar button with data-table-control=filters/groups."
     }
   },
   "react": {
@@ -161,15 +161,17 @@
         }
       },
       "TableEdit": {
-        "renders": "<input class=\"ayy-table__edit\"> or <textarea class=\"ayy-table__edit\"> when multiline",
+        "renders": "<InlineEdit className=\"ayy-table__edit\"> — a display button and an <input>, or a <textarea> when multiline",
         "props": {
           "value": "string — controlled cell text",
           "defaultValue": "string — uncontrolled starting text",
-          "multiline": "boolean — textarea; Shift+Enter adds a line",
-          "onChange": "(event) => void",
-          "onFocus": "(event) => void",
-          "onBlur": "(event) => void",
-          "onKeyDown": "(event) => void",
+          "aria-label": "string — names the button and the field: \"Plan for Northwind\"",
+          "displayValue": "ReactNode — what the cell shows at rest when it isn't the value (a formatted price)",
+          "multiline": "boolean — textarea; Shift+Enter adds a line, ⌘Enter or Ctrl+Enter saves",
+          "disabled": "boolean",
+          "placeholder": "string — shown when the cell is empty",
+          "className": "string — extra classes on the root",
+          "inputMode": "string — the input's virtual keyboard",
           "onValueCommit": "(value: string) => void — called on Enter or blur when the value changed"
         }
       },
@@ -197,7 +199,7 @@
     "End-align numbers with numeric; a cell keeps to one line, so put the full text in its title and add wrap to a column that must show it all.",
     "Make scanned columns sortable; put the raw value in data-sort-value when the cell shows a formatted one.",
     "Frame a working table with TableContainer: title, search and a columns menu above, Pagination below.",
-    "Compose a column menu with TableHead menu and icon; data-column-action wires freeze, wrap, icon, insert-before/after, add and shared filter/group controls. Return false from onColumnAction or cancel ayy-column-action to own the data changes.",
+    "Compose a column menu with TableHead menu and icon, or make the title itself the trigger (a .ayy-table__sort button with aria-haspopup=\"menu\" as the TableHead child, set aria-sort on the th): clicking the title opens the menu, which holds a Sort submenu, Duplicate, Hide and Delete, and dragging it still reorders. data-column-action wires sort-ascending/sort-descending (a Sort submenu), duplicate, hide, delete, freeze, wrap, icon, insert-before/after, add and shared filter/group controls. Return false from onColumnAction or cancel ayy-column-action to own the data changes.",
     "Pin the name column on wide tables; use sticky with a max-block-size on long ones.",
     "Use expandable rows for details that don't deserve a column, and group rows to split a list by status or date.",
     "Put quick actions and a ⋯ DropdownMenu in a trailing actions cell; pair selection with an ActionBar for bulk actions.",

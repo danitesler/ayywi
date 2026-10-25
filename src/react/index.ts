@@ -610,6 +610,7 @@ export {
   ColorPicker,
   type ColorPickerProps,
 } from "../components/color-picker/color-picker.react";
+export { IconPicker, type IconPickerProps, type IconPickerIcon } from "../components/icon-picker/icon-picker.react";
 export {
   Timeline,
   TimelineItem,
