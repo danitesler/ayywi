@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ArrowRight01Icon, Search01Icon } from "@hugeicons/core-free-icons";
 import { buttonClass, Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon, Shortcut } from "@danitesler/ayywi/react";
 import { themes } from "@danitesler/ayywi";
@@ -7,7 +7,7 @@ import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
 import { GITHUB } from "../routes";
 import { showcaseApps } from "../showcase/apps";
-import { BRAND_PRESETS } from "./Brand";
+import { BrandDemo } from "./BrandDemo";
 import { Thumb } from "./Components";
 
 const example = (ref: string) => {
@@ -43,7 +43,6 @@ function Feature({ title, children, href, link, visual }: { title: string; child
 
 /** #/: what ayywi is, shown with its own components. */
 export function Landing({ onSearch }: { onSearch: () => void }) {
-  const brands = BRAND_PRESETS.filter((p) => !p.isMono);
   return (
     <article className="pv-page pv-landing">
       <header className="pv-hero pv-hero--center">
@@ -82,16 +81,7 @@ export function Landing({ onSearch }: { onSearch: () => void }) {
         title="Themes that fit your brand"
         href="#/themes"
         link="Explore themes"
-        visual={
-          <div className="pv-feature__brands">
-            {brands.map((b) => (
-              <span key={b.name} className="pv-feature__brand" style={{ "--ayy-swatch": b.color } as CSSProperties}>
-                <span className="ayy-swatch" />
-                {b.label}
-              </span>
-            ))}
-          </div>
-        }
+        visual={<BrandDemo />}
       >
         Pick one colour and a corner style. ayywi builds the shades, readable button text and a focus ring for all {themes.length} themes, and the
         components stay the same.
