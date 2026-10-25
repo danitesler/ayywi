@@ -66,6 +66,24 @@
   padding-inline: var(--ayy-space-3);
 }
 
+/* ayywi-lint-disable-next-line -- docs sidebar search navigation: virtual focus on the active link */
+.pv-nav .ayy-app-shell__link[data-active="true"] {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+@media (forced-colors: active) {
+  /* ayywi-lint-disable-next-line -- docs sidebar search navigation: high-contrast active state */
+  .pv-nav .ayy-app-shell__link[data-active="true"] {
+    forced-color-adjust: none;
+    outline-color: Highlight;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
 .pv-shell-bar__title {
   font-weight: var(--ayy-weight-medium);
 }

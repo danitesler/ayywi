@@ -135,28 +135,124 @@ function DocsNav({ path }: { path: string }) {
 /** Every component A–Z; a family (Input › Textarea, Number field…) opens to show its members. */
 function ComponentsNav({ slug }: { slug?: string }) {
   const [filter, setFilter] = useState("");
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
   const q = filter.trim();
   const matches = (c: ComponentEntry) => !q || commandMatches(c.name, q) || (c.aka ?? []).some((a) => commandMatches(a, q));
-  const link = (c: ComponentEntry, sub?: boolean) => (
-    <AppShellItem key={c.slug}>
-      <AppShellLink href={`#/components/${c.slug}`} data-route={`components/${c.slug}`} current={c.slug === slug} sub={sub}>
-        {c.name}
-      </AppShellLink>
-    </AppShellItem>
-  );
   const shown = componentFamilies
     .map(({ parent, children }) => ({ parent, family: children.length > 0, members: [parent, ...children].filter(matches) }))
     .filter((f) => f.members.length);
+
+  const items = q
+    ? shown.flatMap((f) => f.members.map((c) => ({ slug: c.slug, name: c.name, href: `#/components/${c.slug}` })))
+    : [{ slug: "", name: "Overview", href: "#/components" }, ...shown.flatMap((f) => f.members.map((c) => ({ slug: c.slug, name: c.name, href: `#/components/${c.slug}` })))];
+
+  const effectiveIndex = q
+    ? (activeIndex >= 0 && activeIndex < items.length ? activeIndex : items.length ? 0 : -1)
+    : (activeIndex >= 0 && activeIndex < items.length ? activeIndex : -1);
+
+  const activeItem = effectiveIndex >= 0 ? items[effectiveIndex] : null;
+  const activeSlug = activeItem ? activeItem.slug : null;
+
+  const onFilterChange = (next: string) => {
+    setFilter(next);
+    setActiveIndex(next.trim() ? 0 : -1);
+  };
+
+  const move = (step: number) => {
+    if (!items.length) return;
+    setActiveIndex((prev) => {
+      const current = prev >= 0 && prev < items.length ? prev : (q ? 0 : (step > 0 ? -1 : items.length));
+      return (current + step + items.length) % items.length;
+    });
+  };
+
+  const navigateActive = () => {
+    if (activeItem) {
+      window.location.hash = activeItem.href;
+    }
+  };
+
+  useEffect(() => {
+    if (effectiveIndex < 0 || !activeItem) return;
+    const id = activeItem.slug ? `pv-link-${activeItem.slug}` : "pv-link-overview";
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ block: "nearest" });
+  }, [effectiveIndex, activeItem]);
+
+  const link = (c: ComponentEntry, sub?: boolean) => {
+    const isActive = effectiveIndex >= 0 && activeSlug === c.slug;
+    return (
+      <AppShellItem key={c.slug}>
+        <AppShellLink
+          id={`pv-link-${c.slug}`}
+          href={`#/components/${c.slug}`}
+          data-route={`components/${c.slug}`}
+          current={c.slug === slug}
+          sub={sub}
+          data-active={isActive ? "true" : undefined}
+          aria-selected={isActive ? "true" : undefined}
+        >
+          {c.name}
+        </AppShellLink>
+      </AppShellItem>
+    );
+  };
+
+  const isOverviewActive = effectiveIndex >= 0 && activeSlug === "";
+
   return (
     <>
       <div className="pv-sidebar__top">
-        <SearchBar size="md" placeholder="Filter components" label="Filter components" value={filter} onValueChange={setFilter} />
+        <SearchBar
+          size="md"
+          placeholder="Filter components"
+          label="Filter components"
+          value={filter}
+          onValueChange={onFilterChange}
+          onKeyDown={(event) => {
+            if (event.nativeEvent.isComposing) return;
+            switch (event.key) {
+              case "ArrowDown":
+                event.preventDefault();
+                move(1);
+                break;
+              case "ArrowUp":
+                event.preventDefault();
+                move(-1);
+                break;
+              case "Enter":
+                if (activeItem) {
+                  event.preventDefault();
+                  navigateActive();
+                }
+                break;
+              case "Escape":
+                if (filter) {
+                  event.preventDefault();
+                  setFilter("");
+                  setActiveIndex(-1);
+                }
+                break;
+            }
+          }}
+          onSearch={navigateActive}
+          aria-controls="pv-nav"
+          aria-activedescendant={activeItem ? (activeItem.slug ? `pv-link-${activeItem.slug}` : "pv-link-overview") : undefined}
+        />
       </div>
       <AppShellNav id="pv-nav" className="pv-nav" aria-label="Components">
         <ul className="ayy-app-shell__list" aria-label="All components">
           {!q && (
             <AppShellItem>
-              <AppShellLink href="#/components" data-route="components" current={!slug}>
+              <AppShellLink
+                id="pv-link-overview"
+                href="#/components"
+                data-route="components"
+                current={!slug}
+                data-active={isOverviewActive ? "true" : undefined}
+                aria-selected={isOverviewActive ? "true" : undefined}
+              >
                 Overview
               </AppShellLink>
             </AppShellItem>
@@ -166,7 +262,10 @@ function ComponentsNav({ slug }: { slug?: string }) {
               link(parent)
             ) : (
               <AppShellItem key={parent.slug}>
-                <AppShellCollapse label={parent.name} open={Boolean(q) || members.some((c) => c.slug === slug) || undefined}>
+                <AppShellCollapse
+                  label={parent.name}
+                  open={Boolean(q) || members.some((c) => c.slug === slug || c.slug === activeSlug) || undefined}
+                >
                   {members.map((c) => link(c, true))}
                 </AppShellCollapse>
               </AppShellItem>

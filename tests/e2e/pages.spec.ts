@@ -102,8 +102,29 @@ test("the components sidebar lists every component A–Z, with families nested a
 
   const filter = page.getByRole("searchbox", { name: "Filter components" });
   await filter.fill("area");
-  await expect(nav.getByRole("link", { name: "Textarea", exact: true })).toBeVisible();
+  const textarea = nav.getByRole("link", { name: "Textarea", exact: true });
+  await expect(textarea).toBeVisible();
+  await expect(textarea).toHaveAttribute("data-active", "true");
   await expect(nav.getByRole("link", { name: "Button", exact: true })).toHaveCount(0);
+  await expect(filter).toBeFocused();
+
+  // Enter navigates to the preselected option while search box keeps focus
+  await filter.press("Enter");
+  await expect(page).toHaveURL(/#\/components\/textarea$/);
+  await expect(filter).toBeFocused();
+
+  // Arrow keys navigate options without losing search box focus
+  await filter.fill("card");
+  const card = nav.getByRole("link", { name: "Card", exact: true });
+  const choiceCard = nav.getByRole("link", { name: "Choice card", exact: true });
+  await expect(card).toHaveAttribute("data-active", "true");
+  await filter.press("ArrowDown");
+  await expect(choiceCard).toHaveAttribute("data-active", "true");
+  await expect(card).not.toHaveAttribute("data-active", "true");
+  await filter.press("ArrowUp");
+  await expect(card).toHaveAttribute("data-active", "true");
+  await expect(filter).toBeFocused();
+
   await filter.fill("zzzz");
   await expect(nav).toContainText("No component called");
 });
