@@ -49,7 +49,7 @@ test("links from before the header tabs land on the same page", async ({ page })
     ["changelog", "docs/changelog", "Changelog"],
     ["button", "components/button", "Button"],
     ["dialog", "components/dialog", "Dialog"],
-    ["brand", "themes", "Themes"],
+    ["brand", "themes", "Select theme"],
     ["apps", "examples", "Examples"],
     ["apps/inbox", "examples/inbox", "Relay"],
     ["showcase", "examples", "Examples"],

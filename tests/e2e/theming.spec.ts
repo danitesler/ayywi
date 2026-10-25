@@ -200,14 +200,16 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
 });
 
-test("the Themes page restyles its showcase app without touching the site", async ({ page }) => {
+test("the Themes page restyles its sample app without touching the site", async ({ page }) => {
   await open(page, "themes", { theme: "dark" });
-  const frame = page.frameLocator(".pv-themer__stage iframe");
-  await expect(frame.locator(".pv-app")).toBeVisible();
+  const sample = page.locator(".pv-themer__sample");
+  const primary = (sel: string) => page.locator(sel).evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
+  const site = await primary("html");
+  await expect(sample.getByRole("button", { name: "Send report" })).toBeVisible();
   await page.getByLabel("Theme", { exact: true }).selectOption("light");
   await page.getByRole("button", { name: "Violet" }).click();
-  await expect(frame.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(frame.locator("html")).toHaveAttribute("data-brand", "violet");
+  await expect(sample).toHaveAttribute("data-theme", "light");
+  expect(await primary(".pv-themer__sample")).not.toBe(site);
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
 });

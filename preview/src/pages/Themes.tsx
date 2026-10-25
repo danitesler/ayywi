@@ -8,7 +8,6 @@ import {
   ColorSwatchCustom,
   ColorSwatchGroup,
   Field,
-  FieldHint,
   Label,
   SegmentedControl,
   SegmentedControlItem,
@@ -16,15 +15,26 @@ import {
   Tooltip,
 } from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
-import { showcaseApps } from "../showcase/apps";
 import { themeOptions } from "../themes";
 import { BODY_FONTS, BRAND_PRESETS, HEADING_FONTS, Sample, Scale, SHAPES } from "./Brand";
-import { ScaledFrame, type Look } from "./Showcase";
+import { BrandApp } from "./BrandDemo";
 
 const DEFAULT_COLOR = "#0ea5e9";
 const resolve = (mode: ThemeMode): ThemeName =>
   mode !== "system" ? mode : window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 const label = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Mono's own corners and fonts, scoped to a selector: a brand's rule without its colours. */
+function monoCss(input: BrandInput, selector: string): string {
+  const { radius, font } = createBrand({ name: "mono", color: "#808080", shape: input.shape, font: input.font });
+  const decls = [
+    `--ayy-radius-control: ${radius.control};`,
+    `--ayy-radius-card: ${radius.card};`,
+    `--ayy-radius-button: ${radius.button};`,
+    ...(["heading", "body", "mono"] as const).filter((k) => font[k]).map((k) => `--ayy-font-${k}: ${font[k]};`),
+  ];
+  return `${selector}, ${selector} :is([data-theme], .dark, .light) { ${decls.join(" ")} }`;
+}
 
 function snippet(brand: BrandInput | null): string {
   if (!brand) return "// ayywi's monochrome default: no brand to set.";
@@ -36,15 +46,13 @@ ayywi.setBrand({ name: "${brand.name}", color: "${brand.color}", shape: "${brand
 }
 
 /**
- * #/themes: pick a brand on the left and see it on a real app on the right, in any theme. Nothing changes on the site until
+ * #/themes: pick a brand on the left and see it on a small app on the right, in any theme. Nothing changes on the site until
  * "Use this theme".
  */
 export function ThemesPage({ current, onUse, theme, setTheme }: { current: BrandInput | null; onUse: (brand: BrandInput | null) => void; theme: ThemeMode; setTheme: (theme: ThemeMode) => void }) {
   const [mono, setMono] = useState(!current);
   const [input, setInput] = useState<BrandInput>(() => current ?? { name: "acme", color: DEFAULT_COLOR, shape: "pill" });
   const [previewTheme, setPreviewTheme] = useState<ThemeName>(() => resolve(theme));
-  const [appId, setAppId] = useState("store");
-  const app = showcaseApps.find((a) => a.id === appId) ?? showcaseApps[0];
 
   const result = useMemo(() => {
     if (mono) return { brand: null };
@@ -55,13 +63,14 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
     }
   }, [mono, input]);
   const draft: BrandInput | null = mono || result.error ? null : input;
-  const look: Look = useMemo(() => ({ theme: previewTheme, brand: draft }), [previewTheme, draft]);
 
   const hex = /^#[0-9a-f]{6}$/i.test(input.color) ? input.color : DEFAULT_COLOR;
   const font = (key: "heading" | "body", value: string) => {
     const next = { ...input.font, [key]: value || undefined };
     setInput({ ...input, font: next.heading || next.body ? next : undefined });
   };
+  const scoped = (selector: string) =>
+    result.error ? "" : mono ? monoCss(input, selector) : result.brand ? brandCss(result.brand, { selector }) : "";
   const sameAsSite = JSON.stringify(draft) === JSON.stringify(current ?? null) && previewTheme === resolve(theme);
 
   return (
@@ -70,12 +79,8 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
         <aside className="pv-themer__panel ayy-scroll" aria-labelledby="themes-title">
           <header className="pv-page__header">
             <h1 className="ayy-h3" id="themes-title">
-              Themes
+              Select theme
             </h1>
-            <p className="pv-note">
-              A brand is one colour, a corner style and optional fonts. ayywi builds the shades, readable button text and a focus ring
-              for every theme; the components stay the same. Try one on the app, then use it on this site.
-            </p>
           </header>
 
           <div className="ayy-cluster">
@@ -132,9 +137,7 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
             </ColorSwatchGroup>
           </Field>
 
-          {/* Mono has no colour to build a brand from, so corners and fonts wait for one. */}
-          {!mono && (
-            <>
+          {/* Mono has no colour to build a brand from: its corners and fonts show here but can only be kept with a colour. */}
             <Field>
               <span className="ayy-label" id="pv-theme-shape">
                 Corners
@@ -170,9 +173,7 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
                 </Select>
               </Field>
             </div>
-            </>
-          )}
-          {mono && <p className="pv-note">Mono is ayywi's default. Pick a colour to change the corners and fonts too.</p>}
+          {mono && <p className="pv-note">Mono is ayywi's default colour. Corners and fonts show on the preview; pick a colour to use them on the site.</p>}
 
           <Field>
             <Label htmlFor="pv-theme-mode">Theme</Label>
@@ -185,18 +186,6 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
             </Select>
           </Field>
 
-          <Field>
-            <Label htmlFor="pv-theme-app">Preview on</Label>
-            <Select id="pv-theme-app" value={app.id} onChange={(e) => setAppId(e.target.value)}>
-              {showcaseApps.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}, {a.kind.toLowerCase()}
-                </option>
-              ))}
-            </Select>
-            <FieldHint>Each app keeps its own density.</FieldHint>
-          </Field>
-
           {result.error && (
             <Alert variant="destructive">
               <AlertDescription>{result.error}</AlertDescription>
@@ -207,11 +196,15 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
         </aside>
 
         <div className="pv-themer__stage">
-          <ScaledFrame key={app.id} app={app} width={1280} height={800} look={look} title={`${app.name} with this theme`} />
+          {/* The brand is scoped to the stage, so the site keeps its own until "Use this theme". */}
+          <style>{scoped(".pv-themer__stage")}</style>
+          <div className="pv-themer__sample" data-theme={previewTheme}>
+            <BrandApp />
+          </div>
         </div>
       </div>
 
-      {draft && result.brand && <style>{brandCss(result.brand, { selector: ".pv-brand-live" })}</style>}
+      <style>{scoped(".pv-brand-live")}</style>
       <section className="pv-brand-live pv-section" aria-labelledby="themes-every">
         <h2 className="pv-h pv-h--section" id="themes-every">
           In every theme

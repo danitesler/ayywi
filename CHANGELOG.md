@@ -89,7 +89,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 - **Preview**
-  Home page "Themes that fit your brand" showed a list of colour names → a working coffee shop (tabs, filter chips, price range, sort, product cards, cart) you recolour live with colour swatches, a custom colour and a corner style.
+  Themes page previewed a full showcase app in an iframe → the same small report-card app, restyled live by the panel's colour, corners, fonts and theme.
+- **Preview**
+  Home page "Themes that fit your brand" showed a list of colour names → a small app (report card with stat, chart, form and buttons) you recolour live with colour swatches, a custom colour and a corner style.
 - **Preview**
   One sidebar holding Start, Foundations and every component category → a header with Docs, Components, Examples and Themes tabs, search and appearance; Docs and Components each have their own sidebar, and old links like `#/button` or `#/colors` still open the same page.
 - **Preview**
