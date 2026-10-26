@@ -100,6 +100,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 - **Preview**
+  Home page agent block was one fixed terminal snippet → tabs for Quick start, npm package, No build and By hand, each with its own copy button, in a block that keeps one 320px height so the page doesn't jump between tabs.
+- **Preview**
   Themes page previewed a full showcase app in an iframe → the same small report-card app, restyled live by the panel's colour, corners, fonts and theme.
 - **Preview**
   Home page "Themes that fit your brand" showed a list of colour names → a small app (report card with stat, chart, form and buttons) you recolour live with colour swatches, a custom colour and a corner style.

@@ -1236,6 +1236,28 @@
   }
 }
 
+/* Home: the agent setup, where tabs pick the path and the code stays one height (320px) so it doesn't jump. */
+.pv-agent-setup .ayy-tabs__panel {
+  min-inline-size: 0;
+}
+
+.pv-agent-setup .pv-code {
+  block-size: 20rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.pv-agent-setup .pv-code__bar {
+  flex: none;
+}
+
+.pv-agent-setup .pv-code__pre {
+  flex: 1;
+  min-block-size: 0;
+  max-block-size: none;
+  overflow-y: auto;
+}
+
 .pv-brand-demo {
   display: flex;
   flex-direction: column;

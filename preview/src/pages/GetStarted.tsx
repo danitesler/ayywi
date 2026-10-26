@@ -10,40 +10,11 @@ import {
   TabsTrigger,
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
-import { buildPrompt, headTags, links, QUICK_START, type Links } from "../prompts";
+import { buildPrompt, links, QUICK_START, SETUPS, type Setup } from "../prompts";
 import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
 
 const ROUTE = "get-started";
-
-type Setup = "package" | "files";
-
-/** For a codebase: the agent sets ayywi up. Chat and AI builders are covered by the prompt above. */
-const SETUPS: Record<Setup, { label: string; prompt: (l: Links) => string }> = {
-  package: {
-    label: "npm package",
-    prompt: () => `Set up the ayywi design system in this project and build a first screen with it.
-
-1. Run npx -y @danitesler/ayywi init. That configures the ayywi agent skill, Cursor rules, AGENTS.md instructions, and the MCP server (with get_component, search, get_tokens, get_rules, create_brand and lint tools).
-2. Load ayywi once at the app entry: import "@danitesler/ayywi/css" (React: use "@danitesler/ayywi/react"; other frameworks: import "@danitesler/ayywi/elements" and use <ayy-*> elements).
-3. Follow the ayywi rules: components and tokens only. No hardcoded colours, no made-up classes, no left/right CSS.
-4. Ask me which brand colour and corners (pill, round, soft or sharp) to use, then run npx @danitesler/ayywi brand "<colour>" --name <app-name> --shape <corners> --out src/brand.css, load it after ayywi's CSS and set data-brand="<app-name>" on <html>. No preference: keep the monochrome default.
-5. Build a first screen that fits this project: an app uses the App shell (sidebar on wide screens, top bar + bottom nav on phones); a website uses Navbar, .ayy-container content and Footer. Include empty, loading and error states.
-6. Run npx @danitesler/ayywi lint and fix everything it reports. Then tell me which files you changed and how to open the screen.`,
-  },
-  files: {
-    label: "No build (CDN)",
-    prompt: (l) => `Set up the ayywi design system in this project and build a first screen with it. Don't install any packages.
-
-1. Load these once from the app's HTML entry, in <head>. They're pinned to one release, so a later one can't change your app; to own them, download them into the project (for example public/vendor/ayywi/, with the fonts/ folder next to fonts.css). With a bundler you can import the CSS instead.
-${headTags(l, "   ")}
-2. Before writing any UI, read ${l.docs}llms-full.txt: the rules, the patterns, the tokens and every component's API. For copy-ready HTML and React, read the page of each component you use: ${l.docs}llms/<component>.md (all listed in ${l.docs}llms.txt). Use only its classes (ayy-*), tokens (--ayy-*) and <ayy-*> elements. No hardcoded colours, no made-up classes, no left/right CSS.
-3. Save the rules at ${l.docs}ai/AGENTS.snippet.md into AGENTS.md (or CLAUDE.md, or .cursorrules) so later sessions follow them too.
-4. Ask me which brand colour and corners (pill, round, soft or sharp) to use, and apply them with ayywi.setBrand({ name, color, shape }) on DOMContentLoaded. No preference: keep the monochrome default.
-5. Build a first screen that fits this project. An app: the App shell (a sidebar on wide screens, a top bar and a Bottom nav on phones) with a Page header. A website: a Navbar, content at .ayy-container width and a Footer. Include its empty, loading and error states.
-6. Tell me which files you changed and how to open the screen.`,
-  },
-};
 
 /** Set up by hand: each step is one short block. */
 const MANUAL = {

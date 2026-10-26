@@ -40,6 +40,25 @@ test("get started and foundation pages render under Docs", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("the home page's agent setup switches between the four ways in, at one height", async ({ page }) => {
+  const errors = await open(page, "");
+  const block = page.locator(".pv-agent-setup");
+  await expect(block.getByRole("tab", { name: "Quick start" })).toHaveAttribute("aria-selected", "true");
+  const height = () => block.locator(".pv-code").evaluate((el) => el.getBoundingClientRect().height);
+  expect(await height()).toBe(320);
+  for (const [name, copy] of [
+    ["npm package", "Copy prompt"],
+    ["No build", "Copy prompt"],
+    ["By hand", "Copy"],
+  ]) {
+    await block.getByRole("tab", { name, exact: true }).click();
+    await expect(block.getByRole("tab", { name, exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(block.getByRole("button", { name: copy, exact: true })).toBeVisible();
+    expect(await height(), name).toBe(320);
+  }
+  expect(errors).toEqual([]);
+});
+
 test("links from before the header tabs land on the same page", async ({ page }) => {
   await open(page, "");
   for (const [old, now, title] of [

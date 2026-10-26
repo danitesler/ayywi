@@ -1,10 +1,26 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft01Icon, ArrowRight01Icon, Search01Icon } from "@hugeicons/core-free-icons";
-import { Button, buttonClass, Footer, FooterBottom, FooterBrand, FooterGroup, FooterLink, FooterNav, Icon, Shortcut } from "@danitesler/ayywi/react";
+import {
+  Button,
+  buttonClass,
+  Footer,
+  FooterBottom,
+  FooterBrand,
+  FooterGroup,
+  FooterLink,
+  FooterNav,
+  Icon,
+  Shortcut,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@danitesler/ayywi/react";
 import { themes } from "@danitesler/ayywi";
 import { version } from "../../../package.json";
 import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
+import { buildPrompt, links, QUICK_START, SETUPS } from "../prompts";
 import { GITHUB } from "../routes";
 import { showcaseApps } from "../showcase/apps";
 import { BrandDemo } from "./BrandDemo";
@@ -22,8 +38,54 @@ const COLLAGE: { ref: string; zoom?: number }[][] = [
   [{ ref: "settings/preferences" }, { ref: "list/inbox" }],
 ];
 
-const INIT = `npx @danitesler/ayywi init
+const MANUAL = `npm install @danitesler/ayywi
+npx @danitesler/ayywi init
 npx @danitesler/ayywi lint`;
+
+/** The same choices as Get started, on the home page: ask the AI, or do it yourself. */
+type AgentTab = "quick" | "package" | "files" | "manual";
+
+const AGENT_TABS: { id: AgentTab; label: string }[] = [
+  { id: "quick", label: "Quick start" },
+  { id: "package", label: "npm package" },
+  { id: "files", label: "No build" },
+  { id: "manual", label: "By hand" },
+];
+
+function AgentSetup() {
+  const [tab, setTab] = useState<AgentTab>("quick");
+  const panels: Record<AgentTab, { code: string; label: string; wrap?: boolean; language?: string }> = {
+    quick: { code: buildPrompt(QUICK_START), label: "prompt", wrap: true },
+    package: { code: SETUPS.package.prompt(links()), label: "prompt", wrap: true },
+    files: { code: SETUPS.files.prompt(links()), label: "prompt", wrap: true },
+    manual: { code: MANUAL, label: "terminal", language: "sh" },
+  };
+
+  return (
+    <div className="pv-agent-setup">
+      <Tabs value={tab} onValueChange={(value) => setTab(value as AgentTab)}>
+        <TabsList aria-label="Set up ayywi">
+          {AGENT_TABS.map(({ id, label }) => (
+            <TabsTrigger key={id} value={id}>
+              {label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {AGENT_TABS.map(({ id }) => (
+          <TabsContent key={id} value={id}>
+            <CodeBlock
+              code={panels[id].code}
+              label={panels[id].label}
+              language={panels[id].language}
+              wrap={panels[id].wrap}
+              copyLabel={panels[id].wrap ? "Copy prompt" : "Copy"}
+            />
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  );
+}
 
 function Feature({ title, children, href, link, visual }: { title: string; children: ReactNode; href: string; link: string; visual: ReactNode }) {
   return (
@@ -252,7 +314,7 @@ export function Landing({ onSearch }: { onSearch: () => void }) {
         in React, any other framework or plain HTML.
       </Feature>
 
-      <Feature title="A design system your agent can use" href="#/docs/get-started" link="Set up your agent" visual={<CodeBlock code={INIT} label="terminal" language="sh" />}>
+      <Feature title="A design system your agent can use" href="#/docs/get-started" link="Set up your agent" visual={<AgentSetup />}>
         One command installs a skill, the rules, a hook that lints every UI file the agent writes and an MCP server, so it looks
         components up instead of inventing them.
       </Feature>
