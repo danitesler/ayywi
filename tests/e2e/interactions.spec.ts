@@ -189,18 +189,19 @@ for (const renderer of ["react", "html"] as const) {
       await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
 
-      // Toggle again collapses it, and the preview stays shut while the pointer is still on the toggle.
+      // Toggle again collapses it. The rail slides out from under the stationary pointer; the hold keeps the
+      // preview shut on the way out, then lets go once the pointer is clear. A broken hold would stick the preview
+      // open under the pointer instead of settling back to the rail.
       const icon = sidebar.locator(".ayy-app-shell__link:has(svg)").first().locator("svg");
       const iconXOpen = (await icon.boundingBox())!.x;
       await toggle.click();
       await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
-      await expect(sidebar).toHaveAttribute("data-ayy-hold", "");
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
+      await settle(sidebar);
+      expect(Math.round((await sidebar.boundingBox())!.width)).toBeLessThan(70);
       // The icons barely move between the open sidebar and the rail: rows keep their place.
       expect(Math.abs((await icon.boundingBox())!.x - iconXOpen)).toBeLessThan(6);
-      // Leaving lets it go; coming back previews again.
-      await main.hover();
-      await expect(sidebar).not.toHaveAttribute("data-ayy-hold");
+      // Coming back previews again, and leaving collapses it back.
       await sidebar.hover();
       await expect.poll(async () => Math.round((await sidebar.boundingBox())!.width)).toBeGreaterThan(200);
       await main.hover();
