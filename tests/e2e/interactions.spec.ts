@@ -2060,6 +2060,127 @@ for (const renderer of ["react", "html"] as const) {
       await textarea.fill("ops@ada");
       await expect(listbox).toBeHidden();
     });
+
+    test("block editor splits and joins lines, turns Markdown, / and @ into blocks and chips, formats, selects across and moves blocks", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "page").locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const line = (n: number) => blocks.nth(n).locator(":scope > .ayy-block-editor__text");
+      const menu = editor.locator(".ayy-block-editor__menu");
+      const caret = (n: number, offset: number | "end") =>
+        line(n).evaluate((el, at) => {
+          el.focus();
+          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+          let left = at === "end" ? Number.POSITIVE_INFINITY : at;
+          let last: Node = el;
+          for (let t = walker.nextNode(); t; t = walker.nextNode()) {
+            last = t;
+            if (left <= (t as Text).length) return getSelection()!.collapse(t, left);
+            left -= (t as Text).length;
+          }
+          getSelection()!.collapse(last, last === el ? el.childNodes.length : (last as Text).length);
+        }, offset);
+      await expect(blocks).toHaveCount(17);
+
+      // Enter splits a line at the caret; Backspace at the start of the new one joins them again.
+      await caret(1, 4);
+      await page.keyboard.press("Enter");
+      await expect(blocks).toHaveCount(18);
+      await expect(line(1)).toHaveText("Ship");
+      await expect(line(2)).toHaveText(/^ the new onboarding/);
+      await page.keyboard.press("Backspace");
+      await expect(blocks).toHaveCount(17);
+      await expect(line(1)).toHaveText(/^Ship the new onboarding/);
+
+      // Markdown at the start of a line makes a block; "/" opens the block menu, filtered by what follows.
+      await caret(16, 0);
+      await page.keyboard.type("## Notes");
+      await expect(blocks.nth(16)).toHaveAttribute("data-type", "heading-2");
+      await page.keyboard.press("Enter");
+      await page.keyboard.type("/quo");
+      await expect(menu).toBeVisible();
+      await expect(menu.getByRole("option").first()).toHaveAttribute("aria-selected", "true");
+      await expect(menu.getByRole("option").first()).toContainText("Quote");
+      await page.keyboard.press("Enter");
+      await expect(menu).toBeHidden();
+      await expect(blocks.nth(17)).toHaveAttribute("data-type", "quote");
+
+      // "@" opens mentions; Enter puts a chip in the line and typing goes on after it.
+      await page.keyboard.type("Ask @gr");
+      await expect(menu.getByRole("option", { name: /Grace Hopper/ })).toHaveAttribute("aria-selected", "true");
+      await page.keyboard.press("Enter");
+      await page.keyboard.type("today");
+      await expect(line(17).locator(".ayy-block-editor__mention")).toHaveAttribute("data-id", "grace");
+      await expect(line(17)).toHaveText("Ask @Grace Hopper today");
+
+      // **bold** turns into bold as it's typed; Mod+B toggles it on a selection.
+      await page.keyboard.type(" **now*");
+      await page.keyboard.type("*");
+      await expect(line(17).locator("strong")).toHaveText("now");
+      await page.keyboard.press("Control+a");
+      await page.keyboard.press("Control+i");
+      await expect(line(17).locator("em")).toHaveText("Ask @Grace Hopper today now");
+
+      // Shift+↓ on a line's last row selects into the next block; typing replaces the text across both, undo brings it back.
+      await expect(blocks).toHaveCount(18);
+      await caret(9, 9);
+      await page.keyboard.press("Shift+ArrowDown");
+      await expect(editor).toHaveAttribute("contenteditable", "true");
+      await page.keyboard.type("X");
+      await expect(blocks).toHaveCount(17);
+      await expect(line(9)).toHaveText(/^Internal X/);
+      await page.keyboard.press("Control+z");
+      await expect(blocks).toHaveCount(18);
+      await expect(line(9)).toHaveText("Internal workspaces, behind a flag");
+
+      // Esc selects the block, Shift+↑ adds the one above, Mod+Shift+↑ moves both, Delete removes them.
+      await caret(10, 0);
+      await page.keyboard.press("Escape");
+      await expect(blocks.nth(10)).toHaveAttribute("data-selected", "");
+      await page.keyboard.press("Shift+ArrowUp");
+      await expect(editor.locator("[data-selected]")).toHaveCount(2);
+      await page.keyboard.press("Control+Shift+ArrowUp");
+      await expect(line(8)).toHaveText("Internal workspaces, behind a flag");
+      await expect(blocks.nth(10)).toHaveAttribute("data-type", "heading-2");
+      await page.keyboard.press("Delete");
+      await expect(blocks).toHaveCount(16);
+      await page.keyboard.press("Control+z");
+      await expect(blocks).toHaveCount(18);
+    });
+
+    test("block editor code blocks keep new lines, switch language from their header with type-ahead, and hide the gutter while typing", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "page").locator(".ayy-block-editor");
+      const block = editor.locator('[data-type="code"]');
+      const code = block.locator(".ayy-block-editor__text");
+      const language = block.locator("button[data-code-language]");
+      await expect(language).toHaveText("TypeScript");
+
+      // Enter in code is a new line, also after typing (the browser may split the line into <div>s instead).
+      await code.evaluate((el) => {
+        el.focus();
+        getSelection()!.collapse(el.firstChild!, 0);
+      });
+      await page.keyboard.type("x");
+      await page.keyboard.press("Enter");
+      await page.keyboard.type("y");
+      await expect(code).toHaveText(/^x\ny\/\/ Start/);
+      await expect(editor).toHaveAttribute("data-typing", "");
+      await expect(block.locator(".ayy-block-editor__gutter")).toHaveCSS("opacity", "0");
+
+      // The language button opens a list; typing jumps to a match; Enter picks it and focus returns to the button.
+      await language.focus();
+      await page.keyboard.press("Enter");
+      const menu = editor.locator('.ayy-block-editor__menu[data-mode="language"]');
+      await expect(menu).toBeVisible();
+      await page.keyboard.press("p");
+      await page.keyboard.press("y");
+      await expect(menu.locator('[aria-selected="true"]')).toHaveText("Python");
+      await page.keyboard.press("Enter");
+      await expect(menu).toBeHidden();
+      await expect(language).toHaveText("Python");
+      await expect(language).toBeFocused();
+    });
   });
 }
 

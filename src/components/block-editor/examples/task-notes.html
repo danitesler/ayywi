@@ -1,0 +1,21 @@
+<div class="ayy-card" style="max-inline-size: 34rem">
+  <div class="ayy-card__header">
+    <h3 class="ayy-card__title">Migrate legacy plans</h3>
+    <p class="ayy-card__description">Due 14 Nov · Billing</p>
+  </div>
+  <div class="ayy-card__content ayy-stack">
+    <ayy-block-editor label="Notes" placeholder="Add notes… type / for headings, lists and more">
+      <div class="ayy-block-editor ayy-block-editor--inset">
+        <div class="ayy-block-editor__block" data-type="text"><div class="ayy-block-editor__text">Customers on the old plan keep their price until renewal.</div></div>
+        <div class="ayy-block-editor__block" data-type="bullet"><span class="ayy-block-editor__marker" aria-hidden="true">•</span><div class="ayy-block-editor__text">Email them <strong>30 days</strong> before</div></div>
+        <div class="ayy-block-editor__block" data-type="bullet"><span class="ayy-block-editor__marker" aria-hidden="true">•</span><div class="ayy-block-editor__text">Link the <a href="https://example.com/pricing">new pricing page</a></div></div>
+        <div class="ayy-block-editor__block" data-type="todo"><input type="checkbox" class="ayy-checkbox ayy-block-editor__check" aria-label="Done"><div class="ayy-block-editor__text">Draft the email</div></div>
+      </div>
+    </ayy-block-editor>
+    <div class="ayy-field ayy-field--inline">
+      <!-- The readonly attribute switches the editor between editing and showing. -->
+      <input class="ayy-switch" type="checkbox" role="switch" id="notes-locked-html" onchange="this.closest('.ayy-card').querySelector('ayy-block-editor').toggleAttribute('readonly', this.checked)" />
+      <label class="ayy-label" for="notes-locked-html">Read only</label>
+    </div>
+  </div>
+</div>

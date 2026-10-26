@@ -1,0 +1,126 @@
+{
+  "name": "Block editor",
+  "slug": "block-editor",
+  "category": "Forms",
+  "description": "A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, quotes, callouts, code, dividers, images, embeds and files. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place.",
+  "aka": ["block-editor", "rich-text-editor", "rich-text", "wysiwyg", "notion-editor", "document-editor", "notes-editor", "page-editor"],
+  "classes": {
+    "ayy-block-editor": "Root. The editor renders its blocks inside it, then the floating menu, formatting bar and caret anchor. Leave room at its inline start for the gutter (about 3.25rem of padding in its container), or use --inset.",
+    "ayy-block-editor--inset": "Keeps the gutter inside the editor's own box, for containers with no padding to hang it in.",
+    "ayy-block-editor__block": "One block. data-type says what it is; data-indent (1–4) nests it, data-checked marks a done to-do, data-selected a block in a block selection, data-dragging one being carried. In plain HTML you can write just <div class=\"ayy-block-editor__block\" data-type=\"heading-1\">Title</div>; the editor builds the rest.",
+    "ayy-block-editor__gutter": "The + and the drag handle at the block's inline start; shown while the pointer is over the block (on touch screens, next to the line being written).",
+    "ayy-block-editor__add": "The + button: a new line below with / typed, so the block menu opens. Alt-click adds it above.",
+    "ayy-block-editor__handle": "The drag handle (.ayy-drag-handle): drag to move the block, or every selected block; click for block actions (duplicate, move, delete, turn into).",
+    "ayy-block-editor__text": "The editable line of a text block (contenteditable, role=\"textbox\"). Inline content: strong, em, u, s, code, links and mention chips. Shows data-placeholder while empty.",
+    "ayy-block-editor__marker": "A list's bullet or number, drawn by the editor (1. a. i. by nesting level).",
+    "ayy-block-editor__check": "A to-do's checkbox (.ayy-checkbox).",
+    "ayy-block-editor__icon": "A callout's icon.",
+    "ayy-block-editor__code-bar": "A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).",
+    "ayy-block-editor__code-button": "A button in the code header: the language (opens a menu of languages; plain text in read-only) or Copy (a check while copied, data-copied).",
+    "ayy-block-editor__rule": "A divider's line (<hr>).",
+    "ayy-block-editor__media": "The <figure> of an image or embed block.",
+    "ayy-block-editor__frame": "The box around an image, a player or a link card. data-ratio=\"video|audio|square\" sizes a provider's player.",
+    "ayy-block-editor__image": "An image block's <img>.",
+    "ayy-block-editor__resize": "The handle on an image's inline-end edge (role=\"separator\"): drag, or use the arrow keys, to set its width.",
+    "ayy-block-editor__caption": "An image or embed's editable caption (also the image's alt text). Its placeholder shows on hover and focus.",
+    "ayy-block-editor__bookmark": "An embed of a page that isn't a player: a quiet card with the site and the address.",
+    "ayy-block-editor__bookmark-title": "The site's name in a link card.",
+    "ayy-block-editor__bookmark-url": "The address in a link card, truncated.",
+    "ayy-block-editor__file": "A file block: a link to download it, with its icon, name and size.",
+    "ayy-block-editor__file-name": "A file's name, truncated.",
+    "ayy-block-editor__file-size": "A file's size, muted.",
+    "ayy-block-editor__empty": "An image, embed or file block with nothing in it yet: a muted panel with a link field and an Upload button. aria-busy=\"true\" while a file uploads.",
+    "ayy-block-editor__mention": "A mention chip inside text (contenteditable=\"false\", data-trigger, data-id, data-label): text with a faint wash, never a loud pill.",
+    "ayy-block-editor__mention-trigger": "The @ or # of a mention, muted.",
+    "ayy-block-editor__menu": "The floating list (.ayy-combobox__listbox) for /, mentions, block actions and a code block's language. data-mode=\"slash|mention|actions|language\".",
+    "ayy-block-editor__menu-label": "A group heading in the menu (Basic blocks, Media, People, Turn into).",
+    "ayy-block-editor__option": "One menu row (.ayy-combobox__option, role=\"option\"). data-current marks a block's current type, data-destructive Delete.",
+    "ayy-block-editor__option-icon": "The tile in front of a menu row: the block type's icon, or an Avatar for a person.",
+    "ayy-block-editor__option-text": "A menu row's name and hint.",
+    "ayy-block-editor__option-hint": "A menu row's muted second line.",
+    "ayy-block-editor__toolbar": "The formatting bar (.ayy-toolbar--floating) over a text selection: bold, italic, underline, strikethrough, code, link. Over a link it shows the link's address.",
+    "ayy-block-editor__link-form": "The link field in the formatting bar, with Open and Remove.",
+    "ayy-block-editor__anchor": "A hidden box the script places over the caret or the selection for the menu and the bar to hang from."
+  },
+  "variants": {
+    "inset": { "values": [false, true], "default": false },
+    "readOnly": { "values": [false, true], "default": false }
+  },
+  "states": {
+    "default": { "looks": "Plain text on the page: no borders or boxes; headings in --ayy-font-heading; lists, quotes, callouts and code in their own quiet styles. The gutter is hidden." },
+    "hover": { "when": ":hover on a block (devices that hover)", "looks": "Its gutter (+ and the drag handle) fades in at the inline start; a hovered image shows its resize handle and its caption placeholder; gutter buttons, link cards and file rows get --ayy-color-wash-hover." },
+    "pressed": { "none": "No pressed look: pressing the handle starts a drag or opens block actions, pressing text places the caret." },
+    "focus": { "when": "A line with the caret (:focus inside .ayy-block-editor__text), or the editor itself while blocks are selected; :focus-visible on the gutter buttons, the resize handle, link cards and file rows", "looks": "The caret, and an empty line's hint (Type / for blocks). Selected blocks show their tint; buttons and handles get the 2px --ayy-color-ring outline." },
+    "disabled": { "none": "Use readOnly to show a document that can't be edited." },
+    "selected": { "when": "data-selected on blocks: Esc in a line, Shift+click, Mod+A twice, or the handle's menu", "looks": "A 12% --ayy-color-primary tint behind the block; images, players and files also get the --ayy-color-ring outline. Forced colours: a Highlight outline." },
+    "error": { "none": "No error look on the editor; a link that isn't a valid URL marks the link field (aria-invalid) instead. Say why a save failed in an Alert or a toast." },
+    "loading": { "when": "aria-busy=\"true\" on .ayy-block-editor__empty while a dropped, pasted or picked file uploads", "looks": "The media panel dims to 60% and stops taking the pointer until the file's URL arrives." },
+    "checked": { "when": "data-checked on a to-do block (its checkbox, or Mod+Enter in the line)", "looks": "The checkbox is checked; the text turns --ayy-color-muted with a line through it." },
+    "dragging": { "when": "data-dragging on the blocks being carried by the handle", "looks": "They dim to 40%; a raised copy (or a chip saying \"3 blocks\") follows the pointer and a 2px primary line shows where they'll land." },
+    "empty": { "when": "data-empty on the root: the document is one empty line", "looks": "The placeholder shows in that line, focused or not." },
+    "typing": { "when": "data-typing on the root: set by typing, cleared when the pointer moves or presses", "looks": "The gutters and code blocks' Copy fade out, so nothing moves beside the words being written." },
+    "read-only": { "when": "readOnly / the readonly attribute (aria-readonly=\"true\" on the root)", "looks": "No gutter, carets, placeholders or empty media panels; checkboxes are disabled, links and mentions open on click." }
+  },
+  "sizes": {
+    "density": "Text follows the type scale (body --ayy-text-md, headings 3xl, 2xl and xl), not density. Menu rows, the formatting bar and the media panel's field and button follow the control sizes, so data-density=\"touch\" makes them bigger; the gutter buttons stay 1.5rem.",
+    "width": "Fills its container; images and embeds fill the column (an image can be resized from 20% to 100%). The gutter hangs about 3.25rem outside the inline start, or inside with --inset."
+  },
+  "js": "blockEditorClass({ inset?, className? }) → string; connectBlockEditor(root, { value?, placeholder?, label?, readOnly?, mentions?, upload?, onChange?, onMentionClick? }) → { getValue, setValue, setOptions, focus, destroy }; blockEditorBlock(type, fields?) makes a block; blockEditorNormalize(value) cleans one; blockEditorToMarkdown, blockEditorFromMarkdown, blockEditorToHtml and blockEditorToText convert (no DOM needed); blockEditorMentionHtml({ trigger, id, label }) is a mention chip for a block's html; blockEditorCodeLanguages lists the languages a code block offers (block.language holds the id, highlighted with Code block's tokenizer); blockEditorEmbed(url) says what an embed block shows; blockEditorCleanHtml(html) keeps only the inline HTML the editor makes.",
+  "element": {
+    "tag": "ayy-block-editor",
+    "description": "Makes the .ayy-block-editor inside it a block editor. The starting blocks are the ones written inside it (short form: <div class=\"ayy-block-editor__block\" data-type=\"todo\" data-checked>Done</div>) or a <script type=\"application/json\"> value; mention lists come from a <script type=\"application/json\" data-mentions> child of the element. Properties: value (read or replace the blocks), mentions, upload (a function that stores a file and returns its URL).",
+    "children": "A <div class=\"ayy-block-editor\"> of blocks, and optionally a <script type=\"application/json\" data-mentions> with mention lists.",
+    "attributes": {
+      "placeholder": "Shown while the document is empty.",
+      "label": "Accessible name of the editor (default \"Editor\").",
+      "readonly": "Show the document without editing it."
+    },
+    "events": {
+      "ayy-change": "{ value } — every block, after each change.",
+      "ayy-mention-click": "{ trigger, id, label } — a mention chip was clicked."
+    }
+  },
+  "react": {
+    "import": "import { BlockEditor } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "BlockEditor": {
+        "renders": "<div class=\"ayy-block-editor\"> that the editor fills with blocks",
+        "props": {
+          "value": "BlockEditorBlock[] — the document, controlled (pass back what onChange gives you).",
+          "defaultValue": "BlockEditorBlock[] — the document to start with, uncontrolled.",
+          "onChange": "(value: BlockEditorBlock[]) => void — after every change.",
+          "placeholder": "string — shown while the document is empty.",
+          "readOnly": "boolean — show the document without editing it.",
+          "mentions": "BlockEditorMentionSource[] — { trigger, label?, options } per trigger; options is a list of { id, label, hint?, avatar? } or a (query) => list or Promise of one.",
+          "upload": "(file: File) => string | Promise<string> — store a pasted, dropped or picked file, return its URL. Default: a data: URL.",
+          "onMentionClick": "(mention: { trigger, id, label }, event: MouseEvent) => void",
+          "inset": "boolean — keep the gutter inside the editor's box.",
+          "aria-label": "string — accessible name of the editor (default \"Editor\").",
+          "...rest": "Native <div> attributes (id, className, style…)."
+        }
+      }
+    }
+  },
+  "a11y": [
+    "Name the editor (aria-label in React, label on <ayy-block-editor>): it's a role=\"group\" of lines, each a role=\"textbox\" named by its type (Text, Heading 1, To-do list).",
+    "Everything works from the keyboard: Enter, Backspace and the arrows move through blocks; Tab and Shift+Tab nest; Esc selects the block (then ↑/↓, Shift+↑/↓, Delete, Mod+D, Mod+Shift+↑/↓, Enter to edit again); Mod+/ opens block actions, Mod+Alt+0–8 turns a block into another type, Mod+B/I/U, Mod+Shift+S, Mod+E and Mod+K format. Tab nests, so the way out of the editor is Esc twice, then Tab.",
+    "The / and mention menus keep focus in the line: ↑/↓ move through aria-activedescendant, Enter or Tab picks, Esc closes without closing a parent Dialog. The block actions menu takes focus and gives it back.",
+    "Block selections, moves and failed uploads are read out in a polite live region.",
+    "Images take their caption as alt text: write one for every picture that carries meaning."
+  ],
+  "do": [
+    "Use a Block editor for documents people write and come back to: notes on a task, a page in a wiki, a spec, a long description with headings, lists, to-dos and media.",
+    "Store the value (blocks) as it is, or convert it with blockEditorToMarkdown / blockEditorFromMarkdown when the storage is Markdown, and render it elsewhere with blockEditorToHtml.",
+    "Pass mentions for the people and records your app has (@ for people, # for issues), with a function when the list is long or remote.",
+    "Pass upload so pasted, dropped and picked files go to your storage instead of the default data: URLs."
+  ],
+  "dont": [
+    "Don't use a Block editor for a short reply, a comment or a single field — use Textarea, or Mentions when the text needs @mentions.",
+    "Don't wrap it in a bordered box like an input: it's the page. Put it straight in the page or a Card, with room at its inline start for the gutter (or --inset).",
+    "Don't trust a value from elsewhere as HTML: pass it through the editor or blockEditorNormalize, which keep only the inline HTML it makes."
+  ],
+  "examples": [
+    { "id": "page", "title": "A page: headings, lists, to-dos, a callout, mentions, an image and code" },
+    { "id": "task-notes", "title": "Task notes in a Card, editable or read-only" }
+  ]
+}

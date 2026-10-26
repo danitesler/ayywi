@@ -91,6 +91,7 @@ export * from "./components/pin-input/pin-input";
 export * from "./components/rating/rating";
 export * from "./components/transfer-list/transfer-list";
 export * from "./components/mentions/mentions";
+export * from "./components/block-editor/block-editor";
 
 /** `var(--ayy-…)` reference for a token, e.g. cssVar("color.bg") → "var(--ayy-color-bg)". */
 export function cssVar(name: TokenName): string {

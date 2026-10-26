@@ -1,0 +1,924 @@
+/* Block editor: a document made of blocks, edited in place like Notion. Quiet by design: no borders or boxes around
+   the text, the gutter (+ and the drag handle) only shows next to the block under the pointer, and a selection is a
+   soft tint. State lives in attributes the script sets:
+     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, code, divider, image, embed, file)
+     [data-indent="1…4"]    nesting level of a list item or line
+     [data-checked]         a to-do that's done
+     [data-selected]        a block in a block selection (Esc, Shift+click, the handle)
+     [data-dragging]        a block being carried by its handle (the drop line is drag-drop's [data-drop-edge])
+     [data-empty]           on the root while the document is one empty line (its placeholder shows)
+     [aria-readonly="true"] on the root: shown, not edited */
+
+.ayy-block-editor {
+  --_indent: 1.625rem;
+  --_gutter: 3.25rem;
+  --_button: 1.5rem;
+  position: relative;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  padding-block-end: var(--ayy-space-6);
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-md);
+  line-height: var(--ayy-leading-normal);
+  overflow-wrap: break-word;
+}
+
+/* The editor is the editing host only while a selection crosses blocks; the caret and the selected blocks show focus. */
+.ayy-block-editor:focus-visible {
+  outline: none;
+}
+
+/* Keep the gutter inside the editor's own box, for containers without room in their padding. */
+.ayy-block-editor--inset {
+  padding-inline-start: var(--_gutter);
+}
+
+/* ---- Blocks ---- */
+
+.ayy-block-editor__block {
+  --_depth: 0;
+  --_lh: calc(1em * var(--ayy-leading-normal));
+  --_pad: var(--ayy-space-0-5);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+  margin-block: 1px;
+  padding-block: var(--_pad);
+  padding-inline-start: calc(var(--_depth) * var(--_indent));
+  border-radius: var(--ayy-radius-sm);
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__block[data-indent="1"] { --_depth: 1; }
+.ayy-block-editor__block[data-indent="2"] { --_depth: 2; }
+.ayy-block-editor__block[data-indent="3"] { --_depth: 3; }
+.ayy-block-editor__block[data-indent="4"] { --_depth: 4; }
+
+/* Headings get air above them and a little below, so a heading reads as the start of a section, not one more line. */
+.ayy-block-editor__block[data-type^="heading"] {
+  margin-block-end: var(--ayy-space-1);
+  font-family: var(--ayy-font-heading);
+  font-weight: var(--ayy-weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.ayy-block-editor__block[data-type="heading-1"] {
+  --_lh: calc(1em * var(--ayy-leading-tight));
+  margin-block-start: var(--ayy-space-8);
+  font-size: var(--ayy-text-3xl);
+  line-height: var(--ayy-leading-tight);
+}
+
+.ayy-block-editor__block[data-type="heading-2"] {
+  --_lh: calc(1em * var(--ayy-leading-tight));
+  margin-block-start: var(--ayy-space-6);
+  font-size: var(--ayy-text-2xl);
+  line-height: var(--ayy-leading-tight);
+}
+
+.ayy-block-editor__block[data-type="heading-3"] {
+  --_lh: calc(1em * var(--ayy-leading-snug));
+  margin-block-start: var(--ayy-space-4);
+  font-size: var(--ayy-text-xl);
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-block-editor__block:first-child {
+  margin-block-start: 0;
+}
+
+/* Phones: headings a step smaller, so a long word still fits a narrow column. */
+@media (max-width: 48rem) {
+  .ayy-block-editor__block[data-type="heading-1"] {
+    font-size: var(--ayy-text-2xl);
+  }
+  .ayy-block-editor__block[data-type="heading-2"] {
+    font-size: var(--ayy-text-xl);
+  }
+  .ayy-block-editor__block[data-type="heading-3"] {
+    font-size: var(--ayy-text-lg);
+  }
+}
+
+/* A block in a block selection: a soft primary tint, like Notion's blue blocks. */
+.ayy-block-editor__block[data-selected] {
+  background-color: color-mix(in srgb, var(--ayy-color-primary) 12%, transparent);
+}
+
+.ayy-block-editor__block[data-dragging] {
+  opacity: 0.4;
+}
+
+/* ---- The gutter: + and the drag handle, hanging at the inline start of the block under the pointer ---- */
+
+.ayy-block-editor__gutter {
+  position: absolute;
+  inset-block-start: calc(var(--_pad) + (var(--_lh) - var(--_button)) / 2);
+  inset-inline-start: calc(var(--_depth) * var(--_indent) - var(--_gutter));
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  /* No font-size here: --_lh is in em of the block's own text, so the gutter lines up with a heading's first line too. */
+  font-family: var(--ayy-font-body);
+  font-weight: var(--ayy-weight-regular);
+  letter-spacing: normal;
+  line-height: 1;
+  opacity: 0;
+  user-select: none;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__block[data-type="callout"] > .ayy-block-editor__gutter {
+  inset-inline-start: calc(var(--_depth) * var(--_indent) - var(--_gutter) - var(--ayy-space-4));
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__block:hover > .ayy-block-editor__gutter {
+    opacity: 1;
+  }
+}
+
+/* Touch screens have no hover: the handle stays next to the line being written, big enough to press. Enter and / add blocks there, so the + steps aside. */
+@media (hover: none) {
+  .ayy-block-editor {
+    --_gutter: 2.5rem;
+    --_button: 2rem;
+  }
+  .ayy-block-editor__block:focus-within > .ayy-block-editor__gutter {
+    opacity: 1;
+  }
+  .ayy-block-editor__gutter .ayy-tooltip:has(> .ayy-block-editor__add) {
+    display: none;
+  }
+  .ayy-block-editor__handle {
+    inline-size: var(--_button);
+    block-size: var(--_button);
+  }
+}
+
+.ayy-block-editor__gutter:focus-within,
+.ayy-block-editor__block[data-selected] > .ayy-block-editor__gutter,
+.ayy-block-editor__gutter:has([aria-expanded="true"]) {
+  opacity: 1;
+}
+
+:root[data-ayy-dragging] .ayy-block-editor__gutter {
+  opacity: 0;
+}
+
+/* Writing hides the gutter and Copy until the pointer moves again, so nothing flickers beside the words (Notion). */
+.ayy-block-editor[data-typing] > .ayy-block-editor__block:not([data-selected]) > .ayy-block-editor__gutter:not(:has([aria-expanded="true"])),
+.ayy-block-editor[data-typing] > .ayy-block-editor__block > .ayy-block-editor__code-bar > .ayy-tooltip:not(:has([data-copied])) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ayy-block-editor__add {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_button);
+  block-size: var(--_button);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background: none;
+  color: var(--ayy-color-muted);
+  cursor: pointer;
+  transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__add:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-block-editor__add:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+.ayy-block-editor__add > svg,
+.ayy-block-editor__handle > svg {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+}
+
+.ayy-block-editor__handle {
+  inline-size: 1.125rem;
+}
+
+.ayy-block-editor__handle[aria-expanded="true"] {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+/* ---- Lines ---- */
+
+.ayy-block-editor__text {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  min-block-size: var(--_lh);
+  outline: none;
+  white-space: pre-wrap;
+  text-align: start;
+  caret-color: var(--ayy-color-text);
+}
+
+/* The hint on an empty line. Floated and flat, so the caret still sits at the start of the line. */
+.ayy-block-editor__text:empty::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  block-size: 0;
+  color: var(--ayy-color-muted);
+  pointer-events: none;
+}
+
+/* Text, lists and quotes hint only on the line being written; headings always name themselves; an empty document shows its placeholder. */
+.ayy-block-editor__block:not([data-type^="heading"]) > .ayy-block-editor__text:empty:not(:focus)::before {
+  display: none;
+}
+
+.ayy-block-editor[data-empty] > .ayy-block-editor__block:first-child > .ayy-block-editor__text:empty::before,
+.ayy-block-editor[data-empty] > .ayy-block-editor__block:first-child > .ayy-block-editor__text:empty:not(:focus)::before {
+  display: block;
+}
+
+.ayy-block-editor[aria-readonly="true"] .ayy-block-editor__text:empty::before {
+  display: none;
+}
+
+.ayy-block-editor__text strong {
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-block-editor__text code {
+  padding: 0.1em 0.3em;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash-hover);
+  font-family: var(--ayy-font-mono);
+  font-size: 0.875em;
+}
+
+.ayy-block-editor__text a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ayy-color-text) 35%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.ayy-block-editor__text a:hover {
+  text-decoration-color: currentColor;
+}
+
+.ayy-block-editor[aria-readonly="true"] .ayy-block-editor__text a {
+  cursor: pointer;
+}
+
+/* Bullets and numbers sit in a column of their own so wrapped lines hang under the text. */
+.ayy-block-editor__marker {
+  flex: none;
+  min-inline-size: 1.25em;
+  color: var(--ayy-color-text-soft);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  user-select: none;
+}
+
+.ayy-block-editor__block[data-type="number"] > .ayy-block-editor__marker {
+  min-inline-size: 1.5em;
+  text-align: end;
+}
+
+.ayy-block-editor__block > .ayy-block-editor__check {
+  margin-block-start: calc((var(--_lh) - var(--ayy-size-check)) / 2 + 0.1em);
+  margin-inline-end: var(--ayy-space-1);
+}
+
+.ayy-block-editor__block[data-checked] > .ayy-block-editor__text {
+  color: var(--ayy-color-muted);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--ayy-color-muted) 70%, transparent);
+}
+
+.ayy-block-editor__block[data-type="quote"] > .ayy-block-editor__text {
+  padding-inline-start: 0.875em;
+  border-inline-start: 3px solid currentColor;
+}
+
+.ayy-block-editor__block[data-type="callout"] {
+  --_pad: var(--ayy-space-3);
+  gap: var(--ayy-space-2);
+  margin-block: var(--ayy-space-1);
+  padding-inline: calc(var(--_depth) * var(--_indent) + var(--ayy-space-4)) var(--ayy-space-4);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-block-editor__icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  block-size: var(--_lh);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-block-editor__icon > svg {
+  inline-size: 1.25em;
+  block-size: 1.25em;
+}
+
+.ayy-block-editor__block[data-type="code"] > .ayy-block-editor__text {
+  overflow-x: auto;
+  padding: calc(var(--ayy-space-1-5) * 2 + 1.5rem) var(--ayy-space-4) var(--ayy-space-4);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash);
+  font-family: var(--ayy-font-mono);
+  font-size: 0.875em;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+.ayy-block-editor__block[data-type="code"] > .ayy-block-editor__gutter {
+  inset-block-start: calc(var(--_pad) + var(--ayy-space-1-5) + (1.5rem - var(--_button)) / 2);
+}
+
+/* A code block's header: its language at the start (a menu of languages), Copy at the end on hover. */
+.ayy-block-editor__code-bar {
+  position: absolute;
+  inset-block-start: calc(var(--_pad) + var(--ayy-space-1-5));
+  inset-inline: calc(var(--_depth) * var(--_indent) + var(--ayy-space-2)) var(--ayy-space-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--ayy-font-body);
+  font-size: var(--ayy-text-xs);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.ayy-block-editor__code-bar > * {
+  pointer-events: auto;
+}
+
+.ayy-block-editor__code-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--ayy-space-1-5);
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background: none;
+  color: var(--ayy-color-muted);
+  font: inherit;
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--ayy-duration-fast) ease, background-color var(--ayy-duration-fast) ease;
+}
+
+span.ayy-block-editor__code-button {
+  cursor: default;
+}
+
+.ayy-block-editor__code-button > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+@media (hover: hover) {
+  button.ayy-block-editor__code-button:hover {
+    background-color: var(--ayy-color-wash-hover);
+    color: var(--ayy-color-text);
+  }
+}
+
+.ayy-block-editor__code-button[aria-expanded="true"] {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-block-editor__code-button[data-copied] {
+  color: var(--ayy-color-success);
+}
+
+.ayy-block-editor__code-button:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+.ayy-block-editor__code-bar > .ayy-tooltip {
+  opacity: 0;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__block:hover > .ayy-block-editor__code-bar > .ayy-tooltip {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .ayy-block-editor__block:focus-within > .ayy-block-editor__code-bar > .ayy-tooltip {
+    opacity: 1;
+  }
+}
+
+.ayy-block-editor__code-bar > .ayy-tooltip:focus-within,
+.ayy-block-editor__code-bar > .ayy-tooltip:has([data-copied]) {
+  opacity: 1;
+}
+
+/* Code colours, the same as Code block's tokens, drawn as highlights over the text so typing is never disturbed. */
+::highlight(ayy-code-keyword),
+::highlight(ayy-code-tag) {
+  color: var(--ayy-color-destructive);
+}
+
+::highlight(ayy-code-string) {
+  color: var(--ayy-color-success);
+}
+
+::highlight(ayy-code-comment) {
+  color: var(--ayy-color-muted);
+}
+
+::highlight(ayy-code-function),
+::highlight(ayy-code-attribute),
+::highlight(ayy-code-property) {
+  color: var(--ayy-color-ai-active);
+}
+
+::highlight(ayy-code-number),
+::highlight(ayy-code-boolean) {
+  color: var(--ayy-color-warning);
+}
+
+::highlight(ayy-code-operator),
+::highlight(ayy-code-punctuation) {
+  color: var(--ayy-color-text-soft);
+}
+
+/* Mentions read as text with a faint wash, never as loud pills. The trigger character is muted. */
+.ayy-block-editor__mention {
+  padding-inline: 0.2em;
+  border-radius: var(--ayy-radius-sm);
+  background-color: color-mix(in srgb, var(--ayy-color-text) 6%, transparent);
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+  white-space: nowrap;
+  cursor: default;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__mention:hover {
+  background-color: color-mix(in srgb, var(--ayy-color-text) 11%, transparent);
+}
+
+.ayy-block-editor__mention-trigger {
+  color: var(--ayy-color-muted);
+  font-weight: var(--ayy-weight-regular);
+}
+
+.ayy-block-editor__rule {
+  flex: 1 1 auto;
+  block-size: 1px;
+  margin-block: calc(var(--_lh) / 2) 0;
+  border: 0;
+  background-color: var(--ayy-color-line);
+}
+
+.ayy-block-editor__block[data-type="divider"] {
+  min-block-size: calc(var(--_lh) + 1px);
+}
+
+/* ---- Media: images, embeds, files ---- */
+
+.ayy-block-editor__media {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+}
+
+.ayy-block-editor__frame {
+  position: relative;
+  max-inline-size: 100%;
+  border-radius: var(--ayy-radius-md);
+}
+
+.ayy-block-editor__frame[data-ratio] {
+  overflow: hidden;
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-block-editor__frame[data-ratio="video"] {
+  aspect-ratio: 16 / 9;
+}
+
+.ayy-block-editor__frame[data-ratio="square"] {
+  aspect-ratio: 4 / 3;
+}
+
+.ayy-block-editor__frame[data-ratio="audio"] {
+  block-size: 9.5rem;
+}
+
+.ayy-block-editor__frame > iframe {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+.ayy-block-editor__frame > video {
+  display: block;
+  inline-size: 100%;
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash);
+}
+
+.ayy-block-editor__frame > audio {
+  display: block;
+  inline-size: 100%;
+}
+
+.ayy-block-editor__image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--ayy-radius-md);
+}
+
+/* Drag the inline-end edge of an image to resize it (arrow keys when focused). */
+.ayy-block-editor__resize {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: grid;
+  place-items: center;
+  inline-size: var(--ayy-space-4);
+  cursor: ew-resize;
+  opacity: 0;
+  touch-action: none;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__resize::after {
+  content: "";
+  inline-size: 0.3125rem;
+  block-size: min(3rem, 40%);
+  border: 1px solid color-mix(in srgb, var(--ayy-color-surface) 70%, transparent);
+  border-radius: var(--ayy-radius-pill);
+  background-color: color-mix(in srgb, var(--ayy-color-text) 60%, transparent);
+  box-shadow: var(--ayy-shadow-rest);
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__frame:hover > .ayy-block-editor__resize {
+    opacity: 1;
+  }
+}
+
+.ayy-block-editor__resize:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+  border-radius: var(--ayy-radius-sm);
+}
+
+.ayy-block-editor__block[data-selected] .ayy-block-editor__frame,
+.ayy-block-editor__block[data-selected] > .ayy-block-editor__file {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+.ayy-block-editor__caption {
+  min-block-size: calc(1em * var(--ayy-leading-normal));
+  margin-block-start: var(--ayy-space-1-5);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+  outline: none;
+  white-space: pre-wrap;
+}
+
+.ayy-block-editor__caption:empty::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  block-size: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__caption:empty:focus::before {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__block:hover .ayy-block-editor__caption:empty::before {
+    opacity: 1;
+  }
+}
+
+/* A link that isn't a player: a quiet card with its site and address. */
+.ayy-block-editor__bookmark {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--ayy-space-2);
+  align-items: center;
+  padding: var(--ayy-space-3) var(--ayy-space-4);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-md);
+  color: var(--ayy-color-text);
+  text-decoration: none;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__bookmark > svg {
+  grid-row: span 2;
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
+  color: var(--ayy-color-muted);
+}
+
+.ayy-block-editor__bookmark-title {
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-block-editor__bookmark-url {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-block-editor__file {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  padding: var(--ayy-space-1-5) var(--ayy-space-2);
+  border-radius: var(--ayy-radius-md);
+  color: var(--ayy-color-text);
+  text-decoration: none;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__file > svg {
+  flex: none;
+  inline-size: 1.125em;
+  block-size: 1.125em;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-block-editor__file-name {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-block-editor__file-size {
+  flex: none;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__bookmark:hover,
+  .ayy-block-editor__file:hover {
+    background-color: var(--ayy-color-wash);
+  }
+}
+
+.ayy-block-editor__bookmark:focus-visible,
+.ayy-block-editor__file:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 2px;
+}
+
+/* An image, embed or file block that has nothing yet: a muted panel with a link field and an upload button. */
+.ayy-block-editor__empty {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  padding: var(--ayy-space-2) var(--ayy-space-3);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-muted);
+  font-family: var(--ayy-font-body);
+}
+
+.ayy-block-editor__empty > svg {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+.ayy-block-editor__empty > .ayy-input {
+  flex: 1 1 12rem;
+  min-inline-size: 0;
+}
+
+.ayy-block-editor__empty[aria-busy="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.ayy-block-editor__empty[hidden] {
+  display: none;
+}
+
+/* ---- The / menu, mentions and block actions: a Combobox list hanging from the caret or the handle ---- */
+
+.ayy-block-editor__menu {
+  inline-size: min(19rem, calc(100vw - 1rem));
+  max-block-size: min(22rem, 60vh);
+}
+
+.ayy-block-editor__menu[data-mode="language"] {
+  inline-size: 12rem;
+}
+
+.ayy-block-editor__menu-label {
+  padding: var(--ayy-space-2) var(--ayy-space-2) var(--ayy-space-1);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.ayy-block-editor__menu-label:first-child {
+  padding-block-start: var(--ayy-space-1);
+}
+
+.ayy-block-editor__option {
+  position: relative;
+  gap: var(--ayy-space-2);
+}
+
+.ayy-block-editor__option-icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-surface);
+  color: var(--ayy-color-text-soft);
+}
+
+.ayy-block-editor__option-icon > svg {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+}
+
+.ayy-block-editor__option-icon:has(> .ayy-avatar) {
+  inline-size: auto;
+  block-size: auto;
+  border: 0;
+  background: none;
+}
+
+/* Block actions are a short list: plain icons, no tiles. */
+.ayy-block-editor__menu[data-mode="actions"] .ayy-block-editor__option-icon {
+  inline-size: auto;
+  block-size: auto;
+  border: 0;
+  background: none;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-block-editor__option-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+  line-height: var(--ayy-leading-snug);
+}
+
+.ayy-block-editor__option-hint {
+  overflow: hidden;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-block-editor__option > .ayy-combobox__meta {
+  font-family: var(--ayy-font-mono);
+}
+
+.ayy-block-editor__menu[data-mode="actions"] .ayy-combobox__meta {
+  font-family: inherit;
+}
+
+.ayy-block-editor__option[data-destructive],
+.ayy-block-editor__option[data-destructive] .ayy-block-editor__option-icon {
+  color: var(--ayy-color-destructive);
+}
+
+/* The current type in "Turn into": a check at the inline end. */
+.ayy-block-editor__option[data-current]::after {
+  content: "";
+  box-sizing: border-box;
+  flex: none;
+  inline-size: 0.35em;
+  block-size: 0.65em;
+  margin-inline-start: auto;
+  margin-inline-end: var(--ayy-space-1);
+  border-right: 2px solid currentColor; /* ayy-allow-physical: a check is a glyph, it doesn't mirror in RTL */
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-15%) rotate(45deg);
+}
+
+/* ---- The formatting bar over a text selection ---- */
+
+/* A popover scrolls its overflow by default; the bar's tooltips must hang outside it instead. */
+.ayy-block-editor__toolbar {
+  margin: 0;
+  overflow: visible;
+}
+
+/* .ayy-toolbar sets display, which beats the browser's display: none for a closed popover. */
+.ayy-block-editor__toolbar[popover]:not(:popover-open) {
+  display: none;
+}
+
+/* The handle's tooltip steps aside while its menu is open. */
+.ayy-block-editor__gutter .ayy-tooltip:has(> [aria-expanded="true"]) > .ayy-tooltip__content {
+  display: none;
+}
+
+.ayy-block-editor__toolbar .ayy-toolbar__button {
+  min-inline-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-sm);
+}
+
+.ayy-block-editor__toolbar [hidden] {
+  display: none;
+}
+
+.ayy-block-editor__link-form {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-0-5);
+}
+
+.ayy-block-editor__link-form > .ayy-input {
+  inline-size: min(17rem, 60vw);
+  margin-inline-end: var(--ayy-space-1);
+}
+
+/* Where a menu or the formatting bar hangs from: a box over the caret or the selection, placed by the script. */
+.ayy-block-editor__anchor {
+  position: absolute;
+  inset-block-start: 0;
+  left: 0; /* ayy-allow-physical: placed in px from the editor's left edge, whatever the text direction */
+  inline-size: 0;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* <ayy-block-editor> only adds behaviour; it has no box of its own. */
+ayy-block-editor {
+  display: contents;
+}
+
+@media (forced-colors: active) {
+  .ayy-block-editor__block[data-selected] {
+    forced-color-adjust: none;
+    outline: 2px solid Highlight;
+    background-color: Canvas;
+  }
+  .ayy-block-editor__mention {
+    border: 1px solid CanvasText;
+  }
+  .ayy-block-editor__block[data-checked] > .ayy-block-editor__text {
+    color: GrayText;
+  }
+  .ayy-block-editor__option[data-current]::after {
+    border-color: CanvasText;
+  }
+  .ayy-block-editor__resize::after {
+    background-color: CanvasText;
+  }
+}
