@@ -209,8 +209,8 @@ export function ThemesPage({ current, onUse, theme, setTheme }: { current: Brand
         <h2 className="pv-h pv-h--section" id="themes-every">
           In every theme
         </h2>
-        <p className="pv-note">The same controls in each theme, so you can check your colour reads well in all of them.</p>
-        <div className="pv-themes">
+        <p className="pv-note">The same title, text and action in each theme, so you can check your colour reads well in all of them.</p>
+        <div className="pv-themes pv-themes--stack">
           {themeOptions.map((t) => (
             <Sample key={t.name} theme={t.name} label={t.label} />
           ))}

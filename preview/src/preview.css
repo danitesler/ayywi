@@ -439,6 +439,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  margin: 0;
   font-size: var(--ayy-text-sm);
 }
 
@@ -446,6 +447,40 @@
   font-family: var(--ayy-font-heading);
   font-size: var(--ayy-text-3xl);
   line-height: 1;
+}
+
+/* Themes page: one theme per full-width band, so each reads as a small page rather than a pile of controls. */
+.pv-themes--stack {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ayy-space-4);
+}
+
+.pv-themes--stack .pv-theme {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-4) var(--ayy-space-6);
+  padding: var(--ayy-space-6) var(--ayy-space-8);
+}
+
+.pv-theme__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+}
+
+.pv-theme__title {
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-xl);
+  line-height: var(--ayy-leading-tight);
+  letter-spacing: var(--ayy-tracking-tight);
+}
+
+.pv-theme__text {
+  max-inline-size: 52ch;
+  color: var(--ayy-color-muted);
 }
 
 .pv-color-tiles {
@@ -1047,15 +1082,6 @@
 
 .pv-brand__sample {
   font-family: var(--ayy-font-body);
-}
-
-.pv-brand__ring {
-  padding-block: var(--ayy-space-0-5);
-  padding-inline: var(--ayy-space-2);
-  border-radius: var(--ayy-radius-sm);
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: 2px;
-  font-size: var(--ayy-text-s);
 }
 
 /* ---- Full-width pages: home, examples, themes ---- */

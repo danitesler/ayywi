@@ -1,19 +1,5 @@
 import { BRAND_SHAPES, BRAND_STEPS, tokens, type Brand, type BrandShape } from "@danitesler/ayywi";
-import {
-  Avatar,
-  Badge,
-  Button,
-  Checkbox,
-  Field,
-  Input,
-  Label,
-  Progress,
-  Radio,
-  SegmentedControl,
-  SegmentedControlItem,
-  Slider,
-  Switch,
-} from "@danitesler/ayywi/react";
+import { Button } from "@danitesler/ayywi/react";
 
 /** The pieces the Themes page (#/themes) is built from: presets, fonts, a per-theme sample and the brand scale. */
 export const brandPage = {
@@ -56,46 +42,20 @@ export const BODY_FONTS: [string, string][] = [
 
 export const SHAPES = Object.keys(BRAND_SHAPES) as BrandShape[];
 
+/** One theme, shown as a small page: the same title, text and action in each, so only the theme changes. */
 export function Sample({ theme, label }: { theme: string; label: string }) {
   return (
     <div className="pv-theme pv-brand__sample" data-theme={theme}>
-      <strong className="pv-theme__head">{label}</strong>
-      <p className="pv-theme__big">Aa</p>
-      <div className="ayy-cluster">
+      <div className="pv-theme__intro">
+        <h3 className="pv-theme__head">{label}</h3>
+        <p className="pv-theme__title">Everything reads the same</p>
+        <p className="pv-theme__text">A title, a paragraph and the action you would tap, in a composition you would actually ship.</p>
+      </div>
+      <div className="ayy-cluster pv-theme__actions">
         <Button size="sm">Primary</Button>
         <Button size="sm" variant="outline">
           Outline
         </Button>
-        <Button size="sm" variant="ghost">
-          Ghost
-        </Button>
-      </div>
-      <Input size="sm" defaultValue="Acme Corp" aria-label={`Brand name (${label})`} />
-      <SegmentedControl size="sm" full defaultValue="left" aria-label={`Options (${label})`}>
-        <SegmentedControlItem value="left">Active</SegmentedControlItem>
-        <SegmentedControlItem value="right">Option</SegmentedControlItem>
-      </SegmentedControl>
-      <div className="ayy-cluster">
-        <Field inline>
-          <Checkbox id={`pv-brand-check-${theme}`} defaultChecked />
-          <Label htmlFor={`pv-brand-check-${theme}`}>Check</Label>
-        </Field>
-        <Field inline>
-          <Radio id={`pv-brand-radio-${theme}`} name={`pv-brand-radio-${theme}`} value="1" defaultChecked />
-          <Label htmlFor={`pv-brand-radio-${theme}`}>Radio</Label>
-        </Field>
-        <Field inline>
-          <Switch id={`pv-brand-switch-${theme}`} defaultChecked />
-          <Label htmlFor={`pv-brand-switch-${theme}`}>On</Label>
-        </Field>
-      </div>
-      <Slider defaultValue={65} aria-label={`Slider (${label})`} />
-      <Progress value={65} size="sm" aria-label={`Progress (${label})`} />
-      <div className="ayy-cluster">
-        <Badge>Badge</Badge>
-        <Badge variant="outline">Outline</Badge>
-        <Avatar name="Acme" fallback="AC" size="sm" />
-        <span className="pv-brand__ring">Focus ring</span>
       </div>
     </div>
   );
