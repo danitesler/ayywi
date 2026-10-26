@@ -273,6 +273,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **Preview**
   Section titles sat 28px (36px on Get started) above their description → 12px.
 
+### Removed
+- **Preview**
+  Ledger account-settings example → six example apps remain; its profile, notifications, plan, billing and workspace sections are gone with it.
+
 ## 0.1.2 — 2026-10-22
 
 ### Added
