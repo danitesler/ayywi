@@ -26,6 +26,7 @@
 @import "../components/select/select.css" layer(ayywi.components);
 @import "../components/combobox/combobox.css" layer(ayywi.components);
 @import "../components/mentions/mentions.css" layer(ayywi.components);
+@import "../components/block-editor/block-editor.css" layer(ayywi.components);
 @import "../components/date-time-picker/date-time-picker.css" layer(ayywi.components);
 @import "../components/color-picker/color-picker.css" layer(ayywi.components);
 @import "../components/icon-picker/icon-picker.css" layer(ayywi.components);

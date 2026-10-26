@@ -18,6 +18,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **Components**
   No way to say one component is a variation of another → an optional `family` in a component's meta.json (Textarea, Number field, Search bar and Inline edit name Input); the preview nests them under it and `pnpm check` rejects a family that doesn't exist.
 
+- **[Block editor](#/block-editor)**
+  New component — a Notion-style rich text editor of blocks (text, headings, lists, to-dos, quotes, callouts, highlighted code with a language picker and Copy, images, embeds, files) with / for blocks, Markdown shortcuts, a formatting bar, @ mentions, drag handles and `<ayy-block-editor>`.
 - **[PIN input](#/pin-input)**
   New component — a row of single-character slots for OTP, two-factor and verification codes, with paste distribution, Backspace navigation, masked PIN mode and `<ayy-pin-input>`.
 - **[Rating](#/rating)**

@@ -9,9 +9,9 @@
     "@danitesler/ayywi/css/<file>.css": "Per-file layered CSS: tokens.css, base.css, one file per component (button.css, card.css…), then focus.css (focus rings for keyboard use only, with trackInputModality()).",
     "@danitesler/ayywi/brands/<name>.css": "Ready-made brands (violet), applied with data-brand=\"<name>\" or setBrand(\"<name>\"). Make your own with `npx @danitesler/ayywi brand`.",
     "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
-    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectDragDrop, connectGrid, connectIconPicker, connectInlineEdit, connectMentions, connectMenu, connectNavbar, connectPinInput, connectPopover, connectRecordPicker, connectShortcutRecorder, connectSwipe, connectTable, connectTableColumnReorder, connectTableColumns, connectTableDragSelect, connectTableEdit, connectTableResize, connectTableRowReorder, connectTagInput, connectTimePicker, connectToc, connectToolbar, connectTransferList, connectTree, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
+    "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectBlockEditor, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectDragDrop, connectGrid, connectIconPicker, connectInlineEdit, connectMentions, connectMenu, connectNavbar, connectPinInput, connectPopover, connectRecordPicker, connectShortcutRecorder, connectSwipe, connectTable, connectTableColumnReorder, connectTableColumns, connectTableDragSelect, connectTableEdit, connectTableResize, connectTableRowReorder, connectTagInput, connectTimePicker, connectToc, connectToolbar, connectTransferList, connectTree, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
     "@danitesler/ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
+    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
     "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "@danitesler/ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-contrast.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "npx @danitesler/ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
@@ -59,7 +59,7 @@
     "No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir=\"rtl\". Logical properties make direction checks unnecessary.",
     "Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).",
     "Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class=\"ayy-icon\" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.",
-    "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-pin-input>, <ayy-mentions>, <ayy-transfer-list>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
+    "In React import from \"@danitesler/ayywi/react\"; in other frameworks and plain HTML use the class names, the class helpers from \"@danitesler/ayywi\" (buttonClass…) and the custom elements from \"@danitesler/ayywi/elements\" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-transfer-list>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).",
     "Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped."
   ],
   "needs": [
@@ -178,6 +178,14 @@
       ],
       "how": "PinInput (<ayy-pin-input> in HTML) inside a Field, with group for a split 3+3 code and mask for secret PINs.",
       "not": "six separate <input maxlength=\"1\"> elements wired by hand or a single plain text input"
+    },
+    {
+      "need": "Write or edit a rich document: notes, a page, a description with headings, lists, to-dos, images and embeds",
+      "use": [
+        "block-editor"
+      ],
+      "how": "BlockEditor (<ayy-block-editor> in HTML): Notion-style blocks with / for block types, Markdown shortcuts, a formatting bar, @ mentions and drag handles; store its value (blocks) or convert with blockEditorToMarkdown / blockEditorToHtml.",
+      "not": "a <textarea> with a Markdown preview, execCommand on one big contenteditable, or a third-party rich text library"
     },
     {
       "need": "Mention people or reference issues inline in a comment (@user, #issue)",
@@ -6264,6 +6272,205 @@
         "react": "src/components/mentions/mentions.react.tsx",
         "meta": "src/components/mentions/mentions.meta.json",
         "element": "src/components/mentions/mentions.element.ts"
+      }
+    },
+    {
+      "name": "Block editor",
+      "slug": "block-editor",
+      "category": "Forms",
+      "description": "A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, quotes, callouts, code, dividers, images, embeds and files. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place.",
+      "aka": [
+        "block-editor",
+        "rich-text-editor",
+        "rich-text",
+        "wysiwyg",
+        "notion-editor",
+        "document-editor",
+        "notes-editor",
+        "page-editor"
+      ],
+      "classes": {
+        "ayy-block-editor": "Root. The editor renders its blocks inside it, then the floating menu, formatting bar and caret anchor. Leave room at its inline start for the gutter (about 3.25rem of padding in its container), or use --inset.",
+        "ayy-block-editor--inset": "Keeps the gutter inside the editor's own box, for containers with no padding to hang it in.",
+        "ayy-block-editor__block": "One block. data-type says what it is; data-indent (1–4) nests it, data-checked marks a done to-do, data-selected a block in a block selection, data-dragging one being carried. In plain HTML you can write just <div class=\"ayy-block-editor__block\" data-type=\"heading-1\">Title</div>; the editor builds the rest.",
+        "ayy-block-editor__gutter": "The + and the drag handle at the block's inline start; shown while the pointer is over the block (on touch screens, next to the line being written).",
+        "ayy-block-editor__add": "The + button: a new line below with / typed, so the block menu opens. Alt-click adds it above.",
+        "ayy-block-editor__handle": "The drag handle (.ayy-drag-handle): drag to move the block, or every selected block; click for block actions (duplicate, move, delete, turn into).",
+        "ayy-block-editor__text": "The editable line of a text block (contenteditable, role=\"textbox\"). Inline content: strong, em, u, s, code, links and mention chips. Shows data-placeholder while empty.",
+        "ayy-block-editor__marker": "A list's bullet or number, drawn by the editor (1. a. i. by nesting level).",
+        "ayy-block-editor__check": "A to-do's checkbox (.ayy-checkbox).",
+        "ayy-block-editor__icon": "A callout's icon.",
+        "ayy-block-editor__code-bar": "A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).",
+        "ayy-block-editor__code-button": "A button in the code header: the language (opens a menu of languages; plain text in read-only) or Copy (a check while copied, data-copied).",
+        "ayy-block-editor__rule": "A divider's line (<hr>).",
+        "ayy-block-editor__media": "The <figure> of an image or embed block.",
+        "ayy-block-editor__frame": "The box around an image, a player or a link card. data-ratio=\"video|audio|square\" sizes a provider's player.",
+        "ayy-block-editor__image": "An image block's <img>.",
+        "ayy-block-editor__resize": "The handle on an image's inline-end edge (role=\"separator\"): drag, or use the arrow keys, to set its width.",
+        "ayy-block-editor__caption": "An image or embed's editable caption (also the image's alt text). Its placeholder shows on hover and focus.",
+        "ayy-block-editor__bookmark": "An embed of a page that isn't a player: a quiet card with the site and the address.",
+        "ayy-block-editor__bookmark-title": "The site's name in a link card.",
+        "ayy-block-editor__bookmark-url": "The address in a link card, truncated.",
+        "ayy-block-editor__file": "A file block: a link to download it, with its icon, name and size.",
+        "ayy-block-editor__file-name": "A file's name, truncated.",
+        "ayy-block-editor__file-size": "A file's size, muted.",
+        "ayy-block-editor__empty": "An image, embed or file block with nothing in it yet: a muted panel with a link field and an Upload button. aria-busy=\"true\" while a file uploads.",
+        "ayy-block-editor__mention": "A mention chip inside text (contenteditable=\"false\", data-trigger, data-id, data-label): text with a faint wash, never a loud pill.",
+        "ayy-block-editor__mention-trigger": "The @ or # of a mention, muted.",
+        "ayy-block-editor__menu": "The floating list (.ayy-combobox__listbox) for /, mentions, block actions and a code block's language. data-mode=\"slash|mention|actions|language\".",
+        "ayy-block-editor__menu-label": "A group heading in the menu (Basic blocks, Media, People, Turn into).",
+        "ayy-block-editor__option": "One menu row (.ayy-combobox__option, role=\"option\"). data-current marks a block's current type, data-destructive Delete.",
+        "ayy-block-editor__option-icon": "The tile in front of a menu row: the block type's icon, or an Avatar for a person.",
+        "ayy-block-editor__option-text": "A menu row's name and hint.",
+        "ayy-block-editor__option-hint": "A menu row's muted second line.",
+        "ayy-block-editor__toolbar": "The formatting bar (.ayy-toolbar--floating) over a text selection: bold, italic, underline, strikethrough, code, link. Over a link it shows the link's address.",
+        "ayy-block-editor__link-form": "The link field in the formatting bar, with Open and Remove.",
+        "ayy-block-editor__anchor": "A hidden box the script places over the caret or the selection for the menu and the bar to hang from."
+      },
+      "variants": {
+        "inset": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        },
+        "readOnly": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false
+        }
+      },
+      "states": {
+        "default": {
+          "looks": "Plain text on the page: no borders or boxes; headings in --ayy-font-heading; lists, quotes, callouts and code in their own quiet styles. The gutter is hidden."
+        },
+        "hover": {
+          "when": ":hover on a block (devices that hover)",
+          "looks": "Its gutter (+ and the drag handle) fades in at the inline start; a hovered image shows its resize handle and its caption placeholder; gutter buttons, link cards and file rows get --ayy-color-wash-hover."
+        },
+        "pressed": {
+          "none": "No pressed look: pressing the handle starts a drag or opens block actions, pressing text places the caret."
+        },
+        "focus": {
+          "when": "A line with the caret (:focus inside .ayy-block-editor__text), or the editor itself while blocks are selected; :focus-visible on the gutter buttons, the resize handle, link cards and file rows",
+          "looks": "The caret, and an empty line's hint (Type / for blocks). Selected blocks show their tint; buttons and handles get the 2px --ayy-color-ring outline."
+        },
+        "disabled": {
+          "none": "Use readOnly to show a document that can't be edited."
+        },
+        "selected": {
+          "when": "data-selected on blocks: Esc in a line, Shift+click, Mod+A twice, or the handle's menu",
+          "looks": "A 12% --ayy-color-primary tint behind the block; images, players and files also get the --ayy-color-ring outline. Forced colours: a Highlight outline."
+        },
+        "error": {
+          "none": "No error look on the editor; a link that isn't a valid URL marks the link field (aria-invalid) instead. Say why a save failed in an Alert or a toast."
+        },
+        "loading": {
+          "when": "aria-busy=\"true\" on .ayy-block-editor__empty while a dropped, pasted or picked file uploads",
+          "looks": "The media panel dims to 60% and stops taking the pointer until the file's URL arrives."
+        },
+        "checked": {
+          "when": "data-checked on a to-do block (its checkbox, or Mod+Enter in the line)",
+          "looks": "The checkbox is checked; the text turns --ayy-color-muted with a line through it."
+        },
+        "dragging": {
+          "when": "data-dragging on the blocks being carried by the handle",
+          "looks": "They dim to 40%; a raised copy (or a chip saying \"3 blocks\") follows the pointer and a 2px primary line shows where they'll land."
+        },
+        "empty": {
+          "when": "data-empty on the root: the document is one empty line",
+          "looks": "The placeholder shows in that line, focused or not."
+        },
+        "typing": {
+          "when": "data-typing on the root: set by typing, cleared when the pointer moves or presses",
+          "looks": "The gutters and code blocks' Copy fade out, so nothing moves beside the words being written."
+        },
+        "read-only": {
+          "when": "readOnly / the readonly attribute (aria-readonly=\"true\" on the root)",
+          "looks": "No gutter, carets, placeholders or empty media panels; checkboxes are disabled, links and mentions open on click."
+        }
+      },
+      "sizes": {
+        "density": "Text follows the type scale (body --ayy-text-md, headings 3xl, 2xl and xl), not density. Menu rows, the formatting bar and the media panel's field and button follow the control sizes, so data-density=\"touch\" makes them bigger; the gutter buttons stay 1.5rem.",
+        "width": "Fills its container; images and embeds fill the column (an image can be resized from 20% to 100%). The gutter hangs about 3.25rem outside the inline start, or inside with --inset."
+      },
+      "js": "blockEditorClass({ inset?, className? }) → string; connectBlockEditor(root, { value?, placeholder?, label?, readOnly?, mentions?, upload?, onChange?, onMentionClick? }) → { getValue, setValue, setOptions, focus, destroy }; blockEditorBlock(type, fields?) makes a block; blockEditorNormalize(value) cleans one; blockEditorToMarkdown, blockEditorFromMarkdown, blockEditorToHtml and blockEditorToText convert (no DOM needed); blockEditorMentionHtml({ trigger, id, label }) is a mention chip for a block's html; blockEditorCodeLanguages lists the languages a code block offers (block.language holds the id, highlighted with Code block's tokenizer); blockEditorEmbed(url) says what an embed block shows; blockEditorCleanHtml(html) keeps only the inline HTML the editor makes.",
+      "element": {
+        "tag": "ayy-block-editor",
+        "description": "Makes the .ayy-block-editor inside it a block editor. The starting blocks are the ones written inside it (short form: <div class=\"ayy-block-editor__block\" data-type=\"todo\" data-checked>Done</div>) or a <script type=\"application/json\"> value; mention lists come from a <script type=\"application/json\" data-mentions> child of the element. Properties: value (read or replace the blocks), mentions, upload (a function that stores a file and returns its URL).",
+        "children": "A <div class=\"ayy-block-editor\"> of blocks, and optionally a <script type=\"application/json\" data-mentions> with mention lists.",
+        "attributes": {
+          "placeholder": "Shown while the document is empty.",
+          "label": "Accessible name of the editor (default \"Editor\").",
+          "readonly": "Show the document without editing it."
+        },
+        "events": {
+          "ayy-change": "{ value } — every block, after each change.",
+          "ayy-mention-click": "{ trigger, id, label } — a mention chip was clicked."
+        }
+      },
+      "react": {
+        "import": "import { BlockEditor } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "BlockEditor": {
+            "renders": "<div class=\"ayy-block-editor\"> that the editor fills with blocks",
+            "props": {
+              "value": "BlockEditorBlock[] — the document, controlled (pass back what onChange gives you).",
+              "defaultValue": "BlockEditorBlock[] — the document to start with, uncontrolled.",
+              "onChange": "(value: BlockEditorBlock[]) => void — after every change.",
+              "placeholder": "string — shown while the document is empty.",
+              "readOnly": "boolean — show the document without editing it.",
+              "mentions": "BlockEditorMentionSource[] — { trigger, label?, options } per trigger; options is a list of { id, label, hint?, avatar? } or a (query) => list or Promise of one.",
+              "upload": "(file: File) => string | Promise<string> — store a pasted, dropped or picked file, return its URL. Default: a data: URL.",
+              "onMentionClick": "(mention: { trigger, id, label }, event: MouseEvent) => void",
+              "inset": "boolean — keep the gutter inside the editor's box.",
+              "aria-label": "string — accessible name of the editor (default \"Editor\").",
+              "...rest": "Native <div> attributes (id, className, style…)."
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Name the editor (aria-label in React, label on <ayy-block-editor>): it's a role=\"group\" of lines, each a role=\"textbox\" named by its type (Text, Heading 1, To-do list).",
+        "Everything works from the keyboard: Enter, Backspace and the arrows move through blocks; Tab and Shift+Tab nest; Esc selects the block (then ↑/↓, Shift+↑/↓, Delete, Mod+D, Mod+Shift+↑/↓, Enter to edit again); Mod+/ opens block actions, Mod+Alt+0–8 turns a block into another type, Mod+B/I/U, Mod+Shift+S, Mod+E and Mod+K format. Tab nests, so the way out of the editor is Esc twice, then Tab.",
+        "The / and mention menus keep focus in the line: ↑/↓ move through aria-activedescendant, Enter or Tab picks, Esc closes without closing a parent Dialog. The block actions menu takes focus and gives it back.",
+        "Block selections, moves and failed uploads are read out in a polite live region.",
+        "Images take their caption as alt text: write one for every picture that carries meaning."
+      ],
+      "do": [
+        "Use a Block editor for documents people write and come back to: notes on a task, a page in a wiki, a spec, a long description with headings, lists, to-dos and media.",
+        "Store the value (blocks) as it is, or convert it with blockEditorToMarkdown / blockEditorFromMarkdown when the storage is Markdown, and render it elsewhere with blockEditorToHtml.",
+        "Pass mentions for the people and records your app has (@ for people, # for issues), with a function when the list is long or remote.",
+        "Pass upload so pasted, dropped and picked files go to your storage instead of the default data: URLs."
+      ],
+      "dont": [
+        "Don't use a Block editor for a short reply, a comment or a single field — use Textarea, or Mentions when the text needs @mentions.",
+        "Don't wrap it in a bordered box like an input: it's the page. Put it straight in the page or a Card, with room at its inline start for the gutter (or --inset).",
+        "Don't trust a value from elsewhere as HTML: pass it through the editor or blockEditorNormalize, which keep only the inline HTML it makes."
+      ],
+      "examples": [
+        {
+          "id": "page",
+          "title": "A page: headings, lists, to-dos, a callout, mentions, an image and code",
+          "html": "<!-- <ayy-block-editor> reads the blocks written inside it; a data-mentions script gives it the @ and # lists. -->\n<ayy-block-editor label=\"Q3 onboarding launch\" placeholder=\"Write the plan, or type / for blocks\">\n  <script type=\"application/json\" data-mentions>[{\"trigger\": \"@\", \"label\": \"People\", \"options\": [{\"id\": \"ada\", \"label\": \"Ada Lovelace\", \"hint\": \"Engineering lead\", \"avatar\": true}, {\"id\": \"grace\", \"label\": \"Grace Hopper\", \"hint\": \"Platform\", \"avatar\": true}, {\"id\": \"alan\", \"label\": \"Alan Turing\", \"hint\": \"Security\", \"avatar\": true}, {\"id\": \"margaret\", \"label\": \"Margaret Hamilton\", \"hint\": \"Release manager\", \"avatar\": true}]}, {\"trigger\": \"#\", \"label\": \"Issues\", \"options\": [{\"id\": \"142\", \"label\": \"Auth token refresh race\", \"hint\": \"#142 · In review\"}, {\"id\": \"158\", \"label\": \"Onboarding checklist copy\", \"hint\": \"#158 · To do\"}, {\"id\": \"163\", \"label\": \"Activation event double-counts\", \"hint\": \"#163 · In progress\"}]}]</script>\n  <div class=\"ayy-block-editor ayy-block-editor--inset\" style=\"max-inline-size: 46rem\">\n    <div class=\"ayy-block-editor__block\" data-type=\"heading-1\"><div class=\"ayy-block-editor__text\">Q3 onboarding launch</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"text\"><div class=\"ayy-block-editor__text\">Ship the new onboarding to <strong>every workspace</strong> by 30 September. <span class=\"ayy-block-editor__mention\" contenteditable=\"false\" data-trigger=\"@\" data-id=\"ada\" data-label=\"Ada Lovelace\"><span class=\"ayy-block-editor__mention-trigger\">@</span>Ada Lovelace</span> owns the rollout, <span class=\"ayy-block-editor__mention\" contenteditable=\"false\" data-trigger=\"@\" data-id=\"margaret\" data-label=\"Margaret Hamilton\"><span class=\"ayy-block-editor__mention-trigger\">@</span>Margaret Hamilton</span> the release notes.</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"callout\"><div class=\"ayy-block-editor__text\">Code freeze is <strong>12 September</strong>. Anything not merged by then moves to Q4.</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"heading-2\"><div class=\"ayy-block-editor__text\">Milestones</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"todo\" data-checked><input type=\"checkbox\" class=\"ayy-checkbox ayy-block-editor__check\" aria-label=\"Done\" checked><div class=\"ayy-block-editor__text\">Finish the onboarding copy</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"todo\"><input type=\"checkbox\" class=\"ayy-checkbox ayy-block-editor__check\" aria-label=\"Done\"><div class=\"ayy-block-editor__text\">Fix <span class=\"ayy-block-editor__mention\" contenteditable=\"false\" data-trigger=\"#\" data-id=\"142\" data-label=\"Auth token refresh race\"><span class=\"ayy-block-editor__mention-trigger\">#</span>Auth token refresh race</span> before the beta</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"todo\"><input type=\"checkbox\" class=\"ayy-checkbox ayy-block-editor__check\" aria-label=\"Done\"><div class=\"ayy-block-editor__text\">Beta with 20 workspaces</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"todo\" data-indent=\"1\"><input type=\"checkbox\" class=\"ayy-checkbox ayy-block-editor__check\" aria-label=\"Done\"><div class=\"ayy-block-editor__text\">Pick workspaces that already talk to support</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"heading-2\"><div class=\"ayy-block-editor__text\">Rollout</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"number\"><span class=\"ayy-block-editor__marker\" aria-hidden=\"true\">1.</span><div class=\"ayy-block-editor__text\">Internal workspaces, behind a flag</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"number\"><span class=\"ayy-block-editor__marker\" aria-hidden=\"true\">2.</span><div class=\"ayy-block-editor__text\">10% of new sign-ups</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"number\"><span class=\"ayy-block-editor__marker\" aria-hidden=\"true\">3.</span><div class=\"ayy-block-editor__text\">Everyone, once activation holds at <em>40%</em> for a week</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"quote\"><div class=\"ayy-block-editor__text\">Measure activation, not sign-ups.</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"image\"><figure class=\"ayy-block-editor__media\"><div class=\"ayy-block-editor__frame\"><img class=\"ayy-block-editor__image\" src=\"data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;1200&#x27; height=&#x27;520&#x27; viewBox=&#x27;0 0 1200 520&#x27;&gt;&lt;defs&gt;&lt;linearGradient id=&#x27;f&#x27; x1=&#x27;0&#x27; y1=&#x27;0&#x27; x2=&#x27;1&#x27; y2=&#x27;0&#x27;&gt;&lt;stop offset=&#x27;0&#x27; stop-color=&#x27;%236366f1&#x27;/&gt;&lt;stop offset=&#x27;1&#x27; stop-color=&#x27;%2314b8a6&#x27;/&gt;&lt;/linearGradient&gt;&lt;/defs&gt;&lt;rect width=&#x27;1200&#x27; height=&#x27;520&#x27; fill=&#x27;%23f4f4f5&#x27;/&gt;&lt;rect x=&#x27;80&#x27; y=&#x27;80&#x27; width=&#x27;1040&#x27; height=&#x27;70&#x27; rx=&#x27;14&#x27; fill=&#x27;url(%23f)&#x27;/&gt;&lt;rect x=&#x27;80&#x27; y=&#x27;180&#x27; width=&#x27;780&#x27; height=&#x27;70&#x27; rx=&#x27;14&#x27; fill=&#x27;url(%23f)&#x27; fill-opacity=&#x27;.8&#x27;/&gt;&lt;rect x=&#x27;80&#x27; y=&#x27;280&#x27; width=&#x27;520&#x27; height=&#x27;70&#x27; rx=&#x27;14&#x27; fill=&#x27;url(%23f)&#x27; fill-opacity=&#x27;.6&#x27;/&gt;&lt;rect x=&#x27;80&#x27; y=&#x27;380&#x27; width=&#x27;410&#x27; height=&#x27;70&#x27; rx=&#x27;14&#x27; fill=&#x27;url(%23f)&#x27; fill-opacity=&#x27;.45&#x27;/&gt;&lt;/svg&gt;\" alt=\"Activation funnel from the last beta\" width=\"1200\" height=\"520\"></div><figcaption class=\"ayy-block-editor__caption\">Activation funnel from the last beta</figcaption></figure></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"code\" data-language=\"typescript\"><div class=\"ayy-block-editor__text\">// Start with 10% of new sign-ups\nflags.enable(\"onboarding-v2\", { percent: 10 });</div></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"divider\"><hr class=\"ayy-block-editor__rule\"></div>\n    <div class=\"ayy-block-editor__block\" data-type=\"text\"><div class=\"ayy-block-editor__text\"></div></div>\n  </div>\n</ayy-block-editor>",
+          "react": "import { useState } from \"react\";\nimport { blockEditorMentionHtml } from \"@danitesler/ayywi\";\nimport { BlockEditor, type BlockEditorBlock, type BlockEditorMentionSource } from \"@danitesler/ayywi/react\";\n\nconst MENTIONS: BlockEditorMentionSource[] = [\n  {\n    trigger: \"@\",\n    label: \"People\",\n    options: [\n      { id: \"ada\", label: \"Ada Lovelace\", hint: \"Engineering lead\", avatar: true },\n      { id: \"grace\", label: \"Grace Hopper\", hint: \"Platform\", avatar: true },\n      { id: \"alan\", label: \"Alan Turing\", hint: \"Security\", avatar: true },\n      { id: \"margaret\", label: \"Margaret Hamilton\", hint: \"Release manager\", avatar: true },\n    ],\n  },\n  {\n    trigger: \"#\",\n    label: \"Issues\",\n    options: [\n      { id: \"142\", label: \"Auth token refresh race\", hint: \"#142 · In review\" },\n      { id: \"158\", label: \"Onboarding checklist copy\", hint: \"#158 · To do\" },\n      { id: \"163\", label: \"Activation event double-counts\", hint: \"#163 · In progress\" },\n    ],\n  },\n];\n\nconst FUNNEL =\n  \"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='520' viewBox='0 0 1200 520'><defs><linearGradient id='f' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%236366f1'/><stop offset='1' stop-color='%2314b8a6'/></linearGradient></defs><rect width='1200' height='520' fill='%23f4f4f5'/><rect x='80' y='80' width='1040' height='70' rx='14' fill='url(%23f)'/><rect x='80' y='180' width='780' height='70' rx='14' fill='url(%23f)' fill-opacity='.8'/><rect x='80' y='280' width='520' height='70' rx='14' fill='url(%23f)' fill-opacity='.6'/><rect x='80' y='380' width='410' height='70' rx='14' fill='url(%23f)' fill-opacity='.45'/></svg>\";\n\nconst ada = blockEditorMentionHtml({ trigger: \"@\", id: \"ada\", label: \"Ada Lovelace\" });\nconst margaret = blockEditorMentionHtml({ trigger: \"@\", id: \"margaret\", label: \"Margaret Hamilton\" });\nconst race = blockEditorMentionHtml({ trigger: \"#\", id: \"142\", label: \"Auth token refresh race\" });\n\nconst START: BlockEditorBlock[] = [\n  { id: \"title\", type: \"heading-1\", html: \"Q3 onboarding launch\" },\n  { id: \"intro\", type: \"text\", html: `Ship the new onboarding to <strong>every workspace</strong> by 30 September. ${ada} owns the rollout, ${margaret} the release notes.` },\n  { id: \"freeze\", type: \"callout\", html: \"Code freeze is <strong>12 September</strong>. Anything not merged by then moves to Q4.\" },\n  { id: \"h-milestones\", type: \"heading-2\", html: \"Milestones\" },\n  { id: \"m1\", type: \"todo\", checked: true, html: \"Finish the onboarding copy\" },\n  { id: \"m2\", type: \"todo\", html: `Fix ${race} before the beta` },\n  { id: \"m3\", type: \"todo\", html: \"Beta with 20 workspaces\" },\n  { id: \"m4\", type: \"todo\", indent: 1, html: \"Pick workspaces that already talk to support\" },\n  { id: \"h-rollout\", type: \"heading-2\", html: \"Rollout\" },\n  { id: \"r1\", type: \"number\", html: \"Internal workspaces, behind a flag\" },\n  { id: \"r2\", type: \"number\", html: \"10% of new sign-ups\" },\n  { id: \"r3\", type: \"number\", html: \"Everyone, once activation holds at <em>40%</em> for a week\" },\n  { id: \"quote\", type: \"quote\", html: \"Measure activation, not sign-ups.\" },\n  { id: \"funnel\", type: \"image\", src: FUNNEL, caption: \"Activation funnel from the last beta\" },\n  { id: \"flag\", type: \"code\", language: \"typescript\", html: \"// Start with 10% of new sign-ups\\nflags.enable(\\\"onboarding-v2\\\", { percent: 10 });\" },\n  { id: \"rule\", type: \"divider\" },\n  { id: \"end\", type: \"text\", html: \"\" },\n];\n\nexport default function Example() {\n  const [doc, setDoc] = useState(START);\n  return (\n    <BlockEditor\n      aria-label=\"Q3 onboarding launch\"\n      inset\n      value={doc}\n      onChange={setDoc}\n      mentions={MENTIONS}\n      placeholder=\"Write the plan, or type / for blocks\"\n      style={{ maxInlineSize: \"46rem\" }}\n    />\n  );\n}"
+        },
+        {
+          "id": "task-notes",
+          "title": "Task notes in a Card, editable or read-only",
+          "html": "<div class=\"ayy-card\" style=\"max-inline-size: 34rem\">\n  <div class=\"ayy-card__header\">\n    <h3 class=\"ayy-card__title\">Migrate legacy plans</h3>\n    <p class=\"ayy-card__description\">Due 14 Nov · Billing</p>\n  </div>\n  <div class=\"ayy-card__content ayy-stack\">\n    <ayy-block-editor label=\"Notes\" placeholder=\"Add notes… type / for headings, lists and more\">\n      <div class=\"ayy-block-editor ayy-block-editor--inset\">\n        <div class=\"ayy-block-editor__block\" data-type=\"text\"><div class=\"ayy-block-editor__text\">Customers on the old plan keep their price until renewal.</div></div>\n        <div class=\"ayy-block-editor__block\" data-type=\"bullet\"><span class=\"ayy-block-editor__marker\" aria-hidden=\"true\">•</span><div class=\"ayy-block-editor__text\">Email them <strong>30 days</strong> before</div></div>\n        <div class=\"ayy-block-editor__block\" data-type=\"bullet\"><span class=\"ayy-block-editor__marker\" aria-hidden=\"true\">•</span><div class=\"ayy-block-editor__text\">Link the <a href=\"https://example.com/pricing\">new pricing page</a></div></div>\n        <div class=\"ayy-block-editor__block\" data-type=\"todo\"><input type=\"checkbox\" class=\"ayy-checkbox ayy-block-editor__check\" aria-label=\"Done\"><div class=\"ayy-block-editor__text\">Draft the email</div></div>\n      </div>\n    </ayy-block-editor>\n    <div class=\"ayy-field ayy-field--inline\">\n      <!-- The readonly attribute switches the editor between editing and showing. -->\n      <input class=\"ayy-switch\" type=\"checkbox\" role=\"switch\" id=\"notes-locked-html\" onchange=\"this.closest('.ayy-card').querySelector('ayy-block-editor').toggleAttribute('readonly', this.checked)\" />\n      <label class=\"ayy-label\" for=\"notes-locked-html\">Read only</label>\n    </div>\n  </div>\n</div>",
+          "react": "import { useState } from \"react\";\nimport { BlockEditor, Card, CardContent, CardDescription, CardHeader, CardTitle, Field, Label, Switch, type BlockEditorBlock } from \"@danitesler/ayywi/react\";\n\nconst NOTES: BlockEditorBlock[] = [\n  { id: \"n1\", type: \"text\", html: \"Customers on the old plan keep their price until renewal.\" },\n  { id: \"n2\", type: \"bullet\", html: \"Email them <strong>30 days</strong> before\" },\n  { id: \"n3\", type: \"bullet\", html: \"Link the <a href=\\\"https://example.com/pricing\\\">new pricing page</a>\" },\n  { id: \"n4\", type: \"todo\", html: \"Draft the email\" },\n];\n\nexport default function Example() {\n  const [notes, setNotes] = useState(NOTES);\n  const [locked, setLocked] = useState(false);\n  return (\n    <Card style={{ maxInlineSize: \"34rem\" }}>\n      <CardHeader>\n        <CardTitle>Migrate legacy plans</CardTitle>\n        <CardDescription>Due 14 Nov · Billing</CardDescription>\n      </CardHeader>\n      <CardContent className=\"ayy-stack\">\n        <BlockEditor aria-label=\"Notes\" inset value={notes} onChange={setNotes} readOnly={locked} placeholder=\"Add notes… type / for headings, lists and more\" />\n        <Field inline>\n          <Switch id=\"notes-locked\" checked={locked} onCheckedChange={setLocked} />\n          <Label htmlFor=\"notes-locked\">Read only</Label>\n        </Field>\n      </CardContent>\n    </Card>\n  );\n}"
+        }
+      ],
+      "files": {
+        "css": "src/components/block-editor/block-editor.css",
+        "js": "src/components/block-editor/block-editor.ts",
+        "react": "src/components/block-editor/block-editor.react.tsx",
+        "meta": "src/components/block-editor/block-editor.meta.json",
+        "element": "src/components/block-editor/block-editor.element.ts"
       }
     },
     {

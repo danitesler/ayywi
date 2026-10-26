@@ -18,6 +18,7 @@ import { AyyDialogElement } from "../components/dialog/dialog.element";
 import { AyyGridElement } from "../components/grid/grid.element";
 import { AyyInlineEditElement } from "../components/inline-edit/inline-edit.element";
 import { AyyMentionsElement } from "../components/mentions/mentions.element";
+import { AyyBlockEditorElement } from "../components/block-editor/block-editor.element";
 import { AyyMenuElement } from "../components/menu/menu.element";
 import { AyyNavbarElement } from "../components/navbar/navbar.element";
 import { AyyPinInputElement } from "../components/pin-input/pin-input.element";
@@ -243,6 +244,7 @@ export function defineElements(): void {
   define("ayy-record-picker", AyyRecordPickerElement);
   define("ayy-pin-input", AyyPinInputElement);
   define("ayy-mentions", AyyMentionsElement);
+  define("ayy-block-editor", AyyBlockEditorElement);
   define("ayy-transfer-list", AyyTransferListElement);
   define("ayy-inline-edit", AyyInlineEditElement);
   define("ayy-swipe", AyySwipeElement);

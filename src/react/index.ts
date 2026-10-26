@@ -650,3 +650,5 @@ export { PinInput, type PinInputProps } from "../components/pin-input/pin-input.
 export { Rating, type RatingProps } from "../components/rating/rating.react";
 export { TransferList, type TransferListProps, type TransferListOption } from "../components/transfer-list/transfer-list.react";
 export { Mentions, type MentionsProps, type MentionOption } from "../components/mentions/mentions.react";
+export { BlockEditor, type BlockEditorProps } from "../components/block-editor/block-editor.react";
+export type { BlockEditorBlock, BlockEditorBlockType, BlockEditorMention, BlockEditorMentionOption, BlockEditorMentionSource } from "../components/block-editor/block-editor";
