@@ -1301,18 +1301,102 @@
   background-color: var(--ayy-color-wash);
 }
 
-.pv-feature__shots {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--ayy-space-3);
+/* ---- Home: every example, full width, scrolling on its own ---- */
+
+.pv-apps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-8);
+  padding-block: var(--ayy-space-12);
+  border-block-start: 1px solid var(--ayy-color-hairline);
 }
 
-.pv-feature__shots > img {
+.pv-apps__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  max-inline-size: 44rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.pv-apps__head :is(h2, p) {
+  margin: 0;
+}
+
+.pv-apps__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-4);
+}
+
+/* The screenshots run off both edges: the fade says the row keeps going. */
+.pv-apps__viewport {
+  margin-inline: calc(var(--ayy-space-1) * -1);
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    var(--ayy-color-text) var(--ayy-space-8),
+    var(--ayy-color-text) calc(100% - var(--ayy-space-8)),
+    transparent
+  );
+}
+
+.pv-apps__strip {
+  display: flex;
+  gap: var(--ayy-space-4);
+  padding: var(--ayy-space-2) var(--ayy-space-1);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.pv-apps__strip::-webkit-scrollbar {
+  display: none;
+}
+
+.pv-apps__strip:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: -2px;
+}
+
+.pv-apps__controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--ayy-space-2);
+}
+
+.pv-apps__row {
+  display: flex;
+  flex: none;
+  gap: var(--ayy-space-4);
+}
+
+.pv-apps__shot {
+  flex: none;
+  inline-size: min(22rem, 72vw);
+}
+
+.pv-apps__shot > img {
   display: block;
   inline-size: 100%;
   block-size: auto;
   border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-md);
+  border-radius: var(--ayy-radius-lg);
+  transition: border-color var(--ayy-duration-fast) var(--ayy-ease-standard);
+}
+
+.pv-apps__shot:is(:hover, :focus-visible) > img {
+  border-color: var(--ayy-color-line-hover);
+}
+
+@media (max-width: 48rem) {
+  .pv-apps {
+    gap: var(--ayy-space-6);
+    padding-block: var(--ayy-space-10);
+  }
 }
 
 .pv-closing {
