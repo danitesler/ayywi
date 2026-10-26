@@ -1061,16 +1061,35 @@
 /* ---- Full-width pages: home, examples, themes ---- */
 
 .pv-wide {
+  --pv-page: 1200px;
+  --_pv-pad: var(--ayy-space-6);
   box-sizing: border-box;
   flex: 1;
   inline-size: 100%;
-  max-inline-size: 1200px;
+  max-inline-size: var(--pv-page);
   margin-inline: auto;
-  padding: var(--ayy-space-10) var(--ayy-space-6) var(--ayy-space-16);
+  padding: var(--ayy-space-10) var(--_pv-pad) var(--ayy-space-16);
 }
 
 .pv-wide--themes {
   max-inline-size: 1440px;
+}
+
+/* Home: the main area spans the window, so the example strip can reach both edges. Every other section sizes itself
+   to the page measure, so the padding and max width above still decide how wide they are. */
+.pv-wide--home {
+  max-inline-size: none;
+  padding-inline: 0;
+}
+
+.pv-wide--home .pv-landing > * {
+  box-sizing: border-box;
+  inline-size: min(calc(100% - 2 * var(--_pv-pad)), calc(var(--pv-page) - 2 * var(--_pv-pad)));
+  margin-inline: auto;
+}
+
+.pv-wide--home .pv-landing > .pv-apps {
+  inline-size: 100%;
 }
 
 .pv-page__header--center {
@@ -1099,7 +1118,8 @@
 
 @media (max-width: 48rem) {
   .pv-wide {
-    padding: var(--ayy-space-6) var(--ayy-space-4) var(--ayy-space-12);
+    --_pv-pad: var(--ayy-space-4);
+    padding-block: var(--ayy-space-6) var(--ayy-space-12);
   }
 }
 
@@ -1340,6 +1360,7 @@
   gap: var(--ayy-space-3);
   max-inline-size: 44rem;
   margin-inline: auto;
+  padding-inline: var(--_pv-pad, var(--ayy-space-6));
   text-align: center;
 }
 
@@ -1353,23 +1374,45 @@
   gap: var(--ayy-space-4);
 }
 
-/* The screenshots run off both edges: the fade says the row keeps going. */
+/* The screenshots run off both edges: the fade says the row keeps going. Gradient overlays rather than a mask, so
+   scrolling doesn't repaint a masked layer every frame. */
 .pv-apps__viewport {
-  margin-inline: calc(var(--ayy-space-1) * -1);
+  position: relative;
   overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    var(--ayy-color-text) var(--ayy-space-8),
-    var(--ayy-color-text) calc(100% - var(--ayy-space-8)),
-    transparent
-  );
+}
+
+.pv-apps__viewport::before,
+.pv-apps__viewport::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: var(--ayy-space-10);
+  pointer-events: none;
+  background-image: linear-gradient(var(--_pv-fade, to right), var(--ayy-color-bg), transparent);
+}
+
+.pv-apps__viewport::before {
+  inset-inline-start: 0;
+}
+
+.pv-apps__viewport::after {
+  --_pv-fade: to left;
+  inset-inline-end: 0;
+}
+
+/* The start edge is the end edge in RTL. */
+:where([dir="rtl"]) .pv-apps__viewport::before {
+  --_pv-fade: to left;
+}
+
+:where([dir="rtl"]) .pv-apps__viewport::after {
+  --_pv-fade: to right;
 }
 
 .pv-apps__strip {
   display: flex;
   gap: var(--ayy-space-4);
-  padding: var(--ayy-space-2) var(--ayy-space-1);
+  padding-block: var(--ayy-space-2);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -1398,7 +1441,7 @@
 
 .pv-apps__shot {
   flex: none;
-  inline-size: min(22rem, 72vw);
+  inline-size: min(24rem, 80vw);
 }
 
 .pv-apps__shot > img {
