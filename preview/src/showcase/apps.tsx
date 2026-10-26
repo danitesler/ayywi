@@ -19,11 +19,8 @@ import {
   FlashIcon,
   Folder01Icon,
   GlobeIcon,
-  HelpCircleIcon,
-  Home01Icon,
   InboxIcon,
   KeyboardIcon,
-  Invoice01Icon,
   Layers01Icon,
   Link01Icon,
   Mail01Icon,
@@ -44,14 +41,12 @@ import {
   UserCircleIcon,
   UserGroupIcon,
   UserMultipleIcon,
-  Wallet01Icon,
   Yoga01Icon,
 } from "@hugeicons/core-free-icons";
 import bookingScreenshot from "./screenshots/booking.png";
 import dashboardScreenshot from "./screenshots/dashboard.png";
 import inboxScreenshot from "./screenshots/inbox.png";
 import landingScreenshot from "./screenshots/landing.png";
-import settingsScreenshot from "./screenshots/settings.png";
 import storeScreenshot from "./screenshots/store.png";
 import trackerScreenshot from "./screenshots/tracker.png";
 import { toast, type DensityMode, type IconData, type ThemeName } from "@danitesler/ayywi";
@@ -115,7 +110,6 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Dropzone,
   EmptyState,
   EmptyStateActions,
   EmptyStateDescription,
@@ -206,7 +200,7 @@ interface SettingsSection {
 
 interface AppSettings {
   groups: { label: string; sections: SettingsSection[] }[];
-  /** Open on load (the Ledger showcase is about its settings). */
+  /** Open on load. */
   defaultOpen?: boolean;
 }
 
@@ -733,7 +727,7 @@ const PLANS = [
 
 const QUOTES = [
   { name: "Ana Ruiz", role: "CTO, Fieldnote", text: "We moved four marketing sites over in a week. Nobody on the team wants to go back." },
-  { name: "Leo Park", role: "Founder, Tiny Ledger", text: "The first tool where our designer and our engineers agree on what 'done' looks like." },
+  { name: "Leo Park", role: "Founder, Small Press", text: "The first tool where our designer and our engineers agree on what 'done' looks like." },
   { name: "Sam Okafor", role: "Head of Growth, Loop", text: "Launch pages used to take a sprint. Now they take an afternoon and a coffee." },
   { name: "Priya Nair", role: "Engineer, Orbit", text: "Dark mode, RTL and keyboard support were there before we thought to ask." },
 ];
@@ -1190,272 +1184,7 @@ function InboxApp() {
   );
 }
 
-/* ---- 4. Account settings: the settings dialog, open over the app's home ---- */
-
-const NOTIFY = [
-  { id: "paid", title: "Invoice paid", text: "As soon as a client pays.", on: true },
-  { id: "late", title: "Late payments", text: "The morning after an invoice is overdue.", on: true },
-  { id: "digest", title: "Weekly digest", text: "Money in, money out and what's due, every Monday.", on: false },
-  { id: "push", title: "Push notifications", text: "The same alerts on your phone.", on: false },
-];
-
-const INVOICES = [
-  { id: "INV-0142", date: "Sep 1, 2026", amount: "$290.00", status: "Paid" },
-  { id: "INV-0131", date: "Aug 1, 2026", amount: "$290.00", status: "Paid" },
-  { id: "INV-0120", date: "Jul 1, 2026", amount: "$240.00", status: "Paid" },
-];
-
-const LEDGER_STATS = [
-  { label: "Outstanding", value: "$12.4k", note: "8 invoices" },
-  { label: "Overdue", value: "$1.9k", note: "2 invoices" },
-  { label: "Paid this month", value: "$31.7k", note: "24 invoices" },
-];
-
-function LedgerProfile() {
-  const [saving, setSaving] = useState(false);
-  const save = () => {
-    setSaving(true);
-    window.setTimeout(() => setSaving(false), 1200);
-  };
-  return (
-    <>
-      <Settings title="Your details" description="This is how clients and teammates see you.">
-        <SettingsRow label="Full name" htmlFor="lg-name">
-          <Input id="lg-name" defaultValue="Dana Levi" autoComplete="name" />
-        </SettingsRow>
-        <SettingsRow label="Email" htmlFor="lg-email">
-          <Input id="lg-email" type="email" defaultValue="dana@ledger.app" autoComplete="email" />
-        </SettingsRow>
-        {selectRow("lg-role", "Role", [["owner", "Owner"], ["finance", "Finance manager"], ["viewer", "Viewer"]], "finance")}
-        <SettingsRow label="Photo" htmlFor="lg-photo" stack>
-          <div className="ayy-cluster" style={gap(3)}>
-            <Avatar name="Dana Levi" />
-            <Dropzone
-              id="lg-photo"
-              compact
-              accept="image/png, image/jpeg"
-              icon={null}
-              title={
-                <>
-                  Drop a photo or <span className="ayy-link">choose one</span>
-                </>
-              }
-              hint="Square, at least 256 × 256"
-              style={{ flex: 1 }}
-            />
-          </div>
-        </SettingsRow>
-        <SettingsRow label="About" htmlFor="lg-bio" hint="Shown on invoices you send." stack>
-          <Textarea id="lg-bio" rows={3} defaultValue="Keeps the books tidy and the invoices on time." aria-describedby="lg-bio-hint" />
-        </SettingsRow>
-      </Settings>
-      <div className="ayy-cluster">
-        <Button loading={saving} onClick={save}>
-          {saving ? "Saving…" : "Save changes"}
-        </Button>
-        <Button variant="ghost">Cancel</Button>
-      </div>
-    </>
-  );
-}
-
-function LedgerBilling() {
-  const [invoicePage, setInvoicePage] = useState(1);
-  return (
-    <div className="ayy-stack" style={gap(6)}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Invoices</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table compact>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Invoice</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead numeric>Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {INVOICES.map((inv) => (
-                <TableRow key={inv.id}>
-                  <TableCell>
-                    <span className="ayy-mono">{inv.id}</span>
-                  </TableCell>
-                  <TableCell>{inv.date}</TableCell>
-                  <TableCell>
-                    <Badge variant="success">{inv.status}</Badge>
-                  </TableCell>
-                  <TableCell numeric>{inv.amount}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter>
-          <Pagination page={invoicePage} count={4} onPageChange={setInvoicePage} />
-        </CardFooter>
-      </Card>
-      <Card>
-        <EmptyState compact>
-          <IconTile size="sm">
-            <Icon icon={CreditCardIcon} />
-          </IconTile>
-          <EmptyStateTitle>No backup card</EmptyStateTitle>
-          <EmptyStateDescription>If •••• 4242 is declined, we'll try this one before pausing your account.</EmptyStateDescription>
-          <EmptyStateActions>
-            <Button size="sm" variant="outline">
-              <Icon icon={Add01Icon} />
-              Add a card
-            </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      </Card>
-    </div>
-  );
-}
-
-const LEDGER_SETTINGS: AppSettings = {
-  defaultOpen: true,
-  groups: [
-    {
-      label: "Account",
-      sections: [
-        { href: "#lg-profile", label: "Profile", icon: UserCircleIcon, content: <LedgerProfile /> },
-        {
-          href: "#lg-notifications",
-          label: "Notifications",
-          icon: Notification01Icon,
-          content: <Settings title="Email me about">{NOTIFY.map((n) => switchRow(`lg-${n.id}`, n.title, n.text, n.on))}</Settings>,
-        },
-      ],
-    },
-    {
-      label: "Workspace",
-      sections: [
-        {
-          href: "#lg-plan",
-          label: "Plan",
-          icon: Wallet01Icon,
-          content: (
-            <div className="ayy-stack" style={gap(6)}>
-              <div className="ayy-grid" style={min("9rem")}>
-                <div className="ayy-stack" style={gap(1)}>
-                  <span className="ayy-muted ayy-eyebrow">Plan</span>
-                  <span>Business</span>
-                </div>
-                <div className="ayy-stack" style={gap(1)}>
-                  <span className="ayy-muted ayy-eyebrow">Next invoice</span>
-                  <span>Oct 1, 2026</span>
-                </div>
-                <div className="ayy-stack" style={gap(1)}>
-                  <span className="ayy-muted ayy-eyebrow">Card</span>
-                  <span>•••• 4242</span>
-                </div>
-              </div>
-              <Settings title="Business plan">
-                <SettingsRow label="Billing cycle" hint="Yearly saves two months.">
-                  <SegmentedControl aria-label="Billing cycle" defaultValue="yearly">
-                    <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
-                    <SegmentedControlItem value="yearly">Yearly</SegmentedControlItem>
-                  </SegmentedControl>
-                </SettingsRow>
-                <SettingsRow label="Invoices this month" hint="164 of 250. Resets on the 1st." stack>
-                  <Progress value={66} aria-label="Invoices used this month" />
-                </SettingsRow>
-                {switchRow("lg-receipts", "Email receipts to accounting", "A copy of every receipt to books@ledger.app.", true)}
-              </Settings>
-            </div>
-          ),
-        },
-        { href: "#lg-billing", label: "Billing", icon: Invoice01Icon, content: <LedgerBilling /> },
-        {
-          href: "#lg-workspace",
-          label: "General",
-          icon: Settings01Icon,
-          content: (
-            <div className="ayy-stack" style={gap(6)}>
-              <Settings title="Workspace">
-                <SettingsRow label="Business name" htmlFor="lg-business" hint="On every invoice and receipt.">
-                  <Input id="lg-business" defaultValue="Levi & Co." aria-describedby="lg-business-hint" />
-                </SettingsRow>
-                {selectRow("lg-currency", "Currency", [["usd", "US dollar"], ["eur", "Euro"], ["ils", "Israeli shekel"]], "usd")}
-                {selectRow("lg-fiscal", "Fiscal year starts", [["1", "January"], ["4", "April"], ["7", "July"]], "1")}
-              </Settings>
-              <Alert variant="destructive">
-                <AlertTitle>Delete workspace</AlertTitle>
-                <AlertDescription>Removes every invoice, client and report. This can’t be undone.</AlertDescription>
-                <AlertActions>
-                  <Button variant="destructive" size="sm">
-                    <Icon icon={Mail01Icon} />
-                    Email me a confirmation link
-                  </Button>
-                </AlertActions>
-              </Alert>
-            </div>
-          ),
-        },
-      ],
-    },
-  ],
-};
-
-function SettingsApp() {
-  return (
-    <AppFrame
-      brand={{ name: "Ledger", icon: CreditCardIcon, href: "#home" }}
-      groups={[
-        {
-          label: "Books",
-          items: [
-            { href: "#home", label: "Home", icon: Home01Icon },
-            { href: "#invoices", label: "Invoices", icon: Invoice01Icon },
-            { href: "#clients", label: "Clients", icon: UserGroupIcon },
-            { href: "#settings", label: "Settings", icon: Settings01Icon },
-          ],
-        },
-      ]}
-      tabs={["#home", "#invoices", "#clients", "#settings"]}
-      current="#home"
-      barActions={<Avatar name="Dana Levi" size="sm" />}
-      footer={
-        <>
-          <AppShellLink href="#help">
-            <Icon icon={HelpCircleIcon} />
-            Help
-          </AppShellLink>
-          {account("Dana Levi")}
-        </>
-      }
-      settings={LEDGER_SETTINGS}
-    >
-      <div className="ayy-stack" style={gap(6)}>
-        <PageHeader>
-          <PageHeaderTitle>Home</PageHeaderTitle>
-          <PageHeaderDescription>What clients owe you and what came in this month.</PageHeaderDescription>
-          <PageHeaderActions>
-            <Button>
-              <Icon icon={Add01Icon} />
-              New invoice
-            </Button>
-          </PageHeaderActions>
-        </PageHeader>
-        <div className="ayy-grid" style={min("12rem")}>
-          {LEDGER_STATS.map((k) => (
-            <Card key={k.label}>
-              <CardContent>
-                <Stat labelFirst size="sm" label={k.label} value={k.value} unit={k.note} />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </AppFrame>
-  );
-}
-
-/* ---- 5. Project tracker: onboarding, and the empty, loading and error states ---- */
+/* ---- 4. Project tracker: onboarding, and the empty, loading and error states ---- */
 
 const TASKS = [
   { id: "t1", title: "Write the launch post", project: "Website", due: "Today", who: "Maya Chen", done: false },
@@ -1740,7 +1469,7 @@ function TrackerApp() {
   );
 }
 
-/* ---- 6. Online store: filters, a product grid, a cart drawer ---- */
+/* ---- 5. Online store: filters, a product grid, a cart drawer ---- */
 
 const ROASTS = [
   { id: "guji", name: "Ethiopia Guji", notes: "Blueberry, jasmine, honey", category: "single", roast: "Light", price: 18, spot: "var(--ayy-accent-ai)" },
@@ -2035,7 +1764,7 @@ function StoreApp() {
   );
 }
 
-/* ---- 7. Booking app: a day strip, class cards, a booking summary ---- */
+/* ---- 6. Booking app: a day strip, class cards, a booking summary ---- */
 
 const WEEK = [
   { value: "mon", day: "Mon", date: 13 },
@@ -2355,22 +2084,7 @@ Dark-contrast theme. ayywi components and tokens only; run npx @danitesler/ayywi
     screenshot: inboxScreenshot,
     Component: InboxApp,
   },
-  {
-    id: "settings",
-    name: "Ledger",
-    kind: "Account settings",
-    description: "Settings in a full dialog over the app: profile with saving state, notifications, plan usage, invoices with pagination and empty state. Full screen on phones. Light gray, touch size.",
-    theme: "light-gray",
-    density: "touch",
-    uses: ["app-shell", "dialog", "settings", "top-bar", "bottom-nav", "page-header", "stat", "card", "input", "select", "textarea", "dropzone", "segmented-control", "progress", "switch", "table", "pagination", "empty-state", "alert"],
-    prompt: `Build an invoicing app's settings with ayywi, in ${APP_FRAME} (Home, Invoices, Clients, Settings; help and the account in the sidebar footer). The Settings destination opens the settings dialog instead of a page.
 
-The Home page behind it: a Page header with one primary New invoice button and three Stat cards. The settings shell: a "Settings" title over two groups of sections (Account: Profile, Notifications; Workspace: Plan, Billing, General); each section starts with a Top bar naming it. Profile: Settings rows with inputs, a role Select, a photo Dropzone and an About Textarea (stacked), then Save changes that shows loading. Notifications: a Settings group of Switch rows with hints. Plan: plan details in a grid, a billing-cycle Segmented control, a usage Progress and a receipts Switch. Billing: an invoices Table with Pagination and a compact Empty state for "No backup card". General: workspace rows and a destructive Alert for deleting the workspace.
-
-Light-gray theme, touch density. Run npx @danitesler/ayywi lint when you're done.`,
-    screenshot: settingsScreenshot,
-    Component: SettingsApp,
-  },
   {
     id: "tracker",
     name: "Orbit",

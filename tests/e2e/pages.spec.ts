@@ -361,7 +361,6 @@ const SHOWCASE = [
   { id: "dashboard", name: "Pulse", theme: "dark", density: "compact" },
   { id: "landing", name: "Northwind", theme: "light", density: "comfortable" },
   { id: "inbox", name: "Relay", theme: "dark-contrast", density: "comfortable" },
-  { id: "settings", name: "Ledger", theme: "light-gray", density: "touch" },
   { id: "tracker", name: "Orbit", theme: "light", density: "compact" },
   { id: "store", name: "Ember", theme: "dark", density: "comfortable" },
   { id: "booking", name: "Haven", theme: "light", density: "touch" },
@@ -419,11 +418,8 @@ test("each app opens its own settings in a near-full-screen dialog", async ({ pa
     await page.goto(`/?app=${app.id}`);
     await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
     const dialog = page.getByRole("dialog", { name: "Settings" });
-    // Ledger is about its settings, so they're open on load.
-    if (app.id !== "settings") {
-      await expect(dialog).toBeHidden();
-      await page.locator(".pv-app > .ayy-app-shell__sidebar").getByRole("link", { name: "Settings" }).click();
-    }
+    await expect(dialog).toBeHidden();
+    await page.locator(".pv-app > .ayy-app-shell__sidebar").getByRole("link", { name: "Settings" }).click();
     await expect(dialog, app.id).toBeVisible();
     await expect(dialog).toHaveClass(/ayy-dialog--full/);
     const links = dialog.getByRole("navigation", { name: "Settings" }).getByRole("link");

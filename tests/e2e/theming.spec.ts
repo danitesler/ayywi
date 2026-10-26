@@ -255,12 +255,11 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
 }
 
 test("axe: no serious violations in the showcase apps", async ({ page }) => {
-  test.setTimeout(90_000); // seven full apps, one axe run each
+  test.setTimeout(90_000); // six full apps, one axe run each
   const failures: string[] = [];
-  for (const id of ["dashboard", "landing", "inbox", "settings", "tracker", "store", "booking"]) {
+  for (const id of ["dashboard", "landing", "inbox", "tracker", "store", "booking"]) {
     await page.goto(`/?app=${id}`);
     await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
-    // Ledger opens on its settings dialog, which fades in: check it at rest.
     await page.evaluate(() => Promise.all((document.querySelector("dialog[open]")?.getAnimations() ?? []).map((a) => a.finished)));
     const results = await new AxeBuilder({ page }).analyze();
     for (const v of results.violations.filter((v) => v.impact === "serious" || v.impact === "critical")) {

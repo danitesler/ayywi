@@ -12,7 +12,7 @@ const ROUTE = "examples";
 export const showcaseAppsPage = {
   route: ROUTE,
   title: "Examples",
-  text: `examples showcase templates apps screens prompt dashboard landing inbox settings tracker desktop tablet mobile ${showcaseApps.map((a) => `${a.name} ${a.kind}`).join(" ")}`,
+  text: `examples showcase templates apps screens prompt dashboard landing inbox tracker desktop tablet mobile ${showcaseApps.map((a) => `${a.name} ${a.kind}`).join(" ")}`,
 };
 export const showcase = showcaseAppsPage;
 
