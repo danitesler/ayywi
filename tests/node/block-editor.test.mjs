@@ -185,3 +185,11 @@ test("highlight is a stored mark: cleaned, and ==text== in Markdown", () => {
   assert.equal(blockEditorFromMarkdown("a ==b== c")[0].html, "a <mark>b</mark> c");
   assert.equal(blockEditorFromMarkdown("a == b")[0].html, "a == b");
 });
+
+test("record blocks keep their link and export as the label", () => {
+  const r = { id: "r", type: "record", record: { trigger: "#", id: "142", label: "Auth token refresh race" } };
+  assert.deepEqual(blockEditorNormalize([r])[0].record, r.record);
+  assert.equal(blockEditorNormalize([{ ...r, record: { trigger: "#", id: "1", label: "" } }])[0].record, undefined);
+  assert.equal(blockEditorToMarkdown([r]), "#Auth token refresh race");
+  assert.equal(blockEditorToHtml([r]), '<p data-record="#142">Auth token refresh race</p>');
+});

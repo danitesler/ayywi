@@ -2779,6 +2779,51 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.type("=");
       await expect(line(16).locator("mark")).toHaveText("hi");
     });
+
+    test("block editor links a record from / and fires the mention click", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const stage = example(page, "page");
+      const editor = stage.locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const menu = editor.locator(".ayy-block-editor__menu");
+
+      await blocks.nth(16).locator(":scope > .ayy-block-editor__text").evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+        const sel = getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.type("/link to iss");
+      await page.keyboard.press("Enter");
+      await expect(menu).toBeVisible();
+      await expect(menu).toHaveAttribute("data-mode", "mention");
+      await expect(menu.getByRole("option", { name: /Onboarding checklist copy/ })).toBeVisible();
+
+      await page.keyboard.type("onb");
+      await expect(menu.getByRole("option", { name: /Onboarding checklist copy/ })).toHaveAttribute("aria-selected", "true");
+      await page.keyboard.press("Enter");
+      const record = editor.locator('[data-type="record"]');
+      await expect(record).toContainText("Onboarding checklist copy");
+
+      if (renderer !== "html") return;
+      const host = stage.locator("ayy-block-editor");
+      await host.evaluate((el) => {
+        el.addEventListener("ayy-mention-click", (e) => {
+          (window as unknown as { __clicked: unknown }).__clicked = (e as CustomEvent).detail;
+        });
+      });
+      await record.locator(".ayy-block-editor__record").click();
+      expect(await page.evaluate(() => (window as unknown as { __clicked?: { id: string } }).__clicked?.id)).toBe("158");
+
+      const text = ((await record.textContent()) ?? "").replace(/\s+/g, " ").trim();
+      await host.evaluate((el) => {
+        (el as HTMLElement & { mentions: unknown[] }).mentions = [];
+      });
+      await expect(record).toHaveText(text);
+    });
   });
 }
 

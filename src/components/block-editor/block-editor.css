@@ -1,7 +1,7 @@
 /* Block editor: a document made of blocks, edited in place like Notion. Quiet by design: no borders or boxes around
    the text, the gutter (+ and the drag handle) only shows next to the block under the pointer, and a selection is a
    soft tint. State lives in attributes the script sets:
-     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, toggle, table, code, divider, image, embed, file)
+     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, toggle, table, code, divider, image, embed, file, record)
      [data-indent="1…4"]    nesting level of a list item or line (what a toggle shows or hides)
      [data-open]            a toggle that shows the blocks nested under it
      [data-checked]         a to-do that's done
@@ -945,7 +945,8 @@ span.ayy-block-editor__code-button {
 }
 
 .ayy-block-editor__block[data-selected] .ayy-block-editor__frame,
-.ayy-block-editor__block[data-selected] > .ayy-block-editor__file {
+.ayy-block-editor__block[data-selected] > .ayy-block-editor__file,
+.ayy-block-editor__block[data-selected] > .ayy-block-editor__record {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 2px;
 }
@@ -1045,15 +1046,62 @@ span.ayy-block-editor__code-button {
   font-size: var(--ayy-text-sm);
 }
 
+/* A stored link to a person, issue or page: a button, so it stays clickable when the editor is read-only. */
+.ayy-block-editor__record {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--ayy-space-1-5) var(--ayy-space-2);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-md);
+  background: none;
+  color: var(--ayy-color-text);
+  font: inherit;
+  line-height: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__record > svg {
+  flex: none;
+  inline-size: 1.125em;
+  block-size: 1.125em;
+  color: var(--ayy-color-muted);
+}
+
+.ayy-block-editor__record-label {
+  min-inline-size: 0;
+  overflow: hidden;
+  font-weight: var(--ayy-weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayy-block-editor__record-source {
+  flex: none;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+}
+
+.ayy-block-editor__record-source:empty {
+  display: none;
+}
+
 @media (hover: hover) {
   .ayy-block-editor__bookmark:hover,
-  .ayy-block-editor__file:hover {
+  .ayy-block-editor__file:hover,
+  .ayy-block-editor__record:hover {
     background-color: var(--ayy-color-wash);
   }
 }
 
 .ayy-block-editor__bookmark:focus-visible,
-.ayy-block-editor__file:focus-visible {
+.ayy-block-editor__file:focus-visible,
+.ayy-block-editor__record:focus-visible {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 2px;
 }
@@ -1274,6 +1322,18 @@ ayy-block-editor {
   }
   .ayy-block-editor__block[data-type="callout"][data-tone] > .ayy-block-editor__icon {
     color: CanvasText;
+  }
+  .ayy-block-editor__record {
+    border: 1px solid CanvasText;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+  .ayy-block-editor__record > svg,
+  .ayy-block-editor__record-source {
+    color: CanvasText;
+  }
+  .ayy-block-editor__record:focus-visible {
+    outline: 2px solid Highlight;
   }
   .ayy-block-editor__option[data-current]::after {
     border-color: CanvasText;

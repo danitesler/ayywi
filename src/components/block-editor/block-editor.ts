@@ -1,5 +1,5 @@
 // Block editor: a Notion-style document editor. Every line is a block (text, headings, lists, to-dos, quotes,
-// callouts, code, dividers, images, embeds, files) with its own contentEditable; Enter splits a block, Backspace at its
+// callouts, code, dividers, images, embeds, files, record links) with its own contentEditable; Enter splits a block, Backspace at its
 // start merges it into the one above, the arrows walk between blocks, Markdown shortcuts ("# ", "- ", "[] ", "**bold**")
 // turn into formatting as you type, "/" opens the block menu and a trigger ("@") opens mentions. Blocks reorder by their
 // drag handle (connectDragDrop, the same look as every other drag in ayywi), Esc selects blocks, and a selection can run
@@ -81,6 +81,7 @@ export const blockEditorBlockTypes = [
   "image",
   "embed",
   "file",
+  "record",
 ] as const;
 export type BlockEditorBlockType = (typeof blockEditorBlockTypes)[number];
 
@@ -141,6 +142,8 @@ export interface BlockEditorBlock {
   size?: number;
   /** Callout blocks: info, success, warning or destructive. Absent is the default note. */
   tone?: BlockEditorTone;
+  /** Record blocks: the linked mention, stored as picked. Not looked up again if mentions later changes. */
+  record?: BlockEditorMention;
 }
 
 export interface BlockEditorMentionOption {
@@ -233,6 +236,9 @@ const C = {
   file: `${P}__file`,
   fileName: `${P}__file-name`,
   fileSize: `${P}__file-size`,
+  record: `${P}__record`,
+  recordLabel: `${P}__record-label`,
+  recordSource: `${P}__record-source`,
   empty: `${P}__empty`,
   mention: blockEditorMentionClass,
   mentionTrigger: `${P}__mention-trigger`,
@@ -286,6 +292,7 @@ const TYPES: Record<BlockEditorBlockType, TypeInfo> = {
   image: { label: "Image", hint: "Upload or link a picture", icon: Image01Icon, keywords: "picture photo screenshot img", media: true },
   embed: { label: "Video or embed", hint: "YouTube, Vimeo, Loom, audio or any link", icon: Video01Icon, keywords: "video embed youtube vimeo loom audio link bookmark iframe", media: true },
   file: { label: "File", hint: "Attach a file to download", icon: Attachment01Icon, keywords: "file attachment upload pdf document", media: true },
+  record: { label: "Link to record", hint: "A person, issue or page", icon: ArrowUpRight01Icon, keywords: "record mention page person issue" },
 };
 
 /** The label of a block type, as the editor's menus name it ("Heading 1", "To-do list"). */
@@ -334,7 +341,7 @@ function codeLanguage(raw: string | null | undefined): string {
 const languageLabel = (id: string | undefined) => blockEditorCodeLanguages.find((l) => l.id === (id ?? ""))?.label ?? "Plain text";
 const INDENTABLE: readonly BlockEditorBlockType[] = ["text", "bullet", "number", "todo", "toggle"];
 const MAX_INDENT = 4;
-const isText = (type: BlockEditorBlockType) => type !== "divider" && type !== "table" && !TYPES[type].media;
+const isText = (type: BlockEditorBlockType) => type !== "divider" && type !== "table" && type !== "record" && !TYPES[type].media;
 const isList = (type: BlockEditorBlockType) => LIST_TYPES.includes(type);
 /** A zero-width space keeps the caret outside a mark that was just made at the end of a line; never stored. */
 const ZW = "​";
@@ -526,6 +533,13 @@ export function blockEditorNormalize(value: readonly Partial<BlockEditorBlock>[]
       const tone = calloutTone(raw.tone);
       if (tone) b.tone = tone;
     }
+    if (type === "record" && raw.record && typeof raw.record === "object" && typeof raw.record.label === "string" && raw.record.label) {
+      b.record = {
+        trigger: typeof raw.record.trigger === "string" ? raw.record.trigger : "",
+        id: typeof raw.record.id === "string" ? raw.record.id : "",
+        label: raw.record.label,
+      };
+    }
     if (type === "table") {
       b.rows = tableGrid(raw.rows);
       b.header = raw.header !== false;
@@ -624,7 +638,7 @@ function markdownCells(line: string): string[] {
   return cells.map((c) => c.trim());
 }
 
-/** Parse Markdown into blocks: headings, lists (indented by two spaces or a tab), to-dos, toggles (<details>), quotes, code fences, tables, rules, images and paragraphs. Blank lines are dropped. */
+/** Parse Markdown into blocks: headings, lists (indented by two spaces or a tab), to-dos, toggles (<details>), quotes, code fences, tables, rules, images and paragraphs. Blank lines are dropped. A record link's trigger and label are not turned back into a record block. */
 export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
   const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
   const out: BlockEditorBlock[] = [];
@@ -696,7 +710,7 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
   return out;
 }
 
-/** The blocks as Markdown (mentions become plain text, underline is dropped, a default callout is a quote, a toned one is a GitHub alert). */
+/** The blocks as Markdown (mentions become plain text, underline is dropped, a default callout is a quote, a toned one is a GitHub alert, a record link is its trigger and label). */
 export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): string {
   const out: string[] = [];
   const numbers: number[] = [];
@@ -763,6 +777,9 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
       case "file":
         if (b.src) out.push(`[${(b.type === "file" ? b.name : b.caption) || b.src}](${b.src})`);
         break;
+      case "record":
+        if (b.record?.label) out.push(`${b.record.trigger}${b.record.label}`);
+        break;
       default:
         out.push(text);
     }
@@ -774,7 +791,7 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
 /** The blocks as plain text, one line per block: for search, previews and the clipboard. */
 export function blockEditorToText(value: readonly BlockEditorBlock[]): string {
   return value
-    .map((b) => (isText(b.type) ? inlineText(b.html ?? "") : b.type === "table" ? tableGrid(b.rows).map((row) => row.join("\t")).join("\n") : b.type === "file" ? (b.name ?? b.src ?? "") : b.type === "divider" ? "" : (b.caption ?? b.src ?? "")))
+    .map((b) => (isText(b.type) ? inlineText(b.html ?? "") : b.type === "table" ? tableGrid(b.rows).map((row) => row.join("\t")).join("\n") : b.type === "record" ? (b.record ? `${b.record.trigger}${b.record.label}` : "") : b.type === "file" ? (b.name ?? b.src ?? "") : b.type === "divider" ? "" : (b.caption ?? b.src ?? "")))
     .filter((line, i, all) => line || (i > 0 && all[i - 1]))
     .join("\n")
     .trim();
@@ -862,6 +879,9 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
       }
       case "file":
         if (b.src) out.push(`<p><a href="${escapeHtml(b.src)}" download="${escapeHtml(b.name ?? "")}">${escapeHtml(b.name || b.src)}</a></p>`);
+        break;
+      case "record":
+        if (b.record?.label) out.push(`<p data-record="${escapeHtml(b.record.trigger + b.record.id)}">${escapeHtml(b.record.label)}</p>`);
         break;
       default:
         out.push(`<p>${html}</p>`);
@@ -1450,6 +1470,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   let spanning = false;
   let pressing = false;
   let menu: MenuState | null = null;
+  /** The line that a "Link to …" slash item will turn into a record, once a mention is picked. */
+  let recordPending: string | null = null;
   let menuItems: MenuItem[] = [];
   let dismissed: { id: string; start: number } | null = null;
   let mentionRequest = 0;
@@ -1588,7 +1610,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return el ? textOf(el).length : 0;
   };
   const isEmptyDoc = () => blocks.length === 1 && blocks[0].type === "text" && !inlineText(blocks[0].html ?? "") && !(blocks[0].html ?? "").includes(C.mention);
-  const signature = (b: BlockEditorBlock) => [b.type, b.tone ?? "", b.html ?? "", b.src ?? "", b.caption ?? "", b.name ?? "", b.size ?? "", b.rows ? b.rows.map((r) => r.join("\u0002")).join("\u0003") : "", b.header === false ? 0 : 1, b.headerColumn ? 1 : 0, b.widths?.join(",") ?? "", b.align?.join(",") ?? "", readOnly() ? 1 : 0, uploading.has(b.id) ? 1 : 0].join("\u0001");
+  const signature = (b: BlockEditorBlock) => [b.type, b.tone ?? "", b.html ?? "", b.src ?? "", b.caption ?? "", b.name ?? "", b.size ?? "", b.record ? `${b.record.trigger}\u0002${b.record.id}\u0002${b.record.label}` : "", b.rows ? b.rows.map((r) => r.join("\u0002")).join("\u0003") : "", b.header === false ? 0 : 1, b.headerColumn ? 1 : 0, b.widths?.join(",") ?? "", b.align?.join(",") ?? "", readOnly() ? 1 : 0, uploading.has(b.id) ? 1 : 0].join("\u0001");
   const replaceAt = (i: number, ...items: BlockEditorBlock[]) => {
     const next = blocks.slice();
     next.splice(i, 1, ...items);
@@ -1731,6 +1753,18 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return figure;
   }
 
+  /** A record link: icon, stored name, and the trigger plus id it was picked from. No record yet says "Pick a record". */
+  function buildRecord(b: BlockEditorBlock): HTMLButtonElement {
+    const card = make("button", C.record, { type: "button" });
+    card.innerHTML = svg(TYPES.record.icon);
+    const label = make("span", C.recordLabel);
+    label.textContent = b.record?.label || "Pick a record";
+    const source = make("span", C.recordSource);
+    if (b.record) source.textContent = `${b.record.trigger}${b.record.id}`;
+    card.append(label, source);
+    return card;
+  }
+
   /** A code block's header: its language (a menu of languages) and Copy. */
   function buildCodeBar(): HTMLElement {
     const bar = make("div", C.codeBar, { contenteditable: "false" });
@@ -1852,6 +1886,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (b.type === "code") el.append(buildCodeBar());
     } else if (b.type === "divider") el.append(make("hr", C.rule));
     else if (b.type === "table") el.append(buildTable(b));
+    else if (b.type === "record") el.append(buildRecord(b));
     else el.append(buildMedia(b));
     return el;
   }
@@ -1936,7 +1971,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   /** A block takes the direction of its own text, so its marker, checkbox and quote line sit on the side the text starts. */
   function orient(el: HTMLElement, b: BlockEditorBlock): void {
-    const dir = directionOf(isText(b.type) ? inlineText(b.html ?? "") : (b.caption ?? b.name ?? ""));
+    const dir = directionOf(isText(b.type) ? inlineText(b.html ?? "") : (b.record?.label ?? b.caption ?? b.name ?? ""));
     if (dir) el.setAttribute("dir", dir);
     else el.removeAttribute("dir");
   }
@@ -2415,25 +2450,57 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return -1;
   }
 
+  /** How well "Link to {source}" matches what's typed after "/". Same ranks as slashScore. */
+  function linkScore(label: string, q: string): number {
+    if (!q) return 0;
+    const l = label.toLowerCase();
+    if (l.startsWith(q)) return 1;
+    if (l.split(/\s+/).some((w) => w.startsWith(q))) return 2;
+    if (l.includes(q)) return 4;
+    return -1;
+  }
+
   function slashItems(query: string): MenuItem[] {
     const q = query.toLowerCase();
-    const ranked = blockEditorBlockTypes
-      .map((type, order) => ({ type, order, score: slashScore(type, q) }))
-      .filter((x) => x.score >= 0)
-      .sort((a, b) => a.score - b.score || a.order - b.order);
-    // Typed: best match first, in one list. Not typed yet: grouped, in the menu's own order.
     const grouped = !q;
-    return ranked
-      .map(({ type }) => type)
-      .map((type) => ({
-        key: type,
-        label: TYPES[type].label,
-        hint: TYPES[type].hint,
-        icon: svg(TYPES[type].icon),
-        meta: TYPES[type].markdown,
-        group: grouped ? (TYPES[type].media ? "Media" : "Basic blocks") : undefined,
-        run: () => applySlash(type),
-      }));
+    // Keep record links with the basic blocks, not after Media (record sits last in the type list).
+    const beforeMedia = blockEditorBlockTypes.indexOf("image");
+    const rows: { score: number; order: number; item: MenuItem }[] = [];
+    blockEditorBlockTypes.forEach((type, order) => {
+      const score = slashScore(type, q);
+      if (score < 0) return;
+      rows.push({
+        score,
+        order: type === "record" ? beforeMedia - 0.5 : order,
+        item: {
+          key: type,
+          label: TYPES[type].label,
+          hint: TYPES[type].hint,
+          icon: svg(TYPES[type].icon),
+          meta: TYPES[type].markdown,
+          group: grouped ? (TYPES[type].media ? "Media" : "Basic blocks") : undefined,
+          run: () => applySlash(type),
+        },
+      });
+    });
+    (opts.mentions ?? []).forEach((source, i) => {
+      const label = "Link to " + (source.label ?? source.trigger);
+      const score = linkScore(label, q);
+      if (score < 0) return;
+      rows.push({
+        score,
+        order: beforeMedia - 0.4 + i / 100,
+        item: {
+          key: `record:${source.trigger}`,
+          label,
+          icon: svg(TYPES.record.icon),
+          group: grouped ? "Basic blocks" : undefined,
+          run: () => applySlash("record", source),
+        },
+      });
+    });
+    rows.sort((a, b) => a.score - b.score || a.order - b.order);
+    return rows.map((row) => row.item);
   }
 
   function mentionItems(m: Extract<MenuState, { mode: "mention" }>): MenuItem[] {
@@ -2712,6 +2779,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function closeMenu(): void {
     if (!menu) return;
+    recordPending = null;
     const was = menu;
     const owner = menuOwner();
     menu = null;
@@ -2829,7 +2897,9 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (!found) {
       const index = before.lastIndexOf("/");
       const query = before.slice(index + 1);
-      if (index >= 0 && (index === 0 || /[\s ]/.test(before[index - 1])) && !/[\s ]/.test(query) && query.length <= 24) found = { start: index, query };
+      // A space used to close the menu. Record links are named "Link to …", so a couple of spaces stay part of the filter.
+      const spaces = query.match(/[\s ]/g)?.length ?? 0;
+      if (index >= 0 && (index === 0 || /[\s ]/.test(before[index - 1])) && !/^[\s ]/.test(query) && spaces <= 2 && query.length <= 24) found = { start: index, query };
     }
     if (!found) {
       dismissed = null;
@@ -2842,13 +2912,23 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     else openSlash(id, found.start, found.query);
   }
 
-  function applySlash(type: BlockEditorBlockType): void {
+  const openedMention = (lineId: string) => !!menu && menu.mode === "mention" && menu.id === lineId;
+
+  function applySlash(type: BlockEditorBlockType, source?: BlockEditorMentionSource): void {
     if (!menu || menu.mode !== "slash") return;
     const { id, start, query } = menu;
     closeMenu();
     const i = indexOf(id);
     const b = blocks[i];
     if (!b) return;
+    if (source) {
+      recordPending = id;
+      commit(replaceAt(i, { ...b, html: escapeText(source.trigger) }), { id, start: source.trigger.length });
+      const el = textEl(id);
+      if (el) detectMenus(el);
+      if (!openedMention(id)) recordPending = null;
+      return;
+    }
     const html = sliceHtml(b.html ?? "", 0, start) + sliceHtml(b.html ?? "", start + 1 + query.length);
     const empty = !inlineText(html).trim() && !html.includes(C.mention);
     if (isText(type)) {
@@ -2856,19 +2936,26 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return;
     }
     const made = blockEditorBlock(type);
-    // A divider is followed by a line to write in; so is a table that would otherwise end the document.
-    const after = type === "divider" || (type === "table" && i === blocks.length - 1) ? [blockEditorBlock("text")] : [];
+    // A divider or record is followed by a line to write in; so is a table that would otherwise end the document.
+    const after = type === "divider" || type === "record" || (type === "table" && i === blocks.length - 1) ? [blockEditorBlock("text")] : [];
     const kept = empty ? [] : [{ ...b, html }];
-    commit(replaceAt(i, ...kept, made, ...after), type === "divider" ? { id: after[0].id, start: 0 } : { id: made.id, start: 0 });
+    commit(replaceAt(i, ...kept, made, ...after), type === "divider" || type === "record" ? { id: after[0].id, start: 0 } : { id: made.id, start: 0 });
   }
 
   function applyMention(option: BlockEditorMentionOption, source: BlockEditorMentionSource): void {
     if (!menu || menu.mode !== "mention") return;
     const { id, start, query } = menu;
+    const asRecord = recordPending === id;
     closeMenu();
     const i = indexOf(id);
     const b = blocks[i];
     if (!b) return;
+    if (asRecord) {
+      const made = blockEditorBlock("record", { record: { trigger: source.trigger, id: option.id, label: option.label } });
+      const fresh = blockEditorBlock("text");
+      commit(replaceAt(i, made, fresh), { id: fresh.id, start: 0 });
+      return;
+    }
     const after = sliceHtml(b.html ?? "", start + source.trigger.length + query.length);
     const gap = /^[\s ]/.test(inlineText(after)) ? "" : " ";
     const html = sliceHtml(b.html ?? "", 0, start) + blockEditorMentionHtml({ trigger: source.trigger, id: option.id, label: option.label }) + gap + after;
@@ -4581,6 +4668,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (chip) {
       const d = chip.dataset;
       opts.onMentionClick?.({ trigger: d.trigger ?? "", id: d.id ?? "", label: d.label ?? "" }, e);
+      return;
+    }
+    const card = target.closest<HTMLElement>(`.${C.record}`);
+    if (card && root.contains(card)) {
+      const record = blocks[indexOf(idOf(card))]?.record;
+      if (record) opts.onMentionClick?.(record, e);
       return;
     }
     const link = target.closest<HTMLAnchorElement>("a");

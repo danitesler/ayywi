@@ -1,6 +1,6 @@
 # Block editor
 
-Category: Forms. A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, toggles that hide the blocks nested under them, tables of plain-text cells (row and column grips that open a scoped menu, drag to reorder, a selection you can clear, move, copy or delete from the keyboard, sorting, resizable and aligned columns, header row and column), quotes, callouts (default, or info, success, warning and destructive, the same colours as Alert), code, dividers, images, embeds and files. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place. Also called: block-editor, rich-text-editor, rich-text, wysiwyg, notion-editor, document-editor, notes-editor, page-editor.
+Category: Forms. A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, toggles that hide the blocks nested under them, tables of plain-text cells (row and column grips that open a scoped menu, drag to reorder, a selection you can clear, move, copy or delete from the keyboard, sorting, resizable and aligned columns, header row and column), quotes, callouts (default, or info, success, warning and destructive, the same colours as Alert), code, dividers, images, embeds, files and record links. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place. Also called: block-editor, rich-text-editor, rich-text, wysiwyg, notion-editor, document-editor, notes-editor, page-editor.
 
 **Classes**
 - `.ayy-block-editor` — Root. The editor renders its blocks inside it, then the floating menu, formatting bar and caret anchor. Leave room at its inline start for the gutter (about 3.25rem of padding in its container), or use --inset.
@@ -37,6 +37,9 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__file` — A file block: a link to download it, with its icon, name and size.
 - `.ayy-block-editor__file-name` — A file's name, truncated.
 - `.ayy-block-editor__file-size` — A file's size, muted.
+- `.ayy-block-editor__record` — A record link: a button card (icon, name, source). Clicking it fires the mention click, in read-only too. With no record yet it says "Pick a record".
+- `.ayy-block-editor__record-label` — The record's name, stored on the block. Not looked up again if mentions later changes.
+- `.ayy-block-editor__record-source` — The trigger and id the record was linked from, muted. Empty until one is picked.
 - `.ayy-block-editor__empty` — An image, embed or file block with nothing in it yet: a muted panel with a link field and an Upload button. aria-busy="true" while a file uploads.
 - `.ayy-block-editor__mention` — A mention chip inside text (contenteditable="false", data-trigger, data-id, data-label): text with a faint wash, never a loud pill.
 - `.ayy-block-editor__mention-trigger` — The @ or # of a mention, muted.
@@ -52,11 +55,11 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 
 **States**
 - `default` — Plain text on the page: no borders or boxes; headings in --ayy-font-heading; lists, quotes, callouts and code in their own quiet styles. The gutter is hidden.
-- `hover` (`:hover on a block (devices that hover)`) — Its gutter (+ and the drag handle) fades in at the inline start; a hovered image shows its resize handle and its caption placeholder; gutter buttons, link cards and file rows get --ayy-color-wash-hover.
+- `hover` (`:hover on a block (devices that hover)`) — Its gutter (+ and the drag handle) fades in at the inline start; a hovered image shows its resize handle and its caption placeholder; gutter buttons, link cards, file rows and record cards get --ayy-color-wash.
 - `pressed` — doesn't apply: No pressed look: pressing the handle starts a drag or opens block actions, pressing text places the caret.
-- `focus` (`A line with the caret (:focus inside .ayy-block-editor__text), or the editor itself while blocks are selected; :focus-visible on the gutter buttons, the resize handle, link cards and file rows`) — The caret, and an empty line's hint (Type / for blocks). Selected blocks show their tint; buttons and handles get the 2px --ayy-color-ring outline.
+- `focus` (`A line with the caret (:focus inside .ayy-block-editor__text), or the editor itself while blocks are selected; :focus-visible on the gutter buttons, the resize handle, link cards, file rows and record cards`) — The caret, and an empty line's hint (Type / for blocks). Selected blocks show their tint; buttons and handles get the 2px --ayy-color-ring outline.
 - `disabled` — doesn't apply: Use readOnly to show a document that can't be edited.
-- `selected` (`data-selected on blocks (Esc in a line, Shift+click, Mod+A twice, or the handle's menu) or on a table row's or column's td/th (its grip menu)`) — A 12% --ayy-color-primary tint behind the block or the selected cells; images, players and files also get the --ayy-color-ring outline. Forced colours: a Highlight outline.
+- `selected` (`data-selected on blocks (Esc in a line, Shift+click, Mod+A twice, or the handle's menu) or on a table row's or column's td/th (its grip menu)`) — A 12% --ayy-color-primary tint behind the block or the selected cells; images, players, files and record cards also get the --ayy-color-ring outline. Forced colours: a Highlight outline.
 - `error` — doesn't apply: No error look on the editor; a link that isn't a valid URL marks the link field (aria-invalid) instead. Say why a save failed in an Alert or a toast.
 - `loading` (`aria-busy="true" on .ayy-block-editor__empty while a dropped, pasted or picked file uploads`) — The media panel dims to 60% and stops taking the pointer until the file's URL arrives.
 - `checked` (`data-checked on a to-do block (its checkbox, or Mod+Enter in the line)`) — The checkbox is checked; the text turns --ayy-color-muted with a line through it.
@@ -67,7 +70,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `dragging` (`data-dragging on the blocks being carried by the handle, or on the cells of the table row or column being dragged by its grip`) — They dim to 40%; a raised copy (or a chip saying "3 blocks") follows the pointer and a 2px primary line shows where they'll land (for a table row or column, the .ayy-block-editor__table-drop line inside its wrap).
 - `empty` (`data-empty on the root: the document is one empty line`) — The placeholder shows in that line, focused or not.
 - `typing` (`data-typing on the root: set by typing, cleared when the pointer moves or presses`) — The gutters and code blocks' Copy fade out, so nothing moves beside the words being written.
-- `read-only` (`readOnly / the readonly attribute (aria-readonly="true" on the root)`) — No gutter, carets, placeholders or empty media panels; checkboxes are disabled, links and mentions open on click.
+- `read-only` (`readOnly / the readonly attribute (aria-readonly="true" on the root)`) — No gutter, carets, placeholders or empty media panels; checkboxes are disabled, links, mentions and record cards open on click.
 
 **Sizes**
 - Density — Text follows the type scale (body --ayy-text-md, headings 3xl, 2xl and xl), not density. Menu rows, the formatting bar and the media panel's field and button follow the control sizes, so data-density="touch" makes them bigger; the gutter buttons stay 1.5rem.
@@ -78,7 +81,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - attribute `label`: Accessible name of the editor (default "Editor").
 - attribute `readonly`: Show the document without editing it.
 - event `ayy-change`: { value } — every block, after each change.
-- event `ayy-mention-click`: { trigger, id, label } — a mention chip was clicked.
+- event `ayy-mention-click`: { trigger, id, label } — a mention chip or a record card was clicked.
 
 **React** — `import { BlockEditor } from "@danitesler/ayywi/react";`
 - `<BlockEditor>` renders <div class="ayy-block-editor"> that the editor fills with blocks. Props: `value` BlockEditorBlock[] — the document, controlled (pass back what onChange gives you).; `defaultValue` BlockEditorBlock[] — the document to start with, uncontrolled.; `onChange` (value: BlockEditorBlock[]) => void — after every change.; `placeholder` string — shown while the document is empty.; `readOnly` boolean — show the document without editing it.; `mentions` BlockEditorMentionSource[] — { trigger, label?, options } per trigger; options is a list of { id, label, hint?, avatar? } or a (query) => list or Promise of one.; `upload` (file: File) => string | Promise<string> — store a pasted, dropped or picked file, return its URL. Default: a data: URL.; `onMentionClick` (mention: { trigger, id, label }, event: MouseEvent) => void; `inset` boolean — keep the gutter inside the editor's box.; `aria-label` string — accessible name of the editor (default "Editor").; `...rest` Native <div> attributes (id, className, style…).
