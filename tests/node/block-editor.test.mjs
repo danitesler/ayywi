@@ -161,12 +161,27 @@ test("callout tones survive normalize, Markdown and HTML", () => {
   assert.equal(blockEditorNormalize([{ ...c, tone: "default" }])[0].tone, undefined);
   assert.equal(blockEditorNormalize([{ ...c, type: "text" }])[0].tone, undefined);
   const md = blockEditorToMarkdown([c]);
-  assert.equal(md, "> [!WARNING]\n> Freeze is **Friday**");
-  const [back] = blockEditorFromMarkdown(md);
-  assert.equal(back.type, "callout");
-  assert.equal(back.tone, "warning");
-  assert.equal(back.html, "Freeze is <strong>Friday</strong>");
+  assert.equal(md, "> [!WARNING]\n> Freeze is **Friday**\n");
+  const back = blockEditorFromMarkdown(md);
+  assert.equal(back.length, 1);
+  assert.equal(back[0].type, "callout");
+  assert.equal(back[0].tone, "warning");
+  assert.equal(back[0].html, "Freeze is <strong>Friday</strong>");
   assert.match(blockEditorToHtml([c]), /^<aside data-tone="warning">/);
+});
+
+test("a toned callout doesn't swallow the next quote", () => {
+  const callout = { id: "c", type: "callout", tone: "warning", html: "Freeze is <strong>Friday</strong>" };
+  const quote = { id: "q", type: "quote", html: "Ship it." };
+  const md = blockEditorToMarkdown([callout, quote]);
+  assert.equal(md, "> [!WARNING]\n> Freeze is **Friday**\n\n> Ship it.");
+  const back = blockEditorFromMarkdown(md);
+  assert.equal(back.length, 2);
+  assert.equal(back[0].type, "callout");
+  assert.equal(back[0].tone, "warning");
+  assert.equal(back[0].html, "Freeze is <strong>Friday</strong>");
+  assert.equal(back[1].type, "quote");
+  assert.equal(back[1].html, "Ship it.");
 });
 
 test("callout tones map GitHub alerts, and a default callout stays a quote", () => {

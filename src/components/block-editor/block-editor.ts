@@ -724,7 +724,7 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
   return out;
 }
 
-/** The blocks as Markdown (mentions become plain text, underline is dropped, a default callout is a quote, a toned one is a GitHub alert, a record link is its trigger and label). */
+/** The blocks as Markdown (mentions become plain text, underline is dropped, a default callout is a quote, a toned one is a GitHub alert followed by a blank line, a record link is its trigger and label). */
 export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): string {
   const out: string[] = [];
   const numbers: number[] = [];
@@ -775,7 +775,8 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
       case "callout": {
         const marker = CALLOUT_ALERT[calloutTone(b.tone) ?? "default"];
         if (!marker) out.push(`> ${text}`);
-        else out.push(`> ${marker}`, ...(text ? text.split("\n").map((l) => `> ${l}`) : [">"]));
+        // A blank line stops import from reading the next quote as this callout's body.
+        else out.push(`> ${marker}`, ...(text ? text.split("\n").map((l) => `> ${l}`) : [">"]), "");
         break;
       }
       case "code":
@@ -2541,15 +2542,16 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function slashItems(query: string): MenuItem[] {
     const q = query.toLowerCase();
     const grouped = !q;
-    // Keep record links with the basic blocks, not after Media (record sits last in the type list).
+    // "Link to …" stays with the basic blocks, ahead of Media. The generic record type is not a slash item.
     const beforeMedia = blockEditorBlockTypes.indexOf("image");
     const rows: { score: number; order: number; item: MenuItem }[] = [];
     blockEditorBlockTypes.forEach((type, order) => {
+      if (type === "record") return;
       const score = slashScore(type, q);
       if (score < 0) return;
       rows.push({
         score,
-        order: type === "record" ? beforeMedia - 0.5 : order,
+        order,
         item: {
           key: type,
           label: TYPES[type].label,

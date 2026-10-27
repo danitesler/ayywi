@@ -162,6 +162,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Fixed
 
+- **[Block editor](#/block-editor)**
+  A coloured callout followed by a quote came back as one callout → Markdown leaves a blank line after a coloured callout, so the quote stays its own block.
+- **[Block editor](#/block-editor)**
+  Typing `/record` inserted an empty record card ahead of "Link to …" → the menu offers one link item per mention source.
 - **Linter**
   A `hidden` input or other control was reported as a raw browser control → hidden ones are skipped, since they never show.
 - **[Dropdown menu](#/menu)**
