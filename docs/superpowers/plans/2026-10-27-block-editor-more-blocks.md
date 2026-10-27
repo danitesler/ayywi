@@ -82,10 +82,10 @@ Expected: FAIL on `tone` being `undefined`.
 
 - [ ] **Step 4: Write and run the e2e test**
 
-`test("block editor callouts change colour from block actions", …)` on the `page` example (its block 2 is a callout):
-- Open its handle menu, then "Colour", then "Warning". Expect `data-tone="warning"`.
+`test("block editor callouts change colour from block actions", …)` on the `task-notes` example, using a callout it makes itself. Use `task-notes`, not `page`: Task 5 gives `page`'s callout a tone, so the undo assertion below would stop meaning anything there.
+- In a new line, type `/callout` and press Enter. Open its handle menu, then "Colour", then "Warning". Expect `data-tone="warning"`.
 - `Control+z`. Expect no `data-tone`.
-- In the `task-notes` example, type `/callout` and press Enter in a new line, then turn on its "Read only" switch. Expect the callout to have no `.ayy-block-editor__handle` (read-only has no gutter, so no "Colour ›").
+- Turn on the example's "Read only" switch. Expect the callout to have no `.ayy-block-editor__handle` (read-only has no gutter, so no "Colour ›").
 
 Run: `pnpm build && pnpm check && pnpm exec playwright test tests/e2e/interactions.spec.ts -g "callouts change colour"`
 Expected: PASS.
@@ -210,7 +210,7 @@ git commit -m "Block editor: record link block"
 ### Task 4: Equation block with an app-supplied renderer
 
 **Files:**
-- Modify: `block-editor.ts`: types (add `"equation"` after `"code"`), `TYPES` (label "Equation", hint "TeX, shown by your math renderer", icon: add `FunctionIcon` from Hugeicons, `markdown: "$$"`), a new `const isPlain = (type: BlockEditorBlockType) => type === "code" || type === "equation"`. Use it in place of `=== "code"` wherever the check is about plain-text editing: escaping in normalize and `syncText`/`syncAll`, `plaintext-only` in `buildText`, Enter inserting a newline, the toolbar hiding, and merging on Backspace/Delete. Keep `=== "code"` for the language, highlighting and copy bar, normalize (escape like code), the converters, `buildBlock`, `shortcut()` (`$$` at the start of an empty line), `BlockEditorOptions.renderMath`, `setOptions`
+- Modify: `block-editor.ts`: types (add `"equation"` after `"code"`), `TYPES` (label "Equation", hint "TeX, shown by your math renderer", icon: add `FunctionIcon` from Hugeicons, `markdown: "$$"`), a new `const isPlain = (type: BlockEditorBlockType) => type === "code" || type === "equation"`. Use it in place of `=== "code"` wherever the check is about plain-text editing: escaping in normalize and `syncText`/`syncAll`, `plaintext-only` in `buildText`, Enter inserting a newline, the toolbar hiding, and merging on Backspace/Delete. Keep `=== "code"` for the language, highlighting and copy bar, the converters, `buildBlock`, `shortcut()` (`$$` at the start of an empty line), `BlockEditorOptions.renderMath`, `setOptions`
 - Modify: `block-editor.react.tsx` (a `renderMath` prop), `block-editor.element.ts` (a `renderMath` property), `block-editor.css`, `block-editor.meta.json` (props, element properties, classes)
 - Test: node and e2e
 

@@ -147,7 +147,7 @@ git commit -m "Block editor: table edits as one pure, tested function"
 **Interfaces:**
 - Consumes: `cellEl(id, row, col)`, `cellPos(cell)`, `els`, `readOnly()`.
 - Produces:
-  - Classes `ayy-block-editor__row-grip` (one per row, a `<button>` inside the row's first cell, `data-row`, `aria-label="Row N"`, `aria-haspopup="menu"`, `aria-expanded`, `tabindex="-1"`, `contenteditable="false"`) and `ayy-block-editor__col-grip` (one per column, inside the first row's cell, `data-col`, `aria-label="Column N"`, same attributes). The icon is `dragHandleIcon` from drag-drop (already imported).
+  - Classes `ayy-block-editor__row-grip` (one per row, a `<button>` inside the row's first `<td>`/`<th>`, next to its `.ayy-block-editor__cell` rather than inside the contenteditable, with `data-row`, `aria-label="Row N"`, `aria-haspopup="menu"`, `aria-expanded`, `tabindex="-1"`) and `ayy-block-editor__col-grip` (one per column, inside the first row's `<td>`/`<th>` for that column, next to its `.__cell`, with `data-col`, `aria-label="Column N"`, same attributes). The icon is `dragHandleIcon` from drag-drop (already imported).
   - Function `markHot(id: string, row: number, col: number): void`. It sets `data-hot` on exactly that row's grip and that column's grip, and clears it everywhere else in the block.
 
 - [ ] **Step 1: Write the failing e2e test**
