@@ -2506,6 +2506,46 @@ for (const renderer of ["react", "html"] as const) {
       await expect(cell(0, 2)).toHaveText("Plan");
       await editor.evaluate((el) => el.removeAttribute("dir"));
     });
+
+    test("block editor table rows and columns select from their grips and take keyboard actions", async ({ page, context }) => {
+      await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const table = editor.locator('[data-type="table"]');
+      const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
+      const cols = await table.locator("thead th").count();
+
+      // Click row grip 2, then Escape: the menu closes and the row stays selected.
+      await table.locator('.ayy-block-editor__row-grip[data-row="2"]').click();
+      await page.keyboard.press("Escape");
+      await expect(table.locator("tbody tr:nth-child(2) > [data-selected]")).toHaveCount(cols);
+
+      const rows = await table.locator("tbody tr").count();
+      await page.keyboard.press("Control+d");
+      await expect(table.locator("tbody tr")).toHaveCount(rows + 1);
+
+      const beforeClear = await table.locator(".ayy-block-editor__cell").allTextContents();
+      await page.keyboard.press("Backspace");
+      await expect(table.locator("tbody tr:nth-child(2) > [data-selected] .ayy-block-editor__cell")).toHaveText(["", "", ""]);
+
+      await page.keyboard.press("Control+Backspace");
+      await expect(table.locator("tbody tr")).toHaveCount(rows);
+
+      await page.keyboard.press("Control+z");
+      await page.keyboard.press("Control+z");
+      await expect(table.locator("tbody tr")).toHaveCount(rows + 1);
+      await expect(table.locator(".ayy-block-editor__cell")).toHaveText(beforeClear);
+
+      // Column grip 1: copy its values as one per line, then a cell click clears the selection.
+      await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
+      await page.keyboard.press("Escape");
+      const column = await table.locator('.ayy-block-editor__cell[data-col="1"]').allTextContents();
+      await page.keyboard.press("Control+c");
+      expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(column.join("\n"));
+
+      await cell(1, 0).click();
+      await expect(editor.locator("[data-selected]")).toHaveCount(0);
+    });
   });
 }
 

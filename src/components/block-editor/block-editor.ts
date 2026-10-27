@@ -1414,6 +1414,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   let hiddenIds = new Set<string>();
   /** The table cell that had the caret last, which the block actions menu's row and column items work on. */
   let lastCell: { id: string; row: number; col: number } | null = null;
+  /** The table row or column selected from its grip. The keyboard acts on it while the editor root is focused. */
+  let axisSel: { id: string; axis: "row" | "column"; index: number } | null = null;
 
   root.classList.add(P);
   root.replaceChildren();
@@ -1866,6 +1868,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       handle?.setAttribute("aria-valuetext", `${b.width ?? 100}%`);
     }
     el.toggleAttribute("data-selected", isPicked(b.id));
+    if (b.type === "table") paintAxisOn(el);
     el.querySelector(`:scope > .${C.text}`)?.setAttribute("data-placeholder", placeholderOf(b));
     orient(el, b);
   }
@@ -1983,6 +1986,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     hideToolbar(true);
     setSpanning(false);
     picked = null;
+    axisSel = null;
     blocks = snap.blocks;
     render();
     applyFocus(snap.focus ?? { id: blocks[blocks.length - 1].id, start: "end" });
@@ -2101,6 +2105,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     for (const [id, el] of els) el.toggleAttribute("data-selected", isPicked(id));
   }
   function pick(anchorId: string, headId: string): void {
+    clearAxis();
     setSpanning(false);
     if (menu?.mode !== "actions") closeMenu();
     hideToolbar(true);
@@ -2113,6 +2118,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     announce(`${n} ${n === 1 ? "block" : "blocks"} selected`);
   }
   function unpick(): void {
+    clearAxis();
     if (!picked) return;
     picked = null;
     paintPicked();
@@ -2691,7 +2697,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     closeMenu();
     if (list === "actions") pick(ids[0], ids[ids.length - 1]);
     else unpick();
-    // Row and column menus act on the table's own axis, not a block selection. Task 5 calls selectAxis(id, list, at?.[list === "row" ? 0 : 1]) here.
+    // A row or column menu selects that axis. Escape closes the menu and leaves the selection.
+    if (list === "row" || list === "column") selectAxis(ids[0], list, at?.[list === "row" ? 0 : 1] ?? 0);
     menu = { mode: "actions", ids, index: 0, anchor: from, list, at };
     if (from.matches("button")) from.setAttribute("aria-expanded", "true");
     renderMenu();
@@ -3616,6 +3623,72 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (cell) selectText(cell, at === "end" ? textOf(cell).length : Math.min(at, textOf(cell).length));
   }
 
+  /** Paint `data-selected` on the selected row's or column's cells, from `axisSel`. `render` rebuilds the table, so it has to be painted again. */
+  function paintAxisOn(el: HTMLElement): void {
+    for (const cell of el.querySelectorAll<HTMLElement>("td[data-selected], th[data-selected]")) cell.removeAttribute("data-selected");
+    if (!axisSel || el.dataset.id !== axisSel.id) return;
+    const attr = axisSel.axis === "row" ? "data-row" : "data-col";
+    for (const field of el.querySelectorAll<HTMLElement>(`.${C.cell}[${attr}="${axisSel.index}"]`)) field.parentElement?.setAttribute("data-selected", "");
+  }
+
+  function clearAxis(): void {
+    if (!axisSel) return;
+    const el = els.get(axisSel.id);
+    axisSel = null;
+    if (el) paintAxisOn(el);
+  }
+
+  /** Set the selection and focus the editor, without the "selected" announcement (a keyboard edit restores it this way). */
+  function applyAxis(id: string, axis: "row" | "column", index: number): boolean {
+    const b = blocks[indexOf(id)];
+    if (!b || b.type !== "table") return false;
+    const grid = gridOf(b);
+    const limit = axis === "row" ? grid.length : grid[0].length;
+    if (index < 0 || index >= limit) return false;
+    if (picked) {
+      picked = null;
+      paintPicked();
+    }
+    setSpanning(false);
+    hideToolbar(true);
+    const previous = axisSel;
+    axisSel = { id, axis, index };
+    if (previous && previous.id !== id) {
+      const old = els.get(previous.id);
+      if (old) paintAxisOn(old);
+    }
+    const el = els.get(id);
+    if (el) paintAxisOn(el);
+    window.getSelection()?.removeAllRanges();
+    if (document.activeElement !== root && !menuEl.contains(document.activeElement)) root.focus({ preventScroll: true });
+    return true;
+  }
+
+  function selectAxis(id: string, axis: "row" | "column", index: number): void {
+    if (!applyAxis(id, axis, index)) return;
+    announce(`${axis === "row" ? "Row" : "Column"} ${index + 1} selected`);
+  }
+
+  /** The selected row as tab-separated cells, or the selected column as one value per line. */
+  function axisTsv(sel: { id: string; axis: "row" | "column"; index: number }): string {
+    const b = blocks[indexOf(sel.id)];
+    if (!b || b.type !== "table") return "";
+    const grid = gridOf(b);
+    if (sel.axis === "row") return (grid[sel.index] ?? []).join("\t");
+    return grid.map((row) => row[sel.index] ?? "").join("\n");
+  }
+
+  /** Run a table edit, then put the selection back if the edit changed the table (a cell focus would have cleared it). */
+  function keepAxis(sel: { id: string; axis: "row" | "column"; index: number }, run: () => void): void {
+    const before = blocks[indexOf(sel.id)];
+    run();
+    if (blocks[indexOf(sel.id)] !== before) applyAxis(sel.id, sel.axis, sel.index);
+  }
+
+  function axisFocus(sel: { axis: "row" | "column"; index: number }): [number, number] {
+    return sel.axis === "row" ? [sel.index, 0] : [0, sel.index];
+  }
+
   /** Text pasted into a cell: a spreadsheet's rows and columns (tab and new line separated) fill the cells from there on, growing the table. */
   function pasteIntoTable(cell: HTMLElement, text: string): void {
     const lines = text.replace(/\r\n?/g, "\n").replace(/\n+$/, "").split("\n");
@@ -3834,6 +3907,75 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
   }
 
+  function onAxisKey(e: KeyboardEvent): void {
+    const sel = axisSel;
+    if (!sel) return;
+    const key = e.key.toLowerCase();
+    const mod = isMod(e);
+    const b = blocks[indexOf(sel.id)];
+    if (!b || b.type !== "table") {
+      clearAxis();
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      const { id, axis, index } = sel;
+      clearAxis();
+      focusCell(id, axis === "row" ? index : 0, axis === "column" ? index : 0);
+      return;
+    }
+    if ((e.key === "Backspace" || e.key === "Delete") && !mod && !e.altKey) {
+      e.preventDefault();
+      const [row, col] = axisFocus(sel);
+      keepAxis(sel, () => clearCells(sel.id, sel.axis, row, col));
+      return;
+    }
+    if (mod && (e.key === "Backspace" || e.key === "Delete")) {
+      e.preventDefault();
+      if (sel.axis === "row") deleteRow(sel.id, sel.index);
+      else deleteColumn(sel.id, sel.index);
+      return;
+    }
+    if (mod && !e.shiftKey && !e.altKey && key === "d") {
+      e.preventDefault();
+      keepAxis(sel, () => (sel.axis === "row" ? duplicateRow(sel.id, sel.index) : duplicateColumn(sel.id, sel.index)));
+      return;
+    }
+    if (mod && e.shiftKey && e.key.startsWith("Arrow")) {
+      const rtl = getComputedStyle(root).direction === "rtl";
+      if (sel.axis === "row" && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        e.preventDefault();
+        const dir: -1 | 1 = e.key === "ArrowUp" ? -1 : 1;
+        keepAxis({ ...sel, index: sel.index + dir }, () => moveRow(sel.id, sel.index, dir));
+        return;
+      }
+      if (sel.axis === "column" && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+        e.preventDefault();
+        const dir: -1 | 1 = (e.key === "ArrowLeft") !== rtl ? -1 : 1;
+        keepAxis({ ...sel, index: sel.index + dir }, () => moveColumn(sel.id, sel.index, dir));
+        return;
+      }
+    }
+    if (mod && (key === "c" || key === "x")) {
+      // No preventDefault: the copy or cut event writes the TSV. Without one (nothing selected), the async clipboard does.
+      copied = false;
+      const text = axisTsv(sel);
+      const cut = key === "x";
+      const snap = { ...sel };
+      window.setTimeout(() => {
+        if (copied) return;
+        void navigator.clipboard?.writeText(text).catch(() => undefined);
+        if (cut) keepAxis(snap, () => clearCells(snap.id, snap.axis, ...axisFocus(snap)));
+      }, 0);
+      return;
+    }
+    if (mod && (key === "z" || key === "y")) {
+      e.preventDefault();
+      if (key === "y" || e.shiftKey) redo();
+      else undo();
+    }
+  }
+
   function onKeyDown(e: KeyboardEvent): void {
     if (readOnly()) return;
     const target = e.target as HTMLElement;
@@ -3848,7 +3990,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return;
     }
     if (target === root) {
-      if (spanning) onSpanKey(e);
+      if (axisSel) onAxisKey(e);
+      else if (spanning) onSpanKey(e);
       else if (picked) onPickedKey(e);
       else if (isMod(e) && (e.key.toLowerCase() === "z" || e.key.toLowerCase() === "y")) {
         e.preventDefault();
@@ -3970,6 +4113,18 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function onCopy(e: ClipboardEvent, cut: boolean): void {
     if (!e.clipboardData) return;
+    if (axisSel) {
+      e.preventDefault();
+      copied = true;
+      const text = axisTsv(axisSel);
+      e.clipboardData.setData("text/plain", text);
+      void navigator.clipboard?.writeText(text).catch(() => undefined);
+      if (cut && !readOnly()) {
+        const sel = axisSel;
+        keepAxis(sel, () => clearCells(sel.id, sel.axis, ...axisFocus(sel)));
+      }
+      return;
+    }
     if (picked) {
       e.preventDefault();
       copied = true;
@@ -4112,6 +4267,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
     }
     const inText = target.closest(`.${C.text}`);
+    if (target.closest(`.${C.cell}`)) clearAxis();
     if (picked && !(e.shiftKey && e.button === 0)) unpick();
     if (picked) return;
     // Before the browser places the caret: a press that turns into a drag can then select across blocks.
@@ -4444,6 +4600,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function onFocusIn(e: FocusEvent): void {
     const target = e.target as Node;
     if (isElement(target) && target.classList.contains(C.cell)) {
+      clearAxis();
       const [row, col] = cellPos(target);
       const id = idOf(target);
       lastCell = { id, row, col };
@@ -4470,6 +4627,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
     if (menu) closeMenu();
     unpick();
+    clearAxis();
     setSpanning(false);
     hideToolbar(true);
   }
@@ -4658,6 +4816,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       hideToolbar(true);
       setSpanning(false);
       picked = null;
+      axisSel = null;
       undoStack = [];
       redoStack = [];
       typing = null;
@@ -4672,6 +4831,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         hideToolbar(true);
         setSpanning(false);
         picked = null;
+        axisSel = null;
       }
       render();
       for (const b of blocks) {

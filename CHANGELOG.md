@@ -101,6 +101,8 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   One look and one density only → `spacious`, `bordered` (column lines), `sticky` (header and footer stay in view) and `fixed` (column widths from the header) join `compact`.
 
 ### Changed
+- **[Block editor](#/block-editor)**
+  A table row or column grip only opened a menu → opening it selects that row or column, and the keyboard can clear, delete, duplicate, move, copy or cut the selection.
 - **Preview**
   Home page agent block was one fixed terminal snippet → tabs for Quick start, npm package, No build and By hand, each with its own copy button, in a block that keeps one 320px height so the page doesn't jump between tabs.
 - **Preview**

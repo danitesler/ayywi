@@ -6372,8 +6372,8 @@
           "none": "Use readOnly to show a document that can't be edited."
         },
         "selected": {
-          "when": "data-selected on blocks: Esc in a line, Shift+click, Mod+A twice, or the handle's menu",
-          "looks": "A 12% --ayy-color-primary tint behind the block; images, players and files also get the --ayy-color-ring outline. Forced colours: a Highlight outline."
+          "when": "data-selected on blocks (Esc in a line, Shift+click, Mod+A twice, or the handle's menu) or on a table row's or column's td/th (its grip menu)",
+          "looks": "A 12% --ayy-color-primary tint behind the block or the selected cells; images, players and files also get the --ayy-color-ring outline. Forced colours: a Highlight outline."
         },
         "error": {
           "none": "No error look on the editor; a link that isn't a valid URL marks the link field (aria-invalid) instead. Say why a save failed in an Alert or a toast."
@@ -6459,6 +6459,7 @@
         "Name the editor (aria-label in React, label on <ayy-block-editor>): it's a role=\"group\" of lines, each a role=\"textbox\" named by its type (Text, Heading 1, To-do list).",
         "Everything works from the keyboard: Enter, Backspace and the arrows move through blocks; Tab and Shift+Tab nest; Mod+Enter opens or closes a toggle, whose arrow is not a tab stop; in a table Tab and Shift+Tab move between cells (Tab in the last one adds a row), Enter goes down a row and adds one after the last, Mod+Enter adds a row below, the arrows leave the table at its first and last row, Mod+Shift+arrows move the row or column, a cell's Mod+/ or right-click opens its menu (Row ›, Column ›, Header row, Header column, Clear every cell, then the block actions), the row and column grips open a menu scoped to that row or column (insert, duplicate, move, clear, delete — columns also sort, align and set width), and the block handle's menu holds the table-wide items (→ opens a group, ← or Esc goes back); Esc selects the block (then ↑/↓, Shift+↑/↓, Delete, Mod+D, Mod+Shift+↑/↓, Enter to edit again); Mod+/ opens block actions, Mod+Alt+0–8 turns a block into another type, Mod+B/I/U, Mod+Shift+S, Mod+E and Mod+K format. Tab nests, so the way out of the editor is Esc twice, then Tab.",
         "The / and mention menus keep focus in the line: ↑/↓ move through aria-activedescendant, Enter or Tab picks, Esc closes without closing a parent Dialog. The block actions menu takes focus and gives it back.",
+        "Opening a row or column grip's menu selects that row or column (Esc closes the menu and leaves it selected). Delete or Backspace clears it, Mod+Backspace or Mod+Delete deletes it, Mod+D duplicates it, Mod+Shift+arrows move it (left and right follow the reading direction), Mod+C copies it (a row is tab-separated, a column is one value per line), Mod+X copies then clears it, and Esc puts the caret in its first cell. Clicking a cell clears the selection.",
         "Block selections, moves and failed uploads are read out in a polite live region.",
         "Images take their caption as alt text: write one for every picture that carries meaning."
       ],

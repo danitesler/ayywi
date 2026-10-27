@@ -5,7 +5,7 @@
      [data-indent="1…4"]    nesting level of a list item or line (what a toggle shows or hides)
      [data-open]            a toggle that shows the blocks nested under it
      [data-checked]         a to-do that's done
-     [data-selected]        a block in a block selection (Esc, Shift+click, the handle)
+     [data-selected]        a block in a block selection (Esc, Shift+click, the handle), or a table cell (td/th) in a selected row or column
      [data-dragging]        a block being carried by its handle (the drop line is drag-drop's [data-drop-edge])
      [data-empty]           on the root while the document is one empty line (its placeholder shows)
      [aria-readonly="true"] on the root: shown, not edited */
@@ -572,6 +572,11 @@
 .ayy-block-editor__cell:focus {
   background-color: color-mix(in srgb, var(--ayy-color-primary) 8%, transparent);
   box-shadow: inset 0 0 0 2px var(--ayy-color-ring);
+}
+
+/* A selected row or column: the same primary tint as a selected block, on each of its cells. */
+.ayy-block-editor__table :is(td, th)[data-selected] {
+  background-color: color-mix(in srgb, var(--ayy-color-primary) 12%, transparent);
 }
 
 /* The row or column being dragged by its grip dims to 40%, like a block carried by its handle. */
@@ -1228,6 +1233,10 @@ ayy-block-editor {
     background-color: CanvasText;
   }
   .ayy-block-editor__cell:focus {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .ayy-block-editor__table :is(td, th)[data-selected] {
     outline: 2px solid Highlight;
     outline-offset: -2px;
   }
