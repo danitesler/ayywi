@@ -24,6 +24,8 @@ export interface BlockEditorProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   mentions?: BlockEditorMentionSource[];
   /** Store a pasted, dropped or picked file and return its URL. Default: a data: URL. */
   upload?: (file: File) => string | Promise<string>;
+  /** Turn an equation block's TeX into HTML. Without it, the TeX shows as typed. */
+  renderMath?: (tex: string) => string;
   /** Called when a mention chip is clicked. */
   onMentionClick?: (mention: BlockEditorMention, event: MouseEvent) => void;
   /** Keep the drag handles inside the editor's own box, for containers with no padding to hang them in. */
@@ -32,15 +34,16 @@ export interface BlockEditorProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 
 /** A Notion-style block editor. Behaviour comes from connectBlockEditor(); the editor owns the DOM inside this element. */
 export const BlockEditor = forwardRef<HTMLDivElement, BlockEditorProps>(function BlockEditor(
-  { value, defaultValue, onChange, placeholder, readOnly, mentions, upload, onMentionClick, inset, className, "aria-label": ariaLabel, ...props },
+  { value, defaultValue, onChange, placeholder, readOnly, mentions, upload, renderMath, onMentionClick, inset, className, "aria-label": ariaLabel, ...props },
   ref,
 ) {
   const rootRef = useRef<HTMLDivElement>(null);
   const controller = useRef<BlockEditorController | null>(null);
   const emitted = useRef<BlockEditorBlock[] | undefined>(undefined);
-  const latest = useRef({ onChange, onMentionClick, upload });
-  latest.current = { onChange, onMentionClick, upload };
+  const latest = useRef({ onChange, onMentionClick, upload, renderMath });
+  latest.current = { onChange, onMentionClick, upload, renderMath };
   const uploadVia = upload ? (file: File) => latest.current.upload!(file) : undefined;
+  const renderMathVia = renderMath ? (tex: string) => latest.current.renderMath!(tex) : undefined;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -52,6 +55,7 @@ export const BlockEditor = forwardRef<HTMLDivElement, BlockEditorProps>(function
       readOnly,
       mentions,
       upload: uploadVia,
+      renderMath: renderMathVia,
       onChange: (next) => {
         emitted.current = next;
         latest.current.onChange?.(next);
@@ -68,9 +72,9 @@ export const BlockEditor = forwardRef<HTMLDivElement, BlockEditorProps>(function
   }, []);
 
   useEffect(() => {
-    controller.current?.setOptions({ placeholder, label: ariaLabel, readOnly, mentions, upload: uploadVia });
+    controller.current?.setOptions({ placeholder, label: ariaLabel, readOnly, mentions, upload: uploadVia, renderMath: renderMathVia });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [placeholder, ariaLabel, readOnly, mentions, !!upload]);
+  }, [placeholder, ariaLabel, readOnly, mentions, !!upload, !!renderMath]);
 
   useEffect(() => {
     if (value && value !== emitted.current) controller.current?.setValue(value);

@@ -1,7 +1,8 @@
 /* Block editor: a document made of blocks, edited in place like Notion. Quiet by design: no borders or boxes around
    the text, the gutter (+ and the drag handle) only shows next to the block under the pointer, and a selection is a
    soft tint. State lives in attributes the script sets:
-     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, toggle, table, code, divider, image, embed, file, record)
+     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, toggle, table, code, equation, divider, image, embed, file, record)
+     [data-rendered]        an equation whose renderer returned HTML (the TeX line stays focusable, clipped until the block is edited)
      [data-indent="1…4"]    nesting level of a list item or line (what a toggle shows or hides)
      [data-open]            a toggle that shows the blocks nested under it
      [data-checked]         a to-do that's done
@@ -693,6 +694,46 @@
 
 .ayy-block-editor__block[data-type="code"] > .ayy-block-editor__gutter {
   inset-block-start: calc(var(--_pad) + var(--ayy-space-1-5) + (1.5rem - var(--_button)) / 2);
+}
+
+/* An equation is TeX while edited, and the app's rendering once the line is left — if that rendering came back. */
+.ayy-block-editor__block[data-type="equation"] > .ayy-block-editor__text {
+  padding: var(--ayy-space-3) var(--ayy-space-4);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash);
+  font-family: var(--ayy-font-mono);
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+.ayy-block-editor__math {
+  display: none;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding: var(--ayy-space-3) var(--ayy-space-4);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-wash);
+  text-align: center;
+  cursor: text;
+  overflow-x: auto;
+}
+
+.ayy-block-editor__block[data-rendered]:not(:focus-within) > .ayy-block-editor__math {
+  display: block;
+}
+
+/* Clip, not display: none, so the TeX line stays focusable for the keyboard and screen readers. */
+.ayy-block-editor__block[data-rendered]:not(:focus-within) > .ayy-block-editor__text {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* A code block's header: its language at the start (a menu of languages), Copy at the end on hover. */

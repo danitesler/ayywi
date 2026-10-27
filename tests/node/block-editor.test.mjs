@@ -193,3 +193,13 @@ test("record blocks keep their link and export as the label", () => {
   assert.equal(blockEditorToMarkdown([r]), "#Auth token refresh race");
   assert.equal(blockEditorToHtml([r]), '<p data-record="#142">Auth token refresh race</p>');
 });
+
+test("equations keep their TeX through Markdown and export it to HTML", () => {
+  const eq = { id: "e", type: "equation", html: "E = mc^2 &lt; x" };
+  assert.equal(blockEditorToMarkdown([eq]), "$$\nE = mc^2 < x\n$$");
+  const [back] = blockEditorFromMarkdown("$$\nE = mc^2 < x\n$$");
+  assert.equal(back.type, "equation");
+  assert.equal(back.html, "E = mc^2 &lt; x");
+  assert.equal(blockEditorToHtml([eq]), "<div data-math>\\[E = mc^2 &lt; x\\]</div>");
+  assert.equal(blockEditorNormalize([{ type: "equation", html: "<b>x</b>" }])[0].html, "x");
+});

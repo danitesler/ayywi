@@ -1,5 +1,5 @@
 // Block editor: a Notion-style document editor. Every line is a block (text, headings, lists, to-dos, quotes,
-// callouts, code, dividers, images, embeds, files, record links) with its own contentEditable; Enter splits a block, Backspace at its
+// callouts, code, equations, dividers, images, embeds, files, record links) with its own contentEditable; Enter splits a block, Backspace at its
 // start merges it into the one above, the arrows walk between blocks, Markdown shortcuts ("# ", "- ", "[] ", "**bold**")
 // turn into formatting as you type, "/" opens the block menu and a trigger ("@") opens mentions. Blocks reorder by their
 // drag handle (connectDragDrop, the same look as every other drag in ayywi), Esc selects blocks, and a selection can run
@@ -27,6 +27,7 @@ import {
   Copy01Icon,
   CopyPlusIcon,
   Delete02Icon,
+  FunctionIcon,
   Grid3x3Icon,
   Heading01Icon,
   Heading02Icon,
@@ -77,6 +78,7 @@ export const blockEditorBlockTypes = [
   "toggle",
   "table",
   "code",
+  "equation",
   "divider",
   "image",
   "embed",
@@ -111,7 +113,7 @@ export interface BlockEditorBlock {
   /** Stable id; the editor makes one when it's missing. */
   id: string;
   type: BlockEditorBlockType;
-  /** Inline content of text blocks as sanitised HTML: text with <strong>, <em>, <u>, <s>, <code>, <a href> and mention chips. Code blocks hold escaped plain text. */
+  /** Inline content of text blocks as sanitised HTML: text with <strong>, <em>, <u>, <s>, <code>, <a href> and mention chips. Code and equation blocks hold escaped plain text. */
   html?: string;
   /** Nesting level, 0–4 (lists, to-dos and text). */
   indent?: number;
@@ -184,6 +186,8 @@ export interface BlockEditorOptions {
   mentions?: BlockEditorMentionSource[];
   /** Store a pasted, dropped or picked file and return its URL. Default: a data: URL (fine for demos, too big for real storage). */
   upload?: (file: File) => string | Promise<string>;
+  /** Turn an equation block's TeX into HTML. Without it, the TeX shows as typed. A throw or an empty result shows the source. */
+  renderMath?: (tex: string) => string;
   /** Called after every change with the whole value. */
   onChange?: (value: BlockEditorBlock[]) => void;
   /** Called when a mention chip is clicked. */
@@ -224,6 +228,7 @@ const C = {
   check: `${P}__check`,
   icon: `${P}__icon`,
   text: blockEditorTextClass,
+  math: `${P}__math`,
   rule: `${P}__rule`,
   media: `${P}__media`,
   frame: `${P}__frame`,
@@ -288,6 +293,7 @@ const TYPES: Record<BlockEditorBlockType, TypeInfo> = {
   callout: { label: "Callout", hint: "Make a note stand out", icon: BulbIcon, keywords: "note tip info warning aside" },
   table: { label: "Table", hint: "Rows and columns of plain text", icon: Grid3x3Icon, keywords: "table grid rows columns cells spreadsheet" },
   code: { label: "Code", hint: "A monospace snippet", icon: SourceCodeIcon, keywords: "snippet pre program", markdown: "```" },
+  equation: { label: "Equation", hint: "TeX, shown by your math renderer", icon: FunctionIcon, keywords: "equation math tex latex formula", markdown: "$$" },
   divider: { label: "Divider", hint: "Separate sections", icon: SolidLine01Icon, keywords: "line rule separator hr", markdown: "---" },
   image: { label: "Image", hint: "Upload or link a picture", icon: Image01Icon, keywords: "picture photo screenshot img", media: true },
   embed: { label: "Video or embed", hint: "YouTube, Vimeo, Loom, audio or any link", icon: Video01Icon, keywords: "video embed youtube vimeo loom audio link bookmark iframe", media: true },
@@ -343,6 +349,7 @@ const INDENTABLE: readonly BlockEditorBlockType[] = ["text", "bullet", "number",
 const MAX_INDENT = 4;
 const isText = (type: BlockEditorBlockType) => type !== "divider" && type !== "table" && type !== "record" && !TYPES[type].media;
 const isList = (type: BlockEditorBlockType) => LIST_TYPES.includes(type);
+const isPlain = (type: BlockEditorBlockType) => type === "code" || type === "equation";
 /** A zero-width space keeps the caret outside a mark that was just made at the end of a line; never stored. */
 const ZW = "​";
 
@@ -525,7 +532,7 @@ export function blockEditorNormalize(value: readonly Partial<BlockEditorBlock>[]
     if (seen.has(id)) id = blockEditorId();
     seen.add(id);
     const b: BlockEditorBlock = { id, type };
-    if (isText(type)) b.html = type === "code" ? escapeHtml(inlineText(raw.html ?? "")) : blockEditorCleanHtml(raw.html ?? "");
+    if (isText(type)) b.html = isPlain(type) ? escapeHtml(inlineText(raw.html ?? "")) : blockEditorCleanHtml(raw.html ?? "");
     if (INDENTABLE.includes(type) && raw.indent) b.indent = Math.max(0, Math.min(MAX_INDENT, Math.round(raw.indent)));
     if (type === "todo") b.checked = !!raw.checked;
     if (type === "toggle" && raw.open) b.open = true;
@@ -638,7 +645,7 @@ function markdownCells(line: string): string[] {
   return cells.map((c) => c.trim());
 }
 
-/** Parse Markdown into blocks: headings, lists (indented by two spaces or a tab), to-dos, toggles (<details>), quotes, code fences, tables, rules, images and paragraphs. Blank lines are dropped. A record link's trigger and label are not turned back into a record block. */
+/** Parse Markdown into blocks: headings, lists (indented by two spaces or a tab), to-dos, toggles (<details>), quotes, code fences, equation fences ($$), tables, rules, images and paragraphs. Blank lines are dropped. A record link's trigger and label are not turned back into a record block. */
 export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
   const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
   const out: BlockEditorBlock[] = [];
@@ -662,6 +669,13 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
       i++;
       while (i < lines.length && !/^\s*```/.test(lines[i])) body.push(lines[i++]);
       out.push(blockEditorBlock("code", { html: escapeHtml(body.join("\n")), ...(language ? { language } : {}) }));
+      continue;
+    }
+    if (/^\s*\$\$/.test(raw)) {
+      const body: string[] = [];
+      i++;
+      while (i < lines.length && !/^\s*\$\$/.test(lines[i])) body.push(lines[i++]);
+      out.push(blockEditorBlock("equation", { html: escapeHtml(body.join("\n")) }));
       continue;
     }
     if (!raw.trim()) continue;
@@ -727,7 +741,7 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
     if (b.type === "number") numbers[level] = (numbers[level] ?? 0) + 1;
     else numbers[level] = 0;
     const pad = isList(b.type) ? "  ".repeat(level) : "";
-    const text = isText(b.type) && b.type !== "code" ? inlineToMarkdown(b.html ?? "").replace(/\n/g, "  \n") : "";
+    const text = isText(b.type) && b.type !== "code" && b.type !== "equation" ? inlineToMarkdown(b.html ?? "").replace(/\n/g, "  \n") : "";
     switch (b.type) {
       case "heading-1":
       case "heading-2":
@@ -766,6 +780,9 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
       }
       case "code":
         out.push(`\`\`\`${b.language ?? ""}`, inlineText(b.html ?? ""), "```");
+        break;
+      case "equation":
+        out.push("$$", inlineText(b.html ?? ""), "$$");
         break;
       case "divider":
         out.push("---");
@@ -809,7 +826,7 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
     }
   };
   for (const b of value) {
-    const html = isText(b.type) && b.type !== "code" ? blockEditorCleanHtml(b.html ?? "").replace(/\n/g, "<br>") : "";
+    const html = isText(b.type) && b.type !== "code" && b.type !== "equation" ? blockEditorCleanHtml(b.html ?? "").replace(/\n/g, "<br>") : "";
     while (toggles.length && toggles[toggles.length - 1] >= (b.indent ?? 0)) {
       closeTo(-1);
       toggles.pop();
@@ -846,6 +863,9 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
         break;
       case "code":
         out.push(`<pre><code${b.language ? ` class="language-${escapeHtml(b.language)}"` : ""}>${escapeHtml(inlineText(b.html ?? ""))}</code></pre>`);
+        break;
+      case "equation":
+        out.push(`<div data-math>\\[${escapeHtml(inlineText(b.html ?? ""))}\\]</div>`);
         break;
       case "divider":
         out.push("<hr>");
@@ -1239,7 +1259,7 @@ function readMarkup(root: HTMLElement): BlockEditorBlock[] {
     out.push({
       id: d.id,
       type,
-      html: type === "code" ? escapeHtml(textOf(text)) : cleanDom(text),
+      html: isPlain(type) ? escapeHtml(textOf(text)) : cleanDom(text),
       indent: d.indent ? Number(d.indent) : undefined,
       checked: d.checked !== undefined || !!el.querySelector<HTMLInputElement>(`.${C.check}`)?.checked,
       open: d.open !== undefined && d.open !== "false",
@@ -1343,7 +1363,7 @@ function cutBlocks(all: readonly BlockEditorBlock[], start: Point, end: Point): 
     if (!isText(b.type)) return { ...b };
     const from = i === 0 ? start.offset : 0;
     const to = i === list.length - 1 ? end.offset : Number.POSITIVE_INFINITY;
-    const html = b.type === "code" ? escapeHtml(inlineText(b.html ?? "").slice(from, to)) : sliceHtml(b.html ?? "", from, to);
+    const html = isPlain(b.type) ? escapeHtml(inlineText(b.html ?? "").slice(from, to)) : sliceHtml(b.html ?? "", from, to);
     return { ...b, html };
   });
 }
@@ -1404,7 +1424,7 @@ function deleteSpan(list: readonly BlockEditorBlock[], start: Point, end: Point)
   const head = isText(first.type) ? sliceHtml(first.html ?? "", 0, start.offset) : "";
   const tail = isText(last.type) ? sliceHtml(last.html ?? "", end.offset) : "";
   let merged: BlockEditorBlock;
-  if (isText(first.type)) merged = { ...first, html: first.type === "code" ? escapeHtml(inlineText(head) + inlineText(tail)) : head + tail };
+  if (isText(first.type)) merged = { ...first, html: isPlain(first.type) ? escapeHtml(inlineText(head) + inlineText(tail)) : head + tail };
   else if (isText(last.type)) merged = { ...last, html: tail };
   else merged = blockEditorBlock("text");
   const next = list.slice();
@@ -1417,7 +1437,7 @@ function insertInto(list: readonly BlockEditorBlock[], i: number, from: number, 
   const b = list[i];
   const next = list.slice();
   if (!incoming.length) return { next, caret: { id: b.id, start: from } };
-  if (b.type === "code") {
+  if (isPlain(b.type)) {
     const text = inlineText(b.html ?? "");
     const pasted = incoming.map((x) => (isText(x.type) ? inlineText(x.html ?? "") : (x.src ?? ""))).join("\n");
     next[i] = { ...b, html: escapeHtml(text.slice(0, from) + pasted + text.slice(to)) };
@@ -1428,17 +1448,17 @@ function insertInto(list: readonly BlockEditorBlock[], i: number, from: number, 
   const right = sliceHtml(html, to);
   const first = incoming[0];
   if (incoming.length === 1 && isText(first.type) && (first.type === "text" || first.type === b.type || inlineText(html).trim())) {
-    next[i] = { ...b, html: left + (first.type === "code" ? escapeText(inlineText(first.html ?? "")) : (first.html ?? "")) + right };
+    next[i] = { ...b, html: left + (isPlain(first.type) ? escapeText(inlineText(first.html ?? "")) : (first.html ?? "")) + right };
     return { next, caret: { id: b.id, start: htmlLength(left) + htmlLength(first.html ?? "") } };
   }
   const out: BlockEditorBlock[] = [];
   if (b.type === "text" && !inlineText(left).trim() && !left.includes(C.mention)) out.push({ ...first, id: b.id });
-  else if (isText(first.type) && first.type !== "code") out.push({ ...b, html: left + (first.html ?? "") });
+  else if (isText(first.type) && !isPlain(first.type)) out.push({ ...b, html: left + (first.html ?? "") });
   else out.push({ ...b, html: left }, first);
   out.push(...incoming.slice(1));
   const last = out[out.length - 1];
   let caret: Focus;
-  if (isText(last.type) && last.type !== "code") {
+  if (isText(last.type) && !isPlain(last.type)) {
     caret = { id: last.id, start: htmlLength(last.html ?? "") };
     out[out.length - 1] = { ...last, html: (last.html ?? "") + right };
   } else {
@@ -1630,7 +1650,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   /** Convert a text block to another text type, keeping its content (and indent and checkbox where they still apply). */
   function asType(b: BlockEditorBlock, type: BlockEditorBlockType): BlockEditorBlock {
-    const out: BlockEditorBlock = { id: b.id, type, html: type === "code" ? escapeHtml(inlineText(b.html ?? "")) : (b.html ?? "") };
+    const out: BlockEditorBlock = { id: b.id, type, html: isPlain(type) ? escapeHtml(inlineText(b.html ?? "")) : (b.html ?? "") };
     if (INDENTABLE.includes(type) && b.indent) out.indent = b.indent;
     if (type === "todo") out.checked = b.type === "todo" ? !!b.checked : false;
     if (type === "toggle") out.open = b.type === "toggle" ? !!b.open : true;
@@ -1655,19 +1675,19 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function buildText(b: BlockEditorBlock): HTMLElement {
     const el = make("div", C.text);
-    const code = b.type === "code";
+    const plain = isPlain(b.type);
     if (!readOnly()) {
       el.setAttribute("role", "textbox");
       el.setAttribute("aria-label", TYPES[b.type].label);
-      if (code) el.setAttribute("aria-multiline", "true");
+      if (plain) el.setAttribute("aria-multiline", "true");
       try {
-        el.contentEditable = code ? "plaintext-only" : "true";
+        el.contentEditable = plain ? "plaintext-only" : "true";
       } catch {
         el.contentEditable = "true";
       }
-      el.spellcheck = !code;
+      el.spellcheck = !plain;
     }
-    if (code) el.textContent = inlineText(b.html ?? "");
+    if (plain) el.textContent = inlineText(b.html ?? "");
     else el.innerHTML = b.html ?? "";
     tidy(el);
     return el;
@@ -1765,6 +1785,16 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (b.record) source.textContent = `${b.record.trigger}${b.record.id}`;
     card.append(label, source);
     return card;
+  }
+
+  /** An equation's rendered output, after the TeX line. Clicking it focuses the line so the source can be edited. */
+  function buildMath(): HTMLElement {
+    const math = make("div", C.math, { "aria-hidden": "true", contenteditable: "false" });
+    math.addEventListener("click", () => {
+      const text = math.parentElement?.querySelector<HTMLElement>(`:scope > .${C.text}`);
+      if (text) selectText(text, textOf(text).length);
+    });
+    return math;
   }
 
   /** A code block's header: its language (a menu of languages) and Copy. */
@@ -1885,6 +1915,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         el.append(icon);
       }
       el.append(buildText(b));
+      if (b.type === "equation") el.append(buildMath());
       if (b.type === "code") el.append(buildCodeBar());
     } else if (b.type === "divider") el.append(make("hr", C.rule));
     else if (b.type === "table") el.append(buildTable(b));
@@ -1896,6 +1927,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   // Code is coloured with the CSS Custom Highlight API: ranges over the text, so the editable DOM (and the caret) is
   // never touched. One Highlight per token type is shared by every editor on the page; each editor owns its ranges.
   const codeRanges = new Map<string, Range[]>();
+  /** Last TeX rendered for an equation, so decorate doesn't call renderMath again until it changes. */
+  const mathCache = new Map<string, { tex: string; html: string }>();
   function unpaintCode(id: string): void {
     for (const range of codeRanges.get(id) ?? []) for (const h of codeHighlights.values()) h.delete(range);
     codeRanges.delete(id);
@@ -1924,6 +1957,38 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     codeRanges.set(b.id, ranges);
   }
 
+  /** Render an equation when renderMath is set and the TeX changed. A throw or an empty result drops data-rendered so the source shows. */
+  function paintMath(el: HTMLElement, b: BlockEditorBlock): void {
+    const math = el.querySelector<HTMLElement>(`:scope > .${C.math}`);
+    if (b.type !== "equation" || !math) return;
+    const tex = inlineText(b.html ?? "");
+    if (!opts.renderMath) {
+      math.replaceChildren();
+      el.removeAttribute("data-rendered");
+      mathCache.delete(b.id);
+      return;
+    }
+    let cached = mathCache.get(b.id);
+    if (!cached || cached.tex !== tex) {
+      let html = "";
+      try {
+        const out = opts.renderMath(tex);
+        html = typeof out === "string" ? out : "";
+      } catch {
+        html = "";
+      }
+      cached = { tex, html };
+      mathCache.set(b.id, cached);
+    }
+    if (cached.html) {
+      if (math.innerHTML !== cached.html) math.innerHTML = cached.html;
+      el.setAttribute("data-rendered", "");
+    } else {
+      math.replaceChildren();
+      el.removeAttribute("data-rendered");
+    }
+  }
+
   function decorate(el: HTMLElement, b: BlockEditorBlock, counts: number[]): void {
     const depth = b.indent ?? 0;
     if (depth) el.setAttribute("data-indent", String(depth));
@@ -1943,6 +2008,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       paintCode(b);
     }
+    if (b.type === "equation") paintMath(el, b);
     const tone = b.type === "callout" ? calloutTone(b.tone) : undefined;
     if (tone) el.setAttribute("data-tone", tone);
     else el.removeAttribute("data-tone");
@@ -2016,6 +2082,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     for (const [id, el] of els) {
       if (keep.has(id)) continue;
       unpaintCode(id);
+      mathCache.delete(id);
       el.remove();
       els.delete(id);
       sigs.delete(id);
@@ -2153,12 +2220,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       next = { ...b, caption: textOf(el) };
       if (!next.caption) delete next.caption;
       els.get(id)?.querySelector("img")?.setAttribute("alt", next.caption ?? "");
-    } else next = { ...b, html: b.type === "code" ? escapeHtml(codeText(el)) : cleanDom(el) };
+    } else next = { ...b, html: isPlain(b.type) ? escapeHtml(codeText(el)) : cleanDom(el) };
     blocks = replaceAt(i, next);
     sigs.set(id, signature(next));
     const blockEl = els.get(id);
     if (blockEl) orient(blockEl, next);
     if (next.type === "code") paintCode(next);
+    if (next.type === "equation" && blockEl) paintMath(blockEl, next);
     refreshPlaceholders();
   }
 
@@ -2169,13 +2237,16 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const el = textEl(b.id);
       if (!el) return b;
       tidy(el);
-      const html = b.type === "code" ? escapeHtml(codeText(el)) : cleanDom(el);
+      const html = isPlain(b.type) ? escapeHtml(codeText(el)) : cleanDom(el);
       if (html === b.html) return b;
       changed = true;
       const next = { ...b, html };
       sigs.set(b.id, signature(next));
       const blockEl = els.get(b.id);
-      if (blockEl) orient(blockEl, next);
+      if (blockEl) {
+        orient(blockEl, next);
+        if (next.type === "equation") paintMath(blockEl, next);
+      }
       return next;
     });
     if (changed) refreshPlaceholders();
@@ -2914,7 +2985,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const id = idOf(el);
     const b = blocks[indexOf(id)];
     const at = selectionIn(el);
-    if (!b || b.type === "code" || !at || at.start !== at.end || readOnly()) {
+    if (!b || isPlain(b.type) || !at || at.start !== at.end || readOnly()) {
       closeTextMenu();
       return;
     }
@@ -3046,8 +3117,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const a = textHost(sel.anchorNode) ?? (spanning && root.contains(sel.anchorNode) ? root : null);
     const f = textHost(sel.focusNode) ?? (spanning && root.contains(sel.focusNode) ? root : null);
     if (!a || !f) return hideToolbar(true);
-    const code = [a, f].some((el) => el !== root && blocks[indexOf(idOf(el))]?.type === "code");
-    if (code) return hideToolbar(true);
+    const plain = [a, f].some((el) => {
+      const type = el !== root ? blocks[indexOf(idOf(el))]?.type : undefined;
+      return !!type && isPlain(type);
+    });
+    if (plain) return hideToolbar(true);
     const range = sel.getRangeAt(0);
     lastRange = range.cloneRange();
     if (sel.isCollapsed) {
@@ -3174,7 +3248,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       restore = span;
       for (let index = span[0].index; index <= span[1].index; index++) {
         const b = blocks[index];
-        const el = b && b.type !== "code" ? textEl(b.id) : null;
+        const el = b && !isPlain(b.type) ? textEl(b.id) : null;
         if (!el) continue;
         const range = document.createRange();
         const [sn, so] = index === span[0].index ? pointAt(el, span[0].offset) : [el as Node, 0];
@@ -3185,7 +3259,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
     } else {
       const el = textHost(sel.anchorNode);
-      if (!el || textHost(sel.focusNode) !== el || blocks[indexOf(idOf(el))]?.type === "code") return;
+      if (!el || textHost(sel.focusNode) !== el || isPlain(blocks[indexOf(idOf(el))]?.type ?? "text")) return;
       const at = selectionIn(el);
       if (at) restore = [{ index: indexOf(idOf(el)), offset: at.start }, { index: indexOf(idOf(el)), offset: at.end }];
       pieces = [{ el, range: sel.getRangeAt(0).cloneRange() }];
@@ -3465,7 +3539,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       setOpen(id, !b.open);
       return;
     }
-    if (b.type !== "code" && mod && !e.altKey) {
+    if (!isPlain(b.type) && mod && !e.altKey) {
       const tag = !e.shiftKey && key === "b" ? "strong" : !e.shiftKey && key === "i" ? "em" : !e.shiftKey && key === "u" ? "u" : e.shiftKey && (key === "s" || key === "x") ? "s" : e.shiftKey && key === "h" ? "mark" : !e.shiftKey && key === "e" ? "code" : "";
       if (tag) {
         e.preventDefault();
@@ -3521,7 +3595,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
 
     if (e.key === "Enter") {
-      if (b.type === "code") {
+      if (isPlain(b.type)) {
         e.preventDefault();
         if (mod) {
           const after = blockEditorBlock();
@@ -3599,7 +3673,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         } else pick(prev.id, prev.id);
       } else {
         const length = lengthOf(i - 1);
-        const merged = prev.type === "code" ? escapeHtml(inlineText(prev.html ?? "") + text) : (prev.html ?? "") + (b.html ?? "");
+        const merged = isPlain(prev.type) ? escapeHtml(inlineText(prev.html ?? "") + text) : (prev.html ?? "") + (b.html ?? "");
         const next = blocks.slice();
         next.splice(i - 1, 2, { ...prev, html: merged });
         commit(next, { id: prev.id, start: length });
@@ -3617,7 +3691,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         commit(next, { id, start: text.length });
       } else if (!isText(nextBlock.type)) pick(nextBlock.id, nextBlock.id);
       else {
-        const html = b.type === "code" ? escapeHtml(text + inlineText(nextBlock.html ?? "")) : (b.html ?? "") + (nextBlock.type === "code" ? escapeText(inlineText(nextBlock.html ?? "")) : (nextBlock.html ?? ""));
+        const html = isPlain(b.type) ? escapeHtml(text + inlineText(nextBlock.html ?? "")) : (b.html ?? "") + (isPlain(nextBlock.type) ? escapeText(inlineText(nextBlock.html ?? "")) : (nextBlock.html ?? ""));
         const next = blocks.slice();
         next.splice(i, 2, { ...b, html });
         commit(next, { id, start: text.length });
@@ -3627,7 +3701,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
     if (e.key === "Tab" && !mod && !e.altKey) {
       e.preventDefault();
-      if (b.type === "code") {
+      if (isPlain(b.type)) {
         if (!e.shiftKey) insertPlain(el, "  ");
         return;
       }
@@ -4286,13 +4360,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
     if (!composing) {
       if (ev.inputType === "insertText" && shortcut(el)) return;
-      if (ev.inputType === "insertText" && ev.data && /[*_`~=]/.test(ev.data)) autoformat(el);
+      if (ev.inputType === "insertText" && ev.data && /[*_`~=]/.test(ev.data) && !isPlain(blocks[indexOf(idOf(el))]?.type ?? "text")) autoformat(el);
       detectMenus(el);
     }
     emit();
   }
 
-  /** Markdown typed at the start of a line: "# ", "- ", "1. ", "[] ", "> ", "```", "---". */
+  /** Markdown typed at the start of a line: "# ", "- ", "1. ", "[] ", "> ", "```", "$$", "---". */
   function shortcut(el: HTMLElement): boolean {
     const id = idOf(el);
     const i = indexOf(id);
@@ -4313,6 +4387,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       [new RegExp(`^>>${S}$`), "toggle"],
       [new RegExp(`^[>"]${S}$`), "quote"],
       [/^```$/, "code"],
+      [/^\$\$$/, "equation"],
       [/^(---|\*\*\*)$/, "divider"],
     ];
     for (const [re, type, extra] of rules) {
@@ -4421,7 +4496,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       insertFiles(files, i, b.type === "text" && !text ? id : undefined);
       return;
     }
-    if (b.type === "code") {
+    if (isPlain(b.type)) {
       e.preventDefault();
       insertPlain(el, plain);
       return;
@@ -5064,6 +5139,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     },
     setOptions(next) {
       const rebuild = "readOnly" in next && !!next.readOnly !== readOnly();
+      if ("renderMath" in next) mathCache.clear();
       opts = { ...opts, ...next };
       if (rebuild) {
         closeMenu();

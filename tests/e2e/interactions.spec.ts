@@ -2848,6 +2848,59 @@ for (const renderer of ["react", "html"] as const) {
       });
       await expect(record).toHaveText(text);
     });
+
+    test("block editor equations show the app's rendering, edit as TeX, and fall back to the source", async ({ page }) => {
+      test.skip(renderer !== "html", "renderMath is set on <ayy-block-editor>");
+      const errors = await open(page, "block-editor", { renderer });
+      const stage = example(page, "page");
+      const editor = stage.locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const host = stage.locator("ayy-block-editor");
+
+      await host.evaluate((el) => {
+        (el as HTMLElement & { renderMath: (tex: string) => string }).renderMath = (tex) => {
+          if (tex === "boom") throw new Error("boom");
+          return `<span class="fake-math">${tex}</span>`;
+        };
+      });
+
+      // The page example ends on an empty line.
+      await blocks.nth(16).locator(":scope > .ayy-block-editor__text").evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+        const sel = getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.type("$$");
+      const equation = blocks.nth(16);
+      await expect(equation).toHaveAttribute("data-type", "equation");
+
+      await page.keyboard.type("x^2");
+      await blocks.nth(1).locator(":scope > .ayy-block-editor__text").click();
+      await expect(equation.locator(".ayy-block-editor__math .fake-math")).toHaveText("x^2");
+
+      await equation.locator(".ayy-block-editor__math").click();
+      const line = equation.locator(":scope > .ayy-block-editor__text");
+      await expect(line).toBeFocused();
+      await expect(line).toHaveText("x^2");
+
+      await line.evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.type("boom");
+      await blocks.nth(1).locator(":scope > .ayy-block-editor__text").click();
+      await expect(equation).not.toHaveAttribute("data-rendered");
+      await expect(line).toBeVisible();
+      expect(errors).toEqual([]);
+    });
   });
 }
 

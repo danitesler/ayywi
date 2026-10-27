@@ -204,6 +204,11 @@ export const SourceCodeIcon: IconData = [
   ["path", { d: "M14.5 4L9.5 20", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
 ];
 
+export const FunctionIcon: IconData = [
+  ["path", { d: "M5 19C5.26413 19.9564 5.79671 21 7.18729 21C9.59365 21 10.1952 19 12 12C13.8048 5 14.4064 3 16.8127 3C18.2033 3 18.7359 4.04358 19 5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M9 10H17", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+];
+
 export const Grid3x3Icon: IconData = [
   ["path", { d: "M9.00034 3.50019V20.5311M15.0003 3.03125V20.5311M20.5 15L3.5 15M20.5 9L3.5 9.00004", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
   ["path", { d: "M4.31802 19.682C5.63604 21 7.75736 21 12 21C16.2426 21 18.364 21 19.682 19.682C21 18.364 21 16.2426 21 12C21 7.75736 21 5.63604 19.682 4.31802C18.364 3 16.2426 3 12 3C7.75736 3 5.63604 3 4.31802 4.31802C3 5.63604 3 7.75736 3 12C3 16.2426 3 18.364 4.31802 19.682Z", stroke: "currentColor", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],

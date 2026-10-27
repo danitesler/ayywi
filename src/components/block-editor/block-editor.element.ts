@@ -5,7 +5,7 @@ import { connectBlockEditor, type BlockEditorBlock, type BlockEditorController, 
  * <ayy-block-editor [placeholder] [label] [readonly]> — turns the .ayy-block-editor inside it into a block editor. The
  * blocks to start with are the ones written inside it (or a <script type="application/json"> value), mention lists a
  * <script type="application/json" data-mentions> child of the element. Fires "ayy-change" ({ value }) after every
- * change and "ayy-mention-click" ({ trigger, id, label }). Properties: value, mentions, upload.
+ * change and "ayy-mention-click" ({ trigger, id, label }). Properties: value, mentions, upload, renderMath.
  */
 export class AyyBlockEditorElement extends ElementBase {
   static observedAttributes = ["placeholder", "label", "readonly"];
@@ -14,6 +14,7 @@ export class AyyBlockEditorElement extends ElementBase {
   #value: BlockEditorBlock[] | undefined;
   #mentions: BlockEditorMentionSource[] | undefined;
   #upload: BlockEditorOptions["upload"];
+  #renderMath: BlockEditorOptions["renderMath"];
 
   connectedCallback(): void {
     if (this.#controller) return;
@@ -24,6 +25,7 @@ export class AyyBlockEditorElement extends ElementBase {
       value: this.#value,
       mentions: this.#mentions,
       upload: this.#upload,
+      renderMath: this.#renderMath,
       onChange: (value) => emit(this, "ayy-change", { value }),
       onMentionClick: (mention) => emit(this, "ayy-mention-click", mention),
     });
@@ -59,6 +61,11 @@ export class AyyBlockEditorElement extends ElementBase {
   set upload(upload: BlockEditorOptions["upload"]) {
     this.#upload = upload;
     this.#controller?.setOptions({ upload });
+  }
+
+  set renderMath(renderMath: BlockEditorOptions["renderMath"]) {
+    this.#renderMath = renderMath;
+    this.#controller?.setOptions({ renderMath });
   }
 
   focus(options?: FocusOptions): void {
