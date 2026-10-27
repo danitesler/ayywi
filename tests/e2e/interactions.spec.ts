@@ -2520,6 +2520,15 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Escape");
       await expect(table.locator("tbody tr:nth-child(2) > [data-selected]")).toHaveCount(cols);
 
+      // Undo of a clear, with the row still selected and focus on the editor, lands in that row's first cell.
+      await expect(editor).toBeFocused();
+      await page.keyboard.press("Backspace");
+      await page.keyboard.press("Control+z");
+      await expect(cell(2, 0)).toBeFocused();
+      await table.locator('.ayy-block-editor__row-grip[data-row="2"]').click();
+      await page.keyboard.press("Escape");
+      await expect(table.locator("tbody tr:nth-child(2) > [data-selected]")).toHaveCount(cols);
+
       const rows = await table.locator("tbody tr").count();
       await page.keyboard.press("Control+d");
       await expect(table.locator("tbody tr")).toHaveCount(rows + 1);

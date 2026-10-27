@@ -1944,6 +1944,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const b = blocks[span[0].index];
       return { id: b.id, start: span[0].offset, end: span[0].index === span[1].index ? span[1].offset : undefined };
     }
+    // A selected row or column keeps focus on the root. Record its first cell so undo and redo land there, not on the last block.
+    if (axisSel) return { id: axisSel.id, cell: axisFocus(axisSel), start: 0 };
     const active = document.activeElement;
     const cell = isElement(active) && active.classList.contains(C.cell) && root.contains(active) ? active : null;
     if (cell) {
