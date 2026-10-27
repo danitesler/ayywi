@@ -3100,8 +3100,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   let resizing: { id: string; frame: HTMLElement; start: number; column: number; rtl: boolean; width: number } | null = null;
   /** A table column being dragged to a new width: the widths of every column when it started, and the <col>s to show it live. */
   let sizing: { id: string; col: number; start: number; rtl: boolean; widths: number[]; cols: HTMLElement[]; table: HTMLElement; width: number } | null = null;
-  /** A table row or column being carried by its grip; `movable` is false for a header row's own grip (it never moves). */
-  let tableDrag: { id: string; axis: "row" | "column"; from: number; to: number; startX: number; startY: number; moved: boolean; grip: HTMLElement; pointerId: number; movable: boolean } | null = null;
+  /** A table row or column being carried by its grip. Only set for a grip that can move (never the header row, or a one-row / one-column table). */
+  let tableDrag: { id: string; axis: "row" | "column"; from: number; to: number; startX: number; startY: number; moved: boolean; grip: HTMLElement; pointerId: number } | null = null;
   /** When a grip drag last finished, so the click that follows it doesn't open the grip's menu. */
   let gripDragAt = 0;
 
@@ -4097,15 +4097,19 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const gripEl = (rowGrip ?? colGrip)!;
       const id = idOf(gripEl);
       const b = blocks[indexOf(id)];
-      if (b) {
-        const axis = rowGrip ? "row" : "column";
-        const from = Number(gripEl.dataset[axis === "row" ? "row" : "col"]);
-        const movable = axis === "column" || !(b.header !== false && from === 0);
+      const axis = rowGrip ? "row" : "column";
+      const from = Number(gripEl.dataset[axis === "row" ? "row" : "col"]);
+      const grid = b ? gridOf(b) : null;
+      const first = b && b.header !== false ? 1 : 0;
+      // A grip that can't move its row or column (the header row, or a one-row / one-column table) stays a plain button:
+      // no drag state, so a press still opens its menu.
+      const movable = !!grid && (axis === "row" ? from >= first && grid.length - first >= 2 : grid[0].length >= 2);
+      if (movable) {
         e.preventDefault();
-        tableDrag = { id, axis, from, to: from, startX: e.clientX, startY: e.clientY, moved: false, grip: gripEl, pointerId: e.pointerId, movable };
+        tableDrag = { id, axis, from, to: from, startX: e.clientX, startY: e.clientY, moved: false, grip: gripEl, pointerId: e.pointerId };
         gripEl.setPointerCapture?.(e.pointerId);
+        return;
       }
-      return;
     }
     const inText = target.closest(`.${C.text}`);
     if (picked && !(e.shiftKey && e.button === 0)) unpick();
@@ -4134,7 +4138,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   /** Point the drop line at the row or column whose centre is nearest the pointer along the drag axis, and record that index in `to`. */
   function updateTableDrag(e: PointerEvent): void {
-    if (!tableDrag || !tableDrag.movable) return;
+    if (!tableDrag) return;
     const wrap = tableDrag.grip.closest<HTMLElement>(`.${C.tableWrap}`);
     const drop = wrap?.querySelector<HTMLElement>(`.${C.tableDrop}`);
     const el = els.get(tableDrag.id);
@@ -4158,7 +4162,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       tableDrag.to = to;
       const rect = rows[to].getBoundingClientRect();
-      drop.style.insetInlineStart = `${tableRect.left - wrapRect.left}px`;
+      drop.style.insetInlineStart = `${(dir === "rtl" ? wrapRect.right - tableRect.right : tableRect.left - wrapRect.left)}px`;
       drop.style.inlineSize = `${tableRect.width}px`;
       drop.style.blockSize = "2px";
       drop.style.insetBlockStart = `${(e.clientY < rect.top + rect.height / 2 ? rect.top : rect.bottom) - wrapRect.top}px`;
@@ -4244,7 +4248,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (drag.moved) {
         gripDragAt = Date.now();
         const b = blocks[indexOf(drag.id)];
-        if (b && drag.movable && drag.to !== drag.from) {
+        if (b && drag.to !== drag.from) {
           editTable(
             drag.id,
             drag.axis === "row" ? { op: "move-row", from: drag.from, to: drag.to } : { op: "move-column", from: drag.from, to: drag.to },

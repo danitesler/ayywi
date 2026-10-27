@@ -38,7 +38,14 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
     set("ayy-theme", s.theme);
     set("ayy-density", s.density);
   }, s);
-  await page.goto(`/?load=${++loads}#/${route}`);
+  const url = `/?load=${++loads}#/${route}`;
+  try {
+    await page.goto(url, { waitUntil: "domcontentloaded" });
+  } catch (err: any) {
+    if (!`${err}`.includes("net::ERR_ABORTED")) throw err;
+    // transient abort (e.g. from prior lazy loads); retry once
+    await page.goto(url, { waitUntil: "domcontentloaded" });
+  }
   await expect(page.locator(".pv-page").first()).toBeVisible();
   return errors;
 }

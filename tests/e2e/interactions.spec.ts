@@ -2358,6 +2358,11 @@ for (const renderer of ["react", "html"] as const) {
       const menu = editor.locator(".ayy-block-editor__menu");
       const option = (name: RegExp) => menu.getByRole("option", { name });
 
+      // The header row's grip can't move, but a click still opens its menu.
+      await table.locator('.ayy-block-editor__row-grip[data-row="0"]').click();
+      await expect(menu).toHaveAttribute("aria-label", "Row 1");
+      await page.keyboard.press("Escape");
+
       // The row grip of the second row (Starter, whose grip is labelled "Row 2") opens a menu scoped to it.
       await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Row 2");
@@ -2433,6 +2438,10 @@ for (const renderer of ["react", "html"] as const) {
       const rowGrip = (r: number) => table.locator(`.ayy-block-editor__row-grip[data-row="${r}"]`);
       const colGrip = (c: number) => table.locator(`.ayy-block-editor__col-grip[data-col="${c}"]`);
 
+      // Wait for the table to be drawn before dragging (header Plan · Old price · New price, rows Starter, Team).
+      await expect(cell(0, 0)).toHaveText("Plan");
+      await expect(cell(1, 0)).toHaveText("Starter");
+
       // Drag row 1 (Starter) down past the last row's centre: Starter lands last, Team moves up.
       await rowGrip(1).scrollIntoViewIfNeeded();
       const grip = (await rowGrip(1).boundingBox())!;
@@ -2465,13 +2474,28 @@ for (const renderer of ["react", "html"] as const) {
       await page.mouse.up();
       await expect(table.locator("thead th")).toHaveText(headersBefore);
 
-      // One Control+z restores the column order.
+      // One Control+z restores the column order (focus a cell first: the header grip kept focus from the press above).
+      await cell(0, 0).click();
       await page.keyboard.press("Control+z");
       await expect(cell(0, 0)).toHaveText("Plan");
       await expect(cell(0, 2)).toHaveText("New price");
 
-      // The same column drag works in RTL, moving the mouse leftwards.
+      // In RTL a row drag still lands on the intended row, and its drop line's inline-start edge (its right edge) sits on
+      // the table's inline-start edge.
       await editor.evaluate((el) => el.setAttribute("dir", "rtl"));
+      await rowGrip(1).scrollIntoViewIfNeeded();
+      const rtlRowGrip = (await rowGrip(1).boundingBox())!;
+      const rtlRowTarget = (await table.locator("tbody tr").nth(1).boundingBox())!;
+      await page.mouse.move(rtlRowGrip.x + rtlRowGrip.width / 2, rtlRowGrip.y + rtlRowGrip.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(rtlRowTarget.x + rtlRowTarget.width / 2, rtlRowTarget.y + rtlRowTarget.height - 2, { steps: 5 });
+      const dropBox = (await table.locator(".ayy-block-editor__table-drop").boundingBox())!;
+      const tableBox = (await table.locator(".ayy-block-editor__table").boundingBox())!;
+      expect(Math.round(dropBox.x + dropBox.width)).toBe(Math.round(tableBox.x + tableBox.width));
+      await page.mouse.up();
+      await expect(cell(2, 0)).toHaveText("Team");
+
+      // The same column drag works in RTL, moving the mouse leftwards.
       await colGrip(0).scrollIntoViewIfNeeded();
       const rtlHandle = (await colGrip(0).boundingBox())!;
       const rtlLast = (await cell(0, 2).boundingBox())!;
