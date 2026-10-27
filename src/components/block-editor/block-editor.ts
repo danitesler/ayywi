@@ -2846,16 +2846,23 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function openMention(id: string, start: number, query: string, source: BlockEditorMentionSource): void {
     const request = ++mentionRequest;
     mentionFlight = null;
+    // A newer lookup abandons the previous one. Its done/giveUp no-ops on the old request id, so drop that
+    // line now. The same line stays pending: this lookup may still open a list.
+    if (recordPending && recordPending !== id) recordPending = null;
     const dropRecord = () => {
       if (recordPending === id) recordPending = null;
+    };
+    // No menu yet, so closeMenu never runs. Clear the flag here or the next pick on this line becomes a record.
+    const gaveUp = () => {
+      closeTextMenu();
+      dropRecord();
     };
     const done = (found: BlockEditorMentionOption[]) => {
       if (request !== mentionRequest) return;
       mentionFlight = null;
       const options = found.slice(0, 8);
       if (!options.length) {
-        closeTextMenu();
-        dropRecord();
+        gaveUp();
         return;
       }
       const same = menu?.mode === "mention" && menu.id === id && menu.start === start;
@@ -2866,22 +2873,27 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const giveUp = () => {
       if (request !== mentionRequest) return;
       mentionFlight = null;
-      closeTextMenu();
-      dropRecord();
+      gaveUp();
     };
-    const list = source.options;
-    if (typeof list === "function") {
-      const result = list(query);
-      if (result && typeof (result as Promise<BlockEditorMentionOption[]>).then === "function") {
-        mentionFlight = id;
-        (result as Promise<BlockEditorMentionOption[]>).then(done, giveUp);
-        return;
+    let result: BlockEditorMentionOption[] | Promise<BlockEditorMentionOption[]>;
+    try {
+      const list = source.options;
+      if (typeof list === "function") result = list(query);
+      else {
+        const q = query.toLowerCase();
+        result = list.filter((o) => !q || `${o.label} ${o.hint ?? ""} ${o.id}`.toLowerCase().includes(q));
       }
-      done(result as BlockEditorMentionOption[]);
-    } else {
-      const q = query.toLowerCase();
-      done(list.filter((o) => !q || `${o.label} ${o.hint ?? ""} ${o.id}`.toLowerCase().includes(q)));
+    } catch {
+      // list() threw after the request id bumped. The previous flight will no-op, so this line must drop here.
+      giveUp();
+      return;
     }
+    if (result && typeof (result as Promise<BlockEditorMentionOption[]>).then === "function") {
+      mentionFlight = id;
+      (result as Promise<BlockEditorMentionOption[]>).then(done, giveUp);
+      return;
+    }
+    done(result as BlockEditorMentionOption[]);
   }
 
   function openActions(ids: string[], from: HTMLElement, list: "actions" | "language" | "row" | "column" | "cell" = "actions", at?: [number, number]): void {
