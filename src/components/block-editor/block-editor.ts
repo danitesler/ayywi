@@ -225,6 +225,7 @@ const C = {
   rowGrip: `${P}__row-grip`,
   colGrip: `${P}__col-grip`,
   colResize: `${P}__col-resize`,
+  tableDrop: `${P}__table-drop`,
   toolbar: `${P}__toolbar`,
   codeBar: `${P}__code-bar`,
   codeButton: `${P}__code-button`,
@@ -1757,6 +1758,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     scroll.append(table);
     wrap.append(scroll);
     if (!readOnly()) {
+      wrap.append(make("div", C.tableDrop, { hidden: "" }));
       for (const axis of ["column", "row"] as const) {
         const add = make("button", C.tableAdd, { type: "button", tabindex: "-1", contenteditable: "false", "data-axis": axis, "aria-label": `Add ${axis}` });
         add.innerHTML = svg(PlusSignIcon);
@@ -3098,6 +3100,10 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   let resizing: { id: string; frame: HTMLElement; start: number; column: number; rtl: boolean; width: number } | null = null;
   /** A table column being dragged to a new width: the widths of every column when it started, and the <col>s to show it live. */
   let sizing: { id: string; col: number; start: number; rtl: boolean; widths: number[]; cols: HTMLElement[]; table: HTMLElement; width: number } | null = null;
+  /** A table row or column being carried by its grip; `movable` is false for a header row's own grip (it never moves). */
+  let tableDrag: { id: string; axis: "row" | "column"; from: number; to: number; startX: number; startY: number; moved: boolean; grip: HTMLElement; pointerId: number; movable: boolean } | null = null;
+  /** When a grip drag last finished, so the click that follows it doesn't open the grip's menu. */
+  let gripDragAt = 0;
 
   function setWidth(id: string, width: number, history = true): void {
     const i = indexOf(id);
@@ -4085,6 +4091,22 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       grip.setAttribute("data-active", "");
       return;
     }
+    const rowGrip = target.closest<HTMLElement>(`.${C.rowGrip}`);
+    const colGrip = target.closest<HTMLElement>(`.${C.colGrip}`);
+    if ((rowGrip || colGrip) && e.button === 0) {
+      const gripEl = (rowGrip ?? colGrip)!;
+      const id = idOf(gripEl);
+      const b = blocks[indexOf(id)];
+      if (b) {
+        const axis = rowGrip ? "row" : "column";
+        const from = Number(gripEl.dataset[axis === "row" ? "row" : "col"]);
+        const movable = axis === "column" || !(b.header !== false && from === 0);
+        e.preventDefault();
+        tableDrag = { id, axis, from, to: from, startX: e.clientX, startY: e.clientY, moved: false, grip: gripEl, pointerId: e.pointerId, movable };
+        gripEl.setPointerCapture?.(e.pointerId);
+      }
+      return;
+    }
     const inText = target.closest(`.${C.text}`);
     if (picked && !(e.shiftKey && e.button === 0)) unpick();
     if (picked) return;
@@ -4096,6 +4118,79 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     } else if (!inText) setSpanning(false);
   }
 
+  /** Mark the dragged row's or column's cells while a grip drag is past its 4 px threshold. */
+  function setTableCellsDragging(on: boolean): void {
+    if (!tableDrag) return;
+    const el = els.get(tableDrag.id);
+    if (!el) return;
+    for (const cell of el.querySelectorAll<HTMLElement>(`.${C.cell}`)) {
+      const index = tableDrag.axis === "row" ? cell.dataset.row : cell.dataset.col;
+      if (Number(index) === tableDrag.from) {
+        if (on) cell.setAttribute("data-dragging", "");
+        else cell.removeAttribute("data-dragging");
+      }
+    }
+  }
+
+  /** Point the drop line at the row or column whose centre is nearest the pointer along the drag axis, and record that index in `to`. */
+  function updateTableDrag(e: PointerEvent): void {
+    if (!tableDrag || !tableDrag.movable) return;
+    const wrap = tableDrag.grip.closest<HTMLElement>(`.${C.tableWrap}`);
+    const drop = wrap?.querySelector<HTMLElement>(`.${C.tableDrop}`);
+    const el = els.get(tableDrag.id);
+    const b = blocks[indexOf(tableDrag.id)];
+    if (!wrap || !drop || !el || !b) return;
+    const wrapRect = wrap.getBoundingClientRect();
+    const dir = getComputedStyle(wrap).direction;
+    const tableRect = el.querySelector<HTMLElement>(`.${C.table}`)?.getBoundingClientRect();
+    if (!tableRect) return;
+
+    if (tableDrag.axis === "row") {
+      const rows = Array.from(el.querySelectorAll<HTMLElement>("tr"));
+      const first = b.header !== false ? 1 : 0;
+      let to = first;
+      let best = Infinity;
+      for (let r = first; r < rows.length; r++) {
+        const rect = rows[r].getBoundingClientRect();
+        const centre = rect.top + rect.height / 2;
+        const d = Math.abs(e.clientY - centre);
+        if (d < best) { best = d; to = r; }
+      }
+      tableDrag.to = to;
+      const rect = rows[to].getBoundingClientRect();
+      drop.style.insetInlineStart = `${tableRect.left - wrapRect.left}px`;
+      drop.style.inlineSize = `${tableRect.width}px`;
+      drop.style.blockSize = "2px";
+      drop.style.insetBlockStart = `${(e.clientY < rect.top + rect.height / 2 ? rect.top : rect.bottom) - wrapRect.top}px`;
+      drop.hidden = false;
+    } else {
+      const grid = gridOf(b);
+      const heads = Array.from(el.querySelectorAll<HTMLElement>(`.${C.cell}[data-row="0"]`));
+      const inlineOf = (x: number) => (dir === "rtl" ? wrapRect.right - x : x - wrapRect.left);
+      const pointer = inlineOf(e.clientX);
+      let to = 0;
+      let best = Infinity;
+      for (let c = 0; c < grid[0].length; c++) {
+        const rect = heads[c]?.getBoundingClientRect();
+        if (!rect) continue;
+        const start = inlineOf(dir === "rtl" ? rect.right : rect.left);
+        const end = inlineOf(dir === "rtl" ? rect.left : rect.right);
+        const centre = (start + end) / 2;
+        const d = Math.abs(pointer - centre);
+        if (d < best) { best = d; to = c; }
+      }
+      tableDrag.to = to;
+      const rect = heads[to].getBoundingClientRect();
+      const start = dir === "rtl" ? wrapRect.right - rect.right : rect.left - wrapRect.left;
+      const end = dir === "rtl" ? wrapRect.right - rect.left : rect.right - wrapRect.left;
+      drop.style.insetBlockStart = `${tableRect.top - wrapRect.top}px`;
+      drop.style.blockSize = `${tableRect.height}px`;
+      drop.style.inlineSize = "2px";
+      drop.style.insetInlineStart = `${pointer < (start + end) / 2 ? start : end}px`;
+      drop.hidden = false;
+    }
+  }
+
   function onPointerMove(e: PointerEvent): void {
     if (root.hasAttribute("data-typing") && (Math.abs(e.movementX) + Math.abs(e.movementY) > 2 || e.pointerType !== "mouse")) root.removeAttribute("data-typing");
     if (sizing) {
@@ -4105,6 +4200,15 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       sizing.cols.forEach((col, c) => (col.style.inlineSize = `${widths[c]}px`));
       sizing.table.setAttribute("data-sized", "");
       sizing.table.style.inlineSize = `${widths.reduce((sum, w) => sum + w, 0)}px`;
+      return;
+    }
+    if (tableDrag) {
+      if (!tableDrag.moved) {
+        if (Math.hypot(e.clientX - tableDrag.startX, e.clientY - tableDrag.startY) < 4) return;
+        tableDrag.moved = true;
+        setTableCellsDragging(true);
+      }
+      updateTableDrag(e);
       return;
     }
     if (!resizing) return;
@@ -4129,6 +4233,25 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const { id, width } = resizing;
       resizing = null;
       if (width) setWidth(id, width);
+      return;
+    }
+    if (tableDrag) {
+      const drag = tableDrag;
+      setTableCellsDragging(false);
+      tableDrag = null;
+      try { drag.grip.releasePointerCapture?.(drag.pointerId); } catch { /* already released */ }
+      drag.grip.closest<HTMLElement>(`.${C.tableWrap}`)?.querySelector<HTMLElement>(`.${C.tableDrop}`)?.setAttribute("hidden", "");
+      if (drag.moved) {
+        gripDragAt = Date.now();
+        const b = blocks[indexOf(drag.id)];
+        if (b && drag.movable && drag.to !== drag.from) {
+          editTable(
+            drag.id,
+            drag.axis === "row" ? { op: "move-row", from: drag.from, to: drag.to } : { op: "move-column", from: drag.from, to: drag.to },
+            drag.axis === "row" ? [drag.to, lastCell?.col ?? 0] : [lastCell?.row ?? 0, drag.to],
+          );
+        }
+      }
       return;
     }
     if (!pressing) return;
@@ -4234,6 +4357,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       openActions(isPicked(id) ? pickedIds() : [id], handle);
       return;
     }
+    // A grip drag just finished: the click that follows must not open the grip's menu.
+    if (Date.now() - gripDragAt < 300) return;
     const rowGrip = target.closest<HTMLElement>(`.${C.rowGrip}`);
     if (rowGrip) {
       openActions([id], rowGrip, "row", [Number(rowGrip.dataset.row), 0]);

@@ -6307,6 +6307,7 @@
         "ayy-block-editor__table-add": "A table's + button (data-axis=\"column\" or \"row\"): shown while the pointer or focus is in the block, always on touch screens.",
         "ayy-block-editor__row-grip": "The handle at a table row's inline start (data-row, aria-haspopup=\"menu\"): lights the row while a cell in it is hovered or focused.",
         "ayy-block-editor__col-grip": "The handle over a table column's top (data-col, aria-haspopup=\"menu\"): lights the column while a cell in it is hovered or focused.",
+        "ayy-block-editor__table-drop": "The 2px line inside a table's wrap showing where a row or column dragged by its grip will land; hidden until the drag moves, then positioned from the cells' rects.",
         "ayy-block-editor__check": "A to-do's checkbox (.ayy-checkbox).",
         "ayy-block-editor__icon": "A callout's icon.",
         "ayy-block-editor__code-bar": "A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).",
@@ -6398,8 +6399,8 @@
           "looks": "The two grips fade in"
         },
         "dragging": {
-          "when": "data-dragging on the blocks being carried by the handle",
-          "looks": "They dim to 40%; a raised copy (or a chip saying \"3 blocks\") follows the pointer and a 2px primary line shows where they'll land."
+          "when": "data-dragging on the blocks being carried by the handle, or on the cells of the table row or column being dragged by its grip",
+          "looks": "They dim to 40%; a raised copy (or a chip saying \"3 blocks\") follows the pointer and a 2px primary line shows where they'll land (for a table row or column, the .ayy-block-editor__table-drop line inside its wrap)."
         },
         "empty": {
           "when": "data-empty on the root: the document is one empty line",

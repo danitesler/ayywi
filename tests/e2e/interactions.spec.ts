@@ -2424,6 +2424,64 @@ for (const renderer of ["react", "html"] as const) {
       await expect(colGrip).toHaveCount(0);
       await expect(table.locator(".ayy-block-editor__cell")).toHaveCount(9);
     });
+
+    test("block editor table rows and columns move by dragging their grips, in both directions", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const table = editor.locator('[data-type="table"]');
+      const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
+      const rowGrip = (r: number) => table.locator(`.ayy-block-editor__row-grip[data-row="${r}"]`);
+      const colGrip = (c: number) => table.locator(`.ayy-block-editor__col-grip[data-col="${c}"]`);
+
+      // Drag row 1 (Starter) down past the last row's centre: Starter lands last, Team moves up.
+      await rowGrip(1).scrollIntoViewIfNeeded();
+      const grip = (await rowGrip(1).boundingBox())!;
+      const team = (await table.locator("tbody tr").nth(1).boundingBox())!;
+      await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(team.x + team.width / 2, team.y + team.height - 2, { steps: 5 });
+      await page.mouse.up();
+      await expect(cell(2, 0)).toHaveText("Starter");
+      await expect(cell(1, 0)).toHaveText("Team");
+
+      // Drag column 0 (Plan) past column 2 (New price): Plan lands last.
+      await colGrip(0).scrollIntoViewIfNeeded();
+      const colHandle = (await colGrip(0).boundingBox())!;
+      const lastCol = (await cell(0, 2).boundingBox())!;
+      await page.mouse.move(colHandle.x + colHandle.width / 2, colHandle.y + colHandle.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(lastCol.x + lastCol.width - 2, lastCol.y + lastCol.height / 2, { steps: 5 });
+      await page.mouse.up();
+      await expect(cell(0, 2)).toHaveText("Plan");
+      await expect(cell(0, 0)).toHaveText("Old price");
+
+      // Dragging the header row's grip changes nothing.
+      await rowGrip(0).scrollIntoViewIfNeeded();
+      const headerGrip = (await rowGrip(0).boundingBox())!;
+      const headersBefore = await table.locator("thead th").allInnerTexts();
+      await page.mouse.move(headerGrip.x + headerGrip.width / 2, headerGrip.y + headerGrip.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(headerGrip.x + headerGrip.width / 2, headerGrip.y + headerGrip.height + 60, { steps: 5 });
+      await page.mouse.up();
+      await expect(table.locator("thead th")).toHaveText(headersBefore);
+
+      // One Control+z restores the column order.
+      await page.keyboard.press("Control+z");
+      await expect(cell(0, 0)).toHaveText("Plan");
+      await expect(cell(0, 2)).toHaveText("New price");
+
+      // The same column drag works in RTL, moving the mouse leftwards.
+      await editor.evaluate((el) => el.setAttribute("dir", "rtl"));
+      await colGrip(0).scrollIntoViewIfNeeded();
+      const rtlHandle = (await colGrip(0).boundingBox())!;
+      const rtlLast = (await cell(0, 2).boundingBox())!;
+      await page.mouse.move(rtlHandle.x + rtlHandle.width / 2, rtlHandle.y + rtlHandle.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(rtlLast.x + 2, rtlLast.y + rtlLast.height / 2, { steps: 5 });
+      await page.mouse.up();
+      await expect(cell(0, 2)).toHaveText("Plan");
+      await editor.evaluate((el) => el.removeAttribute("dir"));
+    });
   });
 }
 
