@@ -1944,8 +1944,6 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const b = blocks[span[0].index];
       return { id: b.id, start: span[0].offset, end: span[0].index === span[1].index ? span[1].offset : undefined };
     }
-    // A selected row or column keeps focus on the root. Record its first cell so undo and redo land there, not on the last block.
-    if (axisSel) return { id: axisSel.id, cell: axisFocus(axisSel), start: 0 };
     const active = document.activeElement;
     const cell = isElement(active) && active.classList.contains(C.cell) && root.contains(active) ? active : null;
     if (cell) {
@@ -1954,9 +1952,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
     const host = textHost(active);
     const id = idOf(host);
-    if (!host || !id) return null;
-    const at = selectionIn(host);
-    return { id, start: at?.start ?? 0, end: at && at.end !== at.start ? at.end : undefined };
+    if (host && id) {
+      const at = selectionIn(host);
+      return { id, start: at?.start ?? 0, end: at && at.end !== at.start ? at.end : undefined };
+    }
+    // A selected row or column keeps focus on the root, a grip, or a menu button — not on a line. Record its first cell so undo and redo land there, not on the last block.
+    if (axisSel) return { id: axisSel.id, cell: axisFocus(axisSel), start: 0 };
+    return null;
   }
 
   function pushHistory(focus: Focus | null = focusNow()): void {
