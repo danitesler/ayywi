@@ -9,7 +9,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__gutter` — The + and the drag handle at the block's inline start; shown while the pointer is over the block (on touch screens, next to the line being written).
 - `.ayy-block-editor__add` — The + button: a new line below with / typed, so the block menu opens. Alt-click adds it above.
 - `.ayy-block-editor__handle` — The drag handle (.ayy-drag-handle): drag to move the block, or every selected block; click for block actions (duplicate, move, delete, turn into, and Colour › on a callout).
-- `.ayy-block-editor__text` — The editable line of a text block (contenteditable, role="textbox"). Inline content: strong, em, u, s, mark, code, links and mention chips. Shows data-placeholder while empty. An equation's line keeps aria-label="Equation" (the TeX), and is clipped — not removed — while data-rendered math is showing.
+- `.ayy-block-editor__text` — The editable line of a text block (contenteditable, role="textbox"). Inline content: strong, em, u, s, mark, code, links and mention chips. Shows data-placeholder while empty. An equation's line is named Equation; the TeX is its text. The line is clipped — not removed — while data-rendered math is showing.
 - `.ayy-block-editor__marker` — A list's bullet or number, drawn by the editor (1. a. i. by nesting level).
 - `.ayy-block-editor__toggle` — A toggle's arrow button: points along the reading direction, turns down while the toggle is open (aria-expanded). Blocks indented under the toggle (data-indent greater than its own) are hidden while it is closed.
 - `.ayy-block-editor__table-wrap` — A table block's box: the scrolling table, the row grips at its inline start, the drop line for a dragged row or column, the + at its inline end (add a column) and the + under it (add a row).
@@ -23,7 +23,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__table-drop` — The 2px line inside a table's wrap showing where a row or column dragged by its grip will land; hidden until the drag moves, then positioned from the cells' rects.
 - `.ayy-block-editor__check` — A to-do's checkbox (.ayy-checkbox).
 - `.ayy-block-editor__icon` — A callout's icon: a bulb by default, then information, check, alert or cancel as data-tone changes. It takes the tone's colour.
-- `.ayy-block-editor__math` — An equation's rendered output, a sibling after the TeX line, aria-hidden. Shown only while the block has data-rendered and is not being edited. Clicking it focuses the line. Screen readers hear the TeX from the line's aria-label, not this HTML.
+- `.ayy-block-editor__math` — An equation's rendered output, a sibling after the TeX line, aria-hidden="true". Shown only while the block has data-rendered and is not being edited. Clicking it focuses the line. The line is named Equation and the TeX is its text; this HTML is hidden from screen readers.
 - `.ayy-block-editor__code-bar` — A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).
 - `.ayy-block-editor__code-button` — A button in the code header: the language (opens a menu of languages; plain text in read-only) or Copy (a check while copied, data-copied).
 - `.ayy-block-editor__rule` — A divider's line (<hr>).
