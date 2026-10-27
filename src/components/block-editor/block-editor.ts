@@ -222,6 +222,8 @@ const C = {
   table: `${P}__table`,
   cell: `${P}__cell`,
   tableAdd: `${P}__table-add`,
+  rowGrip: `${P}__row-grip`,
+  colGrip: `${P}__col-grip`,
   colResize: `${P}__col-resize`,
   toolbar: `${P}__toolbar`,
   codeBar: `${P}__code-bar`,
@@ -1685,6 +1687,15 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   const cellPos = (cell: HTMLElement): [number, number] => [Number(cell.dataset.row), Number(cell.dataset.col)];
   const cellEl = (id: string, row: number, col: number) => els.get(id)?.querySelector<HTMLElement>(`.${C.cell}[data-row="${row}"][data-col="${col}"]`) ?? null;
 
+  /** Light the row and column grips for one cell, and clear them everywhere else in that table block. */
+  function markHot(id: string, row: number, col: number): void {
+    const el = els.get(id);
+    if (!el) return;
+    for (const hot of el.querySelectorAll<HTMLElement>(`.${C.rowGrip}[data-hot], .${C.colGrip}[data-hot]`)) hot.removeAttribute("data-hot");
+    el.querySelector<HTMLElement>(`.${C.rowGrip}[data-row="${row}"]`)?.setAttribute("data-hot", "");
+    el.querySelector<HTMLElement>(`.${C.colGrip}[data-col="${col}"]`)?.setAttribute("data-hot", "");
+  }
+
   function buildTable(b: BlockEditorBlock): HTMLElement {
     const wrap = make("div", C.tableWrap);
     const scroll = make("div", C.tableScroll);
@@ -1725,6 +1736,16 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         }
         field.textContent = text;
         td.append(field);
+        if (!readOnly() && c === 0) {
+          const rowGrip = make("button", C.rowGrip, { type: "button", tabindex: "-1", "data-row": String(r), "aria-label": `Row ${r + 1}`, "aria-haspopup": "menu", "aria-expanded": "false" });
+          rowGrip.innerHTML = dragHandleIcon;
+          td.append(rowGrip);
+        }
+        if (!readOnly() && r === 0) {
+          const colGrip = make("button", C.colGrip, { type: "button", tabindex: "-1", "data-col": String(c), "aria-label": `Column ${c + 1}`, "aria-haspopup": "menu", "aria-expanded": "false" });
+          colGrip.innerHTML = dragHandleIcon;
+          td.append(colGrip);
+        }
         if (r === 0 && !readOnly()) td.append(make("span", C.colResize, { role: "separator", "aria-orientation": "vertical", "aria-label": `Resize column ${c + 1}`, contenteditable: "false", "data-col": String(c) }));
         tr.append(td);
       });
@@ -4242,9 +4263,21 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const target = e.target as Node;
     if (isElement(target) && target.classList.contains(C.cell)) {
       const [row, col] = cellPos(target);
-      lastCell = { id: idOf(target), row, col };
+      const id = idOf(target);
+      lastCell = { id, row, col };
+      markHot(id, row, col);
     }
     if (picked && target !== root && !menuEl.contains(target)) unpick();
+  }
+
+  function onTablePointerOver(e: PointerEvent): void {
+    const target = e.target as Node | null;
+    if (!isElement(target) || readOnly()) return;
+    const cell = target.closest<HTMLElement>("th, td")?.querySelector<HTMLElement>(`:scope > .${C.cell}`);
+    if (!cell) return;
+    const id = idOf(cell);
+    if (!id) return;
+    markHot(id, ...cellPos(cell));
   }
 
   function onFocusOut(e: FocusEvent): void {
@@ -4413,6 +4446,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     [root, "paste", onPaste as EventListener],
     [root, "pointerdown", onPointerDown as EventListener],
     [root, "mousedown", onMouseDown as EventListener],
+    [root, "pointerover", onTablePointerOver as EventListener],
     [root, "click", onClick as EventListener],
     [root, "change", onChange],
     [root, "focusin", onFocusIn as EventListener],

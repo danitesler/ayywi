@@ -6305,6 +6305,8 @@
         "ayy-block-editor__cell": "The editable plain-text line inside every cell (role=\"textbox\", data-row, data-col). Tab and Shift+Tab move between cells, Enter goes down a row.",
         "ayy-block-editor__col-resize": "The handle on a table column's inline-end edge, in the first row (role=\"separator\"): drag it to set the column's width. The same widths are set from the block actions menu (Width) for keyboard users.",
         "ayy-block-editor__table-add": "A table's + button (data-axis=\"column\" or \"row\"): shown while the pointer or focus is in the block, always on touch screens.",
+        "ayy-block-editor__row-grip": "The handle at a table row's inline start (data-row, aria-haspopup=\"menu\"): lights the row while a cell in it is hovered or focused.",
+        "ayy-block-editor__col-grip": "The handle over a table column's top (data-col, aria-haspopup=\"menu\"): lights the column while a cell in it is hovered or focused.",
         "ayy-block-editor__check": "A to-do's checkbox (.ayy-checkbox).",
         "ayy-block-editor__icon": "A callout's icon.",
         "ayy-block-editor__code-bar": "A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).",
@@ -6390,6 +6392,10 @@
         "resizing": {
           "when": "data-active on .ayy-block-editor__col-resize while a table column is dragged",
           "looks": "A 2px --ayy-color-primary line shows on the column's edge; the columns follow the pointer live."
+        },
+        "hot": {
+          "when": "data-hot on the grips of the hovered or focused cell's row and column",
+          "looks": "The two grips fade in"
         },
         "dragging": {
           "when": "data-dragging on the blocks being carried by the handle",

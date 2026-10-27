@@ -18,6 +18,8 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__cell` — The editable plain-text line inside every cell (role="textbox", data-row, data-col). Tab and Shift+Tab move between cells, Enter goes down a row.
 - `.ayy-block-editor__col-resize` — The handle on a table column's inline-end edge, in the first row (role="separator"): drag it to set the column's width. The same widths are set from the block actions menu (Width) for keyboard users.
 - `.ayy-block-editor__table-add` — A table's + button (data-axis="column" or "row"): shown while the pointer or focus is in the block, always on touch screens.
+- `.ayy-block-editor__row-grip` — The handle at a table row's inline start (data-row, aria-haspopup="menu"): lights the row while a cell in it is hovered or focused.
+- `.ayy-block-editor__col-grip` — The handle over a table column's top (data-col, aria-haspopup="menu"): lights the column while a cell in it is hovered or focused.
 - `.ayy-block-editor__check` — A to-do's checkbox (.ayy-checkbox).
 - `.ayy-block-editor__icon` — A callout's icon.
 - `.ayy-block-editor__code-bar` — A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).
@@ -59,6 +61,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `checked` (`data-checked on a to-do block (its checkbox, or Mod+Enter in the line)`) — The checkbox is checked; the text turns --ayy-color-muted with a line through it.
 - `open` (`data-open on a toggle block (its arrow, or Mod+Enter in the line)`) — The arrow turns down and the blocks nested under the toggle show; closed, they are hidden (hidden attribute) but stay in the value.
 - `resizing` (`data-active on .ayy-block-editor__col-resize while a table column is dragged`) — A 2px --ayy-color-primary line shows on the column's edge; the columns follow the pointer live.
+- `hot` (`data-hot on the grips of the hovered or focused cell's row and column`) — The two grips fade in
 - `dragging` (`data-dragging on the blocks being carried by the handle`) — They dim to 40%; a raised copy (or a chip saying "3 blocks") follows the pointer and a 2px primary line shows where they'll land.
 - `empty` (`data-empty on the root: the document is one empty line`) — The placeholder shows in that line, focused or not.
 - `typing` (`data-typing on the root: set by typing, cleared when the pointer moves or presses`) — The gutters and code blocks' Copy fade out, so nothing moves beside the words being written.

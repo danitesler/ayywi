@@ -387,13 +387,14 @@
 
 .ayy-block-editor__table-scroll {
   overflow-x: auto;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-md);
+  padding-inline-start: calc(var(--_button) + 4px);
+  padding-block-start: 0.75rem;
 }
 
 .ayy-block-editor__table {
   inline-size: 100%;
   border-collapse: collapse;
+  border: 1px solid var(--ayy-color-line);
   font-size: 0.9375em;
 }
 
@@ -404,22 +405,6 @@
   border: 1px solid var(--ayy-color-line);
   text-align: start;
   vertical-align: top;
-}
-
-.ayy-block-editor__table tr:first-child > :is(th, td) {
-  border-block-start: 0;
-}
-
-.ayy-block-editor__table tr > :first-child {
-  border-inline-start: 0;
-}
-
-.ayy-block-editor__table tr > :last-child {
-  border-inline-end: 0;
-}
-
-.ayy-block-editor__table tr:last-child > :is(th, td) {
-  border-block-end: 0;
 }
 
 .ayy-block-editor__table th {
@@ -490,6 +475,79 @@
   .ayy-block-editor__col-resize::after {
     inset-inline: 7px;
     opacity: 0.4;
+  }
+}
+
+/* Row and column grips: the handles that light the hovered or focused cell's row and column, waiting at the row's
+   inline start and the column's top. Hidden (opacity) until their row or column is hot, so they fade in and out. */
+.ayy-block-editor__row-grip,
+.ayy-block-editor__col-grip {
+  position: absolute;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text-soft);
+  cursor: pointer;
+  opacity: 0;
+  user-select: none;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__row-grip {
+  inset-inline-start: calc(-1 * var(--_button) - 2px);
+  inset-block: 0;
+  margin-block: auto;
+  inline-size: var(--_button);
+  block-size: var(--_button);
+}
+
+.ayy-block-editor__col-grip {
+  inset-block-start: -0.75rem;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+}
+
+.ayy-block-editor__row-grip > svg,
+.ayy-block-editor__col-grip > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.ayy-block-editor__col-grip > svg {
+  rotate: 90deg;
+}
+
+.ayy-block-editor__row-grip[data-hot],
+.ayy-block-editor__col-grip[data-hot] {
+  opacity: 1;
+}
+
+.ayy-block-editor__row-grip:hover,
+.ayy-block-editor__col-grip:hover,
+.ayy-block-editor__row-grip:focus-visible,
+.ayy-block-editor__col-grip:focus-visible {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-block-editor__row-grip:focus-visible,
+.ayy-block-editor__col-grip:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+@media (hover: none) {
+  .ayy-block-editor__col-grip {
+    inline-size: 2rem;
+    block-size: 2rem;
   }
 }
 

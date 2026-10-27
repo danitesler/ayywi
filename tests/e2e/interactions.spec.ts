@@ -2357,6 +2357,34 @@ for (const renderer of ["react", "html"] as const) {
       await option(/^Header column/).click();
       await expect(table.locator('tbody th[scope="row"]')).toHaveCount(0);
     });
+
+    test("block editor table grips show for the hovered or focused cell and stay out of read-only", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const table = editor.locator('[data-type="table"]');
+      const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
+      const rowGrip = table.locator(".ayy-block-editor__row-grip");
+      const colGrip = table.locator(".ayy-block-editor__col-grip");
+
+      // Hovering a cell lights the grips of its row and column.
+      await cell(2, 1).hover();
+      await expect(table.locator('.ayy-block-editor__row-grip[data-row="2"]')).toHaveAttribute("data-hot", "");
+      await expect(table.locator('.ayy-block-editor__col-grip[data-col="1"]')).toHaveAttribute("data-hot", "");
+      await expect(table.locator('.ayy-block-editor__row-grip[data-row="2"]')).toBeVisible();
+      await expect(table.locator('.ayy-block-editor__col-grip[data-col="1"]')).toBeVisible();
+      await expect(table.locator(".ayy-block-editor__row-grip[data-hot]")).toHaveCount(1);
+
+      // Clicking (focusing) a cell moves the hot grips to its row and column.
+      await cell(1, 2).click();
+      await expect(table.locator('.ayy-block-editor__row-grip[data-row="1"]')).toHaveAttribute("data-hot", "");
+      await expect(table.locator('.ayy-block-editor__col-grip[data-col="2"]')).toHaveAttribute("data-hot", "");
+
+      // Read-only: no grips at all, and the table still shows.
+      await example(page, "task-notes").getByRole("switch", { name: "Read only" }).click();
+      await expect(rowGrip).toHaveCount(0);
+      await expect(colGrip).toHaveCount(0);
+      await expect(table.locator(".ayy-block-editor__cell")).toHaveCount(9);
+    });
   });
 }
 
