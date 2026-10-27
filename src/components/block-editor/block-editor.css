@@ -263,6 +263,21 @@
   font-weight: var(--ayy-weight-semibold);
 }
 
+/* Same default look as Text highlight, on a bare <mark> so stored HTML stays a tag, not a class. */
+.ayy-block-editor__text mark {
+  box-sizing: border-box;
+  display: inline;
+  padding-block: 0;
+  padding-inline: 0;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash-hover);
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ayy-color-line-hover);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+}
+
 .ayy-block-editor__text code {
   padding: 0.1em 0.3em;
   border-radius: var(--ayy-radius-sm);
@@ -1246,6 +1261,12 @@ ayy-block-editor {
   }
   .ayy-block-editor__block[data-checked] > .ayy-block-editor__text {
     color: GrayText;
+  }
+  .ayy-block-editor__text mark {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+    text-decoration-color: HighlightText;
   }
   .ayy-block-editor__block[data-type="callout"][data-tone] {
     border: 1px solid CanvasText;

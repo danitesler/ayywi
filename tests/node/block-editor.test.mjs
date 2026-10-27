@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as ayy from "../../dist/index.js";
-import { blockEditorEditTable, blockEditorFromMarkdown, blockEditorNormalize, blockEditorToHtml, blockEditorToMarkdown, blockEditorToText } from "../../dist/index.js";
+import { blockEditorCleanHtml, blockEditorEditTable, blockEditorFromMarkdown, blockEditorNormalize, blockEditorToHtml, blockEditorToMarkdown, blockEditorToText } from "../../dist/index.js";
 
 const doc = [
   { id: "a", type: "text", html: "Before" },
@@ -177,4 +177,11 @@ test("callout tones map GitHub alerts, and a default callout stays a quote", () 
   assert.equal(blockEditorToMarkdown([{ id: "c", type: "callout", html: "Plain" }]), "> Plain");
   assert.equal(blockEditorToMarkdown([{ id: "c", type: "callout", tone: "default", html: "Plain" }]), "> Plain");
   assert.equal(blockEditorFromMarkdown("> Plain")[0].type, "quote");
+});
+
+test("highlight is a stored mark: cleaned, and ==text== in Markdown", () => {
+  assert.equal(blockEditorCleanHtml('a <mark style="color:red" onclick="x()">b</mark> c'), "a <mark>b</mark> c");
+  assert.equal(blockEditorToMarkdown([{ id: "a", type: "text", html: "a <mark>b</mark>" }]), "a ==b==");
+  assert.equal(blockEditorFromMarkdown("a ==b== c")[0].html, "a <mark>b</mark> c");
+  assert.equal(blockEditorFromMarkdown("a == b")[0].html, "a == b");
 });

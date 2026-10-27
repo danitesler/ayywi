@@ -2733,6 +2733,52 @@ for (const renderer of ["react", "html"] as const) {
       await notes.getByRole("switch", { name: "Read only" }).click();
       await expect(callout.locator(".ayy-block-editor__handle")).toHaveCount(0);
     });
+
+    test("block editor highlights a selection from the bar and with Mod+Shift+H", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "page").locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const line = (n: number) => blocks.nth(n).locator(":scope > .ayy-block-editor__text");
+      const selectText = (n: number, start: number, end: number) =>
+        line(n).evaluate((el, at) => {
+          el.focus();
+          const point = (offset: number): [Node, number] => {
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let left = offset;
+            let last: Node = el;
+            for (let t = walker.nextNode(); t; t = walker.nextNode()) {
+              last = t;
+              if (left <= (t as Text).length) return [t, left];
+              left -= (t as Text).length;
+            }
+            return [last, last === el ? el.childNodes.length : (last as Text).length];
+          };
+          const [sn, so] = point(at[0]);
+          const [en, eo] = point(at[1]);
+          getSelection()!.setBaseAndExtent(sn, so, en, eo);
+        }, [start, end] as [number, number]);
+
+      // "Ship" is the first word of line 1. Mod+Shift+H toggles the highlight.
+      await selectText(1, 0, 4);
+      await page.keyboard.press("Control+Shift+h");
+      await expect(line(1).locator("mark")).toHaveText("Ship");
+      await page.keyboard.press("Control+Shift+h");
+      await expect(line(1).locator("mark")).toHaveCount(0);
+
+      // The page example ends on an empty line. ==hi== becomes a mark as the closing pair is typed.
+      await line(16).evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+        const sel = getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.type("==hi=");
+      await page.keyboard.type("=");
+      await expect(line(16).locator("mark")).toHaveText("hi");
+    });
   });
 }
 

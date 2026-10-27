@@ -6,7 +6,7 @@
 // across blocks like in a text editor.
 //
 // The value is a list of blocks; text blocks carry their inline content as a small, sanitised HTML subset (strong, em,
-// u, s, code, a and mention chips). The editor renders the blocks, keeps its own undo history (structural edits would
+// u, s, mark, code, a and mention chips). The editor renders the blocks, keeps its own undo history (structural edits would
 // confuse the browser's) and reports every change with the whole value. Nothing here needs React; the React wrapper
 // and <ayy-block-editor> both call connectBlockEditor().
 import { cx } from "../../lib/cx";
@@ -31,6 +31,7 @@ import {
   Heading01Icon,
   Heading02Icon,
   Heading03Icon,
+  HighlighterIcon,
   Image01Icon,
   InformationCircleIcon,
   LeftToRightListBulletIcon,
@@ -430,16 +431,16 @@ export function blockEditorMentionHtml(m: BlockEditorMention): string {
   return `<span class="${C.mention}" contenteditable="false" data-trigger="${escapeHtml(m.trigger)}" data-id="${escapeHtml(m.id)}" data-label="${escapeHtml(m.label)}"><span class="${C.mentionTrigger}">${escapeHtml(m.trigger)}</span>${escapeHtml(m.label)}</span>`;
 }
 
-const INLINE_TAGS = new Set(["strong", "em", "u", "s", "code"]);
+const INLINE_TAGS = new Set(["strong", "em", "u", "s", "mark", "code"]);
 /** The elements that count as each mark (what the browser or a paste may have written for it). */
-const MARKS: Record<string, string[]> = { strong: ["STRONG", "B"], em: ["EM", "I"], u: ["U"], s: ["S", "STRIKE", "DEL"], code: ["CODE"] };
+const MARKS: Record<string, string[]> = { strong: ["STRONG", "B"], em: ["EM", "I"], u: ["U"], s: ["S", "STRIKE", "DEL"], mark: ["MARK"], code: ["CODE"] };
 const attr = (attrs: string, name: string) => {
   const m = attrs.match(new RegExp(`\\s${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"));
   return m ? unescapeHtml(m[2] ?? m[3] ?? m[4] ?? "") : null;
 };
 
 /**
- * Keep only the inline HTML the editor makes (strong, em, u, s, code, a with a safe href, mention chips) and drop every
+ * Keep only the inline HTML the editor makes (strong, em, u, s, mark, code, a with a safe href, mention chips) and drop every
  * other tag and attribute. String based, so it runs without a DOM (on a server, in a worker).
  */
 export function blockEditorCleanHtml(html: string): string {
@@ -555,20 +556,21 @@ export function blockEditorNormalize(value: readonly Partial<BlockEditorBlock>[]
 
 // ---- Markdown, HTML and plain text (no DOM needed) ----
 
-const MD_SPECIAL = /([\\`*_~[\]])/g;
+const MD_SPECIAL = /([\\`*_~=[\]])/g;
 
 function inlineToMarkdown(html: string): string {
   let out = "";
   let at = 0;
   const links: string[] = [];
   const clean = blockEditorCleanHtml(html);
-  for (const m of clean.matchAll(/<(\/?)(strong|em|u|s|code|a|span)((?:[^>"']|"[^"]*"|'[^']*')*)>/g)) {
+  for (const m of clean.matchAll(/<(\/?)(strong|em|u|s|mark|code|a|span)((?:[^>"']|"[^"]*"|'[^']*')*)>/g)) {
     out += unescapeHtml(clean.slice(at, m.index)).replace(MD_SPECIAL, "\\$1");
     at = (m.index ?? 0) + m[0].length;
     const [, closing, tag, attrs] = m;
     if (tag === "strong") out += "**";
     else if (tag === "em") out += "*";
     else if (tag === "s") out += "~~";
+    else if (tag === "mark") out += "==";
     else if (tag === "code") out += "`";
     else if (tag === "a") {
       if (closing) out += `](${links.pop() ?? ""})`;
@@ -581,14 +583,14 @@ function inlineToMarkdown(html: string): string {
   return out + unescapeHtml(clean.slice(at)).replace(MD_SPECIAL, "\\$1");
 }
 
-/** Inline Markdown (**bold**, *italic*, ~~strike~~, `code`, [link](url)) to the editor's inline HTML. */
+/** Inline Markdown (**bold**, *italic*, ~~strike~~, ==highlight==, `code`, [link](url)) to the editor's inline HTML. */
 function markdownInline(text: string): string {
   const codes: string[] = [];
   let s = escapeHtml(text).replace(/`([^`]+)`/g, (_, c: string) => {
     codes.push(`<code>${c}</code>`);
     return `\u0000${codes.length - 1}\u0000`;
   });
-  s = s.replace(/\\([\\`*_~[\]])/g, (_, c: string) => `\u0001${c.charCodeAt(0)}\u0001`);
+  s = s.replace(/\\([\\`*_~=[\]])/g, (_, c: string) => `\u0001${c.charCodeAt(0)}\u0001`);
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (whole, label: string, href: string) => {
     const safe = safeUrl(unescapeHtml(href));
     return safe ? `<a href="${escapeHtml(safe)}">${label}</a>` : whole;
@@ -596,6 +598,7 @@ function markdownInline(text: string): string {
   s = s.replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>").replace(/__([^_]+?)__/g, "<strong>$1</strong>");
   s = s.replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>").replace(/(^|[^_\w])_([^_\s][^_]*?)_(?!\w)/g, "$1<em>$2</em>");
   s = s.replace(/~~([^~]+?)~~/g, "<s>$1</s>");
+  s = s.replace(/==([^=\s][^=]*?)==/g, "<mark>$1</mark>");
   s = s.replace(/\u0001(\d+)\u0001/g, (_, n: string) => escapeHtml(String.fromCharCode(Number(n))));
   return s.replace(/\u0000(\d+)\u0000/g, (_, n: string) => codes[Number(n)]);
 }
@@ -1487,6 +1490,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     { command: "em", label: "Italic", icon: TextItalicIcon, shortcut: "Mod+I" },
     { command: "u", label: "Underline", icon: TextUnderlineIcon, shortcut: "Mod+U" },
     { command: "s", label: "Strikethrough", icon: TextStrikethroughIcon, shortcut: "Mod+Shift+S" },
+    { command: "mark", label: "Highlight", icon: HighlighterIcon, shortcut: "Mod+Shift+H" },
     { command: "code", label: "Inline code", icon: CodeIcon, shortcut: "Mod+E" },
     { command: "link", label: "Link", icon: Link01Icon, shortcut: "Mod+K" },
   ];
@@ -2989,7 +2993,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     sel?.collapseToEnd();
   }
 
-  /** The mark element of kind `tag` (strong, em, u, s, code) around `node`, inside its line. */
+  /** The mark element of kind `tag` (strong, em, u, s, mark, code) around `node`, inside its line. */
   function markOf(node: Node | null | undefined, tag: string): HTMLElement | null {
     const host = textHost(node);
     for (let el = isElement(node) ? node : (node?.parentElement ?? null); el && el !== host && host; el = el.parentElement) {
@@ -3032,7 +3036,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   }
 
   /**
-   * Bold, italic, underline, strikethrough and code: on when all the selected text has the mark, off otherwise. Done on
+   * Bold, italic, underline, strikethrough, highlight and code: on when all the selected text has the mark, off otherwise. Done on
    * the DOM rather than with execCommand, which reads the computed style (bold in a heading would turn it off) and
    * writes style attributes. Works across blocks too.
    */
@@ -3087,7 +3091,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     scheduleToolbar();
   }
 
-  /** "**bold**", "*italic*", "~~strike~~", "`code`" turn into formatting as the closing mark is typed. */
+  /** "**bold**", "*italic*", "~~strike~~", "==highlight==", "`code`" turn into formatting as the closing mark is typed. */
   function autoformat(el: HTMLElement): void {
     const sel = window.getSelection();
     if (!sel?.isCollapsed || !sel.anchorNode || sel.anchorNode.nodeType !== 3 || inCode(sel.anchorNode)) return;
@@ -3098,6 +3102,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       [/`([^`\n]+)`$/, "code", 1],
       [/\*\*([^*\s](?:[^*\n]*[^*\s])?)\*\*$/, "strong", 2],
       [/~~([^~\s](?:[^~\n]*[^~\s])?)~~$/, "s", 2],
+      [/==([^=\s](?:[^=\n]*[^=\s])?)==$/, "mark", 2],
       [/(?:^|[^*\w])\*([^*\s](?:[^*\n]*[^*\s])?)\*$/, "em", 1],
       [/(?:^|[^_\w])_([^_\s](?:[^_\n]*[^_\s])?)_$/, "em", 1],
     ];
@@ -3338,7 +3343,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return;
     }
     if (b.type !== "code" && mod && !e.altKey) {
-      const tag = !e.shiftKey && key === "b" ? "strong" : !e.shiftKey && key === "i" ? "em" : !e.shiftKey && key === "u" ? "u" : e.shiftKey && (key === "s" || key === "x") ? "s" : !e.shiftKey && key === "e" ? "code" : "";
+      const tag = !e.shiftKey && key === "b" ? "strong" : !e.shiftKey && key === "i" ? "em" : !e.shiftKey && key === "u" ? "u" : e.shiftKey && (key === "s" || key === "x") ? "s" : e.shiftKey && key === "h" ? "mark" : !e.shiftKey && key === "e" ? "code" : "";
       if (tag) {
         e.preventDefault();
         toggleMark(tag);
@@ -3640,9 +3645,9 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     } else if (mod && !e.altKey && ["b", "i", "u", "e"].includes(key) && !e.shiftKey) {
       e.preventDefault();
       toggleMark(key === "b" ? "strong" : key === "i" ? "em" : key === "u" ? "u" : "code");
-    } else if (mod && e.shiftKey && (key === "s" || key === "x")) {
+    } else if (mod && e.shiftKey && (key === "s" || key === "x" || key === "h")) {
       e.preventDefault();
-      toggleMark("s");
+      toggleMark(key === "h" ? "mark" : "s");
     } else if (e.key === "Tab" || (mod && (key === "k" || key === "d"))) {
       e.preventDefault();
     }
@@ -4158,7 +4163,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
     if (!composing) {
       if (ev.inputType === "insertText" && shortcut(el)) return;
-      if (ev.inputType === "insertText" && ev.data && /[*_`~]/.test(ev.data)) autoformat(el);
+      if (ev.inputType === "insertText" && ev.data && /[*_`~=]/.test(ev.data)) autoformat(el);
       detectMenus(el);
     }
     emit();
