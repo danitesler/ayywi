@@ -387,9 +387,17 @@
 }
 
 .ayy-block-editor__table-scroll {
+  --_col-grip: 1.5rem;
   overflow-x: auto;
   padding-inline-start: calc(var(--_button) + 4px);
-  padding-block-start: 0.75rem;
+  /* The column grip sits fully in this padding, including the 2rem touch size. */
+  padding-block-start: var(--_col-grip);
+}
+
+@media (hover: none) {
+  .ayy-block-editor__table-scroll {
+    --_col-grip: 2rem;
+  }
 }
 
 .ayy-block-editor__table {
@@ -488,8 +496,9 @@
   pointer-events: none;
 }
 
-/* Row and column grips: the handles that light the hovered or focused cell's row and column, waiting at the row's
-   inline start and the column's top. Hidden (opacity) until their row or column is hot, so they fade in and out. */
+/* Row and column grips: the handles that light the hovered or focused cell's row and column. The row grip sits in the
+   inline padding; the column grip sits fully in the scroll box's block-start padding, not over the header text.
+   pointer-events stay off until the grip is hot or keyboard-focused, so an invisible grip never takes a click. */
 .ayy-block-editor__row-grip,
 .ayy-block-editor__col-grip {
   position: absolute;
@@ -503,6 +512,7 @@
   color: var(--ayy-color-text-soft);
   cursor: pointer;
   opacity: 0;
+  pointer-events: none;
   user-select: none;
   transition:
     opacity var(--ayy-duration-fast) ease,
@@ -518,11 +528,11 @@
 }
 
 .ayy-block-editor__col-grip {
-  inset-block-start: -0.75rem;
+  inset-block-start: calc(-1 * var(--_col-grip, 1.5rem));
   inset-inline: 0;
   margin-inline: auto;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
+  inline-size: var(--_col-grip, 1.5rem);
+  block-size: var(--_col-grip, 1.5rem);
 }
 
 .ayy-block-editor__row-grip > svg,
@@ -536,8 +546,11 @@
 }
 
 .ayy-block-editor__row-grip[data-hot],
-.ayy-block-editor__col-grip[data-hot] {
+.ayy-block-editor__col-grip[data-hot],
+.ayy-block-editor__row-grip:focus-visible,
+.ayy-block-editor__col-grip:focus-visible {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .ayy-block-editor__row-grip:hover,
@@ -552,13 +565,6 @@
 .ayy-block-editor__col-grip:focus-visible {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 0;
-}
-
-@media (hover: none) {
-  .ayy-block-editor__col-grip {
-    inline-size: 2rem;
-    block-size: 2rem;
-  }
 }
 
 .ayy-block-editor__cell {

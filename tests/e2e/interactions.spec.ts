@@ -2297,17 +2297,21 @@ for (const renderer of ["react", "html"] as const) {
       await expect(cell(2, 2)).toHaveText("$30");
 
       // The row and column grips open menus scoped to that row or column, and act on it (not the caret's cell).
+      // A grip only takes the pointer once its row or column is hot, so hover a cell in it first.
       const option = (name: RegExp) => menu.getByRole("option", { name });
+      await cell(1, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Row 2");
       await option(/^Delete/).click();
       await expect(table.locator("tbody tr")).toHaveCount(3);
+      await cell(0, 1).hover();
       await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Column 2");
       await option(/^Delete/).click();
       await expect(table.locator("thead th")).toHaveCount(3);
 
       // Align (with Back to leave the group) and Duplicate change the column and the rows from their grips.
+      await cell(0, 1).hover();
       await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
       await option(/^Align/).click();
       await option(/^Back/).click();
@@ -2315,6 +2319,7 @@ for (const renderer of ["react", "html"] as const) {
       await option(/^Align/).click();
       await option(/^Centered/).click();
       await expect(cell(1, 1)).toHaveAttribute("data-align", "center");
+      await cell(1, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
       await option(/^Duplicate/).click();
       await expect(table.locator("tbody tr")).toHaveCount(4);
@@ -2358,26 +2363,50 @@ for (const renderer of ["react", "html"] as const) {
       const menu = editor.locator(".ayy-block-editor__menu");
       const option = (name: RegExp) => menu.getByRole("option", { name });
 
-      // The header row's grip can't move, but a click still opens its menu.
+      // The header row's grip can't move, but a click still opens its menu. Insert above is omitted: it would make the new row the header.
+      await cell(0, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="0"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Row 1");
-      await page.keyboard.press("Escape");
+      await expect(option(/^Insert above/)).toHaveCount(0);
+      await expect(option(/^Insert below/)).toBeVisible();
+      const headerBefore = (await cell(0, 0).textContent()) ?? "";
+      await option(/^Insert below/).click();
+      await expect(cell(0, 0)).toHaveText(headerBefore);
+      await expect(cell(1, 0)).toHaveText("");
+      await page.keyboard.press("Control+z");
+      await expect(table.locator("tbody tr")).toHaveCount(2);
 
       // The row grip of the second row (Starter, whose grip is labelled "Row 2") opens a menu scoped to it.
+      await cell(1, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Row 2");
+      await expect(option(/^Insert above/)).toBeVisible();
       await option(/^Duplicate/).click();
       await expect(table.locator("tbody tr")).toHaveCount(3);
       await expect(table.locator("tbody tr").nth(1).locator("th, td")).toHaveText(["Starter", "$9", "$12"]);
 
       // The first column's grip sorts its column Z → A: the body rows' first cells end up descending.
+      await cell(0, 0).hover();
       await table.locator('.ayy-block-editor__col-grip[data-col="0"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Column 1");
       await option(/^Sort/).click();
       await option(/^Z → A/).click();
       await expect(table.locator('tbody th[scope="row"]')).toHaveText(["Team", "Starter", "Starter"]);
 
-      // Mod+/ in a cell opens the cell menu.
+      // A second A → Z on an already sorted column must not push history: one undo returns to Z → A.
+      await cell(0, 0).hover();
+      await table.locator('.ayy-block-editor__col-grip[data-col="0"]').click();
+      await option(/^Sort/).click();
+      await option(/^A → Z/).click();
+      await cell(0, 0).hover();
+      await table.locator('.ayy-block-editor__col-grip[data-col="0"]').click();
+      await option(/^Sort/).click();
+      await option(/^A → Z/).click();
+      await cell(1, 0).click();
+      await page.keyboard.press("Control+z");
+      await expect(table.locator('tbody th[scope="row"]').first()).toHaveText("Team");
+
+      // Mod+/ in a cell opens the cell menu. Escape and Tab return focus to that cell, not the editor.
       await cell(1, 1).click();
       await page.keyboard.press("Control+/");
       await expect(menu).toBeVisible();
@@ -2386,6 +2415,11 @@ for (const renderer of ["react", "html"] as const) {
       await expect(option(/^Header row/)).toHaveCount(1);
       await expect(option(/^Delete table/)).toHaveCount(1);
       await page.keyboard.press("Escape");
+      await expect(cell(1, 1)).toBeFocused();
+      await page.keyboard.press("Control+/");
+      await page.keyboard.press("Tab");
+      await expect(menu).toBeHidden();
+      await expect(cell(1, 1)).toBeFocused();
 
       // A right-click on a cell opens the same menu.
       await cell(1, 1).evaluate((el) => el.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2 })));
@@ -2410,13 +2444,29 @@ for (const renderer of ["react", "html"] as const) {
       const rowGrip = table.locator(".ayy-block-editor__row-grip");
       const colGrip = table.locator(".ayy-block-editor__col-grip");
 
-      // Hovering a cell lights the grips of its row and column.
+      // A cold grip does not take the pointer, and the column grip sits above the header cell, not over its text.
+      await cell(0, 0).scrollIntoViewIfNeeded();
+      await expect(table.locator('.ayy-block-editor__col-grip[data-col="0"]')).toHaveCSS("pointer-events", "none");
+      const headerBox = (await cell(0, 0).boundingBox())!;
+      const coldGrip = (await table.locator('.ayy-block-editor__col-grip[data-col="0"]').boundingBox())!;
+      expect(coldGrip.y + coldGrip.height).toBeLessThanOrEqual(headerBox.y + 2);
+      await page.mouse.click(headerBox.x + headerBox.width / 2, headerBox.y + headerBox.height / 2);
+      await expect(cell(0, 0)).toBeFocused();
+      await expect(editor.locator(".ayy-block-editor__menu")).toBeHidden();
+
+      // Hovering a cell lights the grips of its row and column, and only those receive the pointer.
       await cell(2, 1).hover();
       await expect(table.locator('.ayy-block-editor__row-grip[data-row="2"]')).toHaveAttribute("data-hot", "");
       await expect(table.locator('.ayy-block-editor__col-grip[data-col="1"]')).toHaveAttribute("data-hot", "");
       await expect(table.locator('.ayy-block-editor__row-grip[data-row="2"]')).toBeVisible();
       await expect(table.locator('.ayy-block-editor__col-grip[data-col="1"]')).toBeVisible();
       await expect(table.locator(".ayy-block-editor__row-grip[data-hot]")).toHaveCount(1);
+      await expect(table.locator('.ayy-block-editor__row-grip[data-row="2"]')).toHaveCSS("pointer-events", "auto");
+      await expect(table.locator('.ayy-block-editor__col-grip[data-col="1"]')).toHaveCSS("pointer-events", "auto");
+      await expect(table.locator('.ayy-block-editor__row-grip[data-row="0"]')).toHaveCSS("pointer-events", "none");
+      const colGripBox = (await table.locator('.ayy-block-editor__col-grip[data-col="1"]').boundingBox())!;
+      const colCellBox = (await cell(0, 1).boundingBox())!;
+      expect(colGripBox.y + colGripBox.height).toBeLessThanOrEqual(colCellBox.y + 2);
 
       // Clicking (focusing) a cell moves the hot grips to its row and column.
       await cell(1, 2).click();
@@ -2441,19 +2491,53 @@ for (const renderer of ["react", "html"] as const) {
       // Wait for the table to be drawn before dragging (header Plan · Old price · New price, rows Starter, Team).
       await expect(cell(0, 0)).toHaveText("Plan");
       await expect(cell(1, 0)).toHaveText("Starter");
+      const drop = table.locator(".ayy-block-editor__table-drop");
 
-      // Drag row 1 (Starter) down past the last row's centre: Starter lands last, Team moves up.
+      // A cancelled drag drops the line and the dragging mark, and does not move the row.
+      await cell(1, 0).hover();
+      const cancelGrip = (await rowGrip(1).boundingBox())!;
+      const cancelTarget = (await table.locator("tbody tr").nth(1).boundingBox())!;
+      await page.mouse.move(cancelGrip.x + cancelGrip.width / 2, cancelGrip.y + cancelGrip.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(cancelTarget.x + cancelTarget.width / 2, cancelTarget.y + cancelTarget.height - 2, { steps: 5 });
+      await expect(table.locator(".ayy-block-editor__cell[data-dragging]")).not.toHaveCount(0);
+      await page.evaluate(() => window.dispatchEvent(new PointerEvent("pointercancel", { bubbles: true })));
+      await expect(table.locator(".ayy-block-editor__cell[data-dragging]")).toHaveCount(0);
+      await expect(drop).toBeHidden();
+      await page.mouse.up();
+      await expect(cell(1, 0)).toHaveText("Starter");
+      await expect(cell(2, 0)).toHaveText("Team");
+
+      // Dragging row 1 into the top half of the next row is the gap it already occupies: the line stays hidden and the row stays.
+      await cell(1, 0).hover();
+      const nearGrip = (await rowGrip(1).boundingBox())!;
+      const nextRow = (await table.locator("tbody tr").nth(1).boundingBox())!;
+      await page.mouse.move(nearGrip.x + nearGrip.width / 2, nearGrip.y + nearGrip.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(nextRow.x + nextRow.width / 2, nextRow.y + 2, { steps: 5 });
+      await expect(drop).toBeHidden();
+      await page.mouse.up();
+      await expect(cell(1, 0)).toHaveText("Starter");
+      await expect(cell(2, 0)).toHaveText("Team");
+
+      // Drag row 1 (Starter) down past the last row's far edge: the line sits on that edge, and Starter lands there.
+      await cell(1, 0).hover();
       await rowGrip(1).scrollIntoViewIfNeeded();
       const grip = (await rowGrip(1).boundingBox())!;
       const team = (await table.locator("tbody tr").nth(1).boundingBox())!;
       await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2);
       await page.mouse.down();
       await page.mouse.move(team.x + team.width / 2, team.y + team.height - 2, { steps: 5 });
+      await expect(drop).toBeVisible();
+      const farLine = (await drop.boundingBox())!;
+      const teamNow = (await table.locator("tbody tr").nth(1).boundingBox())!;
+      expect(Math.abs(farLine.y - (teamNow.y + teamNow.height))).toBeLessThan(4);
       await page.mouse.up();
       await expect(cell(2, 0)).toHaveText("Starter");
       await expect(cell(1, 0)).toHaveText("Team");
 
       // Drag column 0 (Plan) past column 2 (New price): Plan lands last.
+      await cell(0, 0).hover();
       await colGrip(0).scrollIntoViewIfNeeded();
       const colHandle = (await colGrip(0).boundingBox())!;
       const lastCol = (await cell(0, 2).boundingBox())!;
@@ -2465,6 +2549,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(cell(0, 0)).toHaveText("Old price");
 
       // Dragging the header row's grip changes nothing.
+      await cell(0, 0).hover();
       await rowGrip(0).scrollIntoViewIfNeeded();
       const headerGrip = (await rowGrip(0).boundingBox())!;
       const headersBefore = await table.locator("thead th").allInnerTexts();
@@ -2483,19 +2568,21 @@ for (const renderer of ["react", "html"] as const) {
       // In RTL a row drag still lands on the intended row, and its drop line's inline-start edge (its right edge) sits on
       // the table's inline-start edge.
       await editor.evaluate((el) => el.setAttribute("dir", "rtl"));
+      await cell(1, 0).hover();
       await rowGrip(1).scrollIntoViewIfNeeded();
       const rtlRowGrip = (await rowGrip(1).boundingBox())!;
       const rtlRowTarget = (await table.locator("tbody tr").nth(1).boundingBox())!;
       await page.mouse.move(rtlRowGrip.x + rtlRowGrip.width / 2, rtlRowGrip.y + rtlRowGrip.height / 2);
       await page.mouse.down();
       await page.mouse.move(rtlRowTarget.x + rtlRowTarget.width / 2, rtlRowTarget.y + rtlRowTarget.height - 2, { steps: 5 });
-      const dropBox = (await table.locator(".ayy-block-editor__table-drop").boundingBox())!;
+      const dropBox = (await drop.boundingBox())!;
       const tableBox = (await table.locator(".ayy-block-editor__table").boundingBox())!;
       expect(Math.round(dropBox.x + dropBox.width)).toBe(Math.round(tableBox.x + tableBox.width));
       await page.mouse.up();
       await expect(cell(2, 0)).toHaveText("Team");
 
       // The same column drag works in RTL, moving the mouse leftwards.
+      await cell(0, 0).hover();
       await colGrip(0).scrollIntoViewIfNeeded();
       const rtlHandle = (await colGrip(0).boundingBox())!;
       const rtlLast = (await cell(0, 2).boundingBox())!;
@@ -2516,6 +2603,7 @@ for (const renderer of ["react", "html"] as const) {
       const cols = await table.locator("thead th").count();
 
       // Click row grip 2, then Escape: the menu closes and the row stays selected.
+      await cell(2, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="2"]').click();
       await page.keyboard.press("Escape");
       await expect(table.locator("tbody tr:nth-child(2) > [data-selected]")).toHaveCount(cols);
@@ -2525,6 +2613,7 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Backspace");
       await page.keyboard.press("Control+z");
       await expect(cell(2, 0)).toBeFocused();
+      await cell(2, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="2"]').click();
       await page.keyboard.press("Escape");
       await expect(table.locator("tbody tr:nth-child(2) > [data-selected]")).toHaveCount(cols);
@@ -2546,6 +2635,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(table.locator(".ayy-block-editor__cell")).toHaveText(beforeClear);
 
       // Column grip 1: copy its values as one per line, then a cell click clears the selection.
+      await cell(0, 1).hover();
       await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
       await page.keyboard.press("Escape");
       const column = await table.locator('.ayy-block-editor__cell[data-col="1"]').allTextContents();
@@ -2554,6 +2644,51 @@ for (const renderer of ["react", "html"] as const) {
 
       await cell(1, 0).click();
       await expect(editor.locator("[data-selected]")).toHaveCount(0);
+    });
+
+    test("block editor table menus omit insert, duplicate and sort when they would do nothing", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const table = editor.locator('[data-type="table"]');
+      const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
+      const menu = editor.locator(".ayy-block-editor__menu");
+      const option = (name: RegExp) => menu.getByRole("option", { name });
+      const paste = (text: string) => cell(0, 0).evaluate((el, value) => {
+        const data = new DataTransfer();
+        data.setData("text/plain", value);
+        el.dispatchEvent(new ClipboardEvent("paste", { clipboardData: data, bubbles: true, cancelable: true }));
+      }, text);
+
+      // One body row cannot sort.
+      await cell(2, 0).hover();
+      await table.locator('.ayy-block-editor__row-grip[data-row="2"]').click();
+      await option(/^Delete/).click();
+      await expect(table.locator("tbody tr")).toHaveCount(1);
+      await cell(0, 0).hover();
+      await table.locator('.ayy-block-editor__col-grip[data-col="0"]').click();
+      await expect(option(/^Sort/)).toHaveCount(0);
+      await page.keyboard.press("Escape");
+
+      // Twelve columns: no insert or duplicate.
+      await cell(0, 0).click();
+      await paste(Array.from({ length: 12 }, (_, i) => `c${i}`).join("\t"));
+      await expect(table.locator("thead th")).toHaveCount(12);
+      await cell(0, 0).hover();
+      await table.locator('.ayy-block-editor__col-grip[data-col="0"]').click();
+      await expect(option(/^Insert before/)).toHaveCount(0);
+      await expect(option(/^Insert after/)).toHaveCount(0);
+      await expect(option(/^Duplicate/)).toHaveCount(0);
+      await page.keyboard.press("Escape");
+
+      // One hundred rows: no insert or duplicate, on a body row as well as the header.
+      await cell(0, 0).click();
+      await paste(Array.from({ length: 100 }, () => "x").join("\n"));
+      await expect(table.locator("tr")).toHaveCount(100);
+      await cell(1, 0).hover();
+      await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
+      await expect(option(/^Insert above/)).toHaveCount(0);
+      await expect(option(/^Insert below/)).toHaveCount(0);
+      await expect(option(/^Duplicate/)).toHaveCount(0);
     });
   });
 }

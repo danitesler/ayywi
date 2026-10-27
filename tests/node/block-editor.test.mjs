@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import * as ayy from "../../dist/index.js";
 import { blockEditorEditTable, blockEditorFromMarkdown, blockEditorNormalize, blockEditorToHtml, blockEditorToMarkdown, blockEditorToText } from "../../dist/index.js";
 
 const doc = [
@@ -122,6 +123,7 @@ test("clear, align, width and header edits", () => {
   assert.deepEqual(blockEditorEditTable(t3, { op: "clear", rows: [1, 2], columns: [1, 1] }).rows.map((r) => r[1]), ["Qty", "", "", "1"]);
   assert.deepEqual(blockEditorEditTable(t3, { op: "align", column: 1, align: "end" }).align, ["start", "end"]);
   assert.deepEqual(blockEditorEditTable(t3, { op: "width", column: 0, width: 10, measured: [200, 150] }).widths, [48, 150]);
+  assert.deepEqual(blockEditorEditTable(t3, { op: "width", column: 1, width: 80, measured: [10, 5000] }).widths, [48, 80]);
   assert.equal(blockEditorEditTable({ ...t3, widths: [90, 90] }, { op: "width", column: 0, width: 0 }).widths, undefined);
   assert.equal(blockEditorEditTable(t3, { op: "header", column: true }).headerColumn, true);
   assert.equal(blockEditorEditTable(t3, { op: "header", row: false }).header, false);
@@ -134,4 +136,21 @@ test("cells fills from a cell and grows the table, one line per cell", () => {
 test("edits respect the row and column limits", () => {
   const wide = { ...t3, rows: [Array(12).fill("")] };
   assert.equal(blockEditorEditTable(wide, { op: "insert-column", at: 0 }), wide);
+});
+test("a value-identical edit returns the same block", () => {
+  const sorted = blockEditorEditTable(t3, { op: "sort", column: 0, dir: "asc" });
+  assert.notEqual(sorted, t3);
+  assert.equal(blockEditorEditTable(sorted, { op: "sort", column: 0, dir: "asc" }), sorted);
+  assert.equal(blockEditorEditTable(t3, { op: "align", column: 0, align: "start" }), t3);
+  assert.equal(blockEditorEditTable(t3, { op: "header", row: true }), t3);
+  const sized = blockEditorEditTable(t3, { op: "width", column: 0, width: 80, measured: [80, 90] });
+  assert.equal(blockEditorEditTable(sized, { op: "width", column: 0, width: 80 }), sized);
+});
+test("table limits are not package exports", () => {
+  assert.equal("MAX_ROWS" in ayy, false);
+  assert.equal("MAX_COLUMNS" in ayy, false);
+  assert.equal("MIN_COLUMN" in ayy, false);
+  assert.equal("MAX_COLUMN" in ayy, false);
+  assert.equal(typeof ayy.blockEditorEditTable, "function");
+  assert.equal(typeof ayy.tableGrid, "function");
 });

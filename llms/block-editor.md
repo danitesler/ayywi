@@ -13,7 +13,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__marker` — A list's bullet or number, drawn by the editor (1. a. i. by nesting level).
 - `.ayy-block-editor__toggle` — A toggle's arrow button: points along the reading direction, turns down while the toggle is open (aria-expanded). Blocks indented under the toggle (data-indent greater than its own) are hidden while it is closed.
 - `.ayy-block-editor__table-wrap` — A table block's box: the scrolling table, the row grips at its inline start, the drop line for a dragged row or column, the + at its inline end (add a column) and the + under it (add a row).
-- `.ayy-block-editor__table-scroll` — Scrolls the table sideways in a narrow column, with a hairline around it and room at the inline start and top for the row and column grips.
+- `.ayy-block-editor__table-scroll` — Scrolls the table sideways in a narrow column, with room at the inline start and top for the row and column grips. The hairline is on the table, not this box.
 - `.ayy-block-editor__table` — The <table>. A header row is a <thead> of <th scope="col">; the rest is a <tbody>. A selected row or column paints data-selected on its cells. In plain HTML a block with data-type="table" can hold a <table> and the editor reads its rows.
 - `.ayy-block-editor__cell` — The editable plain-text line inside every cell (role="textbox", data-row, data-col). Tab and Shift+Tab move between cells, Enter goes down a row.
 - `.ayy-block-editor__col-resize` — The handle on a table column's inline-end edge, in the first row (role="separator"): drag it to set the column's width. The same widths are set from the column grip's menu (Width) for keyboard users.

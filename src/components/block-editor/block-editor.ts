@@ -55,7 +55,7 @@ import { inputClass } from "../input/input";
 import { isApplePlatform, shortcutHtml } from "../shortcut/shortcut";
 import { blockEditorEditTable, MAX_COLUMN, MAX_COLUMNS, MAX_ROWS, MIN_COLUMN, tableGrid, type BlockEditorTableEdit } from "./block-editor-table";
 
-export * from "./block-editor-table";
+export { blockEditorEditTable, tableGrid, type BlockEditorTableEdit } from "./block-editor-table";
 
 // ---- Types and the class contract ----
 
@@ -2472,14 +2472,18 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const rows = grid.length;
     const cols = grid[0].length;
     const first = b.header === false ? 0 : 1;
+    const headerRow = b.header !== false && row === 0;
+    const canInsertRow = rows < MAX_ROWS;
+    const canInsertCol = cols < MAX_COLUMNS;
     const left = iconSvg(ArrowLeft01Icon, { directional: true });
     const right = iconSvg(ArrowRight01Icon, { directional: true });
     const width = b.widths?.[col] || cellEl(id, 0, col)?.closest("td, th")?.getBoundingClientRect().width || 160;
 
     const rowMenu: MenuItem[] = [
-      { key: "row-insert-above", label: "Insert above", icon: svg(ArrowUp01Icon), run: () => insertRow(id, row, col) },
-      { key: "row-insert-below", label: "Insert below", icon: svg(ArrowDown01Icon), run: () => insertRow(id, row + 1, col) },
-      { key: "row-duplicate", label: "Duplicate", meta: "Mod+D", icon: svg(CopyPlusIcon), run: () => duplicateRow(id, row, col) },
+      // Inserting at 0 would make the new row the header. Omit it; insert-row itself is unchanged.
+      ...(!headerRow && canInsertRow ? [{ key: "row-insert-above", label: "Insert above", icon: svg(ArrowUp01Icon), run: () => insertRow(id, row, col) }] : []),
+      ...(canInsertRow ? [{ key: "row-insert-below", label: "Insert below", icon: svg(ArrowDown01Icon), run: () => insertRow(id, row + 1, col) }] : []),
+      ...(canInsertRow ? [{ key: "row-duplicate", label: "Duplicate", meta: "Mod+D", icon: svg(CopyPlusIcon), run: () => duplicateRow(id, row, col) }] : []),
       ...(row > first ? [{ key: "row-move-up", label: "Move up", icon: svg(ArrowUp01Icon), run: () => moveRow(id, row, -1) }] : []),
       ...(row >= first && row < rows - 1 ? [{ key: "row-move-down", label: "Move down", icon: svg(ArrowDown01Icon), run: () => moveRow(id, row, 1) }] : []),
       { key: "row-clear", label: "Clear", run: () => clearCells(id, "row", row, col) },
@@ -2487,12 +2491,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     ];
 
     const columnMenu: MenuItem[] = [
-      { key: "column-insert-before", label: "Insert before", icon: left, run: () => insertColumn(id, col, row) },
-      { key: "column-insert-after", label: "Insert after", icon: right, run: () => insertColumn(id, col + 1, row) },
-      { key: "column-duplicate", label: "Duplicate", icon: svg(CopyPlusIcon), run: () => duplicateColumn(id, col, row) },
+      ...(canInsertCol ? [{ key: "column-insert-before", label: "Insert before", icon: left, run: () => insertColumn(id, col, row) }] : []),
+      ...(canInsertCol ? [{ key: "column-insert-after", label: "Insert after", icon: right, run: () => insertColumn(id, col + 1, row) }] : []),
+      ...(canInsertCol ? [{ key: "column-duplicate", label: "Duplicate", icon: svg(CopyPlusIcon), run: () => duplicateColumn(id, col, row) }] : []),
       ...(col > 0 ? [{ key: "column-move-earlier", label: "Move earlier", icon: left, run: () => moveColumn(id, col, -1) }] : []),
       ...(col < cols - 1 ? [{ key: "column-move-later", label: "Move later", icon: right, run: () => moveColumn(id, col, 1) }] : []),
-      { key: "column-sort", label: "Sort", icon: svg(ArrowDown01Icon), sub: "Sort", run: () => undefined },
+      ...(rows - first >= 2 ? [{ key: "column-sort", label: "Sort", icon: svg(ArrowDown01Icon), sub: "Sort", run: () => undefined }] : []),
       { key: "column-align", label: "Align", icon: svg(TextIcon), sub: "Align", run: () => undefined },
       { key: "column-width", label: "Width", icon: svg(ArrowRight01Icon), sub: "Width", run: () => undefined },
       { key: "column-clear", label: "Clear", run: () => clearCells(id, "column", row, col) },
@@ -3906,8 +3910,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     } else if (e.key === "Escape" || e.key === "Tab") {
       e.preventDefault();
       e.stopPropagation();
+      // A cell menu has no row or column selection, so focus goes back to that cell. Row and column menus still leave the selection and focus the root.
+      const cell = menu.mode === "actions" && menu.list === "cell" && menu.at ? { id: menu.ids[0], at: menu.at } : null;
       closeMenu();
-      root.focus({ preventScroll: true });
+      if (cell) focusCell(cell.id, cell.at[0], cell.at[1]);
+      else root.focus({ preventScroll: true });
     }
   }
 
@@ -4296,7 +4303,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
   }
 
-  /** Point the drop line at the row or column whose centre is nearest the pointer along the drag axis, and record that index in `to`. */
+  /** Point the drop line at the gap nearest the pointer. `to` is the index the row or column occupies after the move (the splice removes `from` first). A header row is never a landing index. Hide the line when that index is `from`. */
   function updateTableDrag(e: PointerEvent): void {
     if (!tableDrag) return;
     const wrap = tableDrag.grip.closest<HTMLElement>(`.${C.tableWrap}`);
@@ -4308,49 +4315,45 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const dir = getComputedStyle(wrap).direction;
     const tableRect = el.querySelector<HTMLElement>(`.${C.table}`)?.getBoundingClientRect();
     if (!tableRect) return;
+    const from = tableDrag.from;
+    const hide = () => {
+      tableDrag!.to = from;
+      drop.hidden = true;
+    };
 
     if (tableDrag.axis === "row") {
       const rows = Array.from(el.querySelectorAll<HTMLElement>("tr"));
       const first = b.header !== false ? 1 : 0;
-      let to = first;
-      let best = Infinity;
-      for (let r = first; r < rows.length; r++) {
-        const rect = rows[r].getBoundingClientRect();
-        const centre = rect.top + rect.height / 2;
-        const d = Math.abs(e.clientY - centre);
-        if (d < best) { best = d; to = r; }
-      }
+      if (rows.length <= first) return hide();
+      const gaps = rows.slice(first).map((row, i) => ({ index: first + i, at: row.getBoundingClientRect().top }));
+      gaps.push({ index: rows.length, at: rows[rows.length - 1].getBoundingClientRect().bottom });
+      let gap = gaps[0];
+      for (const g of gaps) if (Math.abs(e.clientY - g.at) < Math.abs(e.clientY - gap.at)) gap = g;
+      const to = gap.index > from ? gap.index - 1 : gap.index;
       tableDrag.to = to;
-      const rect = rows[to].getBoundingClientRect();
+      if (to === from || to < first) return hide();
       drop.style.insetInlineStart = `${(dir === "rtl" ? wrapRect.right - tableRect.right : tableRect.left - wrapRect.left)}px`;
       drop.style.inlineSize = `${tableRect.width}px`;
       drop.style.blockSize = "2px";
-      drop.style.insetBlockStart = `${(e.clientY < rect.top + rect.height / 2 ? rect.top : rect.bottom) - wrapRect.top}px`;
+      drop.style.insetBlockStart = `${gap.at - wrapRect.top}px`;
       drop.hidden = false;
     } else {
-      const grid = gridOf(b);
       const heads = Array.from(el.querySelectorAll<HTMLElement>(`.${C.cell}[data-row="0"]`));
+      if (!heads.length) return hide();
       const inlineOf = (x: number) => (dir === "rtl" ? wrapRect.right - x : x - wrapRect.left);
       const pointer = inlineOf(e.clientX);
-      let to = 0;
-      let best = Infinity;
-      for (let c = 0; c < grid[0].length; c++) {
-        const rect = heads[c]?.getBoundingClientRect();
-        if (!rect) continue;
-        const start = inlineOf(dir === "rtl" ? rect.right : rect.left);
-        const end = inlineOf(dir === "rtl" ? rect.left : rect.right);
-        const centre = (start + end) / 2;
-        const d = Math.abs(pointer - centre);
-        if (d < best) { best = d; to = c; }
-      }
+      const edge = (rect: DOMRect, start: boolean) => inlineOf(dir === "rtl" ? (start ? rect.right : rect.left) : start ? rect.left : rect.right);
+      const gaps = heads.map((head, c) => ({ index: c, at: edge(head.getBoundingClientRect(), true) }));
+      gaps.push({ index: heads.length, at: edge(heads[heads.length - 1].getBoundingClientRect(), false) });
+      let gap = gaps[0];
+      for (const g of gaps) if (Math.abs(pointer - g.at) < Math.abs(pointer - gap.at)) gap = g;
+      const to = gap.index > from ? gap.index - 1 : gap.index;
       tableDrag.to = to;
-      const rect = heads[to].getBoundingClientRect();
-      const start = dir === "rtl" ? wrapRect.right - rect.right : rect.left - wrapRect.left;
-      const end = dir === "rtl" ? wrapRect.right - rect.left : rect.right - wrapRect.left;
+      if (to === from) return hide();
       drop.style.insetBlockStart = `${tableRect.top - wrapRect.top}px`;
       drop.style.blockSize = `${tableRect.height}px`;
       drop.style.inlineSize = "2px";
-      drop.style.insetInlineStart = `${pointer < (start + end) / 2 ? start : end}px`;
+      drop.style.insetInlineStart = `${gap.at}px`;
       drop.hidden = false;
     }
   }
@@ -4381,6 +4384,31 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     resizing.frame.style.inlineSize = `${resizing.width}%`;
   }
 
+  /** End a grip drag. A pointerup commits the move; a pointercancel only drops the line and the dragging mark. */
+  function finishTableDrag(commit: boolean): void {
+    if (!tableDrag) return;
+    const drag = tableDrag;
+    setTableCellsDragging(false);
+    tableDrag = null;
+    try { drag.grip.releasePointerCapture?.(drag.pointerId); } catch { /* already released */ }
+    drag.grip.closest<HTMLElement>(`.${C.tableWrap}`)?.querySelector<HTMLElement>(`.${C.tableDrop}`)?.setAttribute("hidden", "");
+    if (!commit || !drag.moved || drag.to === drag.from) return;
+    gripDragAt = Date.now();
+    editTable(
+      drag.id,
+      drag.axis === "row" ? { op: "move-row", from: drag.from, to: drag.to } : { op: "move-column", from: drag.from, to: drag.to },
+      drag.axis === "row" ? [drag.to, lastCell?.col ?? 0] : [lastCell?.row ?? 0, drag.to],
+    );
+  }
+
+  function onPointerCancel(): void {
+    if (tableDrag) {
+      finishTableDrag(false);
+      return;
+    }
+    onPointerUp();
+  }
+
   function onPointerUp(): void {
     if (sizing) {
       const { id, col, width, widths, table } = sizing;
@@ -4400,22 +4428,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return;
     }
     if (tableDrag) {
-      const drag = tableDrag;
-      setTableCellsDragging(false);
-      tableDrag = null;
-      try { drag.grip.releasePointerCapture?.(drag.pointerId); } catch { /* already released */ }
-      drag.grip.closest<HTMLElement>(`.${C.tableWrap}`)?.querySelector<HTMLElement>(`.${C.tableDrop}`)?.setAttribute("hidden", "");
-      if (drag.moved) {
-        gripDragAt = Date.now();
-        const b = blocks[indexOf(drag.id)];
-        if (b && drag.to !== drag.from) {
-          editTable(
-            drag.id,
-            drag.axis === "row" ? { op: "move-row", from: drag.from, to: drag.to } : { op: "move-column", from: drag.from, to: drag.to },
-            drag.axis === "row" ? [drag.to, lastCell?.col ?? 0] : [lastCell?.row ?? 0, drag.to],
-          );
-        }
-      }
+      finishTableDrag(true);
       return;
     }
     if (!pressing) return;
@@ -4804,7 +4817,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     [document, "selectionchange", onDocumentSelection],
     [window, "pointermove", onPointerMove as EventListener],
     [window, "pointerup", onPointerUp],
-    [window, "pointercancel", onPointerUp],
+    [window, "pointercancel", onPointerCancel],
   ];
   for (const [target, type, fn, o] of listeners) target.addEventListener(type, fn, o);
   fileInput.addEventListener("change", onChange);

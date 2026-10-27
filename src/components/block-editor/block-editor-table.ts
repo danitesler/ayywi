@@ -114,8 +114,8 @@ export function blockEditorEditTable(block: BlockEditorBlock, edit: BlockEditorT
       if (edit.column < 0 || edit.column >= columns) return block;
       if (!edit.width) widths.fill(0);
       else {
-        // The first width edit keeps every column's current px, so only this one moves.
-        if (!widths.some(Boolean)) widths = edit.measured?.length ? edit.measured.slice() : rows[0].map(() => 160);
+        // The first width edit keeps every column's current px, so only this one moves. Clamp each measured width, not only the one being sized.
+        if (!widths.some(Boolean)) widths = edit.measured?.length ? edit.measured.map(columnWidth) : rows[0].map(() => 160);
         widths[edit.column] = columnWidth(edit.width);
       }
       break;
@@ -157,12 +157,19 @@ export function blockEditorEditTable(block: BlockEditorBlock, edit: BlockEditorT
     }
   }
 
-  const next: BlockEditorBlock = { ...block, ...extra, rows };
   const nextWidths = Array.from({ length: rows[0].length }, (_, c) => widths[c] ?? 0);
   const nextAlign = Array.from({ length: rows[0].length }, (_, c) => align[c] ?? "start");
-  if (nextWidths.some(Boolean)) next.widths = nextWidths;
+  const widthsOut = nextWidths.some(Boolean) ? nextWidths : undefined;
+  const alignOut = nextAlign.some((a) => a !== "start") ? nextAlign : undefined;
+  const sameRows = !!block.rows && block.rows.length === rows.length && block.rows.every((row, r) => row.length === rows[r].length && row.every((cell, c) => cell === rows[r][c]));
+  const sameList = <T>(a: T[] | undefined, b: T[] | undefined) => a === b || (!!a && !!b && a.length === b.length && a.every((v, i) => v === b[i]));
+  const sameHeader = (extra.header === undefined || extra.header === block.header) && (extra.headerColumn === undefined || extra.headerColumn === block.headerColumn);
+  if (sameRows && sameList(block.widths, widthsOut) && sameList(block.align, alignOut) && sameHeader) return block;
+
+  const next: BlockEditorBlock = { ...block, ...extra, rows };
+  if (widthsOut) next.widths = widthsOut;
   else delete next.widths;
-  if (nextAlign.some((a) => a !== "start")) next.align = nextAlign;
+  if (alignOut) next.align = alignOut;
   else delete next.align;
   return next;
 }
