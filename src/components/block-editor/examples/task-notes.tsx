@@ -6,6 +6,20 @@ const NOTES: BlockEditorBlock[] = [
   { id: "n2", type: "bullet", html: "Email them <strong>30 days</strong> before" },
   { id: "n3", type: "bullet", html: "Link the <a href=\"https://example.com/pricing\">new pricing page</a>" },
   { id: "n4", type: "todo", html: "Draft the email" },
+  { id: "n5", type: "toggle", html: "What customers will ask", open: false },
+  { id: "n6", type: "text", indent: 1, html: "<strong>Will my price change?</strong> Not until your next renewal." },
+  { id: "n7", type: "text", indent: 1, html: "<strong>Can I switch early?</strong> Yes, from Settings → Billing." },
+  {
+    id: "n8",
+    type: "table",
+    rows: [
+      ["Plan", "Old price", "New price"],
+      ["Starter", "$9", "$12"],
+      ["Team", "$24", "$29"],
+    ],
+    align: ["start", "end", "end"],
+    headerColumn: true,
+  },
 ];
 
 export default function Example() {

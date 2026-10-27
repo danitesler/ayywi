@@ -1,8 +1,9 @@
 /* Block editor: a document made of blocks, edited in place like Notion. Quiet by design: no borders or boxes around
    the text, the gutter (+ and the drag handle) only shows next to the block under the pointer, and a selection is a
    soft tint. State lives in attributes the script sets:
-     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, code, divider, image, embed, file)
-     [data-indent="1…4"]    nesting level of a list item or line
+     [data-type]            what a block is (text, heading-1…3, bullet, number, todo, quote, callout, toggle, table, code, divider, image, embed, file)
+     [data-indent="1…4"]    nesting level of a list item or line (what a toggle shows or hides)
+     [data-open]            a toggle that shows the blocks nested under it
      [data-checked]         a to-do that's done
      [data-selected]        a block in a block selection (Esc, Shift+click, the handle)
      [data-dragging]        a block being carried by its handle (the drop line is drag-drop's [data-drop-edge])
@@ -56,6 +57,11 @@
 .ayy-block-editor__block[data-indent="2"] { --_depth: 2; }
 .ayy-block-editor__block[data-indent="3"] { --_depth: 3; }
 .ayy-block-editor__block[data-indent="4"] { --_depth: 4; }
+
+/* What a closed toggle hides stays in the value; the script marks it hidden. */
+.ayy-block-editor__block[hidden] {
+  display: none;
+}
 
 /* Headings get air above them and a little below, so a heading reads as the start of a section, not one more line. */
 .ayy-block-editor__block[data-type^="heading"] {
@@ -295,6 +301,42 @@
   text-align: end;
 }
 
+/* A toggle's arrow turns down when it's open. */
+.ayy-block-editor__toggle {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.25em;
+  block-size: var(--_lh);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background: none;
+  color: var(--ayy-color-text-soft);
+  cursor: pointer;
+  transition: background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__toggle > svg {
+  inline-size: 1em;
+  block-size: 1em;
+  transition: rotate var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__toggle:hover {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-block-editor__toggle:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+.ayy-block-editor__block[data-open] > .ayy-block-editor__toggle > svg {
+  rotate: 90deg;
+}
+
 .ayy-block-editor__block > .ayy-block-editor__check {
   margin-block-start: calc((var(--_lh) - var(--ayy-size-check)) / 2 + 0.1em);
   margin-inline-end: var(--ayy-space-1);
@@ -331,6 +373,197 @@
 .ayy-block-editor__icon > svg {
   inline-size: 1.25em;
   block-size: 1.25em;
+}
+
+/* A table: the cells are plain-text lines in a real <table>, scrolling sideways in a narrow column. The + buttons at its
+   end and below it add a column or a row. */
+.ayy-block-editor__table-wrap {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
+}
+
+.ayy-block-editor__table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-md);
+}
+
+.ayy-block-editor__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375em;
+}
+
+.ayy-block-editor__table th,
+.ayy-block-editor__table td {
+  min-inline-size: 7rem;
+  padding: 0;
+  border: 1px solid var(--ayy-color-line);
+  text-align: start;
+  vertical-align: top;
+}
+
+.ayy-block-editor__table tr:first-child > :is(th, td) {
+  border-block-start: 0;
+}
+
+.ayy-block-editor__table tr > :first-child {
+  border-inline-start: 0;
+}
+
+.ayy-block-editor__table tr > :last-child {
+  border-inline-end: 0;
+}
+
+.ayy-block-editor__table tr:last-child > :is(th, td) {
+  border-block-end: 0;
+}
+
+.ayy-block-editor__table th {
+  background-color: var(--ayy-color-wash);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.ayy-block-editor__table th,
+.ayy-block-editor__table td {
+  position: relative;
+}
+
+/* Dragging a column's edge sets its width: the table then keeps the widths it was given, and scrolls when they add up to more than the column. */
+.ayy-block-editor__table[data-sized] {
+  min-inline-size: 100%;
+  table-layout: fixed;
+}
+
+.ayy-block-editor__table[data-sized] :is(th, td) {
+  min-inline-size: 0;
+}
+
+.ayy-block-editor__cell[data-align="center"] {
+  text-align: center;
+}
+
+.ayy-block-editor__cell[data-align="end"] {
+  text-align: end;
+}
+
+.ayy-block-editor__col-resize {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: -4px;
+  z-index: 1;
+  inline-size: 8px;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.ayy-block-editor__col-resize::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 3px;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-primary);
+  opacity: 0;
+  transition: opacity var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__col-resize[data-active]::after {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__col-resize:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .ayy-block-editor__col-resize {
+    inline-size: 16px;
+    inset-inline-end: -8px;
+  }
+  .ayy-block-editor__col-resize::after {
+    inset-inline: 7px;
+    opacity: 0.4;
+  }
+}
+
+.ayy-block-editor__cell {
+  min-block-size: 1.5em;
+  padding: var(--ayy-space-1-5) var(--ayy-space-2);
+  overflow-wrap: anywhere;
+  line-height: var(--ayy-leading-normal);
+  outline: none;
+}
+
+.ayy-block-editor__cell:focus {
+  background-color: color-mix(in srgb, var(--ayy-color-primary) 8%, transparent);
+  box-shadow: inset 0 0 0 2px var(--ayy-color-ring);
+}
+
+.ayy-block-editor__table-add {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text-soft);
+  cursor: pointer;
+  opacity: 0;
+  user-select: none;
+  transition:
+    opacity var(--ayy-duration-fast) ease,
+    background-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-block-editor__table-add[data-axis="column"] {
+  inline-size: 1.25rem;
+}
+
+.ayy-block-editor__table-add[data-axis="row"] {
+  grid-column: 1;
+  block-size: 1.25rem;
+}
+
+.ayy-block-editor__table-add > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.ayy-block-editor__table-add:hover,
+.ayy-block-editor__table-add:focus-visible {
+  background-color: var(--ayy-color-wash-hover);
+  color: var(--ayy-color-text);
+}
+
+.ayy-block-editor__table-add:focus-visible {
+  outline: 2px solid var(--ayy-color-ring);
+  outline-offset: 0;
+}
+
+@media (hover: hover) {
+  .ayy-block-editor__block:hover .ayy-block-editor__table-add,
+  .ayy-block-editor__block:focus-within .ayy-block-editor__table-add {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .ayy-block-editor__table-add {
+    opacity: 1;
+  }
+  .ayy-block-editor__table-add[data-axis="column"] {
+    inline-size: 1.75rem;
+  }
+  .ayy-block-editor__table-add[data-axis="row"] {
+    block-size: 1.75rem;
+  }
 }
 
 .ayy-block-editor__block[data-type="code"] > .ayy-block-editor__text {
@@ -920,5 +1153,15 @@ ayy-block-editor {
   }
   .ayy-block-editor__resize::after {
     background-color: CanvasText;
+  }
+  .ayy-block-editor__cell:focus {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .ayy-block-editor__table th {
+    border-block-end: 2px solid CanvasText;
+  }
+  .ayy-block-editor__col-resize::after {
+    background-color: Highlight;
   }
 }

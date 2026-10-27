@@ -2181,6 +2181,182 @@ for (const renderer of ["react", "html"] as const) {
       await expect(language).toHaveText("Python");
       await expect(language).toBeFocused();
     });
+
+    test("block editor toggles hide and show what's nested under them, and Enter and >> make them", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const toggle = editor.locator('[data-type="toggle"]');
+      const arrow = toggle.locator(":scope > .ayy-block-editor__toggle");
+      const text = (n: number) => blocks.nth(n).locator(":scope > .ayy-block-editor__text");
+      const shown = editor.locator(":scope > .ayy-block-editor__block:not([hidden])");
+
+      // Closed: the two blocks under it are in the document but not shown.
+      await expect(blocks).toHaveCount(8);
+      await expect(shown).toHaveCount(6);
+      await expect(arrow).toHaveAttribute("aria-expanded", "false");
+
+      await arrow.click();
+      await expect(arrow).toHaveAttribute("aria-expanded", "true");
+      await expect(toggle).toHaveAttribute("data-open", "");
+      await expect(shown).toHaveCount(8);
+      await arrow.click();
+      await expect(shown).toHaveCount(6);
+
+      // Mod+Enter in the line opens it; the arrow keys skip what a closed toggle hides.
+      await text(4).evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.press("Control+Enter");
+      await expect(shown).toHaveCount(8);
+      await page.keyboard.press("Control+Enter");
+      await expect(shown).toHaveCount(6);
+      // ArrowDown skips the two blocks the closed toggle hides, into the table; ArrowUp comes back to the toggle.
+      await page.keyboard.press("ArrowDown");
+      await expect(editor.locator('[data-type="table"] .ayy-block-editor__cell').first()).toBeFocused();
+      await page.keyboard.press("ArrowUp");
+      await expect(text(4)).toBeFocused();
+
+      // Enter at the end of an open toggle starts its first nested line.
+      await page.keyboard.press("Control+Enter");
+      await page.keyboard.press("Enter");
+      await expect(blocks).toHaveCount(9);
+      await expect(blocks.nth(5)).toHaveAttribute("data-indent", "1");
+      await expect(text(5)).toBeFocused();
+
+      // Closing the toggle while the caret is inside it moves the caret to the toggle.
+      await arrow.click();
+      await expect(shown).toHaveCount(6);
+      await expect(text(4)).toBeFocused();
+
+      // ">> " at the start of an empty line makes a toggle (open, so it can take lines right away).
+      await text(0).evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.press("Enter");
+      await page.keyboard.type(">> Notes");
+      await expect(blocks.nth(1)).toHaveAttribute("data-type", "toggle");
+      await expect(blocks.nth(1)).toHaveAttribute("data-open", "");
+    });
+
+    test("block editor tables move between cells with Tab, Enter and the arrows, grow by row and column, and take a pasted spreadsheet", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const table = editor.locator('[data-type="table"]');
+      const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
+      const menu = editor.locator(".ayy-block-editor__menu");
+
+      // The header is a <thead> of <th>, the rest a <tbody>.
+      await expect(table.locator("thead th")).toHaveCount(3);
+      await expect(table.locator("tbody tr")).toHaveCount(2);
+      await expect(cell(0, 0)).toHaveText("Plan");
+
+      // Tab goes along the row, then to the next one; Enter goes down; the last Tab adds a row.
+      await cell(0, 0).click();
+      await page.keyboard.press("Tab");
+      await expect(cell(0, 1)).toBeFocused();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Tab");
+      await expect(cell(1, 0)).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect(cell(2, 0)).toBeFocused();
+      await cell(2, 2).click();
+      await page.keyboard.press("Tab");
+      await expect(table.locator("tbody tr")).toHaveCount(3);
+      await expect(cell(3, 0)).toBeFocused();
+      await page.keyboard.type("Business");
+      await expect(cell(3, 0)).toHaveText("Business");
+
+      // The + beside and below the table add a column and a row.
+      await table.locator('.ayy-block-editor__table-add[data-axis="column"]').click();
+      await expect(table.locator("thead th")).toHaveCount(4);
+      await expect(cell(0, 3)).toBeFocused();
+      await table.locator('.ayy-block-editor__table-add[data-axis="row"]').click();
+      await expect(table.locator("tbody tr")).toHaveCount(4);
+
+      // A spreadsheet pasted into a cell fills the cells from there on.
+      await cell(1, 1).click();
+      await cell(1, 1).evaluate((el) => {
+        const data = new DataTransfer();
+        data.setData("text/plain", "$10\t$13\n$25\t$30");
+        el.dispatchEvent(new ClipboardEvent("paste", { clipboardData: data, bubbles: true, cancelable: true }));
+      });
+      await expect(cell(1, 1)).toHaveText("$10");
+      await expect(cell(2, 2)).toHaveText("$30");
+
+      // Block actions are grouped (Insert, Duplicate, Move, Align, Width, Clear, Delete) and work on the row and column the caret was in.
+      const option = (name: RegExp) => menu.getByRole("option", { name });
+      await cell(1, 1).click();
+      await page.keyboard.press("Control+/");
+      await expect(menu).toBeVisible();
+      await expect(option(/^Delete row/)).toHaveCount(0);
+      await option(/^Delete\b/).first().click();
+      await option(/^Row/).click();
+      await expect(table.locator("tbody tr")).toHaveCount(3);
+      await cell(1, 1).click();
+      await page.keyboard.press("Control+/");
+      await option(/^Delete\b/).first().click();
+      await option(/^Column/).click();
+      await expect(table.locator("thead th")).toHaveCount(3);
+
+      // Back and ArrowLeft leave a group; Align and Duplicate change the column and the rows.
+      await cell(1, 1).click();
+      await page.keyboard.press("Control+/");
+      await option(/^Align/).click();
+      await option(/^Back/).click();
+      await expect(option(/^Align/)).toBeVisible();
+      await option(/^Align/).click();
+      await option(/^Centered/).click();
+      await expect(cell(1, 1)).toHaveAttribute("data-align", "center");
+      await cell(1, 1).click();
+      await page.keyboard.press("Control+/");
+      await option(/^Duplicate\b/).first().click();
+      await option(/^Row/).click();
+      await expect(table.locator("tbody tr")).toHaveCount(4);
+
+      // Mod+Shift+arrows move the row and the column.
+      const before = await cell(1, 0).textContent();
+      await cell(1, 0).click();
+      await page.keyboard.press("Control+Shift+ArrowDown");
+      await expect(cell(2, 0)).toHaveText(before ?? "");
+      await page.keyboard.press("Control+Shift+ArrowRight");
+      await expect(cell(2, 1)).toHaveText(before ?? "");
+
+      // Dragging a column's edge sets its width; Width > Even out clears them.
+      const grip = table.locator(".ayy-block-editor__col-resize").first();
+      const box = (await grip.boundingBox())!;
+      const start = (await cell(0, 0).boundingBox())!.width;
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box.x + box.width / 2 + 60, box.y + box.height / 2, { steps: 4 });
+      await page.mouse.up();
+      await expect(table.locator("table")).toHaveAttribute("data-sized", "");
+      expect((await cell(0, 0).boundingBox())!.width).toBeGreaterThan(start + 40);
+      await cell(0, 0).click();
+      await page.keyboard.press("Control+/");
+      await option(/^Width/).click();
+      await option(/^Even out/).click();
+      await expect(table.locator("table")).not.toHaveAttribute("data-sized", "");
+
+      // The header column (on in this example) makes the first cell of each row a <th scope="row">.
+      await expect(table.locator('tbody th[scope="row"]')).toHaveCount(4);
+      await cell(1, 1).click();
+      await page.keyboard.press("Control+/");
+      await option(/^Header column/).click();
+      await expect(table.locator('tbody th[scope="row"]')).toHaveCount(0);
+    });
   });
 }
 

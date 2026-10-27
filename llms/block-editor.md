@@ -1,16 +1,23 @@
 # Block editor
 
-Category: Forms. A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, quotes, callouts, code, dividers, images, embeds and files. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place. Also called: block-editor, rich-text-editor, rich-text, wysiwyg, notion-editor, document-editor, notes-editor, page-editor.
+Category: Forms. A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, toggles that hide the blocks nested under them, tables of plain-text cells (resizable, aligned columns, header row and column), quotes, callouts, code, dividers, images, embeds and files. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place. Also called: block-editor, rich-text-editor, rich-text, wysiwyg, notion-editor, document-editor, notes-editor, page-editor.
 
 **Classes**
 - `.ayy-block-editor` — Root. The editor renders its blocks inside it, then the floating menu, formatting bar and caret anchor. Leave room at its inline start for the gutter (about 3.25rem of padding in its container), or use --inset.
 - `.ayy-block-editor--inset` — Keeps the gutter inside the editor's own box, for containers with no padding to hang it in.
-- `.ayy-block-editor__block` — One block. data-type says what it is; data-indent (1–4) nests it, data-checked marks a done to-do, data-selected a block in a block selection, data-dragging one being carried. In plain HTML you can write just <div class="ayy-block-editor__block" data-type="heading-1">Title</div>; the editor builds the rest.
+- `.ayy-block-editor__block` — One block. data-type says what it is; data-indent (1–4) nests it, data-checked marks a done to-do, data-open a toggle showing the blocks nested under it (a closed one hides them), data-selected a block in a block selection, data-dragging one being carried. In plain HTML you can write just <div class="ayy-block-editor__block" data-type="heading-1">Title</div>; the editor builds the rest.
 - `.ayy-block-editor__gutter` — The + and the drag handle at the block's inline start; shown while the pointer is over the block (on touch screens, next to the line being written).
 - `.ayy-block-editor__add` — The + button: a new line below with / typed, so the block menu opens. Alt-click adds it above.
 - `.ayy-block-editor__handle` — The drag handle (.ayy-drag-handle): drag to move the block, or every selected block; click for block actions (duplicate, move, delete, turn into).
 - `.ayy-block-editor__text` — The editable line of a text block (contenteditable, role="textbox"). Inline content: strong, em, u, s, code, links and mention chips. Shows data-placeholder while empty.
 - `.ayy-block-editor__marker` — A list's bullet or number, drawn by the editor (1. a. i. by nesting level).
+- `.ayy-block-editor__toggle` — A toggle's arrow button: points along the reading direction, turns down while the toggle is open (aria-expanded). Blocks indented under the toggle (data-indent greater than its own) are hidden while it is closed.
+- `.ayy-block-editor__table-wrap` — A table block's box: the scrolling table, the + at its inline end (add a column) and the + under it (add a row).
+- `.ayy-block-editor__table-scroll` — Scrolls the table sideways in a narrow column, with a hairline around it.
+- `.ayy-block-editor__table` — The <table>. A header row is a <thead> of <th scope="col">; the rest is a <tbody>. In plain HTML a block with data-type="table" can hold a <table> and the editor reads its rows.
+- `.ayy-block-editor__cell` — The editable plain-text line inside every cell (role="textbox", data-row, data-col). Tab and Shift+Tab move between cells, Enter goes down a row.
+- `.ayy-block-editor__col-resize` — The handle on a table column's inline-end edge, in the first row (role="separator"): drag it to set the column's width. The same widths are set from the block actions menu (Width) for keyboard users.
+- `.ayy-block-editor__table-add` — A table's + button (data-axis="column" or "row"): shown while the pointer or focus is in the block, always on touch screens.
 - `.ayy-block-editor__check` — A to-do's checkbox (.ayy-checkbox).
 - `.ayy-block-editor__icon` — A callout's icon.
 - `.ayy-block-editor__code-bar` — A code block's header, over the top of the code: the language at the start, Copy at the end (shown on hover).
@@ -50,6 +57,8 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `error` — doesn't apply: No error look on the editor; a link that isn't a valid URL marks the link field (aria-invalid) instead. Say why a save failed in an Alert or a toast.
 - `loading` (`aria-busy="true" on .ayy-block-editor__empty while a dropped, pasted or picked file uploads`) — The media panel dims to 60% and stops taking the pointer until the file's URL arrives.
 - `checked` (`data-checked on a to-do block (its checkbox, or Mod+Enter in the line)`) — The checkbox is checked; the text turns --ayy-color-muted with a line through it.
+- `open` (`data-open on a toggle block (its arrow, or Mod+Enter in the line)`) — The arrow turns down and the blocks nested under the toggle show; closed, they are hidden (hidden attribute) but stay in the value.
+- `resizing` (`data-active on .ayy-block-editor__col-resize while a table column is dragged`) — A 2px --ayy-color-primary line shows on the column's edge; the columns follow the pointer live.
 - `dragging` (`data-dragging on the blocks being carried by the handle`) — They dim to 40%; a raised copy (or a chip saying "3 blocks") follows the pointer and a 2px primary line shows where they'll land.
 - `empty` (`data-empty on the root: the document is one empty line`) — The placeholder shows in that line, focused or not.
 - `typing` (`data-typing on the root: set by typing, cleared when the pointer moves or presses`) — The gutters and code blocks' Copy fade out, so nothing moves beside the words being written.
@@ -71,7 +80,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 
 **Accessibility**
 - Name the editor (aria-label in React, label on <ayy-block-editor>): it's a role="group" of lines, each a role="textbox" named by its type (Text, Heading 1, To-do list).
-- Everything works from the keyboard: Enter, Backspace and the arrows move through blocks; Tab and Shift+Tab nest; Esc selects the block (then ↑/↓, Shift+↑/↓, Delete, Mod+D, Mod+Shift+↑/↓, Enter to edit again); Mod+/ opens block actions, Mod+Alt+0–8 turns a block into another type, Mod+B/I/U, Mod+Shift+S, Mod+E and Mod+K format. Tab nests, so the way out of the editor is Esc twice, then Tab.
+- Everything works from the keyboard: Enter, Backspace and the arrows move through blocks; Tab and Shift+Tab nest; Mod+Enter opens or closes a toggle, whose arrow is not a tab stop; in a table Tab and Shift+Tab move between cells (Tab in the last one adds a row), Enter goes down a row and adds one after the last, Mod+Enter adds a row below, the arrows leave the table at its first and last row, Mod+Shift+arrows move the row or column, and the block actions menu (Mod+/) groups what works on the row and column the caret was in under Insert, Duplicate, Move, Align, Width, Clear and Delete (→ opens a group, ← or Esc goes back); Esc selects the block (then ↑/↓, Shift+↑/↓, Delete, Mod+D, Mod+Shift+↑/↓, Enter to edit again); Mod+/ opens block actions, Mod+Alt+0–8 turns a block into another type, Mod+B/I/U, Mod+Shift+S, Mod+E and Mod+K format. Tab nests, so the way out of the editor is Esc twice, then Tab.
 - The / and mention menus keep focus in the line: ↑/↓ move through aria-activedescendant, Enter or Tab picks, Esc closes without closing a parent Dialog. The block actions menu takes focus and gives it back.
 - Block selections, moves and failed uploads are read out in a polite live region.
 - Images take their caption as alt text: write one for every picture that carries meaning.
@@ -81,6 +90,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - Store the value (blocks) as it is, or convert it with blockEditorToMarkdown / blockEditorFromMarkdown when the storage is Markdown, and render it elsewhere with blockEditorToHtml.
 - Pass mentions for the people and records your app has (@ for people, # for issues), with a function when the list is long or remote.
 - Pass upload so pasted, dropped and picked files go to your storage instead of the default data: URLs.
+- Keep tables for short, plain facts (a price list, a schedule). Cells are plain text, one line each, up to 100 rows and 12 columns; a spreadsheet pasted into a cell fills the cells from there.
 
 **Don't**
 - Don't use a Block editor for a short reply, a comment or a single field — use Textarea, or Mentions when the text needs @mentions.
@@ -207,6 +217,19 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <div class="ayy-block-editor__block" data-type="bullet"><span class="ayy-block-editor__marker" aria-hidden="true">•</span><div class="ayy-block-editor__text">Email them <strong>30 days</strong> before</div></div>
         <div class="ayy-block-editor__block" data-type="bullet"><span class="ayy-block-editor__marker" aria-hidden="true">•</span><div class="ayy-block-editor__text">Link the <a href="https://example.com/pricing">new pricing page</a></div></div>
         <div class="ayy-block-editor__block" data-type="todo"><input type="checkbox" class="ayy-checkbox ayy-block-editor__check" aria-label="Done"><div class="ayy-block-editor__text">Draft the email</div></div>
+        <div class="ayy-block-editor__block" data-type="toggle"><div class="ayy-block-editor__text">What customers will ask</div></div>
+        <div class="ayy-block-editor__block" data-type="text" data-indent="1"><div class="ayy-block-editor__text"><strong>Will my price change?</strong> Not until your next renewal.</div></div>
+        <div class="ayy-block-editor__block" data-type="text" data-indent="1"><div class="ayy-block-editor__text"><strong>Can I switch early?</strong> Yes, from Settings → Billing.</div></div>
+        <div class="ayy-block-editor__block" data-type="table">
+          <!-- ayywi-lint-disable-next-line -- the editor reads these rows and draws its own table -->
+          <table>
+            <thead><tr><th>Plan</th><th style="text-align: end">Old price</th><th style="text-align: end">New price</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Starter</th><td style="text-align: end">$9</td><td style="text-align: end">$12</td></tr>
+              <tr><th scope="row">Team</th><td style="text-align: end">$24</td><td style="text-align: end">$29</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </ayy-block-editor>
     <div class="ayy-field ayy-field--inline">
@@ -229,6 +252,20 @@ const NOTES: BlockEditorBlock[] = [
   { id: "n2", type: "bullet", html: "Email them <strong>30 days</strong> before" },
   { id: "n3", type: "bullet", html: "Link the <a href=\"https://example.com/pricing\">new pricing page</a>" },
   { id: "n4", type: "todo", html: "Draft the email" },
+  { id: "n5", type: "toggle", html: "What customers will ask", open: false },
+  { id: "n6", type: "text", indent: 1, html: "<strong>Will my price change?</strong> Not until your next renewal." },
+  { id: "n7", type: "text", indent: 1, html: "<strong>Can I switch early?</strong> Yes, from Settings → Billing." },
+  {
+    id: "n8",
+    type: "table",
+    rows: [
+      ["Plan", "Old price", "New price"],
+      ["Starter", "$9", "$12"],
+      ["Team", "$24", "$29"],
+    ],
+    align: ["start", "end", "end"],
+    headerColumn: true,
+  },
 ];
 
 export default function Example() {

@@ -12,6 +12,8 @@
 import { cx } from "../../lib/cx";
 import {
   ArrowDown01Icon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
   ArrowUp01Icon,
   ArrowUpRight01Icon,
   Attachment01Icon,
@@ -22,6 +24,7 @@ import {
   Copy01Icon,
   CopyPlusIcon,
   Delete02Icon,
+  Grid3x3Icon,
   Heading01Icon,
   Heading02Icon,
   Heading03Icon,
@@ -63,6 +66,8 @@ export const blockEditorBlockTypes = [
   "todo",
   "quote",
   "callout",
+  "toggle",
+  "table",
   "code",
   "divider",
   "image",
@@ -70,6 +75,11 @@ export const blockEditorBlockTypes = [
   "file",
 ] as const;
 export type BlockEditorBlockType = (typeof blockEditorBlockTypes)[number];
+
+export type BlockEditorTableAlign = "start" | "center" | "end";
+const TABLE_ALIGNS: readonly BlockEditorTableAlign[] = ["start", "center", "end"];
+const MIN_COLUMN = 48;
+const MAX_COLUMN = 1200;
 
 export interface BlockEditorBlock {
   /** Stable id; the editor makes one when it's missing. */
@@ -81,6 +91,18 @@ export interface BlockEditorBlock {
   indent?: number;
   /** To-do blocks: done or not. */
   checked?: boolean;
+  /** Toggle blocks: showing the blocks nested under it (otherwise they're hidden). */
+  open?: boolean;
+  /** Table blocks: the cells, row by row, as plain text. Every row has the same number of cells. */
+  rows?: string[][];
+  /** Table blocks: the first row is a header (default true). */
+  header?: boolean;
+  /** Table blocks: the first column is a header too (its cells name their row). */
+  headerColumn?: boolean;
+  /** Table blocks: each column's width in px; 0 leaves it to share what's left. Missing: every column the same. */
+  widths?: number[];
+  /** Table blocks: how each column's text lines up. Missing: all at the start. */
+  align?: BlockEditorTableAlign[];
   /** Image, embed and file blocks: the URL. Empty until one is added. */
   src?: string;
   /** Image and embed blocks: plain-text caption (also the image's alt text). */
@@ -193,6 +215,13 @@ const C = {
   optionIcon: `${P}__option-icon`,
   optionText: `${P}__option-text`,
   optionHint: `${P}__option-hint`,
+  toggle: `${P}__toggle`,
+  tableWrap: `${P}__table-wrap`,
+  tableScroll: `${P}__table-scroll`,
+  table: `${P}__table`,
+  cell: `${P}__cell`,
+  tableAdd: `${P}__table-add`,
+  colResize: `${P}__col-resize`,
   toolbar: `${P}__toolbar`,
   codeBar: `${P}__code-bar`,
   codeButton: `${P}__code-button`,
@@ -219,7 +248,9 @@ const TYPES: Record<BlockEditorBlockType, TypeInfo> = {
   number: { label: "Numbered list", hint: "A list with numbers", icon: LeftToRightListNumberIcon, keywords: "numbered ordered ol", markdown: "1." },
   todo: { label: "To-do list", hint: "Track tasks with a checkbox", icon: CheckListIcon, keywords: "todo task checkbox check", markdown: "[]" },
   quote: { label: "Quote", hint: "Set a quotation apart", icon: QuoteDownIcon, keywords: "blockquote citation", markdown: ">" },
+  toggle: { label: "Toggle", hint: "Hide or show the blocks under it", icon: ArrowRight01Icon, keywords: "toggle collapsible collapse expand details accordion dropdown", markdown: ">>" },
   callout: { label: "Callout", hint: "Make a note stand out", icon: BulbIcon, keywords: "note tip info warning aside" },
+  table: { label: "Table", hint: "Rows and columns of plain text", icon: Grid3x3Icon, keywords: "table grid rows columns cells spreadsheet" },
   code: { label: "Code", hint: "A monospace snippet", icon: SourceCodeIcon, keywords: "snippet pre program", markdown: "```" },
   divider: { label: "Divider", hint: "Separate sections", icon: SolidLine01Icon, keywords: "line rule separator hr", markdown: "---" },
   image: { label: "Image", hint: "Upload or link a picture", icon: Image01Icon, keywords: "picture photo screenshot img", media: true },
@@ -271,9 +302,11 @@ function codeLanguage(raw: string | null | undefined): string {
   return blockEditorCodeLanguages.some((l) => l.id === id) ? id : "";
 }
 const languageLabel = (id: string | undefined) => blockEditorCodeLanguages.find((l) => l.id === (id ?? ""))?.label ?? "Plain text";
-const INDENTABLE: readonly BlockEditorBlockType[] = ["text", "bullet", "number", "todo"];
+const INDENTABLE: readonly BlockEditorBlockType[] = ["text", "bullet", "number", "todo", "toggle"];
 const MAX_INDENT = 4;
-const isText = (type: BlockEditorBlockType) => type !== "divider" && !TYPES[type].media;
+const MAX_ROWS = 100;
+const MAX_COLUMNS = 12;
+const isText = (type: BlockEditorBlockType) => type !== "divider" && type !== "table" && !TYPES[type].media;
 const isList = (type: BlockEditorBlockType) => LIST_TYPES.includes(type);
 /** A zero-width space keeps the caret outside a mark that was just made at the end of a line; never stored. */
 const ZW = "​";
@@ -287,7 +320,20 @@ export function blockEditorId(): string {
 
 /** A new block of `type` (text by default). */
 export function blockEditorBlock(type: BlockEditorBlockType = "text", fields: Partial<Omit<BlockEditorBlock, "type">> = {}): BlockEditorBlock {
-  return { id: blockEditorId(), type, ...(isText(type) ? { html: "" } : {}), ...(type === "todo" ? { checked: false } : {}), ...fields };
+  return { id: blockEditorId(), type, ...(isText(type) ? { html: "" } : {}), ...(type === "todo" ? { checked: false } : {}), ...(type === "toggle" ? { open: true } : {}), ...(type === "table" ? { rows: tableRows(3, 3), header: true } : {}), ...fields };
+}
+
+/** An empty grid of cells. */
+function tableRows(rows: number, columns: number): string[][] {
+  return Array.from({ length: rows }, () => Array.from({ length: columns }, () => ""));
+}
+
+/** Cells as the table stores them: single-line plain text, every row as wide as the widest, at least one cell. */
+function tableGrid(raw: unknown): string[][] {
+  const grid = (Array.isArray(raw) ? raw : []).slice(0, MAX_ROWS).map((row) => (Array.isArray(row) ? row : []).slice(0, MAX_COLUMNS).map((cell) => String(cell ?? "").replace(/\s+/g, " ").trim()));
+  const width = Math.max(1, ...grid.map((row) => row.length));
+  if (!grid.length) grid.push([]);
+  return grid.map((row) => Array.from({ length: width }, (_, c) => row[c] ?? ""));
 }
 
 // ---- Strings, URLs and embeds (no DOM needed) ----
@@ -455,6 +501,20 @@ export function blockEditorNormalize(value: readonly Partial<BlockEditorBlock>[]
     if (isText(type)) b.html = type === "code" ? escapeHtml(inlineText(raw.html ?? "")) : blockEditorCleanHtml(raw.html ?? "");
     if (INDENTABLE.includes(type) && raw.indent) b.indent = Math.max(0, Math.min(MAX_INDENT, Math.round(raw.indent)));
     if (type === "todo") b.checked = !!raw.checked;
+    if (type === "toggle" && raw.open) b.open = true;
+    if (type === "table") {
+      b.rows = tableGrid(raw.rows);
+      b.header = raw.header !== false;
+      if (raw.headerColumn) b.headerColumn = true;
+      const columns = b.rows[0].length;
+      const widths = Array.from({ length: columns }, (_, c) => {
+        const w = Number(raw.widths?.[c]);
+        return w > 0 ? Math.max(MIN_COLUMN, Math.min(MAX_COLUMN, Math.round(w))) : 0;
+      });
+      if (widths.some(Boolean)) b.widths = widths;
+      const align = Array.from({ length: columns }, (_, c) => (TABLE_ALIGNS.includes(raw.align?.[c] as BlockEditorTableAlign) ? (raw.align![c] as BlockEditorTableAlign) : "start"));
+      if (align.some((a) => a !== "start")) b.align = align;
+    }
     if (type === "code" && raw.language && codeLanguage(raw.language)) b.language = codeLanguage(raw.language);
     if (TYPES[type].media) {
       b.src = safeUrl(raw.src, type === "file" ? "href" : "src") || (type === "file" ? safeUrl(raw.src, "src") : "");
@@ -517,12 +577,45 @@ function markdownInline(text: string): string {
   return s.replace(/\u0000(\d+)\u0000/g, (_, n: string) => codes[Number(n)]);
 }
 
-/** Parse Markdown into blocks: headings, lists (indented by two spaces or a tab), to-dos, quotes, code fences, rules, images and paragraphs. Blank lines are dropped. */
+/** The separator line under a Markdown table's header: | --- | :---: |. */
+const TABLE_RULE = /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/;
+/** The cells of one Markdown table row, with \| unescaped. */
+function markdownCells(line: string): string[] {
+  const cells: string[] = [];
+  let cell = "";
+  for (let k = 0; k < line.length; k++) {
+    if (line[k] === "\\" && line[k + 1] === "|") {
+      cell += "|";
+      k++;
+    } else if (line[k] === "|") {
+      cells.push(cell);
+      cell = "";
+    } else cell += line[k];
+  }
+  cells.push(cell);
+  if (!cells[0].trim()) cells.shift();
+  if (cells.length && !cells[cells.length - 1].trim() && /\|\s*$/.test(line)) cells.pop();
+  return cells.map((c) => c.trim());
+}
+
+/** Parse Markdown into blocks: headings, lists (indented by two spaces or a tab), to-dos, toggles (<details>), quotes, code fences, tables, rules, images and paragraphs. Blank lines are dropped. */
 export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
   const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
   const out: BlockEditorBlock[] = [];
+  /** The <details> being read: what the blocks inside it add to their indent. */
+  let nest = 0;
   for (let i = 0; i < lines.length; i++) {
     const raw = lines[i];
+    let d: RegExpMatchArray | null;
+    if ((d = raw.match(/^\s*<details(\s+open)?>\s*<summary>(.*)<\/summary>\s*$/i))) {
+      out.push(blockEditorBlock("toggle", { html: d[2].trim(), ...(nest ? { indent: Math.min(MAX_INDENT, nest) } : {}), ...(d[1] ? {} : { open: false }) }));
+      nest++;
+      continue;
+    }
+    if (/^\s*<\/details>\s*$/i.test(raw)) {
+      nest = Math.max(0, nest - 1);
+      continue;
+    }
     if (/^\s*```/.test(raw)) {
       const language = codeLanguage(raw.replace(/^\s*```/, "").trim());
       const body: string[] = [];
@@ -532,8 +625,19 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
       continue;
     }
     if (!raw.trim()) continue;
+    if (/^\s*\|/.test(raw) && TABLE_RULE.test(lines[i + 1] ?? "")) {
+      const grid = [markdownCells(raw)];
+      const align = markdownCells(lines[i + 1]).map((c): BlockEditorTableAlign => (c.startsWith(":") && c.endsWith(":") ? "center" : c.endsWith(":") ? "end" : "start"));
+      i += 2;
+      while (i < lines.length && /^\s*\|/.test(lines[i])) grid.push(markdownCells(lines[i++]));
+      i--;
+      // A blank first row is the placeholder a table without a header is written with.
+      const blank = grid[0].every((cell) => !cell);
+      out.push(blockEditorBlock("table", { rows: tableGrid(blank && grid.length > 1 ? grid.slice(1) : grid), header: !blank || grid.length === 1, ...(align.some((a) => a !== "start") ? { align } : {}) }));
+      continue;
+    }
     const lead = raw.match(/^[ \t]*/)?.[0] ?? "";
-    const indent = Math.min(MAX_INDENT, Math.floor(lead.replace(/\t/g, "  ").length / 2));
+    const indent = Math.min(MAX_INDENT, Math.floor(lead.replace(/\t/g, "  ").length / 2) + nest);
     const line = raw.slice(lead.length);
     let m: RegExpMatchArray | null;
     const nested = indent ? { indent } : {};
@@ -555,12 +659,19 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
 export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): string {
   const out: string[] = [];
   const numbers: number[] = [];
+  /** Depths of the toggles still open as <details>: what's inside one is indented relative to it. */
+  const toggles: number[] = [];
   for (const b of value) {
     const depth = b.indent ?? 0;
-    numbers.length = Math.min(numbers.length, depth + 1);
-    if (b.type === "number") numbers[depth] = (numbers[depth] ?? 0) + 1;
-    else numbers[depth] = 0;
-    const pad = isList(b.type) ? "  ".repeat(depth) : "";
+    while (toggles.length && toggles[toggles.length - 1] >= depth) {
+      toggles.pop();
+      out.push("</details>");
+    }
+    const level = depth - toggles.length;
+    numbers.length = Math.min(numbers.length, level + 1);
+    if (b.type === "number") numbers[level] = (numbers[level] ?? 0) + 1;
+    else numbers[level] = 0;
+    const pad = isList(b.type) ? "  ".repeat(level) : "";
     const text = isText(b.type) && b.type !== "code" ? inlineToMarkdown(b.html ?? "").replace(/\n/g, "  \n") : "";
     switch (b.type) {
       case "heading-1":
@@ -572,10 +683,22 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
         out.push(`${pad}- ${text}`);
         break;
       case "number":
-        out.push(`${pad}${numbers[depth]}. ${text}`);
+        out.push(`${pad}${numbers[level]}. ${text}`);
         break;
       case "todo":
         out.push(`${pad}- [${b.checked ? "x" : " "}] ${text}`);
+        break;
+      case "table": {
+        const rows = tableGrid(b.rows);
+        const line = (row: string[]) => `| ${row.map((cell) => cell.replace(/\|/g, "\\|")).join(" | ")} |`;
+        const [first, ...rest] = b.header === false ? [rows[0].map(() => ""), ...rows] : rows;
+        const rule = first.map((_, c) => (b.align?.[c] === "center" ? ":---:" : b.align?.[c] === "end" ? "---:" : "---"));
+        out.push(line(first), `| ${rule.join(" | ")} |`, ...rest.map(line));
+        break;
+      }
+      case "toggle":
+        out.push(`<details${b.open ? " open" : ""}><summary>${escapeText(inlineText(b.html ?? "")).replace(/\n/g, " ")}</summary>`);
+        toggles.push(depth);
         break;
       case "quote":
       case "callout":
@@ -598,13 +721,14 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
         out.push(text);
     }
   }
+  for (const _ of toggles) out.push("</details>");
   return out.join("\n");
 }
 
 /** The blocks as plain text, one line per block: for search, previews and the clipboard. */
 export function blockEditorToText(value: readonly BlockEditorBlock[]): string {
   return value
-    .map((b) => (isText(b.type) ? inlineText(b.html ?? "") : b.type === "file" ? (b.name ?? b.src ?? "") : b.type === "divider" ? "" : (b.caption ?? b.src ?? "")))
+    .map((b) => (isText(b.type) ? inlineText(b.html ?? "") : b.type === "table" ? tableGrid(b.rows).map((row) => row.join("\t")).join("\n") : b.type === "file" ? (b.name ?? b.src ?? "") : b.type === "divider" ? "" : (b.caption ?? b.src ?? "")))
     .filter((line, i, all) => line || (i > 0 && all[i - 1]))
     .join("\n")
     .trim();
@@ -613,6 +737,8 @@ export function blockEditorToText(value: readonly BlockEditorBlock[]): string {
 /** The blocks as semantic HTML (p, h1–h3, nested ul/ol, blockquote, aside, pre, hr, figure, iframe, a) to show outside the editor or send in an email. */
 export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
   const out: string[] = [];
+  /** Depths of the toggles whose <details> is still open. */
+  const toggles: number[] = [];
   const stack: { tag: "ul" | "ol"; depth: number }[] = [];
   const closeTo = (depth: number, tag?: "ul" | "ol") => {
     while (stack.length && (stack[stack.length - 1].depth > depth || (stack[stack.length - 1].depth === depth && stack[stack.length - 1].tag !== tag))) {
@@ -621,6 +747,11 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
   };
   for (const b of value) {
     const html = isText(b.type) && b.type !== "code" ? blockEditorCleanHtml(b.html ?? "").replace(/\n/g, "<br>") : "";
+    while (toggles.length && toggles[toggles.length - 1] >= (b.indent ?? 0)) {
+      closeTo(-1);
+      toggles.pop();
+      out.push("</details>");
+    }
     if (isList(b.type)) {
       const depth = b.indent ?? 0;
       const tag = b.type === "number" ? "ol" : "ul";
@@ -635,6 +766,10 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
     }
     closeTo(-1);
     switch (b.type) {
+      case "toggle":
+        out.push(`<details${b.open ? " open" : ""}><summary>${html}</summary>`);
+        toggles.push(b.indent ?? 0);
+        break;
       case "heading-1":
       case "heading-2":
       case "heading-3":
@@ -652,6 +787,18 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
       case "divider":
         out.push("<hr>");
         break;
+      case "table": {
+        const rows = tableGrid(b.rows);
+        const cell = (text: string, c: number, tag: "td" | "th", scope = "") => {
+          const a = b.align?.[c];
+          return `<${tag}${scope ? ` scope="${scope}"` : ""}${a && a !== "start" ? ` style="text-align:${a}"` : ""}>${escapeHtml(text)}</${tag}>`;
+        };
+        const row = (cells: string[], head: boolean) => `<tr>${cells.map((text, c) => (head ? cell(text, c, "th", "col") : b.headerColumn && c === 0 ? cell(text, c, "th", "row") : cell(text, c, "td"))).join("")}</tr>`;
+        const widths = b.widths?.some(Boolean) ? `<colgroup>${rows[0].map((_, c) => (b.widths![c] ? `<col style="width:${b.widths![c]}px">` : "<col>")).join("")}</colgroup>` : "";
+        const head = b.header !== false ? `<thead>${row(rows[0], true)}</thead>` : "";
+        out.push(`<table>${widths}${head}<tbody>${(b.header !== false ? rows.slice(1) : rows).map((cells) => row(cells, false)).join("")}</tbody></table>`);
+        break;
+      }
       case "image":
         if (b.src) {
           const caption = b.caption ? `<figcaption>${escapeHtml(b.caption)}</figcaption>` : "";
@@ -675,6 +822,7 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
     }
   }
   closeTo(-1);
+  for (const _ of toggles) out.push("</details>");
   return out.join("\n");
 }
 
@@ -989,6 +1137,24 @@ function readFile(file: File): Promise<string> {
 }
 
 /** Blocks written in the page's markup: full ones the editor rendered, or short ones like <div class="ayy-block-editor__block" data-type="heading-1">Title</div>. A <script type="application/json"> child holding a value wins. */
+/** A table block written as markup: a <table> in the block, with a header when its first row is <th> or in a <thead>, a header column of <th scope="row">, <col> widths and cells' text-align. */
+function tableMarkup(el: HTMLElement): Partial<BlockEditorBlock> {
+  const table = el.querySelector("table");
+  const trs = Array.from(table?.querySelectorAll("tr") ?? []);
+  const rows = trs.map((tr) => Array.from(tr.children).map((cell) => cell.textContent ?? ""));
+  const align = Array.from(trs[0]?.children ?? []).map((cell) => {
+    const a = (cell as HTMLElement).style?.textAlign || (cell as HTMLElement).dataset?.align || "";
+    return a === "center" ? "center" : a === "end" || a === "right" ? "end" : "start";
+  });
+  return {
+    rows,
+    header: !!table?.querySelector("thead, tr:first-child th"),
+    headerColumn: !!table?.querySelector('tbody th[scope="row"], tr:not(:first-child) > th:first-child'),
+    widths: Array.from(table?.querySelectorAll("col") ?? []).map((col) => parseFloat((col as HTMLElement).style.inlineSize || (col as HTMLElement).style.width) || 0),
+    align: align as BlockEditorTableAlign[],
+  };
+}
+
 function readMarkup(root: HTMLElement): BlockEditorBlock[] {
   const json = root.querySelector<HTMLScriptElement>(':scope > script[type="application/json"]:not([data-mentions])');
   if (json) {
@@ -1010,6 +1176,8 @@ function readMarkup(root: HTMLElement): BlockEditorBlock[] {
       html: type === "code" ? escapeHtml(textOf(text)) : cleanDom(text),
       indent: d.indent ? Number(d.indent) : undefined,
       checked: d.checked !== undefined || !!el.querySelector<HTMLInputElement>(`.${C.check}`)?.checked,
+      open: d.open !== undefined && d.open !== "false",
+      ...(type === "table" ? tableMarkup(el) : {}),
       src: d.src ?? img?.getAttribute("src") ?? undefined,
       caption: d.caption ?? el.querySelector(`.${C.caption}`)?.textContent ?? undefined,
       width: d.width ? Number(d.width) : undefined,
@@ -1027,13 +1195,15 @@ function htmlToBlocks(html: string): BlockEditorBlock[] {
   tpl.innerHTML = html;
   const out: BlockEditorBlock[] = [];
   let inline: Node[] = [];
+  /** How many <details> deep the walk is: what the blocks inside add to their indent. */
+  let nest = 0;
   const flush = () => {
     if (!inline.length) return;
     const holder = document.createElement("div");
     holder.append(...inline.map((n) => n.cloneNode(true)));
     inline = [];
     const clean = cleanDom(holder).replace(/^\s+|\s+$/g, "");
-    if (clean) out.push(blockEditorBlock("text", { html: clean }));
+    if (clean) out.push(blockEditorBlock("text", { html: clean, ...(nest ? { indent: Math.min(MAX_INDENT, nest) } : {}) }));
   };
   const walk = (parent: Node, list: { type: "bullet" | "number"; depth: number } | null) => {
     for (const node of Array.from(parent.childNodes)) {
@@ -1043,12 +1213,23 @@ function htmlToBlocks(html: string): BlockEditorBlock[] {
       }
       const tag = node.tagName.toLowerCase();
       if (SKIP_TAGS.has(tag)) continue;
+      if (tag === "details") {
+        flush();
+        const summary = node.querySelector(":scope > summary");
+        out.push(blockEditorBlock("toggle", { html: summary ? cleanDom(summary).trim() : "", open: node.hasAttribute("open"), ...(nest ? { indent: Math.min(MAX_INDENT, nest) } : {}) }));
+        summary?.remove();
+        nest++;
+        walk(node, null);
+        flush();
+        nest--;
+        continue;
+      }
       if (!BLOCK_TAGS.has(tag) && !node.querySelector(BLOCK_SELECTOR)) {
         inline.push(node);
         continue;
       }
       flush();
-      const nested = list ? { indent: Math.min(MAX_INDENT, list.depth) } : {};
+      const nested = list || nest ? { indent: Math.min(MAX_INDENT, (list?.depth ?? 0) + nest) } : {};
       if (/^h[1-6]$/.test(tag)) out.push(blockEditorBlock(`heading-${Math.min(3, Number(tag[1]))}` as BlockEditorBlockType, { html: cleanDom(node).trim() }));
       else if (tag === "ul" || tag === "ol") walk(node, { type: tag === "ol" ? "number" : "bullet", depth: list ? list.depth + 1 : 0 });
       else if (tag === "li") {
@@ -1069,6 +1250,10 @@ function htmlToBlocks(html: string): BlockEditorBlock[] {
         out.push(blockEditorBlock("code", { html: escapeHtml(node.textContent ?? ""), ...(language ? { language } : {}) }));
       }
       else if (tag === "hr") out.push(blockEditorBlock("divider"));
+      else if (tag === "table") {
+        const rows = Array.from(node.querySelectorAll("tr")).map((tr) => Array.from(tr.children).map((cell) => cell.textContent ?? ""));
+        if (rows.length) out.push(blockEditorBlock("table", { rows: tableGrid(rows), header: !!node.querySelector("thead, tr:first-child th") }));
+      }
       else if (tag === "img" || tag === "figure") {
         const img = tag === "img" ? node : node.querySelector("img");
         const src = safeUrl(img?.getAttribute("src"), "src");
@@ -1101,7 +1286,7 @@ interface Point {
   offset: number;
 }
 
-type Focus = { id: string; start: number | "end"; end?: number } | { pick: [string, string] };
+type Focus = { id: string; start: number | "end"; end?: number; cell?: [number, number] } | { pick: [string, string] };
 
 interface Snapshot {
   blocks: BlockEditorBlock[];
@@ -1117,13 +1302,17 @@ interface MenuItem {
   group?: string;
   current?: boolean;
   destructive?: boolean;
+  /** Not offered right now (a submenu leaves it out). */
+  disabled?: boolean;
+  /** Opens the submenu of that name instead of running (a ">" shows at its end); null goes back to the list above. */
+  sub?: string | null;
   run(): void;
 }
 
 type MenuState =
   | { mode: "slash"; id: string; start: number; query: string; index: number }
   | { mode: "mention"; id: string; start: number; query: string; index: number; source: BlockEditorMentionSource; options: BlockEditorMentionOption[] }
-  | { mode: "actions"; ids: string[]; index: number; anchor: HTMLElement; list: "actions" | "language" };
+  | { mode: "actions"; ids: string[]; index: number; anchor: HTMLElement; list: "actions" | "language"; sub?: string };
 
 const BLOCKS_MIME = "application/x-ayy-blocks+json";
 
@@ -1227,6 +1416,10 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   const uploading = new Set<string>();
   const els = new Map<string, HTMLElement>();
   const sigs = new Map<string, string>();
+  /** Blocks nested under a closed toggle: in the value, but not shown. */
+  let hiddenIds = new Set<string>();
+  /** The table cell that had the caret last, which the block actions menu's row and column items work on. */
+  let lastCell: { id: string; row: number; col: number } | null = null;
 
   root.classList.add(P);
   root.replaceChildren();
@@ -1278,6 +1471,63 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   };
   const idOf = (node: Node | null | undefined) => blockOf(node)?.dataset.id ?? "";
   const textEl = (id: string) => els.get(id)?.querySelector<HTMLElement>(`:scope > .${C.text}`) ?? null;
+  /** The block `dir` steps from index `i` that's showing (the arrows skip what a closed toggle hides), or -1. */
+  function stepVisible(i: number, dir: -1 | 1): number {
+    for (let j = i + dir; j >= 0 && j < blocks.length; j += dir) if (!hiddenIds.has(blocks[j].id)) return j;
+    return -1;
+  }
+  /** `ids` plus every block a closed toggle among them hides, so moving, copying or deleting a toggle takes what's inside it. */
+  function withKids(ids: string[]): string[] {
+    const set = new Set(ids);
+    for (const id of ids) {
+      const i = indexOf(id);
+      const b = blocks[i];
+      if (!b || b.type !== "toggle" || b.open) continue;
+      for (let j = i + 1; j < blocks.length && (blocks[j].indent ?? 0) > (b.indent ?? 0); j++) set.add(blocks[j].id);
+    }
+    return blocks.filter((b) => set.has(b.id)).map((b) => b.id);
+  }
+  /** Open every closed toggle above a hidden block, so a caret or a selection can land in it. */
+  function reveal(id: string): boolean {
+    const i = indexOf(id);
+    if (!hiddenIds.has(id)) return false;
+    const next = blocks.slice();
+    let depth = blocks[i].indent ?? 0;
+    for (let j = i - 1; j >= 0 && depth > 0; j--) {
+      const d = next[j].indent ?? 0;
+      if (d >= depth) continue;
+      if (next[j].type === "toggle") next[j] = { ...next[j], open: true };
+      depth = d;
+    }
+    blocks = next;
+    render();
+    return true;
+  }
+  /** Open or close a toggle. */
+  function setOpen(id: string, open: boolean): void {
+    const i = indexOf(id);
+    const b = blocks[i];
+    if (!b || b.type !== "toggle" || !!b.open === open) return;
+    const next = { ...b };
+    if (open) next.open = true;
+    else delete next.open;
+    if (readOnly()) {
+      blocks = replaceAt(i, next);
+      render();
+      return;
+    }
+    const focus = focusNow();
+    commit(replaceAt(i, next), focus && "id" in focus && hiddenAfterClose(i, focus.id) ? { id, start: "end" } : focus);
+    announce(open ? "Toggle opened" : "Toggle closed");
+  }
+  /** Would closing the toggle at `i` hide the block `id`? (Then the caret moves to the toggle.) */
+  function hiddenAfterClose(i: number, id: string): boolean {
+    const depth = blocks[i].indent ?? 0;
+    const at = indexOf(id);
+    if (at <= i) return false;
+    for (let j = i + 1; j <= at; j++) if ((blocks[j].indent ?? 0) <= depth) return false;
+    return true;
+  }
   const textHost = (node: Node | null | undefined): HTMLElement | null => {
     const el = (isElement(node) ? node : node?.parentElement)?.closest<HTMLElement>(`.${C.text}`) ?? null;
     return el && root.contains(el) ? el : null;
@@ -1288,7 +1538,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return el ? textOf(el).length : 0;
   };
   const isEmptyDoc = () => blocks.length === 1 && blocks[0].type === "text" && !inlineText(blocks[0].html ?? "") && !(blocks[0].html ?? "").includes(C.mention);
-  const signature = (b: BlockEditorBlock) => [b.type, b.html ?? "", b.src ?? "", b.caption ?? "", b.name ?? "", b.size ?? "", readOnly() ? 1 : 0, uploading.has(b.id) ? 1 : 0].join("\u0001");
+  const signature = (b: BlockEditorBlock) => [b.type, b.html ?? "", b.src ?? "", b.caption ?? "", b.name ?? "", b.size ?? "", b.rows ? b.rows.map((r) => r.join("\u0002")).join("\u0003") : "", b.header === false ? 0 : 1, b.headerColumn ? 1 : 0, b.widths?.join(",") ?? "", b.align?.join(",") ?? "", readOnly() ? 1 : 0, uploading.has(b.id) ? 1 : 0].join("\u0001");
   const replaceAt = (i: number, ...items: BlockEditorBlock[]) => {
     const next = blocks.slice();
     next.splice(i, 1, ...items);
@@ -1309,6 +1559,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const out: BlockEditorBlock = { id: b.id, type, html: type === "code" ? escapeHtml(inlineText(b.html ?? "")) : (b.html ?? "") };
     if (INDENTABLE.includes(type) && b.indent) out.indent = b.indent;
     if (type === "todo") out.checked = b.type === "todo" ? !!b.checked : false;
+    if (type === "toggle") out.open = b.type === "toggle" ? !!b.open : true;
     return out;
   }
 
@@ -1438,6 +1689,71 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return bar;
   }
 
+  /** The cells of a table block as a grid to change (never the value's own arrays). */
+  const gridOf = (b: BlockEditorBlock): string[][] => (b.rows?.length ? b.rows : tableGrid([])).map((row) => row.slice());
+  const cellPos = (cell: HTMLElement): [number, number] => [Number(cell.dataset.row), Number(cell.dataset.col)];
+  const cellEl = (id: string, row: number, col: number) => els.get(id)?.querySelector<HTMLElement>(`.${C.cell}[data-row="${row}"][data-col="${col}"]`) ?? null;
+
+  function buildTable(b: BlockEditorBlock): HTMLElement {
+    const wrap = make("div", C.tableWrap);
+    const scroll = make("div", C.tableScroll);
+    const table = make("table", C.table);
+    const grid = gridOf(b);
+    const header = b.header !== false;
+    const sized = !!b.widths?.some(Boolean);
+    const cols = make("colgroup");
+    grid[0].forEach((_, c) => {
+      const col = make("col");
+      if (b.widths?.[c]) col.style.inlineSize = `${b.widths[c]}px`;
+      cols.append(col);
+    });
+    if (sized) {
+      table.setAttribute("data-sized", "");
+      table.style.inlineSize = `${b.widths!.reduce((sum, w) => sum + (w || 160), 0)}px`;
+    }
+    const head = make("thead");
+    const body = make("tbody");
+    grid.forEach((row, r) => {
+      const tr = make("tr");
+      row.forEach((text, c) => {
+        const th = header && r === 0;
+        const rowHead = !th && !!b.headerColumn && c === 0;
+        const td = make(th || rowHead ? "th" : "td", undefined, th ? { scope: "col" } : rowHead ? { scope: "row" } : {});
+        const field = make("div", C.cell, { dir: "auto", "data-row": String(r), "data-col": String(c) });
+        const align = b.align?.[c];
+        if (align && align !== "start") field.dataset.align = align;
+        if (!readOnly()) {
+          field.setAttribute("role", "textbox");
+          field.setAttribute("aria-label", `${th ? "Header" : `Row ${r + 1}`}, column ${c + 1}`);
+          try {
+            field.contentEditable = "plaintext-only";
+          } catch {
+            field.contentEditable = "true";
+          }
+          field.spellcheck = true;
+        }
+        field.textContent = text;
+        td.append(field);
+        if (r === 0 && !readOnly()) td.append(make("span", C.colResize, { role: "separator", "aria-orientation": "vertical", "aria-label": `Resize column ${c + 1}`, contenteditable: "false", "data-col": String(c) }));
+        tr.append(td);
+      });
+      (header && r === 0 ? head : body).append(tr);
+    });
+    table.append(cols);
+    if (header) table.append(head);
+    table.append(body);
+    scroll.append(table);
+    wrap.append(scroll);
+    if (!readOnly()) {
+      for (const axis of ["column", "row"] as const) {
+        const add = make("button", C.tableAdd, { type: "button", tabindex: "-1", contenteditable: "false", "data-axis": axis, "aria-label": `Add ${axis}` });
+        add.innerHTML = svg(PlusSignIcon);
+        wrap.append(add);
+      }
+    }
+    return wrap;
+  }
+
   function buildBlock(b: BlockEditorBlock): HTMLElement {
     const el = make("div", C.block, { "data-type": b.type, "data-id": b.id });
     if (!readOnly()) el.append(buildGutter());
@@ -1448,6 +1764,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         box.disabled = readOnly();
         el.append(box);
       }
+      if (b.type === "toggle") {
+        const arrow = make("button", `${C.toggle}`, { type: "button", tabindex: "-1", contenteditable: "false", "aria-label": "Toggle", "aria-expanded": "false" });
+        arrow.innerHTML = iconSvg(ArrowRight01Icon, { directional: true });
+        el.append(arrow);
+      }
       if (b.type === "callout") {
         const icon = make("span", C.icon, { "aria-hidden": "true", contenteditable: "false" });
         icon.innerHTML = svg(BulbIcon);
@@ -1456,6 +1777,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       el.append(buildText(b));
       if (b.type === "code") el.append(buildCodeBar());
     } else if (b.type === "divider") el.append(make("hr", C.rule));
+    else if (b.type === "table") el.append(buildTable(b));
     else el.append(buildMedia(b));
     return el;
   }
@@ -1510,6 +1832,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       paintCode(b);
     }
+    if (b.type === "toggle") {
+      el.toggleAttribute("data-open", !!b.open);
+      const arrow = el.querySelector<HTMLElement>(`:scope > .${C.toggle}`);
+      arrow?.setAttribute("aria-expanded", String(!!b.open));
+      arrow?.setAttribute("aria-label", b.open ? "Close toggle" : "Open toggle");
+    }
+    el.toggleAttribute("hidden", hiddenIds.has(b.id));
     if (b.type === "todo") {
       el.toggleAttribute("data-checked", !!b.checked);
       const box = el.querySelector<HTMLInputElement>(`:scope > .${C.check}`);
@@ -1540,6 +1869,15 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (cursor && !cursor.classList.contains(C.block)) cursor = null;
     const keep = new Set<string>();
     const counts: number[] = [];
+    hiddenIds = new Set();
+    let closedAt = -1;
+    for (const b of blocks) {
+      const depth = b.indent ?? 0;
+      if (closedAt >= 0 && depth > closedAt) hiddenIds.add(b.id);
+      else {
+        closedAt = b.type === "toggle" && !b.open ? depth : -1;
+      }
+    }
     for (const b of blocks) {
       keep.add(b.id);
       const sig = signature(b);
@@ -1590,6 +1928,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return { id: b.id, start: span[0].offset, end: span[0].index === span[1].index ? span[1].offset : undefined };
     }
     const active = document.activeElement;
+    const cell = isElement(active) && active.classList.contains(C.cell) && root.contains(active) ? active : null;
+    if (cell) {
+      const at = selectionIn(cell);
+      return { id: idOf(cell), cell: cellPos(cell), start: at?.start ?? 0, end: at && at.end !== at.start ? at.end : undefined };
+    }
     const host = textHost(active);
     const id = idOf(host);
     if (!host || !id) return null;
@@ -1603,7 +1946,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     redoStack = [];
   }
 
-  const emit = () => opts.onChange?.(blocks.map((b) => ({ ...b })));
+  const copyOf = (b: BlockEditorBlock): BlockEditorBlock => (b.rows ? { ...b, rows: b.rows.map((r) => r.slice()) } : { ...b });
+  const emit = () => opts.onChange?.(blocks.map(copyOf));
 
   function commit(next: BlockEditorBlock[], focus?: Focus | null, history = true): void {
     if (history) {
@@ -1638,6 +1982,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (indexOf(f.pick[0]) >= 0 && indexOf(f.pick[1]) >= 0) pick(f.pick[0], f.pick[1]);
       return;
     }
+    reveal(f.id);
     const el = els.get(f.id);
     if (!el) return;
     if (picked) unpick();
@@ -1645,6 +1990,17 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (input) {
       input.focus();
       return;
+    }
+    const grid = el.dataset.type === "table" ? gridOf(blocks[indexOf(f.id)]) : null;
+    if (grid) {
+      const [row, col] = f.cell ?? (f.start === "end" ? [grid.length - 1, grid[0].length - 1] : [0, 0]);
+      const cell = cellEl(f.id, Math.min(row, grid.length - 1), Math.min(col, grid[0].length - 1));
+      if (cell) {
+        const length = textOf(cell).length;
+        const start = f.start === "end" ? length : Math.min(f.start, length);
+        selectText(cell, start, f.end !== undefined ? Math.min(f.end, length) : start);
+        return;
+      }
     }
     const text = el.querySelector<HTMLElement>(`:scope > .${C.text}`);
     if (!text) {
@@ -1668,7 +2024,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     typing = history === "burst" ? { id, at: now } : history === "step" ? null : typing;
     beforeFocus = null;
     let next: BlockEditorBlock;
-    if (el.classList.contains(C.caption)) {
+    if (el.classList.contains(C.cell)) {
+      const [row, col] = cellPos(el);
+      const rows = gridOf(b);
+      rows[row][col] = textOf(el);
+      next = { ...b, rows };
+    } else if (el.classList.contains(C.caption)) {
       next = { ...b, caption: textOf(el) };
       if (!next.caption) delete next.caption;
       els.get(id)?.querySelector("img")?.setAttribute("alt", next.caption ?? "");
@@ -1706,7 +2067,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (!picked) return null;
     const a = indexOf(picked.anchor);
     const h = indexOf(picked.head);
-    return a < 0 || h < 0 ? null : [Math.min(a, h), Math.max(a, h)];
+    if (a < 0 || h < 0) return null;
+    // A closed toggle in the selection takes what it hides.
+    let hi = Math.max(a, h);
+    while (hi + 1 < blocks.length && hiddenIds.has(blocks[hi + 1].id)) hi++;
+    return [Math.min(a, h), hi];
   }
   const pickedIds = () => {
     const range = pickedRange();
@@ -1742,6 +2107,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   // ---- Structural edits ----
 
   function duplicate(ids: string[]): void {
+    ids = withKids(ids);
     const idx = ids.map(indexOf).filter((i) => i >= 0).sort((a, b) => a - b);
     if (!idx.length) return;
     const copies = idx.map((i) => ({ ...blocks[i], id: blockEditorId() }));
@@ -1752,6 +2118,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   }
 
   function moveBlocks(ids: string[], dir: -1 | 1): void {
+    ids = withKids(ids);
     const idx = ids.map(indexOf).filter((i) => i >= 0).sort((a, b) => a - b);
     if (!idx.length) return;
     const lo = idx[0];
@@ -1760,12 +2127,21 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const focus = focusNow();
     const next = blocks.slice();
     const run = next.splice(lo, hi - lo + 1);
-    next.splice(lo + dir, 0, ...run);
+    // Past one block, or past a whole closed toggle with what it hides.
+    let at = lo + dir;
+    if (dir < 0) at = Math.max(0, stepVisible(lo, -1));
+    else {
+      const over = next[lo];
+      at = lo + 1;
+      if (over.type === "toggle" && !over.open) while (at < next.length && (next[at].indent ?? 0) > (over.indent ?? 0)) at++;
+    }
+    next.splice(at, 0, ...run);
     commit(next, focus);
-    announce(`Moved ${dir < 0 ? "up" : "down"} to position ${lo + dir + 1} of ${blocks.length}`);
+    announce(`Moved ${dir < 0 ? "up" : "down"} to position ${at + 1} of ${blocks.length}`);
   }
 
   function removeBlocks(ids: string[]): void {
+    ids = withKids(ids);
     const set = new Set(ids);
     const lo = Math.min(...ids.map(indexOf).filter((i) => i >= 0));
     const next = blocks.filter((b) => !set.has(b.id));
@@ -2008,7 +2384,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   /** Copy what blocks say as plain text (code as it is), for "Copy text" in block actions. */
   function copyBlocks(ids: string[]): void {
-    const list = blocks.filter((b) => ids.includes(b.id));
+    const list = blocks.filter((b) => withKids(ids).includes(b.id));
     const text = list.length === 1 && list[0].type === "code" ? inlineText(list[0].html ?? "") : blockEditorToText(list);
     void navigator.clipboard?.writeText(text).then(
       () => announce("Copied"),
@@ -2016,19 +2392,75 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     );
   }
 
-  function actionItems(ids: string[]): MenuItem[] {
+  function actionItems(ids: string[], sub?: string): MenuItem[] {
     const list = ids.map((id) => blocks[indexOf(id)]).filter(Boolean);
     const many = list.length > 1;
     const code = list.length === 1 && list[0].type === "code";
+    const table = list.length === 1 && list[0].type === "table" ? list[0] : null;
     const items: MenuItem[] = [
-      ...(list.some((b) => isText(b.type))
+      ...(list.some((b) => isText(b.type) || b.type === "table")
         ? [{ key: "copy", label: code ? "Copy code" : "Copy text", icon: svg(Copy01Icon), group: "Actions", run: () => copyBlocks(ids) }]
         : []),
-      { key: "duplicate", label: "Duplicate", icon: svg(CopyPlusIcon), meta: "Mod+D", group: "Actions", run: () => duplicate(ids) },
-      { key: "up", label: "Move up", icon: svg(ArrowUp01Icon), meta: "Mod+Shift+ArrowUp", group: "Actions", run: () => moveBlocks(ids, -1) },
-      { key: "down", label: "Move down", icon: svg(ArrowDown01Icon), meta: "Mod+Shift+ArrowDown", group: "Actions", run: () => moveBlocks(ids, 1) },
-      { key: "delete", label: many ? `Delete ${list.length} blocks` : "Delete", icon: svg(Delete02Icon), meta: "Delete", group: "Actions", destructive: true, run: () => removeBlocks(ids) },
+      { key: "duplicate", label: table ? "Duplicate table" : "Duplicate", icon: svg(CopyPlusIcon), meta: "Mod+D", group: "Actions", run: () => duplicate(ids) },
+      { key: "up", label: table ? "Move table up" : "Move up", icon: svg(ArrowUp01Icon), meta: "Mod+Shift+ArrowUp", group: "Actions", run: () => moveBlocks(ids, -1) },
+      { key: "down", label: table ? "Move table down" : "Move down", icon: svg(ArrowDown01Icon), meta: "Mod+Shift+ArrowDown", group: "Actions", run: () => moveBlocks(ids, 1) },
+      { key: "delete", label: many ? `Delete ${list.length} blocks` : table ? "Delete table" : "Delete", icon: svg(Delete02Icon), meta: "Delete", group: "Actions", destructive: true, run: () => removeBlocks(ids) },
     ];
+    if (table) {
+      const grid = gridOf(table);
+      const at = lastCell?.id === table.id ? lastCell : { id: table.id, row: 0, col: 0 };
+      const row = Math.min(at.row, grid.length - 1);
+      const col = Math.min(at.col, grid[0].length - 1);
+      const rows = grid.length;
+      const cols = grid[0].length;
+      const id = table.id;
+      const first = table.header === false ? 0 : 1;
+      const left = iconSvg(ArrowLeft01Icon, { directional: true });
+      const right = iconSvg(ArrowRight01Icon, { directional: true });
+      const thisRow = `Row ${row + 1}`;
+      const thisCol = `Column ${col + 1}`;
+      const align = table.align?.[col] ?? "start";
+      const width = table.widths?.[col] || cellEl(id, 0, col)?.closest("td, th")?.getBoundingClientRect().width || 160;
+      const submenus: Record<string, MenuItem[]> = {
+        Insert: [
+          { key: "row-above", label: "Row above", hint: thisRow, icon: svg(ArrowUp01Icon), disabled: rows >= MAX_ROWS, run: () => insertRow(id, row, col) },
+          { key: "row-below", label: "Row below", hint: thisRow, icon: svg(ArrowDown01Icon), disabled: rows >= MAX_ROWS, run: () => insertRow(id, row + 1, col) },
+          { key: "column-before", label: "Column before", hint: thisCol, icon: left, disabled: cols >= MAX_COLUMNS, run: () => insertColumn(id, col, row) },
+          { key: "column-after", label: "Column after", hint: thisCol, icon: right, disabled: cols >= MAX_COLUMNS, run: () => insertColumn(id, col + 1, row) },
+        ],
+        Duplicate: [
+          { key: "duplicate-row", label: "Row", hint: thisRow, icon: svg(CopyPlusIcon), disabled: rows >= MAX_ROWS, run: () => duplicateRow(id, row, col) },
+          { key: "duplicate-column", label: "Column", hint: thisCol, icon: svg(CopyPlusIcon), disabled: cols >= MAX_COLUMNS, run: () => duplicateColumn(id, col, row) },
+        ],
+        Move: [
+          { key: "row-up", label: "Row up", hint: thisRow, meta: "Mod+Shift+ArrowUp", icon: svg(ArrowUp01Icon), disabled: row <= first, run: () => moveRow(id, row, -1) },
+          { key: "row-down", label: "Row down", hint: thisRow, meta: "Mod+Shift+ArrowDown", icon: svg(ArrowDown01Icon), disabled: row < first || row >= rows - 1, run: () => moveRow(id, row, 1) },
+          { key: "column-earlier", label: "Column earlier", hint: thisCol, meta: "Mod+Shift+ArrowLeft", icon: left, disabled: col <= 0, run: () => moveColumn(id, col, -1) },
+          { key: "column-later", label: "Column later", hint: thisCol, meta: "Mod+Shift+ArrowRight", icon: right, disabled: col >= cols - 1, run: () => moveColumn(id, col, 1) },
+        ],
+        Align: (["start", "center", "end"] as const).map((a) => ({ key: `align-${a}`, label: a === "start" ? "At the start" : a === "center" ? "Centered" : "At the end", hint: thisCol, current: align === a, run: () => alignColumn(id, col, a, row) })),
+        Width: [
+          { key: "wider", label: "Wider", hint: `${thisCol}, ${Math.round(width)} px`, icon: svg(PlusSignIcon), run: () => sizeColumn(id, col, width + 24, row) },
+          { key: "narrower", label: "Narrower", hint: thisCol, icon: svg(Delete02Icon), disabled: width - 24 < MIN_COLUMN, run: () => sizeColumn(id, col, width - 24, row) },
+          { key: "even", label: "Even out all columns", disabled: !table.widths?.some(Boolean), run: () => sizeColumn(id, col, 0, row) },
+        ],
+        Clear: [
+          { key: "clear-row", label: "Row", hint: thisRow, run: () => clearCells(id, "row", row, col) },
+          { key: "clear-column", label: "Column", hint: thisCol, run: () => clearCells(id, "column", row, col) },
+          { key: "clear-table", label: "Every cell", run: () => clearCells(id, "table", row, col) },
+        ],
+        Delete: [
+          { key: "delete-row", label: "Row", hint: thisRow, icon: svg(Delete02Icon), destructive: true, disabled: rows < 2, run: () => deleteRow(id, row) },
+          { key: "delete-column", label: "Column", hint: thisCol, icon: svg(Delete02Icon), destructive: true, disabled: cols < 2, run: () => deleteColumn(id, col) },
+        ],
+      };
+      if (sub && submenus[sub]) return [{ key: "back", label: "Back", icon: left, sub: null, run: () => undefined }, ...submenus[sub].filter((item) => !item.disabled).map((item) => ({ ...item, group: sub }))];
+      items.unshift(
+        ...Object.keys(submenus).map((name) => ({ key: `sub-${name}`, label: name, icon: svg(name === "Delete" ? Delete02Icon : name === "Duplicate" ? CopyPlusIcon : name === "Insert" ? PlusSignIcon : name === "Move" ? ArrowUp01Icon : name === "Align" ? TextIcon : name === "Width" ? ArrowRight01Icon : TextStrikethroughIcon), group: "Table", sub: name, run: () => undefined })),
+        { key: "header", label: "Header row", group: "Table", current: table.header !== false, run: () => setTable(id, grid, [row, col], { header: table.header === false }) },
+        { key: "header-column", label: "Header column", group: "Table", current: !!table.headerColumn, run: () => setTable(id, grid, [row, col], table.headerColumn ? { headerColumn: false } : { headerColumn: true }) },
+      );
+    }
     if (code) {
       items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon), group: "Actions", run: () => openActions(ids, els.get(ids[0])?.querySelector<HTMLElement>("[data-code-language]") ?? menuEl, "language") });
     }
@@ -2046,7 +2478,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function renderMenu(): void {
     if (!menu) return;
     const m = menu;
-    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : actionItems(m.ids);
+    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : actionItems(m.ids, m.sub);
     if (!menuItems.length) {
       closeMenu();
       return;
@@ -2054,7 +2486,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     m.index = Math.max(0, Math.min(m.index, menuItems.length - 1));
     menuEl.replaceChildren();
     menuEl.dataset.mode = m.mode === "actions" ? m.list : m.mode;
-    menuEl.setAttribute("aria-label", m.mode === "slash" ? "Blocks" : m.mode === "mention" ? (m.source.label ?? "Mentions") : m.list === "language" ? "Code language" : "Block actions");
+    menuEl.setAttribute("aria-label", m.mode === "slash" ? "Blocks" : m.mode === "mention" ? (m.source.label ?? "Mentions") : m.list === "language" ? "Code language" : m.sub ? `Block actions: ${m.sub}` : "Block actions");
     let group: string | undefined;
     menuItems.forEach((item, i) => {
       if (item.group && item.group !== group) {
@@ -2081,6 +2513,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         text.append(hintEl);
       }
       option.append(text);
+      if (item.sub) {
+        const more = make("span", "ayy-combobox__meta", { "aria-hidden": "true" });
+        more.innerHTML = iconSvg(ArrowRight01Icon, { directional: true });
+        option.append(more);
+      }
       if (item.meta) {
         const meta = make("span", "ayy-combobox__meta");
         if (m.mode === "actions") meta.innerHTML = shortcutHtml(item.meta, apple);
@@ -2153,6 +2590,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function runMenu(index = menu?.index ?? 0): void {
     const item = menuItems[index];
     if (!item || !menu) return;
+    if (menu.mode === "actions" && item.sub !== undefined) {
+      menu.sub = item.sub ?? undefined;
+      menu.index = 0;
+      renderMenu();
+      return;
+    }
     if (menu.mode === "actions") {
       const { ids, list, anchor: from } = menu;
       closeMenu();
@@ -2260,7 +2703,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return;
     }
     const made = blockEditorBlock(type);
-    const after = type === "divider" ? [blockEditorBlock("text")] : [];
+    // A divider is followed by a line to write in; so is a table that would otherwise end the document.
+    const after = type === "divider" || (type === "table" && i === blocks.length - 1) ? [blockEditorBlock("text")] : [];
     const kept = empty ? [] : [{ ...b, html }];
     commit(replaceAt(i, ...kept, made, ...after), type === "divider" ? { id: after[0].id, start: 0 } : { id: made.id, start: 0 });
   }
@@ -2608,6 +3052,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   }
 
   let resizing: { id: string; frame: HTMLElement; start: number; column: number; rtl: boolean; width: number } | null = null;
+  /** A table column being dragged to a new width: the widths of every column when it started, and the <col>s to show it live. */
+  let sizing: { id: string; col: number; start: number; rtl: boolean; widths: number[]; cols: HTMLElement[]; table: HTMLElement; width: number } | null = null;
 
   function setWidth(id: string, width: number, history = true): void {
     const i = indexOf(id);
@@ -2626,6 +3072,10 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function goTo(index: number, edge: "start" | "end", x?: number): void {
     const target = blocks[index];
     if (!target) return;
+    if (target.type === "table") {
+      applyFocus({ id: target.id, start: edge === "start" ? 0 : "end" });
+      return;
+    }
     const el = textEl(target.id);
     if (!el) {
       pick(target.id, target.id);
@@ -2729,6 +3179,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       commit(replaceAt(i, { ...b, checked: !b.checked }), focusNow());
       return;
     }
+    if (mod && e.key === "Enter" && b.type === "toggle") {
+      e.preventDefault();
+      setOpen(id, !b.open);
+      return;
+    }
     if (b.type !== "code" && mod && !e.altKey) {
       const tag = !e.shiftKey && key === "b" ? "strong" : !e.shiftKey && key === "i" ? "em" : !e.shiftKey && key === "u" ? "u" : e.shiftKey && (key === "s" || key === "x") ? "s" : !e.shiftKey && key === "e" ? "code" : "";
       if (tag) {
@@ -2764,15 +3219,17 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (a && h) {
         const forward = e.key === (rtl ? "ArrowLeft" : "ArrowRight");
         const back = e.key === (rtl ? "ArrowRight" : "ArrowLeft");
+        const above = stepVisible(i, -1);
+        const below = stepVisible(i, 1);
         const target =
-          e.key === "ArrowUp" && onFirstLine(el) && i > 0
-            ? pointNear(i - 1, "bottom")
-            : e.key === "ArrowDown" && onLastLine(el) && i < blocks.length - 1
-              ? pointNear(i + 1, "top")
-              : back && h.offset === 0 && i > 0
-                ? { index: i - 1, offset: lengthOf(i - 1) }
-                : forward && h.offset === text.length && i < blocks.length - 1
-                  ? { index: i + 1, offset: 0 }
+          e.key === "ArrowUp" && onFirstLine(el) && above >= 0
+            ? pointNear(above, "bottom")
+            : e.key === "ArrowDown" && onLastLine(el) && below >= 0
+              ? pointNear(below, "top")
+              : back && h.offset === 0 && above >= 0
+                ? { index: above, offset: lengthOf(above) }
+                : forward && h.offset === text.length && below >= 0
+                  ? { index: below, offset: 0 }
                   : null;
         if (target) {
           e.preventDefault();
@@ -2815,6 +3272,20 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         return;
       }
       const html = b.html ?? "";
+      if (b.type === "toggle") {
+        // An open toggle's new line goes inside it, first; a closed one's goes after what it hides.
+        const head = { ...b, html: sliceHtml(html, 0, sel.start) };
+        const tail = sliceHtml(html, sel.end);
+        const next = blocks.slice();
+        let at = i + 1;
+        if (!b.open) while (at < next.length && (next[at].indent ?? 0) > depth) at++;
+        const inside = b.open ? Math.min(MAX_INDENT, depth + 1) : depth;
+        const after = blockEditorBlock("text", { html: tail, ...(inside ? { indent: inside } : {}) });
+        next[i] = head;
+        next.splice(at, 0, after);
+        commit(next, { id: after.id, start: 0 });
+        return;
+      }
       const after = blockEditorBlock(nextType, { html: sliceHtml(html, sel.end), ...keepDepth });
       commit(replaceAt(i, { ...b, html: sliceHtml(html, 0, sel.start) }, after), { id: after.id, start: 0 });
       return;
@@ -2833,6 +3304,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       if (i === 0) return;
       e.preventDefault();
+      if (hiddenIds.has(blocks[i - 1].id)) return;
       const prev = blocks[i - 1];
       if (prev.type === "divider") {
         const next = blocks.slice();
@@ -2857,6 +3329,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (e.key === "Delete" && collapsed && sel.start === text.length && i < blocks.length - 1 && !mod) {
       e.preventDefault();
       const nextBlock = blocks[i + 1];
+      if (hiddenIds.has(nextBlock.id)) return;
       if (nextBlock.type === "divider") {
         const next = blocks.slice();
         next.splice(i + 1, 1);
@@ -2891,18 +3364,20 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const x = caretRect()?.left;
     const forward = e.key === (rtl ? "ArrowLeft" : "ArrowRight");
     const back = e.key === (rtl ? "ArrowRight" : "ArrowLeft");
-    if (e.key === "ArrowUp" && i > 0 && onFirstLine(el)) {
+    const above = stepVisible(i, -1);
+    const below = stepVisible(i, 1);
+    if (e.key === "ArrowUp" && above >= 0 && onFirstLine(el)) {
       e.preventDefault();
-      goTo(i - 1, "end", x);
-    } else if (e.key === "ArrowDown" && i < blocks.length - 1 && onLastLine(el)) {
+      goTo(above, "end", x);
+    } else if (e.key === "ArrowDown" && below >= 0 && onLastLine(el)) {
       e.preventDefault();
-      goTo(i + 1, "start", x);
-    } else if (back && collapsed && sel.start === 0 && i > 0) {
+      goTo(below, "start", x);
+    } else if (back && collapsed && sel.start === 0 && above >= 0) {
       e.preventDefault();
-      goTo(i - 1, "end");
-    } else if (forward && collapsed && sel.end === text.length && i < blocks.length - 1) {
+      goTo(above, "end");
+    } else if (forward && collapsed && sel.end === text.length && below >= 0) {
       e.preventDefault();
-      goTo(i + 1, "start");
+      goTo(below, "start");
     }
   }
 
@@ -2971,7 +3446,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     } else if ((e.key === "ArrowUp" || e.key === "ArrowDown") && !mod && !e.altKey) {
       e.preventDefault();
       const head = indexOf(picked.head);
-      const target = blocks[Math.max(0, Math.min(blocks.length - 1, head + (e.key === "ArrowUp" ? -1 : 1)))];
+      const step = stepVisible(head, e.key === "ArrowUp" ? -1 : 1);
+      const target = blocks[step < 0 ? head : step];
       if (e.shiftKey) pick(picked.anchor, target.id);
       else pick(target.id, target.id);
     } else if (e.key.length === 1 && !mod && !e.altKey && !e.isComposing && list.every((b) => isText(b.type))) {
@@ -3016,6 +3492,241 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       toggleMark("s");
     } else if (e.key === "Tab" || (mod && (key === "k" || key === "d"))) {
       e.preventDefault();
+    }
+  }
+
+  // ---- Tables ----
+
+  /** A table's cells with what belongs to each column, to change as one: widths (0: share what's left) and alignment. */
+  interface Tbl {
+    rows: string[][];
+    widths: number[];
+    align: BlockEditorTableAlign[];
+  }
+  const tblOf = (b: BlockEditorBlock): Tbl => {
+    const rows = gridOf(b);
+    return { rows, widths: rows[0].map((_, c) => b.widths?.[c] ?? 0), align: rows[0].map((_, c) => b.align?.[c] ?? "start") };
+  };
+
+  /** Change a table and put the caret in `cell` afterwards. */
+  function setTable(id: string, t: Tbl | string[][], cell: [number, number], extra: Partial<BlockEditorBlock> = {}): void {
+    const i = indexOf(id);
+    const b = blocks[i];
+    if (!b) return;
+    const rows = Array.isArray(t) ? t : t.rows;
+    const columns = rows[0].length;
+    const widths = Array.from({ length: columns }, (_, c) => (Array.isArray(t) ? b.widths?.[c] : t.widths[c]) ?? 0);
+    const align = Array.from({ length: columns }, (_, c) => (Array.isArray(t) ? b.align?.[c] : t.align[c]) ?? "start");
+    const next: BlockEditorBlock = { ...b, ...extra, rows };
+    if (widths.some(Boolean)) next.widths = widths;
+    else delete next.widths;
+    if (align.some((a) => a !== "start")) next.align = align;
+    else delete next.align;
+    commit(replaceAt(i, next), { id, cell, start: 0 });
+  }
+  function insertRow(id: string, at: number, col = 0): void {
+    const b = blocks[indexOf(id)];
+    const t = tblOf(b);
+    if (!b || t.rows.length >= MAX_ROWS) return;
+    t.rows.splice(at, 0, t.rows[0].map(() => ""));
+    setTable(id, t, [at, Math.min(col, t.rows[0].length - 1)]);
+    announce(`Row ${at + 1} added`);
+  }
+  function insertColumn(id: string, at: number, row = 0): void {
+    const b = blocks[indexOf(id)];
+    const t = tblOf(b);
+    if (!b || t.rows[0].length >= MAX_COLUMNS) return;
+    for (const r of t.rows) r.splice(at, 0, "");
+    t.widths.splice(at, 0, 0);
+    t.align.splice(at, 0, "start");
+    setTable(id, t, [Math.min(row, t.rows.length - 1), at]);
+    announce(`Column ${at + 1} added`);
+  }
+  function deleteRow(id: string, at: number): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    if (t.rows.length < 2) return;
+    t.rows.splice(at, 1);
+    setTable(id, t, [Math.min(at, t.rows.length - 1), 0]);
+    announce("Row deleted");
+  }
+  function deleteColumn(id: string, at: number): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    if (t.rows[0].length < 2) return;
+    for (const r of t.rows) r.splice(at, 1);
+    t.widths.splice(at, 1);
+    t.align.splice(at, 1);
+    setTable(id, t, [0, Math.min(at, t.rows[0].length - 1)]);
+    announce("Column deleted");
+  }
+  function duplicateRow(id: string, at: number, col = 0): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    if (t.rows.length >= MAX_ROWS) return;
+    t.rows.splice(at + 1, 0, t.rows[at].slice());
+    setTable(id, t, [at + 1, col]);
+    announce(`Row ${at + 1} duplicated`);
+  }
+  function duplicateColumn(id: string, at: number, row = 0): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    if (t.rows[0].length >= MAX_COLUMNS) return;
+    for (const r of t.rows) r.splice(at + 1, 0, r[at]);
+    t.widths.splice(at + 1, 0, t.widths[at]);
+    t.align.splice(at + 1, 0, t.align[at]);
+    setTable(id, t, [row, at + 1]);
+    announce(`Column ${at + 1} duplicated`);
+  }
+  /** Swap a row with its neighbour (a header row stays first). */
+  function moveRow(id: string, at: number, dir: -1 | 1): void {
+    const b = blocks[indexOf(id)];
+    const t = tblOf(b);
+    const first = b.header === false ? 0 : 1;
+    const to = at + dir;
+    if (at < first || to < first || to >= t.rows.length) return;
+    [t.rows[at], t.rows[to]] = [t.rows[to], t.rows[at]];
+    setTable(id, t, [to, lastCell?.col ?? 0]);
+    announce(`Row moved to position ${to + 1} of ${t.rows.length}`);
+  }
+  function moveColumn(id: string, at: number, dir: -1 | 1): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    const to = at + dir;
+    if (to < 0 || to >= t.rows[0].length) return;
+    for (const r of t.rows) [r[at], r[to]] = [r[to], r[at]];
+    [t.widths[at], t.widths[to]] = [t.widths[to], t.widths[at]];
+    [t.align[at], t.align[to]] = [t.align[to], t.align[at]];
+    setTable(id, t, [lastCell?.row ?? 0, to]);
+    announce(`Column moved to position ${to + 1} of ${t.rows[0].length}`);
+  }
+  /** Empty a row, a column or every cell (the header row's words too). */
+  function clearCells(id: string, what: "row" | "column" | "table", row: number, col: number): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    t.rows = t.rows.map((r, ri) => r.map((cell, ci) => (what === "table" || (what === "row" ? ri === row : ci === col) ? "" : cell)));
+    setTable(id, t, [row, col]);
+    announce(`${what === "table" ? "Table" : what === "row" ? "Row" : "Column"} cleared`);
+  }
+  function alignColumn(id: string, col: number, align: BlockEditorTableAlign, row = 0): void {
+    const t = tblOf(blocks[indexOf(id)]);
+    t.align[col] = align;
+    setTable(id, t, [row, col]);
+  }
+  /** Set one column's width in px, or every column's back to even (0). */
+  function sizeColumn(id: string, col: number, width: number, row = 0): void {
+    const i = indexOf(id);
+    const t = tblOf(blocks[i]);
+    if (!width) t.widths = t.widths.map(() => 0);
+    else {
+      // The first time, every column keeps the width it has now, so only this one moves.
+      if (!t.widths.some(Boolean)) t.widths = Array.from(els.get(id)?.querySelectorAll<HTMLElement>("tr:first-child > *") ?? []).map((c) => Math.round(c.offsetWidth));
+      t.widths[col] = Math.max(MIN_COLUMN, Math.min(MAX_COLUMN, Math.round(width)));
+    }
+    setTable(id, t, [row, col]);
+  }
+
+  /** Put the caret in a cell, at `at` characters (or its end). */
+  function focusCell(id: string, row: number, col: number, at: number | "end" = 0): void {
+    const cell = cellEl(id, row, col);
+    if (cell) selectText(cell, at === "end" ? textOf(cell).length : Math.min(at, textOf(cell).length));
+  }
+
+  /** Text pasted into a cell: a spreadsheet's rows and columns (tab and new line separated) fill the cells from there on, growing the table. */
+  function pasteIntoTable(cell: HTMLElement, text: string): void {
+    const lines = text.replace(/\r\n?/g, "\n").replace(/\n+$/, "").split("\n");
+    const cells = lines.map((line) => line.split("\t"));
+    if (cells.length === 1 && cells[0].length === 1) {
+      document.execCommand("insertText", false, text.replace(/\s+/g, " "));
+      return;
+    }
+    const id = idOf(cell);
+    const b = blocks[indexOf(id)];
+    const [row, col] = cellPos(cell);
+    const rows = gridOf(b);
+    const width = Math.min(MAX_COLUMNS, Math.max(rows[0].length, col + Math.max(...cells.map((r) => r.length))));
+    const height = Math.min(MAX_ROWS, Math.max(rows.length, row + cells.length));
+    const grid = Array.from({ length: height }, (_, r) => Array.from({ length: width }, (_, c) => rows[r]?.[c] ?? ""));
+    cells.forEach((line, r) => line.forEach((value, c) => (row + r < height && col + c < width ? (grid[row + r][col + c] = value.replace(/\s+/g, " ").trim()) : undefined)));
+    setTable(id, grid, [Math.min(height - 1, row + cells.length - 1), Math.min(width - 1, col + cells[cells.length - 1].length - 1)]);
+  }
+
+  function onCellKey(e: KeyboardEvent, cell: HTMLElement): void {
+    if (e.isComposing || e.keyCode === 229) return;
+    const id = idOf(cell);
+    const i = indexOf(id);
+    const b = blocks[i];
+    if (!b) return;
+    const grid = gridOf(b);
+    const [row, col] = cellPos(cell);
+    const rows = grid.length;
+    const cols = grid[0].length;
+    const mod = isMod(e);
+    const key = e.key.toLowerCase();
+    if (mod && (key === "z" || key === "y")) {
+      e.preventDefault();
+      if (key === "y" || e.shiftKey) redo();
+      else undo();
+      return;
+    }
+    if (mod && key === "/") {
+      e.preventDefault();
+      openActions([id], els.get(id)?.querySelector<HTMLElement>(`.${C.handle}`) ?? cell);
+      return;
+    }
+    if (mod && e.shiftKey && e.key.startsWith("Arrow")) {
+      e.preventDefault();
+      lastCell = { id, row, col };
+      const rtl = getComputedStyle(cell).direction === "rtl";
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") moveRow(id, row, e.key === "ArrowUp" ? -1 : 1);
+      else moveColumn(id, col, (e.key === "ArrowLeft") !== rtl ? -1 : 1);
+      return;
+    }
+    if (e.key === "Tab" && !mod && !e.altKey) {
+      e.preventDefault();
+      if (!e.shiftKey) {
+        if (col < cols - 1) focusCell(id, row, col + 1);
+        else if (row < rows - 1) focusCell(id, row + 1, 0);
+        else insertRow(id, rows);
+      } else if (col > 0) focusCell(id, row, col - 1, "end");
+      else if (row > 0) focusCell(id, row - 1, cols - 1, "end");
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (mod) insertRow(id, row + 1, col);
+      else if (e.shiftKey) focusCell(id, Math.max(0, row - 1), col);
+      else if (row < rows - 1) focusCell(id, row + 1, col);
+      else insertRow(id, rows, col);
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      pick(id, id);
+      return;
+    }
+    if (e.shiftKey || mod || e.altKey) return;
+    const text = textOf(cell);
+    const sel = selectionIn(cell) ?? { start: text.length, end: text.length };
+    const collapsed = sel.start === sel.end;
+    const rtl = getComputedStyle(cell).direction === "rtl";
+    const forward = e.key === (rtl ? "ArrowLeft" : "ArrowRight");
+    const back = e.key === (rtl ? "ArrowRight" : "ArrowLeft");
+    const above = stepVisible(i, -1);
+    const below = stepVisible(i, 1);
+    const x = caretRect()?.left;
+    if (e.key === "ArrowUp" && onFirstLine(cell)) {
+      e.preventDefault();
+      if (row > 0) focusCell(id, row - 1, col, sel.start);
+      else if (above >= 0) goTo(above, "end", x);
+    } else if (e.key === "ArrowDown" && onLastLine(cell)) {
+      e.preventDefault();
+      if (row < rows - 1) focusCell(id, row + 1, col, sel.start);
+      else if (below >= 0) goTo(below, "start", x);
+    } else if (back && collapsed && sel.start === 0) {
+      e.preventDefault();
+      if (col > 0) focusCell(id, row, col - 1, "end");
+      else if (row > 0) focusCell(id, row - 1, cols - 1, "end");
+      else if (above >= 0) goTo(above, "end");
+    } else if (forward && collapsed && sel.end === text.length) {
+      e.preventDefault();
+      if (col < cols - 1) focusCell(id, row, col + 1);
+      else if (row < rows - 1) focusCell(id, row + 1, 0);
+      else if (below >= 0) goTo(below, "start");
     }
   }
 
@@ -3109,6 +3820,25 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     } else if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       runMenu();
+    } else if (menu.mode === "actions" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+      // A submenu opens toward the reading direction and closes back the other way.
+      const rtl = getComputedStyle(menuEl).direction === "rtl";
+      const into = e.key === (rtl ? "ArrowLeft" : "ArrowRight");
+      if (into && menuItems[menu.index]?.sub) {
+        e.preventDefault();
+        runMenu();
+      } else if (!into && menu.sub) {
+        e.preventDefault();
+        menu.sub = undefined;
+        menu.index = 0;
+        renderMenu();
+      }
+    } else if (e.key === "Escape" && menu.mode === "actions" && menu.sub) {
+      e.preventDefault();
+      e.stopPropagation();
+      menu.sub = undefined;
+      menu.index = 0;
+      renderMenu();
     } else if (e.key === "Escape" || e.key === "Tab") {
       e.preventDefault();
       e.stopPropagation();
@@ -3143,6 +3873,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (target.matches("[data-media-input]")) return onMediaInputKey(e, target as HTMLInputElement);
     if (target.classList.contains(C.resize)) return onResizeKey(e, target);
     if (target.classList.contains(C.caption)) return onCaptionKey(e, target);
+    if (target.classList.contains(C.cell)) return onCellKey(e, target);
     const text = textHost(target);
     if (text) onTextKey(e, text);
   }
@@ -3185,14 +3916,14 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       scheduleToolbar();
       return;
     }
-    const el = target.closest?.<HTMLElement>(`.${C.text}, .${C.caption}`);
+    const el = target.closest?.<HTMLElement>(`.${C.text}, .${C.caption}, .${C.cell}`);
     if (!el || !root.contains(el)) return;
     const composing = ev.isComposing;
     // Writing hides the gutters until the pointer moves again (Notion).
     if (!root.hasAttribute("data-typing")) root.setAttribute("data-typing", "");
     if (!composing) dropZw(el);
     syncText(el, ev.inputType?.startsWith("format") ? "step" : "burst");
-    if (el.classList.contains(C.caption)) {
+    if (el.classList.contains(C.caption) || el.classList.contains(C.cell)) {
       emit();
       return;
     }
@@ -3222,6 +3953,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       [new RegExp(`^[-*+]${S}\\[${S}?\\]${S}$`), "todo"],
       [new RegExp(`^[-*+]${S}$`), "bullet"],
       [new RegExp(`^1[.)]${S}$`), "number"],
+      [new RegExp(`^>>${S}$`), "toggle"],
       [new RegExp(`^[>"]${S}$`), "quote"],
       [/^```$/, "code"],
       [/^(---|\*\*\*)$/, "divider"],
@@ -3273,6 +4005,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
     const data = e.clipboardData;
     if (!data || target.closest?.("input, textarea") || toolbar.contains(target)) return;
+    const cell = target.closest?.<HTMLElement>(`.${C.cell}`);
+    if (cell) {
+      e.preventDefault();
+      pasteIntoTable(cell, data.getData("text/plain"));
+      return;
+    }
     const caption = target.closest?.<HTMLElement>(`.${C.caption}`);
     if (caption) {
       e.preventDefault();
@@ -3354,6 +4092,18 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       resize.setPointerCapture?.(e.pointerId);
       return;
     }
+    const grip = target.closest<HTMLElement>(`.${C.colResize}`);
+    if (grip && e.button === 0) {
+      e.preventDefault();
+      const table = grip.closest<HTMLElement>("table")!;
+      const cols = Array.from(table.querySelectorAll<HTMLElement>(":scope > colgroup > col"));
+      const widths = Array.from(table.querySelectorAll<HTMLElement>(":scope tr:first-child > *")).map((c) => Math.round(c.offsetWidth));
+      const col = Number(grip.dataset.col);
+      sizing = { id: idOf(grip), col, start: e.clientX, rtl: getComputedStyle(table).direction === "rtl", widths, cols, table, width: widths[col] };
+      grip.setPointerCapture?.(e.pointerId);
+      grip.setAttribute("data-active", "");
+      return;
+    }
     const inText = target.closest(`.${C.text}`);
     if (picked && !(e.shiftKey && e.button === 0)) unpick();
     if (picked) return;
@@ -3367,6 +4117,15 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function onPointerMove(e: PointerEvent): void {
     if (root.hasAttribute("data-typing") && (Math.abs(e.movementX) + Math.abs(e.movementY) > 2 || e.pointerType !== "mouse")) root.removeAttribute("data-typing");
+    if (sizing) {
+      const dx = sizing.rtl ? sizing.start - e.clientX : e.clientX - sizing.start;
+      sizing.width = Math.max(MIN_COLUMN, Math.min(MAX_COLUMN, Math.round(sizing.widths[sizing.col] + dx)));
+      const widths = sizing.widths.map((w, c) => (c === sizing!.col ? sizing!.width : w));
+      sizing.cols.forEach((col, c) => (col.style.inlineSize = `${widths[c]}px`));
+      sizing.table.setAttribute("data-sized", "");
+      sizing.table.style.inlineSize = `${widths.reduce((sum, w) => sum + w, 0)}px`;
+      return;
+    }
     if (!resizing) return;
     const width = resizing.rtl ? resizing.start - e.clientX : e.clientX - resizing.start;
     resizing.width = Math.max(20, Math.min(100, Math.round((width / resizing.column) * 100)));
@@ -3374,6 +4133,19 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   }
 
   function onPointerUp(): void {
+    if (sizing) {
+      const { id, col, width, widths, table } = sizing;
+      sizing = null;
+      table.querySelector(`.${C.colResize}[data-active]`)?.removeAttribute("data-active");
+      const i = indexOf(id);
+      const b = blocks[i];
+      if (b && width !== widths[col]) {
+        const t = tblOf(b);
+        t.widths = widths.map((w, c) => (c === col ? width : w));
+        setTable(id, t, [lastCell?.id === id ? lastCell.row : 0, col]);
+      } else render();
+      return;
+    }
     if (resizing) {
       const { id, width } = resizing;
       resizing = null;
@@ -3392,6 +4164,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   // Shift+click adds blocks to a block selection. Mouse, not pointer: only preventing mousedown keeps the caret where it was.
   function onMouseDown(e: MouseEvent): void {
+    // The arrow doesn't take the caret from the line it was in (closing a toggle then knows where it was).
+    if ((e.target as HTMLElement).closest?.(`.${C.toggle}, .${C.tableAdd}`)) {
+      e.preventDefault();
+      return;
+    }
     // A double or triple click selects a word or the line inside one block: let the line itself do it. Switching the
     // editing host in the middle of that gesture loses the word, and the caret lands at the start of the line.
     const line = textHost(e.target as Node);
@@ -3438,8 +4215,21 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (code) void copyCodeBlock(copy, { code: textOf(code) });
       return;
     }
+    const arrow = target.closest<HTMLElement>(`.${C.toggle}`);
+    if (arrow) {
+      const id = idOf(arrow);
+      setOpen(id, !blocks[indexOf(id)]?.open);
+      return;
+    }
     if (readOnly()) return;
     const id = idOf(target);
+    const tableAdd = target.closest<HTMLElement>(`.${C.tableAdd}`);
+    if (tableAdd) {
+      const grid = gridOf(blocks[indexOf(id)]);
+      if (tableAdd.dataset.axis === "row") insertRow(id, grid.length);
+      else insertColumn(id, grid[0].length);
+      return;
+    }
     const language = target.closest<HTMLElement>("button[data-code-language]");
     if (language) {
       openActions([id], language, "language");
@@ -3462,7 +4252,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (target === root) clickBelow(e);
       return;
     }
-    if (target.closest(`.${C.caption}, .${C.text}, .${C.resize}, .${C.empty}, input, button, iframe, video, audio`)) return;
+    if (target.closest(`.${C.caption}, .${C.text}, .${C.cell}, .${C.resize}, .${C.colResize}, .${C.empty}, input, button, iframe, video, audio`)) return;
     const b = blocks[indexOf(id)];
     if (!b) return;
     if (!isText(b.type)) {
@@ -3524,6 +4314,10 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function onFocusIn(e: FocusEvent): void {
     const target = e.target as Node;
+    if (isElement(target) && target.classList.contains(C.cell)) {
+      const [row, col] = cellPos(target);
+      lastCell = { id: idOf(target), row, col };
+    }
     if (picked && target !== root && !menuEl.contains(target)) unpick();
   }
 
@@ -3647,7 +4441,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     items: `.${C.block}`,
     handle: `.${C.handle}`,
     moveDom: false,
-    ignore: `.${C.text}, .${C.caption}, input, textarea, select`,
+    ignore: `.${C.text}, .${C.caption}, .${C.cell}, input, textarea, select`,
     canDrag: () => !readOnly(),
     describe: (item) => {
       const b = blocks[indexOf(item.dataset.id ?? "")];
@@ -3668,11 +4462,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     },
     markItem: (item, on) => {
       const id = item.dataset.id ?? "";
-      for (const other of isPicked(id) ? pickedIds() : [id]) els.get(other)?.toggleAttribute("data-dragging", on);
+      for (const other of withKids(isPicked(id) ? pickedIds() : [id])) els.get(other)?.toggleAttribute("data-dragging", on);
     },
     onMove: (move: DragMove) => {
       const id = move.itemId ?? move.item.dataset.id ?? "";
-      const moving = isPicked(id) ? pickedIds() : [id];
+      const moving = withKids(isPicked(id) ? pickedIds() : [id]);
       const set = new Set(moving);
       const others = blocks.filter((b) => b.id !== id);
       let ref: BlockEditorBlock | null = others[move.toIndex] ?? null;
@@ -3713,7 +4507,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   render();
 
   return {
-    getValue: () => blocks.map((b) => ({ ...b })),
+    getValue: () => blocks.map(copyOf),
     setValue(value) {
       const next = blockEditorNormalize(value);
       if (JSON.stringify(next) === JSON.stringify(blocks)) return;
