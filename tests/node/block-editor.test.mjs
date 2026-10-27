@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { blockEditorFromMarkdown, blockEditorNormalize, blockEditorToHtml, blockEditorToMarkdown, blockEditorToText } from "../../dist/index.js";
+import { blockEditorEditTable, blockEditorFromMarkdown, blockEditorNormalize, blockEditorToHtml, blockEditorToMarkdown, blockEditorToText } from "../../dist/index.js";
 
 const doc = [
   { id: "a", type: "text", html: "Before" },
@@ -96,4 +96,42 @@ test("table alignment survives Markdown and shows in HTML", () => {
   assert.match(html, /<th scope="col" style="text-align:center">b<\/th>/);
   assert.match(html, /<th scope="row">1<\/th>/);
   assert.match(html, /<colgroup><col><col style="width:120px"><col><\/colgroup>/);
+});
+
+const t3 = { id: "t", type: "table", header: true, rows: [["Name", "Qty"], ["pear", "10"], ["Apple", "9"], ["", "1"]] };
+test("insert, duplicate and delete rows and columns keep widths and align per column", () => {
+  const sized = { ...t3, widths: [100, 0], align: ["start", "end"] };
+  assert.deepEqual(blockEditorEditTable(sized, { op: "insert-column", at: 1 }).widths, [100, 0, 0]);
+  assert.deepEqual(blockEditorEditTable(sized, { op: "duplicate-column", at: 1 }).align, ["start", "end", "end"]);
+  assert.deepEqual(blockEditorEditTable(t3, { op: "duplicate-row", at: 1 }).rows[2], ["pear", "10"]);
+  assert.equal(blockEditorEditTable(t3, { op: "delete-column", at: 0 }).rows[0].length, 1);
+  const one = { ...t3, rows: [["x"]] };
+  assert.equal(blockEditorEditTable(one, { op: "delete-row", at: 0 }), one);
+});
+test("moves never take the header row out of first place", () => {
+  assert.deepEqual(blockEditorEditTable(t3, { op: "move-row", from: 3, to: 1 }).rows.map((r) => r[1]), ["Qty", "1", "10", "9"]);
+  assert.equal(blockEditorEditTable(t3, { op: "move-row", from: 0, to: 2 }), t3);
+  assert.equal(blockEditorEditTable(t3, { op: "move-row", from: 2, to: 0 }), t3);
+  assert.deepEqual(blockEditorEditTable(t3, { op: "move-column", from: 0, to: 1 }).rows[0], ["Qty", "Name"]);
+});
+test("sort is case- and number-aware, keeps the header and puts empty cells last", () => {
+  assert.deepEqual(blockEditorEditTable(t3, { op: "sort", column: 0, dir: "asc" }).rows.map((r) => r[0]), ["Name", "Apple", "pear", ""]);
+  assert.deepEqual(blockEditorEditTable(t3, { op: "sort", column: 1, dir: "desc" }).rows.map((r) => r[1]), ["Qty", "10", "9", "1"]);
+});
+test("clear, align, width and header edits", () => {
+  assert.deepEqual(blockEditorEditTable(t3, { op: "clear", rows: [1, 2], columns: [1, 1] }).rows.map((r) => r[1]), ["Qty", "", "", "1"]);
+  assert.deepEqual(blockEditorEditTable(t3, { op: "align", column: 1, align: "end" }).align, ["start", "end"]);
+  assert.deepEqual(blockEditorEditTable(t3, { op: "width", column: 0, width: 10, measured: [200, 150] }).widths, [48, 150]);
+  assert.equal(blockEditorEditTable({ ...t3, widths: [90, 90] }, { op: "width", column: 0, width: 0 }).widths, undefined);
+  assert.equal(blockEditorEditTable(t3, { op: "header", column: true }).headerColumn, true);
+  assert.equal(blockEditorEditTable(t3, { op: "header", row: false }).header, false);
+});
+test("cells fills from a cell and grows the table, one line per cell", () => {
+  const out = blockEditorEditTable(t3, { op: "cells", at: [3, 1], values: [["a", "b"], ["c\nd", "e"]] });
+  assert.deepEqual(out.rows.slice(3), [["", "a", "b"], ["", "c d", "e"]]);
+  assert.equal(out.rows[0].length, 3);
+});
+test("edits respect the row and column limits", () => {
+  const wide = { ...t3, rows: [Array(12).fill("")] };
+  assert.equal(blockEditorEditTable(wide, { op: "insert-column", at: 0 }), wide);
 });

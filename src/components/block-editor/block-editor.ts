@@ -53,6 +53,9 @@ import { announce, connectDragDrop, dragHandleClass, dragHandleIcon, dragPreview
 import { iconSvg, type IconData } from "../icon/icon";
 import { inputClass } from "../input/input";
 import { isApplePlatform, shortcutHtml } from "../shortcut/shortcut";
+import { blockEditorEditTable, MAX_COLUMN, MAX_COLUMNS, MAX_ROWS, MIN_COLUMN, tableGrid, type BlockEditorTableEdit } from "./block-editor-table";
+
+export * from "./block-editor-table";
 
 // ---- Types and the class contract ----
 
@@ -78,8 +81,6 @@ export type BlockEditorBlockType = (typeof blockEditorBlockTypes)[number];
 
 export type BlockEditorTableAlign = "start" | "center" | "end";
 const TABLE_ALIGNS: readonly BlockEditorTableAlign[] = ["start", "center", "end"];
-const MIN_COLUMN = 48;
-const MAX_COLUMN = 1200;
 
 export interface BlockEditorBlock {
   /** Stable id; the editor makes one when it's missing. */
@@ -304,8 +305,6 @@ function codeLanguage(raw: string | null | undefined): string {
 const languageLabel = (id: string | undefined) => blockEditorCodeLanguages.find((l) => l.id === (id ?? ""))?.label ?? "Plain text";
 const INDENTABLE: readonly BlockEditorBlockType[] = ["text", "bullet", "number", "todo", "toggle"];
 const MAX_INDENT = 4;
-const MAX_ROWS = 100;
-const MAX_COLUMNS = 12;
 const isText = (type: BlockEditorBlockType) => type !== "divider" && type !== "table" && !TYPES[type].media;
 const isList = (type: BlockEditorBlockType) => LIST_TYPES.includes(type);
 /** A zero-width space keeps the caret outside a mark that was just made at the end of a line; never stored. */
@@ -326,14 +325,6 @@ export function blockEditorBlock(type: BlockEditorBlockType = "text", fields: Pa
 /** An empty grid of cells. */
 function tableRows(rows: number, columns: number): string[][] {
   return Array.from({ length: rows }, () => Array.from({ length: columns }, () => ""));
-}
-
-/** Cells as the table stores them: single-line plain text, every row as wide as the widest, at least one cell. */
-function tableGrid(raw: unknown): string[][] {
-  const grid = (Array.isArray(raw) ? raw : []).slice(0, MAX_ROWS).map((row) => (Array.isArray(row) ? row : []).slice(0, MAX_COLUMNS).map((cell) => String(cell ?? "").replace(/\s+/g, " ").trim()));
-  const width = Math.max(1, ...grid.map((row) => row.length));
-  if (!grid.length) grid.push([]);
-  return grid.map((row) => Array.from({ length: width }, (_, c) => row[c] ?? ""));
 }
 
 // ---- Strings, URLs and embeds (no DOM needed) ----
@@ -2457,8 +2448,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       if (sub && submenus[sub]) return [{ key: "back", label: "Back", icon: left, sub: null, run: () => undefined }, ...submenus[sub].filter((item) => !item.disabled).map((item) => ({ ...item, group: sub }))];
       items.unshift(
         ...Object.keys(submenus).map((name) => ({ key: `sub-${name}`, label: name, icon: svg(name === "Delete" ? Delete02Icon : name === "Duplicate" ? CopyPlusIcon : name === "Insert" ? PlusSignIcon : name === "Move" ? ArrowUp01Icon : name === "Align" ? TextIcon : name === "Width" ? ArrowRight01Icon : TextStrikethroughIcon), group: "Table", sub: name, run: () => undefined })),
-        { key: "header", label: "Header row", group: "Table", current: table.header !== false, run: () => setTable(id, grid, [row, col], { header: table.header === false }) },
-        { key: "header-column", label: "Header column", group: "Table", current: !!table.headerColumn, run: () => setTable(id, grid, [row, col], table.headerColumn ? { headerColumn: false } : { headerColumn: true }) },
+        { key: "header", label: "Header row", group: "Table", current: table.header !== false, run: () => editTable(id, { op: "header", row: table.header === false }, [row, col]) },
+        { key: "header-column", label: "Header column", group: "Table", current: !!table.headerColumn, run: () => editTable(id, { op: "header", column: !table.headerColumn }, [row, col]) },
       );
     }
     if (code) {
@@ -3497,127 +3488,67 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   // ---- Tables ----
 
-  /** A table's cells with what belongs to each column, to change as one: widths (0: share what's left) and alignment. */
-  interface Tbl {
-    rows: string[][];
-    widths: number[];
-    align: BlockEditorTableAlign[];
-  }
-  const tblOf = (b: BlockEditorBlock): Tbl => {
-    const rows = gridOf(b);
-    return { rows, widths: rows[0].map((_, c) => b.widths?.[c] ?? 0), align: rows[0].map((_, c) => b.align?.[c] ?? "start") };
-  };
-
-  /** Change a table and put the caret in `cell` afterwards. */
-  function setTable(id: string, t: Tbl | string[][], cell: [number, number], extra: Partial<BlockEditorBlock> = {}): void {
+  /** Apply a table edit as one undo step, put the caret in `focus` and announce `message`. No-op edits change nothing. */
+  function editTable(id: string, edit: BlockEditorTableEdit, focus: [number, number], message?: string): void {
     const i = indexOf(id);
     const b = blocks[i];
     if (!b) return;
-    const rows = Array.isArray(t) ? t : t.rows;
-    const columns = rows[0].length;
-    const widths = Array.from({ length: columns }, (_, c) => (Array.isArray(t) ? b.widths?.[c] : t.widths[c]) ?? 0);
-    const align = Array.from({ length: columns }, (_, c) => (Array.isArray(t) ? b.align?.[c] : t.align[c]) ?? "start");
-    const next: BlockEditorBlock = { ...b, ...extra, rows };
-    if (widths.some(Boolean)) next.widths = widths;
-    else delete next.widths;
-    if (align.some((a) => a !== "start")) next.align = align;
-    else delete next.align;
-    commit(replaceAt(i, next), { id, cell, start: 0 });
+    const next = blockEditorEditTable(
+      b,
+      edit.op === "width"
+        ? { ...edit, measured: Array.from(els.get(id)?.querySelectorAll<HTMLElement>("tr:first-child > *") ?? []).map((c) => Math.round(c.offsetWidth)) }
+        : edit,
+    );
+    if (next === b) return;
+    commit(replaceAt(i, next), { id, cell: focus, start: 0 });
+    if (message) announce(message);
   }
   function insertRow(id: string, at: number, col = 0): void {
-    const b = blocks[indexOf(id)];
-    const t = tblOf(b);
-    if (!b || t.rows.length >= MAX_ROWS) return;
-    t.rows.splice(at, 0, t.rows[0].map(() => ""));
-    setTable(id, t, [at, Math.min(col, t.rows[0].length - 1)]);
-    announce(`Row ${at + 1} added`);
+    editTable(id, { op: "insert-row", at }, [at, col], `Row ${at + 1} added`);
   }
   function insertColumn(id: string, at: number, row = 0): void {
-    const b = blocks[indexOf(id)];
-    const t = tblOf(b);
-    if (!b || t.rows[0].length >= MAX_COLUMNS) return;
-    for (const r of t.rows) r.splice(at, 0, "");
-    t.widths.splice(at, 0, 0);
-    t.align.splice(at, 0, "start");
-    setTable(id, t, [Math.min(row, t.rows.length - 1), at]);
-    announce(`Column ${at + 1} added`);
+    editTable(id, { op: "insert-column", at }, [row, at], `Column ${at + 1} added`);
   }
   function deleteRow(id: string, at: number): void {
-    const t = tblOf(blocks[indexOf(id)]);
-    if (t.rows.length < 2) return;
-    t.rows.splice(at, 1);
-    setTable(id, t, [Math.min(at, t.rows.length - 1), 0]);
-    announce("Row deleted");
+    editTable(id, { op: "delete-row", at }, [at, 0], "Row deleted");
   }
   function deleteColumn(id: string, at: number): void {
-    const t = tblOf(blocks[indexOf(id)]);
-    if (t.rows[0].length < 2) return;
-    for (const r of t.rows) r.splice(at, 1);
-    t.widths.splice(at, 1);
-    t.align.splice(at, 1);
-    setTable(id, t, [0, Math.min(at, t.rows[0].length - 1)]);
-    announce("Column deleted");
+    editTable(id, { op: "delete-column", at }, [0, at], "Column deleted");
   }
   function duplicateRow(id: string, at: number, col = 0): void {
-    const t = tblOf(blocks[indexOf(id)]);
-    if (t.rows.length >= MAX_ROWS) return;
-    t.rows.splice(at + 1, 0, t.rows[at].slice());
-    setTable(id, t, [at + 1, col]);
-    announce(`Row ${at + 1} duplicated`);
+    editTable(id, { op: "duplicate-row", at }, [at + 1, col], `Row ${at + 1} duplicated`);
   }
   function duplicateColumn(id: string, at: number, row = 0): void {
-    const t = tblOf(blocks[indexOf(id)]);
-    if (t.rows[0].length >= MAX_COLUMNS) return;
-    for (const r of t.rows) r.splice(at + 1, 0, r[at]);
-    t.widths.splice(at + 1, 0, t.widths[at]);
-    t.align.splice(at + 1, 0, t.align[at]);
-    setTable(id, t, [row, at + 1]);
-    announce(`Column ${at + 1} duplicated`);
+    editTable(id, { op: "duplicate-column", at }, [row, at + 1], `Column ${at + 1} duplicated`);
   }
   /** Swap a row with its neighbour (a header row stays first). */
   function moveRow(id: string, at: number, dir: -1 | 1): void {
     const b = blocks[indexOf(id)];
-    const t = tblOf(b);
-    const first = b.header === false ? 0 : 1;
+    if (!b) return;
     const to = at + dir;
-    if (at < first || to < first || to >= t.rows.length) return;
-    [t.rows[at], t.rows[to]] = [t.rows[to], t.rows[at]];
-    setTable(id, t, [to, lastCell?.col ?? 0]);
-    announce(`Row moved to position ${to + 1} of ${t.rows.length}`);
+    editTable(id, { op: "move-row", from: at, to }, [to, lastCell?.col ?? 0], `Row moved to position ${to + 1} of ${gridOf(b).length}`);
   }
   function moveColumn(id: string, at: number, dir: -1 | 1): void {
-    const t = tblOf(blocks[indexOf(id)]);
+    const b = blocks[indexOf(id)];
+    if (!b) return;
     const to = at + dir;
-    if (to < 0 || to >= t.rows[0].length) return;
-    for (const r of t.rows) [r[at], r[to]] = [r[to], r[at]];
-    [t.widths[at], t.widths[to]] = [t.widths[to], t.widths[at]];
-    [t.align[at], t.align[to]] = [t.align[to], t.align[at]];
-    setTable(id, t, [lastCell?.row ?? 0, to]);
-    announce(`Column moved to position ${to + 1} of ${t.rows[0].length}`);
+    editTable(id, { op: "move-column", from: at, to }, [lastCell?.row ?? 0, to], `Column moved to position ${to + 1} of ${gridOf(b)[0].length}`);
   }
   /** Empty a row, a column or every cell (the header row's words too). */
   function clearCells(id: string, what: "row" | "column" | "table", row: number, col: number): void {
-    const t = tblOf(blocks[indexOf(id)]);
-    t.rows = t.rows.map((r, ri) => r.map((cell, ci) => (what === "table" || (what === "row" ? ri === row : ci === col) ? "" : cell)));
-    setTable(id, t, [row, col]);
-    announce(`${what === "table" ? "Table" : what === "row" ? "Row" : "Column"} cleared`);
+    const b = blocks[indexOf(id)];
+    if (!b) return;
+    const grid = gridOf(b);
+    const rows: [number, number] = what === "column" || what === "table" ? [0, grid.length - 1] : [row, row];
+    const columns: [number, number] = what === "row" || what === "table" ? [0, grid[0].length - 1] : [col, col];
+    editTable(id, { op: "clear", rows, columns }, [row, col], `${what === "table" ? "Table" : what === "row" ? "Row" : "Column"} cleared`);
   }
   function alignColumn(id: string, col: number, align: BlockEditorTableAlign, row = 0): void {
-    const t = tblOf(blocks[indexOf(id)]);
-    t.align[col] = align;
-    setTable(id, t, [row, col]);
+    editTable(id, { op: "align", column: col, align }, [row, col]);
   }
   /** Set one column's width in px, or every column's back to even (0). */
   function sizeColumn(id: string, col: number, width: number, row = 0): void {
-    const i = indexOf(id);
-    const t = tblOf(blocks[i]);
-    if (!width) t.widths = t.widths.map(() => 0);
-    else {
-      // The first time, every column keeps the width it has now, so only this one moves.
-      if (!t.widths.some(Boolean)) t.widths = Array.from(els.get(id)?.querySelectorAll<HTMLElement>("tr:first-child > *") ?? []).map((c) => Math.round(c.offsetWidth));
-      t.widths[col] = Math.max(MIN_COLUMN, Math.min(MAX_COLUMN, Math.round(width)));
-    }
-    setTable(id, t, [row, col]);
+    editTable(id, { op: "width", column: col, width }, [row, col]);
   }
 
   /** Put the caret in a cell, at `at` characters (or its end). */
@@ -3629,20 +3560,17 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   /** Text pasted into a cell: a spreadsheet's rows and columns (tab and new line separated) fill the cells from there on, growing the table. */
   function pasteIntoTable(cell: HTMLElement, text: string): void {
     const lines = text.replace(/\r\n?/g, "\n").replace(/\n+$/, "").split("\n");
-    const cells = lines.map((line) => line.split("\t"));
-    if (cells.length === 1 && cells[0].length === 1) {
+    const values = lines.map((line) => line.split("\t"));
+    if (values.length === 1 && values[0].length === 1) {
       document.execCommand("insertText", false, text.replace(/\s+/g, " "));
       return;
     }
     const id = idOf(cell);
-    const b = blocks[indexOf(id)];
     const [row, col] = cellPos(cell);
-    const rows = gridOf(b);
-    const width = Math.min(MAX_COLUMNS, Math.max(rows[0].length, col + Math.max(...cells.map((r) => r.length))));
-    const height = Math.min(MAX_ROWS, Math.max(rows.length, row + cells.length));
-    const grid = Array.from({ length: height }, (_, r) => Array.from({ length: width }, (_, c) => rows[r]?.[c] ?? ""));
-    cells.forEach((line, r) => line.forEach((value, c) => (row + r < height && col + c < width ? (grid[row + r][col + c] = value.replace(/\s+/g, " ").trim()) : undefined)));
-    setTable(id, grid, [Math.min(height - 1, row + cells.length - 1), Math.min(width - 1, col + cells[cells.length - 1].length - 1)]);
+    const grid = gridOf(blocks[indexOf(id)]);
+    const width = Math.min(MAX_COLUMNS, Math.max(grid[0].length, col + Math.max(...values.map((r) => r.length))));
+    const height = Math.min(MAX_ROWS, Math.max(grid.length, row + values.length));
+    editTable(id, { op: "cells", at: [row, col], values }, [Math.min(height - 1, row + values.length - 1), Math.min(width - 1, col + values[values.length - 1].length - 1)]);
   }
 
   function onCellKey(e: KeyboardEvent, cell: HTMLElement): void {
@@ -4140,9 +4068,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const i = indexOf(id);
       const b = blocks[i];
       if (b && width !== widths[col]) {
-        const t = tblOf(b);
-        t.widths = widths.map((w, c) => (c === col ? width : w));
-        setTable(id, t, [lastCell?.id === id ? lastCell.row : 0, col]);
+        editTable(id, { op: "width", column: col, width }, [lastCell?.id === id ? lastCell.row : 0, col]);
       } else render();
       return;
     }
