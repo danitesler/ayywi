@@ -19,7 +19,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   No way to say one component is a variation of another → an optional `family` in a component's meta.json (Textarea, Number field, Search bar and Inline edit name Input); the preview nests them under it and `pnpm check` rejects a family that doesn't exist.
 
 - **[Block editor](#/block-editor)**
-  New component — a Notion-style rich text editor of blocks (text, headings, lists, to-dos, toggles that hide what is nested under them, tables of plain-text cells, quotes, callouts, highlighted code with a language picker and Copy, images, embeds, files) with / for blocks, Markdown shortcuts, a formatting bar, @ mentions, drag handles and `<ayy-block-editor>`.
+  New component — a Notion-style rich text editor of blocks (text, headings, lists, to-dos, toggles that hide what is nested under them, tables with row and column grips, drag to reorder, sorting and resizable columns, quotes, callouts, highlighted code with a language picker and Copy, images, embeds, files) with / for blocks, Markdown shortcuts, a formatting bar, @ mentions, drag handles and `<ayy-block-editor>`.
 - **[PIN input](#/pin-input)**
   New component — a row of single-character slots for OTP, two-factor and verification codes, with paste distribution, Backspace navigation, masked PIN mode and `<ayy-pin-input>`.
 - **[Rating](#/rating)**
@@ -101,8 +101,6 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   One look and one density only → `spacious`, `bordered` (column lines), `sticky` (header and footer stay in view) and `fixed` (column widths from the header) join `compact`.
 
 ### Changed
-- **[Block editor](#/block-editor)**
-  A table row or column grip only opened a menu → opening it selects that row or column, and the keyboard can clear, delete, duplicate, move, copy or cut the selection.
 - **Preview**
   Home page agent block was one fixed terminal snippet → tabs for Quick start, npm package, No build and By hand, each with its own copy button, in a block that keeps one 320px height so the page doesn't jump between tabs.
 - **Preview**
