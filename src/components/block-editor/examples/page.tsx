@@ -34,7 +34,7 @@ const race = blockEditorMentionHtml({ trigger: "#", id: "142", label: "Auth toke
 const START: BlockEditorBlock[] = [
   { id: "title", type: "heading-1", html: "Q3 onboarding launch" },
   { id: "intro", type: "text", html: `Ship the new onboarding to <strong>every workspace</strong> by 30 September. ${ada} owns the rollout, ${margaret} the release notes.` },
-  { id: "freeze", type: "callout", html: "Code freeze is <strong>12 September</strong>. Anything not merged by then moves to Q4." },
+  { id: "freeze", type: "callout", tone: "warning", html: "Code freeze is <strong>12 September</strong>. Anything not merged by then moves to Q4." },
   { id: "h-milestones", type: "heading-2", html: "Milestones" },
   { id: "m1", type: "todo", checked: true, html: "Finish the onboarding copy" },
   { id: "m2", type: "todo", html: `Fix ${race} before the beta` },
