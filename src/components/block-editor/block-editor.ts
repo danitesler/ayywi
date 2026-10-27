@@ -1475,6 +1475,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   let menuItems: MenuItem[] = [];
   let dismissed: { id: string; start: number } | null = null;
   let mentionRequest = 0;
+  /** Line whose mention lookup is still a Promise. recordPending waits for it. */
+  let mentionFlight: string | null = null;
   let stopMenuPlacing: (() => void) | null = null;
   let stopToolbarPlacing: (() => void) | null = null;
   let toolbarFrame = 0;
@@ -2437,6 +2439,9 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   // ---- Menus: "/" for blocks, a trigger for mentions, the handle for block actions ----
 
+  /** A trailing space only matches a label that starts with the typed text ("bulleted ", "link to "), not a keyword string that happens to contain the token ("todo " inside "todo task"). */
+  const trailingSpace = (q: string) => /[\s ]$/.test(q);
+
   /** How well a block type matches what's typed after "/": its name starting with it first, then a word of its name, a keyword, anything. */
   function slashScore(type: BlockEditorBlockType, q: string): number {
     if (!q) return 0;
@@ -2446,6 +2451,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (label.startsWith(q) || t.markdown === q) return 1;
     if (label.split(/\s+/).some((w) => w.startsWith(q))) return 2;
     if (words.some((w) => w.startsWith(q))) return 3;
+    if (trailingSpace(q)) return -1;
     if (label.includes(q) || t.keywords.includes(q)) return 4;
     return -1;
   }
@@ -2456,6 +2462,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const l = label.toLowerCase();
     if (l.startsWith(q)) return 1;
     if (l.split(/\s+/).some((w) => w.startsWith(q))) return 2;
+    if (trailingSpace(q)) return -1;
     if (l.includes(q)) return 4;
     return -1;
   }
@@ -2838,11 +2845,17 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function openMention(id: string, start: number, query: string, source: BlockEditorMentionSource): void {
     const request = ++mentionRequest;
+    mentionFlight = null;
+    const dropRecord = () => {
+      if (recordPending === id) recordPending = null;
+    };
     const done = (found: BlockEditorMentionOption[]) => {
       if (request !== mentionRequest) return;
+      mentionFlight = null;
       const options = found.slice(0, 8);
       if (!options.length) {
         closeTextMenu();
+        dropRecord();
         return;
       }
       const same = menu?.mode === "mention" && menu.id === id && menu.start === start;
@@ -2850,11 +2863,21 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       hideToolbar(true);
       renderMenu();
     };
+    const giveUp = () => {
+      if (request !== mentionRequest) return;
+      mentionFlight = null;
+      closeTextMenu();
+      dropRecord();
+    };
     const list = source.options;
     if (typeof list === "function") {
       const result = list(query);
-      if (result && typeof (result as Promise<BlockEditorMentionOption[]>).then === "function") (result as Promise<BlockEditorMentionOption[]>).then(done, () => closeTextMenu());
-      else done(result as BlockEditorMentionOption[]);
+      if (result && typeof (result as Promise<BlockEditorMentionOption[]>).then === "function") {
+        mentionFlight = id;
+        (result as Promise<BlockEditorMentionOption[]>).then(done, giveUp);
+        return;
+      }
+      done(result as BlockEditorMentionOption[]);
     } else {
       const q = query.toLowerCase();
       done(list.filter((o) => !q || `${o.label} ${o.hint ?? ""} ${o.id}`.toLowerCase().includes(q)));
@@ -2926,7 +2949,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       commit(replaceAt(i, { ...b, html: escapeText(source.trigger) }), { id, start: source.trigger.length });
       const el = textEl(id);
       if (el) detectMenus(el);
-      if (!openedMention(id)) recordPending = null;
+      // Sync lists have already opened or given up. A Promise clears the flag when it settles with no menu.
+      if (!openedMention(id) && mentionFlight !== id) recordPending = null;
       return;
     }
     const html = sliceHtml(b.html ?? "", 0, start) + sliceHtml(b.html ?? "", start + 1 + query.length);

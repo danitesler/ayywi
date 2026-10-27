@@ -2780,6 +2780,30 @@ for (const renderer of ["react", "html"] as const) {
       await expect(line(16).locator("mark")).toHaveText("hi");
     });
 
+    test("block editor closes / when a space follows a single-word command", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "page").locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const menu = editor.locator(".ayy-block-editor__menu");
+      await blocks.nth(16).locator(":scope > .ayy-block-editor__text").evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+        const sel = getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.type("/todo ");
+      await expect(menu).toBeHidden();
+      await page.keyboard.press("Enter");
+      await expect(blocks.nth(16)).toHaveAttribute("data-type", "text");
+
+      // A multi-word label that starts with the typed text stays open. "Link to …" is the record test.
+      await page.keyboard.type("/bulleted ");
+      await expect(menu.getByRole("option", { name: /Bulleted list/ })).toBeVisible();
+    });
+
     test("block editor links a record from / and fires the mention click", async ({ page }) => {
       await open(page, "block-editor", { renderer });
       const stage = example(page, "page");
