@@ -1305,7 +1305,7 @@ interface MenuItem {
 type MenuState =
   | { mode: "slash"; id: string; start: number; query: string; index: number }
   | { mode: "mention"; id: string; start: number; query: string; index: number; source: BlockEditorMentionSource; options: BlockEditorMentionOption[] }
-  | { mode: "actions"; ids: string[]; index: number; anchor: HTMLElement; list: "actions" | "language"; sub?: string };
+  | { mode: "actions"; ids: string[]; index: number; anchor: HTMLElement; list: "actions" | "language" | "row" | "column" | "cell"; at?: [number, number]; sub?: string };
 
 const BLOCKS_MIME = "application/x-ayy-blocks+json";
 
@@ -2404,12 +2404,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     );
   }
 
-  function actionItems(ids: string[], sub?: string): MenuItem[] {
+  /** The five block actions (copy, duplicate, move, delete), labels adapted to the selection. */
+  function blockActions(ids: string[]): MenuItem[] {
     const list = ids.map((id) => blocks[indexOf(id)]).filter(Boolean);
     const many = list.length > 1;
     const code = list.length === 1 && list[0].type === "code";
     const table = list.length === 1 && list[0].type === "table" ? list[0] : null;
-    const items: MenuItem[] = [
+    return [
       ...(list.some((b) => isText(b.type) || b.type === "table")
         ? [{ key: "copy", label: code ? "Copy code" : "Copy text", icon: svg(Copy01Icon), group: "Actions", run: () => copyBlocks(ids) }]
         : []),
@@ -2418,61 +2419,26 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       { key: "down", label: table ? "Move table down" : "Move down", icon: svg(ArrowDown01Icon), meta: "Mod+Shift+ArrowDown", group: "Actions", run: () => moveBlocks(ids, 1) },
       { key: "delete", label: many ? `Delete ${list.length} blocks` : table ? "Delete table" : "Delete", icon: svg(Delete02Icon), meta: "Delete", group: "Actions", destructive: true, run: () => removeBlocks(ids) },
     ];
-    if (table) {
-      const grid = gridOf(table);
-      const at = lastCell?.id === table.id ? lastCell : { id: table.id, row: 0, col: 0 };
-      const row = Math.min(at.row, grid.length - 1);
-      const col = Math.min(at.col, grid[0].length - 1);
-      const rows = grid.length;
-      const cols = grid[0].length;
-      const id = table.id;
-      const first = table.header === false ? 0 : 1;
-      const left = iconSvg(ArrowLeft01Icon, { directional: true });
-      const right = iconSvg(ArrowRight01Icon, { directional: true });
-      const thisRow = `Row ${row + 1}`;
-      const thisCol = `Column ${col + 1}`;
-      const align = table.align?.[col] ?? "start";
-      const width = table.widths?.[col] || cellEl(id, 0, col)?.closest("td, th")?.getBoundingClientRect().width || 160;
-      const submenus: Record<string, MenuItem[]> = {
-        Insert: [
-          { key: "row-above", label: "Row above", hint: thisRow, icon: svg(ArrowUp01Icon), disabled: rows >= MAX_ROWS, run: () => insertRow(id, row, col) },
-          { key: "row-below", label: "Row below", hint: thisRow, icon: svg(ArrowDown01Icon), disabled: rows >= MAX_ROWS, run: () => insertRow(id, row + 1, col) },
-          { key: "column-before", label: "Column before", hint: thisCol, icon: left, disabled: cols >= MAX_COLUMNS, run: () => insertColumn(id, col, row) },
-          { key: "column-after", label: "Column after", hint: thisCol, icon: right, disabled: cols >= MAX_COLUMNS, run: () => insertColumn(id, col + 1, row) },
-        ],
-        Duplicate: [
-          { key: "duplicate-row", label: "Row", hint: thisRow, icon: svg(CopyPlusIcon), disabled: rows >= MAX_ROWS, run: () => duplicateRow(id, row, col) },
-          { key: "duplicate-column", label: "Column", hint: thisCol, icon: svg(CopyPlusIcon), disabled: cols >= MAX_COLUMNS, run: () => duplicateColumn(id, col, row) },
-        ],
-        Move: [
-          { key: "row-up", label: "Row up", hint: thisRow, meta: "Mod+Shift+ArrowUp", icon: svg(ArrowUp01Icon), disabled: row <= first, run: () => moveRow(id, row, -1) },
-          { key: "row-down", label: "Row down", hint: thisRow, meta: "Mod+Shift+ArrowDown", icon: svg(ArrowDown01Icon), disabled: row < first || row >= rows - 1, run: () => moveRow(id, row, 1) },
-          { key: "column-earlier", label: "Column earlier", hint: thisCol, meta: "Mod+Shift+ArrowLeft", icon: left, disabled: col <= 0, run: () => moveColumn(id, col, -1) },
-          { key: "column-later", label: "Column later", hint: thisCol, meta: "Mod+Shift+ArrowRight", icon: right, disabled: col >= cols - 1, run: () => moveColumn(id, col, 1) },
-        ],
-        Align: (["start", "center", "end"] as const).map((a) => ({ key: `align-${a}`, label: a === "start" ? "At the start" : a === "center" ? "Centered" : "At the end", hint: thisCol, current: align === a, run: () => alignColumn(id, col, a, row) })),
-        Width: [
-          { key: "wider", label: "Wider", hint: `${thisCol}, ${Math.round(width)} px`, icon: svg(PlusSignIcon), run: () => sizeColumn(id, col, width + 24, row) },
-          { key: "narrower", label: "Narrower", hint: thisCol, icon: svg(Delete02Icon), disabled: width - 24 < MIN_COLUMN, run: () => sizeColumn(id, col, width - 24, row) },
-          { key: "even", label: "Even out all columns", disabled: !table.widths?.some(Boolean), run: () => sizeColumn(id, col, 0, row) },
-        ],
-        Clear: [
-          { key: "clear-row", label: "Row", hint: thisRow, run: () => clearCells(id, "row", row, col) },
-          { key: "clear-column", label: "Column", hint: thisCol, run: () => clearCells(id, "column", row, col) },
-          { key: "clear-table", label: "Every cell", run: () => clearCells(id, "table", row, col) },
-        ],
-        Delete: [
-          { key: "delete-row", label: "Row", hint: thisRow, icon: svg(Delete02Icon), destructive: true, disabled: rows < 2, run: () => deleteRow(id, row) },
-          { key: "delete-column", label: "Column", hint: thisCol, icon: svg(Delete02Icon), destructive: true, disabled: cols < 2, run: () => deleteColumn(id, col) },
-        ],
-      };
-      if (sub && submenus[sub]) return [{ key: "back", label: "Back", icon: left, sub: null, run: () => undefined }, ...submenus[sub].filter((item) => !item.disabled).map((item) => ({ ...item, group: sub }))];
-      items.unshift(
-        ...Object.keys(submenus).map((name) => ({ key: `sub-${name}`, label: name, icon: svg(name === "Delete" ? Delete02Icon : name === "Duplicate" ? CopyPlusIcon : name === "Insert" ? PlusSignIcon : name === "Move" ? ArrowUp01Icon : name === "Align" ? TextIcon : name === "Width" ? ArrowRight01Icon : TextStrikethroughIcon), group: "Table", sub: name, run: () => undefined })),
-        { key: "header", label: "Header row", group: "Table", current: table.header !== false, run: () => editTable(id, { op: "header", row: table.header === false }, [row, col]) },
-        { key: "header-column", label: "Header column", group: "Table", current: !!table.headerColumn, run: () => editTable(id, { op: "header", column: !table.headerColumn }, [row, col]) },
-      );
-    }
+  }
+
+  /** The header and clear items a table menu shows before the block actions (block handle and cell menus). */
+  function tableWideItems(id: string, at: [number, number]): MenuItem[] {
+    const b = blocks[indexOf(id)];
+    if (!b || b.type !== "table") return [];
+    return [
+      { key: "header", label: "Header row", group: "Table", current: b.header !== false, run: () => editTable(id, { op: "header", row: b.header === false }, at) },
+      { key: "header-column", label: "Header column", group: "Table", current: !!b.headerColumn, run: () => editTable(id, { op: "header", column: !b.headerColumn }, at) },
+      ...(b.widths?.some(Boolean) ? [{ key: "even", label: "Even out column widths", group: "Table", run: () => sizeColumn(id, at[1], 0, at[0]) }] : []),
+      { key: "clear-table", label: "Clear every cell", group: "Table", run: () => clearCells(id, "table", at[0], at[1]) },
+    ];
+  }
+
+  function actionItems(ids: string[]): MenuItem[] {
+    const list = ids.map((id) => blocks[indexOf(id)]).filter(Boolean);
+    const code = list.length === 1 && list[0].type === "code";
+    const table = list.length === 1 && list[0].type === "table" ? list[0] : null;
+    const items = blockActions(ids);
+    if (table) items.unshift(...tableWideItems(table.id, [0, 0]));
     if (code) {
       items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon), group: "Actions", run: () => openActions(ids, els.get(ids[0])?.querySelector<HTMLElement>("[data-code-language]") ?? menuEl, "language") });
     }
@@ -2485,20 +2451,85 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return items;
   }
 
+  /** The row, column or cell menu for a table block, scoped to the grip or cell it was opened from. */
+  function tableItems(id: string, list: "row" | "column" | "cell", at: [number, number], sub?: string): MenuItem[] {
+    const b = blocks[indexOf(id)];
+    if (!b || b.type !== "table") return [];
+    const grid = gridOf(b);
+    const [row, col] = at;
+    const rows = grid.length;
+    const cols = grid[0].length;
+    const first = b.header === false ? 0 : 1;
+    const left = iconSvg(ArrowLeft01Icon, { directional: true });
+    const right = iconSvg(ArrowRight01Icon, { directional: true });
+    const width = b.widths?.[col] || cellEl(id, 0, col)?.closest("td, th")?.getBoundingClientRect().width || 160;
+
+    const rowMenu: MenuItem[] = [
+      { key: "row-insert-above", label: "Insert above", icon: svg(ArrowUp01Icon), run: () => insertRow(id, row, col) },
+      { key: "row-insert-below", label: "Insert below", icon: svg(ArrowDown01Icon), run: () => insertRow(id, row + 1, col) },
+      { key: "row-duplicate", label: "Duplicate", meta: "Mod+D", icon: svg(CopyPlusIcon), run: () => duplicateRow(id, row, col) },
+      ...(row > first ? [{ key: "row-move-up", label: "Move up", icon: svg(ArrowUp01Icon), run: () => moveRow(id, row, -1) }] : []),
+      ...(row >= first && row < rows - 1 ? [{ key: "row-move-down", label: "Move down", icon: svg(ArrowDown01Icon), run: () => moveRow(id, row, 1) }] : []),
+      { key: "row-clear", label: "Clear", run: () => clearCells(id, "row", row, col) },
+      ...(rows > 1 ? [{ key: "row-delete", label: "Delete", icon: svg(Delete02Icon), destructive: true, run: () => deleteRow(id, row) }] : []),
+    ];
+
+    const columnMenu: MenuItem[] = [
+      { key: "column-insert-before", label: "Insert before", icon: left, run: () => insertColumn(id, col, row) },
+      { key: "column-insert-after", label: "Insert after", icon: right, run: () => insertColumn(id, col + 1, row) },
+      { key: "column-duplicate", label: "Duplicate", icon: svg(CopyPlusIcon), run: () => duplicateColumn(id, col, row) },
+      ...(col > 0 ? [{ key: "column-move-earlier", label: "Move earlier", icon: left, run: () => moveColumn(id, col, -1) }] : []),
+      ...(col < cols - 1 ? [{ key: "column-move-later", label: "Move later", icon: right, run: () => moveColumn(id, col, 1) }] : []),
+      { key: "column-sort", label: "Sort", icon: svg(ArrowDown01Icon), sub: "Sort", run: () => undefined },
+      { key: "column-align", label: "Align", icon: svg(TextIcon), sub: "Align", run: () => undefined },
+      { key: "column-width", label: "Width", icon: svg(ArrowRight01Icon), sub: "Width", run: () => undefined },
+      { key: "column-clear", label: "Clear", run: () => clearCells(id, "column", row, col) },
+      ...(cols > 1 ? [{ key: "column-delete", label: "Delete", icon: svg(Delete02Icon), destructive: true, run: () => deleteColumn(id, col) }] : []),
+    ];
+
+    const sortMenu: MenuItem[] = [
+      { key: "sort-asc", label: "A → Z", run: () => editTable(id, { op: "sort", column: col, dir: "asc" }, [row, col], "Sorted A to Z") },
+      { key: "sort-desc", label: "Z → A", run: () => editTable(id, { op: "sort", column: col, dir: "desc" }, [row, col], "Sorted Z to A") },
+    ];
+    const align = b.align?.[col] ?? "start";
+    const alignMenu: MenuItem[] = (["start", "center", "end"] as const).map((a) => ({
+      key: `align-${a}`,
+      label: a === "start" ? "At the start" : a === "center" ? "Centered" : "At the end",
+      current: align === a,
+      run: () => alignColumn(id, col, a, row),
+    }));
+    const widthMenu: MenuItem[] = [
+      { key: "wider", label: "Wider +24 px", icon: svg(PlusSignIcon), run: () => sizeColumn(id, col, width + 24, row) },
+      ...(width - 24 >= MIN_COLUMN ? [{ key: "narrower", label: "Narrower −24 px", icon: svg(Delete02Icon), run: () => sizeColumn(id, col, width - 24, row) }] : []),
+    ];
+
+    const submenus: Record<string, MenuItem[]> = { Row: rowMenu, Column: columnMenu, Sort: sortMenu, Align: alignMenu, Width: widthMenu };
+    if (sub && submenus[sub]) return [{ key: "back", label: "Back", icon: left, sub: null, run: () => undefined }, ...submenus[sub].map((item) => ({ ...item, group: sub }))];
+    if (list === "row") return rowMenu;
+    if (list === "column") return columnMenu;
+    return [
+      { key: "row", label: "Row", icon: svg(ArrowDown01Icon), group: "Table", sub: "Row", run: () => undefined },
+      { key: "column", label: "Column", icon: svg(ArrowRight01Icon), group: "Table", sub: "Column", run: () => undefined },
+      ...tableWideItems(id, at),
+      ...blockActions([id]),
+    ];
+  }
+
   const menuOwner = () => (menu && menu.mode !== "actions" ? textEl(menu.id) : menu ? menuEl : null);
 
   function renderMenu(): void {
     if (!menu) return;
     const m = menu;
-    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : actionItems(m.ids, m.sub);
+    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : m.list === "row" || m.list === "column" || m.list === "cell" ? tableItems(m.ids[0], m.list, m.at ?? [0, 0], m.sub) : actionItems(m.ids);
     if (!menuItems.length) {
       closeMenu();
       return;
     }
     m.index = Math.max(0, Math.min(m.index, menuItems.length - 1));
     menuEl.replaceChildren();
-    menuEl.dataset.mode = m.mode === "actions" ? m.list : m.mode;
-    menuEl.setAttribute("aria-label", m.mode === "slash" ? "Blocks" : m.mode === "mention" ? (m.source.label ?? "Mentions") : m.list === "language" ? "Code language" : m.sub ? `Block actions: ${m.sub}` : "Block actions");
+    menuEl.dataset.mode = m.mode === "actions" ? (m.list === "language" ? "language" : "actions") : m.mode;
+    const menuLabel = m.mode === "slash" ? "Blocks" : m.mode === "mention" ? (m.source.label ?? "Mentions") : m.list === "language" ? "Code language" : m.list === "row" ? `Row ${(m.at?.[0] ?? 0) + 1}` : m.list === "column" ? `Column ${(m.at?.[1] ?? 0) + 1}` : m.list === "cell" ? "Cell" : "Block actions";
+    menuEl.setAttribute("aria-label", m.mode === "actions" && m.sub ? `${menuLabel}: ${m.sub}` : menuLabel);
     let group: string | undefined;
     menuItems.forEach((item, i) => {
       if (item.group && item.group !== group) {
@@ -2585,7 +2616,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (native) {
       if (menuEl.matches(":popover-open")) menuEl.hidePopover();
     } else menuEl.hidden = true;
-    if (was.mode === "actions") was.anchor.setAttribute("aria-expanded", "false");
+    if (was.mode === "actions" && was.anchor.matches("button")) was.anchor.setAttribute("aria-expanded", "false");
   }
   const closeTextMenu = () => {
     if (menu && menu.mode !== "actions") closeMenu();
@@ -2654,12 +2685,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
   }
 
-  function openActions(ids: string[], from: HTMLElement, list: "actions" | "language" = "actions"): void {
+  function openActions(ids: string[], from: HTMLElement, list: "actions" | "language" | "row" | "column" | "cell" = "actions", at?: [number, number]): void {
     closeMenu();
     if (list === "actions") pick(ids[0], ids[ids.length - 1]);
     else unpick();
-    menu = { mode: "actions", ids, index: 0, anchor: from, list };
-    from.setAttribute("aria-expanded", "true");
+    // Row and column menus act on the table's own axis, not a block selection. Task 5 calls selectAxis(id, list, at?.[list === "row" ? 0 : 1]) here.
+    menu = { mode: "actions", ids, index: 0, anchor: from, list, at };
+    if (from.matches("button")) from.setAttribute("aria-expanded", "true");
     renderMenu();
     if (list === "language") moveMenu(Math.max(0, menuItems.findIndex((item) => item.current)) - menu.index);
     menuEl.focus({ preventScroll: true });
@@ -3614,7 +3646,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
     if (mod && key === "/") {
       e.preventDefault();
-      openActions([id], els.get(id)?.querySelector<HTMLElement>(`.${C.handle}`) ?? cell);
+      openActions([id], cell, "cell", [row, col]);
       return;
     }
     if (mod && e.shiftKey && e.key.startsWith("Arrow")) {
@@ -4138,6 +4170,17 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     }
   }
 
+  /** Right-click on a cell opens its menu; anywhere else the browser's own menu stays. */
+  function onContextMenu(e: MouseEvent): void {
+    if (readOnly()) return;
+    const cell = (e.target as HTMLElement).closest<HTMLElement>(`.${C.cell}`);
+    if (!cell) return;
+    e.preventDefault();
+    const id = idOf(cell);
+    const [row, col] = cellPos(cell);
+    openActions([id], cell, "cell", [row, col]);
+  }
+
   function onClick(e: MouseEvent): void {
     const target = e.target as HTMLElement;
     if (toolbar.contains(target) || menuEl.contains(target)) return;
@@ -4189,6 +4232,16 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const handle = target.closest<HTMLElement>(`.${C.handle}`);
     if (handle) {
       openActions(isPicked(id) ? pickedIds() : [id], handle);
+      return;
+    }
+    const rowGrip = target.closest<HTMLElement>(`.${C.rowGrip}`);
+    if (rowGrip) {
+      openActions([id], rowGrip, "row", [Number(rowGrip.dataset.row), 0]);
+      return;
+    }
+    const colGrip = target.closest<HTMLElement>(`.${C.colGrip}`);
+    if (colGrip) {
+      openActions([id], colGrip, "column", [0, Number(colGrip.dataset.col)]);
       return;
     }
     if (target.closest("[data-media-upload]")) {
@@ -4448,6 +4501,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     [root, "mousedown", onMouseDown as EventListener],
     [root, "pointerover", onTablePointerOver as EventListener],
     [root, "click", onClick as EventListener],
+    [root, "contextmenu", onContextMenu as EventListener],
     [root, "change", onChange],
     [root, "focusin", onFocusIn as EventListener],
     [root, "focusout", onFocusOut as EventListener],

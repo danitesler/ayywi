@@ -2296,34 +2296,27 @@ for (const renderer of ["react", "html"] as const) {
       await expect(cell(1, 1)).toHaveText("$10");
       await expect(cell(2, 2)).toHaveText("$30");
 
-      // Block actions are grouped (Insert, Duplicate, Move, Align, Width, Clear, Delete) and work on the row and column the caret was in.
+      // The row and column grips open menus scoped to that row or column, and act on it (not the caret's cell).
       const option = (name: RegExp) => menu.getByRole("option", { name });
-      await cell(1, 1).click();
-      await page.keyboard.press("Control+/");
-      await expect(menu).toBeVisible();
-      await expect(option(/^Delete row/)).toHaveCount(0);
-      await option(/^Delete\b/).first().click();
-      await option(/^Row/).click();
+      await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
+      await expect(menu).toHaveAttribute("aria-label", "Row 2");
+      await option(/^Delete/).click();
       await expect(table.locator("tbody tr")).toHaveCount(3);
-      await cell(1, 1).click();
-      await page.keyboard.press("Control+/");
-      await option(/^Delete\b/).first().click();
-      await option(/^Column/).click();
+      await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
+      await expect(menu).toHaveAttribute("aria-label", "Column 2");
+      await option(/^Delete/).click();
       await expect(table.locator("thead th")).toHaveCount(3);
 
-      // Back and ArrowLeft leave a group; Align and Duplicate change the column and the rows.
-      await cell(1, 1).click();
-      await page.keyboard.press("Control+/");
+      // Align (with Back to leave the group) and Duplicate change the column and the rows from their grips.
+      await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
       await option(/^Align/).click();
       await option(/^Back/).click();
       await expect(option(/^Align/)).toBeVisible();
       await option(/^Align/).click();
       await option(/^Centered/).click();
       await expect(cell(1, 1)).toHaveAttribute("data-align", "center");
-      await cell(1, 1).click();
-      await page.keyboard.press("Control+/");
-      await option(/^Duplicate\b/).first().click();
-      await option(/^Row/).click();
+      await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
+      await option(/^Duplicate/).click();
       await expect(table.locator("tbody tr")).toHaveCount(4);
 
       // Mod+Shift+arrows move the row and the column.
@@ -2334,7 +2327,7 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Control+Shift+ArrowRight");
       await expect(cell(2, 1)).toHaveText(before ?? "");
 
-      // Dragging a column's edge sets its width; Width > Even out clears them.
+      // Dragging a column's edge sets its width; the cell menu's Even out clears them.
       const grip = table.locator(".ayy-block-editor__col-resize").first();
       const box = (await grip.boundingBox())!;
       const start = (await cell(0, 0).boundingBox())!.width;
@@ -2346,8 +2339,7 @@ for (const renderer of ["react", "html"] as const) {
       expect((await cell(0, 0).boundingBox())!.width).toBeGreaterThan(start + 40);
       await cell(0, 0).click();
       await page.keyboard.press("Control+/");
-      await option(/^Width/).click();
-      await option(/^Even out/).click();
+      await option(/^Even out column widths/).click();
       await expect(table.locator("table")).not.toHaveAttribute("data-sized", "");
 
       // The header column (on in this example) makes the first cell of each row a <th scope="row">.
@@ -2356,6 +2348,53 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Control+/");
       await option(/^Header column/).click();
       await expect(table.locator('tbody th[scope="row"]')).toHaveCount(0);
+    });
+
+    test("block editor table menus act on the row or column they were opened from", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "task-notes").locator(".ayy-block-editor");
+      const table = editor.locator('[data-type="table"]');
+      const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
+      const menu = editor.locator(".ayy-block-editor__menu");
+      const option = (name: RegExp) => menu.getByRole("option", { name });
+
+      // The row grip of the second row (Starter, whose grip is labelled "Row 2") opens a menu scoped to it.
+      await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
+      await expect(menu).toHaveAttribute("aria-label", "Row 2");
+      await option(/^Duplicate/).click();
+      await expect(table.locator("tbody tr")).toHaveCount(3);
+      await expect(table.locator("tbody tr").nth(1).locator("th, td")).toHaveText(["Starter", "$9", "$12"]);
+
+      // The first column's grip sorts its column Z → A: the body rows' first cells end up descending.
+      await table.locator('.ayy-block-editor__col-grip[data-col="0"]').click();
+      await expect(menu).toHaveAttribute("aria-label", "Column 1");
+      await option(/^Sort/).click();
+      await option(/^Z → A/).click();
+      await expect(table.locator('tbody th[scope="row"]')).toHaveText(["Team", "Starter", "Starter"]);
+
+      // Mod+/ in a cell opens the cell menu.
+      await cell(1, 1).click();
+      await page.keyboard.press("Control+/");
+      await expect(menu).toBeVisible();
+      await expect(option(/^Row/)).toHaveCount(1);
+      await expect(option(/^Column/)).toHaveCount(1);
+      await expect(option(/^Header row/)).toHaveCount(1);
+      await expect(option(/^Delete table/)).toHaveCount(1);
+      await page.keyboard.press("Escape");
+
+      // A right-click on a cell opens the same menu.
+      await cell(1, 1).evaluate((el) => el.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2 })));
+      await expect(option(/^Row/)).toHaveCount(1);
+      await expect(option(/^Column/)).toHaveCount(1);
+      await expect(option(/^Header row/)).toHaveCount(1);
+      await expect(option(/^Delete table/)).toHaveCount(1);
+      await page.keyboard.press("Escape");
+
+      // The block handle (⋮⋮) menu keeps the table-wide items but drops Row › and Column ›.
+      await table.locator(".ayy-block-editor__handle").click();
+      await expect(option(/^Row/)).toHaveCount(0);
+      await expect(option(/^Header row/)).toHaveCount(1);
+      await expect(option(/^Delete table/)).toHaveCount(1);
     });
 
     test("block editor table grips show for the hovered or focused cell and stay out of read-only", async ({ page }) => {
