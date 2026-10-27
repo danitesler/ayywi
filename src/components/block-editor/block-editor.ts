@@ -11,6 +11,7 @@
 // and <ayy-block-editor> both call connectBlockEditor().
 import { cx } from "../../lib/cx";
 import {
+  Alert02Icon,
   ArrowDown01Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
@@ -18,7 +19,9 @@ import {
   ArrowUpRight01Icon,
   Attachment01Icon,
   BulbIcon,
+  CancelCircleIcon,
   CheckListIcon,
+  CheckmarkCircle02Icon,
   CloudUploadIcon,
   CodeIcon,
   Copy01Icon,
@@ -29,6 +32,7 @@ import {
   Heading02Icon,
   Heading03Icon,
   Image01Icon,
+  InformationCircleIcon,
   LeftToRightListBulletIcon,
   LeftToRightListNumberIcon,
   Link01Icon,
@@ -82,6 +86,25 @@ export type BlockEditorBlockType = (typeof blockEditorBlockTypes)[number];
 export type BlockEditorTableAlign = "start" | "center" | "end";
 const TABLE_ALIGNS: readonly BlockEditorTableAlign[] = ["start", "center", "end"];
 
+/** A callout's colour. Absent, or "default", is the plain note. */
+export type BlockEditorTone = "default" | "info" | "success" | "warning" | "destructive";
+const CALLOUT_TONES: readonly BlockEditorTone[] = ["default", "info", "success", "warning", "destructive"];
+/** GitHub alert written for each tone. A default callout stays a plain quote. */
+const CALLOUT_ALERT: Partial<Record<BlockEditorTone, string>> = { info: "[!NOTE]", success: "[!TIP]", warning: "[!WARNING]", destructive: "[!CAUTION]" };
+/** GitHub alert read back into a tone. [!IMPORTANT] is info, same as [!NOTE]. */
+const ALERT_TONE: Record<string, BlockEditorTone> = { NOTE: "info", TIP: "success", IMPORTANT: "info", WARNING: "warning", CAUTION: "destructive" };
+const ALERT_MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i;
+const CALLOUT_ICONS: Record<BlockEditorTone, IconData> = {
+  default: BulbIcon,
+  info: InformationCircleIcon,
+  success: CheckmarkCircle02Icon,
+  warning: Alert02Icon,
+  destructive: CancelCircleIcon,
+};
+function calloutTone(tone: string | undefined): BlockEditorTone | undefined {
+  return tone && tone !== "default" && (CALLOUT_TONES as readonly string[]).includes(tone) ? (tone as BlockEditorTone) : undefined;
+}
+
 export interface BlockEditorBlock {
   /** Stable id; the editor makes one when it's missing. */
   id: string;
@@ -115,6 +138,8 @@ export interface BlockEditorBlock {
   /** File blocks: file name and size in bytes. */
   name?: string;
   size?: number;
+  /** Callout blocks: info, success, warning or destructive. Absent is the default note. */
+  tone?: BlockEditorTone;
 }
 
 export interface BlockEditorMentionOption {
@@ -496,6 +521,10 @@ export function blockEditorNormalize(value: readonly Partial<BlockEditorBlock>[]
     if (INDENTABLE.includes(type) && raw.indent) b.indent = Math.max(0, Math.min(MAX_INDENT, Math.round(raw.indent)));
     if (type === "todo") b.checked = !!raw.checked;
     if (type === "toggle" && raw.open) b.open = true;
+    if (type === "callout") {
+      const tone = calloutTone(raw.tone);
+      if (tone) b.tone = tone;
+    }
     if (type === "table") {
       b.rows = tableGrid(raw.rows);
       b.header = raw.header !== false;
@@ -639,7 +668,22 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
     else if ((m = line.match(/^[-*+]\s+\[( |x|X)\]\s+(.*)$/))) out.push(blockEditorBlock("todo", { html: markdownInline(m[2]), checked: m[1] !== " ", ...nested }));
     else if ((m = line.match(/^[-*+]\s+(.*)$/))) out.push(blockEditorBlock("bullet", { html: markdownInline(m[1]), ...nested }));
     else if ((m = line.match(/^\d+[.)]\s+(.*)$/))) out.push(blockEditorBlock("number", { html: markdownInline(m[1]), ...nested }));
-    else if ((m = line.match(/^>\s?(.*)$/))) out.push(blockEditorBlock("quote", { html: markdownInline(m[1]) }));
+    else if ((m = line.match(/^>\s?(.*)$/))) {
+      const marker = m[1].match(ALERT_MARKER);
+      if (marker) {
+        const parts: string[] = [];
+        while (i + 1 < lines.length) {
+          const nextRaw = lines[i + 1];
+          const nextLead = nextRaw.match(/^[ \t]*/)?.[0] ?? "";
+          const cont = nextRaw.slice(nextLead.length).match(/^>\s?(.*)$/);
+          // A following alert starts its own callout; a non-quote line ends this one.
+          if (!cont || ALERT_MARKER.test(cont[1])) break;
+          i++;
+          parts.push(cont[1]);
+        }
+        out.push(blockEditorBlock("callout", { tone: ALERT_TONE[marker[1].toUpperCase()], html: markdownInline(parts.join("\n")) }));
+      } else out.push(blockEditorBlock("quote", { html: markdownInline(m[1]) }));
+    }
     else if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) out.push(blockEditorBlock("divider"));
     else if ((m = line.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/))) {
       const src = safeUrl(m[2], "src");
@@ -649,7 +693,7 @@ export function blockEditorFromMarkdown(markdown: string): BlockEditorBlock[] {
   return out;
 }
 
-/** The blocks as Markdown (mentions become plain text, underline is dropped, a callout is a quote). */
+/** The blocks as Markdown (mentions become plain text, underline is dropped, a default callout is a quote, a toned one is a GitHub alert). */
 export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): string {
   const out: string[] = [];
   const numbers: number[] = [];
@@ -695,9 +739,14 @@ export function blockEditorToMarkdown(value: readonly BlockEditorBlock[]): strin
         toggles.push(depth);
         break;
       case "quote":
-      case "callout":
         out.push(`> ${text}`);
         break;
+      case "callout": {
+        const marker = CALLOUT_ALERT[calloutTone(b.tone) ?? "default"];
+        if (!marker) out.push(`> ${text}`);
+        else out.push(`> ${marker}`, ...(text ? text.split("\n").map((l) => `> ${l}`) : [">"]));
+        break;
+      }
       case "code":
         out.push(`\`\`\`${b.language ?? ""}`, inlineText(b.html ?? ""), "```");
         break;
@@ -773,7 +822,7 @@ export function blockEditorToHtml(value: readonly BlockEditorBlock[]): string {
         out.push(`<blockquote>${html}</blockquote>`);
         break;
       case "callout":
-        out.push(`<aside>${html}</aside>`);
+        out.push(`<aside${calloutTone(b.tone) ? ` data-tone="${b.tone}"` : ""}>${html}</aside>`);
         break;
       case "code":
         out.push(`<pre><code${b.language ? ` class="language-${escapeHtml(b.language)}"` : ""}>${escapeHtml(inlineText(b.html ?? ""))}</code></pre>`);
@@ -1171,6 +1220,7 @@ function readMarkup(root: HTMLElement): BlockEditorBlock[] {
       indent: d.indent ? Number(d.indent) : undefined,
       checked: d.checked !== undefined || !!el.querySelector<HTMLInputElement>(`.${C.check}`)?.checked,
       open: d.open !== undefined && d.open !== "false",
+      tone: d.tone as BlockEditorTone | undefined,
       ...(type === "table" ? tableMarkup(el) : {}),
       src: d.src ?? img?.getAttribute("src") ?? undefined,
       caption: d.caption ?? el.querySelector(`.${C.caption}`)?.textContent ?? undefined,
@@ -1534,7 +1584,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return el ? textOf(el).length : 0;
   };
   const isEmptyDoc = () => blocks.length === 1 && blocks[0].type === "text" && !inlineText(blocks[0].html ?? "") && !(blocks[0].html ?? "").includes(C.mention);
-  const signature = (b: BlockEditorBlock) => [b.type, b.html ?? "", b.src ?? "", b.caption ?? "", b.name ?? "", b.size ?? "", b.rows ? b.rows.map((r) => r.join("\u0002")).join("\u0003") : "", b.header === false ? 0 : 1, b.headerColumn ? 1 : 0, b.widths?.join(",") ?? "", b.align?.join(",") ?? "", readOnly() ? 1 : 0, uploading.has(b.id) ? 1 : 0].join("\u0001");
+  const signature = (b: BlockEditorBlock) => [b.type, b.tone ?? "", b.html ?? "", b.src ?? "", b.caption ?? "", b.name ?? "", b.size ?? "", b.rows ? b.rows.map((r) => r.join("\u0002")).join("\u0003") : "", b.header === false ? 0 : 1, b.headerColumn ? 1 : 0, b.widths?.join(",") ?? "", b.align?.join(",") ?? "", readOnly() ? 1 : 0, uploading.has(b.id) ? 1 : 0].join("\u0001");
   const replaceAt = (i: number, ...items: BlockEditorBlock[]) => {
     const next = blocks.slice();
     next.splice(i, 1, ...items);
@@ -1556,6 +1606,10 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (INDENTABLE.includes(type) && b.indent) out.indent = b.indent;
     if (type === "todo") out.checked = b.type === "todo" ? !!b.checked : false;
     if (type === "toggle") out.open = b.type === "toggle" ? !!b.open : true;
+    if (type === "callout") {
+      const tone = calloutTone(b.tone);
+      if (tone) out.tone = tone;
+    }
     return out;
   }
 
@@ -1787,7 +1841,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       if (b.type === "callout") {
         const icon = make("span", C.icon, { "aria-hidden": "true", contenteditable: "false" });
-        icon.innerHTML = svg(BulbIcon);
+        icon.innerHTML = svg(CALLOUT_ICONS[calloutTone(b.tone) ?? "default"]);
         el.append(icon);
       }
       el.append(buildText(b));
@@ -1848,6 +1902,9 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       paintCode(b);
     }
+    const tone = b.type === "callout" ? calloutTone(b.tone) : undefined;
+    if (tone) el.setAttribute("data-tone", tone);
+    else el.removeAttribute("data-tone");
     if (b.type === "toggle") {
       el.toggleAttribute("data-open", !!b.open);
       const arrow = el.querySelector<HTMLElement>(`:scope > .${C.toggle}`);
@@ -2445,14 +2502,45 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     ];
   }
 
-  function actionItems(ids: string[]): MenuItem[] {
+  function actionItems(ids: string[], sub?: string): MenuItem[] {
     const list = ids.map((id) => blocks[indexOf(id)]).filter(Boolean);
     const code = list.length === 1 && list[0].type === "code";
     const table = list.length === 1 && list[0].type === "table" ? list[0] : null;
+    const callout = list.length === 1 && list[0].type === "callout" && !readOnly() ? list[0] : null;
+    if (sub === "Colour" && callout) {
+      const active = calloutTone(callout.tone) ?? "default";
+      const tones: { tone: BlockEditorTone; label: string }[] = [
+        { tone: "default", label: "Default" },
+        { tone: "info", label: "Info" },
+        { tone: "success", label: "Success" },
+        { tone: "warning", label: "Warning" },
+        { tone: "destructive", label: "Destructive" },
+      ];
+      return [
+        { key: "back", label: "Back", icon: iconSvg(ArrowLeft01Icon, { directional: true }), sub: null, run: () => undefined },
+        ...tones.map(({ tone, label }) => ({
+          key: `tone-${tone}`,
+          label,
+          group: "Colour",
+          current: active === tone,
+          run: () => {
+            const i = indexOf(callout.id);
+            const b = blocks[i];
+            if (!b || (calloutTone(b.tone) ?? "default") === tone) return;
+            const next: BlockEditorBlock = { ...b, tone };
+            if (tone === "default") delete next.tone;
+            commit(replaceAt(i, next));
+          },
+        })),
+      ];
+    }
     const items = blockActions(ids);
     if (table) items.unshift(...tableWideItems(table.id, [0, 0]));
     if (code) {
       items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon), group: "Actions", run: () => openActions(ids, els.get(ids[0])?.querySelector<HTMLElement>("[data-code-language]") ?? menuEl, "language") });
+    }
+    if (callout) {
+      items.push({ key: "colour", label: "Colour", icon: svg(CALLOUT_ICONS[calloutTone(callout.tone) ?? "default"]), group: "Actions", sub: "Colour", run: () => undefined });
     }
     if (list.length && list.every((b) => isText(b.type))) {
       for (const type of blockEditorBlockTypes) {
@@ -2536,7 +2624,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function renderMenu(): void {
     if (!menu) return;
     const m = menu;
-    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : m.list === "row" || m.list === "column" || m.list === "cell" ? tableItems(m.ids[0], m.list, m.at ?? [0, 0], m.sub) : actionItems(m.ids);
+    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : m.list === "row" || m.list === "column" || m.list === "cell" ? tableItems(m.ids[0], m.list, m.at ?? [0, 0], m.sub) : actionItems(m.ids, m.sub);
     if (!menuItems.length) {
       closeMenu();
       return;

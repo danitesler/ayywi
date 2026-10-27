@@ -154,3 +154,27 @@ test("table limits are not package exports", () => {
   assert.equal(typeof ayy.blockEditorEditTable, "function");
   assert.equal(typeof ayy.tableGrid, "function");
 });
+
+test("callout tones survive normalize, Markdown and HTML", () => {
+  const c = { id: "c", type: "callout", tone: "warning", html: "Freeze is <strong>Friday</strong>" };
+  assert.equal(blockEditorNormalize([c])[0].tone, "warning");
+  assert.equal(blockEditorNormalize([{ ...c, tone: "default" }])[0].tone, undefined);
+  assert.equal(blockEditorNormalize([{ ...c, type: "text" }])[0].tone, undefined);
+  const md = blockEditorToMarkdown([c]);
+  assert.equal(md, "> [!WARNING]\n> Freeze is **Friday**");
+  const [back] = blockEditorFromMarkdown(md);
+  assert.equal(back.type, "callout");
+  assert.equal(back.tone, "warning");
+  assert.equal(back.html, "Freeze is <strong>Friday</strong>");
+  assert.match(blockEditorToHtml([c]), /^<aside data-tone="warning">/);
+});
+
+test("callout tones map GitHub alerts, and a default callout stays a quote", () => {
+  assert.equal(blockEditorFromMarkdown("> [!NOTE]\n> n")[0].tone, "info");
+  assert.equal(blockEditorFromMarkdown("> [!TIP]\n> t")[0].tone, "success");
+  assert.equal(blockEditorFromMarkdown("> [!IMPORTANT]\n> Watch this")[0].tone, "info");
+  assert.equal(blockEditorFromMarkdown("> [!CAUTION]\n> c")[0].tone, "destructive");
+  assert.equal(blockEditorToMarkdown([{ id: "c", type: "callout", html: "Plain" }]), "> Plain");
+  assert.equal(blockEditorToMarkdown([{ id: "c", type: "callout", tone: "default", html: "Plain" }]), "> Plain");
+  assert.equal(blockEditorFromMarkdown("> Plain")[0].type, "quote");
+});

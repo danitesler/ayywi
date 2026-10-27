@@ -2690,6 +2690,49 @@ for (const renderer of ["react", "html"] as const) {
       await expect(option(/^Insert below/)).toHaveCount(0);
       await expect(option(/^Duplicate/)).toHaveCount(0);
     });
+
+    test("block editor callouts change colour from block actions", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const notes = example(page, "task-notes");
+      const editor = notes.locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      const menu = editor.locator(".ayy-block-editor__menu");
+      const option = (name: RegExp) => menu.getByRole("option", { name });
+
+      // A new line, then /callout. Not the page example: that callout later gets a tone, which would make the undo below meaningless.
+      await blocks.nth(0).locator(":scope > .ayy-block-editor__text").evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.press("Enter");
+      await page.keyboard.type("/callout");
+      await expect(menu.getByRole("option").first()).toContainText("Callout");
+      await page.keyboard.press("Enter");
+      const callout = blocks.nth(1);
+      await expect(callout).toHaveAttribute("data-type", "callout");
+      await expect(callout).not.toHaveAttribute("data-tone");
+
+      // A real pointer move clears the typing lock (the gutter ignores the pointer while it is set). Hover alone does not: its move reports no travel.
+      const box = (await callout.locator(":scope > .ayy-block-editor__text").boundingBox())!;
+      await page.mouse.move(box.x + 4, box.y + 4);
+      await page.mouse.move(box.x + 28, box.y + 12);
+      await expect(editor).not.toHaveAttribute("data-typing");
+      await callout.locator(".ayy-block-editor__handle").click();
+      await option(/^Colour/).click();
+      await option(/^Warning/).click();
+      await expect(callout).toHaveAttribute("data-tone", "warning");
+
+      await page.keyboard.press("Control+z");
+      await expect(callout).not.toHaveAttribute("data-tone");
+
+      await notes.getByRole("switch", { name: "Read only" }).click();
+      await expect(callout.locator(".ayy-block-editor__handle")).toHaveCount(0);
+    });
   });
 }
 

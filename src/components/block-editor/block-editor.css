@@ -5,6 +5,7 @@
      [data-indent="1…4"]    nesting level of a list item or line (what a toggle shows or hides)
      [data-open]            a toggle that shows the blocks nested under it
      [data-checked]         a to-do that's done
+     [data-tone]            a callout's colour (info, success, warning, destructive); absent is the default note
      [data-selected]        a block in a block selection (Esc, Shift+click, the handle), or a table cell (td/th) in a selected row or column
      [data-dragging]        a block being carried by its handle (the drop line is drag-drop's [data-drop-edge])
      [data-empty]           on the root while the document is one empty line (its placeholder shows)
@@ -362,12 +363,26 @@
   background-color: var(--ayy-color-wash);
 }
 
+/* Same tint and icon colour as Alert: 8% of the status colour behind, the colour itself on the icon. */
+.ayy-block-editor__block[data-type="callout"][data-tone="info"] { --_c: var(--ayy-color-info); }
+.ayy-block-editor__block[data-type="callout"][data-tone="success"] { --_c: var(--ayy-color-success); }
+.ayy-block-editor__block[data-type="callout"][data-tone="warning"] { --_c: var(--ayy-color-warning); }
+.ayy-block-editor__block[data-type="callout"][data-tone="destructive"] { --_c: var(--ayy-color-destructive); }
+
+.ayy-block-editor__block[data-type="callout"][data-tone] {
+  background-color: color-mix(in srgb, var(--_c) 8%, transparent);
+}
+
 .ayy-block-editor__icon {
   display: inline-grid;
   flex: none;
   place-items: center;
   block-size: var(--_lh);
   color: var(--ayy-color-muted);
+}
+
+.ayy-block-editor__block[data-type="callout"][data-tone] > .ayy-block-editor__icon {
+  color: var(--_c);
 }
 
 .ayy-block-editor__icon > svg {
@@ -1231,6 +1246,13 @@ ayy-block-editor {
   }
   .ayy-block-editor__block[data-checked] > .ayy-block-editor__text {
     color: GrayText;
+  }
+  .ayy-block-editor__block[data-type="callout"][data-tone] {
+    border: 1px solid CanvasText;
+    background-color: Canvas;
+  }
+  .ayy-block-editor__block[data-type="callout"][data-tone] > .ayy-block-editor__icon {
+    color: CanvasText;
   }
   .ayy-block-editor__option[data-current]::after {
     border-color: CanvasText;
