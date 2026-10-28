@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft01Icon, ComputerIcon, LinkSquare01Icon, SmartPhone01Icon, Tablet01Icon } from "@hugeicons/core-free-icons";
-import { Badge, buttonClass, Card, Chip, CardDescription, CardFooter, CardHeader, CardLink, CardMedia, Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
+import { Badge, buttonClass, Card, CardDescription, CardFooter, CardHeader, CardLink, CardMedia, Icon, SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";
 import type { BrandInput, ThemeMode } from "@danitesler/ayywi";
 import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
@@ -77,18 +77,7 @@ function Modes({ app }: { app: ShowcaseApp }) {
   );
 }
 
-type Group = "all" | "apps" | "sites";
-const GROUPS: { id: Group; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "apps", label: "Apps" },
-  { id: "sites", label: "Websites" },
-];
-/** A website has a Navbar; an app has the App shell. */
-const groupOf = (app: ShowcaseApp): Group => (app.uses.includes("navbar") ? "sites" : "apps");
-
 function Gallery() {
-  const [group, setGroup] = useState<Group>("all");
-  const shown = showcaseApps.filter((app) => group === "all" || groupOf(app) === group);
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
@@ -97,24 +86,9 @@ function Gallery() {
           {showcaseApps.length} screens built with ayywi only, each in its own theme and density. Open one to see it at desktop, tablet and
           phone sizes, with the prompt that builds it.
         </p>
-        <div className="ayy-cluster pv-filter" role="radiogroup" aria-label="Show">
-          {GROUPS.map((g) => (
-            <Chip
-              key={g.id}
-              type="radio"
-              name="pv-example-group"
-              value={g.id}
-              checked={group === g.id}
-              onCheckedChange={(on) => on && setGroup(g.id)}
-              count={g.id === "all" ? showcaseApps.length : showcaseApps.filter((a) => groupOf(a) === g.id).length}
-            >
-              {g.label}
-            </Chip>
-          ))}
-        </div>
       </header>
       <ul className="pv-showcase">
-        {shown.map((app) => (
+        {showcaseApps.map((app) => (
           <li key={app.id}>
             <Card interactive spotlight className="pv-showcase__card" aria-describedby={`sc-${app.id}-desc`}>
               <CardMedia className="pv-showcase__thumb">

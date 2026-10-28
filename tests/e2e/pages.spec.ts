@@ -367,15 +367,11 @@ const SHOWCASE = [
   { id: "booking", name: "Haven", theme: "light", density: "touch" },
 ];
 
-test("examples: chips filter the gallery and cards open a device preview", async ({ page }) => {
+test("examples: cards open a device preview", async ({ page }) => {
   const errors = await open(page, "examples");
   await expect(page.getByRole("heading", { level: 1, name: "Examples" })).toBeVisible();
   const cards = page.locator(".pv-showcase__card");
   await expect(cards).toHaveCount(SHOWCASE.length);
-  await page.getByRole("radio", { name: /^Websites/ }).check();
-  await expect(cards).toHaveCount(2);
-  await page.getByRole("radio", { name: /^Apps/ }).check();
-  await expect(cards).toHaveCount(SHOWCASE.length - 2);
 
   await cards.filter({ hasText: "Relay" }).click();
   await expect(page).toHaveURL(/#\/examples\/inbox$/);
