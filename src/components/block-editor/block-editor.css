@@ -8,7 +8,7 @@
      [data-checked]         a to-do that's done
      [data-tone]            a callout's colour (info, success, warning, destructive); absent is the default note
      [data-selected]        a block in a block selection (Esc, Shift+click, the handle), or a table cell (td/th) in a selected row or column
-     [data-dragging]        a block being carried by its handle (the drop line is drag-drop's [data-drop-edge])
+     [data-dragging]        a block, or a table row or column, being carried (the drop line is drag-drop's [data-drop-edge])
      [data-empty]           on the root while the document is one empty line (its placeholder shows)
      [aria-readonly="true"] on the root: shown, not edited */
 
@@ -516,15 +516,6 @@
     inset-inline: 7px;
     opacity: 0.4;
   }
-}
-
-/* The line showing where a dragged row or column will land, inside the table wrap. Hidden until a grip drag passes its
-   4 px threshold; the script positions it (inline-start, block-start, inline/block size) from the cells' rects. */
-.ayy-block-editor__table-drop {
-  position: absolute;
-  z-index: 2;
-  background-color: var(--ayy-color-primary);
-  pointer-events: none;
 }
 
 /* Row and column grips: the handles that light the hovered or focused cell's row and column. The row grip sits in the
@@ -1184,9 +1175,17 @@ span.ayy-block-editor__code-button {
 
 /* ---- The / menu, mentions and block actions: a Combobox list hanging from the caret or the handle ---- */
 
-.ayy-block-editor__menu {
+.ayy-block-editor__menu,
+.ayy-block-editor__submenu {
   inline-size: min(19rem, calc(100vw - 1rem));
   max-block-size: min(22rem, 60vh);
+}
+
+/* A submenu opens beside its item, like the appearance menu, rather than replacing the list. */
+.ayy-block-editor__submenu {
+  inline-size: max-content;
+  min-inline-size: 11rem;
+  max-inline-size: min(19rem, calc(100vw - 1rem));
 }
 
 .ayy-block-editor__menu[data-mode="language"] {
@@ -1234,12 +1233,25 @@ span.ayy-block-editor__code-button {
 }
 
 /* Block actions are a short list: plain icons, no tiles. */
-.ayy-block-editor__menu[data-mode="actions"] .ayy-block-editor__option-icon {
+.ayy-block-editor__menu[data-mode="actions"] .ayy-block-editor__option-icon,
+.ayy-block-editor__submenu .ayy-block-editor__option-icon {
   inline-size: auto;
   block-size: auto;
   border: 0;
   background: none;
   color: var(--ayy-color-muted);
+}
+
+/* A colour dot keeps the swatch's own size. The actions icon rule above would otherwise flatten it. */
+.ayy-block-editor__menu[data-mode="actions"] .ayy-block-editor__option-icon.ayy-swatch,
+.ayy-block-editor__submenu .ayy-block-editor__option-icon.ayy-swatch {
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-swatch, var(--ayy-color-muted));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ayy-color-text) 18%, transparent);
+  color: var(--ayy-color-bg);
 }
 
 .ayy-block-editor__option-text {
@@ -1394,9 +1406,6 @@ ayy-block-editor {
     border-block-end: 2px solid CanvasText;
   }
   .ayy-block-editor__col-resize::after {
-    background-color: Highlight;
-  }
-  .ayy-block-editor__table-drop {
     background-color: Highlight;
   }
 }

@@ -1017,14 +1017,6 @@
 
 /* ---- Get started ---- */
 
-.pv-try {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--ayy-space-2) var(--ayy-space-3);
-  font-size: var(--ayy-text-sm);
-}
-
 /* Rows of links to components: outline buttons, packed tight. */
 .pv-links {
   --ayy-gap: var(--ayy-space-2);
@@ -1639,6 +1631,1074 @@
 @media (forced-colors: active) {
   .pv-themer__panel,
   .pv-themer__stage {
+    border-color: CanvasText;
+  }
+}
+
+/* ---- Principles: rows (a Card with spotlight, no fill) whose sketch plays on hover. ---- */
+
+.pv-principles {
+  container-type: inline-size;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-4);
+}
+
+.pv-principle {
+  --pv-zoom: 1.2;
+}
+
+.pv-principle__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+  align-items: center;
+  gap: var(--ayy-space-8);
+  min-inline-size: 0;
+  padding: var(--ayy-space-8);
+}
+
+.pv-principle__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-3);
+}
+
+.pv-principle__num {
+  font-family: var(--ayy-font-heading);
+  font-size: 4.5rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--ayy-color-text) 22%, transparent);
+  user-select: none;
+}
+
+.pv-principle__title {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-xl);
+  font-weight: var(--ayy-weight-semibold);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.pv-principle__body {
+  margin: 0;
+  max-inline-size: 36rem;
+  color: var(--ayy-color-text-soft);
+  text-wrap: pretty;
+}
+
+.pv-principle__art {
+  display: grid;
+  place-items: center;
+  min-block-size: 13rem;
+}
+
+.pv-art-host:hover .pv-principle__num {
+  color: light-dark(color-mix(in srgb, var(--ayy-spot) 45%, var(--ayy-color-text)), var(--ayy-spot));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pv-principle__num {
+    transition: color var(--ayy-duration-slow) var(--ayy-ease-out-expo);
+  }
+
+  /* The sketch sits a little low and settles into place when the row is hovered. */
+  .pv-principle__art {
+    transform: translateY(0.5rem);
+    transition: transform var(--ayy-duration-slower) var(--ayy-ease-out-expo);
+  }
+
+  .pv-art-host:hover .pv-principle__art {
+    transform: none;
+  }
+}
+
+@container (max-width: 48rem) {
+  .pv-principle__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ayy-space-6);
+    padding: var(--ayy-space-6);
+  }
+}
+
+@container (max-width: 26rem) {
+  .pv-principle {
+    --pv-zoom: 0.9;
+  }
+
+  .pv-principle__inner {
+    padding: var(--ayy-space-5);
+  }
+
+  .pv-principle__art {
+    min-block-size: 10rem;
+  }
+}
+
+/* ---- Spot illustrations (preview/src/illustrations.tsx). Rules: the Illustration foundations page.
+   One 17 × 9.5rem canvas scaled by --pv-zoom; opaque surfaces on the page colour with 1px border lines; skeleton lines
+   in the line tint; one key colour (the host's --ayy-spot). The still frame is the picture: every keyframe below starts
+   and ends at rest, on one 3.6s loop, staggered by 0.12s beats. ---- */
+
+@property --pv-key {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+.pv-art {
+  --pv-key: var(--ayy-spot, var(--ayy-color-text));
+  --pv-key-text: light-dark(color-mix(in srgb, var(--pv-key) 45%, var(--ayy-color-text)), var(--pv-key));
+  --pv-on-key: var(--ayy-palette-neutral-4);
+  --pv-fill: var(--ayy-color-line);
+  --pv-loop: 3.6s;
+  --pv-beat: 0.12s;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  inline-size: 17rem;
+  block-size: 9.5rem;
+  zoom: var(--pv-zoom, 1.2);
+  font-size: var(--ayy-text-xs);
+  line-height: 1.35;
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-art i,
+.pv-art b {
+  display: block;
+  font-style: normal;
+}
+
+/* Kit */
+
+.pv-art__surface {
+  box-sizing: border-box;
+  border: 1px solid var(--ayy-color-border);
+  border-radius: var(--ayy-radius-lg);
+  background-color: var(--ayy-color-bg);
+}
+
+.pv-art__line {
+  flex: none;
+  block-size: 0.3rem;
+  inline-size: var(--w, 100%);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--pv-fill);
+}
+
+.pv-art__line--key {
+  background-color: var(--pv-key);
+}
+
+.pv-art__block {
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--pv-fill);
+}
+
+.pv-art__block--key {
+  background-color: color-mix(in srgb, var(--pv-key) 60%, var(--ayy-color-bg));
+}
+
+.pv-art__btn {
+  flex: none;
+  block-size: 0.55rem;
+  inline-size: 60%;
+  border-radius: var(--ayy-radius-sm);
+  background-color: var(--pv-key);
+}
+
+.pv-art__chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  block-size: 1.6rem;
+  padding-inline: 0.65rem;
+  border: 1px solid var(--ayy-color-border);
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-bg);
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-art__chip--key {
+  border-color: var(--pv-key);
+  color: var(--pv-key-text);
+}
+
+.pv-art__chip--key::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--pv-key);
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pv-art__spark {
+  flex: none;
+  color: var(--pv-key-text);
+}
+
+.pv-art__link {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 0;
+  border-block-start: 1px dashed color-mix(in srgb, var(--ayy-color-text) 30%, transparent);
+}
+
+.pv-art__cursor {
+  position: absolute;
+  color: var(--ayy-color-bg);
+  filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--ayy-color-shadow) 40%, transparent));
+}
+
+.pv-art__cursor path {
+  fill: var(--ayy-color-text);
+}
+
+/* 01 Agent-first */
+
+.pv-art__chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  inline-size: 15rem;
+}
+
+.pv-art__bubble {
+  max-inline-size: 88%;
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.75rem;
+}
+
+.pv-art__bubble--me {
+  align-self: flex-end;
+  border-end-end-radius: 0.25rem;
+  background-color: var(--pv-key);
+  color: var(--pv-on-key);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.pv-art__bubble--ai {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  border: 1px solid var(--ayy-color-border);
+  border-end-start-radius: 0.25rem;
+  background-color: var(--ayy-color-bg);
+}
+
+.pv-art__ai-head {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ayy-color-text);
+}
+
+.pv-art__steps {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.pv-art__steps i {
+  flex: 1;
+  block-size: 0.25rem;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--pv-key);
+}
+
+.pv-art__actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* 02 Cross-platform */
+
+.pv-art--devices {
+  gap: 0.3rem;
+}
+
+.pv-art__screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem;
+}
+
+.pv-art__screen .pv-art__block {
+  flex: 1;
+}
+
+.pv-art__screen .pv-art__btn {
+  margin-block-start: 0.1rem;
+}
+
+.pv-art__screen--desktop {
+  inline-size: 6.6rem;
+  block-size: 4.6rem;
+}
+
+.pv-art__screen--tablet {
+  inline-size: 4.2rem;
+  block-size: 5.6rem;
+}
+
+.pv-art__screen--phone {
+  inline-size: 2.7rem;
+  block-size: 5.6rem;
+  border-radius: var(--ayy-radius-xl);
+}
+
+.pv-art--devices .pv-art__cursor {
+  inset-block-start: 6.2rem;
+  inset-inline-start: 2.15rem;
+}
+
+/* 03 Adaptive: the window is a size container, so the rail and the wrap are real breakpoints. */
+
+.pv-art__window {
+  position: relative;
+  container-type: inline-size;
+  inline-size: 100%;
+}
+
+.pv-art__window::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -0.2rem;
+  inset-block-start: 50%;
+  inline-size: 0.25rem;
+  block-size: 1.4rem;
+  margin-block-start: -0.7rem;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--pv-key);
+}
+
+.pv-art__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.5rem;
+  border-block-end: 1px solid var(--ayy-color-border);
+}
+
+.pv-art__bar i {
+  inline-size: 0.35rem;
+  block-size: 0.35rem;
+  border-radius: 50%;
+  background-color: var(--pv-fill);
+}
+
+.pv-art__bar .pv-art__line {
+  flex: 1;
+  max-inline-size: 6rem;
+  margin-inline-start: 0.4rem;
+}
+
+.pv-art__view {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.pv-art__side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-inline-end: 0.5rem;
+  border-inline-end: 1px solid var(--ayy-color-border);
+}
+
+.pv-art__main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-inline-size: 0;
+}
+
+.pv-art__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.4rem, 1fr));
+  gap: 0.35rem;
+}
+
+.pv-art__tiles .pv-art__block {
+  block-size: 2.6rem;
+}
+
+@container (max-width: 11rem) {
+  .pv-art__view {
+    grid-template-columns: 0.4rem minmax(0, 1fr);
+  }
+
+  .pv-art__side {
+    padding: 0;
+    border: 0;
+  }
+
+  .pv-art__side .pv-art__line {
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+  }
+}
+
+/* 04 Customizable */
+
+.pv-art--custom {
+  gap: 0.9rem;
+}
+
+.pv-art__app {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  inline-size: 9.4rem;
+  block-size: 7rem;
+  padding: 0.55rem;
+}
+
+.pv-art__app > .pv-art__btn {
+  inline-size: 40%;
+}
+
+.pv-art__widgets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.pv-art__widget {
+  position: relative;
+  inset-inline-start: 0;
+  display: flex;
+  padding: 0.35rem;
+  border: 1px solid var(--ayy-color-border);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-bg);
+}
+
+.pv-art__widget--chart {
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.pv-art__widget--chart i {
+  flex: 1;
+  border-radius: 0.15rem;
+  background-color: var(--pv-key);
+}
+
+.pv-art__widget--chart i:nth-child(1) { block-size: 40%; }
+.pv-art__widget--chart i:nth-child(2) { block-size: 70%; }
+.pv-art__widget--chart i:nth-child(3) { block-size: 55%; }
+.pv-art__widget--chart i:nth-child(4) { block-size: 90%; }
+
+.pv-art__widget--text {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.pv-art__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  inline-size: 5.4rem;
+}
+
+.pv-art__swatches {
+  position: relative;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.pv-art__swatches i {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: 50%;
+}
+
+.pv-art__swatches i:nth-child(1) { background-color: var(--ayy-spot, var(--ayy-accent-brand)); }
+.pv-art__swatches i:nth-child(2) { background-color: var(--ayy-accent-ai); }
+.pv-art__swatches i:nth-child(3) { background-color: var(--ayy-accent-system); }
+.pv-art__swatches i:nth-child(4) { background-color: var(--ayy-accent-research); }
+
+.pv-art__ring {
+  position: absolute;
+  inset-block-start: -3px;
+  inset-inline-start: -3px;
+  inline-size: calc(1rem + 6px);
+  block-size: calc(1rem + 6px);
+  border: 1.5px solid var(--ayy-color-text);
+  border-radius: 50%;
+}
+
+.pv-art__setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.pv-art__setting .pv-art__line {
+  inline-size: 2.2rem;
+}
+
+.pv-art__switch {
+  position: relative;
+  inline-size: 1.9rem;
+  block-size: 1.05rem;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--pv-fill);
+}
+
+.pv-art__switch::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.15rem;
+  inset-inline-start: 0.15rem;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--ayy-color-text);
+}
+
+/* 05 Built for what's next */
+
+.pv-art--next {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7rem;
+  padding-inline: 1rem;
+}
+
+.pv-art__prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  block-size: 2rem;
+  padding-inline: 0.7rem;
+  border-radius: var(--ayy-radius-pill);
+  color: var(--ayy-color-text);
+}
+
+.pv-art__typed {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pv-art__caret {
+  flex: none;
+  inline-size: 1.5px;
+  block-size: 1em;
+  background-color: var(--pv-key);
+}
+
+.pv-art__made {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 0.9fr;
+  gap: 0.5rem;
+  block-size: 4.6rem;
+}
+
+.pv-art__chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.25rem;
+  padding: 0.45rem;
+}
+
+.pv-art__chart i {
+  flex: 1;
+  border-radius: 0.15rem;
+  background-color: var(--pv-key);
+  transform-origin: bottom;
+}
+
+.pv-art__chart i:nth-child(1) { block-size: 45%; }
+.pv-art__chart i:nth-child(2) { block-size: 80%; }
+.pv-art__chart i:nth-child(3) { block-size: 60%; }
+.pv-art__chart i:nth-child(4) { block-size: 100%; }
+
+.pv-art__summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem;
+}
+
+.pv-art__slot {
+  position: relative;
+  border: 1px dashed var(--pv-key);
+  border-radius: var(--ayy-radius-lg);
+}
+
+.pv-art__slot::before,
+.pv-art__slot::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%; /* ayy-allow-physical: centres the plus, symmetric in both directions */
+  inline-size: 0.8rem;
+  block-size: 1.5px;
+  margin: -0.75px 0 0 -0.4rem; /* ayy-allow-physical: half the plus, to centre it */
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--pv-key-text);
+}
+
+.pv-art__slot::after {
+  transform: rotate(90deg);
+}
+
+/* Beats. They play while the host is hovered or has data-play, and never for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art * {
+    animation-duration: var(--pv-loop);
+    animation-iteration-count: infinite;
+    animation-timing-function: var(--ayy-ease-out-expo);
+  }
+
+  /* 01 nudge the ask, re-run the progress, spark, then approve with a ring */
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__bubble--me { animation-name: pv-art-nudge; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__steps i { animation-name: pv-art-step; animation-delay: calc(var(--i) * var(--pv-beat)); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__ai-head .pv-art__spark { animation-name: pv-art-spark; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__actions .pv-art__chip--key { animation-name: pv-art-approve; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__actions .pv-art__chip--key::after { animation: pv-art-ring var(--pv-loop) var(--ayy-ease-out-expo) infinite; }
+
+  /* 02 the cursor visits each screen; each lights up and its button is pressed */
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art--devices .pv-art__cursor { animation-name: pv-art-visit; animation-timing-function: var(--ayy-ease-menu); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__screen {
+    animation-name: pv-art-focus;
+    animation-timing-function: linear;
+    animation-delay: calc(var(--i) * 1.2s - 0.2s);
+  }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__screen .pv-art__btn {
+    animation-name: pv-art-press;
+    animation-delay: calc(var(--i) * 1.2s - 0.2s);
+  }
+
+  /* 03 the window narrows past the breakpoint and widens again */
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__window { animation-name: pv-art-resize; animation-timing-function: var(--ayy-ease-standard); }
+
+  /* 04 the accent follows the swatch; widgets trade places; the switch flips */
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art--custom {
+    animation: pv-art-theme var(--pv-loop) var(--ayy-ease-standard) infinite;
+  }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__ring { animation-name: pv-art-pick; animation-timing-function: var(--ayy-ease-menu); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__widget--chart { animation-name: pv-art-trade; animation-timing-function: var(--ayy-ease-menu); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__widget--text { animation-name: pv-art-trade-back; animation-timing-function: var(--ayy-ease-menu); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__switch { animation-name: pv-art-switch; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__switch::after { animation: pv-art-knob var(--pv-loop) var(--ayy-ease-out-expo) infinite; }
+
+  /* 05 type the prompt, then the interface renders part by part */
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__typed { animation-name: pv-art-type; animation-timing-function: steps(16, end); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__caret { animation: pv-art-blink 0.9s steps(1) infinite; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__made > * { animation-name: pv-art-render; animation-delay: calc(var(--i) * var(--pv-beat)); }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__chart i { animation-name: pv-art-grow; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__chart i:nth-child(2) { animation-delay: 0.06s; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__chart i:nth-child(3) { animation-delay: 0.12s; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__chart i:nth-child(4) { animation-delay: 0.18s; }
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__slot::before,
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-art__slot::after { animation: pv-art-plus var(--pv-loop) var(--ayy-ease-out-expo) infinite; }
+}
+
+/* Every keyframe names only the moments a part leaves its rest state; between them it is at rest. */
+
+@keyframes pv-art-nudge {
+  4% { transform: translateY(-3px); }
+  12% { transform: none; }
+}
+
+@keyframes pv-art-step {
+  14% { opacity: 1; }
+  18%, 30% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+@keyframes pv-art-spark {
+  40% { transform: none; }
+  48% { transform: scale(1.4) rotate(20deg); }
+  58% { transform: none; }
+}
+
+@keyframes pv-art-approve {
+  0%, 60% { transform: none; background-color: var(--ayy-color-bg); color: var(--pv-key-text); }
+  64% { transform: scale(0.92); background-color: var(--pv-key); color: var(--pv-on-key); }
+  70%, 90% { transform: none; background-color: var(--pv-key); color: var(--pv-on-key); }
+  96%, 100% { background-color: var(--ayy-color-bg); color: var(--pv-key-text); }
+}
+
+@keyframes pv-art-ring {
+  63% { opacity: 0; transform: none; }
+  64% { opacity: 0.9; }
+  80% { opacity: 0; transform: scale(1.18, 1.5); }
+}
+
+/* The cursor's tip on each screen's button: desktop, tablet, phone. */
+@keyframes pv-art-visit {
+  0%, 18% { inset-inline-start: 2.15rem; inset-block-start: 6.2rem; }
+  33%, 51% { inset-inline-start: 9.65rem; inset-block-start: 6.7rem; }
+  66%, 84% { inset-inline-start: 15rem; inset-block-start: 6.7rem; }
+  100% { inset-inline-start: 2.15rem; inset-block-start: 6.2rem; }
+}
+
+@keyframes pv-art-focus {
+  0%, 8%, 30%, 100% { border-color: var(--ayy-color-border); }
+  12%, 26% { border-color: var(--pv-key); }
+}
+
+@keyframes pv-art-press {
+  10% { transform: none; }
+  14% { transform: scale(0.85); }
+  20% { transform: none; }
+}
+
+@keyframes pv-art-resize {
+  0%, 12% { inline-size: 100%; }
+  34%, 62% { inline-size: 50%; }
+  84%, 100% { inline-size: 100%; }
+}
+
+@keyframes pv-art-theme {
+  0%, 18% { --pv-key: var(--ayy-spot, var(--ayy-accent-brand)); }
+  25%, 43% { --pv-key: var(--ayy-accent-ai); }
+  50%, 68% { --pv-key: var(--ayy-accent-system); }
+  75%, 93% { --pv-key: var(--ayy-accent-research); }
+  100% { --pv-key: var(--ayy-spot, var(--ayy-accent-brand)); }
+}
+
+/* A swatch is 1rem with a 0.35rem gap: the ring steps 1.35rem. */
+@keyframes pv-art-pick {
+  0%, 18% { inset-inline-start: -3px; }
+  25%, 43% { inset-inline-start: calc(1.35rem - 3px); }
+  50%, 68% { inset-inline-start: calc(2.7rem - 3px); }
+  75%, 93% { inset-inline-start: calc(4.05rem - 3px); }
+  100% { inset-inline-start: -3px; }
+}
+
+/* A widget is a grid item, so 100% is its own column: one column plus the 0.4rem gap. */
+@keyframes pv-art-trade {
+  0%, 36% { inset-inline-start: 0; }
+  48%, 84% { inset-inline-start: calc(100% + 0.4rem); }
+  96%, 100% { inset-inline-start: 0; }
+}
+
+@keyframes pv-art-trade-back {
+  0%, 36% { inset-inline-start: 0; }
+  48%, 84% { inset-inline-start: calc(-100% - 0.4rem); }
+  96%, 100% { inset-inline-start: 0; }
+}
+
+@keyframes pv-art-switch {
+  0%, 16%, 76%, 100% { background-color: var(--pv-fill); }
+  22%, 70% { background-color: var(--pv-key); }
+}
+
+@keyframes pv-art-knob {
+  0%, 16%, 76%, 100% { inset-inline-start: 0.15rem; background-color: var(--ayy-color-text); }
+  22%, 70% { inset-inline-start: 1rem; background-color: var(--pv-on-key); }
+}
+
+@keyframes pv-art-type {
+  0% { max-inline-size: 8rem; }
+  3% { max-inline-size: 0; }
+  28%, 100% { max-inline-size: 8rem; }
+}
+
+@keyframes pv-art-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes pv-art-render {
+  3%, 30% { opacity: 0.25; transform: scale(0.94); }
+  42% { opacity: 1; transform: none; }
+}
+
+@keyframes pv-art-grow {
+  3%, 32% { transform: scaleY(0.15); }
+  48% { transform: none; }
+}
+
+@keyframes pv-art-plus {
+  56% { opacity: 1; }
+  62%, 70% { opacity: 0.2; }
+  78% { opacity: 1; }
+}
+
+@media (forced-colors: active) {
+  .pv-art__surface,
+  .pv-art__chip,
+  .pv-art__bubble--ai,
+  .pv-art__widget {
+    border-color: CanvasText;
+  }
+
+  .pv-principle__num {
+    color: GrayText;
+  }
+}
+
+/* ---- Illustration foundations page ---- */
+
+.pv-illo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2) var(--ayy-space-5);
+  margin-block-start: var(--ayy-space-4);
+}
+
+.pv-illo__gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--ayy-space-4);
+}
+
+.pv-illo__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.pv-illo__stage {
+  --pv-zoom: 1;
+  display: grid;
+  place-items: center;
+  min-block-size: 12rem;
+  padding: var(--ayy-space-4);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-lg);
+  background-color: var(--ayy-color-surface);
+  overflow: clip;
+}
+
+.pv-illo__where {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--ayy-space-6);
+}
+
+.pv-illo__where h3 {
+  margin: 0 0 var(--ayy-space-3);
+}
+
+.pv-illo__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-illo__list li {
+  position: relative;
+  padding-inline-start: var(--ayy-space-5);
+}
+
+.pv-illo__list li::before {
+  position: absolute;
+  inset-inline-start: 0;
+  font-weight: var(--ayy-weight-semibold);
+}
+
+.pv-illo__list--do li::before {
+  content: "✓";
+  color: var(--ayy-color-success);
+}
+
+.pv-illo__list--dont li::before {
+  content: "✕";
+  color: var(--ayy-color-destructive);
+}
+
+.pv-illo__rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--ayy-space-4) var(--ayy-space-6);
+  margin: 0 0 var(--ayy-space-6);
+  padding: 0;
+  list-style: none;
+  counter-reset: pv-rule;
+}
+
+.pv-illo__rules li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  counter-increment: pv-rule;
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-illo__rules strong {
+  color: var(--ayy-color-text);
+}
+
+.pv-illo__rules strong::before {
+  content: counter(pv-rule, decimal-leading-zero) "  ";
+  font-family: var(--ayy-font-heading);
+  color: var(--ayy-color-muted);
+}
+
+.pv-illo__kit {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  gap: var(--ayy-space-3);
+}
+
+.pv-illo__piece {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+  padding: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-lg);
+}
+
+.pv-illo__piece .pv-note {
+  font-size: var(--ayy-text-xs);
+}
+
+.pv-art--piece {
+  --pv-zoom: 1.2;
+  justify-content: flex-start;
+  inline-size: auto;
+  block-size: 3rem;
+  margin-block-end: var(--ayy-space-2);
+}
+
+.pv-illo__surface {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  inline-size: 5rem;
+  block-size: 3rem;
+  padding: 0.5rem;
+}
+
+.pv-illo__pair {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.pv-illo__cursor {
+  position: static;
+}
+
+.pv-illo__anatomy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-6);
+}
+
+.pv-illo__anatomy > .pv-illo__stage {
+  flex: 1 1 18rem;
+}
+
+.pv-illo__anatomy > .pv-illo__timeline {
+  flex: 2 1 18rem;
+}
+
+.pv-illo__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  padding-block: 2.25rem 0;
+}
+
+.pv-illo__track {
+  position: relative;
+  block-size: 0.5rem;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-wash);
+  box-shadow: inset 0 0 0 1px var(--ayy-color-line);
+}
+
+.pv-illo__beat {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--at) * 100%);
+  inline-size: max(0.5rem, calc((var(--to) - var(--at)) * 100%));
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-accent-ai);
+}
+
+/* Labels alternate above and below the track so neighbours don't collide. */
+.pv-illo__beat-label {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: calc(100% + 0.5rem);
+  font-size: var(--ayy-text-xs);
+  white-space: nowrap;
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-illo__beat:nth-child(even) .pv-illo__beat-label {
+  inset-block: calc(100% + 0.5rem) auto;
+}
+
+.pv-illo__playhead {
+  position: absolute;
+  inset-block: -0.4rem;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--ayy-color-text);
+  opacity: 0;
+}
+
+.pv-illo__scale {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 1.5rem;
+  font-size: var(--ayy-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--ayy-color-muted);
+}
+
+.pv-illo__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  margin: 0 0 var(--ayy-space-3);
+  padding-inline-start: var(--ayy-space-5);
+  color: var(--ayy-color-text-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.pv-art-host:hover, .pv-art-host[data-play]) .pv-illo__playhead {
+    opacity: 1;
+    animation: pv-illo-playhead var(--pv-loop, 3.6s) linear infinite;
+  }
+}
+
+@keyframes pv-illo-playhead {
+  to { inset-inline-start: 100%; }
+}
+
+@media (forced-colors: active) {
+  .pv-illo__beat,
+  .pv-illo__playhead {
+    background-color: CanvasText;
+  }
+
+  .pv-illo__stage,
+  .pv-illo__piece {
     border-color: CanvasText;
   }
 }

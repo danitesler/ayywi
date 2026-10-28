@@ -80,7 +80,7 @@ for (const renderer of ["react", "html"] as const) {
       await seats.getByRole("button", { name: "Seats", exact: true }).click();
       await expect(seats).not.toHaveAttribute("aria-sort", /.+/);
       await demo.getByRole("menuitem", { name: "Sort", exact: true }).click();
-      await demo.getByRole("menuitem", { name: "Sort descending", exact: true }).click();
+      await demo.getByRole("menuitemradio", { name: "Sort descending", exact: true }).click();
       await expect(seats).toHaveAttribute("aria-sort", "descending");
       expect(await arrow(seats)).toBe("block");
       const mrr = table.locator('thead th[data-key="mrr"]');

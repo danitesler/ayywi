@@ -66,6 +66,7 @@ test("links from before the header tabs land on the same page", async ({ page })
     ["colors", "docs/colors", "Colors"],
     ["get-started", "docs/get-started", "Get started"],
     ["changelog", "docs/changelog", "Changelog"],
+    ["principles", "docs/principles", "Principles"],
     ["button", "components/button", "Button"],
     ["dialog", "components/dialog", "Dialog"],
     ["brand", "themes", "Select theme"],

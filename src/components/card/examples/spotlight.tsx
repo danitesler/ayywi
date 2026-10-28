@@ -10,11 +10,11 @@ export default function Example() {
           <CardDescription>Move your pointer over me.</CardDescription>
         </CardHeader>
       </Card>
-      <Card interactive spotlight spotColor="var(--ayy-accent-ai)" style={{ inlineSize: "15rem" }}>
+      <Card interactive spotlight transparent spotColor="var(--ayy-accent-ai)" style={{ inlineSize: "15rem" }}>
         <CardHeader>
           <Badge variant="ai">AI</Badge>
           <CardTitle>Assistant</CardTitle>
-          <CardDescription>Colour comes from the content.</CardDescription>
+          <CardDescription>No fill: just the glow and border.</CardDescription>
         </CardHeader>
       </Card>
     </>

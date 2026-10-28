@@ -71,8 +71,8 @@
   background: transparent;
   color: var(--ayy-color-text-soft);
   font-family: inherit;
-  /* Emoji are drawn as text; one control-text step up so they read as icons, not letters. */
-  font-size: var(--ayy-control-text-lg);
+  /* Emoji are drawn as text; a fixed 1.25rem so they read as icons, not letters, at any density. */
+  font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -82,9 +82,8 @@
 }
 
 .ayy-icon-picker__option > .ayy-icon {
-  inline-size: 1.125em;
-  block-size: 1.125em;
-  font-size: var(--ayy-control-text-md);
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
 }
 
 @media (hover: hover) {

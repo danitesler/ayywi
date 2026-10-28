@@ -17,6 +17,8 @@ import {
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
   spotlight?: boolean;
+  /** No fill and no shadow: the page shows through, the border stays. */
+  transparent?: boolean;
   /** The one to pick: the recommended plan, the option you chose. A border in the text colour. */
   featured?: boolean;
   /** Spotlight colour. Any CSS colour or token, e.g. "var(--ayy-accent-product)". */
@@ -26,13 +28,13 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { interactive, spotlight, featured, view, spotColor, className, style, onPointerMove, ...props },
+  { interactive, spotlight, transparent, featured, view, spotColor, className, style, onPointerMove, ...props },
   ref,
 ) {
   return (
     <div
       ref={ref}
-      className={cardClass({ interactive, spotlight, featured, view, className })}
+      className={cardClass({ interactive, spotlight, transparent, featured, view, className })}
       style={spotColor ? ({ "--ayy-spot": spotColor, ...style } as CSSProperties) : style}
       onPointerMove={
         spotlight

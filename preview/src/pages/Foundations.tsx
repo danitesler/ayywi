@@ -25,6 +25,7 @@ import {
 } from "@danitesler/ayywi/react";
 import { Add01Icon, CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
 import { themeOptions } from "../themes";
+import { IllustrationPage } from "./Illustration";
 
 type Entry = [string, TokenDefinition];
 const all = Object.entries(tokens) as Entry[];
@@ -601,6 +602,7 @@ export const foundations: Foundation[] = [
   { route: "spacing", title: "Spacing & sizing", groups: ["space", "size", "control"], keywords: "layout gap padding sizes scale height controls", Page: SpacingPage },
   { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow"], keywords: "corners depth shadow", Page: ElevationPage },
   { route: "motion", title: "Motion", groups: ["ease", "duration"], keywords: "animation easing transition reduced motion", Page: MotionPage },
+  { route: "illustration", title: "Illustration", groups: [], keywords: "illustrations sketches spot illustration hover animation loop beats storytelling empty state onboarding feature cards principles", Page: IllustrationPage },
 ];
 
 /** Searchable text for a foundation page: its title, keywords and every token on it. */

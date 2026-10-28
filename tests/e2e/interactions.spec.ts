@@ -1240,7 +1240,7 @@ for (const renderer of ["react", "html"] as const) {
       const sortBy = async (name: string) => {
         await mrr.click();
         await demo.getByRole("menuitem", { name: "Sort", exact: true }).click();
-        await demo.getByRole("menuitem", { name, exact: true }).click();
+        await demo.getByRole("menuitemradio", { name, exact: true }).click();
       };
       await expect(header).toHaveAttribute("aria-sort", "descending");
       await expect(firstMRR()).toHaveText("$36,000");
@@ -2298,7 +2298,7 @@ for (const renderer of ["react", "html"] as const) {
 
       // The row and column grips open menus scoped to that row or column, and act on it (not the caret's cell).
       // A grip only takes the pointer once its row or column is hot, so hover a cell in it first.
-      const option = (name: RegExp) => menu.getByRole("option", { name });
+      const option = (name: RegExp) => editor.locator(".ayy-block-editor__menu, .ayy-block-editor__submenu").getByRole("option", { name });
       await cell(1, 0).hover();
       await table.locator('.ayy-block-editor__row-grip[data-row="1"]').click();
       await expect(menu).toHaveAttribute("aria-label", "Row 2");
@@ -2310,11 +2310,14 @@ for (const renderer of ["react", "html"] as const) {
       await option(/^Delete/).click();
       await expect(table.locator("thead th")).toHaveCount(3);
 
-      // Align (with Back to leave the group) and Duplicate change the column and the rows from their grips.
+      // Align opens beside the menu, and Escape closes only that panel. Duplicate changes the rows from the row grip.
       await cell(0, 1).hover();
       await table.locator('.ayy-block-editor__col-grip[data-col="1"]').click();
       await option(/^Align/).click();
-      await option(/^Back/).click();
+      await expect(option(/^Centered/)).toBeVisible();
+      await expect(option(/^Align/)).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(option(/^Centered/)).toHaveCount(0);
       await expect(option(/^Align/)).toBeVisible();
       await option(/^Align/).click();
       await option(/^Centered/).click();
@@ -2361,7 +2364,7 @@ for (const renderer of ["react", "html"] as const) {
       const table = editor.locator('[data-type="table"]');
       const cell = (r: number, c: number) => table.locator(`.ayy-block-editor__cell[data-row="${r}"][data-col="${c}"]`);
       const menu = editor.locator(".ayy-block-editor__menu");
-      const option = (name: RegExp) => menu.getByRole("option", { name });
+      const option = (name: RegExp) => editor.locator(".ayy-block-editor__menu, .ayy-block-editor__submenu").getByRole("option", { name });
 
       // The header row's grip can't move, but a click still opens its menu. Insert above is omitted: it would make the new row the header.
       await cell(0, 0).hover();
@@ -2468,10 +2471,17 @@ for (const renderer of ["react", "html"] as const) {
       const colCellBox = (await cell(0, 1).boundingBox())!;
       expect(colGripBox.y + colGripBox.height).toBeLessThanOrEqual(colCellBox.y + 2);
 
-      // Clicking (focusing) a cell moves the hot grips to its row and column.
-      await cell(1, 2).click();
-      await expect(table.locator('.ayy-block-editor__row-grip[data-row="1"]')).toHaveAttribute("data-hot", "");
-      await expect(table.locator('.ayy-block-editor__col-grip[data-col="2"]')).toHaveAttribute("data-hot", "");
+      // The pointer in the lane beside a row, or above a column, moves the grip there. Leaving the table hides them.
+      const lane = (await cell(2, 0).boundingBox())!;
+      await page.mouse.move(lane.x - 14, lane.y + lane.height / 2);
+      await expect(table.locator('.ayy-block-editor__row-grip[data-row="2"]')).toHaveAttribute("data-hot", "");
+      await expect(table.locator(".ayy-block-editor__col-grip[data-hot]")).toHaveCount(0);
+      const above = (await cell(0, 1).boundingBox())!;
+      await page.mouse.move(above.x + above.width / 2, above.y - 10);
+      await expect(table.locator('.ayy-block-editor__col-grip[data-col="1"]')).toHaveAttribute("data-hot", "");
+      await expect(table.locator(".ayy-block-editor__row-grip[data-hot]")).toHaveCount(0);
+      await page.mouse.move(8, 8);
+      await expect(table.locator(".ayy-block-editor__row-grip[data-hot], .ayy-block-editor__col-grip[data-hot]")).toHaveCount(0);
 
       // Read-only: no grips at all, and the table still shows.
       await example(page, "task-notes").getByRole("switch", { name: "Read only" }).click();
@@ -2491,7 +2501,7 @@ for (const renderer of ["react", "html"] as const) {
       // Wait for the table to be drawn before dragging (header Plan · Old price · New price, rows Starter, Team).
       await expect(cell(0, 0)).toHaveText("Plan");
       await expect(cell(1, 0)).toHaveText("Starter");
-      const drop = table.locator(".ayy-block-editor__table-drop");
+      const drop = table.locator("[data-drop-edge]");
 
       // A cancelled drag drops the line and the dragging mark, and does not move the row.
       await cell(1, 0).hover();
@@ -2528,10 +2538,7 @@ for (const renderer of ["react", "html"] as const) {
       await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2);
       await page.mouse.down();
       await page.mouse.move(team.x + team.width / 2, team.y + team.height - 2, { steps: 5 });
-      await expect(drop).toBeVisible();
-      const farLine = (await drop.boundingBox())!;
-      const teamNow = (await table.locator("tbody tr").nth(1).boundingBox())!;
-      expect(Math.abs(farLine.y - (teamNow.y + teamNow.height))).toBeLessThan(4);
+      await expect(table.locator('tbody tr').nth(1).locator('[data-drop-edge="block-end"]')).not.toHaveCount(0);
       await page.mouse.up();
       await expect(cell(2, 0)).toHaveText("Starter");
       await expect(cell(1, 0)).toHaveText("Team");
@@ -2565,8 +2572,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(cell(0, 0)).toHaveText("Plan");
       await expect(cell(0, 2)).toHaveText("New price");
 
-      // In RTL a row drag still lands on the intended row, and its drop line's inline-start edge (its right edge) sits on
-      // the table's inline-start edge.
+      // In RTL a row drag still lands on the intended row, with the same drop line on that row's end edge.
       await editor.evaluate((el) => el.setAttribute("dir", "rtl"));
       await cell(1, 0).hover();
       await rowGrip(1).scrollIntoViewIfNeeded();
@@ -2575,9 +2581,7 @@ for (const renderer of ["react", "html"] as const) {
       await page.mouse.move(rtlRowGrip.x + rtlRowGrip.width / 2, rtlRowGrip.y + rtlRowGrip.height / 2);
       await page.mouse.down();
       await page.mouse.move(rtlRowTarget.x + rtlRowTarget.width / 2, rtlRowTarget.y + rtlRowTarget.height - 2, { steps: 5 });
-      const dropBox = (await drop.boundingBox())!;
-      const tableBox = (await table.locator(".ayy-block-editor__table").boundingBox())!;
-      expect(Math.round(dropBox.x + dropBox.width)).toBe(Math.round(tableBox.x + tableBox.width));
+      await expect(table.locator('tbody tr').nth(1).locator('[data-drop-edge="block-end"]')).not.toHaveCount(0);
       await page.mouse.up();
       await expect(cell(2, 0)).toHaveText("Team");
 
@@ -2697,7 +2701,7 @@ for (const renderer of ["react", "html"] as const) {
       const editor = notes.locator(".ayy-block-editor");
       const blocks = editor.locator(":scope > .ayy-block-editor__block");
       const menu = editor.locator(".ayy-block-editor__menu");
-      const option = (name: RegExp) => menu.getByRole("option", { name });
+      const option = (name: RegExp) => editor.locator(".ayy-block-editor__menu, .ayy-block-editor__submenu").getByRole("option", { name });
 
       // A new line, then /callout. Not the page example: that callout later gets a tone, which would make the undo below meaningless.
       await blocks.nth(0).locator(":scope > .ayy-block-editor__text").evaluate((el) => {

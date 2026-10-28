@@ -134,8 +134,8 @@
 
 .ayy-menu__item > svg {
   flex: none;
-  inline-size: 1.1em;
-  block-size: 1.1em;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
   color: var(--ayy-color-muted);
 }
 

@@ -1,10 +1,13 @@
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Add01Icon,
-  ArrowDown01Icon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  ArrowUp01Icon,
+  ArrangeByLettersAZIcon,
+  ArrangeByLettersZAIcon,
+  ColumnDeleteIcon,
+  CopyPlusIcon,
+  InsertColumnLeftIcon,
+  InsertColumnRightIcon,
+  SortByDown02Icon,
   ArrowUpDownIcon,
   Calendar03Icon,
   Clock01Icon,
@@ -340,22 +343,22 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled={!frame} data-column-action="filter"><Icon icon={FilterHorizontalIcon} />Filter</DropdownMenuItem>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={ArrowUpDownIcon} />}>Sort</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger icon={<Icon icon={SortByDown02Icon} />}>Sort</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem data-column-action="sort-ascending"><Icon icon={ArrowUp01Icon} />Sort ascending</DropdownMenuItem>
-            <DropdownMenuItem data-column-action="sort-descending"><Icon icon={ArrowDown01Icon} />Sort descending</DropdownMenuItem>
+            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "ascending"} data-column-action="sort-ascending"><Icon icon={ArrangeByLettersAZIcon} />Sort ascending</DropdownMenuItem>
+            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "descending"} data-column-action="sort-descending"><Icon icon={ArrangeByLettersZAIcon} />Sort descending</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuItem disabled={!frame} data-column-action="group"><Icon icon={GroupItemsIcon} />Group</DropdownMenuItem>
         <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action="freeze"><Icon icon={PinIcon} />Freeze</DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action="wrap"><Icon icon={TextWrapIcon} />Wrap content</DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem data-column-action="insert-left"><Icon icon={ArrowLeft01Icon} />Insert left</DropdownMenuItem>
-        <DropdownMenuItem data-column-action="insert-right"><Icon icon={ArrowRight01Icon} />Insert right</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="insert-left"><Icon icon={InsertColumnLeftIcon} directional />Insert left</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="insert-right"><Icon icon={InsertColumnRightIcon} directional />Insert right</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem data-column-action="duplicate"><Icon icon={Copy01Icon} />Duplicate</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="duplicate"><Icon icon={CopyPlusIcon} />Duplicate</DropdownMenuItem>
         <DropdownMenuItem data-column-action="hide"><Icon icon={ViewOffIcon} />Hide</DropdownMenuItem>
-        <DropdownMenuItem destructive data-column-action="delete"><Icon icon={Delete02Icon} />Delete</DropdownMenuItem>
+        <DropdownMenuItem destructive data-column-action="delete"><Icon icon={ColumnDeleteIcon} />Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

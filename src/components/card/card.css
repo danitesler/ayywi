@@ -19,6 +19,12 @@
   border-color: var(--ayy-color-line-hover);
 }
 
+/* Transparent: no fill and no rest shadow, so the page shows through. The line border stays. */
+.ayy-card--transparent {
+  background-color: transparent;
+  box-shadow: none;
+}
+
 /* Lifts on hover. Use when the whole card is clickable. Only where there's a real hover: on touch screens a tap would
    leave it lifted. */
 @media (hover: hover) {

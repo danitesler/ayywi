@@ -12,8 +12,9 @@
 import { cx } from "../../lib/cx";
 import {
   Alert02Icon,
+  ArrangeByLettersAZIcon,
+  ArrangeByLettersZAIcon,
   ArrowDown01Icon,
-  ArrowLeft01Icon,
   ArrowRight01Icon,
   ArrowUp01Icon,
   ArrowUpRight01Icon,
@@ -24,24 +25,43 @@ import {
   CheckmarkCircle02Icon,
   CloudUploadIcon,
   CodeIcon,
+  ColumnDeleteIcon,
   Copy01Icon,
   CopyPlusIcon,
   Delete02Icon,
+  DeleteRowIcon,
+  EraserIcon,
   FunctionIcon,
   Grid3x3Icon,
+  HorizontalResizeIcon,
   Heading01Icon,
   Heading02Icon,
   Heading03Icon,
   HighlighterIcon,
   Image01Icon,
   InformationCircleIcon,
+  InsertColumnLeftIcon,
+  InsertColumnRightIcon,
+  InsertRowDownIcon,
+  InsertRowUpIcon,
+  Layout3ColumnIcon,
   LeftToRightListBulletIcon,
   LeftToRightListNumberIcon,
   Link01Icon,
+  MinusSignIcon,
+  MoveDownIcon,
+  MoveLeftIcon,
+  MoveRightIcon,
+  MoveUpIcon,
   PlusSignIcon,
   QuoteDownIcon,
+  Rows3Icon,
   SolidLine01Icon,
+  SortByDown02Icon,
   SourceCodeIcon,
+  TextAlignCenterIcon,
+  TextAlignLeftIcon,
+  TextAlignRightIcon,
   TextBoldIcon,
   TextIcon,
   TextItalicIcon,
@@ -55,7 +75,7 @@ import { avatarClass, avatarInitials } from "../avatar/avatar";
 import { buttonClass } from "../button/button";
 import { checkboxClass } from "../checkbox/checkbox";
 import { codeBlockCopyIcon, copyCodeBlock, normalizeLanguage, tokenizeCode } from "../code-block/code-block";
-import { announce, connectDragDrop, dragHandleClass, dragHandleIcon, dragPreviewChip, dragPreviewClass, setDropEdge, type DragMove } from "../drag-drop/drag-drop";
+import { announce, connectDragDrop, dragHandleClass, dragHandleIcon, dragPreviewChip, dragPreviewClass, setDropEdge, type DragMove, type DropEdge } from "../drag-drop/drag-drop";
 import { iconSvg, type IconData } from "../icon/icon";
 import { inputClass } from "../input/input";
 import { isApplePlatform, shortcutHtml } from "../shortcut/shortcut";
@@ -104,6 +124,14 @@ const CALLOUT_ICONS: Record<BlockEditorTone, IconData> = {
   success: CheckmarkCircle02Icon,
   warning: Alert02Icon,
   destructive: CancelCircleIcon,
+};
+/** The dot beside a callout colour, the same tokens Alert uses for that tone. */
+const CALLOUT_SWATCH: Record<BlockEditorTone, string> = {
+  default: "var(--ayy-color-text-soft)",
+  info: "var(--ayy-color-info)",
+  success: "var(--ayy-color-success)",
+  warning: "var(--ayy-color-warning)",
+  destructive: "var(--ayy-color-destructive)",
 };
 function calloutTone(tone: string | undefined): BlockEditorTone | undefined {
   return tone && tone !== "default" && (CALLOUT_TONES as readonly string[]).includes(tone) ? (tone as BlockEditorTone) : undefined;
@@ -248,6 +276,7 @@ const C = {
   mention: blockEditorMentionClass,
   mentionTrigger: `${P}__mention-trigger`,
   menu: `${P}__menu`,
+  submenu: `${P}__submenu`,
   menuLabel: `${P}__menu-label`,
   option: `${P}__option`,
   optionIcon: `${P}__option-icon`,
@@ -262,7 +291,6 @@ const C = {
   rowGrip: `${P}__row-grip`,
   colGrip: `${P}__col-grip`,
   colResize: `${P}__col-resize`,
-  tableDrop: `${P}__table-drop`,
   toolbar: `${P}__toolbar`,
   codeBar: `${P}__code-bar`,
   codeButton: `${P}__code-button`,
@@ -1392,15 +1420,17 @@ interface MenuItem {
   destructive?: boolean;
   /** Not offered right now (a submenu leaves it out). */
   disabled?: boolean;
-  /** Opens the submenu of that name instead of running (a ">" shows at its end); null goes back to the list above. */
-  sub?: string | null;
+  /** A colour dot, as a CSS colour (a token). Shown instead of `icon`. */
+  swatch?: string;
+  /** Opens that submenu beside this menu instead of running (a ">" shows at its end). */
+  sub?: string;
   run(): void;
 }
 
 type MenuState =
   | { mode: "slash"; id: string; start: number; query: string; index: number }
   | { mode: "mention"; id: string; start: number; query: string; index: number; source: BlockEditorMentionSource; options: BlockEditorMentionOption[] }
-  | { mode: "actions"; ids: string[]; index: number; anchor: HTMLElement; list: "actions" | "language" | "row" | "column" | "cell"; at?: [number, number]; sub?: string };
+  | { mode: "actions"; ids: string[]; index: number; anchor: HTMLElement; list: "actions" | "language" | "row" | "column" | "cell"; at?: [number, number]; sub?: string; nest?: string; sideIndex: number; nestIndex: number };
 
 const BLOCKS_MIME = "application/x-ayy-blocks+json";
 
@@ -1494,11 +1524,15 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   /** The line that a "Link to …" slash item will turn into a record, once a mention is picked. */
   let recordPending: string | null = null;
   let menuItems: MenuItem[] = [];
+  let sideItems: MenuItem[] = [];
+  let nestItems: MenuItem[] = [];
   let dismissed: { id: string; start: number } | null = null;
   let mentionRequest = 0;
   /** Line whose mention lookup is still a Promise. recordPending waits for it. */
   let mentionFlight: string | null = null;
   let stopMenuPlacing: (() => void) | null = null;
+  let stopSidePlacing: (() => void) | null = null;
+  let stopNestPlacing: (() => void) | null = null;
   let stopToolbarPlacing: (() => void) | null = null;
   let toolbarFrame = 0;
   let toolbarShown = false;
@@ -1524,9 +1558,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   const anchor = make("span", C.anchor, { "aria-hidden": "true", contenteditable: "false" });
   const menuEl = make("div", `ayy-combobox__listbox ${C.menu}`, { role: "listbox", id: `ayy-be-${uid}-menu`, tabindex: "-1", contenteditable: "false" });
+  const sideEl = make("div", `ayy-combobox__listbox ${C.submenu}`, { role: "listbox", id: `ayy-be-${uid}-side`, tabindex: "-1", contenteditable: "false" });
+  const nestEl = make("div", `ayy-combobox__listbox ${C.submenu}`, { role: "listbox", id: `ayy-be-${uid}-nest`, tabindex: "-1", contenteditable: "false" });
   const toolbar = make("div", `ayy-toolbar ayy-toolbar--floating ${C.toolbar}`, { role: "toolbar", "aria-label": "Format text", contenteditable: "false" });
   const fileInput = make("input", undefined, { type: "file", hidden: "", tabindex: "-1", "aria-hidden": "true" });
-  for (const floating of [menuEl, toolbar]) {
+  for (const floating of [menuEl, sideEl, nestEl, toolbar]) {
     if (native) floating.setAttribute("popover", "manual");
     else floating.hidden = true;
   }
@@ -1554,7 +1590,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   unlinkButton.innerHTML = svg(Unlink04Icon);
   linkForm.append(linkInput, tooltipped(openLinkButton, "Open link"), tooltipped(unlinkButton, "Remove link"));
   toolbar.append(formatGroup, linkForm);
-  root.append(anchor, menuEl, toolbar, fileInput);
+  root.append(anchor, menuEl, sideEl, nestEl, toolbar, fileInput);
 
   // ---- Reading the document ----
 
@@ -1815,13 +1851,14 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   const cellPos = (cell: HTMLElement): [number, number] => [Number(cell.dataset.row), Number(cell.dataset.col)];
   const cellEl = (id: string, row: number, col: number) => els.get(id)?.querySelector<HTMLElement>(`.${C.cell}[data-row="${row}"][data-col="${col}"]`) ?? null;
 
-  /** Light the row and column grips for one cell, and clear them everywhere else in that table block. */
-  function markHot(id: string, row: number, col: number): void {
+  /** Light the grip for the pointer's row, column, or both, and clear every other hot grip. */
+  function markHot(id: string, row: number, col: number, which: "row" | "column" | "both" = "both"): void {
     const el = els.get(id);
+    if (el) for (const hot of el.querySelectorAll<HTMLElement>(`.${C.rowGrip}[data-hot], .${C.colGrip}[data-hot]`)) hot.removeAttribute("data-hot");
+    clearTableHot();
     if (!el) return;
-    for (const hot of el.querySelectorAll<HTMLElement>(`.${C.rowGrip}[data-hot], .${C.colGrip}[data-hot]`)) hot.removeAttribute("data-hot");
-    el.querySelector<HTMLElement>(`.${C.rowGrip}[data-row="${row}"]`)?.setAttribute("data-hot", "");
-    el.querySelector<HTMLElement>(`.${C.colGrip}[data-col="${col}"]`)?.setAttribute("data-hot", "");
+    if (which !== "column") el.querySelector<HTMLElement>(`.${C.rowGrip}[data-row="${row}"]`)?.setAttribute("data-hot", "");
+    if (which !== "row") el.querySelector<HTMLElement>(`.${C.colGrip}[data-col="${col}"]`)?.setAttribute("data-hot", "");
   }
 
   function buildTable(b: BlockEditorBlock): HTMLElement {
@@ -1885,7 +1922,6 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     scroll.append(table);
     wrap.append(scroll);
     if (!readOnly()) {
-      wrap.append(make("div", C.tableDrop, { hidden: "" }));
       for (const axis of ["column", "row"] as const) {
         const add = make("button", C.tableAdd, { type: "button", tabindex: "-1", contenteditable: "false", "data-axis": axis, "aria-label": `Add ${axis}` });
         add.innerHTML = svg(PlusSignIcon);
@@ -2667,31 +2703,28 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         { tone: "warning", label: "Warning" },
         { tone: "destructive", label: "Destructive" },
       ];
-      return [
-        { key: "back", label: "Back", icon: iconSvg(ArrowLeft01Icon, { directional: true }), sub: null, run: () => undefined },
-        ...tones.map(({ tone, label }) => ({
-          key: `tone-${tone}`,
-          label,
-          group: "Colour",
-          current: active === tone,
-          run: () => {
-            const i = indexOf(callout.id);
-            const b = blocks[i];
-            if (!b || (calloutTone(b.tone) ?? "default") === tone) return;
-            const next: BlockEditorBlock = { ...b, tone };
-            if (tone === "default") delete next.tone;
-            commit(replaceAt(i, next));
-          },
-        })),
-      ];
+      return tones.map(({ tone, label }) => ({
+        key: `tone-${tone}`,
+        label,
+        swatch: CALLOUT_SWATCH[tone],
+        current: active === tone,
+        run: () => {
+          const i = indexOf(callout.id);
+          const b = blocks[i];
+          if (!b || (calloutTone(b.tone) ?? "default") === tone) return;
+          const next: BlockEditorBlock = { ...b, tone };
+          if (tone === "default") delete next.tone;
+          commit(replaceAt(i, next));
+        },
+      }));
     }
     const items = blockActions(ids);
     if (table) items.unshift(...tableWideItems(table.id, [0, 0]));
     if (code) {
-      items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon), group: "Actions", run: () => openActions(ids, els.get(ids[0])?.querySelector<HTMLElement>("[data-code-language]") ?? menuEl, "language") });
+      items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon), group: "Actions", sub: "Language", run: () => undefined });
     }
     if (callout) {
-      items.push({ key: "colour", label: "Colour", icon: svg(CALLOUT_ICONS[calloutTone(callout.tone) ?? "default"]), group: "Actions", sub: "Colour", run: () => undefined });
+      items.push({ key: "colour", label: "Colour", swatch: CALLOUT_SWATCH[calloutTone(callout.tone) ?? "default"], group: "Actions", sub: "Colour", run: () => undefined });
     }
     if (list.length && list.every((b) => isText(b.type))) {
       for (const type of blockEditorBlockTypes) {
@@ -2714,97 +2747,110 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const headerRow = b.header !== false && row === 0;
     const canInsertRow = rows < MAX_ROWS;
     const canInsertCol = cols < MAX_COLUMNS;
-    const left = iconSvg(ArrowLeft01Icon, { directional: true });
-    const right = iconSvg(ArrowRight01Icon, { directional: true });
+    const before = iconSvg(InsertColumnLeftIcon, { directional: true });
+    const after = iconSvg(InsertColumnRightIcon, { directional: true });
+    const earlier = iconSvg(MoveLeftIcon, { directional: true });
+    const later = iconSvg(MoveRightIcon, { directional: true });
     const width = b.widths?.[col] || cellEl(id, 0, col)?.closest("td, th")?.getBoundingClientRect().width || 160;
 
     const rowMenu: MenuItem[] = [
       // Inserting at 0 would make the new row the header. Omit it; insert-row itself is unchanged.
-      ...(!headerRow && canInsertRow ? [{ key: "row-insert-above", label: "Insert above", icon: svg(ArrowUp01Icon), run: () => insertRow(id, row, col) }] : []),
-      ...(canInsertRow ? [{ key: "row-insert-below", label: "Insert below", icon: svg(ArrowDown01Icon), run: () => insertRow(id, row + 1, col) }] : []),
+      ...(!headerRow && canInsertRow ? [{ key: "row-insert-above", label: "Insert above", icon: svg(InsertRowUpIcon), run: () => insertRow(id, row, col) }] : []),
+      ...(canInsertRow ? [{ key: "row-insert-below", label: "Insert below", icon: svg(InsertRowDownIcon), run: () => insertRow(id, row + 1, col) }] : []),
       ...(canInsertRow ? [{ key: "row-duplicate", label: "Duplicate", meta: "Mod+D", icon: svg(CopyPlusIcon), run: () => duplicateRow(id, row, col) }] : []),
-      ...(row > first ? [{ key: "row-move-up", label: "Move up", icon: svg(ArrowUp01Icon), run: () => moveRow(id, row, -1) }] : []),
-      ...(row >= first && row < rows - 1 ? [{ key: "row-move-down", label: "Move down", icon: svg(ArrowDown01Icon), run: () => moveRow(id, row, 1) }] : []),
-      { key: "row-clear", label: "Clear", run: () => clearCells(id, "row", row, col) },
-      ...(rows > 1 ? [{ key: "row-delete", label: "Delete", icon: svg(Delete02Icon), destructive: true, run: () => deleteRow(id, row) }] : []),
+      ...(row > first ? [{ key: "row-move-up", label: "Move up", icon: svg(MoveUpIcon), run: () => moveRow(id, row, -1) }] : []),
+      ...(row >= first && row < rows - 1 ? [{ key: "row-move-down", label: "Move down", icon: svg(MoveDownIcon), run: () => moveRow(id, row, 1) }] : []),
+      { key: "row-clear", label: "Clear", icon: svg(EraserIcon), run: () => clearCells(id, "row", row, col) },
+      ...(rows > 1 ? [{ key: "row-delete", label: "Delete", icon: svg(DeleteRowIcon), destructive: true, run: () => deleteRow(id, row) }] : []),
     ];
 
     const columnMenu: MenuItem[] = [
-      ...(canInsertCol ? [{ key: "column-insert-before", label: "Insert before", icon: left, run: () => insertColumn(id, col, row) }] : []),
-      ...(canInsertCol ? [{ key: "column-insert-after", label: "Insert after", icon: right, run: () => insertColumn(id, col + 1, row) }] : []),
+      ...(canInsertCol ? [{ key: "column-insert-before", label: "Insert before", icon: before, run: () => insertColumn(id, col, row) }] : []),
+      ...(canInsertCol ? [{ key: "column-insert-after", label: "Insert after", icon: after, run: () => insertColumn(id, col + 1, row) }] : []),
       ...(canInsertCol ? [{ key: "column-duplicate", label: "Duplicate", icon: svg(CopyPlusIcon), run: () => duplicateColumn(id, col, row) }] : []),
-      ...(col > 0 ? [{ key: "column-move-earlier", label: "Move earlier", icon: left, run: () => moveColumn(id, col, -1) }] : []),
-      ...(col < cols - 1 ? [{ key: "column-move-later", label: "Move later", icon: right, run: () => moveColumn(id, col, 1) }] : []),
-      ...(rows - first >= 2 ? [{ key: "column-sort", label: "Sort", icon: svg(ArrowDown01Icon), sub: "Sort", run: () => undefined }] : []),
-      { key: "column-align", label: "Align", icon: svg(TextIcon), sub: "Align", run: () => undefined },
-      { key: "column-width", label: "Width", icon: svg(ArrowRight01Icon), sub: "Width", run: () => undefined },
-      { key: "column-clear", label: "Clear", run: () => clearCells(id, "column", row, col) },
-      ...(cols > 1 ? [{ key: "column-delete", label: "Delete", icon: svg(Delete02Icon), destructive: true, run: () => deleteColumn(id, col) }] : []),
+      ...(col > 0 ? [{ key: "column-move-earlier", label: "Move earlier", icon: earlier, run: () => moveColumn(id, col, -1) }] : []),
+      ...(col < cols - 1 ? [{ key: "column-move-later", label: "Move later", icon: later, run: () => moveColumn(id, col, 1) }] : []),
+      ...(rows - first >= 2 ? [{ key: "column-sort", label: "Sort", icon: svg(SortByDown02Icon), sub: "Sort", run: () => undefined }] : []),
+      { key: "column-align", label: "Align", icon: iconSvg(TextAlignLeftIcon, { directional: true }), sub: "Align", run: () => undefined },
+      { key: "column-width", label: "Width", icon: svg(HorizontalResizeIcon), sub: "Width", run: () => undefined },
+      { key: "column-clear", label: "Clear", icon: svg(EraserIcon), run: () => clearCells(id, "column", row, col) },
+      ...(cols > 1 ? [{ key: "column-delete", label: "Delete", icon: svg(ColumnDeleteIcon), destructive: true, run: () => deleteColumn(id, col) }] : []),
     ];
 
     const sortMenu: MenuItem[] = [
-      { key: "sort-asc", label: "A → Z", run: () => editTable(id, { op: "sort", column: col, dir: "asc" }, [row, col], "Sorted A to Z") },
-      { key: "sort-desc", label: "Z → A", run: () => editTable(id, { op: "sort", column: col, dir: "desc" }, [row, col], "Sorted Z to A") },
+      { key: "sort-asc", label: "A → Z", icon: svg(ArrangeByLettersAZIcon), run: () => editTable(id, { op: "sort", column: col, dir: "asc" }, [row, col], "Sorted A to Z") },
+      { key: "sort-desc", label: "Z → A", icon: svg(ArrangeByLettersZAIcon), run: () => editTable(id, { op: "sort", column: col, dir: "desc" }, [row, col], "Sorted Z to A") },
     ];
     const align = b.align?.[col] ?? "start";
+    const alignIcon = { start: TextAlignLeftIcon, center: TextAlignCenterIcon, end: TextAlignRightIcon };
     const alignMenu: MenuItem[] = (["start", "center", "end"] as const).map((a) => ({
       key: `align-${a}`,
       label: a === "start" ? "At the start" : a === "center" ? "Centered" : "At the end",
+      icon: iconSvg(alignIcon[a], a === "center" ? undefined : { directional: true }),
       current: align === a,
       run: () => alignColumn(id, col, a, row),
     }));
     const widthMenu: MenuItem[] = [
       { key: "wider", label: "Wider +24 px", icon: svg(PlusSignIcon), run: () => sizeColumn(id, col, width + 24, row) },
-      ...(width - 24 >= MIN_COLUMN ? [{ key: "narrower", label: "Narrower −24 px", icon: svg(Delete02Icon), run: () => sizeColumn(id, col, width - 24, row) }] : []),
+      ...(width - 24 >= MIN_COLUMN ? [{ key: "narrower", label: "Narrower −24 px", icon: svg(MinusSignIcon), run: () => sizeColumn(id, col, width - 24, row) }] : []),
     ];
 
     const submenus: Record<string, MenuItem[]> = { Row: rowMenu, Column: columnMenu, Sort: sortMenu, Align: alignMenu, Width: widthMenu };
-    if (sub && submenus[sub]) return [{ key: "back", label: "Back", icon: left, sub: null, run: () => undefined }, ...submenus[sub].map((item) => ({ ...item, group: sub }))];
+    if (sub && submenus[sub]) return submenus[sub];
     if (list === "row") return rowMenu;
     if (list === "column") return columnMenu;
     return [
-      { key: "row", label: "Row", icon: svg(ArrowDown01Icon), group: "Table", sub: "Row", run: () => undefined },
-      { key: "column", label: "Column", icon: svg(ArrowRight01Icon), group: "Table", sub: "Column", run: () => undefined },
+      { key: "row", label: "Row", icon: svg(Rows3Icon), group: "Table", sub: "Row", run: () => undefined },
+      { key: "column", label: "Column", icon: svg(Layout3ColumnIcon), group: "Table", sub: "Column", run: () => undefined },
       ...tableWideItems(id, at),
       ...blockActions([id]),
     ];
   }
 
   const menuOwner = () => (menu && menu.mode !== "actions" ? textEl(menu.id) : menu ? menuEl : null);
+  const inMenu = (node: Node | null) => !!node && (menuEl.contains(node) || sideEl.contains(node) || nestEl.contains(node));
 
-  function renderMenu(): void {
-    if (!menu) return;
-    const m = menu;
-    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : m.list === "row" || m.list === "column" || m.list === "cell" ? tableItems(m.ids[0], m.list, m.at ?? [0, 0], m.sub) : actionItems(m.ids, m.sub);
-    if (!menuItems.length) {
-      closeMenu();
-      return;
-    }
-    m.index = Math.max(0, Math.min(m.index, menuItems.length - 1));
-    menuEl.replaceChildren();
-    menuEl.dataset.mode = m.mode === "actions" ? (m.list === "language" ? "language" : "actions") : m.mode;
-    const menuLabel = m.mode === "slash" ? "Blocks" : m.mode === "mention" ? (m.source.label ?? "Mentions") : m.list === "language" ? "Code language" : m.list === "row" ? `Row ${(m.at?.[0] ?? 0) + 1}` : m.list === "column" ? `Column ${(m.at?.[1] ?? 0) + 1}` : m.list === "cell" ? "Cell" : "Block actions";
-    menuEl.setAttribute("aria-label", m.mode === "actions" && m.sub ? `${menuLabel}: ${m.sub}` : menuLabel);
+  /** The items of a submenu that opens beside the menu, not in its place. */
+  function itemsForSub(sub: string): MenuItem[] {
+    if (!menu || menu.mode !== "actions") return [];
+    if (sub === "Language") return languageItems(menu.ids[0]);
+    if (sub === "Colour") return actionItems(menu.ids, "Colour");
+    if (menu.list === "row" || menu.list === "column" || menu.list === "cell") return tableItems(menu.ids[0], menu.list, menu.at ?? [0, 0], sub);
+    return [];
+  }
+
+  /** Draw one floating list. `openKey` marks the item whose submenu is open. */
+  function fillList(el: HTMLElement, items: MenuItem[], index: number, label: string, idPrefix: string, openKey?: string): void {
+    el.replaceChildren();
+    el.setAttribute("aria-label", label);
     let group: string | undefined;
-    menuItems.forEach((item, i) => {
+    items.forEach((item, i) => {
       if (item.group && item.group !== group) {
         group = item.group;
-        const label = make("div", C.menuLabel, { role: "presentation" });
-        label.textContent = group;
-        menuEl.append(label);
+        const heading = make("div", C.menuLabel, { role: "presentation" });
+        heading.textContent = group;
+        el.append(heading);
       }
-      const option = make("div", `ayy-combobox__option ${C.option}`, { role: "option", id: `ayy-be-${uid}-option-${i}`, "aria-selected": String(i === m.index), "data-index": String(i) });
+      const option = make("div", `ayy-combobox__option ${C.option}`, { role: "option", id: `ayy-be-${uid}-${idPrefix}-${i}`, "aria-selected": String(i === index), "data-index": String(i) });
       if (item.current) option.setAttribute("data-current", "");
       if (item.destructive) option.setAttribute("data-destructive", "");
-      if (item.icon) {
+      if (item.sub) {
+        option.dataset.sub = item.sub;
+        option.setAttribute("aria-expanded", item.sub === openKey ? "true" : "false");
+      }
+      if (item.swatch) {
+        const dot = make("span", `${C.optionIcon} ayy-swatch ayy-swatch--sm`, { "aria-hidden": "true" });
+        dot.style.setProperty("--ayy-swatch", item.swatch);
+        option.append(dot);
+      } else if (item.icon) {
         const icon = make("span", C.optionIcon, { "aria-hidden": "true" });
         icon.innerHTML = item.icon;
         option.append(icon);
       }
       const text = make("span", C.optionText);
-      const label = make("span");
-      label.textContent = item.label;
-      text.append(label);
+      const name = make("span");
+      name.textContent = item.label;
+      text.append(name);
       if (item.hint) {
         const hintEl = make("span", C.optionHint);
         hintEl.textContent = item.hint;
@@ -2818,12 +2864,85 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       if (item.meta) {
         const meta = make("span", "ayy-combobox__meta");
-        if (m.mode === "actions") meta.innerHTML = shortcutHtml(item.meta, apple);
+        if (menu?.mode === "actions") meta.innerHTML = shortcutHtml(item.meta, apple);
         else meta.textContent = item.meta;
         option.append(meta);
       }
-      menuEl.append(option);
+      el.append(option);
     });
+  }
+
+  function hideFloating(el: HTMLElement, stop: (() => void) | null): (() => void) | null {
+    stop?.();
+    if (native) {
+      if (el.matches(":popover-open")) el.hidePopover();
+    } else el.hidden = true;
+    el.replaceChildren();
+    return null;
+  }
+
+  function showFloating(el: HTMLElement, anchor: HTMLElement | null): (() => void) | null {
+    if (!anchor) return hideFloating(el, null);
+    if (native) {
+      if (!el.matches(":popover-open")) el.showPopover();
+    } else el.hidden = false;
+    return autoPlace(el, anchor, { side: "end", align: "start", offset: 4 });
+  }
+
+  /** The submenu beside the parent, and the one beside that, for the open `sub` / `nest`. */
+  function renderSides(): void {
+    if (menu?.mode === "actions") {
+      for (const option of menuEl.querySelectorAll<HTMLElement>("[data-sub]")) option.setAttribute("aria-expanded", option.dataset.sub === menu.sub ? "true" : "false");
+    }
+    if (!menu || menu.mode !== "actions" || !menu.sub) {
+      sideItems = [];
+      nestItems = [];
+      stopSidePlacing = hideFloating(sideEl, stopSidePlacing);
+      stopNestPlacing = hideFloating(nestEl, stopNestPlacing);
+      return;
+    }
+    sideItems = itemsForSub(menu.sub);
+    if (!sideItems.length) {
+      menu.sub = undefined;
+      menu.nest = undefined;
+      stopSidePlacing = hideFloating(sideEl, stopSidePlacing);
+      stopNestPlacing = hideFloating(nestEl, stopNestPlacing);
+      return;
+    }
+    menu.sideIndex = Math.max(0, Math.min(menu.sideIndex, sideItems.length - 1));
+    fillList(sideEl, sideItems, menu.sideIndex, menu.sub, "side", menu.nest);
+    const trigger = menuEl.querySelector<HTMLElement>(`[aria-expanded="true"]`) ?? menuEl.querySelector<HTMLElement>(`[data-index="${menu.index}"]`);
+    stopSidePlacing?.();
+    stopSidePlacing = showFloating(sideEl, trigger);
+    if (!menu.nest) {
+      nestItems = [];
+      stopNestPlacing = hideFloating(nestEl, stopNestPlacing);
+      return;
+    }
+    nestItems = itemsForSub(menu.nest);
+    if (!nestItems.length) {
+      menu.nest = undefined;
+      stopNestPlacing = hideFloating(nestEl, stopNestPlacing);
+      return;
+    }
+    menu.nestIndex = Math.max(0, Math.min(menu.nestIndex, nestItems.length - 1));
+    fillList(nestEl, nestItems, menu.nestIndex, menu.nest, "nest");
+    stopNestPlacing?.();
+    stopNestPlacing = showFloating(nestEl, sideEl.querySelector<HTMLElement>('[aria-expanded="true"]'));
+  }
+
+  function renderMenu(): void {
+    if (!menu) return;
+    const m = menu;
+    menuItems = m.mode === "slash" ? slashItems(m.query) : m.mode === "mention" ? mentionItems(m) : m.list === "language" ? languageItems(m.ids[0]) : m.list === "row" || m.list === "column" || m.list === "cell" ? tableItems(m.ids[0], m.list, m.at ?? [0, 0]) : actionItems(m.ids);
+    if (!menuItems.length) {
+      closeMenu();
+      return;
+    }
+    m.index = Math.max(0, Math.min(m.index, menuItems.length - 1));
+    menuEl.dataset.mode = m.mode === "actions" ? (m.list === "language" ? "language" : "actions") : m.mode;
+    const menuLabel = m.mode === "slash" ? "Blocks" : m.mode === "mention" ? (m.source.label ?? "Mentions") : m.list === "language" ? "Code language" : m.list === "row" ? `Row ${(m.at?.[0] ?? 0) + 1}` : m.list === "column" ? `Column ${(m.at?.[1] ?? 0) + 1}` : m.list === "cell" ? "Cell" : "Block actions";
+    fillList(menuEl, menuItems, m.index, menuLabel, "option", m.mode === "actions" ? m.sub : undefined);
     const owner = menuOwner();
     if (owner && owner !== menuEl) {
       owner.setAttribute("aria-controls", menuEl.id);
@@ -2837,6 +2956,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const target = m.mode === "actions" ? m.anchor : placeAnchor(m.id, m.start);
     stopMenuPlacing = target ? autoPlace(menuEl, target, { side: "bottom", align: "start", offset: 4 }) : null;
     menuEl.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+    renderSides();
   }
 
   /** Move the caret anchor over character `offset` of a block, for a menu to hang from. */
@@ -2864,8 +2984,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const owner = menuOwner();
     menu = null;
     menuItems = [];
+    sideItems = [];
+    nestItems = [];
     stopMenuPlacing?.();
     stopMenuPlacing = null;
+    stopSidePlacing = hideFloating(sideEl, stopSidePlacing);
+    stopNestPlacing = hideFloating(nestEl, stopNestPlacing);
     owner?.removeAttribute("aria-activedescendant");
     owner?.removeAttribute("aria-controls");
     owner?.removeAttribute("aria-autocomplete");
@@ -2886,17 +3010,10 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     menuEl.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }
 
-  function runMenu(index = menu?.index ?? 0): void {
-    const item = menuItems[index];
+  function runItem(item: MenuItem | undefined): void {
     if (!item || !menu) return;
-    if (menu.mode === "actions" && item.sub !== undefined) {
-      menu.sub = item.sub ?? undefined;
-      menu.index = 0;
-      renderMenu();
-      return;
-    }
     if (menu.mode === "actions") {
-      const { ids, list, anchor: from } = menu;
+      const { ids, list } = menu;
       closeMenu();
       if (list === "language") {
         item.run();
@@ -2904,9 +3021,22 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         return;
       }
       if (picked && ids.length) root.focus({ preventScroll: true });
-      void from;
     }
     item.run();
+  }
+
+  function runMenu(index = menu?.index ?? 0): void {
+    const item = menuItems[index];
+    if (!item || !menu) return;
+    if (menu.mode === "actions" && item.sub) {
+      menu.sub = item.sub;
+      menu.nest = undefined;
+      menu.sideIndex = 0;
+      renderSides();
+      sideEl.focus({ preventScroll: true });
+      return;
+    }
+    runItem(item);
   }
 
   function openSlash(id: string, start: number, query: string): void {
@@ -2975,7 +3105,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     else unpick();
     // A row or column menu selects that axis. Escape closes the menu and leaves the selection.
     if (list === "row" || list === "column") selectAxis(ids[0], list, at?.[list === "row" ? 0 : 1] ?? 0);
-    menu = { mode: "actions", ids, index: 0, anchor: from, list, at };
+    menu = { mode: "actions", ids, index: 0, anchor: from, list, at, sideIndex: 0, nestIndex: 0 };
     if (from.matches("button")) from.setAttribute("aria-expanded", "true");
     renderMenu();
     if (list === "language") moveMenu(Math.max(0, menuItems.findIndex((item) => item.current)) - menu.index);
@@ -3407,10 +3537,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   let resizing: { id: string; frame: HTMLElement; start: number; column: number; rtl: boolean; width: number } | null = null;
   /** A table column being dragged to a new width: the widths of every column when it started, and the <col>s to show it live. */
   let sizing: { id: string; col: number; start: number; rtl: boolean; widths: number[]; cols: HTMLElement[]; table: HTMLElement; width: number } | null = null;
-  /** A table row or column being carried by its grip. Only set for a grip that can move (never the header row, or a one-row / one-column table). */
-  let tableDrag: { id: string; axis: "row" | "column"; from: number; to: number; startX: number; startY: number; moved: boolean; grip: HTMLElement; pointerId: number } | null = null;
-  /** When a grip drag last finished, so the click that follows it doesn't open the grip's menu. */
-  let gripDragAt = 0;
+  /** Row and column reordering, the same drag-and-drop blocks use. Filled in once those controllers exist. */
+  let tableReorder: { wasDragged(): boolean }[] = [];
 
   function setWidth(id: string, width: number, history = true): void {
     const i = indexOf(id);
@@ -4160,45 +4288,95 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function onMenuKey(e: KeyboardEvent): void {
     if (!menu) return;
+    const current = menu;
+    const panel = nestEl.contains(e.target as Node) ? "nest" : sideEl.contains(e.target as Node) ? "side" : "menu";
+    const items = panel === "nest" ? nestItems : panel === "side" ? sideItems : menuItems;
+    const at = panel === "nest" && current.mode === "actions" ? current.nestIndex : panel === "side" && current.mode === "actions" ? current.sideIndex : current.index;
+    const list = panel === "nest" ? nestEl : panel === "side" ? sideEl : menuEl;
     // Type to jump: "py" lands on Python, "d" on Duplicate.
     if (e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault();
       window.clearTimeout(typeaheadTimer);
       typeahead += e.key.toLowerCase();
       typeaheadTimer = window.setTimeout(() => (typeahead = ""), 700);
-      const order = menuItems.map((_, i) => (menu!.index + (typeahead.length === 1 ? 1 : 0) + i) % menuItems.length);
-      const hit = order.find((i) => menuItems[i].label.toLowerCase().startsWith(typeahead));
-      if (hit !== undefined) moveMenu(hit - menu.index);
+      const order = items.map((_, i) => (at + (typeahead.length === 1 ? 1 : 0) + i) % items.length);
+      const hit = order.find((i) => items[i].label.toLowerCase().startsWith(typeahead));
+      if (hit !== undefined) {
+        if (panel === "nest" && current.mode === "actions") current.nestIndex = hit;
+        else if (panel === "side" && current.mode === "actions") current.sideIndex = hit;
+        else current.index = hit;
+        for (const option of Array.from(list.querySelectorAll<HTMLElement>('[role="option"]'))) option.setAttribute("aria-selected", String(option.dataset.index === String(hit)));
+        list.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+      }
       return;
     }
+    const stepIn = (next: number) => {
+      if (panel === "nest" && current.mode === "actions") current.nestIndex = next;
+      else if (panel === "side" && current.mode === "actions") current.sideIndex = next;
+      else current.index = next;
+      for (const option of Array.from(list.querySelectorAll<HTMLElement>('[role="option"]'))) option.setAttribute("aria-selected", String(option.dataset.index === String(next)));
+      list.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+    };
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
-      moveMenu(e.key === "ArrowDown" ? 1 : -1);
+      if (!items.length) return;
+      stepIn((at + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length);
     } else if (e.key === "Home" || e.key === "End") {
       e.preventDefault();
-      moveMenu((e.key === "Home" ? 0 : menuItems.length - 1) - menu.index);
+      stepIn(e.key === "Home" ? 0 : Math.max(0, items.length - 1));
     } else if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      runMenu();
+      const item = items[at];
+      if (menu.mode === "actions" && item?.sub) {
+        if (panel === "menu") runMenu(at);
+        else if (panel === "side") {
+          menu.nest = item.sub;
+          menu.nestIndex = 0;
+          renderSides();
+          nestEl.focus({ preventScroll: true });
+        }
+        return;
+      }
+      if (panel === "menu") runMenu(at);
+      else runItem(item);
     } else if (menu.mode === "actions" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
       // A submenu opens toward the reading direction and closes back the other way.
       const rtl = getComputedStyle(menuEl).direction === "rtl";
       const into = e.key === (rtl ? "ArrowLeft" : "ArrowRight");
-      if (into && menuItems[menu.index]?.sub) {
+      if (into && items[at]?.sub) {
         e.preventDefault();
-        runMenu();
-      } else if (!into && menu.sub) {
+        if (panel === "menu") runMenu(at);
+        else if (panel === "side") {
+          menu.nest = items[at].sub;
+          menu.nestIndex = 0;
+          renderSides();
+          nestEl.focus({ preventScroll: true });
+        }
+      } else if (!into && panel !== "menu") {
         e.preventDefault();
-        menu.sub = undefined;
-        menu.index = 0;
-        renderMenu();
+        if (panel === "nest") {
+          menu.nest = undefined;
+          renderSides();
+          sideEl.focus({ preventScroll: true });
+        } else {
+          menu.sub = undefined;
+          menu.nest = undefined;
+          renderSides();
+          menuEl.focus({ preventScroll: true });
+        }
       }
-    } else if (e.key === "Escape" && menu.mode === "actions" && menu.sub) {
+    } else if (e.key === "Escape" && menu.mode === "actions" && (menu.nest || menu.sub)) {
       e.preventDefault();
       e.stopPropagation();
-      menu.sub = undefined;
-      menu.index = 0;
-      renderMenu();
+      if (menu.nest) {
+        menu.nest = undefined;
+        renderSides();
+        sideEl.focus({ preventScroll: true });
+      } else {
+        menu.sub = undefined;
+        renderSides();
+        menuEl.focus({ preventScroll: true });
+      }
     } else if (e.key === "Escape" || e.key === "Tab") {
       e.preventDefault();
       e.stopPropagation();
@@ -4282,7 +4460,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function onKeyDown(e: KeyboardEvent): void {
     if (readOnly()) return;
     const target = e.target as HTMLElement;
-    if (menuEl.contains(target)) return onMenuKey(e);
+    if (inMenu(target)) return onMenuKey(e);
     if (toolbar.contains(target)) {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -4525,8 +4703,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function onPointerDown(e: PointerEvent): void {
     const target = e.target as HTMLElement;
     root.removeAttribute("data-typing");
-    if (menu && !menuEl.contains(target) && !target.closest(`.${C.handle}`)) closeMenu();
-    if (toolbar.contains(target) || menuEl.contains(target) || readOnly()) return;
+    if (menu && !inMenu(target) && !target.closest(`.${C.handle}`)) closeMenu();
+    if (toolbar.contains(target) || inMenu(target) || readOnly()) return;
     const resize = target.closest<HTMLElement>(`.${C.resize}`);
     if (resize && e.button === 0) {
       e.preventDefault();
@@ -4550,26 +4728,6 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       grip.setAttribute("data-active", "");
       return;
     }
-    const rowGrip = target.closest<HTMLElement>(`.${C.rowGrip}`);
-    const colGrip = target.closest<HTMLElement>(`.${C.colGrip}`);
-    if ((rowGrip || colGrip) && e.button === 0) {
-      const gripEl = (rowGrip ?? colGrip)!;
-      const id = idOf(gripEl);
-      const b = blocks[indexOf(id)];
-      const axis = rowGrip ? "row" : "column";
-      const from = Number(gripEl.dataset[axis === "row" ? "row" : "col"]);
-      const grid = b ? gridOf(b) : null;
-      const first = b && b.header !== false ? 1 : 0;
-      // A grip that can't move its row or column (the header row, or a one-row / one-column table) stays a plain button:
-      // no drag state, so a press still opens its menu.
-      const movable = !!grid && (axis === "row" ? from >= first && grid.length - first >= 2 : grid[0].length >= 2);
-      if (movable) {
-        e.preventDefault();
-        tableDrag = { id, axis, from, to: from, startX: e.clientX, startY: e.clientY, moved: false, grip: gripEl, pointerId: e.pointerId };
-        gripEl.setPointerCapture?.(e.pointerId);
-        return;
-      }
-    }
     const inText = target.closest(`.${C.text}`);
     if (target.closest(`.${C.cell}`)) clearAxis();
     if (picked && !(e.shiftKey && e.button === 0)) unpick();
@@ -4580,75 +4738,6 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       pressing = true;
       hideToolbar(true);
     } else if (!inText) setSpanning(false);
-  }
-
-  /** Mark the dragged row's or column's cells while a grip drag is past its 4 px threshold. */
-  function setTableCellsDragging(on: boolean): void {
-    if (!tableDrag) return;
-    const el = els.get(tableDrag.id);
-    if (!el) return;
-    for (const cell of el.querySelectorAll<HTMLElement>(`.${C.cell}`)) {
-      const index = tableDrag.axis === "row" ? cell.dataset.row : cell.dataset.col;
-      if (Number(index) === tableDrag.from) {
-        if (on) cell.setAttribute("data-dragging", "");
-        else cell.removeAttribute("data-dragging");
-      }
-    }
-  }
-
-  /** Point the drop line at the gap nearest the pointer. `to` is the index the row or column occupies after the move (the splice removes `from` first). A header row is never a landing index. Hide the line when that index is `from`. */
-  function updateTableDrag(e: PointerEvent): void {
-    if (!tableDrag) return;
-    const wrap = tableDrag.grip.closest<HTMLElement>(`.${C.tableWrap}`);
-    const drop = wrap?.querySelector<HTMLElement>(`.${C.tableDrop}`);
-    const el = els.get(tableDrag.id);
-    const b = blocks[indexOf(tableDrag.id)];
-    if (!wrap || !drop || !el || !b) return;
-    const wrapRect = wrap.getBoundingClientRect();
-    const dir = getComputedStyle(wrap).direction;
-    const tableRect = el.querySelector<HTMLElement>(`.${C.table}`)?.getBoundingClientRect();
-    if (!tableRect) return;
-    const from = tableDrag.from;
-    const hide = () => {
-      tableDrag!.to = from;
-      drop.hidden = true;
-    };
-
-    if (tableDrag.axis === "row") {
-      const rows = Array.from(el.querySelectorAll<HTMLElement>("tr"));
-      const first = b.header !== false ? 1 : 0;
-      if (rows.length <= first) return hide();
-      const gaps = rows.slice(first).map((row, i) => ({ index: first + i, at: row.getBoundingClientRect().top }));
-      gaps.push({ index: rows.length, at: rows[rows.length - 1].getBoundingClientRect().bottom });
-      let gap = gaps[0];
-      for (const g of gaps) if (Math.abs(e.clientY - g.at) < Math.abs(e.clientY - gap.at)) gap = g;
-      const to = gap.index > from ? gap.index - 1 : gap.index;
-      tableDrag.to = to;
-      if (to === from || to < first) return hide();
-      drop.style.insetInlineStart = `${(dir === "rtl" ? wrapRect.right - tableRect.right : tableRect.left - wrapRect.left)}px`;
-      drop.style.inlineSize = `${tableRect.width}px`;
-      drop.style.blockSize = "2px";
-      drop.style.insetBlockStart = `${gap.at - wrapRect.top}px`;
-      drop.hidden = false;
-    } else {
-      const heads = Array.from(el.querySelectorAll<HTMLElement>(`.${C.cell}[data-row="0"]`));
-      if (!heads.length) return hide();
-      const inlineOf = (x: number) => (dir === "rtl" ? wrapRect.right - x : x - wrapRect.left);
-      const pointer = inlineOf(e.clientX);
-      const edge = (rect: DOMRect, start: boolean) => inlineOf(dir === "rtl" ? (start ? rect.right : rect.left) : start ? rect.left : rect.right);
-      const gaps = heads.map((head, c) => ({ index: c, at: edge(head.getBoundingClientRect(), true) }));
-      gaps.push({ index: heads.length, at: edge(heads[heads.length - 1].getBoundingClientRect(), false) });
-      let gap = gaps[0];
-      for (const g of gaps) if (Math.abs(pointer - g.at) < Math.abs(pointer - gap.at)) gap = g;
-      const to = gap.index > from ? gap.index - 1 : gap.index;
-      tableDrag.to = to;
-      if (to === from) return hide();
-      drop.style.insetBlockStart = `${tableRect.top - wrapRect.top}px`;
-      drop.style.blockSize = `${tableRect.height}px`;
-      drop.style.inlineSize = "2px";
-      drop.style.insetInlineStart = `${gap.at}px`;
-      drop.hidden = false;
-    }
   }
 
   function onPointerMove(e: PointerEvent): void {
@@ -4662,43 +4751,16 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       sizing.table.style.inlineSize = `${widths.reduce((sum, w) => sum + w, 0)}px`;
       return;
     }
-    if (tableDrag) {
-      if (!tableDrag.moved) {
-        if (Math.hypot(e.clientX - tableDrag.startX, e.clientY - tableDrag.startY) < 4) return;
-        tableDrag.moved = true;
-        setTableCellsDragging(true);
-      }
-      updateTableDrag(e);
+    if (resizing) {
+      const width = resizing.rtl ? resizing.start - e.clientX : e.clientX - resizing.start;
+      resizing.width = Math.max(20, Math.min(100, Math.round((width / resizing.column) * 100)));
+      resizing.frame.style.inlineSize = `${resizing.width}%`;
       return;
     }
-    if (!resizing) return;
-    const width = resizing.rtl ? resizing.start - e.clientX : e.clientX - resizing.start;
-    resizing.width = Math.max(20, Math.min(100, Math.round((width / resizing.column) * 100)));
-    resizing.frame.style.inlineSize = `${resizing.width}%`;
-  }
-
-  /** End a grip drag. A pointerup commits the move; a pointercancel only drops the line and the dragging mark. */
-  function finishTableDrag(commit: boolean): void {
-    if (!tableDrag) return;
-    const drag = tableDrag;
-    setTableCellsDragging(false);
-    tableDrag = null;
-    try { drag.grip.releasePointerCapture?.(drag.pointerId); } catch { /* already released */ }
-    drag.grip.closest<HTMLElement>(`.${C.tableWrap}`)?.querySelector<HTMLElement>(`.${C.tableDrop}`)?.setAttribute("hidden", "");
-    if (!commit || !drag.moved || drag.to === drag.from) return;
-    gripDragAt = Date.now();
-    editTable(
-      drag.id,
-      drag.axis === "row" ? { op: "move-row", from: drag.from, to: drag.to } : { op: "move-column", from: drag.from, to: drag.to },
-      drag.axis === "row" ? [drag.to, lastCell?.col ?? 0] : [lastCell?.row ?? 0, drag.to],
-    );
+    syncTableHot(e);
   }
 
   function onPointerCancel(): void {
-    if (tableDrag) {
-      finishTableDrag(false);
-      return;
-    }
     onPointerUp();
   }
 
@@ -4718,10 +4780,6 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const { id, width } = resizing;
       resizing = null;
       if (width) setWidth(id, width);
-      return;
-    }
-    if (tableDrag) {
-      finishTableDrag(true);
       return;
     }
     if (!pressing) return;
@@ -4776,7 +4834,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
 
   function onClick(e: MouseEvent): void {
     const target = e.target as HTMLElement;
-    if (toolbar.contains(target) || menuEl.contains(target)) return;
+    if (toolbar.contains(target) || inMenu(target)) return;
     const chip = target.closest<HTMLElement>(`.${C.mention}`);
     if (chip) {
       const d = chip.dataset;
@@ -4834,7 +4892,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       return;
     }
     // A grip drag just finished: the click that follows must not open the grip's menu.
-    if (Date.now() - gripDragAt < 300) return;
+    if (tableReorder.some((drag) => drag.wasDragged())) return;
     const rowGrip = target.closest<HTMLElement>(`.${C.rowGrip}`);
     if (rowGrip) {
       openActions([id], rowGrip, "row", [Number(rowGrip.dataset.row), 0]);
@@ -4918,21 +4976,63 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (isElement(target) && target.classList.contains(C.cell)) {
       clearAxis();
       const [row, col] = cellPos(target);
-      const id = idOf(target);
-      lastCell = { id, row, col };
-      markHot(id, row, col);
+      lastCell = { id: idOf(target), row, col };
     }
-    if (picked && target !== root && !menuEl.contains(target)) unpick();
+    if (picked && target !== root && !inMenu(target)) unpick();
   }
 
-  function onTablePointerOver(e: PointerEvent): void {
+  /** Drop every hot grip, except the table whose row or column menu is open. */
+  function clearTableHot(): void {
+    const keep = menu?.mode === "actions" && (menu.list === "row" || menu.list === "column") ? menu.ids[0] : "";
+    for (const [id, el] of els) {
+      if (id === keep) continue;
+      for (const hot of el.querySelectorAll<HTMLElement>(`.${C.rowGrip}[data-hot], .${C.colGrip}[data-hot]`)) hot.removeAttribute("data-hot");
+    }
+  }
+
+  /**
+   * Move the row and column grips to the pointer. The lanes beside and above the table count too, so the grip
+   * follows into the padding where it actually sits. Leaving the table hides them.
+   */
+  function syncTableHot(e: PointerEvent): void {
+    if (readOnly() || sizing || resizing || document.documentElement.hasAttribute("data-ayy-dragging")) return;
     const target = e.target as Node | null;
-    if (!isElement(target) || readOnly()) return;
-    const cell = target.closest<HTMLElement>("th, td")?.querySelector<HTMLElement>(`:scope > .${C.cell}`);
-    if (!cell) return;
-    const id = idOf(cell);
-    if (!id) return;
-    markHot(id, ...cellPos(cell));
+    const block = isElement(target) ? target.closest<HTMLElement>(`.${C.block}[data-type="table"]`) : null;
+    if (!block || !root.contains(block)) {
+      clearTableHot();
+      return;
+    }
+    const id = block.dataset.id ?? "";
+    const table = block.querySelector<HTMLElement>(`.${C.table}`);
+    const rows = Array.from(block.querySelectorAll<HTMLElement>("tr"));
+    const heads = Array.from(block.querySelectorAll<HTMLElement>(`.${C.cell}[data-row="0"]`));
+    if (!id || !table || !rows.length || !heads.length) return;
+    const tableRect = table.getBoundingClientRect();
+    const rtl = getComputedStyle(table).direction === "rtl";
+    const inRowLane = rtl ? e.clientX > tableRect.right - 1 : e.clientX < tableRect.left + 1;
+    const inColLane = e.clientY < tableRect.top + 1;
+    let row = 0;
+    let bestRow = Infinity;
+    rows.forEach((tr, i) => {
+      const rect = tr.getBoundingClientRect();
+      const d = e.clientY < rect.top ? rect.top - e.clientY : e.clientY > rect.bottom ? e.clientY - rect.bottom : 0;
+      if (d < bestRow) {
+        bestRow = d;
+        row = i;
+      }
+    });
+    let col = 0;
+    let bestCol = Infinity;
+    heads.forEach((cell, i) => {
+      const rect = cell.parentElement?.getBoundingClientRect() ?? cell.getBoundingClientRect();
+      const d = e.clientX < rect.left ? rect.left - e.clientX : e.clientX > rect.right ? e.clientX - rect.right : 0;
+      if (d < bestCol) {
+        bestCol = d;
+        col = i;
+      }
+    });
+    const which = inRowLane && !inColLane ? "row" : inColLane && !inRowLane ? "column" : "both";
+    markHot(id, row, col, which);
   }
 
   function onFocusOut(e: FocusEvent): void {
@@ -5016,7 +5116,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if ((e.target as HTMLElement).closest("button, [role=option]")) e.preventDefault();
   };
   toolbar.addEventListener("mousedown", keepSelection);
-  menuEl.addEventListener("mousedown", keepSelection);
+  for (const el of [menuEl, sideEl, nestEl]) el.addEventListener("mousedown", keepSelection);
   toolbar.addEventListener("click", (e) => {
     const button = (e.target as HTMLElement).closest<HTMLElement>("button");
     if (!button) return;
@@ -5041,14 +5141,164 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (!lastRange) openLinkForm();
   });
   linkInput.addEventListener("input", () => linkInput.removeAttribute("aria-invalid"));
-  menuEl.addEventListener("click", (e) => {
+  const onMenuClick = (e: MouseEvent) => {
     const option = (e.target as HTMLElement).closest<HTMLElement>('[role="option"]');
-    if (option) runMenu(Number(option.dataset.index));
-  });
-  menuEl.addEventListener("pointermove", (e) => {
+    if (!option || !menu) return;
+    const index = Number(option.dataset.index);
+    if (nestEl.contains(option)) {
+      runItem(nestItems[index]);
+      return;
+    }
+    if (sideEl.contains(option)) {
+      const item = sideItems[index];
+      if (menu.mode === "actions" && item?.sub) {
+        menu.nest = item.sub;
+        menu.nestIndex = 0;
+        renderSides();
+        return;
+      }
+      runItem(item);
+      return;
+    }
+    runMenu(index);
+  };
+  const onMenuPointer = (e: PointerEvent) => {
     const option = (e.target as HTMLElement).closest<HTMLElement>('[role="option"]');
-    if (option && menu && Number(option.dataset.index) !== menu.index) moveMenu(Number(option.dataset.index) - menu.index);
+    if (!option || !menu) return;
+    const index = Number(option.dataset.index);
+    if (!menuEl.contains(option)) {
+      if (menu.mode !== "actions") return;
+      if (sideEl.contains(option)) {
+        menu.sideIndex = index;
+        for (const row of sideEl.querySelectorAll<HTMLElement>('[role="option"]')) row.setAttribute("aria-selected", String(row.dataset.index === String(index)));
+        const next = sideItems[index]?.sub;
+        if (next !== menu.nest) {
+          menu.nest = next;
+          menu.nestIndex = 0;
+          renderSides();
+        }
+      }
+      return;
+    }
+    if (index !== menu.index) moveMenu(index - menu.index);
+    if (menu.mode !== "actions") return;
+    const next = menuItems[index]?.sub;
+    if (next !== menu.sub) {
+      menu.sub = next;
+      menu.nest = undefined;
+      menu.sideIndex = 0;
+      renderSides();
+    }
+  };
+  for (const el of [menuEl, sideEl, nestEl]) {
+    el.addEventListener("click", onMenuClick);
+    el.addEventListener("pointermove", onMenuPointer);
+  }
+
+  // ---- Drag and drop of table rows and columns: the same controller blocks use ----
+
+  /** Where a dragged row or column lands, as the index `move-row` / `move-column` want (after the dragged one is removed). */
+  function landingIndex(item: HTMLElement, toIndex: number, axis: "row" | "column"): number {
+    const attr = axis === "row" ? "data-row" : "data-col";
+    const from = Number(item.querySelector(`[${attr}]`)?.getAttribute(attr));
+    const table = item.closest("table");
+    const selector = axis === "row" ? "tbody tr" : `:is(th, td):has(.${C.colGrip})`;
+    const rest = table ? Array.from(table.querySelectorAll<HTMLElement>(selector)).filter((el) => el !== item) : [];
+    if (!rest.length) return from;
+    if (toIndex >= rest.length) {
+      const last = Number(rest[rest.length - 1].querySelector(`[${attr}]`)?.getAttribute(attr));
+      return last > from ? last : last + 1;
+    }
+    const target = Number(rest[toIndex].querySelector(`[${attr}]`)?.getAttribute(attr));
+    return target > from ? target - 1 : target;
+  }
+
+  /** A raised copy of the row or column, the same preview a block drag carries. */
+  function tablePreview(item: HTMLElement, axis: "row" | "column"): HTMLElement {
+    const source = item.closest("table");
+    const copy = document.createElement("table");
+    copy.className = `${C.table} ${dragPreviewClass}`;
+    const body = document.createElement("tbody");
+    if (axis === "row") {
+      const row = item.cloneNode(true) as HTMLElement;
+      row.querySelectorAll("[data-hot], [data-dragging], [data-drop-edge], [contenteditable]").forEach((el) => {
+        el.removeAttribute("data-hot");
+        el.removeAttribute("data-dragging");
+        el.removeAttribute("data-drop-edge");
+        el.removeAttribute("contenteditable");
+      });
+      body.append(row);
+      copy.style.inlineSize = `${source?.getBoundingClientRect().width ?? item.getBoundingClientRect().width}px`;
+    } else {
+      const col = item.querySelector("[data-col]")?.getAttribute("data-col");
+      for (const field of source?.querySelectorAll<HTMLElement>(`[data-col="${col}"]`) ?? []) {
+        const row = document.createElement("tr");
+        const cell = field.parentElement?.cloneNode(true) as HTMLElement | undefined;
+        if (!cell) continue;
+        cell.querySelectorAll("[data-hot], [data-dragging], [data-drop-edge], [contenteditable]").forEach((el) => {
+          el.removeAttribute("data-hot");
+          el.removeAttribute("data-dragging");
+          el.removeAttribute("data-drop-edge");
+          el.removeAttribute("contenteditable");
+        });
+        row.append(cell);
+        body.append(row);
+      }
+      copy.style.inlineSize = `${item.getBoundingClientRect().width}px`;
+    }
+    copy.append(body);
+    return copy;
+  }
+
+  /** Paint or clear drag-drop's drop line on every cell of a row or column, so it spans the whole axis. */
+  function markAxisEdge(item: HTMLElement, edge: DropEdge | null, axis: "row" | "column"): void {
+    const table = item.closest("table");
+    const attr = axis === "row" ? "data-row" : "data-col";
+    const index = item.querySelector(`[${attr}]`)?.getAttribute(attr);
+    if (!table || index == null) return;
+    for (const field of table.querySelectorAll<HTMLElement>(`[${attr}="${index}"]`)) setDropEdge(field.parentElement ?? field, edge);
+  }
+
+  const rowReorder = connectDragDrop(root, {
+    items: `.${C.table} tbody tr:has(.${C.rowGrip})`,
+    handle: `.${C.rowGrip}`,
+    areas: `.${C.table}`,
+    orientation: "vertical",
+    moveDom: false,
+    ignore: `.${C.cell}, .${C.colResize}, input, textarea, select`,
+    canDrag: (row) => !readOnly() && (row.closest("table")?.querySelectorAll("tbody tr").length ?? 0) >= 2,
+    preview: (row) => tablePreview(row, "row"),
+    describe: (row) => row.querySelector(`.${C.rowGrip}`)?.getAttribute("aria-label") ?? "Row",
+    markItem: (row, on) => row.querySelectorAll(`.${C.cell}`).forEach((cell) => cell.toggleAttribute("data-dragging", on)),
+    markEdge: (row, edge) => markAxisEdge(row, edge, "row"),
+    onMove: (move: DragMove) => {
+      const from = Number(move.item.querySelector("[data-row]")?.getAttribute("data-row"));
+      const to = landingIndex(move.item, move.toIndex, "row");
+      editTable(idOf(move.item), { op: "move-row", from, to }, [to, lastCell?.col ?? 0], `Row moved to position ${to + 1}`);
+    },
   });
+  const colReorder = connectDragDrop(root, {
+    items: `.${C.table} :is(th, td):has(.${C.colGrip})`,
+    handle: `.${C.colGrip}`,
+    areas: `.${C.table}`,
+    orientation: "horizontal",
+    moveDom: false,
+    ignore: `.${C.cell}, .${C.colResize}, input, textarea, select`,
+    canDrag: (cell) => !readOnly() && (cell.closest("table")?.querySelectorAll(`:is(th, td):has(.${C.colGrip})`).length ?? 0) >= 2,
+    preview: (cell) => tablePreview(cell, "column"),
+    describe: (cell) => cell.querySelector(`.${C.colGrip}`)?.getAttribute("aria-label") ?? "Column",
+    markItem: (cell, on) => {
+      const col = cell.querySelector("[data-col]")?.getAttribute("data-col");
+      cell.closest("table")?.querySelectorAll(`[data-col="${col}"]`).forEach((field) => field.toggleAttribute("data-dragging", on));
+    },
+    markEdge: (cell, edge) => markAxisEdge(cell, edge, "column"),
+    onMove: (move: DragMove) => {
+      const from = Number(move.item.querySelector("[data-col]")?.getAttribute("data-col"));
+      const to = landingIndex(move.item, move.toIndex, "column");
+      editTable(idOf(move.item), { op: "move-column", from, to }, [lastCell?.row ?? 0, to], `Column moved to position ${to + 1}`);
+    },
+  });
+  tableReorder = [rowReorder, colReorder];
 
   // ---- Drag and drop of blocks: ayywi's own, by the handle ----
 
@@ -5102,7 +5352,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     [root, "paste", onPaste as EventListener],
     [root, "pointerdown", onPointerDown as EventListener],
     [root, "mousedown", onMouseDown as EventListener],
-    [root, "pointerover", onTablePointerOver as EventListener],
+    [root, "pointerover", syncTableHot as EventListener],
     [root, "click", onClick as EventListener],
     [root, "contextmenu", onContextMenu as EventListener],
     [root, "change", onChange],
@@ -5169,10 +5419,14 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       cancelAnimationFrame(toolbarFrame);
       setSpanning(false);
       dnd.destroy();
+      rowReorder.destroy();
+      colReorder.destroy();
       for (const [target, type, fn, o] of listeners) target.removeEventListener(type, fn, o);
       fileInput.removeEventListener("change", onChange);
       anchor.remove();
       menuEl.remove();
+      sideEl.remove();
+      nestEl.remove();
       toolbar.remove();
       fileInput.remove();
     },

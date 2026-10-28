@@ -1,9 +1,6 @@
 import { useState } from "react";
-import type { DensityMode, ThemeMode } from "@danitesler/ayywi";
 import {
   buttonClass,
-  SegmentedControl,
-  SegmentedControlItem,
   Tabs,
   TabsContent,
   TabsList,
@@ -11,7 +8,6 @@ import {
 } from "@danitesler/ayywi/react";
 import { CodeBlock, CopyButton } from "../CodeBlock";
 import { buildPrompt, links, QUICK_START, SETUPS, type Setup } from "../prompts";
-import { themeOptions } from "../themes";
 import agentsSnippet from "../../../ai/AGENTS.snippet.md?raw";
 
 const ROUTE = "get-started";
@@ -40,35 +36,6 @@ export const getStarted = {
   title: "Get started",
   text: "start begin home overview setup install copy paste prompt no code vibe lovable bolt v0 replit cursor claude chatgpt no install cdn files link ai agent mcp llms use cases lint review quick start brand npm by hand cli",
 };
-
-export interface Appearance {
-  theme: ThemeMode;
-  setTheme: (theme: ThemeMode) => void;
-  density: DensityMode;
-  setDensity: (density: DensityMode) => void;
-}
-
-/** Change the theme and density of this whole page, right in the hero. */
-function TryIt({ theme, setTheme, density, setDensity }: Appearance) {
-  const resolved = theme === "system" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : theme;
-  return (
-    <div className="pv-try">
-      <span className="ayy-muted">Try it on this page:</span>
-      <SegmentedControl size="sm" aria-label="Theme" value={resolved} onValueChange={(v) => setTheme(v as ThemeMode)}>
-        {themeOptions.map((t) => (
-          <SegmentedControlItem key={t.name} value={t.name}>
-            {t.label}
-          </SegmentedControlItem>
-        ))}
-      </SegmentedControl>
-      <SegmentedControl size="sm" aria-label="Density" value={density === "auto" ? "" : density} onValueChange={(v) => setDensity(v as DensityMode)}>
-        <SegmentedControlItem value="compact">Compact</SegmentedControlItem>
-        <SegmentedControlItem value="comfortable">Comfortable</SegmentedControlItem>
-        <SegmentedControlItem value="touch">Touch</SegmentedControlItem>
-      </SegmentedControl>
-    </div>
-  );
-}
 
 const MCP_CONFIG = JSON.stringify(
   {
@@ -183,14 +150,13 @@ function CliGuide() {
   );
 }
 
-export function GetStartedPage(appearance: Appearance) {
+export function GetStartedPage() {
   return (
     <article className="pv-page pv-page--compact">
       <header className="pv-page__header">
         <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">Get started</h1>
         <p className="ayy-lede">Paste one prompt; your AI asks the rest. Dark mode and phones included.</p>
-        <TryIt {...appearance} />
       </header>
 
       <QuickStart />

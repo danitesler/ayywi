@@ -6,6 +6,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - `.ayy-card` — Root surface.
 - `.ayy-card--interactive` — Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.
 - `.ayy-card--spotlight` — Pointer-following glow + lit border. Colour via the --ayy-spot custom property.
+- `.ayy-card--transparent` — No fill and no rest shadow: the page shows through. The line border, radius and padding stay. Pairs with spotlight for rows on a plain page.
 - `.ayy-card--featured` — The one to pick: the recommended plan in a pricing grid, or the option someone chose. A 2px border in the text colour (High Contrast: a highlight outline). One per group.
 - `.ayy-card__header` — Top block (title + description).
 - `.ayy-card__title` — Heading. Use an h2–h4 that fits your outline.
@@ -27,7 +28,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - `.ayy-card__view-badges` — View: row of Badges at the end of the body (Edited, Uploaded).
 
 **States**
-- `default` — Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5.
+- `default` — Surface fill, line border, card radius and the rest shadow; header, content and footer padded --ayy-space-5. transparent drops the fill and the rest shadow.
 - `hover` (`:hover; on a view card also [data-hover] (hover tracked elsewhere)`) — Border turns line-hover. interactive also lifts 2px with the lift shadow and zooms its media 3%; spotlight lights a glow and border that follow the pointer. A view card takes the lift shadow, its body fades up from 6px below, a --reveal Hover actions row fades in and the play glyph fades out.
 - `pressed` — doesn't apply: No pressed look, even when interactive.
 - `focus` (`.ayy-card__link:focus-visible; .ayy-card__view-media:focus-visible`) — The ring goes around the whole card (2px, 2px offset) when its title link has keyboard focus. On a view card the ring sits inside the picture's edge, and focus anywhere in it reveals the body and actions like hover.
@@ -42,7 +43,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem).
 
 **React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from "@danitesler/ayywi/react";`
-- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
+- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `transparent` boolean — no fill, no rest shadow (ayy-card--transparent).; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
 - `<CardDescription>` renders <p>.
@@ -79,8 +80,8 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 **Don't**
 - Don't wrap page sections in a card — use plain layout.
 - Don't nest cards inside cards.
-- Don't set background colours on cards; the surface token keeps both themes correct.
-- Don't use spotlight on dense lists — it's for showcase grids.
+- Don't set background colours on cards; the surface token keeps both themes correct. For no fill at all, use transparent.
+- Don't use spotlight on dense lists of small rows — it's for showcase grids and a few large rows.
 - Don't use view cards for records people select in bulk — use Grid with GridItemSelect and an Action bar.
 - Don't crop a view card's picture (object-fit: cover) — captures must show whole; the blurred copy fills the gap. Don't put essential information only in its body: it hides until hover on pointer devices.
 
@@ -143,11 +144,11 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <p class="ayy-card__description">Move your pointer over me.</p>
   </div>
 </div>
-<div class="ayy-card ayy-card--interactive ayy-card--spotlight" style="inline-size: 15rem; --ayy-spot: var(--ayy-accent-ai)">
+<div class="ayy-card ayy-card--interactive ayy-card--spotlight ayy-card--transparent" style="inline-size: 15rem; --ayy-spot: var(--ayy-accent-ai)">
   <div class="ayy-card__header">
     <span class="ayy-badge ayy-badge--ai">AI</span>
     <h3 class="ayy-card__title">Assistant</h3>
-    <p class="ayy-card__description">Colour comes from the content.</p>
+    <p class="ayy-card__description">No fill: just the glow and border.</p>
   </div>
 </div>
 ```
@@ -167,11 +168,11 @@ export default function Example() {
           <CardDescription>Move your pointer over me.</CardDescription>
         </CardHeader>
       </Card>
-      <Card interactive spotlight spotColor="var(--ayy-accent-ai)" style={{ inlineSize: "15rem" }}>
+      <Card interactive spotlight transparent spotColor="var(--ayy-accent-ai)" style={{ inlineSize: "15rem" }}>
         <CardHeader>
           <Badge variant="ai">AI</Badge>
           <CardTitle>Assistant</CardTitle>
-          <CardDescription>Colour comes from the content.</CardDescription>
+          <CardDescription>No fill: just the glow and border.</CardDescription>
         </CardHeader>
       </Card>
     </>

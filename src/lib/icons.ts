@@ -297,3 +297,131 @@ export const CopyPlusIcon: IconData = [
   ["path", { d: "M7 11V9C7 5.70017 7 4.05025 8.02513 3.02513C9.05025 2 10.7002 2 14 2C17.2998 2 18.9497 2 19.9749 3.02513C21 4.05025 21 5.70017 21 9V11C21 14.2998 21 15.9497 19.9749 16.9749C18.9497 18 17.2998 18 14 18C10.7002 18 9.05025 18 8.02513 16.9749C7 15.9497 7 14.2998 7 11Z", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
   ["path", { d: "M3 6V15C3 18.2998 3 19.9497 4.02513 20.9749C5.05025 22 6.70017 22 10 22H17", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
 ];
+
+export const InsertRowUpIcon: IconData = [
+  ["path", { d: "M18 2.8125C18.8888 3.01415 19.5638 3.34564 20.1088 3.89059C21.5 5.28184 21.5 7.52101 21.5 11.9994C21.5 16.4777 21.5 18.7169 20.1088 20.1081C18.7175 21.4993 16.4783 21.4993 12 21.4993C7.52166 21.4993 5.28249 21.4993 3.89124 20.1081C2.5 18.7169 2.5 16.4777 2.5 11.9993C2.5 7.52101 2.5 5.28184 3.89124 3.89059C4.4362 3.34564 5.11125 3.01415 6.00001 2.8125", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M9 5.5L12 2.5L15 5.5M12 3.5V10.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M2.5 15H21.5", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M8.5 21.5L8.5 15M15.5 21.5L15.5 15", stroke: "currentColor", strokeWidth: "1.5", key: "3" }],
+];
+
+export const InsertRowDownIcon: IconData = [
+  ["path", { d: "M18 21.1868C18.8888 20.9852 19.5638 20.6537 20.1088 20.1088C21.5 18.7175 21.5 16.4783 21.5 12C21.5 7.52166 21.5 5.28249 20.1088 3.89124C18.7175 2.5 16.4783 2.5 12 2.5C7.52166 2.5 5.28249 2.5 3.89124 3.89124C2.5 5.28249 2.5 7.52166 2.5 12C2.5 16.4783 2.5 18.7175 3.89124 20.1088C4.4362 20.6537 5.11125 20.9852 6.00001 21.1868", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M12 13.5V20.5M9 18.5L12 21.5L15 18.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M2.5 9L21.5 9", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M8.5 2.5L8.5 9M15.5 2.5L15.5 9", stroke: "currentColor", strokeWidth: "1.5", key: "3" }],
+];
+
+export const InsertColumnLeftIcon: IconData = [
+  ["path", { d: "M2.8125 18C3.01415 18.8888 3.34564 19.5638 3.89059 20.1088C5.28184 21.5 7.52101 21.5 11.9994 21.5C16.4777 21.5 18.7169 21.5 20.1081 20.1088C21.4993 18.7175 21.4993 16.4783 21.4993 12C21.4993 7.52166 21.4993 5.28249 20.1081 3.89124C18.7169 2.5 16.4777 2.5 11.9994 2.5C7.52101 2.5 5.28184 2.5 3.89059 3.89124C3.34564 4.4362 3.01415 5.11125 2.8125 6.00001", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M5.5 9L2.5 12L5.5 15M3.5 12L10.5 12", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M15 2.49805L15 21.498", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M21.5 8.49805H15M21.5 15.498H15", stroke: "currentColor", strokeWidth: "1.5", key: "3" }],
+];
+
+export const InsertColumnRightIcon: IconData = [
+  ["path", { d: "M21.1868 18C20.9852 18.8888 20.6537 19.5638 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C20.6537 4.4362 20.9852 5.11125 21.1868 6.00001", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M18.5 9L21.5 12L18.5 15M20.5 12L13.5 12", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M9 2.49805V21.498", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M2.49805 8.49805H8.99805M2.49805 15.498H8.99805", stroke: "currentColor", strokeWidth: "1.5", key: "3" }],
+];
+
+export const MoveUpIcon: IconData = [
+  ["path", { d: "M12.7422 20C12.7422 20.4142 12.4064 20.75 11.9922 20.75C11.578 20.75 11.2422 20.4142 11.2422 20H11.9922H12.7422ZM11.2422 4.5C11.2422 4.08579 11.578 3.75 11.9922 3.75C12.4064 3.75 12.7422 4.08579 12.7422 4.5H11.9922H11.2422ZM11.9922 20H11.2422V4.5H11.9922H12.7422V20H11.9922Z", fill: "currentColor", key: "0" }],
+  ["path", { d: "M6.99219 9C7.97523 7.98862 10.5918 3.99996 11.9922 4C13.3926 4.00002 16.0091 7.98859 16.9922 8.99999", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+];
+
+export const MoveDownIcon: IconData = [
+  ["path", { d: "M12.7422 4C12.7422 3.58579 12.4064 3.25 11.9922 3.25C11.578 3.25 11.2422 3.58579 11.2422 4H11.9922H12.7422ZM11.2422 19.5C11.2422 19.9142 11.578 20.25 11.9922 20.25C12.4064 20.25 12.7422 19.9142 12.7422 19.5H11.9922H11.2422ZM11.9922 4H11.2422V19.5H11.9922H12.7422V4H11.9922Z", fill: "currentColor", key: "0" }],
+  ["path", { d: "M6.99219 15C7.97523 16.0114 10.5918 20 11.9922 20C13.3926 20 16.0091 16.0114 16.9922 15", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+];
+
+export const MoveLeftIcon: IconData = [
+  ["circle", { cx: "3", cy: "3", r: "3", transform: "matrix(-1 0 0 1 22 9)", stroke: "currentColor", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M2 11.9999H12M2 11.9999C2 12.5619 2.4381 12.9891 3.3143 13.8436L4.97057 15.5M2 11.9999C2 11.4378 2.4381 11.0106 3.3143 10.1561L4.97044 8.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+];
+
+export const MoveRightIcon: IconData = [
+  ["circle", { cx: "5", cy: "12", r: "3", stroke: "currentColor", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M22 12L12 12M22 12C22 12.562 21.5619 12.9893 20.6857 13.8437L19.0294 15.5001M22 12C22 11.4379 21.5619 11.0107 20.6857 10.1563L19.0296 8.50012", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+];
+
+export const Rows3Icon: IconData = [
+  ["path", { d: "M2.49219 15.5H21.4922", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M2.49219 8.5H21.4922", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M2.49219 12C2.49219 7.52166 2.49219 5.28249 3.88343 3.89124C5.27467 2.5 7.51384 2.5 11.9922 2.5C16.4705 2.5 18.7097 2.5 20.1009 3.89124C21.4922 5.28249 21.4922 7.52166 21.4922 12C21.4922 16.4783 21.4922 18.7175 20.1009 20.1088C18.7097 21.5 16.4705 21.5 11.9922 21.5C7.51384 21.5 5.27467 21.5 3.88343 20.1088C2.49219 18.7175 2.49219 16.4783 2.49219 12Z", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+];
+
+export const Layout3ColumnIcon: IconData = [
+  ["path", { d: "M20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124Z", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M8.5 2.5V21.5", stroke: "currentColor", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M15.5 2.5V21.5", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+];
+
+export const SortByDown02Icon: IconData = [
+  ["path", { d: "M3 9L14 9.00008", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M3 15H10", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M3 3H19", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M18.5 21V9M18.5 21C17.7998 21 16.4915 19.0057 16 18.5M18.5 21C19.2002 21 20.5085 19.0057 21 18.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "3" }],
+];
+
+export const ArrangeByLettersAZIcon: IconData = [
+  ["path", { d: "M4 14H8.42109C9.35119 14 9.81624 14 9.94012 14.2801C10.064 14.5603 9.74755 14.8963 9.11466 15.5684L5.47691 19.4316C4.84402 20.1037 4.52757 20.4397 4.65145 20.7199C4.77533 21 5.24038 21 6.17048 21H10", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M4 9L6.10557 4.30527C6.49585 3.43509 6.69098 3 7 3C7.30902 3 7.50415 3.43509 7.89443 4.30527L10 9", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M17.5 20V4M17.5 20C16.7998 20 15.4915 18.0057 15 17.5M17.5 20C18.2002 20 19.5085 18.0057 20 17.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+];
+
+export const ArrangeByLettersZAIcon: IconData = [
+  ["path", { d: "M4 3H8.42109C9.35119 3 9.81624 3 9.94012 3.28013C10.064 3.56026 9.74755 3.89632 9.11466 4.56842L5.47691 8.43158C4.84402 9.10368 4.52757 9.43974 4.65145 9.71987C4.77533 10 5.24038 10 6.17048 10H10", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M4 21L6.10557 16.3053C6.49585 15.4351 6.69098 15 7 15C7.30902 15 7.50415 15.4351 7.89443 16.3053L10 21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M17.5 20V4M17.5 20C16.7998 20 15.4915 18.0057 15 17.5M17.5 20C18.2002 20 19.5085 18.0057 20 17.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+];
+
+export const TextAlignLeftIcon: IconData = [
+  ["path", { d: "M3 3H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M3 9H11", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M3 15H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M3 21H11", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "3" }],
+];
+
+export const TextAlignCenterIcon: IconData = [
+  ["path", { d: "M3 3H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M8 9H16", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M3 15H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M8 21H16", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "3" }],
+];
+
+export const TextAlignRightIcon: IconData = [
+  ["path", { d: "M3 3H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M13 9H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M3 15H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M13 21H21", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "3" }],
+];
+
+export const HorizontalResizeIcon: IconData = [
+  ["path", { d: "M10 20L10 4", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M14 20L14 4", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M10 12L6 12", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M2.00017 12.0504C1.9696 11.0147 6.00844 8.57937 6.38885 9.06275C6.82022 9.61089 5.78886 11.2397 5.55656 11.7584C5.41686 12.0703 5.42069 12.2056 5.57954 12.5172C6.29675 13.9241 6.65535 14.6275 6.43595 14.9325L6.43397 14.9352C6.08047 15.4197 2.03001 13.0611 2.00017 12.0504Z", stroke: "currentColor", strokeWidth: "1.5", key: "3" }],
+  ["path", { d: "M21.9998 11.9496C22.0304 12.9853 17.9916 15.4206 17.6112 14.9373C17.1798 14.3891 18.2111 12.7602 18.4434 12.2416C18.5831 11.9297 18.5793 11.7944 18.4205 11.4828C17.7033 10.0759 17.3446 9.37251 17.564 9.06751L17.566 9.06478C17.9195 8.58035 21.97 10.9389 21.9998 11.9496Z", stroke: "currentColor", strokeWidth: "1.5", key: "4" }],
+  ["path", { d: "M18 12L14 12", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "5" }],
+];
+
+export const EraserIcon: IconData = [
+  ["path", { d: "M8.73792 7.78021L4.84693 11.7574C3.67722 12.953 3.09236 13.5508 3.01263 14.2802C2.99579 14.4343 2.99579 14.5899 3.01263 14.744C3.09236 15.4733 3.67722 16.0711 4.84693 17.2668L4.99601 17.4191C5.62049 18.0575 5.93274 18.3766 6.30638 18.5911C6.5236 18.7157 6.75482 18.8134 6.99505 18.882C7.40827 19 7.85149 19 8.73792 19C9.62436 19 10.0676 19 10.4808 18.882C10.721 18.8134 10.9522 18.7157 11.1695 18.5911C11.5431 18.3766 11.8554 18.0575 12.4798 17.4191L15.3239 14.5121M8.73792 7.78021L12.3199 4.12313C13.7065 2.70754 14.3997 1.99974 15.2627 2C16.1256 2.00026 16.8185 2.70846 18.2042 4.12487L18.9473 4.8845C20.3159 6.28342 21.0002 6.98288 21 7.85008C20.9997 8.71728 20.315 9.41633 18.9456 10.8144L15.3239 14.5121M8.73792 7.78021L15.3239 14.5121", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M10 22L21 22", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+];
+
+export const DeleteRowIcon: IconData = [
+  ["path", { d: "M18 21.1868C18.8888 20.9852 19.5638 20.6537 20.1088 20.1088C21.5 18.7175 21.5 16.4783 21.5 12C21.5 7.52166 21.5 5.28249 20.1088 3.89124C18.7175 2.5 16.4783 2.5 12 2.5C7.52166 2.5 5.28249 2.5 3.89124 3.89124C2.5 5.28249 2.5 7.52166 2.5 12C2.5 16.4783 2.5 18.7175 3.89124 20.1088C4.4362 20.6537 5.11125 20.9852 6.00001 21.1868", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M9 21.5L12 18.5M12 18.5L15 15.5M12 18.5L9 15.5M12 18.5L15 21.5", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M2.5 9L21.5 9", stroke: "currentColor", strokeWidth: "1.5", key: "2" }],
+  ["path", { d: "M8.5 2.5L8.5 9M15.5 2.5L15.5 9", stroke: "currentColor", strokeWidth: "1.5", key: "3" }],
+];
+
+export const ColumnDeleteIcon: IconData = [
+  ["path", { d: "M5.5 3C6.90446 3 7.60669 3 8.11114 3.37919C8.32952 3.54335 8.51702 3.75429 8.66294 3.99997C9 4.56747 9 5.35748 9 6.9375L9 17.0625C9 18.6425 9 19.4325 8.66294 20C8.51702 20.2457 8.32952 20.4566 8.11114 20.6208C7.60669 21 6.90446 21 5.5 21C4.09554 21 3.39331 21 2.88886 20.6208C2.67048 20.4566 2.48298 20.2457 2.33706 20C2 19.4325 2 18.6425 2 17.0625L2 6.9375C2 5.35748 2 4.56747 2.33706 3.99997C2.48298 3.75429 2.67048 3.54335 2.88886 3.37919C3.39331 3 4.09554 3 5.5 3Z", stroke: "currentColor", strokeWidth: "1.5", key: "0" }],
+  ["path", { d: "M20 11.9375L20 17.0625C20 18.6425 20 19.4325 19.6629 20C19.517 20.2457 19.3295 20.4566 19.1111 20.6208C18.6067 21 17.9045 21 16.5 21C15.0955 21 14.3933 21 13.8889 20.6208C13.6705 20.4566 13.483 20.2457 13.3371 20C13 19.4325 13 18.6425 13 17.0625L13 6.9375C13 5.35748 13 4.56747 13.3371 3.99997", stroke: "currentColor", strokeLinecap: "round", strokeWidth: "1.5", key: "1" }],
+  ["path", { d: "M22 8.99936L16 3M22 3.00064L16 9", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", key: "2" }],
+];
+

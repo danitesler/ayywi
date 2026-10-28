@@ -1774,7 +1774,7 @@ Category: Forms. A multi-line text field that opens a floating suggestions list 
 
 ## Block editor
 
-Category: Forms. A Notion-style document editor made of blocks: text, three headings, bulleted, numbered and to-do lists, toggles that hide the blocks nested under them, tables of plain-text cells (row and column grips that open a scoped menu, drag to reorder, a selection you can clear, move, copy or delete from the keyboard, sorting, resizable and aligned columns, header row and column), quotes, callouts (default, or info, success, warning and destructive, the same colours as Alert), code, equations (TeX, shown by your own renderer), dividers, images, embeds, files and record links. Enter starts a new block and Backspace joins it to the one above, the arrows move between blocks as if they were one text, Markdown shortcuts and / turn a line into another block, a quiet bar formats a selection, including highlight, @ inserts mention chips, and the handle in the gutter drags blocks (one or a selection of them) to a new place. Also called: block-editor, rich-text-editor, rich-text, wysiwyg, notion-editor, document-editor, notes-editor, page-editor.
+Category: Forms. A document editor made of blocks: headings, lists, tables, callouts, code, images and files. Type / to add a block, and drag the gutter handle to reorder. Also called: block-editor, rich-text-editor, rich-text, wysiwyg, notion-editor, document-editor, notes-editor, page-editor.
 
 **Classes**
 - `.ayy-block-editor` — Root. The editor renders its blocks inside it, then the floating menu, formatting bar and caret anchor. Leave room at its inline start for the gutter (about 3.25rem of padding in its container), or use --inset.
@@ -1792,9 +1792,8 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__cell` — The editable plain-text line inside every cell (role="textbox", data-row, data-col). Tab and Shift+Tab move between cells, Enter goes down a row.
 - `.ayy-block-editor__col-resize` — The handle on a table column's inline-end edge, in the first row (role="separator"): drag it to set the column's width. The same widths are set from the column grip's menu (Width) for keyboard users.
 - `.ayy-block-editor__table-add` — A table's + button (data-axis="column" or "row"): shown while the pointer or focus is in the block, always on touch screens.
-- `.ayy-block-editor__row-grip` — The handle at a table row's inline start (data-row, aria-haspopup="menu"): shown while a cell in that row is hovered or focused (data-hot). Click selects the row and opens its menu (insert, duplicate, move, clear, delete); drag reorders the row.
-- `.ayy-block-editor__col-grip` — The handle over a table column's top (data-col, aria-haspopup="menu"): shown while a cell in that column is hovered or focused (data-hot). Click selects the column and opens its menu (insert, duplicate, move, sort, align, width, clear, delete); drag reorders the column.
-- `.ayy-block-editor__table-drop` — The 2px line inside a table's wrap showing where a row or column dragged by its grip will land; hidden until the drag moves, then positioned from the cells' rects.
+- `.ayy-block-editor__row-grip` — The handle at a table row's inline start (data-row, aria-haspopup="menu"): shown while the pointer is over that row, including the lane beside the table (data-hot). It hides when the pointer leaves the table. Click selects the row and opens its menu (insert, duplicate, move, clear, delete); drag reorders the row.
+- `.ayy-block-editor__col-grip` — The handle over a table column's top (data-col, aria-haspopup="menu"): shown while the pointer is over that column, including the lane above the table (data-hot). It hides when the pointer leaves the table. Click selects the column and opens its menu (insert, duplicate, move, sort, align, width, clear, delete); drag reorders the column.
 - `.ayy-block-editor__check` — A to-do's checkbox (.ayy-checkbox).
 - `.ayy-block-editor__icon` — A callout's icon: a bulb by default, then information, check, alert or cancel as data-tone changes. It takes the tone's colour.
 - `.ayy-block-editor__math` — An equation's rendered output, a sibling after the TeX line, aria-hidden="true". Shown only while the block has data-rendered and is not being edited. Clicking it focuses the line. The line is named Equation and the TeX is its text; this HTML is hidden from screen readers.
@@ -1819,6 +1818,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `.ayy-block-editor__mention` — A mention chip inside text (contenteditable="false", data-trigger, data-id, data-label): text with a faint wash, never a loud pill.
 - `.ayy-block-editor__mention-trigger` — The @ or # of a mention, muted.
 - `.ayy-block-editor__menu` — The floating list (.ayy-combobox__listbox) for /, mentions, block actions, a table row, column or cell menu, and a code block's language. data-mode="slash|mention|actions|language".
+- `.ayy-block-editor__submenu` — A menu that opens beside an item (Colour, Language, Row, Column, Sort, Align, Width), rather than replacing the list. A further one can open beside that.
 - `.ayy-block-editor__menu-label` — A group heading in the menu (Basic blocks, Media, People, Turn into).
 - `.ayy-block-editor__option` — One menu row (.ayy-combobox__option, role="option"). data-current marks a block's current type, data-destructive Delete.
 - `.ayy-block-editor__option-icon` — The tile in front of a menu row: the block type's icon, or an Avatar for a person.
@@ -1837,7 +1837,7 @@ Category: Forms. A Notion-style document editor made of blocks: text, three head
 - `open` (`data-open on a toggle block (its arrow, or Mod+Enter in the line)`)
 - `tone` (`data-tone="info|success|warning|destructive" on a callout (Colour › in its block actions)`)
 - `resizing` (`data-active on .ayy-block-editor__col-resize while a table column is dragged`)
-- `hot` (`data-hot on the grips of the hovered or focused cell's row and column`)
+- `hot` (`data-hot on the grip of the row or column under the pointer, including the lanes beside and above the table`)
 - `dragging` (`data-dragging on the blocks being carried by the handle, or on the cells of the table row or column being dragged by its grip`)
 - `empty` (`data-empty on the root: the document is one empty line`)
 - `typing` (`data-typing on the root: set by typing, cleared when the pointer moves or presses`)
@@ -3017,6 +3017,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - `.ayy-card` — Root surface.
 - `.ayy-card--interactive` — Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.
 - `.ayy-card--spotlight` — Pointer-following glow + lit border. Colour via the --ayy-spot custom property.
+- `.ayy-card--transparent` — No fill and no rest shadow: the page shows through. The line border, radius and padding stay. Pairs with spotlight for rows on a plain page.
 - `.ayy-card--featured` — The one to pick: the recommended plan in a pricing grid, or the option someone chose. A 2px border in the text colour (High Contrast: a highlight outline). One per group.
 - `.ayy-card__header` — Top block (title + description).
 - `.ayy-card__title` — Heading. Use an h2–h4 that fits your outline.
@@ -3048,7 +3049,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem).
 
 **React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from "@danitesler/ayywi/react";`
-- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
+- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `transparent` boolean — no fill, no rest shadow (ayy-card--transparent).; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
 - `<CardDescription>` renders <p>.

@@ -222,7 +222,7 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
       ...slugs.map((slug: string): [string, string] => [`components/${slug}`, ".pv-stage"]),
-      ...["", "docs/get-started", "docs/changelog", "examples", "examples/inbox", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
+      ...["", "docs/get-started", "docs/changelog", "docs/principles", "examples", "examples/inbox", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "docs/illustration", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);

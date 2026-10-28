@@ -12,6 +12,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ### Added
 
 - **Preview**
+  No design principles → a Principles page under Docs with five rows (agent-first, cross-platform, adaptive, customizable, built for what's next), each with a pointer spotlight and a small sketch that plays on hover.
+- **Preview**
+  No guidance for illustrations → an Illustration page under Foundations: where these sketches belong and where they don't, how to draw them, how they move, and a timeline of one sketch's beats.
+- **[Card](#/card)**
+  A card always had a fill and a shadow → a `transparent` option drops both, so a spotlight card can sit on a plain page as a list row.
+- **Preview**
   No home page → a home page at the site root: what ayywi is, a collage of live components, what themes, components, agent setup and the example apps offer, and a footer.
 - **Preview**
   Components had no overview → `#/components` shows every component as a live card, grouped by category.
@@ -19,7 +25,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   No way to say one component is a variation of another → an optional `family` in a component's meta.json (Textarea, Number field, Search bar and Inline edit name Input); the preview nests them under it and `pnpm check` rejects a family that doesn't exist.
 
 - **[Block editor](#/block-editor)**
-  New component — a Notion-style rich text editor of blocks (text, headings, lists, to-dos, toggles that hide what is nested under them, tables with row and column grips, drag to reorder, sorting and resizable columns, quotes, callouts, highlighted code with a language picker and Copy, images, embeds, files) with / for blocks, Markdown shortcuts, a formatting bar, @ mentions, drag handles and `<ayy-block-editor>`, including callout colours, highlight, record links, and equations with your own renderer.
+  New component — a Notion-style rich text editor of blocks (text, headings, lists, to-dos, toggles that hide what is nested under them, tables with row and column grips that follow the pointer and hide when it leaves, drag to reorder, sorting and resizable columns, quotes, callouts, highlighted code with a language picker and Copy, images, embeds, files) with / for blocks, Markdown shortcuts, a formatting bar, @ mentions, drag handles, block menus that open beside their item, and `<ayy-block-editor>`, including callout colours shown as dots, highlight, record links, and equations with your own renderer.
 - **[PIN input](#/pin-input)**
   New component — a row of single-character slots for OTP, two-factor and verification codes, with paste distribution, Backspace navigation, masked PIN mode and `<ayy-pin-input>`.
 - **[Rating](#/rating)**
@@ -101,6 +107,15 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   One look and one density only → `spacious`, `bordered` (column lines), `sticky` (header and footer stay in view) and `fixed` (column widths from the header) join `compact`.
 
 ### Changed
+
+- **[Icon picker](#/icon-picker)**
+  Icons in the grid were about 16px and emoji 14–16px → icons 18px (the size of menu icons) and emoji 20px.
+
+- **[Menu](#/menu)**
+  Item icons were 1.1em (about 15px) → 1.125rem (18px), the size the Block editor's menus already used, so menus look the same everywhere.
+
+- **[Table](#/table)**
+  Column menu icons were generic arrows and copy/delete glyphs → the same insert-column, duplicate, sort and delete-column icons the Block editor's table menu uses; the Sort submenu now marks the current direction.
 - **Preview**
   Home page agent block was one fixed terminal snippet → tabs for Quick start, npm package, No build and By hand, each with its own copy button, in a block that keeps one 320px height so the page doesn't jump between tabs.
 - **Preview**

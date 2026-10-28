@@ -41,6 +41,7 @@ import { foundations, foundationText } from "./pages/Foundations";
 import { getStarted, GetStartedPage } from "./pages/GetStarted";
 import { Landing, SiteFooter } from "./pages/Landing";
 import { NotFound } from "./pages/NotFound";
+import { principlesPage, PrinciplesPage } from "./pages/Principles";
 import { showcase, ShowcasePage } from "./pages/Showcase";
 import { ThemesPage } from "./pages/Themes";
 import { showcaseApps } from "./showcase/apps";
@@ -63,6 +64,7 @@ const FOUNDATION_DESCRIPTIONS: Record<string, string> = {
   spacing: "Spacing scale, control sizes and layout gaps",
   elevation: "Corner radiuses and elevation shadows",
   motion: "Easing curves, durations and reduced motion support",
+  illustration: "Sketches of the interface that play on hover: how to draw them, animate them and where they belong",
   density: "Compact, comfortable and touch scales across controls, text and padding",
 };
 
@@ -71,6 +73,7 @@ const DOCS: { title: string; items: NavItem[] }[] = [
     title: "Start",
     items: [
       { route: "docs/get-started", title: getStarted.title, description: "Prompts and setup for AI tools, a codebase or by hand", text: getStarted.text },
+      { route: "docs/principles", title: principlesPage.title, description: "Agent-first, cross-platform, adaptive, customizable and built for what's next", text: principlesPage.text },
       { route: "docs/changelog", title: changelogPage.title, description: "Release notes and design system updates", text: changelogPage.text },
     ],
   },
@@ -383,12 +386,14 @@ export function App() {
       page =
         route.page === "changelog" ? (
           <ChangelogPage />
+        ) : route.page === "principles" ? (
+          <PrinciplesPage />
         ) : route.page === "density" ? (
           <DensityPage density={density} setDensity={setDensity} />
         ) : foundation ? (
           <foundation.Page key={foundation.route} />
         ) : (
-          <GetStartedPage theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+          <GetStartedPage />
         );
       break;
     }
