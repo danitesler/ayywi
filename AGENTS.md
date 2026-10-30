@@ -43,8 +43,8 @@ ai/                         consumer kit (skill, AGENTS snippet, Cursor rule) �
 preview/                    Vite + React component browser (discovers components automatically): a header with Docs, Components,
                             Examples and Themes tabs (routes in preview/src/routes.ts), a home page, the showcase apps
                             (preview/src/showcase/apps.tsx) and Get started (prompts in preview/src/prompts.ts); its build also
-                            hosts dist/, the llms files, the AI kit, and each release's runtime files
-                            under v/<release>/ (scripts/keep-versions.mjs carries the earlier ones over on every deploy)
+                            hosts dist/, the llms files, the AI kit, and this build's runtime files
+                            under v/<release>/, so a prompt can pin a path later builds don't change
 ```
 
 ## Commands
@@ -59,7 +59,6 @@ pnpm test:e2e       # Playwright + axe against the built preview, in Playwright'
 scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
 pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme from the theme button, density from the menu beside it
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
-scripts/deploy-pages.sh  # publish the preview to GitHub Pages (gh-pages branch, pushed from here); part of a release
 ```
 
 After a code change: `pnpm build && pnpm typecheck && pnpm check && pnpm test`. Docs-only changes (CHANGELOG, README, prose) need no build and no e2e — but run `pnpm check` when you edit docs, since it validates the README's component table and jsDelivr links.
@@ -122,7 +121,7 @@ When adding a component variation, extend an existing preview example whenever p
 - A selector list with a pseudo-element the browser doesn't know (`::-moz-range-thumb` in Chromium) is dropped whole. Give each vendor pseudo-element its own rule.
 - Chromium can't fill a range track up to the thumb. `.ayy-slider` reads `--ayy-value`, which React and the page-wide `input` listener in `@danitesler/ayywi/elements` keep in step; HTML examples set the starting one inline.
 - The page-wide helpers in `@danitesler/ayywi/elements` (number field steps) listen on `document`. React's own handlers call `preventDefault()` so the step doesn't happen twice when both are loaded.
-- Get started's prompts link `v/<release>/dist/…` on the published site (a path whose files never change) and the public site's latest from localhost, never localhost itself. Set `VITE_AYYWI_SITE` when building for another host.
+- Get started's prompts link `v/<release>/dist/…` when the preview is served from a real host, and the published package on jsDelivr when copied from localhost, never localhost itself.
 - The App shell and Navbar switch their phone layouts at 48rem with media queries, so component examples in the preview only show them in a narrow window. The showcase apps load in an iframe at real device widths for that reason; e2e tests set the viewport.
 - One component's CSS may place another's documented class (the app shell hides its `.ayy-bottom-nav` on wide screens). `pnpm check` allows it; the class stays documented by its own component.
 - Example HTML should match what the React example renders. Write the `.tsx` first and render it to markup (react-dom/server) rather than retyping it; only custom-element wrappers (`<ayy-app-shell>`, `<ayy-navbar>`…) and comments differ.
@@ -167,5 +166,4 @@ Once approved, a release is one job; do every step, in order, and stop at the fi
 6. `npm publish`. If npm asks for a one-time password, stop and ask the maintainer to run it; never handle their 2FA codes.
 7. `git push --follow-tags`.
 8. Verify: `npm view @danitesler/ayywi version` shows the new version, and `node scripts/pin-readme.mjs --verify` passes (jsDelivr can take a few minutes to see a new release).
-9. Publish the site: `scripts/deploy-pages.sh`.
-10. If `shim/` (the unscoped `ayywi` package) should follow, bump its version and dependency range, then `npm publish` from `shim/`.
+9. If `shim/` (the unscoped `ayywi` package) should follow, bump its version and dependency range, then `npm publish` from `shim/`.

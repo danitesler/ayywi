@@ -1,8 +1,10 @@
 // Copy-paste prompts for people who build with AI tools. Every prompt is a short request the person can read and edit,
 // followed by one setup block and the ayywi rules, so any AI builder (Lovable, Bolt, v0, Replit, a chat) needs nothing else.
 
-/** The public site, for prompts copied from a local preview: an AI tool can't reach localhost. The Pages build sets VITE_AYYWI_SITE. */
-const PUBLIC_SITE: string = (import.meta.env.VITE_AYYWI_SITE ?? "https://danitesler.github.io/ayywi/").replace(/\/*$/, "/");
+import { version } from "../../package.json";
+
+/** Where a prompt copied from localhost loads ayywi. An AI tool can't reach localhost, and there is no hosted preview. */
+const PUBLIC_SITE = `https://cdn.jsdelivr.net/npm/@danitesler/ayywi@${version}/`;
 
 export interface Links {
   /** Where the docs are read from (llms files, rules): the latest. */
@@ -11,7 +13,7 @@ export interface Links {
   files: string;
 }
 
-/** The two bases the prompts use. From a local preview, the public site's latest: this build isn't published. */
+/** The two bases the prompts use. From a local preview, the published package: this build isn't published. */
 export function links(): Links {
   const here = new URL(".", window.location.href);
   if (/^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(here.hostname)) return { docs: PUBLIC_SITE, files: `${PUBLIC_SITE}dist/` };

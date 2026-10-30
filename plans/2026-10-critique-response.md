@@ -1,14 +1,14 @@
 # Critique response plan (2026-10-11)
 
-Source: three external critiques of the README, package and positioning. They read the README, not the code. I checked each claim against the repo, npm and the live site.
+Source: three external critiques of the README, package and positioning. They read the README, not the code. I checked each claim against the repo and npm.
 
 ## What the critiques got right, verified
 
 | Claim | Verified? | Notes |
 |---|---|---|
 | `npx ayywi …` resolves the wrong package | **Yes, worse than stated** | Unscoped `ayywi` is unclaimed on npm, so anyone can publish it. `ayywi init` (0.0.1, published) **writes `npx ayywi mcp` into users' MCP configs**. Fixed on main, but users get the fix only after a release. |
-| Unpinned CDN on a personal Pages site | Yes | Fixed in README (jsDelivr `@0.0.1` + SRI). Get started prompts already use `v/<release>/`, but fall back to unpinned `dist/` from localhost. |
-| Live preview 404s | Yes | GitHub Pages isn't enabled on the repo (`gh api repos/danitesler/ayywi/pages` → 404). |
+| Unpinned CDN | Yes | Fixed in README (jsDelivr `@0.0.1` + SRI). Get started prompts already use `v/<release>/`, but fall back to unpinned `dist/` from localhost. |
+| Live preview 404s | Dropped | There is no hosted preview. Run `pnpm preview`. |
 | README is ahead of the release | **Yes, worse than stated** | Published 0.0.1 has 54 components (main has 66) and **no brand engine at all**: no `brand` command, no `createBrand()`, no `create_brand` MCP tool. 25 commits since `v0.0.1`. |
 | Contrast claim muddy | Wording only | The engine already checks the label on the button at 4.5:1 (`src/brand.ts`). README now says so. |
 | No accessibility evidence | Partly | axe runs on every component page and showcase app, and `pnpm check` tests text × surface × theme contrast. It just isn't published anywhere. |
@@ -27,7 +27,7 @@ Source: three external critiques of the README, package and positioning. They re
 1. **Release 0.1.0.** This is what gets the `init` fix to users and makes the README true. Afterwards, update the README pins and SRI hashes to `0.1.0` and remove the "not in 0.0.1" brand note.
 2. **Automate the README pins.** Add a `pnpm check` rule: the README's jsDelivr version equals `package.json` version, and each `integrity` matches `dist/`. Without it, the pins will go stale on the next release.
 3. **Claim unscoped `ayywi` on npm** with a two-file shim whose bin runs `@danitesler/ayywi`. That removes the typosquat risk and makes `npx ayywi` work as people expect. *You need to publish it.*
-4. **Bring the preview site back.** Enable Pages (deploy from a `gh-pages` branch, no workflow file), and add `scripts/deploy-pages.sh`: `VITE_AYYWI_SITE=… pnpm preview:build`, `keep-versions.mjs`, push `preview/dist` to `gh-pages`. Document it in AGENTS.md. *You need to enable Pages in the repo settings.*
+4. **Dropped.** No hosted preview. `pnpm preview` is the preview.
 5. **Pin the localhost fallback** in `preview/src/prompts.ts` to jsDelivr `@<version>` instead of the site's unversioned `dist/`.
 6. **Fill in GitHub About** (command below; I didn't run it because it's public-facing).
 

@@ -92,7 +92,7 @@ function hostedFiles(release: string): Plugin {
           runtime.push(fileName);
         }
       }
-      // scripts/keep-versions.mjs adds the releases already on the live site before a deploy, so old links keep working.
+      // This build's runtime files, also under v/<release>/, so a prompt can pin a path later builds don't change.
       const versions = { latest: release, versions: [{ id: release, version: pkg.version, built: new Date().toISOString().slice(0, 10), files: runtime.sort() }] };
       this.emitFile({ type: "asset", fileName: "versions.json", source: `${JSON.stringify(versions, null, 2)}\n` });
     },
