@@ -30,7 +30,6 @@ import {
   Tooltip,
 } from "@danitesler/ayywi/react";
 import { commandMatches } from "@danitesler/ayywi";
-import { AppearanceMenu } from "./Appearance";
 import { componentFamilies, components, type ComponentEntry } from "./data";
 import { brandPage } from "./pages/Brand";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
@@ -65,6 +64,7 @@ const FOUNDATION_DESCRIPTIONS: Record<string, string> = {
   elevation: "Corner radiuses and elevation shadows",
   motion: "Easing curves, durations and reduced motion support",
   illustration: "Sketches of the interface that play on hover: how to draw them, animate them and where they belong",
+  icons: "Hugeicons by default, or Lucide, Tabler, Material Symbols and Feather: every icon name in each pack",
   density: "Compact, comfortable and touch scales across controls, text and padding",
 };
 
@@ -358,7 +358,6 @@ export function App() {
   const { path, route } = useRoute();
   const settings = useSettings();
   const { theme, setTheme, density, setDensity, brand, setBrand, renderer } = settings;
-  const appearance = { theme, setTheme, density, setDensity, brand, setBrand };
   const [searchOpen, setSearchOpen] = useState(false);
   const tab = route.tab;
   useRevealCurrent(path);
@@ -406,7 +405,7 @@ export function App() {
       page = <ShowcasePage id={route.id} />;
       break;
     case "themes":
-      page = <ThemesPage current={brand} onUse={setBrand} theme={theme} setTheme={setTheme} />;
+      page = <ThemesPage current={brand} onUse={setBrand} theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} icons={settings.icons} setIcons={settings.setIcons} customization={settings.customization} setCustomization={settings.setCustomization} />;
       break;
     case "missing":
       page = <NotFound path={route.path} />;
@@ -433,13 +432,12 @@ export function App() {
           }
         >
           <Button variant="ghost" size="icon" aria-label="Search" aria-haspopup="dialog" aria-expanded={searchOpen} tooltip={false} onClick={() => setSearchOpen(true)}>
-            <Icon icon={Search01Icon} />
+            <Icon icon={Search01Icon} name="search" />
           </Button>
         </Tooltip>
-        <AppearanceMenu {...appearance} />
         <Tooltip side="bottom" content="GitHub">
           <a className={buttonClass({ variant: "ghost", size: "icon", className: "pv-header__github" })} href={GITHUB} target="_blank" rel="noreferrer" aria-label="ayywi on GitHub">
-            <Icon icon={GithubIcon} />
+            <Icon icon={GithubIcon} name="github" />
           </a>
         </Tooltip>
         <a className={buttonClass({ size: "sm", className: "pv-header__start" })} href="#/docs/get-started">
@@ -458,7 +456,7 @@ export function App() {
           <AppShellBar className="pv-shell-bar">
             {/* A sidebar icon, so it isn't mistaken for the header's menu button beside it. */}
             <AppShellToggle aria-label="Open navigation">
-              <Icon icon={SidebarLeftIcon} directional />
+              <Icon icon={SidebarLeftIcon} name="panel-left" directional />
             </AppShellToggle>
             <span className="pv-shell-bar__title">{title}</span>
           </AppShellBar>

@@ -174,7 +174,7 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
           {children}
           {hideClose ? null : (
             <button type="button" className="ayy-dialog__close" aria-label={closeLabel} onClick={() => ctx.setOpen(false)}>
-              <Icon icon={Cancel01Icon} />
+              <Icon icon={Cancel01Icon} name="x" />
             </button>
           )}
         </>

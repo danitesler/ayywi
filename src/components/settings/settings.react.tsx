@@ -121,7 +121,7 @@ export const SettingsLink = forwardRef<HTMLAnchorElement & HTMLButtonElement, Se
         {hint && <span className="ayy-settings__hint">{hint}</span>}
       </span>
       {value !== undefined && <span className="ayy-settings__value">{value}</span>}
-      {!destructive && <Icon icon={ArrowRight01Icon} directional />}
+      {!destructive && <Icon icon={ArrowRight01Icon} name="chevron-right" directional />}
     </>
   );
   const cls = settingsRowClass({ link: true, destructive, className });

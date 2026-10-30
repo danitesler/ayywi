@@ -82,6 +82,7 @@
   padding-inline: var(--ayy-space-2);
   overflow: hidden;
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-md);
   font-weight: var(--ayy-weight-semibold);
   line-height: var(--ayy-leading-snug);

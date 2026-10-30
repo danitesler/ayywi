@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Field, FieldHint, Icon, Label, RecordPicker, type RecordPickerOption } from "@danitesler/ayywi/react";
 
 const initial: RecordPickerOption[] = [
-  { id: "design", label: "Design", icon: <Icon icon={Tag01Icon} /> },
-  { id: "engineering", label: "Engineering", icon: <Icon icon={Tag01Icon} /> },
-  { id: "marketing", label: "Marketing", icon: <Icon icon={Tag01Icon} /> },
-  { id: "operations", label: "Operations", icon: <Icon icon={Tag01Icon} /> },
-  { id: "research", label: "Research", icon: <Icon icon={Tag01Icon} /> },
+  { id: "design", label: "Design", icon: <Icon icon={Tag01Icon} name="tag" /> },
+  { id: "engineering", label: "Engineering", icon: <Icon icon={Tag01Icon} name="tag" /> },
+  { id: "marketing", label: "Marketing", icon: <Icon icon={Tag01Icon} name="tag" /> },
+  { id: "operations", label: "Operations", icon: <Icon icon={Tag01Icon} name="tag" /> },
+  { id: "research", label: "Research", icon: <Icon icon={Tag01Icon} name="tag" /> },
 ];
 
 export default function Example() {

@@ -226,7 +226,7 @@ export function ComponentPage({ component: c, view, renderer }: { component: Com
   const tags = [...(c.element ? [c.element.tag] : []), ...(c.elements ?? []).map((e) => e.tag)].filter((t, i, all) => all.indexOf(t) === i);
   return (
     <article className="pv-page">
-      <header className="pv-page__header">
+      <header className="pv-page__header pv-page__header--center">
         <p className="ayy-eyebrow">{c.category}</p>
         <h1 className="ayy-h2">{c.name}</h1>
         <p className="ayy-lede">{c.description}</p>

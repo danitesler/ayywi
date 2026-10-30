@@ -93,15 +93,15 @@ export default function Example() {
         <ActionBarActions>
           {/* Unique / context-specific actions keep full labels */}
           <ActionBarButton onClick={() => toast(`Assigning reviewer to ${selected.length} docs`)}>
-            <Icon icon={UserCheck01Icon} />
+            <Icon icon={UserCheck01Icon} name="user-check" />
             Assign reviewer
           </ActionBarButton>
           <ActionBarButton onClick={() => toast(`Applying tags to ${selected.length} docs`)}>
-            <Icon icon={Tag01Icon} />
+            <Icon icon={Tag01Icon} name="tag" />
             Change tag
           </ActionBarButton>
           <ActionBarButton onClick={() => toast(`Editing ${selected.length} docs`)}>
-            <Icon icon={PencilEdit02Icon} />
+            <Icon icon={PencilEdit02Icon} name="square-pen" />
             Edit
           </ActionBarButton>
 
@@ -111,27 +111,27 @@ export default function Example() {
           {/* Common bulk actions switch to icon-only buttons; always paired with a Tooltip and aria-label */}
           <Tooltip content="Share selected">
             <ActionBarButton icon aria-label="Share selected" onClick={() => toast.success("Share link created")}>
-              <Icon icon={Share01Icon} />
+              <Icon icon={Share01Icon} name="share" />
             </ActionBarButton>
           </Tooltip>
           <Tooltip content="Copy links">
             <ActionBarButton icon aria-label="Copy links" onClick={() => toast.success("Copied links")}>
-              <Icon icon={CopyLinkIcon} />
+              <Icon icon={CopyLinkIcon} name="square-link" />
             </ActionBarButton>
           </Tooltip>
           <Tooltip content="Duplicate">
             <ActionBarButton icon aria-label="Duplicate selected" onClick={() => toast.success(`Duplicated ${selected.length} docs`)}>
-              <Icon icon={Copy01Icon} />
+              <Icon icon={Copy01Icon} name="copy" />
             </ActionBarButton>
           </Tooltip>
           <Tooltip content="Download">
             <ActionBarButton icon aria-label="Download selected" onClick={() => toast(`Downloading ${selected.length} docs`)}>
-              <Icon icon={Download01Icon} />
+              <Icon icon={Download01Icon} name="download" />
             </ActionBarButton>
           </Tooltip>
           <Tooltip content="Archive">
             <ActionBarButton icon aria-label="Archive selected" onClick={() => toast(`Archived ${selected.length} docs`)}>
-              <Icon icon={Archive02Icon} />
+              <Icon icon={Archive02Icon} name="archive" />
             </ActionBarButton>
           </Tooltip>
           <Tooltip content="Delete">
@@ -144,7 +144,7 @@ export default function Example() {
                 setSelected([]);
               }}
             >
-              <Icon icon={Delete02Icon} />
+              <Icon icon={Delete02Icon} name="trash" />
             </ActionBarButton>
           </Tooltip>
         </ActionBarActions>

@@ -359,12 +359,12 @@ export function connectColorPicker(root: HTMLElement, options: ConnectColorPicke
           w.ayywi?.toast?.("Color copied to clipboard");
         }
       } catch {}
-      copyBtn.innerHTML = iconSvg(Tick02Icon);
+      copyBtn.innerHTML = iconSvg(Tick02Icon, { name: "check" });
       copyBtn.setAttribute("aria-label", "Copied!");
       const tipContent = copyBtn.closest(".ayy-tooltip")?.querySelector(".ayy-tooltip__content");
       if (tipContent) tipContent.textContent = "Copied!";
       setTimeout(() => {
-        copyBtn.innerHTML = iconSvg(Copy01Icon);
+        copyBtn.innerHTML = iconSvg(Copy01Icon, { name: "copy" });
         copyBtn.setAttribute("aria-label", "Copy hex");
         if (tipContent) tipContent.textContent = "Copy hex";
       }, 2000);

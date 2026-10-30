@@ -112,7 +112,7 @@ function DensityCardSample({
           <Button>Save</Button>
           <Button variant="outline">Cancel</Button>
           <Button variant="outline" size="icon" aria-label="Add project">
-            <Icon icon={Add01Icon} />
+            <Icon icon={Add01Icon} name="add" />
           </Button>
         </div>
       </CardContent>
@@ -145,7 +145,7 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
 
   return (
     <article className="pv-page">
-      <header className="pv-page__header">
+      <header className="pv-page__header pv-page__header--center">
         <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Density</h1>
         <p className="ayy-lede">
@@ -192,11 +192,11 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
             />
             <div className="ayy-cluster">
               <Button variant="outline">
-                <Icon icon={FilterIcon} />
+                <Icon icon={FilterIcon} name="filter" />
                 Filters
               </Button>
               <Button>
-                <Icon icon={Add01Icon} />
+                <Icon icon={Add01Icon} name="add" />
                 Add service
               </Button>
             </div>

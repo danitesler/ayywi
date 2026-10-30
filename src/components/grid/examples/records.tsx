@@ -122,7 +122,7 @@ export default function Example() {
                     aria-label={`Edit ${person.name}`}
                     onClick={() => toast(`Edit ${person.name}`)}
                   >
-                    <Icon icon={PencilEdit02Icon} />
+                    <Icon icon={PencilEdit02Icon} name="square-pen" />
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger
@@ -130,29 +130,29 @@ export default function Example() {
                       size="icon-sm"
                       aria-label={`More actions for ${person.name}`}
                     >
-                      <Icon icon={MoreHorizontalIcon} />
+                      <Icon icon={MoreHorizontalIcon} name="ellipsis" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>{person.name}</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => toast(`Edit ${person.name}`)}>
-                        <Icon icon={PencilEdit02Icon} />
+                        <Icon icon={PencilEdit02Icon} name="square-pen" />
                         Edit record
                       </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => toast.success(`Duplicated ${person.name}`)} shortcut="Mod+D">
-                        <Icon icon={Copy01Icon} />
+                        <Icon icon={Copy01Icon} name="copy" />
                         Duplicate
                       </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => toast.success(`Copied ${person.name}`)} shortcut="Mod+C">
-                        <Icon icon={CopyLinkIcon} />
+                        <Icon icon={CopyLinkIcon} name="square-link" />
                         Copy profile link
                       </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => toast(`Archived ${person.name}`)}>
-                        <Icon icon={Archive02Icon} />
+                        <Icon icon={Archive02Icon} name="archive" />
                         Archive
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem destructive onSelect={() => toast.error(`Removed ${person.name}`)}>
-                        <Icon icon={Delete02Icon} />
+                        <Icon icon={Delete02Icon} name="trash" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -181,19 +181,19 @@ export default function Example() {
         <ActionBarSeparator />
         <ActionBarActions>
           <ActionBarButton onClick={() => toast(`Editing ${selected.length} records`)}>
-            <Icon icon={PencilEdit02Icon} />
+            <Icon icon={PencilEdit02Icon} name="square-pen" />
             Edit
           </ActionBarButton>
           <ActionBarButton onClick={() => toast.success(`Duplicated ${selected.length} records`)}>
-            <Icon icon={Copy01Icon} />
+            <Icon icon={Copy01Icon} name="copy" />
             Duplicate
           </ActionBarButton>
           <ActionBarButton onClick={() => toast.success(`Copied ${selected.length} records`)}>
-            <Icon icon={CopyLinkIcon} />
+            <Icon icon={CopyLinkIcon} name="square-link" />
             Copy
           </ActionBarButton>
           <ActionBarButton onClick={() => toast(`Archived ${selected.length} records`)}>
-            <Icon icon={Archive02Icon} />
+            <Icon icon={Archive02Icon} name="archive" />
             Archive
           </ActionBarButton>
           <ActionBarButton
@@ -203,7 +203,7 @@ export default function Example() {
               setSelected([]);
             }}
           >
-            <Icon icon={Delete02Icon} />
+            <Icon icon={Delete02Icon} name="trash" />
             Delete
           </ActionBarButton>
         </ActionBarActions>

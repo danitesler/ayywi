@@ -95,7 +95,7 @@ function Feature({ title, children, href, link, visual }: { title: string; child
         <p className="ayy-lede">{children}</p>
         <a className={buttonClass({ variant: "link" })} href={href}>
           {link}
-          <Icon icon={ArrowRight01Icon} directional />
+          <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
         </a>
       </div>
       <div className="pv-feature__visual">{visual}</div>
@@ -259,10 +259,10 @@ function AppStrip() {
       </div>
       <div className="pv-apps__controls" ref={controls}>
         <Button variant="outline" size="icon" aria-label="Previous apps" aria-controls="pv-apps-strip" data-pv-step="prev">
-          <Icon icon={ArrowLeft01Icon} directional />
+          <Icon icon={ArrowLeft01Icon} name="chevron-left" directional />
         </Button>
         <Button variant="outline" size="icon" aria-label="Next apps" aria-controls="pv-apps-strip" data-pv-step="next">
-          <Icon icon={ArrowRight01Icon} directional />
+          <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
         </Button>
       </div>
     </div>
@@ -347,7 +347,7 @@ export function Landing({ onSearch }: { onSearch: () => void }) {
           </p>
           <a className={buttonClass({ variant: "link" })} href="#/examples">
             See the examples
-            <Icon icon={ArrowRight01Icon} directional />
+            <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
           </a>
         </header>
         <AppStrip />
@@ -361,7 +361,7 @@ export function Landing({ onSearch }: { onSearch: () => void }) {
             Get started
           </a>
           <button type="button" className={buttonClass({ variant: "outline", size: "lg" })} onClick={onSearch}>
-            <Icon icon={Search01Icon} />
+            <Icon icon={Search01Icon} name="search" />
             Search the docs
             <Shortcut keys="Mod+E" />
           </button>

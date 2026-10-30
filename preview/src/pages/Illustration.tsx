@@ -55,9 +55,9 @@ const KIT: { name: string; uses: string; piece: ReactNode }[] = [
     ),
   },
   { name: "Bubble", uses: "a message; the tail corner is the sender's side", piece: <span className="pv-art__bubble pv-art__bubble--me">Plan the week</span> },
-  { name: "Spark", uses: "Hugeicons Sparkles in the key colour: the AI's turn", piece: <Icon icon={SparklesIcon} size="sm" className="pv-art__spark" /> },
+  { name: "Spark", uses: "Hugeicons Sparkles in the key colour: the AI's turn", piece: <Icon icon={SparklesIcon} name="sparkles" size="sm" className="pv-art__spark" /> },
   { name: "Link", uses: "a dashed line: the same thing elsewhere", piece: <span className="pv-art__link" style={{ inlineSize: "3rem" }} /> },
-  { name: "Cursor", uses: "Hugeicons Cursor: where a person acts", piece: <Icon icon={Cursor01Icon} size="sm" className="pv-art__cursor pv-illo__cursor" /> },
+  { name: "Cursor", uses: "Hugeicons Cursor: where a person acts", piece: <Icon icon={Cursor01Icon} name="mouse-pointer" size="sm" className="pv-art__cursor pv-illo__cursor" /> },
 ];
 
 /** The Agent sketch's beats, as a share of its 3.6s loop. */
@@ -88,7 +88,7 @@ export function IllustrationPage() {
 
   return (
     <article className="pv-page">
-      <header className="pv-page__header">
+      <header className="pv-page__header pv-page__header--center">
         <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Illustration</h1>
         <p className="ayy-lede">

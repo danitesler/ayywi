@@ -195,7 +195,7 @@ export const CardViewPlay = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanE
 ) {
   return (
     <span ref={ref} className={cx("ayy-card__view-play", className)} aria-hidden="true" {...props}>
-      <Icon icon={PlayIcon} size="sm" />
+      <Icon icon={PlayIcon} name="play" size="sm" />
     </span>
   );
 });

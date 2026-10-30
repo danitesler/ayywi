@@ -5,13 +5,13 @@ export default function Example() {
   return (
     <>
       <IconTile size="lg" spotColor="var(--ayy-accent-brand)">
-        <Icon icon={Globe02Icon} />
+        <Icon icon={Globe02Icon} name="globe" />
       </IconTile>
       <IconTile spotColor="var(--ayy-accent-system)">
-        <Icon icon={Layers01Icon} />
+        <Icon icon={Layers01Icon} name="layers" />
       </IconTile>
       <IconTile size="sm" spotColor="var(--ayy-accent-marketing)" aria-label="Autogrid">
-        <Icon icon={GridViewIcon} />
+        <Icon icon={GridViewIcon} name="layout-grid" />
       </IconTile>
     </>
   );

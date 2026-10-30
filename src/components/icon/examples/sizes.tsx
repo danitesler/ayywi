@@ -15,7 +15,7 @@ export default function Example() {
       <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-8)", alignItems: "end" } as CSSProperties}>
         {SIZES.map(([size, px]) => (
           <span key={size} className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-2)", alignItems: "center" } as CSSProperties}>
-            <Icon icon={Clock01Icon} size={size} />
+            <Icon icon={Clock01Icon} name="clock" size={size} />
             <span className="ayy-muted">
               {size} · {px}
             </span>
@@ -24,10 +24,10 @@ export default function Example() {
       </div>
       {/* No size: the icon follows the text around it. */}
       <p className="ayy-h4">
-        <Icon icon={Clock01Icon} /> Build queue
+        <Icon icon={Clock01Icon} name="clock" /> Build queue
       </p>
       <p className="ayy-muted">
-        <Icon icon={Clock01Icon} /> Builds start within 2 minutes of a push.
+        <Icon icon={Clock01Icon} name="clock" /> Builds start within 2 minutes of a push.
       </p>
     </div>
   );

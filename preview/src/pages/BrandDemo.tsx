@@ -1,6 +1,7 @@
+import type { ComponentProps } from "react";
 import { useMemo, useState } from "react";
 import { HexagonIcon } from "@hugeicons/core-free-icons";
-import { brandCss, type BrandShape } from "@danitesler/ayywi";
+import { brandCss, type BrandShape, type IconName } from "@danitesler/ayywi";
 import {
   Badge,
   Button,
@@ -35,17 +36,20 @@ const SHAPES: [BrandShape, string][] = [
 ];
 const REVENUE = [12, 18, 15, 24, 22, 31, 29, 38, 36, 44, 41, 52];
 
+/** The app's logo: a Hugeicons icon and its name, so an icon pack replaces it. */
+export type BrandIcon = { icon: ComponentProps<typeof Icon>["icon"]; name: IconName };
+
 /** A small app that takes whatever brand its parent carries: the home page scopes one to it, the Themes page its draft. */
-export function BrandApp() {
+export function BrandApp({ name = "Acme", icon = { icon: HexagonIcon, name: "hexagon" } }: { name?: string; icon?: BrandIcon } = {}) {
   return (
     <Card className="pv-brand-demo__app">
       <CardHeader>
         <div className="ayy-cluster pv-brand-demo__head">
           <span className="pv-brand-demo__logo">
             <IconTile spotColor="var(--ayy-color-primary)">
-              <Icon icon={HexagonIcon} />
+              <Icon icon={icon.icon} name={icon.name} />
             </IconTile>
-            Acme
+            {name}
           </span>
           <Badge>Live</Badge>
         </div>

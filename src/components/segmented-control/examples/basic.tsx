@@ -11,11 +11,11 @@ export default function Example() {
       </SegmentedControl>
       <SegmentedControl aria-label="View" defaultValue="list" size="sm">
         <SegmentedControlItem value="list">
-          <Icon icon={ListViewIcon} />
+          <Icon icon={ListViewIcon} name="layout-list" />
           List
         </SegmentedControlItem>
         <SegmentedControlItem value="grid">
-          <Icon icon={GridViewIcon} />
+          <Icon icon={GridViewIcon} name="layout-grid" />
           Grid
         </SegmentedControlItem>
       </SegmentedControl>

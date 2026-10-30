@@ -1,7 +1,7 @@
 <div style="inline-size:100%;max-inline-size:42rem;font-family:var(--ayy-font-body)">
   <section class="ayy-settings" aria-labelledby="set-appearance-html">
     <h2 id="set-appearance-html" class="ayy-settings__title">Appearance</h2>
-    <p class="ayy-settings__description">Theme, density, text size, brand colour, corners and font for the whole interface.</p>
+    <p class="ayy-settings__description">Theme, density, text size, brand colour, corners, font and icons for the whole interface.</p>
     <div class="ayy-settings__list">
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
@@ -14,16 +14,33 @@
               <option value="system" selected>System</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
-              <option value="dark-contrast">Black</option>
-              <option value="light-gray">Light gray</option>
             </select>
             <span class="ayy-select__picture" data-value="system" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>
             <span class="ayy-select__picture" data-value="light" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span></span>
             <span class="ayy-select__picture" data-value="dark" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="dark-contrast" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark-contrast" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="light-gray" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light-gray" aria-hidden="true"></span></span>
           </div>
         </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-surface-html">Surface colour</label>
+          <p class="ayy-settings__hint" id="set-surface-hint-html">Subtle tints backgrounds with the selected brand colour.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-surface-html" aria-describedby="set-surface-hint-html">
+              <option value="neutral" selected="">Neutral</option>
+              <option value="subtle">Subtle</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-contrast-html">Contrast</label>
+          <p class="ayy-settings__hint" id="set-contrast-hint-html">Higher contrast moves backgrounds closer to black or white.</p>
+        </div>
+        <div class="ayy-settings__control"><input type="range" class="ayy-slider" id="set-contrast-html" aria-describedby="set-contrast-hint-html" min="0" max="100" value="0" style="--ayy-value:0" /></div>
       </div>
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
@@ -129,6 +146,28 @@
             <span class="ayy-select__picture" data-value="default" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
             <span class="ayy-select__picture" data-value="system" hidden="" aria-hidden="true"><span style="font-family:system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
             <span class="ayy-select__picture" data-value="mono" hidden="" aria-hidden="true"><span style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Noto Sans Mono&quot;, monospace, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-icons-html">Icons</label>
+          <p class="ayy-settings__hint" id="set-icons-hint-html">Swaps every icon the interface draws for the same icon in another set.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-icons-html" aria-describedby="set-icons-hint-html">
+              <option value="hugeicons" selected>Hugeicons</option>
+              <option value="feather">Feather</option>
+              <option value="lucide">Lucide</option>
+              <option value="material-symbols">Material Symbols</option>
+              <option value="tabler">Tabler Icons</option>
+            </select>
+            <span class="ayy-select__picture" data-value="hugeicons" aria-hidden="true"><span data-ayy-icons="hugeicons"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="feather" hidden="" aria-hidden="true"><span data-ayy-icons="feather"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="lucide" hidden="" aria-hidden="true"><span data-ayy-icons="lucide"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="material-symbols" hidden="" aria-hidden="true"><span data-ayy-icons="material-symbols"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="tabler" hidden="" aria-hidden="true"><span data-ayy-icons="tabler"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
           </div>
         </div>
       </div>

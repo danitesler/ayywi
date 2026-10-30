@@ -30,6 +30,7 @@
   align-items: center;
   gap: var(--ayy-space-1-5);
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
   font-size: var(--ayy-text-s);
   color: var(--ayy-color-muted);
   font-weight: var(--ayy-weight-medium);
@@ -58,6 +59,7 @@
   background-color: transparent;
   color: var(--ayy-color-muted);
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
   font-size: var(--ayy-text-s);
   cursor: pointer;
   transition:
@@ -142,6 +144,7 @@
   background-color: var(--ayy-color-surface-raised);
   color: var(--ayy-color-text);
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-s);
   line-height: var(--ayy-leading-tight);
   white-space: nowrap;
@@ -183,6 +186,7 @@
   border-end-start-radius: calc(var(--ayy-radius-card) - 1px);
   border-end-end-radius: calc(var(--ayy-radius-card) - 1px);
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
   font-size: var(--ayy-text-sm);
   line-height: var(--ayy-leading-normal);
   tab-size: 2;

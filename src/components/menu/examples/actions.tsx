@@ -45,19 +45,19 @@ export default function Example() {
       <DropdownMenuTrigger variant="outline">Project actions</DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem onSelect={() => toast("Rename")} shortcut="Mod+R">
-          <Icon icon={PencilEdit02Icon} />
+          <Icon icon={PencilEdit02Icon} name="square-pen" />
           Rename
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuRow>
-            <DropdownMenuItem icon={<Icon icon={Copy01Icon} />} value="2 copies" shortcut="Mod+D" onSelect={() => toast("Duplicated")}>
+            <DropdownMenuItem icon={<Icon icon={Copy01Icon} name="copy" />} value="2 copies" shortcut="Mod+D" onSelect={() => toast("Duplicated")}>
               Duplicate
             </DropdownMenuItem>
-            <DropdownMenuMore aria-label="More options for Duplicate" icon={<Icon icon={MoreHorizontalIcon} />} />
+            <DropdownMenuMore aria-label="More options for Duplicate" icon={<Icon icon={MoreHorizontalIcon} name="ellipsis" />} />
           </DropdownMenuRow>
           <DropdownMenuSubContent>
             <DropdownMenuItem onSelect={() => toast("Duplicated without comments")}>Without comments</DropdownMenuItem>
-            <DropdownMenuItem icon={<Icon icon={LayoutTemplateIcon} />} onSelect={() => toast("Duplicated as template")}>
+            <DropdownMenuItem icon={<Icon icon={LayoutTemplateIcon} name="layout-template" />} onSelect={() => toast("Duplicated as template")}>
               As a template
             </DropdownMenuItem>
           </DropdownMenuSubContent>
@@ -65,27 +65,27 @@ export default function Example() {
 
         <DropdownMenuSub>
           <DropdownMenuRow>
-            <DropdownMenuItem icon={<Icon icon={Share08Icon} />} value={<Badge variant="muted">3</Badge>} shortcut="Mod+S" onSelect={() => toast("Share settings")}>
+            <DropdownMenuItem icon={<Icon icon={Share08Icon} name="share-2" />} value={<Badge variant="muted">3</Badge>} shortcut="Mod+S" onSelect={() => toast("Share settings")}>
               Share
             </DropdownMenuItem>
-            <DropdownMenuMore aria-label="More options for Share" icon={<Icon icon={MoreHorizontalIcon} />} />
+            <DropdownMenuMore aria-label="More options for Share" icon={<Icon icon={MoreHorizontalIcon} name="ellipsis" />} />
           </DropdownMenuRow>
           <DropdownMenuSubContent>
-            <DropdownMenuItem icon={<Icon icon={Link01Icon} />} onSelect={() => toast("Link copied")} shortcut="Mod+C">
+            <DropdownMenuItem icon={<Icon icon={Link01Icon} name="link" />} onSelect={() => toast("Link copied")} shortcut="Mod+C">
               Copy link
             </DropdownMenuItem>
-            <DropdownMenuItem icon={<Icon icon={Mail01Icon} />} onSelect={() => toast("Invite sent")}>
+            <DropdownMenuItem icon={<Icon icon={Mail01Icon} name="mail" />} onSelect={() => toast("Invite sent")}>
               Invite by email
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 
         <DropdownMenuItem disabled>
-          <Icon icon={UserSwitchIcon} />
+          <Icon icon={UserSwitchIcon} name="user-switch" />
           Transfer ownership
         </DropdownMenuItem>
         <DropdownMenuItem
-          icon={<Icon icon={CropIcon} />}
+          icon={<Icon icon={CropIcon} name="crop" />}
           description="Drag to select part of the screen"
           onSelect={() => toast("Capture area")}
           shortcut="Mod+4"
@@ -95,7 +95,7 @@ export default function Example() {
 
         <DropdownMenuSub>
           <DropdownMenuSubTrigger
-            icon={<Icon icon={Clock01Icon} />}
+            icon={<Icon icon={Clock01Icon} name="clock" />}
             value={timer === "off" ? "Off" : `${timer}s`}
           >
             Self-timer
@@ -111,7 +111,7 @@ export default function Example() {
         </DropdownMenuSub>
 
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={Download01Icon} />} value={format.toUpperCase()}>
+          <DropdownMenuSubTrigger icon={<Icon icon={Download01Icon} name="download" />} value={format.toUpperCase()}>
             Export format
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -124,7 +124,7 @@ export default function Example() {
         </DropdownMenuSub>
 
         <DropdownMenuSub inline>
-          <DropdownMenuSubTrigger icon={<Icon icon={Layers01Icon} />}>
+          <DropdownMenuSubTrigger icon={<Icon icon={Layers01Icon} name="layers" />}>
             Advanced options
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -142,19 +142,19 @@ export default function Example() {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          icon={<Icon icon={Camera01Icon} />}
+          icon={<Icon icon={Camera01Icon} name="camera" />}
           onSelect={() => toast("Screen captured")}
           shortcut="Mod+3"
         >
           Full screen
         </DropdownMenuItem>
 
-        <DropdownMenuItem icon={<Icon icon={Archive02Icon} />} onSelect={() => toast("Project archived")}>
+        <DropdownMenuItem icon={<Icon icon={Archive02Icon} name="archive" />} onSelect={() => toast("Project archived")}>
           Archive project
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem destructive onSelect={() => toast.error("Project deleted")}>
-          <Icon icon={Delete02Icon} />
+          <Icon icon={Delete02Icon} name="trash" />
           Delete project
         </DropdownMenuItem>
       </DropdownMenuContent>

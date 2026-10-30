@@ -38,7 +38,7 @@ export function addTags(values: readonly string[], add: readonly string[], { max
 }
 
 /** The × inside a tag, as SVG markup (Hugeicons Cancel01). */
-export const tagRemoveIcon = /* @__PURE__ */ iconSvg(Cancel01Icon);
+export const tagRemoveIcon = /* @__PURE__ */ iconSvg(Cancel01Icon, { name: "x" });
 
 /** One tag's chip, as React's TagInput renders it. */
 export function tagChip(value: string, removeLabel = (v: string) => `Remove ${v}`): HTMLSpanElement {
@@ -108,6 +108,7 @@ export function connectTagInput(root: HTMLElement, options: TagInputControllerOp
         hidden.name = options.name;
         hidden.value = v;
         hidden.dataset.tag = "";
+        hidden.disabled = input.disabled;
         root.append(hidden);
       }
     }

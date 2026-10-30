@@ -92,11 +92,11 @@ export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
       <div className={tocBarClass}>
         <button type="button" className={tocToggleClass} aria-label={toggleLabel} aria-expanded="false" aria-controls={listId}>
           <span className={tocToggleIconClass}>
-            <Icon icon={Menu01Icon} />
+            <Icon icon={Menu01Icon} name="menu" />
           </span>
           <span className={tocToggleCurrentClass}>{defaultToggleText}</span>
           <span className={tocToggleCaretClass}>
-            <Icon icon={ArrowDown01Icon} />
+            <Icon icon={ArrowDown01Icon} name="chevron-down" />
           </span>
         </button>
       </div>

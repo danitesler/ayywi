@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { BRAND_SHAPES, BRAND_STEPS, tokens, type Brand, type BrandShape } from "@danitesler/ayywi";
 import { Button } from "@danitesler/ayywi/react";
 
@@ -43,9 +44,9 @@ export const BODY_FONTS: [string, string][] = [
 export const SHAPES = Object.keys(BRAND_SHAPES) as BrandShape[];
 
 /** One theme, shown as a small page: the same title, text and action in each, so only the theme changes. */
-export function Sample({ theme, label }: { theme: string; label: string }) {
+export function Sample({ theme, label, style }: { theme: string; label: string; style?: CSSProperties }) {
   return (
-    <div className="pv-theme pv-brand__sample" data-theme={theme}>
+    <div className="pv-theme pv-brand__sample" data-theme={theme} style={style}>
       <div className="pv-theme__intro">
         <h3 className="pv-theme__head">{label}</h3>
         <p className="pv-theme__title">Everything reads the same</p>

@@ -27,7 +27,7 @@ export const ratingStarClass = "ayy-rating__star";
 export const ratingFillClass = "ayy-rating__fill";
 
 /** Default star glyph as SVG markup (Hugeicons StarIcon). */
-export const ratingStarIcon = /* @__PURE__ */ iconSvg(StarIcon);
+export const ratingStarIcon = /* @__PURE__ */ iconSvg(StarIcon, { name: "star" });
 
 const wasCheckedBeforePointer = new WeakMap<HTMLInputElement, boolean>();
 

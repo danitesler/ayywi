@@ -12,7 +12,7 @@ export default function Example() {
           3/5
         </ProgressRing>
         <ProgressRing value={100} size="lg" variant="success" aria-label="Goal reached">
-          <Icon icon={Tick02Icon} />
+          <Icon icon={Tick02Icon} name="check" />
         </ProgressRing>
         <div className="ayy-cluster" style={{ alignItems: "center" }}>
           <ProgressRing value={40} size="sm" aria-labelledby="ring-upload" />

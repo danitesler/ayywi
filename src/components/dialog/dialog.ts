@@ -27,4 +27,4 @@ export function isBackdropClick(dialog: HTMLDialogElement, event: { target: Even
 }
 
 /** SVG markup for the close icon (Hugeicons Cancel01), for non-React renderers. */
-export const dialogCloseIcon = /* @__PURE__ */ iconSvg(Cancel01Icon);
+export const dialogCloseIcon = /* @__PURE__ */ iconSvg(Cancel01Icon, { name: "x" });

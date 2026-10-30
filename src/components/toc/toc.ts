@@ -23,8 +23,8 @@ export const tocToggleIconClass = "ayy-toc__toggle-icon";
 export const tocToggleCurrentClass = "ayy-toc__toggle-current";
 export const tocToggleCaretClass = "ayy-toc__toggle-caret";
 
-export const tocMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);
-export const tocChevronIcon = /* @__PURE__ */ iconSvg(ArrowDown01Icon);
+export const tocMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon, { name: "menu" });
+export const tocChevronIcon = /* @__PURE__ */ iconSvg(ArrowDown01Icon, { name: "chevron-down" });
 
 export interface TocOptions {
   /**

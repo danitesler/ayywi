@@ -119,15 +119,15 @@ export default function Example({
         } as CSSProperties}
       >
         <Button variant={variant} size={size} block align="start">
-          <Icon icon={PlusSignIcon} />
+          <Icon icon={PlusSignIcon} name="plus" />
           Align start
         </Button>
         <Button variant={variant} size={size} block align="center">
-          <Icon icon={PlusSignIcon} />
+          <Icon icon={PlusSignIcon} name="plus" />
           Align center (default)
         </Button>
         <Button variant={variant} size={size} block align="end">
-          <Icon icon={PlusSignIcon} />
+          <Icon icon={PlusSignIcon} name="plus" />
           Align end
         </Button>
       </div>

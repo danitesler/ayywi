@@ -1,4 +1,4 @@
-// Builds dist/: layered + unlayered CSS, per-file CSS, brands, fonts, JS (ESM, CJS, <script>), .d.ts,
+// Builds dist/: layered + unlayered CSS, per-file CSS, brands, icon packs, fonts, JS (ESM, CJS, <script>), .d.ts,
 // and token exports for other platforms. Prints gzip sizes.
 import { build, transform } from "esbuild";
 import { execFileSync } from "node:child_process";
@@ -7,6 +7,7 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { gzipSync } from "node:zlib";
 import { buildPlatforms } from "./build-platforms.mjs";
+import { loadPacks } from "./lib/icon-packs.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
@@ -14,7 +15,7 @@ const src = (p) => join(root, "src", p);
 const LAYERS = "@layer ayywi.tokens, ayywi.base, ayywi.components, ayywi.utilities, ayywi.brand;";
 
 rmSync(dist, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
-for (const dir of ["css", "brands", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
+for (const dir of ["css", "brands", "icons", "fonts", "tokens"]) mkdirSync(join(dist, dir), { recursive: true });
 
 // ---- CSS: layered (default) ----
 const indexCss = src("css/index.css");
@@ -74,6 +75,18 @@ for (const name of readdirSync(src("components"))) {
   const cssPath = src(`components/${name}/${name}.css`);
   if (!existsSync(cssPath)) continue;
   writeFileSync(join(dist, `css/${name}.css`), wrap("ayywi.components", readFileSync(cssPath, "utf8")));
+}
+
+// ---- Icon packs: src/css/icon-packs/<id>.css (generated) → icons/<id>.css, opt-in, with the pack's licence beside it ----
+for (const pack of loadPacks(root)) {
+  const { code } = await transform(readFileSync(src(`css/icon-packs/${pack.id}.css`), "utf8"), { loader: "css", minify: true, legalComments: "inline" });
+  // The licence comment first, then the layer order, so the file is layered right even when it loads before ayywi.css.
+  const [, licence, rest] = code.match(/^(\/\*![\s\S]*?\*\/)\s*([\s\S]*)$/);
+  writeFileSync(join(dist, `icons/${pack.id}.css`), `${licence}\n${LAYERS}\n${rest.trim()}\n`);
+  const pkg = join(root, "node_modules", pack.package);
+  const licenceFile = readdirSync(pkg).find((f) => /^licen[cs]e(\.(md|txt))?$/i.test(f));
+  if (!licenceFile) throw new Error(`${pack.package} has no LICENSE file to ship with icons/${pack.id}.css`);
+  copyFileSync(join(pkg, licenceFile), join(dist, `icons/LICENSE-${pack.id}.txt`));
 }
 
 // ---- Fonts: self-hosted (default) + Google Fonts alternative ----
@@ -185,4 +198,8 @@ const fontBytes = readdirSync(join(dist, "fonts")).filter((f) => f.endsWith(".wo
 console.log("\nfile                               raw     gzip (minified)");
 for (const [f, raw, g] of rows) console.log(`${f.padEnd(34)} ${raw.padStart(8)} ${g.padStart(10)}`);
 console.log(`fonts/*.woff2 (opt-in)             ${kb(fontBytes).padStart(8)}`);
+const packFiles = readdirSync(join(dist, "icons")).filter((f) => f.endsWith(".css"));
+const packRaw = packFiles.reduce((n, f) => n + statSync(join(dist, "icons", f)).size, 0);
+const packGzip = packFiles.reduce((n, f) => n + gzipSync(readFileSync(join(dist, "icons", f))).length, 0);
+console.log(`${"icons/*.css (opt-in)".padEnd(34)} ${kb(packRaw).padStart(8)} ${kb(packGzip).padStart(10)}`);
 console.log(`\ndist: ${relative(root, dist)}/ ready`);

@@ -50,19 +50,19 @@ export default function Example() {
             onValueChange={(v) => setDevice(v as ShowcaseDevice)}
           >
             <SegmentedControlItem value="desktop" title="Desktop" aria-label="Desktop">
-              <Icon icon={ComputerIcon} />
+              <Icon icon={ComputerIcon} name="monitor" />
             </SegmentedControlItem>
             <SegmentedControlItem value="tablet" title="Tablet" aria-label="Tablet">
-              <Icon icon={Tablet01Icon} />
+              <Icon icon={Tablet01Icon} name="tablet" />
             </SegmentedControlItem>
             <SegmentedControlItem value="mobile" title="Mobile" aria-label="Mobile">
-              <Icon icon={SmartPhone01Icon} />
+              <Icon icon={SmartPhone01Icon} name="smartphone" />
             </SegmentedControlItem>
           </SegmentedControl>
           <Popover>
             <Tooltip content="Props">
               <PopoverTrigger variant="outline" size="icon-sm" aria-label="Props">
-                <Icon icon={SlidersHorizontalIcon} />
+                <Icon icon={SlidersHorizontalIcon} name="sliders-horizontal" />
               </PopoverTrigger>
             </Tooltip>
             <PopoverContent

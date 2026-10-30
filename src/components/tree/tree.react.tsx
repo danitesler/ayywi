@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type Reac
 import { ArrowRight01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { Icon } from "../icon/icon.react";
-import { connectTree, treeClass, treeGroupClass, treeItemClass, treeLabelClass, treeRowClass, treeToggleClass } from "./tree";
+import { connectTree, treeClass, treeGroupClass, treeItemClass, treeLabelClass, treeRowClass, treeToggleClass, type TreeController } from "./tree";
 
 export interface TreeNode {
   id: string;
@@ -56,6 +56,7 @@ export const Tree = forwardRef<HTMLUListElement, TreeProps>(function Tree(
   ref,
 ) {
   const local = useRef<HTMLUListElement>(null);
+  const controllerRef = useRef<TreeController | null>(null);
   const [localExpanded, setLocalExpanded] = useState<string[]>(defaultExpandedIds ?? []);
   const [localSelected, setLocalSelected] = useState<string | null>(defaultSelectedId ?? null);
 
@@ -81,8 +82,17 @@ export const Tree = forwardRef<HTMLUListElement, TreeProps>(function Tree(
         state.onExpandedChange?.(next);
       },
     });
-    return () => controller.destroy();
+    controllerRef.current = controller;
+    return () => {
+      controller.destroy();
+      controllerRef.current = null;
+    };
   }, []);
+
+  // Nodes that arrive or go after the first render (loaded later, filtered) can leave the tree without a tab stop.
+  useEffect(() => {
+    controllerRef.current?.refresh();
+  }, [nodes, expanded]);
 
   const render = (list: TreeNode[], level: number): ReactNode =>
     list.map((node) => {
@@ -104,7 +114,7 @@ export const Tree = forwardRef<HTMLUListElement, TreeProps>(function Tree(
           <div className={treeRowClass}>
             {hasChildren ? (
               <span className={treeToggleClass} aria-hidden="true">
-                <Icon icon={ArrowRight01Icon} directional />
+                <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
               </span>
             ) : null}
             {node.icon}

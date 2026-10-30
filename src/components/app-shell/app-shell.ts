@@ -40,10 +40,10 @@ export const appShellSizes = ["sm", "md", "lg"] as const;
 export type AppShellSize = (typeof appShellSizes)[number];
 
 /** SVG markup for the menu icon (Hugeicons Menu01) the toggle draws, for non-React renderers. */
-export const appShellMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);
+export const appShellMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon, { name: "menu" });
 
 /** SVG markup for the settings shell's back arrow (Hugeicons ArrowLeft01), mirrored in RTL. */
-export const appShellBackIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { directional: true });
+export const appShellBackIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { name: "chevron-left", directional: true });
 
 /** Esc here belongs to the text field (clearing, cancelling an edit) or to the overlay it's in. Switches and checkboxes don't keep it. */
 const KEEPS_ESCAPE =

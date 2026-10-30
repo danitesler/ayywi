@@ -66,7 +66,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-transfer-list__count">4</span>
       </div>
       <div class="ayy-transfer-list__search">
-        <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         <input type="search" class="ayy-transfer-list__filter" placeholder="Filter…" aria-label="Filter Available" />
       </div>
       <div class="ayy-transfer-list__list" role="group" aria-label="Available">
@@ -81,25 +81,25 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <div class="ayy-transfer-list__actions">
       <ayy-tooltip class="ayy-tooltip">
         <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-sm" data-action="add" aria-label="Move selected to Assigned" aria-describedby="transfer-add-tip" disabled>
-          <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+          <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         </button>
         <span role="tooltip" id="transfer-add-tip" class="ayy-tooltip__content" data-side="top">Move selected</span>
       </ayy-tooltip>
       <ayy-tooltip class="ayy-tooltip">
         <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-sm" data-action="add-all" aria-label="Move all to Assigned" aria-describedby="transfer-add-all-tip">
-          <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.5 18C12.5 18 18.5 13.5811 18.5 12C18.5 10.4188 12.5 6 12.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M5.50005 18C5.50005 18 11.5 13.5811 11.5 12C11.5 10.4188 5.5 6 5.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+          <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevrons-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.5 18C12.5 18 18.5 13.5811 18.5 12C18.5 10.4188 12.5 6 12.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M5.50005 18C5.50005 18 11.5 13.5811 11.5 12C11.5 10.4188 5.5 6 5.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         </button>
         <span role="tooltip" id="transfer-add-all-tip" class="ayy-tooltip__content" data-side="top">Move all</span>
       </ayy-tooltip>
       <ayy-tooltip class="ayy-tooltip">
         <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-sm" data-action="remove" aria-label="Move selected to Available" aria-describedby="transfer-remove-tip" disabled>
-          <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+          <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         </button>
         <span role="tooltip" id="transfer-remove-tip" class="ayy-tooltip__content" data-side="top">Remove selected</span>
       </ayy-tooltip>
       <ayy-tooltip class="ayy-tooltip">
         <button type="button" class="ayy-button ayy-button--outline ayy-button--icon-sm" data-action="remove-all" aria-label="Move all to Available" aria-describedby="transfer-remove-all-tip">
-          <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.5 18C11.5 18 5.50001 13.5811 5.5 12C5.49999 10.4188 11.5 6 11.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.5 18C18.5 18 12.5 13.5811 12.5 12C12.5 10.4188 18.5 6 18.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+          <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevrons-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.5 18C11.5 18 5.50001 13.5811 5.5 12C5.49999 10.4188 11.5 6 11.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.5 18C18.5 18 12.5 13.5811 12.5 12C12.5 10.4188 18.5 6 18.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         </button>
         <span role="tooltip" id="transfer-remove-all-tip" class="ayy-tooltip__content" data-side="top">Remove all</span>
       </ayy-tooltip>
@@ -111,7 +111,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <span class="ayy-transfer-list__count">3</span>
       </div>
       <div class="ayy-transfer-list__search">
-        <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         <input type="search" class="ayy-transfer-list__filter" placeholder="Filter…" aria-label="Filter Assigned" />
       </div>
       <div class="ayy-transfer-list__list" role="group" aria-label="Assigned">

@@ -7,22 +7,22 @@ export default function Example() {
     <div className="ayy-stack">
       <nav className="ayy-cluster" aria-label="Pagination">
         <Button variant="outline">
-          <Icon icon={ArrowLeft02Icon} directional />
+          <Icon icon={ArrowLeft02Icon} name="arrow-left" directional />
           Previous
         </Button>
         <Button variant="outline">
           Next
-          <Icon icon={ArrowRight02Icon} directional />
+          <Icon icon={ArrowRight02Icon} name="arrow-right" directional />
         </Button>
       </nav>
       <nav className="ayy-cluster" aria-label="עימוד" dir="rtl" lang="he">
         <Button variant="outline">
-          <Icon icon={ArrowLeft02Icon} directional />
+          <Icon icon={ArrowLeft02Icon} name="arrow-left" directional />
           הקודם
         </Button>
         <Button variant="outline">
           הבא
-          <Icon icon={ArrowRight02Icon} directional />
+          <Icon icon={ArrowRight02Icon} name="arrow-right" directional />
         </Button>
       </nav>
     </div>

@@ -2,7 +2,7 @@
   "name": "Icon",
   "slug": "icon",
   "category": "Data display",
-  "description": "A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it.",
+  "description": "A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Give it a name and an icon pack (Lucide, Tabler, Material Symbols, Feather) can draw it instead.",
   "aka": ["svg-icon"],
   "classes": {
     "ayy-icon": "On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.",
@@ -37,7 +37,7 @@
     "density": "Default 1.25em scales with surrounding text including --ayy-text-s; inside buttons, menu items and alerts the component sets the size.",
     "width": "Square. directional mirrors it in RTL."
   },
-  "js": "iconSvg(icon, { size?, directional?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from \"@hugeicons/core-free-icons\". Plain HTML: paste the SVG with class=\"ayy-icon\".",
+  "js": "iconSvg(icon, { size?, directional?, name?, label?, strokeWidth?, className? }) → SVG markup for innerHTML, v-html, {@html} or server templates; iconClass({ size?, directional?, className? }); iconSizes; type IconData (Hugeicons' format). Icons come from `npm i @hugeicons/core-free-icons`: import { Search01Icon } from \"@hugeicons/core-free-icons\". Plain HTML: paste the SVG with class=\"ayy-icon\". name writes data-ayy-icon, which a pack replaces: import \"@danitesler/ayywi/icons/<pack>.css\" and call setIconPack(pack) (or set data-ayy-icons on any element) to draw named icons in Lucide, Tabler, Material Symbols or Feather. strokeWidth only affects the inline Hugeicons paths; a pack keeps its own stroke.",
   "react": {
     "import": "import { Icon } from \"@danitesler/ayywi/react\"; import { Search01Icon } from \"@hugeicons/core-free-icons\";",
     "components": {
@@ -47,6 +47,7 @@
           "icon": "IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package",
           "size": "\"auto\" | \"sm\" | \"md\" | \"lg\" | \"xl\" — auto follows the text; the rest are 16/20/24/32px",
           "directional": "boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction",
+          "name": "IconName — the glyph's name (\"x\", \"search\"…), written as data-ayy-icon so an icon pack can replace it; leave it off for your own icons",
           "label": "string — accessible name; without it the icon is decorative (aria-hidden)",
           "strokeWidth": "number — stroke width on the 24px grid (Hugeicons default 1.5)"
         }
@@ -71,7 +72,7 @@
     "Don't use an icon for people and workspaces — use Avatar.",
     "Don't use Icon for illustrations and logos — use an <img> or your own SVG.",
     "Don't rely on an icon when its meaning isn't obvious — write the word instead of (or next to) it.",
-    "Don't mix in another icon set. Hugeicons' 1.5px rounded stroke is part of the look.",
+    "Don't mix in another icon set by hand. Hugeicons' 1.5px rounded stroke is the default look; an icon pack switches every named icon at once.",
     "Don't keep a fixed colour (color, fill or stroke set to a hex value) on an SVG you paste in: a black icon disappears in the dark theme.",
     "Don't use colour as the only signal: pair a status icon with a label."
   ],

@@ -79,5 +79,7 @@ export class AyyPinInputElement extends ElementBase {
     }
     hidden.name = name;
     hidden.value = this.#controller?.value() ?? "";
+    const slots = Array.from(root.querySelectorAll<HTMLInputElement>(".ayy-pin-input__slot"));
+    hidden.disabled = slots.length > 0 && slots.every((slot) => slot.disabled);
   }
 }

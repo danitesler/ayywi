@@ -392,6 +392,7 @@ export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "../compon
 export { Toc, type TocProps, type TocItem } from "../components/toc/toc.react";
 export { Tree, type TreeProps, type TreeNode } from "../components/tree/tree.react";
 export { Separator, type SeparatorProps } from "../components/separator/separator.react";
+export { Scrollbar, type ScrollbarProps } from "../components/scrollbar/scrollbar.react";
 export { Carousel, CarouselSlide, type CarouselProps, type CarouselSlideProps } from "../components/carousel/carousel.react";
 export { IconTile, type IconTileProps } from "../components/icon-tile/icon-tile.react";
 export { Stat, type StatProps } from "../components/stat/stat.react";

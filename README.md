@@ -8,7 +8,7 @@ When you ask an AI tool to build UI, you usually get five mismatched shades of g
 
 ![The Dashboard showcase app, built only from ayywi components](https://raw.githubusercontent.com/danitesler/ayywi/main/preview/src/showcase/screenshots/dashboard.png)
 
-- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 84 components.
+- **Small:** zero runtime dependencies, ~37 kB of CSS gzipped for all 85 components.
 - **Built for AI tools:** one prompt or one MCP connection gives your agent the full contract, component specs, and real-time linter.
 - **States and accessibility built in:** components ship empty, loading, and error states; interactive ones have focus rings, keyboard support, ARIA, RTL, and Windows High Contrast styles. axe runs on every component page and showcase app (no serious or critical violations), and `pnpm check` tests every text colour against every surface in every theme.
 - **Themes & density:** four themes (`dark`, `light`, `dark-contrast`, `light-gray`) and three densities (`compact`, `comfortable`, `touch`), driven by single attributes.
@@ -120,6 +120,16 @@ ayywi eliminates custom responsive CSS by providing built-in layout contracts:
 - **Websites (`Navbar`):** Full horizontal navigation on desktop; automatically collapses into an accessible mobile menu button on screens below 48rem.
 - **Settings:** Notion- and Claude-style settings in a near-full-screen modal — sections beside the open one on desktop, full screen with drill-down navigation on phones.
 
+## Icon packs
+
+ayywi draws its own icons (close, chevrons, status icons…) with Hugeicons. To use Lucide, Tabler Icons, Material Symbols or Feather instead, import the pack's stylesheet and pick it, per page or per section:
+
+```ts
+import "@danitesler/ayywi/icons/lucide.css";
+import { setIconPack } from "@danitesler/ayywi";
+setIconPack("lucide"); // or data-ayy-icons="lucide" on any element
+```
+
 ## Brand in one colour
 
 ayywi is monochrome until you brand it. Give it one seed colour and a corner preference.
@@ -151,6 +161,17 @@ Apply themes and density modes with single HTML attributes on `<html>` or any co
 | `dark-contrast` | Pure OLED black page with high-contrast cards |
 | `light-gray` | Clean white cards on a grey canvas |
 
+Customize surfaces in either base mode with `setThemeCustomization`. The contrast value runs from 0 (default) to 100 (the dark page becomes black); `surface` is `"neutral"` (no tint) or `"subtle"` (a quiet tint of the colour in the surfaces). Optionally pass `textColor` as a hex colour; the text and tint are adjusted where necessary to keep built-in text, status, chart and primary colours legible. Twelve ready-made `THEME_PRESETS` provide starting points for light and dark themes. Their fonts come from `THEME_FONTS`, ten heading and body pairings from Google Fonts (Fraunces, Literata, Space Grotesk, DM Sans, Space Mono, IBM Plex Sans, Bricolage Grotesque, Figtree, Syne, Manrope, Lexend and Sora); `themeFontsUrl()` returns one stylesheet URL for them, which your app loads itself. Pass the active brand seed as the third argument, or `null` for the default monochrome brand; update it if the brand changes.
+
+```js
+import { setTheme, setBrand, setThemeCustomization } from "@danitesler/ayywi";
+setTheme("dark");
+setBrand({ name: "acme", color: "#7c3aed" });
+setThemeCustomization({ color: "#7c3aed", surface: "subtle", contrast: 50 }, undefined, "#7c3aed");
+```
+
+Pass `null` to `setThemeCustomization` to restore the default surfaces. The older `dark-contrast` and `light-gray` theme names remain available for existing apps. The generated palette checks ayywi's built-in tokens; an app must check any colours it overrides itself.
+
 Densities include `compact` (desktop default), `comfortable` (looser spacing), and `touch` (automatically activated on mobile devices for 44px+ tap targets).
 
 ## Components
@@ -160,7 +181,7 @@ Densities include `compact` (desktop default), `comfortable` (looser spacing), a
 | Actions | Button (and split button), Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button |
 | Navigation | Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree |
 | Forms | Field, Input, PIN input (and OTP), Search bar, Filter bar, Sorting, Textarea, Mentions, Block editor (rich text), Inline edit, Select, Combobox, Tag input, Record picker, Transfer list (dual list), Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut (keys and recorder), Settings |
-| Layout | Page header, Card (plus a view type for captures and recordings), Tabs, Accordion, Carousel, Separator, Drag and drop, Showcase |
+| Layout | Page header, Card (plus a view type for captures and recordings), Tabs, Accordion, Carousel, Separator, Scrollbar, Drag and drop, Showcase |
 | Overlays | Dialog (centred, side modal or bottom sheet), Popover, Tooltip |
 | Feedback | Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state |
 | Data display | Badge, Status dot, Keyboard hint, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart, Text highlight |

@@ -174,7 +174,7 @@ export function openSwatchColorPicker(input: HTMLInputElement, { anchor }: { anc
   copy.type = "button";
   copy.className = `ayy-button ayy-button--ghost ayy-button--icon-sm ${colorPickerCopyClass}`;
   copy.setAttribute("aria-label", "Copy hex");
-  copy.innerHTML = iconSvg(Copy01Icon);
+  copy.innerHTML = iconSvg(Copy01Icon, { name: "copy" });
 
   const tipContent = document.createElement("span");
   tipContent.className = "ayy-tooltip__content";

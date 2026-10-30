@@ -118,14 +118,14 @@ export interface CardToastHandle extends ToastHandle {
   status: (status: CardToastStatus | null, clearAfter?: number) => void;
 }
 
-export const toastCloseIcon = iconSvg(Cancel01Icon);
-export const toastCopyIcon = iconSvg(Copy01Icon);
-export const toastCopiedIcon = iconSvg(Tick02Icon);
-export const toastSuccessIcon = iconSvg(CheckmarkCircle02Icon);
-export const toastWarningIcon = iconSvg(Alert02Icon);
-export const toastInfoIcon = iconSvg(InformationCircleIcon);
-export const toastErrorIcon = iconSvg(CancelCircleIcon);
-export const toastPlayIcon = iconSvg(PlayIcon, { size: "sm" });
+export const toastCloseIcon = iconSvg(Cancel01Icon, { name: "x" });
+export const toastCopyIcon = iconSvg(Copy01Icon, { name: "copy" });
+export const toastCopiedIcon = iconSvg(Tick02Icon, { name: "check" });
+export const toastSuccessIcon = iconSvg(CheckmarkCircle02Icon, { name: "circle-check" });
+export const toastWarningIcon = iconSvg(Alert02Icon, { name: "triangle-alert" });
+export const toastInfoIcon = iconSvg(InformationCircleIcon, { name: "info" });
+export const toastErrorIcon = iconSvg(CancelCircleIcon, { name: "circle-x" });
+export const toastPlayIcon = iconSvg(PlayIcon, { name: "play", size: "sm" });
 
 const VARIANT_ICONS: Record<string, string> = {
   success: toastSuccessIcon,
@@ -494,20 +494,21 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
     copyBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       const textToCopy = options.copyText ?? (options.description ? `${message}\n${options.description}` : message);
-      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(textToCopy).catch(() => {});
-      }
-      copyBtn.innerHTML = toastCopiedIcon;
-      copyBtn.setAttribute("data-copied", "");
-      copyBtn.setAttribute("aria-label", "Copied");
-      copyTip.lastElementChild!.textContent = "Copied";
-      if (copyResetTimer) window.clearTimeout(copyResetTimer);
-      copyResetTimer = window.setTimeout(() => {
-        copyBtn.innerHTML = toastCopyIcon;
-        copyBtn.removeAttribute("data-copied");
-        copyBtn.setAttribute("aria-label", "Copy");
-        copyTip.lastElementChild!.textContent = "Copy";
-      }, 1500);
+      if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) return;
+      // Only say "Copied" once the write has gone through; otherwise the button stays as it was, ready to try again.
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyBtn.innerHTML = toastCopiedIcon;
+        copyBtn.setAttribute("data-copied", "");
+        copyBtn.setAttribute("aria-label", "Copied");
+        copyTip.lastElementChild!.textContent = "Copied";
+        if (copyResetTimer) window.clearTimeout(copyResetTimer);
+        copyResetTimer = window.setTimeout(() => {
+          copyBtn.innerHTML = toastCopyIcon;
+          copyBtn.removeAttribute("data-copied");
+          copyBtn.setAttribute("aria-label", "Copy");
+          copyTip.lastElementChild!.textContent = "Copy";
+        }, 1500);
+      }, () => {});
     });
     const copyTip = withTooltip(copyBtn, "Copy", cleanups);
     toast.append(copyTip);
@@ -979,13 +980,17 @@ export const toast = Object.assign(showToast, {
   card: cardToast,
   /** Copy text to clipboard and trigger a confirmation toast. */
   copy(text: string, options?: ToastOptions): ToastHandle {
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).catch(() => {});
-    }
-    return showToast(options?.title ?? "Copied to clipboard", {
+    const failed = () => showToast("Couldn't copy to clipboard", { variant: "destructive" });
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) return failed();
+    const handle = showToast(options?.title ?? "Copied to clipboard", {
       ...options,
       variant: options?.variant ?? "success",
     });
+    navigator.clipboard.writeText(text).catch(() => {
+      handle.dismiss();
+      failed();
+    });
+    return handle;
   },
   /** Dismiss one toast by id, or all of them. */
   dismiss(id?: string): void {

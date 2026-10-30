@@ -20,7 +20,7 @@ export const treeLabelClass = "ayy-tree__label";
 export const treeGroupClass = "ayy-tree__group";
 
 /** The chevron: points along the reading direction and turns down while its group is open. */
-export const treeChevronIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { directional: true });
+export const treeChevronIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
 
 const ITEM = '[role="treeitem"]';
 const DROPPED = ".ayy-inline-edit, button, input, textarea, select, a[href], [contenteditable]:not([contenteditable='false'])";
@@ -37,6 +37,8 @@ export interface TreeControllerOptions {
 export interface TreeController {
   /** Focus the node with this id (the selected one, or the first, without one). */
   focus(id?: string): void;
+  /** Call after nodes were added, removed or shown or hidden: gives the tree a tab stop again if it has lost its one. */
+  refresh(): void;
   destroy(): void;
 }
 
@@ -219,9 +221,13 @@ export function connectTree(root: HTMLElement, options: TreeControllerOptions = 
     else group.hidden = expanded === "false";
   }
 
-  const list = visible();
-  const active = list.find((item) => item.getAttribute("aria-selected") === "true") ?? list[0];
-  if (active) setTabStop(active);
+  const ensureTabStop = (force = false): void => {
+    const list = visible();
+    if (!force && list.some((item) => item.tabIndex === 0)) return;
+    const active = list.find((item) => item.getAttribute("aria-selected") === "true") ?? list.find((item) => !isDisabled(item)) ?? list[0];
+    if (active) setTabStop(active);
+  };
+  ensureTabStop(true);
 
   root.addEventListener("click", onClick);
   root.addEventListener("dblclick", onDoubleClick);
@@ -229,6 +235,7 @@ export function connectTree(root: HTMLElement, options: TreeControllerOptions = 
   root.addEventListener("focusin", onFocusIn);
 
   return {
+    refresh: () => ensureTabStop(),
     focus(id?: string) {
       const list = visible();
       const target = id

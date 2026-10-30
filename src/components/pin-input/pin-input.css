@@ -46,6 +46,7 @@
   background-color: var(--ayy-color-wash);
   color: var(--ayy-color-text);
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
   font-size: var(--_font);
   font-weight: var(--ayy-weight-semibold);
   font-variant-numeric: tabular-nums;

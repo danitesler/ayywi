@@ -91,6 +91,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Accordion](llms/accordion.md): A stack of sections that expand and collapse, for FAQs and for settings with a lot of detail. Only the heading shows until someone opens a section, and opening one can close the others.
 - [Carousel](llms/carousel.md): A row of slides that scrolls sideways, with buttons to move to the next or previous one. It suits galleries, testimonials and featured items. It uses native scrolling, so swiping and the keyboard work without extra code.
 - [Separator](llms/separator.md): A thin line that divides blocks of content, between sections of a page or between items in a row.
+- [Scrollbar](llms/scrollbar.md): A thin scrollbar with no track that is drawn in the text colour, so it follows every theme. Put it on any scroll container, or on the page.
 - [Drag and drop](llms/drag-drop.md): Standard drag and drop for reordering items and moving them between areas: a floating preview follows the pointer, drop targets show hover states (ready, over, reject), and a primary line indicates the exact drop position. Fully accessible with arrow keys.
 
 ### Overlays
@@ -116,7 +117,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Keyboard hint](llms/kbd.md): A small keycap for showing a keyboard key or shortcut in help text, menus and tooltips. Shortcuts adapt to the platform, so Mac users see their own symbols.
 - [Text highlight](llms/text-highlight.md): A way to mark text inside a sentence, for search matches or phrases that need attention. It's subtle by default, with colour variants for warnings, errors, successes and info.
 - [Avatar](llms/avatar.md): A small picture that stands for a person or a workspace. When there's no image, or it fails to load, it shows initials instead.
-- [Icon](llms/icon.md): A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it.
+- [Icon](llms/icon.md): A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Give it a name and an icon pack (Lucide, Tabler, Material Symbols, Feather) can draw it instead.
 - [Icon tile](llms/icon-tile.md): A rounded app-icon tile that gives a product, plugin or service a recognisable mark, with the glyph tinted in its accent colour.
 - [Stat](llms/stat.md): A big number with a short label, for headline figures like downloads, views or revenue.
 - [List](llms/list.md): Rows of people, records or settings, each with an image or icon, a title, a description and something at the end like a value or a control. A row can be a link.

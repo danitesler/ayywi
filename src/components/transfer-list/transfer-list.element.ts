@@ -75,6 +75,7 @@ export class AyyTransferListElement extends ElementBase {
       input.name = name;
       input.value = val;
       input.dataset.transferValue = "";
+      input.disabled = root.getAttribute("aria-disabled") === "true";
       root.append(input);
     }
   }

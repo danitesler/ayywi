@@ -119,7 +119,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         }}
         {...props}
       />
-      <Icon icon={ArrowDown01Icon} />
+      <Icon icon={ArrowDown01Icon} name="chevron-down" />
       <ul ref={listbox} id={listId} className={comboboxListboxClass} role="listbox" popover="manual">
         {list.map((option) => (
           <li
@@ -140,7 +140,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
           {emptyText}
         </li>
       </ul>
-      {name && <input ref={hidden} type="hidden" name={name} defaultValue={value ?? defaultValue ?? ""} />}
+      {name && <input ref={hidden} type="hidden" name={name} defaultValue={value ?? defaultValue ?? ""} disabled={props.disabled} />}
     </div>
   );
 });

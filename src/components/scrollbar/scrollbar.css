@@ -1,0 +1,70 @@
+/* A thin scrollbar with no track, drawn in the text colour so it follows every theme. Put it on any scroll container,
+   or on <html> for the page. Size it with --ayy-scrollbar-size. */
+.ayy-scrollbar {
+  --_size: var(--ayy-scrollbar-size, 0.5rem);
+  --_thumb-rest: color-mix(in srgb, var(--ayy-color-text) 22%, transparent);
+  --_thumb: var(--_thumb-rest);
+  --_thumb-hover: color-mix(in srgb, var(--ayy-color-text) 40%, transparent);
+  --_thumb-active: color-mix(in srgb, var(--ayy-color-text) 55%, transparent);
+}
+
+/* Chromium and Safari ignore ::-webkit-scrollbar once scrollbar-width or scrollbar-color is set, so those two only
+   reach browsers that lack the pseudo-element (Firefox), where "thin" is the thinnest it offers. */
+@supports not selector(::-webkit-scrollbar) {
+  .ayy-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--_thumb) transparent;
+  }
+}
+
+.ayy-scrollbar::-webkit-scrollbar {
+  width: var(--_size);
+  height: var(--_size);
+  background-color: transparent;
+}
+
+.ayy-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.ayy-scrollbar::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* The transparent border keeps the thumb clear of the edge and thinner than the gutter. */
+.ayy-scrollbar::-webkit-scrollbar-thumb {
+  min-height: 2rem;
+  border: 2px solid transparent;
+  border-radius: var(--ayy-radius-pill);
+  background-color: var(--_thumb);
+  background-clip: content-box;
+}
+
+.ayy-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--_thumb-hover);
+}
+
+.ayy-scrollbar::-webkit-scrollbar-thumb:active {
+  background-color: var(--_thumb-active);
+}
+
+/* Hidden until the pointer or focus is inside; the gutter keeps its size so nothing shifts. */
+.ayy-scrollbar--hover {
+  --_thumb: transparent;
+}
+
+.ayy-scrollbar--hover:is(:hover, :focus-within) {
+  --_thumb: var(--_thumb-rest);
+}
+
+@media (forced-colors: active) {
+  .ayy-scrollbar {
+    --_thumb-rest: GrayText;
+    --_thumb-hover: CanvasText;
+    --_thumb-active: Highlight;
+  }
+
+  .ayy-scrollbar::-webkit-scrollbar-thumb {
+    forced-color-adjust: none;
+  }
+}

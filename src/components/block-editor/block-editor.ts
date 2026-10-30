@@ -45,6 +45,7 @@ import {
   InsertRowDownIcon,
   InsertRowUpIcon,
   Layout3ColumnIcon,
+  ArrowHorizontalIcon,
   LeftToRightListBulletIcon,
   LeftToRightListNumberIcon,
   Link01Icon,
@@ -76,7 +77,8 @@ import { buttonClass } from "../button/button";
 import { checkboxClass } from "../checkbox/checkbox";
 import { codeBlockCopyIcon, copyCodeBlock, normalizeLanguage, tokenizeCode } from "../code-block/code-block";
 import { announce, connectDragDrop, dragHandleClass, dragHandleIcon, dragPreviewChip, dragPreviewClass, setDropEdge, type DragMove, type DropEdge } from "../drag-drop/drag-drop";
-import { iconSvg, type IconData } from "../icon/icon";
+import type { IconName } from "../../icon-packs";
+import { iconSvg, type IconData, type IconSvgOptions } from "../icon/icon";
 import { inputClass } from "../input/input";
 import { isApplePlatform, shortcutHtml } from "../shortcut/shortcut";
 import { blockEditorEditTable, MAX_COLUMN, MAX_COLUMNS, MAX_ROWS, MIN_COLUMN, tableGrid, type BlockEditorTableEdit } from "./block-editor-table";
@@ -118,12 +120,12 @@ const CALLOUT_ALERT: Partial<Record<BlockEditorTone, string>> = { info: "[!NOTE]
 /** GitHub alert read back into a tone. [!IMPORTANT] is info, same as [!NOTE]. */
 const ALERT_TONE: Record<string, BlockEditorTone> = { NOTE: "info", TIP: "success", IMPORTANT: "info", WARNING: "warning", CAUTION: "destructive" };
 const ALERT_MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i;
-const CALLOUT_ICONS: Record<BlockEditorTone, IconData> = {
-  default: BulbIcon,
-  info: InformationCircleIcon,
-  success: CheckmarkCircle02Icon,
-  warning: Alert02Icon,
-  destructive: CancelCircleIcon,
+const CALLOUT_ICONS: Record<BlockEditorTone, { icon: IconData; iconName: IconName }> = {
+  default: { icon: BulbIcon, iconName: "lightbulb" },
+  info: { icon: InformationCircleIcon, iconName: "info" },
+  success: { icon: CheckmarkCircle02Icon, iconName: "circle-check" },
+  warning: { icon: Alert02Icon, iconName: "triangle-alert" },
+  destructive: { icon: CancelCircleIcon, iconName: "circle-x" },
 };
 /** The dot beside a callout colour, the same tokens Alert uses for that tone. */
 const CALLOUT_SWATCH: Record<BlockEditorTone, string> = {
@@ -288,6 +290,7 @@ const C = {
   table: `${P}__table`,
   cell: `${P}__cell`,
   tableAdd: `${P}__table-add`,
+  tableFit: `${P}__table-fit`,
   rowGrip: `${P}__row-grip`,
   colGrip: `${P}__col-grip`,
   colResize: `${P}__col-resize`,
@@ -302,6 +305,7 @@ interface TypeInfo {
   label: string;
   hint: string;
   icon: IconData;
+  iconName: IconName;
   keywords: string;
   /** The Markdown shortcut that makes it, shown in the / menu. */
   markdown?: string;
@@ -309,24 +313,24 @@ interface TypeInfo {
 }
 
 const TYPES: Record<BlockEditorBlockType, TypeInfo> = {
-  text: { label: "Text", hint: "Just start writing", icon: TextIcon, keywords: "paragraph plain body" },
-  "heading-1": { label: "Heading 1", hint: "Big section heading", icon: Heading01Icon, keywords: "h1 title", markdown: "#" },
-  "heading-2": { label: "Heading 2", hint: "Medium section heading", icon: Heading02Icon, keywords: "h2 subtitle", markdown: "##" },
-  "heading-3": { label: "Heading 3", hint: "Small section heading", icon: Heading03Icon, keywords: "h3", markdown: "###" },
-  bullet: { label: "Bulleted list", hint: "A simple list", icon: LeftToRightListBulletIcon, keywords: "bullet unordered ul", markdown: "-" },
-  number: { label: "Numbered list", hint: "A list with numbers", icon: LeftToRightListNumberIcon, keywords: "numbered ordered ol", markdown: "1." },
-  todo: { label: "To-do list", hint: "Track tasks with a checkbox", icon: CheckListIcon, keywords: "todo task checkbox check", markdown: "[]" },
-  quote: { label: "Quote", hint: "Set a quotation apart", icon: QuoteDownIcon, keywords: "blockquote citation", markdown: ">" },
-  toggle: { label: "Toggle", hint: "Hide or show the blocks under it", icon: ArrowRight01Icon, keywords: "toggle collapsible collapse expand details accordion dropdown", markdown: ">>" },
-  callout: { label: "Callout", hint: "Make a note stand out", icon: BulbIcon, keywords: "note tip info warning aside" },
-  table: { label: "Table", hint: "Rows and columns of plain text", icon: Grid3x3Icon, keywords: "table grid rows columns cells spreadsheet" },
-  code: { label: "Code", hint: "A monospace snippet", icon: SourceCodeIcon, keywords: "snippet pre program", markdown: "```" },
-  equation: { label: "Equation", hint: "TeX, shown by your math renderer", icon: FunctionIcon, keywords: "equation math tex latex formula", markdown: "$$" },
-  divider: { label: "Divider", hint: "Separate sections", icon: SolidLine01Icon, keywords: "line rule separator hr", markdown: "---" },
-  image: { label: "Image", hint: "Upload or link a picture", icon: Image01Icon, keywords: "picture photo screenshot img", media: true },
-  embed: { label: "Video or embed", hint: "YouTube, Vimeo, Loom, audio or any link", icon: Video01Icon, keywords: "video embed youtube vimeo loom audio link bookmark iframe", media: true },
-  file: { label: "File", hint: "Attach a file to download", icon: Attachment01Icon, keywords: "file attachment upload pdf document", media: true },
-  record: { label: "Link to record", hint: "A person, issue or page", icon: ArrowUpRight01Icon, keywords: "record mention page person issue" },
+  text: { label: "Text", hint: "Just start writing", icon: TextIcon, iconName: "text", keywords: "paragraph plain body" },
+  "heading-1": { label: "Heading 1", hint: "Big section heading", icon: Heading01Icon, iconName: "heading-1", keywords: "h1 title", markdown: "#" },
+  "heading-2": { label: "Heading 2", hint: "Medium section heading", icon: Heading02Icon, iconName: "heading-2", keywords: "h2 subtitle", markdown: "##" },
+  "heading-3": { label: "Heading 3", hint: "Small section heading", icon: Heading03Icon, iconName: "heading-3", keywords: "h3", markdown: "###" },
+  bullet: { label: "Bulleted list", hint: "A simple list", icon: LeftToRightListBulletIcon, iconName: "list", keywords: "bullet unordered ul", markdown: "-" },
+  number: { label: "Numbered list", hint: "A list with numbers", icon: LeftToRightListNumberIcon, iconName: "list-ordered", keywords: "numbered ordered ol", markdown: "1." },
+  todo: { label: "To-do list", hint: "Track tasks with a checkbox", icon: CheckListIcon, iconName: "list-checks", keywords: "todo task checkbox check", markdown: "[]" },
+  quote: { label: "Quote", hint: "Set a quotation apart", icon: QuoteDownIcon, iconName: "quote", keywords: "blockquote citation", markdown: ">" },
+  toggle: { label: "Toggle", hint: "Hide or show the blocks under it", icon: ArrowRight01Icon, iconName: "chevron-right", keywords: "toggle collapsible collapse expand details accordion dropdown", markdown: ">>" },
+  callout: { label: "Callout", hint: "Make a note stand out", icon: BulbIcon, iconName: "lightbulb", keywords: "note tip info warning aside" },
+  table: { label: "Table", hint: "Rows and columns of plain text", icon: Grid3x3Icon, iconName: "table", keywords: "table grid rows columns cells spreadsheet" },
+  code: { label: "Code", hint: "A monospace snippet", icon: SourceCodeIcon, iconName: "code-block", keywords: "snippet pre program", markdown: "```" },
+  equation: { label: "Equation", hint: "TeX, shown by your math renderer", icon: FunctionIcon, iconName: "function", keywords: "equation math tex latex formula", markdown: "$$" },
+  divider: { label: "Divider", hint: "Separate sections", icon: SolidLine01Icon, iconName: "separator", keywords: "line rule separator hr", markdown: "---" },
+  image: { label: "Image", hint: "Upload or link a picture", icon: Image01Icon, iconName: "image", keywords: "picture photo screenshot img", media: true },
+  embed: { label: "Video or embed", hint: "YouTube, Vimeo, Loom, audio or any link", icon: Video01Icon, iconName: "video", keywords: "video embed youtube vimeo loom audio link bookmark iframe", media: true },
+  file: { label: "File", hint: "Attach a file to download", icon: Attachment01Icon, iconName: "paperclip", keywords: "file attachment upload pdf document", media: true },
+  record: { label: "Link to record", hint: "A person, issue or page", icon: ArrowUpRight01Icon, iconName: "arrow-up-right", keywords: "record mention page person issue" },
 };
 
 /** The label of a block type, as the editor's menus name it ("Heading 1", "To-do list"). */
@@ -390,7 +394,7 @@ export function blockEditorId(): string {
 
 /** A new block of `type` (text by default). */
 export function blockEditorBlock(type: BlockEditorBlockType = "text", fields: Partial<Omit<BlockEditorBlock, "type">> = {}): BlockEditorBlock {
-  return { id: blockEditorId(), type, ...(isText(type) ? { html: "" } : {}), ...(type === "todo" ? { checked: false } : {}), ...(type === "toggle" ? { open: true } : {}), ...(type === "table" ? { rows: tableRows(3, 3), header: true } : {}), ...fields };
+  return { id: blockEditorId(), type, ...(isText(type) ? { html: "" } : {}), ...(type === "todo" ? { checked: false } : {}), ...(type === "toggle" ? { open: true } : {}), ...(type === "table" ? { rows: tableRows(3, 2), header: true } : {}), ...fields };
 }
 
 /** An empty grid of cells. */
@@ -1194,8 +1198,14 @@ function dropZw(el: HTMLElement): void {
   }
 }
 
-function svg(icon: IconData): string {
-  return iconSvg(icon);
+function svg(icon: IconData, options?: IconSvgOptions): string {
+  return iconSvg(icon, options);
+}
+
+/** The glyph for a block type, named so an icon pack can replace it. */
+function typeIcon(type: BlockEditorBlockType): string {
+  const { icon, iconName } = TYPES[type];
+  return svg(icon, { name: iconName });
 }
 
 function make<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, attrs: Record<string, string> = {}): HTMLElementTagNameMap[K] {
@@ -1566,28 +1576,28 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (native) floating.setAttribute("popover", "manual");
     else floating.hidden = true;
   }
-  const FORMATS = [
-    { command: "strong", label: "Bold", icon: TextBoldIcon, shortcut: "Mod+B" },
-    { command: "em", label: "Italic", icon: TextItalicIcon, shortcut: "Mod+I" },
-    { command: "u", label: "Underline", icon: TextUnderlineIcon, shortcut: "Mod+U" },
-    { command: "s", label: "Strikethrough", icon: TextStrikethroughIcon, shortcut: "Mod+Shift+S" },
-    { command: "mark", label: "Highlight", icon: HighlighterIcon, shortcut: "Mod+Shift+H" },
-    { command: "code", label: "Inline code", icon: CodeIcon, shortcut: "Mod+E" },
-    { command: "link", label: "Link", icon: Link01Icon, shortcut: "Mod+K" },
+  const FORMATS: { command: string; label: string; icon: IconData; iconName: IconName; shortcut: string }[] = [
+    { command: "strong", label: "Bold", icon: TextBoldIcon, iconName: "bold", shortcut: "Mod+B" },
+    { command: "em", label: "Italic", icon: TextItalicIcon, iconName: "italic", shortcut: "Mod+I" },
+    { command: "u", label: "Underline", icon: TextUnderlineIcon, iconName: "underline", shortcut: "Mod+U" },
+    { command: "s", label: "Strikethrough", icon: TextStrikethroughIcon, iconName: "strikethrough", shortcut: "Mod+Shift+S" },
+    { command: "mark", label: "Highlight", icon: HighlighterIcon, iconName: "highlighter", shortcut: "Mod+Shift+H" },
+    { command: "code", label: "Inline code", icon: CodeIcon, iconName: "code", shortcut: "Mod+E" },
+    { command: "link", label: "Link", icon: Link01Icon, iconName: "link", shortcut: "Mod+K" },
   ];
   const formatGroup = make("div", "ayy-toolbar__group");
   for (const f of FORMATS) {
     if (f.command === "link") formatGroup.append(make("span", "ayy-toolbar__separator", { "aria-hidden": "true" }));
     const button = make("button", "ayy-toolbar__button", { type: "button", tabindex: "-1", "aria-label": f.label, "aria-pressed": "false", "data-command": f.command });
-    button.innerHTML = svg(f.icon);
+    button.innerHTML = svg(f.icon, { name: f.iconName });
     formatGroup.append(tooltipped(button, f.label, f.shortcut));
   }
   const linkForm = make("form", C.linkForm, { hidden: "" });
   const linkInput = make("input", inputClass({ size: "sm" }), { type: "url", placeholder: "Paste or type a link", "aria-label": "Link address", autocomplete: "off", spellcheck: "false" });
   const openLinkButton = make("button", "ayy-toolbar__button", { type: "button", "aria-label": "Open link", "data-link": "open" });
-  openLinkButton.innerHTML = svg(ArrowUpRight01Icon);
+  openLinkButton.innerHTML = svg(ArrowUpRight01Icon, { name: "arrow-up-right" });
   const unlinkButton = make("button", "ayy-toolbar__button", { type: "button", "aria-label": "Remove link", "data-link": "remove" });
-  unlinkButton.innerHTML = svg(Unlink04Icon);
+  unlinkButton.innerHTML = svg(Unlink04Icon, { name: "unlink" });
   linkForm.append(linkInput, tooltipped(openLinkButton, "Open link"), tooltipped(unlinkButton, "Remove link"));
   toolbar.append(formatGroup, linkForm);
   root.append(anchor, menuEl, sideEl, nestEl, toolbar, fileInput);
@@ -1703,7 +1713,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function buildGutter(): HTMLElement {
     const gutter = make("div", C.gutter, { contenteditable: "false" });
     const add = make("button", C.add, { type: "button", tabindex: "-1", "aria-label": "Add a block below" });
-    add.innerHTML = svg(PlusSignIcon);
+    add.innerHTML = svg(PlusSignIcon, { name: "plus" });
     const handle = make("button", `${dragHandleClass} ${C.handle}`, { type: "button", tabindex: "-1", "aria-label": "Drag to move, click for options", "aria-haspopup": "listbox", "aria-expanded": "false" });
     handle.innerHTML = dragHandleIcon;
     gutter.append(tooltipped(add, "Add below · Alt-click above", undefined, "bottom"), tooltipped(handle, "Drag to move · click for options", undefined, "bottom"));
@@ -1733,12 +1743,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function buildEmptyMedia(b: BlockEditorBlock): HTMLElement {
     const box = make("div", C.empty, { contenteditable: "false" });
     if (uploading.has(b.id)) box.setAttribute("aria-busy", "true");
-    box.innerHTML = svg(TYPES[b.type].icon);
+    box.innerHTML = typeIcon(b.type);
     const placeholder =
       b.type === "image" ? "Paste an image link and press Enter" : b.type === "file" ? "Paste a file link and press Enter" : "Paste a YouTube, Vimeo, Loom, Spotify, Figma or media link";
     const input = make("input", inputClass({ size: "sm" }), { type: "url", placeholder, "aria-label": `${TYPES[b.type].label} link`, "data-media-input": "", autocomplete: "off" });
     const upload = make("button", buttonClass({ variant: "outline", size: "sm" }), { type: "button", "data-media-upload": "" });
-    upload.innerHTML = `${svg(CloudUploadIcon)}Upload`;
+    upload.innerHTML = `${svg(CloudUploadIcon, { name: "cloud-upload" })}Upload`;
     box.append(input, upload);
     return box;
   }
@@ -1747,7 +1757,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (!b.src) return readOnly() ? make("div", C.empty, { hidden: "" }) : buildEmptyMedia(b);
     if (b.type === "file") {
       const link = make("a", C.file, { href: b.src, target: "_blank", rel: "noopener noreferrer", download: b.name ?? "" });
-      link.innerHTML = svg(Attachment01Icon);
+      link.innerHTML = svg(Attachment01Icon, { name: "paperclip" });
       const name = make("span", C.fileName, { dir: "auto" });
       name.textContent = b.name || decodeURIComponent(b.src.split(/[?#]/)[0].split("/").pop() || "") || "File";
       link.append(name);
@@ -1785,7 +1795,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         frame.append(make(embed.kind, undefined, { src: embed.src, controls: "", preload: "metadata" }));
       } else if (embed.kind === "link") {
         const card = make("a", C.bookmark, { href: embed.src, target: "_blank", rel: "noopener noreferrer" });
-        card.innerHTML = svg(Link01Icon);
+        card.innerHTML = svg(Link01Icon, { name: "link" });
         const title = make("span", C.bookmarkTitle);
         title.textContent = embed.host;
         const url = make("span", C.bookmarkUrl);
@@ -1815,7 +1825,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   /** A record link: icon, stored name, and the trigger plus id it was picked from. No record yet says "Pick a record". */
   function buildRecord(b: BlockEditorBlock): HTMLButtonElement {
     const card = make("button", C.record, { type: "button" });
-    card.innerHTML = svg(TYPES.record.icon);
+    card.innerHTML = typeIcon("record");
     const label = make("span", C.recordLabel);
     label.textContent = b.record?.label || "Pick a record";
     const source = make("span", C.recordSource);
@@ -1924,9 +1934,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (!readOnly()) {
       for (const axis of ["column", "row"] as const) {
         const add = make("button", C.tableAdd, { type: "button", tabindex: "-1", contenteditable: "false", "data-axis": axis, "aria-label": `Add ${axis}` });
-        add.innerHTML = svg(PlusSignIcon);
+        add.innerHTML = svg(PlusSignIcon, { name: "plus" });
         wrap.append(add);
       }
+      const fit = make("button", C.tableFit, { type: "button", tabindex: "-1", contenteditable: "false", "aria-label": "Fit table to width" });
+      fit.innerHTML = svg(ArrowHorizontalIcon, { name: "table-fit" });
+      wrap.append(fit);
     }
     return wrap;
   }
@@ -1943,12 +1956,13 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       }
       if (b.type === "toggle") {
         const arrow = make("button", `${C.toggle}`, { type: "button", tabindex: "-1", contenteditable: "false", "aria-label": "Toggle", "aria-expanded": "false" });
-        arrow.innerHTML = iconSvg(ArrowRight01Icon, { directional: true });
+        arrow.innerHTML = iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
         el.append(arrow);
       }
       if (b.type === "callout") {
         const icon = make("span", C.icon, { "aria-hidden": "true", contenteditable: "false" });
-        icon.innerHTML = svg(CALLOUT_ICONS[calloutTone(b.tone) ?? "default"]);
+        const glyph = CALLOUT_ICONS[calloutTone(b.tone) ?? "default"];
+        icon.innerHTML = svg(glyph.icon, { name: glyph.iconName });
         el.append(icon);
       }
       el.append(buildText(b));
@@ -2592,7 +2606,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
           key: type,
           label: TYPES[type].label,
           hint: TYPES[type].hint,
-          icon: svg(TYPES[type].icon),
+          icon: typeIcon(type),
           meta: TYPES[type].markdown,
           group: grouped ? (TYPES[type].media ? "Media" : "Basic blocks") : undefined,
           run: () => applySlash(type),
@@ -2609,7 +2623,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
         item: {
           key: `record:${source.trigger}`,
           label,
-          icon: svg(TYPES.record.icon),
+          icon: typeIcon("record"),
           group: grouped ? "Basic blocks" : undefined,
           run: () => applySlash("record", source),
         },
@@ -2668,12 +2682,12 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const table = list.length === 1 && list[0].type === "table" ? list[0] : null;
     return [
       ...(list.some((b) => isText(b.type) || b.type === "table")
-        ? [{ key: "copy", label: code ? "Copy code" : "Copy text", icon: svg(Copy01Icon), group: "Actions", run: () => copyBlocks(ids) }]
+        ? [{ key: "copy", label: code ? "Copy code" : "Copy text", icon: svg(Copy01Icon, { name: "copy" }), group: "Actions", run: () => copyBlocks(ids) }]
         : []),
-      { key: "duplicate", label: table ? "Duplicate table" : "Duplicate", icon: svg(CopyPlusIcon), meta: "Mod+D", group: "Actions", run: () => duplicate(ids) },
-      { key: "up", label: table ? "Move table up" : "Move up", icon: svg(ArrowUp01Icon), meta: "Mod+Shift+ArrowUp", group: "Actions", run: () => moveBlocks(ids, -1) },
-      { key: "down", label: table ? "Move table down" : "Move down", icon: svg(ArrowDown01Icon), meta: "Mod+Shift+ArrowDown", group: "Actions", run: () => moveBlocks(ids, 1) },
-      { key: "delete", label: many ? `Delete ${list.length} blocks` : table ? "Delete table" : "Delete", icon: svg(Delete02Icon), meta: "Delete", group: "Actions", destructive: true, run: () => removeBlocks(ids) },
+      { key: "duplicate", label: table ? "Duplicate table" : "Duplicate", icon: svg(CopyPlusIcon, { name: "copy-plus" }), meta: "Mod+D", group: "Actions", run: () => duplicate(ids) },
+      { key: "up", label: table ? "Move table up" : "Move up", icon: svg(ArrowUp01Icon, { name: "chevron-up" }), meta: "Mod+Shift+ArrowUp", group: "Actions", run: () => moveBlocks(ids, -1) },
+      { key: "down", label: table ? "Move table down" : "Move down", icon: svg(ArrowDown01Icon, { name: "chevron-down" }), meta: "Mod+Shift+ArrowDown", group: "Actions", run: () => moveBlocks(ids, 1) },
+      { key: "delete", label: many ? `Delete ${list.length} blocks` : table ? "Delete table" : "Delete", icon: svg(Delete02Icon, { name: "trash" }), meta: "Delete", group: "Actions", destructive: true, run: () => removeBlocks(ids) },
     ];
   }
 
@@ -2684,7 +2698,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     return [
       { key: "header", label: "Header row", group: "Table", current: b.header !== false, run: () => editTable(id, { op: "header", row: b.header === false }, at) },
       { key: "header-column", label: "Header column", group: "Table", current: !!b.headerColumn, run: () => editTable(id, { op: "header", column: !b.headerColumn }, at) },
-      ...(b.widths?.some(Boolean) ? [{ key: "even", label: "Even out column widths", group: "Table", run: () => sizeColumn(id, at[1], 0, at[0]) }] : []),
+      { key: "fit", label: "Fit to width", group: "Table", run: () => fitTable(id, at) },
+      ...(b.widths?.some(Boolean) ? [{ key: "even", label: "Reset column widths", group: "Table", run: () => sizeColumn(id, at[1], 0, at[0]) }] : []),
       { key: "clear-table", label: "Clear every cell", group: "Table", run: () => clearCells(id, "table", at[0], at[1]) },
     ];
   }
@@ -2721,7 +2736,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const items = blockActions(ids);
     if (table) items.unshift(...tableWideItems(table.id, [0, 0]));
     if (code) {
-      items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon), group: "Actions", sub: "Language", run: () => undefined });
+      items.push({ key: "language", label: `Language: ${languageLabel(list[0].language)}`, icon: svg(SourceCodeIcon, { name: "code-block" }), group: "Actions", sub: "Language", run: () => undefined });
     }
     if (callout) {
       items.push({ key: "colour", label: "Colour", swatch: CALLOUT_SWATCH[calloutTone(callout.tone) ?? "default"], group: "Actions", sub: "Colour", run: () => undefined });
@@ -2729,7 +2744,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (list.length && list.every((b) => isText(b.type))) {
       for (const type of blockEditorBlockTypes) {
         if (!isText(type)) continue;
-        items.push({ key: `turn-${type}`, label: TYPES[type].label, icon: svg(TYPES[type].icon), group: "Turn into", current: list.every((b) => b.type === type), run: () => turnInto(ids, type) });
+        items.push({ key: `turn-${type}`, label: TYPES[type].label, icon: typeIcon(type), group: "Turn into", current: list.every((b) => b.type === type), run: () => turnInto(ids, type) });
       }
     }
     return items;
@@ -2747,52 +2762,56 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const headerRow = b.header !== false && row === 0;
     const canInsertRow = rows < MAX_ROWS;
     const canInsertCol = cols < MAX_COLUMNS;
-    const before = iconSvg(InsertColumnLeftIcon, { directional: true });
-    const after = iconSvg(InsertColumnRightIcon, { directional: true });
-    const earlier = iconSvg(MoveLeftIcon, { directional: true });
-    const later = iconSvg(MoveRightIcon, { directional: true });
+    const before = iconSvg(InsertColumnLeftIcon, { name: "column-insert-left", directional: true });
+    const after = iconSvg(InsertColumnRightIcon, { name: "column-insert-right", directional: true });
+    const earlier = iconSvg(MoveLeftIcon, { name: "move-left", directional: true });
+    const later = iconSvg(MoveRightIcon, { name: "move-right", directional: true });
     const width = b.widths?.[col] || cellEl(id, 0, col)?.closest("td, th")?.getBoundingClientRect().width || 160;
 
     const rowMenu: MenuItem[] = [
       // Inserting at 0 would make the new row the header. Omit it; insert-row itself is unchanged.
-      ...(!headerRow && canInsertRow ? [{ key: "row-insert-above", label: "Insert above", icon: svg(InsertRowUpIcon), run: () => insertRow(id, row, col) }] : []),
-      ...(canInsertRow ? [{ key: "row-insert-below", label: "Insert below", icon: svg(InsertRowDownIcon), run: () => insertRow(id, row + 1, col) }] : []),
-      ...(canInsertRow ? [{ key: "row-duplicate", label: "Duplicate", meta: "Mod+D", icon: svg(CopyPlusIcon), run: () => duplicateRow(id, row, col) }] : []),
-      ...(row > first ? [{ key: "row-move-up", label: "Move up", icon: svg(MoveUpIcon), run: () => moveRow(id, row, -1) }] : []),
-      ...(row >= first && row < rows - 1 ? [{ key: "row-move-down", label: "Move down", icon: svg(MoveDownIcon), run: () => moveRow(id, row, 1) }] : []),
-      { key: "row-clear", label: "Clear", icon: svg(EraserIcon), run: () => clearCells(id, "row", row, col) },
-      ...(rows > 1 ? [{ key: "row-delete", label: "Delete", icon: svg(DeleteRowIcon), destructive: true, run: () => deleteRow(id, row) }] : []),
+      ...(!headerRow && canInsertRow ? [{ key: "row-insert-above", label: "Insert above", icon: svg(InsertRowUpIcon, { name: "row-insert-top" }), run: () => insertRow(id, row, col) }] : []),
+      ...(canInsertRow ? [{ key: "row-insert-below", label: "Insert below", icon: svg(InsertRowDownIcon, { name: "row-insert-bottom" }), run: () => insertRow(id, row + 1, col) }] : []),
+      ...(canInsertRow ? [{ key: "row-duplicate", label: "Duplicate", meta: "Mod+D", icon: svg(CopyPlusIcon, { name: "copy-plus" }), run: () => duplicateRow(id, row, col) }] : []),
+      ...(row > first ? [{ key: "row-move-up", label: "Move up", icon: svg(MoveUpIcon, { name: "move-up" }), run: () => moveRow(id, row, -1) }] : []),
+      ...(row >= first && row < rows - 1 ? [{ key: "row-move-down", label: "Move down", icon: svg(MoveDownIcon, { name: "move-down" }), run: () => moveRow(id, row, 1) }] : []),
+      { key: "row-clear", label: "Clear", icon: svg(EraserIcon, { name: "eraser" }), run: () => clearCells(id, "row", row, col) },
+      ...(rows > 1 ? [{ key: "row-delete", label: "Delete", icon: svg(DeleteRowIcon, { name: "row-delete" }), destructive: true, run: () => deleteRow(id, row) }] : []),
     ];
 
     const columnMenu: MenuItem[] = [
       ...(canInsertCol ? [{ key: "column-insert-before", label: "Insert before", icon: before, run: () => insertColumn(id, col, row) }] : []),
       ...(canInsertCol ? [{ key: "column-insert-after", label: "Insert after", icon: after, run: () => insertColumn(id, col + 1, row) }] : []),
-      ...(canInsertCol ? [{ key: "column-duplicate", label: "Duplicate", icon: svg(CopyPlusIcon), run: () => duplicateColumn(id, col, row) }] : []),
+      ...(canInsertCol ? [{ key: "column-duplicate", label: "Duplicate", icon: svg(CopyPlusIcon, { name: "copy-plus" }), run: () => duplicateColumn(id, col, row) }] : []),
       ...(col > 0 ? [{ key: "column-move-earlier", label: "Move earlier", icon: earlier, run: () => moveColumn(id, col, -1) }] : []),
       ...(col < cols - 1 ? [{ key: "column-move-later", label: "Move later", icon: later, run: () => moveColumn(id, col, 1) }] : []),
-      ...(rows - first >= 2 ? [{ key: "column-sort", label: "Sort", icon: svg(SortByDown02Icon), sub: "Sort", run: () => undefined }] : []),
-      { key: "column-align", label: "Align", icon: iconSvg(TextAlignLeftIcon, { directional: true }), sub: "Align", run: () => undefined },
-      { key: "column-width", label: "Width", icon: svg(HorizontalResizeIcon), sub: "Width", run: () => undefined },
-      { key: "column-clear", label: "Clear", icon: svg(EraserIcon), run: () => clearCells(id, "column", row, col) },
-      ...(cols > 1 ? [{ key: "column-delete", label: "Delete", icon: svg(ColumnDeleteIcon), destructive: true, run: () => deleteColumn(id, col) }] : []),
+      ...(rows - first >= 2 ? [{ key: "column-sort", label: "Sort", icon: svg(SortByDown02Icon, { name: "sort" }), sub: "Sort", run: () => undefined }] : []),
+      { key: "column-align", label: "Align", icon: iconSvg(TextAlignLeftIcon, { name: "align-left", directional: true }), sub: "Align", run: () => undefined },
+      { key: "column-width", label: "Width", icon: svg(HorizontalResizeIcon, { name: "resize-horizontal" }), sub: "Width", run: () => undefined },
+      { key: "column-clear", label: "Clear", icon: svg(EraserIcon, { name: "eraser" }), run: () => clearCells(id, "column", row, col) },
+      ...(cols > 1 ? [{ key: "column-delete", label: "Delete", icon: svg(ColumnDeleteIcon, { name: "column-delete" }), destructive: true, run: () => deleteColumn(id, col) }] : []),
     ];
 
     const sortMenu: MenuItem[] = [
-      { key: "sort-asc", label: "A → Z", icon: svg(ArrangeByLettersAZIcon), run: () => editTable(id, { op: "sort", column: col, dir: "asc" }, [row, col], "Sorted A to Z") },
-      { key: "sort-desc", label: "Z → A", icon: svg(ArrangeByLettersZAIcon), run: () => editTable(id, { op: "sort", column: col, dir: "desc" }, [row, col], "Sorted Z to A") },
+      { key: "sort-asc", label: "A → Z", icon: svg(ArrangeByLettersAZIcon, { name: "sort-a-z" }), run: () => editTable(id, { op: "sort", column: col, dir: "asc" }, [row, col], "Sorted A to Z") },
+      { key: "sort-desc", label: "Z → A", icon: svg(ArrangeByLettersZAIcon, { name: "sort-z-a" }), run: () => editTable(id, { op: "sort", column: col, dir: "desc" }, [row, col], "Sorted Z to A") },
     ];
     const align = b.align?.[col] ?? "start";
-    const alignIcon = { start: TextAlignLeftIcon, center: TextAlignCenterIcon, end: TextAlignRightIcon };
+    const alignIcon = {
+      start: { icon: TextAlignLeftIcon, iconName: "align-left" },
+      center: { icon: TextAlignCenterIcon, iconName: "align-center" },
+      end: { icon: TextAlignRightIcon, iconName: "align-right" },
+    } as const;
     const alignMenu: MenuItem[] = (["start", "center", "end"] as const).map((a) => ({
       key: `align-${a}`,
       label: a === "start" ? "At the start" : a === "center" ? "Centered" : "At the end",
-      icon: iconSvg(alignIcon[a], a === "center" ? undefined : { directional: true }),
+      icon: iconSvg(alignIcon[a].icon, { name: alignIcon[a].iconName, directional: a !== "center" }),
       current: align === a,
       run: () => alignColumn(id, col, a, row),
     }));
     const widthMenu: MenuItem[] = [
-      { key: "wider", label: "Wider +24 px", icon: svg(PlusSignIcon), run: () => sizeColumn(id, col, width + 24, row) },
-      ...(width - 24 >= MIN_COLUMN ? [{ key: "narrower", label: "Narrower −24 px", icon: svg(MinusSignIcon), run: () => sizeColumn(id, col, width - 24, row) }] : []),
+      { key: "wider", label: "Wider +24 px", icon: svg(PlusSignIcon, { name: "plus" }), run: () => sizeColumn(id, col, width + 24, row) },
+      ...(width - 24 >= MIN_COLUMN ? [{ key: "narrower", label: "Narrower −24 px", icon: svg(MinusSignIcon, { name: "minus" }), run: () => sizeColumn(id, col, width - 24, row) }] : []),
     ];
 
     const submenus: Record<string, MenuItem[]> = { Row: rowMenu, Column: columnMenu, Sort: sortMenu, Align: alignMenu, Width: widthMenu };
@@ -2800,8 +2819,8 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     if (list === "row") return rowMenu;
     if (list === "column") return columnMenu;
     return [
-      { key: "row", label: "Row", icon: svg(Rows3Icon), group: "Table", sub: "Row", run: () => undefined },
-      { key: "column", label: "Column", icon: svg(Layout3ColumnIcon), group: "Table", sub: "Column", run: () => undefined },
+      { key: "row", label: "Row", icon: svg(Rows3Icon, { name: "rows" }), group: "Table", sub: "Row", run: () => undefined },
+      { key: "column", label: "Column", icon: svg(Layout3ColumnIcon, { name: "columns" }), group: "Table", sub: "Column", run: () => undefined },
       ...tableWideItems(id, at),
       ...blockActions([id]),
     ];
@@ -2859,7 +2878,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       option.append(text);
       if (item.sub) {
         const more = make("span", "ayy-combobox__meta", { "aria-hidden": "true" });
-        more.innerHTML = iconSvg(ArrowRight01Icon, { directional: true });
+        more.innerHTML = iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
         option.append(more);
       }
       if (item.meta) {
@@ -3990,7 +4009,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
     const next = blockEditorEditTable(
       b,
       edit.op === "width"
-        ? { ...edit, measured: Array.from(els.get(id)?.querySelectorAll<HTMLElement>("tr:first-child > *") ?? []).map((c) => Math.round(c.offsetWidth)) }
+        ? { ...edit, measured: Array.from(els.get(id)?.querySelector("table")?.rows[0]?.cells ?? []).map((c) => Math.round(c.offsetWidth)) }
         : edit,
     );
     if (next === b) return;
@@ -4040,7 +4059,27 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   function alignColumn(id: string, col: number, align: BlockEditorTableAlign, row = 0): void {
     editTable(id, { op: "align", column: col, align }, [row, col]);
   }
-  /** Set one column's width in px, or every column's back to even (0). */
+  /** Stretch or squeeze the columns, keeping their proportions, until the table is as wide as the block. A one-off: the widths stay as they are when the block later gets wider or narrower. */
+  function fitTable(id: string, at: [number, number]): void {
+    const el = els.get(id);
+    const wrap = el?.querySelector<HTMLElement>(`.${C.tableWrap}`);
+    const scroll = el?.querySelector<HTMLElement>(`.${C.tableScroll}`);
+    const add = wrap?.querySelector<HTMLElement>(`.${C.tableAdd}[data-axis="column"]`);
+    const current = Array.from(el?.querySelector("table")?.rows[0]?.cells ?? []).map((c) => c.offsetWidth);
+    const total = current.reduce((sum, w) => sum + w, 0);
+    if (!wrap || !scroll || !add || !total) return;
+    // What the block gives the table: its width less the + button beside it and the room for the row grips. The scroller itself is only as wide as the table, so it can't be asked.
+    const style = getComputedStyle(scroll);
+    const gap = parseFloat(getComputedStyle(wrap).columnGap) || 0;
+    // A pixel or two less than all of it, for rounding and the table's hairline, or it would scroll.
+    const room = Math.floor(wrap.clientWidth - add.offsetWidth - gap - parseFloat(style.paddingInlineStart) - parseFloat(style.paddingInlineEnd)) - 2;
+    if (room <= 0) return;
+    const widths = current.map((w) => Math.max(MIN_COLUMN, Math.round((w * room) / total)));
+    const widest = widths.indexOf(Math.max(...widths));
+    widths[widest] = Math.max(MIN_COLUMN, widths[widest] + room - widths.reduce((sum, w) => sum + w, 0));
+    editTable(id, { op: "fit", widths }, at, "Table fits the width");
+  }
+  /** Set one column's width in px, or every column's back to automatic (0). */
   function sizeColumn(id: string, col: number, width: number, row = 0): void {
     editTable(id, { op: "width", column: col, width }, [row, col]);
   }
@@ -4721,7 +4760,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       e.preventDefault();
       const table = grip.closest<HTMLElement>("table")!;
       const cols = Array.from(table.querySelectorAll<HTMLElement>(":scope > colgroup > col"));
-      const widths = Array.from(table.querySelectorAll<HTMLElement>(":scope tr:first-child > *")).map((c) => Math.round(c.offsetWidth));
+      const widths = Array.from((table as HTMLTableElement).rows[0]?.cells ?? []).map((c) => Math.round(c.offsetWidth));
       const col = Number(grip.dataset.col);
       sizing = { id: idOf(grip), col, start: e.clientX, rtl: getComputedStyle(table).direction === "rtl", widths, cols, table, width: widths[col] };
       grip.setPointerCapture?.(e.pointerId);
@@ -4795,7 +4834,7 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
   // Shift+click adds blocks to a block selection. Mouse, not pointer: only preventing mousedown keeps the caret where it was.
   function onMouseDown(e: MouseEvent): void {
     // The arrow doesn't take the caret from the line it was in (closing a toggle then knows where it was).
-    if ((e.target as HTMLElement).closest?.(`.${C.toggle}, .${C.tableAdd}`)) {
+    if ((e.target as HTMLElement).closest?.(`.${C.toggle}, .${C.tableAdd}, .${C.tableFit}`)) {
       e.preventDefault();
       return;
     }
@@ -4875,6 +4914,11 @@ export function connectBlockEditor(root: HTMLElement, options: BlockEditorOption
       const grid = gridOf(blocks[indexOf(id)]);
       if (tableAdd.dataset.axis === "row") insertRow(id, grid.length);
       else insertColumn(id, grid[0].length);
+      return;
+    }
+    if (target.closest(`.${C.tableFit}`)) {
+      const cell = lastCell?.id === id ? lastCell : null;
+      fitTable(id, [cell?.row ?? 0, cell?.col ?? 0]);
       return;
     }
     const language = target.closest<HTMLElement>("button[data-code-language]");

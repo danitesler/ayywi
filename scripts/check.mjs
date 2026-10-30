@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { cssRuleFindings, lintPaths, loadContract } from "../cli/lint.mjs";
 import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
 import { contrast, mix } from "./lib/contrast.mjs";
+import { DEFAULT_PACK, loadPacks } from "./lib/icon-packs.mjs";
 import { links as cdnLinks, PINNED, tags as cdnTags } from "./lib/readme-pins.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
@@ -517,9 +518,87 @@ try {
   fail("src/brand.ts", e.message);
 }
 
+// ---- Built-in glyphs carry their name, so an icon pack can replace them ----
+// Library source: every use of a lib/icons glyph says its name (name: "x" / name="x" / iconName: "x" on the same line).
+// Examples and the preview site (preview/src): every Hugeicons icon they import is in the registry, and every line that
+// uses one says its name, data ({ icon: X, iconName: "x" }) included, so the whole site follows the chosen pack. Every
+// <svg class="ayy-icon"> in the HTML examples whose shapes match a registry glyph has data-ayy-icon. The registry is
+// tokens/icon-packs/hugeicons.json.
+{
+  const registry = loadPacks(root).find((p) => p.id === DEFAULT_PACK).glyphs;
+  const nameOf = Object.fromEntries(Object.entries(registry).map(([name, exportName]) => [exportName, name]));
+  const needs = (exportName, name) => `${exportName} needs name "${name}" so icon packs can replace it`;
+  const listFiles = (dir) =>
+    readdirSync(join(root, dir), { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? listFiles(`${dir}/${e.name}`) : [`${dir}/${e.name}`]));
+  const componentFiles = listFiles("src/components");
+  const blank = (s) => s.replace(/[^\n]/g, " ");
+  /** The glyph names a line gives: the string literals after name= / name: / iconName:. */
+  const namesOn = (line) =>
+    new Set([...line.matchAll(/\b(?:name|iconName)\s*(?:=\{?|:)\s*([^,}>\n]*)/g)].flatMap((m) => [...m[1].matchAll(/"([^"]+)"/g)].map((s) => s[1])));
+
+  const sources = [...componentFiles, ...listFiles("preview/src")].filter((f) => /\.(ts|tsx)$/.test(f) && !f.endsWith(".d.ts"));
+  for (const file of sources) {
+    const example = file.includes("/examples/") || file.startsWith("preview/"); // the examples and the site itself
+    let source = read(file);
+    // Which glyph exports does this file bring in? Library source: from lib/icons. Examples: from the package, when the registry has them.
+    const tracked = new Set();
+    source = source.replace(/import\s+(?:type\s+)?\{([^}]*)\}\s*from\s*"([^"]+)"\s*;?/g, (whole, list, from) => {
+      if (example ? from === "@hugeicons/core-free-icons" : /\/lib\/icons$/.test(from)) {
+        for (const item of list.split(",")) {
+          const exportName = item.trim().split(/\s+as\s+/)[0];
+          if (exportName) tracked.add(exportName);
+        }
+      }
+      return blank(whole);
+    });
+    if (!tracked.size) continue;
+    source.split("\n").forEach((line, i) => {
+      if (/^\s*(\/\/|\*|\/\*)/.test(line)) return;
+      for (const m of line.matchAll(/\b[A-Z]\w*Icon\b/g)) {
+        if (!tracked.has(m[0])) continue;
+        // A type (typeof StarIcon) draws nothing.
+        if (/\btypeof\s+$/.test(line.slice(0, m.index))) continue;
+        const name = nameOf[m[0]];
+        if (!name) fail(`${file}:${i + 1}`, `${example ? "Hugeicons icon" : "built-in glyph"} ${m[0]} is not in tokens/icon-packs/hugeicons.json${example ? " — name it there and in every pack" : ""}`);
+        else if (!namesOn(line).has(name)) fail(`${file}:${i + 1}`, needs(m[0], name));
+      }
+    });
+  }
+
+  // HTML examples: match <svg class="ayy-icon"> shapes against the registry glyphs' geometry.
+  const GEOMETRY = ["d", "cx", "cy", "r", "x", "y", "width", "height", "points"];
+  const signature = (shapes) => shapes.map(([tag, attrs]) => `${tag}[${GEOMETRY.filter((k) => k in attrs).map((k) => `${k}=${attrs[k]}`).join(";")}]`).join("|");
+  const bySignature = new Map();
+  for (const [name, exportName] of Object.entries(registry)) {
+    const data = (await import(`@hugeicons/core-free-icons/${exportName}`)).default;
+    const key = signature(data.map(([tag, attrs]) => [tag, Object.fromEntries(Object.entries(attrs).map(([k, v]) => [k, String(v)]))]));
+    if (bySignature.has(key)) fail(`tokens/icon-packs/${DEFAULT_PACK}.json`, `"${name}" draws the same shapes as "${bySignature.get(key).name}"`);
+    bySignature.set(key, { name, exportName });
+  }
+  for (const file of componentFiles.filter((f) => f.includes("/examples/") && f.endsWith(".html"))) {
+    const html = read(file);
+    for (const svg of html.matchAll(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/g)) {
+      if (!/\bclass="(?:[^"]*\s)?ayy-icon(?:\s[^"]*)?"/.test(svg[1])) continue;
+      const shapes = [...svg[2].matchAll(/<(path|circle|rect|line|polyline|polygon|ellipse)\b([^>]*)>/g)].map((s) => [
+        s[1],
+        Object.fromEntries([...s[2].matchAll(/([\w:-]+)="([^"]*)"/g)].map((a) => [a[1], a[2]])),
+      ]);
+      const glyph = bySignature.get(signature(shapes));
+      if (!glyph || svg[1].includes(`data-ayy-icon="${glyph.name}"`)) continue;
+      fail(`${file}:${html.slice(0, svg.index).split("\n").length}`, needs(glyph.exportName, glyph.name));
+    }
+  }
+
+  // The preview loads every pack, so the site can wear any of them.
+  const previewPacks = read("preview/src/icon-packs.css");
+  for (const { id } of loadPacks(root)) {
+    if (!previewPacks.includes(`@import "../../src/css/icon-packs/${id}.css";`)) fail("preview/src/icon-packs.css", `doesn't import the ${id} pack`);
+  }
+}
+
 // ---- Generated files are current ----
 let generatedOk = true;
-for (const script of ["scripts/build-tokens.mjs", "scripts/build-manifest.mjs"]) {
+for (const script of ["scripts/build-tokens.mjs", "scripts/build-icon-packs.mjs", "scripts/build-manifest.mjs"]) {
   try {
     execFileSync(process.execPath, [join(root, script)], { cwd: root, env: { ...process.env, AYYWI_CHECK: "1" }, stdio: "pipe" });
   } catch (e) {

@@ -6,7 +6,7 @@ export default function Example() {
     <Card style={{ inlineSize: "min(100%, 26rem)" }}>
       <EmptyState compact role="status">
         <IconTile size="sm">
-          <Icon icon={Search01Icon} />
+          <Icon icon={Search01Icon} name="search" />
         </IconTile>
         <EmptyStateTitle>No invoices match “Acme 2025”</EmptyStateTitle>
         <EmptyStateDescription>Try a client name or an invoice number, or clear the filters.</EmptyStateDescription>

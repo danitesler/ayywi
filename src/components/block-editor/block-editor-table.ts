@@ -31,7 +31,8 @@ export type BlockEditorTableEdit =
   | { op: "move-column"; from: number; to: number }
   | { op: "clear"; rows: [number, number]; columns: [number, number] } // inclusive ranges
   | { op: "align"; column: number; align: BlockEditorTableAlign }
-  | { op: "width"; column: number; width: number; measured?: number[] } // width 0 = even out all
+  | { op: "width"; column: number; width: number; measured?: number[] } // width 0 = back to automatic widths
+  | { op: "fit"; widths: number[] } // every column's width at once, one per column
   | { op: "sort"; column: number; dir: "asc" | "desc" }
   | { op: "header"; row?: boolean; column?: boolean }
   | { op: "cells"; at: [number, number]; values: string[][] }; // fills from `at`, growing up to the limits
@@ -118,6 +119,11 @@ export function blockEditorEditTable(block: BlockEditorBlock, edit: BlockEditorT
         if (!widths.some(Boolean)) widths = edit.measured?.length ? edit.measured.map(columnWidth) : rows[0].map(() => 160);
         widths[edit.column] = columnWidth(edit.width);
       }
+      break;
+    }
+    case "fit": {
+      if (edit.widths.length !== columns) return block;
+      widths = edit.widths.map(columnWidth);
       break;
     }
     case "sort": {

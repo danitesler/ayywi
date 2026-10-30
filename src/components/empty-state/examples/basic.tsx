@@ -5,13 +5,13 @@ export default function Example() {
   return (
     <EmptyState bordered style={{ inlineSize: "min(100%, 34rem)" }}>
       <IconTile>
-        <Icon icon={Folder01Icon} />
+        <Icon icon={Folder01Icon} name="folder" />
       </IconTile>
       <EmptyStateTitle>No projects yet</EmptyStateTitle>
       <EmptyStateDescription>Projects hold your pages, forms and the people working on them. Start one from scratch or from a template.</EmptyStateDescription>
       <EmptyStateActions>
         <Button>
-          <Icon icon={Add01Icon} />
+          <Icon icon={Add01Icon} name="add" />
           New project
         </Button>
         <Button variant="ghost">Browse templates</Button>

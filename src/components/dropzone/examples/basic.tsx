@@ -13,14 +13,14 @@ export default function Example() {
       <List divided aria-label="Uploads">
         {files.map((file) => (
           <ListItem key={file.name}>
-            <Icon icon={Image01Icon} />
+            <Icon icon={Image01Icon} name="image" />
             <ListContent>
               <ListTitle>{file.name}</ListTitle>
               <ListDescription>{file.progress < 100 ? `${file.size} · uploading, ${file.progress}%` : file.size}</ListDescription>
               {file.progress < 100 && <Progress value={file.progress} size="sm" aria-label={`Uploading ${file.name}`} />}
             </ListContent>
             <Button variant="ghost" size="icon-sm" aria-label={`Remove ${file.name}`}>
-              <Icon icon={Delete02Icon} />
+              <Icon icon={Delete02Icon} name="trash" />
             </Button>
           </ListItem>
         ))}

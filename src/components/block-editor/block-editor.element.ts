@@ -32,6 +32,8 @@ export class AyyBlockEditorElement extends ElementBase {
   }
 
   disconnectedCallback(): void {
+    // Keep what the user has typed, or the next connectedCallback starts from the blocks first assigned.
+    if (this.#controller) this.#value = this.#controller.getValue();
     this.#controller?.destroy();
     this.#controller = null;
   }

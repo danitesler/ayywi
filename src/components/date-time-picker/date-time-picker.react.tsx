@@ -295,6 +295,7 @@ export const DatePickerGrid = forwardRef<HTMLDivElement, DatePickerGridProps>(fu
         <div className="ayy-date-picker-grid__presets" role="group" aria-label={presetsLabel}>
           {presets.map((preset) => {
             const date = resolveDatePickerDate(preset.date, today);
+            const outside = (min !== undefined && date < min) || (max !== undefined && date > max);
             return (
               <button
                 key={preset.date}
@@ -302,7 +303,8 @@ export const DatePickerGrid = forwardRef<HTMLDivElement, DatePickerGridProps>(fu
                 className="ayy-date-picker-grid__preset"
                 data-date={preset.date}
                 aria-pressed={date === selected}
-                onClick={() => pick(date)}
+                aria-disabled={outside || undefined}
+                onClick={() => !outside && pick(date)}
               >
                 {preset.icon}
                 <span>{preset.label}</span>
@@ -351,7 +353,7 @@ export const DatePickerGrid = forwardRef<HTMLDivElement, DatePickerGridProps>(fu
           aria-label={prevAriaLabel}
           onClick={() => showStep(-1)}
         >
-          <Icon icon={ArrowLeft01Icon} />
+          <Icon icon={ArrowLeft01Icon} name="chevron-left" />
         </button>
         <button
           type="button"
@@ -359,7 +361,7 @@ export const DatePickerGrid = forwardRef<HTMLDivElement, DatePickerGridProps>(fu
           aria-label={nextAriaLabel}
           onClick={() => showStep(1)}
         >
-          <Icon icon={ArrowRight01Icon} />
+          <Icon icon={ArrowRight01Icon} name="chevron-right" />
         </button>
       </div>
       {view === "days" ? (
@@ -584,7 +586,7 @@ export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(functio
         className={cx(inputClass({ size }), "ayy-date-picker", className)}
         {...props}
       >
-        <Icon icon={Calendar03Icon} />
+        <Icon icon={Calendar03Icon} name="calendar" />
         <span id={valueId} className="ayy-date-picker__value" data-placeholder={placeholder}>
           {text}
         </span>
@@ -878,7 +880,7 @@ export const DateRange = forwardRef<HTMLDivElement, DateRangeProps>(function Dat
                   aria-label={prevAriaLabel}
                   onClick={() => showStep(-1)}
                 >
-                  <Icon icon={ArrowLeft01Icon} />
+                  <Icon icon={ArrowLeft01Icon} name="chevron-left" />
                 </button>
               ) : (
                 <span className="ayy-date-range__nav" aria-hidden="true" style={{ visibility: "hidden" }} />
@@ -925,7 +927,7 @@ export const DateRange = forwardRef<HTMLDivElement, DateRangeProps>(function Dat
                   aria-label={nextAriaLabel}
                   onClick={() => showStep(1)}
                 >
-                  <Icon icon={ArrowRight01Icon} />
+                  <Icon icon={ArrowRight01Icon} name="chevron-right" />
                 </button>
               ) : (
                 <span className="ayy-date-range__nav" aria-hidden="true" style={{ visibility: "hidden" }} />
@@ -1175,7 +1177,7 @@ export const DateRangePicker = forwardRef<HTMLButtonElement, DateRangePickerProp
         className={cx(inputClass({ size }), "ayy-date-range-picker", className)}
         {...props}
       >
-        <Icon icon={Calendar03Icon} />
+        <Icon icon={Calendar03Icon} name="calendar" />
         <span id={valueId} className="ayy-date-range-picker__value" data-placeholder={placeholder}>
           {text}
         </span>
@@ -1637,7 +1639,7 @@ export const TimePickerTrigger = forwardRef<HTMLButtonElement, TimePickerTrigger
         className={timePickerTriggerClassName({ size, className })}
         {...props}
       >
-        <Icon icon={Clock01Icon} />
+        <Icon icon={Clock01Icon} name="clock" />
         <span id={valueId} className="ayy-time-picker-trigger__value" data-placeholder={placeholder}>
           {displayText}
         </span>
@@ -1901,7 +1903,7 @@ export const DateTimePickerTrigger = forwardRef<HTMLButtonElement, DateTimePicke
         className={dateTimePickerTriggerClassName({ size, className })}
         {...props}
       >
-        <Icon icon={Calendar03Icon} />
+        <Icon icon={Calendar03Icon} name="calendar" />
         <span id={valueId} className="ayy-date-time-picker-trigger__value" data-placeholder={placeholder}>
           {displayText}
         </span>

@@ -63,14 +63,14 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.
 - On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.
 - Put Sign out or Delete account last, in its own group, as a destructive link row.
-- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type="color" data-value="custom"> after the select), and "Aa" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
+- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type="color" data-value="custom"> after the select), and "Aa" samples for Font and Text size. Use Surface colour and Contrast Sliders with setThemeCustomization(), passing the active brand colour. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
 
 **Don't**
 - Don't add a Save button for switches and selects that apply at once; save as they change and confirm with a Toast if needed.
 - Don't put two controls in one row; split the setting.
 - Don't use a checkbox for a setting that applies at once — that's what a Switch says.
 - Don't nest a card inside the list; use another group.
-- Don't draw your own theme thumbnails, or use a Select without pictures or a button opening a popover for an appearance setting: a Select whose pictures are SettingsScreens draws each choice from its real tokens.
+- Don't draw your own theme thumbnails, or use a Select without pictures or a button opening a popover for Theme, Density, Text size, Brand colour, Corners, Font or Text direction: a Select whose pictures are SettingsScreens draws each choice from its real tokens.
 - Don't open settings in a small or side Dialog, or switch sections with Tabs; use a size="full" Dialog with the App shell's settings mode. --plain is for a sheet with a couple of quick options.
 
 ## Settings — Preferences with switches and selects
@@ -197,9 +197,9 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <section class="ayy-settings" aria-labelledby="set-account-1-html">
     <h2 id="set-account-1-html" class="ayy-settings__title">Account</h2>
     <div class="ayy-settings__list">
-      <a class="ayy-settings__row ayy-settings__link" href="#profile"><span class="ayy-settings__text"><span class="ayy-settings__label">Profile</span><span class="ayy-settings__hint">ada@example.com</span></span><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
-      <a class="ayy-settings__row ayy-settings__link" href="#language"><span class="ayy-settings__text"><span class="ayy-settings__label">Language</span></span><span class="ayy-settings__value">English</span><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
-      <a class="ayy-settings__row ayy-settings__link" href="#sync"><span class="ayy-settings__text"><span class="ayy-settings__label">Sync</span></span><span class="ayy-settings__value">On</span><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+      <a class="ayy-settings__row ayy-settings__link" href="#profile"><span class="ayy-settings__text"><span class="ayy-settings__label">Profile</span><span class="ayy-settings__hint">ada@example.com</span></span><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+      <a class="ayy-settings__row ayy-settings__link" href="#language"><span class="ayy-settings__text"><span class="ayy-settings__label">Language</span></span><span class="ayy-settings__value">English</span><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+      <a class="ayy-settings__row ayy-settings__link" href="#sync"><span class="ayy-settings__text"><span class="ayy-settings__label">Sync</span></span><span class="ayy-settings__value">On</span><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
     </div>
   </section>
   <section class="ayy-settings" aria-labelledby="set-account-2-html">
@@ -303,7 +303,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div style="inline-size:100%;max-inline-size:42rem;font-family:var(--ayy-font-body)">
   <section class="ayy-settings" aria-labelledby="set-appearance-html">
     <h2 id="set-appearance-html" class="ayy-settings__title">Appearance</h2>
-    <p class="ayy-settings__description">Theme, density, text size, brand colour, corners and font for the whole interface.</p>
+    <p class="ayy-settings__description">Theme, density, text size, brand colour, corners, font and icons for the whole interface.</p>
     <div class="ayy-settings__list">
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
@@ -316,16 +316,33 @@ HTML (also Vue/Svelte/Angular templates, server templates):
               <option value="system" selected>System</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
-              <option value="dark-contrast">Black</option>
-              <option value="light-gray">Light gray</option>
             </select>
             <span class="ayy-select__picture" data-value="system" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>
             <span class="ayy-select__picture" data-value="light" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light" aria-hidden="true"></span></span>
             <span class="ayy-select__picture" data-value="dark" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="dark-contrast" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="dark-contrast" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="light-gray" hidden="" aria-hidden="true"><span class="ayy-settings__screen" data-theme="light-gray" aria-hidden="true"></span></span>
           </div>
         </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-surface-html">Surface colour</label>
+          <p class="ayy-settings__hint" id="set-surface-hint-html">Subtle tints backgrounds with the selected brand colour.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-surface-html" aria-describedby="set-surface-hint-html">
+              <option value="neutral" selected="">Neutral</option>
+              <option value="subtle">Subtle</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-contrast-html">Contrast</label>
+          <p class="ayy-settings__hint" id="set-contrast-hint-html">Higher contrast moves backgrounds closer to black or white.</p>
+        </div>
+        <div class="ayy-settings__control"><input type="range" class="ayy-slider" id="set-contrast-html" aria-describedby="set-contrast-hint-html" min="0" max="100" value="0" style="--ayy-value:0" /></div>
       </div>
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
@@ -434,6 +451,28 @@ HTML (also Vue/Svelte/Angular templates, server templates):
           </div>
         </div>
       </div>
+      <div class="ayy-settings__row">
+        <div class="ayy-settings__text">
+          <label class="ayy-settings__label" for="set-icons-html">Icons</label>
+          <p class="ayy-settings__hint" id="set-icons-hint-html">Swaps every icon the interface draws for the same icon in another set.</p>
+        </div>
+        <div class="ayy-settings__control">
+          <div class="ayy-select">
+            <select class="ayy-select__control" id="set-icons-html" aria-describedby="set-icons-hint-html">
+              <option value="hugeicons" selected>Hugeicons</option>
+              <option value="feather">Feather</option>
+              <option value="lucide">Lucide</option>
+              <option value="material-symbols">Material Symbols</option>
+              <option value="tabler">Tabler Icons</option>
+            </select>
+            <span class="ayy-select__picture" data-value="hugeicons" aria-hidden="true"><span data-ayy-icons="hugeicons"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="feather" hidden="" aria-hidden="true"><span data-ayy-icons="feather"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="lucide" hidden="" aria-hidden="true"><span data-ayy-icons="lucide"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="material-symbols" hidden="" aria-hidden="true"><span data-ayy-icons="material-symbols"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="tabler" hidden="" aria-hidden="true"><span data-ayy-icons="tabler"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
   <section class="ayy-settings" aria-labelledby="set-a11y-html">
@@ -496,15 +535,14 @@ React:
 
 ```tsx
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { BRAND_SHAPES, openSettingsColor, setBrand, setDensity, setTheme, tokens, type BrandShape, type DensityMode, type ThemeMode } from "@danitesler/ayywi";
-import { Select, Settings, SettingsLink, SettingsRow, SettingsScreen, Switch } from "@danitesler/ayywi/react";
+import { BODY_FONT_ADJUST, BRAND_SHAPES, iconPackInfo, iconPacks, openSettingsColor, setBrand, setDensity, setIconPack, setTheme, setThemeCustomization, tokens, type BrandShape, type DensityMode, type IconPackName, type SurfaceStyle, type ThemeMode } from "@danitesler/ayywi";
+import { Icon, Select, Settings, SettingsLink, SettingsRow, SettingsScreen, Slider, Switch } from "@danitesler/ayywi/react";
+import { StarIcon } from "@hugeicons/core-free-icons";
 
 const THEMES: { value: ThemeMode; label: string }[] = [
   { value: "system", label: "System" },
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
-  { value: "dark-contrast", label: "Black" },
-  { value: "light-gray", label: "Light gray" },
 ];
 
 const DENSITIES: { value: DensityMode; label: string }[] = [
@@ -578,6 +616,12 @@ const SHAPE_PICTURES = picturesOf(SHAPES, (s) => (
 ));
 const FONT_PICTURES = picturesOf(FONTS, (f) => <span style={{ fontFamily: f.family }}>Aa</span>);
 const DIRECTION_PICTURES = picturesOf(DIRECTIONS, (d) => <DirectionScreen direction={d.value} />);
+// A star in each pack. A pack needs its CSS on the page (@danitesler/ayywi/icons/<pack>.css); without it Hugeicons stay.
+const ICON_PICTURES = picturesOf(iconPacks.map((pack) => ({ value: pack })), (p) => (
+  <span data-ayy-icons={p.value}>
+    <Icon icon={StarIcon} name="star" size="sm" />
+  </span>
+));
 
 const LANGUAGES = [
   { value: "en", label: "English", dir: "ltr" },
@@ -589,11 +633,14 @@ const LANGUAGES = [
 const DEFAULTS = {
   theme: "system" as ThemeMode,
   density: "auto" as DensityMode,
+  surface: "neutral" as SurfaceStyle,
+  contrast: 0,
   textSize: 100,
   colour: "default",
   custom: seed("palette.violet.58"),
   shape: "pill" as BrandShape,
   font: "default",
+  icons: "hugeicons" as IconPackName,
   motion: false,
   language: "en",
   direction: "auto",
@@ -602,12 +649,15 @@ const DEFAULTS = {
 export default function Example() {
   const root = useRef<HTMLDivElement>(null);
   const [theme, setThemeState] = useState<ThemeMode>(DEFAULTS.theme);
+  const [surface, setSurface] = useState<SurfaceStyle>(DEFAULTS.surface);
+  const [contrast, setContrast] = useState(DEFAULTS.contrast);
   const [density, setDensityState] = useState<DensityMode>(DEFAULTS.density);
   const [textSize, setTextSize] = useState<number>(DEFAULTS.textSize);
   const [colour, setColour] = useState<string>(DEFAULTS.colour);
   const [custom, setCustom] = useState<string>(DEFAULTS.custom);
   const [shape, setShape] = useState<BrandShape>(DEFAULTS.shape);
   const [font, setFont] = useState<string>(DEFAULTS.font);
+  const [icons, setIcons] = useState<IconPackName>(DEFAULTS.icons);
   const [motion, setMotion] = useState<boolean>(DEFAULTS.motion);
   const [language, setLanguage] = useState<string>(DEFAULTS.language);
   const [direction, setDirection] = useState<string>(DEFAULTS.direction);
@@ -622,17 +672,26 @@ export default function Example() {
     const color = colour === "custom" ? custom : picked ? seed(picked.token) : null;
     if (color) setBrand({ name: "settings-example", color, shape }, el);
     else setBrand(null, el);
+    setThemeCustomization(surface === "neutral" && contrast === 0 ? null : { color: color ?? tokens["palette.neutral.58"].value, surface, contrast }, el, color);
     const radius = BRAND_SHAPES[shape];
     el.style.setProperty("--ayy-radius-control", radius.control);
     el.style.setProperty("--ayy-radius-card", radius.card);
     el.style.setProperty("--ayy-radius-button", radius.button);
     const family = FONTS.find((f) => f.value === font);
-    if (font === "default" || !family) el.style.removeProperty("--ayy-font-body");
-    else el.style.setProperty("--ayy-font-body", family.family);
+    if (font === "default" || !family) {
+      el.style.removeProperty("--ayy-font-body");
+      el.style.removeProperty("--ayy-font-body-adjust");
+    } else {
+      // Scaled to Sora's x-height, so switching font doesn't make the text look smaller.
+      el.style.setProperty("--ayy-font-body", family.family);
+      el.style.setProperty("--ayy-font-body-adjust", String(BODY_FONT_ADJUST));
+    }
+    setIconPack(icons, el, { persist: false });
     const lang = LANGUAGES.find((l) => l.value === language);
     el.lang = language;
     el.dir = direction === "auto" ? (lang?.dir ?? "ltr") : direction;
-  }, [theme, density, colour, custom, shape, font, language, direction]);
+  }, [theme, density, colour, custom, shape, font, icons, language, direction, surface, contrast]);
+  useEffect(() => { const el = root.current; return () => { if (el) setThemeCustomization(null, el); }; }, []);
 
   // Choosing Custom (again) opens the colour picker under the select, once the list has closed.
   const colourSelect = useRef<HTMLSelectElement>(null);
@@ -645,7 +704,7 @@ export default function Example() {
 
   return (
     <div ref={root} style={{ inlineSize: "100%", maxInlineSize: "42rem", fontFamily: "var(--ayy-font-body)" }}>
-      <Settings title="Appearance" description="Theme, density, text size, brand colour, corners and font for the whole interface.">
+      <Settings title="Appearance" description="Theme, density, text size, brand colour, corners, font and icons for the whole interface.">
         <SettingsRow label="Theme" htmlFor="set-theme" hint="System follows your device's light or dark setting.">
           <Select
             id="set-theme"
@@ -660,6 +719,15 @@ export default function Example() {
               </option>
             ))}
           </Select>
+        </SettingsRow>
+        <SettingsRow label="Surface colour" htmlFor="set-surface" hint="Subtle tints backgrounds with the selected brand colour.">
+          <Select id="set-surface" aria-describedby="set-surface-hint" value={surface} onChange={(event) => setSurface(event.currentTarget.value as SurfaceStyle)}>
+            <option value="neutral">Neutral</option>
+            <option value="subtle">Subtle</option>
+          </Select>
+        </SettingsRow>
+        <SettingsRow label="Contrast" htmlFor="set-contrast" hint="Higher contrast moves backgrounds closer to black or white.">
+          <Slider id="set-contrast" aria-describedby="set-contrast-hint" min={0} max={100} value={contrast} onValueChange={setContrast} />
         </SettingsRow>
         <SettingsRow label="Density" htmlFor="set-density" hint="Auto: compact with a mouse, touch on a touch screen.">
           <Select
@@ -732,6 +800,21 @@ export default function Example() {
             ))}
           </Select>
         </SettingsRow>
+        <SettingsRow label="Icons" htmlFor="set-icons" hint="Swaps every icon the interface draws for the same icon in another set.">
+          <Select
+            id="set-icons"
+            aria-describedby="set-icons-hint"
+            value={icons}
+            onChange={(event) => setIcons(event.currentTarget.value as IconPackName)}
+            pictures={ICON_PICTURES}
+          >
+            {iconPacks.map((pack) => (
+              <option key={pack} value={pack}>
+                {iconPackInfo[pack].label}
+              </option>
+            ))}
+          </Select>
+        </SettingsRow>
       </Settings>
       <Settings title="Accessibility and language">
         <SettingsRow label="Reduce motion" htmlFor="set-motion" hint="Turns animations off, whatever the device is set to.">
@@ -781,11 +864,14 @@ export default function Example() {
           onClick={() => {
             setThemeState(DEFAULTS.theme);
             setDensityState(DEFAULTS.density);
+            setSurface(DEFAULTS.surface);
+            setContrast(DEFAULTS.contrast);
             setTextSize(DEFAULTS.textSize);
             setColour(DEFAULTS.colour);
             setCustom(DEFAULTS.custom);
             setShape(DEFAULTS.shape);
             setFont(DEFAULTS.font);
+            setIcons(DEFAULTS.icons);
             setMotion(DEFAULTS.motion);
             setLanguage(DEFAULTS.language);
             setDirection(DEFAULTS.direction);

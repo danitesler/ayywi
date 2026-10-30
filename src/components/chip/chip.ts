@@ -20,4 +20,4 @@ export const chipCountClass = "ayy-chip__count";
 export const chipRemoveClass = "ayy-chip__remove";
 
 /** The cross inside .ayy-chip__remove, as SVG markup (Hugeicons Cancel01). */
-export const chipRemoveIcon = /* @__PURE__ */ iconSvg(Cancel01Icon);
+export const chipRemoveIcon = /* @__PURE__ */ iconSvg(Cancel01Icon, { name: "x" });

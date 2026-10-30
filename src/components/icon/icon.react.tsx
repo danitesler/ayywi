@@ -1,13 +1,16 @@
 import { createElement, forwardRef, type SVGAttributes } from "react";
+import type { IconName } from "../../icon-packs";
 import { iconClass, type IconData, type IconSize } from "./icon";
 
-export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "strokeWidth"> {
+export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "strokeWidth" | "name"> {
   /** Icon data, e.g. `import { Search01Icon } from "@hugeicons/core-free-icons"`. */
   icon: IconData;
   /** "auto" (default) follows the text size; sm, md, lg and xl are 16, 20, 24 and 32px. */
   size?: IconSize;
   /** The icon points along the reading direction (an arrow): mirror it in right-to-left text. */
   directional?: boolean;
+  /** The glyph's name (`"x"`, `"search"`), written as `data-ayy-icon`. An icon pack replaces the glyphs that carry one. Leave it off for your own icons. */
+  name?: IconName;
   /** Accessible name. Without one the icon is decorative and hidden from screen readers. */
   label?: string;
   /** Stroke width of every stroked shape. Hugeicons draw at 1.5. */
@@ -16,13 +19,14 @@ export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "strokeWid
 
 /** A Hugeicons icon (or any icon in the same format) as inline SVG. It takes the text colour. */
 export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
-  { icon, size, directional, label, strokeWidth, className, ...props },
+  { icon, size, directional, name, label, strokeWidth, className, ...props },
   ref,
 ) {
   return (
     <svg
       ref={ref}
       className={iconClass({ size, directional, className })}
+      data-ayy-icon={name}
       viewBox="0 0 24 24"
       fill="none"
       role={label ? "img" : undefined}

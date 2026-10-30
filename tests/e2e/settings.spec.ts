@@ -142,12 +142,20 @@ test("appearance settings: selects with pictures, and picking updates the contai
   await expect(shownPicture(theme).locator(".ayy-settings__screen")).toHaveCount(2);
   await theme.click();
   const themeList = page.getByRole("listbox", { name: "Theme" });
-  await expect(themeList.locator(".ayy-select__picture")).toHaveCount(5);
+  await expect(themeList.locator(".ayy-select__picture")).toHaveCount(3);
   await themeList.getByRole("option", { name: "Light", exact: true }).click();
   await expect(themeList).toBeHidden();
   await expect(app.locator("[data-theme='light']").first()).toBeVisible();
   await expect(shownPicture(theme).locator(".ayy-settings__screen")).toHaveAttribute("data-theme", "light");
 
+  // Surface style and contrast apply to the example, and remain bounded.
+  const surface = app.getByLabel("Surface colour", { exact: true });
+  await surface.selectOption("subtle");
+  await expect(surface).toHaveValue("subtle");
+  const contrast = app.getByLabel("Contrast", { exact: true });
+  await contrast.press("End");
+  await expect(contrast).toHaveValue("100");
+  await expect(app.locator("[data-ayy-custom-theme]" )).toHaveCount(1);
   // Density draws rows and updates data-density.
   const density = app.getByLabel("Density", { exact: true });
   await density.click();
@@ -199,6 +207,7 @@ test("appearance settings: selects with pictures, and picking updates the contai
   await expect(app.locator("[data-motion='reduce']")).toBeVisible();
   await app.getByRole("button", { name: /Reset appearance/ }).click();
   await expect(app.locator("[data-motion='reduce']")).toHaveCount(0);
+  await expect(app.locator("[data-ayy-custom-theme]")).toHaveCount(0);
 });
 
 test("appearance settings in plain HTML: pictures follow the choice and Custom opens the colour picker", async ({ page }) => {

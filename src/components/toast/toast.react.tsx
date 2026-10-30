@@ -72,10 +72,10 @@ export const NotificationToast = forwardRef<HTMLDivElement, NotificationToastPro
   );
 
   const defaultIcon = icon ?? (
-    variant === "success" ? <Icon icon={CheckmarkCircle02Icon} /> :
-    variant === "warning" ? <Icon icon={Alert02Icon} /> :
-    variant === "destructive" ? <Icon icon={CancelCircleIcon} /> :
-    variant === "info" ? <Icon icon={InformationCircleIcon} /> : null
+    variant === "success" ? <Icon icon={CheckmarkCircle02Icon} name="circle-check" /> :
+    variant === "warning" ? <Icon icon={Alert02Icon} name="triangle-alert" /> :
+    variant === "destructive" ? <Icon icon={CancelCircleIcon} name="circle-x" /> :
+    variant === "info" ? <Icon icon={InformationCircleIcon} name="info" /> : null
   );
 
   const handleCopy = (e: MouseEvent) => {
@@ -87,11 +87,12 @@ export const NotificationToast = forwardRef<HTMLDivElement, NotificationToastPro
           ? `${title}\n${description}`
           : title
         : "");
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText && text) {
-      navigator.clipboard.writeText(text).catch(() => {});
-    }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText || !text) return;
+    // Only say "Copied" once the write has gone through; otherwise the button stays as it was, ready to try again.
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }, () => {});
   };
 
   return (
@@ -123,7 +124,7 @@ export const NotificationToast = forwardRef<HTMLDivElement, NotificationToastPro
             data-copied={copied ? "" : undefined}
             onClick={handleCopy}
           >
-            <Icon icon={copied ? Tick02Icon : Copy01Icon} />
+            <Icon icon={copied ? Tick02Icon : Copy01Icon} name={copied ? "check" : "copy"} />
           </button>
         </Tooltip>
       )}
@@ -254,7 +255,7 @@ export const CardToastClose = forwardRef<HTMLButtonElement, CardToastCloseProps>
 ) {
   const button = (
     <button ref={ref} type="button" className={cx("ayy-toast__close", className)} aria-label={label} {...props}>
-      <Icon icon={Cancel01Icon} />
+      <Icon icon={Cancel01Icon} name="x" />
     </button>
   );
   return tooltip ? (

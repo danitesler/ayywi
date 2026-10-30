@@ -114,7 +114,7 @@ export const ActionBarClose = forwardRef<HTMLButtonElement, ActionBarCloseProps>
       className={cx(actionBarCloseClass, className)}
       {...props}
     >
-      {children ?? <Icon icon={Cancel01Icon} />}
+      {children ?? <Icon icon={Cancel01Icon} name="x" />}
     </button>
   );
   if (hasParentTooltip || tooltip === false) return button;

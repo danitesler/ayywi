@@ -75,26 +75,26 @@ export default function Example({
         <p className="ayy-muted">Three deploys went out this morning. Nothing needs you.</p>
       </div>
       <BottomNav size={size} compact={compact} iconOnly={iconOnly}>
-        <BottomNavLink href="#home" icon={<Icon icon={DashboardSquare01Icon} />} current>
+        <BottomNavLink href="#home" icon={<Icon icon={DashboardSquare01Icon} name="layout-dashboard" />} current>
           Home
         </BottomNavLink>
         {moreItems ? (
-          <BottomNavLink href="#search" icon={<Icon icon={Search01Icon} />}>
+          <BottomNavLink href="#search" icon={<Icon icon={Search01Icon} name="search" />}>
             Search
           </BottomNavLink>
         ) : null}
-        <BottomNavLink href="#projects" icon={<Icon icon={Folder01Icon} />}>
+        <BottomNavLink href="#projects" icon={<Icon icon={Folder01Icon} name="folder" />}>
           Projects
         </BottomNavLink>
         {moreItems ? (
-          <BottomNavLink href="#tasks" icon={<Icon icon={Task01Icon} />}>
+          <BottomNavLink href="#tasks" icon={<Icon icon={Task01Icon} name="clipboard-list" />}>
             Tasks
           </BottomNavLink>
         ) : null}
-        <BottomNavLink href="#inbox" icon={<Icon icon={Notification03Icon} />}>
+        <BottomNavLink href="#inbox" icon={<Icon icon={Notification03Icon} name="bell-2" />}>
           Inbox
         </BottomNavLink>
-        <BottomNavLink href="#account" icon={<Icon icon={UserIcon} />}>
+        <BottomNavLink href="#account" icon={<Icon icon={UserIcon} name="user" />}>
           Account
         </BottomNavLink>
       </BottomNav>

@@ -16,7 +16,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
-import type { FloatingAlign, FloatingSide, PlaceBoundary } from "../../lib/position";
+import { supportsPopover, type FloatingAlign, type FloatingSide, type PlaceBoundary } from "../../lib/position";
 import { mergeRefs } from "../../lib/refs";
 import { Button, type ButtonProps } from "../button/button.react";
 import { Shortcut } from "../shortcut/shortcut.react";
@@ -338,16 +338,49 @@ export function DropdownMenuSub({
     [controlled, onOpenChange],
   );
 
+  const setOpenRef = useRef(setOpen);
+  setOpenRef.current = setOpen;
+  const openRef = useRef(open);
+  openRef.current = open;
+  const native = supportsPopover();
+
+  // A flyout reports its own open state; an inline group (and a browser without popovers) reports it through aria-expanded.
   useEffect(() => {
     const trigger = subTriggerRef.current;
+    const panel = subContentRef.current;
     if (!trigger) return;
+    if (!inline && native && panel) {
+      const onToggle = (event: Event) => {
+        const next = (event as ToggleEvent).newState === "open";
+        if (next !== openRef.current) setOpenRef.current(next);
+      };
+      panel.addEventListener("toggle", onToggle);
+      return () => panel.removeEventListener("toggle", onToggle);
+    }
     const observer = new MutationObserver(() => {
       const isExpanded = trigger.getAttribute("aria-expanded") === "true";
       setOpen(isExpanded);
     });
     observer.observe(trigger, { attributes: true, attributeFilter: ["aria-expanded"] });
     return () => observer.disconnect();
-  }, [setOpen]);
+  }, [setOpen, inline, native]);
+
+  // The open prop (or defaultOpen) shows and hides the flyout. A flyout can only show next to its row, so it waits for the parent menu.
+  useEffect(() => {
+    const trigger = subTriggerRef.current;
+    const panel = subContentRef.current;
+    if (inline || !native || !trigger || !panel) return;
+    const parent = trigger.closest<HTMLElement>(".ayy-menu");
+    const apply = () => {
+      const shown = panel.matches(":popover-open");
+      if (openRef.current === shown) return;
+      if (!openRef.current) panel.hidePopover();
+      else if (!parent || !parent.hasAttribute("popover") || parent.matches(":popover-open")) panel.showPopover();
+    };
+    apply();
+    parent?.addEventListener("toggle", apply);
+    return () => parent?.removeEventListener("toggle", apply);
+  }, [open, inline, native]);
 
   return (
     <SubmenuContext.Provider value={{ open, setOpen, subTriggerRef, subContentRef, inline, subContentId }}>

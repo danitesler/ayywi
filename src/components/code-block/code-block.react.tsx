@@ -157,7 +157,7 @@ export const CodeBlockSelector = forwardRef<HTMLButtonElement, CodeBlockSelector
           {...props}
         >
           <span>{displayLabel}</span>
-          <Icon icon={ArrowDown01Icon} className={codeBlockChevronClass()} />
+          <Icon icon={ArrowDown01Icon} name="chevron-down" className={codeBlockChevronClass()} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className={codeBlockMenuClass()}>
@@ -255,7 +255,7 @@ export const CodeBlockCopy = forwardRef<HTMLButtonElement, CodeBlockCopyProps>(f
       onClick={handleCopy}
       {...props}
     >
-      {children ?? <Icon icon={copied ? Tick02Icon : Copy01Icon} />}
+      {children ?? <Icon icon={copied ? Tick02Icon : Copy01Icon} name={copied ? "check" : "copy"} />}
     </button>
   );
 });

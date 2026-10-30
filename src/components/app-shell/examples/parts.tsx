@@ -51,37 +51,37 @@ export default function Example() {
           <AppShellToggle />
           <AppShellBrand href="#home">Northwind</AppShellBrand>
           <Button variant="ghost" size="icon" aria-label="Search">
-            <Icon icon={Search01Icon} />
+            <Icon icon={Search01Icon} name="search" />
           </Button>
         </AppShellBar>
         <AppShellSidebar>
           <AppShellHead>
             <AppShellBrand href="#home">
-              <Icon icon={Layers01Icon} />
+              <Icon icon={Layers01Icon} name="layers" />
               <span className="ayy-app-shell__logotype">northwind</span>
             </AppShellBrand>
             <AppShellToggle>
-              <Icon icon={SidebarLeftIcon} className="ayy-icon--directional" />
+              <Icon icon={SidebarLeftIcon} name="panel-left" className="ayy-icon--directional" />
             </AppShellToggle>
           </AppShellHead>
           <AppShellNav aria-label="Workspace">
             <AppShellGroup label="Workspace">
               <AppShellItem>
                 <AppShellLink className="ayy-app-shell__link--action" href="#new">
-                  <Icon icon={Add01Icon} />
+                  <Icon icon={Add01Icon} name="add" />
                   <span>New</span>
                 </AppShellLink>
               </AppShellItem>
               <AppShellItem className="ayy-app-shell__row">
                 <AppShellLink href="#projects">
-                  <Icon icon={Folder01Icon} />
+                  <Icon icon={Folder01Icon} name="folder" />
                   <span>Projects</span>
                   <Badge variant="muted">Beta</Badge>
                 </AppShellLink>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <AppShellMore aria-label="Project options">
-                      <Icon icon={MoreHorizontalIcon} />
+                      <Icon icon={MoreHorizontalIcon} name="ellipsis" />
                     </AppShellMore>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -94,7 +94,7 @@ export default function Example() {
               </AppShellItem>
               <AppShellItem>
                 <AppShellLink current href="#artifacts">
-                  <Icon icon={ChartBubble01Icon} />
+                  <Icon icon={ChartBubble01Icon} name="chart-scatter" />
                   <span>Artifacts</span>
                 </AppShellLink>
                 <AppShellSublist aria-label="Artifact views">
@@ -125,7 +125,7 @@ export default function Example() {
           </AppShellNav>
           <AppShellFooter>
             <AppShellLink href="#settings" title="Settings">
-              <Icon icon={Settings02Icon} />
+              <Icon icon={Settings02Icon} name="cog" />
               <span>Settings</span>
             </AppShellLink>
           </AppShellFooter>

@@ -9,13 +9,13 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
 - Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
-- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
+- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setIconPack, getIconPack, THEME_PRESETS, setThemeCustomization, createThemeCustomization, createThemeText, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
 
 ## Installing and updating
 
-- Install from npm: `pnpm add @danitesler/ayywi` (or npm/yarn), then `npx @danitesler/ayywi init`. Import only from "@danitesler/ayywi" and its subpaths ("/react", "/elements", "/css", "/fonts.css", "/brands/*", "/fonts/*"). Never from "ayywi": that name is only the CLI. Never reach into node_modules/@danitesler/ayywi/dist by path.
+- Install from npm: `pnpm add @danitesler/ayywi` (or npm/yarn), then `npx @danitesler/ayywi init`. Import only from "@danitesler/ayywi" and its subpaths ("/react", "/elements", "/css", "/fonts.css", "/brands/*", "/fonts/*", "/icons/*"). Never from "ayywi": that name is only the CLI. Never reach into node_modules/@danitesler/ayywi/dist by path.
 - Never vendor ayywi: no copy of its dist/ in the repo, no .tgz, no file: or link: dependency in a committed package.json. A fresh clone must install with the package manager alone.
 - To change ayywi while building an app, point the app's bundler at a local ayywi checkout only for that session (a Vite resolve.alias read from an AYYWI_DIR environment variable, with resolve.dedupe for react and react-dom), and run `pnpm build` in the checkout after each change. Never commit that link.
 - Upgrade with `pnpm up @danitesler/ayywi`, then `npx @danitesler/ayywi init --force` so the skill, rules and AGENTS.md section match the installed version, and read the CHANGELOG between the two versions.
@@ -45,7 +45,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Every <img> gets width and height (its real size) so nothing jumps while it loads. Product screenshots go in a Frame. Draw small product visuals as SVG with tokens instead of images with text baked in.
 - No :dir() selectors — minifiers rewrite them into :lang() lists that ignore dir="rtl". Logical properties make direction checks unnecessary.
 - Body text must fall back to system fonts — never remove the system-ui stack from --ayy-font-body (CJK/Arabic/Cyrillic rely on it).
-- Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set. Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
+- Icons come from Hugeicons (@hugeicons/core-free-icons): <Icon icon={Search01Icon} /> in React, iconSvg(Search01Icon) or the pasted SVG with class="ayy-icon" elsewhere. Don't add another icon set: to draw ayywi's own icons, and the common ones you name, in Lucide, Tabler, Material Symbols or Feather, import @danitesler/ayywi/icons/<pack>.css and call setIconPack() (or set data-ayy-icons). Icons are decorative (aria-hidden) unless you give them a label; arrows that point along the reading direction take directional.
 - In React import from "@danitesler/ayywi/react"; in other frameworks and plain HTML use the class names, the class helpers from "@danitesler/ayywi" (buttonClass…) and the custom elements from "@danitesler/ayywi/elements" (<ayy-app-shell>, <ayy-navbar>, <ayy-tabs>, <ayy-combobox>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-toolbar>, <ayy-action-bar>, <ayy-shortcut-recorder>, <ayy-command>, <ayy-tag-input>, <ayy-record-picker>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-transfer-list>, <ayy-inline-edit>, <ayy-swipe>, <ayy-drag-drop>, <ayy-dialog>, <ayy-menu>, <ayy-popover>, <ayy-tooltip>, <ayy-toc>, <ayy-tree>, <ayy-carousel>, <ayy-table>, <ayy-grid>).
 - Run `npx @danitesler/ayywi lint` after UI changes and fix every finding it reports, warnings included: raw-control, bare-control, clickable-element and rebuilt-component mean an ayywi component was skipped.
 
@@ -131,7 +131,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 3. Sections: the open section's AppShellLink has current (aria-current="page"); a link click switches the section in place. On wide screens settings open on the first section; on phones on the section list.
 4. Section: the main starts with a TopBar (title = the section's name, its <h1>; onBack returns to the section list, backLabel = "Settings"; its back button shows on phones only), then one Settings group per topic (title, optional description) holding SettingsRows (a Switch, Select, SegmentedControl, Shortcut recorder or Button at the end) and SettingsLinks (rows that open a sub-page or run an action). The content column is --ayy-size-measure wide, centred; the shell does that.
 5. Saving: switches, selects and segmented controls apply at once; confirm with a Toast only when the effect isn't visible. Free text (a name, a folder path) saves on blur or Enter. Anything that must be submitted together (a password change) is a Dialog opened from a SettingsLink.
-6. Appearance: an Appearance section uses the same controls in every product (see settings/appearance). Theme, Density, Text size, Brand colour, Corners, Font and Text direction are each a Select with pictures (one per option, the chosen one before the text, each in the list): SettingsScreens for Theme (System, Light, Dark, Black, Light gray; setTheme()), Corners (each shape's radii) and Text direction (Auto, which follows the language, Left to right, Right to left; dir on the screen and on the app); SettingsScreen variant="rows" for Density (Auto, Compact, Comfortable, Touch; setDensity()); SettingsScreen variant="brand" with --ayy-color-primary for Brand colour (Default, a few palette colours and Custom, which opens the colour picker on a hidden <input type="color" data-value="custom"> after the select; setBrand()); and "Aa" samples for Font and for Text size (75% to 150%, setting the root font size). Reduce motion: a Switch that sets data-motion="reduce". Language: a Select. Reset appearance: a destructive SettingsLink in its own group.
+6. Appearance: an Appearance section uses the same controls in every product (see settings/appearance). Theme, Density, Text size, Brand colour, Corners, Font and Text direction are each a Select with pictures (one per option, the chosen one before the text, each in the list): SettingsScreens for Theme (System, Light, Dark; setTheme()), Corners (each shape's radii) and Text direction (Auto, which follows the language, Left to right, Right to left; dir on the screen and on the app); SettingsScreen variant="rows" for Density (Auto, Compact, Comfortable, Touch; setDensity()); SettingsScreen variant="brand" with --ayy-color-primary for Brand colour (Default, a few palette colours and Custom, which opens the colour picker on a hidden <input type="color" data-value="custom"> after the select; setBrand()); and "Aa" samples for Font and for Text size (75% to 150%, setting the root font size). Surface colour: a 0–100 Slider from neutral to stronger tint, a colour picker and a 0–100 contrast Slider; optional text colour uses a colour picker. Apply them with setThemeCustomization() and pass the active brand colour (or null for mono). Apps may offer THEME_PRESETS as ready-made looks with Custom last. Reduce motion: a Switch that sets data-motion="reduce". Language: a Select. Reset appearance: a destructive SettingsLink in its own group.
 7. Danger: Sign out, Reset and Delete account go last, in their own Settings group, as destructive SettingsLinks; destructive ones confirm in a Dialog.
 8. Leave: the dialog's close button, Esc or a click on the backdrop. The dialog puts focus back on the Settings link the user came from.
 
@@ -242,7 +242,7 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 - **direction**: All layout uses logical properties; set dir="rtl" on any ancestor and components mirror. Icons that point along the reading direction (arrows) need directional (ayy-icon--directional) to mirror too.
 - **elements**: Custom elements are light DOM (no shadow root): write the same ayy- markup inside them; they add behaviour. Vue: compilerOptions.isCustomElement = (t) => t.startsWith("ayy-"); Angular: CUSTOM_ELEMENTS_SCHEMA.
 - **highContrast**: Every stateful component has a forced-colors (Windows High Contrast) style using system colours.
-- **icons**: Hugeicons is the icon library: install @hugeicons/core-free-icons (an optional peer; ayywi renders its data, so there's still no runtime dependency). React: <Icon icon={Search01Icon} />. Elsewhere: iconSvg(Search01Icon), or the SVG pasted from hugeicons.com with class="ayy-icon" and no fixed colour attributes. Icons use currentColor and 1.25em (the text size); size sm/md/lg/xl is 16/20/24/32px (--ayy-size-icon-*).
+- **icons**: Hugeicons is the icon library: install @hugeicons/core-free-icons (an optional peer; ayywi renders its data, so there's still no runtime dependency). React: <Icon icon={Search01Icon} />. Elsewhere: iconSvg(Search01Icon), or the SVG pasted from hugeicons.com with class="ayy-icon" and no fixed colour attributes. Icons use currentColor and 1.25em (the text size); size sm/md/lg/xl is 16/20/24/32px (--ayy-size-icon-*). Icon packs: the icons ayywi draws itself, and any icon given a name (<Icon icon={…} name="search" />, iconSvg(icon, { name })), can be drawn by Lucide, Tabler Icons, Material Symbols or Feather instead: import "@danitesler/ayywi/icons/<pack>.css" and call setIconPack(pack) (or set data-ayy-icons on any element; the nearest wins). Packs keep their own stroke, so strokeWidth only affects Hugeicons; a glyph a pack lacks stays Hugeicons.
 
 ## Global attributes
 
@@ -250,6 +250,8 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 - `data-density`: "compact" | "comfortable" | "touch" — control sizes for this subtree. None = compact, or touch on touch-first devices.
 - `data-brand`: A brand's name — its colours, corners and fonts for this subtree, in every theme. Needs the brand's stylesheet (@danitesler/ayywi/brands/<name>.css, or brandCss() / `npx @danitesler/ayywi brand` output); setBrand() sets both. None = ayywi's monochrome default.
 - `dir`: "rtl" mirrors every component (logical properties throughout).
+- `data-ayy-icons`: An icon pack's id ("lucide" | "tabler" | "material-symbols" | "feather" | "hugeicons") — draws the named icons (the ones ayywi itself uses: close, chevrons, toast and status icons…, and common app icons such as settings or user) in that pack for this subtree; the nearest one wins. Needs that pack's stylesheet (@danitesler/ayywi/icons/<id>.css); "hugeicons" only matters inside another pack's subtree and needs icons/hugeicons.css. setIconPack() sets it and remembers the choice. None = Hugeicons.
+- `data-ayy-icon`: A glyph's name ("x", "chevron-right", "settings"…) on an .ayy-icon <svg> — what an icon pack replaces. ayywi's own components and iconSvg(icon, { name }) / <Icon name="…" /> write it; leave it off for icons that should stay as drawn.
 - `data-motion`: "reduce" — turns ayywi's animations and transitions off for this subtree, as prefers-reduced-motion does; for an app's own Reduce motion setting. None = follow the OS.
 - `data-ayy-input`: "keyboard" | "pointer" on <html>, set by trackInputModality() (started by @danitesler/ayywi/elements; React apps call it once at startup). Pointer hides focus rings, except on text fields, until the next Tab or arrow key; a tooltip then opens on hover only. None = the browser's own :focus-visible.
 
@@ -457,6 +459,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 ## Public custom properties
 
 - `--ayy-spot`: The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card or page: it lights card spotlights, the active contents item, icon tiles, the scroll-progress bar and .ayy-accent-text.
+- `--ayy-scrollbar-size`: Width of a Scrollbar's gutter (default 0.5rem). The thumb is 4px thinner than the gutter.
 - `--ayy-mx`: Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).
 - `--ayy-my`: Card spotlight pointer Y in px (set by React Card or @danitesler/ayywi/elements).
 - `--ayy-dot`: Badge status-dot colour override.
@@ -480,6 +483,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - `--ayy-table-bg`: What a table sits on, which its pinned columns and sticky header paint so rows don't show through them. Default the page colour; set it on the table when it sits on another surface (var(--ayy-color-surface) in a card).
 - `--ayy-table-truncate`: Widest a table's .ayy-table__truncate text gets before it ends in … (default 16rem).
 - `--ayy-swipe-bg`: Background of a swipe row's content, which must hide the action trays under it. Default the page colour; set it to the surface the list sits on (var(--ayy-color-surface) in a card).
+- `--ayy-font-body-adjust`: The font-size-adjust of body text (default none). A brand or theme with its own body font sets it to Sora's x-height (BODY_FONT_ADJUST), so that font reads as large as Sora; headings, code and signatures keep their own size.
 - `--ayy-gap`: Gap for .ayy-stack / .ayy-cluster / .ayy-grid / .ayy-spread / .ayy-split and the carousel track.
 - `--ayy-min`: Narrowest column of .ayy-grid (default 16rem) before it drops a column; the aside width of .ayy-split (default 18rem).
 - `--ayy-ratio`: A picture's shape, width ÷ height (1.6, or 1440 / 900), set on a card toast or a view Card's .ayy-card__view-media: the card follows it, within its own minimum and maximum height. Default 16 / 10.
@@ -541,7 +545,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
 - **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Filter bar, Sorting, Textarea, Mentions, Block editor, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
-- **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Drag and drop
+- **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Scrollbar, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
 - **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart
@@ -1786,12 +1790,13 @@ Category: Forms. A document editor made of blocks: headings, lists, tables, call
 - `.ayy-block-editor__text` — The editable line of a text block (contenteditable, role="textbox"). Inline content: strong, em, u, s, mark, code, links and mention chips. Shows data-placeholder while empty. An equation's line is named Equation; the TeX is its text. The line is clipped — not removed — while data-rendered math is showing.
 - `.ayy-block-editor__marker` — A list's bullet or number, drawn by the editor (1. a. i. by nesting level).
 - `.ayy-block-editor__toggle` — A toggle's arrow button: points along the reading direction, turns down while the toggle is open (aria-expanded). Blocks indented under the toggle (data-indent greater than its own) are hidden while it is closed.
-- `.ayy-block-editor__table-wrap` — A table block's box: the scrolling table, the row grips at its inline start, the drop line for a dragged row or column, the + at its inline end (add a column) and the + under it (add a row).
+- `.ayy-block-editor__table-wrap` — A table block's box: the scrolling table, the row grips at its inline start, the drop line for a dragged row or column, the + at its inline end (add a column), the + under it (add a row) and the fit button in the corner between them. The box is as wide as the table, which is as wide as its columns.
 - `.ayy-block-editor__table-scroll` — Scrolls the table sideways in a narrow column, with room at the inline start and top for the row and column grips. The hairline is on the table, not this box.
 - `.ayy-block-editor__table` — The <table>. A header row is a <thead> of <th scope="col">; the rest is a <tbody>. A selected row or column paints data-selected on its cells. In plain HTML a block with data-type="table" can hold a <table> and the editor reads its rows.
 - `.ayy-block-editor__cell` — The editable plain-text line inside every cell (role="textbox", data-row, data-col). Tab and Shift+Tab move between cells, Enter goes down a row.
-- `.ayy-block-editor__col-resize` — The handle on a table column's inline-end edge, in the first row (role="separator"): drag it to set the column's width. The same widths are set from the column grip's menu (Width) for keyboard users.
+- `.ayy-block-editor__col-resize` — The handle on a table column's inline-end edge, in the first row (role="separator"): drag it to set the column's width; the table shrinks and grows with it instead of staying as wide as the block. The same widths are set from the column grip's menu (Width) for keyboard users.
 - `.ayy-block-editor__table-add` — A table's + button (data-axis="column" or "row"): shown while the pointer or focus is in the block, always on touch screens.
+- `.ayy-block-editor__table-fit` — The table's fit-to-width button, in the corner under and after the table (aria-label="Fit table to width"): stretches or squeezes the columns, keeping their proportions, until the table is as wide as the block. A one-off — the widths stay as they are when the block later resizes. Shown while the pointer or focus is in the block, always on touch screens. Keyboard users get the same from the table menu's Fit to width.
 - `.ayy-block-editor__row-grip` — The handle at a table row's inline start (data-row, aria-haspopup="menu"): shown while the pointer is over that row, including the lane beside the table (data-hot). It hides when the pointer leaves the table. Click selects the row and opens its menu (insert, duplicate, move, clear, delete); drag reorders the row.
 - `.ayy-block-editor__col-grip` — The handle over a table column's top (data-col, aria-haspopup="menu"): shown while the pointer is over that column, including the lane above the table (data-hot). It hides when the pointer leaves the table. Click selects the column and opens its menu (insert, duplicate, move, sort, align, width, clear, delete); drag reorders the column.
 - `.ayy-block-editor__check` — A to-do's checkbox (.ayy-checkbox).
@@ -1872,7 +1877,7 @@ Category: Forms. A document editor made of blocks: headings, lists, tables, call
 - Pass mentions for the people and records your app has (@ for people, # for issues), with a function when the list is long or remote.
 - Pass upload so pasted, dropped and picked files go to your storage instead of the default data: URLs.
 - Pass renderMath (for example KaTeX's renderToString) so equation blocks show as math, and keep that library in your app so ayywi's bundle stays small.
-- Keep tables for short, plain facts (a price list, a schedule). Cells are plain text, one line each, up to 100 rows and 12 columns; a spreadsheet pasted into a cell fills the cells from there.
+- Keep tables for short, plain facts (a price list, a schedule). Cells are plain text, one line each, up to 100 rows and 12 columns; a spreadsheet pasted into a cell fills the cells from there. A new table is two columns, only as wide as they are; drag a column's edge to size it, and use the corner button to fit the table to the block's width.
 
 **Examples**: A page: headings, lists, to-dos, a callout, mentions, an image and code, Task notes in a Card, editable or read-only. Copy-ready HTML and React in llms/block-editor.md.
 
@@ -2382,7 +2387,7 @@ Category: Forms. A searchable grid of icons and emoji with a remove button, for 
 - event `ayy-change`: { value, kind } — kind is "icon", "emoji", or null when removed.
 
 **React** — `import { IconPicker } from "@danitesler/ayywi/react";`
-- `<IconPicker>` renders <div class="ayy-icon-picker"> with a search Input, a remove Button and a section per kind. Props: `value / defaultValue` string — the picked icon value or emoji; "" for none; `onValueChange` (value: string, change: { value, kind, option }) => void; `icons` { value: string; label: string; icon: IconData | ReactNode; keywords?: string[] }[] — the Icons section; omit for emoji only; `emojis` { value: string; label: string; keywords?: string[] }[] — the Emoji section (iconPickerEmojis by default; [] hides it); `searchable` boolean — show the search field (default true); `removable` boolean — show the remove button (default true); `iconsLabel / emojisLabel / searchLabel / removeLabel / emptyLabel` string — the visible and accessible text; `...` HTMLAttributes<HTMLDivElement> props
+- `<IconPicker>` renders <div class="ayy-icon-picker"> with a search Input, a remove Button and a section per kind. Props: `value / defaultValue` string — the picked icon value or emoji; "" for none; `onValueChange` (value: string, change: { value, kind, option }) => void; `icons` { value: string; label: string; icon: IconData | ReactNode; name?: IconName; keywords?: string[] }[] — the Icons section; omit for emoji only. name is the glyph's name ("star"), written as data-ayy-icon so an icon pack can replace it; `emojis` { value: string; label: string; keywords?: string[] }[] — the Emoji section (iconPickerEmojis by default; [] hides it); `searchable` boolean — show the search field (default true); `removable` boolean — show the remove button (default true); `iconsLabel / emojisLabel / searchLabel / removeLabel / emptyLabel` string — the visible and accessible text; `...` HTMLAttributes<HTMLDivElement> props
 
 **Accessibility**
 - Every option is a <button> with an aria-label naming the icon or emoji (an emoji character alone is read inconsistently) and aria-pressed for the picked one, so the choice is announced, not only tinted.
@@ -2933,7 +2938,7 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 - Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.
 - On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.
 - Put Sign out or Delete account last, in its own group, as a destructive link row.
-- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type="color" data-value="custom"> after the select), and "Aa" samples for Font and Text size. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
+- For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant="rows" for Density, variant="brand" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type="color" data-value="custom"> after the select), and "Aa" samples for Font and Text size. Use Surface colour and Contrast Sliders with setThemeCustomization(), passing the active brand colour. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir.
 
 **Examples**: Preferences with switches and selects, Phone settings with link rows, Choice cards in a stacked row, Appearance, brand, language and reset. Copy-ready HTML and React in llms/settings.md.
 
@@ -3229,6 +3234,38 @@ Category: Layout. A thin line that divides blocks of content, between sections o
 - Give the separator room with the layout's gap or the sections' padding.
 
 **Examples**: Plain, fading and vertical. Copy-ready HTML and React in llms/separator.md.
+
+## Scrollbar
+
+Category: Layout. A thin scrollbar with no track that is drawn in the text colour, so it follows every theme. Put it on any scroll container, or on the page. Also called: scrollbar, scroll-bar, scroller.
+
+**Classes**
+- `.ayy-scrollbar` — Root, on the element that scrolls (or <html> for the page). 8px gutter, 4px thumb, transparent track.
+- `.ayy-scrollbar--hover` — Thumb is hidden until the pointer or focus is inside the container.
+
+**States**
+- `hover` (`The pointer is over the thumb (Chromium and Safari only)`)
+- `pressed` (`The thumb is being dragged (Chromium and Safari only)`)
+- `focus` (`Focus is inside the container, with the hover variant`)
+
+**Sizes**
+- Density — Doesn't follow data-density.
+- Width — 8px by default; set --ayy-scrollbar-size on the container for another gutter. The thumb is the gutter minus 4px. Firefox only offers its own thin scrollbar and ignores the size.
+
+**React** — `import { Scrollbar } from "@danitesler/ayywi/react";`
+- `<Scrollbar>` renders <div tabindex="0">. Props: `hover` boolean — show the thumb only while the pointer or focus is inside.
+
+**Accessibility**
+- Scrolling stays native: wheel, touch, keyboard and assistive technology all work. The component only changes how the bar looks.
+- A scroll container that has no focusable content needs tabindex="0" and a label, or keyboard users can't scroll it. The React component sets tabindex="0".
+- Forced colours: the thumb is drawn in system colours.
+
+**Do**
+- Use the scrollbar on scroll containers inside a page: lists, panels, code, menus.
+- Put it on <html> to thin the page's own scrollbar.
+- Use the hover variant where the bar would crowd a dense, quiet surface.
+
+**Examples**: Always visible and on hover. Copy-ready HTML and React in llms/scrollbar.md.
 
 ## Drag and drop
 
@@ -3913,7 +3950,7 @@ Category: Data display. A small picture that stands for a person or a workspace.
 
 ## Icon
 
-Category: Data display. A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Also called: svg-icon.
+Category: Data display. A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Give it a name and an icon pack (Lucide, Tabler, Material Symbols, Feather) can draw it instead. Also called: svg-icon.
 
 **Classes**
 - `.ayy-icon` — On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.
@@ -3933,7 +3970,7 @@ Category: Data display. A single icon from the Hugeicons library that ayywi uses
 - Width — Square. directional mirrors it in RTL.
 
 **React** — `import { Icon } from "@danitesler/ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`
-- `<Icon>` renders <svg class="ayy-icon">. Props: `icon` IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package; `size` "auto" | "sm" | "md" | "lg" | "xl" — auto follows the text; the rest are 16/20/24/32px; `directional` boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction; `label` string — accessible name; without it the icon is decorative (aria-hidden); `strokeWidth` number — stroke width on the 24px grid (Hugeicons default 1.5)
+- `<Icon>` renders <svg class="ayy-icon">. Props: `icon` IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package; `size` "auto" | "sm" | "md" | "lg" | "xl" — auto follows the text; the rest are 16/20/24/32px; `directional` boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction; `name` IconName — the glyph's name ("x", "search"…), written as data-ayy-icon so an icon pack can replace it; leave it off for your own icons; `label` string — accessible name; without it the icon is decorative (aria-hidden); `strokeWidth` number — stroke width on the 24px grid (Hugeicons default 1.5)
 
 **Accessibility**
 - Icons are decorative by default (aria-hidden): the text next to them carries the meaning.

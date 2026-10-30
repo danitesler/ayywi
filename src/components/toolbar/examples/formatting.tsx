@@ -27,7 +27,7 @@ export default function Example() {
         }
       >
         <ToolbarButton aria-label="Bold" pressed={bold} onClick={() => setBold(!bold)}>
-          <Icon icon={TextBoldIcon} />
+          <Icon icon={TextBoldIcon} name="bold" />
         </ToolbarButton>
       </Tooltip>
       <Tooltip
@@ -38,7 +38,7 @@ export default function Example() {
         }
       >
         <ToolbarButton aria-label="Italic" pressed={italic} onClick={() => setItalic(!italic)}>
-          <Icon icon={TextItalicIcon} />
+          <Icon icon={TextItalicIcon} name="italic" />
         </ToolbarButton>
       </Tooltip>
       <Tooltip
@@ -49,12 +49,12 @@ export default function Example() {
         }
       >
         <ToolbarButton aria-label="Underline" pressed={underline} onClick={() => setUnderline(!underline)}>
-          <Icon icon={TextUnderlineIcon} />
+          <Icon icon={TextUnderlineIcon} name="underline" />
         </ToolbarButton>
       </Tooltip>
       <Popover>
         <PopoverTrigger asChild>
-          <ToolbarButton>Text options <Icon icon={ArrowDown01Icon} /></ToolbarButton>
+          <ToolbarButton>Text options <Icon icon={ArrowDown01Icon} name="chevron-down" /></ToolbarButton>
         </PopoverTrigger>
         <PopoverContent align="start" aria-label="Text options">
           <div className="ayy-stack" style={{ gap: "var(--ayy-space-2)" }}>
@@ -86,7 +86,7 @@ export default function Example() {
         }
       >
         <ToolbarButton>
-          <Icon icon={Link01Icon} />
+          <Icon icon={Link01Icon} name="link" />
           Link
         </ToolbarButton>
       </Tooltip>
@@ -98,7 +98,7 @@ export default function Example() {
         }
       >
         <ToolbarButton>
-          <Icon icon={Comment01Icon} />
+          <Icon icon={Comment01Icon} name="message-square-text" />
           Comment
         </ToolbarButton>
       </Tooltip>
@@ -110,7 +110,7 @@ export default function Example() {
         }
       >
         <ToolbarButton>
-          <Icon icon={SparklesIcon} />
+          <Icon icon={SparklesIcon} name="sparkles" />
           AI
         </ToolbarButton>
       </Tooltip>
@@ -123,7 +123,7 @@ export default function Example() {
         }
       >
         <ToolbarButton aria-label="Delete">
-          <Icon icon={Delete02Icon} />
+          <Icon icon={Delete02Icon} name="trash" />
         </ToolbarButton>
       </Tooltip>
     </Toolbar>

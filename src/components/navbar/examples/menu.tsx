@@ -66,7 +66,7 @@ export default function Example({
     <div style={{ inlineSize: "100%" }}>
       <Navbar>
         <NavbarBrand href="#top">
-          {showBrandIcon ? <Icon icon={Layers01Icon} /> : null}
+          {showBrandIcon ? <Icon icon={Layers01Icon} name="layers" /> : null}
           Northwind
         </NavbarBrand>
         <NavbarNav>

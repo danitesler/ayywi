@@ -150,7 +150,7 @@ export const TransferList = forwardRef<HTMLDivElement, TransferListProps>(functi
       </div>
       {searchable && (
         <div className={transferListSearchClass}>
-          <Icon icon={Search01Icon} />
+          <Icon icon={Search01Icon} name="search" />
           <input
             type="search"
             className={transferListFilterClass}
@@ -201,7 +201,7 @@ export const TransferList = forwardRef<HTMLDivElement, TransferListProps>(functi
           tooltip={`Move selected`}
           disabled
         >
-          <Icon icon={ArrowRight01Icon} directional />
+          <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
         </Button>
         {showMoveAll && (
           <Button
@@ -212,7 +212,7 @@ export const TransferList = forwardRef<HTMLDivElement, TransferListProps>(functi
             tooltip="Move all"
             disabled={disabled || sourceItems.every((i) => i.disabled)}
           >
-            <Icon icon={ArrowRightDoubleIcon} directional />
+            <Icon icon={ArrowRightDoubleIcon} name="chevrons-right" directional />
           </Button>
         )}
         <Button
@@ -223,7 +223,7 @@ export const TransferList = forwardRef<HTMLDivElement, TransferListProps>(functi
           tooltip="Remove selected"
           disabled
         >
-          <Icon icon={ArrowLeft01Icon} directional />
+          <Icon icon={ArrowLeft01Icon} name="chevron-left" directional />
         </Button>
         {showMoveAll && (
           <Button
@@ -234,12 +234,12 @@ export const TransferList = forwardRef<HTMLDivElement, TransferListProps>(functi
             tooltip="Remove all"
             disabled={disabled || targetItems.every((i) => i.disabled)}
           >
-            <Icon icon={ArrowLeftDoubleIcon} directional />
+            <Icon icon={ArrowLeftDoubleIcon} name="chevrons-left" directional />
           </Button>
         )}
       </div>
       {renderPane("target", targetTitle, targetItems, targetEmptyText)}
-      {name && selectedIds.map((id) => <input key={id} type="hidden" name={name} value={id} />)}
+      {name && selectedIds.map((id) => <input key={id} type="hidden" name={name} value={id} disabled={disabled} />)}
     </div>
   );
 });

@@ -66,7 +66,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(function S
       }}
     >
       <div className="ayy-search-bar__field">
-        <Icon icon={Search01Icon} />
+        <Icon icon={Search01Icon} name="search" />
         <input
           ref={mergeRefs(ref, input)}
           type="search"
@@ -88,13 +88,15 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(function S
           className="ayy-search-bar__clear"
           aria-label={clearLabel}
           hidden={!text}
+          disabled={props.disabled || props.readOnly}
           onClick={(event) => {
             event.preventDefault();
+            if (props.disabled || props.readOnly) return;
             set("");
             input.current?.focus();
           }}
         >
-          <Icon icon={Cancel01Icon} />
+          <Icon icon={Cancel01Icon} name="x" />
         </button>
       </div>
       {onCancel && (

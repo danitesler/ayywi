@@ -68,7 +68,7 @@ export default function Example() {
         <FilterBarMain>
           <FilterBarGroup>
             <InputGroup style={{ inlineSize: "min(100%, 11rem)" }}>
-              <Icon icon={Search01Icon} />
+              <Icon icon={Search01Icon} name="search" />
               <Input
                 type="search"
                 placeholder="Search tasks..."
@@ -82,7 +82,7 @@ export default function Example() {
               <DropdownMenuTrigger asChild>
                 <FilterBarTrigger active={priorities.length > 0} count={priorities.length}>
                   Priority
-                  <Icon icon={ArrowDown01Icon} />
+                  <Icon icon={ArrowDown01Icon} name="chevron-down" />
                 </FilterBarTrigger>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" aria-label="Priority">
@@ -103,7 +103,7 @@ export default function Example() {
               <DropdownMenuTrigger asChild>
                 <FilterBarTrigger active={categories.length > 0} count={categories.length}>
                   Category
-                  <Icon icon={ArrowDown01Icon} />
+                  <Icon icon={ArrowDown01Icon} name="chevron-down" />
                 </FilterBarTrigger>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" aria-label="Category">

@@ -19,7 +19,7 @@ export function recordPickerClass({ multiple = false, size = "md", className }: 
 }
 
 /** The clear-all button, as SVG markup (Hugeicons CancelCircle). */
-export const recordPickerClearIcon = /* @__PURE__ */ iconSvg(CancelCircleIcon);
+export const recordPickerClearIcon = /* @__PURE__ */ iconSvg(CancelCircleIcon, { name: "circle-x" });
 
 /** One picked record's chip, as React's RecordPicker renders it. */
 export function recordPickerChip(option: { id: string; label: string }, removeLabel: (label: string) => string = (label) => `Remove ${label}`): HTMLSpanElement {

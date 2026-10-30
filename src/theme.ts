@@ -1,3 +1,6 @@
+import { ICON_PACK_STORAGE_KEY } from "./icon-pack";
+import { iconPacks } from "./icon-packs";
+import { read, store } from "./lib/storage";
 import { themeBase, themes, type ThemeName } from "./tokens";
 
 /** A theme name ("dark", "light", "dark-contrast", "light-gray"), or "system" to follow the OS. */
@@ -13,24 +16,6 @@ export const DENSITY_STORAGE_KEY = "ayy-density";
 
 const THEMES: readonly string[] = [...themes, "system"];
 const DENSITIES: readonly string[] = ["compact", "comfortable", "touch", "auto"];
-
-function store(key: string, value: string): void {
-  try {
-    localStorage.setItem(key, value);
-  } catch {
-    // storage can be unavailable (private mode, sandboxed iframes)
-  }
-}
-
-function read<T extends string>(key: string, allowed: readonly string[], fallback: T): T {
-  try {
-    const stored = localStorage.getItem(key);
-    if (stored && allowed.includes(stored)) return stored as T;
-  } catch {
-    // ignore
-  }
-  return fallback;
-}
 
 /**
  * Force a theme on `target` (default: <html>). "system" removes the override so the OS preference applies.
@@ -91,8 +76,11 @@ export function getDensity(): DensityMode {
   return read<DensityMode>(DENSITY_STORAGE_KEY, DENSITIES, "auto");
 }
 
+/** Packs the init script restores: the default, hugeicons, is the absence of the attribute. */
+const RESTORED_ICON_PACKS = iconPacks.filter((pack) => pack !== "hugeicons");
+
 /**
- * Inline this in <head> (before CSS paints) to apply a stored theme and density without a flash:
+ * Inline this in <head> (before CSS paints) to apply a stored theme, density and icon pack without a flash:
  * <script>{themeInitScript}</script>
  */
-export const themeInitScript = `(function(){try{var d=document.documentElement,t=localStorage.getItem("${THEME_STORAGE_KEY}"),n=localStorage.getItem("${DENSITY_STORAGE_KEY}");if(${JSON.stringify(themes)}.indexOf(t)>-1)d.setAttribute("data-theme",t);if(n==="compact"||n==="comfortable"||n==="touch")d.setAttribute("data-density",n)}catch(e){}})();`;
+export const themeInitScript = `(function(){try{var d=document.documentElement,t=localStorage.getItem("${THEME_STORAGE_KEY}"),n=localStorage.getItem("${DENSITY_STORAGE_KEY}"),i=localStorage.getItem("${ICON_PACK_STORAGE_KEY}");if(${JSON.stringify(themes)}.indexOf(t)>-1)d.setAttribute("data-theme",t);if(n==="compact"||n==="comfortable"||n==="touch")d.setAttribute("data-density",n);if(${JSON.stringify(RESTORED_ICON_PACKS)}.indexOf(i)>-1)d.setAttribute("data-ayy-icons",i)}catch(e){}})();`;

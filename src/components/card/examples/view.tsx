@@ -35,25 +35,25 @@ function Actions({ media }: { media?: boolean }) {
   return (
     <HoverActions position="top-end" group reveal>
       <HoverAction label={media ? "Copy file" : "Copy"}>
-        <Icon icon={Copy01Icon} />
+        <Icon icon={Copy01Icon} name="copy" />
       </HoverAction>
       {media ? (
         <HoverAction label="Trim">
-          <Icon icon={ScissorIcon} />
+          <Icon icon={ScissorIcon} name="scissors" />
         </HoverAction>
       ) : (
         <>
           <HoverAction label="Annotate">
-            <Icon icon={Edit02Icon} />
+            <Icon icon={Edit02Icon} name="pen-line" />
           </HoverAction>
           <HoverAction label="Pin to screen">
-            <Icon icon={PinIcon} />
+            <Icon icon={PinIcon} name="pin" />
           </HoverAction>
         </>
       )}
       <DropdownMenu>
         <DropdownMenuTrigger variant="ghost" size="icon-sm" aria-label="More actions">
-          <Icon icon={MoreHorizontalIcon} />
+          <Icon icon={MoreHorizontalIcon} name="ellipsis" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>Save</DropdownMenuItem>
@@ -102,7 +102,7 @@ export default function Example() {
       <Card view>
         <CardViewMedia aria-label="Play the checkout recording from yesterday" onClick={() => {}}>
           <CardViewImage src={VIDEO} width={1920} height={1080} />
-          <CardViewBadge icon={<Icon icon={Video01Icon} />}>0:42</CardViewBadge>
+          <CardViewBadge icon={<Icon icon={Video01Icon} name="video" />}>0:42</CardViewBadge>
           <CardViewPlay />
         </CardViewMedia>
         <CardViewBody>

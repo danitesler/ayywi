@@ -10,7 +10,7 @@ export const dropzoneTitleClass = "ayy-dropzone__title";
 export const dropzoneHintClass = "ayy-dropzone__hint";
 
 /** The upload glyph, as SVG markup (Hugeicons CloudUpload). */
-export const dropzoneIcon = /* @__PURE__ */ iconSvg(CloudUploadIcon);
+export const dropzoneIcon = /* @__PURE__ */ iconSvg(CloudUploadIcon, { name: "cloud-upload" });
 
 /** Does a drag carry files (not text or a link being dragged around the page)? */
 export function dragHasFiles(event: DragEvent): boolean {

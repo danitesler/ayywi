@@ -11,7 +11,7 @@ export const navbarActionsClass = "ayy-navbar__actions";
 export const navbarToggleClass = "ayy-navbar__toggle";
 
 /** SVG markup for the menu icon (Hugeicons Menu01) the toggle draws, for non-React renderers. */
-export const navbarMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon);
+export const navbarMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon, { name: "menu" });
 
 /** Below this width a navbar with a __toggle folds its links into a panel under the bar. */
 const MENU_QUERY = "(max-width: 48rem)";

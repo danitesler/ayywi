@@ -14,7 +14,7 @@ export default function Example() {
     <div className="ayy-stack" style={{ inlineSize: "100%" }}>
       <div className="ayy-spread">
         <InputGroup style={{ inlineSize: "min(100%, 18rem)" }}>
-          <Icon icon={Search01Icon} />
+          <Icon icon={Search01Icon} name="search" />
           <Input type="search" placeholder="Search tickets" aria-label="Search tickets" />
         </InputGroup>
         <ChipGroup aria-label="Filters" scroll>

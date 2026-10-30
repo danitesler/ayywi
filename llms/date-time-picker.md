@@ -146,7 +146,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <label class="ayy-label" for="check-in-html">Check-in</label>
   <ayy-popover align="start">
     <button type="button" class="ayy-input ayy-date-picker" id="check-in-html" popovertarget="check-in-popover-html" aria-haspopup="dialog" aria-describedby="check-in-value-html check-in-hint-html">
-      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <svg class="ayy-icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
       <span id="check-in-value-html" class="ayy-date-picker__value" data-placeholder="Pick a day"></span>
     </button>
     <div class="ayy-popover" id="check-in-popover-html" popover role="dialog" aria-label="Pick a day">
@@ -154,8 +154,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <div class="ayy-date-picker-grid">
           <div class="ayy-date-picker-grid__header">
             <span class="ayy-date-picker-grid__title" aria-live="polite"></span>
-            <button type="button" class="ayy-date-picker-grid__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
-            <button type="button" class="ayy-date-picker-grid__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+            <button type="button" class="ayy-date-picker-grid__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+            <button type="button" class="ayy-date-picker-grid__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
           </div>
           <div class="ayy-date-picker-grid__weekdays" aria-hidden="true"></div>
           <div class="ayy-date-picker-grid__grid"></div>
@@ -208,7 +208,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <label class="ayy-label" for="stay-dates-html">Dates of stay</label>
   <ayy-popover align="start">
     <button type="button" class="ayy-input ayy-date-range-picker" id="stay-dates-html" popovertarget="stay-dates-popover-html" aria-haspopup="dialog" aria-describedby="stay-dates-value-html stay-dates-hint-html">
-      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <svg class="ayy-icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
       <span id="stay-dates-value-html" class="ayy-date-range-picker__value" data-placeholder="Pick check-in and check-out">12 Oct 2026 – 18 Oct 2026</span>
     </button>
     <div class="ayy-popover" id="stay-dates-popover-html" popover role="dialog" aria-label="Pick check-in and check-out">
@@ -216,7 +216,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
         <div class="ayy-date-range">
           <div class="ayy-date-range__month">
             <div class="ayy-date-range__header">
-              <button type="button" class="ayy-date-range__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+              <button type="button" class="ayy-date-range__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
               <span class="ayy-date-range__title" aria-live="polite"></span>
               <span class="ayy-date-range__nav" aria-hidden="true" style="visibility: hidden"></span>
             </div>
@@ -227,7 +227,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
             <div class="ayy-date-range__header">
               <span class="ayy-date-range__nav" aria-hidden="true" style="visibility: hidden"></span>
               <span class="ayy-date-range__title" aria-live="polite"></span>
-              <button type="button" class="ayy-date-range__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+              <button type="button" class="ayy-date-range__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
             </div>
             <div class="ayy-date-range__weekdays" aria-hidden="true"></div>
             <div class="ayy-date-range__grid"></div>
@@ -281,7 +281,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <label class="ayy-label" for="meeting-time-html">Meeting time</label>
   <ayy-popover align="start">
     <button type="button" class="ayy-input ayy-time-picker-trigger" id="meeting-time-html" popovertarget="meeting-time-popover-html" aria-haspopup="dialog" aria-describedby="meeting-time-value-html meeting-time-hint-html">
-      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <svg class="ayy-icon" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
       <span id="meeting-time-value-html" class="ayy-time-picker-trigger__value" data-placeholder="Pick a time">09:30</span>
     </button>
     <div class="ayy-popover" id="meeting-time-popover-html" popover role="dialog" aria-label="Pick a time">
@@ -331,7 +331,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <label class="ayy-label" for="departure-time-html">Flight departure</label>
   <ayy-popover align="start">
     <button type="button" class="ayy-input ayy-date-time-picker-trigger" id="departure-time-html" popovertarget="departure-popover-html" aria-haspopup="dialog" aria-describedby="departure-value-html departure-hint-html">
-      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <svg class="ayy-icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
       <span id="departure-value-html" class="ayy-date-time-picker-trigger__value" data-placeholder="Pick date & time">14 Oct 2026, 14:30</span>
     </button>
     <div class="ayy-popover" id="departure-popover-html" popover role="dialog" aria-label="Pick date & time">
@@ -380,22 +380,22 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-date-picker-grid">
     <div class="ayy-date-picker-grid__presets" role="group" aria-label="Quick dates">
       <button type="button" class="ayy-date-picker-grid__preset" data-date="+0" aria-pressed="false">
-        <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"></circle><path d="M12 2V4M12 20V22M4 12H2M22 12H20M19.0711 4.92893L17.6569 6.34315M6.34315 17.6569L4.92893 19.0711M19.0711 19.0711L17.6569 17.6569M6.34315 6.34315L4.92893 4.92893" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>
+        <svg class="ayy-icon" data-ayy-icon="sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"></circle><path d="M12 2V4M12 20V22M4 12H2M22 12H20M19.0711 4.92893L17.6569 6.34315M6.34315 17.6569L4.92893 19.0711M19.0711 19.0711L17.6569 17.6569M6.34315 6.34315L4.92893 4.92893" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>
         <span>Today</span>
       </button>
       <button type="button" class="ayy-date-picker-grid__preset" data-date="+1" aria-pressed="false">
-        <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="arrow-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         <span>Tomorrow</span>
       </button>
       <button type="button" class="ayy-date-picker-grid__preset" data-date="+7" aria-pressed="true">
-        <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <svg class="ayy-icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
         <span>Next week</span>
       </button>
     </div>
     <div class="ayy-date-picker-grid__header">
       <h2 class="ayy-date-picker-grid__title" aria-live="polite">October 2026</h2>
-      <button type="button" class="ayy-date-picker-grid__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
-      <button type="button" class="ayy-date-picker-grid__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+      <button type="button" class="ayy-date-picker-grid__nav" aria-label="Previous month"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+      <button type="button" class="ayy-date-picker-grid__nav" aria-label="Next month"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
     </div>
     <div class="ayy-date-picker-grid__weekdays" aria-hidden="true"></div>
     <div class="ayy-date-picker-grid__grid"></div>
@@ -421,9 +421,9 @@ export default function Example() {
       value={due}
       onValueChange={setDue}
       presets={[
-        { label: "Today", date: "+0", icon: <Icon icon={Sun03Icon} /> },
-        { label: "Tomorrow", date: "+1", icon: <Icon icon={ArrowRight02Icon} directional /> },
-        { label: "Next week", date: "+7", icon: <Icon icon={Calendar03Icon} /> },
+        { label: "Today", date: "+0", icon: <Icon icon={Sun03Icon} name="sun" /> },
+        { label: "Tomorrow", date: "+1", icon: <Icon icon={ArrowRight02Icon} name="arrow-right" directional /> },
+        { label: "Next week", date: "+7", icon: <Icon icon={Calendar03Icon} name="calendar" /> },
       ]}
       footer={
         <>

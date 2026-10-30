@@ -103,7 +103,7 @@ export const ChipRemovable = forwardRef<HTMLSpanElement, ChipRemovableProps>(fun
         aria-label={removeLabel ?? (typeof children === "string" ? `Remove ${children}` : "Remove")}
         onClick={onRemove}
       >
-        <Icon icon={Cancel01Icon} />
+        <Icon icon={Cancel01Icon} name="x" />
       </button>
     </span>
   );

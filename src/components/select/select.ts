@@ -129,7 +129,7 @@ export function openSelectList(
   };
   for (const child of Array.from(select.children)) {
     if (child instanceof HTMLOptionElement && !child.hidden) list.append(optionFor(child));
-    else if (child instanceof HTMLOptGroupElement) {
+    else if (child instanceof HTMLOptGroupElement && !child.hidden) {
       const group = document.createElement("div");
       group.setAttribute("role", "group");
       const heading = document.createElement("div");

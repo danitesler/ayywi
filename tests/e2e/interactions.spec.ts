@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { example, keyboardFocus, open, rtl, settle, stage } from "./helpers";
 
 /** The app shell playground's toolbar switch. Inert in the HTML renderer: use pgSetup() there instead. */
@@ -989,7 +989,9 @@ for (const renderer of ["react", "html"] as const) {
       await expect(page.locator(".ayy-toaster .ayy-toast")).toHaveCount(0);
     });
 
-    test("long text toast appears with copy button, copies text, and animates out", async ({ page }) => {
+    test("long text toast appears with copy button, copies text, and animates out", async ({ page, context }) => {
+      // The button says "Copied" only once the clipboard took the text, so the page needs to be allowed to write it.
+      await context.grantPermissions(["clipboard-read", "clipboard-write"]);
       await open(page, "toast", { renderer });
       await page.evaluate(() => {
         document.querySelectorAll(".ayy-toaster .ayy-toast").forEach((el) => el.remove());
@@ -1001,6 +1003,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(longToast.locator(".ayy-toast__copy")).toBeVisible();
       await longToast.locator(".ayy-toast__copy").click();
       await expect(longToast.locator(".ayy-toast__copy")).toHaveAttribute("data-copied", "");
+      expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("Secret API key\nwhsec_test_secret_key_12345");
       // Close button dismisses with leaving animation
       await longToast.locator(".ayy-toast__close").click();
       await expect(page.locator(".ayy-toaster .ayy-toast--long")).toBeHidden();
@@ -2335,7 +2338,7 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Control+Shift+ArrowRight");
       await expect(cell(2, 1)).toHaveText(before ?? "");
 
-      // Dragging a column's edge sets its width; the cell menu's Even out clears them.
+      // Dragging a column's edge sets its width; the cell menu's Reset column widths clears them.
       const grip = table.locator(".ayy-block-editor__col-resize").first();
       const box = (await grip.boundingBox())!;
       const start = (await cell(0, 0).boundingBox())!.width;
@@ -2347,7 +2350,7 @@ for (const renderer of ["react", "html"] as const) {
       expect((await cell(0, 0).boundingBox())!.width).toBeGreaterThan(start + 40);
       await cell(0, 0).click();
       await page.keyboard.press("Control+/");
-      await option(/^Even out column widths/).click();
+      await option(/^Reset column widths/).click();
       await expect(table.locator("table")).not.toHaveAttribute("data-sized", "");
 
       // The header column (on in this example) makes the first cell of each row a <th scope="row">.
@@ -2356,6 +2359,72 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Control+/");
       await option(/^Header column/).click();
       await expect(table.locator('tbody th[scope="row"]')).toHaveCount(0);
+    });
+
+    test("block editor tables start with two columns, are as wide as their columns, and fit the block only on request", async ({ page }) => {
+      await open(page, "block-editor", { renderer });
+      const editor = example(page, "page").locator(".ayy-block-editor");
+      const blocks = editor.locator(":scope > .ayy-block-editor__block");
+      await blocks.nth(16).locator(":scope > .ayy-block-editor__text").evaluate((el) => {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+        const sel = getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+      await page.keyboard.type("/table");
+      await page.keyboard.press("Enter");
+      const table = editor.locator('[data-type="table"]').last();
+      const grid = table.locator("table");
+      const wrap = table.locator(".ayy-block-editor__table-wrap");
+      await expect(grid).toBeVisible();
+      await expect(table.locator("thead th")).toHaveCount(2);
+      const width = async (l: Locator) => (await l.boundingBox())!.width;
+      // Two columns of their own width, not stretched across the block.
+      expect(await width(grid)).toBeLessThan((await width(wrap)) * 0.7);
+      await expect(grid).not.toHaveAttribute("data-sized", "");
+
+      // Dragging a column's edge narrower makes the table narrower: nothing stretches the others to fill the block.
+      const resize = table.locator(".ayy-block-editor__col-resize").first();
+      const box = (await resize.boundingBox())!;
+      const start = await width(grid);
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      const second = table.locator("thead th").nth(1);
+      const secondStart = await width(second);
+      const firstStart = await width(table.locator("thead th").first());
+      await page.mouse.move(box.x + box.width / 2 - 40, box.y + box.height / 2, { steps: 4 });
+      // While the pointer is still down the edge is under it, and the next column hasn't moved.
+      expect(Math.abs((await width(table.locator("thead th").first())) - (firstStart - 40))).toBeLessThanOrEqual(2);
+      expect(Math.abs((await width(second)) - secondStart)).toBeLessThanOrEqual(1);
+      await page.mouse.move(box.x + box.width / 2 + 60, box.y + box.height / 2, { steps: 4 });
+      expect(Math.abs((await width(table.locator("thead th").first())) - (firstStart + 60))).toBeLessThanOrEqual(2);
+      expect(Math.abs((await width(second)) - secondStart)).toBeLessThanOrEqual(1);
+      await page.mouse.move(box.x + box.width / 2 - 40, box.y + box.height / 2, { steps: 4 });
+      await page.mouse.up();
+      await expect(grid).toHaveAttribute("data-sized", "");
+      expect(await width(grid)).toBeLessThan(start - 30);
+      expect(Math.abs((await width(second)) - secondStart)).toBeLessThanOrEqual(1);
+
+      // The corner button fits the table to the block once; the widths then stay as they are.
+      await table.hover();
+      await table.getByRole("button", { name: "Fit table to width" }).click();
+      const fitted = await width(grid);
+      const room = await width(wrap);
+      expect(fitted).toBeGreaterThan(room * 0.8);
+      expect(fitted).toBeLessThanOrEqual(room);
+      const scroller = table.locator(".ayy-block-editor__table-scroll");
+      expect(await scroller.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0);
+      await page.setViewportSize({ width: 1100, height: 800 });
+      expect(await width(grid)).toBeLessThanOrEqual(fitted + 1);
+      expect(await width(grid)).toBeGreaterThanOrEqual(fitted - 1);
+
+      // Keyboard users get it from the table menu.
+      await table.locator(".ayy-block-editor__cell").first().click();
+      await page.keyboard.press("Control+/");
+      await expect(editor.locator(".ayy-block-editor__menu").getByRole("option", { name: /^Fit to width/ })).toBeVisible();
     });
 
     test("block editor table menus act on the row or column they were opened from", async ({ page }) => {

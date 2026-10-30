@@ -21,6 +21,9 @@ tokens/tokens.json          SOURCE OF TRUTH for tokens (DTCG-style; $value = dar
 tokens/themes/*.json        extra themes (dark-contrast, light-gray): overrides of a base theme's colours, compiled into tokens.css
 src/css/tokens.css          generated
 src/tokens.ts               generated
+tokens/icon-packs/<id>.json SOURCE OF TRUTH for icon packs: hugeicons.json lists every built-in glyph name; the others map each name to the pack's own icon (or null)
+src/css/icon-packs/<id>.css generated: one mask stylesheet per pack, shipped as @danitesler/ayywi/icons/<id>.css
+src/icon-packs.ts           generated: iconNames, IconName, iconPacks, IconPackName, iconPackInfo
 src/css/base.css            page defaults (:where, zero specificity), typography + layout utilities, reduced motion, --_ayy-dir
 src/css/index.css           declares the layers, imports tokens, base, every component into them
 src/components/<slug>/      one folder per component — see .claude/skills/ayywi-add-component/SKILL.md
@@ -84,9 +87,17 @@ The canonical list lives in `scripts/lib/contract.mjs` (`RULES`) and is rendered
 4. `ayy-` prefix on every class and keyframe; `--ayy-` on every public custom property; private ones are `--_x`.
 5. Visible focus ring on everything interactive. Labels, `aria-*` and keyboard support are part of "done". State shown by colour needs a `@media (forced-colors: active)` block.
 6. Zero runtime dependencies. Native elements first (`<dialog>`, `role="switch"` checkbox…).
-7. Never edit generated files (`src/css/tokens.css`, `src/tokens.ts`, `manifest/`, `llms*.txt`, `llms/`, `ai/AGENTS.snippet.md`, `ai/cursor/ayywi.mdc`, `ai/skills/ayywi/reference.md`). Edit the source and run `pnpm generate`.
+7. Never edit generated files (`src/css/tokens.css`, `src/tokens.ts`, `src/icon-packs.ts`, `src/css/icon-packs/*.css`, `manifest/`, `llms*.txt`, `llms/`, `ai/AGENTS.snippet.md`, `ai/cursor/ayywi.mdc`, `ai/skills/ayywi/reference.md`). Edit the source and run `pnpm generate`.
 8. Docs are code: a component's `*.meta.json` must describe exactly the classes its CSS defines, every state in `STATES` (`scripts/lib/contract.mjs`) and its sizes. `pnpm check` fails otherwise.
 9. No file names that differ only by case (esbuild + macOS/Windows resolve them to the same file).
+
+## Adding an icon pack
+
+For maintainers; people using ayywi can't add packs. Add the pack's npm package as a devDependency at an exact version, write `tokens/icon-packs/<id>.json` (copy a sibling; `null` for a glyph the pack lacks, which then draws Hugeicons), and run `pnpm generate`. `scripts/lib/icon-packs.mjs` reads a pack's SVGs by `source` kind; add a new kind there only when `data` or `svg` doesn't fit. Check the grid on the Icons page (`#/docs/icons`), then add a CHANGELOG line.
+
+## Adding a built-in glyph
+
+Copy the Hugeicons data into `src/lib/icons.ts`, add `"kebab-name": "ExportName"` to `tokens/icon-packs/hugeicons.json`, and add the pack's own icon name (or `null`) under the same name in every other pack's file. Then `pnpm generate`.
 
 ## Preview examples
 
@@ -125,7 +136,7 @@ When adding a component variation, extend an existing preview example whenever p
 
 Semver: renaming or removing a class, token or prop is **breaking**.
 
-Record every change in `CHANGELOG.md` under `## Unreleased` (only a release renames it; see Releases below), grouped under `### Added`, `### Changed`, `### Fixed` or `### Removed`. Each item is one sentence a cross-functional reader understands — no implementation detail, no math — with the title on the first line and the description on the next, indented two spaces. Link the component to its preview route (`**[Dialog](#/dialog)**`); for non-component areas bold the name (`**Tokens**`, **Linter**). Say what it was before and what it is now, and put `(**Breaking**)` in the title of a rename or removal.
+Record every change in `CHANGELOG.md` under `## Unreleased` (only a release renames it; see Releases below), grouped under `### Added`, `### Changed`, `### Fixed` or `### Removed`. Within each release and category, group changes to the same component or area under one title, using an indented bullet for each change; keep breaking changes clearly marked. Each item is one sentence a cross-functional reader understands — no implementation detail, no math — with the title on the first line and the description on the next, indented two spaces. Link the component to its preview route (`**[Dialog](#/dialog)**`); for non-component areas bold the name (`**Tokens**`, **Linter**). Say what it was before and what it is now, and put `(**Breaking**)` in the title of a rename or removal.
 
 ```markdown
 ### Added

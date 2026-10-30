@@ -40,7 +40,7 @@ export default function Example() {
       {/* 2. Status toast (success) */}
       <NotificationToast
         variant="success"
-        icon={<Icon icon={CheckmarkCircle02Icon} size="sm" />}
+        icon={<Icon icon={CheckmarkCircle02Icon} name="circle-check" size="sm" />}
         title="Success toast"
         description="Marketing site is live."
         onClose={() => setDismissed(true)}
@@ -56,7 +56,7 @@ export default function Example() {
       {/* 4. Error / Destructive */}
       <NotificationToast
         variant="destructive"
-        icon={<Icon icon={CancelCircleIcon} size="sm" />}
+        icon={<Icon icon={CancelCircleIcon} name="circle-x" size="sm" />}
         title="Error toast"
         description="3 type errors in api/server.ts"
         onClose={() => setDismissed(true)}
@@ -70,10 +70,10 @@ export default function Example() {
           <CardToastClose label="Dismiss preview" />
           <CardToastCorner position="top-start">
             <CardToastAction label="Annotate">
-              <Icon icon={Edit02Icon} size="sm" />
+              <Icon icon={Edit02Icon} name="pen-line" size="sm" />
             </CardToastAction>
             <CardToastAction label="Pin to screen">
-              <Icon icon={PinIcon} size="sm" />
+              <Icon icon={PinIcon} name="pin" size="sm" />
             </CardToastAction>
           </CardToastCorner>
           <CardToastCenter>
@@ -82,15 +82,15 @@ export default function Example() {
           </CardToastCenter>
           <CardToastCorner position="bottom-start">
             <CardToastAction label="Share link">
-              <Icon icon={CloudUploadIcon} size="sm" />
+              <Icon icon={CloudUploadIcon} name="cloud-upload" size="sm" />
             </CardToastAction>
           </CardToastCorner>
           <CardToastCorner position="bottom-end">
             <CardToastAction label="Show in folder">
-              <Icon icon={Folder01Icon} size="sm" />
+              <Icon icon={Folder01Icon} name="folder" size="sm" />
             </CardToastAction>
             <CardToastAction label="Delete">
-              <Icon icon={Delete02Icon} size="sm" />
+              <Icon icon={Delete02Icon} name="trash" size="sm" />
             </CardToastAction>
           </CardToastCorner>
         </CardToastScrim>

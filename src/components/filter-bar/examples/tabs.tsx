@@ -75,7 +75,7 @@ export default function Example() {
             </FilterBarTab>
           </FilterBarTabs>
           <InputGroup style={{ inlineSize: "min(100%, 14rem)" }}>
-            <Icon icon={Search01Icon} />
+            <Icon icon={Search01Icon} name="search" />
             <Input
               type="search"
               placeholder="Search posts..."

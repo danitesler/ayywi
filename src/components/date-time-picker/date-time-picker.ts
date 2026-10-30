@@ -154,13 +154,13 @@ export const dateTimePickerTriggerClass = dateTimePickerTriggerClassName;
 // 2. SVG Icons (vendored Hugeicons markup)
 // ==========================================
 
-export const datePickerIcon = iconSvg(Calendar03Icon);
-export const datePickerPreviousIcon = iconSvg(ArrowLeft01Icon, { directional: true });
-export const datePickerNextIcon = iconSvg(ArrowRight01Icon, { directional: true });
+export const datePickerIcon = iconSvg(Calendar03Icon, { name: "calendar" });
+export const datePickerPreviousIcon = iconSvg(ArrowLeft01Icon, { name: "chevron-left", directional: true });
+export const datePickerNextIcon = iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
 export const dateRangePreviousIcon = datePickerPreviousIcon;
 export const dateRangeNextIcon = datePickerNextIcon;
 export const dateRangePickerIcon = datePickerIcon;
-export const timePickerIcon = iconSvg(Clock01Icon);
+export const timePickerIcon = iconSvg(Clock01Icon, { name: "clock" });
 export const timePickerClockIcon = timePickerIcon;
 export const dateTimePickerIcon = datePickerIcon;
 
@@ -362,6 +362,11 @@ export function formatDateTime(dateIso: string, timeIso: string, locale?: string
 export function isInRange(date: string, start: string, end: string): boolean {
   const [min, max] = start <= end ? [start, end] : [end, start];
   return date > min && date < max;
+}
+
+/** Whether `date` (YYYY-MM-DD) is before `min` or after `max`, the limits a shortcut (Today, a preset) must respect like a day does. */
+function outsideLimits(date: string, min?: string, max?: string): boolean {
+  return (min !== undefined && date < min) || (max !== undefined && date > max);
 }
 
 export function isSameDay(a: string | null | undefined, b: string | null | undefined): boolean {
@@ -945,7 +950,10 @@ export function connectDatePicker(root: HTMLElement, options: DatePickerControll
     }
 
     for (const preset of root.querySelectorAll<HTMLButtonElement>(`.${datePickerPresetClass}`)) {
-      preset.setAttribute("aria-pressed", String(resolveDatePickerDate(preset.dataset.date ?? "", today) === value));
+      const presetDate = resolveDatePickerDate(preset.dataset.date ?? "", today);
+      preset.setAttribute("aria-pressed", String(presetDate === value));
+      if (outsideLimits(presetDate, opts.min, opts.max)) preset.setAttribute("aria-disabled", "true");
+      else preset.removeAttribute("aria-disabled");
     }
 
     if (focusTarget === "cursor") {
@@ -1009,6 +1017,7 @@ export function connectDatePicker(root: HTMLElement, options: DatePickerControll
     const presetBtn = (event.target as Element | null)?.closest?.<HTMLButtonElement>(`button.${datePickerPresetClass}`);
     if (presetBtn && root.contains(presetBtn) && presetBtn.dataset.date) {
       const date = resolveDatePickerDate(presetBtn.dataset.date, today);
+      if (outsideLimits(date, opts.min, opts.max)) return;
       value = date;
       cursor = date;
       month = startOfMonth(date);
@@ -1028,6 +1037,7 @@ export function connectDatePicker(root: HTMLElement, options: DatePickerControll
         opts.onClear?.();
         opts.onSelect?.("");
       } else if (action === "today") {
+        if (outsideLimits(today, opts.min, opts.max)) return;
         value = today;
         cursor = today;
         month = startOfMonth(today);
@@ -1524,6 +1534,7 @@ export function connectDateRange(root: HTMLElement, options: DateRangeController
         opts.onClear?.();
         opts.onSelect?.(null);
       } else if (action === "today") {
+        if (outsideLimits(today, opts.min, opts.max)) return;
         const todayRange: [string, string] = [today, today];
         range = todayRange;
         pendingStart = null;
@@ -2118,6 +2129,7 @@ export function connectDateTimePicker(root: HTMLElement, options: DateTimePicker
         opts.onSelect?.("", "");
       } else if (action === "today") {
         const today = opts.today ?? todayIso();
+        if (outsideLimits(today, opts.min, opts.max)) return;
         dateVal = today;
         timeVal = timeVal || "12:00";
         dateCtrl.setValue(dateVal);

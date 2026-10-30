@@ -52,7 +52,7 @@ export const Dropzone = forwardRef<HTMLInputElement, DropzoneProps>(function Dro
         }}
         {...props}
       />
-      {icon === undefined ? <Icon icon={CloudUploadIcon} /> : icon}
+      {icon === undefined ? <Icon icon={CloudUploadIcon} name="cloud-upload" /> : icon}
       <span className={dropzoneTitleClass}>
         {title ?? (
           <>

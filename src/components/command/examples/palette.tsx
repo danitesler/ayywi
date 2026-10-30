@@ -18,29 +18,29 @@ export default function Example() {
       }
     >
       <CommandGroup heading="Create">
-        <CommandItem value="new-task" keywords="add todo" icon={<Icon icon={Add01Icon} />} shortcut="Mod+N">
+        <CommandItem value="new-task" keywords="add todo" icon={<Icon icon={Add01Icon} name="add" />} shortcut="Mod+N">
           New task
         </CommandItem>
-        <CommandItem value="new-note" keywords="add page" icon={<Icon icon={Note01Icon} />} shortcut="Mod+Shift+N">
+        <CommandItem value="new-note" keywords="add page" icon={<Icon icon={Note01Icon} name="notepad" />} shortcut="Mod+Shift+N">
           New note
         </CommandItem>
-        <CommandItem value="new-tag" icon={<Icon icon={Tag01Icon} />}>
+        <CommandItem value="new-tag" icon={<Icon icon={Tag01Icon} name="tag" />}>
           New tag
         </CommandItem>
       </CommandGroup>
       <CommandGroup heading="Go to">
-        <CommandItem value="today" icon={<Icon icon={Sun03Icon} />} meta="4">
+        <CommandItem value="today" icon={<Icon icon={Sun03Icon} name="sun" />} meta="4">
           Today
         </CommandItem>
-        <CommandItem value="inbox" icon={<Icon icon={InboxIcon} />} meta="12">
+        <CommandItem value="inbox" icon={<Icon icon={InboxIcon} name="inbox" />} meta="12">
           Inbox
         </CommandItem>
-        <CommandItem value="settings" keywords="preferences options" icon={<Icon icon={Settings01Icon} />} shortcut="Mod+,">
+        <CommandItem value="settings" keywords="preferences options" icon={<Icon icon={Settings01Icon} name="settings" />} shortcut="Mod+,">
           Settings
         </CommandItem>
       </CommandGroup>
       <CommandGroup heading="Appearance">
-        <CommandItem value="theme" keywords="dark light mode" icon={<Icon icon={Moon02Icon} />}>
+        <CommandItem value="theme" keywords="dark light mode" icon={<Icon icon={Moon02Icon} name="moon" />}>
           Switch theme
         </CommandItem>
       </CommandGroup>

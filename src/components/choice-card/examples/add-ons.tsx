@@ -5,7 +5,7 @@ export default function Example() {
   return (
     <ChoiceGroup legend="Extras" type="checkbox" style={{ inlineSize: "100%" }}>
       <ChoiceCard
-        icon={<Icon icon={GiftIcon} />}
+        icon={<Icon icon={GiftIcon} name="gift" />}
         title="Gift wrap"
         description="Recycled paper and a handwritten card"
         meta="+$4"
@@ -13,7 +13,7 @@ export default function Example() {
         inputProps={{ name: "extras" }}
       />
       <ChoiceCard
-        icon={<Icon icon={DeliveryTruck01Icon} />}
+        icon={<Icon icon={DeliveryTruck01Icon} name="truck" />}
         title="Express delivery"
         description="Tomorrow before noon"
         meta="+$9"
@@ -22,7 +22,7 @@ export default function Example() {
         defaultChecked
       />
       <ChoiceCard
-        icon={<Icon icon={Leaf01Icon} />}
+        icon={<Icon icon={Leaf01Icon} name="leaf" />}
         title="Plastic-free packing"
         description="Compostable bags and tape"
         meta="Free"

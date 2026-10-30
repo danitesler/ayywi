@@ -20,7 +20,7 @@ for (const renderer of ["react", "html"] as const) {
   });
 }
 
-const FOUNDATIONS = { density: "Density", colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion" };
+const FOUNDATIONS = { density: "Density", colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion", illustration: "Illustration", icons: "Icons" };
 
 test("get started and foundation pages render under Docs", async ({ page }) => {
   const errors = await open(page, "docs/get-started");
@@ -69,7 +69,7 @@ test("links from before the header tabs land on the same page", async ({ page })
     ["principles", "docs/principles", "Principles"],
     ["button", "components/button", "Button"],
     ["dialog", "components/dialog", "Dialog"],
-    ["brand", "themes", "Select theme"],
+    ["brand", "themes", "Themes"],
     ["apps", "examples", "Examples"],
     ["apps/inbox", "examples/inbox", "Relay"],
     ["showcase", "examples", "Examples"],
@@ -316,7 +316,7 @@ test("the header's search finds components, docs and examples and jumps to them"
 test("nothing overflows horizontally on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const components = ["button", "table", "dialog", "navbar", "app-shell", "bottom-nav", "footer", "pagination", "steps", "page-header", "input", "segmented-control", "list", "empty-state", "accordion", "toc", "carousel", "chat"];
-  for (const route of ["", "docs/get-started", "docs/colors", "docs/typography", "docs/spacing", "examples", "examples/dashboard", "themes", "components", "components/table/properties", ...components.map((c) => `components/${c}`)]) {
+  for (const route of ["", "docs/get-started", "docs/colors", "docs/typography", "docs/spacing", "docs/icons", "examples", "examples/dashboard", "themes", "components", "components/table/properties", ...components.map((c) => `components/${c}`)]) {
     // Keep the pointer off the header: in RTL its buttons sit where the pointer rests, and a tooltip fading in or out
     // isn't layout.
     await page.mouse.move(195, 700);
@@ -447,4 +447,75 @@ test("on a phone, an app's settings fill the screen: the section list, then a se
   await dialog.getByRole("button", { name: "Settings" }).click();
   await expect(list).toBeVisible();
   await expect(list.getByRole("link", { name: "AI assistant" })).toBeFocused();
+});
+
+test.describe("Components and Docs pages are centred like Examples", () => {
+  const measure = (page: import("@playwright/test").Page, selector: string) =>
+    page.locator(selector).evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      const area = (el.closest(".ayy-app-shell__main") ?? el.parentElement!).getBoundingClientRect();
+      return { width: box.width, start: box.left - area.left, end: area.right - box.right };
+    });
+
+  test("at 1600px the page content sits in the middle of its area and is as wide as Examples", async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
+    await open(page, "examples");
+    const examples = await measure(page, "main.pv-wide");
+    expect(examples.width).toBe(1200);
+    for (const route of ["components/button", "components", "docs/get-started", "docs/colors"]) {
+      await page.goto(`/#/${route}`);
+      await expect(page.locator(".pv-content")).toBeVisible();
+      const box = await measure(page, ".pv-content");
+      expect(box.width, route).toBe(examples.width);
+      expect(Math.abs(box.start - box.end), route).toBeLessThanOrEqual(1);
+      expect(box.start, route).toBeGreaterThan(0);
+    }
+  });
+
+  for (const dir of ["ltr", "rtl"] as const) {
+    test(`centring holds with dir=${dir}`, async ({ page }) => {
+      await page.setViewportSize({ width: 1600, height: 900 });
+      await open(page, "components/button");
+      await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
+      const box = await measure(page, ".pv-content");
+      expect(Math.abs(box.start - box.end)).toBeLessThanOrEqual(1);
+    });
+  }
+
+  for (const dir of ["ltr", "rtl"] as const) {
+    test(`page headers on Components and Docs pages are centred like Examples' (dir=${dir})`, async ({ page }) => {
+      await page.setViewportSize({ width: 1600, height: 900 });
+      await open(page, "examples");
+      const lede = (await page.locator(".pv-page__header .ayy-lede").first().evaluate((el) => el.getBoundingClientRect().width));
+      for (const route of ["components/button", "docs/get-started", "docs/colors", "docs/icons", "docs/changelog", "docs/principles"]) {
+        await page.goto(`/#/${route}`);
+        await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
+        const header = page.locator(".pv-content .pv-page__header").first();
+        await expect(header).toBeVisible();
+        for (const part of ["h1", ".ayy-lede"]) {
+          expect(await header.locator(part).first().evaluate((el) => getComputedStyle(el).textAlign), `${route} ${part}`).toBe("center");
+        }
+        // The header block sits in the middle of the content, and its text never runs wider than Examples' lede.
+        const box = await header.evaluate((el) => {
+          const h = el.getBoundingClientRect();
+          const c = el.closest(".pv-content")!.getBoundingClientRect();
+          return { start: h.left - c.left, end: c.right - h.right, lede: el.querySelector(".ayy-lede")!.getBoundingClientRect().width };
+        });
+        expect(Math.abs(box.start - box.end), route).toBeLessThanOrEqual(1);
+        expect(box.lede, route).toBeLessThanOrEqual(lede + 1);
+      }
+    });
+  }
+
+  test("at 375px nothing on a component or docs page scrolls sideways", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    for (const route of ["components/button", "components", "docs/get-started", "docs/colors"]) {
+      await open(page, route);
+      // The page's own box, not the document: the header's hidden tooltips are a separate, known overflow.
+      const fit = await page.locator(".pv-content").evaluate((el) => ({ right: el.getBoundingClientRect().right, left: el.getBoundingClientRect().left, over: el.scrollWidth - el.clientWidth, vw: document.documentElement.clientWidth }));
+      expect(fit.right, route).toBeLessThanOrEqual(fit.vw);
+      expect(fit.left, route).toBeGreaterThanOrEqual(0);
+      expect(fit.over, route).toBeLessThanOrEqual(0);
+    }
+  });
 });

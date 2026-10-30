@@ -1,6 +1,7 @@
 import { forwardRef, isValidElement, useEffect, useId, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
 import { mergeRefs } from "../../lib/refs";
 import { buttonClass } from "../button/button";
+import type { IconName } from "../../icon-packs";
 import type { IconData } from "../icon/icon";
 import { Icon } from "../icon/icon.react";
 import { inputClass } from "../input/input";
@@ -29,6 +30,8 @@ export interface IconPickerIcon {
   label: string;
   /** Hugeicons data (`StarIcon`) or any rendered icon. */
   icon: IconData | ReactNode;
+  /** The glyph's name, when `icon` is one ayywi draws (`"star"`), so an icon pack can replace it. Ignored for a rendered icon. */
+  name?: IconName;
   /** Extra search words. */
   keywords?: string[];
 }
@@ -148,7 +151,7 @@ export const IconPicker = forwardRef<HTMLDivElement, IconPickerProps>(function I
             <p id={`${id}-icons`} className={iconPickerLabelClass}>{iconsLabel}</p>
             <div className={iconPickerGridClass}>
               {icons.map((item) =>
-                option(item.value, item.value, item.label, item.keywords, isValidElement(item.icon) ? item.icon : <Icon icon={item.icon as IconData} />),
+                option(item.value, item.value, item.label, item.keywords, isValidElement(item.icon) ? item.icon : <Icon icon={item.icon as IconData} name={item.name} />),
               )}
             </div>
           </div>

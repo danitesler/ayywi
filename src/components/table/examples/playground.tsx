@@ -145,19 +145,19 @@ const GROUP_ORDER: Status[] = ["Past due", "Trial", "Active", "Closed"];
 type Key = "name" | "plan" | "status" | "seats" | "mrr" | "renews" | "note";
 type ColumnKey = Key | `column-${number}`;
 const COLUMN_ICONS: IconPickerIcon[] = [
-  { value: "star", label: "Star", icon: StarIcon },
-  { value: "tag", label: "Tag", icon: Tag01Icon, keywords: ["label", "plan"] },
-  { value: "calendar", label: "Calendar", icon: Calendar03Icon, keywords: ["date", "renews"] },
-  { value: "text", label: "Text", icon: TextIcon, keywords: ["note"] },
-  { value: "money", label: "Money", icon: DollarCircleIcon, keywords: ["revenue", "mrr", "price"] },
-  { value: "user", label: "User", icon: UserIcon, keywords: ["person", "seats", "owner"] },
-  { value: "flag", label: "Flag", icon: Flag01Icon, keywords: ["status", "priority"] },
-  { value: "clock", label: "Clock", icon: Clock01Icon, keywords: ["time", "due"] },
+  { value: "star", label: "Star", icon: StarIcon, name: "star" },
+  { value: "tag", label: "Tag", icon: Tag01Icon, name: "tag", keywords: ["label", "plan"] },
+  { value: "calendar", label: "Calendar", icon: Calendar03Icon, name: "calendar", keywords: ["date", "renews"] },
+  { value: "text", label: "Text", icon: TextIcon, name: "text", keywords: ["note"] },
+  { value: "money", label: "Money", icon: DollarCircleIcon, name: "circle-dollar-sign", keywords: ["revenue", "mrr", "price"] },
+  { value: "user", label: "User", icon: UserIcon, name: "user", keywords: ["person", "seats", "owner"] },
+  { value: "flag", label: "Flag", icon: Flag01Icon, name: "flag", keywords: ["status", "priority"] },
+  { value: "clock", label: "Clock", icon: Clock01Icon, name: "clock", keywords: ["time", "due"] },
 ];
 // A picked icon's value is in COLUMN_ICONS; anything else is an emoji, shown as text.
 const columnIcon = (value: string) => {
   const found = COLUMN_ICONS.find((item) => item.value === value);
-  return found ? <Icon icon={found.icon as typeof StarIcon} /> : value;
+  return found ? <Icon icon={found.icon as typeof StarIcon} name={found.name} /> : value;
 };
 interface Column { key: ColumnKey; label: string; numeric?: boolean; icon?: string }
 const COLUMNS: Column[] = [
@@ -335,30 +335,30 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
       <DropdownMenuContent>
         <DropdownMenuLabel>{column.label}</DropdownMenuLabel>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={SmileIcon} />} aria-haspopup="dialog">{column.icon ? "Change icon" : "Add icon"}</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger icon={<Icon icon={SmileIcon} name="smile" />} aria-haspopup="dialog">{column.icon ? "Change icon" : "Add icon"}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent role="dialog" aria-label={`${column.label} icon`}>
             <IconPicker data-column-action="icon" value={column.icon ?? ""} icons={COLUMN_ICONS} />
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled={!frame} data-column-action="filter"><Icon icon={FilterHorizontalIcon} />Filter</DropdownMenuItem>
+        <DropdownMenuItem disabled={!frame} data-column-action="filter"><Icon icon={FilterHorizontalIcon} name="settings-2" />Filter</DropdownMenuItem>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={SortByDown02Icon} />}>Sort</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger icon={<Icon icon={SortByDown02Icon} name="sort" />}>Sort</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "ascending"} data-column-action="sort-ascending"><Icon icon={ArrangeByLettersAZIcon} />Sort ascending</DropdownMenuItem>
-            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "descending"} data-column-action="sort-descending"><Icon icon={ArrangeByLettersZAIcon} />Sort descending</DropdownMenuItem>
+            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "ascending"} data-column-action="sort-ascending"><Icon icon={ArrangeByLettersAZIcon} name="sort-a-z" />Sort ascending</DropdownMenuItem>
+            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "descending"} data-column-action="sort-descending"><Icon icon={ArrangeByLettersZAIcon} name="sort-z-a" />Sort descending</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        <DropdownMenuItem disabled={!frame} data-column-action="group"><Icon icon={GroupItemsIcon} />Group</DropdownMenuItem>
-        <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action="freeze"><Icon icon={PinIcon} />Freeze</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action="wrap"><Icon icon={TextWrapIcon} />Wrap content</DropdownMenuCheckboxItem>
+        <DropdownMenuItem disabled={!frame} data-column-action="group"><Icon icon={GroupItemsIcon} name="group" />Group</DropdownMenuItem>
+        <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action="freeze"><Icon icon={PinIcon} name="pin" />Freeze</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action="wrap"><Icon icon={TextWrapIcon} name="text-wrap" />Wrap content</DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem data-column-action="insert-left"><Icon icon={InsertColumnLeftIcon} directional />Insert left</DropdownMenuItem>
-        <DropdownMenuItem data-column-action="insert-right"><Icon icon={InsertColumnRightIcon} directional />Insert right</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="insert-left"><Icon icon={InsertColumnLeftIcon} name="column-insert-left" directional />Insert left</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="insert-right"><Icon icon={InsertColumnRightIcon} name="column-insert-right" directional />Insert right</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem data-column-action="duplicate"><Icon icon={CopyPlusIcon} />Duplicate</DropdownMenuItem>
-        <DropdownMenuItem data-column-action="hide"><Icon icon={ViewOffIcon} />Hide</DropdownMenuItem>
-        <DropdownMenuItem destructive data-column-action="delete"><Icon icon={ColumnDeleteIcon} />Delete</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="duplicate"><Icon icon={CopyPlusIcon} name="copy-plus" />Duplicate</DropdownMenuItem>
+        <DropdownMenuItem data-column-action="hide"><Icon icon={ViewOffIcon} name="eye-closed" />Hide</DropdownMenuItem>
+        <DropdownMenuItem destructive data-column-action="delete"><Icon icon={ColumnDeleteIcon} name="column-delete" />Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -562,24 +562,24 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
           <TableCell actions pin={pinActions ? "end" : undefined}>
             <TableRowActions reveal={reveal}>
               <Button variant="ghost" size="icon-sm" aria-label={`Edit ${account.name}`} disabled={closed} onClick={() => toast(`Edit ${account.name}`)}>
-                <Icon icon={PencilEdit02Icon} />
+                <Icon icon={PencilEdit02Icon} name="square-pen" />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger variant="ghost" size="icon-sm" aria-label={`More actions for ${account.name}`} disabled={closed}>
-                  <Icon icon={MoreHorizontalIcon} />
+                  <Icon icon={MoreHorizontalIcon} name="ellipsis" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onSelect={() => toast.success(`Duplicated ${account.name}`)}>
-                    <Icon icon={Copy01Icon} />
+                    <Icon icon={Copy01Icon} name="copy" />
                     Duplicate
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={() => toast(`Archived ${account.name}`)}>
-                    <Icon icon={Archive02Icon} />
+                    <Icon icon={Archive02Icon} name="archive" />
                     Archive
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem destructive onSelect={() => toast.error(`Deleted ${account.name}`)}>
-                    <Icon icon={Delete02Icon} />
+                    <Icon icon={Delete02Icon} name="trash" />
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -655,7 +655,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
             </TableHead>
           ))}
           <TableHead className="ayy-table__add-column">
-            <Button variant="ghost" size="icon-sm" aria-label="Add column" data-column-action="add"><Icon icon={Add01Icon} /></Button>
+            <Button variant="ghost" size="icon-sm" aria-label="Add column" data-column-action="add"><Icon icon={Add01Icon} name="add" /></Button>
           </TableHead>
           <TableHead actions pin={pinActions ? "end" : undefined}>
             <span className="ayy-sr-only">Actions</span>
@@ -737,15 +737,15 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
       <ActionBarSeparator />
       <ActionBarActions>
         <ActionBarButton onClick={() => toast(`Editing ${selected.length} accounts`)}>
-          <Icon icon={PencilEdit02Icon} />
+          <Icon icon={PencilEdit02Icon} name="square-pen" />
           Edit
         </ActionBarButton>
         <ActionBarButton onClick={() => toast.success(`Exported ${selected.length} accounts`)}>
-          <Icon icon={Copy01Icon} />
+          <Icon icon={Copy01Icon} name="copy" />
           Export
         </ActionBarButton>
         <ActionBarButton onClick={() => toast(`Archived ${selected.length} accounts`)}>
-          <Icon icon={Archive02Icon} />
+          <Icon icon={Archive02Icon} name="archive" />
           Archive
         </ActionBarButton>
         <ActionBarButton
@@ -755,7 +755,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
             setSelected([]);
           }}
         >
-          <Icon icon={Delete02Icon} />
+          <Icon icon={Delete02Icon} name="trash" />
           Delete
         </ActionBarButton>
       </ActionBarActions>
@@ -797,12 +797,12 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger ref={filterTrigger} variant={filterCount ? "secondary" : "outline"} size="icon" aria-label={filterCount ? `Filters (${filterCount} active)` : "Filters"} data-table-control="filters">
-                <Icon icon={FilterHorizontalIcon} />
+                <Icon icon={FilterHorizontalIcon} name="settings-2" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" aria-label="Filter options" style={{ minInlineSize: "13rem" }}>
                 <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger icon={<Icon icon={Flag01Icon} />} value={statusFilter.length || undefined}>Status</DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger icon={<Icon icon={Flag01Icon} name="flag" />} value={statusFilter.length || undefined}>Status</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent aria-label="Status options">
                     {(["Active", "Trial", "Past due", "Closed"] as Status[]).map((st) => (
                       <DropdownMenuSelectedItem
@@ -820,7 +820,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger icon={<Icon icon={Tag01Icon} />} value={planFilter.length || undefined}>Plan</DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger icon={<Icon icon={Tag01Icon} name="tag" />} value={planFilter.length || undefined}>Plan</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent aria-label="Plan options">
                     {["Enterprise", "Team", "Starter"].map((pl) => (
                       <DropdownMenuSelectedItem
@@ -847,7 +847,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger variant={sort ? "secondary" : "outline"} size="icon" aria-label={sort ? `Sort (${columns.find((c) => c.key === sort.key)?.label ?? sort.key}, ${sort.direction})` : "Sort"} data-table-control="sort">
-                <Icon icon={ArrowUpDownIcon} />
+                <Icon icon={ArrowUpDownIcon} name="arrow-up-down" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" aria-label="Sort options" style={{ minInlineSize: "13rem" }}>
                 <DropdownMenuLabel>Sort by</DropdownMenuLabel>
@@ -866,11 +866,11 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger ref={groupTrigger} variant="outline" size="icon" aria-label="Table options" data-table-control="groups">
-                <Icon icon={LayoutTable01Icon} />
+                <Icon icon={LayoutTable01Icon} name="layout-table" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" aria-label="Table options" style={{ minInlineSize: "13rem" }}>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger icon={<Icon icon={GroupItemsIcon} />}>Group by</DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger icon={<Icon icon={GroupItemsIcon} name="group" />}>Group by</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent aria-label="Group by">
                     <DropdownMenuRadioGroup value={grouped ? groupKey : "none"}>
                       <DropdownMenuRadioItem value="none" data-column-action="group-by" data-column-value="none">No groups</DropdownMenuRadioItem>
@@ -879,7 +879,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger icon={<Icon icon={LayoutTable01Icon} />}>Columns</DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger icon={<Icon icon={LayoutTable01Icon} name="layout-table" />}>Columns</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent aria-label="Columns">
                     {columns.map((c) => (
                       <DropdownMenuCheckboxItem
@@ -895,7 +895,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
               </DropdownMenuContent>
             </DropdownMenu>
             <Button onClick={() => toast("New account")}>
-              <Icon icon={Add01Icon} />
+              <Icon icon={Add01Icon} name="add" />
               Add account
             </Button>
           </TableTools>

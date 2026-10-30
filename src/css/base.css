@@ -5,6 +5,7 @@
   background-color: var(--ayy-color-bg);
   color: var(--ayy-color-text);
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-sm);
   line-height: var(--ayy-leading-normal);
   -webkit-font-smoothing: antialiased;
@@ -14,6 +15,7 @@
 
 :where(h1, h2, h3) {
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
 }
 
 /* Reading direction as a number, for things logical properties can't flip (mirrored icons, chart lines): -1 under
@@ -27,6 +29,7 @@
   :where(.ayy-h1, .ayy-h2, .ayy-h3, .ayy-h4, .ayy-h5, .ayy-h6) {
     margin: 0;
     font-family: var(--ayy-font-heading);
+    font-size-adjust: none;
     color: var(--ayy-color-text);
     text-wrap: balance;
   }
@@ -84,6 +87,7 @@
 
   :where(.ayy-eyebrow) {
     font-family: var(--ayy-font-body);
+    font-size-adjust: var(--ayy-font-body-adjust, none);
     font-size: var(--ayy-text-sm);
     font-weight: var(--ayy-weight-regular);
     line-height: var(--ayy-leading-normal);
@@ -92,12 +96,14 @@
 
   :where(.ayy-signature) {
     font-family: var(--ayy-font-signature);
+    font-size-adjust: none;
     font-weight: var(--ayy-weight-semibold);
     line-height: var(--ayy-leading-tight);
   }
 
   .ayy-mono {
     font-family: var(--ayy-font-mono);
+    font-size-adjust: none;
   }
 
   .ayy-tabular {
@@ -108,6 +114,7 @@
   :where(.ayy-display) {
     margin: 0;
     font-family: var(--ayy-font-heading);
+    font-size-adjust: none;
     font-size: var(--ayy-text-display);
     font-weight: var(--ayy-weight-bold);
     line-height: var(--ayy-leading-display);
@@ -178,6 +185,7 @@
     border-radius: var(--ayy-radius-md);
     background-color: var(--ayy-color-wash);
     font-family: var(--ayy-font-mono);
+    font-size-adjust: none;
     font-size: 0.85em;
     overflow-wrap: anywhere;
   }
@@ -198,6 +206,7 @@
   }
   :where(.ayy-prose :is(h2, h3, h4)) {
     font-family: var(--ayy-font-heading);
+    font-size-adjust: none;
     font-weight: var(--ayy-weight-bold);
     line-height: var(--ayy-leading-tight);
     letter-spacing: var(--ayy-tracking-tight);

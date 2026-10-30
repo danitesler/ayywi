@@ -40,10 +40,10 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
       </div>
       <div className={carouselControlsClass}>
         <button type="button" className={buttonClass({ variant: "outline", size: "icon" })} data-ayy-prev="" aria-label={previousLabel}>
-          <Icon icon={ArrowLeft02Icon} directional />
+          <Icon icon={ArrowLeft02Icon} name="arrow-left" directional />
         </button>
         <button type="button" className={buttonClass({ variant: "outline", size: "icon" })} data-ayy-next="" aria-label={nextLabel}>
-          <Icon icon={ArrowRight02Icon} directional />
+          <Icon icon={ArrowRight02Icon} name="arrow-right" directional />
         </button>
       </div>
     </div>

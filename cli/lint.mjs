@@ -708,7 +708,7 @@ function lintMarkup(text, contract, coUse = new Map()) {
     if (!OTHER_ICON_SETS.test(m[2])) continue;
     push(
       "icon-library",
-      `"${m[2]}" — ayywi's icon library is Hugeicons: <Icon icon={…} /> with icons from @hugeicons/core-free-icons (iconSvg() outside React)`,
+      `"${m[2]}" — ayywi's icon library is Hugeicons: <Icon icon={…} /> with icons from @hugeicons/core-free-icons (iconSvg() outside React). To draw ayywi's own icons in Lucide, Tabler, Material Symbols or Feather, load @danitesler/ayywi/icons/<pack>.css and call setIconPack()`,
       m.index + m[0].indexOf(m[2]),
     );
   }

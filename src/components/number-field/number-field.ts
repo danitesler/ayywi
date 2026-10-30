@@ -14,8 +14,8 @@ export const numberFieldDecrementClass = "ayy-number-field__decrement";
 export const numberFieldIncrementClass = "ayy-number-field__increment";
 
 /** The glyphs inside the buttons, as SVG markup (Hugeicons MinusSign and PlusSign). */
-export const numberFieldMinusIcon = /* @__PURE__ */ iconSvg(MinusSignIcon);
-export const numberFieldPlusIcon = /* @__PURE__ */ iconSvg(PlusSignIcon);
+export const numberFieldMinusIcon = /* @__PURE__ */ iconSvg(MinusSignIcon, { name: "minus" });
+export const numberFieldPlusIcon = /* @__PURE__ */ iconSvg(PlusSignIcon, { name: "plus" });
 
 const parts = (field: Element) => ({
   input: field.querySelector<HTMLInputElement>(`.${numberFieldInputClass}`),

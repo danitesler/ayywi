@@ -10,7 +10,7 @@ export const comboboxMetaClass = "ayy-combobox__meta";
 export const comboboxEmptyClass = "ayy-combobox__empty";
 
 /** The chevron after the input, as SVG markup (Hugeicons ArrowDown01). */
-export const comboboxChevronIcon = /* @__PURE__ */ iconSvg(ArrowDown01Icon);
+export const comboboxChevronIcon = /* @__PURE__ */ iconSvg(ArrowDown01Icon, { name: "chevron-down" });
 
 export interface ComboboxControllerOptions {
   /** Called when an option is chosen (click, Enter), and with null when the field is cleared. The input already shows its label. */

@@ -185,6 +185,7 @@
 
 .ayy-color-picker__inputs :is(input, .ayy-input) {
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
 }
 
 .ayy-color-picker__copy {

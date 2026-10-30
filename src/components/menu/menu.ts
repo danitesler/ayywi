@@ -387,6 +387,9 @@ export function connectMenu(
   };
 
   const onContentKey = (event: KeyboardEvent) => {
+    // A submenu panel sits inside this content, so its keys bubble here. Its own controller already handled them.
+    const owner = (event.target as Element | null)?.closest(".ayy-menu");
+    if (owner && owner !== content && content.contains(owner)) return;
     const active = document.activeElement as HTMLElement | null;
     const rtl = isRtl();
 

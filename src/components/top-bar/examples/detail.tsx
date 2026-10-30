@@ -12,10 +12,10 @@ export default function Example() {
         actions={
           <>
             <Button variant="ghost" size="icon" aria-label="Share">
-              <Icon icon={Share08Icon} />
+              <Icon icon={Share08Icon} name="share-2" />
             </Button>
             <Button variant="ghost" size="icon" aria-label="More">
-              <Icon icon={MoreHorizontalIcon} />
+              <Icon icon={MoreHorizontalIcon} name="ellipsis" />
             </Button>
           </>
         }

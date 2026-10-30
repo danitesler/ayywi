@@ -83,7 +83,7 @@ export const NavbarToggle = forwardRef<HTMLButtonElement, NavbarToggleProps>(fun
       aria-expanded="false"
       {...props}
     >
-      {children ?? <Icon icon={Menu01Icon} />}
+      {children ?? <Icon icon={Menu01Icon} name="menu" />}
     </button>
   );
 });

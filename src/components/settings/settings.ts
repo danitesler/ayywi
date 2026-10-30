@@ -48,4 +48,4 @@ export function syncSettingsColor(input: HTMLInputElement): void {
 }
 
 /** The chevron at the end of a link row, as SVG markup (Hugeicons ArrowRight01, mirrored in RTL). */
-export const settingsChevronIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { directional: true });
+export const settingsChevronIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });

@@ -93,7 +93,7 @@ export default function Example() {
         <FilterBarMain>
           <FilterBarGroup>
             <InputGroup style={{ inlineSize: "min(100%, 14rem)" }}>
-              <Icon icon={Search01Icon} />
+              <Icon icon={Search01Icon} name="search" />
               <Input
                 type="search"
                 placeholder="Search tasks..."
@@ -106,7 +106,7 @@ export default function Example() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <FilterBarTrigger active={totalActive > 0} count={totalActive > 0 ? totalActive : undefined}>
-                  <Icon icon={FilterHorizontalIcon} />
+                  <Icon icon={FilterHorizontalIcon} name="settings-2" />
                   Filters
                 </FilterBarTrigger>
               </DropdownMenuTrigger>
@@ -115,7 +115,7 @@ export default function Example() {
 
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger
-                    icon={<Icon icon={Flag01Icon} />}
+                    icon={<Icon icon={Flag01Icon} name="flag" />}
                     value={priorities.length > 0 ? priorities.length : undefined}
                   >
                     Priority
@@ -136,7 +136,7 @@ export default function Example() {
 
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger
-                    icon={<Icon icon={Tag01Icon} />}
+                    icon={<Icon icon={Tag01Icon} name="tag" />}
                     value={categories.length > 0 ? categories.length : undefined}
                   >
                     Category
@@ -157,7 +157,7 @@ export default function Example() {
 
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger
-                    icon={<Icon icon={CheckmarkCircle01Icon} />}
+                    icon={<Icon icon={CheckmarkCircle01Icon} name="circle-check-2" />}
                     value={statuses.length > 0 ? statuses.length : undefined}
                   >
                     Status

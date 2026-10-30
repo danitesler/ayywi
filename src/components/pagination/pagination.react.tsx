@@ -92,7 +92,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
       ) : null}
       {item(page - 1, (
         <>
-          <Icon icon={ArrowLeft01Icon} directional />
+          <Icon icon={ArrowLeft01Icon} name="chevron-left" directional />
           {text.previous}
         </>
       ), { step: true, rel: "prev" })}
@@ -108,7 +108,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
       {item(page + 1, (
         <>
           {text.next}
-          <Icon icon={ArrowRight01Icon} directional />
+          <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
         </>
       ), { step: true, rel: "next" })}
     </nav>

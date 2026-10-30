@@ -16,22 +16,22 @@ export default function Example() {
     <div className="ayy-cluster">
       <SplitButton>
         <Button onClick={() => toast.success("Deployed to production")}>
-          <Icon icon={Rocket01Icon} />
+          <Icon icon={Rocket01Icon} name="rocket-launch" />
           Deploy
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger size="icon" aria-label="More deploy options">
-            <Icon icon={ArrowDown01Icon} />
+            <Icon icon={ArrowDown01Icon} name="chevron-down" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem icon={<Icon icon={Rocket01Icon} />} onSelect={() => toast("Deploying preview…")}>
+            <DropdownMenuItem icon={<Icon icon={Rocket01Icon} name="rocket-launch" />} onSelect={() => toast("Deploying preview…")}>
               Deploy to preview
             </DropdownMenuItem>
-            <DropdownMenuItem icon={<Icon icon={Calendar03Icon} />} onSelect={() => toast("Scheduled for 09:00")}>
+            <DropdownMenuItem icon={<Icon icon={Calendar03Icon} name="calendar" />} onSelect={() => toast("Scheduled for 09:00")}>
               Schedule deploy
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem icon={<Icon icon={Copy01Icon} />} onSelect={() => toast("Build command copied")}>
+            <DropdownMenuItem icon={<Icon icon={Copy01Icon} name="copy" />} onSelect={() => toast("Build command copied")}>
               Copy build command
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -44,13 +44,13 @@ export default function Example() {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger variant="outline" size="icon" aria-label="More save options">
-            <Icon icon={ArrowDown01Icon} />
+            <Icon icon={ArrowDown01Icon} name="chevron-down" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem icon={<Icon icon={Clock01Icon} />} onSelect={() => toast("Saved as draft")}>
+            <DropdownMenuItem icon={<Icon icon={Clock01Icon} name="clock" />} onSelect={() => toast("Saved as draft")}>
               Save as draft
             </DropdownMenuItem>
-            <DropdownMenuItem icon={<Icon icon={Copy01Icon} />} onSelect={() => toast("Saved as template")}>
+            <DropdownMenuItem icon={<Icon icon={Copy01Icon} name="copy" />} onSelect={() => toast("Saved as template")}>
               Save as template
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -63,7 +63,7 @@ export default function Example() {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger variant="secondary" size="icon-sm" aria-label="More export formats">
-            <Icon icon={ArrowDown01Icon} />
+            <Icon icon={ArrowDown01Icon} name="chevron-down" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onSelect={() => toast("Exported JSON")}>Export JSON</DropdownMenuItem>

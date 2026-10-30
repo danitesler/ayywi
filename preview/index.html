@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="ayy-scrollbar">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,12 +11,14 @@
         try {
           var m = localStorage.getItem("ayy-theme");
           if (m === "light" || m === "dark") document.documentElement.setAttribute("data-theme", m);
+          var i = localStorage.getItem("ayy-icons");
+          if (["feather", "lucide", "material-symbols", "tabler"].indexOf(i) > -1) document.documentElement.setAttribute("data-ayy-icons", i);
         } catch (e) {}
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Sora:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Sora:wght@400;500;600;700&family=Unbounded:wght@500;600;700&family=Fraunces:wght@400..700&family=Literata:wght@400..700&family=Space+Grotesk:wght@400..700&family=DM+Sans:wght@400..700&family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400..700&family=Figtree:wght@400..700&family=Syne:wght@400..700&family=Manrope:wght@400..700&family=Lexend:wght@400..700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>

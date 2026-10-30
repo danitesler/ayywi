@@ -336,6 +336,19 @@
   color: var(--ayy-color-text);
 }
 
+/* A preset outside min / max */
+.ayy-date-picker-grid__preset[aria-disabled="true"] {
+  opacity: var(--ayy-opacity-disabled);
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .ayy-date-picker-grid__preset[aria-disabled="true"]:hover {
+    background: none;
+    color: var(--ayy-color-text-soft);
+  }
+}
+
 .ayy-date-picker-grid__preset:focus-visible {
   outline: 2px solid var(--ayy-color-ring);
   outline-offset: 1px;

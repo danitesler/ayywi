@@ -55,9 +55,9 @@ export default function Example() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SortingTrigger aria-label={`Sort by ${currentLabel}`}>
-                <Icon icon={Sorting05Icon} />
+                <Icon icon={Sorting05Icon} name="sort-2" />
                 <span>{`Sort: ${currentLabel}`}</span>
-                <Icon icon={ArrowDown01Icon} />
+                <Icon icon={ArrowDown01Icon} name="chevron-down" />
               </SortingTrigger>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" aria-label="Sort options">

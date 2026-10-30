@@ -7,7 +7,7 @@ export default function Example() {
   return (
     <>
       <Button variant="outline" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-        <Icon icon={Search01Icon} />
+        <Icon icon={Search01Icon} name="search" />
         Search
         <Shortcut keys="Mod+K" />
       </Button>
@@ -30,18 +30,18 @@ export default function Example() {
         }
       >
         <CommandGroup heading="Go to">
-          <CommandItem value="today" icon={<Icon icon={Sun03Icon} />}>
+          <CommandItem value="today" icon={<Icon icon={Sun03Icon} name="sun" />}>
             Today
           </CommandItem>
-          <CommandItem value="inbox" icon={<Icon icon={InboxIcon} />} meta="12">
+          <CommandItem value="inbox" icon={<Icon icon={InboxIcon} name="inbox" />} meta="12">
             Inbox
           </CommandItem>
-          <CommandItem value="settings" keywords="preferences" icon={<Icon icon={Settings01Icon} />} shortcut="Mod+,">
+          <CommandItem value="settings" keywords="preferences" icon={<Icon icon={Settings01Icon} name="settings" />} shortcut="Mod+,">
             Settings
           </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Create">
-          <CommandItem value="new-task" keywords="add todo" icon={<Icon icon={Add01Icon} />} shortcut="Mod+N">
+          <CommandItem value="new-task" keywords="add todo" icon={<Icon icon={Add01Icon} name="add" />} shortcut="Mod+N">
             New task
           </CommandItem>
         </CommandGroup>

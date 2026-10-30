@@ -7,17 +7,17 @@ export function searchBarClass({ size = "md", className }: { size?: "md" | "lg";
 }
 
 /** The magnifier, as SVG markup (Hugeicons Search01). */
-export const searchBarIcon = /* @__PURE__ */ iconSvg(Search01Icon);
+export const searchBarIcon = /* @__PURE__ */ iconSvg(Search01Icon, { name: "search" });
 /** The clear button's ×, as SVG markup (Hugeicons Cancel01). */
-export const searchBarClearIcon = /* @__PURE__ */ iconSvg(Cancel01Icon);
+export const searchBarClearIcon = /* @__PURE__ */ iconSvg(Cancel01Icon, { name: "x" });
 
 /**
- * Clear the search field a .ayy-search-bar__clear button belongs to: empty it, fire "input" so filters update, and
+ * Clear the search field a .ayy-search-bar__clear button belongs to: empty it (unless it's disabled or read-only), fire "input" so filters update, and
  * put focus back in it. @danitesler/ayywi/elements calls this for every clear button on the page.
  */
 export function clearSearchBar(button: Element): void {
   const input = button.closest(".ayy-search-bar__field")?.querySelector<HTMLInputElement>(".ayy-search-bar__input");
-  if (!input) return;
+  if (!input || input.disabled || input.readOnly) return;
   input.value = "";
   input.dispatchEvent(new Event("input", { bubbles: true }));
   input.focus();

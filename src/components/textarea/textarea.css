@@ -57,6 +57,7 @@
 
 .ayy-textarea--mono {
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
 }
 
 @media (forced-colors: active) {

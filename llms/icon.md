@@ -1,6 +1,6 @@
 # Icon
 
-Category: Data display. A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Also called: svg-icon.
+Category: Data display. A single icon from the Hugeicons library that ayywi uses. It follows the colour and size of the text around it. Give it a name and an icon pack (Lucide, Tabler, Material Symbols, Feather) can draw it instead. Also called: svg-icon.
 
 **Classes**
 - `.ayy-icon` — On the <svg>. 1.25em square, so it follows the surrounding text; centred on capital letters; never shrinks in a flex row.
@@ -30,7 +30,7 @@ Category: Data display. A single icon from the Hugeicons library that ayywi uses
 - Width — Square. directional mirrors it in RTL.
 
 **React** — `import { Icon } from "@danitesler/ayywi/react"; import { Search01Icon } from "@hugeicons/core-free-icons";`
-- `<Icon>` renders <svg class="ayy-icon">. Props: `icon` IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package; `size` "auto" | "sm" | "md" | "lg" | "xl" — auto follows the text; the rest are 16/20/24/32px; `directional` boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction; `label` string — accessible name; without it the icon is decorative (aria-hidden); `strokeWidth` number — stroke width on the 24px grid (Hugeicons default 1.5)
+- `<Icon>` renders <svg class="ayy-icon">. Props: `icon` IconData (required) — any icon from @hugeicons/core-free-icons or a Hugeicons Pro package; `size` "auto" | "sm" | "md" | "lg" | "xl" — auto follows the text; the rest are 16/20/24/32px; `directional` boolean — mirror in right-to-left text; for arrows and other icons that point along the reading direction; `name` IconName — the glyph's name ("x", "search"…), written as data-ayy-icon so an icon pack can replace it; leave it off for your own icons; `label` string — accessible name; without it the icon is decorative (aria-hidden); `strokeWidth` number — stroke width on the 24px grid (Hugeicons default 1.5)
 
 **Accessibility**
 - Icons are decorative by default (aria-hidden): the text next to them carries the meaning.
@@ -50,7 +50,7 @@ Category: Data display. A single icon from the Hugeicons library that ayywi uses
 - Don't use an icon for people and workspaces — use Avatar.
 - Don't use Icon for illustrations and logos — use an <img> or your own SVG.
 - Don't rely on an icon when its meaning isn't obvious — write the word instead of (or next to) it.
-- Don't mix in another icon set. Hugeicons' 1.5px rounded stroke is part of the look.
+- Don't mix in another icon set by hand. Hugeicons' 1.5px rounded stroke is the default look; an icon pack switches every named icon at once.
 - Don't keep a fixed colour (color, fill or stroke set to a hex value) on an SVG you paste in: a black icon disappears in the dark theme.
 - Don't use colour as the only signal: pair a status icon with a label.
 
@@ -62,25 +62,25 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div class="ayy-stack" style="--ayy-gap: var(--ayy-space-6)">
   <div class="ayy-cluster" style="--ayy-gap: var(--ayy-space-8); align-items: end">
     <span class="ayy-stack" style="--ayy-gap: var(--ayy-space-2); align-items: center">
-      <svg class="ayy-icon ayy-icon--sm" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--sm" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
       <span class="ayy-muted">sm · 16px</span>
     </span>
     <span class="ayy-stack" style="--ayy-gap: var(--ayy-space-2); align-items: center">
-      <svg class="ayy-icon ayy-icon--md" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--md" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
       <span class="ayy-muted">md · 20px</span>
     </span>
     <span class="ayy-stack" style="--ayy-gap: var(--ayy-space-2); align-items: center">
-      <svg class="ayy-icon ayy-icon--lg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--lg" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
       <span class="ayy-muted">lg · 24px</span>
     </span>
     <span class="ayy-stack" style="--ayy-gap: var(--ayy-space-2); align-items: center">
-      <svg class="ayy-icon ayy-icon--xl" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--xl" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
       <span class="ayy-muted">xl · 32px</span>
     </span>
   </div>
   <!-- No size: the icon follows the text around it. -->
-  <p class="ayy-h4"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg> Build queue</p>
-  <p class="ayy-muted"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg> Builds start within 2 minutes of a push.</p>
+  <p class="ayy-h4"><svg class="ayy-icon" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg> Build queue</p>
+  <p class="ayy-muted"><svg class="ayy-icon" data-ayy-icon="clock" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg> Builds start within 2 minutes of a push.</p>
 </div>
 ```
 
@@ -104,7 +104,7 @@ export default function Example() {
       <div className="ayy-cluster" style={{ "--ayy-gap": "var(--ayy-space-8)", alignItems: "end" } as CSSProperties}>
         {SIZES.map(([size, px]) => (
           <span key={size} className="ayy-stack" style={{ "--ayy-gap": "var(--ayy-space-2)", alignItems: "center" } as CSSProperties}>
-            <Icon icon={Clock01Icon} size={size} />
+            <Icon icon={Clock01Icon} name="clock" size={size} />
             <span className="ayy-muted">
               {size} · {px}
             </span>
@@ -113,10 +113,10 @@ export default function Example() {
       </div>
       {/* No size: the icon follows the text around it. */}
       <p className="ayy-h4">
-        <Icon icon={Clock01Icon} /> Build queue
+        <Icon icon={Clock01Icon} name="clock" /> Build queue
       </p>
       <p className="ayy-muted">
-        <Icon icon={Clock01Icon} /> Builds start within 2 minutes of a push.
+        <Icon icon={Clock01Icon} name="clock" /> Builds start within 2 minutes of a push.
       </p>
     </div>
   );
@@ -131,14 +131,14 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <!-- Decorative icons are aria-hidden. An icon that carries the meaning on its own gets role="img" and a label. -->
 <ul class="ayy-list ayy-list--compact" aria-label="Deploys">
   <li class="ayy-list__item">
-    <svg class="ayy-icon" style="color: var(--ayy-color-success)" viewBox="0 0 24 24" fill="none" role="img" aria-label="Ready"><path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M8 12.5L10.5 15L16 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+    <svg class="ayy-icon" data-ayy-icon="circle-check" style="color: var(--ayy-color-success)" viewBox="0 0 24 24" fill="none" role="img" aria-label="Ready"><path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M8 12.5L10.5 15L16 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
     <span>Marketing site</span>
-    <span class="ayy-cluster ayy-muted" style="--ayy-gap: var(--ayy-space-1)"><svg class="ayy-icon ayy-icon--sm" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 19H13C15.8284 19 17.2426 19 18.1213 18.1213C19 17.2426 19 15.8284 19 13V10M19 10C19.7002 10 21.0085 11.9943 21.5 12.5M19 10C18.2998 10 16.9915 11.9943 16.5 12.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M5 7L5 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/></svg> main</span>
+    <span class="ayy-cluster ayy-muted" style="--ayy-gap: var(--ayy-space-1)"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="git-branch" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 19H13C15.8284 19 17.2426 19 18.1213 18.1213C19 17.2426 19 15.8284 19 13V10M19 10C19.7002 10 21.0085 11.9943 21.5 12.5M19 10C18.2998 10 16.9915 11.9943 16.5 12.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M5 7L5 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/></svg> main</span>
   </li>
   <li class="ayy-list__item">
-    <svg class="ayy-icon" style="color: var(--ayy-color-destructive)" viewBox="0 0 24 24" fill="none" role="img" aria-label="Failed"><path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+    <svg class="ayy-icon" data-ayy-icon="circle-x" style="color: var(--ayy-color-destructive)" viewBox="0 0 24 24" fill="none" role="img" aria-label="Failed"><path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
     <span>Docs</span>
-    <span class="ayy-cluster ayy-muted" style="--ayy-gap: var(--ayy-space-1)"><svg class="ayy-icon ayy-icon--sm" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 19H13C15.8284 19 17.2426 19 18.1213 18.1213C19 17.2426 19 15.8284 19 13V10M19 10C19.7002 10 21.0085 11.9943 21.5 12.5M19 10C18.2998 10 16.9915 11.9943 16.5 12.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M5 7L5 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/></svg> fix/search-index</span>
+    <span class="ayy-cluster ayy-muted" style="--ayy-gap: var(--ayy-space-1)"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="git-branch" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 19H13C15.8284 19 17.2426 19 18.1213 18.1213C19 17.2426 19 15.8284 19 13V10M19 10C19.7002 10 21.0085 11.9943 21.5 12.5M19 10C18.2998 10 16.9915 11.9943 16.5 12.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M5 7L5 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/></svg> fix/search-index</span>
   </li>
 </ul>
 ```
@@ -155,17 +155,17 @@ export default function Example() {
   return (
     <List compact aria-label="Deploys">
       <ListItem>
-        <Icon icon={CheckmarkCircle02Icon} label="Ready" style={{ color: "var(--ayy-color-success)" }} />
+        <Icon icon={CheckmarkCircle02Icon} name="circle-check" label="Ready" style={{ color: "var(--ayy-color-success)" }} />
         <span>Marketing site</span>
         <span className="ayy-cluster ayy-muted" style={{ "--ayy-gap": "var(--ayy-space-1)" } as CSSProperties}>
-          <Icon icon={GitBranchIcon} size="sm" /> main
+          <Icon icon={GitBranchIcon} name="git-branch" size="sm" /> main
         </span>
       </ListItem>
       <ListItem>
-        <Icon icon={CancelCircleIcon} label="Failed" style={{ color: "var(--ayy-color-destructive)" }} />
+        <Icon icon={CancelCircleIcon} name="circle-x" label="Failed" style={{ color: "var(--ayy-color-destructive)" }} />
         <span>Docs</span>
         <span className="ayy-cluster ayy-muted" style={{ "--ayy-gap": "var(--ayy-space-1)" } as CSSProperties}>
-          <Icon icon={GitBranchIcon} size="sm" /> fix/search-index
+          <Icon icon={GitBranchIcon} name="git-branch" size="sm" /> fix/search-index
         </span>
       </ListItem>
     </List>
@@ -182,22 +182,22 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div class="ayy-stack">
   <nav class="ayy-cluster" aria-label="Pagination">
     <button type="button" class="ayy-button ayy-button--outline">
-      <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12.002H19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M10.9999 18.002C10.9999 18.002 4.99998 13.583 4.99997 12.0019C4.99996 10.4208 11 6.00195 11 6.00195" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="arrow-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12.002H19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M10.9999 18.002C10.9999 18.002 4.99998 13.583 4.99997 12.0019C4.99996 10.4208 11 6.00195 11 6.00195" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
       Previous
     </button>
     <button type="button" class="ayy-button ayy-button--outline">
       Next
-      <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.5 12L4.99997 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="arrow-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.5 12L4.99997 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
     </button>
   </nav>
   <nav class="ayy-cluster" aria-label="עימוד" dir="rtl" lang="he">
     <button type="button" class="ayy-button ayy-button--outline">
-      <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12.002H19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M10.9999 18.002C10.9999 18.002 4.99998 13.583 4.99997 12.0019C4.99996 10.4208 11 6.00195 11 6.00195" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="arrow-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12.002H19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M10.9999 18.002C10.9999 18.002 4.99998 13.583 4.99997 12.0019C4.99996 10.4208 11 6.00195 11 6.00195" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
       הקודם
     </button>
     <button type="button" class="ayy-button ayy-button--outline">
       הבא
-      <svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.5 12L4.99997 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      <svg class="ayy-icon ayy-icon--directional" data-ayy-icon="arrow-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.5 12L4.99997 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
     </button>
   </nav>
 </div>
@@ -215,22 +215,22 @@ export default function Example() {
     <div className="ayy-stack">
       <nav className="ayy-cluster" aria-label="Pagination">
         <Button variant="outline">
-          <Icon icon={ArrowLeft02Icon} directional />
+          <Icon icon={ArrowLeft02Icon} name="arrow-left" directional />
           Previous
         </Button>
         <Button variant="outline">
           Next
-          <Icon icon={ArrowRight02Icon} directional />
+          <Icon icon={ArrowRight02Icon} name="arrow-right" directional />
         </Button>
       </nav>
       <nav className="ayy-cluster" aria-label="עימוד" dir="rtl" lang="he">
         <Button variant="outline">
-          <Icon icon={ArrowLeft02Icon} directional />
+          <Icon icon={ArrowLeft02Icon} name="arrow-left" directional />
           הקודם
         </Button>
         <Button variant="outline">
           הבא
-          <Icon icon={ArrowRight02Icon} directional />
+          <Icon icon={ArrowRight02Icon} name="arrow-right" directional />
         </Button>
       </nav>
     </div>

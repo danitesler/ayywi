@@ -28,6 +28,7 @@
   color: var(--ayy-color-text);
   box-shadow: var(--ayy-shadow-overlay);
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-s);
   font-weight: var(--ayy-weight-regular);
   line-height: var(--ayy-leading-snug);

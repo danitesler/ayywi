@@ -49,7 +49,7 @@ import inboxScreenshot from "./screenshots/inbox.png";
 import landingScreenshot from "./screenshots/landing.png";
 import storeScreenshot from "./screenshots/store.png";
 import trackerScreenshot from "./screenshots/tracker.png";
-import { toast, type DensityMode, type IconData, type ThemeName } from "@danitesler/ayywi";
+import { toast, type DensityMode, type IconData, type IconName, type ThemeName } from "@danitesler/ayywi";
 import {
   Accordion,
   AccordionItem,
@@ -188,6 +188,7 @@ interface Destination {
   href: string;
   label: string;
   icon: IconData;
+  iconName: IconName;
 }
 
 /** One settings section: a link in the settings dialog's sidebar and what it shows. */
@@ -195,6 +196,7 @@ interface SettingsSection {
   href: string;
   label: string;
   icon: IconData;
+  iconName: IconName;
   content: ReactNode;
 }
 
@@ -235,7 +237,7 @@ function SettingsShell({ settings, titleId }: { settings: AppSettings; titleId: 
               {g.sections.map((section) => (
                 <AppShellItem key={section.href}>
                   <AppShellLink href={section.href} current={section === shown} onClick={(event) => open(event, section.href)}>
-                    <Icon icon={section.icon} />
+                    <Icon icon={section.icon} name={section.iconName} />
                     {section.label}
                   </AppShellLink>
                 </AppShellItem>
@@ -299,7 +301,7 @@ function ShortcutRow({ id, label, initial }: { id: string; label: string; initia
 }
 
 interface AppFrameProps {
-  brand: { name: string; icon: IconData; href: string };
+  brand: { name: string; icon: IconData; iconName: IconName; href: string };
   /** Sidebar groups. The bottom nav shows `tabs` of these (same labels, icons and order). */
   groups: { label: string; items: Destination[] }[];
   /** hrefs of the destinations in the bottom nav, three to five. With more destinations than tabs, a "More" tab opens the sidebar. */
@@ -330,7 +332,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, 
   const more = all.length > tabItems.length;
   const brandLink = (
     <AppShellBrand href={brand.href}>
-      <Icon icon={brand.icon} />
+      <Icon icon={brand.icon} name={brand.iconName} />
       {brand.name}
     </AppShellBrand>
   );
@@ -341,7 +343,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, 
         {barActions}
         {hasSettings ? null : (
           <Button variant="ghost" size="icon" aria-label="Settings" aria-haspopup="dialog" onClick={openSettings}>
-            <Icon icon={Settings01Icon} />
+            <Icon icon={Settings01Icon} name="settings" />
           </Button>
         )}
       </AppShellBar>
@@ -353,7 +355,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, 
               {g.items.map((d) => (
                 <AppShellItem key={d.href}>
                   <AppShellLink href={d.href} current={d.href === current} onClick={onDestination(d.href)}>
-                    <Icon icon={d.icon} />
+                    <Icon icon={d.icon} name={d.iconName} />
                     {d.label}
                   </AppShellLink>
                 </AppShellItem>
@@ -364,7 +366,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, 
         <AppShellFooter>
           {hasSettings ? null : (
             <AppShellLink href="#settings" onClick={openSettings}>
-              <Icon icon={Settings01Icon} />
+              <Icon icon={Settings01Icon} name="settings" />
               Settings
             </AppShellLink>
           )}
@@ -374,12 +376,12 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, 
       <AppShellMain className={mainClassName}>{children}</AppShellMain>
       <BottomNav aria-label={brand.name}>
         {tabItems.map((d) => (
-          <BottomNavLink key={d.href} href={d.href} icon={<Icon icon={d.icon} />} current={d.href === current} onClick={onDestination(d.href)}>
+          <BottomNavLink key={d.href} href={d.href} icon={<Icon icon={d.icon} name={d.iconName} />} current={d.href === current} onClick={onDestination(d.href)}>
             {d.label}
           </BottomNavLink>
         ))}
         {more ? (
-          <BottomNavButton className="ayy-app-shell__toggle" icon={<Icon icon={MoreHorizontalIcon} />}>
+          <BottomNavButton className="ayy-app-shell__toggle" icon={<Icon icon={MoreHorizontalIcon} name="ellipsis" />}>
             More
           </BottomNavButton>
         ) : null}
@@ -391,7 +393,7 @@ function AppFrame({ brand, groups, tabs, current, barActions, footer, settings, 
 
 const searchButton = (label: string) => (
   <Button variant="ghost" size="icon" aria-label={label}>
-    <Icon icon={Search01Icon} />
+    <Icon icon={Search01Icon} name="search" />
   </Button>
 );
 
@@ -451,7 +453,7 @@ const PULSE_SETTINGS: AppSettings = {
         {
           href: "#pl-profile",
           label: "Profile",
-          icon: UserCircleIcon,
+          icon: UserCircleIcon, iconName: "circle-user",
           content: (
             <>
               <Settings title="Your details">
@@ -472,7 +474,7 @@ const PULSE_SETTINGS: AppSettings = {
         {
           href: "#pl-preferences",
           label: "Preferences",
-          icon: PaintBoardIcon,
+          icon: PaintBoardIcon, iconName: "palette",
           content: (
             <>
               <Settings title="Appearance">
@@ -489,7 +491,7 @@ const PULSE_SETTINGS: AppSettings = {
         {
           href: "#pl-notifications",
           label: "Notifications",
-          icon: Notification01Icon,
+          icon: Notification01Icon, iconName: "bell",
           content: (
             <Settings title="Email me" description="Alerts go to maya@pulse.dev.">
               {switchRow("pl-weekly", "Weekly report", "Traffic, revenue and top pages, every Monday.", true)}
@@ -506,7 +508,7 @@ const PULSE_SETTINGS: AppSettings = {
         {
           href: "#pl-general",
           label: "General",
-          icon: Settings01Icon,
+          icon: Settings01Icon, iconName: "settings",
           content: (
             <Settings title="Workspace">
               <SettingsRow label="Name" htmlFor="pl-workspace">
@@ -520,7 +522,7 @@ const PULSE_SETTINGS: AppSettings = {
         {
           href: "#pl-data",
           label: "Data",
-          icon: Shield01Icon,
+          icon: Shield01Icon, iconName: "shield",
           content: (
             <>
               <Settings title="Collection">
@@ -545,23 +547,23 @@ function DashboardApp() {
   const pages = [...PAGES].sort((a, b) => compareValues(a.views, b.views, sort));
   return (
     <AppFrame
-      brand={{ name: "Pulse", icon: ChartLineData01Icon, href: "#overview" }}
+      brand={{ name: "Pulse", icon: ChartLineData01Icon, iconName: "chart-line", href: "#overview" }}
       groups={[
         {
           label: "Workspace",
           items: [
-            { href: "#overview", label: "Overview", icon: DashboardSquare01Icon },
-            { href: "#reports", label: "Reports", icon: Analytics01Icon },
-            { href: "#audiences", label: "Audiences", icon: UserGroupIcon },
-            { href: "#projects", label: "Projects", icon: Folder01Icon },
+            { href: "#overview", label: "Overview", icon: DashboardSquare01Icon, iconName: "layout-dashboard" },
+            { href: "#reports", label: "Reports", icon: Analytics01Icon, iconName: "bar-chart" },
+            { href: "#audiences", label: "Audiences", icon: UserGroupIcon, iconName: "users-group" },
+            { href: "#projects", label: "Projects", icon: Folder01Icon, iconName: "folder" },
           ],
         },
         {
           label: "Account",
           items: [
-            { href: "#integrations", label: "Integrations", icon: Link01Icon },
-            { href: "#billing", label: "Billing", icon: CreditCardIcon },
-            { href: "#settings", label: "Settings", icon: Settings01Icon },
+            { href: "#integrations", label: "Integrations", icon: Link01Icon, iconName: "link" },
+            { href: "#billing", label: "Billing", icon: CreditCardIcon, iconName: "credit-card" },
+            { href: "#settings", label: "Settings", icon: Settings01Icon, iconName: "settings" },
           ],
         },
       ]}
@@ -582,7 +584,7 @@ function DashboardApp() {
               <SegmentedControlItem value="90d">90d</SegmentedControlItem>
             </SegmentedControl>
             <Button size="sm" variant="outline">
-              <Icon icon={Download01Icon} />
+              <Icon icon={Download01Icon} name="download" />
               Export
             </Button>
           </PageHeaderActions>
@@ -714,9 +716,9 @@ function DashboardApp() {
 /* ---- 2. Marketing site ---- */
 
 const FEATURES = [
-  { icon: FlashIcon, color: "var(--ayy-accent-marketing)", title: "Ship in an afternoon", text: "Start from a template, connect your data, publish. No build pipeline to babysit." },
-  { icon: Shield01Icon, color: "var(--ayy-accent-system)", title: "Secure by default", text: "SSO, audit logs and per-project roles on every plan, not just the expensive one." },
-  { icon: GlobeIcon, color: "var(--ayy-accent-product)", title: "Fast everywhere", text: "Pages are served from 40 regions, so the first byte arrives before anyone notices." },
+  { icon: FlashIcon, iconName: "zap" as const, color: "var(--ayy-accent-marketing)", title: "Ship in an afternoon", text: "Start from a template, connect your data, publish. No build pipeline to babysit." },
+  { icon: Shield01Icon, iconName: "shield" as const, color: "var(--ayy-accent-system)", title: "Secure by default", text: "SSO, audit logs and per-project roles on every plan, not just the expensive one." },
+  { icon: GlobeIcon, iconName: "earth" as const, color: "var(--ayy-accent-product)", title: "Fast everywhere", text: "Pages are served from 40 regions, so the first byte arrives before anyone notices." },
 ];
 
 const PLANS = [
@@ -748,7 +750,7 @@ function LandingApp() {
       </a>
       <Navbar>
         <NavbarBrand href="#top">
-          <Icon icon={Layers01Icon} />
+          <Icon icon={Layers01Icon} name="layers" />
           Northwind
         </NavbarBrand>
         <NavbarNav>
@@ -796,7 +798,7 @@ function LandingApp() {
               <Card key={f.title}>
                 <CardHeader>
                   <IconTile spotColor={f.color}>
-                    <Icon icon={f.icon} />
+                    <Icon icon={f.icon} name={f.iconName} />
                   </IconTile>
                   <CardTitle>{f.title}</CardTitle>
                   <CardDescription>{f.text}</CardDescription>
@@ -831,7 +833,7 @@ function LandingApp() {
                   <List compact aria-label={`${p.name} includes`}>
                     {p.perks.map((perk) => (
                       <ListItem key={perk}>
-                        <Icon icon={CheckmarkCircle02Icon} />
+                        <Icon icon={CheckmarkCircle02Icon} name="circle-check" />
                         {perk}
                       </ListItem>
                     ))}
@@ -894,7 +896,7 @@ function LandingApp() {
             <p className="ayy-muted">Free for your first project. No card needed.</p>
             <form className="ayy-cluster" onSubmit={(e) => e.preventDefault()}>
               <InputGroup size="lg" style={{ inlineSize: "18rem" }}>
-                <Icon icon={Mail01Icon} />
+                <Icon icon={Mail01Icon} name="mail" />
                 <Input type="email" placeholder="you@company.com" aria-label="Work email" autoComplete="email" required />
               </InputGroup>
               <Button type="submit" size="lg" variant="ring">
@@ -908,7 +910,7 @@ function LandingApp() {
       <Footer>
         <FooterBrand>
           <a href="#top">
-            <Icon icon={Layers01Icon} />
+            <Icon icon={Layers01Icon} name="layers" />
             Northwind
           </a>
           <p>Fast, accessible sites from a sentence.</p>
@@ -962,7 +964,7 @@ const RELAY_SETTINGS: AppSettings = {
         {
           href: "#rl-profile",
           label: "Profile",
-          icon: UserCircleIcon,
+          icon: UserCircleIcon, iconName: "circle-user",
           content: (
             <Settings title="How customers see you">
               <SettingsRow label="Display name" htmlFor="rl-name" hint="Shown above every reply you send.">
@@ -977,7 +979,7 @@ const RELAY_SETTINGS: AppSettings = {
         {
           href: "#rl-notifications",
           label: "Notifications",
-          icon: Notification01Icon,
+          icon: Notification01Icon, iconName: "bell",
           content: (
             <>
               <Settings title="Notify me about">
@@ -999,7 +1001,7 @@ const RELAY_SETTINGS: AppSettings = {
         {
           href: "#rl-replies",
           label: "Replies",
-          icon: SentIcon,
+          icon: SentIcon, iconName: "send",
           content: (
             <Settings title="Sending">
               {switchRow("rl-enter", "Send with ⌘ Enter", "Enter alone starts a new line.", true)}
@@ -1011,7 +1013,7 @@ const RELAY_SETTINGS: AppSettings = {
         {
           href: "#rl-ai",
           label: "AI assistant",
-          icon: SparklesIcon,
+          icon: SparklesIcon, iconName: "sparkles",
           content: (
             <Settings title="Relay AI" description="Suggestions are drafts. Nothing is sent until you send it.">
               {switchRow("rl-suggest", "Suggest replies", "Three short replies under each customer message.", true)}
@@ -1024,7 +1026,7 @@ const RELAY_SETTINGS: AppSettings = {
         {
           href: "#rl-shortcuts",
           label: "Shortcuts",
-          icon: KeyboardIcon,
+          icon: KeyboardIcon, iconName: "keyboard",
           content: (
             <Settings title="Keyboard shortcuts" description="Click a shortcut, then press the new keys.">
               <ShortcutRow id="rl-key-send" label="Send reply" initial="Mod+Enter" />
@@ -1043,15 +1045,15 @@ function InboxApp() {
   const agent = <Avatar size="sm" name="Relay AI" fallback="AI" />;
   return (
     <AppFrame
-      brand={{ name: "Relay", icon: Message01Icon, href: "#inbox" }}
+      brand={{ name: "Relay", icon: Message01Icon, iconName: "message-circle", href: "#inbox" }}
       groups={[
         {
           label: "Queues",
           items: [
-            { href: "#inbox", label: "Inbox", icon: InboxIcon },
-            { href: "#mentions", label: "Mentions", icon: Notification01Icon },
-            { href: "#sent", label: "Sent", icon: SentIcon },
-            { href: "#customers", label: "Customers", icon: UserMultipleIcon },
+            { href: "#inbox", label: "Inbox", icon: InboxIcon, iconName: "inbox" },
+            { href: "#mentions", label: "Mentions", icon: Notification01Icon, iconName: "bell" },
+            { href: "#sent", label: "Sent", icon: SentIcon, iconName: "send" },
+            { href: "#customers", label: "Customers", icon: UserMultipleIcon, iconName: "users" },
           ],
         },
       ]}
@@ -1077,7 +1079,7 @@ function InboxApp() {
             <Badge variant="muted">12 open</Badge>
           </div>
           <InputGroup size="sm">
-            <Icon icon={Search01Icon} />
+            <Icon icon={Search01Icon} name="search" />
             <Input type="search" placeholder="Search" aria-label="Search conversations" aria-keyshortcuts="/" />
             <InputGroupAddon>
               <Kbd>/</Kbd>
@@ -1122,7 +1124,7 @@ function InboxApp() {
           <ChatTyping avatar={agent} label="Relay AI is drafting a reply" />
           <ChatReplies>
             <Button variant="outline" size="sm">
-              <Icon icon={SparklesIcon} />
+              <Icon icon={SparklesIcon} name="sparkles" />
               Suggest the async export
             </Button>
             <Button variant="outline" size="sm">
@@ -1134,10 +1136,10 @@ function InboxApp() {
           <Textarea rows={2} placeholder="Write a reply…" aria-label="Reply to Jonah Weiss" />
           <div className="ayy-spread">
             <Button type="button" variant="ghost" size="icon" aria-label="Attach a file">
-              <Icon icon={Attachment01Icon} />
+              <Icon icon={Attachment01Icon} name="paperclip" />
             </Button>
             <Button type="submit">
-              <Icon icon={SentIcon} />
+              <Icon icon={SentIcon} name="send" />
               Send
             </Button>
           </div>
@@ -1208,7 +1210,7 @@ const ORBIT_SETTINGS: AppSettings = {
         {
           href: "#ob-preferences",
           label: "Preferences",
-          icon: PaintBoardIcon,
+          icon: PaintBoardIcon, iconName: "palette",
           content: (
             <Settings title="General">
               {selectRow("ob-start", "Open on", [["tasks", "My tasks"], ["projects", "Projects"], ["calendar", "Calendar"]], "tasks")}
@@ -1220,7 +1222,7 @@ const ORBIT_SETTINGS: AppSettings = {
         {
           href: "#ob-notifications",
           label: "Notifications",
-          icon: Notification01Icon,
+          icon: Notification01Icon, iconName: "bell",
           content: (
             <Settings title="Tell me when">
               {switchRow("ob-assigned", "A task is assigned to me", "In the app and by email.", true)}
@@ -1233,7 +1235,7 @@ const ORBIT_SETTINGS: AppSettings = {
         {
           href: "#ob-shortcuts",
           label: "Shortcuts",
-          icon: KeyboardIcon,
+          icon: KeyboardIcon, iconName: "keyboard",
           content: (
             <Settings title="Keyboard shortcuts" description="Click a shortcut, then press the new keys.">
               <ShortcutRow id="ob-key-new" label="New task" initial="Mod+Shift+N" />
@@ -1250,7 +1252,7 @@ const ORBIT_SETTINGS: AppSettings = {
         {
           href: "#ob-members",
           label: "Members",
-          icon: UserGroupIcon,
+          icon: UserGroupIcon, iconName: "users-group",
           content: (
             <>
               <Settings title="Members" description="4 of 10 seats on the Team plan.">
@@ -1266,7 +1268,7 @@ const ORBIT_SETTINGS: AppSettings = {
               </Settings>
               <div className="ayy-cluster">
                 <Button variant="outline">
-                  <Icon icon={Add01Icon} />
+                  <Icon icon={Add01Icon} name="add" />
                   Invite people
                 </Button>
               </div>
@@ -1276,7 +1278,7 @@ const ORBIT_SETTINGS: AppSettings = {
         {
           href: "#ob-integrations",
           label: "Integrations",
-          icon: Link01Icon,
+          icon: Link01Icon, iconName: "link",
           content: (
             <Settings title="Connected apps">
               <SettingsLink href="#ob-github" label="GitHub" hint="Close tasks from pull requests." value="Sync failed" />
@@ -1304,22 +1306,22 @@ function TrackerApp() {
     setProjects((list) => (list.includes(project) ? list.filter((p) => p !== project) : [...list, project]));
   return (
     <AppFrame
-      brand={{ name: "Orbit", icon: Rocket01Icon, href: "#tasks" }}
+      brand={{ name: "Orbit", icon: Rocket01Icon, iconName: "rocket-launch", href: "#tasks" }}
       groups={[
         {
           label: "Work",
           items: [
-            { href: "#tasks", label: "My tasks", icon: Task01Icon },
-            { href: "#projects", label: "Projects", icon: Folder01Icon },
-            { href: "#calendar", label: "Calendar", icon: Calendar03Icon },
-            { href: "#inbox", label: "Inbox", icon: InboxIcon },
+            { href: "#tasks", label: "My tasks", icon: Task01Icon, iconName: "clipboard-list" },
+            { href: "#projects", label: "Projects", icon: Folder01Icon, iconName: "folder" },
+            { href: "#calendar", label: "Calendar", icon: Calendar03Icon, iconName: "calendar" },
+            { href: "#inbox", label: "Inbox", icon: InboxIcon, iconName: "inbox" },
           ],
         },
         {
           label: "Team",
           items: [
-            { href: "#members", label: "Members", icon: UserGroupIcon },
-            { href: "#settings", label: "Settings", icon: Settings01Icon },
+            { href: "#members", label: "Members", icon: UserGroupIcon, iconName: "users-group" },
+            { href: "#settings", label: "Settings", icon: Settings01Icon, iconName: "settings" },
           ],
         },
       ]}
@@ -1335,7 +1337,7 @@ function TrackerApp() {
           <PageHeaderDescription>What's on your plate across every project.</PageHeaderDescription>
           <PageHeaderActions>
             <Button aria-keyshortcuts="C">
-              <Icon icon={Add01Icon} />
+              <Icon icon={Add01Icon} name="add" />
               New task
             </Button>
           </PageHeaderActions>
@@ -1413,13 +1415,13 @@ function TrackerApp() {
                     ) : (
                       <EmptyState compact>
                         <IconTile size="sm">
-                          <Icon icon={Calendar03Icon} />
+                          <Icon icon={Calendar03Icon} name="calendar" />
                         </IconTile>
                         <EmptyStateTitle>Nothing coming up</EmptyStateTitle>
                         <EmptyStateDescription>Tasks with a due date after today show up here.</EmptyStateDescription>
                         <EmptyStateActions>
                           <Button size="sm" variant="outline">
-                            <Icon icon={Add01Icon} />
+                            <Icon icon={Add01Icon} name="add" />
                             Plan a task
                           </Button>
                         </EmptyStateActions>
@@ -1433,12 +1435,12 @@ function TrackerApp() {
 
           <div className="ayy-stack" style={gap(4)}>
             <Alert variant="destructive" role="alert">
-              <Icon icon={Alert02Icon} />
+              <Icon icon={Alert02Icon} name="triangle-alert" />
               <AlertTitle>GitHub sync failed</AlertTitle>
               <AlertDescription>We couldn't reach github.com. Your tasks are safe; new pull requests won't show up until it syncs.</AlertDescription>
               <AlertActions>
                 <Button size="sm" variant="outline" loading={retrying} onClick={retry}>
-                  {retrying ? null : <Icon icon={RefreshIcon} />}
+                  {retrying ? null : <Icon icon={RefreshIcon} name="rotate-cw" />}
                   {retrying ? "Retrying…" : "Try again"}
                 </Button>
               </AlertActions>
@@ -1524,7 +1526,7 @@ function StoreApp() {
       </a>
       <Navbar>
         <NavbarBrand href="#shop">
-          <Icon icon={Coffee02Icon} />
+          <Icon icon={Coffee02Icon} name="coffee" />
           Ember
         </NavbarBrand>
         <NavbarNav>
@@ -1537,7 +1539,7 @@ function StoreApp() {
         </NavbarNav>
         <NavbarActions>
           <Button size="sm" variant="outline" onClick={() => setCartOpen(true)} aria-label={`Cart, ${count} items`}>
-            <Icon icon={ShoppingBag01Icon} />
+            <Icon icon={ShoppingBag01Icon} name="shopping-bag" />
             Cart
             <Badge>{count}</Badge>
           </Button>
@@ -1596,7 +1598,7 @@ function StoreApp() {
                     <DropdownMenuTrigger asChild>
                       <SortingTrigger size="sm" aria-label={`Sort by ${order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular"}`}>
                         <span>{`Sort: ${order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular"}`}</span>
-                        <Icon icon={ArrowDown01Icon} />
+                        <Icon icon={ArrowDown01Icon} name="chevron-down" />
                       </SortingTrigger>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" aria-label="Sort by">
@@ -1620,7 +1622,7 @@ function StoreApp() {
                       <CardMedia>
                         <div className="ayy-bg-grid pv-app-product">
                           <IconTile size="lg">
-                            <Icon icon={Coffee02Icon} />
+                            <Icon icon={Coffee02Icon} name="coffee" />
                           </IconTile>
                         </div>
                       </CardMedia>
@@ -1634,7 +1636,7 @@ function StoreApp() {
                         <div className="ayy-spread" style={{ inlineSize: "100%" }}>
                           <span className="ayy-h6">${r.price}</span>
                           <Button size="sm" variant="outline" onClick={() => add(r.id)} aria-label={`Add ${r.name} to the cart`}>
-                            <Icon icon={Add01Icon} />
+                            <Icon icon={Add01Icon} name="add" />
                             Add
                           </Button>
                         </div>
@@ -1645,7 +1647,7 @@ function StoreApp() {
               ) : (
                 <EmptyState bordered>
                   <IconTile>
-                    <Icon icon={Coffee02Icon} />
+                    <Icon icon={Coffee02Icon} name="coffee" />
                   </IconTile>
                   <EmptyStateTitle>No coffee in that range</EmptyStateTitle>
                   <EmptyStateDescription>Widen the price range or pick another kind.</EmptyStateDescription>
@@ -1676,7 +1678,7 @@ function StoreApp() {
                     return (
                       <ListItem key={id} style={{ "--ayy-spot": r.spot } as CSSProperties}>
                         <IconTile size="sm">
-                          <Icon icon={Coffee02Icon} />
+                          <Icon icon={Coffee02Icon} name="coffee" />
                         </IconTile>
                         <ListContent>
                           <ListTitle>{r.name}</ListTitle>
@@ -1741,7 +1743,7 @@ function StoreApp() {
       <Footer>
         <FooterBrand>
           <a href="#shop">
-            <Icon icon={Coffee02Icon} />
+            <Icon icon={Coffee02Icon} name="coffee" />
             Ember
           </a>
           <p>Small-batch coffee from Lisbon.</p>
@@ -1802,7 +1804,7 @@ const HAVEN_SETTINGS: AppSettings = {
         {
           href: "#hv-profile",
           label: "Profile",
-          icon: UserCircleIcon,
+          icon: UserCircleIcon, iconName: "circle-user",
           content: (
             <Settings title="Your details" description="Teachers see your first name on the class list.">
               <SettingsRow label="Name" htmlFor="hv-name">
@@ -1820,7 +1822,7 @@ const HAVEN_SETTINGS: AppSettings = {
         {
           href: "#hv-notifications",
           label: "Notifications",
-          icon: Notification01Icon,
+          icon: Notification01Icon, iconName: "bell",
           content: (
             <Settings title="Remind me">
               {switchRow("hv-remind", "Before a class", "A push notification with the studio and room.", true)}
@@ -1838,7 +1840,7 @@ const HAVEN_SETTINGS: AppSettings = {
         {
           href: "#hv-membership",
           label: "Membership",
-          icon: Ticket01Icon,
+          icon: Ticket01Icon, iconName: "ticket",
           content: (
             <>
               <Settings title="10-class pass" description="6 classes left, valid until December 31.">
@@ -1855,7 +1857,7 @@ const HAVEN_SETTINGS: AppSettings = {
         {
           href: "#hv-preferences",
           label: "Preferences",
-          icon: Yoga01Icon,
+          icon: Yoga01Icon, iconName: "yoga",
           content: (
             <Settings title="Booking">
               {selectRow("hv-studio", "Home studio", [["florentin", "Florentin"], ["port", "Old Port"], ["park", "Park Hayarkon"]], "florentin", "Its classes show first on the schedule.")}
@@ -1881,15 +1883,15 @@ function BookingApp() {
   const toggleStyle = (style: string) => setStyles((list) => (list.includes(style) ? list.filter((s) => s !== style) : [...list, style]));
   return (
     <AppFrame
-      brand={{ name: "Haven", icon: Yoga01Icon, href: "#schedule" }}
+      brand={{ name: "Haven", icon: Yoga01Icon, iconName: "yoga", href: "#schedule" }}
       groups={[
         {
           label: "Studio",
           items: [
-            { href: "#schedule", label: "Schedule", icon: Calendar03Icon },
-            { href: "#bookings", label: "My bookings", icon: Ticket01Icon },
-            { href: "#teachers", label: "Teachers", icon: UserGroupIcon },
-            { href: "#profile", label: "Profile", icon: UserCircleIcon },
+            { href: "#schedule", label: "Schedule", icon: Calendar03Icon, iconName: "calendar" },
+            { href: "#bookings", label: "My bookings", icon: Ticket01Icon, iconName: "ticket" },
+            { href: "#teachers", label: "Teachers", icon: UserGroupIcon, iconName: "users-group" },
+            { href: "#profile", label: "Profile", icon: UserCircleIcon, iconName: "circle-user" },
           ],
         },
       ]}
@@ -1937,7 +1939,7 @@ function BookingApp() {
               ) : (
                 <EmptyState bordered compact>
                   <IconTile size="sm">
-                    <Icon icon={Calendar03Icon} />
+                    <Icon icon={Calendar03Icon} name="calendar" />
                   </IconTile>
                   <EmptyStateTitle>No classes {onDay.length ? "of that style" : "this day"}</EmptyStateTitle>
                   <EmptyStateDescription>{onDay.length ? "Try another style, or every style." : "Pick another day this week."}</EmptyStateDescription>

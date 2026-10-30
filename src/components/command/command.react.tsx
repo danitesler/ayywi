@@ -114,7 +114,7 @@ function CommandParts({ label = "Search commands", placeholder = "Type a command
   return (
     <>
       <div ref={search} className="ayy-command__search">
-        <Icon icon={Search01Icon} />
+        <Icon icon={Search01Icon} name="search" />
         <input
           type="search"
           className="ayy-command__input"

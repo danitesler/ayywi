@@ -51,7 +51,7 @@
         "props": {
           "value / defaultValue": "string — the picked icon value or emoji; \"\" for none",
           "onValueChange": "(value: string, change: { value, kind, option }) => void",
-          "icons": "{ value: string; label: string; icon: IconData | ReactNode; keywords?: string[] }[] — the Icons section; omit for emoji only",
+          "icons": "{ value: string; label: string; icon: IconData | ReactNode; name?: IconName; keywords?: string[] }[] — the Icons section; omit for emoji only. name is the glyph's name (\"star\"), written as data-ayy-icon so an icon pack can replace it",
           "emojis": "{ value: string; label: string; keywords?: string[] }[] — the Emoji section (iconPickerEmojis by default; [] hides it)",
           "searchable": "boolean — show the search field (default true)",
           "removable": "boolean — show the remove button (default true)",

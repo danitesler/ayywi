@@ -5,13 +5,13 @@ export default function Example() {
   return (
     <Tabs defaultValue="code">
       <TabsList aria-label="Project">
-        <TabsTrigger value="code" icon={<Icon icon={CodeIcon} />}>
+        <TabsTrigger value="code" icon={<Icon icon={CodeIcon} name="code" />}>
           Code
         </TabsTrigger>
-        <TabsTrigger value="pull-requests" icon={<Icon icon={GitPullRequestIcon} />}>
+        <TabsTrigger value="pull-requests" icon={<Icon icon={GitPullRequestIcon} name="git-pull-request" />}>
           Pull requests
         </TabsTrigger>
-        <TabsTrigger value="deployments" icon={<Icon icon={RocketIcon} />}>
+        <TabsTrigger value="deployments" icon={<Icon icon={RocketIcon} name="rocket" />}>
           Deployments
         </TabsTrigger>
       </TabsList>

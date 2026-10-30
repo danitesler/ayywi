@@ -308,7 +308,7 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function
                 aria-label={copied ? "Copied!" : "Copy hex"}
                 onClick={handleCopy}
               >
-                <Icon icon={copied ? Tick02Icon : Copy01Icon} />
+                <Icon icon={copied ? Tick02Icon : Copy01Icon} name={copied ? "check" : "copy"} />
               </Button>
             </Tooltip>
           )}

@@ -167,7 +167,7 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
         <span key={option.id} className="ayy-chip ayy-chip--removable ayy-tag-input__tag ayy-record-picker__tag" data-value={option.id}>
           <span className="ayy-record-picker__tag-label">{option.label}</span>
           <button type="button" className="ayy-chip__remove" aria-label={removeLabel(option)} disabled={disabled} onClick={() => remove(option.id)}>
-            <Icon icon={Cancel01Icon} />
+            <Icon icon={Cancel01Icon} name="x" />
           </button>
         </span>
       ))}
@@ -185,7 +185,7 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
       />
       {clearable && (
         <button type="button" className="ayy-record-picker__clear" aria-label={clearLabel} disabled={disabled}>
-          <Icon icon={CancelCircleIcon} />
+          <Icon icon={CancelCircleIcon} name="circle-x" />
         </button>
       )}
       <ul
@@ -224,7 +224,7 @@ export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(func
           {emptyText}
         </li>
       </ul>
-      {name && ids.map((id) => <input key={id} type="hidden" name={name} value={id} />)}
+      {name && ids.map((id) => <input key={id} type="hidden" name={name} value={id} disabled={disabled} />)}
     </div>
   );
 });

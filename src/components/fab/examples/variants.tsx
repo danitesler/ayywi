@@ -7,17 +7,17 @@ export default function Example() {
   return (
     <div className="ayy-cluster" style={{ alignItems: "center", "--ayy-gap": "var(--ayy-space-6)" } as CSSProperties}>
       <Fab inline aria-label="New task">
-        <Icon icon={Add01Icon} />
+        <Icon icon={Add01Icon} name="add" />
       </Fab>
       <Fab inline extended>
-        <Icon icon={PencilEdit01Icon} />
+        <Icon icon={PencilEdit01Icon} name="pencil-line" />
         Compose
       </Fab>
       <Fab inline variant="secondary" aria-label="Record a voice note">
-        <Icon icon={Mic01Icon} />
+        <Icon icon={Mic01Icon} name="mic" />
       </Fab>
       <Fab inline size="sm" variant="secondary" aria-label="Quick note">
-        <Icon icon={PencilEdit01Icon} />
+        <Icon icon={PencilEdit01Icon} name="pencil-line" />
       </Fab>
     </div>
   );

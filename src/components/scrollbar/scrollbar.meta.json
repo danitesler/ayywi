@@ -1,0 +1,54 @@
+{
+  "name": "Scrollbar",
+  "slug": "scrollbar",
+  "category": "Layout",
+  "description": "A thin scrollbar with no track that is drawn in the text colour, so it follows every theme. Put it on any scroll container, or on the page.",
+  "aka": ["scrollbar", "scroll-bar", "scroller"],
+  "classes": {
+    "ayy-scrollbar": "Root, on the element that scrolls (or <html> for the page). 8px gutter, 4px thumb, transparent track.",
+    "ayy-scrollbar--hover": "Thumb is hidden until the pointer or focus is inside the container."
+  },
+  "variants": {
+    "hover": { "values": [true, false], "default": false }
+  },
+  "states": {
+    "default": { "looks": "A rounded thumb in the text colour at 22%, on a transparent track." },
+    "hover": { "when": "The pointer is over the thumb (Chromium and Safari only)", "looks": "Thumb darkens to 40% text. With --hover, the whole thumb appears while the pointer is inside the container." },
+    "pressed": { "when": "The thumb is being dragged (Chromium and Safari only)", "looks": "Thumb darkens to 55% text." },
+    "focus": { "when": "Focus is inside the container, with the hover variant", "looks": "The thumb shows, as it does on hover. The scrollbar itself isn't focusable: give the scroll container tabindex=\"0\" so the keyboard can scroll it." },
+    "disabled": { "none": "A scrollbar can't be disabled; remove overflow instead." },
+    "selected": { "none": "Nothing to select." },
+    "error": { "none": "Nothing to validate." },
+    "loading": { "none": "Nothing loads in a scrollbar." }
+  },
+  "sizes": {
+    "density": "Doesn't follow data-density.",
+    "width": "8px by default; set --ayy-scrollbar-size on the container for another gutter. The thumb is the gutter minus 4px. Firefox only offers its own thin scrollbar and ignores the size."
+  },
+  "js": "scrollbarClass({ hover?, className? }) → string",
+  "react": {
+    "import": "import { Scrollbar } from \"@danitesler/ayywi/react\";",
+    "components": {
+      "Scrollbar": {
+        "renders": "<div tabindex=\"0\">",
+        "props": { "hover": "boolean — show the thumb only while the pointer or focus is inside." }
+      }
+    }
+  },
+  "a11y": [
+    "Scrolling stays native: wheel, touch, keyboard and assistive technology all work. The component only changes how the bar looks.",
+    "A scroll container that has no focusable content needs tabindex=\"0\" and a label, or keyboard users can't scroll it. The React component sets tabindex=\"0\".",
+    "Forced colours: the thumb is drawn in system colours."
+  ],
+  "do": [
+    "Use the scrollbar on scroll containers inside a page: lists, panels, code, menus.",
+    "Put it on <html> to thin the page's own scrollbar.",
+    "Use the hover variant where the bar would crowd a dense, quiet surface."
+  ],
+  "dont": [
+    "Don't use it to hide scrolling — to hide the bar altogether, give the user another way to scroll.",
+    "Don't use it as a progress indicator — use Progress, or the reading-progress bar.",
+    "Don't make it thicker to match touch targets; touch devices draw their own overlay bars."
+  ],
+  "examples": [{ "id": "variants", "title": "Always visible and on hover" }]
+}

@@ -86,19 +86,19 @@ export default function Example() {
         <ActionBarSeparator />
         <ActionBarActions>
           <ActionBarButton onClick={() => toast(`Editing ${selected.length} posts`)}>
-            <Icon icon={PencilEdit02Icon} />
+            <Icon icon={PencilEdit02Icon} name="square-pen" />
             Edit
           </ActionBarButton>
           <ActionBarButton onClick={() => toast.success(`Duplicated ${selected.length} posts`)}>
-            <Icon icon={Copy01Icon} />
+            <Icon icon={Copy01Icon} name="copy" />
             Duplicate
           </ActionBarButton>
           <ActionBarButton onClick={() => toast.success("Copied links")}>
-            <Icon icon={CopyLinkIcon} />
+            <Icon icon={CopyLinkIcon} name="square-link" />
             Copy
           </ActionBarButton>
           <ActionBarButton onClick={() => toast(`Archived ${selected.length} posts`)}>
-            <Icon icon={Archive02Icon} />
+            <Icon icon={Archive02Icon} name="archive" />
             Archive
           </ActionBarButton>
           <ActionBarButton
@@ -108,7 +108,7 @@ export default function Example() {
               setSelected([]);
             }}
           >
-            <Icon icon={Delete02Icon} />
+            <Icon icon={Delete02Icon} name="trash" />
             Delete
           </ActionBarButton>
         </ActionBarActions>

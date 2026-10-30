@@ -26,17 +26,17 @@ export default function Example() {
       </CardViewMedia>
       <HoverActions position="top-end" group>
         <HoverAction label="Copy" hint={<Shortcut keys="Mod+C" />}>
-          <Icon icon={Copy01Icon} />
+          <Icon icon={Copy01Icon} name="copy" />
         </HoverAction>
         <HoverAction label="Annotate">
-          <Icon icon={Edit02Icon} />
+          <Icon icon={Edit02Icon} name="pen-line" />
         </HoverAction>
         <HoverAction label="Pin to screen">
-          <Icon icon={PinIcon} />
+          <Icon icon={PinIcon} name="pin" />
         </HoverAction>
         <DropdownMenu>
           <DropdownMenuTrigger variant="ghost" size="icon-sm" aria-label="More actions">
-            <Icon icon={MoreHorizontalIcon} />
+            <Icon icon={MoreHorizontalIcon} name="ellipsis" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Save</DropdownMenuItem>

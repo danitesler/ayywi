@@ -53,6 +53,7 @@
   flex: none;
   color: var(--ayy-color-muted);
   font-family: var(--ayy-font-mono);
+  font-size-adjust: none;
   font-size: var(--ayy-text-xs);
 }
 

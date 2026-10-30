@@ -92,6 +92,7 @@ export class AyyRecordPickerElement extends ElementBase {
         hidden.name = this.#name;
         hidden.value = id;
         hidden.dataset.record = "";
+        hidden.disabled = disabled;
         root.append(hidden);
       }
     }

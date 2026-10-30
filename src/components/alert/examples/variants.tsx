@@ -5,12 +5,12 @@ export default function Example() {
   return (
     <div className="ayy-stack" style={{ inlineSize: "min(100%, 32.5rem)" }}>
       <Alert>
-        <Icon icon={InformationCircleIcon} />
+        <Icon icon={InformationCircleIcon} name="info" />
         <AlertTitle>Read-only mode</AlertTitle>
         <AlertDescription>You're viewing a shared project. Ask the owner for edit access.</AlertDescription>
       </Alert>
       <Alert variant="warning">
-        <Icon icon={Alert02Icon} />
+        <Icon icon={Alert02Icon} name="triangle-alert" />
         <AlertTitle>Your trial ends in 3 days</AlertTitle>
         <AlertDescription>Add a payment method to keep your projects online.</AlertDescription>
         <AlertActions>

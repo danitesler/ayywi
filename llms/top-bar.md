@@ -54,18 +54,18 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 ```html
 <div style="inline-size: min(100%, 24rem); border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl); overflow: hidden">
   <header class="ayy-top-bar">
-    <a class="ayy-top-bar__back" href="#lists" aria-label="Back"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+    <a class="ayy-top-bar__back" href="#lists" aria-label="Back"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
     <div class="ayy-top-bar__heading">
       <h1 class="ayy-top-bar__title">Groceries</h1>
       <p class="ayy-top-bar__subtitle">8 items, 3 done</p>
     </div>
     <div class="ayy-top-bar__actions">
       <span class="ayy-tooltip">
-        <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon" aria-label="Share"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 6.5C21 8.15685 19.6569 9.5 18 9.5C16.3431 9.5 15 8.15685 15 6.5C15 4.84315 16.3431 3.5 18 3.5C19.6569 3.5 21 4.84315 21 6.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12Z" stroke="currentColor" stroke-width="1.5"></path><path d="M21 17.5C21 19.1569 19.6569 20.5 18 20.5C16.3431 20.5 15 19.1569 15 17.5C15 15.8431 16.3431 14.5 18 14.5C19.6569 14.5 21 15.8431 21 17.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M8.72852 10.7495L15.2285 7.75M8.72852 13.25L15.2285 16.2495" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+        <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon" aria-label="Share"><svg class="ayy-icon" data-ayy-icon="share-2" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 6.5C21 8.15685 19.6569 9.5 18 9.5C16.3431 9.5 15 8.15685 15 6.5C15 4.84315 16.3431 3.5 18 3.5C19.6569 3.5 21 4.84315 21 6.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12Z" stroke="currentColor" stroke-width="1.5"></path><path d="M21 17.5C21 19.1569 19.6569 20.5 18 20.5C16.3431 20.5 15 19.1569 15 17.5C15 15.8431 16.3431 14.5 18 14.5C19.6569 14.5 21 15.8431 21 17.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M8.72852 10.7495L15.2285 7.75M8.72852 13.25L15.2285 16.2495" stroke="currentColor" stroke-width="1.5"></path></svg></button>
         <span role="tooltip" class="ayy-tooltip__content">Share</span>
       </span>
       <span class="ayy-tooltip">
-        <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon" aria-label="More"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.00449 12.5V12M18.0045 12.5V12M12.0045 12.5V12M7.00449 12.5C7.00449 11.9477 6.55677 11.5 6.00449 11.5C5.4522 11.5 5.00449 11.9477 5.00449 12.5C5.00449 13.0523 5.4522 13.5 6.00449 13.5C6.55677 13.5 7.00449 13.0523 7.00449 12.5ZM19.0045 12.5C19.0045 11.9477 18.5568 11.5 18.0045 11.5C17.4522 11.5 17.0045 11.9477 17.0045 12.5C17.0045 13.0523 17.4522 13.5 18.0045 13.5C18.5568 13.5 19.0045 13.0523 19.0045 12.5ZM13.0045 12.5C13.0045 11.9477 12.5568 11.5 12.0045 11.5C11.4522 11.5 11.0045 11.9477 11.0045 12.5C11.0045 13.0523 11.4522 13.5 12.0045 13.5C12.5568 13.5 13.0045 13.0523 13.0045 12.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+        <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon" aria-label="More"><svg class="ayy-icon" data-ayy-icon="ellipsis" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.00449 12.5V12M18.0045 12.5V12M12.0045 12.5V12M7.00449 12.5C7.00449 11.9477 6.55677 11.5 6.00449 11.5C5.4522 11.5 5.00449 11.9477 5.00449 12.5C5.00449 13.0523 5.4522 13.5 6.00449 13.5C6.55677 13.5 7.00449 13.0523 7.00449 12.5ZM19.0045 12.5C19.0045 11.9477 18.5568 11.5 18.0045 11.5C17.4522 11.5 17.0045 11.9477 17.0045 12.5C17.0045 13.0523 17.4522 13.5 18.0045 13.5C18.5568 13.5 19.0045 13.0523 19.0045 12.5ZM13.0045 12.5C13.0045 11.9477 12.5568 11.5 12.0045 11.5C11.4522 11.5 11.0045 11.9477 11.0045 12.5C11.0045 13.0523 11.4522 13.5 12.0045 13.5C12.5568 13.5 13.0045 13.0523 13.0045 12.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
         <span role="tooltip" class="ayy-tooltip__content">More</span>
       </span>
     </div>
@@ -91,10 +91,10 @@ export default function Example() {
         actions={
           <>
             <Button variant="ghost" size="icon" aria-label="Share">
-              <Icon icon={Share08Icon} />
+              <Icon icon={Share08Icon} name="share-2" />
             </Button>
             <Button variant="ghost" size="icon" aria-label="More">
-              <Icon icon={MoreHorizontalIcon} />
+              <Icon icon={MoreHorizontalIcon} name="ellipsis" />
             </Button>
           </>
         }
@@ -117,16 +117,16 @@ HTML (also Vue/Svelte/Angular templates, server templates):
     <h1 class="ayy-top-bar__title">Inbox</h1>
     <div class="ayy-top-bar__actions">
       <span class="ayy-tooltip">
-        <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon" aria-label="New task"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+        <button type="button" class="ayy-button ayy-button--ghost ayy-button--icon" aria-label="New task"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
         <span role="tooltip" class="ayy-tooltip__content">New task</span>
       </span>
     </div>
     <div class="ayy-top-bar__row">
       <form role="search" class="ayy-search-bar">
         <div class="ayy-search-bar__field">
-          <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+          <svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
           <input type="search" enterkeyhint="search" class="ayy-search-bar__input" aria-label="Search tasks" placeholder="Search tasks" />
-          <button type="button" class="ayy-search-bar__clear" aria-label="Clear search"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+          <button type="button" class="ayy-search-bar__clear" aria-label="Clear search"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
         </div>
       </form>
     </div>
@@ -150,7 +150,7 @@ export default function Example() {
         title="Inbox"
         actions={
           <Button variant="ghost" size="icon" aria-label="New task">
-            <Icon icon={Add01Icon} />
+            <Icon icon={Add01Icon} name="add" />
           </Button>
         }
       >
@@ -171,7 +171,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 ```html
 <div style="inline-size: min(100%, 24rem); border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl); overflow: hidden">
   <header class="ayy-top-bar ayy-top-bar--center">
-    <a class="ayy-top-bar__back" href="#task" aria-label="Back"><svg class="ayy-icon ayy-icon--directional" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+    <a class="ayy-top-bar__back" href="#task" aria-label="Back"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
     <h1 class="ayy-top-bar__title">Edit task</h1>
     <div class="ayy-top-bar__actions">
       <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Save</button>

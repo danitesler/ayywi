@@ -21,11 +21,11 @@ export default function Example() {
           <AppShellBrand href="#inbox">Tasks</AppShellBrand>
           <AppShellNav>
             <AppShellLink href="#inbox" current>
-              <Icon icon={InboxIcon} />
+              <Icon icon={InboxIcon} name="inbox" />
               Inbox
             </AppShellLink>
             <AppShellLink href="#today">
-              <Icon icon={Calendar03Icon} />
+              <Icon icon={Calendar03Icon} name="calendar" />
               Today
             </AppShellLink>
           </AppShellNav>
@@ -35,19 +35,19 @@ export default function Example() {
           <p className="ayy-muted">Everything that isn't in a list yet.</p>
         </AppShellMain>
         <Fab aria-label="New task">
-          <Icon icon={Add01Icon} />
+          <Icon icon={Add01Icon} name="add" />
         </Fab>
         <BottomNav>
-          <BottomNavLink href="#inbox" icon={<Icon icon={InboxIcon} />} current>
+          <BottomNavLink href="#inbox" icon={<Icon icon={InboxIcon} name="inbox" />} current>
             Inbox
           </BottomNavLink>
-          <BottomNavLink href="#today" icon={<Icon icon={Calendar03Icon} />}>
+          <BottomNavLink href="#today" icon={<Icon icon={Calendar03Icon} name="calendar" />}>
             Today
           </BottomNavLink>
-          <BottomNavLink href="#search" icon={<Icon icon={Search01Icon} />}>
+          <BottomNavLink href="#search" icon={<Icon icon={Search01Icon} name="search" />}>
             Search
           </BottomNavLink>
-          <BottomNavLink href="#settings" icon={<Icon icon={Settings02Icon} />}>
+          <BottomNavLink href="#settings" icon={<Icon icon={Settings02Icon} name="cog" />}>
             Settings
           </BottomNavLink>
         </BottomNav>

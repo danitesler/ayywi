@@ -66,10 +66,10 @@ export const Rating = forwardRef<HTMLDivElement, RatingProps>(function Rating(
           const isHalf = !isFull && rounded >= starNumber - 0.5;
           return (
             <span key={starNumber} className={cx(ratingStarClass, isFull && "ayy-rating__star--full")} aria-hidden="true">
-              <Icon icon={StarIcon} />
+              <Icon icon={StarIcon} name="star" />
               {isHalf && (
                 <span className={ratingFillClass}>
-                  <Icon icon={StarIcon} />
+                  <Icon icon={StarIcon} name="star" />
                 </span>
               )}
             </span>
@@ -116,7 +116,7 @@ export const Rating = forwardRef<HTMLDivElement, RatingProps>(function Rating(
                 }
               }}
             />
-            <Icon icon={StarIcon} />
+            <Icon icon={StarIcon} name="star" />
           </label>
         );
       })}

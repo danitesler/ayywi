@@ -53,7 +53,7 @@ export interface DragHandleProps extends ButtonHTMLAttributes<HTMLButtonElement>
 export const DragHandle = forwardRef<HTMLButtonElement, DragHandleProps>(function DragHandle({ tooltip, className, ...props }, ref) {
   const button = (
     <button ref={ref} type="button" className={cx(dragHandleClass, className)} {...props}>
-      <Icon icon={DragDropVerticalIcon} />
+      <Icon icon={DragDropVerticalIcon} name="grip-vertical" />
     </button>
   );
   if (tooltip === false) return button;

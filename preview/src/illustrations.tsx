@@ -13,7 +13,7 @@ import { Cursor01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
 const beat = (i: number) => ({ "--i": i }) as CSSProperties;
 const width = (w: string) => ({ "--w": w }) as CSSProperties;
 
-const Spark = () => <Icon icon={SparklesIcon} size="sm" className="pv-art__spark" />;
+const Spark = () => <Icon icon={SparklesIcon} name="sparkles" size="sm" className="pv-art__spark" />;
 
 /** 01 Ask, reply, approve: the agent shows its progress and a person signs it off. */
 export function AgentSketch() {
@@ -61,7 +61,7 @@ export function DevicesSketch() {
       <Screen kind="tablet" i={1} />
       <span className="pv-art__link" />
       <Screen kind="phone" i={2} />
-      <Icon icon={Cursor01Icon} size="sm" className="pv-art__cursor" />
+      <Icon icon={Cursor01Icon} name="mouse-pointer" size="sm" className="pv-art__cursor" />
     </div>
   );
 }

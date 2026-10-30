@@ -13,23 +13,23 @@ export default function Example() {
       </CardViewMedia>
       <HoverActions position="top-start">
         <HoverAction label="Annotate">
-          <Icon icon={Edit02Icon} />
+          <Icon icon={Edit02Icon} name="pen-line" />
         </HoverAction>
         <HoverAction label="Pin to screen">
-          <Icon icon={PinIcon} />
+          <Icon icon={PinIcon} name="pin" />
         </HoverAction>
       </HoverActions>
       <HoverActions position="bottom-start">
         <HoverAction label="Upload" side="top">
-          <Icon icon={CloudUploadIcon} />
+          <Icon icon={CloudUploadIcon} name="cloud-upload" />
         </HoverAction>
       </HoverActions>
       <HoverActions position="bottom-end">
         <HoverAction label="Show in folder" side="top">
-          <Icon icon={Folder01Icon} />
+          <Icon icon={Folder01Icon} name="folder" />
         </HoverAction>
         <HoverAction label="Delete" side="top">
-          <Icon icon={Delete02Icon} />
+          <Icon icon={Delete02Icon} name="trash" />
         </HoverAction>
       </HoverActions>
     </Card>

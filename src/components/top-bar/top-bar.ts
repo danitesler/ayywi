@@ -14,4 +14,4 @@ export const topBarActionsClass = "ayy-top-bar__actions";
 export const topBarRowClass = "ayy-top-bar__row";
 
 /** The back chevron, as SVG markup (Hugeicons ArrowLeft01, mirrored in RTL). */
-export const topBarBackIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { directional: true });
+export const topBarBackIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { name: "chevron-left", directional: true });

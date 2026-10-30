@@ -181,10 +181,12 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   const primary = (sel: string) => page.locator(sel).first().evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
   const before = await primary(".pv-theme[data-theme=\"light\"]");
   await page.goto("/#/themes");
-  await page.getByLabel("Custom seed colour", { exact: true }).fill("#dc2626");
+  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
+  await page.getByLabel("Custom accent colour", { exact: true }).fill("#dc2626");
   // Themes tries a brand on its own samples and app first; the site takes it on "Use this theme".
   await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"light\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await page.getByRole("dialog", { name: "Custom theme" }).getByRole("button", { name: "Done" }).click();
   await page.getByRole("button", { name: "Use this theme" }).click();
   await page.goto("/#/docs/colors");
   await expect(page.locator("html")).toHaveAttribute("data-brand", "acme");
@@ -202,11 +204,12 @@ test("a generated brand colours buttons in every theme, nested themes included, 
 
 test("the Themes page restyles its sample app without touching the site", async ({ page }) => {
   await open(page, "themes", { theme: "dark" });
+  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
   const sample = page.locator(".pv-themer__sample");
   const primary = (sel: string) => page.locator(sel).evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
   const site = await primary("html");
   await expect(sample.getByRole("button", { name: "Send report" })).toBeVisible();
-  await page.getByLabel("Theme", { exact: true }).selectOption("light");
+  await page.getByRole("dialog", { name: "Custom theme" }).locator("label", { hasText: /^Light$/ }).click();
   await page.getByRole("button", { name: "Violet" }).click();
   await expect(sample).toHaveAttribute("data-theme", "light");
   expect(await primary(".pv-themer__sample")).not.toBe(site);
@@ -222,7 +225,7 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
       ...slugs.map((slug: string): [string, string] => [`components/${slug}`, ".pv-stage"]),
-      ...["", "docs/get-started", "docs/changelog", "docs/principles", "examples", "examples/inbox", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "docs/illustration", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
+      ...["", "docs/get-started", "docs/changelog", "docs/principles", "examples", "examples/inbox", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "docs/illustration", "docs/icons", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);

@@ -16,17 +16,17 @@ export default function Example() {
           key={task.id}
           contentProps={{ className: "ayy-list__item" }}
           startActions={
-            <SwipeAction variant="success" icon={<Icon icon={Tick02Icon} />}>
+            <SwipeAction variant="success" icon={<Icon icon={Tick02Icon} name="check" />}>
               Done
             </SwipeAction>
           }
           endActions={
             <>
-              <SwipeAction icon={<Icon icon={PinIcon} />}>Pin</SwipeAction>
-              <SwipeAction variant="warning" icon={<Icon icon={Clock01Icon} />}>
+              <SwipeAction icon={<Icon icon={PinIcon} name="pin" />}>Pin</SwipeAction>
+              <SwipeAction variant="warning" icon={<Icon icon={Clock01Icon} name="clock" />}>
                 Snooze
               </SwipeAction>
-              <SwipeAction variant="destructive" icon={<Icon icon={Delete02Icon} />}>
+              <SwipeAction variant="destructive" icon={<Icon icon={Delete02Icon} name="trash" />}>
                 Delete
               </SwipeAction>
             </>

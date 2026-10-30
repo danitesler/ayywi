@@ -60,12 +60,12 @@ export default function Example({
         <PageHeaderActions>
           {showSecondaryAction ? (
             <Button variant="outline">
-              <Icon icon={Download01Icon} />
+              <Icon icon={Download01Icon} name="download" />
               Export
             </Button>
           ) : null}
           <Button>
-            <Icon icon={Add01Icon} />
+            <Icon icon={Add01Icon} name="add" />
             New project
           </Button>
         </PageHeaderActions>

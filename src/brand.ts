@@ -214,6 +214,17 @@ const FONT_FALLBACK = {
   mono: fallbacks("font.mono", []),
 };
 
+/**
+ * Sora's x-height as a share of its font size (1ex at regular weight). Another body font is scaled to it through
+ * --ayy-font-body-adjust (font-size-adjust), so DM Sans or a system font reads as large as Sora at the same size token.
+ * Sora itself stays unscaled: its x-height grows with weight, and a fixed adjust would shrink its bold text.
+ */
+export const BODY_FONT_ADJUST = 0.534;
+
+/** The --ayy-font-body-adjust declaration for a body font stack: none for Sora, BODY_FONT_ADJUST for any other. */
+export const bodyFontAdjust = (body: string): string =>
+  `--ayy-font-body-adjust: ${/^"?Sora"?\s*(,|$)/.test(body) ? "none" : BODY_FONT_ADJUST};`;
+
 function fontStack(value: string | readonly string[], fallback: readonly string[]): string {
   const own = (typeof value === "string" ? value.split(",") : [...value]).map((f) => f.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
   for (const f of own) if (!/^[\w\- .]+$/.test(f)) throw new Error(`font "${f}": use a family name (letters, digits, spaces, - and .)`);
@@ -325,6 +336,7 @@ export function brandCss(brand: Brand | BrandInput, options: BrandCssOptions = {
     `--ayy-radius-card: ${b.radius.card};`,
     `--ayy-radius-button: ${b.radius.button};`,
     ...(["heading", "body", "mono"] as const).filter((k) => b.font[k]).map((k) => `--ayy-font-${k}: ${b.font[k]};`),
+    ...(b.font.body ? [bodyFontAdjust(b.font.body)] : []),
   ];
   // Themed sections inside the brand declare their own colours, so the brand repeats on them.
   const rule = `${sel},\n${sel} :is([data-theme], .dark, .light) {\n${decls.map((d) => `  ${d}`).join("\n")}\n}`;

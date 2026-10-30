@@ -25,7 +25,7 @@ export const TABS: { tab: Tab; label: string; href: string }[] = [
 ];
 
 /** Docs pages, in sidebar order. */
-export const DOC_PAGES = ["get-started", "principles", "changelog", "colors", "typography", "spacing", "elevation", "motion", "illustration", "density"];
+export const DOC_PAGES = ["get-started", "principles", "changelog", "colors", "typography", "spacing", "elevation", "motion", "illustration", "icons", "density"];
 
 const slugs = new Set(components.map((c) => c.slug));
 

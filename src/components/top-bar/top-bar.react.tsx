@@ -39,7 +39,7 @@ export const TopBar = forwardRef<HTMLElement, TopBarProps>(function TopBar(
 ) {
   const backContent = (
     <>
-      <Icon icon={ArrowLeft01Icon} directional />
+      <Icon icon={ArrowLeft01Icon} name="chevron-left" directional />
       {backLabel && <span>{backLabel}</span>}
     </>
   );

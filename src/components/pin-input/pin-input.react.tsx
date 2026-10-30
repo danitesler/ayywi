@@ -1,4 +1,4 @@
-import { Fragment, forwardRef, useEffect, useRef, useState, type HTMLAttributes } from "react";
+import { Fragment, forwardRef, useEffect, useReducer, useRef, useState, type HTMLAttributes } from "react";
 import { mergeRefs } from "../../lib/refs";
 import type { InputSize } from "../input/input";
 import {
@@ -72,6 +72,7 @@ export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(function PinIn
   const current = value ?? uncontrolled;
   const rootRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<PinInputController | null>(null);
+  const [, reconcile] = useReducer((n: number) => n + 1, 0);
   const callbacks = useRef({ value, onValueChange, onComplete });
   callbacks.current = { value, onValueChange, onComplete };
 
@@ -83,6 +84,8 @@ export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(function PinIn
       onChange: (next) => {
         if (callbacks.current.value === undefined) setUncontrolled(next);
         callbacks.current.onValueChange?.(next);
+        // The slots were edited in the DOM; render again so a parent that kept its value gets them put back.
+        reconcile();
       },
       onComplete: (next) => callbacks.current.onComplete?.(next),
     });
@@ -93,11 +96,12 @@ export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(function PinIn
     };
   }, [type, total]);
 
+  // After every render, not only when the prop changes: a rejected edit leaves the prop as it was.
   useEffect(() => {
     if (value !== undefined && controllerRef.current && controllerRef.current.value() !== value) {
       controllerRef.current.setValue(value);
     }
-  }, [value]);
+  });
 
   const labelFor =
     slotLabel ?? ((index: number, count: number) => `${type === "alphanumeric" ? "Character" : "Digit"} ${index + 1} of ${count}`);
@@ -150,7 +154,7 @@ export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(function PinIn
               </Fragment>
             );
           })}
-      {name && <input type="hidden" name={name} value={current} />}
+      {name && <input type="hidden" name={name} value={current} disabled={disabled} />}
     </div>
   );
 });

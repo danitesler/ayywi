@@ -51,7 +51,7 @@ const assets = [
     tag: "Screenshot",
     variant: "info",
     spot: "var(--ayy-accent-product)",
-    icon: Image01Icon,
+    icon: Image01Icon, name: "image",
   },
   {
     id: "asset-2",
@@ -60,7 +60,7 @@ const assets = [
     tag: "Social post",
     variant: "success",
     spot: "var(--ayy-accent-marketing)",
-    icon: Share08Icon,
+    icon: Share08Icon, name: "share-2",
   },
   {
     id: "asset-3",
@@ -69,7 +69,7 @@ const assets = [
     tag: "Media asset",
     variant: "ai",
     spot: "var(--ayy-accent-brand)",
-    icon: Image01Icon,
+    icon: Image01Icon, name: "image",
   },
 ] as const;
 
@@ -112,7 +112,7 @@ export default function Example() {
                   />
                 </GridItemSelect>
                 <IconTile size="lg">
-                  <Icon icon={asset.icon} size="lg" />
+                  <Icon icon={asset.icon} name={asset.name} size="lg" />
                 </IconTile>
                 <GridItemActions>
                   <Button
@@ -121,7 +121,7 @@ export default function Example() {
                     aria-label={`Copy ${asset.title}`}
                     onClick={() => toast.success(`Copied ${asset.title}`)}
                   >
-                    <Icon icon={CopyLinkIcon} />
+                    <Icon icon={CopyLinkIcon} name="square-link" />
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger
@@ -129,29 +129,29 @@ export default function Example() {
                       size="icon-sm"
                       aria-label={`More actions for ${asset.title}`}
                     >
-                      <Icon icon={MoreHorizontalIcon} />
+                      <Icon icon={MoreHorizontalIcon} name="ellipsis" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>{asset.title}</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => toast(`Edit ${asset.title}`)}>
-                        <Icon icon={PencilEdit02Icon} />
+                        <Icon icon={PencilEdit02Icon} name="square-pen" />
                         Edit details
                       </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => toast.success(`Duplicated ${asset.title}`)} shortcut="Mod+D">
-                        <Icon icon={Copy01Icon} />
+                        <Icon icon={Copy01Icon} name="copy" />
                         Duplicate
                       </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => toast.success(`Copied link to ${asset.title}`)} shortcut="Mod+C">
-                        <Icon icon={CopyLinkIcon} />
+                        <Icon icon={CopyLinkIcon} name="square-link" />
                         Copy link
                       </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => toast(`Archived ${asset.title}`)}>
-                        <Icon icon={Archive02Icon} />
+                        <Icon icon={Archive02Icon} name="archive" />
                         Archive
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem destructive onSelect={() => toast.error(`Deleted ${asset.title}`)}>
-                        <Icon icon={Delete02Icon} />
+                        <Icon icon={Delete02Icon} name="trash" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -183,19 +183,19 @@ export default function Example() {
         <ActionBarSeparator />
         <ActionBarActions>
           <ActionBarButton onClick={() => toast(`Editing ${selected.length} items`)}>
-            <Icon icon={PencilEdit02Icon} />
+            <Icon icon={PencilEdit02Icon} name="square-pen" />
             Edit
           </ActionBarButton>
           <ActionBarButton onClick={() => toast.success(`Duplicated ${selected.length} items`)}>
-            <Icon icon={Copy01Icon} />
+            <Icon icon={Copy01Icon} name="copy" />
             Duplicate
           </ActionBarButton>
           <ActionBarButton onClick={() => toast.success(`Copied ${selected.length} links`)}>
-            <Icon icon={CopyLinkIcon} />
+            <Icon icon={CopyLinkIcon} name="square-link" />
             Copy
           </ActionBarButton>
           <ActionBarButton onClick={() => toast(`Archived ${selected.length} items`)}>
-            <Icon icon={Archive02Icon} />
+            <Icon icon={Archive02Icon} name="archive" />
             Archive
           </ActionBarButton>
           <ActionBarButton
@@ -205,7 +205,7 @@ export default function Example() {
               setSelected([]);
             }}
           >
-            <Icon icon={Delete02Icon} />
+            <Icon icon={Delete02Icon} name="trash" />
             Delete
           </ActionBarButton>
         </ActionBarActions>

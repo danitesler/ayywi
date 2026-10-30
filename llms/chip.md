@@ -115,7 +115,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 <div class="ayy-stack" style="inline-size: 100%">
   <div class="ayy-spread">
     <div class="ayy-input-group" style="inline-size: min(100%, 18rem)">
-      <svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
       <input type="search" class="ayy-input" placeholder="Search tickets" aria-label="Search tickets"/>
     </div>
     <div role="group" class="ayy-chip-group ayy-chip-group--scroll" aria-label="Filters">
@@ -127,8 +127,8 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   </div>
   <div class="ayy-cluster">
     <span class="ayy-muted">Filtered by</span>
-    <span class="ayy-chip ayy-chip--removable">Assignee: me<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: me"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
-    <span class="ayy-chip ayy-chip--removable">Priority: Urgent<button type="button" class="ayy-chip__remove" aria-label="Remove Priority: Urgent"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+    <span class="ayy-chip ayy-chip--removable">Assignee: me<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: me"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+    <span class="ayy-chip ayy-chip--removable">Priority: Urgent<button type="button" class="ayy-chip__remove" aria-label="Remove Priority: Urgent"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
     <button type="button" class="ayy-button ayy-button--ghost ayy-button--sm">Clear all</button>
   </div>
 </div>
@@ -153,7 +153,7 @@ export default function Example() {
     <div className="ayy-stack" style={{ inlineSize: "100%" }}>
       <div className="ayy-spread">
         <InputGroup style={{ inlineSize: "min(100%, 18rem)" }}>
-          <Icon icon={Search01Icon} />
+          <Icon icon={Search01Icon} name="search" />
           <Input type="search" placeholder="Search tickets" aria-label="Search tickets" />
         </InputGroup>
         <ChipGroup aria-label="Filters" scroll>

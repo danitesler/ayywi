@@ -1,4 +1,5 @@
 import { cx } from "../../lib/cx";
+import type { IconName } from "../../icon-packs";
 
 export const iconSizes = ["auto", "sm", "md", "lg", "xl"] as const;
 export type IconSize = (typeof iconSizes)[number];
@@ -22,6 +23,8 @@ export function iconClass({ size = "auto", directional = false, className }: Ico
 }
 
 export interface IconSvgOptions extends IconClassOptions {
+  /** The glyph's name (`"x"`, `"search"`), written as `data-ayy-icon`. An icon pack replaces the glyphs that carry one. Leave it off for your own icons. */
+  name?: IconName;
   /** Accessible name. Without one the icon is decorative and hidden from screen readers. */
   label?: string;
   /** Stroke width of every stroked shape. Hugeicons draw at 1.5 on the 24px grid. */
@@ -42,7 +45,7 @@ const escape = (value: string | number) => String(value).replace(/&/g, "&amp;").
  * SVG markup for an icon, for everything that isn't React: innerHTML, v-html, {@html}, server templates.
  * iconSvg(Search01Icon) → '<svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">…</svg>'
  */
-export function iconSvg(icon: IconData, { size, directional, className, label, strokeWidth }: IconSvgOptions = {}): string {
+export function iconSvg(icon: IconData, { size, directional, className, name, label, strokeWidth }: IconSvgOptions = {}): string {
   const a11y = label ? `role="img" aria-label="${escape(label)}"` : 'aria-hidden="true"';
   const shapes = icon.map(([tag, { key: _key, ...attributes }]) => {
     // strokeWidth only replaces existing strokes: filled shapes (dots, two-tone layers) keep their look.
@@ -52,5 +55,5 @@ export function iconSvg(icon: IconData, { size, directional, className, label, s
       .join("");
     return `<${tag}${attrs}/>`;
   });
-  return `<svg class="${escape(iconClass({ size, directional, className }))}" viewBox="0 0 24 24" fill="none" ${a11y}>${shapes.join("")}</svg>`;
+  return `<svg class="${escape(iconClass({ size, directional, className }))}"${name ? ` data-ayy-icon="${escape(name)}"` : ""} viewBox="0 0 24 24" fill="none" ${a11y}>${shapes.join("")}</svg>`;
 }

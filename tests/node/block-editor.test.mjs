@@ -100,6 +100,13 @@ test("table alignment survives Markdown and shows in HTML", () => {
 });
 
 const t3 = { id: "t", type: "table", header: true, rows: [["Name", "Qty"], ["pear", "10"], ["Apple", "9"], ["", "1"]] };
+test("fit sets every column's width at once, clamped, and ignores a list of the wrong length", () => {
+  assert.deepEqual(blockEditorEditTable(t3, { op: "fit", widths: [300, 10] }).widths, [300, 48]);
+  assert.equal(blockEditorEditTable(t3, { op: "fit", widths: [300] }), t3);
+  const fitted = blockEditorEditTable(t3, { op: "fit", widths: [200, 150] });
+  assert.equal(blockEditorEditTable(fitted, { op: "fit", widths: [200, 150] }), fitted, "the same widths change nothing");
+});
+
 test("insert, duplicate and delete rows and columns keep widths and align per column", () => {
   const sized = { ...t3, widths: [100, 0], align: ["start", "end"] };
   assert.deepEqual(blockEditorEditTable(sized, { op: "insert-column", at: 1 }).widths, [100, 0, 0]);

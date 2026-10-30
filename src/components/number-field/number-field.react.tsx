@@ -71,7 +71,7 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
         aria-disabled={disabled || atMin}
         onClick={stepBy(-1)}
       >
-        <Icon icon={MinusSignIcon} />
+        <Icon icon={MinusSignIcon} name="minus" />
       </button>
       <input
         ref={mergeRefs(ref, input)}
@@ -97,7 +97,7 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
         aria-disabled={disabled || atMax}
         onClick={stepBy(1)}
       >
-        <Icon icon={PlusSignIcon} />
+        <Icon icon={PlusSignIcon} name="plus" />
       </button>
     </div>
   );

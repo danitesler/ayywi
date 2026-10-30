@@ -4,6 +4,9 @@
 
 .pv-site {
   --pv-header: var(--ayy-size-header);
+  /* One page measure for every tab: Examples, Components and Docs content are this wide and centred in their area. */
+  --pv-page: 1200px;
+  --_pv-pad: var(--ayy-space-6);
   display: flex;
   flex-direction: column;
   min-block-size: 100dvh;
@@ -97,6 +100,7 @@
 
 .pv-release__version {
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-lg);
   font-weight: var(--ayy-weight-medium);
 }
@@ -178,8 +182,9 @@
   --ayy-sidebar-w: initial;
   box-sizing: border-box;
   inline-size: 100%;
-  max-inline-size: 1040px;
-  padding: var(--ayy-space-10) var(--ayy-space-8) var(--ayy-space-16);
+  max-inline-size: var(--pv-page);
+  margin-inline: auto;
+  padding: var(--ayy-space-10) var(--_pv-pad) var(--ayy-space-16);
 }
 
 .pv-page {
@@ -208,6 +213,7 @@
 .pv-h {
   margin: 0 0 var(--ayy-space-2);
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-sm);
   font-weight: var(--ayy-weight-regular);
   color: var(--ayy-color-muted);
@@ -219,6 +225,7 @@
   line-height: var(--ayy-leading-tight); /* body's leading would add dead space under the title */
   scroll-margin-block-start: 88px; /* clear the sticky toolbar when jumped to */
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-xl);
   font-weight: var(--ayy-weight-medium);
   letter-spacing: var(--ayy-tracking-tight);
@@ -288,6 +295,7 @@
 
 .pv-props-popover__title {
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-sm);
   font-weight: var(--ayy-weight-regular);
   color: var(--ayy-color-muted);
@@ -342,6 +350,7 @@
 
 .pv-props-group__title {
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-sm);
   font-weight: var(--ayy-weight-regular);
   color: var(--ayy-color-muted);
@@ -445,6 +454,7 @@
 
 .pv-theme__big {
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-3xl);
   line-height: 1;
 }
@@ -473,6 +483,7 @@
 
 .pv-theme__title {
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-xl);
   line-height: var(--ayy-leading-tight);
   letter-spacing: var(--ayy-tracking-tight);
@@ -517,6 +528,7 @@
 .pv-color-tile__desc {
   color: var(--ayy-color-muted);
   font-size: var(--ayy-text-s);
+  overflow-wrap: anywhere; /* a package path in a description would push the tile past a phone's edge */
 }
 
 .pv-type {
@@ -559,11 +571,112 @@
   }
 }
 
-.pv-bar {
-  display: block;
-  block-size: 10px;
+/* Spacing scale: each bar is the step at its real width, so the row stays short. */
+.pv-spaces {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-4);
+}
+
+.pv-spaces__band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--ayy-space-3) var(--ayy-space-3);
+}
+
+.pv-spaces__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-inline-size: 2.5rem;
+}
+
+.pv-spaces__bar {
+  block-size: 0.5rem;
   border-radius: var(--ayy-radius-pill);
   background-color: var(--ayy-color-text);
+}
+
+.pv-spaces__name {
+  font-size: var(--ayy-text-s);
+  font-weight: var(--ayy-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.pv-spaces__px {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* One line of real controls per size, instead of a card. */
+.pv-size-rows {
+  display: grid;
+  gap: var(--ayy-space-2);
+}
+
+.pv-size-rows__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-2);
+}
+
+.pv-size-rows__label {
+  flex: 0 0 4.25rem;
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.pv-size-rows__row :is(.ayy-input, .ayy-select) {
+  flex: 0 1 8rem;
+  inline-size: 8rem;
+}
+
+.pv-size-rows__px {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Icons, switch, checkbox and the touch target, in one wrapping row. */
+.pv-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-3) var(--ayy-space-5);
+}
+
+.pv-marks__item {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+}
+
+.pv-marks__text {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--ayy-text-s);
+  font-weight: var(--ayy-weight-medium);
+  line-height: var(--ayy-leading-tight);
+}
+
+.pv-marks__text span {
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+.pv-marks__touch {
+  box-sizing: border-box;
+  flex: none;
+  inline-size: var(--ayy-size-touch);
+  block-size: var(--ayy-size-touch);
+  border: 1px dashed var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-md);
 }
 
 .pv-tiles {
@@ -745,6 +858,7 @@
 .pv-tagline {
   margin: 0;
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: clamp(1.125rem, 1rem + 1vw, var(--ayy-text-2xl));
   font-weight: var(--ayy-weight-medium);
   letter-spacing: var(--ayy-tracking-tight);
@@ -1074,13 +1188,12 @@
 
 .pv-brand__sample {
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
 }
 
 /* ---- Full-width pages: home, examples, themes ---- */
 
 .pv-wide {
-  --pv-page: 1200px;
-  --_pv-pad: var(--ayy-space-6);
   box-sizing: border-box;
   flex: 1;
   inline-size: 100%;
@@ -1120,6 +1233,10 @@
 
 .pv-page__header--center .ayy-lede {
   text-wrap: balance;
+}
+
+.pv-page__header--center .pv-page__meta {
+  justify-content: center;
 }
 
 .pv-links--center {
@@ -1295,6 +1412,10 @@
   overflow-y: auto;
 }
 
+.pv-themer__prompt .pv-code__pre.pv-code__pre--wrap {
+  max-block-size: 360px;
+}
+
 .pv-brand-demo {
   display: flex;
   flex-direction: column;
@@ -1329,6 +1450,7 @@
   align-items: center;
   gap: var(--ayy-space-2);
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-xl);
   font-weight: var(--ayy-weight-bold);
   color: var(--ayy-color-primary);
@@ -1536,6 +1658,12 @@
   margin-block-start: var(--ayy-space-4);
 }
 
+.pv-comp-tabs > .ayy-tabs__list {
+  display: flex;
+  inline-size: max-content;
+  margin-inline: auto;
+}
+
 .pv-comp-tabs__panel:not([hidden]) {
   display: flex;
   flex-direction: column;
@@ -1557,6 +1685,7 @@
 
 .pv-ref__renders {
   font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
   font-size: var(--ayy-text-sm);
   font-weight: var(--ayy-weight-regular);
 }
@@ -1572,25 +1701,108 @@
   line-height: var(--ayy-leading-normal);
 }
 
-/* ---- Themes: settings beside a live app ---- */
+/* ---- Themes: one box, the choices on its start side and a live app on its end side ---- */
 
 .pv-themer {
-  display: grid;
-  grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
-  align-items: stretch;
-  gap: var(--ayy-space-6);
-}
-
-.pv-themer__panel {
   box-sizing: border-box;
-  min-block-size: 47.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-5);
-  padding: var(--ayy-space-5);
+  display: grid;
+  grid-template-columns: minmax(26rem, 30rem) minmax(0, 1fr);
   border: 1px solid var(--ayy-color-line);
   border-radius: var(--ayy-radius-card);
   background-color: var(--ayy-color-surface);
+  overflow: clip;
+}
+
+.pv-themer__panel {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-6);
+  padding: var(--ayy-space-5);
+  border-inline-end: 1px solid var(--ayy-color-line);
+}
+
+.pv-themer__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-3);
+}
+
+/* .ayy-eyebrow, which an <h2>'s own heading font would otherwise override. */
+.pv-themer__group-title {
+  margin: 0;
+  font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
+}
+
+/* The Custom picture with its cog on top; the cog sits beside the radio, not inside its label. */
+.pv-themer__custom {
+  position: relative;
+}
+
+.pv-themer__cog {
+  position: absolute;
+  inset-block-start: var(--ayy-space-2);
+  inset-inline-end: var(--ayy-space-2);
+}
+
+.pv-themer__actions {
+  margin-block-start: auto;
+  padding-block-start: var(--ayy-space-5);
+  border-block-start: 1px solid var(--ayy-color-line);
+}
+
+/* The customize dialog: the settings scroll on the start side, the live preview sits centred on the end side. */
+.pv-themer__dialog {
+  inline-size: min(76rem, calc(100vw - 3rem));
+  max-inline-size: none;
+}
+
+.pv-themer__customize {
+  display: grid;
+  grid-template-columns: minmax(15rem, 18rem) minmax(0, 1fr);
+  gap: var(--ayy-space-5);
+  block-size: min(42rem, calc(100dvh - 12rem));
+}
+
+.pv-themer__scroll {
+  min-inline-size: 0;
+  min-block-size: 0;
+  overflow-y: auto;
+}
+
+.pv-themer__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-5);
+  padding-inline-end: var(--ayy-space-3);
+}
+
+/* More room for the sample than the page's box gives it. */
+.pv-themer__customize .pv-themer__sample {
+  max-inline-size: 46rem;
+}
+
+.pv-themer__customize .pv-themer__stage {
+  min-block-size: 0;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-lg);
+  overflow: auto;
+}
+
+@media (max-width: 48rem) {
+  .pv-themer__customize {
+    grid-template-columns: minmax(0, 1fr);
+    block-size: auto;
+  }
+  .pv-themer__scroll {
+    overflow-y: visible;
+  }
+}
+
+/* Reset sits on the start side of the footer, Done on the end side. */
+.pv-themer__reset {
+  margin-inline-end: auto;
 }
 
 .pv-themer__fonts {
@@ -1599,39 +1811,122 @@
   gap: var(--ayy-space-3);
 }
 
+/* The preview wears the chosen theme: its data-theme and surfaces come from the page, its brand from a scoped rule. */
 .pv-themer__stage {
   box-sizing: border-box;
   min-inline-size: 0;
-  min-block-size: 47.5rem;
-  padding: var(--ayy-space-4);
+  min-block-size: 36rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--ayy-space-4);
+  padding: var(--ayy-space-5);
+  background-color: var(--ayy-color-bg);
+  background-image: radial-gradient(var(--ayy-color-line) 1px, transparent 1px);
+  background-size: 1rem 1rem;
+  color: var(--ayy-color-text);
+  font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
+}
+
+.pv-themer__stage-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-1);
+}
+
+.pv-themer__guide {
+  margin-block-start: var(--ayy-space-8);
+}
+
+.pv-themer__guide > .pv-h--section {
+  margin-block-start: 0;
+}
+
+/* Using themes: two cards, so the guidance reads as its own thing under the picker. */
+.pv-themer__guide .pv-usage > .pv-section {
+  padding: var(--ayy-space-5);
   border: 1px solid var(--ayy-color-line);
   border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-wash);
-  display: grid;
-  place-items: center;
 }
 
 .pv-themer__sample {
+  box-sizing: border-box;
   inline-size: 100%;
   max-inline-size: 36rem;
+  align-self: center;
+  justify-self: center;
   padding: var(--ayy-space-5);
-  border: 1px solid var(--ayy-color-line);
   border-radius: var(--ayy-radius-lg);
   background-color: var(--ayy-color-bg);
   color: var(--ayy-color-text);
+  font-family: var(--ayy-font-body);
+  font-size-adjust: var(--ayy-font-body-adjust, none);
 }
 
 @media (max-width: 64rem) {
   .pv-themer {
     grid-template-columns: minmax(0, 1fr);
   }
+  .pv-themer__panel {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--ayy-color-line);
+  }
+  .pv-themer__stage {
+    min-block-size: 0;
+  }
 }
 
 @media (forced-colors: active) {
+  .pv-themer,
   .pv-themer__panel,
-  .pv-themer__stage {
+  .pv-themer__actions,
+  .pv-themer__guide .pv-usage > .pv-section {
     border-color: CanvasText;
   }
+}
+
+/* ---- Icons page: every built-in glyph in one pack, named, in a grid that keeps three columns on a phone. ---- */
+
+.pv-icon-packs {
+  margin-block-start: var(--ayy-space-8);
+}
+
+.pv-icon-packs > .pv-h--section {
+  margin-block-start: 0;
+}
+
+.pv-icon-packs__field {
+  max-inline-size: 16rem;
+}
+
+.pv-icon-packs__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: var(--ayy-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pv-icon-packs__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+  padding: var(--ayy-space-3) var(--ayy-space-1);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-md);
+  text-align: center;
+}
+
+/* The body font, not mono: the longest names (strikethrough, column-insert-right) still fit three columns on a phone. */
+.pv-icon-packs__name {
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  font-size: var(--ayy-text-xs);
+  line-height: var(--ayy-leading-snug);
+  color: var(--ayy-color-muted);
 }
 
 /* ---- Principles: rows (a Card with spotlight, no fill) whose sketch plays on hover. ---- */
@@ -1667,6 +1962,7 @@
 
 .pv-principle__num {
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: 4.5rem;
   line-height: 1;
   color: color-mix(in srgb, var(--ayy-color-text) 22%, transparent);
@@ -1676,6 +1972,7 @@
 .pv-principle__title {
   margin: 0;
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   font-size: var(--ayy-text-xl);
   font-weight: var(--ayy-weight-semibold);
   line-height: 1.2;
@@ -2549,6 +2846,7 @@
 .pv-illo__rules strong::before {
   content: counter(pv-rule, decimal-leading-zero) "  ";
   font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
   color: var(--ayy-color-muted);
 }
 

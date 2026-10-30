@@ -51,6 +51,7 @@
 @import "../components/accordion/accordion.css" layer(ayywi.components);
 @import "../components/carousel/carousel.css" layer(ayywi.components);
 @import "../components/separator/separator.css" layer(ayywi.components);
+@import "../components/scrollbar/scrollbar.css" layer(ayywi.components);
 @import "../components/dialog/dialog.css" layer(ayywi.components);
 @import "../components/command/command.css" layer(ayywi.components);
 @import "../components/popover/popover.css" layer(ayywi.components);

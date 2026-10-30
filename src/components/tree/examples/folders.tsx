@@ -6,29 +6,29 @@ const nodes: TreeNode[] = [
   {
     id: "projects",
     label: "Projects",
-    icon: <Icon icon={Folder01Icon} className="ayy-tree__icon" />,
+    icon: <Icon icon={Folder01Icon} name="folder" className="ayy-tree__icon" />,
     children: [
-      { id: "q4", label: "Q4 launch", icon: <Icon icon={Megaphone01Icon} className="ayy-tree__icon" /> },
+      { id: "q4", label: "Q4 launch", icon: <Icon icon={Megaphone01Icon} name="megaphone" className="ayy-tree__icon" /> },
       {
         id: "avery",
         label: "Averyveryverylongcampaignbriefwithnospacesfinalversion",
-        icon: <Icon icon={File02Icon} className="ayy-tree__icon" />,
+        icon: <Icon icon={File02Icon} name="file-text" className="ayy-tree__icon" />,
       },
     ],
   },
   {
     id: "team",
     label: "Team",
-    icon: <Icon icon={Folder01Icon} className="ayy-tree__icon" />,
+    icon: <Icon icon={Folder01Icon} name="folder" className="ayy-tree__icon" />,
     children: [
-      { id: "design", label: "Design", icon: <Icon icon={PaintBrush01Icon} className="ayy-tree__icon" /> },
-      { id: "brand", label: "Brand kit", icon: <Icon icon={File02Icon} className="ayy-tree__icon" /> },
+      { id: "design", label: "Design", icon: <Icon icon={PaintBrush01Icon} name="paintbrush" className="ayy-tree__icon" /> },
+      { id: "brand", label: "Brand kit", icon: <Icon icon={File02Icon} name="file-text" className="ayy-tree__icon" /> },
     ],
   },
   {
     id: "shared",
     label: "Shared with me",
-    icon: <Icon icon={FolderShared01Icon} className="ayy-tree__icon" />,
+    icon: <Icon icon={FolderShared01Icon} name="folder-user" className="ayy-tree__icon" />,
     disabled: true,
   },
 ];

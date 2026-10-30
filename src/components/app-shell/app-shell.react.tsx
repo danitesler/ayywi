@@ -148,7 +148,7 @@ export const AppShellBack = forwardRef<HTMLAnchorElement & HTMLButtonElement, Ap
 ) {
   const content = (
     <>
-      <Icon icon={ArrowLeft01Icon} directional />
+      <Icon icon={ArrowLeft01Icon} name="chevron-left" directional />
       <span>{children}</span>
     </>
   );
@@ -229,7 +229,7 @@ export const AppShellToggle = forwardRef<HTMLButtonElement, AppShellToggleProps>
       aria-expanded={ariaExpanded}
       {...props}
     >
-      {children ?? <Icon icon={Menu01Icon} />}
+      {children ?? <Icon icon={Menu01Icon} name="menu" />}
     </button>
   );
 

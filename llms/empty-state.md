@@ -53,11 +53,11 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
 <div class="ayy-empty-state ayy-empty-state--bordered" style="inline-size: min(100%, 34rem)">
-  <span class="ayy-icon-tile" aria-hidden="true"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></span>
+  <span class="ayy-icon-tile" aria-hidden="true"><svg class="ayy-icon" data-ayy-icon="folder" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></span>
   <h2 class="ayy-empty-state__title">No projects yet</h2>
   <p class="ayy-empty-state__description">Projects hold your pages, forms and the people working on them. Start one from scratch or from a template.</p>
   <div class="ayy-empty-state__actions">
-    <button type="button" class="ayy-button"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>New project</button>
+    <button type="button" class="ayy-button"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>New project</button>
     <button type="button" class="ayy-button ayy-button--ghost">Browse templates</button>
   </div>
 </div>
@@ -73,13 +73,13 @@ export default function Example() {
   return (
     <EmptyState bordered style={{ inlineSize: "min(100%, 34rem)" }}>
       <IconTile>
-        <Icon icon={Folder01Icon} />
+        <Icon icon={Folder01Icon} name="folder" />
       </IconTile>
       <EmptyStateTitle>No projects yet</EmptyStateTitle>
       <EmptyStateDescription>Projects hold your pages, forms and the people working on them. Start one from scratch or from a template.</EmptyStateDescription>
       <EmptyStateActions>
         <Button>
-          <Icon icon={Add01Icon} />
+          <Icon icon={Add01Icon} name="add" />
           New project
         </Button>
         <Button variant="ghost">Browse templates</Button>
@@ -96,7 +96,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
 ```html
 <div class="ayy-card" style="inline-size: min(100%, 26rem)">
   <div class="ayy-empty-state ayy-empty-state--compact" role="status">
-    <span class="ayy-icon-tile ayy-icon-tile--sm" aria-hidden="true"><svg class="ayy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+    <span class="ayy-icon-tile ayy-icon-tile--sm" aria-hidden="true"><svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
     <h2 class="ayy-empty-state__title">No invoices match “Acme 2025”</h2>
     <p class="ayy-empty-state__description">Try a client name or an invoice number, or clear the filters.</p>
     <div class="ayy-empty-state__actions"><button type="button" class="ayy-button ayy-button--outline ayy-button--sm">Clear filters</button></div>
@@ -115,7 +115,7 @@ export default function Example() {
     <Card style={{ inlineSize: "min(100%, 26rem)" }}>
       <EmptyState compact role="status">
         <IconTile size="sm">
-          <Icon icon={Search01Icon} />
+          <Icon icon={Search01Icon} name="search" />
         </IconTile>
         <EmptyStateTitle>No invoices match “Acme 2025”</EmptyStateTitle>
         <EmptyStateDescription>Try a client name or an invoice number, or clear the filters.</EmptyStateDescription>

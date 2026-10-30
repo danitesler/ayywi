@@ -25,6 +25,7 @@ import {
 } from "@danitesler/ayywi/react";
 import { Add01Icon, CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
 import { themeOptions } from "../themes";
+import { IconsPage } from "./Icons";
 import { IllustrationPage } from "./Illustration";
 
 type Entry = [string, TokenDefinition];
@@ -37,7 +38,7 @@ const px = (v: TokenDefinition["value"]) => (typeof v === "string" && v.endsWith
 
 function Header({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <header className="pv-page__header">
+    <header className="pv-page__header pv-page__header--center">
       <p className="ayy-eyebrow">Foundations</p>
       <h1 className="ayy-h2">{title}</h1>
       <p className="ayy-lede">{children}</p>
@@ -209,17 +210,29 @@ function ScaleRows({ entries }: { entries: Entry[] }) {
 
 // ---- Spacing & sizing ----
 
-const SIZES = [
-  { name: "sm", px: "28px", desc: "Small control height. Grows with density." },
-  { name: "md", px: "32px", desc: "Default control height. Grows with density." },
-  { name: "lg", px: "40px", desc: "Large control height. Grows with density." },
-  { name: "icon-sm", px: "16px", desc: "Icons in dense rows and inside buttons." },
-  { name: "icon-md", px: "20px", desc: "Icons in list rows, headings and beside body text." },
-  { name: "icon-lg", px: "24px", desc: "Icons at their natural size." },
-  { name: "switch", px: "20px", desc: "Height of a switch." },
-  { name: "check", px: "16px", desc: "Size of a checkbox or radio." },
-  { name: "touch", px: "44px", desc: "The smallest comfortable target for a finger." },
-];
+/** Compact, then comfortable, then touch — or the one value, when a size doesn't grow. */
+const densityPx = (t: TokenDefinition) =>
+  t.density ? `${px(t.value)} / ${px(t.density.comfortable)} / ${px(t.density.touch)}` : px(t.value);
+
+const CONTROL_ROWS = [
+  { label: "Small", size: "sm", icon: "icon-sm", token: "size.control-sm" },
+  { label: "Medium", size: "md", icon: "icon", token: "size.control-md" },
+  { label: "Large", size: "lg", icon: "icon-lg", token: "size.control-lg" },
+] as const;
+
+/** Dense steps on one row, section-scale steps (16 and up) on the next, so the longest bar doesn't sit alone. */
+function spaceBands() {
+  const spaces = byValue(group("space"));
+  const split = spaces.findIndex(([, t]) => parseFloat(String(t.value)) >= 4);
+  return split > 0 ? [spaces.slice(0, split), spaces.slice(split)] : [spaces];
+}
+
+const ICON_MARKS = [
+  { name: "icon-sm", size: "sm" },
+  { name: "icon-md", size: "md" },
+  { name: "icon-lg", size: "lg" },
+  { name: "icon-xl", size: "xl" },
+] as const;
 
 function SpacingPage() {
   return (
@@ -231,94 +244,78 @@ function SpacingPage() {
 
       <h2 className="pv-h pv-h--section">Spacing</h2>
       <p className="pv-note">
-        Every gap and padding comes from this scale, built on a 4px grid. The smallest steps are for dense interfaces, the largest for
-        generous space around page sections.
+        Every gap and padding comes from this scale, on a 4px grid. The bar is the step itself: short ones for dense UI, long ones for
+        space around a section.
       </p>
-      <div className="pv-scale">
-        {byValue(group("space")).map(([name, t]) => (
-          <div key={name} className="pv-scale__row">
-            <span className="pv-scale__label">
-              {short(name)}
-              <span className="ayy-muted">{px(t.value)}</span>
-            </span>
-            <span className="pv-bar" style={{ inlineSize: `var(${t.cssVar})` }} />
+      <div className="pv-spaces">
+        {spaceBands().map((band) => (
+          <div key={band[0][0]} className="pv-spaces__band">
+            {band.map(([name, t]) => (
+              <div key={name} className="pv-spaces__item" title={t.cssVar}>
+                <span className="pv-spaces__bar" style={{ inlineSize: `var(${t.cssVar})` }} aria-hidden="true" />
+                <span className="pv-spaces__name">{short(name)}</span>
+                <span className="pv-spaces__px">{px(t.value)}</span>
+              </div>
+            ))}
           </div>
         ))}
       </div>
 
-      <h2 className="pv-h pv-h--section">Sizes</h2>
-      <p className="pv-note">Heights of controls, icons and touch targets. Control heights grow with density.</p>
-      <div className="pv-scale">
-        {SIZES.map(({ name, px, desc }) => (
-          <div key={name} className="pv-scale__row">
-            <span className="pv-scale__label">
-              {name}
-              <span className="ayy-muted">{px}</span>
-            </span>
-            <span className="pv-scale__sample ayy-muted">{desc}</span>
+      <h2 className="pv-h pv-h--section">Controls</h2>
+      <p className="pv-note">
+        Buttons, inputs and selects of the same size share one height. That height grows with density: compact, comfortable, then touch.
+      </p>
+      <div className="pv-size-rows">
+        {CONTROL_ROWS.map((row) => (
+          <div key={row.size} className="pv-size-rows__row">
+            <span className="pv-size-rows__label">{row.label}</span>
+            <Input aria-label={`${row.label} project name`} placeholder="Name" size={row.size} />
+            <Select aria-label={`${row.label} status`} size={row.size} defaultValue="active">
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </Select>
+            <Button size={row.size}>Save</Button>
+            <Button variant="outline" size={row.icon} aria-label="Add project">
+              <Icon icon={Add01Icon} name="add" />
+            </Button>
+            <span className="pv-size-rows__px">{densityPx(tokens[row.token])}</span>
           </div>
         ))}
       </div>
 
-      <h2 className="pv-h pv-h--section">Components by size</h2>
-      <p className="pv-note">Buttons, inputs and selects of the same size share one height, so they line up side by side.</p>
-      <div className="pv-densities">
-        <Card>
-          <CardContent className="ayy-stack">
-            <div>
-              <strong>Small</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>28 / 32 / 40px height</p>
-            </div>
-            <Input aria-label="Small project name" placeholder="Project name" size="sm" />
-            <Select aria-label="Small project status" size="sm" defaultValue="active">
-              <option value="active">Active</option>
-              <option value="archived">Archived</option>
-            </Select>
-            <div className="ayy-cluster">
-              <Button size="sm">Save</Button>
-              <Button variant="outline" size="sm">Cancel</Button>
-              <Button variant="outline" size="icon-sm" aria-label="Add project"><Icon icon={Add01Icon} /></Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="ayy-stack">
-            <div>
-              <strong>Medium</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>32 / 40 / 44px height · Default</p>
-            </div>
-            <Input aria-label="Medium project name" placeholder="Project name" size="md" />
-            <Select aria-label="Medium project status" size="md" defaultValue="active">
-              <option value="active">Active</option>
-              <option value="archived">Archived</option>
-            </Select>
-            <div className="ayy-cluster">
-              <Button size="md">Save</Button>
-              <Button variant="outline" size="md">Cancel</Button>
-              <Button variant="outline" size="icon" aria-label="Add project"><Icon icon={Add01Icon} /></Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="ayy-stack">
-            <div>
-              <strong>Large</strong>
-              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>36 / 44 / 48px height</p>
-            </div>
-            <Input aria-label="Large project name" placeholder="Project name" size="lg" />
-            <Select aria-label="Large project status" size="lg" defaultValue="active">
-              <option value="active">Active</option>
-              <option value="archived">Archived</option>
-            </Select>
-            <div className="ayy-cluster">
-              <Button size="lg">Save</Button>
-              <Button variant="outline" size="lg">Cancel</Button>
-              <Button variant="outline" size="icon-lg" aria-label="Add project"><Icon icon={Add01Icon} /></Button>
-            </div>
-          </CardContent>
-        </Card>
+      <h2 className="pv-h pv-h--section">Icons and targets</h2>
+      <p className="pv-note">Icons beside text, a switch, a checkbox, and the smallest comfortable target for a finger.</p>
+      <div className="pv-marks">
+        {ICON_MARKS.map((mark) => (
+          <div key={mark.name} className="pv-marks__item" title={tokens[`size.${mark.name}`].cssVar}>
+            <Icon icon={Add01Icon} name="add" size={mark.size} />
+            <span className="pv-marks__text">
+              {mark.name}
+              <span>{px(tokens[`size.${mark.name}`].value)}</span>
+            </span>
+          </div>
+        ))}
+        <div className="pv-marks__item" title={tokens["size.switch"].cssVar}>
+          <Switch aria-label="Switch size" />
+          <span className="pv-marks__text">
+            switch
+            <span>{densityPx(tokens["size.switch"])}</span>
+          </span>
+        </div>
+        <div className="pv-marks__item" title={tokens["size.check"].cssVar}>
+          <Checkbox aria-label="Checkbox size" />
+          <span className="pv-marks__text">
+            check
+            <span>{densityPx(tokens["size.check"])}</span>
+          </span>
+        </div>
+        <div className="pv-marks__item" title={tokens["size.touch"].cssVar}>
+          <span className="pv-marks__touch" aria-hidden="true" />
+          <span className="pv-marks__text">
+            touch
+            <span>{px(tokens["size.touch"].value)}</span>
+          </span>
+        </div>
       </div>
     </article>
   );
@@ -424,7 +421,7 @@ function MotionPage() {
       <div className="pv-motion__controls">
         <div className="ayy-cluster">
           <Button variant="outline" size="sm" onClick={() => setRunning((r) => !r)}>
-            <Icon icon={running ? PauseIcon : PlayIcon} />
+            <Icon icon={running ? PauseIcon : PlayIcon} name={running ? "pause" : "play"} />
             {running ? "Pause loop" : "Play loop"}
           </Button>
           <Badge variant={running ? "success" : "outline"}>
@@ -513,7 +510,7 @@ function MotionPage() {
           <div className="pv-motion__stage">
             <InlineToast
               tone="success"
-              icon={<Icon icon={CheckmarkCircle02Icon} />}
+              icon={<Icon icon={CheckmarkCircle02Icon} name="circle-check" />}
               className="pv-motion__toast"
               data-visible={isToggled || undefined}
               aria-hidden={!isToggled}
@@ -603,6 +600,7 @@ export const foundations: Foundation[] = [
   { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow"], keywords: "corners depth shadow", Page: ElevationPage },
   { route: "motion", title: "Motion", groups: ["ease", "duration"], keywords: "animation easing transition reduced motion", Page: MotionPage },
   { route: "illustration", title: "Illustration", groups: [], keywords: "illustrations sketches spot illustration hover animation loop beats storytelling empty state onboarding feature cards principles", Page: IllustrationPage },
+  { route: "icons", title: "Icons", groups: [], keywords: "icons icon packs hugeicons lucide tabler material symbols feather glyphs setIconPack data-ayy-icons name licence", Page: IconsPage },
 ];
 
 /** Searchable text for a foundation page: its title, keywords and every token on it. */

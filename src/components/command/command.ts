@@ -8,7 +8,7 @@ export const commandListClass = "ayy-command__list";
 export const commandItemClass = "ayy-command__item";
 
 /** The magnifier before the input, as SVG markup (Hugeicons Search01). */
-export const commandSearchIcon = /* @__PURE__ */ iconSvg(Search01Icon);
+export const commandSearchIcon = /* @__PURE__ */ iconSvg(Search01Icon, { name: "search" });
 
 export interface CommandControllerOptions {
   /** Called when an item is run (Enter or a click). The item has been clicked, so its own handlers run too. */

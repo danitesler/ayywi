@@ -17,9 +17,9 @@ export const showcaseAppsPage = {
 export const showcase = showcaseAppsPage;
 
 const DEVICES = {
-  desktop: { label: "Desktop", icon: ComputerIcon, width: 1280, height: 800 },
-  tablet: { label: "Tablet", icon: Tablet01Icon, width: 834, height: 1112 },
-  mobile: { label: "Mobile", icon: SmartPhone01Icon, width: 390, height: 844 },
+  desktop: { label: "Desktop", icon: ComputerIcon, iconName: "monitor", width: 1280, height: 800 },
+  tablet: { label: "Tablet", icon: Tablet01Icon, iconName: "tablet", width: 834, height: 1112 },
+  mobile: { label: "Mobile", icon: SmartPhone01Icon, iconName: "smartphone", width: 390, height: 844 },
 } as const;
 type Device = keyof typeof DEVICES;
 
@@ -129,7 +129,7 @@ function Detail({ app }: { app: ShowcaseApp }) {
     <article className="pv-page">
       <div>
         <a className={buttonClass({ variant: "ghost", size: "sm" })} href={`#/${ROUTE}`}>
-          <Icon icon={ArrowLeft01Icon} directional />
+          <Icon icon={ArrowLeft01Icon} name="chevron-left" directional />
           All examples
         </a>
       </div>
@@ -144,7 +144,7 @@ function Detail({ app }: { app: ShowcaseApp }) {
         <SegmentedControl size="sm" aria-label="Device" value={device} onValueChange={(v) => setDevice(v as Device)}>
           {(Object.keys(DEVICES) as Device[]).map((key) => (
             <SegmentedControlItem key={key} value={key}>
-              <Icon icon={DEVICES[key].icon} />
+              <Icon icon={DEVICES[key].icon} name={DEVICES[key].iconName} />
               {DEVICES[key].label}
             </SegmentedControlItem>
           ))}
@@ -153,7 +153,7 @@ function Detail({ app }: { app: ShowcaseApp }) {
           {d.width} × {d.height}
         </span>
         <a className={buttonClass({ variant: "outline", size: "sm" })} href={frameSrc(app)} target="_blank" rel="noreferrer">
-          <Icon icon={LinkSquare01Icon} />
+          <Icon icon={LinkSquare01Icon} name="external-link" />
           Open full screen
         </a>
       </div>

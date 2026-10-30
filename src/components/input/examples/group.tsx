@@ -10,7 +10,7 @@ export default function Example() {
       <Field>
         <Label htmlFor="ig-search">Search</Label>
         <InputGroup>
-          <Icon icon={Search01Icon} />
+          <Icon icon={Search01Icon} name="search" />
           <Input id="ig-search" type="search" placeholder="Search conversations" aria-keyshortcuts="/" />
           <InputGroupAddon>
             <Kbd>/</Kbd>
@@ -50,7 +50,7 @@ export default function Example() {
                 toast("Access token copied to clipboard");
               }}
             >
-              <Icon icon={Copy01Icon} />
+              <Icon icon={Copy01Icon} name="copy" />
             </Button>
           </Tooltip>
         </InputGroup>
@@ -78,7 +78,7 @@ export default function Example() {
                 toast(next ? "Password revealed" : "Password hidden");
               }}
             >
-              <Icon icon={showPassword ? ViewOffSlashIcon : ViewIcon} />
+              <Icon icon={showPassword ? ViewOffSlashIcon : ViewIcon} name={showPassword ? "eye-off" : "eye"} />
             </Button>
           </Tooltip>
           <Tooltip content="Copy password">
@@ -92,7 +92,7 @@ export default function Example() {
                 toast("Password copied to clipboard");
               }}
             >
-              <Icon icon={Copy01Icon} />
+              <Icon icon={Copy01Icon} name="copy" />
             </Button>
           </Tooltip>
         </InputGroup>

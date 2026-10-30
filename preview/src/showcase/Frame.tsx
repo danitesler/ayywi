@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, type MouseEvent } from "react";
-import { setBrand, setDensity, setTheme, type BrandInput, type ThemeMode } from "@danitesler/ayywi";
+import { getIconPack, ICON_PACK_STORAGE_KEY, setBrand, setDensity, setIconPack, setTheme, type BrandInput, type ThemeMode } from "@danitesler/ayywi";
 import { showcaseApps } from "./apps";
 
 /** One showcase app on its own page (?app=<id>), loaded in the device preview's iframe so media queries see the device width. */
@@ -13,6 +13,16 @@ export function ShowcaseFrame({ id }: { id: string }) {
     setDensity(app.density, document.documentElement, { persist: false });
     document.title = `${app.name} · ${app.kind} · ayywi`;
   }, [app]);
+
+  // The site's icon pack (preview/src/icon-packs.css loads every pack's CSS): index.html restores it on <html> when the
+  // frame loads, and a storage event keeps it in step when the site picks another pack while the frame is open.
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === null || event.key === ICON_PACK_STORAGE_KEY) setIconPack(getIconPack(), document.documentElement, { persist: false });
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   // The Themes page restyles the app it shows: { type: "ayywi-look", theme, brand } from the page that holds this frame.
   useEffect(() => {

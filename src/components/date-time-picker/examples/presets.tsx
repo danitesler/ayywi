@@ -9,9 +9,9 @@ export default function Example() {
       value={due}
       onValueChange={setDue}
       presets={[
-        { label: "Today", date: "+0", icon: <Icon icon={Sun03Icon} /> },
-        { label: "Tomorrow", date: "+1", icon: <Icon icon={ArrowRight02Icon} directional /> },
-        { label: "Next week", date: "+7", icon: <Icon icon={Calendar03Icon} /> },
+        { label: "Today", date: "+0", icon: <Icon icon={Sun03Icon} name="sun" /> },
+        { label: "Tomorrow", date: "+1", icon: <Icon icon={ArrowRight02Icon} name="arrow-right" directional /> },
+        { label: "Next week", date: "+7", icon: <Icon icon={Calendar03Icon} name="calendar" /> },
       ]}
       footer={
         <>

@@ -10,7 +10,7 @@ export default function Example() {
         title="Inbox"
         actions={
           <Button variant="ghost" size="icon" aria-label="New task">
-            <Icon icon={Add01Icon} />
+            <Icon icon={Add01Icon} name="add" />
           </Button>
         }
       >

@@ -67,8 +67,8 @@ export const tokenPropertyClass = "ayy-token-property";
 export const tokenPunctuationClass = "ayy-token-punctuation";
 export const tokenBooleanClass = "ayy-token-boolean";
 
-export const codeBlockCopyIcon = /* @__PURE__ */ iconSvg(Copy01Icon);
-export const codeBlockCheckIcon = /* @__PURE__ */ iconSvg(Tick02Icon);
+export const codeBlockCopyIcon = /* @__PURE__ */ iconSvg(Copy01Icon, { name: "copy" });
+export const codeBlockCheckIcon = /* @__PURE__ */ iconSvg(Tick02Icon, { name: "check" });
 
 const copyTimers = new WeakMap<Element, ReturnType<typeof setTimeout>>();
 

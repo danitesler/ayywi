@@ -4,6 +4,7 @@ import { chartColors, chartTheme, setDensity, setTheme, toast } from "@danitesle
 import "@danitesler/ayywi/elements";
 import "../../src/css/index.css";
 import "./preview.css";
+import "./icon-packs.css";
 
 // Plain-HTML examples call window.ayywi.* exactly like pages using dist/elements.global.js.
 Object.assign(window, { ayywi: { toast, setTheme, setDensity, chartColors, chartTheme } });

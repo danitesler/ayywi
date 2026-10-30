@@ -28,7 +28,7 @@ export default function Example() {
     <div className="ayy-stack" style={{ inlineSize: "min(100%, 24rem)", gap: "var(--ayy-space-3)" }}>
       {/* Standalone with icon */}
       <div>
-        <InlineToast tone="success" icon={<Icon icon={CheckmarkCircle02Icon} size="sm" />}>
+        <InlineToast tone="success" icon={<Icon icon={CheckmarkCircle02Icon} name="circle-check" size="sm" />}>
           Inline toast (with icon)
         </InlineToast>
       </div>
@@ -46,10 +46,10 @@ export default function Example() {
           <CardToastClose label="Dismiss preview" />
           <CardToastCorner position="top-start">
             <CardToastAction label="Annotate">
-              <Icon icon={Edit02Icon} size="sm" />
+              <Icon icon={Edit02Icon} name="pen-line" size="sm" />
             </CardToastAction>
             <CardToastAction label="Pin to screen">
-              <Icon icon={PinIcon} size="sm" />
+              <Icon icon={PinIcon} name="pin" size="sm" />
             </CardToastAction>
           </CardToastCorner>
           <CardToastCenter>
@@ -58,19 +58,19 @@ export default function Example() {
           </CardToastCenter>
           <CardToastCorner position="bottom-start">
             <CardToastAction label="Share link">
-              <Icon icon={CloudUploadIcon} size="sm" />
+              <Icon icon={CloudUploadIcon} name="cloud-upload" size="sm" />
             </CardToastAction>
           </CardToastCorner>
           <CardToastCorner position="bottom-end">
             <CardToastAction label="Show in folder">
-              <Icon icon={Folder01Icon} size="sm" />
+              <Icon icon={Folder01Icon} name="folder" size="sm" />
             </CardToastAction>
             <CardToastAction label="Delete">
-              <Icon icon={Delete02Icon} size="sm" />
+              <Icon icon={Delete02Icon} name="trash" size="sm" />
             </CardToastAction>
           </CardToastCorner>
         </CardToastScrim>
-        <InlineToast tone="success" icon={<Icon icon={CheckmarkCircle02Icon} size="sm" />}>
+        <InlineToast tone="success" icon={<Icon icon={CheckmarkCircle02Icon} name="circle-check" size="sm" />}>
           Copied to clipboard
         </InlineToast>
       </CardToast>

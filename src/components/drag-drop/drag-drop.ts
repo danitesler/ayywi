@@ -25,7 +25,7 @@ export function sortableClassName({ orientation, className }: { orientation?: Dr
 }
 
 /** The six-dot grip, as SVG markup (Hugeicons DragDropVertical), for a .ayy-drag-handle button. */
-export const dragHandleIcon = /* @__PURE__ */ iconSvg(DragDropVerticalIcon);
+export const dragHandleIcon = /* @__PURE__ */ iconSvg(DragDropVerticalIcon, { name: "grip-vertical" });
 
 /**
  * The default for DragDropOptions.accepts: an area with data-accepts="bug feature" takes only items whose data-type is

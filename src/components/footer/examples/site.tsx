@@ -7,7 +7,7 @@ export default function Example() {
       <Footer>
         <FooterBrand>
           <a href="#top">
-            <Icon icon={Layers01Icon} />
+            <Icon icon={Layers01Icon} name="layers" />
             Northwind
           </a>
           <p>Fast, accessible sites from a sentence. Made in Lisbon and Tel Aviv.</p>

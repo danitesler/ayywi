@@ -6,19 +6,19 @@ const nodes: TreeNode[] = [
   {
     id: "team",
     label: "Team",
-    icon: <Icon icon={Folder01Icon} className="ayy-tree__icon" />,
+    icon: <Icon icon={Folder01Icon} name="folder" className="ayy-tree__icon" />,
     children: [
-      { id: "marketing", label: "Marketing", icon: <Icon icon={Megaphone01Icon} className="ayy-tree__icon" /> },
-      { id: "design", label: "Design", icon: <Icon icon={PaintBrush01Icon} className="ayy-tree__icon" /> },
+      { id: "marketing", label: "Marketing", icon: <Icon icon={Megaphone01Icon} name="megaphone" className="ayy-tree__icon" /> },
+      { id: "design", label: "Design", icon: <Icon icon={PaintBrush01Icon} name="paintbrush" className="ayy-tree__icon" /> },
     ],
   },
   {
     id: "projects",
     label: "Projects",
-    icon: <Icon icon={Folder02Icon} className="ayy-tree__icon" />,
-    children: [{ id: "q4", label: "Q4 launch", icon: <Icon icon={Megaphone01Icon} className="ayy-tree__icon" /> }],
+    icon: <Icon icon={Folder02Icon} name="folder-open" className="ayy-tree__icon" />,
+    children: [{ id: "q4", label: "Q4 launch", icon: <Icon icon={Megaphone01Icon} name="megaphone" className="ayy-tree__icon" /> }],
   },
-  { id: "archive", label: "Archive", icon: <Icon icon={Folder02Icon} className="ayy-tree__icon" /> },
+  { id: "archive", label: "Archive", icon: <Icon icon={Folder02Icon} name="folder-open" className="ayy-tree__icon" /> },
 ];
 
 export default function Example() {

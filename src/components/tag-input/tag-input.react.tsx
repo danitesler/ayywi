@@ -111,7 +111,7 @@ export const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function Tag
         <span key={tag} className="ayy-chip ayy-chip--removable ayy-tag-input__tag" data-value={tag}>
           {tag}
           <button type="button" className="ayy-chip__remove" aria-label={removeLabel(tag)} disabled={disabled} onClick={() => remove(i)}>
-            <Icon icon={Cancel01Icon} />
+            <Icon icon={Cancel01Icon} name="x" />
           </button>
         </span>
       ))}
@@ -171,7 +171,7 @@ export const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function Tag
           </li>
         </ul>
       )}
-      {name && tags.map((tag) => <input key={tag} type="hidden" name={name} value={tag} />)}
+      {name && tags.map((tag) => <input key={tag} type="hidden" name={name} value={tag} disabled={disabled} />)}
       <span className="ayy-sr-only" role="status">
         {said}
       </span>

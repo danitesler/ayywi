@@ -24,11 +24,11 @@ export const transferListDescriptionClass = "ayy-transfer-list__description";
 export const transferListEmptyClass = "ayy-transfer-list__empty";
 export const transferListActionsClass = "ayy-transfer-list__actions";
 
-export const transferListSearchIcon = /* @__PURE__ */ iconSvg(Search01Icon);
-export const transferListAddIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { directional: true });
-export const transferListAddAllIcon = /* @__PURE__ */ iconSvg(ArrowRightDoubleIcon, { directional: true });
-export const transferListRemoveIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { directional: true });
-export const transferListRemoveAllIcon = /* @__PURE__ */ iconSvg(ArrowLeftDoubleIcon, { directional: true });
+export const transferListSearchIcon = /* @__PURE__ */ iconSvg(Search01Icon, { name: "search" });
+export const transferListAddIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
+export const transferListAddAllIcon = /* @__PURE__ */ iconSvg(ArrowRightDoubleIcon, { name: "chevrons-right", directional: true });
+export const transferListRemoveIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { name: "chevron-left", directional: true });
+export const transferListRemoveAllIcon = /* @__PURE__ */ iconSvg(ArrowLeftDoubleIcon, { name: "chevrons-left", directional: true });
 
 export type TransferDirection = "to-target" | "to-source";
 

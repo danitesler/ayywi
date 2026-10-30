@@ -41,9 +41,9 @@ import type { Renderer } from "./settings";
 export type Device = "desktop" | "tablet" | "mobile";
 
 const DEVICES = [
-  { id: "desktop" as const, label: "Desktop", icon: ComputerIcon },
-  { id: "tablet" as const, label: "Tablet", icon: Tablet01Icon },
-  { id: "mobile" as const, label: "Mobile", icon: SmartPhone01Icon },
+  { id: "desktop" as const, label: "Desktop", icon: ComputerIcon, iconName: "monitor" as const },
+  { id: "tablet" as const, label: "Tablet", icon: Tablet01Icon, iconName: "tablet" as const },
+  { id: "mobile" as const, label: "Mobile", icon: SmartPhone01Icon, iconName: "smartphone" as const },
 ];
 
 function HtmlStage({ html }: { html: string }) {
@@ -91,7 +91,7 @@ function DeviceIframe({
       const root = document.documentElement;
       const target = doc.documentElement;
       target.className = root.className;
-      for (const attr of ["data-theme", "data-density", "data-brand", "dir", "lang"]) {
+      for (const attr of ["data-theme", "data-density", "data-ayy-icons", "data-brand", "data-ayy-custom-theme", "dir", "lang"]) {
         const val = root.getAttribute(attr);
         if (val !== null) target.setAttribute(attr, val);
         else target.removeAttribute(attr);
@@ -135,15 +135,23 @@ function DeviceIframe({
         iframeBrandStyle.remove();
       }
     };
+    const syncCustomizationStyles = () => {
+      doc.head.querySelectorAll("style[data-ayy-theme-customization]").forEach((style) => style.remove());
+      document.head.querySelectorAll("style[data-ayy-theme-customization]").forEach((style) => doc.head.appendChild(style.cloneNode(true)));
+    };
     syncBrandStyle();
+    syncCustomizationStyles();
 
     const observer = new MutationObserver(syncAttrs);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class", "data-theme", "data-density", "data-brand", "dir", "lang"],
+      attributeFilter: ["class", "data-theme", "data-density", "data-ayy-icons", "data-brand", "data-ayy-custom-theme", "dir", "lang"],
     });
 
-    const brandObserver = new MutationObserver(syncBrandStyle);
+    const brandObserver = new MutationObserver(() => {
+      syncBrandStyle();
+      syncCustomizationStyles();
+    });
     brandObserver.observe(document.head, {
       childList: true,
       subtree: true,
@@ -304,7 +312,7 @@ export function Showcase({
               {DEVICES.map((d) => (
                 <Tooltip key={d.id} content={d.label}>
                   <SegmentedControlItem value={d.id} aria-label={d.label}>
-                    <Icon icon={d.icon} />
+                    <Icon icon={d.icon} name={d.iconName} />
                   </SegmentedControlItem>
                 </Tooltip>
               ))}
@@ -316,7 +324,7 @@ export function Showcase({
             <Popover>
               <Tooltip content="Props">
                 <PopoverTrigger variant="outline" size="icon-sm" aria-label="Props">
-                  <Icon icon={SlidersHorizontalIcon} />
+                  <Icon icon={SlidersHorizontalIcon} name="sliders-horizontal" />
                 </PopoverTrigger>
               </Tooltip>
               <PopoverContent

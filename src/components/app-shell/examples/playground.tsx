@@ -62,17 +62,17 @@ const SETTINGS_GROUPS = [
   {
     label: "Account",
     links: [
-      { href: "#profile", icon: UserCircleIcon, name: "Profile" },
-      { href: "#preferences", icon: PaintBoardIcon, name: "Preferences" },
-      { href: "#notifications", icon: Notification03Icon, name: "Notifications" },
+      { href: "#profile", icon: UserCircleIcon, iconName: "circle-user" as const, name: "Profile" },
+      { href: "#preferences", icon: PaintBoardIcon, iconName: "palette" as const, name: "Preferences" },
+      { href: "#notifications", icon: Notification03Icon, iconName: "bell-2" as const, name: "Notifications" },
     ],
   },
   {
     label: "Workspace",
     links: [
-      { href: "#members", icon: UserGroupIcon, name: "Members" },
-      { href: "#shortcuts", icon: KeyboardIcon, name: "Shortcuts" },
-      { href: "#data", icon: Database01Icon, name: "Data and sync" },
+      { href: "#members", icon: UserGroupIcon, iconName: "users-group" as const, name: "Members" },
+      { href: "#shortcuts", icon: KeyboardIcon, iconName: "keyboard" as const, name: "Shortcuts" },
+      { href: "#data", icon: Database01Icon, iconName: "database" as const, name: "Data and sync" },
     ],
   },
 ];
@@ -350,7 +350,7 @@ export default function Example({
               <AppShellToggle />
               <AppShellBrand href="#dashboard">Northwind</AppShellBrand>
               <Button variant="ghost" size="icon" aria-label="Search">
-                <Icon icon={Search01Icon} />
+                <Icon icon={Search01Icon} name="search" />
               </Button>
             </AppShellBar>
           ) : null}
@@ -358,7 +358,7 @@ export default function Example({
             <AppShellHead>
               {/* The logo: a mark, then a name (or a logotype that only shows while the sidebar is open). In the rail the mark stays and the pointer swaps it for the toggle. */}
               <AppShellBrand href="#home">
-                <Icon icon={Layers01Icon} />
+                <Icon icon={Layers01Icon} name="layers" />
                 {logotype ? (
                   <span className="ayy-app-shell__logotype">northwind</span>
                 ) : (
@@ -366,7 +366,7 @@ export default function Example({
                 )}
               </AppShellBrand>
               <AppShellToggle>
-                <Icon icon={SidebarLeftIcon} directional />
+                <Icon icon={SidebarLeftIcon} name="panel-left" directional />
               </AppShellToggle>
             </AppShellHead>
             {grouped ? (
@@ -419,7 +419,7 @@ export default function Example({
                 </AppShellNav>
                 <AppShellFooter>
                   <AppShellLink href="#settings" title="Settings">
-                    <Icon icon={Settings02Icon} />
+                    <Icon icon={Settings02Icon} name="cog" />
                     <span>Settings</span>
                   </AppShellLink>
                 </AppShellFooter>
@@ -428,25 +428,25 @@ export default function Example({
               <>
                 <AppShellNav>
                   <AppShellLink href="#dashboard" current title="Dashboard">
-                    <Icon icon={DashboardSquare01Icon} />
+                    <Icon icon={DashboardSquare01Icon} name="layout-dashboard" />
                     <span>Dashboard</span>
                   </AppShellLink>
                   <AppShellLink href="#projects" title="Projects">
-                    <Icon icon={Folder01Icon} />
+                    <Icon icon={Folder01Icon} name="folder" />
                     <span>Projects</span>
                   </AppShellLink>
                   <AppShellLink href="#team" title="Team">
-                    <Icon icon={UserGroupIcon} />
+                    <Icon icon={UserGroupIcon} name="users-group" />
                     <span>Team</span>
                   </AppShellLink>
                   <AppShellLink href="#invoices" title="Invoices">
-                    <Icon icon={Invoice01Icon} />
+                    <Icon icon={Invoice01Icon} name="receipt" />
                     <span>Invoices</span>
                   </AppShellLink>
                 </AppShellNav>
                 <AppShellFooter>
                   <AppShellLink href="#settings" title="Settings">
-                    <Icon icon={Settings02Icon} />
+                    <Icon icon={Settings02Icon} name="cog" />
                     <span>Settings</span>
                   </AppShellLink>
                 </AppShellFooter>
@@ -474,16 +474,16 @@ export default function Example({
           </AppShellMain>
           {showTabs ? (
             <BottomNav size={navSize} compact={navCompact} iconOnly={navIconOnly}>
-              <BottomNavLink href="#dashboard" icon={<Icon icon={DashboardSquare01Icon} />} current>
+              <BottomNavLink href="#dashboard" icon={<Icon icon={DashboardSquare01Icon} name="layout-dashboard" />} current>
                 Dashboard
               </BottomNavLink>
-              <BottomNavLink href="#projects" icon={<Icon icon={Folder01Icon} />}>
+              <BottomNavLink href="#projects" icon={<Icon icon={Folder01Icon} name="folder" />}>
                 Projects
               </BottomNavLink>
-              <BottomNavLink href="#team" icon={<Icon icon={UserGroupIcon} />}>
+              <BottomNavLink href="#team" icon={<Icon icon={UserGroupIcon} name="users-group" />}>
                 Team
               </BottomNavLink>
-              <BottomNavButton className="ayy-app-shell__toggle" icon={<Icon icon={MoreHorizontalIcon} />}>
+              <BottomNavButton className="ayy-app-shell__toggle" icon={<Icon icon={MoreHorizontalIcon} name="ellipsis" />}>
                 More
               </BottomNavButton>
             </BottomNav>
@@ -496,7 +496,7 @@ export default function Example({
       </p>
       <Dialog>
         <DialogTrigger variant="outline">
-          <Icon icon={Settings01Icon} />
+          <Icon icon={Settings01Icon} name="settings" />
           Settings
         </DialogTrigger>
         <DialogContent size="full" aria-labelledby="settings-title">
@@ -511,7 +511,7 @@ export default function Example({
           >
             <Popover>
               <PopoverTrigger variant="ghost" size="icon-sm" aria-label="Props">
-                <Icon icon={SlidersHorizontalIcon} />
+                <Icon icon={SlidersHorizontalIcon} name="sliders-horizontal" />
               </PopoverTrigger>
               <PopoverContent side="bottom" align="end" aria-label="Settings shell props">
                 <div className="ayy-stack" style={{ inlineSize: "15rem" }}>
@@ -552,7 +552,7 @@ export default function Example({
                 const groups = SETTINGS_GROUPS.map((g) => ({ ...g, links: g.links.filter((l) => l.name.toLowerCase().includes(query)) })).filter((g) => g.links.length);
                 const link = (l: (typeof SETTINGS_GROUPS)[number]["links"][number]) => (
                   <AppShellLink key={l.href} href={l.href} current={l.href === "#preferences"}>
-                    <Icon icon={l.icon} />
+                    <Icon icon={l.icon} name={l.iconName} />
                     {l.name}
                   </AppShellLink>
                 );
