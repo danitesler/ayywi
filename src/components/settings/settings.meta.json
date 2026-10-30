@@ -125,20 +125,20 @@
     "Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.",
     "On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.",
     "Put Sign out or Delete account last, in its own group, as a destructive link row.",
-    "For appearance settings, use the same controls in every product: Theme, Density, Text size, Brand colour, Corners, Font and Text direction each as a Select with pictures: SettingsScreens for Theme, Corners and Text direction (dir on the screen), variant=\"rows\" for Density, variant=\"brand\" with --ayy-color-primary for Brand colour (its last option, Custom, opens the colour picker on a hidden <input type=\"color\" data-value=\"custom\"> after the select), and \"Aa\" samples for Font and Text size. Use Surface colour and Contrast Sliders with setThemeCustomization(), passing the active brand colour. Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once with setTheme(), setDensity(), setBrand(), data-motion and dir."
+    "For appearance settings, use the same two controls in every product: Mode (System, Light, Dark) as a Select whose pictures are SettingsScreens, applied with setTheme(); and Theme as a Select of THEME_PRESETS whose pictures are SettingsScreen variant=\"brand\" with the theme's accent as --ayy-color-primary, applied with setBrand(), setThemeCustomization() and setIconPack(). A theme carries the accent, surfaces, corners, fonts and icons, so don't offer them as separate settings. Text direction is a Select with SettingsScreen pictures (dir on the screen). Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once."
   ],
   "dont": [
     "Don't add a Save button for switches and selects that apply at once; save as they change and confirm with a Toast if needed.",
     "Don't put two controls in one row; split the setting.",
     "Don't use a checkbox for a setting that applies at once — that's what a Switch says.",
     "Don't nest a card inside the list; use another group.",
-    "Don't draw your own theme thumbnails, or use a Select without pictures or a button opening a popover for Theme, Density, Text size, Brand colour, Corners, Font or Text direction: a Select whose pictures are SettingsScreens draws each choice from its real tokens.",
+    "Don't draw your own theme thumbnails, or use a Select without pictures or a button opening a popover for Mode, Theme or Text direction: a Select whose pictures are SettingsScreens draws each choice from its real tokens. Don't add separate settings for brand colour, surfaces, contrast, corners, fonts, icons, density or text size: the theme decides them.",
     "Don't open settings in a small or side Dialog, or switch sections with Tabs; use a size=\"full\" Dialog with the App shell's settings mode. --plain is for a sheet with a couple of quick options."
   ],
   "examples": [
     { "id": "preferences", "title": "Preferences with switches and selects" },
     { "id": "account", "title": "Phone settings with link rows" },
     { "id": "theme", "title": "Choice cards in a stacked row" },
-    { "id": "appearance", "title": "Appearance, brand, language and reset" }
+    { "id": "appearance", "title": "Appearance, language and reset" }
   ]
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { DEFAULT_THEME_CUSTOMIZATION, getDensity, getIconPack, getTheme, setBrand, setDensity, setIconPack, setTheme, setThemeCustomization, createThemeCustomization, surfaceStrength, type ThemeCustomization, type BrandInput, type DensityMode, type IconPackName, type ThemeMode } from "@danitesler/ayywi";
+import { DEFAULT_THEME_CUSTOMIZATION, getDensity, getTheme, setBrand, setDensity, setIconPack, setTheme, setThemeCustomization, surfaceStrength, type ThemeCustomization, type BrandInput, type DensityMode, type IconPackName, type ThemeMode } from "@danitesler/ayywi";
 
 export type Renderer = "react" | "html";
 
@@ -33,43 +33,28 @@ function usePersisted<T extends string>(key: string, allowed: readonly T[], fall
   return [value, set] as const;
 }
 
-const BRAND_KEY = "ayy-preview-brand";
-
-function loadBrand(): BrandInput | null {
-  try {
-    const v = JSON.parse(localStorage.getItem(BRAND_KEY) ?? "null");
-    return v && typeof v.name === "string" && typeof v.color === "string" ? v : null;
-  } catch {
-    return null;
-  }
-}
+/** The theme picked on the Themes page (brand, surfaces, icon pack) lasts for this tab only: a reload or a new tab starts
+ * from Default. Older builds stored it, so those keys are cleared. */
+const OLD_THEME_KEYS = ["ayy-preview-brand", "ayy-preview-theme-customization", "ayy-preview-custom-theme", "ayy-icons"];
 
 export function useSettings() {
-  const [theme, setThemeState] = useState<ThemeMode>(() => getTheme());
-  const [customization, setCustomizationState] = useState<ThemeCustomization>(() => {
+  useState(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem("ayy-preview-theme-customization") ?? "null");
-      // Surface used to be a tint strength (0–100) or "vivid": anything above 0 is Subtle now.
-      const surface = typeof saved?.surface === "number" && Number.isFinite(saved.surface) && saved.surface >= 0 && saved.surface <= 100 ? (saved.surface > 0 ? "subtle" : "neutral") : saved?.surface === "vivid" ? "subtle" : saved?.surface;
-      if (saved && /^#[0-9a-f]{6}$/i.test(saved.color) && ["neutral", "subtle"].includes(surface) && (saved.textColor === undefined || /^#[0-9a-f]{6}$/i.test(saved.textColor)) && Number.isFinite(saved.contrast) && saved.contrast >= 0 && saved.contrast <= 100) { const next = { ...saved, surface }; createThemeCustomization(next); return next; }
+      for (const key of OLD_THEME_KEYS) localStorage.removeItem(key);
     } catch { /* storage unavailable */ }
-    return DEFAULT_THEME_CUSTOMIZATION;
   });
-  const setCustomization = useCallback((next: ThemeCustomization) => {
-    setCustomizationState(next);
-    save("ayy-preview-theme-customization", JSON.stringify(next));
-  }, []);
+  const [theme, setThemeState] = useState<ThemeMode>(() => getTheme());
+  const [customization, setCustomization] = useState<ThemeCustomization>(DEFAULT_THEME_CUSTOMIZATION);
   const [density, setDensityState] = useState<DensityMode>(() => getDensity());
-  // The site's icon pack: setIconPack stores it, and index.html's inline script puts it back before the first paint.
-  const [icons, setIcons] = useState<IconPackName>(() => getIconPack());
+  const [icons, setIcons] = useState<IconPackName>("hugeicons");
   const [renderer, setRenderer] = usePersisted<Renderer>("ayy-preview-renderer", ["react", "html"], "react");
 
   useEffect(() => setTheme(theme), [theme]);
   useEffect(() => setDensity(density), [density]);
-  useEffect(() => setIconPack(icons), [icons]);
+  useEffect(() => setIconPack(icons, undefined, { persist: false }), [icons]);
 
   // The preview's brand: generated in the page, so any colour works without a stylesheet.
-  const [brand, setBrandState] = useState<BrandInput | null>(loadBrand);
+  const [brand, chooseBrand] = useState<BrandInput | null>(null);
   useEffect(() => {
     try {
       setBrand(brand);
@@ -78,10 +63,5 @@ export function useSettings() {
     }
   }, [brand]);
   useEffect(() => { setThemeCustomization(surfaceStrength(customization.surface) === 0 && customization.contrast === 0 && !customization.textColor && !customization.appearance ? null : customization, undefined, brand?.color ?? null); }, [customization, brand]);
-  const chooseBrand = useCallback((next: BrandInput | null) => {
-    setBrandState(next);
-    save(BRAND_KEY, JSON.stringify(next));
-  }, []);
-
   return { theme, setTheme: setThemeState, customization, setCustomization, density, setDensity: setDensityState, icons, setIcons, brand, setBrand: chooseBrand, renderer, setRenderer };
 }

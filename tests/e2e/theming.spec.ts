@@ -180,36 +180,35 @@ test("a generated brand colours buttons in every theme, nested themes included, 
   await open(page, "docs/colors", { theme: "dark" });
   const primary = (sel: string) => page.locator(sel).first().evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
   const before = await primary(".pv-theme[data-theme=\"light\"]");
-  await page.goto("/#/themes");
-  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
+  await page.evaluate(() => (location.hash = "#/themes"));
+  await page.getByRole("button", { name: "Customize Default", exact: true }).click();
   await page.getByLabel("Custom accent colour", { exact: true }).fill("#dc2626");
-  // Themes tries a brand on its own samples and app first; the site takes it on "Use this theme".
-  await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"light\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
+  // The settings try a brand on their own preview first; the site takes it on Save.
+  await expect(page.locator(".pv-themer__sample").getByRole("button", { name: "Start free" })).toHaveCSS("background-color", "rgb(220, 38, 38)");
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
-  await page.getByRole("dialog", { name: "Custom theme" }).getByRole("button", { name: "Done" }).click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await page.goto("/#/docs/colors");
+  await page.getByRole("dialog", { name: "Customize Default" }).getByRole("button", { name: "Save" }).click();
+  await page.evaluate(() => (location.hash = "#/docs/colors"));
   await expect(page.locator("html")).toHaveAttribute("data-brand", "acme");
   const button = page.locator(".pv-theme[data-theme=\"light\"] .ayy-button").first();
   await expect(button).toHaveCSS("background-color", "rgb(220, 38, 38)");
   await expect(page.locator(".pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(220, 38, 38)");
   await expect(page.locator(".pv-header .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(220, 38, 38)");
   expect(await primary(".pv-theme[data-theme=\"light\"]")).not.toBe(before);
-  await page.goto("/#/themes");
-  await page.getByRole("button", { name: "Reset to default" }).click();
+  await page.evaluate(() => (location.hash = "#/themes"));
+  await page.locator(".pv-themer").getByRole("radio", { name: "Default", exact: true }).locator("xpath=..").click();
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
   await expect(page.locator(".pv-header .pv-brand > .ayy-icon")).toHaveCSS("color", "rgb(255, 255, 255)");
-  await expect(page.locator(".pv-brand-live .pv-theme[data-theme=\"dark\"] .ayy-button").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(page.locator(".pv-themer__sample").getByRole("button", { name: "Start free" })).toHaveCSS("background-color", "rgb(255, 255, 255)");
 });
 
 test("the Themes page restyles its sample app without touching the site", async ({ page }) => {
   await open(page, "themes", { theme: "dark" });
-  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
+  await page.getByRole("button", { name: "Customize Default", exact: true }).click();
   const sample = page.locator(".pv-themer__sample");
   const primary = (sel: string) => page.locator(sel).evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
   const site = await primary("html");
   await expect(sample.getByRole("button", { name: "Send report" })).toBeVisible();
-  await page.getByRole("dialog", { name: "Custom theme" }).locator("label", { hasText: /^Light$/ }).click();
+  await page.getByRole("dialog", { name: "Customize Default" }).locator("label", { hasText: /^Light$/ }).click();
   await page.getByRole("button", { name: "Violet" }).click();
   await expect(sample).toHaveAttribute("data-theme", "light");
   expect(await primary(".pv-themer__sample")).not.toBe(site);

@@ -17,14 +17,15 @@
   max-inline-size: none;
 }
 
-/* The tabs sit after the wordmark; the actions go to the end. */
+/* The tabs sit in the middle of the header, the wordmark at the start and the actions at the end. */
 @media (min-width: 48.001rem) {
-  .pv-header__nav {
-    margin-inline-start: var(--ayy-space-4);
+  .pv-header .ayy-navbar__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
   }
 
   .pv-header__actions {
-    margin-inline-start: auto;
+    justify-self: end;
   }
 }
 
@@ -457,41 +458,6 @@
   font-size-adjust: none;
   font-size: var(--ayy-text-3xl);
   line-height: 1;
-}
-
-/* Themes page: one theme per full-width band, so each reads as a small page rather than a pile of controls. */
-.pv-themes--stack {
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--ayy-space-4);
-}
-
-.pv-themes--stack .pv-theme {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--ayy-space-4) var(--ayy-space-6);
-  padding: var(--ayy-space-6) var(--ayy-space-8);
-}
-
-.pv-theme__intro {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-1);
-  min-inline-size: 0;
-}
-
-.pv-theme__title {
-  font-family: var(--ayy-font-heading);
-  font-size-adjust: none;
-  font-size: var(--ayy-text-xl);
-  line-height: var(--ayy-leading-tight);
-  letter-spacing: var(--ayy-tracking-tight);
-}
-
-.pv-theme__text {
-  max-inline-size: 52ch;
-  color: var(--ayy-color-muted);
 }
 
 .pv-color-tiles {
@@ -1139,56 +1105,10 @@
 
 
 
-/* ---- Themes page: brand samples and scale ---- */
+/* ---- Themes page: accent swatches ---- */
 
 .pv-brand__swatches {
   margin-block-start: 0;
-}
-
-.pv-brand__scale {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
-  gap: var(--ayy-space-1-5);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--ayy-text-s);
-}
-
-@media (min-width: 48rem) {
-  .pv-brand__scale {
-    grid-template-columns: repeat(11, minmax(0, 1fr));
-    gap: var(--ayy-space-1);
-  }
-}
-
-.pv-brand__step {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-inline-size: 0;
-}
-
-.pv-brand__step strong {
-  font-size: var(--ayy-text-s);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pv-brand__step .ayy-mono {
-  font-size: var(--ayy-text-s);
-}
-
-.pv-brand__chip {
-  block-size: 32px;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-md);
-}
-
-.pv-brand__sample {
-  font-family: var(--ayy-font-body);
-  font-size-adjust: var(--ayy-font-body-adjust, none);
 }
 
 /* ---- Full-width pages: home, examples, themes ---- */
@@ -1410,10 +1330,6 @@
   min-block-size: 0;
   max-block-size: none;
   overflow-y: auto;
-}
-
-.pv-themer__prompt .pv-code__pre.pv-code__pre--wrap {
-  max-block-size: 360px;
 }
 
 .pv-brand-demo {
@@ -1701,58 +1617,86 @@
   line-height: var(--ayy-leading-normal);
 }
 
-/* ---- Themes: one box, the choices on its start side and a live app on its end side ---- */
+/* ---- Themes: the list of themes on the start side (sticky on wide screens), a small website in the chosen theme on
+   the end side. ---- */
 
 .pv-themer {
-  box-sizing: border-box;
   display: grid;
-  grid-template-columns: minmax(26rem, 30rem) minmax(0, 1fr);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-surface);
-  overflow: clip;
+  grid-template-columns: minmax(17rem, 20rem) minmax(0, 1fr);
+  gap: var(--ayy-space-6);
+  align-items: start;
 }
 
 .pv-themer__panel {
+  position: sticky;
+  inset-block-start: calc(var(--pv-header) + var(--ayy-space-6));
+  box-sizing: border-box;
+  max-block-size: calc(100dvh - var(--pv-header) - var(--ayy-space-12));
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--ayy-space-6);
+  gap: var(--ayy-space-5);
   padding: var(--ayy-space-5);
-  border-inline-end: 1px solid var(--ayy-color-line);
+  overflow-y: auto;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface);
 }
 
-.pv-themer__group {
+/* One theme per row: its light and dark screens, then its name and a short note. */
+.pv-themer__list {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ayy-space-2);
+}
+
+/* A theme and, at its end, the cog that opens its settings. */
+.pv-themer__item {
   display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-3);
+  align-items: center;
+  gap: var(--ayy-space-1);
+  min-inline-size: 0;
 }
 
-/* .ayy-eyebrow, which an <h2>'s own heading font would otherwise override. */
-.pv-themer__group-title {
-  margin: 0;
-  font-family: var(--ayy-font-body);
-  font-size-adjust: var(--ayy-font-body-adjust, none);
+.pv-themer__item > .ayy-settings__option {
+  flex: 1;
 }
 
-/* The Custom picture with its cog on top; the cog sits beside the radio, not inside its label. */
-.pv-themer__custom {
-  position: relative;
-}
-
+/* The cog shows on the chosen theme, and on the others while hovered or focused. Without hover it always shows. */
 .pv-themer__cog {
-  position: absolute;
-  inset-block-start: var(--ayy-space-2);
-  inset-inline-end: var(--ayy-space-2);
+  display: flex;
+  opacity: 0;
+  transition: opacity var(--ayy-duration-fast) ease;
 }
 
-.pv-themer__actions {
-  margin-block-start: auto;
-  padding-block-start: var(--ayy-space-5);
-  border-block-start: 1px solid var(--ayy-color-line);
+.pv-themer__item:is(:hover, :focus-within, :has(input:checked)) .pv-themer__cog {
+  opacity: 1;
 }
 
-/* The customize dialog: the settings scroll on the start side, the live preview sits centred on the end side. */
+@media (hover: none) {
+  .pv-themer__cog {
+    opacity: 1;
+  }
+}
+
+.pv-themer__list .ayy-settings__option {
+  flex-direction: row;
+  gap: var(--ayy-space-3);
+  text-align: start;
+}
+
+.pv-themer__list .ayy-settings__preview {
+  flex: none;
+  inline-size: 5.5rem;
+}
+
+
+.pv-themer__name {
+  color: var(--ayy-color-text);
+  font-size: var(--ayy-text-sm);
+  font-weight: var(--ayy-weight-medium);
+}
+
+/* The customize dialog: the settings scroll on the start side, the live preview on the end side. */
 .pv-themer__dialog {
   inline-size: min(76rem, calc(100vw - 3rem));
   max-inline-size: none;
@@ -1778,15 +1722,8 @@
   padding-inline-end: var(--ayy-space-3);
 }
 
-/* More room for the sample than the page's box gives it. */
-.pv-themer__customize .pv-themer__sample {
-  max-inline-size: 46rem;
-}
-
 .pv-themer__customize .pv-themer__stage {
   min-block-size: 0;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-lg);
   overflow: auto;
 }
 
@@ -1805,62 +1742,129 @@
   margin-inline-end: auto;
 }
 
-.pv-themer__fonts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--ayy-space-3);
-}
-
 /* The preview wears the chosen theme: its data-theme and surfaces come from the page, its brand from a scoped rule. */
 .pv-themer__stage {
   box-sizing: border-box;
   min-inline-size: 0;
-  min-block-size: 36rem;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: var(--ayy-space-4);
+  min-block-size: 40rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-5);
   padding: var(--ayy-space-5);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-card);
   background-color: var(--ayy-color-bg);
-  background-image: radial-gradient(var(--ayy-color-line) 1px, transparent 1px);
-  background-size: 1rem 1rem;
   color: var(--ayy-color-text);
   font-family: var(--ayy-font-body);
   font-size-adjust: var(--ayy-font-body-adjust, none);
 }
 
-.pv-themer__stage-header {
+/* Above the preview: the theme's name on the start side, Copy for... on the end side. */
+.pv-themer__main {
+  min-inline-size: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--ayy-space-1);
+  gap: var(--ayy-space-3);
 }
 
-.pv-themer__guide {
-  margin-block-start: var(--ayy-space-8);
+.pv-themer__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+  min-block-size: var(--ayy-size-control-sm);
 }
 
-.pv-themer__guide > .pv-h--section {
-  margin-block-start: 0;
-}
-
-/* Using themes: two cards, so the guidance reads as its own thing under the picker. */
-.pv-themer__guide .pv-usage > .pv-section {
-  padding: var(--ayy-space-5);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
+.pv-themer__head > h2 {
+  margin: 0;
 }
 
 .pv-themer__sample {
   box-sizing: border-box;
   inline-size: 100%;
-  max-inline-size: 36rem;
-  align-self: center;
-  justify-self: center;
-  padding: var(--ayy-space-5);
-  border-radius: var(--ayy-radius-lg);
   background-color: var(--ayy-color-bg);
   color: var(--ayy-color-text);
   font-family: var(--ayy-font-body);
   font-size-adjust: var(--ayy-font-body-adjust, none);
+}
+
+/* The small website: a header, a hero beside a report card, three cards and a footer. */
+.pv-site-sample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-10);
+}
+
+.pv-site-sample__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-3) var(--ayy-space-6);
+  padding-block-end: var(--ayy-space-4);
+  border-block-end: 1px solid var(--ayy-color-line);
+}
+
+.pv-site-sample__links {
+  flex: 1;
+  justify-content: center;
+}
+
+.pv-site-sample__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--ayy-space-8);
+}
+
+.pv-site-sample__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ayy-space-4);
+}
+
+.pv-site-sample__title {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size-adjust: none;
+  font-size: var(--ayy-text-4xl);
+  font-weight: var(--ayy-weight-bold);
+  line-height: var(--ayy-leading-tight);
+  letter-spacing: var(--ayy-tracking-tight);
+}
+
+.pv-site-sample__lead {
+  max-inline-size: 42ch;
+  margin: 0;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-lg);
+  line-height: var(--ayy-leading-normal);
+}
+
+.pv-site-sample__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ayy-space-4);
+}
+
+.pv-site-sample__text {
+  margin: 0;
+  color: var(--ayy-color-muted);
+}
+
+.pv-site-sample__footer {
+  padding-block-start: var(--ayy-space-4);
+  border-block-start: 1px solid var(--ayy-color-line);
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-s);
+}
+
+@media (max-width: 80rem) {
+  .pv-site-sample__hero,
+  .pv-site-sample__cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 64rem) {
@@ -1868,19 +1872,32 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .pv-themer__panel {
-    border-inline-end: 0;
-    border-block-end: 1px solid var(--ayy-color-line);
+    position: static;
+    max-block-size: none;
+  }
+  .pv-themer__list {
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
   }
   .pv-themer__stage {
     min-block-size: 0;
   }
 }
 
+@media (max-width: 48rem) {
+  .pv-site-sample__links {
+    display: none;
+  }
+  .pv-site-sample__actions {
+    margin-inline-start: auto;
+  }
+  .pv-site-sample__title {
+    font-size: var(--ayy-text-3xl);
+  }
+}
+
 @media (forced-colors: active) {
-  .pv-themer,
   .pv-themer__panel,
-  .pv-themer__actions,
-  .pv-themer__guide .pv-usage > .pv-section {
+  .pv-themer__stage {
     border-color: CanvasText;
   }
 }
@@ -1895,20 +1912,26 @@
   margin-block-start: 0;
 }
 
-.pv-icon-packs__field {
-  max-inline-size: 16rem;
+.pv-icon-packs__tabs {
+  text-align: center;
+  margin-block-end: var(--ayy-space-4);
 }
 
+/* Five rows, however many columns fit: every later row collapses to nothing and the list clips it. Spacing is margin, not gap, so the collapsed rows add none. */
 .pv-icon-packs__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
-  gap: var(--ayy-space-2);
+  grid-template-rows: repeat(5, auto);
+  grid-auto-rows: 0;
+  column-gap: var(--ayy-space-2);
+  overflow: hidden;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .pv-icon-packs__item {
+  margin-block-end: var(--ayy-space-2);
   display: flex;
   flex-direction: column;
   align-items: center;

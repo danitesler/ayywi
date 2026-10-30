@@ -100,6 +100,8 @@ Copy the Hugeicons data into `src/lib/icons.ts`, add `"kebab-name": "ExportName"
 
 ## Preview examples
 
+Wherever the preview shows how to use something (a component, a theme, an icon pack), lead with an AI prompt (`buildPrompt()` from `preview/src/prompts.ts`, copy button "Copy prompt") and keep the code as the second tab, as Themes and the Icons page do. Never show a bare code snippet as the only way in.
+
 When adding a component variation, extend an existing preview example whenever possible: add it as an item, option or state in the relevant example. Create a separate example only when the variation cannot be demonstrated clearly within an existing one. Do not add a standalone preview section just because a variation is new. Keep the React and HTML examples in sync.
 
 ## Gotchas learned the hard way

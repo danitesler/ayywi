@@ -11,8 +11,6 @@
         try {
           var m = localStorage.getItem("ayy-theme");
           if (m === "light" || m === "dark") document.documentElement.setAttribute("data-theme", m);
-          var i = localStorage.getItem("ayy-icons");
-          if (["feather", "lucide", "material-symbols", "tabler"].indexOf(i) > -1) document.documentElement.setAttribute("data-ayy-icons", i);
         } catch (e) {}
       })();
     </script>

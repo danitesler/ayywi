@@ -12,12 +12,15 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **Icons page**
+  Packs were picked from a dropdown with a code snippet below → a centered tab per pack, a preview limited to five rows of icons, and a copyable AI prompt (with the code as a second tab) for using the pack.
+
 - **[Scrollbar](#/scrollbar)**
   New component — a thin scrollbar with no track that follows the theme, for any scroll container or the whole page.
 
 - **Themes**
-  - Twelve ready-made themes (six dark, six light, each starting with ayywi's own Default) and a custom theme now offer adjustable surfaces, text colour and contrast in light and dark modes; Ember, Lagoon, Wine, Lavender and Paper also bring their own corners or fonts.
-  - Themes could only be light or dark, and Custom had no density → Auto in the Default group follows the device between ayywi's default light and dark; Custom also offers Auto for its mode, and a Density setting (Auto, Compact, Comfortable, Touch) that applies to the site along with the theme.
+  - Six ready-made themes (Default, Ember, Forest, Arctic, Twilight, Wine), each in light and dark, and a custom theme with adjustable surfaces, text colour and contrast; Ember, Forest, Wine and the others also bring their own corners, fonts or icon pack.
+  - Themes could only be light or dark, and Custom had no density → a Mode control (Auto, Light, Dark) applies to every theme, Auto following the device; Custom also has a Density setting (Auto, Compact, Comfortable, Touch) that applies to the site along with the theme.
   - Ten font pairings from Google Fonts (Editorial, Serif, Sans, System, Grotesk, Technical, Friendly, Display, Readable and Default) pick the heading and body fonts together, and each themed preset uses a different one.
   - Choosing an icon pack in Custom showed nothing until Use → the live preview draws a row of sample icons in the pack as you pick it.
 
@@ -71,6 +74,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - Appearance choices opened from a button as a grid of large pictures → each one (Theme, Density, Text size, Brand colour, Corners, Font, Text direction) is a Select with pictures, lined up with the Language select.
   - Density and brand colour previewed the same miniature app as Theme → Density draws a list whose rows grow with the density (`variant="rows"`), and Brand colour shows where the colour lands: the chosen sidebar item, a progress bar, a checkbox and a button (`variant="brand"`).
   - Text size was a slider, Brand colour a row of swatches and Text direction a segmented control → each is a Select with "Aa" samples, colour previews and left-to-right / right-to-left screens; choosing Custom opens the colour picker straight away. The screens also mirror correctly on right-to-left pages.
+  - Appearance offered Theme, Surface colour, Contrast, Density, Text size, Brand colour, Corners, Font and Icons → only Mode (System, Light, Dark) and Theme (the ready-made themes), since a theme decides the colour, surfaces, corners, fonts and icons; the contract rule says the same.
 
 - **[Select](#/select)**
   - Options were text only → options can have pictures (`pictures` in React, `.ayy-select__picture` in HTML): the chosen one shows before the text, and the list shows each one larger next to its option.
@@ -141,11 +145,13 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - Section titles sat 28px (36px on Get started) above their description → 12px.
 
 - **Themes**
-  - The ready-made themes were in no colour order → the Dark and Light rows run warm, green, blue, purple, pink, so each column pairs similar colours.
+  - Twelve themes, six only dark and six only light, with lookalike pairs (Arctic and Paper, Twilight and Lavender, Wine and Blush…) → six themes that each work in light and dark, one per colour: Default, then warm, green, blue, purple, pink (**Breaking**: `ThemePreset` has no `theme` field, and the defaults are one `default` preset).
   - Surface offered Neutral, Subtle and Rich → only Neutral and Subtle, and every ready-made theme uses Subtle.
   - A theme with its own body font (DM Sans, Figtree, Literata, a system font…) looked smaller than Sora at the same size → that font is scaled to Sora's letter height, so text reads the same size in every theme; Sora, headings and code are unchanged.
-  - The picker and the preview floated side by side with the guide right under them → one box with the themes grouped as Default (Auto and Custom), Dark and Light, and "Using themes" in its own section.
-  - Custom theme settings opened inline under the picker → they open in a centred dialog from a cog on the Custom picture, with the settings on one side and the live preview on the other.
+  - A grid of theme pictures with a "Using themes" guide, a light-and-dark sample and the colour scale below → a list of themes in a sticky sidebar beside a large preview of a small website, with the theme's name and a Copy for... popover (AI prompt and code, as on component pages) above it; the guide and the sections under it are gone.
+  - A theme reached the site only on Use this theme, and stayed after a reload → picking a theme or a mode applies it at once, and a reload or a new tab starts from Default again.
+  - The list showed each theme's light and dark screens side by side with a line of description → one smaller picture in the chosen mode and just the name; the cog shows on the chosen theme and on hover.
+  - Custom theme settings opened inline under the picker → a cog beside every theme opens its settings in a centred dialog, filled in with that theme and with the live preview beside them; Save keeps the theme if nothing changed and makes it Custom if something did, Cancel leaves everything as it was.
   - Strong tints mixed up to 16% of the accent into surfaces, which made Ember and Wine heavy and saturated → Surface is Neutral or a quiet Subtle tint, presets use Subtle, and the Custom dialog has six settings (Mode, Accent colour, Surface, Corners, Font, Density) instead of nine; with the Mono accent, Subtle makes the page a deeper black instead of tinting it.
   - The Customize cog blended into the Custom picture → it is a filled button, and the dialog is wider so the live preview gets most of the room.
   - The live preview borrowed its fonts and surroundings from the theme the site was using → the whole preview area, centred, wears the theme you picked.

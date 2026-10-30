@@ -80,24 +80,28 @@ test("the nearest data-ayy-icons wins", async ({ page }) => {
 const masked = /^url\("data:image\/svg\+xml/;
 const names = Object.keys(JSON.parse(readFileSync(new URL("../../tokens/icon-packs/hugeicons.json", import.meta.url), "utf8")).glyphs);
 /** How many of the 194 names a pack leaves to Hugeicons. */
+/** Gives the site a pack from the Themes page, for this tab: Default's settings with another pack, saved. */
+async function sitePack(page: Page, pack: string) {
+  await page.evaluate(() => (location.hash = "#/themes"));
+  await page.getByRole("button", { name: "Customize Default", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Customize Default" });
+  await dialog.getByLabel("Icons").selectOption(pack);
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", pack);
+}
 const lacking = (pack: string) => Object.values(JSON.parse(readFileSync(new URL(`../../tokens/icon-packs/${pack}.json`, import.meta.url), "utf8")).glyphs).filter((v) => v === null).length;
 
-test("choosing a pack on the Themes page switches every built-in icon", async ({ page }) => {
+test("choosing a pack on the Themes page switches every built-in icon, for this tab only", async ({ page }) => {
   await openRoute(page, "themes");
-  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
-  await dialog.getByLabel("Icons").selectOption("lucide");
-  await dialog.getByRole("button", { name: "Done" }).click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "lucide");
+  await sitePack(page, "lucide");
   // The Icons page opens on the site's pack.
   await page.evaluate(() => (location.hash = "#/docs/icons"));
-  await expect(page.getByLabel("Pack", { exact: true })).toHaveValue("lucide");
+  await expect(page.getByRole("tablist", { name: "Pack" }).getByRole("tab", { name: "Lucide" })).toHaveAttribute("aria-selected", "true");
   const grid = page.locator(".pv-icon-packs__grid");
   await expect(grid.locator("[data-ayy-icon]")).toHaveCount(names.length);
   expect(await style(grid.locator('[data-ayy-icon="search"]'), "mask-image")).toMatch(masked);
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "lucide");
+  await expect(page.locator("html")).not.toHaveAttribute("data-ayy-icons", /.+/);
 });
 
 test("the Icons docs page shows every glyph in a pack, and marks the ones Hugeicons draws", async ({ page }) => {
@@ -117,10 +121,10 @@ test("the Icons docs page shows every glyph in a pack, and marks the ones Hugeic
   await expect(page.getByRole("navigation", { name: "Docs", exact: true }).getByRole("link", { name: "Icons", exact: true })).toHaveAttribute("aria-current", "page");
 });
 
-test("the custom theme's live preview wears the pack being chosen, before Use", async ({ page }) => {
+test("the settings dialog's live preview wears the pack being chosen, before Save", async ({ page }) => {
   await openRoute(page, "themes");
-  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
+  await page.getByRole("button", { name: "Customize Default", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Customize Default" });
   const preview = dialog.locator(".pv-themer__stage");
   await expect(preview.locator("[data-ayy-icon]").first()).toBeVisible();
   await dialog.getByLabel("Icons").selectOption("feather");
@@ -130,7 +134,7 @@ test("the custom theme's live preview wears the pack being chosen, before Use", 
   expect(await row.count()).toBeGreaterThanOrEqual(4);
   for (const icon of await row.all()) expect(await style(icon, "mask-image")).toMatch(masked);
   const feather = await style(row.first(), "mask-image");
-  // The site itself is untouched until Use.
+  // The site itself is untouched until Save.
   await expect(page.locator("html")).not.toHaveAttribute("data-ayy-icons");
   // Back to Hugeicons: the preview says so explicitly, and draws another mask.
   await dialog.getByLabel("Icons").selectOption("hugeicons");
@@ -139,16 +143,17 @@ test("the custom theme's live preview wears the pack being chosen, before Use", 
 });
 
 test("icons drawn after load take the pack", async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem("ayy-icons", "lucide"));
-  await openRoute(page, "components/toast");
+  // The HTML renderer, so the chip below is drawn by <ayy-tag-input> (tagRemoveIcon), not React's <Icon name="x">.
+  await openRoute(page, "components/toast", { renderer: "html" });
+  await sitePack(page, "lucide");
+  await page.evaluate(() => (location.hash = "#/components/toast"));
   await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "lucide");
   await page.evaluate(() => (window as unknown as { ayywi: { toast: { success: (m: string) => void } } }).ayywi.toast.success("Saved"));
   const check = page.locator(".ayy-toast", { hasText: "Saved" }).locator('[data-ayy-icon="circle-check"]');
   await expect(check).toBeVisible();
   expect(await style(check, "mask-image")).toMatch(masked);
 
-  // The HTML renderer, so the chip is drawn by <ayy-tag-input> (tagRemoveIcon), not React's <Icon name="x">.
-  await openRoute(page, "components/tag-input", { renderer: "html" });
+  await page.evaluate(() => (location.hash = "#/components/tag-input"));
   await expect(page.locator("ayy-tag-input").first()).toBeAttached();
   const field = page.locator(":is(.pv-stage, .ayy-showcase__stage)").first();
   const input = field.getByRole("combobox", { name: "Tags" });
@@ -160,23 +165,18 @@ test("icons drawn after load take the pack", async ({ page }) => {
   expect(await style(remove, "mask-image")).toMatch(masked);
 });
 
-test("a preset that names a pack applies it, and the page recognises it again", async ({ page }) => {
+test("a preset that names a pack applies it, and Default puts Hugeicons back", async ({ page }) => {
   await openRoute(page, "themes");
-  await page.locator(".pv-themer").getByRole("radio", { name: "Lagoon" }).check({ force: true });
-  await page.getByRole("button", { name: "Use this theme" }).click();
+  await page.locator(".pv-themer").getByRole("radio", { name: "Ember" }).check({ force: true });
   await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "lucide");
-  await page.reload();
-  await expect(page.locator(".pv-themer").getByRole("radio", { name: "Lagoon" })).toBeChecked();
-  await expect(page.getByRole("button", { name: "Use this theme" })).toBeDisabled();
-  // The same brand with another pack is not Lagoon any more: Use stays available to put Lucide back.
-  await page.evaluate(() => localStorage.setItem("ayy-icons", "tabler"));
-  await page.reload();
-  await expect(page.locator(".pv-themer").getByRole("radio", { name: "Lagoon" })).not.toBeChecked();
+  await page.locator(".pv-themer").getByRole("radio", { name: "Default" }).check({ force: true });
+  await expect(page.locator("html")).not.toHaveAttribute("data-ayy-icons", /.+/);
 });
 
 test("device-width examples take the pack inside their iframe", async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem("ayy-icons", "lucide"));
-  await openRoute(page, "components/top-bar");
+  await openRoute(page, "themes");
+  await sitePack(page, "lucide");
+  await page.evaluate(() => (location.hash = "#/components/top-bar"));
   const example = page.locator('[aria-labelledby="ex-detail"]');
   // The segment, not its radio: under a pack the masked device icon (a painted box) sits over the radio's centre.
   await example.locator("label", { has: page.getByRole("radio", { name: "Mobile" }) }).click();
@@ -188,26 +188,12 @@ test("device-width examples take the pack inside their iframe", async ({ page })
 });
 
 // Every Hugeicons icon on the site carries a name, so app icons follow the pack too, not only the glyphs ayywi draws.
-test("app icons in a component example and inside a showcase app's frame follow the pack", async ({ page, context }) => {
-  await page.addInitScript(() => localStorage.setItem("ayy-icons", "feather"));
-  await openRoute(page, "components/list");
+test("app icons in a component example follow the pack", async ({ page }) => {
+  await openRoute(page, "themes");
+  await sitePack(page, "feather");
+  await page.evaluate(() => (location.hash = "#/components/list"));
   // The settings list draws its icons from data ({ icon: Notification01Icon, iconName: "bell" }).
   const bell = page.locator('.pv-stage [data-ayy-icon="bell"], .ayy-showcase__stage [data-ayy-icon="bell"]').first();
   await expect(bell).toBeVisible();
   expect(await style(bell, "mask-image")).toMatch(masked);
-
-  // ?app= renders a showcase app on its own page, as the device preview's iframe does; index.html restores the pack.
-  await page.goto("/?app=dashboard");
-  await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "feather");
-  const settings = page.locator('[data-ayy-icon="settings"]').first();
-  await expect(settings).toBeAttached();
-  const feather = await style(settings, "mask-image");
-  expect(feather).toMatch(masked);
-
-  // The site picks another pack while the frame is open: a storage event brings the frame along.
-  const site = await context.newPage();
-  await site.goto("/");
-  await site.evaluate(() => localStorage.setItem("ayy-icons", "lucide"));
-  await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "lucide");
-  await expect.poll(() => style(settings, "mask-image")).not.toBe(feather);
 });

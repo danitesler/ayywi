@@ -1,16 +1,16 @@
 <div style="inline-size:100%;max-inline-size:42rem;font-family:var(--ayy-font-body)">
   <section class="ayy-settings" aria-labelledby="set-appearance-html">
     <h2 id="set-appearance-html" class="ayy-settings__title">Appearance</h2>
-    <p class="ayy-settings__description">Theme, density, text size, brand colour, corners, font and icons for the whole interface.</p>
+    <p class="ayy-settings__description">Light or dark, and the theme for the whole interface.</p>
     <div class="ayy-settings__list">
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-theme-html">Theme</label>
-          <p class="ayy-settings__hint" id="set-theme-hint-html">System follows your device's light or dark setting.</p>
+          <label class="ayy-settings__label" for="set-mode-html">Mode</label>
+          <p class="ayy-settings__hint" id="set-mode-hint-html">System follows your device's light or dark setting.</p>
         </div>
         <div class="ayy-settings__control">
           <div class="ayy-select">
-            <select class="ayy-select__control" id="set-theme-html" aria-describedby="set-theme-hint-html">
+            <select class="ayy-select__control" id="set-mode-html" aria-describedby="set-mode-hint-html">
               <option value="system" selected>System</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
@@ -23,151 +23,25 @@
       </div>
       <div class="ayy-settings__row">
         <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-surface-html">Surface colour</label>
-          <p class="ayy-settings__hint" id="set-surface-hint-html">Subtle tints backgrounds with the selected brand colour.</p>
+          <label class="ayy-settings__label" for="set-theme-html">Theme</label>
+          <p class="ayy-settings__hint" id="set-theme-hint-html">Colour, corners, fonts and icons, in light and dark.</p>
         </div>
         <div class="ayy-settings__control">
           <div class="ayy-select">
-            <select class="ayy-select__control" id="set-surface-html" aria-describedby="set-surface-hint-html">
-              <option value="neutral" selected="">Neutral</option>
-              <option value="subtle">Subtle</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-contrast-html">Contrast</label>
-          <p class="ayy-settings__hint" id="set-contrast-hint-html">Higher contrast moves backgrounds closer to black or white.</p>
-        </div>
-        <div class="ayy-settings__control"><input type="range" class="ayy-slider" id="set-contrast-html" aria-describedby="set-contrast-hint-html" min="0" max="100" value="0" style="--ayy-value:0" /></div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-density-html">Density</label>
-          <p class="ayy-settings__hint" id="set-density-hint-html">Auto: compact with a mouse, touch on a touch screen.</p>
-        </div>
-        <div class="ayy-settings__control">
-          <div class="ayy-select">
-            <select class="ayy-select__control" id="set-density-html" aria-describedby="set-density-hint-html">
-              <option value="auto" selected>Auto</option>
-              <option value="compact">Compact</option>
-              <option value="comfortable">Comfortable</option>
-              <option value="touch">Touch</option>
-            </select>
-            <span class="ayy-select__picture" data-value="auto" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="compact" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="compact" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="comfortable" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="comfortable" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="touch" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--rows" data-density="touch" aria-hidden="true"></span></span>
-          </div>
-        </div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-text-size-html">Text size</label>
-          <p class="ayy-settings__hint" id="set-text-size-hint-html">Sets the root font size, so all text and spacing scale with it.</p>
-        </div>
-        <div class="ayy-settings__control">
-          <div class="ayy-select">
-            <select class="ayy-select__control" id="set-text-size-html" aria-describedby="set-text-size-hint-html">
-              <option value="75">75%</option>
-              <option value="87.5">87.5%</option>
-              <option value="100" selected>100%</option>
-              <option value="112.5">112.5%</option>
-              <option value="125">125%</option>
-              <option value="150">150%</option>
-            </select>
-            <span class="ayy-select__picture" data-value="75" hidden="" aria-hidden="true"><span style="font-size:75%">Aa</span></span>
-            <span class="ayy-select__picture" data-value="87.5" hidden="" aria-hidden="true"><span style="font-size:87.5%">Aa</span></span>
-            <span class="ayy-select__picture" data-value="100" aria-hidden="true"><span style="font-size:100%">Aa</span></span>
-            <span class="ayy-select__picture" data-value="112.5" hidden="" aria-hidden="true"><span style="font-size:112.5%">Aa</span></span>
-            <span class="ayy-select__picture" data-value="125" hidden="" aria-hidden="true"><span style="font-size:125%">Aa</span></span>
-            <span class="ayy-select__picture" data-value="150" hidden="" aria-hidden="true"><span style="font-size:150%">Aa</span></span>
-          </div>
-        </div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-brand-colour-html">Brand colour</label>
-          <p class="ayy-settings__hint" id="set-brand-colour-hint-html">Default is monochrome. Contrast is checked in every theme.</p>
-        </div>
-        <div class="ayy-settings__control">
-          <div class="ayy-select">
-            <select class="ayy-select__control" id="set-brand-colour-html" aria-describedby="set-brand-colour-hint-html">
+            <select class="ayy-select__control" id="set-theme-html" aria-describedby="set-theme-hint-html">
               <option value="default" selected>Default</option>
-              <option value="blue">Blue</option>
-              <option value="violet">Violet</option>
-              <option value="green">Green</option>
-              <option value="orange">Orange</option>
-              <option value="pink">Pink</option>
-              <option value="custom">Custom</option>
+              <option value="ember">Ember</option>
+              <option value="forest">Forest</option>
+              <option value="arctic">Arctic</option>
+              <option value="twilight">Twilight</option>
+              <option value="wine">Wine</option>
             </select>
             <span class="ayy-select__picture" data-value="default" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-color-text)" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="blue" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-blue-53)" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="violet" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-violet-58)" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="green" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-green-24)" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="orange" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-orange-40)" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="pink" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-pink-42)" aria-hidden="true"></span></span>
-            <span class="ayy-select__picture" data-value="custom" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-violet-58)" aria-hidden="true"></span></span>
-          </div>
-          <input type="color" hidden="" tabindex="-1" aria-label="Custom colour" data-value="custom" value="#7c3aed"/>
-        </div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-corners-html">Corners</label>
-        </div>
-        <div class="ayy-settings__control">
-          <div class="ayy-select">
-            <select class="ayy-select__control" id="set-corners-html">
-              <option value="pill" selected>Pill</option>
-              <option value="round">Round</option>
-              <option value="soft">Soft</option>
-              <option value="sharp">Sharp</option>
-            </select>
-            <span class="ayy-select__picture" data-value="pill" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-pill)"></span></span>
-            <span class="ayy-select__picture" data-value="round" hidden="" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-2xl);--ayy-radius-button:var(--ayy-radius-xl)"></span></span>
-            <span class="ayy-select__picture" data-value="soft" hidden="" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-xl);--ayy-radius-button:var(--ayy-radius-lg)"></span></span>
-            <span class="ayy-select__picture" data-value="sharp" hidden="" aria-hidden="true"><span class="ayy-settings__screen" aria-hidden="true" style="--ayy-radius-card:var(--ayy-radius-md);--ayy-radius-button:var(--ayy-radius-sm)"></span></span>
-          </div>
-        </div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-font-html">Font</label>
-        </div>
-        <div class="ayy-settings__control">
-          <div class="ayy-select">
-            <select class="ayy-select__control" id="set-font-html">
-              <option value="default" selected>Sora</option>
-              <option value="system">System</option>
-              <option value="mono">Mono</option>
-            </select>
-            <span class="ayy-select__picture" data-value="default" aria-hidden="true"><span style="font-family:Sora, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
-            <span class="ayy-select__picture" data-value="system" hidden="" aria-hidden="true"><span style="font-family:system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
-            <span class="ayy-select__picture" data-value="mono" hidden="" aria-hidden="true"><span style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Noto Sans Mono&quot;, monospace, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif">Aa</span></span>
-          </div>
-        </div>
-      </div>
-      <div class="ayy-settings__row">
-        <div class="ayy-settings__text">
-          <label class="ayy-settings__label" for="set-icons-html">Icons</label>
-          <p class="ayy-settings__hint" id="set-icons-hint-html">Swaps every icon the interface draws for the same icon in another set.</p>
-        </div>
-        <div class="ayy-settings__control">
-          <div class="ayy-select">
-            <select class="ayy-select__control" id="set-icons-html" aria-describedby="set-icons-hint-html">
-              <option value="hugeicons" selected>Hugeicons</option>
-              <option value="feather">Feather</option>
-              <option value="lucide">Lucide</option>
-              <option value="material-symbols">Material Symbols</option>
-              <option value="tabler">Tabler Icons</option>
-            </select>
-            <span class="ayy-select__picture" data-value="hugeicons" aria-hidden="true"><span data-ayy-icons="hugeicons"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
-            <span class="ayy-select__picture" data-value="feather" hidden="" aria-hidden="true"><span data-ayy-icons="feather"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
-            <span class="ayy-select__picture" data-value="lucide" hidden="" aria-hidden="true"><span data-ayy-icons="lucide"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
-            <span class="ayy-select__picture" data-value="material-symbols" hidden="" aria-hidden="true"><span data-ayy-icons="material-symbols"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
-            <span class="ayy-select__picture" data-value="tabler" hidden="" aria-hidden="true"><span data-ayy-icons="tabler"><svg class="ayy-icon ayy-icon--sm" data-ayy-icon="star" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></span>
+            <span class="ayy-select__picture" data-value="ember" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-orange-65)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="forest" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-green-51)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="arctic" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-blue-68)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="twilight" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-violet-58)" aria-hidden="true"></span></span>
+            <span class="ayy-select__picture" data-value="wine" hidden="" aria-hidden="true"><span class="ayy-settings__screen ayy-settings__screen--brand" style="--ayy-color-primary:var(--ayy-palette-red-71)" aria-hidden="true"></span></span>
           </div>
         </div>
       </div>
@@ -223,7 +97,7 @@
   <section class="ayy-settings" aria-labelledby="set-reset-html">
     <h2 id="set-reset-html" class="ayy-settings__title">Reset</h2>
     <div class="ayy-settings__list">
-      <button type="button" class="ayy-settings__row ayy-settings__link ayy-settings__link--destructive"><span class="ayy-settings__text"><span class="ayy-settings__label">Reset appearance</span><span class="ayy-settings__hint">Theme, density, brand, motion and language go back to their defaults.</span></span></button>
+      <button type="button" class="ayy-settings__row ayy-settings__link ayy-settings__link--destructive"><span class="ayy-settings__text"><span class="ayy-settings__label">Reset appearance</span><span class="ayy-settings__hint">Mode, theme, motion and language go back to their defaults.</span></span></button>
     </div>
   </section>
 </div>

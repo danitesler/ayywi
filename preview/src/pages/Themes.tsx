@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ArrowRight01Icon, Book02Icon, Cancel01Icon, ContrastIcon, DropletIcon, Fire02Icon, Flower01Icon, Moon02Icon, Notification01Icon, PaintBrush01Icon, Search01Icon, Settings01Icon, SnowflakeIcon, SparklesIcon, StarsIcon, Sun03Icon, SunriseIcon, Tick02Icon, Tree01Icon, WaterfallDown01Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, Cancel01Icon, ContrastIcon, DropletIcon, Fire02Icon, Notification01Icon, PaintBrush01Icon, Search01Icon, Settings01Icon, SnowflakeIcon, StarsIcon, Tick02Icon, Tree01Icon } from "@hugeicons/core-free-icons";
 import { bodyFontAdjust, brandCss, createBrand, createThemeCustomization, createThemeText, iconPackInfo, iconPacks, surfaceStrength, THEME_PRESETS, THEME_FONTS, themeFontsUrl, tokens, DEFAULT_THEME_CUSTOMIZATION, type ThemeCustomization, type BrandInput, type BrandShape, type DensityMode, type IconName, type IconPackName, type ThemeMode, type ThemeName } from "@danitesler/ayywi";
 import {
   Alert,
   AlertDescription,
+  Badge,
   Button,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
   Dialog,
   DialogBody,
   DialogClose,
@@ -14,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
   Icon,
+  IconTile,
   SettingsOption,
   SettingsPicker,
   SettingsScreen,
@@ -22,40 +28,29 @@ import {
   ColorSwatchGroup,
   Field,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   SegmentedControl,
   SegmentedControlItem,
+  Select,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-  Select,
   Tooltip,
 } from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
 import { buildPrompt } from "../prompts";
 import { themeOptions } from "../themes";
-import { BRAND_PRESETS, Sample, Scale, SHAPES } from "./Brand";
+import { BRAND_PRESETS, SHAPES } from "./Brand";
 import { BrandApp, type BrandIcon } from "./BrandDemo";
 
-type CustomDraft = { mono: boolean; input: BrandInput; custom: ThemeCustomization; theme: ThemeName; auto?: boolean; density?: DensityMode; icons?: IconPackName };
+/** A theme's own settings: what Customize edits and Custom keeps while another theme is picked. The mode is the page's. */
+type ThemeDraft = { mono: boolean; input: BrandInput; custom: ThemeCustomization; density: DensityMode; icons: IconPackName };
 const DENSITIES: [DensityMode, string][] = [["auto", "Auto"], ["compact", "Compact"], ["comfortable", "Comfortable"], ["touch", "Touch"]];
-const isIconPack = (value: unknown): value is IconPackName => (iconPacks as readonly unknown[]).includes(value);
 /** What "auto" density is on this device: touch on a coarse pointer, compact otherwise. */
 const resolveDensity = (density: DensityMode) => density !== "auto" ? density : window.matchMedia("(pointer: coarse)").matches ? "touch" : "compact";
-const CUSTOM_DRAFT_KEY = "ayy-preview-custom-theme";
-function loadCustomDraft(): CustomDraft | null {
-  try {
-    const draft = JSON.parse(localStorage.getItem(CUSTOM_DRAFT_KEY) ?? "null");
-    if (!draft || typeof draft.mono !== "boolean" || (draft.theme !== "light" && draft.theme !== "dark")) return null;
-    createBrand(draft.input);
-    createThemeCustomization(draft.custom, draft.mono ? null : draft.input.color);
-    if (!isIconPack(draft.icons)) delete draft.icons;
-    return draft;
-  } catch { return null; }
-}
-function saveCustomDraft(draft: CustomDraft) {
-  try { localStorage.setItem(CUSTOM_DRAFT_KEY, JSON.stringify(draft)); } catch { /* storage unavailable */ }
-}
 
 const DEFAULT_COLOR = "#0ea5e9";
 /** A few built-in icons under the preview's app, so another icon pack shows before it is used. */
@@ -70,20 +65,13 @@ const SAMPLE_ICONS: { icon: typeof Search01Icon; name: IconName; directional?: b
 
 /** One icon for each theme, shown on the preview's app. */
 const THEME_ICONS: Record<string, BrandIcon> = {
-  auto: { icon: ContrastIcon, name: "contrast" },
+  default: { icon: ContrastIcon, name: "contrast" },
   custom: { icon: PaintBrush01Icon, name: "paintbrush" },
-  dark: { icon: Moon02Icon, name: "moon" },
-  light: { icon: Sun03Icon, name: "sun" },
+  ember: { icon: Fire02Icon, name: "flame" },
+  forest: { icon: Tree01Icon, name: "tree" },
   arctic: { icon: SnowflakeIcon, name: "snowflake" },
   twilight: { icon: StarsIcon, name: "stars" },
-  forest: { icon: Tree01Icon, name: "tree" },
-  ember: { icon: Fire02Icon, name: "flame" },
   wine: { icon: DropletIcon, name: "droplet" },
-  sunlit: { icon: SunriseIcon, name: "sunrise" },
-  blush: { icon: Flower01Icon, name: "flower" },
-  lagoon: { icon: WaterfallDown01Icon, name: "chart-column-decreasing" },
-  lavender: { icon: SparklesIcon, name: "sparkles" },
-  paper: { icon: Book02Icon, name: "book" },
 };
 /** The Surface choices. With an accent, Subtle tints the page and panels with it (the library's own "subtle" strength); Mono has no colour to tint with, so Subtle takes the page deeper instead (depth: towards black, or white in light mode). */
 const SURFACE_LEVELS = [
@@ -177,34 +165,120 @@ function themeRequest(name: string, brand: BrandInput | null, customization: The
   return `Use the ayywi "${name}" theme in this app: ${traits.join(", ")}.\n\n${steps.map((step, i) => `${i + 1}. ${step}`).join("\n")}`;
 }
 
+const FEATURES = [
+  { tag: "Plan", title: "Roadmaps", text: "Lay out the quarter and share it with one link." },
+  { tag: "Track", title: "Projects", text: "See what moved this week without asking around." },
+  { tag: "Review", title: "Reports", text: "Send the numbers every Monday, written for people." },
+];
+
+/** A small website in the chosen theme: a header, a hero beside a report card, three cards and a footer of glyphs. */
+function ThemeSite({ name, icon = THEME_ICONS.default }: { name: string; icon?: BrandIcon }) {
+  return (
+    <div className="pv-site-sample">
+      <header className="pv-site-sample__nav">
+        <span className="pv-brand-demo__logo">
+          <IconTile spotColor="var(--ayy-color-primary)">
+            <Icon icon={icon.icon} name={icon.name} />
+          </IconTile>
+          {name}
+        </span>
+        <div className="pv-site-sample__links ayy-cluster" role="group" aria-label="Sample site sections">
+          <Button variant="secondary" size="sm">Overview</Button>
+          <Button variant="ghost" size="sm">Projects</Button>
+          <Button variant="ghost" size="sm">Pricing</Button>
+        </div>
+        <div className="ayy-cluster pv-site-sample__actions">
+          <Button variant="ghost" size="icon-sm" aria-label="Search">
+            <Icon icon={Search01Icon} name="search" />
+          </Button>
+          <Button size="sm">Sign in</Button>
+        </div>
+      </header>
+
+      <section className="pv-site-sample__hero" aria-label="Sample hero">
+        <div className="pv-site-sample__copy">
+          <Badge variant="outline">New in version 2</Badge>
+          <h3 className="pv-site-sample__title">Plan less, ship more.</h3>
+          <p className="pv-site-sample__lead">Roadmaps, reports and reviews in one calm place. Every colour, corner and font here comes from the theme.</p>
+          <div className="ayy-cluster">
+            <Button>Start free</Button>
+            <Button variant="outline">Book a demo</Button>
+          </div>
+        </div>
+        <BrandApp name="Weekly report" icon={icon} />
+      </section>
+
+      <div className="pv-site-sample__cards">
+        {FEATURES.map((feature) => (
+          <Card key={feature.title}>
+            <CardHeader className="ayy-stack">
+              <Badge variant="outline">{feature.tag}</Badge>
+              <h4 className="ayy-h5">{feature.title}</h4>
+            </CardHeader>
+            <CardContent>
+              <p className="pv-site-sample__text">{feature.text}</p>
+            </CardContent>
+            <CardFooter>
+              <Button variant="ghost" size="sm">
+                Open {feature.title.toLowerCase()}
+                <Icon icon={ArrowRight01Icon} name="chevron-right" directional />
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      <footer className="ayy-spread pv-site-sample__footer">
+        <span>© 2026 {name} Inc.</span>
+        <div className="ayy-cluster" role="group" aria-label="Sample glyphs">
+          {SAMPLE_ICONS.map(({ icon: glyph, name: glyphName, directional }) => <Icon key={glyphName} icon={glyph} name={glyphName} directional={directional} />)}
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+/** A preset's picture in the list: its light and dark screens side by side. */
+function presetPicture(brand: BrandInput | null, customization: ThemeCustomization): CSSProperties {
+  const colors = createThemeCustomization(customization, brand?.color ?? null);
+  const ink = createThemeText(customization, colors);
+  const made = brand ? createBrand(brand) : null;
+  return {
+    ...Object.fromEntries((["bg", "surface"] as const).map((name) => [`--ayy-color-${name}`, `light-dark(${colors.light[name]}, ${colors.dark[name]})`])),
+    "--ayy-color-text": customization.textColor ? `light-dark(${ink.light}, ${ink.dark})` : lightDark("color.text"),
+    "--ayy-color-primary": made ? `light-dark(${made.light.primary}, ${made.dark.primary})` : lightDark("color.primary"),
+    ...(made ? { "--ayy-radius-control": made.radius.control, "--ayy-radius-card": made.radius.card, "--ayy-radius-button": made.radius.button } : {}),
+  } as CSSProperties;
+}
+
 /**
- * #/themes: pick a brand on the left and see it on a small app on the right, in any theme. Nothing changes on the site until
- * "Use this theme".
+ * #/themes: a list of themes on the start side, a small website wearing the chosen one on the end side. Every theme comes
+ * in light and dark; the pictures in the list follow the chosen mode. Picking a theme applies it to the site at once, for this tab only: a reload starts from Default.
+ * The cog beside a theme opens its settings; saving a change makes it the Custom theme.
  */
 export function ThemesPage({ current, onUse, theme, setTheme, density, setDensity, icons, setIcons, customization, setCustomization }: { current: BrandInput | null; onUse: (brand: BrandInput | null) => void; theme: ThemeMode; setTheme: (theme: ThemeMode) => void; density: DensityMode; setDensity: (density: DensityMode) => void; icons: IconPackName; setIcons: (icons: IconPackName) => void; customization: ThemeCustomization; setCustomization: (value: ThemeCustomization) => void }) {
   const [custom, setCustom] = useState(customization);
   const [mono, setMono] = useState(!current);
   const [input, setInput] = useState<BrandInput>(() => current ?? { name: "acme", color: DEFAULT_COLOR, shape: customization.appearance?.shape ?? "pill", font: customization.appearance?.font });
   const [previewTheme, setPreviewTheme] = useState<ThemeName>(() => resolve(theme));
-  const [selected, setSelected] = useState(() => {
-    const match = THEME_PRESETS.find((preset) =>
-    preset.theme === resolve(theme) && sameBrand(preset.brand, current) &&
-    surfaceStrength(preset.customization.surface) === surfaceStrength(customization.surface) &&
-    preset.customization.contrast === customization.contrast && preset.customization.textColor === customization.textColor &&
-    (surfaceStrength(customization.surface) === 0 || preset.customization.color === customization.color) && !customization.appearance &&
-    (preset.icons ?? "hugeicons") === icons
-    )?.id;
-    // The default themes on a site that follows the device are Auto.
-    return (match === "light" || match === "dark") && theme === "system" ? "auto" : match ?? "custom";
-  });
-  const [customizing, setCustomizing] = useState(false);
-  // Auto follows the device's light or dark; only a custom theme can ask for it. Density belongs to Custom too: a preset leaves the site's alone.
-  const [auto, setAuto] = useState(() => theme === "system" && (selected === "custom" || selected === "auto"));
+  const [selected, setSelected] = useState(() =>
+    THEME_PRESETS.find((preset) =>
+      sameBrand(preset.brand, current) &&
+      surfaceStrength(preset.customization.surface) === surfaceStrength(customization.surface) &&
+      preset.customization.contrast === customization.contrast && preset.customization.textColor === customization.textColor &&
+      (surfaceStrength(customization.surface) === 0 || preset.customization.color === customization.color) && !customization.appearance &&
+      (preset.icons ?? "hugeicons") === icons
+    )?.id ?? "custom");
+  // Auto follows the device's light or dark.
+  const [auto, setAuto] = useState(() => theme === "system");
+  // Density belongs to Custom: a preset leaves the site's alone.
   const [previewDensity, setPreviewDensity] = useState<DensityMode>(density);
   // The icon pack: a preset names its own, Custom keeps the one chosen in its settings.
   const [previewIcons, setPreviewIcons] = useState<IconPackName>(icons);
-  const [initialCustomDraft] = useState(loadCustomDraft);
-  const customDraft = useRef<CustomDraft | null>(initialCustomDraft);
+  // Custom's settings, in memory only, so a new tab or a reload starts from Default.
+  const customDraft = useRef<ThemeDraft | null>(selected === "custom" ? { mono, input, custom, density: previewDensity, icons: previewIcons } : null);
+  // While the settings dialog is open: the theme it was opened on, and everything as it was, for Cancel.
+  const [editing, setEditing] = useState<{ id: string; before: ThemeDraft; selected: string } | null>(null);
   useEffect(() => {
     if (!auto) return;
     const query = window.matchMedia("(prefers-color-scheme: light)");
@@ -213,46 +287,50 @@ export function ThemesPage({ current, onUse, theme, setTheme, density, setDensit
     query.addEventListener("change", sync);
     return () => query.removeEventListener("change", sync);
   }, [auto]);
-  useEffect(() => {
-    if (selected !== "custom") return;
-    const draft = { mono, input, custom, theme: previewTheme, auto, density: previewDensity, icons: previewIcons };
-    customDraft.current = draft;
-    saveCustomDraft(draft);
-  }, [selected, mono, input, custom, previewTheme, auto, previewDensity, previewIcons]);
-  const choosePreset = (id: string) => {
-    if (selected === "custom") {
-      customDraft.current = { mono, input, custom, theme: previewTheme, auto, density: previewDensity, icons: previewIcons };
-      saveCustomDraft(customDraft.current);
-    }
-    setSelected(id);
-    if (id === "auto") {
-      setMono(true);
-      setInput({ name: "acme", color: DEFAULT_COLOR, shape: "pill" });
-      setCustom(THEME_PRESETS[0].customization);
-      setAuto(true);
-      setPreviewIcons("hugeicons");
-      return;
-    }
-    if (id === "custom") {
-      if (customDraft.current) {
-        setMono(customDraft.current.mono);
-        setInput(customDraft.current.input);
-        setCustom(customDraft.current.custom);
-        setPreviewTheme(customDraft.current.theme);
-        setAuto(Boolean(customDraft.current.auto));
-        if (customDraft.current.density) setPreviewDensity(customDraft.current.density);
-        if (customDraft.current.icons) setPreviewIcons(customDraft.current.icons);
-      }
-      return;
-    }
-    setAuto(false);
+
+  const snapshot = (): ThemeDraft => ({ mono, input, custom, density: previewDensity, icons: previewIcons });
+  const load = (draft: ThemeDraft) => {
+    setMono(draft.mono);
+    setInput(draft.input);
+    setCustom(draft.custom);
+    setPreviewDensity(draft.density);
+    setPreviewIcons(draft.icons);
+  };
+  const presetDraft = (id: string): ThemeDraft | null => {
+    if (id === "custom") return customDraft.current;
     const preset = THEME_PRESETS.find((item) => item.id === id);
-    if (!preset) return;
-    setMono(!preset.brand);
-    setInput(preset.brand ?? { name: "acme", color: DEFAULT_COLOR, shape: "pill" });
-    setCustom(preset.customization);
-    setPreviewTheme(preset.theme);
-    setPreviewIcons(preset.icons ?? "hugeicons");
+    if (!preset) return null;
+    return { mono: !preset.brand, input: preset.brand ?? { name: "acme", color: DEFAULT_COLOR, shape: "pill" }, custom: preset.customization, density, icons: preset.icons ?? "hugeicons" };
+  };
+  const choosePreset = (id: string) => {
+    if (selected === "custom") customDraft.current = snapshot();
+    setSelected(id);
+    const next = presetDraft(id);
+    if (next) load(next);
+  };
+  /** Opens a theme's settings, filled in with that theme. */
+  const customize = (id: string) => {
+    setEditing({ id, before: snapshot(), selected });
+    if (selected === "custom") customDraft.current = snapshot();
+    const next = presetDraft(id);
+    if (next) load(next);
+  };
+  /** Save: unchanged, it's that theme; changed, it becomes Custom. */
+  const saveCustom = () => {
+    if (!editing) return;
+    const now = snapshot();
+    const start = presetDraft(editing.id);
+    const changed = !start || JSON.stringify({ ...now, density: null }) !== JSON.stringify({ ...start, density: null }) || (editing.id === "custom" ? now.density !== start.density : now.density !== density);
+    const id = editing.id === "custom" || changed ? "custom" : editing.id;
+    if (id === "custom") customDraft.current = now;
+    setSelected(id);
+    setEditing(null);
+  };
+  const cancelCustom = () => {
+    if (!editing) return;
+    load(editing.before);
+    setSelected(editing.selected);
+    setEditing(null);
   };
 
   const result = useMemo(() => {
@@ -274,168 +352,143 @@ export function ThemesPage({ current, onUse, theme, setTheme, density, setDensit
   const customForSite: ThemeCustomization = mono && ((input.shape && input.shape !== "pill") || input.font)
     ? { ...customColors, appearance: { shape: input.shape, font: input.font } }
     : customColors;
-  const sameAsSite = JSON.stringify(draft) === JSON.stringify(current ?? null) && (auto ? theme === "system" : previewTheme === resolve(theme)) && (selected !== "custom" || previewDensity === density) && previewIcons === icons && JSON.stringify(customForSite) === JSON.stringify(customization);
+  const mode: ThemeMode = auto ? "system" : previewTheme;
+  const appliedDensity = selected === "custom" ? previewDensity : undefined;
+
+  // Whatever is picked is the site's theme (the dialog's edits wait for Save).
+  const applied = JSON.stringify([draft, customForSite, mode, previewIcons, appliedDensity ?? null]);
+  useEffect(() => {
+    if (editing) return;
+    if (JSON.stringify(draft) !== JSON.stringify(current ?? null)) onUse(draft);
+    if (theme !== mode && !(mode !== "system" && resolve(theme) === mode && theme !== "system")) setTheme(mode);
+    if (appliedDensity && appliedDensity !== density) setDensity(appliedDensity);
+    if (previewIcons !== icons) setIcons(previewIcons);
+    if (JSON.stringify(customForSite) !== JSON.stringify(customization)) setCustomization(customForSite);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- applied is the key of everything above
+  }, [applied, editing]);
+
   const palette = createThemeCustomization(custom, draft?.color ?? null);
   const textColors = createThemeText(custom, palette);
-  const presetPictures = useMemo(() => THEME_PRESETS.map((preset) => {
-    const colors = createThemeCustomization(preset.customization, preset.brand?.color ?? null);
-    const ink = createThemeText(preset.customization, colors)[preset.theme];
-    const primary = preset.brand ? createBrand(preset.brand)[preset.theme].primary : ink;
-    const radius = preset.brand ? createBrand(preset.brand).radius : null;
-    const picture = {
-      "--ayy-color-bg": colors[preset.theme].bg, "--ayy-color-surface": colors[preset.theme].surface, "--ayy-color-text": ink, "--ayy-color-primary": primary,
-      ...(radius ? { "--ayy-radius-control": radius.control, "--ayy-radius-card": radius.card, "--ayy-radius-button": radius.button } : {}),
-    } as CSSProperties;
-    return { preset, picture };
-  }), []);
-  const autoPicture = useMemo(() => {
-    const colors = createThemeCustomization(THEME_PRESETS[0].customization, null);
-    return {
-      ...Object.fromEntries((["bg", "surface"] as const).map((name) => [`--ayy-color-${name}`, `light-dark(${colors.light[name]}, ${colors.dark[name]})`])),
-      "--ayy-color-text": lightDark("color.text"), "--ayy-color-primary": lightDark("color.primary"),
-    } as CSSProperties;
-  }, []);
+  const presetPictures = useMemo(() => THEME_PRESETS.map((preset) => ({ preset, picture: presetPicture(preset.brand, preset.customization) })), []);
+  const customSource = selected === "custom" ? { mono, input, custom } : customDraft.current;
+  const customPicture = presetPicture(customSource && !customSource.mono ? customSource.input : null, customSource?.custom ?? DEFAULT_THEME_CUSTOMIZATION);
   const sampleStyle = {
     ...Object.fromEntries((["bg", "surface", "surface-raised"] as const).map((name) => [`--ayy-color-${name}`, `light-dark(${palette.light[name]}, ${palette.dark[name]})`])),
     "--ayy-color-glass": `light-dark(${palette.light.bg}c7, ${palette.dark.surface}c7)`,
     "--ayy-color-text": custom.textColor ? `light-dark(${textColors.light}, ${textColors.dark})` : lightDark("color.text"),
   } as CSSProperties;
 
-  const groups = [
-    { id: "dark", label: "Dark", presets: presetPictures.filter(({ preset }) => preset.theme === "dark") },
-    { id: "light", label: "Light", presets: presetPictures.filter(({ preset }) => preset.theme === "light") },
-  ];
-  const selectedPreset = THEME_PRESETS.find((preset) => preset.id === selected);
-  const selectedLabel = selected === "custom" ? "Custom" : selected === "auto" ? "Auto" : selectedPreset?.brand ? selectedPreset.label : `Default ${selectedPreset?.theme}`;
+  const shownId = editing ? editing.id : selected;
+  const selectedLabel = shownId === "custom" ? "Custom" : THEME_PRESETS.find((preset) => preset.id === shownId)?.label ?? "Default";
   const pickerName = "pv-theme-preset";
 
-  const mode: ThemeMode = auto ? "system" : previewTheme;
   const chosenFont = THEME_FONTS.find((set) => JSON.stringify(set.font ?? null) === JSON.stringify(input.font ?? null));
   const fontsUrl = input.font && chosenFont ? themeFontsUrl([chosenFont]) : "";
-  const appliedDensity = selected === "custom" ? previewDensity : undefined;
-  const [usage, setUsage] = useState("prompt");
-  const isCustomDefault = mono && surfaceStrength(custom.surface) === 0 && custom.contrast === 0 && !custom.textColor && !custom.appearance && (input.shape ?? "pill") === "pill" && !input.font && auto && previewDensity === "auto" && previewIcons === "hugeicons";
-  /** Back to where Custom starts: monochrome, neutral, pill corners, ayywi's fonts, following the device. */
+  const isCustomDefault = mono && surfaceStrength(custom.surface) === 0 && custom.contrast === 0 && !custom.textColor && !custom.appearance && (input.shape ?? "pill") === "pill" && !input.font && previewDensity === "auto" && previewIcons === "hugeicons";
+  /** Back to where Custom starts: monochrome, neutral, pill corners, ayywi's fonts. */
   const resetCustom = () => {
     setMono(true);
     setInput({ name: "acme", color: DEFAULT_COLOR, shape: "pill" });
     setCustom(DEFAULT_THEME_CUSTOMIZATION);
-    setAuto(true);
     setPreviewDensity("auto");
     setPreviewIcons("hugeicons");
   };
 
+  /** Auto, Light or Dark: the preview's mode, and the site's. */
+  const modeControl = (
+    <SegmentedControl
+      full
+      aria-label="Mode"
+      value={auto ? "system" : previewTheme}
+      onValueChange={(v) => {
+        setAuto(v === "system");
+        if (v !== "system") setPreviewTheme(v as ThemeName);
+      }}
+    >
+      <SegmentedControlItem value="system">Auto</SegmentedControlItem>
+      {themeOptions.filter((t) => t.name === "light" || t.name === "dark").sort((a, b) => Number(b.name === "light") - Number(a.name === "light")).map((t) => (
+        <SegmentedControlItem key={t.name} value={t.name}>{t.label}</SegmentedControlItem>
+      ))}
+    </SegmentedControl>
+  );
+
   /** The whole preview area wears the chosen theme (surfaces, text, fonts, colours), so none of it is the site's. */
-  const stage = (id: string, compact = false) => (
-    <section className="pv-themer__stage" aria-labelledby={id} data-theme={previewTheme} data-density={resolveDensity(selected === "custom" ? previewDensity : density)} data-ayy-icons={previewIcons} style={sampleStyle}>
-      <header className="pv-themer__stage-header">
-        <h2 className="ayy-h6" id={id}>Live preview · {selectedLabel}</h2>
-        {!compact && <p className="pv-note">{sameAsSite ? "This is the theme your site uses." : "Preview only. Nothing changes on the site until you choose Use this theme."}</p>}
-      </header>
-      <div className="pv-themer__sample ayy-stack" data-theme={previewTheme} style={sampleStyle}>
-        <BrandApp name={selectedLabel} icon={THEME_ICONS[selected]} />
-        <div className="ayy-spread" role="group" aria-label="Sample glyphs">
-          {SAMPLE_ICONS.map(({ icon, name, directional }) => <Icon key={name} icon={icon} name={name} directional={directional} size="lg" />)}
-        </div>
+  const stage = (labelledBy: string) => (
+    <section className="pv-themer__stage" aria-labelledby={labelledBy} data-theme={previewTheme} data-density={resolveDensity(selected === "custom" || editing ? previewDensity : density)} data-ayy-icons={previewIcons} style={sampleStyle}>
+      <div className="pv-themer__sample" data-theme={previewTheme} style={sampleStyle}>
+        <ThemeSite name={selectedLabel} icon={THEME_ICONS[shownId]} />
       </div>
     </section>
   );
 
+  const items = [...presetPictures.map(({ preset, picture }) => ({ id: preset.id, name: preset.label, picture })), { id: "custom", name: "Custom", picture: customPicture }];
+
   return (
     <article className="pv-page pv-themes-page">
-      <header className="pv-page__header">
-        <h1 className="ayy-h3" id="themes-title">
-          Themes
-        </h1>
-        <p className="pv-note">Choose a ready-made look or make your own, and see it on a small app before you apply it to the site.</p>
-      </header>
-
-      {/* The brand is scoped to the preview, so the site keeps its own until "Use this theme". */}
+      {/* The brand is scoped to the preview, so the page around it keeps the site's own. */}
       <style>{scoped(".pv-themer__stage")}</style>
 
       <section className="pv-themer" aria-labelledby="themes-title">
         <div className="pv-themer__panel">
-          <section className="pv-themer__group" aria-labelledby="themes-default">
-            <h2 className="ayy-eyebrow pv-themer__group-title" id="themes-default">Default</h2>
-            <SettingsPicker name={pickerName} aria-labelledby="themes-default" value={selected} onValueChange={choosePreset}>
-              <SettingsOption value="auto" label="Auto" preview={<SettingsScreen variant="brand" theme="system" style={autoPicture} />} />
-              <div className="pv-themer__custom">
-                <SettingsOption value="custom" label="Custom" preview={<SettingsScreen variant="brand" theme={previewTheme} style={sampleStyle} />} />
-                <span className="pv-themer__cog">
-                  <Tooltip content="Customize theme">
-                    <Button
-                      variant="primary"
-                      size="icon-sm"
-                      aria-label="Customize theme"
-                      onClick={() => {
-                        choosePreset("custom");
-                        setCustomizing(true);
-                      }}
-                    >
-                      <Icon icon={Settings01Icon} name="settings" />
-                    </Button>
-                  </Tooltip>
-                </span>
-              </div>
-            </SettingsPicker>
-          </section>
-          {groups.map((group) => (
-            <section className="pv-themer__group" key={group.id} aria-labelledby={`themes-${group.id}`}>
-              <h2 className="ayy-eyebrow pv-themer__group-title" id={`themes-${group.id}`}>{group.label}</h2>
-              <SettingsPicker name={pickerName} aria-labelledby={`themes-${group.id}`} value={selected} onValueChange={choosePreset}>
-                {group.presets.map(({ preset, picture }) => (
-                  <SettingsOption key={preset.id} value={preset.id} label={preset.brand ? preset.label : "Default"} inputProps={preset.brand ? undefined : { "aria-label": `Default ${preset.theme}` }} preview={<SettingsScreen variant="brand" theme={preset.theme} style={picture} />} />
-                ))}
-              </SettingsPicker>
-            </section>
-          ))}
-
-          <div className="pv-themer__actions ayy-cluster">
-            <Button
-              disabled={sameAsSite}
-              onClick={() => {
-                onUse(draft);
-                setTheme(auto ? "system" : previewTheme);
-                if (selected === "custom") setDensity(previewDensity);
-                setIcons(previewIcons);
-                setCustomization(customForSite);
-              }}
-            >
-              Use this theme
-            </Button>
-            <Button
-              variant="ghost"
-              disabled={!current && mono && JSON.stringify(custom) === JSON.stringify(DEFAULT_THEME_CUSTOMIZATION) && icons === "hugeicons" && previewIcons === "hugeicons"}
-              onClick={() => {
-                setSelected("custom");
-                customDraft.current = null;
-                setInput({ name: "acme", color: DEFAULT_COLOR, shape: "pill" });
-                setMono(true);
-                onUse(null);
-                setCustom(DEFAULT_THEME_CUSTOMIZATION);
-                setCustomization(DEFAULT_THEME_CUSTOMIZATION);
-                setPreviewIcons("hugeicons");
-                setIcons("hugeicons");
-              }}
-            >
-              Reset to default
-            </Button>
-          </div>
+          <h1 className="ayy-h4" id="themes-title">Themes</h1>
+          {modeControl}
           {result.error && (
             <Alert variant="destructive">
               <AlertDescription>{result.error}</AlertDescription>
             </Alert>
           )}
+          <SettingsPicker className="pv-themer__list" name={pickerName} aria-label="Themes" value={selected} onValueChange={choosePreset}>
+            {items.map(({ id, name, picture }) => (
+              <div className="pv-themer__item" key={id}>
+                <SettingsOption
+                  value={id}
+                  label={<span className="pv-themer__name">{name}</span>}
+                  preview={<SettingsScreen variant="brand" theme={previewTheme} style={picture} />}
+                />
+                <span className="pv-themer__cog">
+                  <Tooltip content={`Customize ${name}`}>
+                    <Button variant="ghost" size="icon-sm" aria-label={`Customize ${name}`} onClick={() => customize(id)}>
+                      <Icon icon={Settings01Icon} name="settings" />
+                    </Button>
+                  </Tooltip>
+                </span>
+              </div>
+            ))}
+          </SettingsPicker>
         </div>
 
-        {customizing ? <div className="pv-themer__stage" aria-hidden="true" /> : stage("themes-preview")}
+        <div className="pv-themer__main">
+          <header className="pv-themer__head">
+            <h2 className="ayy-h6" id="themes-preview">{selectedLabel} · {previewTheme === "light" ? "Light" : "Dark"}</h2>
+            <Popover>
+              <PopoverTrigger variant="outline" size="sm">
+                Copy for...
+              </PopoverTrigger>
+              <PopoverContent side="bottom" align="end" aria-label={`Copy for ${selectedLabel}`} className="pv-code-popover">
+                <Tabs defaultValue="prompt">
+                  <TabsList aria-label={`Copy options for ${selectedLabel}`}>
+                    <TabsTrigger value="prompt">AI prompt</TabsTrigger>
+                    <TabsTrigger value="code">Code</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="prompt">
+                    <CodeBlock code={buildPrompt(themeRequest(selectedLabel, draft, customForSite, mode, appliedDensity, chosenFont, fontsUrl, previewIcons))} label="prompt" copyLabel="Copy prompt" wrap />
+                  </TabsContent>
+                  <TabsContent value="code">
+                    <CodeBlock code={snippet(draft, customForSite, mode, appliedDensity, fontsUrl, previewIcons)} label="code" language="sh" wrap />
+                  </TabsContent>
+                </Tabs>
+              </PopoverContent>
+            </Popover>
+          </header>
+          {editing ? <div className="pv-themer__stage" aria-hidden="true" /> : stage("themes-preview")}
+        </div>
       </section>
 
-      <Dialog open={customizing} onOpenChange={setCustomizing}>
+      <Dialog open={Boolean(editing)} onOpenChange={(open) => { if (!open) cancelCustom(); }}>
         <DialogContent size="xl" className="pv-themer__dialog">
           <DialogHeader>
-            <DialogTitle>Custom theme</DialogTitle>
-            <DialogDescription>Changes show in the live preview as you make them.</DialogDescription>
+            <DialogTitle>Customize {editing?.id === "custom" ? "Custom" : selectedLabel}</DialogTitle>
+            <DialogDescription>Changes show in the preview as you make them. Saving a change makes it your Custom theme.</DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="pv-themer__customize">
@@ -443,22 +496,8 @@ export function ThemesPage({ current, onUse, theme, setTheme, density, setDensit
                 <div className="pv-themer__controls">
                   <Field>
                     <span className="ayy-label" id="pv-theme-mode">Mode</span>
-                    <SegmentedControl
-                      full
-                      aria-labelledby="pv-theme-mode"
-                      value={auto ? "system" : previewTheme}
-                      onValueChange={(v) => {
-                        setAuto(v === "system");
-                        if (v !== "system") setPreviewTheme(v as ThemeName);
-                      }}
-                    >
-                      <SegmentedControlItem value="system">Auto</SegmentedControlItem>
-                      {themeOptions.filter((t) => t.name === "light" || t.name === "dark").sort((a, b) => Number(b.name === "light") - Number(a.name === "light")).map((t) => (
-                        <SegmentedControlItem key={t.name} value={t.name}>{t.label}</SegmentedControlItem>
-                      ))}
-                    </SegmentedControl>
+                    {modeControl}
                   </Field>
-
                   <Field>
                     <span className="ayy-label" id="pv-theme-colour">Accent colour</span>
                     <ColorSwatchGroup track role="group" aria-labelledby="pv-theme-colour" className="pv-brand__swatches">
@@ -545,79 +584,18 @@ export function ThemesPage({ current, onUse, theme, setTheme, density, setDensit
 
                 </div>
               </div>
-              {stage("themes-preview-custom", true)}
+              {editing && stage("themes-preview")}
             </div>
           </DialogBody>
           <DialogFooter>
             <Button variant="ghost" className="pv-themer__reset" disabled={isCustomDefault} onClick={resetCustom}>
               Reset theme
             </Button>
-            <DialogClose variant="primary">Done</DialogClose>
+            <DialogClose variant="outline">Cancel</DialogClose>
+            <Button onClick={saveCustom}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <section className="pv-section pv-themer__guide" aria-labelledby="themes-usage">
-        <h2 className="pv-h pv-h--section" id="themes-usage">Using themes</h2>
-        <p className="pv-note">Start with a preset, or choose Custom to create a look for your product.</p>
-        <div className="pv-usage">
-          <section className="pv-section" aria-labelledby="themes-possibilities">
-            <h3 className="ayy-h5" id="themes-possibilities">What you can change</h3>
-            <ul className="pv-list">
-              <li>Choose light or dark, or follow the device setting in your app.</li>
-              <li>Pick an accent and tint the page, panels and navigation with your own colour.</li>
-              <li>Adjust text colour, contrast, fonts and corners. Custom settings stay saved in this preview.</li>
-              <li>Swap the built-in icons for another pack: Lucide, Tabler Icons, Material Symbols or Feather. <a href="#/docs/icons">See every icon in each</a>.</li>
-            </ul>
-          </section>
-          <section className="pv-section" aria-labelledby="themes-rules">
-            <h3 className="ayy-h5" id="themes-rules">Rules to follow</h3>
-            <ul className="pv-list">
-              <li>Use semantic tokens for surfaces and text so components follow the selected theme.</li>
-              <li>Keep normal text at least 4.5:1 and essential controls and focus indicators at least 3:1 against their backgrounds.</li>
-              <li>Check any app-specific colours, preserve visible focus and test forced-colour mode.</li>
-              <li>Store the user's choices in your app if they should persist between visits.</li>
-            </ul>
-          </section>
-        </div>
-        <p className="pv-note">Use the theme you picked above in your app: give the prompt to any AI tool, or take the code.</p>
-        <Tabs value={usage} onValueChange={setUsage}>
-          <TabsList aria-label="Use this theme">
-            <TabsTrigger value="prompt">Prompt</TabsTrigger>
-            <TabsTrigger value="code">Code</TabsTrigger>
-          </TabsList>
-          <TabsContent value="prompt" className="pv-themer__prompt">
-            <CodeBlock code={buildPrompt(themeRequest(selectedLabel ?? "Custom", draft, customForSite, mode, appliedDensity, chosenFont, fontsUrl, previewIcons))} label="prompt" copyLabel="Copy prompt" wrap />
-          </TabsContent>
-          <TabsContent value="code">
-            <CodeBlock code={snippet(draft, customForSite, mode, appliedDensity, fontsUrl, previewIcons)} label="code" language="sh" wrap />
-          </TabsContent>
-        </Tabs>
-      </section>
-
-      {selected === "custom" && <>
-      <style>{scoped(".pv-brand-live")}</style>
-      <section className="pv-brand-live pv-section" aria-labelledby="themes-every">
-        <h2 className="pv-h pv-h--section" id="themes-every">
-          In light and dark
-        </h2>
-        <p className="pv-note">The same title, text and action in each theme, so you can check your colour reads well in all of them.</p>
-        <div className="pv-themes pv-themes--stack">
-          {themeOptions.filter((t) => t.name === "light" || t.name === "dark").map((t) => (
-            <Sample key={t.name} theme={t.name} label={t.label} style={sampleStyle} />
-          ))}
-        </div>
-
-        <h2 className="pv-h pv-h--section" id="brand-scale">
-          Scale
-        </h2>
-        <p className="pv-note">
-          The shade marked seed is the closest to your colour, and the rest are built around it. Primary buttons and the focus ring take
-          their colours from here.
-        </p>
-        <Scale brand={result.brand ?? null} />
-      </section>
-      </>}
     </article>
   );
 }

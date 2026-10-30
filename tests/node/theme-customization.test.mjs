@@ -40,14 +40,16 @@ test("every ready-made theme with a colour uses Subtle surfaces; the defaults st
   for (const preset of THEME_PRESETS) assert.equal(preset.customization.surface, preset.brand ? "subtle" : "neutral", preset.id);
 });
 
-test("ready-made themes run warm, green, blue, purple, pink in Dark and Light, Default first", () => {
-  const ids = (theme) => THEME_PRESETS.filter((preset) => preset.theme === theme).map((preset) => preset.id);
-  assert.deepEqual(ids("dark"), ["dark", "ember", "forest", "arctic", "twilight", "wine"]);
-  assert.deepEqual(ids("light"), ["light", "sunlit", "lagoon", "paper", "lavender", "blush"]);
+test("ready-made themes run Default, then warm, green, blue, purple, pink, and each works in light and dark", () => {
+  assert.deepEqual(THEME_PRESETS.map((preset) => preset.id), ["default", "ember", "forest", "arctic", "twilight", "wine"]);
+  for (const preset of THEME_PRESETS) {
+    assert.equal("theme" in preset, false, preset.id);
+    if (preset.brand) for (const mode of ["light", "dark"]) assert.ok(createBrand(preset.brand)[mode].primary, `${preset.id} ${mode}`);
+  }
 });
 
 test("preset and custom text colors remain readable on all generated surfaces", () => {
-  assert.equal(THEME_PRESETS.length, 12);
+  assert.equal(THEME_PRESETS.length, 6);
   for (const preset of THEME_PRESETS) for (const textColor of [preset.customization.textColor, "#000000", "#ffffff", "#ff0000", "#777777"]) {
     const input = { ...preset.customization, textColor };
     const palette = createThemeCustomization(input, preset.brand?.color ?? null);

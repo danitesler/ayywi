@@ -1,43 +1,128 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-/** Selects Custom and opens its settings: the cog on the Custom picture. */
-async function openCustom(page: Page) {
-  await page.getByRole("button", { name: "Customize theme", exact: true }).click();
-  await expect(page.getByRole("dialog", { name: "Custom theme" })).toBeVisible();
+/** The settings dialog, whichever theme it was opened on. */
+const settings = (page: Page) => page.locator("dialog.pv-themer__dialog");
+/** Opens a theme's settings with the cog beside it in the list. */
+async function openCustom(page: Page, theme = "Default") {
+  await page.getByRole("button", { name: `Customize ${theme}`, exact: true }).click();
+  await expect(page.getByRole("dialog", { name: `Customize ${theme}` })).toBeVisible();
 }
 /** A choice in the dialog's segmented controls (Mode, Surface, Corners): pick it by its label. */
-const choose = (page: Page, name: string) => page.getByRole("dialog", { name: "Custom theme" }).locator("label", { hasText: new RegExp(`^${name}$`) }).click();
-async function closeCustom(page: Page) {
-  await page.getByRole("dialog", { name: "Custom theme" }).getByRole("button", { name: "Done" }).click();
-  await expect(page.getByRole("dialog", { name: "Custom theme" })).toBeHidden();
+const choose = (page: Page, name: string) => settings(page).locator("label", { hasText: new RegExp(`^${name}$`) }).click();
+/** The page's own Mode control, above the list of themes. */
+const pageMode = (page: Page, name: string) => page.locator(".pv-themer__panel label", { hasText: new RegExp(`^${name}$`) }).click();
+/** A theme in the list: picking it applies it to the site. */
+const pick = (page: Page, name: string) => page.locator(".pv-themer").getByRole("radio", { name, exact: true }).locator("xpath=..").click();
+const checked = (page: Page) => page.locator(".pv-themer input[name='pv-theme-preset']:checked");
+async function save(page: Page) {
+  await settings(page).getByRole("button", { name: "Save" }).click();
+  await expect(settings(page)).toBeHidden();
 }
+const settle = (page: Page) => page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => undefined))));
 
-test("theme customization previews, applies and survives reload in both modes", async ({ page }) => {
+test("six themes and Custom in one list, each in light and dark, picked by a click that applies at once", async ({ page }) => {
+  await page.goto("/#/themes");
+  const picker = page.locator(".pv-themer");
+  const radios = picker.getByRole("radiogroup", { name: "Themes" }).getByRole("radio");
+  const names = ["Default", "Ember", "Forest", "Arctic", "Twilight", "Wine", "Custom"];
+  await expect(radios).toHaveCount(names.length);
+  for (const [i, name] of names.entries()) {
+    await expect(radios.nth(i)).toHaveAccessibleName(name);
+    await expect(picker.getByRole("button", { name: `Customize ${name}`, exact: true })).toBeAttached();
+  }
+  await expect(page.getByRole("button", { name: "Use this theme" })).toHaveCount(0);
+  // Each picture is one screen in the chosen mode, and the cog shows on the chosen theme and on hover.
+  const screen = picker.locator(".pv-themer__list .ayy-settings__preview").nth(1).locator(".ayy-settings__screen");
+  await expect(screen).toHaveCount(1);
+  const cog = (name: string) => picker.locator(".pv-themer__item", { has: page.getByRole("button", { name: `Customize ${name}`, exact: true }) }).locator(".pv-themer__cog");
+  await expect(cog("Default")).toHaveCSS("opacity", "1");
+  await expect(cog("Ember")).toHaveCSS("opacity", "0");
+  await cog("Ember").locator("xpath=..").hover();
+  await expect(cog("Ember")).toHaveCSS("opacity", "1");
+  await pageMode(page, "Light");
+  await expect(screen).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await pick(page, "Arctic");
+  await expect(page.locator("html")).toHaveAttribute("data-brand", "arctic");
+  await expect(page.locator(".pv-themer__sample")).toHaveAttribute("data-theme", "light");
+  await pageMode(page, "Dark");
+  await expect(page.locator(".pv-themer__sample")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+});
+
+test("a picked theme lasts for the tab only: a reload or a new tab starts from Default", async ({ page, context }) => {
+  await page.goto("/#/themes");
+  await pick(page, "Ember");
+  await expect(page.locator("html")).toHaveAttribute("data-brand", "ember");
+  await expect(page.locator("html")).toHaveAttribute("data-ayy-icons", "lucide");
+  // Moving around the site keeps it.
+  await page.evaluate(() => (location.hash = "#/components/button"));
+  await expect(page.locator("html")).toHaveAttribute("data-brand", "ember");
+  const other = await context.newPage();
+  await other.goto("/#/themes");
+  await expect(other.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await expect(other.locator("html")).not.toHaveAttribute("data-ayy-icons", /.+/);
+  await page.reload();
+  await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await page.evaluate(() => (location.hash = "#/themes"));
+  await expect(checked(page)).toHaveValue("default");
+  expect(await page.evaluate(() => Object.keys(localStorage).filter((key) => /brand|customization|custom-theme|ayy-icons/.test(key)))).toEqual([]);
+});
+
+test("the cog opens a theme's settings filled in with it; Save unchanged keeps it, a change makes it Custom, Cancel undoes", async ({ page }) => {
+  await page.goto("/#/themes");
+  await openCustom(page, "Ember");
+  const dialog = settings(page);
+  await expect(dialog.getByRole("radio", { name: "Sharp" })).toBeChecked();
+  await expect(dialog.getByLabel("Font")).toHaveValue("grotesk");
+  await expect(dialog.getByLabel("Icons")).toHaveValue("lucide");
+  // Nothing reaches the site until Save.
+  await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+  await save(page);
+  await expect(checked(page)).toHaveValue("ember");
+  await expect(page.locator("html")).toHaveAttribute("data-brand", "ember");
+
+  const corners = () => page.locator("html").evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-radius-button").trim());
+  const sharp = await corners();
+  await openCustom(page, "Ember");
+  await choose(page, "Round");
+  expect(await corners()).toBe(sharp);
+  await save(page);
+  await expect(checked(page)).toHaveValue("custom");
+  await expect.poll(corners).not.toBe(sharp);
+  const round = await corners();
+
+  await openCustom(page, "Wine");
+  await choose(page, "Sharp");
+  await settings(page).getByRole("button", { name: "Cancel" }).click();
+  await expect(settings(page)).toBeHidden();
+  await expect(checked(page)).toHaveValue("custom");
+  expect(await corners()).toBe(round);
+  // Custom's cog opens the saved custom theme.
+  await openCustom(page, "Custom");
+  await expect(settings(page).getByRole("radio", { name: "Round" })).toBeChecked();
+  await page.keyboard.press("Escape");
+  await expect(settings(page)).toBeHidden();
+  await expect(checked(page)).toHaveValue("custom");
+});
+
+test("custom settings preview in both modes and pass axe", async ({ page }) => {
   await page.goto("/#/themes");
   await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
   await choose(page, "Subtle");
   await choose(page, "Dark");
   const sample = page.locator(".pv-themer__sample");
   const violations = async () => {
-    await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => undefined))));
+    await settle(page);
     return (await new AxeBuilder({ page }).include(".pv-themer").disableRules(["region"]).analyze()).violations.filter((v) => v.impact === "serious" || v.impact === "critical");
   };
   const dark = await sample.evaluate((el) => getComputedStyle(el).backgroundColor);
-  await closeCustom(page);
-  expect(await violations()).toEqual([]);
-  await openCustom(page);
   await choose(page, "Light");
-  const light = await sample.evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(light).not.toEqual(dark);
-  await closeCustom(page);
+  expect(await sample.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toEqual(dark);
+  await save(page);
   expect(await violations()).toEqual([]);
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await page.reload();
-  await openCustom(page);
-  await expect(dialog.getByRole("radio", { name: "Subtle" })).toBeChecked();
-  await expect(dialog.getByRole("radio", { name: "Light" })).toBeChecked();
+  await expect(checked(page)).toHaveValue("custom");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
 
@@ -50,14 +135,13 @@ for (const scheme of ["dark", "light"] as const) test(`custom tint reaches the n
   const background = (selector: typeof navbar) => selector.evaluate((el) => getComputedStyle(el).backgroundColor);
   const originalNav = await background(navbar);
   const originalTop = await background(topbar);
-  await page.goto("/#/themes");
+  await page.evaluate(() => (location.hash = "#/themes"));
   await openCustom(page);
-  await page.getByRole("dialog", { name: "Custom theme" }).getByRole("button", { name: "Violet" }).click();
+  await settings(page).getByRole("button", { name: "Violet" }).click();
   await choose(page, "Subtle");
   await choose(page, scheme === "dark" ? "Dark" : "Light");
-  await closeCustom(page);
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await page.goto("/#/components/top-bar");
+  await save(page);
+  await page.evaluate(() => (location.hash = "#/components/top-bar"));
   await expect.poll(() => background(navbar)).not.toBe(originalNav);
   await expect.poll(() => background(topbar)).not.toBe(originalTop);
   const tintedTop = await background(topbar);
@@ -68,87 +152,66 @@ for (const scheme of ["dark", "light"] as const) test(`custom tint reaches the n
   await expect.poll(() => mobileTop.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(tintedTop);
 });
 
-test("twelve presets in Dark and Light, six each with a Default first, and Custom opens its settings in a dialog", async ({ page }) => {
+for (const scheme of ["dark", "light"] as const) test(`Default is monochrome in ${scheme}, in the preview and on the site`, async ({ page }) => {
   await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
-  await expect(picker.getByRole("radio")).toHaveCount(14);
-  await expect(picker.getByRole("radio", { name: "Midnight" })).toHaveCount(0);
-  for (const [group, names] of [
-    ["Default", ["Auto", "Custom"]],
-    ["Dark", ["Default dark", "Ember", "Forest", "Arctic", "Twilight", "Wine"]],
-    ["Light", ["Default light", "Sunlit", "Lagoon", "Paper", "Lavender", "Blush"]],
-  ] as const) {
-    const radios = picker.getByRole("radiogroup", { name: group }).getByRole("radio");
-    await expect(radios).toHaveCount(names.length);
-    for (const [i, name] of names.entries()) await expect(radios.nth(i)).toHaveAccessibleName(name);
-  }
-  await expect(page.getByRole("dialog")).toHaveCount(0);
-  await picker.getByRole("radio", { name: "Arctic", exact: true }).locator("xpath=..").click();
-  await expect(page.locator(".pv-themer__sample")).toHaveAttribute("data-theme", "dark");
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-brand", "arctic");
-  await page.reload();
-  await expect(picker.getByRole("radio", { name: "Arctic", exact: true })).toBeChecked();
-  await picker.getByRole("radio", { name: "Custom", exact: true }).locator("xpath=..").click();
-  await expect(page.getByRole("dialog")).toHaveCount(0);
-  await openCustom(page);
-  const settings = page.getByRole("dialog", { name: "Custom theme" });
-  for (const name of ["Mode", "Accent colour", "Surface", "Corners"]) await expect(settings.getByText(name, { exact: true })).toBeVisible();
-  await expect(settings.getByLabel("Font")).toBeVisible();
-  await expect(settings.getByLabel("Density")).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog", { name: "Custom theme" })).toBeHidden();
-});
-
-for (const scheme of ["dark", "light"] as const) test(`a Default ${scheme} theme is monochrome, even while the site wears another theme`, async ({ page }) => {
-  await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
-  await picker.getByRole("radio", { name: scheme === "dark" ? "Wine" : "Lavender", exact: true }).locator("xpath=..").click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-brand", /.+/);
+  await pageMode(page, scheme === "dark" ? "Dark" : "Light");
+  await pick(page, "Wine");
+  await expect(page.locator("html")).toHaveAttribute("data-brand", "wine");
   const primary = (selector: string) => page.locator(selector).evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-color-primary").trim());
-  const siteAccent = await primary("html");
-  await picker.getByRole("radio", { name: `Default ${scheme}`, exact: true }).locator("xpath=..").click();
-  // The preview shows the default's own colours, not the ones the site wears.
+  await pick(page, "Default");
   const mono = scheme === "dark" ? "#ffffff" : "#0a0a0a";
   await expect(page.getByRole("button", { name: "Send report" })).toHaveCSS("background-color", scheme === "dark" ? "rgb(255, 255, 255)" : "rgb(10, 10, 10)");
   expect(await primary(".pv-themer__sample")).toContain(mono);
-  expect(await primary("html")).toBe(siteAccent);
-  await page.getByRole("button", { name: "Use this theme" }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
   expect(await primary("html")).toMatch(scheme === "dark" ? /^#(fff|ffffff)$/i : /^#0a0a0a$/i);
 });
 
-test("the preview is the chosen theme all the way through, whatever the site wears, and sits centred", async ({ page }) => {
+test("the preview wears the theme all the way through, with its name and Copy for... above it", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
-  await picker.getByRole("radio", { name: "Ember", exact: true }).locator("xpath=..").click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-brand", "ember");
-  await picker.getByRole("radio", { name: "Paper", exact: true }).locator("xpath=..").click();
+  await pageMode(page, "Light");
+  await pick(page, "Arctic");
   const stage = page.locator(".pv-themer__stage");
   const sample = page.locator(".pv-themer__sample");
-  // Paper is light, with Literata for body text; the site is a dark theme with its own colours.
   await expect(stage).toHaveAttribute("data-theme", "light");
-  await expect(sample.getByText("Revenue", { exact: true })).toHaveCSS("font-family", /Literata/);
+  await expect(sample.getByText("Revenue", { exact: true })).toHaveCSS("font-family", /IBM Plex Sans/);
   const luminance = (rgb: string) => rgb.match(/\d+/g)!.slice(0, 3).map(Number).reduce((a, b) => a + b, 0) / 3;
   expect(luminance(await stage.evaluate((el) => getComputedStyle(el).backgroundColor))).toBeGreaterThan(200);
-  expect(luminance(await stage.getByRole("heading", { level: 2 }).evaluate((el) => getComputedStyle(el).color))).toBeLessThan(100);
-  // Centred in the preview, both ways.
-  const [box, inner] = [await stage.boundingBox(), await sample.boundingBox()];
-  expect(Math.abs(box!.x + box!.width / 2 - (inner!.x + inner!.width / 2))).toBeLessThan(2);
-  const header = await stage.locator(".pv-themer__stage-header").boundingBox();
-  const free = { top: header!.y + header!.height, bottom: box!.y + box!.height };
-  expect(Math.abs((free.top + free.bottom) / 2 - (inner!.y + inner!.height / 2))).toBeLessThan(24);
+  // The name and Copy for... sit above the preview, outside it; the list is on the start side.
+  const heading = page.getByRole("heading", { level: 2, name: "Arctic · Light" });
+  const copy = page.getByRole("button", { name: "Copy for...", exact: true });
+  const [panel, box, title, button] = [await page.locator(".pv-themer__panel").boundingBox(), await stage.boundingBox(), await heading.boundingBox(), await copy.boundingBox()];
+  expect(panel!.x + panel!.width).toBeLessThan(box!.x);
+  for (const above of [title!, button!]) expect(above.y + above.height).toBeLessThanOrEqual(box!.y);
+  expect(Math.abs(box!.x + box!.width - (button!.x + button!.width))).toBeLessThan(2);
+  await expect(stage.getByRole("button", { name: "Copy for...", exact: true })).toHaveCount(0);
 });
 
-test("Customize theme is a centred dialog with the live preview on its end side", async ({ page }) => {
+test("Copy for... shows the theme's prompt and code in a popover, like a component's", async ({ page }) => {
+  await page.goto("/#/themes");
+  await pageMode(page, "Dark");
+  await pick(page, "Arctic");
+  await page.getByRole("button", { name: "Copy for...", exact: true }).click();
+  const popover = page.getByRole("dialog", { name: "Copy for Arctic" });
+  await expect(popover.getByRole("tab", { name: "AI prompt" })).toHaveAttribute("aria-selected", "true");
+  const panel = popover.getByRole("tabpanel");
+  await expect(panel).toContainText('Use the ayywi "Arctic" theme');
+  await expect(panel).toContainText("#5e81ac");
+  await expect(panel).toContainText("fonts.googleapis.com/css2?family=Space+Mono");
+  await expect(panel).toContainText('ayywi.setTheme("dark")');
+  await expect(popover.getByRole("button", { name: "Copy prompt" })).toBeVisible();
+  await popover.getByRole("tab", { name: "Code" }).click();
+  await expect(popover.getByRole("tabpanel")).toContainText('ayywi.setBrand({ name: "arctic"');
+  await expect(popover.getByRole("tabpanel")).not.toContainText("Use the ayywi");
+});
+
+test("the settings dialog is centred with the live preview on its end side", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/#/themes");
   await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
+  const dialog = settings(page);
   // Its opening animation scales it, so measure once it has settled.
-  await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => undefined))));
+  await settle(page);
   const box = (await dialog.boundingBox())!;
   expect(Math.abs(box.x + box.width / 2 - 640)).toBeLessThan(2);
   expect(Math.abs(box.y + box.height / 2 - 400)).toBeLessThan(2);
@@ -156,93 +219,56 @@ test("Customize theme is a centred dialog with the live preview on its end side"
   const preview = (await dialog.locator(".pv-themer__sample").boundingBox())!;
   expect(preview.x).toBeGreaterThan(controls.x + controls.width);
   await expect(page.locator(".pv-themer__sample")).toHaveCount(1);
-  const stage = (await dialog.locator(".pv-themer__stage").boundingBox())!;
-  expect(Math.abs(stage.x + stage.width / 2 - (preview.x + preview.width / 2))).toBeLessThan(2);
-  await closeCustom(page);
+  await save(page);
   await expect(page.locator(".pv-themer__sample")).toHaveCount(1);
 });
 
-test("Ember brings its own corners and heading font to the site, and survives a reload", async ({ page }) => {
+test("Ember brings its own corners and heading font to the site", async ({ page }) => {
   await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
-  await picker.getByRole("radio", { name: "Ember", exact: true }).locator("xpath=..").click();
   const corners = () => page.locator("html").evaluate((el) => getComputedStyle(el).getPropertyValue("--ayy-radius-button").trim());
   const before = await corners();
-  await page.getByRole("button", { name: "Use this theme" }).click();
+  await pick(page, "Ember");
   await expect(page.locator("html")).toHaveAttribute("data-brand", "ember");
   await expect.poll(corners).not.toBe(before);
-  await page.reload();
-  await expect(picker.getByRole("radio", { name: "Ember", exact: true })).toBeChecked();
 });
 
-test("Auto follows the device's colour scheme and applies as the system theme", async ({ page }) => {
+test("Auto mode follows the device for any theme and applies as the system theme", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/#/themes");
-  await openCustom(page);
-  await choose(page, "Subtle");
-  await choose(page, "Auto");
-  const stage = page.getByRole("dialog", { name: "Custom theme" }).locator(".pv-themer__stage");
+  const picker = page.locator(".pv-themer");
+  await expect(picker.getByRole("radiogroup", { name: "Mode" }).getByRole("radio", { name: "Auto" })).toBeChecked();
+  await expect(checked(page)).toHaveValue("default");
+  await pick(page, "Arctic");
+  const stage = page.locator(".pv-themer__stage");
   await expect(stage).toHaveAttribute("data-theme", "dark");
   await page.emulateMedia({ colorScheme: "light" });
   await expect(stage).toHaveAttribute("data-theme", "light");
-  await closeCustom(page);
-  await page.getByRole("button", { name: "Use this theme" }).click();
   expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("system");
-  await page.emulateMedia({ colorScheme: "dark" });
-  await expect(page.locator(".pv-themer__sample")).toHaveAttribute("data-theme", "dark");
-  await page.reload();
-  await openCustom(page);
-  await expect(page.getByRole("dialog", { name: "Custom theme" }).getByRole("radio", { name: "Auto" })).toBeChecked();
+  await pageMode(page, "Dark");
+  expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("dark");
 });
 
-test("Density resizes the preview, applies to the site and survives a reload", async ({ page }) => {
+test("Density resizes the preview and applies with a saved custom theme; a preset leaves it alone", async ({ page }) => {
   await page.goto("/#/themes");
   await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
+  const dialog = settings(page);
   const send = dialog.getByRole("button", { name: "Send report" });
   await dialog.getByLabel("Density").selectOption("compact");
   const compact = (await send.boundingBox())!.height;
   await dialog.getByLabel("Density").selectOption("touch");
   await expect(dialog.locator(".pv-themer__stage")).toHaveAttribute("data-density", "touch");
   expect((await send.boundingBox())!.height).toBeGreaterThan(compact);
-  await closeCustom(page);
-  await page.getByRole("button", { name: "Use this theme" }).click();
+  await save(page);
+  await expect(checked(page)).toHaveValue("custom");
   await expect(page.locator("html")).toHaveAttribute("data-density", "touch");
-  await page.reload();
-  await openCustom(page);
-  await expect(page.getByLabel("Density")).toHaveValue("touch");
-  // A preset leaves the site's density alone.
-  await closeCustom(page);
-  await page.locator(".pv-themer").getByRole("radio", { name: "Arctic", exact: true }).locator("xpath=..").click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
+  await pick(page, "Arctic");
   await expect(page.locator("html")).toHaveAttribute("data-density", "touch");
-});
-
-test("Auto in Default picks the default dark or light from the device", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
-  // A site that has never been themed follows the device, so Auto is what it uses.
-  await expect(picker.getByRole("radio", { name: "Auto", exact: true })).toBeChecked();
-  await picker.getByRole("radio", { name: "Arctic", exact: true }).locator("xpath=..").click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await picker.getByRole("radio", { name: "Auto", exact: true }).locator("xpath=..").click();
-  const stage = page.locator(".pv-themer__stage");
-  await expect(stage).toHaveAttribute("data-theme", "dark");
-  await page.emulateMedia({ colorScheme: "light" });
-  await expect(stage).toHaveAttribute("data-theme", "light");
-  await expect(page.getByRole("button", { name: "Send report" })).toHaveCSS("background-color", "rgb(10, 10, 10)");
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
-  expect(await page.evaluate(() => localStorage.getItem("ayy-theme"))).toBe("system");
-  await page.reload();
-  await expect(picker.getByRole("radio", { name: "Auto", exact: true })).toBeChecked();
 });
 
 test("with Mono, Subtle takes the page deeper; with an accent it tints it", async ({ page }) => {
   await page.goto("/#/themes");
   await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
+  const dialog = settings(page);
   await choose(page, "Dark");
   const sample = dialog.locator(".pv-themer__sample");
   const bg = async () => (await sample.evaluate((el) => getComputedStyle(el).backgroundColor)).match(/\d+/g)!.slice(0, 3).map(Number);
@@ -259,27 +285,21 @@ test("with Mono, Subtle takes the page deeper; with an accent it tints it", asyn
   expect(Math.max(r, g, b)).toBeGreaterThan(subtle[0]);
 });
 
-test("Surface offers only Neutral and Subtle, and an older stored strength loads as Subtle", async ({ page }) => {
-  await page.addInitScript(() => {
-    localStorage.setItem("ayy-preview-brand", JSON.stringify({ name: "acme", color: "#7c3aed" }));
-    localStorage.setItem("ayy-preview-theme-customization", JSON.stringify({ color: "#7c3aed", surface: 60, contrast: 0 }));
-  });
+test("Surface offers only Neutral and Subtle", async ({ page }) => {
   await page.goto("/#/themes");
-  await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
-  const surface = dialog.getByRole("radiogroup", { name: "Surface" });
+  await openCustom(page, "Forest");
+  const surface = settings(page).getByRole("radiogroup", { name: "Surface" });
   await expect(surface.getByRole("radio")).toHaveCount(2);
   await expect(surface.getByRole("radio", { name: "Subtle" })).toBeChecked();
-  await expect(dialog.getByRole("radio", { name: "Rich" })).toHaveCount(0);
+  await expect(settings(page).getByRole("radio", { name: "Rich" })).toHaveCount(0);
 });
 
-test("the preview app is named after the theme and has its own icon", async ({ page }) => {
+test("the preview site is named after the theme and has its own icon", async ({ page }) => {
   await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
   const sample = page.locator(".pv-themer__sample");
   const paths: string[] = [];
-  for (const name of ["Ember", "Wine", "Paper"]) {
-    await picker.getByRole("radio", { name, exact: true }).locator("xpath=..").click();
+  for (const name of ["Ember", "Wine", "Arctic"]) {
+    await pick(page, name);
     await expect(sample.getByText(name, { exact: true })).toBeVisible();
     await expect(sample.getByText("Acme")).toHaveCount(0);
     paths.push(await sample.locator("svg.ayy-icon").first().evaluate((el) => el.innerHTML));
@@ -287,51 +307,35 @@ test("the preview app is named after the theme and has its own icon", async ({ p
   expect(new Set(paths).size).toBe(3);
 });
 
-test("Reset theme sits at the footer's start and puts Custom back to its defaults", async ({ page }) => {
+test("Reset theme sits at the footer's start and puts the settings back to Default's", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/#/themes");
   await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
+  const dialog = settings(page);
   const reset = dialog.getByRole("button", { name: "Reset theme" });
   await expect(reset).toBeDisabled();
   await choose(page, "Subtle");
   await choose(page, "Sharp");
-  await choose(page, "Dark");
   await dialog.getByLabel("Font").selectOption("serif");
   await dialog.getByLabel("Density").selectOption("touch");
   await expect(reset).toBeEnabled();
-  const [r, d, box] = [(await reset.boundingBox())!, (await dialog.getByRole("button", { name: "Done" }).boundingBox())!, (await dialog.boundingBox())!];
+  const [r, s, box] = [(await reset.boundingBox())!, (await dialog.getByRole("button", { name: "Save" }).boundingBox())!, (await dialog.boundingBox())!];
   expect(r.x).toBeLessThan(box.x + 64);
-  expect(d.x).toBeGreaterThan(box.x + box.width - 160);
+  expect(s.x).toBeGreaterThan(box.x + box.width - 160);
   await reset.click();
-  for (const name of ["Neutral", "Pill", "Auto"]) await expect(dialog.getByRole("radio", { name })).toBeChecked();
+  for (const name of ["Neutral", "Pill"]) await expect(dialog.getByRole("radio", { name })).toBeChecked();
   await expect(dialog.getByLabel("Font")).toHaveValue("default");
   await expect(dialog.getByLabel("Density")).toHaveValue("auto");
   await expect(reset).toBeDisabled();
 });
 
-test("Using themes gives a prompt for the picked theme, with the code in a tab", async ({ page }) => {
-  await page.goto("/#/themes");
-  await page.locator(".pv-themer").getByRole("radio", { name: "Arctic", exact: true }).locator("xpath=..").click();
-  const guide = page.locator(".pv-themer__guide");
-  await expect(guide.getByRole("tab", { name: "Prompt" })).toHaveAttribute("aria-selected", "true");
-  const panel = guide.getByRole("tabpanel");
-  await expect(panel).toContainText('Use the ayywi "Arctic" theme');
-  await expect(panel).toContainText("#5e81ac");
-  await expect(panel).toContainText("fonts.googleapis.com/css2?family=Space+Mono");
-  await expect(panel).toContainText('ayywi.setTheme("dark")');
-  await guide.getByRole("tab", { name: "Code" }).click();
-  await expect(guide.getByRole("tabpanel")).toContainText('ayywi.setBrand({ name: "arctic"');
-  await expect(guide.getByRole("tabpanel")).not.toContainText("Use the ayywi");
-});
-
 test("every font pairing reaches the preview's headings and text", async ({ page }) => {
   await page.goto("/#/themes");
   await openCustom(page);
-  const dialog = page.getByRole("dialog", { name: "Custom theme" });
+  const dialog = settings(page);
   const options = await dialog.getByLabel("Font").locator("option").evaluateAll((list) => list.map((o) => [(o as HTMLOptionElement).value, o.textContent ?? ""]));
   expect(options.length).toBe(10);
-  const heading = dialog.locator(".pv-themer__sample").getByText("Custom", { exact: true });
+  const heading = dialog.locator(".pv-themer__sample").getByText("Default", { exact: true });
   const text = dialog.locator(".pv-themer__sample").getByText("Revenue", { exact: true });
   const families: Record<string, [string, string]> = {
     editorial: ["Fraunces", "Sora"], serif: ["Literata", "Literata"], sans: ["Sora", "Sora"], system: ["system-ui", "system-ui"],
@@ -345,35 +349,31 @@ test("every font pairing reaches the preview's headings and text", async ({ page
   }
 });
 
-test("a custom font survives applying and reloading", async ({ page }) => {
+test("a custom font reaches the site on Save and stays with Custom while another theme is picked", async ({ page }) => {
   await page.goto("/#/themes");
   await openCustom(page);
-  await page.getByLabel("Font").selectOption("serif");
-  await closeCustom(page);
-  await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => undefined))));
+  await settings(page).getByLabel("Font").selectOption("serif");
+  await save(page);
+  await settle(page);
   const result = await new AxeBuilder({ page }).include(".pv-themer__sample").disableRules(["region"]).analyze();
   expect(result.violations.filter((v) => v.impact === "serious" || v.impact === "critical")).toEqual([]);
-  await page.getByRole("button", { name: "Use this theme" }).click();
   await expect(page.locator("body")).toHaveCSS("font-family", /Literata/);
-  await page.reload();
-  await openCustom(page);
-  await expect(page.getByLabel("Font")).toHaveValue("serif");
-  await closeCustom(page);
-  await page.getByRole("radio", { name: "Arctic", exact: true }).locator("xpath=..").click();
-  await page.getByRole("button", { name: "Use this theme" }).click();
-  await page.reload();
-  await openCustom(page);
-  await expect(page.getByLabel("Font")).toHaveValue("serif");
+  await pick(page, "Arctic");
+  await expect(page.locator("body")).not.toHaveCSS("font-family", /Literata/);
+  await pick(page, "Custom");
+  await expect(page.locator("body")).toHaveCSS("font-family", /Literata/);
 });
 
-test("all twelve preset previews pass accessibility checks", async ({ page }) => {
-  test.setTimeout(90_000); // twelve axe runs
+test("every theme's preview passes accessibility checks in light and dark", async ({ page }) => {
+  test.setTimeout(120_000); // twelve axe runs
   await page.goto("/#/themes");
-  const picker = page.locator(".pv-themer");
-  for (const name of ["Default light", "Default dark", "Arctic", "Twilight", "Forest", "Ember", "Wine", "Sunlit", "Blush", "Lagoon", "Lavender", "Paper"]) {
-    await picker.getByRole("radio", { name, exact: true }).locator("xpath=..").click();
-    await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => undefined))));
-    const result = await new AxeBuilder({ page }).include(".pv-themer__sample").disableRules(["region"]).analyze();
-    expect(result.violations.filter((v) => v.impact === "serious" || v.impact === "critical"), name).toEqual([]);
+  for (const mode of ["Light", "Dark"]) {
+    await pageMode(page, mode);
+    for (const name of ["Default", "Ember", "Forest", "Arctic", "Twilight", "Wine"]) {
+      await pick(page, name);
+      await settle(page);
+      const result = await new AxeBuilder({ page }).include(".pv-themer__sample").disableRules(["region"]).analyze();
+      expect(result.violations.filter((v) => v.impact === "serious" || v.impact === "critical"), `${name} ${mode}`).toEqual([]);
+    }
   }
 });

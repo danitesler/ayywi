@@ -87,7 +87,7 @@ test("themeInitScript restores a stored pack", { skip }, async () => {
 test("presets and the stored customization name only known packs", { skip }, async () => {
   const { THEME_PRESETS, iconPacks } = await import(dist("index.js"));
   const named = Object.fromEntries(THEME_PRESETS.filter((p) => p.icons).map((p) => [p.id, p.icons]));
-  assert.deepEqual(named, { arctic: "tabler", forest: "feather", paper: "material-symbols", lagoon: "lucide" });
+  assert.deepEqual(named, { ember: "lucide", forest: "feather", arctic: "tabler", wine: "material-symbols" });
   for (const pack of Object.values(named)) assert.ok(iconPacks.includes(pack));
 });
 
