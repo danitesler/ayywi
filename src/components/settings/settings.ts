@@ -37,13 +37,14 @@ export function openSettingsColor(select: HTMLSelectElement): void {
   openSwatchColorPicker(input, { anchor: select });
 }
 
-/** A custom colour changed: the brand screens in its option's picture show it. */
+/** A custom colour changed: the brand screens and swatch in its option's picture show it. */
 export function syncSettingsColor(input: HTMLInputElement): void {
   const wrapper = input.previousElementSibling;
   if (input.type !== "color" || !wrapper?.classList.contains("ayy-select")) return;
   for (const picture of wrapper.querySelectorAll<HTMLElement>(":scope > .ayy-select__picture")) {
     if (picture.dataset.value !== input.dataset.value) continue;
     for (const screen of picture.querySelectorAll<HTMLElement>(".ayy-settings__screen")) screen.style.setProperty("--ayy-color-primary", input.value);
+    for (const swatch of picture.querySelectorAll<HTMLElement>(".ayy-swatch")) swatch.style.setProperty("--ayy-swatch", input.value);
   }
 }
 

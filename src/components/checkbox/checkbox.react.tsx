@@ -11,7 +11,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 /** A native checkbox: forms, labels and keyboard (Space) work out of the box. */
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+export const Checkbox = /* @__PURE__ */ forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
   { indeterminate = false, className, onChange, onCheckedChange, ...props },
   ref,
 ) {

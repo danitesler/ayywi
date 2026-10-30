@@ -48,7 +48,7 @@ interface MenuContextValue {
   parentSub?: boolean;
 }
 
-const MenuContext = createContext<MenuContextValue | null>(null);
+const MenuContext = /* @__PURE__ */ createContext<MenuContextValue | null>(null);
 
 function useMenu(component: string): MenuContextValue {
   const ctx = useContext(MenuContext);
@@ -110,7 +110,7 @@ export interface DropdownMenuTriggerProps extends ButtonProps {
 }
 
 /** The button that opens the menu. Accepts all Button props, or pass asChild to clone a custom trigger element. */
-export const DropdownMenuTrigger = forwardRef<HTMLButtonElement, DropdownMenuTriggerProps>(function DropdownMenuTrigger(
+export const DropdownMenuTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuTriggerProps>(function DropdownMenuTrigger(
   { asChild = false, children, ...props },
   ref,
 ) {
@@ -143,7 +143,7 @@ export interface DropdownMenuContentProps extends HTMLAttributes<HTMLDivElement>
   onSubmenuLayout?: (layout: MenuSubmenuLayout) => void;
 }
 
-export const DropdownMenuContent = forwardRef<HTMLDivElement, DropdownMenuContentProps>(function DropdownMenuContent(
+export const DropdownMenuContent = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuContentProps>(function DropdownMenuContent(
   { side = "bottom", align = "start", static: isStatic, boundary, subSide, onSubmenuLayout, className, ...props },
   ref,
 ) {
@@ -205,7 +205,7 @@ export interface DropdownMenuRowProps extends HTMLAttributes<HTMLDivElement> {}
  * A split row: a DropdownMenuItem and a DropdownMenuMore side by side, so the item runs its action while the icon button
  * opens a menu for that item. Wrap both in a DropdownMenuSub that holds the second menu's DropdownMenuSubContent.
  */
-export const DropdownMenuRow = forwardRef<HTMLDivElement, DropdownMenuRowProps>(function DropdownMenuRow(
+export const DropdownMenuRow = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuRowProps>(function DropdownMenuRow(
   { className, ...props },
   ref,
 ) {
@@ -230,7 +230,7 @@ export interface DropdownMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLBut
   closeOnSelect?: boolean;
 }
 
-export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemProps>(function DropdownMenuItem(
+export const DropdownMenuItem = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuItemProps>(function DropdownMenuItem(
   {
     onSelect,
     destructive,
@@ -300,7 +300,7 @@ interface SubmenuContextValue {
   subContentId: string;
 }
 
-const SubmenuContext = createContext<SubmenuContextValue | null>(null);
+const SubmenuContext = /* @__PURE__ */ createContext<SubmenuContextValue | null>(null);
 
 function useSubmenu(component: string): SubmenuContextValue {
   const ctx = useContext(SubmenuContext);
@@ -375,7 +375,7 @@ export function DropdownMenuSub({
       const shown = panel.matches(":popover-open");
       if (openRef.current === shown) return;
       if (!openRef.current) panel.hidePopover();
-      else if (!parent || !parent.hasAttribute("popover") || parent.matches(":popover-open")) panel.showPopover();
+      else if (!parent || !parent.hasAttribute("popover") || parent.matches(":popover-open")) panel.showPopover({ source: trigger });
     };
     apply();
     parent?.addEventListener("toggle", apply);
@@ -394,7 +394,7 @@ export interface DropdownMenuSubTriggerProps extends Omit<DropdownMenuItemProps,
   selected?: boolean;
 }
 
-export const DropdownMenuSubTrigger = forwardRef<HTMLButtonElement, DropdownMenuSubTriggerProps>(
+export const DropdownMenuSubTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuSubTriggerProps>(
   function DropdownMenuSubTrigger(
     { children, icon, value, description, selected, onSelect, destructive, closeOnSelect, className, onClick, ...props },
     ref,
@@ -453,7 +453,7 @@ export interface DropdownMenuMoreProps extends ButtonHTMLAttributes<HTMLButtonEl
  * The square icon button at the end of a DropdownMenuRow. It's a second menuitem that opens the row's own menu: use it in a
  * DropdownMenuSub, followed by its DropdownMenuSubContent.
  */
-export const DropdownMenuMore = forwardRef<HTMLButtonElement, DropdownMenuMoreProps>(function DropdownMenuMore(
+export const DropdownMenuMore = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuMoreProps>(function DropdownMenuMore(
   { icon, className, type = "button", ...props },
   ref,
 ) {
@@ -480,7 +480,11 @@ export interface DropdownMenuSubContentProps extends HTMLAttributes<HTMLDivEleme
   align?: FloatingAlign;
 }
 
-export const DropdownMenuSubContent = forwardRef<HTMLDivElement, DropdownMenuSubContentProps>(
+/**
+ * The submenu's panel. With role="dialog" (an Icon picker rather than items) it has to sit outside the menu, which may
+ * only hold items: put the DropdownMenuSub around the DropdownMenuContent and this right after it.
+ */
+export const DropdownMenuSubContent = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuSubContentProps>(
   function DropdownMenuSubContent({ side, align, className, children, ...props }, ref) {
     const sub = useSubmenu("DropdownMenuSubContent");
 
@@ -522,7 +526,7 @@ export interface DropdownMenuSelectedItemProps extends DropdownMenuItemProps {
 }
 
 /** A selectable menu item that reserves space on the start (left) for a checkmark indicator when selected. */
-export const DropdownMenuSelectedItem = forwardRef<HTMLButtonElement, DropdownMenuSelectedItemProps>(
+export const DropdownMenuSelectedItem = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuSelectedItemProps>(
   function DropdownMenuSelectedItem(
     { selected = false, onSelectedChange, onSelect, closeOnSelect = false, onClick, children, ...props },
     ref,
@@ -554,7 +558,7 @@ export interface DropdownMenuCheckboxItemProps extends DropdownMenuItemProps {
   onCheckedChange?: (checked: boolean) => void;
 }
 
-export const DropdownMenuCheckboxItem = forwardRef<HTMLButtonElement, DropdownMenuCheckboxItemProps>(
+export const DropdownMenuCheckboxItem = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuCheckboxItemProps>(
   function DropdownMenuCheckboxItem(
     { checked = false, onCheckedChange, onSelect, closeOnSelect = false, onClick, children, ...props },
     ref,
@@ -587,7 +591,7 @@ interface RadioGroupContextValue {
   closeOnSelect?: boolean;
 }
 
-const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
+const RadioGroupContext = /* @__PURE__ */ createContext<RadioGroupContextValue | null>(null);
 
 export interface DropdownMenuRadioGroupProps extends HTMLAttributes<HTMLDivElement> {
   value?: string;
@@ -595,7 +599,7 @@ export interface DropdownMenuRadioGroupProps extends HTMLAttributes<HTMLDivEleme
   closeOnSelect?: boolean;
 }
 
-export const DropdownMenuRadioGroup = forwardRef<HTMLDivElement, DropdownMenuRadioGroupProps>(
+export const DropdownMenuRadioGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuRadioGroupProps>(
   function DropdownMenuRadioGroup({ value, onValueChange, closeOnSelect = false, children, ...props }, ref) {
     return (
       <RadioGroupContext.Provider value={{ value, onValueChange, closeOnSelect }}>
@@ -611,7 +615,7 @@ export interface DropdownMenuRadioItemProps extends DropdownMenuItemProps {
   value: string;
 }
 
-export const DropdownMenuRadioItem = forwardRef<HTMLButtonElement, DropdownMenuRadioItemProps>(
+export const DropdownMenuRadioItem = /* @__PURE__ */ forwardRef<HTMLButtonElement, DropdownMenuRadioItemProps>(
   function DropdownMenuRadioItem({ value, onSelect, onClick, children, ...props }, ref) {
     const group = useContext(RadioGroupContext);
     const checked = group?.value === value;
@@ -640,7 +644,7 @@ export const DropdownMenuRadioItem = forwardRef<HTMLButtonElement, DropdownMenuR
 
 export interface DropdownMenuLabelProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const DropdownMenuLabel = forwardRef<HTMLDivElement, DropdownMenuLabelProps>(function DropdownMenuLabel(
+export const DropdownMenuLabel = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuLabelProps>(function DropdownMenuLabel(
   { className, ...props },
   ref,
 ) {
@@ -649,7 +653,7 @@ export const DropdownMenuLabel = forwardRef<HTMLDivElement, DropdownMenuLabelPro
 
 export interface DropdownMenuSeparatorProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const DropdownMenuSeparator = forwardRef<HTMLDivElement, DropdownMenuSeparatorProps>(function DropdownMenuSeparator(
+export const DropdownMenuSeparator = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuSeparatorProps>(function DropdownMenuSeparator(
   { className, ...props },
   ref,
 ) {

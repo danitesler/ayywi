@@ -5,7 +5,7 @@ import { chatBubbleClass, chatClass, chatMessageClass, chatRepliesClass, chatTyp
 export interface ChatProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** role="log": new messages are announced politely. Pass role={undefined} for a static transcript. */
-export const Chat = forwardRef<HTMLDivElement, ChatProps>(function Chat({ className, ...props }, ref) {
+export const Chat = /* @__PURE__ */ forwardRef<HTMLDivElement, ChatProps>(function Chat({ className, ...props }, ref) {
   return <div ref={ref} role="log" className={cx(chatClass, className)} {...props} />;
 });
 
@@ -16,7 +16,7 @@ export interface ChatMessageProps extends HTMLAttributes<HTMLDivElement> {
   avatar?: ReactNode;
 }
 
-export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(function ChatMessage(
+export const ChatMessage = /* @__PURE__ */ forwardRef<HTMLDivElement, ChatMessageProps>(function ChatMessage(
   { direction, avatar, className, children, ...props },
   ref,
 ) {
@@ -34,7 +34,7 @@ export interface ChatTypingProps extends HTMLAttributes<HTMLDivElement> {
   avatar?: ReactNode;
 }
 
-export const ChatTyping = forwardRef<HTMLDivElement, ChatTypingProps>(function ChatTyping(
+export const ChatTyping = /* @__PURE__ */ forwardRef<HTMLDivElement, ChatTypingProps>(function ChatTyping(
   { label = "Typing", avatar, className, ...props },
   ref,
 ) {
@@ -54,7 +54,7 @@ export const ChatTyping = forwardRef<HTMLDivElement, ChatTypingProps>(function C
 
 export interface ChatRepliesProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ChatReplies = forwardRef<HTMLDivElement, ChatRepliesProps>(function ChatReplies(
+export const ChatReplies = /* @__PURE__ */ forwardRef<HTMLDivElement, ChatRepliesProps>(function ChatReplies(
   { className, ...props },
   ref,
 ) {

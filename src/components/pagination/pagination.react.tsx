@@ -38,7 +38,7 @@ export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onCh
 }
 
 /** Previous, numbered pages with "…" gaps, and next. On phones only previous, the current page and next show. */
-export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagination(
+export const Pagination = /* @__PURE__ */ forwardRef<HTMLElement, PaginationProps>(function Pagination(
   { page, count, siblings = 1, href, onPageChange, pageSize, pageSizeOptions = [10, 25, 50], onPageSizeChange, labels, className, ...props },
   ref,
 ) {

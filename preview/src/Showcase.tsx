@@ -34,7 +34,7 @@ import {
   Tooltip,
 } from "@danitesler/ayywi/react";
 import { CodeBlock } from "./CodeBlock";
-import { components, type ComponentEntry, type ExampleEntry } from "./data";
+import { components, useExample, type ComponentEntry, type ExampleEntry, type LoadedExample } from "./data";
 import { componentPrompt } from "./prompts";
 import type { Renderer } from "./settings";
 
@@ -148,9 +148,16 @@ function DeviceIframe({
       attributeFilter: ["class", "data-theme", "data-density", "data-ayy-icons", "data-brand", "data-ayy-custom-theme", "dir", "lang"],
     });
 
-    const brandObserver = new MutationObserver(() => {
+    const brandObserver = new MutationObserver((records) => {
       syncBrandStyle();
       syncCustomizationStyles();
+      // Stylesheets that load later (an icon pack the page just asked for) reach the iframe too.
+      for (const record of records) {
+        record.addedNodes.forEach((node) => {
+          const sheet = (node instanceof HTMLLinkElement && node.rel === "stylesheet") || (node instanceof HTMLStyleElement && node.hasAttribute("data-vite-dev-id"));
+          if (sheet) doc.head.prepend(node.cloneNode(true));
+        });
+      }
     });
     brandObserver.observe(document.head, {
       childList: true,
@@ -224,19 +231,35 @@ function isExampleResponsive(slug?: string, exampleId?: string): boolean {
   return RESPONSIVE_SLUGS.has(slug);
 }
 
-export function Showcase({
-  example,
-  component,
-  renderer,
-}: {
+interface ShowcaseProps {
   example: ExampleEntry;
   component?: ComponentEntry;
   renderer: Renderer;
-}) {
+}
+
+/** One example, shown once its code has loaded; until then its title over an empty stage, so the page keeps its layout. */
+export function Showcase(props: ShowcaseProps) {
+  const { example } = props;
+  const fallback = (
+    <AyyShowcase className="pv-example" aria-labelledby={`ex-${example.id}`} aria-busy="true">
+      <ShowcaseHeader className="pv-example__header">
+        <ShowcaseTitle className="pv-example__title" id={`ex-${example.id}`}>
+          {example.title}
+        </ShowcaseTitle>
+      </ShowcaseHeader>
+      <ShowcaseStage className="pv-stage" />
+    </AyyShowcase>
+  );
+  const loaded = useExample(example);
+  return loaded ? <LoadedShowcase {...props} loaded={loaded} /> : fallback;
+}
+
+function LoadedShowcase({ example: entry, loaded, component, renderer }: ShowcaseProps & { loaded: LoadedExample }) {
+  const example = { ...entry, ...loaded };
   const { Component } = example;
   const showHtml = renderer === "html" || !Component;
   const comp = component ?? components.find((c) => c.examples.some((e) => e.id === example.id));
-  const prompt = comp ? componentPrompt(comp, example, renderer) : "";
+  const prompt = comp ? componentPrompt(comp) : "";
   const isResponsive = Boolean(comp && isExampleResponsive(comp.slug, example.id));
 
   const [device, setDevice] = useState<Device>(() => {

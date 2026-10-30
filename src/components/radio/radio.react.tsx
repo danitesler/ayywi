@@ -18,7 +18,7 @@ interface RadioGroupContextValue {
   select: (value: string) => void;
 }
 
-const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
+const RadioGroupContext = /* @__PURE__ */ createContext<RadioGroupContextValue | null>(null);
 
 export interface RadioGroupProps extends Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, "onChange" | "defaultValue"> {
   /** Visible group label, rendered as the <legend>. */
@@ -32,7 +32,7 @@ export interface RadioGroupProps extends Omit<FieldsetHTMLAttributes<HTMLFieldSe
 }
 
 /** A <fieldset> of radios sharing one name and one value. */
-export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(function RadioGroup(
+export const RadioGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, RadioGroupProps>(function RadioGroup(
   { label, name, value: controlled, defaultValue, onValueChange, orientation, className, children, ...props },
   ref,
 ) {
@@ -58,7 +58,7 @@ export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 }
 
 /** A native radio. Inside a RadioGroup it takes its name and checked state from the group. */
-export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio({ value, className, onChange, ...props }, ref) {
+export const Radio = /* @__PURE__ */ forwardRef<HTMLInputElement, RadioProps>(function Radio({ value, className, onChange, ...props }, ref) {
   const group = useContext(RadioGroupContext);
   const groupProps = group
     ? {

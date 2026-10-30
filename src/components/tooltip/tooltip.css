@@ -120,6 +120,12 @@
   translate: none;
 }
 
+/* An author display (the shortcut layout above) overrides the UA's display:none on a closed popover, which left the
+   hidden bubble laid out and widening the page near an edge. */
+.ayy-tooltip__content[data-floating]:not(:popover-open) {
+  display: none;
+}
+
 @starting-style {
   .ayy-tooltip__content[data-floating]:popover-open {
     opacity: 0;

@@ -154,13 +154,13 @@ export const dateTimePickerTriggerClass = dateTimePickerTriggerClassName;
 // 2. SVG Icons (vendored Hugeicons markup)
 // ==========================================
 
-export const datePickerIcon = iconSvg(Calendar03Icon, { name: "calendar" });
-export const datePickerPreviousIcon = iconSvg(ArrowLeft01Icon, { name: "chevron-left", directional: true });
-export const datePickerNextIcon = iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
+export const datePickerIcon = /* @__PURE__ */ iconSvg(Calendar03Icon, { name: "calendar" });
+export const datePickerPreviousIcon = /* @__PURE__ */ iconSvg(ArrowLeft01Icon, { name: "chevron-left", directional: true });
+export const datePickerNextIcon = /* @__PURE__ */ iconSvg(ArrowRight01Icon, { name: "chevron-right", directional: true });
 export const dateRangePreviousIcon = datePickerPreviousIcon;
 export const dateRangeNextIcon = datePickerNextIcon;
 export const dateRangePickerIcon = datePickerIcon;
-export const timePickerIcon = iconSvg(Clock01Icon, { name: "clock" });
+export const timePickerIcon = /* @__PURE__ */ iconSvg(Clock01Icon, { name: "clock" });
 export const timePickerClockIcon = timePickerIcon;
 export const dateTimePickerIcon = datePickerIcon;
 
@@ -704,9 +704,9 @@ export const dateRangeKeyTarget = datePickerKeyTarget;
 
 export type TimePickerPeriod = "AM" | "PM";
 
-export const timePickerHours24 = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
-export const timePickerHours12 = Array.from({ length: 12 }, (_, i) => String(i === 0 ? 12 : i).padStart(2, "0"));
-export const timePickerMinutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+export const timePickerHours24 = /* @__PURE__ */ Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+export const timePickerHours12 = /* @__PURE__ */ Array.from({ length: 12 }, (_, i) => String(i === 0 ? 12 : i).padStart(2, "0"));
+export const timePickerMinutes = /* @__PURE__ */ Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
 export const timePickerPeriods: TimePickerPeriod[] = ["AM", "PM"];
 
 export function centerTimePickerSelection(el: HTMLElement): void {

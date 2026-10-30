@@ -947,6 +947,30 @@
   pointer-events: none;
 }
 
+/* An example's page: previous, all and next in one centred row of outline buttons. */
+.pv-example-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ayy-space-3);
+  margin-block-end: var(--ayy-space-6);
+}
+
+/* Phones: previous and next are round arrows either side of All examples (their names stay in aria-label), so the row
+   doesn't wrap. */
+@media (max-width: 40rem) {
+  .pv-example-nav__name {
+    display: none;
+  }
+
+  .pv-example-nav > [rel] {
+    inline-size: var(--ayy-size-control-md);
+    padding-inline: 0;
+    justify-content: center;
+  }
+}
+
 /* A real-size iframe, scaled to fit. */
 .pv-scaled {
   inline-size: 100%;
@@ -971,11 +995,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--ayy-space-3);
 }
 
 .pv-device-bar__size {
-  margin-inline-start: auto;
   font-size: var(--ayy-text-s);
 }
 
@@ -1030,69 +1054,103 @@
   flex: 1;
 }
 
-/* Store: the product art's box. The tile and the grid come from ayywi. */
+/* Store: the product art's box, washed in the coffee's colour, and a bag of coffee drawn in tokens. */
 .pv-app-product {
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 3;
+  background-color: color-mix(in oklab, var(--ayy-spot, var(--ayy-color-primary)) 14%, var(--ayy-color-surface));
 }
 
-/* Support inbox: list · thread · details, each scrolling on its own inside the shell's main. */
-.pv-app-inbox {
-  display: grid;
-  grid-template-columns: 20rem minmax(0, 1fr) 17rem;
-  padding: 0;
-  overflow: hidden;
+.pv-app-product--hero {
+  aspect-ratio: 16 / 9;
 }
 
-.pv-app-inbox > * {
-  box-sizing: border-box;
+.pv-app-product--thumb {
+  flex: none;
+  inline-size: 3rem;
+  aspect-ratio: 1;
+  border-radius: var(--ayy-radius-control);
+  font-size: 0.45rem;
+}
+
+.pv-app-bag {
+  --_bag: var(--ayy-spot, var(--ayy-color-primary));
   display: flex;
   flex-direction: column;
-  gap: var(--ayy-space-4);
-  min-block-size: 0;
-  padding: var(--ayy-space-5);
-  overflow-y: auto;
+  align-items: center;
+  justify-content: center;
+  inline-size: 5.5em;
+  block-size: 7.5em;
+  padding-block-start: 1em;
+  border-radius: 0.5em 0.5em 0.9em 0.9em;
+  background:
+    repeating-linear-gradient(90deg, color-mix(in oklab, var(--_bag) 70%, var(--ayy-color-bg)) 0 0.25em, transparent 0.25em 0.5em) top / 100% 0.9em no-repeat,
+    linear-gradient(color-mix(in oklab, var(--_bag) 85%, var(--ayy-color-bg)), color-mix(in oklab, var(--_bag) 60%, var(--ayy-color-bg)));
+  box-shadow: var(--ayy-shadow-lift);
+  font-size: var(--ayy-text-s);
 }
 
-.pv-app-inbox__list {
-  padding-inline: var(--ayy-space-3);
-  border-inline-end: 1px solid var(--ayy-color-hairline);
+.pv-app-bag[data-size="lg"] {
+  font-size: var(--ayy-text-2xl);
 }
 
-.pv-app-inbox__aside {
-  border-inline-start: 1px solid var(--ayy-color-hairline);
+.pv-app-bag__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+  inline-size: 78%;
+  padding-block: 0.6em;
+  border-radius: 0.3em;
+  background-color: var(--ayy-color-surface-raised);
+  color: var(--ayy-color-text);
 }
 
-.pv-app-inbox__chat {
-  flex: 1;
-  inline-size: 100%;
+.pv-app-bag__name {
+  font-family: var(--ayy-font-heading);
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-/* Tablet: the details pane goes. Phone: the inbox is the list; a thread would be its own screen. */
-@media (max-width: 64rem) {
-  .pv-app-inbox {
-    grid-template-columns: 18rem minmax(0, 1fr);
-  }
-
-  .pv-app-inbox__aside {
-    display: none;
-  }
+.pv-app-bag__roast {
+  display: flex;
+  gap: 0.25em;
 }
 
-@media (max-width: 48rem) {
-  .pv-app-inbox {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.pv-app-bag__dot {
+  inline-size: 0.4em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--_bag);
+}
 
-  .pv-app-inbox__thread {
-    display: none;
-  }
+.pv-app-bag__dot[data-on] {
+  background-color: var(--_bag);
+}
 
-  .pv-app-inbox__list {
-    padding-inline: var(--ayy-space-2);
-    border-inline-end: 0;
-  }
+.pv-app-bag__weight {
+  font-size: 0.6em;
+  color: var(--ayy-color-muted);
+}
+
+/* Dating app: a tall portrait washed in the theme's colour, the person's initial standing in for a photo. */
+.pv-app-portrait {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(circle at 30% 25%, color-mix(in oklab, var(--ayy-color-primary) 18%, transparent), transparent 60%),
+    linear-gradient(160deg, color-mix(in oklab, var(--ayy-color-primary) 10%, var(--ayy-color-surface)), color-mix(in oklab, var(--ayy-color-primary) 32%, var(--ayy-color-surface)));
+}
+
+.pv-app-portrait__initial {
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-display);
+  line-height: 1;
+  color: var(--ayy-color-surface);
 }
 
 /* ---- Get started ---- */
@@ -1912,9 +1970,16 @@
   margin-block-start: 0;
 }
 
+/* The pack tabs centred above the grid, which sits in the chosen tab's panel. */
 .pv-icon-packs__tabs {
-  text-align: center;
-  margin-block-end: var(--ayy-space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ayy-space-4);
+}
+
+.pv-icon-packs__tabs > [role="tabpanel"] {
+  align-self: stretch;
 }
 
 /* Five rows, however many columns fit: every later row collapses to nothing and the list clips it. Spacing is margin, not gap, so the collapsed rows add none. */

@@ -6,8 +6,8 @@
 #   scripts/check-all.sh --quick    # skip the preview build and Playwright e2e
 #
 # Steps: build (tokens, manifest, dist/), typecheck (library, preview, examples, tests), pnpm check
-# (design rules, docs ↔ CSS ↔ props drift, generated files, example lint), node tests, the preview
-# site build, and Playwright + axe against it. The skill evals (evals/run.mjs) need a coding agent
+# (design rules, docs ↔ CSS ↔ props drift, generated files, example lint), node tests, and Playwright
+# + axe against the preview site, which the e2e server builds (scripts/e2e-server.mjs). The skill evals (evals/run.mjs) need a coding agent
 # and aren't run here.
 #
 # Needs for the full run: Playwright's chromium (pnpm exec playwright install chromium).
@@ -40,8 +40,7 @@ step "build left no uncommitted changes" git diff --exit-code --stat
 step "node tests" pnpm -s test
 
 if [[ $quick == 0 ]]; then
-  step "preview build" pnpm -s preview:build
-  step "Playwright e2e (+ axe)" e2e
+  step "preview build + Playwright e2e (+ axe)" e2e
 fi
 
 echo

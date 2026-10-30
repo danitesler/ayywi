@@ -6,7 +6,7 @@ export interface ScrollbarProps extends HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
 }
 
-export const Scrollbar = forwardRef<HTMLDivElement, ScrollbarProps>(function Scrollbar(
+export const Scrollbar = /* @__PURE__ */ forwardRef<HTMLDivElement, ScrollbarProps>(function Scrollbar(
   { hover, className, tabIndex = 0, ...props },
   ref,
 ) {

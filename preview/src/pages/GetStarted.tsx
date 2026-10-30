@@ -154,7 +154,6 @@ export function GetStartedPage() {
   return (
     <article className="pv-page pv-page--compact">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">Get started</h1>
         <p className="ayy-lede">Paste one prompt; your AI asks the rest. Dark mode and phones included.</p>
       </header>

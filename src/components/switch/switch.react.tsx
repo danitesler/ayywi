@@ -8,7 +8,7 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
 }
 
 /** A native checkbox with role="switch": form submission, keyboard (Space) and labels work out of the box. */
-export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
+export const Switch = /* @__PURE__ */ forwardRef<HTMLInputElement, SwitchProps>(function Switch(
   { className, onChange, onCheckedChange, ...props },
   ref,
 ) {

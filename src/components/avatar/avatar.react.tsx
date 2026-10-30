@@ -21,7 +21,7 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** Image with initials underneath — if the image fails, the initials show. */
-export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
+export const Avatar = /* @__PURE__ */ forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
   { name, src, fallback, size, shape, className, ...props },
   ref,
 ) {
@@ -40,7 +40,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 
 export interface AvatarGroupProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(function AvatarGroup(
+export const AvatarGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, AvatarGroupProps>(function AvatarGroup(
   { className, ...props },
   ref,
 ) {

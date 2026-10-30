@@ -8,7 +8,7 @@ export interface StatusDotProps extends HTMLAttributes<HTMLSpanElement> {
   label?: string;
 }
 
-export const StatusDot = forwardRef<HTMLSpanElement, StatusDotProps>(function StatusDot(
+export const StatusDot = /* @__PURE__ */ forwardRef<HTMLSpanElement, StatusDotProps>(function StatusDot(
   { variant = "neutral", size = "md", pulse = false, label, className, ...props },
   ref,
 ) {

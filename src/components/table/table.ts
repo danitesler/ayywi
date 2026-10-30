@@ -89,7 +89,7 @@ export function nextSortDirection(current: string | null | undefined): SortDirec
   return current === "ascending" ? "descending" : "ascending";
 }
 
-const collator = typeof Intl === "undefined" ? null : new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+const collator = typeof Intl === "undefined" ? null : /* @__PURE__ */ new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
 /** A number from text like "1,204", "$48.20", "-3%" or "12 GB"; null when the text isn't one number. */
 function asNumber(value: string): number | null {

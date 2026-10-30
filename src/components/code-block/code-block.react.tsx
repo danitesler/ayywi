@@ -50,7 +50,7 @@ export interface CodeBlockProps extends HTMLAttributes<HTMLDivElement> {
   numbered?: boolean;
 }
 
-export const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(function CodeBlock(
+export const CodeBlock = /* @__PURE__ */ forwardRef<HTMLDivElement, CodeBlockProps>(function CodeBlock(
   { numbered, className, children, ...props },
   ref,
 ) {
@@ -63,7 +63,7 @@ export const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(function Cod
 
 export interface CodeBlockHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CodeBlockHeader = forwardRef<HTMLDivElement, CodeBlockHeaderProps>(function CodeBlockHeader(
+export const CodeBlockHeader = /* @__PURE__ */ forwardRef<HTMLDivElement, CodeBlockHeaderProps>(function CodeBlockHeader(
   { className, children, ...props },
   ref,
 ) {
@@ -76,7 +76,7 @@ export const CodeBlockHeader = forwardRef<HTMLDivElement, CodeBlockHeaderProps>(
 
 export interface CodeBlockFilenameProps extends HTMLAttributes<HTMLSpanElement> {}
 
-export const CodeBlockFilename = forwardRef<HTMLSpanElement, CodeBlockFilenameProps>(function CodeBlockFilename(
+export const CodeBlockFilename = /* @__PURE__ */ forwardRef<HTMLSpanElement, CodeBlockFilenameProps>(function CodeBlockFilename(
   { className, children, ...props },
   ref,
 ) {
@@ -89,7 +89,7 @@ export const CodeBlockFilename = forwardRef<HTMLSpanElement, CodeBlockFilenamePr
 
 export interface CodeBlockActionsProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CodeBlockActions = forwardRef<HTMLDivElement, CodeBlockActionsProps>(function CodeBlockActions(
+export const CodeBlockActions = /* @__PURE__ */ forwardRef<HTMLDivElement, CodeBlockActionsProps>(function CodeBlockActions(
   { className, children, ...props },
   ref,
 ) {
@@ -115,7 +115,7 @@ export interface CodeBlockSelectorProps extends Omit<ButtonHTMLAttributes<HTMLBu
   disabled?: boolean;
 }
 
-export const CodeBlockSelector = forwardRef<HTMLButtonElement, CodeBlockSelectorProps>(function CodeBlockSelector(
+export const CodeBlockSelector = /* @__PURE__ */ forwardRef<HTMLButtonElement, CodeBlockSelectorProps>(function CodeBlockSelector(
   {
     value: controlledValue,
     defaultValue = "tsx",
@@ -191,7 +191,7 @@ export interface CodeBlockCopyProps extends Omit<ButtonHTMLAttributes<HTMLButton
   copiedLabel?: string;
 }
 
-export const CodeBlockCopy = forwardRef<HTMLButtonElement, CodeBlockCopyProps>(function CodeBlockCopy(
+export const CodeBlockCopy = /* @__PURE__ */ forwardRef<HTMLButtonElement, CodeBlockCopyProps>(function CodeBlockCopy(
   {
     code,
     timeout = 2000,
@@ -262,7 +262,7 @@ export const CodeBlockCopy = forwardRef<HTMLButtonElement, CodeBlockCopyProps>(f
 
 export interface CodeBlockPreProps extends HTMLAttributes<HTMLPreElement> {}
 
-export const CodeBlockPre = forwardRef<HTMLPreElement, CodeBlockPreProps>(function CodeBlockPre(
+export const CodeBlockPre = /* @__PURE__ */ forwardRef<HTMLPreElement, CodeBlockPreProps>(function CodeBlockPre(
   { className, children, ...props },
   ref,
 ) {
@@ -294,7 +294,7 @@ const TOKEN_CLASSES: Record<string, string | undefined> = {
   boolean: tokenBooleanClass,
 };
 
-export const CodeBlockCode = forwardRef<HTMLElement, CodeBlockCodeProps>(function CodeBlockCode(
+export const CodeBlockCode = /* @__PURE__ */ forwardRef<HTMLElement, CodeBlockCodeProps>(function CodeBlockCode(
   { language, code, className, children, ...props },
   ref,
 ) {

@@ -14,7 +14,7 @@ export interface ShortcutProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** A shortcut's keys as keycaps (⌘ ⇧ K on a Mac, Ctrl Shift K elsewhere), read aloud as words. */
-export const Shortcut = forwardRef<HTMLSpanElement, ShortcutProps>(function Shortcut({ keys, className, ...props }, ref) {
+export const Shortcut = /* @__PURE__ */ forwardRef<HTMLSpanElement, ShortcutProps>(function Shortcut({ keys, className, ...props }, ref) {
   const platform = usePlatform();
   return (
     <span ref={ref} className={cx(shortcutClass, className)} data-keys={keys} {...props}>
@@ -46,7 +46,7 @@ export interface ShortcutRecorderProps extends Omit<ButtonHTMLAttributes<HTMLBut
 }
 
 /** Click, then press the keys. Esc cancels, Backspace clears, leaving the button stops listening. */
-export const ShortcutRecorder = forwardRef<HTMLButtonElement, ShortcutRecorderProps>(function ShortcutRecorder(
+export const ShortcutRecorder = /* @__PURE__ */ forwardRef<HTMLButtonElement, ShortcutRecorderProps>(function ShortcutRecorder(
   { value, onValueChange, label, onRecordingChange, bare, placeholder = "Record shortcut", recordingText = "Press keys…", className, onClick, onBlur, ...props },
   ref,
 ) {
@@ -107,7 +107,7 @@ export const ShortcutRecorder = forwardRef<HTMLButtonElement, ShortcutRecorderPr
 });
 
 /** A list of shortcuts: a <dl> of ShortcutListItem rows. */
-export const ShortcutList = forwardRef<HTMLDListElement, HTMLAttributes<HTMLDListElement>>(function ShortcutList({ className, ...props }, ref) {
+export const ShortcutList = /* @__PURE__ */ forwardRef<HTMLDListElement, HTMLAttributes<HTMLDListElement>>(function ShortcutList({ className, ...props }, ref) {
   return <dl ref={ref} className={cx("ayy-shortcut-list", className)} {...props} />;
 });
 
@@ -119,7 +119,7 @@ export interface ShortcutListItemProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** One row: what it does, then the keys. */
-export const ShortcutListItem = forwardRef<HTMLDivElement, ShortcutListItemProps>(function ShortcutListItem({ label, keys, className, children, ...props }, ref) {
+export const ShortcutListItem = /* @__PURE__ */ forwardRef<HTMLDivElement, ShortcutListItemProps>(function ShortcutListItem({ label, keys, className, children, ...props }, ref) {
   return (
     <div ref={ref} className={cx("ayy-shortcut-list__row", className)} {...props}>
       <dt>{label}</dt>

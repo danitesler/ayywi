@@ -151,22 +151,13 @@ export interface ComponentPromptMeta {
   dont?: string[];
 }
 
-export interface ExamplePromptMeta {
-  title: string;
-  reactSource?: string;
-  htmlSource?: string;
-}
-
-/** Generate an actionable AI prompt to build a component example with ayywi. */
+/** Generate an AI prompt with general guidance for a component. */
 export function componentPrompt(
   component: ComponentPromptMeta,
-  example: ExamplePromptMeta,
-  renderer: "react" | "html" = "react",
   l = links(),
 ): string {
-  const isHtml = renderer === "html" && Boolean(example.htmlSource);
   const lines = [
-    `Build ${/^[aeiou]/i.test(component.name) ? "an" : "a"} ${component.name} component (${example.title}) using the ayywi design system.`,
+    `Build ${/^[aeiou]/i.test(component.name) ? "an" : "a"} ${component.name} component using the ayywi design system.`,
     ``,
     `Context:`,
     component.description,
@@ -174,7 +165,7 @@ export function componentPrompt(
     `Implementation:`,
   ];
 
-  if (!isHtml && component.react?.import) {
+  if (component.react?.import) {
     lines.push(`- React: ${component.react.import}`);
   }
   const tags = [
@@ -202,17 +193,6 @@ export function componentPrompt(
     `- Rules: Tokens only (var(--ayy-*)). No hardcoded hex/rgb colours, no made-up ayy- classes.`,
     `- Docs: ${l.docs}llms/${component.slug}.md`,
   );
-
-  const snippet = isHtml ? example.htmlSource : (example.reactSource || example.htmlSource);
-  if (snippet) {
-    lines.push(
-      ``,
-      `Reference code:`,
-      `\`\`\`${isHtml ? "html" : "tsx"}`,
-      snippet,
-      `\`\`\``,
-    );
-  }
 
   return lines.join("\n");
 }

@@ -39,7 +39,7 @@ export interface TocProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   onValueChange?: (id: string) => void;
 }
 
-export const Toc = forwardRef<HTMLElement, TocProps>(function Toc(
+export const Toc = /* @__PURE__ */ forwardRef<HTMLElement, TocProps>(function Toc(
   {
     items,
     title,

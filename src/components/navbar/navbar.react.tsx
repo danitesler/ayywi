@@ -18,7 +18,7 @@ import {
 export interface NavbarProps extends HTMLAttributes<HTMLElement> {}
 
 /** The sticky site header. Children go inside the centred inner row. With a NavbarToggle, the links fold into a menu on phones. */
-export const Navbar = forwardRef<HTMLElement, NavbarProps>(function Navbar({ className, children, ...props }, ref) {
+export const Navbar = /* @__PURE__ */ forwardRef<HTMLElement, NavbarProps>(function Navbar({ className, children, ...props }, ref) {
   const own = useRef<HTMLElement>(null);
   useEffect(() => (own.current ? connectNavbar(own.current) : undefined), []);
   return (
@@ -30,7 +30,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(function Navbar({ cla
 
 export interface NavbarBrandProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
-export const NavbarBrand = forwardRef<HTMLAnchorElement, NavbarBrandProps>(function NavbarBrand(
+export const NavbarBrand = /* @__PURE__ */ forwardRef<HTMLAnchorElement, NavbarBrandProps>(function NavbarBrand(
   { className, ...props },
   ref,
 ) {
@@ -39,7 +39,7 @@ export const NavbarBrand = forwardRef<HTMLAnchorElement, NavbarBrandProps>(funct
 
 export interface NavbarNavProps extends HTMLAttributes<HTMLElement> {}
 
-export const NavbarNav = forwardRef<HTMLElement, NavbarNavProps>(function NavbarNav(
+export const NavbarNav = /* @__PURE__ */ forwardRef<HTMLElement, NavbarNavProps>(function NavbarNav(
   { className, "aria-label": label = "Main", ...props },
   ref,
 ) {
@@ -51,7 +51,7 @@ export interface NavbarLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>
   current?: boolean;
 }
 
-export const NavbarLink = forwardRef<HTMLAnchorElement, NavbarLinkProps>(function NavbarLink(
+export const NavbarLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement, NavbarLinkProps>(function NavbarLink(
   { current, className, ...props },
   ref,
 ) {
@@ -60,7 +60,7 @@ export const NavbarLink = forwardRef<HTMLAnchorElement, NavbarLinkProps>(functio
 
 export interface NavbarActionsProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const NavbarActions = forwardRef<HTMLDivElement, NavbarActionsProps>(function NavbarActions(
+export const NavbarActions = /* @__PURE__ */ forwardRef<HTMLDivElement, NavbarActionsProps>(function NavbarActions(
   { className, ...props },
   ref,
 ) {
@@ -70,7 +70,7 @@ export const NavbarActions = forwardRef<HTMLDivElement, NavbarActionsProps>(func
 export interface NavbarToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 /** The phone menu button (hidden from 48rem). Navbar manages aria-expanded; leave it uncontrolled. Put it last. */
-export const NavbarToggle = forwardRef<HTMLButtonElement, NavbarToggleProps>(function NavbarToggle(
+export const NavbarToggle = /* @__PURE__ */ forwardRef<HTMLButtonElement, NavbarToggleProps>(function NavbarToggle(
   { className, "aria-label": label = "Menu", children, ...props },
   ref,
 ) {

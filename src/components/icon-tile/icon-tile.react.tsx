@@ -8,7 +8,7 @@ export interface IconTileProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** Decorative unless you give it an aria-label (then it's an image). */
-export const IconTile = forwardRef<HTMLSpanElement, IconTileProps>(function IconTile(
+export const IconTile = /* @__PURE__ */ forwardRef<HTMLSpanElement, IconTileProps>(function IconTile(
   { size, spotColor, className, style, ...props },
   ref,
 ) {

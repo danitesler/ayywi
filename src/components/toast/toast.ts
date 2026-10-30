@@ -118,14 +118,14 @@ export interface CardToastHandle extends ToastHandle {
   status: (status: CardToastStatus | null, clearAfter?: number) => void;
 }
 
-export const toastCloseIcon = iconSvg(Cancel01Icon, { name: "x" });
-export const toastCopyIcon = iconSvg(Copy01Icon, { name: "copy" });
-export const toastCopiedIcon = iconSvg(Tick02Icon, { name: "check" });
-export const toastSuccessIcon = iconSvg(CheckmarkCircle02Icon, { name: "circle-check" });
-export const toastWarningIcon = iconSvg(Alert02Icon, { name: "triangle-alert" });
-export const toastInfoIcon = iconSvg(InformationCircleIcon, { name: "info" });
-export const toastErrorIcon = iconSvg(CancelCircleIcon, { name: "circle-x" });
-export const toastPlayIcon = iconSvg(PlayIcon, { name: "play", size: "sm" });
+export const toastCloseIcon = /* @__PURE__ */ iconSvg(Cancel01Icon, { name: "x" });
+export const toastCopyIcon = /* @__PURE__ */ iconSvg(Copy01Icon, { name: "copy" });
+export const toastCopiedIcon = /* @__PURE__ */ iconSvg(Tick02Icon, { name: "check" });
+export const toastSuccessIcon = /* @__PURE__ */ iconSvg(CheckmarkCircle02Icon, { name: "circle-check" });
+export const toastWarningIcon = /* @__PURE__ */ iconSvg(Alert02Icon, { name: "triangle-alert" });
+export const toastInfoIcon = /* @__PURE__ */ iconSvg(InformationCircleIcon, { name: "info" });
+export const toastErrorIcon = /* @__PURE__ */ iconSvg(CancelCircleIcon, { name: "circle-x" });
+export const toastPlayIcon = /* @__PURE__ */ iconSvg(PlayIcon, { name: "play", size: "sm" });
 
 const VARIANT_ICONS: Record<string, string> = {
   success: toastSuccessIcon,
@@ -971,7 +971,7 @@ type ToastFn = (message: string, options?: Omit<ToastOptions, "variant">) => Toa
  * Show a toast. Works in any framework (it renders straight into the DOM) and is a no-op during SSR.
  *   toast("Saved")   toast.success("Deployed", { description: "v2.1 is live" })   toast.error("Build failed")
  */
-export const toast = Object.assign(showToast, {
+export const toast = /* @__PURE__ */ Object.assign(showToast, {
   success: ((message, options) => showToast(message, { ...options, variant: "success" })) as ToastFn,
   warning: ((message, options) => showToast(message, { ...options, variant: "warning" })) as ToastFn,
   error: ((message, options) => showToast(message, { ...options, variant: "destructive" })) as ToastFn,

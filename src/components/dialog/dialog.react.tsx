@@ -29,7 +29,7 @@ interface DialogContextValue {
   setHasDescription: (value: boolean) => void;
 }
 
-const DialogContext = createContext<DialogContextValue | null>(null);
+const DialogContext = /* @__PURE__ */ createContext<DialogContextValue | null>(null);
 
 function useDialog(component: string): DialogContextValue {
   const ctx = useContext(DialogContext);
@@ -72,7 +72,7 @@ export function Dialog({ open: controlled, defaultOpen = false, onOpenChange, ch
 
 export interface DialogTriggerProps extends ButtonProps {}
 
-export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>(function DialogTrigger({ onClick, ...props }, ref) {
+export const DialogTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, DialogTriggerProps>(function DialogTrigger({ onClick, ...props }, ref) {
   const { setOpen } = useDialog("DialogTrigger");
   return (
     <Button
@@ -108,7 +108,7 @@ function transitionMs(el: Element): number {
   return Math.max(0, ...durations.map((d, i) => d + (delays[i] ?? 0)));
 }
 
-export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(function DialogContent(
+export const DialogContent = /* @__PURE__ */ forwardRef<HTMLDialogElement, DialogContentProps>(function DialogContent(
   { size, side, className, children, hideClose, closeLabel = "Close", closeOnBackdrop = true, onClose, onClick, ...props },
   forwardedRef,
 ) {
@@ -185,7 +185,7 @@ export const DialogContent = forwardRef<HTMLDialogElement, DialogContentProps>(f
 
 export interface DialogHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const DialogHeader = forwardRef<HTMLDivElement, DialogHeaderProps>(function DialogHeader(
+export const DialogHeader = /* @__PURE__ */ forwardRef<HTMLDivElement, DialogHeaderProps>(function DialogHeader(
   { className, ...props },
   ref,
 ) {
@@ -195,13 +195,13 @@ export const DialogHeader = forwardRef<HTMLDivElement, DialogHeaderProps>(functi
 export interface DialogBodyProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** Scrolls on its own between the header and the footer, which stay in view. Fills the height of a side modal. */
-export const DialogBody = forwardRef<HTMLDivElement, DialogBodyProps>(function DialogBody({ className, ...props }, ref) {
+export const DialogBody = /* @__PURE__ */ forwardRef<HTMLDivElement, DialogBodyProps>(function DialogBody({ className, ...props }, ref) {
   return <div ref={ref} className={cx("ayy-dialog__body", className)} {...props} />;
 });
 
 export interface DialogFooterProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const DialogFooter = forwardRef<HTMLDivElement, DialogFooterProps>(function DialogFooter(
+export const DialogFooter = /* @__PURE__ */ forwardRef<HTMLDivElement, DialogFooterProps>(function DialogFooter(
   { className, ...props },
   ref,
 ) {
@@ -210,7 +210,7 @@ export const DialogFooter = forwardRef<HTMLDivElement, DialogFooterProps>(functi
 
 export interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 
-export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(function DialogTitle(
+export const DialogTitle = /* @__PURE__ */ forwardRef<HTMLHeadingElement, DialogTitleProps>(function DialogTitle(
   { className, ...props },
   ref,
 ) {
@@ -224,7 +224,7 @@ export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(func
 
 export interface DialogDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const DialogDescription = forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
+export const DialogDescription = /* @__PURE__ */ forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
   function DialogDescription({ className, ...props }, ref) {
     const { descriptionId, setHasDescription } = useDialog("DialogDescription");
     useLayoutEffect(() => {
@@ -238,7 +238,7 @@ export const DialogDescription = forwardRef<HTMLParagraphElement, DialogDescript
 export interface DialogCloseProps extends ButtonProps {}
 
 /** A Button that closes the dialog. Defaults to the secondary variant. */
-export const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>(function DialogClose(
+export const DialogClose = /* @__PURE__ */ forwardRef<HTMLButtonElement, DialogCloseProps>(function DialogClose(
   { variant = "secondary", onClick, ...props },
   ref,
 ) {

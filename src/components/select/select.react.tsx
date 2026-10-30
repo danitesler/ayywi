@@ -23,7 +23,7 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
  * A styled native <select>. Children are regular <option>/<optgroup> elements. With a mouse or trackpad the options
  * open in ayywi's list; touch screens keep the OS picker. onChange fires either way.
  */
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+export const Select = /* @__PURE__ */ forwardRef<HTMLSelectElement, SelectProps>(function Select(
   { size, className, wrapperProps, pictures, onChoose, onMouseDown, onClick, onKeyDown, onChange, ...props },
   ref,
 ) {

@@ -13,7 +13,7 @@ export interface StatProps extends HTMLAttributes<HTMLDivElement> {
   size?: StatSize;
 }
 
-export const Stat = forwardRef<HTMLDivElement, StatProps>(function Stat(
+export const Stat = /* @__PURE__ */ forwardRef<HTMLDivElement, StatProps>(function Stat(
   { value, unit, label, labelFirst, size, className, ...props },
   ref,
 ) {

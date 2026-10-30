@@ -12,7 +12,7 @@ export interface HoverActionsProps extends HTMLAttributes<HTMLDivElement> {
   reveal?: boolean;
 }
 
-export const HoverActions = forwardRef<HTMLDivElement, HoverActionsProps>(function HoverActions(
+export const HoverActions = /* @__PURE__ */ forwardRef<HTMLDivElement, HoverActionsProps>(function HoverActions(
   { position, group = false, reveal = false, className, children, ...props },
   ref,
 ) {
@@ -36,7 +36,7 @@ export interface HoverActionProps extends ButtonHTMLAttributes<HTMLButtonElement
   children: ReactNode;
 }
 
-export const HoverAction = forwardRef<HTMLButtonElement, HoverActionProps>(function HoverAction(
+export const HoverAction = /* @__PURE__ */ forwardRef<HTMLButtonElement, HoverActionProps>(function HoverAction(
   { label, hint, tooltip = true, side = "bottom", className, children, type = "button", ...props },
   ref,
 ) {

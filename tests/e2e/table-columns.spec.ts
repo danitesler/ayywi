@@ -242,13 +242,59 @@ test("column menu is accessible and table stays contained at each viewport", asy
     await demo.screenshot({ path: `test-results/table-${width}.png` });
   }
   await demo.locator("thead").getByRole("button", { name: "Plan", exact: true }).click();
+  // The icon panel is a dialog, which a menu can't hold: open, it sits beside the menu's items, not among them.
+  await demo.getByRole("menuitem", { name: "Add icon", exact: true }).hover();
+  await expect(demo.getByRole("dialog", { name: "Plan icon" })).toBeVisible();
   const results = await new AxeBuilder({ page }).include('.ayy-table-container').analyze();
   expect(results.violations).toEqual([]);
   await page.screenshot({ path: 'test-results/table-menu-dark.png' });
+  // Esc closes the icon panel first, back on its row, then the menu.
+  await page.keyboard.press("Escape");
+  await expect(demo.getByRole("menuitem", { name: "Add icon", exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(demo.locator("thead").getByRole("button", { name: "Plan", exact: true })).toBeFocused();
   expect(errors).toEqual([]);
 });
+
+for (const renderer of ["react", "html"] as const) {
+  test(`the icon panel opens from its row where showPopover takes no source (${renderer})`, async ({ page }) => {
+    // Browsers before Chrome 133, Firefox 141 and Safari 18.4 ignore showPopover({ source }).
+    await page.addInitScript(() => {
+      const show = HTMLElement.prototype.showPopover;
+      HTMLElement.prototype.showPopover = function () {
+        show.call(this);
+      };
+    });
+    await open(page, "table", { renderer });
+    const demo = example(page, "playground");
+    const plan = demo.locator('thead th[data-key="plan"]');
+    const menu = plan.getByRole("menu");
+    const icons = demo.getByRole("dialog", { name: "Plan icon" });
+    const row = demo.getByRole("menuitem", { name: /(Add|Change) icon/ });
+    await plan.getByRole("button", { name: "Plan", exact: true }).click();
+    // Hover can't open it without closing the menu, so it waits for a click.
+    await row.hover();
+    await page.waitForTimeout(300);
+    await expect(icons).toBeHidden();
+    await expect(menu).toBeVisible();
+    await row.click();
+    await expect(icons).toBeVisible();
+    await expect(menu).toBeVisible();
+    await expect(icons.getByRole("searchbox", { name: "Search icons" })).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(icons).toBeHidden();
+    await expect(menu).toBeVisible();
+    await expect(row).toBeFocused();
+    await page.keyboard.press("ArrowRight");
+    await expect(icons.getByRole("searchbox", { name: "Search icons" })).toBeFocused();
+    await expect(menu).toBeVisible();
+    await page.keyboard.type("rocket");
+    await page.keyboard.press("Enter");
+    await expect(plan.locator(".ayy-table__column-icon")).toHaveText("🚀");
+    await expect(icons).toBeHidden();
+    await expect(menu).toBeHidden();
+  });
+}
 
 for (const renderer of ["react", "html"] as const) {
   test(`a column can be hidden from its menu (${renderer})`, async ({ page }) => {

@@ -19,7 +19,7 @@ interface TabsContextValue {
   idFor: (kind: "tab" | "panel", value: string) => string;
 }
 
-const TabsContext = createContext<TabsContextValue | null>(null);
+const TabsContext = /* @__PURE__ */ createContext<TabsContextValue | null>(null);
 
 function useTabs(component: string): TabsContextValue {
   const ctx = useContext(TabsContext);
@@ -33,7 +33,7 @@ export interface TabsProps extends Omit<HTMLAttributes<HTMLDivElement>, "default
   onValueChange?: (value: string) => void;
 }
 
-export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
+export const Tabs = /* @__PURE__ */ forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   { value: controlled, defaultValue = "", onValueChange, className, ...props },
   ref,
 ) {
@@ -63,7 +63,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
 
 export interface TabsListProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsList(
+export const TabsList = /* @__PURE__ */ forwardRef<HTMLDivElement, TabsListProps>(function TabsList(
   { className, onKeyDown, ...props },
   ref,
 ) {
@@ -92,7 +92,7 @@ export interface TabsTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement
   icon?: ReactNode;
 }
 
-export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(function TabsTrigger(
+export const TabsTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, TabsTriggerProps>(function TabsTrigger(
   { value, icon, className, onClick, children, ...props },
   ref,
 ) {
@@ -127,7 +127,7 @@ export interface TabsContentProps extends HTMLAttributes<HTMLDivElement> {
   keepMounted?: boolean;
 }
 
-export const TabsContent = forwardRef<HTMLDivElement, TabsContentProps>(function TabsContent(
+export const TabsContent = /* @__PURE__ */ forwardRef<HTMLDivElement, TabsContentProps>(function TabsContent(
   { value, keepMounted = false, className, children, ...props },
   ref,
 ) {

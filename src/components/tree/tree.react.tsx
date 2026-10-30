@@ -38,7 +38,7 @@ export interface TreeProps extends Omit<HTMLAttributes<HTMLUListElement>, "onSel
 }
 
 /** A tree of folders, files or records: expandable groups, one selection and arrow-key navigation. */
-export const Tree = forwardRef<HTMLUListElement, TreeProps>(function Tree(
+export const Tree = /* @__PURE__ */ forwardRef<HTMLUListElement, TreeProps>(function Tree(
   {
     label,
     nodes,

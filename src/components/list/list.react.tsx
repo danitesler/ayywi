@@ -10,21 +10,21 @@ export interface ListProps extends HTMLAttributes<HTMLUListElement> {
 }
 
 /** A <ul> of ListItem rows. */
-export const List = forwardRef<HTMLUListElement, ListProps>(function List({ divided, compact, className, ...props }, ref) {
+export const List = /* @__PURE__ */ forwardRef<HTMLUListElement, ListProps>(function List({ divided, compact, className, ...props }, ref) {
   return <ul ref={ref} className={listClass({ divided, compact, className })} {...props} />;
 });
 
 export interface ListItemProps extends LiHTMLAttributes<HTMLLIElement> {}
 
 /** One row: leading media (Avatar, Icon, IconTile), a ListContent, then trailing ListMeta or a control. */
-export const ListItem = forwardRef<HTMLLIElement, ListItemProps>(function ListItem({ className, ...props }, ref) {
+export const ListItem = /* @__PURE__ */ forwardRef<HTMLLIElement, ListItemProps>(function ListItem({ className, ...props }, ref) {
   return <li ref={ref} className={cx(listItemClass, className)} {...props} />;
 });
 
 export interface ListContentProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** The column that holds ListTitle and ListDescription; it takes the free space. */
-export const ListContent = forwardRef<HTMLDivElement, ListContentProps>(function ListContent({ className, ...props }, ref) {
+export const ListContent = /* @__PURE__ */ forwardRef<HTMLDivElement, ListContentProps>(function ListContent({ className, ...props }, ref) {
   return <div ref={ref} className={cx(listContentClass, className)} {...props} />;
 });
 
@@ -34,14 +34,14 @@ export interface ListTitleProps extends HTMLAttributes<HTMLElement> {
 }
 
 /** The row's main text: a <p>, or a <label> for the row's control when htmlFor is set. */
-export const ListTitle = forwardRef<HTMLElement, ListTitleProps>(function ListTitle({ htmlFor, className, ...props }, ref) {
+export const ListTitle = /* @__PURE__ */ forwardRef<HTMLElement, ListTitleProps>(function ListTitle({ htmlFor, className, ...props }, ref) {
   if (htmlFor) return <label ref={ref as Ref<HTMLLabelElement>} htmlFor={htmlFor} className={cx(listTitleClass, className)} {...props} />;
   return <p ref={ref as Ref<HTMLParagraphElement>} className={cx(listTitleClass, className)} {...props} />;
 });
 
 export interface ListDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const ListDescription = forwardRef<HTMLParagraphElement, ListDescriptionProps>(function ListDescription(
+export const ListDescription = /* @__PURE__ */ forwardRef<HTMLParagraphElement, ListDescriptionProps>(function ListDescription(
   { className, ...props },
   ref,
 ) {
@@ -51,7 +51,7 @@ export const ListDescription = forwardRef<HTMLParagraphElement, ListDescriptionP
 export interface ListMetaProps extends HTMLAttributes<HTMLSpanElement> {}
 
 /** Short trailing text: a time, a count, a size. */
-export const ListMeta = forwardRef<HTMLSpanElement, ListMetaProps>(function ListMeta({ className, ...props }, ref) {
+export const ListMeta = /* @__PURE__ */ forwardRef<HTMLSpanElement, ListMetaProps>(function ListMeta({ className, ...props }, ref) {
   return <span ref={ref} className={cx(listMetaClass, className)} {...props} />;
 });
 
@@ -61,6 +61,6 @@ export interface ListLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 /** Put inside ListTitle: the link covers the whole row. */
-export const ListLink = forwardRef<HTMLAnchorElement, ListLinkProps>(function ListLink({ current, className, ...props }, ref) {
+export const ListLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement, ListLinkProps>(function ListLink({ current, className, ...props }, ref) {
   return <a ref={ref} className={cx(listLinkClass, className)} aria-current={current ? "page" : undefined} {...props} />;
 });

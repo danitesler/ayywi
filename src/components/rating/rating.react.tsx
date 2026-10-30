@@ -30,7 +30,7 @@ export interface RatingProps extends Omit<HTMLAttributes<HTMLDivElement>, "defau
 }
 
 /** 1–5 star rating picker built on native radio inputs, or a read-only fractional star display. */
-export const Rating = forwardRef<HTMLDivElement, RatingProps>(function Rating(
+export const Rating = /* @__PURE__ */ forwardRef<HTMLDivElement, RatingProps>(function Rating(
   {
     value,
     defaultValue = 0,

@@ -99,12 +99,39 @@ function hostedFiles(release: string): Plugin {
   };
 }
 
+/**
+ * main.tsx imports App dynamically, so the browser only finds out about it once the entry has run. Preloading it (and
+ * the chunks it imports) from the HTML downloads both at once. Not for ?app= iframes, which never load the docs.
+ */
+function preloadApp(): Plugin {
+  return {
+    name: "ayywi-preload-app",
+    apply: "build",
+    transformIndexHtml: {
+      order: "post",
+      handler(_html, ctx) {
+        const chunks = Object.values(ctx.bundle ?? {}).filter((c) => c.type === "chunk");
+        const app = chunks.find((c) => c.facadeModuleId === here("src/App.tsx"));
+        if (!app) return;
+        const files = [app.fileName, ...app.imports.filter((f) => f !== ctx.chunk?.fileName)];
+        const links = files.map((f) => `l(${JSON.stringify(`./${f}`)})`).join(";");
+        return [{
+          tag: "script",
+          // First in <head>: an inline script after a stylesheet waits for that stylesheet to load.
+          injectTo: "head-prepend",
+          children: `if(!/[?&]app=/.test(location.search)){var l=function(h){var e=document.createElement("link");e.rel="modulepreload";e.crossOrigin="";e.href=h;document.head.appendChild(e)};${links}}`,
+        }];
+      },
+    },
+  };
+}
+
 const release = releaseId(hosted());
 
 export default defineConfig({
   root: here("."),
   base: "./",
-  plugins: [react(), hostedFiles(release)],
+  plugins: [react(), hostedFiles(release), preloadApp()],
   define: { __AYYWI_RELEASE__: JSON.stringify(release) },
   resolve: {
     alias: [

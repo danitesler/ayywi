@@ -55,7 +55,7 @@ pnpm build          # generate + dist/ (layered + unlayered CSS, ESM, CJS, .d.ts
 pnpm typecheck      # library + preview + every example file + tests
 pnpm check          # design rules, docs ↔ CSS ↔ props ↔ elements, generated files up to date, lints examples
 pnpm test           # node tests (linter, MCP, init, token exports, eval scorer) — needs a build
-pnpm test:e2e       # Playwright + axe against the built preview, in Playwright's Chromium (E2E_CHROME=1: the installed Chrome)
+pnpm test:e2e       # Playwright + axe against the built preview (built or reused by scripts/e2e-server.mjs), in Playwright's Chromium (E2E_CHROME=1: the installed Chrome)
 scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
 pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme from the theme button, density from the menu beside it
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
@@ -71,11 +71,18 @@ A visual or interactive change also needs e2e, at two speeds:
 ```sh
 export E2E_PORT=$((4200 + $$ % 300))                            # this shell only; never share another session's
 pnpm preview --port "$E2E_PORT" --strictPort --host 127.0.0.1   # terminal 1
-pnpm exec playwright test tests/e2e/interactions.spec.ts -g "dialog"
-pnpm test:e2e                                                   # whole suite against the built preview
+E2E_REUSE=1 pnpm exec playwright test tests/e2e/interactions.spec.ts -g "dialog"
+pnpm test:e2e                                                   # whole suite against the built preview (stop terminal 1 first)
 ```
 
 `E2E_PORT` drives the preview and Playwright's `baseURL`. A port that already answers is an error, not a reuse (`E2E_REUSE=1` opts in), so two sessions cannot test each other's code by accident. `-g` matches the whole test title, so pair it with a file and a lowercase term; `--list` shows what a filter hits without starting a server. Keep the full run before calling the work done: it is the only one that sees the built CSS, where `:dir()` becomes `:lang()`, and the only one that covers `pages`, `theming` (axe), `dist` and `app-components`, which can't be scoped to a component.
+
+Several sessions often work in this checkout at once, and every build empties and rewrites `dist/` and `preview/dist/`. So:
+
+- `pnpm build` and `pnpm preview:build` take a lock (`scripts/build-lock.mjs`): a second build waits for the first instead of deleting its files. Never build by calling the steps behind them directly.
+- `pnpm test:e2e` never serves `preview/dist/`. Its server (`scripts/e2e-server.mjs`) hashes the sources and serves the build for that hash from `node_modules/.cache/ayywi-e2e/<hash>/`, building it only if no session has yet. Another session's build can't touch a running suite, and back-to-back runs on unchanged sources skip the build. Specs read `dist/` files through `distFile()` from helpers, which points at that same build.
+- Don't start a preview server only to run e2e, and don't reuse another session's server or port: its build may be from other sources.
+- A failure that says a file or chunk is missing (`ENOENT … dist/`, `ERR_HTTP_RESPONSE_CODE_FAILURE`, examples stuck `aria-busy`) means files changed under the run. Rerun before debugging.
 
 `scripts/check-all.sh` runs all of them plus the preview build and e2e (`--quick` skips those two); run it before merging or publishing. **There is no hosted CI. Never add GitHub Actions workflows** (or any other `.github/` automation); every check runs locally.
 

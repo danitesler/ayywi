@@ -158,8 +158,10 @@ export function brandScale(seed: string): { scale: Record<BrandStep, string>; se
 
 // ---- Picking the semantic colours ----
 
-const BLACK = tokens["palette.neutral.0"].value;
-const WHITE = tokens["palette.neutral.100"].value;
+// Read through a call so bundlers can drop it (and the token table) from apps that never make a brand.
+const paletteValue = (name: "palette.neutral.0" | "palette.neutral.100") => tokens[name].value;
+const BLACK = /* @__PURE__ */ paletteValue("palette.neutral.0");
+const WHITE = /* @__PURE__ */ paletteValue("palette.neutral.100");
 const SURFACES = ["bg", "surface", "surface-raised"] as const;
 
 function colorIn(name: `color.${string}`, theme: ThemeName): string {
@@ -209,9 +211,9 @@ function pick(scheme: "dark" | "light", scale: Record<BrandStep, string>, seedSt
 const fallbacks = (name: "font.heading" | "font.body" | "font.mono", drop: readonly string[]) =>
   (tokens[name].value as readonly string[]).filter((f) => !drop.includes(f));
 const FONT_FALLBACK = {
-  heading: fallbacks("font.heading", ["Unbounded", "Arial Black"]),
-  body: fallbacks("font.body", ["Sora"]),
-  mono: fallbacks("font.mono", []),
+  heading: /* @__PURE__ */ fallbacks("font.heading", ["Unbounded", "Arial Black"]),
+  body: /* @__PURE__ */ fallbacks("font.body", ["Sora"]),
+  mono: /* @__PURE__ */ fallbacks("font.mono", []),
 };
 
 /**
@@ -244,7 +246,7 @@ const BRAND_NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const HEX6 = /^#[0-9a-f]{6}$/i;
 const RADIUS = /^(0|\d+(\.\d+)?(px|rem|em)|var\(--ayy-radius-[a-z0-9-]+\))$/;
 const FAMILY = String.raw`(?:"[\w\- .]+"|[\w\-.]+)`;
-const FONT_LIST = new RegExp(`^${FAMILY}(?:, ${FAMILY})*$`);
+const FONT_LIST = /* @__PURE__ */ new RegExp(`^${FAMILY}(?:, ${FAMILY})*$`);
 
 function checkBrand(b: Brand): Brand {
   const fail = (what: string, value: unknown) => new Error(`brand ${what} ${JSON.stringify(value)} isn't one createBrand() makes`);

@@ -14,7 +14,7 @@ export type DensityMode = "compact" | "comfortable" | "touch" | "auto";
 export const THEME_STORAGE_KEY = "ayy-theme";
 export const DENSITY_STORAGE_KEY = "ayy-density";
 
-const THEMES: readonly string[] = [...themes, "system"];
+const THEMES: readonly string[] = /* @__PURE__ */ (themes as readonly string[]).concat("system");
 const DENSITIES: readonly string[] = ["compact", "comfortable", "touch", "auto"];
 
 /**
@@ -77,7 +77,7 @@ export function getDensity(): DensityMode {
 }
 
 /** Packs the init script restores: the default, hugeicons, is the absence of the attribute. */
-const RESTORED_ICON_PACKS = iconPacks.filter((pack) => pack !== "hugeicons");
+const RESTORED_ICON_PACKS = /* @__PURE__ */ iconPacks.filter((pack) => pack !== "hugeicons");
 
 /**
  * Inline this in <head> (before CSS paints) to apply a stored theme, density and icon pack without a flash:

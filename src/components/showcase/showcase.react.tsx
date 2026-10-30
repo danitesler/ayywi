@@ -17,7 +17,7 @@ export interface ShowcaseProps extends HTMLAttributes<HTMLElement> {
   device?: ShowcaseDevice;
 }
 
-export const Showcase = forwardRef<HTMLElement, ShowcaseProps>(function Showcase(
+export const Showcase = /* @__PURE__ */ forwardRef<HTMLElement, ShowcaseProps>(function Showcase(
   { device = "desktop", className, children, ...props },
   ref
 ) {
@@ -35,7 +35,7 @@ export const Showcase = forwardRef<HTMLElement, ShowcaseProps>(function Showcase
 
 export interface ShowcaseHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ShowcaseHeader = forwardRef<HTMLDivElement, ShowcaseHeaderProps>(function ShowcaseHeader(
+export const ShowcaseHeader = /* @__PURE__ */ forwardRef<HTMLDivElement, ShowcaseHeaderProps>(function ShowcaseHeader(
   { className, children, ...props },
   ref
 ) {
@@ -48,7 +48,7 @@ export const ShowcaseHeader = forwardRef<HTMLDivElement, ShowcaseHeaderProps>(fu
 
 export interface ShowcaseTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 
-export const ShowcaseTitle = forwardRef<HTMLHeadingElement, ShowcaseTitleProps>(function ShowcaseTitle(
+export const ShowcaseTitle = /* @__PURE__ */ forwardRef<HTMLHeadingElement, ShowcaseTitleProps>(function ShowcaseTitle(
   { className, children, ...props },
   ref
 ) {
@@ -61,7 +61,7 @@ export const ShowcaseTitle = forwardRef<HTMLHeadingElement, ShowcaseTitleProps>(
 
 export interface ShowcaseActionsProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ShowcaseActions = forwardRef<HTMLDivElement, ShowcaseActionsProps>(function ShowcaseActions(
+export const ShowcaseActions = /* @__PURE__ */ forwardRef<HTMLDivElement, ShowcaseActionsProps>(function ShowcaseActions(
   { className, children, ...props },
   ref
 ) {
@@ -74,7 +74,7 @@ export const ShowcaseActions = forwardRef<HTMLDivElement, ShowcaseActionsProps>(
 
 export interface ShowcaseStageProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ShowcaseStage = forwardRef<HTMLDivElement, ShowcaseStageProps>(function ShowcaseStage(
+export const ShowcaseStage = /* @__PURE__ */ forwardRef<HTMLDivElement, ShowcaseStageProps>(function ShowcaseStage(
   { className, children, ...props },
   ref
 ) {
@@ -89,7 +89,7 @@ export interface ShowcaseViewportProps extends HTMLAttributes<HTMLDivElement> {
   device?: ShowcaseDevice;
 }
 
-export const ShowcaseViewport = forwardRef<HTMLDivElement, ShowcaseViewportProps>(function ShowcaseViewport(
+export const ShowcaseViewport = /* @__PURE__ */ forwardRef<HTMLDivElement, ShowcaseViewportProps>(function ShowcaseViewport(
   { device = "desktop", className, children, ...props },
   ref
 ) {
@@ -107,7 +107,7 @@ export const ShowcaseViewport = forwardRef<HTMLDivElement, ShowcaseViewportProps
 
 export interface ShowcaseBodyProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ShowcaseBody = forwardRef<HTMLDivElement, ShowcaseBodyProps>(function ShowcaseBody(
+export const ShowcaseBody = /* @__PURE__ */ forwardRef<HTMLDivElement, ShowcaseBodyProps>(function ShowcaseBody(
   { className, children, ...props },
   ref
 ) {

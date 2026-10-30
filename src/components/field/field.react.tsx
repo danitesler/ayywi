@@ -6,13 +6,13 @@ export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   inline?: boolean;
 }
 
-export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field({ inline, className, ...props }, ref) {
+export const Field = /* @__PURE__ */ forwardRef<HTMLDivElement, FieldProps>(function Field({ inline, className, ...props }, ref) {
   return <div ref={ref} className={fieldClass({ inline, className })} {...props} />;
 });
 
 export interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {}
 
-export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
+export const Label = /* @__PURE__ */ forwardRef<HTMLLabelElement, LabelProps>(function Label(
   { className, ...props },
   ref,
 ) {
@@ -21,7 +21,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
 
 export interface FieldHintProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const FieldHint = forwardRef<HTMLParagraphElement, FieldHintProps>(function FieldHint(
+export const FieldHint = /* @__PURE__ */ forwardRef<HTMLParagraphElement, FieldHintProps>(function FieldHint(
   { className, ...props },
   ref,
 ) {
@@ -30,7 +30,7 @@ export const FieldHint = forwardRef<HTMLParagraphElement, FieldHintProps>(functi
 
 export interface FieldErrorProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const FieldError = forwardRef<HTMLParagraphElement, FieldErrorProps>(function FieldError(
+export const FieldError = /* @__PURE__ */ forwardRef<HTMLParagraphElement, FieldErrorProps>(function FieldError(
   { className, ...props },
   ref,
 ) {

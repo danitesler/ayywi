@@ -118,7 +118,7 @@ export interface DatePickerGridProps extends Omit<HTMLAttributes<HTMLDivElement>
 }
 
 /** One month of days to pick a date from. The grid is one Tab stop; arrows move the day, PageUp/PageDown the month. */
-export const DatePickerGrid = forwardRef<HTMLDivElement, DatePickerGridProps>(function DatePickerGrid(
+export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePickerGridProps>(function DatePickerGrid(
   {
     value,
     defaultValue = null,
@@ -524,7 +524,7 @@ export interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
 }
 
 /** A field-like button showing the date; opens DatePickerGrid in a popover and closes when picked. */
-export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(function DatePicker(
+export const DatePicker = /* @__PURE__ */ forwardRef<HTMLButtonElement, DatePickerProps>(function DatePicker(
   {
     value,
     defaultValue = null,
@@ -660,7 +660,7 @@ export interface DateRangeProps extends Omit<HTMLAttributes<HTMLDivElement>, "on
 }
 
 /** Two (or more) months of day buttons side-by-side to pick a start and end date range. */
-export const DateRange = forwardRef<HTMLDivElement, DateRangeProps>(function DateRange(
+export const DateRange = /* @__PURE__ */ forwardRef<HTMLDivElement, DateRangeProps>(function DateRange(
   {
     value,
     defaultValue = null,
@@ -1114,7 +1114,7 @@ export interface DateRangePickerProps extends Omit<ButtonHTMLAttributes<HTMLButt
 }
 
 /** Field-like button that opens DateRange in a popover. */
-export const DateRangePicker = forwardRef<HTMLButtonElement, DateRangePickerProps>(function DateRangePicker(
+export const DateRangePicker = /* @__PURE__ */ forwardRef<HTMLButtonElement, DateRangePickerProps>(function DateRangePicker(
   {
     value,
     defaultValue = null,
@@ -1239,7 +1239,7 @@ export interface TimePickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "v
 }
 
 /** TimePicker renders scrollable columns of hours, minutes, and optional period. */
-export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function TimePicker(
+export const TimePicker = /* @__PURE__ */ forwardRef<HTMLDivElement, TimePickerProps>(function TimePicker(
   {
     value,
     defaultValue,
@@ -1581,7 +1581,7 @@ export interface TimePickerTriggerProps extends Omit<ButtonHTMLAttributes<HTMLBu
 }
 
 /** TimePickerTrigger renders a field-like button that opens a TimePicker in a popover. */
-export const TimePickerTrigger = forwardRef<HTMLButtonElement, TimePickerTriggerProps>(function TimePickerTrigger(
+export const TimePickerTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, TimePickerTriggerProps>(function TimePickerTrigger(
   {
     value,
     defaultValue,
@@ -1687,7 +1687,7 @@ export interface DateTimePickerProps extends Omit<HTMLAttributes<HTMLDivElement>
 }
 
 /** DateTimePicker renders side-by-side DatePickerGrid and TimePicker for picking date and time together. */
-export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(function DateTimePicker(
+export const DateTimePicker = /* @__PURE__ */ forwardRef<HTMLDivElement, DateTimePickerProps>(function DateTimePicker(
   {
     value,
     defaultValue,
@@ -1829,7 +1829,7 @@ export interface DateTimePickerTriggerProps extends Omit<ButtonHTMLAttributes<HT
 }
 
 /** Field-like button that opens DateTimePicker in a popover. */
-export const DateTimePickerTrigger = forwardRef<HTMLButtonElement, DateTimePickerTriggerProps>(function DateTimePickerTrigger(
+export const DateTimePickerTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, DateTimePickerTriggerProps>(function DateTimePickerTrigger(
   {
     value,
     defaultValue,

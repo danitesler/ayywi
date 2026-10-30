@@ -37,7 +37,7 @@ export interface SettingsProps extends Omit<HTMLAttributes<HTMLElement>, "title"
 }
 
 /** A group of settings: a heading, a line of description, then the rows in a card. */
-export const Settings = forwardRef<HTMLElement, SettingsProps>(function Settings({ title, description, plain, className, children, ...props }, ref) {
+export const Settings = /* @__PURE__ */ forwardRef<HTMLElement, SettingsProps>(function Settings({ title, description, plain, className, children, ...props }, ref) {
   const titleId = useId();
   return (
     <section ref={ref} className={settingsClass({ plain, className })} aria-labelledby={title ? titleId : undefined} {...props}>
@@ -66,7 +66,7 @@ export interface SettingsRowProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 }
 
 /** One setting: label and hint at the start, the control (children) at the end. */
-export const SettingsRow = forwardRef<HTMLDivElement, SettingsRowProps>(function SettingsRow(
+export const SettingsRow = /* @__PURE__ */ forwardRef<HTMLDivElement, SettingsRowProps>(function SettingsRow(
   { label, htmlFor, hint, error, stack, className, children, ...props },
   ref,
 ) {
@@ -110,7 +110,7 @@ export interface SettingsLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorE
 }
 
 /** A row that opens a sub-page (with href) or runs an action (without): the whole row is one link or button. */
-export const SettingsLink = forwardRef<HTMLAnchorElement & HTMLButtonElement, SettingsLinkProps>(function SettingsLink(
+export const SettingsLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement & HTMLButtonElement, SettingsLinkProps>(function SettingsLink(
   { label, hint, value, destructive, className, ...props },
   ref,
 ) {
@@ -147,7 +147,7 @@ interface PickerContextValue {
   select: (value: string) => void;
 }
 
-const PickerContext = createContext<PickerContextValue | null>(null);
+const PickerContext = /* @__PURE__ */ createContext<PickerContextValue | null>(null);
 
 export interface SettingsPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /** Shared radio name (for forms). Generated if omitted. */
@@ -159,7 +159,7 @@ export interface SettingsPickerProps extends Omit<HTMLAttributes<HTMLDivElement>
 }
 
 /** Appearance choices as pictures (theme, corners, font): a role="radiogroup" of SettingsOptions. Give it an aria-label. */
-export const SettingsPicker = forwardRef<HTMLDivElement, SettingsPickerProps>(function SettingsPicker(
+export const SettingsPicker = /* @__PURE__ */ forwardRef<HTMLDivElement, SettingsPickerProps>(function SettingsPicker(
   { name, value: controlled, defaultValue, onValueChange, disabled, className, children, ...props },
   ref,
 ) {
@@ -191,7 +191,7 @@ export interface SettingsOptionProps extends Omit<LabelHTMLAttributes<HTMLLabelE
 }
 
 /** One picture in a SettingsPicker: a <label> around a hidden native radio, the picture and its caption. */
-export const SettingsOption = forwardRef<HTMLLabelElement, SettingsOptionProps>(function SettingsOption(
+export const SettingsOption = /* @__PURE__ */ forwardRef<HTMLLabelElement, SettingsOptionProps>(function SettingsOption(
   { value, label, preview, disabled, inputProps, className, ...props },
   ref,
 ) {
@@ -237,7 +237,7 @@ export interface SettingsScreenProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** A miniature screen drawn from tokens, for a SettingsOption's picture. Brand and corner tokens around it show too. */
-export const SettingsScreen = forwardRef<HTMLSpanElement, SettingsScreenProps>(function SettingsScreen({ variant, theme, density, className, ...props }, ref) {
+export const SettingsScreen = /* @__PURE__ */ forwardRef<HTMLSpanElement, SettingsScreenProps>(function SettingsScreen({ variant, theme, density, className, ...props }, ref) {
   const screen = (t: ThemeMode | undefined, d: DensityMode | undefined, key?: string) => (
     <span
       key={key}

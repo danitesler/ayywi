@@ -40,7 +40,7 @@ export interface ColorSwatchProps extends Omit<LabelHTMLAttributes<HTMLLabelElem
 }
 
 /** One colour in a ColorSwatchGroup: a <label> around a visually hidden radio. */
-export const ColorSwatch = forwardRef<HTMLLabelElement, ColorSwatchProps>(function ColorSwatch(
+export const ColorSwatch = /* @__PURE__ */ forwardRef<HTMLLabelElement, ColorSwatchProps>(function ColorSwatch(
   { color, label, name, value, checked, defaultChecked, onCheckedChange, disabled, size, none, inputProps, className, style, ...props },
   ref,
 ) {
@@ -76,7 +76,7 @@ export interface ColorSwatchButtonProps extends ButtonHTMLAttributes<HTMLButtonE
 }
 
 /** A colour that applies on click (an editor's pen colour): <button aria-pressed>. */
-export const ColorSwatchButton = forwardRef<HTMLButtonElement, ColorSwatchButtonProps>(function ColorSwatchButton(
+export const ColorSwatchButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ColorSwatchButtonProps>(function ColorSwatchButton(
   { color, label, pressed, onPressedChange, size, none, type = "button", className, style, onClick, ...props },
   ref,
 ) {
@@ -106,7 +106,7 @@ export interface ColorSwatchCustomProps extends Omit<InputHTMLAttributes<HTMLInp
 }
 
 /** Any colour: a native <input type="color"> drawn as a rainbow ring around the colour it holds. */
-export const ColorSwatchCustom = forwardRef<HTMLInputElement, ColorSwatchCustomProps>(function ColorSwatchCustom(
+export const ColorSwatchCustom = /* @__PURE__ */ forwardRef<HTMLInputElement, ColorSwatchCustomProps>(function ColorSwatchCustom(
   { label, size, className, style, value, onInput, onMouseDown, onClick, onKeyDown, ...props },
   ref,
 ) {
@@ -159,7 +159,7 @@ export interface ColorSwatchGroupProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** A row of swatches: role="radiogroup" with an aria-label ("Colour"). Pass role="group" for ColorSwatchButtons. */
-export const ColorSwatchGroup = forwardRef<HTMLDivElement, ColorSwatchGroupProps>(function ColorSwatchGroup({ track, role = "radiogroup", className, ...props }, ref) {
+export const ColorSwatchGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, ColorSwatchGroupProps>(function ColorSwatchGroup({ track, role = "radiogroup", className, ...props }, ref) {
   return <div ref={ref} role={role} className={colorSwatchGroupClass({ track, className })} {...props} />;
 });
 

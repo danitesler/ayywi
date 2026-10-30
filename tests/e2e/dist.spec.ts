@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { distFile } from "./helpers";
 
 // The no-build path: a static page with only the two dist files. Run `pnpm build` first.
-const read = (p: string) => readFileSync(new URL(`../../dist/${p}`, import.meta.url), "utf8");
+const read = (p: string) => readFileSync(distFile(p), "utf8");
 
 const PAGE = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>smoke</title>

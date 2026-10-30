@@ -50,7 +50,7 @@ export interface RecordPickerProps extends Omit<InputHTMLAttributes<HTMLInputEle
 }
 
 /** A tag field whose chips are records from a list: one person to assign, many labels to apply. */
-export const RecordPicker = forwardRef<HTMLInputElement, RecordPickerProps>(function RecordPicker(
+export const RecordPicker = /* @__PURE__ */ forwardRef<HTMLInputElement, RecordPickerProps>(function RecordPicker(
   {
     options,
     value,

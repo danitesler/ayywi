@@ -21,7 +21,7 @@ export interface DropzoneProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 /** A drop zone that is also a file picker: a <label> around a native file input covering it. */
-export const Dropzone = forwardRef<HTMLInputElement, DropzoneProps>(function Dropzone(
+export const Dropzone = /* @__PURE__ */ forwardRef<HTMLInputElement, DropzoneProps>(function Dropzone(
   { title, hint, icon, onFiles, compact, className, style, onChange, disabled, ...props },
   ref,
 ) {

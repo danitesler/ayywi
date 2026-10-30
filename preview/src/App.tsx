@@ -100,7 +100,7 @@ const SEARCH: { title: string; items: NavItem[] }[] = [
   },
   {
     title: "Examples",
-    items: showcaseApps.map((a) => ({ route: `examples/${a.id}`, title: `${a.name}, ${a.kind.toLowerCase()}`, description: a.description, text: `${showcase.text} ${a.description}` })),
+    items: showcaseApps.map((a) => ({ route: `examples/${a.id}`, title: a.kind, description: a.description, text: `${showcase.text} ${a.description}` })),
   },
   { title: "Themes", items: [{ route: "themes", title: "Themes", description: "Brand colours, corners and fonts on a real app", text: brandPage.text }] },
 ];

@@ -58,7 +58,7 @@
       "ayy-open-change": "{ open: boolean }",
       "ayy-submenu-layout": "{ open: boolean, width: number, height: number, side: FloatingSide }"
     },
-    "children": "A trigger <button> and a [popover] element with role=\"menu\" containing .ayy-menu__item buttons, optional submenu panels, split rows (.ayy-menu__row with a .ayy-menu__more button) and expandable groups."
+    "children": "A trigger <button> and a [popover] element with role=\"menu\" containing .ayy-menu__item buttons, optional submenu panels (a role=\"dialog\" one goes right after the menu, not inside it), split rows (.ayy-menu__row with a .ayy-menu__more button) and expandable groups."
   },
   "react": {
     "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuRow, DropdownMenuMore, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuSelectedItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from \"@danitesler/ayywi/react\";",
@@ -79,7 +79,7 @@
       "DropdownMenuSeparator": { "renders": "<div role=\"separator\">" },
       "DropdownMenuSub": { "renders": "nothing (submenu state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void", "inline": "boolean" } },
       "DropdownMenuSubTrigger": { "renders": "<button role=\"menuitem\" aria-haspopup=\"menu\">", "props": { "icon": "ReactNode", "value": "ReactNode", "description": "ReactNode", "selected": "boolean — reserves space on inline start for checkmark indicator" } },
-      "DropdownMenuSubContent": { "renders": "<div popover role=\"menu\"> or <div role=\"group\"> (inline)", "props": { "side": "\"end\" | \"start\"", "align": "\"start\"" } },
+      "DropdownMenuSubContent": { "renders": "<div popover role=\"menu\">, <div popover role=\"dialog\"> (placed after the DropdownMenuContent) or <div role=\"group\"> (inline)", "props": { "side": "\"end\" | \"start\"", "align": "\"start\"" } },
       "DropdownMenuCheckboxItem": { "renders": "<button role=\"menuitemcheckbox\">", "props": { "checked": "boolean", "onCheckedChange": "(checked: boolean) => void", "closeOnSelect": "boolean" } },
       "DropdownMenuSelectedItem": { "renders": "<button role=\"menuitemcheckbox\">", "props": { "selected": "boolean", "onSelectedChange": "(selected: boolean) => void", "closeOnSelect": "boolean" } },
       "DropdownMenuRadioGroup": { "renders": "<div role=\"group\">", "props": { "value": "string", "onValueChange": "(value: string) => void", "closeOnSelect": "boolean" } },
@@ -90,6 +90,7 @@
     "Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items.",
     "ArrowRight / ArrowLeft open and close submenus (mirrored in RTL); Esc inside a submenu closes only that panel.",
     "Esc or Tab closes the menu and focus returns to the trigger.",
+    "A submenu panel holding more than items (an Icon picker) is role=\"dialog\" and sits outside the menu, which may only hold items: in HTML right after it, named by its row's aria-controls; in React, the DropdownMenuSub wraps the DropdownMenuContent and the DropdownMenuSubContent follows it.",
     "Icon-only triggers (⋯) need aria-label.",
     "A split row is two menu items: the action and its trailing More button, which arrows reach like any other item. Label the button with its row (\"More options for Duplicate project\"), not just \"More\"."
   ],

@@ -3,7 +3,7 @@ import { cx } from "../../lib/cx";
 import { mergeRefs } from "../../lib/refs";
 import { enhanceTooltip, tooltipClass, tooltipContentClass, type TooltipSide } from "./tooltip";
 
-export const tooltipContext = createContext<boolean>(false);
+export const tooltipContext = /* @__PURE__ */ createContext<boolean>(false);
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "content"> {
   /** Tooltip text. Keep it short; it's a hint, not content. */
@@ -14,7 +14,7 @@ export interface TooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "con
 }
 
 /** Shows on hover and focus, Esc dismisses it. Renders in the top layer, so it can't be clipped. */
-export const Tooltip = forwardRef<HTMLSpanElement, TooltipProps>(function Tooltip(
+export const Tooltip = /* @__PURE__ */ forwardRef<HTMLSpanElement, TooltipProps>(function Tooltip(
   { content, side = "top", className, children, ...props },
   ref,
 ) {

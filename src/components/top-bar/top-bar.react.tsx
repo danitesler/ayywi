@@ -33,7 +33,7 @@ export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "title"> 
 }
 
 /** A phone screen's header: back, title, actions; sticky at the top. Children become a second row (a search bar). */
-export const TopBar = forwardRef<HTMLElement, TopBarProps>(function TopBar(
+export const TopBar = /* @__PURE__ */ forwardRef<HTMLElement, TopBarProps>(function TopBar(
   { title, subtitle, backHref, onBack, backLabel, backAriaLabel = "Back", actions, center, large, className, children, ...props },
   ref,
 ) {

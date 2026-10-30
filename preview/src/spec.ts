@@ -1,7 +1,7 @@
 import type { ComponentEntry } from "./data";
 
 /** One component as markdown for an AI chat or agent: what the MCP server's get_component returns, from the same metadata. */
-export function componentSpec(c: ComponentEntry): string {
+export async function componentSpec(c: ComponentEntry): Promise<string> {
   const list = (items: string[]) => items.map((i) => `- ${i}`).join("\n");
   const parts = [
     `# ayywi ${c.name}`,
@@ -20,7 +20,8 @@ export function componentSpec(c: ComponentEntry): string {
     )}`,
   );
   parts.push(`Accessibility:\n${list(c.a11y)}`, `Do:\n${list(c.do)}`, `Don't:\n${list(c.dont)}`);
-  for (const ex of c.examples) {
+  for (const entry of c.examples) {
+    const ex = { ...entry, ...(await entry.load()) };
     parts.push(`## Example: ${ex.title}\n\nHTML:\n\`\`\`html\n${ex.htmlSource}\n\`\`\`\n\nReact:\n\`\`\`tsx\n${ex.reactSource}\n\`\`\``);
   }
   return parts.join("\n\n");

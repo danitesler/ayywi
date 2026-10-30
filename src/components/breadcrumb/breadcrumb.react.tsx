@@ -13,7 +13,7 @@ export interface BreadcrumbProps extends HTMLAttributes<HTMLElement> {
   pill?: boolean;
 }
 
-export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Breadcrumb(
+export const Breadcrumb = /* @__PURE__ */ forwardRef<HTMLElement, BreadcrumbProps>(function Breadcrumb(
   { items, pill, className, "aria-label": label = "Breadcrumb", ...props },
   ref,
 ) {

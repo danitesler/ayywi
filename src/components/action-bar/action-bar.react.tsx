@@ -36,7 +36,7 @@ export interface ActionBarProps extends HTMLAttributes<HTMLDivElement> {
   onClear?: () => void;
 }
 
-export const ActionBar = forwardRef<HTMLDivElement, ActionBarProps>(function ActionBar(
+export const ActionBar = /* @__PURE__ */ forwardRef<HTMLDivElement, ActionBarProps>(function ActionBar(
   { open = false, fixed, label = "Bulk actions", onClear, className, children, ...props },
   ref,
 ) {
@@ -78,7 +78,7 @@ export const ActionBar = forwardRef<HTMLDivElement, ActionBarProps>(function Act
 
 export interface ActionBarSelectionProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ActionBarSelection = forwardRef<HTMLDivElement, ActionBarSelectionProps>(function ActionBarSelection(
+export const ActionBarSelection = /* @__PURE__ */ forwardRef<HTMLDivElement, ActionBarSelectionProps>(function ActionBarSelection(
   { className, ...props },
   ref,
 ) {
@@ -87,7 +87,7 @@ export const ActionBarSelection = forwardRef<HTMLDivElement, ActionBarSelectionP
 
 export interface ActionBarCountProps extends HTMLAttributes<HTMLSpanElement> {}
 
-export const ActionBarCount = forwardRef<HTMLSpanElement, ActionBarCountProps>(function ActionBarCount(
+export const ActionBarCount = /* @__PURE__ */ forwardRef<HTMLSpanElement, ActionBarCountProps>(function ActionBarCount(
   { className, ...props },
   ref,
 ) {
@@ -101,7 +101,7 @@ export interface ActionBarCloseProps extends ButtonHTMLAttributes<HTMLButtonElem
   tooltipSide?: TooltipSide;
 }
 
-export const ActionBarClose = forwardRef<HTMLButtonElement, ActionBarCloseProps>(function ActionBarClose(
+export const ActionBarClose = /* @__PURE__ */ forwardRef<HTMLButtonElement, ActionBarCloseProps>(function ActionBarClose(
   { label = "Clear selection", tooltip = true, tooltipSide = "top", className, children, ...props },
   ref,
 ) {
@@ -127,7 +127,7 @@ export const ActionBarClose = forwardRef<HTMLButtonElement, ActionBarCloseProps>
 
 export interface ActionBarSeparatorProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ActionBarSeparator = forwardRef<HTMLDivElement, ActionBarSeparatorProps>(function ActionBarSeparator(
+export const ActionBarSeparator = /* @__PURE__ */ forwardRef<HTMLDivElement, ActionBarSeparatorProps>(function ActionBarSeparator(
   { className, ...props },
   ref,
 ) {
@@ -136,7 +136,7 @@ export const ActionBarSeparator = forwardRef<HTMLDivElement, ActionBarSeparatorP
 
 export interface ActionBarActionsProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ActionBarActions = forwardRef<HTMLDivElement, ActionBarActionsProps>(function ActionBarActions(
+export const ActionBarActions = /* @__PURE__ */ forwardRef<HTMLDivElement, ActionBarActionsProps>(function ActionBarActions(
   { className, ...props },
   ref,
 ) {
@@ -156,7 +156,7 @@ export interface ActionBarButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
   tooltipSide?: TooltipSide;
 }
 
-export const ActionBarButton = forwardRef<HTMLButtonElement, ActionBarButtonProps>(function ActionBarButton(
+export const ActionBarButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ActionBarButtonProps>(function ActionBarButton(
   { variant, primary, secondary, destructive, icon, open, tooltip, tooltipSide = "top", className, type = "button", ...props },
   ref,
 ) {

@@ -13,7 +13,7 @@ export interface StepsProps extends OlHTMLAttributes<HTMLOListElement> {
 }
 
 /** Where you are in a short flow. Give it an aria-label ("Checkout progress"). */
-export const Steps = forwardRef<HTMLOListElement, StepsProps>(function Steps(
+export const Steps = /* @__PURE__ */ forwardRef<HTMLOListElement, StepsProps>(function Steps(
   { steps, current, vertical, doneLabel = "Done: ", className, ...props },
   ref,
 ) {

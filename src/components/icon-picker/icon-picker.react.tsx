@@ -58,7 +58,7 @@ export interface IconPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "o
 }
 
 /** A searchable grid of icons and emoji with a remove button. Put it in a Popover, or in a DropdownMenuSubContent with role="dialog". */
-export const IconPicker = forwardRef<HTMLDivElement, IconPickerProps>(function IconPicker(
+export const IconPicker = /* @__PURE__ */ forwardRef<HTMLDivElement, IconPickerProps>(function IconPicker(
   {
     value: controlled,
     defaultValue = "",

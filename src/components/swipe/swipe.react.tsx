@@ -15,7 +15,7 @@ export interface SwipeProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** A row that slides sideways to show action buttons. Children are the row's content. */
-export const Swipe = forwardRef<HTMLDivElement, SwipeProps>(function Swipe(
+export const Swipe = /* @__PURE__ */ forwardRef<HTMLDivElement, SwipeProps>(function Swipe(
   { startActions, endActions, onOpenChange, contentProps, className, children, ...props },
   ref,
 ) {
@@ -45,7 +45,7 @@ export interface SwipeActionProps extends ButtonHTMLAttributes<HTMLButtonElement
 }
 
 /** One button in a swipe tray: an icon over a short label. The row closes after it runs. */
-export const SwipeAction = forwardRef<HTMLButtonElement, SwipeActionProps>(function SwipeAction(
+export const SwipeAction = /* @__PURE__ */ forwardRef<HTMLButtonElement, SwipeActionProps>(function SwipeAction(
   { variant, icon, type = "button", className, children, ...props },
   ref,
 ) {

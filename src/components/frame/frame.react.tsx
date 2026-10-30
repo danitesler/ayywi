@@ -7,7 +7,7 @@ export interface FrameProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"
   title?: ReactNode;
 }
 
-export const Frame = forwardRef<HTMLDivElement, FrameProps>(function Frame({ title, className, children, ...props }, ref) {
+export const Frame = /* @__PURE__ */ forwardRef<HTMLDivElement, FrameProps>(function Frame({ title, className, children, ...props }, ref) {
   return (
     <div ref={ref} className={cx(frameClass, className)} {...props}>
       <div className={frameBarClass}>{title ? <span className={frameTitleClass}>{title}</span> : null}</div>

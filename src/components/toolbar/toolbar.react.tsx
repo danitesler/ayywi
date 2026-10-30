@@ -25,7 +25,7 @@ export interface ToolbarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** role="toolbar": one Tab stop, arrow keys between its buttons. Give it an aria-label ("Text formatting"). */
-export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar({ vertical, floating, scroll, size, className, children, ...props }, ref) {
+export const Toolbar = /* @__PURE__ */ forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar({ vertical, floating, scroll, size, className, children, ...props }, ref) {
   const inner = useRef<HTMLDivElement>(null);
   const controller = useRef<ToolbarController | null>(null);
   useEffect(() => {
@@ -61,7 +61,7 @@ export interface ToolbarButtonProps extends ButtonHTMLAttributes<HTMLButtonEleme
 }
 
 /** A tool: an icon (give it aria-label) or an icon and a short label. */
-export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(function ToolbarButton(
+export const ToolbarButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ToolbarButtonProps>(function ToolbarButton(
   { pressed, type = "button", tooltip, tooltipSide = "top", className, ...props },
   ref,
 ) {
@@ -86,20 +86,20 @@ export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(f
 export interface ToolbarGroupProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** Tools that belong together. role="group" with an aria-label when the group has a name ("Shapes"). */
-export const ToolbarGroup = forwardRef<HTMLDivElement, ToolbarGroupProps>(function ToolbarGroup({ className, ...props }, ref) {
+export const ToolbarGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, ToolbarGroupProps>(function ToolbarGroup({ className, ...props }, ref) {
   return <div ref={ref} role="group" className={cx(toolbarGroupClass, className)} {...props} />;
 });
 
 export interface ToolbarSeparatorProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** A line between groups. */
-export const ToolbarSeparator = forwardRef<HTMLDivElement, ToolbarSeparatorProps>(function ToolbarSeparator({ className, ...props }, ref) {
+export const ToolbarSeparator = /* @__PURE__ */ forwardRef<HTMLDivElement, ToolbarSeparatorProps>(function ToolbarSeparator({ className, ...props }, ref) {
   return <div ref={ref} role="separator" className={cx(toolbarSeparatorClass, className)} {...props} />;
 });
 
 export interface ToolbarSpacerProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** Pushes the items after it to the far end. */
-export const ToolbarSpacer = forwardRef<HTMLDivElement, ToolbarSpacerProps>(function ToolbarSpacer({ className, ...props }, ref) {
+export const ToolbarSpacer = /* @__PURE__ */ forwardRef<HTMLDivElement, ToolbarSpacerProps>(function ToolbarSpacer({ className, ...props }, ref) {
   return <div ref={ref} aria-hidden="true" className={cx(toolbarSpacerClass, className)} {...props} />;
 });

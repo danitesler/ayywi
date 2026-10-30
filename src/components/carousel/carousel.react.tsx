@@ -18,7 +18,7 @@ export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
   slideLabel?: string;
 }
 
-export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carousel(
+export const Carousel = /* @__PURE__ */ forwardRef<HTMLDivElement, CarouselProps>(function Carousel(
   { label, slideWidth, previousLabel = "Previous", nextLabel = "Next", slideLabel, className, style, children, ...props },
   ref,
 ) {
@@ -52,7 +52,7 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
 
 export interface CarouselSlideProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(function CarouselSlide(
+export const CarouselSlide = /* @__PURE__ */ forwardRef<HTMLDivElement, CarouselSlideProps>(function CarouselSlide(
   { className, ...props },
   ref,
 ) {

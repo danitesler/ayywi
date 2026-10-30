@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import manifest from "../../manifest/components.json" with { type: "json" };
-import { open } from "./helpers";
+import { examplesLoaded, open } from "./helpers";
 
 const slugs = manifest.components.map((c: { slug: string }) => c.slug);
 
@@ -10,6 +10,7 @@ for (const renderer of ["react", "html"] as const) {
     for (const slug of slugs) {
       await page.goto(`/#/components/${slug}`);
       await expect(page.locator(".pv-page__header h1")).toBeVisible();
+      await examplesLoaded(page);
       const stages = page.locator(":is(.pv-stage, .ayy-showcase__stage)");
       expect(await stages.count(), slug).toBeGreaterThan(0);
       for (const s of await stages.all()) {
@@ -71,7 +72,8 @@ test("links from before the header tabs land on the same page", async ({ page })
     ["dialog", "components/dialog", "Dialog"],
     ["brand", "themes", "Themes"],
     ["apps", "examples", "Examples"],
-    ["apps/inbox", "examples/inbox", "Relay"],
+    ["apps/inbox", "examples/dating", "Dating app"],
+    ["examples/inbox", "examples/dating", "Dating app"],
     ["showcase", "examples", "Examples"],
   ]) {
     await page.goto(`/#/${old}`);
@@ -117,6 +119,7 @@ test("the components sidebar lists every component A–Z, with families nested a
   await expect(input.getByRole("link", { name: "Textarea", exact: true })).toBeVisible();
   // The family holding the current page is open.
   await page.goto("/#/components/combobox");
+  await examplesLoaded(page);
   await expect(nav.locator("details", { has: page.locator("summary", { hasText: /^Select$/ }) })).toHaveAttribute("open", "");
   await expect(nav.getByRole("link", { name: "Combobox", exact: true })).toHaveAttribute("aria-current", "page");
 
@@ -199,6 +202,28 @@ test("example code is one click away", async ({ page }) => {
   await expect(code).toContainText("Build a Button component");
 });
 
+test("component variations copy the same general prompt", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await open(page, "components/button");
+  await examplesLoaded(page);
+  const examples = page.locator(".pv-example");
+  expect(await examples.count()).toBeGreaterThan(1);
+  const prompts: string[] = [];
+  for (const example of (await examples.all()).slice(0, 2)) {
+    await example.getByRole("button", { name: "Copy for..." }).click();
+    const popover = page.getByRole("dialog", { name: /^Copy for / });
+    await popover.getByRole("button", { name: "Copy prompt" }).click();
+    prompts.push(await page.evaluate(() => navigator.clipboard.readText()));
+    await expect(popover.getByRole("tab", { name: "React" })).toBeVisible();
+    await expect(popover.getByRole("tab", { name: "HTML" })).toBeVisible();
+    await page.keyboard.press("Escape");
+  }
+  expect(prompts[0]).toBe(prompts[1]);
+  expect(prompts[0]).toContain("Build a Button component using the ayywi design system.");
+  expect(prompts[0]).toContain("@danitesler/ayywi/react");
+  expect(prompts[0]).not.toContain("Reference code:");
+});
+
 test("get started's quick-start prompt asks first, brand included, then loads ayywi", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page, "docs/get-started");
@@ -272,8 +297,8 @@ test("the header's search finds components, docs and examples and jumps to them"
   await box.fill("surface-raised"); // token names match via keywords
   await expect(dialog.getByRole("option", { name: /Colors/ })).toBeVisible();
 
-  await box.fill("relay"); // showcase apps
-  await expect(dialog.getByRole("option", { name: /Relay/ })).toBeVisible();
+  await box.fill("dating"); // showcase apps
+  await expect(dialog.getByRole("option", { name: /Dating app/ })).toBeVisible();
 
   await box.fill("dialog");
   await dialog.getByRole("option", { name: /^Dialog/ }).click();
@@ -359,12 +384,12 @@ test("on a phone the header's tabs fold into a menu and the sidebar is a drawer"
 });
 
 const SHOWCASE = [
-  { id: "dashboard", name: "Pulse", theme: "dark", density: "compact" },
-  { id: "landing", name: "Northwind", theme: "light", density: "comfortable" },
-  { id: "inbox", name: "Relay", theme: "dark-contrast", density: "comfortable" },
-  { id: "tracker", name: "Orbit", theme: "light", density: "compact" },
-  { id: "store", name: "Ember", theme: "dark", density: "comfortable" },
-  { id: "booking", name: "Haven", theme: "light", density: "touch" },
+  { id: "dashboard", kind: "Analytics dashboard", preset: "arctic", theme: "dark", density: "compact" },
+  { id: "landing", kind: "Marketing site", preset: "twilight", theme: "dark", density: "comfortable" },
+  { id: "dating", kind: "Dating app", preset: "wine", theme: "light", density: "comfortable" },
+  { id: "tracker", kind: "Project tracker", preset: "default", theme: "light", density: "compact" },
+  { id: "store", kind: "Online store", preset: "ember", theme: "dark", density: "comfortable" },
+  { id: "booking", kind: "Booking app", preset: "forest", theme: "light", density: "touch" },
 ];
 
 test("examples: cards open a device preview", async ({ page }) => {
@@ -373,9 +398,20 @@ test("examples: cards open a device preview", async ({ page }) => {
   const cards = page.locator(".pv-showcase__card");
   await expect(cards).toHaveCount(SHOWCASE.length);
 
-  await cards.filter({ hasText: "Relay" }).click();
-  await expect(page).toHaveURL(/#\/examples\/inbox$/);
-  await expect(page.getByRole("heading", { level: 1, name: "Relay" })).toBeVisible();
+  // A card is the kind of app, and nothing else: no theme or density tags.
+  await expect(cards.locator(".ayy-badge")).toHaveCount(0);
+  await cards.filter({ hasText: "Dating app" }).click();
+  await expect(page).toHaveURL(/#\/examples\/dating$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Dating app" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Built with" })).toHaveCount(0);
+  // Previous, All examples and Next sit together above the preview.
+  const nav = page.getByRole("navigation", { name: "Examples" });
+  await expect(nav.getByRole("link")).toHaveText(["Marketing site", "All examples", "Project tracker"]);
+  await expect(nav.getByRole("link", { name: "Previous: Marketing site" })).toBeVisible();
+  await nav.getByRole("link", { name: /Next/ }).click();
+  await expect(page).toHaveURL(/#\/examples\/tracker$/);
+  await nav.getByRole("link", { name: /Previous/ }).click();
+  await expect(page).toHaveURL(/#\/examples\/dating$/);
 
   const frame = page.locator(".pv-device iframe");
   const device = page.getByRole("radiogroup", { name: "Device" });
@@ -387,13 +423,15 @@ test("examples: cards open a device preview", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("each showcase app renders in its own theme and density, and fits a phone", async ({ page }) => {
+test("each showcase app renders in its own theme preset and density, and fits a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const app of SHOWCASE) {
     await page.goto(`/?app=${app.id}`);
     await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("data-theme", app.theme);
     await expect(page.locator("html")).toHaveAttribute("data-density", app.density);
+    if (app.preset === "default") await expect(page.locator("html")).not.toHaveAttribute("data-brand", /.+/);
+    else await expect(page.locator("html")).toHaveAttribute("data-brand", app.preset);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, app.id).toBeLessThanOrEqual(0);
     if (app.id === "landing" || app.id === "store") {
@@ -404,7 +442,7 @@ test("each showcase app renders in its own theme and density, and fits a phone",
       await expect(page.locator(".ayy-bottom-nav"), app.id).toBeVisible();
       await expect(page.locator(".pv-app > .ayy-app-shell__sidebar"), app.id).toBeHidden();
       await expect(page.locator(".ayy-navbar"), app.id).toHaveCount(0);
-      await expect(page.locator(".ayy-page-header, .pv-app-inbox"), app.id).not.toHaveCount(0);
+      await expect(page.locator(".ayy-page-header"), app.id).not.toHaveCount(0);
     }
   }
 });
@@ -433,7 +471,7 @@ test("each app opens its own settings in a near-full-screen dialog", async ({ pa
 
 test("on a phone, an app's settings fill the screen: the section list, then a section", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/?app=inbox");
+  await page.goto("/?app=dating");
   await page.locator(".ayy-app-shell__bar").getByRole("button", { name: "Settings" }).click();
   const dialog = page.getByRole("dialog", { name: "Settings" });
   await expect(dialog).toBeVisible();
@@ -441,12 +479,28 @@ test("on a phone, an app's settings fill the screen: the section list, then a se
   expect(Math.round((await dialog.boundingBox())!.width)).toBe(390);
   const list = dialog.locator(".ayy-app-shell__sidebar");
   await expect(list).toBeVisible();
-  await list.getByRole("link", { name: "AI assistant" }).click();
+  await list.getByRole("link", { name: "Privacy" }).click();
   await expect(list).toBeHidden();
-  await expect(dialog.getByRole("heading", { level: 1, name: "AI assistant" })).toBeVisible();
+  await expect(dialog.getByRole("heading", { level: 1, name: "Privacy" })).toBeVisible();
   await dialog.getByRole("button", { name: "Settings" }).click();
   await expect(list).toBeVisible();
-  await expect(list.getByRole("link", { name: "AI assistant" })).toBeFocused();
+  await expect(list.getByRole("link", { name: "Privacy" })).toBeFocused();
+});
+
+test("page titles stay at the same height without category labels or component import blocks", async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  let top: number | undefined;
+  for (const route of ["docs/spacing", "docs/icons", "docs/get-started", "components/button", "components/dialog", "components", "examples", "examples/dating"]) {
+    await open(page, route);
+    const header = page.locator(".pv-page__header");
+    await expect(header.locator(".ayy-eyebrow"), route).toHaveCount(0);
+    const offset = await header.locator("h1").evaluate((el) => el.getBoundingClientRect().top - el.closest("main")!.getBoundingClientRect().top);
+    top ??= offset;
+    expect(Math.abs(offset - top), route).toBeLessThanOrEqual(1);
+    if (route.startsWith("components/")) {
+      await expect(page.locator(".pv-comp-tabs__panel > .pv-code"), route).toHaveCount(0);
+    }
+  }
 });
 
 test.describe("Components and Docs pages are centred like Examples", () => {

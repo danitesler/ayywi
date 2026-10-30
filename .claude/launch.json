@@ -2,6 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     { "name": "preview", "runtimeExecutable": "pnpm", "runtimeArgs": ["preview"], "port": 5173 },
-    { "name": "preview-alt", "runtimeExecutable": "pnpm", "runtimeArgs": ["preview", "--port", "5199", "--strictPort"], "port": 5199 }
+    { "name": "preview-alt", "runtimeExecutable": "pnpm", "runtimeArgs": ["preview", "--port", "5199", "--strictPort"], "port": 5199 },
+    { "name": "preview-built", "runtimeExecutable": "pnpm", "runtimeArgs": ["preview:serve", "--port", "5288", "--strictPort", "--host", "127.0.0.1"], "port": 5288 }
   ]
 }

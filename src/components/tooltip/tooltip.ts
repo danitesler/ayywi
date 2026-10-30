@@ -34,7 +34,7 @@ const ACTION_PREFIXES = [
   "Share",
   "Add",
 ];
-const ACTION_RE = new RegExp(`^(${ACTION_PREFIXES.join("|")})\\b`, "i");
+const ACTION_RE = /* @__PURE__ */ new RegExp(`^(${ACTION_PREFIXES.join("|")})\\b`, "i");
 
 /**
  * Keep action tooltips general ("Edit", "Delete", "More actions"), leaving the item's specific name in aria-label

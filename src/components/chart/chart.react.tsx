@@ -35,7 +35,7 @@ export interface ChartSeries {
   color?: string;
 }
 
-const compact = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
+const compact = /* @__PURE__ */ new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
 const formatCompact = (value: number) => compact.format(value);
 
 /** An SVG-safe id (useId's colons and guillemets don't survive url(#…)). */
@@ -90,8 +90,8 @@ function shownLabels(count: number, room: number, ends: boolean): Set<number> {
 /** The n-th series colour token, for a series that doesn't take its colour from its position. */
 const seriesColor = (i: number) => `var(--ayy-chart-${(i % CHART_SERIES) + 1})`;
 
-const percentFormat = new Intl.NumberFormat(undefined, { style: "percent", maximumFractionDigits: 1 });
-const grouped = new Intl.NumberFormat();
+const percentFormat = /* @__PURE__ */ new Intl.NumberFormat(undefined, { style: "percent", maximumFractionDigits: 1 });
+const grouped = /* @__PURE__ */ new Intl.NumberFormat();
 const formatGrouped = (value: number) => grouped.format(value);
 
 interface DataTableProps {
@@ -166,7 +166,7 @@ export interface ChartLegendProps extends Omit<HTMLAttributes<HTMLUListElement>,
  * The key of a chart: each series' colour and name. Give it onToggle and the entries become buttons (aria-pressed) that
  * switch a series off and on; a chart's own `toggle` prop does that for you.
  */
-export const ChartLegend = forwardRef<HTMLUListElement, ChartLegendProps>(function ChartLegend({ items, hiddenItems = [], onToggle, className, ...props }, ref) {
+export const ChartLegend = /* @__PURE__ */ forwardRef<HTMLUListElement, ChartLegendProps>(function ChartLegend({ items, hiddenItems = [], onToggle, className, ...props }, ref) {
   return (
     <ul ref={ref} className={cx("ayy-chart__legend", className)} {...(onToggle ? {} : { "aria-hidden": true })} {...props}>
       {items.map((item, i) => {
@@ -248,7 +248,7 @@ export interface ChartTooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>,
 }
 
 /** The hover card of a chart: a title, then a row (swatch, name, value) for each series. The charts draw theirs; this is the same card on its own. */
-export const ChartTooltip = forwardRef<HTMLSpanElement, ChartTooltipProps>(function ChartTooltip({ title, rows, static: inPlace, className, ...props }, ref) {
+export const ChartTooltip = /* @__PURE__ */ forwardRef<HTMLSpanElement, ChartTooltipProps>(function ChartTooltip({ title, rows, static: inPlace, className, ...props }, ref) {
   return (
     <span ref={ref} className={cx("ayy-chart__tooltip", inPlace && "ayy-chart__tooltip--static", className)} {...props}>
       {title !== undefined && title !== "" && <span className="ayy-chart__tooltip-title">{title}</span>}
@@ -329,7 +329,7 @@ interface ColumnChartProps extends BarChartProps {
 }
 
 /** Columns or rows of bars: BarChart and HistogramChart. */
-const ColumnChart = forwardRef<HTMLElement, ColumnChartProps>(function ColumnChart(
+const ColumnChart = /* @__PURE__ */ forwardRef<HTMLElement, ColumnChartProps>(function ColumnChart(
   { label, labels, series, stacked, showValues, horizontal, lines = [], max, ticks = 3, format = formatCompact, height, legend, type, rowLabels, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
@@ -401,7 +401,7 @@ const ColumnChart = forwardRef<HTMLElement, ColumnChartProps>(function ColumnCha
 });
 
 /** Columns drawn by CSS: one column per label, one bar per series, with value lines, a legend and a data table. */
-export const BarChart = forwardRef<HTMLElement, BarChartProps>(function BarChart(props, ref) {
+export const BarChart = /* @__PURE__ */ forwardRef<HTMLElement, BarChartProps>(function BarChart(props, ref) {
   return <ColumnChart ref={ref} {...props} />;
 });
 
@@ -421,7 +421,7 @@ export interface HistogramChartProps extends Omit<ChartBaseProps, "labels" | "le
 }
 
 /** A distribution: values counted into equal bins, drawn as touching columns, each bin's start under it. */
-export const HistogramChart = forwardRef<HTMLElement, HistogramChartProps>(function HistogramChart(
+export const HistogramChart = /* @__PURE__ */ forwardRef<HTMLElement, HistogramChartProps>(function HistogramChart(
   { values, bins, range, formatBin = formatCompact, name, color, label, ...props },
   ref,
 ) {
@@ -457,7 +457,7 @@ export interface WaterfallChartProps extends Omit<ChartBaseProps, "labels" | "le
 }
 
 /** How a total becomes another: each change floats from the running total, rises in success and falls in destructive. */
-export const WaterfallChart = forwardRef<HTMLElement, WaterfallChartProps>(function WaterfallChart(
+export const WaterfallChart = /* @__PURE__ */ forwardRef<HTMLElement, WaterfallChartProps>(function WaterfallChart(
   { label, steps, min, max, ticks = 3, format = formatCompact, height, name, className, style, ...props },
   ref,
 ) {
@@ -535,7 +535,7 @@ export interface LineChartProps extends ChartBaseProps {
 }
 
 /** Lines (and the area under them) over evenly spaced points, as SVG paths stretched to the plot. */
-export const LineChart = forwardRef<HTMLElement, LineChartProps>(function LineChart(
+export const LineChart = /* @__PURE__ */ forwardRef<HTMLElement, LineChartProps>(function LineChart(
   { label, labels, series, min = 0, max, ticks = 3, area = true, smooth = true, step, stacked, format = formatCompact, height, legend, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
@@ -652,7 +652,7 @@ export interface ScatterChartProps extends Omit<HTMLAttributes<HTMLElement>, "ch
 }
 
 /** Points by two values (a third sizes them as bubbles): how two measures relate, and the outliers. */
-export const ScatterChart = forwardRef<HTMLElement, ScatterChartProps>(function ScatterChart(
+export const ScatterChart = /* @__PURE__ */ forwardRef<HTMLElement, ScatterChartProps>(function ScatterChart(
   {
     label,
     series,
@@ -774,7 +774,7 @@ export interface DonutChartProps extends Omit<HTMLAttributes<HTMLElement>, "chil
 }
 
 /** Parts of one whole as slices of a ring (or a pie), with the total in the middle and the shares in the legend. */
-export const DonutChart = forwardRef<HTMLElement, DonutChartProps>(function DonutChart(
+export const DonutChart = /* @__PURE__ */ forwardRef<HTMLElement, DonutChartProps>(function DonutChart(
   { label, items, pie, total, totalLabel, name, format = formatGrouped, size, legend = true, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
@@ -851,7 +851,7 @@ export interface GaugeChartProps extends Omit<HTMLAttributes<HTMLElement>, "chil
 }
 
 /** One value against its range as a half ring: a budget, a quota, a score. A meter for screen readers. */
-export const GaugeChart = forwardRef<HTMLElement, GaugeChartProps>(function GaugeChart(
+export const GaugeChart = /* @__PURE__ */ forwardRef<HTMLElement, GaugeChartProps>(function GaugeChart(
   { label, value, min = 0, max = 100, format = formatGrouped, totalLabel, color, size, className, style, ...props },
   ref,
 ) {
@@ -911,7 +911,7 @@ export interface RadarChartProps extends Omit<HTMLAttributes<HTMLElement>, "chil
 }
 
 /** A few measures per series, one spoke each, as closed shapes: profiles to compare at a glance. */
-export const RadarChart = forwardRef<HTMLElement, RadarChartProps>(function RadarChart(
+export const RadarChart = /* @__PURE__ */ forwardRef<HTMLElement, RadarChartProps>(function RadarChart(
   { label, axes, series, min = 0, max, ticks = 5, format = formatCompact, size, legend, toggle, hiddenSeries, defaultHiddenSeries, onHiddenSeriesChange, className, style, ...props },
   ref,
 ) {
@@ -976,7 +976,7 @@ export interface HeatmapChartProps extends Omit<HTMLAttributes<HTMLElement>, "ch
 }
 
 /** A grid of cells shaded by value: activity by day and hour, usage by team and week. */
-export const HeatmapChart = forwardRef<HTMLElement, HeatmapChartProps>(function HeatmapChart(
+export const HeatmapChart = /* @__PURE__ */ forwardRef<HTMLElement, HeatmapChartProps>(function HeatmapChart(
   { label, rows, columns, values, max, format = formatGrouped, color, legend = ["Less", "More"], className, style, ...props },
   ref,
 ) {
@@ -1049,7 +1049,7 @@ export interface FunnelChartProps extends Omit<HTMLAttributes<HTMLOListElement>,
 }
 
 /** Steps people drop out of (visited, signed up, paid): each bar as wide as its share of the first, with the rate. */
-export const FunnelChart = forwardRef<HTMLOListElement, FunnelChartProps>(function FunnelChart(
+export const FunnelChart = /* @__PURE__ */ forwardRef<HTMLOListElement, FunnelChartProps>(function FunnelChart(
   { steps, format = formatGrouped, rate = "previous", rateLabel, color, className, style, ...props },
   ref,
 ) {
@@ -1095,7 +1095,7 @@ export interface SparklineProps extends Omit<SVGAttributes<SVGSVGElement>, "valu
 }
 
 /** A small line with no axes, for a Stat or a table cell. */
-export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(function Sparkline(
+export const Sparkline = /* @__PURE__ */ forwardRef<SVGSVGElement, SparklineProps>(function Sparkline(
   { values, label, area, color, min, max, className, style, ...props },
   ref,
 ) {
@@ -1142,7 +1142,7 @@ export interface BarListProps extends Omit<HTMLAttributes<HTMLOListElement>, "ch
 }
 
 /** Ranked rows with the bar behind the text: top pages, sources, countries. Readable as is, no table needed. */
-export const BarList = forwardRef<HTMLOListElement, BarListProps>(function BarList(
+export const BarList = /* @__PURE__ */ forwardRef<HTMLOListElement, BarListProps>(function BarList(
   { items, max, format = formatGrouped, color, className, style, ...props },
   ref,
 ) {
@@ -1181,7 +1181,7 @@ export interface TableChartProps extends Omit<TableHTMLAttributes<HTMLTableEleme
 }
 
 /** A table view of chart data with series swatches in the headers and tabular numeric cells, using ayywi's Table. */
-export const TableChart = forwardRef<HTMLTableElement, TableChartProps>(function TableChart(
+export const TableChart = /* @__PURE__ */ forwardRef<HTMLTableElement, TableChartProps>(function TableChart(
   { label, labels, series, format = formatCompact, compact, className, ...props },
   ref,
 ) {

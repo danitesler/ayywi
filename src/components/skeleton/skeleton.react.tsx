@@ -6,6 +6,6 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** Decorative loading placeholder (aria-hidden). Mark the loading region with aria-busy="true". */
-export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skeleton({ shape, className, ...props }, ref) {
+export const Skeleton = /* @__PURE__ */ forwardRef<HTMLDivElement, SkeletonProps>(function Skeleton({ shape, className, ...props }, ref) {
   return <div ref={ref} aria-hidden="true" className={skeletonClass({ shape, className })} {...props} />;
 });

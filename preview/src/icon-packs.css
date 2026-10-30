@@ -1,8 +1,0 @@
-/* Every icon pack, so every page, the showcase apps' frames and the Themes page can wear any of them; the library ships
-   each one opt-in. A stylesheet imported after index.css, so the packs' ayywi.components layer keeps its place in the
-   order index.css declares. `pnpm check` fails when a pack in tokens/icon-packs/ is missing here. */
-@import "../../src/css/icon-packs/hugeicons.css";
-@import "../../src/css/icon-packs/feather.css";
-@import "../../src/css/icon-packs/lucide.css";
-@import "../../src/css/icon-packs/material-symbols.css";
-@import "../../src/css/icon-packs/tabler.css";

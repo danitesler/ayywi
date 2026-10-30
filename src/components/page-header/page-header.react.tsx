@@ -5,14 +5,14 @@ import { pageHeaderActionsClass, pageHeaderClass, pageHeaderDescriptionClass, pa
 export interface PageHeaderProps extends HTMLAttributes<HTMLElement> {}
 
 /** The top of an app screen: an optional Breadcrumb, a PageHeaderTitle, a PageHeaderDescription and PageHeaderActions. */
-export const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(function PageHeader({ className, ...props }, ref) {
+export const PageHeader = /* @__PURE__ */ forwardRef<HTMLElement, PageHeaderProps>(function PageHeader({ className, ...props }, ref) {
   return <header ref={ref} className={cx(pageHeaderClass, className)} {...props} />;
 });
 
 export interface PageHeaderTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 
 /** The page's <h1>. */
-export const PageHeaderTitle = forwardRef<HTMLHeadingElement, PageHeaderTitleProps>(function PageHeaderTitle(
+export const PageHeaderTitle = /* @__PURE__ */ forwardRef<HTMLHeadingElement, PageHeaderTitleProps>(function PageHeaderTitle(
   { className, ...props },
   ref,
 ) {
@@ -21,7 +21,7 @@ export const PageHeaderTitle = forwardRef<HTMLHeadingElement, PageHeaderTitlePro
 
 export interface PageHeaderDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const PageHeaderDescription = forwardRef<HTMLParagraphElement, PageHeaderDescriptionProps>(function PageHeaderDescription(
+export const PageHeaderDescription = /* @__PURE__ */ forwardRef<HTMLParagraphElement, PageHeaderDescriptionProps>(function PageHeaderDescription(
   { className, ...props },
   ref,
 ) {
@@ -31,7 +31,7 @@ export const PageHeaderDescription = forwardRef<HTMLParagraphElement, PageHeader
 export interface PageHeaderActionsProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** The page's buttons: at most one primary, the rest outline or ghost. Below the title on phones. */
-export const PageHeaderActions = forwardRef<HTMLDivElement, PageHeaderActionsProps>(function PageHeaderActions(
+export const PageHeaderActions = /* @__PURE__ */ forwardRef<HTMLDivElement, PageHeaderActionsProps>(function PageHeaderActions(
   { className, ...props },
   ref,
 ) {

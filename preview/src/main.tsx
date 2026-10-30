@@ -4,10 +4,11 @@ import { chartColors, chartTheme, setDensity, setTheme, toast } from "@danitesle
 import "@danitesler/ayywi/elements";
 import "../../src/css/index.css";
 import "./preview.css";
-import "./icon-packs.css";
+import { loadIconPacksOnDemand } from "./icon-packs";
 
 // Plain-HTML examples call window.ayywi.* exactly like pages using dist/elements.global.js.
 Object.assign(window, { ayywi: { toast, setTheme, setDensity, chartColors, chartTheme } });
+loadIconPacksOnDemand();
 
 // ?app=<id> renders one showcase app on its own, for the device preview's iframe. Each is its own bundle, so the
 // iframes on Get started and What you can build don't download the docs (every component's examples).

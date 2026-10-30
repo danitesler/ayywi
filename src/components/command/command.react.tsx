@@ -41,7 +41,7 @@ interface CommandPartsProps {
 }
 
 // The typed text, for ranking (null while the palette doesn't filter: then results come in the app's order).
-const RankContext = createContext<string | null>(null);
+const RankContext = /* @__PURE__ */ createContext<string | null>(null);
 
 /** Plain text of a title or description: a string, or an element with a string `text` prop (TextHighlight). */
 function plainText(node: ReactNode): string | undefined {
@@ -179,7 +179,7 @@ export interface CommandProps extends Omit<HTMLAttributes<HTMLDivElement>, "chil
 }
 
 /** A command palette in the page (or a popover): a search field over grouped items, filtered as you type. */
-export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command(
+export const Command = /* @__PURE__ */ forwardRef<HTMLDivElement, CommandProps>(function Command(
   { label, placeholder, emptyText, footer, filter, onSearchChange, onRun, inputProps, className, children, ...props },
   ref,
 ) {
@@ -215,7 +215,7 @@ export interface CommandDialogProps {
 }
 
 /** The palette in a modal dialog near the top of the screen, opened with ⌘K. Running an item closes it. */
-export const CommandDialog = forwardRef<HTMLDialogElement, CommandDialogProps>(function CommandDialog(
+export const CommandDialog = /* @__PURE__ */ forwardRef<HTMLDialogElement, CommandDialogProps>(function CommandDialog(
   { open: controlled, defaultOpen = false, onOpenChange, shortcut = "Mod+K", className, onRun, ...parts },
   ref,
 ) {
@@ -277,7 +277,7 @@ export interface CommandGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   heading?: ReactNode;
 }
 
-export const CommandGroup = forwardRef<HTMLDivElement, CommandGroupProps>(function CommandGroup({ heading, className, children, ...props }, ref) {
+export const CommandGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, CommandGroupProps>(function CommandGroup({ heading, className, children, ...props }, ref) {
   const id = useId();
   const rank = useContext(RankContext);
   return (
@@ -310,7 +310,7 @@ export interface CommandItemProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   disabled?: boolean;
 }
 
-export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(function CommandItem(
+export const CommandItem = /* @__PURE__ */ forwardRef<HTMLDivElement, CommandItemProps>(function CommandItem(
   { onSelect, value, keywords, description, icon, shortcut, meta, disabled, className, children, onClick, ...props },
   ref,
 ) {

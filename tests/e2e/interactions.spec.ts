@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { example, keyboardFocus, open, rtl, settle, stage } from "./helpers";
+import { example, examplesLoaded, keyboardFocus, open, rtl, settle, stage } from "./helpers";
 
 /** The app shell playground's toolbar switch. Inert in the HTML renderer: use pgSetup() there instead. */
 async function pgSwitch(page: Page, name: string, on: boolean) {
@@ -841,9 +841,11 @@ for (const renderer of ["react", "html"] as const) {
 
       test("preview header and table icon-only buttons show tooltip on hover", async ({ page }) => {
         await open(page, "table", { renderer: "react" });
-        const appearanceBtn = page.getByRole("button", { name: "Appearance" });
-        await appearanceBtn.hover();
-        await expect(page.getByRole("tooltip", { name: "Appearance" })).toBeVisible();
+        // A hint with a shortcut lays its keycaps out in a row, and must still be hidden until hovered.
+        const searchTip = page.locator(".pv-header").getByRole("tooltip", { name: /^Search/, includeHidden: true });
+        await expect(searchTip).toBeHidden();
+        await page.locator(".pv-header").getByRole("button", { name: "Search", exact: true }).hover();
+        await expect(searchTip).toBeVisible();
 
         const editBtn = page.getByRole("button", { name: "Edit Northwind Traders" });
         await editBtn.hover();
@@ -937,6 +939,7 @@ for (const renderer of ["react", "html"] as const) {
 
       // Open a modal, then toast from inside it: the toast must still be clickable.
       await page.goto("/#/components/dialog");
+      await examplesLoaded(page);
       await stage(page).getByRole("button", { name: "Delete project" }).click();
       await page.evaluate(() => (window as unknown as { ayywi: { toast: (m: string, o: object) => void } }).ayywi.toast("Over modal", { action: { label: "Act", onClick: () => {} } }));
       const act = page.locator(".ayy-toast", { hasText: "Over modal" }).getByRole("button", { name: "Act" });
@@ -1003,7 +1006,7 @@ for (const renderer of ["react", "html"] as const) {
       await expect(longToast.locator(".ayy-toast__copy")).toBeVisible();
       await longToast.locator(".ayy-toast__copy").click();
       await expect(longToast.locator(".ayy-toast__copy")).toHaveAttribute("data-copied", "");
-      expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("Secret API key\nwhsec_test_secret_key_12345");
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("Secret API key\nwhsec_test_secret_key_12345");
       // Close button dismisses with leaving animation
       await longToast.locator(".ayy-toast__close").click();
       await expect(page.locator(".ayy-toaster .ayy-toast--long")).toBeHidden();
@@ -2713,7 +2716,8 @@ for (const renderer of ["react", "html"] as const) {
       await page.keyboard.press("Escape");
       const column = await table.locator('.ayy-block-editor__cell[data-col="1"]').allTextContents();
       await page.keyboard.press("Control+c");
-      expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(column.join("\n"));
+      // Where Ctrl+C fires no copy event (macOS), the editor writes through the async clipboard a task later.
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(column.join("\n"));
 
       await cell(1, 0).click();
       await expect(editor.locator("[data-selected]")).toHaveCount(0);

@@ -64,7 +64,9 @@ export function connectPopover(trigger: HTMLElement, content: HTMLElement, optio
 
   function open() {
     if (isOpen()) return;
-    if (native) content.showPopover();
+    // The trigger as source, as a click on it would set: a popover kept outside the one its trigger is in (a menu's
+    // dialog panel) still nests in it rather than closing it. Browsers without the option ignore it.
+    if (native) content.showPopover({ source: trigger });
     else {
       content.setAttribute("data-open", "");
       content.hidden = false;

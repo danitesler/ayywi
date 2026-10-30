@@ -16,7 +16,7 @@ export interface SliderProps extends NativeRange {
 }
 
 /** A native range input with the track filled up to the thumb. Label it with a <Label htmlFor> or aria-label. */
-export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
+export const Slider = /* @__PURE__ */ forwardRef<HTMLInputElement, SliderProps>(function Slider(
   { value: controlled, defaultValue, onValueChange, min = 0, max = 100, step = 1, className, style, ...props },
   ref,
 ) {
@@ -57,7 +57,7 @@ export interface SliderRangeProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 }
 
 /** Two thumbs on one track, for a min and a max (a price range): role="group", name it with aria-labelledby. The thumbs can't cross. */
-export const SliderRange = forwardRef<HTMLDivElement, SliderRangeProps>(function SliderRange(
+export const SliderRange = /* @__PURE__ */ forwardRef<HTMLDivElement, SliderRangeProps>(function SliderRange(
   { value: controlled, defaultValue, onValueChange, min = 0, max = 100, step = 1, labels, names, disabled, className, style, ...props },
   ref,
 ) {

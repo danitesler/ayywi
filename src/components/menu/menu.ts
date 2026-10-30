@@ -1,6 +1,6 @@
 import { cx } from "../../lib/cx";
 import { connectPopover, type PopoverController, type PopoverControllerOptions } from "../popover/popover";
-import { place, type FloatingSide, type PlaceBoundary } from "../../lib/position";
+import { place, supportsPopover, supportsPopoverSource, type FloatingSide, type PlaceBoundary } from "../../lib/position";
 
 export const menuClass = "ayy-menu";
 export const menuRowClass = "ayy-menu__row";
@@ -321,6 +321,17 @@ export function connectMenu(
 
   initSubmenus();
 
+  // A dialog panel (an Icon picker) sits outside the menu, which may only hold items. Opening it keeps this menu open
+  // through showPopover({ source }); browsers without that option only nest it when its button's own click opens it.
+  const clickOnly = (sub: SubmenuState) => !content.contains(sub.panel) && supportsPopover() && !supportsPopoverSource();
+
+  const focusInto = (panel: HTMLElement) => {
+    const subItems = Array.from(panel.querySelectorAll<HTMLElement>(ITEM)).filter(
+      (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-disabled") !== "true",
+    );
+    (subItems[0] ?? (panel.getAttribute("role") === "dialog" ? firstFocusable(panel) : null))?.focus();
+  };
+
   const openSubmenuFor = (subTrigger: HTMLElement, focusFirst = false) => {
     const sub = submenus.get(subTrigger);
     if (!sub) return;
@@ -329,15 +340,16 @@ export function connectMenu(
       subTimer = null;
     }
     if (activeSubmenu && activeSubmenu !== sub) closeActiveSubmenu();
+    if (clickOnly(sub)) {
+      // Hover leaves it shut; a key clicks the button.
+      if (focusFirst && sub.controller.isOpen()) focusInto(sub.panel);
+      else if (focusFirst) subTrigger.click();
+      return;
+    }
     activeSubmenu = sub;
     sub.controller.open();
     subTrigger.setAttribute("aria-expanded", "true");
-    if (focusFirst) {
-      const subItems = Array.from(sub.panel.querySelectorAll<HTMLElement>(ITEM)).filter(
-        (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-disabled") !== "true",
-      );
-      (subItems[0] ?? (sub.panel.getAttribute("role") === "dialog" ? firstFocusable(sub.panel) : null))?.focus();
-    }
+    if (focusFirst) focusInto(sub.panel);
   };
 
   const isPointerInSafeTriangle = (panelRect: DOMRect): boolean => {
@@ -351,9 +363,9 @@ export function connectMenu(
   const onContentPointerOver = (event: MouseEvent) => {
     const target = (event.target as Element | null)?.closest<HTMLElement>(ITEM);
     if (!target || !content.contains(target)) return;
-    // The submenu panels are DOM children of this content (popover="auto" keeps
-    // them in place). Their hover events bubble up here — let the panel's own
-    // controller handle them instead of treating them as leaving the submenu.
+    // A submenu panel inside this content (all but a dialog panel) bubbles its
+    // hover events up here — let the panel's own controller handle them instead
+    // of treating them as leaving the submenu.
     if (target.closest(".ayy-menu") !== content) return;
 
     if (activeSubmenu) {
@@ -387,7 +399,7 @@ export function connectMenu(
   };
 
   const onContentKey = (event: KeyboardEvent) => {
-    // A submenu panel sits inside this content, so its keys bubble here. Its own controller already handled them.
+    // A submenu panel inside this content bubbles its keys here. Its own controller already handled them.
     const owner = (event.target as Element | null)?.closest(".ayy-menu");
     if (owner && owner !== content && content.contains(owner)) return;
     const active = document.activeElement as HTMLElement | null;
@@ -515,6 +527,11 @@ export function connectMenu(
     if (!item || !content.contains(item) || !items().includes(item)) return;
 
     if (submenus.has(item)) {
+      // Without showPopover({ source }) the button's native invoker opens a panel outside this menu (clickOnly above).
+      if (clickOnly(submenus.get(item)!)) {
+        activeSubmenu = submenus.get(item)!;
+        return;
+      }
       // The controller opens the panel; prevent the native invoker from toggling it closed again.
       event.preventDefault();
       if (item.classList.contains("ayy-menu__more") && submenus.get(item)!.controller.isOpen()) closeActiveSubmenu();
@@ -565,6 +582,9 @@ export function connectMenu(
   content.addEventListener("keydown", onContentKey);
   content.addEventListener("click", onContentClick);
   if (trigger) trigger.addEventListener("keydown", onTriggerKey);
+  // A pick in a dialog panel (an Icon picker) ends the whole menu. Outside the menu, the event can't bubble to it.
+  const onPick = () => closeAll();
+  if (options.parentMenu) content.addEventListener("ayy-pick", onPick);
 
   return {
     ...controller,
@@ -592,6 +612,7 @@ export function connectMenu(
       content.removeEventListener("mouseout", onContentPointerLeave);
       content.removeEventListener("keydown", onContentKey);
       content.removeEventListener("click", onContentClick);
+      content.removeEventListener("ayy-pick", onPick);
       if (trigger) trigger.removeEventListener("keydown", onTriggerKey);
       if (virtualAnchor?.parentNode) virtualAnchor.parentNode.removeChild(virtualAnchor);
       for (const sub of submenus.values()) sub.controller.destroy();

@@ -25,7 +25,7 @@ export interface BottomNavProps extends HTMLAttributes<HTMLElement> {
 }
 
 /** A phone app's tab bar: top-level destinations pinned to the bottom of its scroll container. */
-export const BottomNav = forwardRef<HTMLElement, BottomNavProps>(function BottomNav(
+export const BottomNav = /* @__PURE__ */ forwardRef<HTMLElement, BottomNavProps>(function BottomNav(
   { size, compact, iconOnly, className, "aria-label": label = "Main", ...props },
   ref,
 ) {
@@ -46,7 +46,7 @@ export interface BottomNavLinkProps extends AnchorHTMLAttributes<HTMLAnchorEleme
   current?: boolean;
 }
 
-export const BottomNavLink = forwardRef<HTMLAnchorElement, BottomNavLinkProps>(function BottomNavLink(
+export const BottomNavLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement, BottomNavLinkProps>(function BottomNavLink(
   { icon, current, className, children, ...props },
   ref,
 ) {
@@ -64,7 +64,7 @@ export interface BottomNavButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
 }
 
 /** A tab that does something instead of going somewhere, e.g. "More" (add className="ayy-app-shell__toggle" to open the app shell's drawer). */
-export const BottomNavButton = forwardRef<HTMLButtonElement, BottomNavButtonProps>(function BottomNavButton(
+export const BottomNavButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, BottomNavButtonProps>(function BottomNavButton(
   { icon, className, children, ...props },
   ref,
 ) {

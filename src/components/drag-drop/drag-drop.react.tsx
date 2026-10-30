@@ -50,7 +50,7 @@ export interface DragHandleProps extends ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 /** The grip you pick an item up by: a button with the six-dot icon. Give it an aria-label that names the item ("Move Revenue"); the tooltip stays general. */
-export const DragHandle = forwardRef<HTMLButtonElement, DragHandleProps>(function DragHandle({ tooltip, className, ...props }, ref) {
+export const DragHandle = /* @__PURE__ */ forwardRef<HTMLButtonElement, DragHandleProps>(function DragHandle({ tooltip, className, ...props }, ref) {
   const button = (
     <button ref={ref} type="button" className={cx(dragHandleClass, className)} {...props}>
       <Icon icon={DragDropVerticalIcon} name="grip-vertical" />
@@ -76,7 +76,7 @@ export interface SortableProps extends Omit<HTMLAttributes<HTMLElement>, "onChan
 }
 
 /** A list whose items you drag to reorder, with a line showing where the dragged one will land. */
-export const Sortable = forwardRef<HTMLElement, SortableProps>(function Sortable(
+export const Sortable = /* @__PURE__ */ forwardRef<HTMLElement, SortableProps>(function Sortable(
   { as: Tag = "ul", orientation, handle = true, onMove, canDrag, describe, className, ...props },
   ref,
 ) {
@@ -99,7 +99,7 @@ export interface SortableItemProps extends HTMLAttributes<HTMLElement> {
 }
 
 /** One row of a Sortable: put a DragHandle first, then the content. */
-export const SortableItem = forwardRef<HTMLElement, SortableItemProps>(function SortableItem({ as: Tag = "li", className, ...props }, ref) {
+export const SortableItem = /* @__PURE__ */ forwardRef<HTMLElement, SortableItemProps>(function SortableItem({ as: Tag = "li", className, ...props }, ref) {
   const Element = Tag as ElementType;
   return <Element ref={ref} className={cx(draggableClass, sortableItemClass, className)} {...props} />;
 });
@@ -118,7 +118,7 @@ export interface DragDropAreaProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 }
 
 /** Holds several DropTargets and moves items between them (a board's columns). Items also reorder inside a target. */
-export const DragDropArea = forwardRef<HTMLDivElement, DragDropAreaProps>(function DragDropArea(
+export const DragDropArea = /* @__PURE__ */ forwardRef<HTMLDivElement, DragDropAreaProps>(function DragDropArea(
   { orientation, handle = true, onMove, accepts, canDrag, describe, ...props },
   ref,
 ) {
@@ -143,7 +143,7 @@ export interface DropTargetProps extends HTMLAttributes<HTMLElement> {
 }
 
 /** A place items can be dropped. It shows ready, over and reject while something is dragged. Give it a data-id, and data-accepts="bug feature" to take only those items' data-type. */
-export const DropTarget = forwardRef<HTMLElement, DropTargetProps>(function DropTarget({ as: Tag = "ul", list = true, className, ...props }, ref) {
+export const DropTarget = /* @__PURE__ */ forwardRef<HTMLElement, DropTargetProps>(function DropTarget({ as: Tag = "ul", list = true, className, ...props }, ref) {
   const Element = Tag as ElementType;
   return <Element ref={ref} className={cx(dropTargetClass, list && sortableClassName(), className)} {...props} />;
 });

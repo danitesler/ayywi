@@ -146,7 +146,6 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Density</h1>
         <p className="ayy-lede">
           Density changes how much room the interface takes. Compact fits the most on screen, comfortable gives things more space, and touch makes controls large enough for fingers. Control heights, padding and text sizes all follow it.

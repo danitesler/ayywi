@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { distFile } from "./helpers";
 
 // Regressions from the 2026-10-28 component audit, on a plain HTML page with only the two dist files
 // (the framework-free helpers and the custom elements). Run `pnpm build` first.
-const read = (p: string) => readFileSync(new URL(`../../dist/${p}`, import.meta.url), "utf8");
+const read = (p: string) => readFileSync(distFile(p), "utf8");
 
 async function load(page: Page, body: string) {
   await page.route("**/smoke/**", (r) => {

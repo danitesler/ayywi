@@ -2,7 +2,7 @@ import { createContext, forwardRef, useContext, useId, type DetailsHTMLAttribute
 import { cx } from "../../lib/cx";
 import { accordionClass, accordionContentClass, accordionItemClass, accordionTriggerClass } from "./accordion";
 
-const AccordionContext = createContext<string | undefined>(undefined);
+const AccordionContext = /* @__PURE__ */ createContext<string | undefined>(undefined);
 
 export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   /** Only one item open at a time (every <details> gets the same name). */
@@ -10,7 +10,7 @@ export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** A stack of AccordionItem, divided by hairlines. */
-export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(function Accordion({ single, className, ...props }, ref) {
+export const Accordion = /* @__PURE__ */ forwardRef<HTMLDivElement, AccordionProps>(function Accordion({ single, className, ...props }, ref) {
   const name = useId();
   return (
     <AccordionContext.Provider value={single ? name : undefined}>
@@ -25,7 +25,7 @@ export interface AccordionItemProps extends Omit<DetailsHTMLAttributes<HTMLDetai
 }
 
 /** A native <details>: the label is its <summary>, the children its content. Pass `open` to start expanded. */
-export const AccordionItem = forwardRef<HTMLDetailsElement, AccordionItemProps>(function AccordionItem(
+export const AccordionItem = /* @__PURE__ */ forwardRef<HTMLDetailsElement, AccordionItemProps>(function AccordionItem(
   { label, className, children, ...props },
   ref,
 ) {

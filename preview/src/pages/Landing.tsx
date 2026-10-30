@@ -28,7 +28,7 @@ import { Thumb } from "./Components";
 
 const example = (ref: string) => {
   const [slug, id] = ref.split("/");
-  return components.find((c) => c.slug === slug)?.examples.find((e) => e.id === id)?.Component ?? null;
+  return components.find((c) => c.slug === slug)?.examples.find((e) => e.id === id);
 };
 
 /** The hero's collage: real examples, small, in the page's theme and brand. Columns read top to bottom. */
@@ -250,7 +250,7 @@ function AppStrip() {
             <div key={copy} className="pv-apps__row" data-pv-copy="" aria-hidden={copy === "repeat" || undefined}>
               {showcaseApps.map((app) => (
                 <a key={app.id} className="pv-apps__shot" href={`#/examples/${app.id}`} tabIndex={copy === "repeat" ? -1 : undefined}>
-                  <img src={app.screenshot} alt={`${app.name}, ${app.kind}`} loading="lazy" width={1280} height={800} />
+                  <img src={app.screenshot} alt={app.kind} loading="lazy" width={1280} height={800} />
                 </a>
               ))}
             </div>
@@ -298,7 +298,7 @@ export function Landing({ onSearch }: { onSearch: () => void }) {
           <div key={i} className="pv-collage__column">
             {column.map((tile) => (
               <div key={tile.ref} className="pv-collage__tile">
-                <Thumb Component={example(tile.ref)} zoom={tile.zoom ?? 0.8} />
+                <Thumb example={example(tile.ref)} zoom={tile.zoom ?? 0.8} />
               </div>
             ))}
           </div>
@@ -322,7 +322,7 @@ export function Landing({ onSearch }: { onSearch: () => void }) {
         visual={
           <div className="pv-feature__thumbs">
             {["button/variants", "switch/basic", "badge/variants", "progress/basic"].map((ref) => (
-              <Thumb key={ref} Component={example(ref)} zoom={0.7} />
+              <Thumb key={ref} example={example(ref)} zoom={0.7} />
             ))}
           </div>
         }

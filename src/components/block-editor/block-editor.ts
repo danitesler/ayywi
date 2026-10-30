@@ -954,7 +954,7 @@ const codeText = (el: Node) => inlineText(cleanDom(el));
 const isElement = (node: Node | null | undefined): node is HTMLElement => !!node && node.nodeType === 1;
 const SKIP_TAGS = new Set(["script", "style", "template", "iframe", "object", "embed", "svg", "math", "head", "meta", "link", "title", "input", "button", "select", "textarea"]);
 const BLOCK_TAGS = new Set(["p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "blockquote", "pre", "hr", "img", "figure", "table", "tr", "section", "article", "header", "footer", "main", "aside", "nav", "dl", "dt", "dd"]);
-const BLOCK_SELECTOR = [...BLOCK_TAGS].join(",");
+const BLOCK_SELECTOR = /* @__PURE__ */ [...BLOCK_TAGS].join(",");
 const escapeText = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /** An element's inline content as the editor's stored HTML: marks, safe links and mention chips; pasted styles (Google Docs' bold spans) become marks. */

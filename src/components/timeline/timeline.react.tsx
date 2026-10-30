@@ -17,7 +17,7 @@ export interface TimelineProps extends OlHTMLAttributes<HTMLOListElement> {
 }
 
 /** Chronological log or history of events. An ordered list (<ol>) by default. */
-export const Timeline = forwardRef<HTMLOListElement, TimelineProps>(function Timeline(
+export const Timeline = /* @__PURE__ */ forwardRef<HTMLOListElement, TimelineProps>(function Timeline(
   { alternate, className, ...props },
   ref,
 ) {
@@ -30,7 +30,7 @@ export interface TimelineItemProps extends LiHTMLAttributes<HTMLLIElement> {
 }
 
 /** Single event entry row containing the track, marker and content. */
-export const TimelineItem = forwardRef<HTMLLIElement, TimelineItemProps>(function TimelineItem(
+export const TimelineItem = /* @__PURE__ */ forwardRef<HTMLLIElement, TimelineItemProps>(function TimelineItem(
   { marker, className, children, ...props },
   ref,
 ) {
@@ -48,7 +48,7 @@ export interface TimelineMarkerProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** Circle dot, icon or avatar placed on the track at an event node. */
-export const TimelineMarker = forwardRef<HTMLSpanElement, TimelineMarkerProps>(function TimelineMarker(
+export const TimelineMarker = /* @__PURE__ */ forwardRef<HTMLSpanElement, TimelineMarkerProps>(function TimelineMarker(
   { pulse, className, ...props },
   ref,
 ) {
@@ -58,7 +58,7 @@ export const TimelineMarker = forwardRef<HTMLSpanElement, TimelineMarkerProps>(f
 export interface TimelineContentProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** Container holding the event details (time, title, body). */
-export const TimelineContent = forwardRef<HTMLDivElement, TimelineContentProps>(function TimelineContent(
+export const TimelineContent = /* @__PURE__ */ forwardRef<HTMLDivElement, TimelineContentProps>(function TimelineContent(
   { className, ...props },
   ref,
 ) {
@@ -68,7 +68,7 @@ export const TimelineContent = forwardRef<HTMLDivElement, TimelineContentProps>(
 export interface TimelineTimeProps extends TimeHTMLAttributes<HTMLTimeElement> {}
 
 /** Muted timestamp or date with tabular numbers. */
-export const TimelineTime = forwardRef<HTMLTimeElement, TimelineTimeProps>(function TimelineTime(
+export const TimelineTime = /* @__PURE__ */ forwardRef<HTMLTimeElement, TimelineTimeProps>(function TimelineTime(
   { className, ...props },
   ref,
 ) {
@@ -78,7 +78,7 @@ export const TimelineTime = forwardRef<HTMLTimeElement, TimelineTimeProps>(funct
 export interface TimelineTitleProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** Heading or summary of the event. */
-export const TimelineTitle = forwardRef<HTMLDivElement, TimelineTitleProps>(function TimelineTitle(
+export const TimelineTitle = /* @__PURE__ */ forwardRef<HTMLDivElement, TimelineTitleProps>(function TimelineTitle(
   { className, ...props },
   ref,
 ) {
@@ -88,7 +88,7 @@ export const TimelineTitle = forwardRef<HTMLDivElement, TimelineTitleProps>(func
 export interface TimelineBodyProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** Supporting text, description or status badge for the event. */
-export const TimelineBody = forwardRef<HTMLDivElement, TimelineBodyProps>(function TimelineBody(
+export const TimelineBody = /* @__PURE__ */ forwardRef<HTMLDivElement, TimelineBodyProps>(function TimelineBody(
   { className, ...props },
   ref,
 ) {

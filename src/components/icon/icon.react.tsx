@@ -18,7 +18,7 @@ export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "strokeWid
 }
 
 /** A Hugeicons icon (or any icon in the same format) as inline SVG. It takes the text colour. */
-export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
+export const Icon = /* @__PURE__ */ forwardRef<SVGSVGElement, IconProps>(function Icon(
   { icon, size, directional, name, label, strokeWidth, className, ...props },
   ref,
 ) {

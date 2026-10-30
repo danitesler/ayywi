@@ -7,7 +7,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   size?: InputSize;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+export const Input = /* @__PURE__ */ forwardRef<HTMLInputElement, InputProps>(function Input(
   { size, className, type = "text", ...props },
   ref,
 ) {
@@ -19,12 +19,12 @@ export interface InputGroupProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** An Input with an icon, InputGroupAddon text or a small Button inside its box. Put the Input in as a direct child. */
-export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(function InputGroup({ size, className, ...props }, ref) {
+export const InputGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, InputGroupProps>(function InputGroup({ size, className, ...props }, ref) {
   return <div ref={ref} className={inputGroupClass({ size, className })} {...props} />;
 });
 
 /** Text beside the input: a prefix (https://), a suffix (USD) or a Kbd hint. */
-export const InputGroupAddon = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(function InputGroupAddon(
+export const InputGroupAddon = /* @__PURE__ */ forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(function InputGroupAddon(
   { className, ...props },
   ref,
 ) {

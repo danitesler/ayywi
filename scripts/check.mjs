@@ -589,10 +589,9 @@ try {
     }
   }
 
-  // The preview loads every pack, so the site can wear any of them.
-  const previewPacks = read("preview/src/icon-packs.css");
-  for (const { id } of loadPacks(root)) {
-    if (!previewPacks.includes(`@import "../../src/css/icon-packs/${id}.css";`)) fail("preview/src/icon-packs.css", `doesn't import the ${id} pack`);
+  // The preview can load every pack, so the site can wear any of them.
+  if (!read("preview/src/icon-packs.ts").includes('import.meta.glob("../../src/css/icon-packs/*.css")')) {
+    fail("preview/src/icon-packs.ts", "doesn't load the packs from src/css/icon-packs/");
   }
 }
 

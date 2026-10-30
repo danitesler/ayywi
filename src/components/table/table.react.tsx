@@ -89,7 +89,7 @@ export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
 }
 
 /** Wrapped in a horizontally scrollable container so wide tables never break the layout. */
-export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
+export const Table = /* @__PURE__ */ forwardRef<HTMLTableElement, TableProps>(function Table(
   { compact, spacious, bordered, sticky, fixed, reorderable, onColumnResize, onCellEdit, onColumnReorder, onRowReorder, onColumnAction, wrapperProps, className, ...props },
   ref,
 ) {
@@ -151,32 +151,32 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
 export interface TableContainerProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** A framed table: TableToolbar, Table, TablePager. Give it a max-block-size to scroll a sticky table inside it. */
-export const TableContainer = forwardRef<HTMLDivElement, TableContainerProps>(function TableContainer({ className, ...props }, ref) {
+export const TableContainer = /* @__PURE__ */ forwardRef<HTMLDivElement, TableContainerProps>(function TableContainer({ className, ...props }, ref) {
   return <div ref={ref} className={cx(tableContainerClass, className)} {...props} />;
 });
 
 export interface TableToolbarProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** The bar above the table: a TableHeading and TableTools (search, filters, a columns menu, a primary action). */
-export const TableToolbar = forwardRef<HTMLDivElement, TableToolbarProps>(function TableToolbar({ className, ...props }, ref) {
+export const TableToolbar = /* @__PURE__ */ forwardRef<HTMLDivElement, TableToolbarProps>(function TableToolbar({ className, ...props }, ref) {
   return <div ref={ref} className={cx(tableToolbarClass, className)} {...props} />;
 });
 
 export interface TableHeadingProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const TableHeading = forwardRef<HTMLDivElement, TableHeadingProps>(function TableHeading({ className, ...props }, ref) {
+export const TableHeading = /* @__PURE__ */ forwardRef<HTMLDivElement, TableHeadingProps>(function TableHeading({ className, ...props }, ref) {
   return <div ref={ref} className={cx(tableHeadingClass, className)} {...props} />;
 });
 
 export interface TableTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 
-export const TableTitle = forwardRef<HTMLHeadingElement, TableTitleProps>(function TableTitle({ className, ...props }, ref) {
+export const TableTitle = /* @__PURE__ */ forwardRef<HTMLHeadingElement, TableTitleProps>(function TableTitle({ className, ...props }, ref) {
   return <h2 ref={ref} className={cx(tableTitleClass, className)} {...props} />;
 });
 
 export interface TableDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const TableDescription = forwardRef<HTMLParagraphElement, TableDescriptionProps>(function TableDescription(
+export const TableDescription = /* @__PURE__ */ forwardRef<HTMLParagraphElement, TableDescriptionProps>(function TableDescription(
   { className, ...props },
   ref,
 ) {
@@ -185,21 +185,21 @@ export const TableDescription = forwardRef<HTMLParagraphElement, TableDescriptio
 
 export interface TableToolsProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const TableTools = forwardRef<HTMLDivElement, TableToolsProps>(function TableTools({ className, ...props }, ref) {
+export const TableTools = /* @__PURE__ */ forwardRef<HTMLDivElement, TableToolsProps>(function TableTools({ className, ...props }, ref) {
   return <div ref={ref} className={cx(tableToolsClass, className)} {...props} />;
 });
 
 export interface TablePagerProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** The bar under the table: the range shown ("1–10 of 48") and a Pagination. */
-export const TablePager = forwardRef<HTMLDivElement, TablePagerProps>(function TablePager({ className, ...props }, ref) {
+export const TablePager = /* @__PURE__ */ forwardRef<HTMLDivElement, TablePagerProps>(function TablePager({ className, ...props }, ref) {
   return <div ref={ref} className={cx(tablePagerClass, className)} {...props} />;
 });
 
 export interface TableHeaderProps extends HTMLAttributes<HTMLTableSectionElement> {
 }
 
-export const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
+export const TableHeader = /* @__PURE__ */ forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   function TableHeader(props, ref) {
     return <thead ref={ref} {...props} />;
   },
@@ -208,7 +208,7 @@ export const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>
 export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
 }
 
-export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
+export const TableBody = /* @__PURE__ */ forwardRef<HTMLTableSectionElement, TableBodyProps>(
   function TableBody(props, ref) {
     return <tbody ref={ref} {...props} />;
   },
@@ -217,7 +217,7 @@ export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
 export interface TableFooterProps extends HTMLAttributes<HTMLTableSectionElement> {
 }
 
-export const TableFooter = forwardRef<HTMLTableSectionElement, TableFooterProps>(
+export const TableFooter = /* @__PURE__ */ forwardRef<HTMLTableSectionElement, TableFooterProps>(
   function TableFooter(props, ref) {
     return <tfoot ref={ref} {...props} />;
   },
@@ -232,7 +232,7 @@ export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   detail?: boolean;
 }
 
-export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow(
+export const TableRow = /* @__PURE__ */ forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow(
   { selected, disabled, detail, className, ...props },
   ref,
 ) {
@@ -291,7 +291,7 @@ export interface TableHeadProps extends ThHTMLAttributes<HTMLTableCellElement>, 
   reorderable?: boolean;
 }
 
-export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(
+export const TableHead = /* @__PURE__ */ forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(
   { numeric, select, reorder, actions, pin, wrap, icon, menu, sort, onSort, resizable, reorderable, className, scope = "col", children, ...props },
   ref,
 ) {
@@ -313,7 +313,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(functi
   );
 });
 
-export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
+export const TableCell = /* @__PURE__ */ forwardRef<HTMLTableCellElement, TableCellProps>(
   function TableCell({ numeric, select, reorder, actions, pin, truncate, wrap, className, children, ...props }, ref) {
     return (
       <td ref={ref} className={cx(cellClass({ numeric, select, reorder, actions, pin }, className), wrap && tableCellWrapClass) || undefined} {...props}>
@@ -326,7 +326,7 @@ export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
 export interface TableResizeProps extends HTMLAttributes<HTMLSpanElement> {}
 
 /** A column's resize handle (a separator). TableHead resizable renders it; Table wires the dragging and keys. */
-export const TableResize = forwardRef<HTMLSpanElement, TableResizeProps>(function TableResize({ className, ...props }, ref) {
+export const TableResize = /* @__PURE__ */ forwardRef<HTMLSpanElement, TableResizeProps>(function TableResize({ className, ...props }, ref) {
   return (
     <span
       ref={ref}
@@ -345,7 +345,7 @@ export interface TableExpandProps extends ButtonHTMLAttributes<HTMLButtonElement
 }
 
 /** The chevron that opens a row's detail row. Give it an aria-label naming the row ("Show details for INV-1042"). */
-export const TableExpand = forwardRef<HTMLButtonElement, TableExpandProps>(function TableExpand(
+export const TableExpand = /* @__PURE__ */ forwardRef<HTMLButtonElement, TableExpandProps>(function TableExpand(
   { expanded, className, type = "button", ...props },
   ref,
 ) {
@@ -358,7 +358,7 @@ export interface TableGroupProps extends HTMLAttributes<HTMLTableRowElement> {
 }
 
 /** A row heading the rows under it ("Overdue", "This week"). Start each group's <TableBody> with one. */
-export const TableGroup = forwardRef<HTMLTableRowElement, TableGroupProps>(function TableGroup(
+export const TableGroup = /* @__PURE__ */ forwardRef<HTMLTableRowElement, TableGroupProps>(function TableGroup(
   { colSpan, className, children, ...props },
   ref,
 ) {
@@ -377,7 +377,7 @@ export interface TableEmptyProps extends HTMLAttributes<HTMLTableRowElement> {
 }
 
 /** The one row a table has when nothing matches: a line of text or an EmptyState. */
-export const TableEmpty = forwardRef<HTMLTableRowElement, TableEmptyProps>(function TableEmpty(
+export const TableEmpty = /* @__PURE__ */ forwardRef<HTMLTableRowElement, TableEmptyProps>(function TableEmpty(
   { colSpan, children, ...props },
   ref,
 ) {
@@ -393,20 +393,20 @@ export const TableEmpty = forwardRef<HTMLTableRowElement, TableEmptyProps>(funct
 export interface TableRowLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
 /** The row's main link, stretched over the whole row. Other controls in the row stay clickable above it. */
-export const TableRowLink = forwardRef<HTMLAnchorElement, TableRowLinkProps>(function TableRowLink({ className, ...props }, ref) {
+export const TableRowLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement, TableRowLinkProps>(function TableRowLink({ className, ...props }, ref) {
   return <a ref={ref} className={cx(tableRowLinkClass, className)} {...props} />;
 });
 
 export interface TableMediaProps extends HTMLAttributes<HTMLDivElement> {}
 
 /** A cell's Avatar or icon followed by a name and a TableSecondary line. */
-export const TableMedia = forwardRef<HTMLDivElement, TableMediaProps>(function TableMedia({ className, ...props }, ref) {
+export const TableMedia = /* @__PURE__ */ forwardRef<HTMLDivElement, TableMediaProps>(function TableMedia({ className, ...props }, ref) {
   return <div ref={ref} className={cx(tableMediaClass, className)} {...props} />;
 });
 
 export interface TableSecondaryProps extends HTMLAttributes<HTMLSpanElement> {}
 
-export const TableSecondary = forwardRef<HTMLSpanElement, TableSecondaryProps>(function TableSecondary({ className, ...props }, ref) {
+export const TableSecondary = /* @__PURE__ */ forwardRef<HTMLSpanElement, TableSecondaryProps>(function TableSecondary({ className, ...props }, ref) {
   return <span ref={ref} className={cx(tableSecondaryClass, className)} {...props} />;
 });
 
@@ -415,7 +415,7 @@ export interface TableRowActionsProps extends HTMLAttributes<HTMLDivElement> {
   reveal?: boolean;
 }
 
-export const TableRowActions = forwardRef<HTMLDivElement, TableRowActionsProps>(function TableRowActions(
+export const TableRowActions = /* @__PURE__ */ forwardRef<HTMLDivElement, TableRowActionsProps>(function TableRowActions(
   { reveal, className, ...props },
   ref,
 ) {
@@ -446,7 +446,7 @@ export interface TableEditProps {
  * on click with the text where it was, saves on Enter or blur and reverts on Escape. A save also bubbles "ayy-change", so
  * the Table's onCellEdit hears it.
  */
-export const TableEdit = forwardRef<HTMLDivElement, TableEditProps>(function TableEdit(
+export const TableEdit = /* @__PURE__ */ forwardRef<HTMLDivElement, TableEditProps>(function TableEdit(
   { "aria-label": label, inputMode, className, onValueCommit, multiline, ...props },
   ref,
 ) {
@@ -470,7 +470,7 @@ export const TableEdit = forwardRef<HTMLDivElement, TableEditProps>(function Tab
 export interface TableCaptionProps extends HTMLAttributes<HTMLTableCaptionElement> {
 }
 
-export const TableCaption = forwardRef<HTMLTableCaptionElement, TableCaptionProps>(
+export const TableCaption = /* @__PURE__ */ forwardRef<HTMLTableCaptionElement, TableCaptionProps>(
   function TableCaption(props, ref) {
     return <caption ref={ref} {...props} />;
   },

@@ -9,7 +9,6 @@ export function NotFound({ path }: { path: string }) {
   return (
     <article className="pv-page pv-page--center">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">404</p>
         <h1 className="ayy-h2">This page doesn't exist</h1>
         <p className="ayy-lede">
           Nothing lives at <code className="ayy-code">#/{path}</code>.{close.length ? " Did you mean one of these?" : ""}

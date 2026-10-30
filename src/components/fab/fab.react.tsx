@@ -14,7 +14,7 @@ export interface FabProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
 }
 
 /** The screen's main action, floating at the bottom inline-end corner. Children: an Icon (and a label when extended). */
-export const Fab = forwardRef<HTMLButtonElement & HTMLAnchorElement, FabProps>(function Fab(
+export const Fab = /* @__PURE__ */ forwardRef<HTMLButtonElement & HTMLAnchorElement, FabProps>(function Fab(
   { variant, size, extended, inline, href, type = "button", className, ...props },
   ref,
 ) {

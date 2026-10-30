@@ -15,7 +15,7 @@ export interface PropertyListProps extends HTMLAttributes<HTMLDListElement> {
 }
 
 /** A record's attributes as a <dl> of PropertyRow rows. */
-export const PropertyList = forwardRef<HTMLDListElement, PropertyListProps>(function PropertyList(
+export const PropertyList = /* @__PURE__ */ forwardRef<HTMLDListElement, PropertyListProps>(function PropertyList(
   { compact, className, ...props },
   ref,
 ) {
@@ -34,7 +34,7 @@ export interface PropertyRowProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** One row: a term (an icon and a label) and its value. Read-only values are plain content; editable ones nest InlineEdit. */
-export const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow(
+export const PropertyRow = /* @__PURE__ */ forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow(
   { label, icon, empty = false, emptyText = "Not set", className, children, ...props },
   ref,
 ) {

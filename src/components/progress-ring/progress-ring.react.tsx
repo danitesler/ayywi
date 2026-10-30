@@ -11,7 +11,7 @@ export interface ProgressRingProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** Progress as a ring that fills clockwise from the top. Children go in the middle: the value, a time, an icon. */
-export const ProgressRing = forwardRef<HTMLDivElement, ProgressRingProps>(function ProgressRing(
+export const ProgressRing = /* @__PURE__ */ forwardRef<HTMLDivElement, ProgressRingProps>(function ProgressRing(
   { value, variant, size, className, style, children, ...props },
   ref,
 ) {

@@ -54,7 +54,6 @@ export function PrinciplesPage() {
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">Start</p>
         <h1 className="ayy-h2">Principles</h1>
         <p className="ayy-lede">Five ideas every component and token is held to. Hover a row to see it move.</p>
       </header>

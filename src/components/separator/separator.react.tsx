@@ -7,7 +7,7 @@ export interface SeparatorProps extends HTMLAttributes<HTMLHRElement> {
   fade?: boolean;
 }
 
-export const Separator = forwardRef<HTMLHRElement, SeparatorProps>(function Separator(
+export const Separator = /* @__PURE__ */ forwardRef<HTMLHRElement, SeparatorProps>(function Separator(
   { orientation = "horizontal", fade, className, ...props },
   ref,
 ) {

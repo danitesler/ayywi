@@ -45,7 +45,7 @@ export interface NotificationToastProps extends Omit<HTMLAttributes<HTMLDivEleme
   closeLabel?: string;
 }
 
-export const NotificationToast = forwardRef<HTMLDivElement, NotificationToastProps>(function NotificationToast(
+export const NotificationToast = /* @__PURE__ */ forwardRef<HTMLDivElement, NotificationToastProps>(function NotificationToast(
   {
     variant = "default",
     title,
@@ -143,7 +143,7 @@ export interface CardToastProps extends HTMLAttributes<HTMLDivElement> {
   ratio?: number | string;
 }
 
-export const CardToast = forwardRef<HTMLDivElement, CardToastProps>(function CardToast(
+export const CardToast = /* @__PURE__ */ forwardRef<HTMLDivElement, CardToastProps>(function CardToast(
   { split, ratio, className, style, children, ...props },
   ref,
 ) {
@@ -164,7 +164,7 @@ export const CardToast = forwardRef<HTMLDivElement, CardToastProps>(function Car
 
 export interface CardToastThumbProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardToastThumb = forwardRef<HTMLDivElement, CardToastThumbProps>(function CardToastThumb(
+export const CardToastThumb = /* @__PURE__ */ forwardRef<HTMLDivElement, CardToastThumbProps>(function CardToastThumb(
   { className, children, ...props },
   ref,
 ) {
@@ -177,7 +177,7 @@ export const CardToastThumb = forwardRef<HTMLDivElement, CardToastThumbProps>(fu
 
 export interface CardToastBackdropProps extends ImgHTMLAttributes<HTMLImageElement> {}
 
-export const CardToastBackdrop = forwardRef<HTMLImageElement, CardToastBackdropProps>(function CardToastBackdrop(
+export const CardToastBackdrop = /* @__PURE__ */ forwardRef<HTMLImageElement, CardToastBackdropProps>(function CardToastBackdrop(
   { className, alt = "", width, height, ...props },
   ref,
 ) {
@@ -197,7 +197,7 @@ export const CardToastBackdrop = forwardRef<HTMLImageElement, CardToastBackdropP
 
 export interface CardToastImageProps extends ImgHTMLAttributes<HTMLImageElement> {}
 
-export const CardToastImage = forwardRef<HTMLImageElement, CardToastImageProps>(function CardToastImage(
+export const CardToastImage = /* @__PURE__ */ forwardRef<HTMLImageElement, CardToastImageProps>(function CardToastImage(
   { className, alt = "", width, height, ...props },
   ref,
 ) {
@@ -216,7 +216,7 @@ export const CardToastImage = forwardRef<HTMLImageElement, CardToastImageProps>(
 
 export interface CardToastMediaProps extends HTMLAttributes<HTMLSpanElement> {}
 
-export const CardToastMedia = forwardRef<HTMLSpanElement, CardToastMediaProps>(function CardToastMedia(
+export const CardToastMedia = /* @__PURE__ */ forwardRef<HTMLSpanElement, CardToastMediaProps>(function CardToastMedia(
   { className, children, ...props },
   ref,
 ) {
@@ -229,7 +229,7 @@ export const CardToastMedia = forwardRef<HTMLSpanElement, CardToastMediaProps>(f
 
 export interface CardToastScrimProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardToastScrim = forwardRef<HTMLDivElement, CardToastScrimProps>(function CardToastScrim(
+export const CardToastScrim = /* @__PURE__ */ forwardRef<HTMLDivElement, CardToastScrimProps>(function CardToastScrim(
   { className, children, ...props },
   ref,
 ) {
@@ -249,7 +249,7 @@ export interface CardToastCloseProps extends ButtonHTMLAttributes<HTMLButtonElem
   side?: TooltipSide;
 }
 
-export const CardToastClose = forwardRef<HTMLButtonElement, CardToastCloseProps>(function CardToastClose(
+export const CardToastClose = /* @__PURE__ */ forwardRef<HTMLButtonElement, CardToastCloseProps>(function CardToastClose(
   { className, label = "Dismiss", tooltip = true, side = "bottom", ...props },
   ref,
 ) {
@@ -271,7 +271,7 @@ export interface CardToastCornerProps extends HTMLAttributes<HTMLDivElement> {
   position?: "top" | "top-start" | "bottom-start" | "bottom-end";
 }
 
-export const CardToastCorner = forwardRef<HTMLDivElement, CardToastCornerProps>(function CardToastCorner(
+export const CardToastCorner = /* @__PURE__ */ forwardRef<HTMLDivElement, CardToastCornerProps>(function CardToastCorner(
   { position = "top-start", className, children, ...props },
   ref,
 ) {
@@ -284,7 +284,7 @@ export const CardToastCorner = forwardRef<HTMLDivElement, CardToastCornerProps>(
 
 export interface CardToastCenterProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardToastCenter = forwardRef<HTMLDivElement, CardToastCenterProps>(function CardToastCenter(
+export const CardToastCenter = /* @__PURE__ */ forwardRef<HTMLDivElement, CardToastCenterProps>(function CardToastCenter(
   { className, children, ...props },
   ref,
 ) {
@@ -306,7 +306,7 @@ export interface CardToastActionProps extends ButtonHTMLAttributes<HTMLButtonEle
 }
 
 /** An icon button in a card toast's corner: a Hover action, sized and frosted the same way. */
-export const CardToastAction = forwardRef<HTMLButtonElement, CardToastActionProps>(function CardToastAction(
+export const CardToastAction = /* @__PURE__ */ forwardRef<HTMLButtonElement, CardToastActionProps>(function CardToastAction(
   { className, label, hint, tooltip = true, side, children, ...props },
   ref,
 ) {
@@ -329,7 +329,7 @@ export interface InlineToastProps extends HTMLAttributes<HTMLDivElement> {
   icon?: ReactNode;
 }
 
-export const InlineToast = forwardRef<HTMLDivElement, InlineToastProps>(function InlineToast(
+export const InlineToast = /* @__PURE__ */ forwardRef<HTMLDivElement, InlineToastProps>(function InlineToast(
   { tone = "default", icon, className, children, ...props },
   ref,
 ) {
@@ -346,7 +346,7 @@ export interface CardToastStatusProps extends HTMLAttributes<HTMLDivElement> {
   icon?: ReactNode;
 }
 
-export const CardToastStatus = forwardRef<HTMLDivElement, CardToastStatusProps>(function CardToastStatus(
+export const CardToastStatus = /* @__PURE__ */ forwardRef<HTMLDivElement, CardToastStatusProps>(function CardToastStatus(
   { tone = "success", icon, className, children, ...props },
   ref,
 ) {

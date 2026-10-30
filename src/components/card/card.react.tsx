@@ -27,7 +27,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   view?: boolean;
 }
 
-export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
+export const Card = /* @__PURE__ */ forwardRef<HTMLDivElement, CardProps>(function Card(
   { interactive, spotlight, transparent, featured, view, spotColor, className, style, onPointerMove, ...props },
   ref,
 ) {
@@ -51,7 +51,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
 export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(function CardHeader(
+export const CardHeader = /* @__PURE__ */ forwardRef<HTMLDivElement, CardHeaderProps>(function CardHeader(
   { className, ...props },
   ref,
 ) {
@@ -60,7 +60,7 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(function C
 
 export interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 
-export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(function CardTitle(
+export const CardTitle = /* @__PURE__ */ forwardRef<HTMLHeadingElement, CardTitleProps>(function CardTitle(
   { className, ...props },
   ref,
 ) {
@@ -69,7 +69,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(function
 
 export interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
+export const CardDescription = /* @__PURE__ */ forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   function CardDescription({ className, ...props }, ref) {
     return <p ref={ref} className={cx(cardDescriptionClass, className)} {...props} />;
   },
@@ -77,7 +77,7 @@ export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionP
 
 export interface CardContentProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(function CardContent(
+export const CardContent = /* @__PURE__ */ forwardRef<HTMLDivElement, CardContentProps>(function CardContent(
   { className, ...props },
   ref,
 ) {
@@ -86,7 +86,7 @@ export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(function
 
 export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(function CardFooter(
+export const CardFooter = /* @__PURE__ */ forwardRef<HTMLDivElement, CardFooterProps>(function CardFooter(
   { className, ...props },
   ref,
 ) {
@@ -95,7 +95,7 @@ export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(function C
 
 export interface CardMediaProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const CardMedia = forwardRef<HTMLDivElement, CardMediaProps>(function CardMedia(
+export const CardMedia = /* @__PURE__ */ forwardRef<HTMLDivElement, CardMediaProps>(function CardMedia(
   { className, ...props },
   ref,
 ) {
@@ -105,7 +105,7 @@ export const CardMedia = forwardRef<HTMLDivElement, CardMediaProps>(function Car
 export interface CardLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
 /** The title's link, stretched over the whole card. Put it inside <CardTitle>. */
-export const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(function CardLink(
+export const CardLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement, CardLinkProps>(function CardLink(
   { className, ...props },
   ref,
 ) {
@@ -124,7 +124,7 @@ export interface CardViewMediaProps extends HTMLAttributes<HTMLElement> {
 }
 
 /** The picture area. A link with href, a button with onClick (open, play, annotate), otherwise a plain block. */
-export const CardViewMedia = forwardRef<HTMLElement, CardViewMediaProps>(function CardViewMedia(
+export const CardViewMedia = /* @__PURE__ */ forwardRef<HTMLElement, CardViewMediaProps>(function CardViewMedia(
   { ratio, className, style, children, ...props },
   ref,
 ) {
@@ -158,7 +158,7 @@ export interface CardViewImageProps extends ImgHTMLAttributes<HTMLImageElement> 
 }
 
 /** The picture, letterboxed, over a blurred copy of itself. Renders two <img>s. */
-export const CardViewImage = forwardRef<HTMLImageElement, CardViewImageProps>(function CardViewImage(
+export const CardViewImage = /* @__PURE__ */ forwardRef<HTMLImageElement, CardViewImageProps>(function CardViewImage(
   { backdrop, src, alt = "", className, ...props },
   ref,
 ) {
@@ -176,7 +176,7 @@ export interface CardViewBadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** The kind and length of a recording ("0:42"), top start corner. */
-export const CardViewBadge = forwardRef<HTMLSpanElement, CardViewBadgeProps>(function CardViewBadge(
+export const CardViewBadge = /* @__PURE__ */ forwardRef<HTMLSpanElement, CardViewBadgeProps>(function CardViewBadge(
   { icon, className, children, ...props },
   ref,
 ) {
@@ -189,7 +189,7 @@ export const CardViewBadge = forwardRef<HTMLSpanElement, CardViewBadgeProps>(fun
 });
 
 /** The "this plays" badge in the top end corner. It fades when hover actions take the corner. */
-export const CardViewPlay = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(function CardViewPlay(
+export const CardViewPlay = /* @__PURE__ */ forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(function CardViewPlay(
   { className, ...props },
   ref,
 ) {
@@ -200,7 +200,7 @@ export const CardViewPlay = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanE
   );
 });
 
-export const CardViewBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardViewBody(
+export const CardViewBody = /* @__PURE__ */ forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardViewBody(
   { className, children, ...props },
   ref,
 ) {
@@ -211,7 +211,7 @@ export const CardViewBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEle
   );
 });
 
-export const CardViewText = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardViewText(
+export const CardViewText = /* @__PURE__ */ forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardViewText(
   { className, children, ...props },
   ref,
 ) {
@@ -222,7 +222,7 @@ export const CardViewText = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEle
   );
 });
 
-export const CardViewTitle = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function CardViewTitle(
+export const CardViewTitle = /* @__PURE__ */ forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function CardViewTitle(
   { className, children, ...props },
   ref,
 ) {
@@ -233,7 +233,7 @@ export const CardViewTitle = forwardRef<HTMLParagraphElement, HTMLAttributes<HTM
   );
 });
 
-export const CardViewMeta = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function CardViewMeta(
+export const CardViewMeta = /* @__PURE__ */ forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(function CardViewMeta(
   { className, children, ...props },
   ref,
 ) {
@@ -244,7 +244,7 @@ export const CardViewMeta = forwardRef<HTMLParagraphElement, HTMLAttributes<HTML
   );
 });
 
-export const CardViewBadges = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardViewBadges(
+export const CardViewBadges = /* @__PURE__ */ forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function CardViewBadges(
   { className, children, ...props },
   ref,
 ) {

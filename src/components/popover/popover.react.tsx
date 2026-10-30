@@ -29,7 +29,7 @@ interface PopoverContextValue {
   controllerRef: MutableRefObject<PopoverController | null>;
 }
 
-const PopoverContext = createContext<PopoverContextValue | null>(null);
+const PopoverContext = /* @__PURE__ */ createContext<PopoverContextValue | null>(null);
 
 function usePopover(component: string): PopoverContextValue {
   const ctx = useContext(PopoverContext);
@@ -75,7 +75,7 @@ export interface PopoverTriggerProps extends ButtonProps {
 }
 
 /** The button that opens the popover. Accepts all Button props, or pass asChild to clone a custom trigger element. */
-export const PopoverTrigger = forwardRef<HTMLButtonElement, PopoverTriggerProps>(function PopoverTrigger(
+export const PopoverTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, PopoverTriggerProps>(function PopoverTrigger(
   { asChild = false, children, ...props },
   ref,
 ) {
@@ -103,7 +103,7 @@ export interface PopoverContentProps extends HTMLAttributes<HTMLDivElement> {
   align?: FloatingAlign;
 }
 
-export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(function PopoverContent(
+export const PopoverContent = /* @__PURE__ */ forwardRef<HTMLDivElement, PopoverContentProps>(function PopoverContent(
   { side = "bottom", align = "center", className, ...props },
   ref,
 ) {

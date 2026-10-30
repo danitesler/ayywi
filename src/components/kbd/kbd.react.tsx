@@ -15,7 +15,7 @@ export interface KbdProps extends HTMLAttributes<HTMLElement> {
  * A key or shortcut hint: <Kbd>⌘K</Kbd> or <Kbd keyName="mod" />. With keyName, a symbol (⌘ ⌥ ⇧ ⌃ ↩ ⌫) gets an
  * aria-label so screen readers say the key's name. The server and the first render draw Windows names.
  */
-export const Kbd = forwardRef<HTMLElement, KbdProps>(function Kbd({ keyName, platform, children, className, ...props }, ref) {
+export const Kbd = /* @__PURE__ */ forwardRef<HTMLElement, KbdProps>(function Kbd({ keyName, platform, children, className, ...props }, ref) {
   const detected = usePlatform();
   const target = platform ?? detected;
   const label = keyName ? platformKeyLabel(keyName, target) : undefined;

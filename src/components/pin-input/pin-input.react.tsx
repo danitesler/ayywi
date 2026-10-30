@@ -43,7 +43,7 @@ export interface PinInputProps extends Omit<HTMLAttributes<HTMLDivElement>, "def
 }
 
 /** Segmented PIN / OTP input for verification codes, 2FA tokens and passcodes. */
-export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(function PinInput(
+export const PinInput = /* @__PURE__ */ forwardRef<HTMLDivElement, PinInputProps>(function PinInput(
   {
     length = 6,
     groups,

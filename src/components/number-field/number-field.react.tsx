@@ -21,7 +21,7 @@ export interface NumberFieldProps extends Omit<InputHTMLAttributes<HTMLInputElem
 }
 
 /** A native number input between minus and plus buttons. Label the input (htmlFor its id, or aria-label). */
-export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(function NumberField(
+export const NumberField = /* @__PURE__ */ forwardRef<HTMLInputElement, NumberFieldProps>(function NumberField(
   {
     value: controlled,
     defaultValue,

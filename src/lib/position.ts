@@ -128,3 +128,27 @@ export function autoPlace(floating: HTMLElement, anchor: Element, options: Place
 export function supportsPopover(): boolean {
   return typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype;
 }
+
+let sourceOption: boolean | undefined;
+
+/**
+ * Does showPopover() take { source }? (Chrome 133, Firefox 141, Safari 18.4.) A source nests the popover in the one
+ * around it even when it sits elsewhere in the page, as a click on a popovertarget button does. Reading the option
+ * is the test: browsers without it ignore the argument, and the call throws either way on a plain div.
+ */
+export function supportsPopoverSource(): boolean {
+  if (sourceOption !== undefined) return sourceOption;
+  if (!supportsPopover()) return false;
+  sourceOption = false;
+  try {
+    document.createElement("div").showPopover({
+      get source() {
+        sourceOption = true;
+        return undefined;
+      },
+    });
+  } catch {
+    // No popover attribute: expected.
+  }
+  return sourceOption;
+}

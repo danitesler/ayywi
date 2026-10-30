@@ -37,8 +37,10 @@ export function canonical(path: string): string {
       return "";
     case "docs":
       return second ? path : "docs/get-started";
-    case "components":
     case "examples":
+      // The support inbox example was replaced by the dating app.
+      return second === "inbox" ? "examples/dating" : path;
+    case "components":
     case "themes":
       return path;
     case "get-started":
@@ -49,7 +51,7 @@ export function canonical(path: string): string {
       return "themes";
     case "apps":
     case "showcase":
-      return ["examples", second, ...rest].filter(Boolean).join("/");
+      return canonical(["examples", second, ...rest].filter(Boolean).join("/"));
   }
   if (DOC_PAGES.includes(first)) return `docs/${path}`;
   if (slugs.has(first)) return `components/${path}`;

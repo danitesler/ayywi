@@ -33,7 +33,7 @@ export interface BlockEditorProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 }
 
 /** A Notion-style block editor. Behaviour comes from connectBlockEditor(); the editor owns the DOM inside this element. */
-export const BlockEditor = forwardRef<HTMLDivElement, BlockEditorProps>(function BlockEditor(
+export const BlockEditor = /* @__PURE__ */ forwardRef<HTMLDivElement, BlockEditorProps>(function BlockEditor(
   { value, defaultValue, onChange, placeholder, readOnly, mentions, upload, renderMath, onMentionClick, inset, className, "aria-label": ariaLabel, ...props },
   ref,
 ) {

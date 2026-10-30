@@ -39,7 +39,6 @@ const px = (v: TokenDefinition["value"]) => (typeof v === "string" && v.endsWith
 function Header({ title, children }: { title: string; children: ReactNode }) {
   return (
     <header className="pv-page__header pv-page__header--center">
-      <p className="ayy-eyebrow">Foundations</p>
       <h1 className="ayy-h2">{title}</h1>
       <p className="ayy-lede">{children}</p>
     </header>

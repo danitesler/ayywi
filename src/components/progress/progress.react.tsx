@@ -11,7 +11,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement> {
   size?: ProgressSize;
 }
 
-export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progress(
+export const Progress = /* @__PURE__ */ forwardRef<HTMLDivElement, ProgressProps>(function Progress(
   { value, variant, tone, size, className, style, ...props },
   ref,
 ) {

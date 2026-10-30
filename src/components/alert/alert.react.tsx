@@ -7,13 +7,13 @@ export interface AlertProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** Inline message. Put an optional <Icon> first, then AlertTitle / AlertDescription / AlertActions. */
-export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert({ variant, className, ...props }, ref) {
+export const Alert = /* @__PURE__ */ forwardRef<HTMLDivElement, AlertProps>(function Alert({ variant, className, ...props }, ref) {
   return <div ref={ref} className={alertClass({ variant, className })} {...props} />;
 });
 
 export interface AlertTitleProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const AlertTitle = forwardRef<HTMLParagraphElement, AlertTitleProps>(function AlertTitle(
+export const AlertTitle = /* @__PURE__ */ forwardRef<HTMLParagraphElement, AlertTitleProps>(function AlertTitle(
   { className, ...props },
   ref,
 ) {
@@ -22,7 +22,7 @@ export const AlertTitle = forwardRef<HTMLParagraphElement, AlertTitleProps>(func
 
 export interface AlertDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
-export const AlertDescription = forwardRef<HTMLParagraphElement, AlertDescriptionProps>(function AlertDescription(
+export const AlertDescription = /* @__PURE__ */ forwardRef<HTMLParagraphElement, AlertDescriptionProps>(function AlertDescription(
   { className, ...props },
   ref,
 ) {
@@ -31,7 +31,7 @@ export const AlertDescription = forwardRef<HTMLParagraphElement, AlertDescriptio
 
 export interface AlertActionsProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const AlertActions = forwardRef<HTMLDivElement, AlertActionsProps>(function AlertActions(
+export const AlertActions = /* @__PURE__ */ forwardRef<HTMLDivElement, AlertActionsProps>(function AlertActions(
   { className, ...props },
   ref,
 ) {

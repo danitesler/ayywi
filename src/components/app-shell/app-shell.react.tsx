@@ -47,8 +47,8 @@ interface AppShellContextValue {
   collapsed?: boolean;
 }
 
-const AppShellContext = createContext<AppShellContextValue>({});
-const InHeadContext = createContext<boolean>(false);
+const AppShellContext = /* @__PURE__ */ createContext<AppShellContextValue>({});
+const InHeadContext = /* @__PURE__ */ createContext<boolean>(false);
 
 export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -86,7 +86,7 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. Wide screens support collapsing to an icon rail and hover preview. */
-export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
+export const AppShell = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
   { size, settings, collapsed, hoverPreview = true, drawer, onCollapseChange, onResize, className, children, ...props },
   ref,
 ) {
@@ -142,7 +142,7 @@ export interface AppShellBackProps extends AnchorHTMLAttributes<HTMLAnchorElemen
 }
 
 /** The way out of settings, first in the sidebar: an arrow and "Back to <app>". A link with href, else a button. */
-export const AppShellBack = forwardRef<HTMLAnchorElement & HTMLButtonElement, AppShellBackProps>(function AppShellBack(
+export const AppShellBack = /* @__PURE__ */ forwardRef<HTMLAnchorElement & HTMLButtonElement, AppShellBackProps>(function AppShellBack(
   { className, children, ...props },
   ref,
 ) {
@@ -169,7 +169,7 @@ export const AppShellBack = forwardRef<HTMLAnchorElement & HTMLButtonElement, Ap
 export interface AppShellTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 
 /** The settings sidebar's heading ("Settings"), under AppShellBack. An <h2>: each section's Top bar holds the page's <h1>. */
-export const AppShellTitle = forwardRef<HTMLHeadingElement, AppShellTitleProps>(function AppShellTitle({ className, ...props }, ref) {
+export const AppShellTitle = /* @__PURE__ */ forwardRef<HTMLHeadingElement, AppShellTitleProps>(function AppShellTitle({ className, ...props }, ref) {
   return <h2 ref={ref} className={cx(appShellTitleClass, className)} {...props} />;
 });
 
@@ -179,7 +179,7 @@ export interface AppShellHeadProps extends HTMLAttributes<HTMLDivElement> {}
  * The sidebar's top row: the AppShellBrand (a logo mark, with a name or a logotype beside it), then the AppShellToggle that
  * collapses the sidebar, at the inline end. In the rail only the mark shows; resting the pointer on it swaps in the toggle.
  */
-export const AppShellHead = forwardRef<HTMLDivElement, AppShellHeadProps>(function AppShellHead({ className, children, ...props }, ref) {
+export const AppShellHead = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellHeadProps>(function AppShellHead({ className, children, ...props }, ref) {
   return (
     <InHeadContext.Provider value={true}>
       <div ref={ref} className={cx(appShellHeadClass, className)} {...props}>
@@ -192,7 +192,7 @@ export const AppShellHead = forwardRef<HTMLDivElement, AppShellHeadProps>(functi
 export interface AppShellBarProps extends HTMLAttributes<HTMLElement> {}
 
 /** The phone top bar (hidden from 48rem): an AppShellToggle, the brand, and maybe a search button. Put it first in the shell. */
-export const AppShellBar = forwardRef<HTMLElement, AppShellBarProps>(function AppShellBar({ className, ...props }, ref) {
+export const AppShellBar = /* @__PURE__ */ forwardRef<HTMLElement, AppShellBarProps>(function AppShellBar({ className, ...props }, ref) {
   return <header ref={ref} className={cx(appShellBarClass, className)} {...props} />;
 });
 
@@ -207,7 +207,7 @@ export interface AppShellToggleProps extends ButtonHTMLAttributes<HTMLButtonElem
 }
 
 /** The menu button that opens the sidebar as a drawer, or collapses and expands it in an AppShellHead (where it also gets a tooltip). AppShell manages aria-expanded; leave it uncontrolled. */
-export const AppShellToggle = forwardRef<HTMLButtonElement, AppShellToggleProps>(function AppShellToggle(
+export const AppShellToggle = /* @__PURE__ */ forwardRef<HTMLButtonElement, AppShellToggleProps>(function AppShellToggle(
   { className, "aria-label": label, tooltip, tooltipSide = "bottom", children, ...props },
   ref,
 ) {
@@ -244,7 +244,7 @@ export const AppShellToggle = forwardRef<HTMLButtonElement, AppShellToggleProps>
 
 export interface AppShellSidebarProps extends HTMLAttributes<HTMLElement> {}
 
-export const AppShellSidebar = forwardRef<HTMLElement, AppShellSidebarProps>(function AppShellSidebar(
+export const AppShellSidebar = /* @__PURE__ */ forwardRef<HTMLElement, AppShellSidebarProps>(function AppShellSidebar(
   { className, ...props },
   ref,
 ) {
@@ -253,7 +253,7 @@ export const AppShellSidebar = forwardRef<HTMLElement, AppShellSidebarProps>(fun
 
 export interface AppShellBrandProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
-export const AppShellBrand = forwardRef<HTMLAnchorElement, AppShellBrandProps>(function AppShellBrand(
+export const AppShellBrand = /* @__PURE__ */ forwardRef<HTMLAnchorElement, AppShellBrandProps>(function AppShellBrand(
   { className, ...props },
   ref,
 ) {
@@ -262,7 +262,7 @@ export const AppShellBrand = forwardRef<HTMLAnchorElement, AppShellBrandProps>(f
 
 export interface AppShellNavProps extends HTMLAttributes<HTMLElement> {}
 
-export const AppShellNav = forwardRef<HTMLElement, AppShellNavProps>(function AppShellNav(
+export const AppShellNav = /* @__PURE__ */ forwardRef<HTMLElement, AppShellNavProps>(function AppShellNav(
   { className, "aria-label": label = "Main", ...props },
   ref,
 ) {
@@ -276,7 +276,7 @@ export interface AppShellLinkProps extends AnchorHTMLAttributes<HTMLAnchorElemen
   sub?: boolean;
 }
 
-export const AppShellLink = forwardRef<HTMLAnchorElement, AppShellLinkProps>(function AppShellLink(
+export const AppShellLink = /* @__PURE__ */ forwardRef<HTMLAnchorElement, AppShellLinkProps>(function AppShellLink(
   { current, sub, className, ...props },
   ref,
 ) {
@@ -293,7 +293,7 @@ export interface AppShellGroupProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** A headed section of the nav: a label over a list of AppShellItem. */
-export const AppShellGroup = forwardRef<HTMLDivElement, AppShellGroupProps>(function AppShellGroup(
+export const AppShellGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellGroupProps>(function AppShellGroup(
   { label, collapsible, defaultOpen = true, className, children, ...props },
   ref,
 ) {
@@ -325,7 +325,7 @@ export const AppShellGroup = forwardRef<HTMLDivElement, AppShellGroupProps>(func
 
 export interface AppShellItemProps extends LiHTMLAttributes<HTMLLIElement> {}
 
-export const AppShellItem = forwardRef<HTMLLIElement, AppShellItemProps>(function AppShellItem(props, ref) {
+export const AppShellItem = /* @__PURE__ */ forwardRef<HTMLLIElement, AppShellItemProps>(function AppShellItem(props, ref) {
   return <li ref={ref} {...props} />;
 });
 
@@ -335,7 +335,7 @@ export interface AppShellMoreProps extends ButtonHTMLAttributes<HTMLButtonElemen
  * The icon button at the end of an AppShellRow that opens the row's menu. A sibling of AppShellLink, never inside it:
  * give it an aria-label naming the row ("Project options") and put a DropdownMenuTrigger around it (asChild).
  */
-export const AppShellMore = forwardRef<HTMLButtonElement, AppShellMoreProps>(function AppShellMore(
+export const AppShellMore = /* @__PURE__ */ forwardRef<HTMLButtonElement, AppShellMoreProps>(function AppShellMore(
   { className, type = "button", ...props },
   ref,
 ) {
@@ -348,7 +348,7 @@ export interface AppShellSublistProps extends HTMLAttributes<HTMLUListElement> {
 }
 
 /** One level of AppShellItem children under a link, indented along a guide line. */
-export const AppShellSublist = forwardRef<HTMLUListElement, AppShellSublistProps>(function AppShellSublist(
+export const AppShellSublist = /* @__PURE__ */ forwardRef<HTMLUListElement, AppShellSublistProps>(function AppShellSublist(
   { className, ...props },
   ref,
 ) {
@@ -361,7 +361,7 @@ export interface AppShellCollapseProps extends DetailsHTMLAttributes<HTMLDetails
 }
 
 /** A group of child links that opens and closes: a native <details>. Set `open` when it holds the current page. */
-export const AppShellCollapse = forwardRef<HTMLDetailsElement, AppShellCollapseProps>(function AppShellCollapse(
+export const AppShellCollapse = /* @__PURE__ */ forwardRef<HTMLDetailsElement, AppShellCollapseProps>(function AppShellCollapse(
   { label, className, children, ...props },
   ref,
 ) {
@@ -375,7 +375,7 @@ export const AppShellCollapse = forwardRef<HTMLDetailsElement, AppShellCollapseP
 
 export interface AppShellFooterProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const AppShellFooter = forwardRef<HTMLDivElement, AppShellFooterProps>(function AppShellFooter(
+export const AppShellFooter = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellFooterProps>(function AppShellFooter(
   { className, ...props },
   ref,
 ) {
@@ -387,14 +387,14 @@ export interface AppShellMainProps extends HTMLAttributes<HTMLElement> {
   as?: "main" | "div";
 }
 
-export const AppShellMain = forwardRef<HTMLElement, AppShellMainProps>(function AppShellMain({ as: Tag = "main", className, ...props }, ref) {
+export const AppShellMain = /* @__PURE__ */ forwardRef<HTMLElement, AppShellMainProps>(function AppShellMain({ as: Tag = "main", className, ...props }, ref) {
   return <Tag ref={ref as never} className={cx(appShellMainClass, className)} {...props} />;
 });
 
 export interface AppShellDetailProps extends HTMLAttributes<HTMLElement> {}
 
 /** The third column at the inline end, for what's picked in the main area. Show and hide it with `hidden`; on phones it covers the screen. */
-export const AppShellDetail = forwardRef<HTMLElement, AppShellDetailProps>(function AppShellDetail({ className, ...props }, ref) {
+export const AppShellDetail = /* @__PURE__ */ forwardRef<HTMLElement, AppShellDetailProps>(function AppShellDetail({ className, ...props }, ref) {
   return <aside ref={ref} className={cx(appShellDetailClass, className)} {...props} />;
 });
 
@@ -404,7 +404,7 @@ export interface AppShellResizeProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** A drag handle on the sidebar's or the detail pane's edge (a keyboard-operable separator). A direct child of AppShell. */
-export const AppShellResize = forwardRef<HTMLDivElement, AppShellResizeProps>(function AppShellResize({ edge = "sidebar", className, ...props }, ref) {
+export const AppShellResize = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellResizeProps>(function AppShellResize({ edge = "sidebar", className, ...props }, ref) {
   return (
     <div
       ref={ref}

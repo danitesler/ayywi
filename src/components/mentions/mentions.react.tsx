@@ -48,7 +48,7 @@ export interface MentionsProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 }
 
 /** Multi-line textarea with inline `@` (or `#`) autocomplete suggestions positioned at the caret. */
-export const Mentions = forwardRef<HTMLTextAreaElement, MentionsProps>(function Mentions(
+export const Mentions = /* @__PURE__ */ forwardRef<HTMLTextAreaElement, MentionsProps>(function Mentions(
   {
     options,
     triggers = ["@"],

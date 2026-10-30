@@ -16,7 +16,7 @@ export interface SortingProps extends HTMLAttributes<HTMLDivElement> {
   size?: SortingSize;
 }
 
-export const Sorting = forwardRef<HTMLDivElement, SortingProps>(function Sorting(
+export const Sorting = /* @__PURE__ */ forwardRef<HTMLDivElement, SortingProps>(function Sorting(
   { size = "md", className, children, ...props },
   ref,
 ) {
@@ -32,7 +32,7 @@ export interface SortingTriggerProps extends ButtonHTMLAttributes<HTMLButtonElem
   open?: boolean;
 }
 
-export const SortingTrigger = forwardRef<HTMLButtonElement, SortingTriggerProps>(function SortingTrigger(
+export const SortingTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, SortingTriggerProps>(function SortingTrigger(
   { size = "md", open = false, type = "button", className, children, ...props },
   ref,
 ) {

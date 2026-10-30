@@ -29,7 +29,7 @@ export interface TagInputProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 /** A field that turns typed text into removable tags. Give the inner input a <Label htmlFor> through id. */
-export const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(
+export const TagInput = /* @__PURE__ */ forwardRef<HTMLInputElement, TagInputProps>(function TagInput(
   {
     value,
     defaultValue = [],

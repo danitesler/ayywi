@@ -28,7 +28,7 @@ export interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElemen
 }
 
 /** A rounded search field with a clear button (and Cancel), in a <form role="search">. Other props go on the input. */
-export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(function SearchBar(
+export const SearchBar = /* @__PURE__ */ forwardRef<HTMLInputElement, SearchBarProps>(function SearchBar(
   {
     value,
     defaultValue = "",

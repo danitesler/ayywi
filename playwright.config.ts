@@ -22,10 +22,13 @@ export default defineConfig({
     baseURL: `http://127.0.0.1:${port}`,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], channel, launchOptions: { executablePath } } }],
+  // Builds the preview into a folder of its own, or reuses the build of identical sources, so another session building
+  // in this checkout can't change the files mid-run (scripts/e2e-server.mjs). It may first wait for that build.
   webServer: {
-    command: `pnpm preview:build && pnpm preview:serve --port ${port} --strictPort --host 127.0.0.1`,
+    command: "node scripts/e2e-server.mjs",
+    env: { E2E_PORT: String(port) },
     url: `http://127.0.0.1:${port}`,
     reuseExistingServer: Boolean(process.env.E2E_REUSE),
-    timeout: 120_000,
+    timeout: 600_000,
   },
 });

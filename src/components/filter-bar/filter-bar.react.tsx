@@ -21,7 +21,7 @@ export interface FilterBarProps extends HTMLAttributes<HTMLDivElement> {
   size?: FilterBarSize;
 }
 
-export const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(function FilterBar(
+export const FilterBar = /* @__PURE__ */ forwardRef<HTMLDivElement, FilterBarProps>(function FilterBar(
   { sticky = false, flush = false, size = "md", className, children, ...props },
   ref,
 ) {
@@ -34,7 +34,7 @@ export const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(function Fil
 
 export interface FilterBarMainProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const FilterBarMain = forwardRef<HTMLDivElement, FilterBarMainProps>(function FilterBarMain(
+export const FilterBarMain = /* @__PURE__ */ forwardRef<HTMLDivElement, FilterBarMainProps>(function FilterBarMain(
   { className, children, ...props },
   ref,
 ) {
@@ -47,7 +47,7 @@ export const FilterBarMain = forwardRef<HTMLDivElement, FilterBarMainProps>(func
 
 export interface FilterBarGroupProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const FilterBarGroup = forwardRef<HTMLDivElement, FilterBarGroupProps>(function FilterBarGroup(
+export const FilterBarGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, FilterBarGroupProps>(function FilterBarGroup(
   { className, children, ...props },
   ref,
 ) {
@@ -62,7 +62,7 @@ export interface FilterBarTabsProps extends HTMLAttributes<HTMLDivElement> {
   label?: string;
 }
 
-export const FilterBarTabs = forwardRef<HTMLDivElement, FilterBarTabsProps>(function FilterBarTabs(
+export const FilterBarTabs = /* @__PURE__ */ forwardRef<HTMLDivElement, FilterBarTabsProps>(function FilterBarTabs(
   { label = "Filters", className, children, ...props },
   ref,
 ) {
@@ -78,7 +78,7 @@ export interface FilterBarTabProps extends ButtonHTMLAttributes<HTMLButtonElemen
   count?: ReactNode;
 }
 
-export const FilterBarTab = forwardRef<HTMLButtonElement, FilterBarTabProps>(function FilterBarTab(
+export const FilterBarTab = /* @__PURE__ */ forwardRef<HTMLButtonElement, FilterBarTabProps>(function FilterBarTab(
   { selected = false, count, type = "button", className, children, ...props },
   ref,
 ) {
@@ -103,7 +103,7 @@ export interface FilterBarTriggerProps extends ButtonHTMLAttributes<HTMLButtonEl
   active?: boolean;
 }
 
-export const FilterBarTrigger = forwardRef<HTMLButtonElement, FilterBarTriggerProps>(function FilterBarTrigger(
+export const FilterBarTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, FilterBarTriggerProps>(function FilterBarTrigger(
   { count, open = false, active = false, type = "button", className, children, ...props },
   ref,
 ) {
@@ -125,7 +125,7 @@ export const FilterBarTrigger = forwardRef<HTMLButtonElement, FilterBarTriggerPr
 
 export interface FilterBarActiveProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const FilterBarActive = forwardRef<HTMLDivElement, FilterBarActiveProps>(function FilterBarActive(
+export const FilterBarActive = /* @__PURE__ */ forwardRef<HTMLDivElement, FilterBarActiveProps>(function FilterBarActive(
   { className, children, ...props },
   ref,
 ) {
@@ -138,7 +138,7 @@ export const FilterBarActive = forwardRef<HTMLDivElement, FilterBarActiveProps>(
 
 export interface FilterBarSummaryProps extends HTMLAttributes<HTMLSpanElement> {}
 
-export const FilterBarSummary = forwardRef<HTMLSpanElement, FilterBarSummaryProps>(function FilterBarSummary(
+export const FilterBarSummary = /* @__PURE__ */ forwardRef<HTMLSpanElement, FilterBarSummaryProps>(function FilterBarSummary(
   { className, children, ...props },
   ref,
 ) {
@@ -151,7 +151,7 @@ export const FilterBarSummary = forwardRef<HTMLSpanElement, FilterBarSummaryProp
 
 export interface FilterBarClearProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
-export const FilterBarClear = forwardRef<HTMLButtonElement, FilterBarClearProps>(function FilterBarClear(
+export const FilterBarClear = /* @__PURE__ */ forwardRef<HTMLButtonElement, FilterBarClearProps>(function FilterBarClear(
   { type = "button", className, children = "Clear all", ...props },
   ref,
 ) {

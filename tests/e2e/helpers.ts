@@ -1,4 +1,21 @@
+import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 import { expect, type Locator, type Page } from "@playwright/test";
+
+/**
+ * A dist/ file from the build this run serves. scripts/e2e-server.mjs keeps its own copy, so another session's build
+ * can't change it mid-run. Against a server it didn't start (E2E_REUSE), the checkout's dist/.
+ */
+export function distFile(path: string): URL {
+  try {
+    const served = new URL(`../../node_modules/.cache/ayywi-e2e/port-${process.env.E2E_PORT ?? 4173}.json`, import.meta.url);
+    const { pid, dir } = JSON.parse(readFileSync(served, "utf8")) as { pid: number; dir: string };
+    process.kill(pid, 0);
+    return pathToFileURL(`${dir}/dist/${path}`);
+  } catch {
+    return new URL(`../../dist/${path}`, import.meta.url);
+  }
+}
 
 export interface Settings {
   renderer?: "react" | "html";
@@ -30,7 +47,9 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
       if (m.type() === "error" && !m.text().startsWith("Failed to load resource")) list.push(m.text());
     });
   }
-  if (!page.url().startsWith("http")) await page.goto("/");
+  // Storage needs the origin, but not the app: a first app load saves its default settings ("system") from an effect
+  // that can land after the values written below. A hosted text file runs no script.
+  if (!page.url().startsWith("http")) await page.goto("/llms.txt");
   await page.evaluate((s: Settings) => {
     localStorage.clear();
     const set = (k: string, v?: string) => v && localStorage.setItem(k, v);
@@ -47,8 +66,12 @@ export async function open(page: Page, route: string, s: Settings = {}): Promise
     await page.goto(url, { waitUntil: "domcontentloaded" });
   }
   await expect(page.locator(".pv-page").first()).toBeVisible();
+  await examplesLoaded(page);
   return errors;
 }
+
+/** Examples load their code on first show, under a placeholder that says aria-busy; wait until every one is in. */
+export const examplesLoaded = (page: Page) => expect(page.locator(".pv-example[aria-busy='true']")).toHaveCount(0);
 
 /** The live stage of the n-th example on a component page. */
 export const stage = (page: Page, n = 0) => page.locator(":is(.pv-stage, .ayy-showcase__stage)").nth(n);

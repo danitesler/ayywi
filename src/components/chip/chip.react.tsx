@@ -27,7 +27,7 @@ export interface ChipProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, "
 }
 
 /** A filter or choice chip: a <label> around a visually hidden native checkbox (or radio). Children are the label and an optional Icon. */
-export const Chip = forwardRef<HTMLLabelElement, ChipProps>(function Chip(
+export const Chip = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChipProps>(function Chip(
   { type = "checkbox", checked, defaultChecked, onCheckedChange, name, value, disabled, count, inputProps, className, children, ...props },
   ref,
 ) {
@@ -61,7 +61,7 @@ export interface ChipButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 /** A toggle chip for apps that filter as you click: <button aria-pressed>. */
-export const ChipButton = forwardRef<HTMLButtonElement, ChipButtonProps>(function ChipButton(
+export const ChipButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ChipButtonProps>(function ChipButton(
   { pressed, onPressedChange, count, type = "button", className, children, onClick, ...props },
   ref,
 ) {
@@ -90,7 +90,7 @@ export interface ChipRemovableProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 /** An active filter ("Status: Open") with a remove button. */
-export const ChipRemovable = forwardRef<HTMLSpanElement, ChipRemovableProps>(function ChipRemovable(
+export const ChipRemovable = /* @__PURE__ */ forwardRef<HTMLSpanElement, ChipRemovableProps>(function ChipRemovable(
   { onRemove, removeLabel, className, children, ...props },
   ref,
 ) {
@@ -115,6 +115,6 @@ export interface ChipGroupProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** A row of chips: role="group" (give it an aria-label), or pass role="radiogroup" for radio chips. */
-export const ChipGroup = forwardRef<HTMLDivElement, ChipGroupProps>(function ChipGroup({ scroll, role = "group", className, ...props }, ref) {
+export const ChipGroup = /* @__PURE__ */ forwardRef<HTMLDivElement, ChipGroupProps>(function ChipGroup({ scroll, role = "group", className, ...props }, ref) {
   return <div ref={ref} role={role} className={chipGroupClass({ scroll, className })} {...props} />;
 });

@@ -69,7 +69,7 @@ export interface TransferListProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 }
 
 /** Dual-list shuttle for moving items between an available column and a selected column. */
-export const TransferList = forwardRef<HTMLDivElement, TransferListProps>(function TransferList(
+export const TransferList = /* @__PURE__ */ forwardRef<HTMLDivElement, TransferListProps>(function TransferList(
   {
     options,
     value,

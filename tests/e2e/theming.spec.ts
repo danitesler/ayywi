@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import manifest from "../../manifest/components.json" with { type: "json" };
-import { open, rtl, settle, stage } from "./helpers";
+import { examplesLoaded, open, rtl, settle, stage } from "./helpers";
 
 const slugs = manifest.components.map((c: { slug: string }) => c.slug);
 
@@ -122,6 +122,7 @@ test.describe("forced colors (Windows High Contrast)", () => {
     expect(await bg(on)).not.toBe(await bg(off));
 
     await page.goto("/#/components/progress");
+    await examplesLoaded(page);
     const bar = stage(page).locator(".ayy-progress__bar").first();
     const track = stage(page).locator(".ayy-progress").first();
     expect(await bar.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe(
@@ -129,6 +130,7 @@ test.describe("forced colors (Windows High Contrast)", () => {
     );
 
     await page.goto("/#/components/tabs");
+    await examplesLoaded(page);
     const selected = stage(page).getByRole("tab", { selected: true });
     const other = stage(page).getByRole("tab", { name: "Activity" });
     const look = (l: typeof selected) =>
@@ -140,6 +142,7 @@ test.describe("forced colors (Windows High Contrast)", () => {
 
     // The current app shell link is filled with the opaque system Highlight colour, not the translucent wash it has otherwise.
     await page.goto("/#/components/app-shell");
+    await examplesLoaded(page);
     const current = stage(page).locator('.ayy-app-shell__link[aria-current="page"]');
     const highlight = await stage(page).evaluate((el) => {
       const probe = Object.assign(document.createElement("span"), { style: "forced-color-adjust: none; background-color: Highlight" });
@@ -224,11 +227,12 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
     // Component examples, then whole pages (sidebar, search, toolbar and the foundation pages' theme tables).
     const targets: [string, string][] = [
       ...slugs.map((slug: string): [string, string] => [`components/${slug}`, ".pv-stage"]),
-      ...["", "docs/get-started", "docs/changelog", "docs/principles", "examples", "examples/inbox", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "docs/illustration", "docs/icons", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
+      ...["", "docs/get-started", "docs/changelog", "docs/principles", "examples", "examples/dating", "docs/colors", "docs/typography", "docs/spacing", "docs/elevation", "docs/motion", "docs/illustration", "docs/icons", "themes", "docs/density", "components", "components/button/properties", "components/button/accessibility"].map((r): [string, string] => [r, ".pv-site"]),
     ];
     for (const [route, scope] of targets) {
       await page.goto(`/#/${route}`);
       await expect(page.locator(".pv-page h1").first(), `/#/${route}`).toBeVisible();
+      await examplesLoaded(page);
       // Let entrance fades finish (toasts fade in from opacity 0): axe blends a fading element's colours with the page
       // under it and reports contrast that never shows at rest. Endless animations (spinners, pulses) are skipped.
       await page.evaluate(() =>
@@ -259,7 +263,7 @@ for (const theme of ["dark", "light", "dark-contrast", "light-gray"] as const) {
 test("axe: no serious violations in the showcase apps", async ({ page }) => {
   test.setTimeout(90_000); // six full apps, one axe run each
   const failures: string[] = [];
-  for (const id of ["dashboard", "landing", "inbox", "tracker", "store", "booking"]) {
+  for (const id of ["dashboard", "landing", "dating", "tracker", "store", "booking"]) {
     await page.goto(`/?app=${id}`);
     await expect(page.locator(".pv-frame .pv-app")).toBeVisible();
     await page.evaluate(() => Promise.all((document.querySelector("dialog[open]")?.getAnimations() ?? []).map((a) => a.finished)));

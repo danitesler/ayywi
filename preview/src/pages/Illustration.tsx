@@ -89,7 +89,6 @@ export function IllustrationPage() {
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Illustration</h1>
         <p className="ayy-lede">
           Small sketches of the interface itself, drawn with the same tokens as the components. They show one idea at a glance and

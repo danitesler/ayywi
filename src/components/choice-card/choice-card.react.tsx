@@ -30,7 +30,7 @@ interface ChoiceContextValue {
   select: (value: string) => void;
 }
 
-const ChoiceContext = createContext<ChoiceContextValue | null>(null);
+const ChoiceContext = /* @__PURE__ */ createContext<ChoiceContextValue | null>(null);
 
 export interface ChoiceGroupProps extends Omit<HTMLAttributes<HTMLFieldSetElement>, "onChange" | "defaultValue"> {
   /** The question ("Plan", "Delivery"): the fieldset's <legend>. Or label it with aria-label. */
@@ -50,7 +50,7 @@ export interface ChoiceGroupProps extends Omit<HTMLAttributes<HTMLFieldSetElemen
 }
 
 /** A <fieldset> grid of choice cards; role="radiogroup" for radio cards. */
-export const ChoiceGroup = forwardRef<HTMLFieldSetElement, ChoiceGroupProps>(function ChoiceGroup(
+export const ChoiceGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, ChoiceGroupProps>(function ChoiceGroup(
   { legend, type = "radio", name, value: controlled, defaultValue, onValueChange, min, scroll, disabled, className, style, children, ...props },
   ref,
 ) {
@@ -99,7 +99,7 @@ export interface ChoiceCardProps extends Omit<LabelHTMLAttributes<HTMLLabelEleme
 }
 
 /** A card-sized radio or checkbox: the whole card is the label. */
-export const ChoiceCard = forwardRef<HTMLLabelElement, ChoiceCardProps>(function ChoiceCard(
+export const ChoiceCard = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChoiceCardProps>(function ChoiceCard(
   { value, title, description, meta, icon, compact, type, checked, defaultChecked, onCheckedChange, disabled, inputProps, className, ...props },
   ref,
 ) {

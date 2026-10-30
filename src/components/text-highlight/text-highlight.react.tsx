@@ -17,7 +17,7 @@ export interface TextHighlightProps extends Omit<HTMLAttributes<HTMLElement>, "c
  * An inline highlight for search matches or callout text.
  * By default uses a subtle tinted-white background, with warning, destructive, success, info, and orange variants.
  */
-export const TextHighlight = forwardRef<HTMLElement, TextHighlightProps>(function TextHighlight(
+export const TextHighlight = /* @__PURE__ */ forwardRef<HTMLElement, TextHighlightProps>(function TextHighlight(
   { text: textProp, query, variant, as, className, children, ...props },
   ref,
 ) {

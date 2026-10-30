@@ -40,7 +40,7 @@ Category: Forms. A searchable grid of icons and emoji with a remove button, for 
 - Every option is a <button> with an aria-label naming the icon or emoji (an emoji character alone is read inconsistently) and aria-pressed for the picked one, so the choice is announced, not only tinted.
 - Each section is a role="group" labelled by its heading. One option is the tab stop (the picked one, or the first): Tab moves search → grid → remove, and the arrow keys, Home and End move inside the grid, mirrored in RTL.
 - ArrowDown from the search field enters the grid and ArrowUp from the first row returns to it; Enter in the search field picks the first match. A no-match search announces the role="status" empty message.
-- Keys stay inside the picker except Esc, so a Menu or Popover around it still closes on Esc and returns focus. As a menu's submenu panel, give the panel role="dialog" and an aria-label, and the trigger aria-haspopup="dialog".
+- Keys stay inside the picker except Esc, so a Menu or Popover around it still closes on Esc and returns focus. As a menu's submenu panel, give the panel role="dialog" and an aria-label, put it after the menu rather than inside it (a menu holds only items), and give the trigger aria-haspopup="dialog".
 
 **Do**
 - Use an icon picker to let people mark a column, project, page or label with an icon or emoji of their choice.

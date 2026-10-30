@@ -20,7 +20,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 /** Defaults to type="button" so it never submits a form by accident. Pass type="submit" explicitly. */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+export const Button = /* @__PURE__ */ forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     variant,
     size,
@@ -87,7 +87,7 @@ export interface SplitButtonProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** Joins a main action Button with a trailing DropdownMenu trigger Button into a single split button. */
-export const SplitButton = forwardRef<HTMLDivElement, SplitButtonProps>(function SplitButton(
+export const SplitButton = /* @__PURE__ */ forwardRef<HTMLDivElement, SplitButtonProps>(function SplitButton(
   { block, className, role = "group", ...props },
   ref,
 ) {

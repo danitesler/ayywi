@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardLink, CardMedia } from "@danitesler/ayywi/react";
-import { componentGroups, components, type ComponentEntry } from "../data";
+import { componentGroups, components, useExample, type ComponentEntry, type ExampleEntry } from "../data";
 
 /**
  * An example rendered live but small: decorative (inert, hidden from assistive tech), drawn once it nears the viewport so
  * a page of them doesn't block the first paint. It follows the page's theme, density and brand like everything else.
  */
-export function Thumb({ Component, zoom = 0.6, className }: { Component: ComponentType | null; zoom?: number; className?: string }) {
+export function Thumb({ example, zoom = 0.6, className }: { example: ExampleEntry | undefined; zoom?: number; className?: string }) {
   const box = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
   // Zoom scales lengths but not percentages, so the example gets the box's width in its own (zoomed) pixels.
@@ -30,20 +30,25 @@ export function Thumb({ Component, zoom = 0.6, className }: { Component: Compone
   }, []);
   return (
     <div ref={box} className={`pv-thumb ${className ?? ""}`} aria-hidden="true" inert>
-      {shown && width > 0 && Component && (
+      {shown && width > 0 && example?.hasReact && (
         <div className="pv-thumb__inner" style={{ zoom, inlineSize: width / zoom }}>
-          <Component />
+          <ThumbExample example={example} />
         </div>
       )}
     </div>
   );
 }
 
+function ThumbExample({ example }: { example: ExampleEntry }) {
+  const Component = useExample(example)?.Component;
+  return Component ? <Component /> : null;
+}
+
 function ComponentCard({ c }: { c: ComponentEntry }) {
   return (
     <Card interactive className="pv-comp-card">
       <CardMedia className="pv-comp-card__media">
-        <Thumb Component={c.examples[0]?.Component ?? null} />
+        <Thumb example={c.examples[0]} />
       </CardMedia>
       <CardHeader>
         <h3 className="ayy-card__title">

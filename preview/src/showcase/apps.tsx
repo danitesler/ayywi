@@ -1,5 +1,5 @@
-// Seven screens built only from ayywi components, tokens and layout utilities. The pv-app-* classes in preview.css
-// only size the showcase frame, lay out the inbox's three panes and frame the store's product art; every colour, size
+// Six screens built only from ayywi components, tokens and layout utilities. The pv-app-* classes in preview.css
+// only size the showcase frame and draw the store's coffee bags and the dating app's portrait; every colour, size
 // and control comes from ayywi. The apps share one frame (AppFrame): the sidebar on wide screens, a top bar and a
 // bottom nav on phones. The marketing site and the store are websites: a Navbar and a Footer.
 import { useId, useRef, useState, type ComponentType, type CSSProperties, type MouseEvent, type ReactNode } from "react";
@@ -8,33 +8,43 @@ import {
   Alert02Icon,
   Analytics01Icon,
   ArrowDown01Icon,
-  Attachment01Icon,
   Calendar03Icon,
+  Cancel01Icon,
+  ChartIncreaseIcon,
   ChartLineData01Icon,
   CheckmarkCircle02Icon,
+  Clock01Icon,
   Coffee02Icon,
   CreditCardIcon,
   DashboardSquare01Icon,
+  DeliveryTruck01Icon,
   Download01Icon,
+  DropletIcon,
+  Fire02Icon,
   FlashIcon,
+  Flower01Icon,
   Folder01Icon,
   GlobeIcon,
   InboxIcon,
   KeyboardIcon,
   Layers01Icon,
   Link01Icon,
+  Location01Icon,
+  LockIcon,
   Mail01Icon,
   Message01Icon,
   MoreHorizontalIcon,
   Notification01Icon,
   PaintBoardIcon,
+  PlayIcon,
   RefreshIcon,
   Rocket01Icon,
   Search01Icon,
-  SentIcon,
   Settings01Icon,
   Shield01Icon,
   ShoppingBag01Icon,
+  SlidersHorizontalIcon,
+  SmileIcon,
   SparklesIcon,
   Task01Icon,
   Ticket01Icon,
@@ -45,11 +55,11 @@ import {
 } from "@hugeicons/core-free-icons";
 import bookingScreenshot from "./screenshots/booking.png";
 import dashboardScreenshot from "./screenshots/dashboard.png";
-import inboxScreenshot from "./screenshots/inbox.png";
+import datingScreenshot from "./screenshots/dating.png";
 import landingScreenshot from "./screenshots/landing.png";
 import storeScreenshot from "./screenshots/store.png";
 import trackerScreenshot from "./screenshots/tracker.png";
-import { toast, type DensityMode, type IconData, type IconName, type ThemeName } from "@danitesler/ayywi";
+import { toast, type DensityMode, type IconData, type IconName } from "@danitesler/ayywi";
 import {
   Accordion,
   AccordionItem,
@@ -69,12 +79,11 @@ import {
   AppShellSidebar,
   AppShellTitle,
   Avatar,
-  AvatarGroup,
   Badge,
+  BarList,
   BottomNav,
   BottomNavButton,
   BottomNavLink,
-  BarList,
   Button,
   buttonClass,
   Card,
@@ -82,21 +91,19 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardLink,
   CardMedia,
   CardTitle,
   Carousel,
   CarouselSlide,
-  Chat,
-  ChatMessage,
-  ChatReplies,
-  ChatTyping,
-  Chip,
   Checkbox,
+  Chip,
   ChipButton,
   ChipGroup,
   ChoiceCard,
   ChoiceGroup,
   Combobox,
+  compareValues,
   Dialog,
   DialogBody,
   DialogClose,
@@ -126,7 +133,6 @@ import {
   IconTile,
   Input,
   InputGroup,
-  InputGroupAddon,
   Kbd,
   Label,
   LineChart,
@@ -143,6 +149,7 @@ import {
   NavbarLink,
   NavbarNav,
   NavbarToggle,
+  nextSortDirection,
   NumberField,
   PageHeader,
   PageHeaderActions,
@@ -150,10 +157,11 @@ import {
   PageHeaderTitle,
   Pagination,
   Progress,
+  ProgressRing,
+  Rating,
   SegmentedControl,
   SegmentedControlItem,
   Select,
-  Separator,
   Settings,
   SettingsLink,
   SettingsRow,
@@ -163,7 +171,9 @@ import {
   Sorting,
   SortingTrigger,
   Sparkline,
+  Spinner,
   Stat,
+  StatusDot,
   Steps,
   Switch,
   Table,
@@ -174,8 +184,6 @@ import {
   TableRow,
   Textarea,
   TopBar,
-  compareValues,
-  nextSortDirection,
   type SortDirection,
 } from "@danitesler/ayywi/react";
 
@@ -397,11 +405,12 @@ const searchButton = (label: string) => (
   </Button>
 );
 
+/** The account as a sidebar row, so the avatar lines up with the icons above it. */
 const account = (name: string) => (
-  <div className="ayy-cluster">
+  <AppShellLink href="#account">
     <Avatar name={name} size="sm" />
-    <span>{name}</span>
-  </div>
+    {name}
+  </AppShellLink>
 );
 
 /* ---- 1. Analytics dashboard ---- */
@@ -576,7 +585,12 @@ function DashboardApp() {
       <div className="ayy-stack" style={gap(5)}>
         <PageHeader>
           <PageHeaderTitle>Overview</PageHeaderTitle>
-          <PageHeaderDescription>Traffic and revenue across every site in this workspace.</PageHeaderDescription>
+          <PageHeaderDescription>
+            <span className="ayy-cluster" style={gap(2)}>
+              <StatusDot variant="success" pulse />
+              214 people on your sites right now
+            </span>
+          </PageHeaderDescription>
           <PageHeaderActions>
             <SegmentedControl size="sm" aria-label="Date range" defaultValue="30d">
               <SegmentedControlItem value="7d">7d</SegmentedControlItem>
@@ -703,8 +717,14 @@ function DashboardApp() {
               </CardContent>
             </Card>
             <Alert variant="info">
-              <AlertTitle>Weekly report is ready</AlertTitle>
-              <AlertDescription>Sent to 4 people every Monday at 9:00.</AlertDescription>
+              <Icon icon={ChartIncreaseIcon} name="trending-up" />
+              <AlertTitle>/blog/design-tokens is taking off</AlertTitle>
+              <AlertDescription>Up 340% in the last hour, mostly from news.ycombinator.com.</AlertDescription>
+              <AlertActions>
+                <Button size="sm" variant="outline">
+                  See referrers
+                </Button>
+              </AlertActions>
             </Alert>
           </div>
         </div>
@@ -716,7 +736,7 @@ function DashboardApp() {
 /* ---- 2. Marketing site ---- */
 
 const FEATURES = [
-  { icon: FlashIcon, iconName: "zap" as const, color: "var(--ayy-accent-marketing)", title: "Ship in an afternoon", text: "Start from a template, connect your data, publish. No build pipeline to babysit." },
+  { icon: FlashIcon, iconName: "zap" as const, color: "var(--ayy-accent-marketing)", title: "Ship in an afternoon", text: "Start from a sentence or a template, connect your CMS, publish. No build pipeline to babysit." },
   { icon: Shield01Icon, iconName: "shield" as const, color: "var(--ayy-accent-system)", title: "Secure by default", text: "SSO, audit logs and per-project roles on every plan, not just the expensive one." },
   { icon: GlobeIcon, iconName: "earth" as const, color: "var(--ayy-accent-product)", title: "Fast everywhere", text: "Pages are served from 40 regions, so the first byte arrives before anyone notices." },
 ];
@@ -762,7 +782,7 @@ function LandingApp() {
           <NavbarLink href="#faq">FAQ</NavbarLink>
         </NavbarNav>
         <NavbarActions>
-          <a className={buttonClass({ variant: "ring", size: "sm" })} href="#start">
+          <a className={buttonClass({ size: "sm" })} href="#start">
             Start free
           </a>
         </NavbarActions>
@@ -770,27 +790,87 @@ function LandingApp() {
       </Navbar>
 
       <main id="nw-main">
-        <section className="ayy-container ayy-bg-grid" style={{ paddingBlock: "var(--ayy-space-24)", textAlign: "center" }} aria-labelledby="nw-hero">
-          <header className="ayy-stack" style={{ alignItems: "center", gap: "var(--ayy-space-4)", maxInlineSize: "var(--ayy-size-measure)", marginInline: "auto" }}>
+        <section className="ayy-container ayy-bg-grid" style={{ paddingBlock: "var(--ayy-space-20)" }} aria-labelledby="nw-hero">
+          <header className="ayy-stack" style={{ alignItems: "center", gap: "var(--ayy-space-4)", maxInlineSize: "var(--ayy-size-measure)", marginInline: "auto", textAlign: "center" }}>
             <Badge variant="ai">New · AI page builder</Badge>
             <h1 className="ayy-h1" id="nw-hero">
-              Launch pages your team is proud of
+              Describe it. Northwind builds the page.
             </h1>
-            <p className="ayy-lede">Northwind turns a sentence into a fast, accessible site. Edit it together, publish it anywhere.</p>
+            <p className="ayy-lede">One sentence in, a fast, accessible site out. Edit it together, then publish to your own domain.</p>
             <div className="ayy-cluster">
-              <a className={buttonClass({ variant: "ring", size: "lg" })} href="#start">
+              <a className={buttonClass({ size: "lg" })} href="#start">
                 Start building free
               </a>
               <a className={buttonClass({ size: "lg", variant: "outline" })} href="#demo">
-                Book a demo
+                <Icon icon={PlayIcon} name="play" />
+                Watch the 2-minute demo
               </a>
             </div>
           </header>
+
+          <Card style={{ maxInlineSize: "44rem", marginInline: "auto", marginBlockStart: "var(--ayy-space-12)" }}>
+            <CardHeader>
+              <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                <span className="ayy-cluster" style={gap(2)}>
+                  <StatusDot variant="success" pulse />
+                  <span className="ayy-mono ayy-small">ceramica-porto.northwind.site</span>
+                </span>
+                <Badge variant="muted">Building · 0:38</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="ayy-stack" style={gap(4)}>
+                <InputGroup>
+                  <Icon icon={SparklesIcon} name="sparkles" />
+                  <Input readOnly aria-label="Prompt" defaultValue="A launch page for a ceramics studio in Porto. Warm, quiet, lots of photos." />
+                </InputGroup>
+                <List compact aria-label="What Northwind is doing">
+                  {[
+                    { text: "Picked a palette from your logo: clay, cream and ink", done: true },
+                    { text: "Wrote six sections: hero, collection, studio, classes, press, visit", done: true },
+                    { text: "Checking contrast, alt text and keyboard order", done: false },
+                  ].map((step) => (
+                    <ListItem key={step.text}>
+                      {step.done ? <Icon icon={CheckmarkCircle02Icon} name="circle-check" /> : <Spinner size="sm" label="" />}
+                      <ListContent>{step.done ? <ListDescription>{step.text}</ListDescription> : <ListTitle>{step.text}</ListTitle>}</ListContent>
+                    </ListItem>
+                  ))}
+                </List>
+                <Progress value={82} aria-label="Building the page" />
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="ayy-container" style={{ paddingBlock: "var(--ayy-space-12)" }} aria-labelledby="nw-proof">
+          <h2 className="ayy-eyebrow" id="nw-proof" style={{ textAlign: "center", marginBlockEnd: "var(--ayy-space-6)" }}>
+            4,000 teams launch with Northwind
+          </h2>
+          <ul className="ayy-cluster" style={{ ...gap(10), justifyContent: "center", listStyle: "none", padding: 0, margin: 0 }}>
+            {["Fieldnote", "Small Press", "Loop", "Kestrel", "Halcyon", "Mapleworks"].map((name) => (
+              <li key={name} className="ayy-h5 ayy-muted">
+                {name}
+              </li>
+            ))}
+          </ul>
+          <div className="ayy-grid" style={{ ...min("12rem"), ...gap(4), marginBlockStart: "var(--ayy-space-12)" }}>
+            {[
+              { label: "Median first load", value: "0.4", unit: "s" },
+              { label: "Lighthouse accessibility", value: "100" },
+              { label: "Sites live today", value: "12,480" },
+            ].map((stat) => (
+              <Card key={stat.label}>
+                <CardContent>
+                  <Stat labelFirst label={stat.label} value={stat.value} unit={stat.unit} />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </section>
 
         <section className="ayy-container" id="product" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-features">
           <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
-            <p className="ayy-eyebrow">01 · Why Northwind</p>
+            <p className="ayy-eyebrow">Why Northwind</p>
             <h2 className="ayy-h2" id="nw-features">Everything a launch needs</h2>
           </header>
           <div className="ayy-grid" style={min("15rem")}>
@@ -810,7 +890,7 @@ function LandingApp() {
 
         <section className="ayy-container" id="pricing" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-pricing">
           <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
-            <p className="ayy-eyebrow">02 · Pricing</p>
+            <p className="ayy-eyebrow">Pricing</p>
             <h2 className="ayy-h2" id="nw-pricing">Simple plans that grow with you</h2>
             <p className="ayy-muted">Per editor, per month. Viewers are always free.</p>
             <SegmentedControl aria-label="Billing cycle" value={cycle} onValueChange={setCycle}>
@@ -840,7 +920,7 @@ function LandingApp() {
                   </List>
                 </CardContent>
                 <CardFooter>
-                  <a className={buttonClass({ variant: p.featured ? "ring" : "outline", block: true })} href="#start">
+                  <a className={buttonClass({ variant: p.featured ? undefined : "outline", block: true })} href="#start">
                     Choose {p.name}
                   </a>
                 </CardFooter>
@@ -851,7 +931,7 @@ function LandingApp() {
 
         <section className="ayy-container" id="customers" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-customers">
           <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
-            <p className="ayy-eyebrow">03 · Customers</p>
+            <p className="ayy-eyebrow">Customers</p>
             <h2 className="ayy-h2" id="nw-customers">Teams that switched</h2>
           </header>
           <Carousel label="Customer quotes" slideWidth="18rem">
@@ -878,7 +958,7 @@ function LandingApp() {
 
         <section className="ayy-container" id="faq" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="nw-faq">
           <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
-            <p className="ayy-eyebrow">04 · FAQ</p>
+            <p className="ayy-eyebrow">FAQ</p>
             <h2 className="ayy-h2" id="nw-faq">Questions, answered</h2>
           </header>
           <Accordion single>
@@ -899,7 +979,7 @@ function LandingApp() {
                 <Icon icon={Mail01Icon} name="mail" />
                 <Input type="email" placeholder="you@company.com" aria-label="Work email" autoComplete="email" required />
               </InputGroup>
-              <Button type="submit" size="lg" variant="ring">
+              <Button type="submit" size="lg">
                 Get started
               </Button>
             </form>
@@ -946,93 +1026,83 @@ function LandingApp() {
   );
 }
 
-/* ---- 3. Support inbox with an AI assistant ---- */
+/* ---- 3. Dating app: one profile at a time, new matches beside it ---- */
 
-const THREADS = [
-  { id: "jonah", name: "Jonah Weiss", text: "The export button spins forever on large reports…", time: "2m", status: "Urgent", variant: "destructive" },
-  { id: "ana", name: "Ana Ruiz", text: "Can we move our billing date to the 1st?", time: "18m", status: "Billing", variant: "info" },
-  { id: "leo", name: "Leo Park", text: "Thanks, that fixed it!", time: "1h", status: "Solved", variant: "success" },
-  { id: "priya", name: "Priya Nair", text: "Is there an API for bulk invites?", time: "3h", status: "Question", variant: "muted" },
-  { id: "sam", name: "Sam Okafor", text: "SSO login loops back to the start page.", time: "5h", status: "Bug", variant: "warning" },
+const PEOPLE = [
+  { id: "maria", name: "Maria", age: 31, place: "Graça", distance: "2 km", job: "Ceramicist", prompt: "A perfect Sunday: a long lunch, then getting lost in a bookshop until it closes.", likes: ["Natural wine", "Bouldering", "Fado", "Film cameras"] },
+  { id: "joao", name: "João", age: 34, place: "Alcântara", distance: "5 km", job: "Architect", prompt: "I'll judge you a little for your coffee order, then make you a better one.", likes: ["Cycling", "Jazz", "Cooking"] },
 ] as const;
 
-const RELAY_SETTINGS: AppSettings = {
+const MATCHES = [
+  { id: "ines", name: "Inês", text: "Ok but which tasca? I need names.", time: "2m", online: true, unread: true },
+  { id: "tiago", name: "Tiago", text: "You: The photo with the dog is unfair", time: "1h", online: true, unread: false },
+  { id: "clara", name: "Clara", text: "Thursday works! 19:30 at the miradouro?", time: "3h", online: false, unread: true },
+  { id: "rui", name: "Rui", text: "New match. Say hello", time: "Yesterday", online: false, unread: false },
+] as const;
+
+const KINDRED_SETTINGS: AppSettings = {
   groups: [
     {
       label: "Account",
       sections: [
         {
-          href: "#rl-profile",
+          href: "#kd-profile",
           label: "Profile",
           icon: UserCircleIcon, iconName: "circle-user",
           content: (
-            <Settings title="How customers see you">
-              <SettingsRow label="Display name" htmlFor="rl-name" hint="Shown above every reply you send.">
-                <Input id="rl-name" defaultValue="Maya from Relay" aria-describedby="rl-name-hint" />
+            <Settings title="About you" description="People see this on your profile.">
+              <SettingsRow label="First name" htmlFor="kd-name">
+                <Input id="kd-name" defaultValue="Dani" autoComplete="given-name" />
               </SettingsRow>
-              <SettingsRow label="Signature" htmlFor="rl-signature" hint="Added to the end of email replies." stack>
-                <Textarea id="rl-signature" rows={3} defaultValue={"Maya Chen\nCustomer success, Relay"} aria-describedby="rl-signature-hint" />
+              <SettingsRow label="Prompt" htmlFor="kd-prompt" hint="One line that starts a conversation." stack>
+                <Textarea id="kd-prompt" rows={2} defaultValue="Ask me about the worst restaurant I've ever loved." aria-describedby="kd-prompt-hint" />
               </SettingsRow>
             </Settings>
           ),
         },
         {
-          href: "#rl-notifications",
+          href: "#kd-notifications",
           label: "Notifications",
           icon: Notification01Icon, iconName: "bell",
           content: (
-            <>
-              <Settings title="Notify me about">
-                {switchRow("rl-new", "New conversations", "In the queues you're part of.", true)}
-                {switchRow("rl-mentions", "Mentions", "When a teammate @mentions you in a note.", true)}
-                {switchRow("rl-sla", "SLA warnings", "Fifteen minutes before a reply is overdue.", true)}
-              </Settings>
-              <Settings title="Desktop">
-                {switchRow("rl-sound", "Play a sound", "A short chime with each notification.")}
-              </Settings>
-            </>
+            <Settings title="Tell me when">
+              {switchRow("kd-match", "Someone matches with me", "Right away, with their first photo.", true)}
+              {switchRow("kd-message", "I get a message", "From people I've matched with.", true)}
+              {switchRow("kd-daily", "My daily picks are ready", "Once a day, at 18:00.")}
+            </Settings>
           ),
         },
       ],
     },
     {
-      label: "Inbox",
+      label: "Dating",
       sections: [
         {
-          href: "#rl-replies",
-          label: "Replies",
-          icon: SentIcon, iconName: "send",
+          href: "#kd-preferences",
+          label: "Preferences",
+          icon: SlidersHorizontalIcon, iconName: "sliders-horizontal",
           content: (
-            <Settings title="Sending">
-              {switchRow("rl-enter", "Send with ⌘ Enter", "Enter alone starts a new line.", true)}
-              {selectRow("rl-undo", "Undo send", [["0", "Off"], ["5", "5 seconds"], ["10", "10 seconds"], ["30", "30 seconds"]], "10")}
-              {selectRow("rl-after", "After sending", [["next", "Open the next conversation"], ["stay", "Stay on this one"], ["list", "Go back to the list"]], "next")}
+            <Settings title="Show me">
+              {selectRow("kd-who", "Interested in", [["women", "Women"], ["men", "Men"], ["everyone", "Everyone"]], "everyone")}
+              {selectRow("kd-age", "Ages", [["25", "25 to 35"], ["28", "28 to 40"], ["35", "35 to 50"]], "28")}
+              {selectRow("kd-distance", "Within", [["5", "5 km"], ["15", "15 km"], ["50", "50 km"]], "15")}
             </Settings>
           ),
         },
         {
-          href: "#rl-ai",
-          label: "AI assistant",
-          icon: SparklesIcon, iconName: "sparkles",
+          href: "#kd-privacy",
+          label: "Privacy",
+          icon: LockIcon, iconName: "lock",
           content: (
-            <Settings title="Relay AI" description="Suggestions are drafts. Nothing is sent until you send it.">
-              {switchRow("rl-suggest", "Suggest replies", "Three short replies under each customer message.", true)}
-              {selectRow("rl-tone", "Tone", [["friendly", "Friendly"], ["neutral", "Neutral"], ["formal", "Formal"]], "friendly")}
-              {switchRow("rl-summary", "Summarise long threads", "A two-line summary at the top of threads over ten messages.", true)}
-              {switchRow("rl-learn", "Learn from my replies", "Suggestions pick up your wording over time.")}
-            </Settings>
-          ),
-        },
-        {
-          href: "#rl-shortcuts",
-          label: "Shortcuts",
-          icon: KeyboardIcon, iconName: "keyboard",
-          content: (
-            <Settings title="Keyboard shortcuts" description="Click a shortcut, then press the new keys.">
-              <ShortcutRow id="rl-key-send" label="Send reply" initial="Mod+Enter" />
-              <ShortcutRow id="rl-key-assign" label="Assign to me" initial="Mod+Shift+A" />
-              <ShortcutRow id="rl-key-close" label="Close conversation" initial="Mod+Shift+E" />
-            </Settings>
+            <>
+              <Settings title="Visibility">
+                {switchRow("kd-discover", "Show me in Discover", "Turn off to only talk to people you've matched with.", true)}
+                {switchRow("kd-receipts", "Read receipts", "Matches see when you've read their message.")}
+              </Settings>
+              <Settings>
+                <SettingsLink label="Pause my account" hint="Your profile is hidden; your matches stay." destructive />
+              </Settings>
+            </>
           ),
         },
       ],
@@ -1040,148 +1110,148 @@ const RELAY_SETTINGS: AppSettings = {
   ],
 };
 
-function InboxApp() {
-  const jonah = <Avatar size="sm" name="Jonah Weiss" />;
-  const agent = <Avatar size="sm" name="Relay AI" fallback="AI" />;
+function DatingApp() {
+  const [index, setIndex] = useState(0);
+  const person = PEOPLE[index % PEOPLE.length];
+  const next = (liked: boolean) => {
+    if (liked) toast.success(`You liked ${person.name}. If it's mutual, you'll match.`);
+    setIndex((i) => i + 1);
+  };
   return (
     <AppFrame
-      brand={{ name: "Relay", icon: Message01Icon, iconName: "message-circle", href: "#inbox" }}
+      brand={{ name: "Kindred", icon: Flower01Icon, iconName: "flower", href: "#discover" }}
       groups={[
         {
-          label: "Queues",
+          label: "Kindred",
           items: [
-            { href: "#inbox", label: "Inbox", icon: InboxIcon, iconName: "inbox" },
-            { href: "#mentions", label: "Mentions", icon: Notification01Icon, iconName: "bell" },
-            { href: "#sent", label: "Sent", icon: SentIcon, iconName: "send" },
-            { href: "#customers", label: "Customers", icon: UserMultipleIcon, iconName: "users" },
+            { href: "#discover", label: "Discover", icon: Flower01Icon, iconName: "flower" },
+            { href: "#matches", label: "Matches", icon: UserMultipleIcon, iconName: "users" },
+            { href: "#messages", label: "Messages", icon: Message01Icon, iconName: "message-circle" },
+            { href: "#profile", label: "Profile", icon: UserCircleIcon, iconName: "circle-user" },
           ],
         },
       ]}
-      tabs={["#inbox", "#mentions", "#sent", "#customers"]}
-      current="#inbox"
-      barActions={searchButton("Search conversations")}
-      footer={
-        <AvatarGroup aria-label="3 teammates online">
-          <Avatar name="Maya Chen" size="sm" />
-          <Avatar name="Ravi Shah" size="sm" />
-          <Avatar name="Eli Stone" size="sm" />
-        </AvatarGroup>
-      }
-      settings={RELAY_SETTINGS}
-      mainClassName="pv-app-inbox"
+      tabs={["#discover", "#matches", "#messages", "#profile"]}
+      current="#discover"
+      footer={account("Dani Tesler")}
+      settings={KINDRED_SETTINGS}
     >
-      <section className="pv-app-inbox__list" aria-labelledby="rl-inbox">
-        <div className="ayy-stack" style={gap(3)}>
-          <div className="ayy-spread">
-            <h1 className="ayy-h4" id="rl-inbox">
-              Inbox
-            </h1>
-            <Badge variant="muted">12 open</Badge>
-          </div>
-          <InputGroup size="sm">
-            <Icon icon={Search01Icon} name="search" />
-            <Input type="search" placeholder="Search" aria-label="Search conversations" aria-keyshortcuts="/" />
-            <InputGroupAddon>
-              <Kbd>/</Kbd>
-            </InputGroupAddon>
-          </InputGroup>
-        </div>
-        <List aria-label="Conversations">
-          {THREADS.map((t) => (
-            <ListItem key={t.id}>
-              <Avatar name={t.name} size="sm" />
-              <ListContent>
-                <ListTitle>
-                  <ListLink href={`#${t.id}`} current={t.id === "jonah"}>
-                    {t.name}
-                  </ListLink>
-                </ListTitle>
-                <ListDescription className="ayy-truncate">{t.text}</ListDescription>
-                <Badge variant={t.variant}>{t.status}</Badge>
-              </ListContent>
-              <ListMeta>{t.time}</ListMeta>
-            </ListItem>
-          ))}
-        </List>
-      </section>
+      <div className="ayy-stack" style={gap(5)}>
+        <PageHeader>
+          <PageHeaderTitle>Discover</PageHeaderTitle>
+          <PageHeaderDescription>12 new people near Lisbon today.</PageHeaderDescription>
+          <PageHeaderActions>
+            <Button size="sm" variant="outline">
+              <Icon icon={SlidersHorizontalIcon} name="sliders-horizontal" />
+              Filters
+            </Button>
+          </PageHeaderActions>
+        </PageHeader>
 
-      <section className="pv-app-inbox__thread" aria-labelledby="rl-thread">
-        <div className="ayy-spread">
-          <div className="ayy-stack" style={gap(1)}>
-            <h2 className="ayy-h5" id="rl-thread">
-              Export never finishes
-            </h2>
-            <p className="ayy-muted">Jonah Weiss · Acme Inc.</p>
-          </div>
-          <Badge variant="destructive" dot>
-            Urgent
-          </Badge>
-        </div>
-        <Chat aria-label="Conversation with Jonah Weiss" className="pv-app-inbox__chat">
-          <ChatMessage avatar={jonah}>Hi! The export button spins forever when I pick the full-year report. Smaller ranges work.</ChatMessage>
-          <ChatMessage direction="out">Thanks Jonah. Roughly how many rows does the full-year report have?</ChatMessage>
-          <ChatMessage avatar={jonah}>About 240,000. It used to work last month.</ChatMessage>
-          <ChatTyping avatar={agent} label="Relay AI is drafting a reply" />
-          <ChatReplies>
-            <Button variant="outline" size="sm">
-              <Icon icon={SparklesIcon} name="sparkles" />
-              Suggest the async export
-            </Button>
-            <Button variant="outline" size="sm">
-              Ask for a screenshot
-            </Button>
-          </ChatReplies>
-        </Chat>
-        <form className="ayy-stack" style={gap(2)} onSubmit={(e) => e.preventDefault()}>
-          <Textarea rows={2} placeholder="Write a reply…" aria-label="Reply to Jonah Weiss" />
-          <div className="ayy-spread">
-            <Button type="button" variant="ghost" size="icon" aria-label="Attach a file">
-              <Icon icon={Attachment01Icon} name="paperclip" />
-            </Button>
-            <Button type="submit">
-              <Icon icon={SentIcon} name="send" />
-              Send
-            </Button>
-          </div>
-        </form>
-      </section>
+        <div className="ayy-split" style={min("18rem")}>
+          <Card>
+            <CardMedia>
+              <div className="pv-app-portrait" aria-hidden="true">
+                <span className="pv-app-portrait__initial">{person.name[0]}</span>
+              </div>
+            </CardMedia>
+            <CardHeader>
+              <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                <h2 className="ayy-h3" id="kd-person">
+                  {person.name}, {person.age}
+                </h2>
+                <Badge variant="success" dot>
+                  Active today
+                </Badge>
+              </div>
+              <CardDescription>
+                <span className="ayy-cluster" style={gap(2)}>
+                  <Icon icon={Location01Icon} name="map-pin" />
+                  {person.place}, {person.distance} away · {person.job}
+                </span>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="ayy-stack" style={gap(4)}>
+                <blockquote className="ayy-lede" style={{ margin: 0 }}>
+                  “{person.prompt}”
+                </blockquote>
+                <ul className="ayy-cluster" style={{ ...gap(2), listStyle: "none", padding: 0, margin: 0 }} aria-label={`${person.name} likes`}>
+                  {person.likes.map((like) => (
+                    <li key={like}>
+                      <Badge variant="outline">{like}</Badge>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <div className="ayy-cluster" style={{ inlineSize: "100%", justifyContent: "center" }}>
+                <Button size="lg" variant="outline" onClick={() => next(false)}>
+                  <Icon icon={Cancel01Icon} name="x" />
+                  Pass
+                </Button>
+                <Button size="lg" onClick={() => next(true)}>
+                  <Icon icon={SmileIcon} name="smile" />
+                  Like
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
 
-      <aside className="pv-app-inbox__aside" aria-labelledby="rl-customer">
-        <div className="ayy-stack" style={gap(4)}>
-          <div className="ayy-cluster" style={gap(3)}>
-            <Avatar name="Jonah Weiss" size="lg" />
-            <div className="ayy-stack" style={gap(0)}>
-              <h2 className="ayy-h5" id="rl-customer">
-                Jonah Weiss
-              </h2>
-              <p className="ayy-muted">Ops lead</p>
-            </div>
+          <div className="ayy-stack" style={gap(4)}>
+            <Card>
+              <CardHeader>
+                <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                  <CardTitle>New matches</CardTitle>
+                  <Badge>2 unread</Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <List aria-label="Matches">
+                  {MATCHES.map((m) => (
+                    <ListItem key={m.id}>
+                      <Avatar name={m.name} size="sm" />
+                      <ListContent>
+                        <ListTitle>
+                          <ListLink href={`#${m.id}`}>{m.name}</ListLink>
+                        </ListTitle>
+                        <ListDescription className="ayy-truncate">{m.text}</ListDescription>
+                      </ListContent>
+                      <ListMeta>
+                        <span className="ayy-cluster" style={gap(2)}>
+                          {m.unread ? <StatusDot variant="info" label="Unread" /> : null}
+                          {m.time}
+                        </span>
+                      </ListMeta>
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Your profile</CardTitle>
+                <CardDescription>Profiles with a voice prompt get twice the replies.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="ayy-stack" style={gap(2)}>
+                  <div className="ayy-spread">
+                    <span>Complete</span>
+                    <span className="ayy-muted">80%</span>
+                  </div>
+                  <Progress value={80} aria-label="Profile complete" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button size="sm" variant="outline">
+                  Add a voice prompt
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
-          <div className="ayy-stack" style={gap(2)}>
-            <div className="ayy-spread">
-              <span className="ayy-muted">Company</span>
-              <span>Acme Inc.</span>
-            </div>
-            <div className="ayy-spread">
-              <span className="ayy-muted">Plan</span>
-              <Badge variant="info">Scale</Badge>
-            </div>
-            <div className="ayy-spread">
-              <span className="ayy-muted">Customer since</span>
-              <span>March 2023</span>
-            </div>
-            <div className="ayy-spread">
-              <span className="ayy-muted">Open tickets</span>
-              <span>2</span>
-            </div>
-          </div>
-          <Separator />
-          <Alert variant="warning">
-            <AlertTitle>SLA in 38 minutes</AlertTitle>
-            <AlertDescription>First reply is due at 14:30.</AlertDescription>
-          </Alert>
         </div>
-      </aside>
+      </div>
     </AppFrame>
   );
 }
@@ -1189,10 +1259,12 @@ function InboxApp() {
 /* ---- 4. Project tracker: onboarding, and the empty, loading and error states ---- */
 
 const TASKS = [
-  { id: "t1", title: "Write the launch post", project: "Website", due: "Today", who: "Maya Chen", done: false },
-  { id: "t2", title: "Review the pricing page copy", project: "Website", due: "Today", who: "Ravi Shah", done: false },
-  { id: "t3", title: "Fix the signup email in Outlook", project: "Growth", due: "Tomorrow", who: "Eli Stone", done: false },
-  { id: "t4", title: "Plan the October release", project: "Product", due: "Fri", who: "Maya Chen", done: true },
+  { id: "t1", title: "Fix the signup email in Outlook", project: "Growth", due: "Yesterday", who: "Eli Stone", done: false, late: true, flag: "Bug" },
+  { id: "t2", title: "Write the launch post for 2.4", project: "Website", due: "Today", who: "Maya Chen", done: false, flag: "High" },
+  { id: "t3", title: "Review the pricing page copy with legal", project: "Website", due: "Today", who: "Ravi Shah", done: false },
+  { id: "t4", title: "Record the onboarding walkthrough", project: "Product", due: "Today", who: "Noa Peretz", done: false },
+  { id: "t5", title: "Reply to the Kestrel security questionnaire", project: "Growth", due: "Today", who: "Maya Chen", done: true },
+  { id: "t6", title: "Plan the November release", project: "Product", due: "Fri", who: "Maya Chen", done: false },
 ];
 
 const MEMBERS = [
@@ -1300,7 +1372,7 @@ function TrackerApp() {
     window.setTimeout(() => setRetrying(false), 1500);
   };
   const [projects, setProjects] = useState<string[]>([]);
-  const inView = view === "today" ? TASKS.filter((t) => t.due === "Today") : view === "upcoming" ? [] : TASKS;
+  const inView = view === "today" ? TASKS.filter((t) => t.due === "Today" || t.late) : view === "upcoming" ? [] : TASKS;
   const tasks = projects.length ? inView.filter((t) => projects.includes(t.project)) : inView;
   const toggleProject = (project: string) =>
     setProjects((list) => (list.includes(project) ? list.filter((p) => p !== project) : [...list, project]));
@@ -1334,7 +1406,7 @@ function TrackerApp() {
       <div className="ayy-stack" style={gap(5)}>
         <PageHeader>
           <PageHeaderTitle>My tasks</PageHeaderTitle>
-          <PageHeaderDescription>What's on your plate across every project.</PageHeaderDescription>
+          <PageHeaderDescription>Thursday, October 30 · 4 due today, 1 overdue.</PageHeaderDescription>
           <PageHeaderActions>
             <Button aria-keyshortcuts="C">
               <Icon icon={Add01Icon} name="add" />
@@ -1394,9 +1466,16 @@ function TrackerApp() {
                           <ListContent>
                             <ListTitle htmlFor={`or-${t.id}`}>{t.title}</ListTitle>
                             <ListDescription>
-                              {t.project} · due {t.due}
+                              {t.project} · due {t.due.toLowerCase()}
                             </ListDescription>
                           </ListContent>
+                          {t.late ? (
+                            <Badge variant="destructive" dot>
+                              Overdue
+                            </Badge>
+                          ) : t.flag ? (
+                            <Badge variant="warning">{t.flag}</Badge>
+                          ) : null}
                           <Avatar name={t.who} size="sm" />
                         </ListItem>
                       ))}
@@ -1471,16 +1550,21 @@ function TrackerApp() {
   );
 }
 
-/* ---- 5. Online store: filters, a product grid, a cart drawer ---- */
+/* ---- 5. Online store: this week's roast, a product grid, brew guides, a cart drawer ---- */
 
+/* Each bag's label is its own colour, the way roasters tell origins apart on a shelf. Roast: 1 light, 2 medium, 3 dark. */
 const ROASTS = [
-  { id: "guji", name: "Ethiopia Guji", notes: "Blueberry, jasmine, honey", category: "single", roast: "Light", price: 18, spot: "var(--ayy-accent-ai)" },
-  { id: "huila", name: "Colombia Huila", notes: "Red apple, caramel, cocoa", category: "single", roast: "Medium", price: 16, spot: "var(--ayy-accent-marketing)" },
-  { id: "kiambu", name: "Kenya Kiambu", notes: "Blackcurrant, grapefruit", category: "single", roast: "Light", price: 21, spot: "var(--ayy-accent-brand)" },
-  { id: "house", name: "House blend", notes: "Milk chocolate, hazelnut", category: "blend", roast: "Medium", price: 13, spot: "var(--ayy-accent-research)" },
-  { id: "night", name: "Night shift", notes: "Dark chocolate, molasses", category: "blend", roast: "Dark", price: 14, spot: "var(--ayy-accent-product)" },
-  { id: "decaf", name: "Swiss water decaf", notes: "Cocoa, plum, brown sugar", category: "decaf", roast: "Medium", price: 15, spot: "var(--ayy-accent-system)" },
-];
+  { id: "guji", name: "Ethiopia Guji", short: "Guji", origin: "Uraga, Guji", process: "Washed", notes: "Blueberry, jasmine, honey", category: "single", roast: 1, price: 18, rating: 4.8, reviews: 214, tag: { text: "New harvest", variant: "success" }, spot: "var(--ayy-accent-ai)" },
+  { id: "huila", name: "Colombia Huila", short: "Huila", origin: "Pitalito, Huila", process: "Honey", notes: "Red apple, caramel, cocoa", category: "single", roast: 2, price: 16, rating: 4.6, reviews: 389, tag: { text: "Bestseller", variant: "info" }, spot: "var(--ayy-accent-marketing)" },
+  { id: "kiambu", name: "Kenya Kiambu AA", short: "Kiambu", origin: "Gatundu, Kiambu", process: "Washed", notes: "Blackcurrant, grapefruit", category: "single", roast: 1, price: 21, rating: 4.9, reviews: 97, tag: { text: "4 bags left", variant: "warning" }, spot: "var(--ayy-accent-brand)" },
+  { id: "house", name: "House blend", short: "House", origin: "Brazil and Colombia", process: "Natural", notes: "Milk chocolate, hazelnut", category: "blend", roast: 2, price: 13, rating: 4.7, reviews: 1204, tag: null, spot: "var(--ayy-accent-research)" },
+  { id: "night", name: "Night shift", short: "Night", origin: "Sumatra and Brazil", process: "Wet-hulled", notes: "Dark chocolate, molasses", category: "blend", roast: 3, price: 14, rating: 4.5, reviews: 512, tag: { text: "Espresso", variant: "muted" }, spot: "var(--ayy-accent-product)" },
+  { id: "decaf", name: "Swiss water decaf", short: "Decaf", origin: "Cajamarca, Peru", process: "Swiss water", notes: "Cocoa, plum, brown sugar", category: "decaf", roast: 2, price: 15, rating: 4.4, reviews: 158, tag: null, spot: "var(--ayy-accent-system)" },
+] as const;
+
+type Roast = (typeof ROASTS)[number];
+
+const ROAST_LEVEL = ["", "Light", "Medium", "Dark"];
 
 const SHOP_CATEGORIES = [
   { value: "all", label: "All" },
@@ -1489,7 +1573,30 @@ const SHOP_CATEGORIES = [
   { value: "decaf", label: "Decaf" },
 ];
 
+const BREWS = [
+  { title: "Pour-over", text: "Bright and clean. The way to taste a light roast.", time: "3:30", dose: "15 g to 250 ml", icon: DropletIcon, iconName: "droplet" as const, spot: "var(--ayy-accent-system)" },
+  { title: "AeroPress", text: "Forgiving, fast, and it packs into a carry-on.", time: "2:00", dose: "17 g to 220 ml", icon: Clock01Icon, iconName: "clock" as const, spot: "var(--ayy-accent-marketing)" },
+  { title: "Espresso", text: "Night shift was built for it. Milk loves it too.", time: "0:28", dose: "18 g in, 36 g out", icon: Fire02Icon, iconName: "flame" as const, spot: "var(--ayy-accent-product)" },
+];
+
 const dollars = (n: number) => `$${n.toFixed(2)}`;
+
+/** A bag of coffee, drawn: a crimped top, the label in the coffee's own colour, the roast as dots. Decorative. */
+function Bag({ roast, size }: { roast: Roast; size?: "lg" }) {
+  return (
+    <span className="pv-app-bag" data-size={size} style={{ "--ayy-spot": roast.spot } as CSSProperties} aria-hidden="true">
+      <span className="pv-app-bag__label">
+        <span className="pv-app-bag__name">{roast.short}</span>
+        <span className="pv-app-bag__roast">
+          {[1, 2, 3].map((n) => (
+            <span key={n} className="pv-app-bag__dot" data-on={n <= roast.roast || undefined} />
+          ))}
+        </span>
+        <span className="pv-app-bag__weight">250 g</span>
+      </span>
+    </span>
+  );
+}
 
 function StoreApp() {
   const [category, setCategory] = useState("all");
@@ -1499,14 +1606,17 @@ function StoreApp() {
   const [cartOpen, setCartOpen] = useState(false);
   const [delivery, setDelivery] = useState("standard");
 
-  const inCategory = (id: string) => (id === "all" ? ROASTS : ROASTS.filter((r) => r.category === id));
+  const inCategory = (id: string) => (id === "all" ? [...ROASTS] : ROASTS.filter((r) => r.category === id));
   const shown = inCategory(category)
     .filter((r) => r.price >= low && r.price <= high)
-    .sort((a, b) => (order === "price-low" ? a.price - b.price : order === "price-high" ? b.price - a.price : 0));
+    .sort((a, b) => (order === "price-low" ? a.price - b.price : order === "price-high" ? b.price - a.price : b.reviews - a.reviews));
   const count = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = Object.entries(cart).reduce((sum, [id, qty]) => sum + (ROASTS.find((r) => r.id === id)?.price ?? 0) * qty, 0);
   const shipping = delivery === "express" ? 9 : 0;
-  const add = (id: string) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+  const add = (r: Roast) => {
+    setCart((c) => ({ ...c, [r.id]: (c[r.id] ?? 0) + 1 }));
+    toast.success(`${r.name} is in your cart`);
+  };
   const setQuantity = (id: string, qty: number) =>
     setCart((c) => {
       const next = { ...c };
@@ -1518,6 +1628,8 @@ function StoreApp() {
     setCategory("all");
     setPrice([10, 24]);
   };
+  const featured = ROASTS[0];
+  const orderLabel = order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular";
 
   return (
     <div className="pv-app pv-app--page">
@@ -1548,13 +1660,88 @@ function StoreApp() {
       </Navbar>
 
       <main id="em-main">
-        <section className="ayy-container" style={{ paddingBlock: "var(--ayy-space-24)" }} aria-labelledby="em-title">
-          <header className="ayy-stack" style={{ gap: "var(--ayy-space-2)", marginBlockEnd: "var(--ayy-space-8)" }}>
-            <p className="ayy-eyebrow">Roasted every Tuesday</p>
-            <h1 className="ayy-h2" id="em-title">
-              Coffee from farms we know by name
-            </h1>
-            <p className="ayy-lede">250 g bags, shipped the day after roasting. Standard delivery is free.</p>
+        <section className="ayy-container" style={{ paddingBlock: "var(--ayy-space-12)" }} aria-labelledby="em-title">
+          <div className="ayy-grid" style={{ ...min("min(24rem, 100%)"), ...gap(10), alignItems: "center" }}>
+            <div className="ayy-stack" style={gap(5)}>
+              <p className="ayy-eyebrow">Roasted Tuesday, October 28 · ships tomorrow</p>
+              <h1 className="ayy-h1" id="em-title">
+                Coffee from farms we know by name
+              </h1>
+              <p className="ayy-lede">Six coffees, roasted in Lisbon in 12 kg batches and sent out the next morning. We pay farmers twice the fair-trade price, and print it on the bag.</p>
+              <div className="ayy-cluster">
+                <a className={buttonClass({ size: "lg" })} href="#em-menu">
+                  Shop the roast
+                </a>
+                <a className={buttonClass({ size: "lg", variant: "outline" })} href="#em-subscribe">
+                  Subscribe and save 15%
+                </a>
+              </div>
+              <div className="ayy-cluster" style={gap(5)}>
+                <span className="ayy-cluster" style={gap(2)}>
+                  <Rating readOnly size="sm" value={4.8} aria-label="Rated 4.8 out of 5" />
+                  <span className="ayy-muted">2,574 reviews</span>
+                </span>
+                <span className="ayy-cluster ayy-muted" style={gap(2)}>
+                  <Icon icon={DeliveryTruck01Icon} name="truck" />
+                  Free delivery over $30
+                </span>
+              </div>
+            </div>
+
+            <Card style={{ "--ayy-spot": featured.spot } as CSSProperties}>
+              <CardMedia>
+                <div className="ayy-bg-grid pv-app-product pv-app-product--hero">
+                  <Bag roast={featured} size="lg" />
+                </div>
+              </CardMedia>
+              <CardHeader>
+                <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                  <Badge variant="success" dot>
+                    This week's roast
+                  </Badge>
+                  <span className="ayy-muted">Lot 118</span>
+                </div>
+                <CardTitle>{featured.name}, washed</CardTitle>
+                <CardDescription>Grown by Tadesse Edema at 2,100 m. Tastes like a blueberry muffin with the window open.</CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                  <Stat size="sm" value={`$${featured.price}`} unit="/ 250 g" />
+                  <Button onClick={() => add(featured)}>
+                    <Icon icon={Add01Icon} name="add" />
+                    Add to cart
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+          </div>
+        </section>
+
+        <section className="ayy-container" id="em-menu" style={{ paddingBlock: "var(--ayy-space-16)" }} aria-labelledby="em-menu-title">
+          <header className="ayy-spread" style={{ ...gap(4), marginBlockEnd: "var(--ayy-space-6)", alignItems: "end" }}>
+            <div className="ayy-stack" style={gap(2)}>
+              <p className="ayy-eyebrow">The menu</p>
+              <h2 className="ayy-h2" id="em-menu-title">
+                On the shelf this week
+              </h2>
+            </div>
+            <Sorting size="sm">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SortingTrigger size="sm" aria-label={`Sort by ${orderLabel}`}>
+                    <span>{`Sort: ${orderLabel}`}</span>
+                    <Icon icon={ArrowDown01Icon} name="chevron-down" />
+                  </SortingTrigger>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" aria-label="Sort by">
+                  <DropdownMenuRadioGroup value={order} onValueChange={setOrder} closeOnSelect>
+                    <DropdownMenuRadioItem value="popular">Most popular</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="price-low">Price, low to high</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="price-high">Price, high to low</DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </Sorting>
           </header>
 
           <div className="ayy-stack" style={gap(5)}>
@@ -1574,68 +1761,50 @@ function StoreApp() {
                   </Chip>
                 ))}
               </ChipGroup>
-              <div className="ayy-cluster" style={gap(4)}>
-                <div className="ayy-stack" style={{ ...gap(1), inlineSize: "13rem" }}>
-                  <div className="ayy-spread">
-                    <span className="ayy-label" id="em-price">
-                      Price
-                    </span>
-                    <span className="ayy-muted">
-                      ${low} – ${high}
-                    </span>
-                  </div>
-                  <SliderRange
-                    aria-labelledby="em-price"
-                    min={10}
-                    max={24}
-                    value={[low, high]}
-                    onValueChange={setPrice}
-                    labels={["Lowest price", "Highest price"]}
-                  />
+              <div className="ayy-stack" style={{ ...gap(1), inlineSize: "13rem" }}>
+                <div className="ayy-spread">
+                  <span className="ayy-label" id="em-price">
+                    Price
+                  </span>
+                  <span className="ayy-muted">
+                    ${low} – ${high}
+                  </span>
                 </div>
-                <Sorting size="sm">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SortingTrigger size="sm" aria-label={`Sort by ${order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular"}`}>
-                        <span>{`Sort: ${order === "price-low" ? "Price, low to high" : order === "price-high" ? "Price, high to low" : "Most popular"}`}</span>
-                        <Icon icon={ArrowDown01Icon} name="chevron-down" />
-                      </SortingTrigger>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" aria-label="Sort by">
-                      <DropdownMenuRadioGroup value={order} onValueChange={setOrder} closeOnSelect>
-                        <DropdownMenuRadioItem value="popular">Most popular</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="price-low">Price, low to high</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="price-high">Price, high to low</DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </Sorting>
+                <SliderRange aria-labelledby="em-price" min={10} max={24} value={[low, high]} onValueChange={setPrice} labels={["Lowest price", "Highest price"]} />
               </div>
             </div>
 
             <div role="status">
               {shown.length ? (
-                // At most 14rem a column, and never fewer than two: a phone shows two products a row.
-                <div className="ayy-grid" style={{ ...min("min(14rem, calc(50% - var(--ayy-space-2)))"), ...gap(4) }}>
+                // Three bags a row on a laptop, two on a phone.
+                <div className="ayy-grid" style={{ ...min("min(18rem, calc(50% - var(--ayy-space-2)))"), ...gap(4) }}>
                   {shown.map((r) => (
                     <Card key={r.id} style={{ "--ayy-spot": r.spot } as CSSProperties}>
                       <CardMedia>
-                        <div className="ayy-bg-grid pv-app-product">
-                          <IconTile size="lg">
-                            <Icon icon={Coffee02Icon} name="coffee" />
-                          </IconTile>
+                        <div className="pv-app-product">
+                          <Bag roast={r} />
                         </div>
                       </CardMedia>
                       <CardHeader>
+                        {r.tag ? (
+                          <div>
+                            <Badge variant={r.tag.variant}>{r.tag.text}</Badge>
+                          </div>
+                        ) : null}
                         <CardTitle>{r.name}</CardTitle>
                         <CardDescription>
-                          {r.roast} roast · {r.notes}
+                          {ROAST_LEVEL[r.roast]} roast · {r.process} · {r.origin}
                         </CardDescription>
+                        <p className="ayy-small">{r.notes}</p>
+                        <span className="ayy-cluster" style={gap(2)}>
+                          <Rating readOnly size="sm" value={r.rating} aria-label={`Rated ${r.rating} out of 5`} />
+                          <span className="ayy-muted ayy-small">{r.reviews.toLocaleString("en-US")}</span>
+                        </span>
                       </CardHeader>
                       <CardFooter>
                         <div className="ayy-spread" style={{ inlineSize: "100%" }}>
                           <span className="ayy-h6">${r.price}</span>
-                          <Button size="sm" variant="outline" onClick={() => add(r.id)} aria-label={`Add ${r.name} to the cart`}>
+                          <Button size="sm" variant="outline" onClick={() => add(r)} aria-label={`Add ${r.name} to the cart`}>
                             <Icon icon={Add01Icon} name="add" />
                             Add
                           </Button>
@@ -1661,6 +1830,68 @@ function StoreApp() {
             </div>
           </div>
         </section>
+
+        <section className="ayy-container" id="guides" style={{ paddingBlock: "var(--ayy-space-16)" }} aria-labelledby="em-guides">
+          <header className="ayy-stack" style={{ ...gap(2), marginBlockEnd: "var(--ayy-space-6)" }}>
+            <p className="ayy-eyebrow">Brewing guides</p>
+            <h2 className="ayy-h2" id="em-guides">
+              Three ways we brew it at the bar
+            </h2>
+          </header>
+          <div className="ayy-grid" style={{ ...min("15rem"), ...gap(4) }}>
+            {BREWS.map((b) => (
+              <Card key={b.title} interactive>
+                <CardHeader>
+                  <IconTile spotColor={b.spot}>
+                    <Icon icon={b.icon} name={b.iconName} />
+                  </IconTile>
+                  <CardTitle>
+                    <CardLink href="#guides">{b.title}</CardLink>
+                  </CardTitle>
+                  <CardDescription>{b.text}</CardDescription>
+                </CardHeader>
+                <CardFooter>
+                  <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+                    <span className="ayy-mono">{b.time}</span>
+                    <span className="ayy-muted ayy-small">{b.dose}</span>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="ayy-container" id="em-subscribe" style={{ paddingBlock: "var(--ayy-space-16)" }} aria-labelledby="em-sub">
+          <Card featured>
+            <CardContent>
+              <div className="ayy-split" style={{ ...min("16rem"), ...gap(8), alignItems: "center" }}>
+                <div className="ayy-stack" style={gap(3)}>
+                  <h2 className="ayy-h3" id="em-sub">
+                    Never run out
+                  </h2>
+                  <p className="ayy-muted">A fresh bag every two or four weeks, chosen by our roaster or by you. Skip, swap or pause from your account.</p>
+                  <List compact aria-label="Subscribers get">
+                    {["15% off every bag", "Free delivery, always", "First taste of new harvests"].map((perk) => (
+                      <ListItem key={perk}>
+                        <Icon icon={CheckmarkCircle02Icon} name="circle-check" />
+                        {perk}
+                      </ListItem>
+                    ))}
+                  </List>
+                </div>
+                <div className="ayy-stack" style={gap(3)}>
+                  <ChoiceGroup legend="How often" name="em-every" defaultValue="2" min="8rem">
+                    <ChoiceCard value="2" title="Every 2 weeks" description="For a cup a day" meta="$15.30 a bag" />
+                    <ChoiceCard value="4" title="Every 4 weeks" description="For weekends" meta="$15.30 a bag" />
+                  </ChoiceGroup>
+                  <Button block onClick={() => toast.success("Subscription started. First bag ships Wednesday.")}>
+                    Start my subscription
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
       </main>
 
       <Dialog open={cartOpen} onOpenChange={setCartOpen}>
@@ -1676,13 +1907,15 @@ function StoreApp() {
                   {Object.entries(cart).map(([id, qty]) => {
                     const r = ROASTS.find((x) => x.id === id)!;
                     return (
-                      <ListItem key={id} style={{ "--ayy-spot": r.spot } as CSSProperties}>
-                        <IconTile size="sm">
-                          <Icon icon={Coffee02Icon} name="coffee" />
-                        </IconTile>
+                      <ListItem key={id}>
+                        <span className="pv-app-product pv-app-product--thumb">
+                          <Bag roast={r} />
+                        </span>
                         <ListContent>
                           <ListTitle>{r.name}</ListTitle>
-                          <ListDescription>250 g · ${r.price}</ListDescription>
+                          <ListDescription>
+                            250 g · ${r.price}
+                          </ListDescription>
                         </ListContent>
                         <NumberField
                           size="sm"
@@ -1752,6 +1985,11 @@ function StoreApp() {
           <FooterGroup label="Shop">
             <FooterLink href="#shop">Coffee</FooterLink>
             <FooterLink href="#subscriptions">Subscriptions</FooterLink>
+            <FooterLink href="#gifts">Gift cards</FooterLink>
+          </FooterGroup>
+          <FooterGroup label="Learn">
+            <FooterLink href="#guides">Brewing guides</FooterLink>
+            <FooterLink href="#farms">Our farms</FooterLink>
           </FooterGroup>
           <FooterGroup label="Help">
             <FooterLink href="#shipping">Shipping</FooterLink>
@@ -1759,7 +1997,7 @@ function StoreApp() {
           </FooterGroup>
         </FooterNav>
         <FooterBottom>
-          <p>© 2026 Ember Roasters</p>
+          <p>© 2026 Ember Roasters · Rua da Boavista 12, Lisbon</p>
         </FooterBottom>
       </Footer>
     </div>
@@ -1889,7 +2127,7 @@ function BookingApp() {
           label: "Studio",
           items: [
             { href: "#schedule", label: "Schedule", icon: Calendar03Icon, iconName: "calendar" },
-            { href: "#bookings", label: "My bookings", icon: Ticket01Icon, iconName: "ticket" },
+            { href: "#bookings", label: "Bookings", icon: Ticket01Icon, iconName: "ticket" },
             { href: "#teachers", label: "Teachers", icon: UserGroupIcon, iconName: "users-group" },
             { href: "#profile", label: "Profile", icon: UserCircleIcon, iconName: "circle-user" },
           ],
@@ -1903,8 +2141,22 @@ function BookingApp() {
       <div className="ayy-stack" style={gap(5)}>
         <PageHeader>
           <PageHeaderTitle>Book a class</PageHeaderTitle>
-          <PageHeaderDescription>October 13–19 · 6 classes left on your 10-class pass.</PageHeaderDescription>
+          <PageHeaderDescription>Good morning, Dana. October 13–19 · 6 classes left on your 10-class pass.</PageHeaderDescription>
         </PageHeader>
+
+        <Card>
+          <CardContent>
+            <div className="ayy-cluster" style={{ ...gap(4), flexWrap: "nowrap" }}>
+              <ProgressRing size="lg" value={75} variant="success" aria-label="3 of 4 classes this week">
+                3/4
+              </ProgressRing>
+              <div className="ayy-stack" style={gap(1)}>
+                <p className="ayy-h6">One more class for your weekly goal</p>
+                <p className="ayy-muted">Up next: Sunrise vinyasa with Ana, Wednesday at 07:00 in Príncipe Real.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <ChoiceGroup aria-label="Day" name="hv-day" value={day} onValueChange={setDay} min="6rem" scroll>
           {WEEK.map((d) => {
@@ -2021,10 +2273,11 @@ export interface ShowcaseApp {
   name: string;
   kind: string;
   description: string;
-  theme: ThemeName;
+  /** The Themes page preset it wears (THEME_PRESETS id): colours, fonts, corners and icon pack. */
+  preset: string;
+  /** Light or dark: every preset has both. */
+  theme: "light" | "dark";
   density: Exclude<DensityMode, "auto">;
-  /** Component slugs used, for the "Built with" links. */
-  uses: string[];
   /** A prompt that builds a screen like this with ayywi, for "Build it with AI". */
   prompt: string;
   screenshot: string;
@@ -2038,17 +2291,17 @@ export const showcaseApps: ShowcaseApp[] = [
     id: "dashboard",
     name: "Pulse",
     kind: "Analytics dashboard",
-    description: "KPIs, visitors chart, top pages, sources, goals. Dark and dense. Seven destinations: four tabs plus More on phones. Settings in a full dialog.",
+    description: "Live visitors, KPI sparklines, a month-on-month chart, top pages and traffic sources. Cool and technical, in Arctic.",
+    preset: "arctic",
     theme: "dark",
     density: "compact",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "segmented-control", "card", "stat", "chart", "badge", "table", "pagination", "progress", "alert", "button", "avatar", "icon"],
     prompt: `Build an analytics dashboard with ayywi, in ${APP_FRAME}. Seven destinations in two sidebar groups (Workspace: Overview, Reports, Audiences, Projects; Account: Integrations, Billing, Settings), so the bottom nav shows the first four and a More tab that opens the sidebar as a drawer.
 
-The Overview page: a Page header with a date-range Segmented control (7d, 30d, 90d) and an outline Export button; four KPI cards (Stat, a success or warning Badge and a Sparkline) in an .ayy-grid; a Visitors card with a LineChart of this month against last month (the comparison series dashed); then an .ayy-split with a Top pages table (compact, numeric columns, the Views column sortable, status badges, Pagination in the card footer) beside a Traffic sources card with a BarList, a Goals card of Progress bars and an info Alert.
+The Overview page: a Page header whose description is a live count of visitors behind a pulsing success Status dot, with a date-range Segmented control (7d, 30d, 90d) and an outline Export button; four KPI cards (Stat, a success or warning Badge and a Sparkline) in an .ayy-grid; a Visitors card with a LineChart of this month against last month (the comparison series dashed); then an .ayy-split with a Top pages table (compact, numeric columns, the Views column sortable, status badges, Pagination in the card footer) beside a Traffic sources card with a BarList, a Goals card of Progress bars and an info Alert about a traffic spike on one page, with a See referrers action.
 
 Settings (the Settings destination): Account — Profile, Preferences, Notifications; Workspace — General, Data, with a destructive Delete all data link row.
 
-Dark theme, compact density. ayywi components and tokens only; run npx @danitesler/ayywi lint when you're done.`,
+The Arctic theme (THEME_PRESETS), dark, compact density. ayywi components and tokens only; run npx @danitesler/ayywi lint when you're done.`,
     screenshot: dashboardScreenshot,
     Component: DashboardApp,
   },
@@ -2056,52 +2309,52 @@ Dark theme, compact density. ayywi components and tokens only; run npx @danitesl
     id: "landing",
     name: "Northwind",
     kind: "Marketing site",
-    description: "Hero, features, pricing with billing toggle, customer carousel, FAQ, footer. Navbar folds into a menu on phones.",
-    theme: "light",
+    description: "The launch site of an AI page builder: a live build in the hero, customer proof, features, pricing, quotes and an FAQ. Bold and nocturnal, in Twilight.",
+    preset: "twilight",
+    theme: "dark",
     density: "comfortable",
-    uses: ["navbar", "card", "icon-tile", "segmented-control", "stat", "list", "badge", "carousel", "accordion", "input", "footer", "button", "avatar"],
-    prompt: `Build a one-page marketing site with ayywi: skip link, a Navbar (brand, four links, a ring "Start free" button, a NavbarToggle for phones), then <main> at .ayy-container width, then a Footer.
+    prompt: `Build a one-page marketing site for an AI page builder with ayywi: skip link, a Navbar (brand, four links, a primary "Start free" button, a NavbarToggle for phones), then <main> at .ayy-container width, then a Footer.
 
-Sections: a centred hero (AI badge, h1, lede, a ring and an outline button, .ayy-bg-grid behind it); three feature cards with IconTiles in different accents; pricing with a Monthly/Yearly Segmented control and three plan cards (the middle one featured with a "Most popular" badge, perks in a compact List); a Carousel of customer quotes; an FAQ Accordion (single); a closing section with an email InputGroup and a submit button.
+Sections: a centred hero (AI badge, h1, lede, a primary and an outline button, .ayy-bg-grid behind it) above a Card showing a page being built — a pulsing Status dot and the site's address, a read-only prompt InputGroup, a compact List of build steps (done ones with a check, the current one with a Spinner) and a Progress bar; a strip of customer names and three Stats; three feature cards with IconTiles in different accents; pricing with a Monthly/Yearly Segmented control and three plan cards (the middle one featured with a "Most popular" badge, perks in a compact List); a Carousel of customer quotes; an FAQ Accordion (single); a closing section with an email InputGroup and a submit button.
 
-Light theme. One ring call to action per view; everything else outline or ghost. Run npx @danitesler/ayywi lint when you're done.`,
+The Twilight theme (THEME_PRESETS), dark. One primary call to action per view; everything else outline or ghost. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: landingScreenshot,
     Component: LandingApp,
   },
   {
-    id: "inbox",
-    name: "Relay",
-    kind: "Support inbox",
-    description: "Conversations, thread with AI replies, customer details. Three panes on desktop, list on phones. Settings in a full dialog.",
-    theme: "dark-contrast",
+    id: "dating",
+    name: "Kindred",
+    kind: "Dating app",
+    description: "One profile at a time with a prompt and interests, new matches with unread messages, and how complete your own profile is. Warm and editorial, in Wine.",
+    preset: "wine",
+    theme: "light",
     density: "comfortable",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "list", "input", "kbd", "chat", "avatar", "badge", "textarea", "button", "alert", "separator"],
-    prompt: `Build a support inbox with ayywi, in ${APP_FRAME} (Inbox, Mentions, Sent, Customers).
+    prompt: `Build the Discover screen of a dating app with ayywi, in ${APP_FRAME} (Discover, Matches, Messages, Profile).
 
-The main area has three panes: a conversation List (avatar, name as a ListLink, a truncated preview, a status Badge, the time in ListMeta, the open one marked current) under a search InputGroup with a Kbd "/" hint; the thread (a Chat with incoming and outgoing messages, a typing indicator and suggested replies, then a reply form with a Textarea, an attach icon button and Send); and a customer panel (Avatar, customer details, a warning Alert for the SLA). The panes collapse to the list on phones.
+A Page header (how many new people are nearby) with an outline Filters button. Then an .ayy-split: on the left one profile Card — a tall portrait on CardMedia, the name and age as a heading with a success "Active today" Badge, place, distance and job with a map-pin Icon, their prompt as a quote, interests as outline Badges, and a footer with an outline Pass and a primary Like (a toast, then the next person); on the right a New matches Card (a List with Avatar, a ListLink name, a truncated last message, the time and an unread Status dot) and a Your profile Card with a Progress bar and an outline button.
 
-Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile with a stacked signature Textarea, Notifications; Inbox — Replies, AI assistant, Shortcuts with Shortcut recorders.
+Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile, Notifications; Dating — Preferences, Privacy with a destructive Pause my account.
 
-Dark-contrast theme. ayywi components and tokens only; run npx @danitesler/ayywi lint when you're done.`,
-    screenshot: inboxScreenshot,
-    Component: InboxApp,
+The Wine theme (THEME_PRESETS), light. Run npx @danitesler/ayywi lint when you're done.`,
+    screenshot: datingScreenshot,
+    Component: DatingApp,
   },
 
   {
     id: "tracker",
     name: "Orbit",
     kind: "Project tracker",
-    description: "Onboarding, filterable tasks with empty states, retryable error, loading skeletons. Settings in a full dialog.",
+    description: "Your day across projects: onboarding, overdue and flagged tasks, filters with empty states, a sync error to retry and loading activity. Quiet and neutral, in Default.",
+    preset: "default",
     theme: "light",
     density: "compact",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "steps", "segmented-control", "chip", "kbd", "list", "checkbox", "empty-state", "alert", "skeleton", "card", "button", "avatar"],
     prompt: `Build a task tracker home screen with ayywi, in ${APP_FRAME} (My tasks, Projects, Calendar, Inbox in the tabs; Members and Settings behind More).
 
-A Page header with one primary "New task" button. An onboarding card with Steps (Create a project ✓, Invite your team — current, Connect GitHub) and two buttons. Then an .ayy-split: a Today/Upcoming/All Segmented control with a Kbd hint, project filter chips (ChipButton with counts, in a scrolling ChipGroup), and a card that holds either a divided List of tasks (a Checkbox labelled by the title, project and due date, the assignee's Avatar) or a compact Empty state when a view has nothing (another, with a "Show every project" button, when the chips filter everything out); beside it a destructive Alert "GitHub sync failed" whose Try again button shows loading, and an Activity card of Skeleton rows while it loads (aria-busy).
+A Page header with one primary "New task" button. An onboarding card with Steps (Create a project ✓, Invite your team — current, Connect GitHub) and two buttons. Then an .ayy-split: a Today/Upcoming/All Segmented control with a Kbd hint, project filter chips (ChipButton with counts, in a scrolling ChipGroup), and a card that holds either a divided List of tasks (a Checkbox labelled by the title, project and due date, a destructive Overdue or warning priority Badge where it applies, the assignee's Avatar) or a compact Empty state when a view has nothing (another, with a "Show every project" button, when the chips filter everything out); beside it a destructive Alert "GitHub sync failed" whose Try again button shows loading, and an Activity card of Skeleton rows while it loads (aria-busy).
 
 Settings (Settings, behind More): Account — Preferences, Notifications, Shortcuts; Team — Members with a role Select per person, Integrations as link rows with their status.
 
-Light theme, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx @danitesler/ayywi lint when you're done.`,
+The Default theme, light, compact density. Every state — empty, loading, error — uses an ayywi component. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: trackerScreenshot,
     Component: TrackerApp,
   },
@@ -2109,17 +2362,17 @@ Light theme, compact density. Every state — empty, loading, error — uses an 
     id: "store",
     name: "Ember",
     kind: "Online store",
-    description: "Coffee shop: filters, product grid with empty state, cart drawer with quantities and total.",
+    description: "A coffee roaster's shop: this week's roast, bags with tasting notes and ratings, brewing guides, a subscription and a cart drawer. Roasty and warm, in Ember.",
+    preset: "ember",
     theme: "dark",
     density: "comfortable",
-    uses: ["navbar", "chip", "slider", "sorting", "card", "icon-tile", "badge", "empty-state", "dialog", "list", "number-field", "choice-card", "footer", "button", "toast"],
-    prompt: `Build an online coffee store with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), content at .ayy-container width, and a Footer.
+    prompt: `Build the online shop of a small coffee roaster with ayywi: a Navbar (brand, Shop, Subscriptions, Brewing guides, Our farms, an outline Cart button with a Badge count, a NavbarToggle for phones), content at .ayy-container width, and a Footer.
 
-The shop: an eyebrow, an h2 and a lede; a filter bar (.ayy-spread) with radio Chips for the kind of coffee (with counts), a SliderRange for the price with the range in text, and Sorting to sort; then an .ayy-grid of product Cards (CardMedia with an IconTile on .ayy-bg-grid in the product's --ayy-spot colour, the name, the roast and tasting notes, the price and an outline Add button), or an Empty state with Reset filters when nothing matches.
+A hero in an .ayy-split: the roast date as an eyebrow, an h1, a lede, a primary and an outline button, a read-only Rating with the review count and free delivery; beside it this week's roast in a Card (a drawn bag on its CardMedia, a success Badge, the farm and producer, a Stat price and an Add to cart button). Then the menu: a header with Sorting; a filter bar with radio Chips for the kind of coffee (with counts) and a SliderRange for the price; an .ayy-grid of product Cards — each bag drawn in its own --ayy-spot colour with the roast level as dots, a Badge only where it says something (New harvest, Bestseller, 4 bags left), roast, process and origin, tasting notes, a read-only Rating with the review count, the price and an outline Add button that shows a toast — or an Empty state with Reset filters. Then three interactive brewing-guide Cards (IconTile, time in mono, the dose) and a featured subscription Card with perks and a ChoiceGroup for how often.
 
 The cart is a Dialog with side="end": a divided List of items with a small NumberField each, a Delivery ChoiceGroup (Standard free, Express $9), the subtotal, delivery and total, and a footer with Keep shopping and one primary Check out that shows a toast.
 
-Dark theme. Run npx @danitesler/ayywi lint when you're done.`,
+The Ember theme (THEME_PRESETS), dark. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: storeScreenshot,
     Component: StoreApp,
   },
@@ -2127,17 +2380,17 @@ Dark theme. Run npx @danitesler/ayywi lint when you're done.`,
     id: "booking",
     name: "Haven",
     kind: "Booking app",
-    description: "Yoga schedule: day strip, style chips, classes with spots left, booking card. Touch size. Settings in a full dialog.",
+    description: "Classes at a yoga studio: a weekly goal, a day strip, style filters, classes with spots left and a booking card. Calm and green, in Forest, at touch size.",
+    preset: "forest",
     theme: "light",
     density: "touch",
-    uses: ["app-shell", "bottom-nav", "dialog", "settings", "page-header", "choice-card", "chip", "empty-state", "card", "combobox", "number-field", "field", "button", "toast"],
-    prompt: `Build a class booking app for a yoga studio with ayywi, in ${APP_FRAME} (Schedule, My bookings, Teachers, Profile).
+    prompt: `Build a class booking app for a yoga studio with ayywi, in ${APP_FRAME} (Schedule, Bookings, Teachers, Profile).
 
-The Schedule page: a Page header (the week and the classes left on the pass); a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, details of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
+The Schedule page: a Page header (a greeting, the week and the classes left on the pass); a Card with a ProgressRing for the weekly goal beside the next booked class; a day strip — a scrolling ChoiceGroup of compact ChoiceCards, one per day with how many classes it has; then an .ayy-split: on the left, style filters (ChipButtons with counts in a scrolling ChipGroup) above the day's classes as a ChoiceGroup of ChoiceCards (time and name as the title, teacher, length and style as the description, spots left as meta, a full class disabled), or a compact Empty state when nothing matches; on the right, a Your booking Card with a Combobox to pick the studio, details of the chosen class, a NumberField for spots (max 2) with a hint, and one primary full-width Book button that shows a toast.
 
 Settings (a Settings link in the sidebar footer, a settings button in the phone bar): Account — Profile, Notifications; Studio — Membership with link rows and a destructive Sign out, Preferences.
 
-Light theme, touch density. Run npx @danitesler/ayywi lint when you're done.`,
+The Forest theme (THEME_PRESETS), light, touch density. Run npx @danitesler/ayywi lint when you're done.`,
     screenshot: bookingScreenshot,
     Component: BookingApp,
   },

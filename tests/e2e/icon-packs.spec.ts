@@ -1,10 +1,9 @@
 import { existsSync, readFileSync } from "node:fs";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { expect, type Page, test } from "@playwright/test";
-import { open as openRoute } from "./helpers";
+import { distFile as dist, open as openRoute } from "./helpers";
 
 // Icon packs on a plain page: dist/ayywi.min.css plus an opt-in dist/icons/<pack>.css. Run `pnpm build` first.
-const dist = (p: string) => new URL(`../../dist/${p}`, import.meta.url);
 
 // The inline glyph every built-in icon renders (iconSvg(Cancel01Icon, { name: "x" })).
 const paths = Cancel01Icon.map(([tag, { key: _key, ...a }]) =>
@@ -109,12 +108,11 @@ test("the Icons docs page shows every glyph in a pack, and marks the ones Hugeic
   await expect(page.getByRole("heading", { level: 1, name: "Icons", exact: true })).toBeVisible();
   const grid = page.locator(".pv-icon-packs__grid");
   await expect(grid.locator("[data-ayy-icon]")).toHaveCount(names.length);
-  await page.getByLabel("Pack", { exact: true }).selectOption("feather");
+  await page.getByRole("tablist", { name: "Pack" }).getByRole("tab", { name: "Feather" }).click();
   await expect(grid).toHaveAttribute("data-ayy-icons", "feather");
   expect(await style(grid.locator('[data-ayy-icon="search"]'), "mask-image")).toMatch(masked);
   expect(lacking("feather")).toBeGreaterThan(0);
   await expect(grid.locator(".ayy-badge")).toHaveCount(lacking("feather"));
-  await expect(page.locator(".pv-icon-packs__about")).toContainText(`Hugeicons draws ${lacking("feather")} of ${names.length}`);
   // Browsing a pack does not change the site's.
   await expect(page.locator("html")).not.toHaveAttribute("data-ayy-icons");
   // It is in the Docs sidebar, after Illustration.

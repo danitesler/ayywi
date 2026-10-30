@@ -50,7 +50,7 @@ export interface InlineEditProps {
 }
 
 /** A value that becomes an input in place. Enter saves, Esc cancels, blur saves; a multiline field saves on Mod+Enter. */
-export const InlineEdit = forwardRef<HTMLDivElement, InlineEditProps>(function InlineEdit(
+export const InlineEdit = /* @__PURE__ */ forwardRef<HTMLDivElement, InlineEditProps>(function InlineEdit(
   {
     value,
     defaultValue = "",

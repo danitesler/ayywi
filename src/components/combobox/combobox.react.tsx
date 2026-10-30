@@ -49,7 +49,7 @@ export interface ComboboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 const normalise = (option: ComboboxOption | string): ComboboxOption => (typeof option === "string" ? { value: option, label: option } : option);
 
 /** An input that filters a list as you type and picks one option. Label it with <Label htmlFor> on its id. */
-export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Combobox(
+export const Combobox = /* @__PURE__ */ forwardRef<HTMLInputElement, ComboboxProps>(function Combobox(
   { options, value, defaultValue, onValueChange, onInputChange, filter = true, emptyText = "No matches", size, name, className, ...props },
   ref,
 ) {

@@ -18,7 +18,7 @@ interface SegmentedContextValue {
   select: (value: string) => void;
 }
 
-const SegmentedContext = createContext<SegmentedContextValue | null>(null);
+const SegmentedContext = /* @__PURE__ */ createContext<SegmentedContextValue | null>(null);
 
 export interface SegmentedControlProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /** Shared radio name (for forms). Generated if omitted. */
@@ -32,7 +32,7 @@ export interface SegmentedControlProps extends Omit<HTMLAttributes<HTMLDivElemen
 }
 
 /** One choice out of two to five, as pill segments. A role="radiogroup" of native radios: give it an aria-label. */
-export const SegmentedControl = forwardRef<HTMLDivElement, SegmentedControlProps>(function SegmentedControl(
+export const SegmentedControl = /* @__PURE__ */ forwardRef<HTMLDivElement, SegmentedControlProps>(function SegmentedControl(
   { name, value: controlled, defaultValue, onValueChange, size, full, className, children, ...props },
   ref,
 ) {
@@ -60,7 +60,7 @@ export interface SegmentedControlItemProps extends Omit<LabelHTMLAttributes<HTML
 }
 
 /** A segment: a <label> around a visually hidden native radio. Children are the text (and an optional Icon). */
-export const SegmentedControlItem = forwardRef<HTMLLabelElement, SegmentedControlItemProps>(function SegmentedControlItem(
+export const SegmentedControlItem = /* @__PURE__ */ forwardRef<HTMLLabelElement, SegmentedControlItemProps>(function SegmentedControlItem(
   { value, disabled, inputProps, className, children, ...props },
   ref,
 ) {

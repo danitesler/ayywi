@@ -64,7 +64,7 @@ function parseToHsv(colorStr: string): HSV {
 }
 
 /** A full-featured colour picker with 2D saturation/brightness area, hue and alpha sliders, hex input and preset swatches. */
-export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(function ColorPicker(
+export const ColorPicker = /* @__PURE__ */ forwardRef<HTMLDivElement, ColorPickerProps>(function ColorPicker(
   {
     value: controlled,
     defaultValue,

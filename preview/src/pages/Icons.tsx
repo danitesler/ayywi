@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getIconPack, iconNames, iconPackInfo, iconPacks, type IconPackName } from "@danitesler/ayywi";
+import { iconNames, iconPackInfo, iconPacks, type IconPackName } from "@danitesler/ayywi";
 import { Badge, Icon, Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
 import { CodeBlock } from "../CodeBlock";
 import { buildPrompt } from "../prompts";
@@ -9,7 +9,7 @@ import hugeicons from "../../../tokens/icon-packs/hugeicons.json";
 
 /**
  * Each glyph ayywi draws as Hugeicons draws it: what components render inline, and what a pack falls back to. The other
- * names (app icons such as "settings") have no inline shapes here; the grid's pack CSS (preview/src/icon-packs.css) draws every name.
+ * names (app icons such as "settings") have no inline shapes here; the grid's pack CSS (loaded by preview/src/icon-packs.ts) draws every name.
  */
 const GLYPHS = Object.fromEntries(iconNames.map((name) => [name, (glyphs as Record<string, IconData>)[(hugeicons.glyphs as Record<string, string>)[name]] ?? []]));
 
@@ -27,16 +27,21 @@ const packRequest = (pack: IconPackName) =>
 - Choose it with setIconPack("${pack}") or data-ayy-icons="${pack}" on <html> or any section.
 - Use ayywi's named icons (<Icon name="search" />); keep the name from the icon list at #/docs/icons. A name the pack lacks stays Hugeicons.${pack === "hugeicons" ? "" : "\n- Packs keep their own stroke, so strokeWidth only changes Hugeicons."}`;
 
+/** The site's pack, as the Themes page set it on <html> for this tab. */
+const sitePack = (): IconPackName => {
+  const pack = typeof document === "undefined" ? null : document.documentElement.getAttribute("data-ayy-icons");
+  return (iconPacks as readonly string[]).includes(pack ?? "") ? (pack as IconPackName) : "hugeicons";
+};
+
 /** #/docs/icons: every name ayywi knows, drawn by the pack you pick. Browsing a pack doesn't change the site's. */
 export function IconsPage() {
-  const [pack, setPack] = useState<IconPackName>(getIconPack);
+  const [pack, setPack] = useState<IconPackName>(sitePack);
   const [usage, setUsage] = useState("prompt");
   const info = iconPackInfo[pack];
   const fallbacks = new Set<string>(info.fallbacks);
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">Foundations</p>
         <h1 className="ayy-h2">Icons</h1>
         <p className="ayy-lede">
           Hugeicons is the default. Lucide, Tabler Icons, Material Symbols and Feather can draw the same icons instead: load a pack&apos;s
@@ -51,16 +56,21 @@ export function IconsPage() {
               <TabsTrigger key={id} value={id}>{iconPackInfo[id].label}</TabsTrigger>
             ))}
           </TabsList>
-        </Tabs>
-        <ul className="pv-icon-packs__grid" data-ayy-icons={pack} aria-label={`Glyphs in ${info.label}`}>
-          {iconNames.map((name) => (
-            <li key={name} className="pv-icon-packs__item">
-              <Icon icon={GLYPHS[name]} name={name} size="lg" />
-              <span className="pv-icon-packs__name">{name}</span>
-              {fallbacks.has(name) && <Badge variant="muted">Hugeicons</Badge>}
-            </li>
+          {/* One panel per pack, so every tab points at a panel; only the chosen one draws its grid. */}
+          {iconPacks.map((id) => (
+            <TabsContent key={id} value={id}>
+              <ul className="pv-icon-packs__grid" data-ayy-icons={pack} aria-label={`Glyphs in ${info.label}`}>
+                {iconNames.map((name) => (
+                  <li key={name} className="pv-icon-packs__item">
+                    <Icon icon={GLYPHS[name]} name={name} size="lg" />
+                    <span className="pv-icon-packs__name">{name}</span>
+                    {fallbacks.has(name) && <Badge variant="muted">Hugeicons</Badge>}
+                  </li>
+                ))}
+              </ul>
+            </TabsContent>
           ))}
-        </ul>
+        </Tabs>
       </section>
 
       <section className="pv-section" aria-labelledby="icons-use">

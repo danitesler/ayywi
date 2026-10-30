@@ -73,8 +73,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - Appearance settings had no picture picker or reusable appearance rows → added `SettingsPicker`, `SettingsOption` and `SettingsScreen` (`ayy-settings__picker`, `ayy-settings__option`, `ayy-settings__preview`, `ayy-settings__caption`, `ayy-settings__screen`) for visual options with miniature token-drawn screens (including split light/dark for System), `data-motion="reduce"` for app-level reduced motion, a live `appearance` example at the bottom of the Settings page, and a contract rule to use them for theme, density, text size, brand colour, corners, font, motion, language, direction and reset.
   - Appearance choices opened from a button as a grid of large pictures → each one (Theme, Density, Text size, Brand colour, Corners, Font, Text direction) is a Select with pictures, lined up with the Language select.
   - Density and brand colour previewed the same miniature app as Theme → Density draws a list whose rows grow with the density (`variant="rows"`), and Brand colour shows where the colour lands: the chosen sidebar item, a progress bar, a checkbox and a button (`variant="brand"`).
+  - The Theme select showed a miniature app per theme → each option is a round swatch of its accent, in the list and on the closed select (a Swatch, `ayy-swatch`, in the select's picture).
   - Text size was a slider, Brand colour a row of swatches and Text direction a segmented control → each is a Select with "Aa" samples, colour previews and left-to-right / right-to-left screens; choosing Custom opens the colour picker straight away. The screens also mirror correctly on right-to-left pages.
-  - Appearance offered Theme, Surface colour, Contrast, Density, Text size, Brand colour, Corners, Font and Icons → only Mode (System, Light, Dark) and Theme (the ready-made themes), since a theme decides the colour, surfaces, corners, fonts and icons; the contract rule says the same.
+  - Appearance offered Theme, Surface colour, Contrast, Density, Text size, Brand colour, Corners, Font and Icons → only Mode (System, Light, Dark) and Theme (the ready-made themes and Custom), since a theme decides the colour, surfaces, corners, fonts and icons. A cog beside Theme opens them, with density, in a dialog filled in with the current theme and beside a live preview; saving a change makes it Custom, and the Theme select and its cog span the same width as the other selects. The contract rule says the same.
+  - A group's description sat as far from its title as from the list below → it sits just under the title. A closed dialog or other element between two groups took their spacing away → groups keep it whatever sits between them.
 
 - **[Select](#/select)**
   - Options were text only → options can have pictures (`pictures` in React, `.ayy-select__picture` in HTML): the chosen one shows before the text, and the list shows each one larger next to its option.
@@ -125,6 +127,10 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ### Changed
 
 - **Preview**
+  - Component headers showed the package version under every title → the version label is removed.
+  - Component example prompts described a specific preview and included its code → each variation offers the same general component guidance, with React and HTML examples still available in their tabs.
+  - Page titles showed category labels and started at different heights → titles share the same position without those labels, and component pages no longer show a separate import code block under Usage.
+  - The preview downloaded every component's examples and all five icon packs before showing anything → a page loads only the examples it shows, an icon pack loads when someone picks it, and the theme fonts no longer hold up the first paint.
   - Spacing & sizing listed every step on its own row and compared control sizes in three cards → steps share two rows of true-size bars, and each size is a single line of controls.
   - Component documentation tabs were aligned to the start → they are centered under each component heading.
   - Home page agent block was one fixed terminal snippet → tabs for Quick start, npm package, No build and By hand, each with its own copy button, in a block that keeps one 320px height so the page doesn't jump between tabs.
@@ -135,6 +141,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - A component page was one scroll of examples and do's and don'ts → Overview, Properties and Accessibility tabs; Properties shows the React props, variants, states, sizes, classes and custom element attributes.
   - The Brand page under Foundations → a Themes tab that tries a colour, corners, fonts and theme on a live example app, and applies them to the site only on "Use this theme".
   - What you can build → an Examples tab with Apps and Websites filters.
+  - Example apps wore plain light, dark or high-contrast themes with repetitive placeholder content → each wears one of the six themes that suits it (dashboard in Arctic, marketing site in Twilight, dating app in Wine, tracker in Default, coffee store in Ember, yoga booking in Forest), with livelier, realistic content; the support inbox example is replaced by the dating app, and old inbox links open it.
+  - Example cards and pages led with the made-up app name and theme and density tags, and listed the components used → they lead with the kind of app, centred on its page, without tags or a Built with list, and each card's hover spotlight takes its theme's colour.
+  - An example page had All examples at the top and Next at the bottom → Previous, All examples and Next sit centred above it, the neighbours shown with a thumbnail.
   - The sidebar could collapse to a rail of icons → removed; the header carries the logo and search instead.
   - Component and Docs pages sat against the sidebar in a narrower column than Examples → their content is as wide as Examples (1200px at most) and centred in the space beside the sidebar, and each page's eyebrow, title and lede are centred like Examples'.
   - The Brand page had a separate hex text field and popover swatch for seed colour → replaced with native `<ColorSwatchCustom>` in the swatch group alongside preset themes.
@@ -161,7 +170,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 - **[Menu](#/menu)**
   - Item icons were 1.1em (about 15px) → 1.125rem (18px), the size the Block editor's menus already used, so menus look the same everywhere.
-  - A submenu could only hold menu items → a submenu panel with `role="dialog"` can hold an Icon picker (or another control): focus lands on its first field, and picking closes the whole menu.
+  - A submenu could only hold menu items → a submenu panel with `role="dialog"` can hold an Icon picker (or another control): it sits right after the menu rather than inside it, since a menu may only hold items, focus lands on its first field, and picking closes the whole menu.
 
 - **[Table](#/table)**
   - Column menu icons were generic arrows and copy/delete glyphs → the same insert-column, duplicate, sort and delete-column icons the Block editor's table menu uses; the Sort submenu now marks the current direction.
@@ -223,7 +232,16 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - Small text and control text were 12px in compact density (and `--ayy-text-xs` 12px everywhere) → 13px, so compact and comfortable now share 13px (touch stays 14px; `--ayy-control-text-field` is 13px on both, 16px on touch).
   - Large control height was 40 / 48 / 52px (compact / comfortable / touch) → 36 / 44 / 48px (`--ayy-size-control-lg`).
 
+- **Tests**
+  E2E runs rebuilt and served the shared `preview/dist/`, so another session building in the same checkout deleted files from under a running suite → each run serves its own build of the current sources (reused when one already exists), and builds in one checkout wait for each other instead of overlapping.
+
 ### Fixed
+
+- **React components**
+  Importing one React component bundled every component, about 150 kB gzipped → an app ships only the components it uses (a Button on its own is about 4–6 kB).
+
+- **[Tooltip](#/tooltip)**
+  A hidden tooltip that shows a keyboard shortcut stayed in the page layout, so near the screen edge it made a phone page scroll sideways → it leaves the layout until it shows.
 
 - **Linter**
   A `hidden` input or other control was reported as a raw browser control → hidden ones are skipped, since they never show.

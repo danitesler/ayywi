@@ -1,10 +1,11 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { distFile } from "./helpers";
 
 async function tableFixture(page: Page, count = 1000) {
   await page.route("**/dist/**", (route) => {
     const file = new URL(route.request().url()).pathname.slice("/dist/".length);
-    return route.fulfill({ contentType: file.endsWith(".css") ? "text/css" : "text/javascript", body: readFileSync(new URL(`../../dist/${file}`, import.meta.url), "utf8") });
+    return route.fulfill({ contentType: file.endsWith(".css") ? "text/css" : "text/javascript", body: readFileSync(distFile(file), "utf8") });
   });
   await page.route("**/drag-performance", (route) => route.fulfill({
     contentType: "text/html",

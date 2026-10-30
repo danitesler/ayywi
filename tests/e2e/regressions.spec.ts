@@ -2,12 +2,13 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { expect, test, type Page } from "@playwright/test";
+import { distFile } from "./helpers";
 
 // Regression tests for bugs found in the 2026-10 audit. Plain-HTML cases load only the dist files (run `pnpm build`
 // first); React cases bundle a small app from src/react with esbuild, so they can render setups the preview has no
 // example for (12-hour pickers, context menus, wrapped command items).
 
-const read = (p: string) => readFileSync(new URL(`../../dist/${p}`, import.meta.url), "utf8");
+const read = (p: string) => readFileSync(distFile(p), "utf8");
 const here = fileURLToPath(new URL(".", import.meta.url));
 
 type Log = unknown[][];

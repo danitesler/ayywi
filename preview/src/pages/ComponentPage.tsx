@@ -18,9 +18,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@danitesler/ayywi/react";
-import { version } from "../../../package.json";
 import { STATES } from "../../../scripts/lib/contract.mjs";
-import { CodeBlock } from "../CodeBlock";
 import { components, type ComponentEntry } from "../data";
 import { COMPONENT_VIEWS, type ComponentView } from "../routes";
 import { Showcase } from "../Showcase";
@@ -96,7 +94,6 @@ function Overview({ c, renderer }: { c: ComponentEntry; renderer: Renderer }) {
       ))}
 
       <h2 className="pv-h pv-h--section">Usage</h2>
-      <CodeBlock code={c.react.import} label="React" language="tsx" />
       <div className="pv-usage">
         <Guidance title="Do" items={c.do} tone="yes" />
         <Guidance title="Don't" items={c.dont} tone="no" />
@@ -227,15 +224,15 @@ export function ComponentPage({ component: c, view, renderer }: { component: Com
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
-        <p className="ayy-eyebrow">{c.category}</p>
         <h1 className="ayy-h2">{c.name}</h1>
         <p className="ayy-lede">{c.description}</p>
-        <p className="pv-page__meta ayy-muted">
-          <span className="ayy-mono">@danitesler/ayywi v{version}</span>
-          {tags.map((t) => (
-            <span key={t} className="ayy-mono">{`<${t}>`}</span>
-          ))}
-        </p>
+        {tags.length > 0 && (
+          <p className="pv-page__meta ayy-muted">
+            {tags.map((t) => (
+              <span key={t} className="ayy-mono">{`<${t}>`}</span>
+            ))}
+          </p>
+        )}
       </header>
 
       <Tabs

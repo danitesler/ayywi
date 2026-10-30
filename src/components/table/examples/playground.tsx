@@ -332,34 +332,35 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
           </span>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>{column.label}</DropdownMenuLabel>
-        <DropdownMenuSub>
+      {/* The icon panel is a dialog, which a menu can't hold: its DropdownMenuSub wraps the menu, and the panel follows it. */}
+      <DropdownMenuSub>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>{column.label}</DropdownMenuLabel>
           <DropdownMenuSubTrigger icon={<Icon icon={SmileIcon} name="smile" />} aria-haspopup="dialog">{column.icon ? "Change icon" : "Add icon"}</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent role="dialog" aria-label={`${column.label} icon`}>
-            <IconPicker data-column-action="icon" value={column.icon ?? ""} icons={COLUMN_ICONS} />
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem disabled={!frame} data-column-action="filter"><Icon icon={FilterHorizontalIcon} name="settings-2" />Filter</DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Icon icon={SortByDown02Icon} name="sort" />}>Sort</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "ascending"} data-column-action="sort-ascending"><Icon icon={ArrangeByLettersAZIcon} name="sort-a-z" />Sort ascending</DropdownMenuItem>
-            <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "descending"} data-column-action="sort-descending"><Icon icon={ArrangeByLettersZAIcon} name="sort-z-a" />Sort descending</DropdownMenuItem>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuItem disabled={!frame} data-column-action="group"><Icon icon={GroupItemsIcon} name="group" />Group</DropdownMenuItem>
-        <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action="freeze"><Icon icon={PinIcon} name="pin" />Freeze</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action="wrap"><Icon icon={TextWrapIcon} name="text-wrap" />Wrap content</DropdownMenuCheckboxItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem data-column-action="insert-left"><Icon icon={InsertColumnLeftIcon} name="column-insert-left" directional />Insert left</DropdownMenuItem>
-        <DropdownMenuItem data-column-action="insert-right"><Icon icon={InsertColumnRightIcon} name="column-insert-right" directional />Insert right</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem data-column-action="duplicate"><Icon icon={CopyPlusIcon} name="copy-plus" />Duplicate</DropdownMenuItem>
-        <DropdownMenuItem data-column-action="hide"><Icon icon={ViewOffIcon} name="eye-closed" />Hide</DropdownMenuItem>
-        <DropdownMenuItem destructive data-column-action="delete"><Icon icon={ColumnDeleteIcon} name="column-delete" />Delete</DropdownMenuItem>
-      </DropdownMenuContent>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem disabled={!frame} data-column-action="filter"><Icon icon={FilterHorizontalIcon} name="settings-2" />Filter</DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger icon={<Icon icon={SortByDown02Icon} name="sort" />}>Sort</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "ascending"} data-column-action="sort-ascending"><Icon icon={ArrangeByLettersAZIcon} name="sort-a-z" />Sort ascending</DropdownMenuItem>
+              <DropdownMenuItem role="menuitemradio" closeOnSelect selected={sort?.key === column.key && sort.direction === "descending"} data-column-action="sort-descending"><Icon icon={ArrangeByLettersZAIcon} name="sort-z-a" />Sort descending</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuItem disabled={!frame} data-column-action="group"><Icon icon={GroupItemsIcon} name="group" />Group</DropdownMenuItem>
+          <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action="freeze"><Icon icon={PinIcon} name="pin" />Freeze</DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action="wrap"><Icon icon={TextWrapIcon} name="text-wrap" />Wrap content</DropdownMenuCheckboxItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem data-column-action="insert-left"><Icon icon={InsertColumnLeftIcon} name="column-insert-left" directional />Insert left</DropdownMenuItem>
+          <DropdownMenuItem data-column-action="insert-right"><Icon icon={InsertColumnRightIcon} name="column-insert-right" directional />Insert right</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem data-column-action="duplicate"><Icon icon={CopyPlusIcon} name="copy-plus" />Duplicate</DropdownMenuItem>
+          <DropdownMenuItem data-column-action="hide"><Icon icon={ViewOffIcon} name="eye-closed" />Hide</DropdownMenuItem>
+          <DropdownMenuItem destructive data-column-action="delete"><Icon icon={ColumnDeleteIcon} name="column-delete" />Delete</DropdownMenuItem>
+        </DropdownMenuContent>
+        <DropdownMenuSubContent role="dialog" aria-label={`${column.label} icon`}>
+          <IconPicker data-column-action="icon" value={column.icon ?? ""} icons={COLUMN_ICONS} />
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
     </DropdownMenu>
   );
 

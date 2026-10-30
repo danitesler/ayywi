@@ -11,7 +11,8 @@
   margin: 0;
 }
 
-.ayy-settings + .ayy-settings {
+/* "~", not "+": something between two groups (a closed <dialog>, a hidden element) mustn't take their spacing away. */
+.ayy-settings ~ .ayy-settings {
   margin-block-start: var(--ayy-space-6);
 }
 
@@ -28,6 +29,8 @@
 
 .ayy-settings__description {
   margin: 0;
+  /* Closer to its title than the list is to them: the pair reads as one heading. */
+  margin-block-start: calc(var(--ayy-space-1-5) * -1);
   padding-inline: var(--ayy-space-1);
   max-inline-size: var(--ayy-size-measure);
   color: var(--ayy-color-muted);
@@ -105,7 +108,7 @@
 
 .ayy-settings__control > :is(.ayy-select, .ayy-input, .ayy-combobox, .ayy-date-picker),
 .ayy-settings__control > :is(ayy-combobox, ayy-date-picker) > :is(.ayy-combobox, .ayy-date-picker),
-.ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) {
+.ayy-settings__control > :is(.ayy-button[aria-haspopup]:not(.ayy-button--icon), ayy-popover > .ayy-button[aria-haspopup]:not(.ayy-button--icon)) {
   min-inline-size: 11rem;
 }
 
@@ -114,12 +117,18 @@
   min-inline-size: 12.5rem;
 }
 
-.ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) {
+/* A select with an icon button after it (Theme and its cog) is narrower by the button and the gap, so the pair spans
+   the same width as the selects above and below. */
+.ayy-settings__control > .ayy-select:has(+ .ayy-button--icon, + :is(.ayy-tooltip, ayy-dialog) > .ayy-button--icon, + ayy-dialog > .ayy-tooltip > .ayy-button--icon) {
+  min-inline-size: calc(12.5rem - var(--ayy-size-control-md) - var(--ayy-space-2));
+}
+
+.ayy-settings__control > :is(.ayy-button[aria-haspopup]:not(.ayy-button--icon), ayy-popover > .ayy-button[aria-haspopup]:not(.ayy-button--icon)) {
   min-inline-size: 11rem;
   justify-content: flex-start;
 }
 
-.ayy-settings__control > :is(.ayy-button[aria-haspopup], ayy-popover > .ayy-button[aria-haspopup]) > svg:last-child {
+.ayy-settings__control > :is(.ayy-button[aria-haspopup]:not(.ayy-button--icon), ayy-popover > .ayy-button[aria-haspopup]:not(.ayy-button--icon)) > svg:last-child {
   margin-inline-start: auto;
 }
 
@@ -458,6 +467,27 @@
   left: 30cqi; /* ayy-allow-physical: mirrored with the screen */
   inline-size: 20cqi;
   block-size: 11cqb;
+}
+
+/* Colour: a theme's accent as a round Swatch (--ayy-swatch) in a Select's picture. The frame shrinks to the dot, before
+   the chosen option's text and in the list. */
+.ayy-select__picture:has(> .ayy-swatch),
+.ayy-select__option > .ayy-select__picture:has(> .ayy-swatch) {
+  inline-size: calc(var(--ayy-size-control-sm) * 0.75);
+  block-size: calc(var(--ayy-size-control-sm) * 0.75);
+  aspect-ratio: auto;
+  overflow: visible;
+  border: 0;
+  border-radius: var(--ayy-radius-pill);
+  background: none;
+}
+
+.ayy-select__picture > .ayy-swatch {
+  cursor: inherit;
+}
+
+.ayy-select:has(> .ayy-select__picture > .ayy-swatch) > .ayy-select__control {
+  padding-inline-start: calc(var(--ayy-space-2) * 2 + var(--ayy-size-control-sm) * 0.75);
 }
 
 /* A second screen shows only the right half of the picture, in either direction: System is light then dark, Auto

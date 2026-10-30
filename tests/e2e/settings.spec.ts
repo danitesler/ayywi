@@ -151,25 +151,70 @@ test("appearance settings: Mode and Theme, selects with pictures, and picking up
   await expect(modeList).toBeHidden();
   await expect(app.locator("[data-theme='light']").first()).toBeVisible();
 
-  // Theme: one brand screen per ready-made theme; Ember brings its brand and icon pack.
+  // Theme: one brand screen per ready-made theme and Custom; Ember brings its brand and icon pack.
   const theme = app.getByLabel("Theme", { exact: true });
   await theme.click();
   const themeList = page.getByRole("listbox", { name: "Theme" });
-  await expect(themeList.locator(".ayy-settings__screen--brand")).toHaveCount(6);
+  await expect(themeList.locator(".ayy-settings__screen--brand")).toHaveCount(7); // six themes and Custom
   await themeList.getByRole("option", { name: "Ember", exact: true }).click();
   await expect(app.locator("[data-brand='ember']")).toBeVisible();
   await expect(app.locator("[data-brand='ember']")).toHaveAttribute("data-ayy-icons", "lucide");
 
+  // The cog opens the theme's settings filled in with Ember; Save unchanged keeps Ember, a change makes it Custom.
+  const customize = app.getByRole("button", { name: "Customize theme" });
+  const dialog = page.getByRole("dialog", { name: "Customize theme" });
+  // The pair spans the same width as the Mode select above it.
+  const [modeBox, themeBox, cogBox] = [await app.getByLabel("Mode", { exact: true }).locator("xpath=..").boundingBox(), await theme.locator("xpath=..").boundingBox(), await customize.boundingBox()];
+  expect(Math.abs(themeBox!.x - modeBox!.x)).toBeLessThan(1);
+  expect(Math.abs(cogBox!.x + cogBox!.width - (modeBox!.x + modeBox!.width))).toBeLessThan(1);
+  await customize.click();
+  const accent = (name: string) => dialog.getByRole("group", { name: "Accent colour" }).getByRole("button", { name, exact: true });
+  await expect(accent("Ember")).toHaveAttribute("aria-pressed", "true");
+  await expect(dialog.getByRole("radio", { name: "Sharp" })).toBeChecked();
+  await expect(dialog.getByLabel("Icons")).toHaveValue("lucide");
+  await expect(dialog.getByLabel("Density")).toHaveValue("auto");
+  // The preview wears the draft, density included, and runs the full height of the settings beside it.
+  const previewBox = dialog.getByRole("group", { name: "Preview" });
+  await dialog.getByLabel("Density").selectOption("touch");
+  await expect(previewBox).toHaveAttribute("data-density", "touch");
+  const [pBox, densityBox] = [await previewBox.boundingBox(), await dialog.getByLabel("Density").boundingBox()];
+  expect(pBox!.y + pBox!.height).toBeGreaterThanOrEqual(densityBox!.y + densityBox!.height);
+  await dialog.getByLabel("Density").selectOption("auto");
+  // The preview wears the draft; the example keeps Ember until Save.
+  const send = dialog.getByRole("group", { name: "Preview" }).getByRole("button", { name: "Send report" });
+  const ember = await send.evaluate((el) => getComputedStyle(el).backgroundColor);
+  await accent("Forest").click();
+  await expect.poll(() => send.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe(ember);
+  await expect(app.locator("[data-brand='ember']")).toBeVisible();
+  await accent("Ember").click();
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(theme).toHaveValue("ember");
+  await customize.click();
+  await accent("Forest").click();
+  await dialog.locator("label", { hasText: /^Round$/ }).click();
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await expect(theme).toHaveValue("custom");
+  await expect(app.locator("[data-brand='custom']")).toBeVisible();
+  // Cancel leaves Custom as it was.
+  await customize.click();
+  await expect(accent("Forest")).toHaveAttribute("aria-pressed", "true");
+  await accent("Wine").click();
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await customize.click();
+  await expect(accent("Forest")).toHaveAttribute("aria-pressed", "true");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+
   // Text direction: Right to left sets dir on the example.
   await app.getByLabel("Text direction", { exact: true }).selectOption("rtl");
-  await expect(app.locator("[data-brand='ember']")).toHaveAttribute("dir", "rtl");
+  await expect(app.locator("[data-brand='custom']")).toHaveAttribute("dir", "rtl");
 
   // Reduce motion sets data-motion="reduce", and reset clears it and goes back to Default.
   await app.getByRole("switch", { name: "Reduce motion" }).click();
   await expect(app.locator("[data-motion='reduce']")).toBeVisible();
   await app.getByRole("button", { name: /Reset appearance/ }).click();
   await expect(app.locator("[data-motion='reduce']")).toHaveCount(0);
-  await expect(app.locator("[data-brand='ember']")).toHaveCount(0);
+  await expect(app.locator("[data-brand]")).toHaveCount(0);
   await expect(theme).toHaveValue("default");
 });
 
@@ -186,4 +231,14 @@ test("appearance settings in plain HTML: pictures follow the choice", async ({ p
   await page.getByRole("listbox", { name: "Theme" }).getByRole("option", { name: "Forest" }).click();
   await expect(theme).toHaveValue("forest");
   await expect(theme.locator("xpath=..").locator(".ayy-select__picture:not([hidden])")).toHaveAttribute("data-value", "forest");
+  // The cog opens the theme's settings in a dialog.
+  await app.getByRole("button", { name: "Customize theme" }).click();
+  const dialog = page.getByRole("dialog", { name: "Customize theme" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("group", { name: "Accent colour" }).getByRole("button")).toHaveCount(6);
+  await expect(dialog.getByRole("radiogroup", { name: "Corners" }).getByRole("radio")).toHaveCount(4);
+  for (const name of ["Font", "Icons", "Density"]) await expect(dialog.getByLabel(name, { exact: true })).toBeVisible();
+  await expect(dialog.getByRole("group", { name: "Preview" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(dialog).toBeHidden();
 });
