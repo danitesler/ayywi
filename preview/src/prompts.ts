@@ -3,7 +3,7 @@
 
 import { version } from "../../package.json";
 
-/** Where a prompt copied from localhost loads ayywi. An AI tool can't reach localhost, and there is no hosted preview. */
+/** Where a prompt copied from localhost loads ayywi. An AI tool can't reach localhost, and the hosted preview may be older than this build. */
 const PUBLIC_SITE = `https://cdn.jsdelivr.net/npm/@danitesler/ayywi@${version}/`;
 
 export interface Links {

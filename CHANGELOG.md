@@ -297,7 +297,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 - **Preview**
   - Ledger account-settings example → six example apps remain; its profile, notifications, plan, billing and workspace sections are gone with it.
-  - The hosted preview and the script that published it are gone. Run `pnpm preview` locally. A prompt copied from localhost loads the published package from jsDelivr.
+  - The GitHub Pages preview is gone → the preview now lives at danitesler.com/ayywi, published by `scripts/deploy-site.sh`. A prompt copied from localhost loads the published package from jsDelivr.
 
 ## 0.1.2 — 2026-10-22
 

@@ -188,9 +188,9 @@ Densities include `compact` (desktop default), `comfortable` (looser spacing), a
 
 Layout utilities (`.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-grid`, `.ayy-split`) and a marketing site kit (containers, hero type, scroll reveal) handle the structure between components.
 
-## Explore
+## Explore live
 
-Run the preview locally with `pnpm preview`:
+Visit the [interactive preview](https://danitesler.com/ayywi/), or run it locally with `pnpm preview`:
 - **7 full-scale showcase apps:** Dashboard, Marketing site, Support inbox, Settings, Habit tracker, Store, Booking app (viewable at desktop, tablet, and mobile sizes).
 - **Component browser:** Every component with live interactive stages, theme toggles, and copy-ready HTML and React code.
 - **Brand playground:** Test your brand colour and corner radius in real time.

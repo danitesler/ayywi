@@ -59,7 +59,10 @@ pnpm test:e2e       # Playwright + axe against the built preview, in Playwright'
 scripts/check-all.sh  # every check above, locally (--quick skips the preview build and e2e)
 pnpm preview        # http://localhost:5173 — every component, the showcase apps; theme from the theme button, density from the menu beside it
 pnpm preview:build  # static site in preview/dist, hosting dist/ayywi.min.css, dist/elements.global.js and llms*.txt too
+scripts/deploy-site.sh  # publish the preview to danitesler.com/ayywi/ (a commit to the danitesler/danitesler repo); part of a release
 ```
+
+`deploy-site.sh` uses the website checkout at `../danitesler` (or `$DANITESLER_REPO`) when it is on `main` with no edits in `ayywi/`, and a temporary clone otherwise. It refuses uncommitted ayywi changes (`--allow-dirty` overrides), keeps every earlier `v/<release>/`, and never touches the website's `ayywi/**/.htaccess`. `--no-push` commits locally so you can look first.
 
 After a code change: `pnpm build && pnpm typecheck && pnpm check && pnpm test`. Docs-only changes (CHANGELOG, README, prose) need no build and no e2e — but run `pnpm check` when you edit docs, since it validates the README's component table and jsDelivr links.
 
@@ -168,4 +171,5 @@ Once approved, a release is one job; do every step, in order, and stop at the fi
 6. `npm publish`. If npm asks for a one-time password, stop and ask the maintainer to run it; never handle their 2FA codes.
 7. `git push --follow-tags`.
 8. Verify: `npm view @danitesler/ayywi version` shows the new version, and `node scripts/pin-readme.mjs --verify` passes (jsDelivr can take a few minutes to see a new release).
-9. If `shim/` (the unscoped `ayywi` package) should follow, bump its version and dependency range, then `npm publish` from `shim/`.
+9. Publish the site: `scripts/deploy-site.sh`.
+10. If `shim/` (the unscoped `ayywi` package) should follow, bump its version and dependency range, then `npm publish` from `shim/`.
