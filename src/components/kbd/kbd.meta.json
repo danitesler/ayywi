@@ -72,8 +72,8 @@
   ],
   "examples": [
     { "id": "basic", "title": "Shortcuts in text" },
-    { "id": "sizes", "title": "Sizes" },
     { "id": "platform", "title": "Platform adaptation (macOS, Windows, Linux)" },
-    { "id": "multilingual", "title": "Multi-language hotkey handling" }
+    { "id": "multilingual", "title": "Multi-language hotkey handling" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

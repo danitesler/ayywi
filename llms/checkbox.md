@@ -88,40 +88,6 @@ export default function Example() {
 }
 ```
 
-## Checkbox — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<div class="ayy-stack">
-  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox ayy-checkbox--sm" checked /> Small: dense tables and menus</label>
-  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" checked /> Medium: the default</label>
-  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox ayy-checkbox--lg" checked /> Large: forms people fill in on a phone</label>
-</div>
-```
-
-React:
-
-```tsx
-import { Checkbox } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <div className="ayy-stack">
-      <label className="ayy-label">
-        <Checkbox size="sm" defaultChecked /> Small: dense tables and menus
-      </label>
-      <label className="ayy-label">
-        <Checkbox defaultChecked /> Medium: the default
-      </label>
-      <label className="ayy-label">
-        <Checkbox size="lg" defaultChecked /> Large: forms people fill in on a phone
-      </label>
-    </div>
-  );
-}
-```
-
 ## Checkbox — Coloured by priority
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -153,6 +119,40 @@ export default function Example() {
       <label className="ayy-label">
         <Checkbox defaultChecked style={{ "--ayy-check-color": "var(--ayy-color-info)" } as React.CSSProperties} />
         Low priority: tidy the shared drive
+      </label>
+    </div>
+  );
+}
+```
+
+## Checkbox — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox ayy-checkbox--sm" checked /> Small: dense tables and menus</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" checked /> Medium: the default</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox ayy-checkbox--lg" checked /> Large: forms people fill in on a phone</label>
+</div>
+```
+
+React:
+
+```tsx
+import { Checkbox } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <label className="ayy-label">
+        <Checkbox size="sm" defaultChecked /> Small: dense tables and menus
+      </label>
+      <label className="ayy-label">
+        <Checkbox defaultChecked /> Medium: the default
+      </label>
+      <label className="ayy-label">
+        <Checkbox size="lg" defaultChecked /> Large: forms people fill in on a phone
       </label>
     </div>
   );

@@ -136,100 +136,6 @@ export default function Example() {
 }
 ```
 
-## Card — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<div class="ayy-stack" style="inline-size: min(100%, 22.5rem)">
-  <div class="ayy-card ayy-card--sm">
-    <div class="ayy-card__header">
-      <h3 class="ayy-card__title">Weekly report</h3>
-      <p class="ayy-card__description">Activity across your workspace.</p>
-    </div>
-    <div class="ayy-card__content">
-      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
-    </div>
-    <div class="ayy-card__footer">
-      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
-    </div>
-  </div>
-  <div class="ayy-card">
-    <div class="ayy-card__header">
-      <h3 class="ayy-card__title">Weekly report</h3>
-      <p class="ayy-card__description">Activity across your workspace.</p>
-    </div>
-    <div class="ayy-card__content">
-      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
-    </div>
-    <div class="ayy-card__footer">
-      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
-    </div>
-  </div>
-  <div class="ayy-card ayy-card--lg">
-    <div class="ayy-card__header">
-      <h3 class="ayy-card__title">Weekly report</h3>
-      <p class="ayy-card__description">Activity across your workspace.</p>
-    </div>
-    <div class="ayy-card__content">
-      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
-    </div>
-    <div class="ayy-card__footer">
-      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
-    </div>
-  </div>
-</div>
-```
-
-React:
-
-```tsx
-import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <div className="ayy-stack" style={{ inlineSize: "min(100%, 22.5rem)" }}>
-      <Card size="sm">
-        <CardHeader>
-          <CardTitle>Weekly report</CardTitle>
-          <CardDescription>Activity across your workspace.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
-        </CardContent>
-        <CardFooter>
-          <Button size="sm">Open report</Button>
-        </CardFooter>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Weekly report</CardTitle>
-          <CardDescription>Activity across your workspace.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
-        </CardContent>
-        <CardFooter>
-          <Button size="sm">Open report</Button>
-        </CardFooter>
-      </Card>
-      <Card size="lg">
-        <CardHeader>
-          <CardTitle>Weekly report</CardTitle>
-          <CardDescription>Activity across your workspace.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
-        </CardContent>
-        <CardFooter>
-          <Button size="sm">Open report</Button>
-        </CardFooter>
-      </Card>
-    </div>
-  );
-}
-```
-
 ## Card — Interactive with spotlight
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -505,6 +411,100 @@ export default function Example() {
           </CardViewBadges>
         </CardViewBody>
         <Actions media />
+      </Card>
+    </div>
+  );
+}
+```
+
+## Card — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 22.5rem)">
+  <div class="ayy-card ayy-card--sm">
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title">Weekly report</h3>
+      <p class="ayy-card__description">Activity across your workspace.</p>
+    </div>
+    <div class="ayy-card__content">
+      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
+    </div>
+    <div class="ayy-card__footer">
+      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    </div>
+  </div>
+  <div class="ayy-card">
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title">Weekly report</h3>
+      <p class="ayy-card__description">Activity across your workspace.</p>
+    </div>
+    <div class="ayy-card__content">
+      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
+    </div>
+    <div class="ayy-card__footer">
+      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    </div>
+  </div>
+  <div class="ayy-card ayy-card--lg">
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title">Weekly report</h3>
+      <p class="ayy-card__description">Activity across your workspace.</p>
+    </div>
+    <div class="ayy-card__content">
+      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
+    </div>
+    <div class="ayy-card__footer">
+      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 22.5rem)" }}>
+      <Card size="sm">
+        <CardHeader>
+          <CardTitle>Weekly report</CardTitle>
+          <CardDescription>Activity across your workspace.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm">Open report</Button>
+        </CardFooter>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Weekly report</CardTitle>
+          <CardDescription>Activity across your workspace.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm">Open report</Button>
+        </CardFooter>
+      </Card>
+      <Card size="lg">
+        <CardHeader>
+          <CardTitle>Weekly report</CardTitle>
+          <CardDescription>Activity across your workspace.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm">Open report</Button>
+        </CardFooter>
       </Card>
     </div>
   );

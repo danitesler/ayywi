@@ -87,38 +87,6 @@ export default function Example() {
 }
 ```
 
-## Badge — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<span class="ayy-badge ayy-badge--success ayy-badge--sm">Synced</span>
-<span class="ayy-badge ayy-badge--success">Synced</span>
-<span class="ayy-badge ayy-badge--success ayy-badge--lg">Synced</span>
-<span class="ayy-badge ayy-badge--warning ayy-badge--sm"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
-<span class="ayy-badge ayy-badge--warning"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
-<span class="ayy-badge ayy-badge--warning ayy-badge--lg"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
-```
-
-React:
-
-```tsx
-import { Badge } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <>
-      <Badge size="sm" variant="success">Synced</Badge>
-      <Badge variant="success">Synced</Badge>
-      <Badge size="lg" variant="success">Synced</Badge>
-      <Badge size="sm" variant="warning" dot>Pending</Badge>
-      <Badge variant="warning" dot>Pending</Badge>
-      <Badge size="lg" variant="warning" dot>Pending</Badge>
-    </>
-  );
-}
-```
-
 ## Badge — Status dot
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -149,6 +117,38 @@ export default function Example() {
       <Badge variant="muted" dot="static" style={{ "--ayy-dot": "var(--ayy-accent-brand)" } as CSSProperties}>
         Custom dot
       </Badge>
+    </>
+  );
+}
+```
+
+## Badge — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<span class="ayy-badge ayy-badge--success ayy-badge--sm">Synced</span>
+<span class="ayy-badge ayy-badge--success">Synced</span>
+<span class="ayy-badge ayy-badge--success ayy-badge--lg">Synced</span>
+<span class="ayy-badge ayy-badge--warning ayy-badge--sm"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
+<span class="ayy-badge ayy-badge--warning"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
+<span class="ayy-badge ayy-badge--warning ayy-badge--lg"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
+```
+
+React:
+
+```tsx
+import { Badge } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Badge size="sm" variant="success">Synced</Badge>
+      <Badge variant="success">Synced</Badge>
+      <Badge size="lg" variant="success">Synced</Badge>
+      <Badge size="sm" variant="warning" dot>Pending</Badge>
+      <Badge variant="warning" dot>Pending</Badge>
+      <Badge size="lg" variant="warning" dot>Pending</Badge>
     </>
   );
 }

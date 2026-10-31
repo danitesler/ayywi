@@ -76,40 +76,6 @@ export default function Example() {
 }
 ```
 
-## Keyboard hint — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<div class="ayy-stack">
-  <p>Small, inside a menu row: Save <kbd class="ayy-kbd ayy-kbd--sm">Ctrl</kbd> <kbd class="ayy-kbd ayy-kbd--sm">S</kbd></p>
-  <p>Medium, in a sentence: press <kbd class="ayy-kbd">/</kbd> to search.</p>
-  <p>Large, in a help page: jump to the next section with <kbd class="ayy-kbd ayy-kbd--lg">J</kbd>.</p>
-</div>
-```
-
-React:
-
-```tsx
-import { Kbd } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <div className="ayy-stack">
-      <p>
-        Small, inside a menu row: Save <Kbd size="sm" keyName="mod" /> <Kbd size="sm">S</Kbd>
-      </p>
-      <p>
-        Medium, in a sentence: press <Kbd>/</Kbd> to search.
-      </p>
-      <p>
-        Large, in a help page: jump to the next section with <Kbd size="lg">J</Kbd>.
-      </p>
-    </div>
-  );
-}
-```
-
 ## Keyboard hint — Platform adaptation (macOS, Windows, Linux)
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -234,6 +200,40 @@ export default function Example() {
         <Kbd keyName="mod" /> + <Kbd>У</Kbd>
       </div>
       <p className="ayy-muted">{status}</p>
+    </div>
+  );
+}
+```
+
+## Keyboard hint — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <p>Small, inside a menu row: Save <kbd class="ayy-kbd ayy-kbd--sm">Ctrl</kbd> <kbd class="ayy-kbd ayy-kbd--sm">S</kbd></p>
+  <p>Medium, in a sentence: press <kbd class="ayy-kbd">/</kbd> to search.</p>
+  <p>Large, in a help page: jump to the next section with <kbd class="ayy-kbd ayy-kbd--lg">J</kbd>.</p>
+</div>
+```
+
+React:
+
+```tsx
+import { Kbd } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <p>
+        Small, inside a menu row: Save <Kbd size="sm" keyName="mod" /> <Kbd size="sm">S</Kbd>
+      </p>
+      <p>
+        Medium, in a sentence: press <Kbd>/</Kbd> to search.
+      </p>
+      <p>
+        Large, in a help page: jump to the next section with <Kbd size="lg">J</Kbd>.
+      </p>
     </div>
   );
 }

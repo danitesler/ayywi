@@ -111,74 +111,6 @@ export default function Example() {
 }
 ```
 
-## Chip — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<div class="ayy-stack">
-  <div role="group" class="ayy-chip-group" aria-label="Small status filters">
-    <label class="ayy-chip ayy-chip--sm"><input type="checkbox" name="status-sm" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
-    <label class="ayy-chip ayy-chip--sm"><input type="checkbox" name="status-sm" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
-    <span class="ayy-chip ayy-chip--sm ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
-  </div>
-  <div role="group" class="ayy-chip-group" aria-label="Medium status filters">
-    <label class="ayy-chip"><input type="checkbox" name="status-md" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
-    <label class="ayy-chip"><input type="checkbox" name="status-md" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
-    <span class="ayy-chip ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
-  </div>
-  <div role="group" class="ayy-chip-group" aria-label="Large status filters">
-    <label class="ayy-chip ayy-chip--lg"><input type="checkbox" name="status-lg" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
-    <label class="ayy-chip ayy-chip--lg"><input type="checkbox" name="status-lg" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
-    <span class="ayy-chip ayy-chip--lg ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
-  </div>
-</div>
-```
-
-React:
-
-```tsx
-import { Chip, ChipGroup, ChipRemovable } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <div className="ayy-stack">
-      <ChipGroup aria-label="Small status filters">
-        <Chip size="sm" name="status-sm" value="open" defaultChecked count={12}>
-          Open
-        </Chip>
-        <Chip size="sm" name="status-sm" value="closed" count={31}>
-          Closed
-        </Chip>
-        <ChipRemovable size="sm" onRemove={() => {}}>
-          Assignee: Mira
-        </ChipRemovable>
-      </ChipGroup>
-      <ChipGroup aria-label="Medium status filters">
-        <Chip name="status-md" value="open" defaultChecked count={12}>
-          Open
-        </Chip>
-        <Chip name="status-md" value="closed" count={31}>
-          Closed
-        </Chip>
-        <ChipRemovable onRemove={() => {}}>Assignee: Mira</ChipRemovable>
-      </ChipGroup>
-      <ChipGroup aria-label="Large status filters">
-        <Chip size="lg" name="status-lg" value="open" defaultChecked count={12}>
-          Open
-        </Chip>
-        <Chip size="lg" name="status-lg" value="closed" count={31}>
-          Closed
-        </Chip>
-        <ChipRemovable size="lg" onRemove={() => {}}>
-          Assignee: Mira
-        </ChipRemovable>
-      </ChipGroup>
-    </div>
-  );
-}
-```
-
 ## Chip — Filter bar with active filters
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -261,6 +193,74 @@ export default function Example() {
           </Button>
         </div>
       )}
+    </div>
+  );
+}
+```
+
+## Chip — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <div role="group" class="ayy-chip-group" aria-label="Small status filters">
+    <label class="ayy-chip ayy-chip--sm"><input type="checkbox" name="status-sm" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
+    <label class="ayy-chip ayy-chip--sm"><input type="checkbox" name="status-sm" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
+    <span class="ayy-chip ayy-chip--sm ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+  </div>
+  <div role="group" class="ayy-chip-group" aria-label="Medium status filters">
+    <label class="ayy-chip"><input type="checkbox" name="status-md" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
+    <label class="ayy-chip"><input type="checkbox" name="status-md" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
+    <span class="ayy-chip ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+  </div>
+  <div role="group" class="ayy-chip-group" aria-label="Large status filters">
+    <label class="ayy-chip ayy-chip--lg"><input type="checkbox" name="status-lg" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
+    <label class="ayy-chip ayy-chip--lg"><input type="checkbox" name="status-lg" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
+    <span class="ayy-chip ayy-chip--lg ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Chip, ChipGroup, ChipRemovable } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <ChipGroup aria-label="Small status filters">
+        <Chip size="sm" name="status-sm" value="open" defaultChecked count={12}>
+          Open
+        </Chip>
+        <Chip size="sm" name="status-sm" value="closed" count={31}>
+          Closed
+        </Chip>
+        <ChipRemovable size="sm" onRemove={() => {}}>
+          Assignee: Mira
+        </ChipRemovable>
+      </ChipGroup>
+      <ChipGroup aria-label="Medium status filters">
+        <Chip name="status-md" value="open" defaultChecked count={12}>
+          Open
+        </Chip>
+        <Chip name="status-md" value="closed" count={31}>
+          Closed
+        </Chip>
+        <ChipRemovable onRemove={() => {}}>Assignee: Mira</ChipRemovable>
+      </ChipGroup>
+      <ChipGroup aria-label="Large status filters">
+        <Chip size="lg" name="status-lg" value="open" defaultChecked count={12}>
+          Open
+        </Chip>
+        <Chip size="lg" name="status-lg" value="closed" count={31}>
+          Closed
+        </Chip>
+        <ChipRemovable size="lg" onRemove={() => {}}>
+          Assignee: Mira
+        </ChipRemovable>
+      </ChipGroup>
     </div>
   );
 }

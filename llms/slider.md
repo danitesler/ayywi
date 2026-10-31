@@ -86,44 +86,6 @@ export default function Example() {
 }
 ```
 
-## Slider — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<div class="ayy-stack" style="inline-size: min(100%, 22rem)">
-  <input type="range" class="ayy-slider ayy-slider--sm" min="0" max="100" step="1" style="--ayy-value: 30" aria-label="Small slider" value="30" />
-  <input type="range" class="ayy-slider" min="0" max="100" step="1" style="--ayy-value: 50" aria-label="Medium slider" value="50" />
-  <input type="range" class="ayy-slider ayy-slider--lg" min="0" max="100" step="1" style="--ayy-value: 70" aria-label="Large slider" value="70" />
-  <div role="group" class="ayy-slider-range ayy-slider-range--sm" style="--ayy-from: 20; --ayy-to: 60" aria-label="Small range">
-    <input type="range" class="ayy-slider" aria-label="Small range minimum" min="0" max="100" step="1" value="20" />
-    <input type="range" class="ayy-slider" aria-label="Small range maximum" min="0" max="100" step="1" value="60" />
-  </div>
-  <div role="group" class="ayy-slider-range ayy-slider-range--lg" style="--ayy-from: 20; --ayy-to: 60" aria-label="Large range">
-    <input type="range" class="ayy-slider" aria-label="Large range minimum" min="0" max="100" step="1" value="20" />
-    <input type="range" class="ayy-slider" aria-label="Large range maximum" min="0" max="100" step="1" value="60" />
-  </div>
-</div>
-```
-
-React:
-
-```tsx
-import { Slider, SliderRange } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <div className="ayy-stack" style={{ inlineSize: "min(100%, 22rem)" }}>
-      <Slider size="sm" defaultValue={30} aria-label="Small slider" />
-      <Slider defaultValue={50} aria-label="Medium slider" />
-      <Slider size="lg" defaultValue={70} aria-label="Large slider" />
-      <SliderRange size="sm" defaultValue={[20, 60]} labels={["Small range minimum", "Small range maximum"]} aria-label="Small range" />
-      <SliderRange size="lg" defaultValue={[20, 60]} labels={["Large range minimum", "Large range maximum"]} aria-label="Large range" />
-    </div>
-  );
-}
-```
-
 ## Slider — Price range
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -170,6 +132,44 @@ export default function Example() {
         labels={["Minimum price", "Maximum price"]}
         names={["price_min", "price_max"]}
       />
+    </div>
+  );
+}
+```
+
+## Slider — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 22rem)">
+  <input type="range" class="ayy-slider ayy-slider--sm" min="0" max="100" step="1" style="--ayy-value: 30" aria-label="Small slider" value="30" />
+  <input type="range" class="ayy-slider" min="0" max="100" step="1" style="--ayy-value: 50" aria-label="Medium slider" value="50" />
+  <input type="range" class="ayy-slider ayy-slider--lg" min="0" max="100" step="1" style="--ayy-value: 70" aria-label="Large slider" value="70" />
+  <div role="group" class="ayy-slider-range ayy-slider-range--sm" style="--ayy-from: 20; --ayy-to: 60" aria-label="Small range">
+    <input type="range" class="ayy-slider" aria-label="Small range minimum" min="0" max="100" step="1" value="20" />
+    <input type="range" class="ayy-slider" aria-label="Small range maximum" min="0" max="100" step="1" value="60" />
+  </div>
+  <div role="group" class="ayy-slider-range ayy-slider-range--lg" style="--ayy-from: 20; --ayy-to: 60" aria-label="Large range">
+    <input type="range" class="ayy-slider" aria-label="Large range minimum" min="0" max="100" step="1" value="20" />
+    <input type="range" class="ayy-slider" aria-label="Large range maximum" min="0" max="100" step="1" value="60" />
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Slider, SliderRange } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 22rem)" }}>
+      <Slider size="sm" defaultValue={30} aria-label="Small slider" />
+      <Slider defaultValue={50} aria-label="Medium slider" />
+      <Slider size="lg" defaultValue={70} aria-label="Large slider" />
+      <SliderRange size="sm" defaultValue={[20, 60]} labels={["Small range minimum", "Small range maximum"]} aria-label="Small range" />
+      <SliderRange size="lg" defaultValue={[20, 60]} labels={["Large range minimum", "Large range maximum"]} aria-label="Large range" />
     </div>
   );
 }

@@ -1323,7 +1323,7 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 - Offer a page size picker (pageSize, onPageSizeChange) on long tables so people choose how much they scan.
 - Show the range next to it ("41–60 of 1,280") in muted text.
 
-**Examples**: Under a table, Sizes, With a page size picker. Copy-ready HTML and React in llms/pagination.md.
+**Examples**: Under a table, With a page size picker, Sizes. Copy-ready HTML and React in llms/pagination.md.
 
 ## Steps
 
@@ -2470,7 +2470,7 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 - Phrase labels positively: "Email me updates", not "Don't email me".
 - Match the size to the controls around it: sm beside sm buttons and inputs, lg in forms made for touch.
 
-**Examples**: States, Sizes, Coloured by priority. Copy-ready HTML and React in llms/checkbox.md.
+**Examples**: States, Coloured by priority, Sizes. Copy-ready HTML and React in llms/checkbox.md.
 
 ## Radio
 
@@ -2600,7 +2600,7 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 - Show the filters in force as removable chips above the results, with a Clear all button.
 - Use ChipGroup scroll in a phone toolbar so the chips stay on one line.
 
-**Examples**: Filters and one choice, Sizes, Filter bar with active filters. Copy-ready HTML and React in llms/chip.md.
+**Examples**: Filters and one choice, Filter bar with active filters, Sizes. Copy-ready HTML and React in llms/chip.md.
 
 ## Color swatch
 
@@ -2731,7 +2731,7 @@ Category: Forms. A control for choosing a value, or a range between two values, 
 - Use a range slider to filter by price or size between a min and a max.
 - Pick a step that matches what people choose (5, 10, 0.5), and print the value next to the label.
 
-**Examples**: With its value, Sizes, Price range. Copy-ready HTML and React in llms/slider.md.
+**Examples**: With its value, Price range, Sizes. Copy-ready HTML and React in llms/slider.md.
 
 ## Number field
 
@@ -3157,7 +3157,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - Use the view type (view) for captures, recordings and pictures people open — a screenshot history, a media library — in .ayy-grid; pass the picture's real width and height, and keep the box at 16 / 10 so rows line up (portrait pictures letterbox over the blur).
 - On a view card, group three or more actions in one Hover actions bar (top end, group, reveal) ending in a ⋯ DropdownMenu; show a recording's length in CardViewBadge and add CardViewPlay.
 
-**Examples**: Basic, Sizes, Interactive with spotlight, Linked card with media, View cards: capture history. Copy-ready HTML and React in llms/card.md.
+**Examples**: Basic, Interactive with spotlight, Linked card with media, View cards: capture history, Sizes. Copy-ready HTML and React in llms/card.md.
 
 ## Tabs
 
@@ -3206,7 +3206,7 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 - Keep tab labels to one or two words.
 - Keep the tab set stable — don't add/remove tabs based on content.
 
-**Examples**: Basic, Sizes, With icons, Filters with counts. Copy-ready HTML and React in llms/tabs.md.
+**Examples**: Basic, With icons, Filters with counts, Sizes. Copy-ready HTML and React in llms/tabs.md.
 
 ## Accordion
 
@@ -3900,7 +3900,7 @@ Category: Data display. A small label that marks the status, category or count o
 - Keep labels to one or two words.
 - Use the status variants for status, accent spotlights for categories.
 
-**Examples**: Variants, Sizes, Status dot. Copy-ready HTML and React in llms/badge.md.
+**Examples**: Variants, Status dot, Sizes. Copy-ready HTML and React in llms/badge.md.
 
 ## Status dot
 
@@ -3969,7 +3969,7 @@ Category: Data display. A small keycap for showing a keyboard key or shortcut in
 - Adapt modifiers to the user's OS: ⌘ / ⌥ / ⇧ / ⌃ on macOS, Ctrl / Alt / Shift / Win on Windows, and Ctrl / Alt / Shift / Super on Linux (or use <Shortcut keys="Mod+K" /> / <Kbd keyName="mod" />).
 - Listen to event.code (physical key like 'KeyE') or use matchShortcut(event, 'Mod+E') rather than event.key === 'e' so hotkeys work across keyboard layouts and languages (e.g. Russian Cyrillic Cmd+У).
 
-**Examples**: Shortcuts in text, Sizes, Platform adaptation (macOS, Windows, Linux), Multi-language hotkey handling. Copy-ready HTML and React in llms/kbd.md.
+**Examples**: Shortcuts in text, Platform adaptation (macOS, Windows, Linux), Multi-language hotkey handling, Sizes. Copy-ready HTML and React in llms/kbd.md.
 
 ## Text highlight
 

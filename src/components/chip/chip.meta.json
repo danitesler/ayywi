@@ -90,7 +90,7 @@
   ],
   "examples": [
     { "id": "filters", "title": "Filters and one choice" },
-    { "id": "sizes", "title": "Sizes" },
-    { "id": "filter-bar", "title": "Filter bar with active filters" }
+    { "id": "filter-bar", "title": "Filter bar with active filters" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

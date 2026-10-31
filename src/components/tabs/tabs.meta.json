@@ -72,8 +72,8 @@
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
-    { "id": "sizes", "title": "Sizes" },
     { "id": "icons", "title": "With icons" },
-    { "id": "counts", "title": "Filters with counts" }
+    { "id": "counts", "title": "Filters with counts" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

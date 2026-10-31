@@ -65,5 +65,5 @@
     "Don't use checkboxes to pick exactly one option — use Radio.",
     "Don't use a checkbox to trigger an immediate action."
   ],
-  "examples": [{ "id": "basic", "title": "States" }, { "id": "sizes", "title": "Sizes" }, { "id": "colored", "title": "Coloured by priority" }]
+  "examples": [{ "id": "basic", "title": "States" }, { "id": "colored", "title": "Coloured by priority" }, { "id": "sizes", "title": "Sizes" } ]
 }

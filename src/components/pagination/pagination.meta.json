@@ -75,5 +75,5 @@
     "Don't use it to step through a sign-up or checkout — use Steps.",
     "Don't show it when everything fits on one page."
   ],
-  "examples": [{ "id": "basic", "title": "Under a table" }, { "id": "sizes", "title": "Sizes" }, { "id": "page-size", "title": "With a page size picker" }]
+  "examples": [{ "id": "basic", "title": "Under a table" }, { "id": "page-size", "title": "With a page size picker" }, { "id": "sizes", "title": "Sizes" } ]
 }

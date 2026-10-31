@@ -127,9 +127,9 @@
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
-    { "id": "sizes", "title": "Sizes" },
     { "id": "spotlight", "title": "Interactive with spotlight" },
     { "id": "media", "title": "Linked card with media" },
-    { "id": "view", "title": "View cards: capture history" }
+    { "id": "view", "title": "View cards: capture history" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

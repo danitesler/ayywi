@@ -113,89 +113,6 @@ export default function Example() {
 }
 ```
 
-## Tabs — Sizes
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<!-- <ayy-tabs> (@danitesler/ayywi/elements) wires ids, clicks and arrow keys. -->
-<div class="ayy-stack">
-  <ayy-tabs class="ayy-tabs ayy-tabs--sm" value="all">
-    <div class="ayy-tabs__list" role="tablist" aria-label="Small tabs">
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
-    </div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
-  </ayy-tabs>
-  <ayy-tabs class="ayy-tabs" value="all">
-    <div class="ayy-tabs__list" role="tablist" aria-label="Medium tabs">
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
-    </div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
-  </ayy-tabs>
-  <ayy-tabs class="ayy-tabs ayy-tabs--lg" value="all">
-    <div class="ayy-tabs__list" role="tablist" aria-label="Large tabs">
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
-      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
-    </div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
-    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
-  </ayy-tabs>
-</div>
-```
-
-React:
-
-```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
-
-export default function Example() {
-  return (
-    <div className="ayy-stack">
-      <Tabs size="sm" defaultValue="all">
-        <TabsList aria-label="Small tabs">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="open">Open</TabsTrigger>
-          <TabsTrigger value="closed">Closed</TabsTrigger>
-        </TabsList>
-        <TabsContent value="all" />
-        <TabsContent value="open" />
-        <TabsContent value="closed" />
-      </Tabs>
-      <Tabs defaultValue="all">
-        <TabsList aria-label="Medium tabs">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="open">Open</TabsTrigger>
-          <TabsTrigger value="closed">Closed</TabsTrigger>
-        </TabsList>
-        <TabsContent value="all" />
-        <TabsContent value="open" />
-        <TabsContent value="closed" />
-      </Tabs>
-      <Tabs size="lg" defaultValue="all">
-        <TabsList aria-label="Large tabs">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="open">Open</TabsTrigger>
-          <TabsTrigger value="closed">Closed</TabsTrigger>
-        </TabsList>
-        <TabsContent value="all" />
-        <TabsContent value="open" />
-        <TabsContent value="closed" />
-      </Tabs>
-    </div>
-  );
-}
-```
-
 ## Tabs — With icons
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -307,6 +224,89 @@ export default function Example() {
         <p className="ayy-muted">Open-source add-ons for Playnite.</p>
       </TabsContent>
     </Tabs>
+  );
+}
+```
+
+## Tabs — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-tabs> (@danitesler/ayywi/elements) wires ids, clicks and arrow keys. -->
+<div class="ayy-stack">
+  <ayy-tabs class="ayy-tabs ayy-tabs--sm" value="all">
+    <div class="ayy-tabs__list" role="tablist" aria-label="Small tabs">
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
+    </div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
+  </ayy-tabs>
+  <ayy-tabs class="ayy-tabs" value="all">
+    <div class="ayy-tabs__list" role="tablist" aria-label="Medium tabs">
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
+    </div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
+  </ayy-tabs>
+  <ayy-tabs class="ayy-tabs ayy-tabs--lg" value="all">
+    <div class="ayy-tabs__list" role="tablist" aria-label="Large tabs">
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
+    </div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
+  </ayy-tabs>
+</div>
+```
+
+React:
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <Tabs size="sm" defaultValue="all">
+        <TabsList aria-label="Small tabs">
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" />
+        <TabsContent value="open" />
+        <TabsContent value="closed" />
+      </Tabs>
+      <Tabs defaultValue="all">
+        <TabsList aria-label="Medium tabs">
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" />
+        <TabsContent value="open" />
+        <TabsContent value="closed" />
+      </Tabs>
+      <Tabs size="lg" defaultValue="all">
+        <TabsList aria-label="Large tabs">
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" />
+        <TabsContent value="open" />
+        <TabsContent value="closed" />
+      </Tabs>
+    </div>
   );
 }
 ```

@@ -72,7 +72,7 @@
   ],
   "examples": [
     { "id": "variants", "title": "Variants" },
-    { "id": "sizes", "title": "Sizes" },
-    { "id": "dot", "title": "Status dot" }
+    { "id": "dot", "title": "Status dot" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

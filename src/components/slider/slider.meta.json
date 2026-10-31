@@ -83,7 +83,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "With its value" },
-    { "id": "sizes", "title": "Sizes" },
-    { "id": "range", "title": "Price range" }
+    { "id": "range", "title": "Price range" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

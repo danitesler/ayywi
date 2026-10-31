@@ -86,6 +86,44 @@ export default function Example() {
 }
 ```
 
+## Pagination — With a page size picker
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-spread" style="inline-size:100%"><p class="ayy-muted">1–10 of 1,280 invoices</p><nav class="ayy-pagination" aria-label="Pagination"><div class="ayy-pagination__size"><label class="ayy-pagination__size-label" for="_R_2_">Rows per page</label><div class="ayy-select ayy-select--sm"><select class="ayy-select__control" id="_R_2_"><option value="10" selected="">10</option><option value="25">25</option><option value="50">50</option></select></div></div><button class="ayy-pagination__link ayy-pagination__link--step" type="button" disabled=""><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Previous</button><button class="ayy-pagination__link" aria-current="page" type="button">1</button><button class="ayy-pagination__link" type="button">2</button><button class="ayy-pagination__link" type="button">3</button><button class="ayy-pagination__link" type="button">4</button><button class="ayy-pagination__link" type="button">5</button><span class="ayy-pagination__ellipsis" aria-hidden="true">…</span><button class="ayy-pagination__link" type="button">128</button><button class="ayy-pagination__link ayy-pagination__link--step" type="button">Next<svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></nav></div>
+```
+
+React:
+
+```tsx
+import { useState } from "react";
+import { Pagination } from "@danitesler/ayywi/react";
+
+const TOTAL = 1280;
+
+export default function Example() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const first = (page - 1) * pageSize + 1;
+  return (
+    <div className="ayy-spread" style={{ inlineSize: "100%" }}>
+      <p className="ayy-muted">{`${first}–${Math.min(page * pageSize, TOTAL)} of 1,280 invoices`}</p>
+      <Pagination
+        page={page}
+        count={Math.ceil(TOTAL / pageSize)}
+        onPageChange={setPage}
+        pageSize={pageSize}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setPage(1);
+        }}
+      />
+    </div>
+  );
+}
+```
+
 ## Pagination — Sizes
 
 HTML (also Vue/Svelte/Angular templates, server templates):
@@ -139,44 +177,6 @@ export default function Example() {
       <Pagination size="sm" page={3} count={64} href={(page) => `?page=${page}`} aria-label="Small pagination" />
       <Pagination page={3} count={64} href={(page) => `?page=${page}`} aria-label="Medium pagination" />
       <Pagination size="lg" page={3} count={64} href={(page) => `?page=${page}`} aria-label="Large pagination" />
-    </div>
-  );
-}
-```
-
-## Pagination — With a page size picker
-
-HTML (also Vue/Svelte/Angular templates, server templates):
-
-```html
-<div class="ayy-spread" style="inline-size:100%"><p class="ayy-muted">1–10 of 1,280 invoices</p><nav class="ayy-pagination" aria-label="Pagination"><div class="ayy-pagination__size"><label class="ayy-pagination__size-label" for="_R_2_">Rows per page</label><div class="ayy-select ayy-select--sm"><select class="ayy-select__control" id="_R_2_"><option value="10" selected="">10</option><option value="25">25</option><option value="50">50</option></select></div></div><button class="ayy-pagination__link ayy-pagination__link--step" type="button" disabled=""><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Previous</button><button class="ayy-pagination__link" aria-current="page" type="button">1</button><button class="ayy-pagination__link" type="button">2</button><button class="ayy-pagination__link" type="button">3</button><button class="ayy-pagination__link" type="button">4</button><button class="ayy-pagination__link" type="button">5</button><span class="ayy-pagination__ellipsis" aria-hidden="true">…</span><button class="ayy-pagination__link" type="button">128</button><button class="ayy-pagination__link ayy-pagination__link--step" type="button">Next<svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></nav></div>
-```
-
-React:
-
-```tsx
-import { useState } from "react";
-import { Pagination } from "@danitesler/ayywi/react";
-
-const TOTAL = 1280;
-
-export default function Example() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const first = (page - 1) * pageSize + 1;
-  return (
-    <div className="ayy-spread" style={{ inlineSize: "100%" }}>
-      <p className="ayy-muted">{`${first}–${Math.min(page * pageSize, TOTAL)} of 1,280 invoices`}</p>
-      <Pagination
-        page={page}
-        count={Math.ceil(TOTAL / pageSize)}
-        onPageChange={setPage}
-        pageSize={pageSize}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-          setPage(1);
-        }}
-      />
     </div>
   );
 }
