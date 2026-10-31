@@ -42,7 +42,7 @@ export const densityPage = {
 
 type SizeScope = "md" | "sm" | "lg";
 
-export const SCOPE_CODE = `<!-- Every control that doesn't name a size uses the small step -->
+const SCOPE_CODE = `<!-- Every control that doesn't name a size uses the small step -->
 <div class="ayy-cluster" data-size="sm">
   <input class="ayy-input" placeholder="Filter services…" aria-label="Filter services" />
   <button class="ayy-button ayy-button--outline">Filters</button>
@@ -57,7 +57,7 @@ export const SCOPE_CODE = `<!-- Every control that doesn't name a size uses the 
   <div data-size="md"><button class="ayy-button">Back to the default</button></div>
 </div>`;
 
-export const SCOPE_REQUEST = `In this app, make the toolbar above the table and the settings side panel compact. Put data-size="sm" on each container, so every button, input, select, switch, checkbox, tab and chip inside it uses the small step, instead of adding size="sm" to each control. Leave the one primary action at its own size, and don't add a size to controls that should stay as they are. If part of a compact container needs the default back, use data-size="md" on it.`;
+const SCOPE_REQUEST = `In this app, make the toolbar above the table and the settings side panel compact. Put data-size="sm" on each container, so every button, input, select, switch, checkbox, tab and chip inside it uses the small step, instead of adding size="sm" to each control. Leave the one primary action at its own size, and don't add a size to controls that should stay as they are. If part of a compact container needs the default back, use data-size="md" on it.`;
 
 export interface DensityPageProps {
   density: DensityMode;

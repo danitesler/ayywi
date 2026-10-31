@@ -32,11 +32,8 @@ import {
   TabsTrigger,
 } from "@danitesler/ayywi/react";
 import { Add01Icon, CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
-import { CodeBlock } from "../CodeBlock";
 import { components } from "../data";
-import { buildPrompt } from "../prompts";
 import { themeOptions } from "../themes";
-import { SCOPE_CODE, SCOPE_REQUEST } from "./Density";
 import { IconsPage } from "./Icons";
 import { IllustrationPage } from "./Illustration";
 
@@ -348,84 +345,6 @@ function SpacingPage() {
         ))}
       </div>
 
-      <h2 className="pv-h pv-h--section">Size steps</h2>
-      <p className="pv-note">
-        Components that come in sizes use <code>sm</code>, <code>md</code> and <code>lg</code>: a <code>size</code> prop in React, a{" "}
-        <code>--sm</code> or <code>--lg</code> class in HTML. <code>md</code> is the default and adds no class. Each step reads the tokens
-        below, so it still grows with density (compact / comfortable / touch).
-      </p>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Token</TableHead>
-            <TableHead>sm</TableHead>
-            <TableHead>md</TableHead>
-            <TableHead>lg</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {SIZE_STEPS.map((row) => (
-            <TableRow key={row.label}>
-              <TableCell>
-                <strong>{row.label}</strong>
-              </TableCell>
-              {row.tokens.map((name) => (
-                <TableCell key={name} title={tokens[name].cssVar}>
-                  {densityPx(tokens[name])}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      <h2 className="pv-h pv-h--section">Group sizing</h2>
-      <p className="pv-note">
-        To make a whole toolbar, form or panel small or large, put <code>data-size="sm"</code> or <code>"lg"</code> on its container
-        instead of a size on every control. Controls inside that don't name a size take that step; explicit sizes keep theirs, and{" "}
-        <code>data-size="md"</code> puts the default back for part of a scope. See <a href="#/docs/density">Density</a> for how it
-        combines with <code>data-density</code>.
-      </p>
-      <GroupSizingDemo />
-      <Tabs defaultValue="prompt">
-        <TabsList aria-label="Use group sizing">
-          <TabsTrigger value="prompt">AI prompt</TabsTrigger>
-          <TabsTrigger value="code">Code</TabsTrigger>
-        </TabsList>
-        <TabsContent value="prompt">
-          <CodeBlock code={buildPrompt(SCOPE_REQUEST)} label="prompt" copyLabel="Copy prompt" wrap />
-        </TabsContent>
-        <TabsContent value="code">
-          <CodeBlock code={SCOPE_CODE} label="html" language="html" wrap />
-        </TabsContent>
-      </Tabs>
-
-      <h2 className="pv-h pv-h--section">Components with sizes</h2>
-      <p className="pv-note">
-        {SIZED.length} components take a <code>size</code>. Group sizing says whether one with no size of its own follows{" "}
-        <code>data-size</code> on an ancestor, or keeps its own size inside a scope.
-      </p>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Component</TableHead>
-            <TableHead>Sizes</TableHead>
-            <TableHead>Group sizing</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {SIZED.map((c) => (
-            <TableRow key={c.slug}>
-              <TableCell>
-                <a href={`#/components/${c.slug}`}>{c.name}</a>
-              </TableCell>
-              <TableCell className="ayy-mono">{c.values.join(" · ")}</TableCell>
-              <TableCell>{c.scoped ? <Badge variant="success">Follows</Badge> : <span className="ayy-muted">Own size</span>}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
       <h2 className="pv-h pv-h--section">Icons and targets</h2>
       <p className="pv-note">Icons beside text, a switch, a checkbox, and the smallest comfortable target for a finger.</p>
       <div className="pv-marks">
@@ -460,6 +379,72 @@ function SpacingPage() {
           </span>
         </div>
       </div>
+
+      <h2 className="pv-h pv-h--section">Group sizing</h2>
+      <p className="pv-note">
+        To make a whole toolbar, form or panel small or large, put <code>data-size="sm"</code> or <code>"lg"</code> on its container
+        instead of a size on every control. Controls inside that don't name a size take that step; explicit sizes keep theirs, and{" "}
+        <code>data-size="md"</code> puts the default back for part of a scope. See <a href="#/docs/density">Density</a> for how it
+        combines with <code>data-density</code>.
+      </p>
+      <GroupSizingDemo />
+
+      <h2 className="pv-h pv-h--section">Size steps</h2>
+      <p className="pv-note">
+        Components that come in sizes use <code>sm</code>, <code>md</code> and <code>lg</code>: a <code>size</code> prop in React, a{" "}
+        <code>--sm</code> or <code>--lg</code> class in HTML. <code>md</code> is the default and adds no class. Each step reads the tokens
+        below, so it still grows with density (compact / comfortable / touch).
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Token</TableHead>
+            <TableHead>sm</TableHead>
+            <TableHead>md</TableHead>
+            <TableHead>lg</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {SIZE_STEPS.map((row) => (
+            <TableRow key={row.label}>
+              <TableCell>
+                <strong>{row.label}</strong>
+              </TableCell>
+              {row.tokens.map((name) => (
+                <TableCell key={name} title={tokens[name].cssVar}>
+                  {densityPx(tokens[name])}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <h2 className="pv-h pv-h--section">Components with sizes</h2>
+      <p className="pv-note">
+        {SIZED.length} components take a <code>size</code>. Group sizing says whether one with no size of its own follows{" "}
+        <code>data-size</code> on an ancestor, or keeps its own size inside a scope.
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Component</TableHead>
+            <TableHead>Sizes</TableHead>
+            <TableHead>Group sizing</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {SIZED.map((c) => (
+            <TableRow key={c.slug}>
+              <TableCell>
+                <a href={`#/components/${c.slug}`}>{c.name}</a>
+              </TableCell>
+              <TableCell className="ayy-mono">{c.values.join(" · ")}</TableCell>
+              <TableCell>{c.scoped ? <Badge variant="success">Follows</Badge> : <span className="ayy-muted">Own size</span>}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </article>
   );
 }
