@@ -1,4 +1,4 @@
-# Grid
+# Card grid
 
 Category: Data display. A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar. Also called: data-grid, card-grid, media-grid, asset-grid, gallery-grid, tile-grid.
 
@@ -67,7 +67,7 @@ Category: Data display. A grid of cards that can be selected, for media, project
 - Don't use Grid for single-choice form inputs (like picking a pricing plan) — use ChoiceCard.
 - Don't hide the selection checkbox on selected cards.
 
-## Grid — Media assets, screenshots and social posts
+## Card grid — Media assets, screenshots and social posts
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -298,7 +298,7 @@ export default function Example() {
 }
 ```
 
-## Grid — Project cards and user records
+## Card grid — Project cards and user records
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 

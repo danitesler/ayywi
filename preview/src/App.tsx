@@ -30,7 +30,7 @@ import {
   Tooltip,
 } from "@danitesler/ayywi/react";
 import { commandMatches } from "@danitesler/ayywi";
-import { componentFamilies, components, type ComponentEntry } from "./data";
+import { components, sidebarEntries, type ComponentEntry } from "./data";
 import { brandPage } from "./pages/Brand";
 import { changelogPage, ChangelogPage } from "./pages/Changelog";
 import { ComponentPage } from "./pages/ComponentPage";
@@ -135,15 +135,16 @@ function DocsNav({ path }: { path: string }) {
   );
 }
 
-/** Every component A–Z; a family (Input › Textarea, Number field…) opens to show its members. */
+/** Every component A–Z; a family (Text entry › Input, Textarea…) opens to show its members. */
 function ComponentsNav({ slug }: { slug?: string }) {
   const [filter, setFilter] = useState("");
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const q = filter.trim();
   const matches = (c: ComponentEntry) => !q || commandMatches(c.name, q) || (c.aka ?? []).some((a) => commandMatches(a, q));
-  const shown = componentFamilies
-    .map(({ parent, children }) => ({ parent, family: children.length > 0, members: [parent, ...children].filter(matches) }))
-    .filter((f) => f.members.length);
+  // Typing a family's label ("loading") shows all of it.
+  const shown = sidebarEntries
+    .map((e) => ({ ...e, members: e.id && q && commandMatches(e.label, q) ? e.members : e.members.filter(matches) }))
+    .filter((e) => e.members.length);
 
   const items = q
     ? shown.flatMap((f) => f.members.map((c) => ({ slug: c.slug, name: c.name, href: `#/components/${c.slug}` })))
@@ -260,13 +261,13 @@ function ComponentsNav({ slug }: { slug?: string }) {
               </AppShellLink>
             </AppShellItem>
           )}
-          {shown.map(({ parent, family, members }) =>
-            !family ? (
-              link(parent)
+          {shown.map(({ label, id, members }) =>
+            !id ? (
+              link(members[0])
             ) : (
-              <AppShellItem key={parent.slug}>
+              <AppShellItem key={id}>
                 <AppShellCollapse
-                  label={parent.name}
+                  label={label}
                   open={Boolean(q) || members.some((c) => c.slug === slug || c.slug === activeSlug) || undefined}
                 >
                   {members.map((c) => link(c, true))}

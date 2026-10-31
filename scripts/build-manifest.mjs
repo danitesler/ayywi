@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ATTRIBUTES, CATEGORIES, NEEDS, ORDER, PATTERNS, PUBLIC_HOOKS, RULES, SETUP, STATES, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, FAMILIES, NEEDS, ORDER, PATTERNS, PUBLIC_HOOKS, RULES, SETUP, STATES, UTILITIES } from "./lib/contract.mjs";
 import { finish, output, remove } from "./lib/output.mjs";
 import { loadTokens } from "./lib/tokens.mjs";
 
@@ -15,6 +15,7 @@ const read = (p) => readFileSync(join(root, p), "utf8").trimEnd();
 
 const CATEGORY_ORDER = Object.keys(CATEGORIES);
 const rank = (list, x) => (list.includes(x) ? list.indexOf(x) : list.length);
+const familyOf = new Map(Object.entries(FAMILIES).flatMap(([id, f]) => f.members.map((slug) => [slug, id])));
 
 const components = readdirSync(join(root, "src/components"))
   .filter((slug) => existsSync(join(root, "src/components", slug, `${slug}.meta.json`)))
@@ -30,6 +31,7 @@ const components = readdirSync(join(root, "src/components"))
   if (existsSync(join(root, `${dir}/${slug}.element.ts`))) files.element = `${dir}/${slug}.element.ts`;
   return {
     ...meta,
+    ...(familyOf.has(slug) && { family: familyOf.get(slug) }),
     files,
     examples: (meta.examples ?? []).map((ex) => ({
       ...ex,
@@ -104,6 +106,7 @@ const manifest = {
   attributes: ATTRIBUTES,
   themes: themes.map((t) => ({ name: t.name, base: t.base, description: t.description })),
   categories: CATEGORIES,
+  families: FAMILIES,
   states: STATES,
   publicCustomProperties: PUBLIC_HOOKS,
   utilities: UTILITIES,

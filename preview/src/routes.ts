@@ -41,6 +41,10 @@ export function canonical(path: string): string {
       // The support inbox example was replaced by the dating app.
       return second === "inbox" ? "examples/dating" : path;
     case "components":
+      // The floating action button's page became part of Button's.
+      return second === "fab" ? "components/button" : path;
+    case "fab":
+      return "components/button";
     case "themes":
       return path;
     case "get-started":

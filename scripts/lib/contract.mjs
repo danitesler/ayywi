@@ -100,7 +100,7 @@ export const CATEGORIES = {
 /** Component order within a category (categories themselves follow CATEGORIES), for the manifest and llms*.txt
     (the preview's Components sidebar lists them A–Z, families nested). Unlisted slugs sort last, alphabetically. */
 export const ORDER = [
-  "button", "hover-actions", "toolbar", "action-bar", "menu", "command", "fab",
+  "button", "hover-actions", "toolbar", "action-bar", "menu", "command",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc", "tree",
   "field", "input", "pin-input", "search-bar", "filter-bar", "sorting", "textarea", "mentions", "block-editor", "inline-edit", "select", "combobox", "tag-input", "record-picker", "transfer-list", "date-time-picker", "color-picker", "icon-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "rating", "dropzone", "switch", "shortcut", "settings",
   "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator", "scrollbar", "drag-drop",
@@ -108,6 +108,24 @@ export const ORDER = [
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
   "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "property-list", "swipe", "timeline", "frame", "chat", "code-block", "table", "grid", "chart",
 ];
+
+/** Component families: components that do one job, named for the job, members in the order the preview lists them.
+    The preview's Components sidebar nests them under the label; the manifest gives each member its family id.
+    A component is in one family at most; one that isn't sits in the sidebar on its own. */
+export const FAMILIES = {
+  "app-layout": { label: "App layout", members: ["app-shell", "top-bar", "bottom-nav"] },
+  cards: { label: "Cards", members: ["card", "choice-card"] },
+  color: { label: "Color", members: ["color-picker", "swatch"] },
+  "data-views": { label: "Data views", members: ["table", "grid"] },
+  dropdowns: { label: "Dropdowns", members: ["select", "combobox"] },
+  icons: { label: "Icons", members: ["icon", "icon-tile"] },
+  lists: { label: "Lists", members: ["list", "swipe"] },
+  loading: { label: "Loading", members: ["progress", "progress-ring", "spinner"] },
+  "multi-pickers": { label: "Multi-pickers", members: ["tag-input", "record-picker"] },
+  "status-labels": { label: "Status labels", members: ["badge", "status-dot"] },
+  "text-entry": { label: "Text entry", members: ["input", "textarea", "number-field", "search-bar", "pin-input", "mentions", "inline-edit"] },
+  "view-controls": { label: "View controls", members: ["filter-bar", "sorting"] },
+};
 
 /** Screens built from several components that every app should build the same way. Each is rendered into the manifest
     ("patterns"), llms-full.txt, llms.txt and the MCP server's get_rules, so agents follow one recipe instead of inventing one.

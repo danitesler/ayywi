@@ -512,7 +512,7 @@ export interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   size?: InputSize;
   /** Form name: a hidden input carries the ISO date. */
   name?: string;
-  /** Shortcuts and footer of the calendar inside. */
+  /** Shortcuts and footer of the month grid inside. */
   presets?: DatePickerPreset[];
   footer?: ReactNode;
   /** Whether to show Clear and Today action buttons in the popover footer. Default true. */

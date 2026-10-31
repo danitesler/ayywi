@@ -2,7 +2,6 @@
   "name": "PIN input",
   "slug": "pin-input",
   "category": "Forms",
-  "family": "input",
   "description": "One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once.",
   "aka": ["pin-input", "otp-input", "otp", "pin-field", "verification-code", "passcode-input"],
   "classes": {

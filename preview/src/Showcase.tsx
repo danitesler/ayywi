@@ -216,11 +216,11 @@ const RESPONSIVE_SLUGS = new Set([
 ]);
 
 const RESPONSIVE_EXAMPLES = new Set([
-  "fab/app",
+  "button/fab-app",
 ]);
 
 const NON_RESPONSIVE_EXAMPLES = new Set([
-  "fab/variants",
+  "button/fab",
 ]);
 
 function isExampleResponsive(slug?: string, exampleId?: string): boolean {

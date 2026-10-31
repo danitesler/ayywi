@@ -2,8 +2,8 @@
   "name": "Button",
   "slug": "button",
   "category": "Actions",
-  "description": "The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions.",
-  "aka": ["button", "btn", "icon-button", "icon-btn", "cta", "split-button", "button-group"],
+  "description": "The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions, and as a round floating action button for the main action of a phone screen.",
+  "aka": ["button", "btn", "icon-button", "icon-btn", "cta", "split-button", "button-group", "fab", "floating-action", "floating-button", "float-button"],
   "classes": {
     "ayy-button": "Root. Alone it is the primary button.",
     "ayy-button--secondary": "Quiet filled button for secondary actions.",
@@ -25,24 +25,34 @@
     "ayy-button--start": "Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.",
     "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class.",
     "ayy-button-split": "Group joining a main action .ayy-button and a trailing icon .ayy-button (opening a menu) into a single split button with a shared seam.",
-    "ayy-button-split--block": "Full-width split button: the main action stretches and the menu trigger stays square."
+    "ayy-button-split--block": "Full-width split button: the main action stretches and the menu trigger stays square.",
+    "ayy-fab": "Floating action button: a <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
+    "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
+    "ayy-fab--secondary": "A raised surface with a border instead of the primary fill: less emphasis.",
+    "ayy-fab--lg": "Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.",
+    "ayy-fab--sm": "Smaller (the control-lg size), for a second action stacked above the main one.",
+    "ayy-fab--inline": "Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page)."
   },
   "variants": {
     "variant": { "values": ["primary", "secondary", "outline", "ghost", "destructive", "link", "ring"], "default": "primary" },
     "size": { "values": ["xs", "sm", "md", "lg", "xl", "icon-xs", "icon-sm", "icon", "icon-lg", "icon-xl"], "default": "md" },
     "block": { "values": [false, true], "default": false, "component": "Button" },
     "align": { "values": ["start", "center", "end"], "default": "center", "component": "Button" },
-    "loading": { "values": [false, true], "default": false, "component": "Button" }
+    "loading": { "values": [false, true], "default": false, "component": "Button" },
+    "fabVariant": { "prop": "variant", "values": ["primary", "secondary"], "default": "primary", "component": "Fab" },
+    "fabSize": { "prop": "size", "values": ["sm", "md", "lg"], "default": "md", "component": "Fab" },
+    "extended": { "values": [false, true], "default": false, "component": "Fab" },
+    "inline": { "values": [false, true], "default": false, "component": "Fab" }
   },
   "states": {
-    "default": { "looks": "Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring." },
-    "hover": { "when": ":hover", "looks": "Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins." },
-    "pressed": { "when": ":active", "looks": "Drops back to its resting position while held; colours stay as on hover." },
-    "focus": { "when": ":focus-visible", "looks": "2px --ayy-color-ring outline, 2px offset. Ring also spins its border." },
+    "default": { "looks": "Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring. Fab: a round primary-colour button with a 20px icon and the lift shadow, fixed to the bottom inline-end corner clear of the home indicator." },
+    "hover": { "when": ":hover", "looks": "Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins. Fab (devices that hover): the fill mixes 12% toward the label colour." },
+    "pressed": { "when": ":active", "looks": "Drops back to its resting position while held; colours stay as on hover. Fab shrinks to 94%." },
+    "focus": { "when": ":focus-visible", "looks": "2px --ayy-color-ring outline, 2px offset (3px on a Fab). Ring also spins its border." },
     "disabled": { "when": ":disabled on <button>, aria-disabled=\"true\" on <a>", "looks": "--ayy-opacity-disabled, ignores the pointer. Forced colours: GrayText border and label." },
     "selected": { "none": "Not a toggle. For on/off use a Chip button (aria-pressed), for one of a few a Segmented control, for a setting a Switch." },
     "error": { "none": "Errors belong to the form: a FieldError under the field, or an Alert for a failed action." },
-    "loading": { "when": "aria-busy=\"true\" with an aria-hidden .ayy-spinner as the first child (React: loading)", "looks": "Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or \"Saving…\") so the width barely moves." }
+    "loading": { "when": "aria-busy=\"true\" with an aria-hidden .ayy-spinner as the first child (React: loading)", "looks": "Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or \"Saving…\") so the width barely moves. Don't spin a Fab: run the action and show progress where its result appears (a new row's Skeleton, a toast)." }
   },
   "sizes": {
     "scale": {
@@ -57,12 +67,12 @@
       "icon-lg": "Square at the lg control height (36/44/48px) with a 20px icon.",
       "icon-xl": "Square at the xl height (44/52/56px) with a 24px icon."
     },
-    "density": "Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl).",
-    "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action."
+    "density": "Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl). A Fab's diameter follows data-density through the lg control height: sm 40/48/52px, md 52/60/64px, lg 60/68/72px (compact/comfortable/touch); a data-size scope doesn't resize it, set size on it.",
+    "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action. A Fab is a circle (extended: a pill hugging its icon and label) and takes no room: it floats over the content (inline puts it back in the flow)."
   },
-  "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
+  "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string; fabClass({ variant?, size?, extended?, inline?, className? }) → string, with fabVariants and fabSizes. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
   "react": {
-    "import": "import { Button, SplitButton } from \"@danitesler/ayywi/react\";",
+    "import": "import { Button, Fab, SplitButton } from \"@danitesler/ayywi/react\";",
     "components": {
       "Button": {
         "renders": "<button>",
@@ -84,6 +94,17 @@
           "block": "boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.",
           "...rest": "All native <div> attributes."
         }
+      },
+      "Fab": {
+        "renders": "<button type=\"button\" class=\"ayy-fab\">, or <a> with href",
+        "props": {
+          "variant": "\"primary\" | \"secondary\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
+          "extended": "boolean — icon and a label; otherwise give it aria-label",
+          "inline": "boolean — not floating",
+          "href": "string — renders an <a>",
+          "type": "\"button\" | \"submit\" | \"reset\" — default \"button\""
+        }
       }
     }
   },
@@ -92,7 +113,10 @@
     "In a SplitButton, give the trailing menu trigger an explicit aria-label naming what it opens (\"More deploy options\").",
     "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
     "Visible focus ring on :focus-visible is built in — never remove it.",
-    "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away."
+    "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.",
+    "An icon-only Fab needs an aria-label that says the action (\"New task\"), not the icon (\"Plus\").",
+    "Put a Fab after the main content in the DOM so it comes after what it acts on in the tab order, not before the page.",
+    "A Fab must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the Fab's height) so the last row can scroll clear of it."
   ],
   "do": [
     "Use a button for any action the user can take: submit, open, save, delete.",
@@ -101,13 +125,18 @@
     "Always pair icon-only buttons (size=\"icon*\", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.",
     "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
     "On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.",
-    "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg)."
+    "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).",
+    "Use one Fab for a phone screen's main, constructive action: create, compose, scan, add. Make it extended when the action isn't obvious from an icon, or on the first screens of an app.",
+    "Hide the Fab on screens where the main action is already on screen (a form's Save) or while a sheet is open."
   ],
   "dont": [
     "Don't use a button for navigation inside running text — use a plain link.",
     "Don't use a button to toggle a setting on/off — use Switch.",
     "Don't restyle colours per button — add a variant to the design system instead.",
-    "Don't use destructive for non-destructive emphasis."
+    "Don't use destructive for non-destructive emphasis.",
+    "Don't use more than one main Fab; stack a small secondary one at most.",
+    "Don't put destructive or minor actions (Delete, Share, Settings) in a Fab — use a Top bar action or a Menu.",
+    "Don't use a Fab on desktop layouts where a toolbar button fits better."
   ],
   "examples": [
     { "id": "variants", "title": "Variants" },
@@ -117,6 +146,8 @@
     { "id": "loading", "title": "Loading with spinner" },
     { "id": "align", "title": "Wide button alignment" },
     { "id": "as-link", "title": "Link styled as a button" },
-    { "id": "ring", "title": "Ring call to action" }
+    { "id": "ring", "title": "Ring call to action" },
+    { "id": "fab", "title": "Floating action button: icon, extended, secondary, small, large" },
+    { "id": "fab-app", "title": "Floating action button in an app shell, above the bottom nav" }
   ]
 }

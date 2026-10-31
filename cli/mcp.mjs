@@ -12,7 +12,7 @@ const SUPPORTED = ["2025-06-18", "2025-03-26", "2024-11-05"];
 function componentMarkdown(c) {
   const list = (items) => (items ?? []).map((i) => `- ${i}`).join("\n");
   const variants = Object.entries(c.variants ?? {}).map(
-    ([k, v]) => `${k}: ${(v.values ?? []).map((x) => JSON.stringify(x)).join(" | ")} (default ${JSON.stringify(v.default)}${v.component ? `, on <${v.component}>` : ""})`,
+    ([k, v]) => `${v.prop ?? k}: ${(v.values ?? []).map((x) => JSON.stringify(x)).join(" | ")} (default ${JSON.stringify(v.default)}${v.component ? `, on <${v.component}>` : ""})`,
   );
   const parts = [
     `# ${c.name}`,

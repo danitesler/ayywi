@@ -1,16 +1,15 @@
 import { useEffect, useState, type ComponentType } from "react";
-import { CATEGORIES, ORDER } from "../../scripts/lib/contract.mjs";
+import { CATEGORIES, FAMILIES, ORDER } from "../../scripts/lib/contract.mjs";
 
 export interface ComponentMeta {
   name: string;
   slug: string;
   category: string;
-  /** The component this one is a variation of; the Components sidebar nests it there. */
-  family?: string;
   description: string;
   aka?: string[];
   classes: Record<string, string>;
-  variants: Record<string, { values: (string | boolean)[]; default: string | boolean }>;
+  /** Keyed by prop, or by any unique key with `prop` naming it when two components in one meta share a prop name. */
+  variants: Record<string, { values: (string | boolean)[]; default: string | boolean; component?: string; prop?: string }>;
   states: Record<string, { when?: string; looks?: string; none?: string }>;
   sizes: { scale?: Record<string, string>; density: string; width: string };
   js?: string;
@@ -42,6 +41,8 @@ export interface ExampleEntry {
 
 export interface ComponentEntry extends ComponentMeta {
   examples: ExampleEntry[];
+  /** Its FAMILIES id (scripts/lib/contract.mjs), if it has one. */
+  family?: string;
 }
 
 const metas = import.meta.glob<ComponentMeta>("../../src/components/*/*.meta.json", { eager: true, import: "default" });
@@ -89,10 +90,12 @@ export function useExample(example: ExampleEntry | undefined): LoadedExample | u
 
 const rank = (list: string[], x: string) => (list.includes(x) ? list.indexOf(x) : list.length);
 const CATEGORY_ORDER = Object.keys(CATEGORIES);
+const familyOf = new Map(Object.entries(FAMILIES).flatMap(([id, f]) => f.members.map((slug) => [slug, id] as const)));
 
 export const components: ComponentEntry[] = Object.values(metas)
   .map((meta) => ({
     ...meta,
+    family: familyOf.get(meta.slug),
     examples: meta.examples.map((ex) => {
       const base = `../../src/components/${meta.slug}/examples/${ex.id}`;
       return { ...ex, hasReact: `${base}.tsx` in reactModules, ...loader(base) };
@@ -105,8 +108,13 @@ export const componentGroups: { category: string; description: string; component
   ...new Set(components.map((c) => c.category)),
 ].map((category) => ({ category, description: CATEGORIES[category] ?? "", components: components.filter((c) => c.category === category) }));
 
-/** The Components sidebar: every component A–Z, each with the variations that name it as their family, A–Z too. */
-export const componentFamilies: { parent: ComponentEntry; children: ComponentEntry[] }[] = components
-  .filter((c) => !c.family)
-  .map((parent) => ({ parent, children: components.filter((c) => c.family === parent.slug).sort((a, b) => a.name.localeCompare(b.name)) }))
-  .sort((a, b) => a.parent.name.localeCompare(b.parent.name));
+const bySlug = new Map(components.map((c) => [c.slug, c]));
+
+/** A family's members in FAMILIES order, the given component included. */
+export const familyMembers = (id: string): ComponentEntry[] => FAMILIES[id].members.flatMap((slug) => bySlug.get(slug) ?? []);
+
+/** The Components sidebar, A–Z: each family under its label (`id` set), every other component on its own. */
+export const sidebarEntries: { label: string; id?: string; members: ComponentEntry[] }[] = [
+  ...Object.entries(FAMILIES).map(([id, f]) => ({ label: f.label, id, members: familyMembers(id) })),
+  ...components.filter((c) => !c.family).map((c) => ({ label: c.name, members: [c] })),
+].sort((a, b) => a.label.localeCompare(b.label));

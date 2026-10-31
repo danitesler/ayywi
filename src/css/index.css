@@ -60,7 +60,6 @@
 @import "../components/footer/footer.css" layer(ayywi.components);
 @import "../components/app-shell/app-shell.css" layer(ayywi.components);
 @import "../components/bottom-nav/bottom-nav.css" layer(ayywi.components);
-@import "../components/fab/fab.css" layer(ayywi.components);
 @import "../components/top-bar/top-bar.css" layer(ayywi.components);
 @import "../components/search-bar/search-bar.css" layer(ayywi.components);
 @import "../components/filter-bar/filter-bar.css" layer(ayywi.components);

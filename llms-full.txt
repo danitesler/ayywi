@@ -164,7 +164,7 @@ Built from: App shell, Top bar, Settings, Switch, Select, Segmented control, Sho
 
 A searchable, filterable, sortable view of records or media, with multi-select and bulk actions. It's built from a page header, a filter bar, a table or card grid with quick actions, and a floating action bar that appears while items are selected. It also covers the loading, empty and error states.
 
-Built from: Page header, Filter bar, Search bar, Sorting, Chip, Table, Grid, Action bar, Dropdown menu, Pagination, Skeleton, Empty state, Alert. Example: Table → "Playground" (`get_component table`, llms/table.md).
+Built from: Page header, Filter bar, Search bar, Sorting, Chip, Table, Card grid, Action bar, Dropdown menu, Pagination, Skeleton, Empty state, Alert. Example: Table → "Playground" (`get_component table`, llms/table.md).
 
 **How**
 1. Header: start the screen with a PageHeader (PageHeaderTitle as the one <h1>, PageHeaderDescription, and PageHeaderActions with at most one primary create Button and optional export/view controls).
@@ -550,17 +550,17 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 ## Components by category
 
-- **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette, Floating action button
+- **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
 - **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Filter bar, Sorting, Textarea, Mentions, Block editor, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Scrollbar, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Grid, Chart
+- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Card grid, Chart
 
 ## Button
 
-Category: Actions. The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions. Also called: button, btn, icon-button, icon-btn, cta, split-button, button-group.
+Category: Actions. The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions, and as a round floating action button for the main action of a phone screen. Also called: button, btn, icon-button, icon-btn, cta, split-button, button-group, fab, floating-action, floating-button, float-button.
 
 **Classes**
 - `.ayy-button` — Root. Alone it is the primary button.
@@ -584,6 +584,12 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `.ayy-button--end` — Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class.
 - `.ayy-button-split` — Group joining a main action .ayy-button and a trailing icon .ayy-button (opening a menu) into a single split button with a shared seam.
 - `.ayy-button-split--block` — Full-width split button: the main action stretches and the menu trigger stays square.
+- `.ayy-fab` — Floating action button: a <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.
+- `.ayy-fab--extended` — Icon and a visible label: a wider pill ("Compose"). Needs no aria-label.
+- `.ayy-fab--secondary` — A raised surface with a border instead of the primary fill: less emphasis.
+- `.ayy-fab--lg` — Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.
+- `.ayy-fab--sm` — Smaller (the control-lg size), for a second action stacked above the main one.
+- `.ayy-fab--inline` — Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page).
 
 **States**
 - `hover` (`:hover`)
@@ -603,12 +609,13 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `icon-sm` — Square at the sm control height (28/32/40px) with a 16px icon.
 - `icon-lg` — Square at the lg control height (36/44/48px) with a 20px icon.
 - `icon-xl` — Square at the xl height (44/52/56px) with a 24px icon.
-- Density — Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl).
-- Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
+- Density — Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl). A Fab's diameter follows data-density through the lg control height: sm 40/48/52px, md 52/60/64px, lg 60/68/72px (compact/comfortable/touch); a data-size scope doesn't resize it, set size on it.
+- Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action. A Fab is a circle (extended: a pill hugging its icon and label) and takes no room: it floats over the content (inline puts it back in the flow).
 
-**React** — `import { Button, SplitButton } from "@danitesler/ayywi/react";`
+**React** — `import { Button, Fab, SplitButton } from "@danitesler/ayywi/react";`
 - `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "xs" | "sm" | "md" | "lg" | "xl" | "icon-xs" | "icon-sm" | "icon" | "icon-lg" | "icon-xl"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `tooltip` ReactNode | boolean — custom tooltip text or element; icon-only buttons show their aria-label on hover by default (pass false to disable).; `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top").; `...rest` All native <button> attributes.
 - `<SplitButton>` renders <div role="group" class="ayy-button-split">. Props: `block` boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.; `...rest` All native <div> attributes.
+- `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md" | "lg"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
 
 **Accessibility**
 - Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus.
@@ -616,6 +623,9 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both).
 - Visible focus ring on :focus-visible is built in — never remove it.
 - While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
+- An icon-only Fab needs an aria-label that says the action ("New task"), not the icon ("Plus").
+- Put a Fab after the main content in the DOM so it comes after what it acts on in the tab order, not before the page.
+- A Fab must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the Fab's height) so the last row can scroll clear of it.
 
 **Do**
 - Use a button for any action the user can take: submit, open, save, delete.
@@ -625,8 +635,10 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - Keep one primary button per view or section; make everything else secondary, outline or ghost.
 - On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
 - Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).
+- Use one Fab for a phone screen's main, constructive action: create, compose, scan, add. Make it extended when the action isn't obvious from an icon, or on the first screens of an app.
+- Hide the Fab on screens where the main action is already on screen (a form's Save) or while a sheet is open.
 
-**Examples**: Variants, Sizes, With icon & icon-only, Split button, Loading with spinner, Wide button alignment, Link styled as a button, Ring call to action. Copy-ready HTML and React in llms/button.md.
+**Examples**: Variants, Sizes, With icon & icon-only, Split button, Loading with spinner, Wide button alignment, Link styled as a button, Ring call to action, Floating action button: icon, extended, secondary, small, large, Floating action button in an app shell, above the bottom nav. Copy-ready HTML and React in llms/button.md.
 
 ## Hover actions
 
@@ -922,46 +934,6 @@ Category: Actions. A search box above a list of actions and places, so people ca
 - Show descriptions conditionally when matches occur in item descriptions, or keep descriptions always visible for items that need extra context.
 
 **Examples**: Inline palette with groups and shortcuts, ⌘K dialog, Search with text highlight and descriptions. Copy-ready HTML and React in llms/command.md.
-
-## Floating action button
-
-Category: Actions. A round floating button for the main action of a phone screen, like composing or adding something. It stays in the corner over the content and can show a label when extended. Also called: fab, floating-action, floating-button, float-button.
-
-**Classes**
-- `.ayy-fab` — A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.
-- `.ayy-fab--extended` — Icon and a visible label: a wider pill ("Compose"). Needs no aria-label.
-- `.ayy-fab--secondary` — A raised surface with a border instead of the primary fill: less emphasis.
-- `.ayy-fab--lg` — Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.
-- `.ayy-fab--sm` — Smaller (the control-lg size), for a second action stacked above the main one.
-- `.ayy-fab--inline` — Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page).
-
-**States**
-- `hover` (`:hover (devices that hover)`)
-- `pressed` (`:active`)
-- `focus` (`:focus-visible`)
-- `disabled` (`:disabled or [aria-disabled="true"]`)
-
-**Sizes**
-- `sm` — The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.
-- `md` (default) — The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.
-- `lg` — The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon.
-- Density — Its diameter follows data-density through the lg control height (the sizes above). A data-size scope doesn't resize it: set size on it.
-- Width — Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow).
-
-**React** — `import { Fab } from "@danitesler/ayywi/react";`
-- `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md" | "lg"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
-
-**Accessibility**
-- An icon-only FAB needs an aria-label that says the action ("New task"), not the icon ("Plus").
-- Put it after the main content in the DOM so it comes after what it acts on in the tab order, not before the page.
-- It must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the FAB's height) so the last row can scroll clear of it.
-
-**Do**
-- Use one FAB for the screen's main, constructive action: create, compose, scan, add.
-- Use extended when the action isn't obvious from an icon, or on the first screens of an app.
-- Hide it on screens where the main action is already on screen (a form's Save) or while a sheet is open.
-
-**Examples**: Icon, extended, secondary, small, large, In an app shell, above the bottom nav. Copy-ready HTML and React in llms/fab.md.
 
 ## Navbar
 
@@ -4634,7 +4606,7 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 
 **Examples**: Simple, Medium, Playground. Copy-ready HTML and React in llms/table.md.
 
-## Grid
+## Card grid
 
 Category: Data display. A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar. Also called: data-grid, card-grid, media-grid, asset-grid, gallery-grid, tile-grid.
 

@@ -73,17 +73,21 @@ export function loadContract(path = manifestPath()) {
         }
       }
     }
-    for (const [prop, def] of Object.entries(c.variants ?? {})) {
+    // A variant's key is its prop, unless `prop` names it (two components in one meta with the same prop: Button's and Fab's variant).
+    const variantList = Object.entries(c.variants ?? {}).map(([key, def]) => ({ ...def, prop: def.prop ?? key }));
+    for (const def of variantList) {
       if (!def.values?.every((v) => typeof v === "string")) continue;
       const comp = def.component ?? reactNames[0];
       if (!comp) continue;
       if (!reactVariants.has(comp)) reactVariants.set(comp, {});
-      reactVariants.get(comp)[prop] = def.values;
+      reactVariants.get(comp)[def.prop] = def.values;
     }
     for (const m of String(c.js ?? "").matchAll(/(\w+Class)\(\{\s*([^}]*)\}\)/g)) {
       const keys = {};
+      const comp = m[1][0].toUpperCase() + m[1].slice(1, -"Class".length); // fabClass → Fab
       for (const k of m[2].split(",").map((s) => s.trim().replace(/\?$/, ""))) {
-        const def = c.variants?.[k];
+        const named = variantList.filter((d) => d.prop === k);
+        const def = named.find((d) => d.component === comp) ?? named.find((d) => !d.component || d.component === reactNames[0]);
         if (def?.values?.every((v) => typeof v === "string")) keys[k] = def.values;
       }
       helperVariants.set(m[1], keys);

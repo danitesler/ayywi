@@ -9,7 +9,7 @@ export async function componentSpec(c: ComponentEntry): Promise<string> {
     `Classes:\n${list(Object.entries(c.classes).map(([k, v]) => `.${k} — ${v}`))}`,
   ];
   const variants = Object.entries(c.variants ?? {});
-  if (variants.length) parts.push(`Variants:\n${list(variants.map(([k, v]) => `${k}: ${v.values.map((x) => JSON.stringify(x)).join(" | ")} (default ${JSON.stringify(v.default)})`))}`);
+  if (variants.length) parts.push(`Variants:\n${list(variants.map(([k, v]) => `${v.prop ?? k}: ${v.values.map((x) => JSON.stringify(x)).join(" | ")} (default ${JSON.stringify(v.default)}${v.component ? `, on <${v.component}>` : ""})`))}`);
   if (c.js) parts.push(`JS helpers (from "@danitesler/ayywi"): ${c.js}`);
   if (c.element) parts.push(`Custom element: <${c.element.tag}> (import "@danitesler/ayywi/elements", or load dist/elements.global.js).`);
   parts.push(

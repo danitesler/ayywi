@@ -2,7 +2,7 @@
 // The build prepends "use client" so these work from React Server Components (Next.js App Router).
 export * from "../index";
 
-export { Button, SplitButton, type ButtonProps, type SplitButtonProps } from "../components/button/button.react";
+export { Button, Fab, SplitButton, type ButtonProps, type FabProps, type SplitButtonProps } from "../components/button/button.react";
 export {
   Card,
   CardHeader,
@@ -576,7 +576,6 @@ export {
 export { Command, CommandDialog, CommandGroup, CommandItem, type CommandProps, type CommandDialogProps, type CommandGroupProps, type CommandItemProps } from "../components/command/command.react";
 export { TagInput, type TagInputProps } from "../components/tag-input/tag-input.react";
 export { RecordPicker, type RecordPickerProps, type RecordPickerOption } from "../components/record-picker/record-picker.react";
-export { Fab, type FabProps } from "../components/fab/fab.react";
 export { TopBar, type TopBarProps } from "../components/top-bar/top-bar.react";
 export { SearchBar, type SearchBarProps } from "../components/search-bar/search-bar.react";
 export {

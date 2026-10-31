@@ -3,6 +3,7 @@ export declare const PUBLIC_HOOKS: Record<string, string>;
 export declare const UTILITIES: Record<string, string>;
 export declare const CATEGORIES: Record<string, string>;
 export declare const ORDER: string[];
+export declare const FAMILIES: Record<string, { label: string; members: string[] }>;
 export declare const ATTRIBUTES: Record<string, string>;
 export declare const RULES: string[];
 export declare const STATES: Record<string, string>;

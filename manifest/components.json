@@ -780,6 +780,99 @@
     "Feedback": "Status, progress and messages.",
     "Data display": "Values, people and records."
   },
+  "families": {
+    "app-layout": {
+      "label": "App layout",
+      "members": [
+        "app-shell",
+        "top-bar",
+        "bottom-nav"
+      ]
+    },
+    "cards": {
+      "label": "Cards",
+      "members": [
+        "card",
+        "choice-card"
+      ]
+    },
+    "color": {
+      "label": "Color",
+      "members": [
+        "color-picker",
+        "swatch"
+      ]
+    },
+    "data-views": {
+      "label": "Data views",
+      "members": [
+        "table",
+        "grid"
+      ]
+    },
+    "dropdowns": {
+      "label": "Dropdowns",
+      "members": [
+        "select",
+        "combobox"
+      ]
+    },
+    "icons": {
+      "label": "Icons",
+      "members": [
+        "icon",
+        "icon-tile"
+      ]
+    },
+    "lists": {
+      "label": "Lists",
+      "members": [
+        "list",
+        "swipe"
+      ]
+    },
+    "loading": {
+      "label": "Loading",
+      "members": [
+        "progress",
+        "progress-ring",
+        "spinner"
+      ]
+    },
+    "multi-pickers": {
+      "label": "Multi-pickers",
+      "members": [
+        "tag-input",
+        "record-picker"
+      ]
+    },
+    "status-labels": {
+      "label": "Status labels",
+      "members": [
+        "badge",
+        "status-dot"
+      ]
+    },
+    "text-entry": {
+      "label": "Text entry",
+      "members": [
+        "input",
+        "textarea",
+        "number-field",
+        "search-bar",
+        "pin-input",
+        "mentions",
+        "inline-edit"
+      ]
+    },
+    "view-controls": {
+      "label": "View controls",
+      "members": [
+        "filter-bar",
+        "sorting"
+      ]
+    }
+  },
   "states": {
     "default": "At rest: nothing hovered, focused or set.",
     "hover": "The pointer is over it. Touch screens have no hover, so never put information only there.",
@@ -2418,7 +2511,7 @@
       "name": "Button",
       "slug": "button",
       "category": "Actions",
-      "description": "The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions.",
+      "description": "The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions, and as a round floating action button for the main action of a phone screen.",
       "aka": [
         "button",
         "btn",
@@ -2426,7 +2519,11 @@
         "icon-btn",
         "cta",
         "split-button",
-        "button-group"
+        "button-group",
+        "fab",
+        "floating-action",
+        "floating-button",
+        "float-button"
       ],
       "classes": {
         "ayy-button": "Root. Alone it is the primary button.",
@@ -2449,7 +2546,13 @@
         "ayy-button--start": "Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.",
         "ayy-button--end": "Icon and label sit at the inline end of a wide button, with the same edge spacing as --start (mirrored). Use with block. Centered is the default, no class.",
         "ayy-button-split": "Group joining a main action .ayy-button and a trailing icon .ayy-button (opening a menu) into a single split button with a shared seam.",
-        "ayy-button-split--block": "Full-width split button: the main action stretches and the menu trigger stays square."
+        "ayy-button-split--block": "Full-width split button: the main action stretches and the menu trigger stays square.",
+        "ayy-fab": "Floating action button: a <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
+        "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
+        "ayy-fab--secondary": "A raised surface with a border instead of the primary fill: less emphasis.",
+        "ayy-fab--lg": "Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.",
+        "ayy-fab--sm": "Smaller (the control-lg size), for a second action stacked above the main one.",
+        "ayy-fab--inline": "Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page)."
       },
       "variants": {
         "variant": {
@@ -2503,23 +2606,58 @@
           ],
           "default": false,
           "component": "Button"
+        },
+        "fabVariant": {
+          "prop": "variant",
+          "values": [
+            "primary",
+            "secondary"
+          ],
+          "default": "primary",
+          "component": "Fab"
+        },
+        "fabSize": {
+          "prop": "size",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "component": "Fab"
+        },
+        "extended": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "Fab"
+        },
+        "inline": {
+          "values": [
+            false,
+            true
+          ],
+          "default": false,
+          "component": "Fab"
         }
       },
       "states": {
         "default": {
-          "looks": "Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring."
+          "looks": "Primary: --ayy-color-primary fill, --ayy-color-primary-fg label, semibold. Secondary: wash fill and line border. Outline: transparent with a line-strong border. Ghost: transparent, no border. Destructive: 10% red tint, red label. Link: plain text. Ring: wash inside a gradient ring. Fab: a round primary-colour button with a 20px icon and the lift shadow, fixed to the bottom inline-end corner clear of the home indicator."
         },
         "hover": {
           "when": ":hover",
-          "looks": "Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins."
+          "looks": "Lifts 2px. Primary adds the glow shadow at 90% opacity; secondary, outline, ghost and ring move to wash-hover, wash or highlight with a stronger border; destructive deepens to a 15% tint. Link underlines instead of lifting; ring's border spins. Fab (devices that hover): the fill mixes 12% toward the label colour."
         },
         "pressed": {
           "when": ":active",
-          "looks": "Drops back to its resting position while held; colours stay as on hover."
+          "looks": "Drops back to its resting position while held; colours stay as on hover. Fab shrinks to 94%."
         },
         "focus": {
           "when": ":focus-visible",
-          "looks": "2px --ayy-color-ring outline, 2px offset. Ring also spins its border."
+          "looks": "2px --ayy-color-ring outline, 2px offset (3px on a Fab). Ring also spins its border."
         },
         "disabled": {
           "when": ":disabled on <button>, aria-disabled=\"true\" on <a>",
@@ -2533,7 +2671,7 @@
         },
         "loading": {
           "when": "aria-busy=\"true\" with an aria-hidden .ayy-spinner as the first child (React: loading)",
-          "looks": "Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or \"Saving…\") so the width barely moves."
+          "looks": "Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or \"Saving…\") so the width barely moves. Don't spin a Fab: run the action and show progress where its result appears (a new row's Skeleton, a toast)."
         }
       },
       "sizes": {
@@ -2549,12 +2687,12 @@
           "icon-lg": "Square at the lg control height (36/44/48px) with a 20px icon.",
           "icon-xl": "Square at the xl height (44/52/56px) with a 24px icon."
         },
-        "density": "Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl).",
-        "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action."
+        "density": "Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl). A Fab's diameter follows data-density through the lg control height: sm 40/48/52px, md 52/60/64px, lg 60/68/72px (compact/comfortable/touch); a data-size scope doesn't resize it, set size on it.",
+        "width": "Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action. A Fab is a circle (extended: a pill hugging its icon and label) and takes no room: it floats over the content (inline puts it back in the flow)."
       },
-      "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
+      "js": "buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string; fabClass({ variant?, size?, extended?, inline?, className? }) → string, with fabVariants and fabSizes. Loading in HTML: aria-busy=\"true\" plus <span class=\"ayy-spinner\" aria-hidden=\"true\"></span> as the first child.",
       "react": {
-        "import": "import { Button, SplitButton } from \"@danitesler/ayywi/react\";",
+        "import": "import { Button, Fab, SplitButton } from \"@danitesler/ayywi/react\";",
         "components": {
           "Button": {
             "renders": "<button>",
@@ -2576,6 +2714,17 @@
               "block": "boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.",
               "...rest": "All native <div> attributes."
             }
+          },
+          "Fab": {
+            "renders": "<button type=\"button\" class=\"ayy-fab\">, or <a> with href",
+            "props": {
+              "variant": "\"primary\" | \"secondary\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
+              "extended": "boolean — icon and a label; otherwise give it aria-label",
+              "inline": "boolean — not floating",
+              "href": "string — renders an <a>",
+              "type": "\"button\" | \"submit\" | \"reset\" — default \"button\""
+            }
           }
         }
       },
@@ -2584,7 +2733,10 @@
         "In a SplitButton, give the trailing menu trigger an explicit aria-label naming what it opens (\"More deploy options\").",
         "Use disabled on <button>; on <a> use aria-disabled=\"true\" (the class handles both).",
         "Visible focus ring on :focus-visible is built in — never remove it.",
-        "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away."
+        "While it works, set aria-busy=\"true\" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.",
+        "An icon-only Fab needs an aria-label that says the action (\"New task\"), not the icon (\"Plus\").",
+        "Put a Fab after the main content in the DOM so it comes after what it acts on in the tab order, not before the page.",
+        "A Fab must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the Fab's height) so the last row can scroll clear of it."
       ],
       "do": [
         "Use a button for any action the user can take: submit, open, save, delete.",
@@ -2593,13 +2745,18 @@
         "Always pair icon-only buttons (size=\"icon*\", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.",
         "Keep one primary button per view or section; make everything else secondary, outline or ghost.",
         "On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.",
-        "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg)."
+        "Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).",
+        "Use one Fab for a phone screen's main, constructive action: create, compose, scan, add. Make it extended when the action isn't obvious from an icon, or on the first screens of an app.",
+        "Hide the Fab on screens where the main action is already on screen (a form's Save) or while a sheet is open."
       ],
       "dont": [
         "Don't use a button for navigation inside running text — use a plain link.",
         "Don't use a button to toggle a setting on/off — use Switch.",
         "Don't restyle colours per button — add a variant to the design system instead.",
-        "Don't use destructive for non-destructive emphasis."
+        "Don't use destructive for non-destructive emphasis.",
+        "Don't use more than one main Fab; stack a small secondary one at most.",
+        "Don't put destructive or minor actions (Delete, Share, Settings) in a Fab — use a Top bar action or a Menu.",
+        "Don't use a Fab on desktop layouts where a toolbar button fits better."
       ],
       "examples": [
         {
@@ -2649,6 +2806,18 @@
           "title": "Ring call to action",
           "html": "<!-- The site-wide call to action beside a quieter outline link, as in a hero. -->\n<a href=\"#connect\" class=\"ayy-button ayy-button--ring ayy-button--lg\">Let's connect</a>\n<a href=\"#work\" class=\"ayy-button ayy-button--outline ayy-button--lg\">See the work</a>",
           "react": "import { buttonClass } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <a href=\"#connect\" className={buttonClass({ variant: \"ring\", size: \"lg\" })}>\n        Let's connect\n      </a>\n      <a href=\"#work\" className={buttonClass({ variant: \"outline\", size: \"lg\" })}>\n        See the work\n      </a>\n    </>\n  );\n}"
+        },
+        {
+          "id": "fab",
+          "title": "Floating action button: icon, extended, secondary, small, large",
+          "html": "<!-- ayy-fab--inline places them in the row for this page; in an app they float at the bottom corner. -->\n<div class=\"ayy-cluster\" style=\"align-items: center; --ayy-gap: var(--ayy-space-6)\">\n  <button type=\"button\" class=\"ayy-fab ayy-fab--inline\" aria-label=\"New task\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--extended ayy-fab--inline\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>Compose</button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--inline\" aria-label=\"Record a voice note\"><svg class=\"ayy-icon\" data-ayy-icon=\"mic\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7 6.5C7 4.01472 9.01472 2 11.5 2C13.9853 2 16 4.01472 16 6.5V11.5C16 13.9853 13.9853 16 11.5 16C9.01472 16 7 13.9853 7 11.5V6.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11.5 19H11.0828C7.57267 19 4.57706 16.4623 4 13M11.5 19H11.9172C15.4273 19 18.4229 16.4623 19 13M11.5 19V22\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--sm ayy-fab--inline\" aria-label=\"Quick note\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--lg ayy-fab--inline\" aria-label=\"New task, large\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n</div>",
+          "react": "import { Add01Icon, Mic01Icon, PencilEdit01Icon } from \"@hugeicons/core-free-icons\";\nimport type { CSSProperties } from \"react\";\nimport { Fab, Icon } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // inline places them in the row for this page; in an app they float at the bottom corner.\n  return (\n    <div className=\"ayy-cluster\" style={{ alignItems: \"center\", \"--ayy-gap\": \"var(--ayy-space-6)\" } as CSSProperties}>\n      <Fab inline aria-label=\"New task\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n      <Fab inline extended>\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n        Compose\n      </Fab>\n      <Fab inline variant=\"secondary\" aria-label=\"Record a voice note\">\n        <Icon icon={Mic01Icon} name=\"mic\" />\n      </Fab>\n      <Fab inline size=\"sm\" variant=\"secondary\" aria-label=\"Quick note\">\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n      </Fab>\n      <Fab inline size=\"lg\" aria-label=\"New task, large\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "fab-app",
+          "title": "Floating action button in an app shell, above the bottom nav",
+          "html": "<!-- The FAB is a direct child of the shell, after the main area: its corner on wide screens, above the bottom nav below 48rem.\n     The outer box only stands in for the browser window. -->\n<div style=\"inline-size: 100%; block-size: 22rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)\">\n  <ayy-app-shell>\n    <div class=\"ayy-app-shell\" style=\"block-size: 100%\">\n      <aside class=\"ayy-app-shell__sidebar\">\n        <a class=\"ayy-app-shell__brand\" href=\"#inbox\">Tasks</a>\n        <nav class=\"ayy-app-shell__nav\" aria-label=\"Main\">\n          <a class=\"ayy-app-shell__link\" aria-current=\"page\" href=\"#inbox\"><svg class=\"ayy-icon\" data-ayy-icon=\"inbox\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M21.5 13.5H16.5743C15.7322 13.5 15.0706 14.2036 14.6995 14.9472C14.2963 15.7551 13.4889 16.5 12 16.5C10.5111 16.5 9.70373 15.7551 9.30054 14.9472C8.92942 14.2036 8.26777 13.5 7.42566 13.5H2.5\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Inbox</a>\n          <a class=\"ayy-app-shell__link\" href=\"#today\"><svg class=\"ayy-icon\" data-ayy-icon=\"calendar\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 2V6M8 2V6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 10H21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Today</a>\n        </nav>\n      </aside>\n      <main class=\"ayy-app-shell__main\">\n        <h2 class=\"ayy-h3\">Inbox</h2>\n        <p class=\"ayy-muted\">Everything that isn&#x27;t in a list yet.</p>\n      </main>\n      <button type=\"button\" class=\"ayy-fab\" aria-label=\"New task\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <nav class=\"ayy-bottom-nav\" aria-label=\"Main\">\n        <a class=\"ayy-bottom-nav__link\" aria-current=\"page\" href=\"#inbox\"><svg class=\"ayy-icon\" data-ayy-icon=\"inbox\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M21.5 13.5H16.5743C15.7322 13.5 15.0706 14.2036 14.6995 14.9472C14.2963 15.7551 13.4889 16.5 12 16.5C10.5111 16.5 9.70373 15.7551 9.30054 14.9472C8.92942 14.2036 8.26777 13.5 7.42566 13.5H2.5\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Inbox</span></a>\n        <a class=\"ayy-bottom-nav__link\" href=\"#today\"><svg class=\"ayy-icon\" data-ayy-icon=\"calendar\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 2V6M8 2V6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 10H21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Today</span></a>\n        <a class=\"ayy-bottom-nav__link\" href=\"#search\"><svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Search</span></a>\n        <a class=\"ayy-bottom-nav__link\" href=\"#settings\"><svg class=\"ayy-icon\" data-ayy-icon=\"cog\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Settings</span></a>\n      </nav>\n    </div>\n  </ayy-app-shell>\n</div>",
+          "react": "import { Add01Icon, Calendar03Icon, InboxIcon, Search01Icon, Settings02Icon } from \"@hugeicons/core-free-icons\";\nimport {\n  AppShell,\n  AppShellBrand,\n  AppShellLink,\n  AppShellMain,\n  AppShellNav,\n  AppShellSidebar,\n  BottomNav,\n  BottomNavLink,\n  Fab,\n  Icon,\n} from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // A direct child of the shell, after the main area: its corner on wide screens, above the bottom nav on phones.\n  return (\n    <div style={{ inlineSize: \"100%\", blockSize: \"22rem\", overflow: \"hidden\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <AppShell style={{ blockSize: \"100%\" }}>\n        <AppShellSidebar>\n          <AppShellBrand href=\"#inbox\">Tasks</AppShellBrand>\n          <AppShellNav>\n            <AppShellLink href=\"#inbox\" current>\n              <Icon icon={InboxIcon} name=\"inbox\" />\n              Inbox\n            </AppShellLink>\n            <AppShellLink href=\"#today\">\n              <Icon icon={Calendar03Icon} name=\"calendar\" />\n              Today\n            </AppShellLink>\n          </AppShellNav>\n        </AppShellSidebar>\n        <AppShellMain>\n          <h2 className=\"ayy-h3\">Inbox</h2>\n          <p className=\"ayy-muted\">Everything that isn't in a list yet.</p>\n        </AppShellMain>\n        <Fab aria-label=\"New task\">\n          <Icon icon={Add01Icon} name=\"add\" />\n        </Fab>\n        <BottomNav>\n          <BottomNavLink href=\"#inbox\" icon={<Icon icon={InboxIcon} name=\"inbox\" />} current>\n            Inbox\n          </BottomNavLink>\n          <BottomNavLink href=\"#today\" icon={<Icon icon={Calendar03Icon} name=\"calendar\" />}>\n            Today\n          </BottomNavLink>\n          <BottomNavLink href=\"#search\" icon={<Icon icon={Search01Icon} name=\"search\" />}>\n            Search\n          </BottomNavLink>\n          <BottomNavLink href=\"#settings\" icon={<Icon icon={Settings02Icon} name=\"cog\" />}>\n            Settings\n          </BottomNavLink>\n        </BottomNav>\n      </AppShell>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -3670,149 +3839,6 @@
       }
     },
     {
-      "name": "Floating action button",
-      "slug": "fab",
-      "category": "Actions",
-      "family": "button",
-      "description": "A round floating button for the main action of a phone screen, like composing or adding something. It stays in the corner over the content and can show a label when extended.",
-      "aka": [
-        "fab",
-        "floating-action",
-        "floating-button",
-        "float-button"
-      ],
-      "classes": {
-        "ayy-fab": "A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
-        "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
-        "ayy-fab--secondary": "A raised surface with a border instead of the primary fill: less emphasis.",
-        "ayy-fab--lg": "Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.",
-        "ayy-fab--sm": "Smaller (the control-lg size), for a second action stacked above the main one.",
-        "ayy-fab--inline": "Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page)."
-      },
-      "variants": {
-        "variant": {
-          "values": [
-            "primary",
-            "secondary"
-          ],
-          "default": "primary"
-        },
-        "size": {
-          "values": [
-            "sm",
-            "md",
-            "lg"
-          ],
-          "default": "md"
-        },
-        "extended": {
-          "values": [
-            false,
-            true
-          ],
-          "default": false
-        },
-        "inline": {
-          "values": [
-            false,
-            true
-          ],
-          "default": false
-        }
-      },
-      "states": {
-        "default": {
-          "looks": "A round primary-colour button with a 20px icon and the lift shadow, fixed to the bottom inline-end corner clear of the home indicator."
-        },
-        "hover": {
-          "when": ":hover (devices that hover)",
-          "looks": "The fill mixes 12% toward the label colour."
-        },
-        "pressed": {
-          "when": ":active",
-          "looks": "Shrinks to 94%."
-        },
-        "focus": {
-          "when": ":focus-visible",
-          "looks": "2px ring, 3px offset."
-        },
-        "disabled": {
-          "when": ":disabled or [aria-disabled=\"true\"]",
-          "looks": "--ayy-opacity-disabled, not-allowed cursor."
-        },
-        "selected": {
-          "none": "A FAB runs an action; it has no on state. For a tool that stays on, use a Toolbar button with aria-pressed."
-        },
-        "error": {
-          "none": "No error look. If the action fails, say so in a toast and leave the FAB as it was."
-        },
-        "loading": {
-          "none": "Don't spin a FAB. Run the action and show progress where its result appears (a new row's Skeleton, a toast)."
-        }
-      },
-      "sizes": {
-        "scale": {
-          "sm": "The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.",
-          "md": "The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.",
-          "lg": "The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon."
-        },
-        "density": "Its diameter follows data-density through the lg control height (the sizes above). A data-size scope doesn't resize it: set size on it.",
-        "width": "Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow)."
-      },
-      "js": "fabClass({ variant?, size?, extended?, inline?, className? }) → string; fabVariants, fabSizes.",
-      "react": {
-        "import": "import { Fab } from \"@danitesler/ayywi/react\";",
-        "components": {
-          "Fab": {
-            "renders": "<button type=\"button\" class=\"ayy-fab\">, or <a> with href",
-            "props": {
-              "variant": "\"primary\" | \"secondary\"",
-              "size": "\"sm\" | \"md\" | \"lg\"",
-              "extended": "boolean — icon and a label; otherwise give it aria-label",
-              "inline": "boolean — not floating",
-              "href": "string — renders an <a>",
-              "type": "\"button\" | \"submit\" | \"reset\" — default \"button\""
-            }
-          }
-        }
-      },
-      "a11y": [
-        "An icon-only FAB needs an aria-label that says the action (\"New task\"), not the icon (\"Plus\").",
-        "Put it after the main content in the DOM so it comes after what it acts on in the tab order, not before the page.",
-        "It must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the FAB's height) so the last row can scroll clear of it."
-      ],
-      "do": [
-        "Use one FAB for the screen's main, constructive action: create, compose, scan, add.",
-        "Use extended when the action isn't obvious from an icon, or on the first screens of an app.",
-        "Hide it on screens where the main action is already on screen (a form's Save) or while a sheet is open."
-      ],
-      "dont": [
-        "Don't use more than one main FAB; stack a small secondary one at most.",
-        "Don't put destructive or minor actions (Delete, Share, Settings) in a FAB — use a Top bar action or a Menu.",
-        "Don't use it on desktop layouts where a toolbar button fits better."
-      ],
-      "examples": [
-        {
-          "id": "variants",
-          "title": "Icon, extended, secondary, small, large",
-          "html": "<!-- ayy-fab--inline places them in the row for this page; in an app they float at the bottom corner. -->\n<div class=\"ayy-cluster\" style=\"align-items: center; --ayy-gap: var(--ayy-space-6)\">\n  <button type=\"button\" class=\"ayy-fab ayy-fab--inline\" aria-label=\"New task\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--extended ayy-fab--inline\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>Compose</button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--inline\" aria-label=\"Record a voice note\"><svg class=\"ayy-icon\" data-ayy-icon=\"mic\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7 6.5C7 4.01472 9.01472 2 11.5 2C13.9853 2 16 4.01472 16 6.5V11.5C16 13.9853 13.9853 16 11.5 16C9.01472 16 7 13.9853 7 11.5V6.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11.5 19H11.0828C7.57267 19 4.57706 16.4623 4 13M11.5 19H11.9172C15.4273 19 18.4229 16.4623 19 13M11.5 19V22\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--sm ayy-fab--inline\" aria-label=\"Quick note\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--lg ayy-fab--inline\" aria-label=\"New task, large\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n</div>",
-          "react": "import { Add01Icon, Mic01Icon, PencilEdit01Icon } from \"@hugeicons/core-free-icons\";\nimport type { CSSProperties } from \"react\";\nimport { Fab, Icon } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // inline places them in the row for this page; in an app they float at the bottom corner.\n  return (\n    <div className=\"ayy-cluster\" style={{ alignItems: \"center\", \"--ayy-gap\": \"var(--ayy-space-6)\" } as CSSProperties}>\n      <Fab inline aria-label=\"New task\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n      <Fab inline extended>\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n        Compose\n      </Fab>\n      <Fab inline variant=\"secondary\" aria-label=\"Record a voice note\">\n        <Icon icon={Mic01Icon} name=\"mic\" />\n      </Fab>\n      <Fab inline size=\"sm\" variant=\"secondary\" aria-label=\"Quick note\">\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n      </Fab>\n      <Fab inline size=\"lg\" aria-label=\"New task, large\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n    </div>\n  );\n}"
-        },
-        {
-          "id": "app",
-          "title": "In an app shell, above the bottom nav",
-          "html": "<!-- The FAB is a direct child of the shell, after the main area: its corner on wide screens, above the bottom nav below 48rem.\n     The outer box only stands in for the browser window. -->\n<div style=\"inline-size: 100%; block-size: 22rem; overflow: hidden; border: 1px solid var(--ayy-color-line); border-radius: var(--ayy-radius-xl)\">\n  <ayy-app-shell>\n    <div class=\"ayy-app-shell\" style=\"block-size: 100%\">\n      <aside class=\"ayy-app-shell__sidebar\">\n        <a class=\"ayy-app-shell__brand\" href=\"#inbox\">Tasks</a>\n        <nav class=\"ayy-app-shell__nav\" aria-label=\"Main\">\n          <a class=\"ayy-app-shell__link\" aria-current=\"page\" href=\"#inbox\"><svg class=\"ayy-icon\" data-ayy-icon=\"inbox\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M21.5 13.5H16.5743C15.7322 13.5 15.0706 14.2036 14.6995 14.9472C14.2963 15.7551 13.4889 16.5 12 16.5C10.5111 16.5 9.70373 15.7551 9.30054 14.9472C8.92942 14.2036 8.26777 13.5 7.42566 13.5H2.5\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Inbox</a>\n          <a class=\"ayy-app-shell__link\" href=\"#today\"><svg class=\"ayy-icon\" data-ayy-icon=\"calendar\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 2V6M8 2V6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 10H21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Today</a>\n        </nav>\n      </aside>\n      <main class=\"ayy-app-shell__main\">\n        <h2 class=\"ayy-h3\">Inbox</h2>\n        <p class=\"ayy-muted\">Everything that isn&#x27;t in a list yet.</p>\n      </main>\n      <button type=\"button\" class=\"ayy-fab\" aria-label=\"New task\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <nav class=\"ayy-bottom-nav\" aria-label=\"Main\">\n        <a class=\"ayy-bottom-nav__link\" aria-current=\"page\" href=\"#inbox\"><svg class=\"ayy-icon\" data-ayy-icon=\"inbox\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M21.5 13.5H16.5743C15.7322 13.5 15.0706 14.2036 14.6995 14.9472C14.2963 15.7551 13.4889 16.5 12 16.5C10.5111 16.5 9.70373 15.7551 9.30054 14.9472C8.92942 14.2036 8.26777 13.5 7.42566 13.5H2.5\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Inbox</span></a>\n        <a class=\"ayy-bottom-nav__link\" href=\"#today\"><svg class=\"ayy-icon\" data-ayy-icon=\"calendar\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 2V6M8 2V6\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 10H21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Today</span></a>\n        <a class=\"ayy-bottom-nav__link\" href=\"#search\"><svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Search</span></a>\n        <a class=\"ayy-bottom-nav__link\" href=\"#settings\"><svg class=\"ayy-icon\" data-ayy-icon=\"cog\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg><span class=\"ayy-bottom-nav__label\">Settings</span></a>\n      </nav>\n    </div>\n  </ayy-app-shell>\n</div>",
-          "react": "import { Add01Icon, Calendar03Icon, InboxIcon, Search01Icon, Settings02Icon } from \"@hugeicons/core-free-icons\";\nimport {\n  AppShell,\n  AppShellBrand,\n  AppShellLink,\n  AppShellMain,\n  AppShellNav,\n  AppShellSidebar,\n  BottomNav,\n  BottomNavLink,\n  Fab,\n  Icon,\n} from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // A direct child of the shell, after the main area: its corner on wide screens, above the bottom nav on phones.\n  return (\n    <div style={{ inlineSize: \"100%\", blockSize: \"22rem\", overflow: \"hidden\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <AppShell style={{ blockSize: \"100%\" }}>\n        <AppShellSidebar>\n          <AppShellBrand href=\"#inbox\">Tasks</AppShellBrand>\n          <AppShellNav>\n            <AppShellLink href=\"#inbox\" current>\n              <Icon icon={InboxIcon} name=\"inbox\" />\n              Inbox\n            </AppShellLink>\n            <AppShellLink href=\"#today\">\n              <Icon icon={Calendar03Icon} name=\"calendar\" />\n              Today\n            </AppShellLink>\n          </AppShellNav>\n        </AppShellSidebar>\n        <AppShellMain>\n          <h2 className=\"ayy-h3\">Inbox</h2>\n          <p className=\"ayy-muted\">Everything that isn't in a list yet.</p>\n        </AppShellMain>\n        <Fab aria-label=\"New task\">\n          <Icon icon={Add01Icon} name=\"add\" />\n        </Fab>\n        <BottomNav>\n          <BottomNavLink href=\"#inbox\" icon={<Icon icon={InboxIcon} name=\"inbox\" />} current>\n            Inbox\n          </BottomNavLink>\n          <BottomNavLink href=\"#today\" icon={<Icon icon={Calendar03Icon} name=\"calendar\" />}>\n            Today\n          </BottomNavLink>\n          <BottomNavLink href=\"#search\" icon={<Icon icon={Search01Icon} name=\"search\" />}>\n            Search\n          </BottomNavLink>\n          <BottomNavLink href=\"#settings\" icon={<Icon icon={Settings02Icon} name=\"cog\" />}>\n            Settings\n          </BottomNavLink>\n        </BottomNav>\n      </AppShell>\n    </div>\n  );\n}"
-        }
-      ],
-      "files": {
-        "css": "src/components/fab/fab.css",
-        "js": "src/components/fab/fab.ts",
-        "react": "src/components/fab/fab.react.tsx",
-        "meta": "src/components/fab/fab.meta.json"
-      }
-    },
-    {
       "name": "Navbar",
       "slug": "navbar",
       "category": "Navigation",
@@ -4287,6 +4313,7 @@
         },
         "children": "A <div class=\"ayy-app-shell\">. Wires the phone drawer when the shell has a __toggle in its __bar or its .ayy-bottom-nav: the toggle opens and closes the sidebar; Esc, the scrim, a link in the drawer or widening past 48rem close it. On wide screens, wires sidebar collapsing and optional hover-preview. On a settings shell, Esc follows the __back. A __row with a __more button is an ordinary button after the link: wire its menu with <ayy-menu>. A sidebar toggle's data-ayy-label-expanded / data-ayy-label-collapsed, also on its .ayy-tooltip__content, keep its label and tooltip text on the action it now performs."
       },
+      "family": "app-layout",
       "files": {
         "css": "src/components/app-shell/app-shell.css",
         "js": "src/components/app-shell/app-shell.ts",
@@ -4299,7 +4326,6 @@
       "name": "Bottom nav",
       "slug": "bottom-nav",
       "category": "Navigation",
-      "family": "app-shell",
       "description": "The tab bar of a phone app. It keeps the main destinations at the bottom of the screen where a thumb can reach them, each with an icon and a short label. Inside an App shell it replaces the sidebar on phones.",
       "aka": [
         "bottom-nav",
@@ -4437,6 +4463,7 @@
           "react": "import {\n  DashboardSquare01Icon,\n  Folder01Icon,\n  Notification03Icon,\n  Search01Icon,\n  Task01Icon,\n  UserIcon,\n} from \"@hugeicons/core-free-icons\";\nimport { useEffect, useState, type CSSProperties, type ReactNode } from \"react\";\nimport {\n  BottomNav,\n  BottomNavLink,\n  Field,\n  Icon,\n  Label,\n  Select,\n  Switch,\n  type BottomNavSize,\n} from \"@danitesler/ayywi/react\";\n\nexport default function Example({\n  setControls,\n}: {\n  setControls?: (node: ReactNode) => void;\n} = {}) {\n  const [size, setSize] = useState<BottomNavSize>(\"lg\");\n  const [compact, setCompact] = useState(false);\n  const [iconOnly, setIconOnly] = useState(false);\n  const [moreItems, setMoreItems] = useState(false);\n\n  useEffect(() => {\n    if (setControls) {\n      setControls(\n        <div className=\"ayy-stack\">\n          <div className=\"ayy-stack\">\n            <span className=\"ayy-muted ayy-mono ayy-small\">Options</span>\n            <div className=\"ayy-spread\">\n              <Label htmlFor=\"bn-size\">Size</Label>\n              <div style={{ inlineSize: \"7.5rem\" }}>\n                <Select\n                  id=\"bn-size\"\n                  size=\"sm\"\n                  value={size}\n                  onChange={(e) => setSize(e.target.value as BottomNavSize)}\n                >\n                  <option value=\"lg\">Big (lg)</option>\n                  <option value=\"md\">Medium (md)</option>\n                  <option value=\"sm\">Small (sm)</option>\n                </Select>\n              </div>\n            </div>\n            <div className=\"ayy-spread\">\n              <Label htmlFor=\"bn-compact\">Compact</Label>\n              <Switch id=\"bn-compact\" checked={compact} onCheckedChange={setCompact} />\n            </div>\n            <div className=\"ayy-spread\">\n              <Label htmlFor=\"bn-icon-only\">Icon only</Label>\n              <Switch id=\"bn-icon-only\" checked={iconOnly} onCheckedChange={setIconOnly} />\n            </div>\n            <div className=\"ayy-spread\">\n              <Label htmlFor=\"bn-more\">More items (6)</Label>\n              <Switch id=\"bn-more\" checked={moreItems} onCheckedChange={setMoreItems} />\n            </div>\n          </div>\n        </div>\n      );\n      return () => setControls(null);\n    }\n  }, [setControls, size, compact, iconOnly, moreItems]);\n\n  const phoneContainer = (\n    <div style={{ display: \"flex\", flexDirection: \"column\", inlineSize: \"min(100%, 24rem)\", blockSize: \"22rem\", overflow: \"auto\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\" }}>\n      <div className=\"ayy-stack\" style={{ flex: 1, padding: \"var(--ayy-space-4)\" }}>\n        <h2 className=\"ayy-h4\">Home</h2>\n        <p className=\"ayy-muted\">Three deploys went out this morning. Nothing needs you.</p>\n      </div>\n      <BottomNav size={size} compact={compact} iconOnly={iconOnly}>\n        <BottomNavLink href=\"#home\" icon={<Icon icon={DashboardSquare01Icon} name=\"layout-dashboard\" />} current>\n          Home\n        </BottomNavLink>\n        {moreItems ? (\n          <BottomNavLink href=\"#search\" icon={<Icon icon={Search01Icon} name=\"search\" />}>\n            Search\n          </BottomNavLink>\n        ) : null}\n        <BottomNavLink href=\"#projects\" icon={<Icon icon={Folder01Icon} name=\"folder\" />}>\n          Projects\n        </BottomNavLink>\n        {moreItems ? (\n          <BottomNavLink href=\"#tasks\" icon={<Icon icon={Task01Icon} name=\"clipboard-list\" />}>\n            Tasks\n          </BottomNavLink>\n        ) : null}\n        <BottomNavLink href=\"#inbox\" icon={<Icon icon={Notification03Icon} name=\"bell-2\" />}>\n          Inbox\n        </BottomNavLink>\n        <BottomNavLink href=\"#account\" icon={<Icon icon={UserIcon} name=\"user\" />}>\n          Account\n        </BottomNavLink>\n      </BottomNav>\n    </div>\n  );\n\n  if (setControls) {\n    return phoneContainer;\n  }\n\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"100%\", alignItems: \"center\", \"--ayy-gap\": \"var(--ayy-space-4)\" } as CSSProperties}>\n      <div className=\"ayy-grid\" style={{ \"--ayy-min\": \"10rem\", inlineSize: \"min(100%, 24rem)\" } as CSSProperties}>\n        <Field inline>\n          <Label htmlFor=\"bn-size-inline\">Size</Label>\n          <Select id=\"bn-size-inline\" size=\"sm\" value={size} onChange={(e) => setSize(e.target.value as BottomNavSize)}>\n            <option value=\"lg\">Big</option>\n            <option value=\"md\">Medium</option>\n            <option value=\"sm\">Small</option>\n          </Select>\n        </Field>\n        <Field inline>\n          <Switch id=\"bn-compact-inline\" checked={compact} onCheckedChange={setCompact} />\n          <Label htmlFor=\"bn-compact-inline\">Compact</Label>\n        </Field>\n        <Field inline>\n          <Switch id=\"bn-icon-inline\" checked={iconOnly} onCheckedChange={setIconOnly} />\n          <Label htmlFor=\"bn-icon-inline\">Icon only</Label>\n        </Field>\n        <Field inline>\n          <Switch id=\"bn-more-inline\" checked={moreItems} onCheckedChange={setMoreItems} />\n          <Label htmlFor=\"bn-more-inline\">6 items</Label>\n        </Field>\n      </div>\n      {phoneContainer}\n    </div>\n  );\n}"
         }
       ],
+      "family": "app-layout",
       "files": {
         "css": "src/components/bottom-nav/bottom-nav.css",
         "js": "src/components/bottom-nav/bottom-nav.ts",
@@ -4448,7 +4475,6 @@
       "name": "Top bar",
       "slug": "top-bar",
       "category": "Navigation",
-      "family": "app-shell",
       "description": "The header of a phone screen, with a back button, the screen title and a few actions. It stays at the top, and can hold a search bar or a segmented control beneath it.",
       "aka": [
         "top-bar",
@@ -4574,6 +4600,7 @@
           "react": "import { Button, TopBar } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // Centred title, as on iOS: back on one side, the screen's action on the other.\n  return (\n    <div style={{ inlineSize: \"min(100%, 24rem)\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\", overflow: \"hidden\" }}>\n      <TopBar\n        center\n        title=\"Edit task\"\n        backHref=\"#task\"\n        actions={\n          <Button variant=\"ghost\" size=\"sm\">\n            Save\n          </Button>\n        }\n      />\n      <p className=\"ayy-muted\" style={{ padding: \"var(--ayy-space-4)\", margin: 0 }}>\n        The form goes here.\n      </p>\n    </div>\n  );\n}"
         }
       ],
+      "family": "app-layout",
       "files": {
         "css": "src/components/top-bar/top-bar.css",
         "js": "src/components/top-bar/top-bar.ts",
@@ -5623,6 +5650,7 @@
           "react": "import { Field, FieldError, Input, Label } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 20rem)\" }}>\n      <Label htmlFor=\"api-key\">API key</Label>\n      <Input id=\"api-key\" defaultValue=\"sk-123\" aria-invalid=\"true\" aria-describedby=\"api-key-error\" />\n      <FieldError id=\"api-key-error\">Key looks too short.</FieldError>\n    </Field>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/input/input.css",
         "js": "src/components/input/input.ts",
@@ -5634,7 +5662,6 @@
       "name": "PIN input",
       "slug": "pin-input",
       "category": "Forms",
-      "family": "input",
       "description": "One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once.",
       "aka": [
         "pin-input",
@@ -5777,6 +5804,7 @@
           "react": "import { useState } from \"react\";\nimport { Field, FieldError, FieldHint, Label, PinInput, toast } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [code, setCode] = useState(\"\");\n  const invalid = code.length === 6 && code !== \"482910\";\n\n  return (\n    <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-5)\", maxInlineSize: \"24rem\" } as React.CSSProperties}>\n      <Field>\n        <Label id=\"otp-label\" htmlFor=\"otp-code\">\n          Authenticator code\n        </Label>\n        <PinInput\n          id=\"otp-code\"\n          aria-labelledby=\"otp-label\"\n          groups={[3, 3]}\n          value={code}\n          invalid={invalid}\n          onValueChange={setCode}\n          onComplete={(next) => {\n            if (next === \"482910\") toast.success(\"Code verified\");\n          }}\n        />\n        {invalid ? (\n          <FieldError>That code didn’t match. Try 482910.</FieldError>\n        ) : (\n          <FieldHint>Enter or paste the 6-digit code (try 482910).</FieldHint>\n        )}\n      </Field>\n\n      <Field>\n        <Label id=\"pin-mask-label\" htmlFor=\"card-pin\">\n          Card PIN\n        </Label>\n        <PinInput id=\"card-pin\" aria-labelledby=\"pin-mask-label\" length={4} mask defaultValue=\"1984\" />\n      </Field>\n\n      <Field>\n        <Label id=\"backup-label\" htmlFor=\"invite-code\">\n          Invite code (alphanumeric)\n        </Label>\n        <PinInput id=\"invite-code\" aria-labelledby=\"backup-label\" groups={[4, 4]} type=\"alphanumeric\" size=\"sm\" placeholder=\"·\" />\n      </Field>\n    </div>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/pin-input/pin-input.css",
         "js": "src/components/pin-input/pin-input.ts",
@@ -5789,7 +5817,6 @@
       "name": "Search bar",
       "slug": "search-bar",
       "category": "Forms",
-      "family": "input",
       "description": "A rounded search field with a magnifier and a clear button, often used at the top of a phone list. It's a real search form, so phones show a search key on the keyboard.",
       "aka": [
         "search-bar",
@@ -5912,6 +5939,7 @@
           "react": "import { SearchBar } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // While searching on a phone: Cancel ends the search and goes back to the list.\n  return (\n    <div style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <SearchBar size=\"lg\" placeholder=\"Search notes\" label=\"Search notes\" defaultValue=\"trip\" onCancel={() => {}} />\n    </div>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/search-bar/search-bar.css",
         "js": "src/components/search-bar/search-bar.ts",
@@ -5923,7 +5951,6 @@
       "name": "Filter bar",
       "slug": "filter-bar",
       "category": "Forms",
-      "family": "table",
       "description": "A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all.",
       "aka": [
         "filter-bar",
@@ -6111,6 +6138,7 @@
           "react": "import {\n  CheckmarkCircle01Icon,\n  FilterHorizontalIcon,\n  Flag01Icon,\n  Search01Icon,\n  Tag01Icon,\n} from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport {\n  Badge,\n  Card,\n  CardContent,\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSelectedItem,\n  DropdownMenuSeparator,\n  DropdownMenuSub,\n  DropdownMenuSubContent,\n  DropdownMenuSubTrigger,\n  DropdownMenuTrigger,\n  EmptyState,\n  EmptyStateDescription,\n  EmptyStateTitle,\n  FilterBar,\n  FilterBarClear,\n  FilterBarGroup,\n  FilterBarMain,\n  FilterBarSummary,\n  FilterBarTrigger,\n  Icon,\n  Input,\n  InputGroup,\n} from \"@danitesler/ayywi/react\";\n\ninterface Task {\n  id: string;\n  title: string;\n  priority: \"Urgent\" | \"High\" | \"Normal\";\n  category: \"Design\" | \"Engineering\" | \"Marketing\";\n  status: \"In progress\" | \"Backlog\" | \"Completed\";\n  assignee: string;\n}\n\nconst TASKS: Task[] = [\n  { id: \"1\", title: \"Audit contrast across dark themes\", priority: \"Urgent\", category: \"Design\", status: \"In progress\", assignee: \"Dani\" },\n  { id: \"2\", title: \"Build accessible filter bar menus\", priority: \"High\", category: \"Engineering\", status: \"In progress\", assignee: \"Alex\" },\n  { id: \"3\", title: \"Document keyboard shortcuts on Mac vs Windows\", priority: \"Normal\", category: \"Design\", status: \"Backlog\", assignee: \"Dani\" },\n  { id: \"4\", title: \"Optimize CSS bundle gzip size\", priority: \"High\", category: \"Engineering\", status: \"Completed\", assignee: \"Sarah\" },\n  { id: \"5\", title: \"Prepare release announcement copy\", priority: \"Normal\", category: \"Marketing\", status: \"Backlog\", assignee: \"Elena\" },\n  { id: \"6\", title: \"Fix iOS tap highlight on segmented items\", priority: \"Urgent\", category: \"Engineering\", status: \"In progress\", assignee: \"Alex\" },\n];\n\nconst PRIORITIES: Array<Task[\"priority\"]> = [\"Urgent\", \"High\", \"Normal\"];\nconst CATEGORIES: Array<Task[\"category\"]> = [\"Design\", \"Engineering\", \"Marketing\"];\nconst STATUSES: Array<Task[\"status\"]> = [\"In progress\", \"Backlog\", \"Completed\"];\n\nconst toggle = (list: string[], value: string) =>\n  list.includes(value) ? list.filter((item) => item !== value) : [...list, value];\n\nexport default function Example() {\n  const [search, setSearch] = useState(\"\");\n  const [priorities, setPriorities] = useState<string[]>([]);\n  const [categories, setCategories] = useState<string[]>([]);\n  const [statuses, setStatuses] = useState<string[]>([]);\n\n  const totalActive = priorities.length + categories.length + statuses.length;\n\n  const resetFilters = () => {\n    setPriorities([]);\n    setCategories([]);\n    setStatuses([]);\n  };\n\n  const filtered = TASKS.filter((t) => {\n    const matchesSearch = !search.trim() || t.title.toLowerCase().includes(search.toLowerCase());\n    const matchesPriority = priorities.length === 0 || priorities.includes(t.priority);\n    const matchesCategory = categories.length === 0 || categories.includes(t.category);\n    const matchesStatus = statuses.length === 0 || statuses.includes(t.status);\n    return matchesSearch && matchesPriority && matchesCategory && matchesStatus;\n  });\n\n  const priorityVariant = (p: Task[\"priority\"]) => {\n    if (p === \"Urgent\") return \"destructive\";\n    if (p === \"High\") return \"warning\";\n    return \"outline\";\n  };\n\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"100%\", gap: \"var(--ayy-space-4)\" }}>\n      <FilterBar style={{ inlineSize: \"100%\" }}>\n        <FilterBarMain>\n          <FilterBarGroup>\n            <InputGroup style={{ inlineSize: \"min(100%, 14rem)\" }}>\n              <Icon icon={Search01Icon} name=\"search\" />\n              <Input\n                type=\"search\"\n                placeholder=\"Search tasks...\"\n                aria-label=\"Search tasks\"\n                value={search}\n                onChange={(e) => setSearch(e.target.value)}\n              />\n            </InputGroup>\n\n            <DropdownMenu>\n              <DropdownMenuTrigger asChild>\n                <FilterBarTrigger active={totalActive > 0} count={totalActive > 0 ? totalActive : undefined}>\n                  <Icon icon={FilterHorizontalIcon} name=\"settings-2\" />\n                  Filters\n                </FilterBarTrigger>\n              </DropdownMenuTrigger>\n              <DropdownMenuContent align=\"start\" style={{ minInlineSize: \"13rem\" }} aria-label=\"Filter options\">\n                <DropdownMenuLabel>Filter by</DropdownMenuLabel>\n\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger\n                    icon={<Icon icon={Flag01Icon} name=\"flag\" />}\n                    value={priorities.length > 0 ? priorities.length : undefined}\n                  >\n                    Priority\n                  </DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Priority options\">\n                    {PRIORITIES.map((priority) => (\n                      <DropdownMenuSelectedItem\n                        key={priority}\n                        selected={priorities.includes(priority)}\n                        onSelectedChange={() => setPriorities((curr) => toggle(curr, priority))}\n                        value={TASKS.filter((t) => t.priority === priority).length}\n                      >\n                        {priority}\n                      </DropdownMenuSelectedItem>\n                    ))}\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger\n                    icon={<Icon icon={Tag01Icon} name=\"tag\" />}\n                    value={categories.length > 0 ? categories.length : undefined}\n                  >\n                    Category\n                  </DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Category options\">\n                    {CATEGORIES.map((category) => (\n                      <DropdownMenuSelectedItem\n                        key={category}\n                        selected={categories.includes(category)}\n                        onSelectedChange={() => setCategories((curr) => toggle(curr, category))}\n                        value={TASKS.filter((t) => t.category === category).length}\n                      >\n                        {category}\n                      </DropdownMenuSelectedItem>\n                    ))}\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger\n                    icon={<Icon icon={CheckmarkCircle01Icon} name=\"circle-check-2\" />}\n                    value={statuses.length > 0 ? statuses.length : undefined}\n                  >\n                    Status\n                  </DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Status options\">\n                    {STATUSES.map((status) => (\n                      <DropdownMenuSelectedItem\n                        key={status}\n                        selected={statuses.includes(status)}\n                        onSelectedChange={() => setStatuses((curr) => toggle(curr, status))}\n                        value={TASKS.filter((t) => t.status === status).length}\n                      >\n                        {status}\n                      </DropdownMenuSelectedItem>\n                    ))}\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n\n                {totalActive > 0 ? (\n                  <>\n                    <DropdownMenuSeparator />\n                    <DropdownMenuItem destructive onSelect={resetFilters}>\n                      Reset filters\n                    </DropdownMenuItem>\n                  </>\n                ) : null}\n              </DropdownMenuContent>\n            </DropdownMenu>\n\n            {totalActive > 0 ? (\n              <FilterBarClear onClick={resetFilters}>Reset</FilterBarClear>\n            ) : null}\n          </FilterBarGroup>\n\n          <FilterBarSummary>{`Showing ${filtered.length} of ${TASKS.length} tasks`}</FilterBarSummary>\n        </FilterBarMain>\n      </FilterBar>\n\n      {filtered.length > 0 ? (\n        <div className=\"ayy-stack\" style={{ gap: \"var(--ayy-space-2)\" }}>\n          {filtered.map((task) => (\n            <Card key={task.id}>\n              <CardContent style={{ padding: \"var(--ayy-space-3)\" }}>\n                <div className=\"ayy-spread\">\n                  <div className=\"ayy-stack\" style={{ gap: \"var(--ayy-space-1)\" }}>\n                    <span style={{ fontWeight: \"var(--ayy-weight-medium)\" }}>{task.title}</span>\n                    <span className=\"ayy-muted\" style={{ fontSize: \"var(--ayy-text-xs)\" }}>\n                      {`${task.category} • ${task.status} • Assigned to ${task.assignee}`}\n                    </span>\n                  </div>\n                  <Badge variant={priorityVariant(task.priority)}>{task.priority}</Badge>\n                </div>\n              </CardContent>\n            </Card>\n          ))}\n        </div>\n      ) : (\n        <EmptyState>\n          <EmptyStateTitle>No matching tasks</EmptyStateTitle>\n          <EmptyStateDescription>Try clearing or modifying the active filters.</EmptyStateDescription>\n        </EmptyState>\n      )}\n    </div>\n  );\n}"
         }
       ],
+      "family": "view-controls",
       "files": {
         "css": "src/components/filter-bar/filter-bar.css",
         "js": "src/components/filter-bar/filter-bar.ts",
@@ -6122,7 +6150,6 @@
       "name": "Sorting",
       "slug": "sorting",
       "category": "Forms",
-      "family": "table",
       "description": "A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it.",
       "aka": [
         "sorting",
@@ -6230,6 +6257,7 @@
           "react": "import { ArrowDown01Icon, Sorting05Icon } from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport {\n  Card,\n  CardContent,\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuRadioGroup,\n  DropdownMenuRadioItem,\n  DropdownMenuTrigger,\n  Icon,\n  Sorting,\n  SortingTrigger,\n} from \"@danitesler/ayywi/react\";\n\ninterface RecordItem {\n  id: string;\n  title: string;\n  updated: string;\n  timestamp: number;\n  comments: number;\n}\n\nconst RECORDS: RecordItem[] = [\n  { id: \"1\", title: \"API Gateway migration\", updated: \"5m ago\", timestamp: 5, comments: 14 },\n  { id: \"2\", title: \"Checkout redesign proposal\", updated: \"2h ago\", timestamp: 120, comments: 28 },\n  { id: \"3\", title: \"Design tokens sync script\", updated: \"Yesterday\", timestamp: 1440, comments: 6 },\n  { id: \"4\", title: \"Auth token refresh bugfix\", updated: \"3d ago\", timestamp: 4320, comments: 3 },\n];\n\nconst OPTIONS = [\n  { value: \"recent\", label: \"Recently updated\" },\n  { value: \"oldest\", label: \"Oldest first\" },\n  { value: \"comments\", label: \"Most comments\" },\n  { value: \"alpha\", label: \"Alphabetical\" },\n];\n\nexport default function Example() {\n  const [sortKey, setSortKey] = useState(\"recent\");\n\n  const sorted = [...RECORDS].sort((a, b) => {\n    if (sortKey === \"recent\") return a.timestamp - b.timestamp;\n    if (sortKey === \"oldest\") return b.timestamp - a.timestamp;\n    if (sortKey === \"comments\") return b.comments - a.comments;\n    return a.title.localeCompare(b.title);\n  });\n\n  const currentLabel = OPTIONS.find((o) => o.value === sortKey)?.label ?? \"Recently updated\";\n\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"100%\", gap: \"var(--ayy-space-4)\" }}>\n      <div className=\"ayy-spread\">\n        <span className=\"ayy-muted\" style={{ fontSize: \"var(--ayy-text-sm)\" }}>Project documents</span>\n        <Sorting>\n          <DropdownMenu>\n            <DropdownMenuTrigger asChild>\n              <SortingTrigger aria-label={`Sort by ${currentLabel}`}>\n                <Icon icon={Sorting05Icon} name=\"sort-2\" />\n                <span>{`Sort: ${currentLabel}`}</span>\n                <Icon icon={ArrowDown01Icon} name=\"chevron-down\" />\n              </SortingTrigger>\n            </DropdownMenuTrigger>\n            <DropdownMenuContent align=\"end\" aria-label=\"Sort options\">\n              <DropdownMenuRadioGroup value={sortKey} onValueChange={setSortKey} closeOnSelect>\n                {OPTIONS.map((opt) => (\n                  <DropdownMenuRadioItem key={opt.value} value={opt.value}>\n                    {opt.label}\n                  </DropdownMenuRadioItem>\n                ))}\n              </DropdownMenuRadioGroup>\n            </DropdownMenuContent>\n          </DropdownMenu>\n        </Sorting>\n      </div>\n\n      <div className=\"ayy-stack\" style={{ gap: \"var(--ayy-space-2)\" }}>\n        {sorted.map((item) => (\n          <Card key={item.id}>\n            <CardContent style={{ padding: \"var(--ayy-space-3)\" }}>\n              <div className=\"ayy-spread\">\n                <span style={{ fontWeight: \"var(--ayy-weight-medium)\" }}>{item.title}</span>\n                <span className=\"ayy-muted\" style={{ fontSize: \"var(--ayy-text-xs)\" }}>\n                  {`Updated ${item.updated} • ${item.comments} comments`}\n                </span>\n              </div>\n            </CardContent>\n          </Card>\n        ))}\n      </div>\n    </div>\n  );\n}"
         }
       ],
+      "family": "view-controls",
       "files": {
         "css": "src/components/sorting/sorting.css",
         "js": "src/components/sorting/sorting.ts",
@@ -6241,7 +6269,6 @@
       "name": "Textarea",
       "slug": "textarea",
       "category": "Forms",
-      "family": "input",
       "description": "A multi-line text field for longer text like comments and descriptions. It can grow as you type.",
       "aka": [
         "textarea",
@@ -6357,6 +6384,7 @@
           "react": "import { Textarea } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 26.25rem)\" }}>\n      <Textarea size=\"sm\" placeholder=\"Small: a quick reply\" aria-label=\"Small textarea\" />\n      <Textarea placeholder=\"Medium: a short description\" aria-label=\"Medium textarea\" />\n      <Textarea size=\"lg\" placeholder=\"Large: a long-form answer\" aria-label=\"Large textarea\" />\n    </div>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/textarea/textarea.css",
         "js": "src/components/textarea/textarea.ts",
@@ -6368,7 +6396,6 @@
       "name": "Mentions",
       "slug": "mentions",
       "category": "Forms",
-      "family": "input",
       "description": "A multi-line text field that opens a floating suggestions list right at the caret when someone types @ or #, for tagging teammates, channels or issues inside comments and notes.",
       "aka": [
         "mentions",
@@ -6492,6 +6519,7 @@
           "react": "import { useState } from \"react\";\nimport { Avatar, Field, FieldHint, Label, Mentions, type MentionOption } from \"@danitesler/ayywi/react\";\n\nconst SUGGESTIONS: MentionOption[] = [\n  { id: \"ada\", label: \"Ada Lovelace\", icon: <Avatar name=\"Ada Lovelace\" size=\"sm\" />, keywords: \"engineering lead\" },\n  { id: \"grace\", label: \"Grace Hopper\", icon: <Avatar name=\"Grace Hopper\" size=\"sm\" />, keywords: \"compiler infra\" },\n  { id: \"alan\", label: \"Alan Turing\", icon: <Avatar name=\"Alan Turing\" size=\"sm\" />, keywords: \"security\" },\n  { id: \"margaret\", label: \"Margaret Hamilton\", icon: <Avatar name=\"Margaret Hamilton\" size=\"sm\" />, keywords: \"flight systems\" },\n  { id: \"142\", label: \"Auth token refresh race\", trigger: \"#\" },\n  { id: \"158\", label: \"RTL sidebar resize handle\", trigger: \"#\" },\n];\n\nexport default function Example() {\n  const [comment, setComment] = useState(\"Looping in @ada to review #142 before Friday’s release. \");\n\n  return (\n    <div style={{ maxInlineSize: \"30rem\" }}>\n      <Field>\n        <Label htmlFor=\"review-comment\">Release note</Label>\n        <Mentions\n          id=\"review-comment\"\n          rows={3}\n          autosize\n          triggers={[\"@\", \"#\"]}\n          options={SUGGESTIONS}\n          value={comment}\n          onValueChange={setComment}\n          placeholder=\"Type @ to mention someone or # to link an issue…\"\n        />\n        <FieldHint>Type @ for teammates or # for issues; arrows and Enter insert.</FieldHint>\n      </Field>\n    </div>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/mentions/mentions.css",
         "js": "src/components/mentions/mentions.ts",
@@ -6739,7 +6767,6 @@
       "name": "Inline edit",
       "slug": "inline-edit",
       "category": "Forms",
-      "family": "input",
       "description": "A value that becomes an input where it sits: a page or card title, a project name, a version, a due date. Click it or press Enter to edit, Enter saves, Esc cancels, blur saves, and a multiline field grows as you type and saves on Mod+Enter.",
       "aka": [
         "inline-edit",
@@ -6874,6 +6901,7 @@
           "react": "import { InlineEdit } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 28rem)\" }}>\n      <InlineEdit\n        label=\"Edit the description\"\n        multiline\n        defaultValue=\"The workspace shows its members, their roles and what each one worked on this week.\"\n      />\n      <p className=\"ayy-small ayy-muted\">Click the description. Enter starts a line; ⌘Enter or Ctrl+Enter saves.</p>\n    </div>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/inline-edit/inline-edit.css",
         "js": "src/components/inline-edit/inline-edit.ts",
@@ -7005,6 +7033,7 @@
           "react": "import { Field, Label, Select } from \"@danitesler/ayywi/react\";\n\n// One picture per option value: \"Aa\" in each font.\nconst FONT_PICTURES = {\n  heading: <span style={{ fontFamily: \"var(--ayy-font-heading)\" }}>Aa</span>,\n  body: <span style={{ fontFamily: \"var(--ayy-font-body)\" }}>Aa</span>,\n  mono: <span style={{ fontFamily: \"var(--ayy-font-mono)\" }}>Aa</span>,\n};\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 20rem)\" }}>\n      <Field>\n        <Label htmlFor=\"region\">Region</Label>\n        <Select id=\"region\" defaultValue=\"eu\">\n          <option value=\"us\">United States</option>\n          <option value=\"eu\">Europe</option>\n          <option value=\"apac\">Asia Pacific</option>\n        </Select>\n      </Field>\n      <Field>\n        <Label htmlFor=\"title-font\">Title font</Label>\n        <Select id=\"title-font\" defaultValue=\"heading\" pictures={FONT_PICTURES}>\n          <option value=\"heading\">Unbounded</option>\n          <option value=\"body\">Sora</option>\n          <option value=\"mono\">Monospace</option>\n        </Select>\n      </Field>\n      <Select size=\"sm\" aria-label=\"Sort by\" defaultValue=\"recent\">\n        <option value=\"recent\">Most recent</option>\n        <option value=\"name\">Name</option>\n      </Select>\n      <Select disabled aria-label=\"Plan\">\n        <option>Enterprise</option>\n      </Select>\n    </div>\n  );\n}"
         }
       ],
+      "family": "dropdowns",
       "files": {
         "css": "src/components/select/select.css",
         "js": "src/components/select/select.ts",
@@ -7016,7 +7045,6 @@
       "name": "Combobox",
       "slug": "combobox",
       "category": "Forms",
-      "family": "select",
       "description": "A text field that filters a list as you type, for picking one option from a long set like a city, a customer or a time zone. The options open under the field and follow the standard accessible pattern.",
       "aka": [
         "combobox",
@@ -7143,6 +7171,7 @@
           "react": "import { Combobox, Field, FieldHint, Label } from \"@danitesler/ayywi/react\";\n\nconst zones = [\n  { value: \"Europe/Lisbon\", label: \"Lisbon\", meta: \"Portugal\", keywords: \"Portugal\" },\n  { value: \"Europe/London\", label: \"London\", meta: \"United Kingdom\", keywords: \"United Kingdom\" },\n  { value: \"Europe/Berlin\", label: \"Berlin\", meta: \"Germany\", keywords: \"Germany\" },\n  { value: \"Asia/Jerusalem\", label: \"Jerusalem\", meta: \"Israel\", keywords: \"Israel\" },\n  { value: \"Asia/Dubai\", label: \"Dubai\", meta: \"United Arab Emirates\", keywords: \"United Arab Emirates\" },\n  { value: \"Asia/Tokyo\", label: \"Tokyo\", meta: \"Japan\", keywords: \"Japan\" },\n  { value: \"America/New_York\", label: \"New York\", meta: \"United States\", keywords: \"United States\" },\n  { value: \"America/Sao_Paulo\", label: \"São Paulo\", meta: \"Brazil\", keywords: \"Brazil\" },\n];\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 20rem)\" }}>\n      <Label htmlFor=\"timezone\">Time zone</Label>\n      <Combobox id=\"timezone\" name=\"timezone\" options={zones} defaultValue=\"Europe/Lisbon\" placeholder=\"Search a city\" aria-describedby=\"timezone-hint\" />\n      <FieldHint id=\"timezone-hint\">Type a city or a country.</FieldHint>\n    </Field>\n  );\n}"
         }
       ],
+      "family": "dropdowns",
       "files": {
         "css": "src/components/combobox/combobox.css",
         "js": "src/components/combobox/combobox.ts",
@@ -7289,6 +7318,7 @@
           "react": "import { Field, FieldHint, Label, TagInput } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Field style={{ inlineSize: \"min(100%, 28rem)\" }}>\n      <Label htmlFor=\"share-with\">Share with</Label>\n      <TagInput\n        id=\"share-with\"\n        size=\"lg\"\n        max={5}\n        defaultValue={[\"ada@example.com\", \"grace@example.com\"]}\n        placeholder=\"Email addresses\"\n        inputMode=\"email\"\n        aria-describedby=\"share-with-hint\"\n      />\n      <FieldHint id=\"share-with-hint\">Up to 5 people. Paste a list separated by commas.</FieldHint>\n    </Field>\n  );\n}"
         }
       ],
+      "family": "multi-pickers",
       "files": {
         "css": "src/components/tag-input/tag-input.css",
         "js": "src/components/tag-input/tag-input.ts",
@@ -7301,7 +7331,6 @@
       "name": "Record picker",
       "slug": "record-picker",
       "category": "Forms",
-      "family": "tag-input",
       "description": "A tag field whose chips are records picked from a list: one person to assign, many labels to apply. Type to filter, Enter picks the active record, Backspace in the empty field removes the last, and a create row turns new text into a record.",
       "aka": [
         "record-picker",
@@ -7459,6 +7488,7 @@
           "react": "import { Tag01Icon } from \"@hugeicons/core-free-icons\";\nimport { useState } from \"react\";\nimport { Field, FieldHint, Icon, Label, RecordPicker, type RecordPickerOption } from \"@danitesler/ayywi/react\";\n\nconst initial: RecordPickerOption[] = [\n  { id: \"design\", label: \"Design\", icon: <Icon icon={Tag01Icon} name=\"tag\" /> },\n  { id: \"engineering\", label: \"Engineering\", icon: <Icon icon={Tag01Icon} name=\"tag\" /> },\n  { id: \"marketing\", label: \"Marketing\", icon: <Icon icon={Tag01Icon} name=\"tag\" /> },\n  { id: \"operations\", label: \"Operations\", icon: <Icon icon={Tag01Icon} name=\"tag\" /> },\n  { id: \"research\", label: \"Research\", icon: <Icon icon={Tag01Icon} name=\"tag\" /> },\n];\n\nexport default function Example() {\n  const [options, setOptions] = useState(initial);\n  const [labels, setLabels] = useState<string[]>([]);\n  return (\n    <Field style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <Label id=\"labels-label\" htmlFor=\"labels-input\">\n        Labels\n      </Label>\n      <RecordPicker\n        id=\"labels-input\"\n        name=\"labels\"\n        multiple\n        creatable\n        aria-labelledby=\"labels-label\"\n        aria-describedby=\"labels-hint\"\n        options={options}\n        value={labels}\n        onValueChange={setLabels}\n        onCreate={(label) => {\n          const option = { id: label.toLocaleLowerCase().replace(/[^a-z0-9]+/g, \"-\"), label };\n          setOptions((current) => [...current, option]);\n          return option;\n        }}\n        placeholder=\"Add a label\"\n        emptyText=\"No labels\"\n      />\n      <FieldHint id=\"labels-hint\">Type a new label and pick “Create” to add it.</FieldHint>\n    </Field>\n  );\n}"
         }
       ],
+      "family": "multi-pickers",
       "files": {
         "css": "src/components/record-picker/record-picker.css",
         "js": "src/components/record-picker/record-picker.ts",
@@ -8171,6 +8201,7 @@
           "react": "import { useState } from \"react\";\nimport { ColorPicker } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [color, setColor] = useState(\"#10b981\");\n\n  return (\n    <ColorPicker\n      value={color}\n      onValueChange={setColor}\n      addon=\"HEX\"\n      addonPosition=\"end\"\n      copyable\n    />\n  );\n}"
         }
       ],
+      "family": "color",
       "files": {
         "css": "src/components/color-picker/color-picker.css",
         "js": "src/components/color-picker/color-picker.ts",
@@ -8882,7 +8913,6 @@
       "name": "Color swatch",
       "slug": "swatch",
       "category": "Forms",
-      "family": "color-picker",
       "description": "Round colour options for picking one colour, as for a tag, a list or a drawing tool. It can include a \"no colour\" option and an \"any colour\" option that opens the colour picker.",
       "aka": [
         "color-swatch",
@@ -9046,6 +9076,7 @@
           "react": "import { ColorSwatch, ColorSwatchCustom, ColorSwatchGroup } from \"@danitesler/ayywi/react\";\n\nconst PENS = [\n  { value: \"ink\", label: \"Ink\", color: \"var(--ayy-color-text)\" },\n  { value: \"red\", label: \"Red\", color: \"var(--ayy-color-destructive)\" },\n  { value: \"blue\", label: \"Blue\", color: \"var(--ayy-chart-1)\" },\n  { value: \"green\", label: \"Green\", color: \"var(--ayy-chart-3)\" },\n  { value: \"amber\", label: \"Amber\", color: \"var(--ayy-chart-5)\" },\n];\n\nexport default function Example() {\n  return (\n    <ColorSwatchGroup aria-label=\"Pen colour\" track>\n      {PENS.map((p) => (\n        <ColorSwatch key={p.value} size=\"sm\" color={p.color} label={p.label} name=\"pen\" value={p.value} defaultChecked={p.value === \"red\"} />\n      ))}\n      <ColorSwatchCustom size=\"sm\" label=\"Custom colour\" defaultValue=\"#7c5cff\" />\n    </ColorSwatchGroup>\n  );\n}"
         }
       ],
+      "family": "color",
       "files": {
         "css": "src/components/swatch/swatch.css",
         "js": "src/components/swatch/swatch.ts",
@@ -9057,7 +9088,6 @@
       "name": "Choice card",
       "slug": "choice-card",
       "category": "Forms",
-      "family": "card",
       "description": "A large option for picking one or more things that need more explanation than a radio label, like plans, delivery methods or add-ons. The whole card is clickable and works as a normal radio or checkbox.",
       "aka": [
         "choice-card",
@@ -9232,6 +9262,7 @@
           "react": "import { ChoiceCard, ChoiceGroup } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 36rem)\" }}>\n      <ChoiceGroup legend=\"Small\" name=\"delivery-sm\" size=\"sm\" defaultValue=\"standard\">\n        <ChoiceCard value=\"standard\" title=\"Standard\" description=\"3–5 days\" meta=\"Free\" />\n        <ChoiceCard value=\"express\" title=\"Express\" description=\"Next day\" meta=\"$9\" />\n      </ChoiceGroup>\n      <ChoiceGroup legend=\"Medium\" name=\"delivery-md\" defaultValue=\"standard\">\n        <ChoiceCard value=\"standard\" title=\"Standard\" description=\"3–5 days\" meta=\"Free\" />\n        <ChoiceCard value=\"express\" title=\"Express\" description=\"Next day\" meta=\"$9\" />\n      </ChoiceGroup>\n      <ChoiceGroup legend=\"Large\" name=\"delivery-lg\" size=\"lg\" defaultValue=\"standard\">\n        <ChoiceCard value=\"standard\" title=\"Standard\" description=\"3–5 days\" meta=\"Free\" />\n        <ChoiceCard value=\"express\" title=\"Express\" description=\"Next day\" meta=\"$9\" />\n      </ChoiceGroup>\n    </div>\n  );\n}"
         }
       ],
+      "family": "cards",
       "files": {
         "css": "src/components/choice-card/choice-card.css",
         "js": "src/components/choice-card/choice-card.ts",
@@ -9383,7 +9414,6 @@
       "name": "Number field",
       "slug": "number-field",
       "category": "Forms",
-      "family": "input",
       "description": "A number input with minus and plus buttons, for small quantities like seats, guests or items. Typing and arrow keys work as in any number field.",
       "aka": [
         "number-field",
@@ -9492,6 +9522,7 @@
           "react": "import { Field, FieldHint, Label, NumberField } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Field>\n        <Label htmlFor=\"guests\">Guests</Label>\n        <NumberField\n          id=\"guests\"\n          name=\"guests\"\n          defaultValue={2}\n          min={1}\n          max={8}\n          decrementLabel=\"Remove a guest\"\n          incrementLabel=\"Add a guest\"\n          aria-describedby=\"guests-hint\"\n        />\n        <FieldHint id=\"guests-hint\">Up to 8 per booking.</FieldHint>\n      </Field>\n      <NumberField size=\"sm\" defaultValue={1} min={0} max={20} aria-label=\"Quantity of Ethiopia Guji, 250 g\" />\n      <NumberField size=\"lg\" defaultValue={2} min={0} max={20} aria-label=\"Quantity of Kenya Nyeri, 1 kg\" />\n    </div>\n  );\n}"
         }
       ],
+      "family": "text-entry",
       "files": {
         "css": "src/components/number-field/number-field.css",
         "js": "src/components/number-field/number-field.ts",
@@ -10743,6 +10774,7 @@
           "react": "import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 22.5rem)\" }}>\n      <Card size=\"sm\">\n        <CardHeader>\n          <CardTitle>Weekly report</CardTitle>\n          <CardDescription>Activity across your workspace.</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n        </CardContent>\n        <CardFooter>\n          <Button size=\"sm\">Open report</Button>\n        </CardFooter>\n      </Card>\n      <Card>\n        <CardHeader>\n          <CardTitle>Weekly report</CardTitle>\n          <CardDescription>Activity across your workspace.</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n        </CardContent>\n        <CardFooter>\n          <Button size=\"sm\">Open report</Button>\n        </CardFooter>\n      </Card>\n      <Card size=\"lg\">\n        <CardHeader>\n          <CardTitle>Weekly report</CardTitle>\n          <CardDescription>Activity across your workspace.</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n        </CardContent>\n        <CardFooter>\n          <Button size=\"sm\">Open report</Button>\n        </CardFooter>\n      </Card>\n    </div>\n  );\n}"
         }
       ],
+      "family": "cards",
       "files": {
         "css": "src/components/card/card.css",
         "js": "src/components/card/card.ts",
@@ -12574,6 +12606,7 @@
           "react": "import { useState } from \"react\";\nimport { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Progress } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [progress, setProgress] = useState(45);\n\n  const step = (delta: number) => {\n    setProgress((prev) => Math.min(100, Math.max(0, prev + delta)));\n  };\n\n  const isComplete = progress === 100;\n\n  return (\n    <Card style={{ inlineSize: \"min(100%, 26rem)\" }}>\n      <CardHeader>\n        <div className=\"ayy-spread\">\n          <CardTitle>File upload</CardTitle>\n          <span className=\"ayy-mono ayy-muted\">{progress}%</span>\n        </div>\n        <CardDescription>\n          {isComplete ? \"Upload complete. File is ready to share.\" : \"Uploading client-presentation-v2.pdf…\"}\n        </CardDescription>\n      </CardHeader>\n      <CardContent>\n        <Progress\n          value={progress}\n          variant={isComplete ? \"success\" : progress > 80 ? \"warning\" : \"default\"}\n          aria-label=\"File upload progress\"\n        />\n      </CardContent>\n      <CardFooter>\n        <Button size=\"sm\" variant=\"outline\" onClick={() => step(-25)} disabled={progress <= 0}>\n          -25%\n        </Button>\n        <Button size=\"sm\" onClick={() => step(25)} disabled={progress >= 100}>\n          +25%\n        </Button>\n        <Button size=\"sm\" variant=\"ghost\" onClick={() => setProgress(0)} disabled={progress === 0}>\n          Reset\n        </Button>\n      </CardFooter>\n    </Card>\n  );\n}"
         }
       ],
+      "family": "loading",
       "files": {
         "css": "src/components/progress/progress.css",
         "js": "src/components/progress/progress.ts",
@@ -12585,7 +12618,6 @@
       "name": "Progress ring",
       "slug": "progress-ring",
       "category": "Feedback",
-      "family": "progress",
       "description": "Progress shown as a ring that fills up, for goals, timers and uploads in small spaces. It can show a known amount or an unknown one, with a value or an icon in the middle.",
       "aka": [
         "progress-ring",
@@ -12710,6 +12742,7 @@
           "react": "import { Tick02Icon } from \"@hugeicons/core-free-icons\";\nimport { Icon, ProgressRing } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-cluster\" style={{ alignItems: \"center\", \"--ayy-gap\": \"var(--ayy-space-8)\" } as any}>\n      <ProgressRing value={28} size=\"xl\" aria-label=\"Focus session, 18 minutes left\">\n        18:00\n      </ProgressRing>\n      <div className=\"ayy-stack\" style={{ alignItems: \"start\" }}>\n        <ProgressRing value={60} size=\"lg\" aria-label=\"Habit: 3 of 5 days this week\">\n          3/5\n        </ProgressRing>\n        <ProgressRing value={100} size=\"lg\" variant=\"success\" aria-label=\"Goal reached\">\n          <Icon icon={Tick02Icon} name=\"check\" />\n        </ProgressRing>\n        <div className=\"ayy-cluster\" style={{ alignItems: \"center\" }}>\n          <ProgressRing value={40} size=\"sm\" aria-labelledby=\"ring-upload\" />\n          <span id=\"ring-upload\">Uploading 2 of 5</span>\n        </div>\n        <div className=\"ayy-cluster\" style={{ alignItems: \"center\" }}>\n          <ProgressRing size=\"sm\" variant=\"ai\" aria-labelledby=\"ring-ai\" />\n          <span id=\"ring-ai\">Recognising text</span>\n        </div>\n      </div>\n    </div>\n  );\n}"
         }
       ],
+      "family": "loading",
       "files": {
         "css": "src/components/progress-ring/progress-ring.css",
         "js": "src/components/progress-ring/progress-ring.ts",
@@ -12721,7 +12754,6 @@
       "name": "Spinner",
       "slug": "spinner",
       "category": "Feedback",
-      "family": "progress",
       "description": "A small loading indicator for short waits, like inside a button or beside some text. For loading a larger area, use a skeleton instead.",
       "aka": [
         "spinner",
@@ -12819,6 +12851,7 @@
           "react": "import type { CSSProperties } from \"react\";\nimport { Button, Spinner } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ \"--ayy-gap\": \"var(--ayy-space-5)\" } as CSSProperties}>\n      <div className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-5)\" } as CSSProperties}>\n        <Spinner size=\"sm\" label=\"Loading comments\" />\n        <Spinner label=\"Loading invoices\" />\n        <Spinner size=\"lg\" label=\"Loading report\" />\n      </div>\n      <div className=\"ayy-cluster\">\n        <Button loading>Saving…</Button>\n        <Button variant=\"outline\" loading>\n          Refreshing\n        </Button>\n      </div>\n    </div>\n  );\n}"
         }
       ],
+      "family": "loading",
       "files": {
         "css": "src/components/spinner/spinner.css",
         "js": "src/components/spinner/spinner.ts",
@@ -13204,6 +13237,7 @@
           "react": "import { Badge } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <Badge size=\"sm\" variant=\"success\">Synced</Badge>\n      <Badge variant=\"success\">Synced</Badge>\n      <Badge size=\"lg\" variant=\"success\">Synced</Badge>\n      <Badge size=\"sm\" variant=\"warning\" dot>Pending</Badge>\n      <Badge variant=\"warning\" dot>Pending</Badge>\n      <Badge size=\"lg\" variant=\"warning\" dot>Pending</Badge>\n    </>\n  );\n}"
         }
       ],
+      "family": "status-labels",
       "files": {
         "css": "src/components/badge/badge.css",
         "js": "src/components/badge/badge.ts",
@@ -13215,7 +13249,6 @@
       "name": "Status dot",
       "slug": "status-dot",
       "category": "Data display",
-      "family": "badge",
       "description": "A small coloured dot that shows the state of something, like someone being online, a live stream or a server's health.",
       "aka": [
         "status-dot",
@@ -13333,6 +13366,7 @@
           "react": "import { StatusDot } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-4)\" } as React.CSSProperties}>\n      <span className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-2)\" } as React.CSSProperties}>\n        <StatusDot variant=\"destructive\" pulse />\n        <span>Live stream</span>\n      </span>\n      <span className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-2)\" } as React.CSSProperties}>\n        <StatusDot variant=\"warning\" pulse />\n        <span>Recording</span>\n      </span>\n      <span className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-2)\" } as React.CSSProperties}>\n        <StatusDot variant=\"success\" pulse />\n        <span>System operational</span>\n      </span>\n    </div>\n  );\n}"
         }
       ],
+      "family": "status-labels",
       "files": {
         "css": "src/components/status-dot/status-dot.css",
         "js": "src/components/status-dot/status-dot.ts",
@@ -13860,6 +13894,7 @@
           "react": "import { ArrowLeft02Icon, ArrowRight02Icon } from \"@hugeicons/core-free-icons\";\nimport { Button, Icon } from \"@danitesler/ayywi/react\";\n\n// directional mirrors an icon in right-to-left text. The same buttons, then inside dir=\"rtl\":\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <nav className=\"ayy-cluster\" aria-label=\"Pagination\">\n        <Button variant=\"outline\">\n          <Icon icon={ArrowLeft02Icon} name=\"arrow-left\" directional />\n          Previous\n        </Button>\n        <Button variant=\"outline\">\n          Next\n          <Icon icon={ArrowRight02Icon} name=\"arrow-right\" directional />\n        </Button>\n      </nav>\n      <nav className=\"ayy-cluster\" aria-label=\"עימוד\" dir=\"rtl\" lang=\"he\">\n        <Button variant=\"outline\">\n          <Icon icon={ArrowLeft02Icon} name=\"arrow-left\" directional />\n          הקודם\n        </Button>\n        <Button variant=\"outline\">\n          הבא\n          <Icon icon={ArrowRight02Icon} name=\"arrow-right\" directional />\n        </Button>\n      </nav>\n    </div>\n  );\n}"
         }
       ],
+      "family": "icons",
       "files": {
         "css": "src/components/icon/icon.css",
         "js": "src/components/icon/icon.ts",
@@ -13871,7 +13906,6 @@
       "name": "Icon tile",
       "slug": "icon-tile",
       "category": "Data display",
-      "family": "icon",
       "description": "A rounded app-icon tile that gives a product, plugin or service a recognisable mark, with the glyph tinted in its accent colour.",
       "aka": [
         "icon-tile",
@@ -13963,6 +13997,7 @@
           "react": "import { Icon, IconTile } from \"@danitesler/ayywi/react\";\nimport { Globe02Icon, GridViewIcon, Layers01Icon } from \"@hugeicons/core-free-icons\";\n\nexport default function Example() {\n  return (\n    <>\n      <IconTile size=\"lg\" spotColor=\"var(--ayy-accent-brand)\">\n        <Icon icon={Globe02Icon} name=\"globe\" />\n      </IconTile>\n      <IconTile spotColor=\"var(--ayy-accent-system)\">\n        <Icon icon={Layers01Icon} name=\"layers\" />\n      </IconTile>\n      <IconTile size=\"sm\" spotColor=\"var(--ayy-accent-marketing)\" aria-label=\"Autogrid\">\n        <Icon icon={GridViewIcon} name=\"layout-grid\" />\n      </IconTile>\n    </>\n  );\n}"
         }
       ],
+      "family": "icons",
       "files": {
         "css": "src/components/icon-tile/icon-tile.css",
         "js": "src/components/icon-tile/icon-tile.ts",
@@ -14218,6 +14253,7 @@
           "react": "import { Mail01Icon, Notification01Icon, SmartPhone01Icon } from \"@hugeicons/core-free-icons\";\nimport { Card, CardContent, Icon, IconTile, List, ListContent, ListDescription, ListItem, ListTitle, Switch } from \"@danitesler/ayywi/react\";\n\nconst ROWS = [\n  { id: \"email\", icon: Mail01Icon, iconName: \"mail\" as const, title: \"Email\", text: \"A summary of new invoices and payments, once a day.\", on: true },\n  { id: \"push\", icon: SmartPhone01Icon, iconName: \"smartphone\" as const, title: \"Push notifications\", text: \"Payments as they arrive, on your phone.\", on: true },\n  { id: \"reminders\", icon: Notification01Icon, iconName: \"bell\" as const, title: \"Payment reminders\", text: \"Nudge clients three days before an invoice is due.\", on: false },\n];\n\nexport default function Example() {\n  return (\n    <Card style={{ inlineSize: \"min(100%, 30rem)\" }}>\n      <CardContent>\n        <List divided aria-label=\"Notifications\">\n          {ROWS.map((r) => (\n            <ListItem key={r.id}>\n              <IconTile size=\"sm\">\n                <Icon icon={r.icon} name={r.iconName} />\n              </IconTile>\n              <ListContent>\n                <ListTitle htmlFor={`notify-${r.id}`}>{r.title}</ListTitle>\n                <ListDescription>{r.text}</ListDescription>\n              </ListContent>\n              <Switch id={`notify-${r.id}`} defaultChecked={r.on} />\n            </ListItem>\n          ))}\n        </List>\n      </CardContent>\n    </Card>\n  );\n}"
         }
       ],
+      "family": "lists",
       "files": {
         "css": "src/components/list/list.css",
         "js": "src/components/list/list.ts",
@@ -14379,7 +14415,6 @@
       "name": "Swipe actions",
       "slug": "swipe",
       "category": "Data display",
-      "family": "list",
       "description": "A list row that slides sideways to reveal actions, the way phone mail and task apps do. It works with touch, mouse and keyboard, and follows the reading direction.",
       "aka": [
         "swipe",
@@ -14508,6 +14543,7 @@
           "react": "import { Clock01Icon, Delete02Icon, PinIcon, Tick02Icon } from \"@hugeicons/core-free-icons\";\nimport { Icon, listClass, Swipe, SwipeAction } from \"@danitesler/ayywi/react\";\n\nconst TASKS = [\n  { id: \"milk\", title: \"Buy milk\", due: \"Today\" },\n  { id: \"call\", title: \"Call the bank about the card\", due: \"Tomorrow\" },\n  { id: \"trip\", title: \"Book the train to Lisbon\", due: \"Fri\" },\n];\n\nexport default function Example() {\n  // Swipe a row (or drag it with the mouse). Keyboards reach the buttons with Tab.\n  return (\n    <div className={listClass({ divided: true })} style={{ inlineSize: \"min(100%, 24rem)\", border: \"1px solid var(--ayy-color-line)\", borderRadius: \"var(--ayy-radius-xl)\", overflow: \"hidden\" }}>\n      {TASKS.map((task) => (\n        <Swipe\n          key={task.id}\n          contentProps={{ className: \"ayy-list__item\" }}\n          startActions={\n            <SwipeAction variant=\"success\" icon={<Icon icon={Tick02Icon} name=\"check\" />}>\n              Done\n            </SwipeAction>\n          }\n          endActions={\n            <>\n              <SwipeAction icon={<Icon icon={PinIcon} name=\"pin\" />}>Pin</SwipeAction>\n              <SwipeAction variant=\"warning\" icon={<Icon icon={Clock01Icon} name=\"clock\" />}>\n                Snooze\n              </SwipeAction>\n              <SwipeAction variant=\"destructive\" icon={<Icon icon={Delete02Icon} name=\"trash\" />}>\n                Delete\n              </SwipeAction>\n            </>\n          }\n        >\n          <div className=\"ayy-list__content\">\n            <p className=\"ayy-list__title\">{task.title}</p>\n          </div>\n          <span className=\"ayy-list__meta\">{task.due}</span>\n        </Swipe>\n      ))}\n    </div>\n  );\n}"
         }
       ],
+      "family": "lists",
       "files": {
         "css": "src/components/swipe/swipe.css",
         "js": "src/components/swipe/swipe.ts",
@@ -15480,6 +15516,7 @@
           "react": "import { Fragment, useEffect, useRef, useState, type ReactNode } from \"react\";\nimport {\n  Add01Icon,\n  ArrangeByLettersAZIcon,\n  ArrangeByLettersZAIcon,\n  ColumnDeleteIcon,\n  CopyPlusIcon,\n  InsertColumnLeftIcon,\n  InsertColumnRightIcon,\n  SortByDown02Icon,\n  ArrowUpDownIcon,\n  Calendar03Icon,\n  Clock01Icon,\n  DollarCircleIcon,\n  Flag01Icon,\n  UserIcon,\n  GroupItemsIcon,\n  PinIcon,\n  SmileIcon,\n  StarIcon,\n  Tag01Icon,\n  ViewOffIcon,\n  TextIcon,\n  TextWrapIcon,\n  Archive02Icon,\n  Copy01Icon,\n  Delete02Icon,\n  FilterHorizontalIcon,\n  LayoutTable01Icon,\n  MoreHorizontalIcon,\n  PencilEdit02Icon,\n} from \"@hugeicons/core-free-icons\";\nimport {\n  ActionBar,\n  ActionBarActions,\n  ActionBarButton,\n  ActionBarClose,\n  ActionBarCount,\n  ActionBarSelection,\n  ActionBarSeparator,\n  Avatar,\n  Badge,\n  Button,\n  Checkbox,\n  DropdownMenu,\n  DropdownMenuCheckboxItem,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuRadioGroup,\n  DropdownMenuRadioItem,\n  DropdownMenuSelectedItem,\n  DropdownMenuSub,\n  DropdownMenuSubTrigger,\n  DropdownMenuSubContent,\n  DropdownMenuTrigger,\n  EmptyState,\n  EmptyStateDescription,\n  DragHandle,\n  EmptyStateTitle,\n  Icon,\n  IconPicker,\n  type IconPickerIcon,\n  Label,\n  Pagination,\n  SearchBar,\n  Select,\n  Switch,\n  Table,\n  TableBody,\n  TableCaption,\n  TableCell,\n  TableContainer,\n  TableDescription,\n  TableEdit,\n  TableEmpty,\n  TableExpand,\n  TableFooter,\n  TableGroup,\n  TableHead,\n  TableHeader,\n  TableHeading,\n  TableMedia,\n  TablePager,\n  TableResize,\n  TableRow,\n  TableRowActions,\n  TableRowLink,\n  TableSecondary,\n  TableTitle,\n  TableToolbar,\n  TableTools,\n  compareValues,\n  toast,\n  type SortDirection,\n  type TableColumnActionDetail,\n  type TableRowReorderDetail,\n} from \"@danitesler/ayywi/react\";\n\ntype Status = \"Active\" | \"Trial\" | \"Past due\" | \"Closed\";\n\ninterface Account {\n  id: string;\n  name: string;\n  email: string;\n  plan: string;\n  status: Status;\n  seats: number;\n  mrr: number;\n  renews: string;\n  note: string;\n}\n\nconst ACCOUNTS: Account[] = [\n  { id: \"ACC-201\", name: \"Northwind Traders\", email: \"ops@northwind.com\", plan: \"Enterprise\", status: \"Active\", seats: 240, mrr: 12400, renews: \"2027-03-01\", note: \"Wants SSO for the Lisbon office before the March renewal.\" },\n  { id: \"ACC-202\", name: \"Lumen Labs\", email: \"finance@lumenlabs.io\", plan: \"Team\", status: \"Past due\", seats: 32, mrr: 1280, renews: \"2026-11-02\", note: \"Card declined twice; finance contact is back on Monday.\" },\n  { id: \"ACC-203\", name: \"Acme Studio\", email: \"hello@acme.studio\", plan: \"Team\", status: \"Trial\", seats: 12, mrr: 0, renews: \"2026-11-09\", note: \"Trial ends in 17 days; asked for a demo of approvals.\" },\n  { id: \"ACC-204\", name: \"Brightside Health\", email: \"it@brightside.health\", plan: \"Enterprise\", status: \"Active\", seats: 610, mrr: 30500, renews: \"2027-06-15\", note: \"Security review passed. Expanding to two more clinics in Q1.\" },\n  { id: \"ACC-205\", name: \"Kestrel Logistics\", email: \"admin@kestrel.co\", plan: \"Starter\", status: \"Closed\", seats: 4, mrr: 0, renews: \"—\", note: \"Closed in September: moved to an in-house tool.\" },\n  { id: \"ACC-206\", name: \"Orchard & Pine\", email: \"team@orchardpine.com\", plan: \"Team\", status: \"Active\", seats: 48, mrr: 1920, renews: \"2027-01-20\", note: \"Uses the API for weekly exports to their warehouse.\" },\n  { id: \"ACC-207\", name: \"Halcyon Media\", email: \"billing@halcyon.media\", plan: \"Starter\", status: \"Trial\", seats: 6, mrr: 0, renews: \"2026-11-28\", note: \"Came from the webinar; two editors invited so far.\" },\n  { id: \"ACC-208\", name: \"Fjord Analytics\", email: \"ops@fjord.dev\", plan: \"Team\", status: \"Active\", seats: 64, mrr: 2560, renews: \"2027-02-11\", note: \"Asked about SCIM provisioning for the Oslo team.\" },\n  { id: \"ACC-209\", name: \"Granite Works\", email: \"it@graniteworks.com\", plan: \"Enterprise\", status: \"Active\", seats: 380, mrr: 19000, renews: \"2027-04-30\", note: \"Procurement wants a two-year price lock.\" },\n  { id: \"ACC-210\", name: \"Harbor & Co\", email: \"billing@harborco.com\", plan: \"Starter\", status: \"Past due\", seats: 8, mrr: 240, renews: \"2026-11-05\", note: \"Invoice 4021 is 21 days late; reminder sent.\" },\n  { id: \"ACC-211\", name: \"Ironleaf Studio\", email: \"hi@ironleaf.studio\", plan: \"Team\", status: \"Trial\", seats: 15, mrr: 0, renews: \"2026-11-14\", note: \"Evaluating against two other tools; demo booked Friday.\" },\n  { id: \"ACC-212\", name: \"Juniper Foods\", email: \"admin@juniperfoods.com\", plan: \"Team\", status: \"Active\", seats: 52, mrr: 2080, renews: \"2027-01-08\", note: \"Rolled out to the kitchen managers last month.\" },\n  { id: \"ACC-213\", name: \"Keystone Legal\", email: \"ops@keystonelegal.com\", plan: \"Enterprise\", status: \"Active\", seats: 150, mrr: 7500, renews: \"2027-05-22\", note: \"Requires audit logs retained for seven years.\" },\n  { id: \"ACC-214\", name: \"Lattice Robotics\", email: \"finance@lattice.ai\", plan: \"Team\", status: \"Past due\", seats: 140, mrr: 5600, renews: \"2026-11-01\", note: \"PO number changed; finance is reissuing the invoice.\" },\n  { id: \"ACC-215\", name: \"Meridian Travel\", email: \"team@meridian.travel\", plan: \"Starter\", status: \"Closed\", seats: 5, mrr: 0, renews: \"—\", note: \"Closed in August: seasonal business, may return in spring.\" },\n  { id: \"ACC-216\", name: \"Nimbus Energy\", email: \"it@nimbus.energy\", plan: \"Enterprise\", status: \"Active\", seats: 720, mrr: 36000, renews: \"2027-09-01\", note: \"Largest account in the EU; quarterly business review next week.\" },\n  { id: \"ACC-217\", name: \"Oakline Design\", email: \"hello@oakline.design\", plan: \"Starter\", status: \"Trial\", seats: 3, mrr: 0, renews: \"2026-12-02\", note: \"Solo founder; likely to convert after the trial.\" },\n  { id: \"ACC-218\", name: \"Pinecrest Schools\", email: \"admin@pinecrest.edu\", plan: \"Team\", status: \"Active\", seats: 96, mrr: 3840, renews: \"2027-07-01\", note: \"Education discount applied; renews each July.\" },\n  { id: \"ACC-219\", name: \"Quarry Capital\", email: \"ops@quarry.vc\", plan: \"Team\", status: \"Active\", seats: 22, mrr: 880, renews: \"2027-03-17\", note: \"Wants a read-only role for their LPs.\" },\n  { id: \"ACC-220\", name: \"Riverbend Clinic\", email: \"it@riverbend.health\", plan: \"Enterprise\", status: \"Trial\", seats: 90, mrr: 0, renews: \"2026-11-20\", note: \"Security questionnaire sent; awaiting their sign-off.\" },\n  { id: \"ACC-221\", name: \"Sable Print\", email: \"billing@sableprint.com\", plan: \"Starter\", status: \"Closed\", seats: 4, mrr: 0, renews: \"—\", note: \"Closed in June: merged with a larger shop.\" },\n  { id: \"ACC-222\", name: \"Tidewater Marine\", email: \"ops@tidewater.co\", plan: \"Team\", status: \"Active\", seats: 40, mrr: 1600, renews: \"2027-02-25\", note: \"Uses the mobile app on the dock; asked for offline mode.\" },\n  { id: \"ACC-223\", name: \"Umber Coffee\", email: \"hi@umbercoffee.com\", plan: \"Starter\", status: \"Active\", seats: 9, mrr: 270, renews: \"2027-01-30\", note: \"Seven locations; managers share one login for now.\" },\n  { id: \"ACC-224\", name: \"Vantage Media\", email: \"finance@vantage.media\", plan: \"Team\", status: \"Past due\", seats: 36, mrr: 1440, renews: \"2026-11-03\", note: \"Switching to annual billing; invoice pending.\" },\n];\n\nconst STATUS_BADGE = { Active: \"success\", Trial: \"info\", \"Past due\": \"destructive\", Closed: \"muted\" } as const;\nconst GROUP_ORDER: Status[] = [\"Past due\", \"Trial\", \"Active\", \"Closed\"];\n\ntype Key = \"name\" | \"plan\" | \"status\" | \"seats\" | \"mrr\" | \"renews\" | \"note\";\ntype ColumnKey = Key | `column-${number}`;\nconst COLUMN_ICONS: IconPickerIcon[] = [\n  { value: \"star\", label: \"Star\", icon: StarIcon, name: \"star\" },\n  { value: \"tag\", label: \"Tag\", icon: Tag01Icon, name: \"tag\", keywords: [\"label\", \"plan\"] },\n  { value: \"calendar\", label: \"Calendar\", icon: Calendar03Icon, name: \"calendar\", keywords: [\"date\", \"renews\"] },\n  { value: \"text\", label: \"Text\", icon: TextIcon, name: \"text\", keywords: [\"note\"] },\n  { value: \"money\", label: \"Money\", icon: DollarCircleIcon, name: \"circle-dollar-sign\", keywords: [\"revenue\", \"mrr\", \"price\"] },\n  { value: \"user\", label: \"User\", icon: UserIcon, name: \"user\", keywords: [\"person\", \"seats\", \"owner\"] },\n  { value: \"flag\", label: \"Flag\", icon: Flag01Icon, name: \"flag\", keywords: [\"status\", \"priority\"] },\n  { value: \"clock\", label: \"Clock\", icon: Clock01Icon, name: \"clock\", keywords: [\"time\", \"due\"] },\n];\n// A picked icon's value is in COLUMN_ICONS; anything else is an emoji, shown as text.\nconst columnIcon = (value: string) => {\n  const found = COLUMN_ICONS.find((item) => item.value === value);\n  return found ? <Icon icon={found.icon as typeof StarIcon} name={found.name} /> : value;\n};\ninterface Column { key: ColumnKey; label: string; numeric?: boolean; icon?: string }\nconst COLUMNS: Column[] = [\n  { key: \"name\", label: \"Account\" },\n  { key: \"plan\", label: \"Plan\" },\n  { key: \"status\", label: \"Status\" },\n  { key: \"seats\", label: \"Seats\", numeric: true },\n  { key: \"mrr\", label: \"MRR\", numeric: true },\n  { key: \"renews\", label: \"Renews\" },\n  { key: \"note\", label: \"Last note\" },\n];\n\nconst money = new Intl.NumberFormat(\"en-US\", { style: \"currency\", currency: \"USD\", maximumFractionDigits: 0 });\nconst day = new Intl.DateTimeFormat(\"en-US\", { month: \"short\", day: \"numeric\", year: \"numeric\" });\nconst PAGE_SIZE_OPTIONS = [5, 10, 25];\n\ntype Size = \"sm\" | \"md\" | \"lg\";\n\n/**\n * One table, every variation: open Props to switch the size, column lines, the frame (toolbar and pager), a sticky\n * header, pinned columns, resizable columns, inline cell editing, selectable (including drag-to-select across rows),\n * expandable, grouped, linked and disabled rows, truncated text and the loading look. Search for a name that isn't\n * there to see the empty row.\n */\nexport default function Example({ setControls }: { setControls?: (node: ReactNode) => void } = {}) {\n  const [size, setSize] = useState<Size>(\"md\");\n  const [frame, setFrame] = useState(true);\n  const [bordered, setBordered] = useState(false);\n  const [sticky, setSticky] = useState(true);\n  const [pinName, setPinName] = useState(true);\n  const [pinActions, setPinActions] = useState(false);\n  const [resizable, setResizable] = useState(true);\n  const [reorderable, setReorderable] = useState(true);\n  const [rowReorder, setRowReorder] = useState(true);\n  const [editable, setEditable] = useState(true);\n  const [selectable, setSelectable] = useState(true);\n  const [expandable, setExpandable] = useState(true);\n  const [grouped, setGrouped] = useState(false);\n  const [rowLinks, setRowLinks] = useState(false);\n  const [disabledRows, setDisabledRows] = useState(true);\n  const [reveal, setReveal] = useState(true);\n  const [truncate, setTruncate] = useState(true);\n  const [loading, setLoading] = useState(false);\n\n  const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS);\n  const [columns, setColumns] = useState(COLUMNS);\n  const [columnOrder, setColumnOrder] = useState<ColumnKey[]>(COLUMNS.map((c) => c.key));\n  const [frozen, setFrozen] = useState<ColumnKey[]>([]);\n  const [wrapped, setWrapped] = useState<ColumnKey[]>([]);\n  const [values, setValues] = useState<Record<string, Record<string, string>>>({});\n  const [groupKey, setGroupKey] = useState<ColumnKey>(\"status\");\n  const filterTrigger = useRef<HTMLButtonElement>(null);\n  const groupTrigger = useRef<HTMLButtonElement>(null);\n  const nextColumn = useRef(0);\n  const [query, setQuery] = useState(\"\");\n  const [statusFilter, setStatusFilter] = useState<Status[]>([]);\n  const [planFilter, setPlanFilter] = useState<string[]>([]);\n  const [hidden, setHidden] = useState<ColumnKey[]>([]);\n  const [sort, setSort] = useState<{ key: ColumnKey; direction: SortDirection } | null>({ key: \"mrr\", direction: \"descending\" });\n  const [selected, setSelected] = useState<string[]>([\"ACC-206\"]);\n  const [expanded, setExpanded] = useState<string[]>([\"ACC-201\"]);\n  const [page, setPage] = useState(1);\n  const [pageSize, setPageSize] = useState(10);\n\n  useEffect(() => {\n    if (!setControls) return;\n    const toggle = (id: string, label: string, checked: boolean, set: (v: boolean) => void, disabled = false) => (\n      <div className=\"ayy-spread\">\n        <Label htmlFor={id}>{label}</Label>\n        <Switch id={id} checked={checked} onCheckedChange={set} disabled={disabled} />\n      </div>\n    );\n    setControls(\n      <div className=\"ayy-stack\">\n        <div className=\"ayy-spread\">\n          <Label htmlFor=\"tp-size\">Size</Label>\n          <div style={{ inlineSize: \"7.5rem\" }}>\n            <Select id=\"tp-size\" size=\"sm\" value={size} onChange={(e) => setSize(e.target.value as Size)}>\n              <option value=\"sm\">Small</option>\n              <option value=\"md\">Medium</option>\n              <option value=\"lg\">Large</option>\n            </Select>\n          </div>\n        </div>\n        <span className=\"ayy-muted ayy-mono ayy-small\">Table</span>\n        {toggle(\"tp-frame\", \"Frame, toolbar and pager\", frame, setFrame)}\n        {toggle(\"tp-bordered\", \"Column lines\", bordered, setBordered)}\n        {toggle(\"tp-sticky\", \"Sticky header\", sticky, setSticky)}\n        {toggle(\"tp-pin\", \"Pin the name column\", pinName, setPinName)}\n        {toggle(\"tp-pin-end\", \"Pin the actions column\", pinActions, setPinActions)}\n        {toggle(\"tp-resize\", \"Resizable columns\", resizable, setResizable)}\n        {toggle(\"tp-reorder\", \"Reorderable columns\", reorderable, setReorderable)}\n        {toggle(\"tp-row-reorder\", \"Reorderable rows\", rowReorder, setRowReorder)}\n        {toggle(\"tp-edit\", \"Editable cells\", editable, setEditable)}\n        {toggle(\"tp-truncate\", \"Truncate long text\", truncate, setTruncate)}\n        {toggle(\"tp-loading\", \"Loading\", loading, setLoading)}\n        <span className=\"ayy-muted ayy-mono ayy-small\">Rows</span>\n        {toggle(\"tp-select\", \"Selectable\", selectable, setSelectable)}\n        {toggle(\"tp-expand\", \"Expandable\", expandable, setExpandable)}\n        {toggle(\"tp-group\", \"Grouped by status\", grouped, (on) => { setGroupKey(\"status\"); setGrouped(on); })}\n        {toggle(\"tp-link\", \"Whole row is a link\", rowLinks, setRowLinks, pinName)}\n        {toggle(\"tp-disabled\", \"Closed accounts disabled\", disabledRows, setDisabledRows)}\n        {toggle(\"tp-reveal\", \"Actions on hover\", reveal, setReveal)}\n      </div>,\n    );\n  }, [setControls, size, frame, bordered, sticky, pinName, pinActions, resizable, reorderable, rowReorder, editable, selectable, expandable, grouped, rowLinks, disabledRows, reveal, truncate, loading]);\n\n  useEffect(() => () => setControls?.(null), [setControls]);\n\n  const updateAccount = (id: string, patch: Partial<Account>) =>\n    setAccounts((list) => list.map((a) => (a.id === id ? { ...a, ...patch } : a)));\n\n  const visibleKeys = columnOrder.filter((k) => !hidden.includes(k));\n  const visible = visibleKeys.map((k) => columns.find((c) => c.key === k)!);\n  const isPinned = (key: ColumnKey) => key === \"name\" ? pinName : frozen.includes(key);\n  const columnProps = (key: ColumnKey) => ({ \"data-key\": key, pin: isPinned(key), wrap: wrapped.includes(key) });\n  const valueOf = (account: Account, key: ColumnKey) => key in account ? account[key as Key] : values[account.id]?.[key] ?? \"\";\n  const shownValue = (account: Account, key: ColumnKey) => {\n    const value = valueOf(account, key);\n    return key === \"mrr\" ? money.format(account.mrr) : key === \"renews\" && account.renews !== \"—\" ? day.format(new Date(`${account.renews}T00:00:00`)) : String(value ?? \"\");\n  };\n  const insertColumn = (key?: ColumnKey, after = false) => {\n    const column: Column = { key: `column-${++nextColumn.current}`, label: `Column ${nextColumn.current}` };\n    setColumns((list) => [...list, column]);\n    setColumnOrder((list) => {\n      const next = [...list];\n      const index = key === undefined ? next.length : next.indexOf(key) + (after ? 1 : 0);\n      next.splice(index, 0, column.key);\n      return next;\n    });\n  };\n  const onColumnAction = ({ action, key, value }: TableColumnActionDetail) => {\n    const columnKey = key as ColumnKey | undefined;\n    if (action === \"add\") insertColumn();\n    else if ((action === \"sort-ascending\" || action === \"sort-descending\") && columnKey) setSort({ key: columnKey, direction: action === \"sort-ascending\" ? \"ascending\" : \"descending\" });\n    else if (action === \"duplicate\" && columnKey) {\n      const source = columns.find((c) => c.key === columnKey)!;\n      const copy: Column = { ...source, key: `column-${++nextColumn.current}`, label: `${source.label} copy` };\n      setColumns((list) => [...list, copy]);\n      setColumnOrder((list) => {\n        const next = [...list];\n        next.splice(next.indexOf(columnKey) + 1, 0, copy.key);\n        return next;\n      });\n      setValues((all) => Object.fromEntries(accounts.map((a) => [a.id, { ...all[a.id], [copy.key]: shownValue(a, columnKey) }])));\n    } else if (action === \"hide\" && columnKey) {\n      setHidden((list) => [...list, columnKey]);\n    } else if (action === \"delete\" && columnKey) {\n      setColumns((list) => list.filter((c) => c.key !== columnKey));\n      setColumnOrder((list) => list.filter((k) => k !== columnKey));\n      setSort((current) => (current?.key === columnKey ? null : current));\n    } else if (action === \"insert-before\" || action === \"insert-after\") insertColumn(columnKey, action === \"insert-after\");\n    else if (action === \"freeze\" && columnKey) {\n      if (columnKey === \"name\") setPinName((on) => !on);\n      else setFrozen((list) => list.includes(columnKey) ? list.filter((k) => k !== columnKey) : [...list, columnKey]);\n    } else if (action === \"wrap\" && columnKey) setWrapped((list) => list.includes(columnKey) ? list.filter((k) => k !== columnKey) : [...list, columnKey]);\n    else if (action === \"icon\" && columnKey) setColumns((list) => list.map((c) => c.key === columnKey ? { ...c, icon: value || undefined } : c));\n    else if (action === \"filter\" || action === \"group\") setTimeout(() => (action === \"filter\" ? filterTrigger : groupTrigger).current?.click(), 0);\n    else if (action === \"group-by\") {\n      setGrouped(value !== \"none\");\n      if (value && value !== \"none\") setGroupKey(value as ColumnKey);\n    }\n    return false;\n  };\n  const columnMenu = (column: Column) => (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <button type=\"button\" className=\"ayy-table__sort\">\n          <span className=\"ayy-table__column-label\">\n            {column.icon ? <span className=\"ayy-table__column-icon\" aria-hidden=\"true\">{columnIcon(column.icon)}</span> : null}\n            {column.label}\n          </span>\n        </button>\n      </DropdownMenuTrigger>\n      {/* The icon panel is a dialog, which a menu can't hold: its DropdownMenuSub wraps the menu, and the panel follows it. */}\n      <DropdownMenuSub>\n        <DropdownMenuContent>\n          <DropdownMenuLabel>{column.label}</DropdownMenuLabel>\n          <DropdownMenuSubTrigger icon={<Icon icon={SmileIcon} name=\"smile\" />} aria-haspopup=\"dialog\">{column.icon ? \"Change icon\" : \"Add icon\"}</DropdownMenuSubTrigger>\n          <DropdownMenuSeparator />\n          <DropdownMenuItem disabled={!frame} data-column-action=\"filter\"><Icon icon={FilterHorizontalIcon} name=\"settings-2\" />Filter</DropdownMenuItem>\n          <DropdownMenuSub>\n            <DropdownMenuSubTrigger icon={<Icon icon={SortByDown02Icon} name=\"sort\" />}>Sort</DropdownMenuSubTrigger>\n            <DropdownMenuSubContent>\n              <DropdownMenuItem role=\"menuitemradio\" closeOnSelect selected={sort?.key === column.key && sort.direction === \"ascending\"} data-column-action=\"sort-ascending\"><Icon icon={ArrangeByLettersAZIcon} name=\"sort-a-z\" />Sort ascending</DropdownMenuItem>\n              <DropdownMenuItem role=\"menuitemradio\" closeOnSelect selected={sort?.key === column.key && sort.direction === \"descending\"} data-column-action=\"sort-descending\"><Icon icon={ArrangeByLettersZAIcon} name=\"sort-z-a\" />Sort descending</DropdownMenuItem>\n            </DropdownMenuSubContent>\n          </DropdownMenuSub>\n          <DropdownMenuItem disabled={!frame} data-column-action=\"group\"><Icon icon={GroupItemsIcon} name=\"group\" />Group</DropdownMenuItem>\n          <DropdownMenuCheckboxItem checked={isPinned(column.key)} data-column-action=\"freeze\"><Icon icon={PinIcon} name=\"pin\" />Freeze</DropdownMenuCheckboxItem>\n          <DropdownMenuCheckboxItem checked={wrapped.includes(column.key)} data-column-action=\"wrap\"><Icon icon={TextWrapIcon} name=\"text-wrap\" />Wrap content</DropdownMenuCheckboxItem>\n          <DropdownMenuSeparator />\n          <DropdownMenuItem data-column-action=\"insert-left\"><Icon icon={InsertColumnLeftIcon} name=\"column-insert-left\" directional />Insert left</DropdownMenuItem>\n          <DropdownMenuItem data-column-action=\"insert-right\"><Icon icon={InsertColumnRightIcon} name=\"column-insert-right\" directional />Insert right</DropdownMenuItem>\n          <DropdownMenuSeparator />\n          <DropdownMenuItem data-column-action=\"duplicate\"><Icon icon={CopyPlusIcon} name=\"copy-plus\" />Duplicate</DropdownMenuItem>\n          <DropdownMenuItem data-column-action=\"hide\"><Icon icon={ViewOffIcon} name=\"eye-closed\" />Hide</DropdownMenuItem>\n          <DropdownMenuItem destructive data-column-action=\"delete\"><Icon icon={ColumnDeleteIcon} name=\"column-delete\" />Delete</DropdownMenuItem>\n        </DropdownMenuContent>\n        <DropdownMenuSubContent role=\"dialog\" aria-label={`${column.label} icon`}>\n          <IconPicker data-column-action=\"icon\" value={column.icon ?? \"\"} icons={COLUMN_ICONS} />\n        </DropdownMenuSubContent>\n      </DropdownMenuSub>\n    </DropdownMenu>\n  );\n\n  const onColumnReorder = ({ from, to }: { from: number; to: number }) => {\n    const offset = (rowReorder ? 1 : 0) + (expandable ? 1 : 0) + (selectable ? 1 : 0);\n    const fromCol = from - offset;\n    const toCol = to - offset;\n    if (fromCol >= 0 && toCol >= 0 && fromCol < visibleKeys.length && toCol < visibleKeys.length) {\n      setColumnOrder((prev) => {\n        const next = [...prev];\n        const fromKey = visibleKeys[fromCol];\n        const toKey = visibleKeys[toCol];\n        const fi = next.indexOf(fromKey);\n        const ti = next.indexOf(toKey);\n        if (fi >= 0 && ti >= 0) {\n          const [moved] = next.splice(fi, 1);\n          next.splice(ti, 0, moved);\n        }\n        return next;\n      });\n    }\n    return false;\n  };\n  const matches = accounts.filter((a) => {\n    const matchesQuery = `${a.name} ${a.email} ${a.id}`.toLowerCase().includes(query.trim().toLowerCase());\n    const matchesStatus = statusFilter.length === 0 || statusFilter.includes(a.status);\n    const matchesPlan = planFilter.length === 0 || planFilter.includes(a.plan);\n    return matchesQuery && matchesStatus && matchesPlan;\n  });\n  const filterCount = statusFilter.length + planFilter.length;\n  const sorted = sort ? [...matches].sort((a, b) => compareValues(valueOf(a, sort.key), valueOf(b, sort.key), sort.direction)) : matches;\n  const pages = Math.max(1, Math.ceil(sorted.length / pageSize));\n  const current = Math.min(page, pages);\n  const shown = frame ? sorted.slice((current - 1) * pageSize, current * pageSize) : sorted;\n  const groupLabel = (account: Account) => {\n    const value = valueOf(account, groupKey);\n    return value === \"\" || value == null ? \"Empty\" : String(value);\n  };\n  const groupLabels = groupKey === \"status\" ? GROUP_ORDER : [...new Set(shown.map(groupLabel))];\n  const groups = grouped\n    ? groupLabels.map((status) => ({ status, rows: shown.filter((a) => groupLabel(a) === status) })).filter((g) => g.rows.length)\n    : [{ status: null, rows: shown }];\n  const columnCount = visible.length + 2 + (rowReorder ? 1 : 0) + (selectable ? 1 : 0) + (expandable ? 1 : 0);\n  const selectableIds = shown.filter((a) => !(disabledRows && a.status === \"Closed\")).map((a) => a.id);\n  const allOn = selectableIds.length > 0 && selectableIds.every((id) => selected.includes(id));\n  const someOn = selectableIds.some((id) => selected.includes(id));\n\n  const isClosed = (account: Account) => disabledRows && account.status === \"Closed\";\n  // Dropping a row writes the order you see into the list and turns sorting off, so the new order sticks. Closed rows can't be picked up and keep their slot.\n  const onRowReorder = ({ from, to }: TableRowReorderDetail) => {\n    const onScreen = groups.flatMap((g) => g.rows);\n    const ids = onScreen.filter((a) => !isClosed(a)).map((a) => a.id);\n    const [moved] = ids.splice(from, 1);\n    ids.splice(to, 0, moved);\n    const order = onScreen.map((a) => (isClosed(a) ? a.id : ids.shift()!));\n    const byId = new Map(accounts.map((a) => [a.id, a]));\n    const start = frame ? (current - 1) * pageSize : 0;\n    const full = sorted.map((a) => a.id);\n    full.splice(start, order.length, ...order);\n    setAccounts([...full.map((id) => byId.get(id)!), ...accounts.filter((a) => !full.includes(a.id))]);\n    setSort(null);\n    return false;\n  };\n  const flip = (list: string[], id: string, on: boolean) => (on ? [...list, id] : list.filter((x) => x !== id));\n  const cell = (account: Account, key: ColumnKey, closed: boolean) => {\n    switch (key) {\n      case \"name\":\n        return (\n          <TableCell key={key} {...columnProps(key)} pin={pinName}>\n            <TableMedia>\n              <Avatar name={account.name} size=\"sm\" />\n              <div>\n                {rowLinks && !pinName && !closed ? (\n                  <TableRowLink href={`#${account.id.toLowerCase()}`}>{account.name}</TableRowLink>\n                ) : (\n                  <span>{account.name}</span>\n                )}\n                <TableSecondary>{account.email}</TableSecondary>\n              </div>\n            </TableMedia>\n          </TableCell>\n        );\n      case \"plan\":\n        return (\n          <TableCell key={key} {...columnProps(key)}>\n            {editable && !closed ? (\n              <TableEdit\n                multiline={wrapped.includes(key)}\n                aria-label={`Plan for ${account.name}`}\n                value={account.plan}\n                onValueCommit={(v) => updateAccount(account.id, { plan: v || account.plan })}\n              />\n            ) : (\n              account.plan\n            )}\n          </TableCell>\n        );\n      case \"status\":\n        return (\n          <TableCell key={key} {...columnProps(key)}>\n            <Badge variant={STATUS_BADGE[account.status]}>{account.status}</Badge>\n          </TableCell>\n        );\n      case \"seats\":\n        return (\n          <TableCell key={key} {...columnProps(key)} numeric data-sort-value={account.seats}>\n            {editable && !closed ? (\n              <TableEdit\n                multiline={wrapped.includes(key)}\n                aria-label={`Seats for ${account.name}`}\n                inputMode=\"numeric\"\n                value={String(account.seats)}\n                onValueCommit={(v) => {\n                  const n = Number(v.replace(/[^0-9.-]/g, \"\"));\n                  if (Number.isFinite(n) && n >= 0) updateAccount(account.id, { seats: Math.round(n) });\n                }}\n              />\n            ) : (\n              account.seats\n            )}\n          </TableCell>\n        );\n      case \"mrr\":\n        return (\n          <TableCell key={key} {...columnProps(key)} numeric data-sort-value={account.mrr}>\n            {editable && !closed ? (\n              <TableEdit\n                multiline={wrapped.includes(key)}\n                aria-label={`MRR for ${account.name}`}\n                value={money.format(account.mrr)}\n                onValueCommit={(v) => {\n                  const n = Number(v.replace(/[^0-9.-]/g, \"\"));\n                  if (Number.isFinite(n) && n >= 0) updateAccount(account.id, { mrr: Math.round(n) });\n                }}\n              />\n            ) : (\n              money.format(account.mrr)\n            )}\n          </TableCell>\n        );\n      case \"renews\":\n        return (\n          <TableCell key={key} {...columnProps(key)} className=\"ayy-muted\">\n            {account.renews === \"—\" ? \"—\" : day.format(new Date(`${account.renews}T00:00:00`))}\n          </TableCell>\n        );\n      case \"note\":\n        return (\n          <TableCell key={key} {...columnProps(key)} className=\"ayy-muted\" truncate={!editable && truncate}>\n            {editable && !closed ? (\n              <TableEdit\n                multiline={wrapped.includes(key)}\n                aria-label={`Last note for ${account.name}`}\n                value={account.note}\n                onValueCommit={(v) => updateAccount(account.id, { note: v })}\n              />\n            ) : (\n              account.note\n            )}\n          </TableCell>\n        );\n      default:\n        return <TableCell key={key} {...columnProps(key)}><TableEdit multiline={wrapped.includes(key)} aria-label={`${columns.find((c) => c.key === key)?.label} for ${account.name}`} value={values[account.id]?.[key] ?? \"\"} disabled={closed} onValueCommit={(value) => setValues((all) => ({ ...all, [account.id]: { ...all[account.id], [key]: value } }))} /></TableCell>;\n    }\n  };\n\n  const row = (account: Account) => {\n    const closed = disabledRows && account.status === \"Closed\";\n    const open = expanded.includes(account.id);\n    return (\n      <Fragment key={account.id}>\n        <TableRow data-id={account.id} selected={selectable ? selected.includes(account.id) : undefined} disabled={closed}>\n          {rowReorder ? (\n            <TableCell reorder>\n              <DragHandle aria-label={`Move ${account.name}`} disabled={closed} tooltip={false} />\n            </TableCell>\n          ) : null}\n          {expandable ? (\n            <TableCell>\n              <TableExpand\n                expanded={open}\n                aria-controls={`${account.id}-detail`}\n                aria-label={`Show details for ${account.name}`}\n                onClick={() => setExpanded((list) => flip(list, account.id, !open))}\n              />\n            </TableCell>\n          ) : null}\n          {selectable ? (\n            <TableCell select>\n              <Checkbox\n                aria-label={`Select ${account.name}`}\n                checked={selected.includes(account.id)}\n                disabled={closed}\n                onCheckedChange={(on) => setSelected((list) => flip(list, account.id, on))}\n              />\n            </TableCell>\n          ) : null}\n          {visible.map((c) => cell(account, c.key, closed))}\n          <TableCell className=\"ayy-table__add-column\" />\n          <TableCell actions pin={pinActions ? \"end\" : undefined}>\n            <TableRowActions reveal={reveal}>\n              <Button variant=\"ghost\" size=\"icon-sm\" aria-label={`Edit ${account.name}`} disabled={closed} onClick={() => toast(`Edit ${account.name}`)}>\n                <Icon icon={PencilEdit02Icon} name=\"square-pen\" />\n              </Button>\n              <DropdownMenu>\n                <DropdownMenuTrigger variant=\"ghost\" size=\"icon-sm\" aria-label={`More actions for ${account.name}`} disabled={closed}>\n                  <Icon icon={MoreHorizontalIcon} name=\"ellipsis\" />\n                </DropdownMenuTrigger>\n                <DropdownMenuContent align=\"end\">\n                  <DropdownMenuItem onSelect={() => toast.success(`Duplicated ${account.name}`)}>\n                    <Icon icon={Copy01Icon} name=\"copy\" />\n                    Duplicate\n                  </DropdownMenuItem>\n                  <DropdownMenuItem onSelect={() => toast(`Archived ${account.name}`)}>\n                    <Icon icon={Archive02Icon} name=\"archive\" />\n                    Archive\n                  </DropdownMenuItem>\n                  <DropdownMenuSeparator />\n                  <DropdownMenuItem destructive onSelect={() => toast.error(`Deleted ${account.name}`)}>\n                    <Icon icon={Delete02Icon} name=\"trash\" />\n                    Delete\n                  </DropdownMenuItem>\n                </DropdownMenuContent>\n              </DropdownMenu>\n            </TableRowActions>\n          </TableCell>\n        </TableRow>\n        {expandable ? (\n          <TableRow detail id={`${account.id}-detail`}>\n            <TableCell />\n            {selectable ? <TableCell /> : null}\n            <TableCell colSpan={visible.length + 2}>\n              <span className=\"ayy-small\">\n                {account.id} · {account.note}\n              </span>\n            </TableCell>\n          </TableRow>\n        ) : null}\n      </Fragment>\n    );\n  };\n\n  const table = (\n    <Table\n      key={`${resizable}-${reorderable}-${selectable}-${expandable}-${hidden.join()}`}\n      size={size}\n      bordered={bordered}\n      sticky={sticky}\n      reorderable={reorderable}\n      onColumnReorder={onColumnReorder}\n      onRowReorder={onRowReorder}\n      onColumnAction={onColumnAction}\n      aria-busy={loading || undefined}\n      aria-labelledby={frame ? \"tp-title\" : undefined}\n      wrapperProps={!frame && sticky ? { style: { maxBlockSize: \"20rem\" } } : undefined}\n    >\n      {frame ? null : <TableCaption className=\"ayy-sr-only\">Accounts</TableCaption>}\n      <TableHeader>\n        <TableRow>\n          {rowReorder ? (\n            <TableHead reorder reorderable={false}>\n              <span className=\"ayy-sr-only\">Reorder</span>\n            </TableHead>\n          ) : null}\n          {expandable ? (\n            <TableHead reorderable={false}>\n              <span className=\"ayy-sr-only\">Details</span>\n            </TableHead>\n          ) : null}\n          {selectable ? (\n            <TableHead select>\n              <Checkbox\n                aria-label=\"Select all accounts on this page\"\n                checked={allOn}\n                indeterminate={someOn && !allOn}\n                onCheckedChange={(on) => setSelected((list) => (on ? [...new Set([...list, ...selectableIds])] : list.filter((id) => !selectableIds.includes(id))))}\n              />\n            </TableHead>\n          ) : null}\n          {visible.map((c) => (\n            <TableHead\n              key={c.key}\n              numeric={c.numeric}\n              pin={isPinned(c.key)}\n              wrap={wrapped.includes(c.key)}\n              aria-sort={sort?.key === c.key ? sort.direction : undefined}\n              reorderable={reorderable && !isPinned(c.key)}\n              data-key={c.key}\n            >\n              {columnMenu(c)}\n              {resizable ? <TableResize aria-label={`Resize ${c.label}`} /> : null}\n            </TableHead>\n          ))}\n          <TableHead className=\"ayy-table__add-column\">\n            <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Add column\" data-column-action=\"add\"><Icon icon={Add01Icon} name=\"add\" /></Button>\n          </TableHead>\n          <TableHead actions pin={pinActions ? \"end\" : undefined}>\n            <span className=\"ayy-sr-only\">Actions</span>\n          </TableHead>\n        </TableRow>\n      </TableHeader>\n      {!visible.length ? (\n        <TableBody><TableEmpty colSpan={columnCount}><EmptyState compact><EmptyStateTitle>No columns</EmptyStateTitle><EmptyStateDescription>Use the + in the header to add a column, or show columns from the Columns menu.</EmptyStateDescription></EmptyState></TableEmpty></TableBody>\n      ) : shown.length ? (\n        groups.map((g) => (\n          <TableBody key={g.status ?? \"all\"}>\n            {g.status ? <TableGroup colSpan={columnCount}>{g.status} · {g.rows.length}</TableGroup> : null}\n            {g.rows.map(row)}\n          </TableBody>\n        ))\n      ) : (\n        <TableBody>\n          <TableEmpty colSpan={columnCount}>\n            <EmptyState compact>\n              <EmptyStateTitle>No accounts match “{query}”</EmptyStateTitle>\n              <EmptyStateDescription>Check the spelling, or search by email or account ID.</EmptyStateDescription>\n              <Button\n                size=\"sm\"\n                variant=\"outline\"\n                onClick={() => {\n                  setQuery(\"\");\n                  setStatusFilter([]);\n                  setPlanFilter([]);\n                }}\n              >\n                Clear search and filters\n              </Button>\n            </EmptyState>\n          </TableEmpty>\n        </TableBody>\n      )}\n      <TableFooter>\n        <TableRow>\n          {rowReorder ? <TableCell reorder /> : null}\n          {expandable ? <TableCell /> : null}\n          {selectable ? <TableCell select /> : null}\n          {visible.map((c) => {\n            if (c.key === \"name\") {\n              return (\n                <TableCell key={c.key} {...columnProps(c.key)} pin={pinName}>\n                  Total\n                </TableCell>\n              );\n            }\n            if (c.key === \"seats\") {\n              return (\n                <TableCell key={c.key} {...columnProps(c.key)} numeric data-sort-value={matches.reduce((s, a) => s + a.seats, 0)}>\n                  {matches.reduce((s, a) => s + a.seats, 0)}\n                </TableCell>\n              );\n            }\n            if (c.key === \"mrr\") {\n              return (\n                <TableCell key={c.key} {...columnProps(c.key)} numeric data-sort-value={matches.reduce((s, a) => s + a.mrr, 0)}>\n                  {money.format(matches.reduce((s, a) => s + a.mrr, 0))}\n                </TableCell>\n              );\n            }\n            return <TableCell key={c.key} {...columnProps(c.key)} />;\n          })}\n          <TableCell className=\"ayy-table__add-column\" />\n          <TableCell actions pin={pinActions ? \"end\" : undefined} />\n        </TableRow>\n      </TableFooter>\n    </Table>\n  );\n\n  const actionBar = (\n    <ActionBar open={selectable && selected.length > 0} onClear={() => setSelected([])}>\n      <ActionBarSelection>\n        <ActionBarCount>{selected.length} selected</ActionBarCount>\n        <ActionBarClose />\n      </ActionBarSelection>\n      <ActionBarSeparator />\n      <ActionBarActions>\n        <ActionBarButton onClick={() => toast(`Editing ${selected.length} accounts`)}>\n          <Icon icon={PencilEdit02Icon} name=\"square-pen\" />\n          Edit\n        </ActionBarButton>\n        <ActionBarButton onClick={() => toast.success(`Exported ${selected.length} accounts`)}>\n          <Icon icon={Copy01Icon} name=\"copy\" />\n          Export\n        </ActionBarButton>\n        <ActionBarButton onClick={() => toast(`Archived ${selected.length} accounts`)}>\n          <Icon icon={Archive02Icon} name=\"archive\" />\n          Archive\n        </ActionBarButton>\n        <ActionBarButton\n          destructive\n          onClick={() => {\n            toast.error(`Deleted ${selected.length} accounts`);\n            setSelected([]);\n          }}\n        >\n          <Icon icon={Delete02Icon} name=\"trash\" />\n          Delete\n        </ActionBarButton>\n      </ActionBarActions>\n    </ActionBar>\n  );\n\n  if (!frame) {\n    return (\n      <div style={{ inlineSize: \"100%\" }}>\n        {table}\n        {actionBar}\n      </div>\n    );\n  }\n\n  return (\n    <>\n      <TableContainer style={{ inlineSize: \"100%\", maxBlockSize: sticky ? \"32rem\" : undefined }}>\n        <TableToolbar>\n          <TableHeading>\n            <TableTitle id=\"tp-title\">Accounts</TableTitle>\n            <TableDescription>\n              {selected.length ? `${selected.length} selected · ` : \"\"}\n              {matches.length} of {ACCOUNTS.length} accounts\n              {statusFilter.length > 0 || planFilter.length > 0 ? \" (filtered)\" : \"\"}\n            </TableDescription>\n          </TableHeading>\n          <TableTools>\n            <div style={{ inlineSize: \"14rem\" }}>\n              <SearchBar\n                label=\"Search accounts\"\n                placeholder=\"Search accounts\"\n                value={query}\n                onValueChange={(v) => {\n                  setQuery(v);\n                  setPage(1);\n                }}\n              />\n            </div>\n            <DropdownMenu>\n              <DropdownMenuTrigger ref={filterTrigger} variant={filterCount ? \"secondary\" : \"outline\"} size=\"icon\" aria-label={filterCount ? `Filters (${filterCount} active)` : \"Filters\"} data-table-control=\"filters\">\n                <Icon icon={FilterHorizontalIcon} name=\"settings-2\" />\n              </DropdownMenuTrigger>\n              <DropdownMenuContent align=\"end\" aria-label=\"Filter options\" style={{ minInlineSize: \"13rem\" }}>\n                <DropdownMenuLabel>Filter by</DropdownMenuLabel>\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger icon={<Icon icon={Flag01Icon} name=\"flag\" />} value={statusFilter.length || undefined}>Status</DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Status options\">\n                    {([\"Active\", \"Trial\", \"Past due\", \"Closed\"] as Status[]).map((st) => (\n                      <DropdownMenuSelectedItem\n                        key={st}\n                        selected={statusFilter.includes(st)}\n                        onSelectedChange={(on) => {\n                          setStatusFilter((list) => (on ? [...list, st] : list.filter((s) => s !== st)));\n                          setPage(1);\n                        }}\n                        value={accounts.filter((a) => a.status === st).length}\n                      >\n                        {st}\n                      </DropdownMenuSelectedItem>\n                    ))}\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger icon={<Icon icon={Tag01Icon} name=\"tag\" />} value={planFilter.length || undefined}>Plan</DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Plan options\">\n                    {[\"Enterprise\", \"Team\", \"Starter\"].map((pl) => (\n                      <DropdownMenuSelectedItem\n                        key={pl}\n                        selected={planFilter.includes(pl)}\n                        onSelectedChange={(on) => {\n                          setPlanFilter((list) => (on ? [...list, pl] : list.filter((p) => p !== pl)));\n                          setPage(1);\n                        }}\n                        value={accounts.filter((a) => a.plan === pl).length}\n                      >\n                        {pl}\n                      </DropdownMenuSelectedItem>\n                    ))}\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n                {filterCount ? (\n                  <>\n                    <DropdownMenuSeparator />\n                    <DropdownMenuItem destructive onSelect={() => { setStatusFilter([]); setPlanFilter([]); setPage(1); }}>Reset filters</DropdownMenuItem>\n                  </>\n                ) : null}\n              </DropdownMenuContent>\n            </DropdownMenu>\n            <DropdownMenu>\n              <DropdownMenuTrigger variant={sort ? \"secondary\" : \"outline\"} size=\"icon\" aria-label={sort ? `Sort (${columns.find((c) => c.key === sort.key)?.label ?? sort.key}, ${sort.direction})` : \"Sort\"} data-table-control=\"sort\">\n                <Icon icon={ArrowUpDownIcon} name=\"arrow-up-down\" />\n              </DropdownMenuTrigger>\n              <DropdownMenuContent align=\"end\" aria-label=\"Sort options\" style={{ minInlineSize: \"13rem\" }}>\n                <DropdownMenuLabel>Sort by</DropdownMenuLabel>\n                {columns.map((c) => (\n                  <DropdownMenuSub key={c.key}>\n                    <DropdownMenuSubTrigger>{c.label}</DropdownMenuSubTrigger>\n                    <DropdownMenuSubContent aria-label={`Sort ${c.label}`}>\n                      <DropdownMenuRadioGroup value={sort?.key === c.key ? sort.direction : \"\"}>\n                        <DropdownMenuRadioItem value=\"ascending\" data-column-action=\"sort-ascending\" data-column-key={c.key}>{c.numeric ? \"Low to high\" : \"A to Z\"}</DropdownMenuRadioItem>\n                        <DropdownMenuRadioItem value=\"descending\" data-column-action=\"sort-descending\" data-column-key={c.key}>{c.numeric ? \"High to low\" : \"Z to A\"}</DropdownMenuRadioItem>\n                      </DropdownMenuRadioGroup>\n                    </DropdownMenuSubContent>\n                  </DropdownMenuSub>\n                ))}\n              </DropdownMenuContent>\n            </DropdownMenu>\n            <DropdownMenu>\n              <DropdownMenuTrigger ref={groupTrigger} variant=\"outline\" size=\"icon\" aria-label=\"Table options\" data-table-control=\"groups\">\n                <Icon icon={LayoutTable01Icon} name=\"layout-table\" />\n              </DropdownMenuTrigger>\n              <DropdownMenuContent align=\"end\" aria-label=\"Table options\" style={{ minInlineSize: \"13rem\" }}>\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger icon={<Icon icon={GroupItemsIcon} name=\"group\" />}>Group by</DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Group by\">\n                    <DropdownMenuRadioGroup value={grouped ? groupKey : \"none\"}>\n                      <DropdownMenuRadioItem value=\"none\" data-column-action=\"group-by\" data-column-value=\"none\">No groups</DropdownMenuRadioItem>\n                      {columns.map((c) => <DropdownMenuRadioItem key={c.key} value={c.key} data-column-action=\"group-by\" data-column-value={c.key}>{c.label}</DropdownMenuRadioItem>)}\n                    </DropdownMenuRadioGroup>\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n                <DropdownMenuSub>\n                  <DropdownMenuSubTrigger icon={<Icon icon={LayoutTable01Icon} name=\"layout-table\" />}>Columns</DropdownMenuSubTrigger>\n                  <DropdownMenuSubContent aria-label=\"Columns\">\n                    {columns.map((c) => (\n                      <DropdownMenuCheckboxItem\n                        key={c.key}\n                        checked={!hidden.includes(c.key)}\n                        onCheckedChange={(on) => setHidden((list) => (on ? list.filter((k) => k !== c.key) : [...list, c.key]))}\n                      >\n                        {c.label}\n                      </DropdownMenuCheckboxItem>\n                    ))}\n                  </DropdownMenuSubContent>\n                </DropdownMenuSub>\n              </DropdownMenuContent>\n            </DropdownMenu>\n            <Button onClick={() => toast(\"New account\")}>\n              <Icon icon={Add01Icon} name=\"add\" />\n              Add account\n            </Button>\n          </TableTools>\n        </TableToolbar>\n        {table}\n        <TablePager>\n          <span>\n            {sorted.length ? `${(current - 1) * pageSize + 1}–${Math.min(current * pageSize, sorted.length)} of ${sorted.length}` : \"0 of 0\"}\n          </span>\n          <Pagination\n            page={current}\n            count={pages}\n            onPageChange={setPage}\n            pageSize={pageSize}\n            pageSizeOptions={PAGE_SIZE_OPTIONS}\n            onPageSizeChange={(size) => {\n              setPageSize(size);\n              setPage(1);\n            }}\n          />\n        </TablePager>\n      </TableContainer>\n      {actionBar}\n    </>\n  );\n}"
         }
       ],
+      "family": "data-views",
       "files": {
         "css": "src/components/table/table.css",
         "js": "src/components/table/table.ts",
@@ -15489,10 +15526,9 @@
       }
     },
     {
-      "name": "Grid",
+      "name": "Card grid",
       "slug": "grid",
       "category": "Data display",
-      "family": "table",
       "description": "A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar.",
       "aka": [
         "data-grid",
@@ -15674,6 +15710,7 @@
           "react": "import { useState } from \"react\";\nimport {\n  Archive02Icon,\n  Copy01Icon,\n  CopyLinkIcon,\n  Delete02Icon,\n  MoreHorizontalIcon,\n  PencilEdit02Icon,\n} from \"@hugeicons/core-free-icons\";\nimport {\n  ActionBar,\n  ActionBarActions,\n  ActionBarButton,\n  ActionBarClose,\n  ActionBarCount,\n  ActionBarSelection,\n  ActionBarSeparator,\n  Avatar,\n  Badge,\n  Button,\n  Checkbox,\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n  Grid,\n  GridItem,\n  GridItemActions,\n  GridItemBody,\n  GridItemDescription,\n  GridItemFooter,\n  GridItemHeader,\n  GridItemSelect,\n  GridItemTitle,\n  GridSelectAll,\n  GridToolbar,\n  GridWrap,\n  Icon,\n  toast,\n} from \"@danitesler/ayywi/react\";\n\nconst records = [\n  {\n    id: \"usr-1\",\n    name: \"Maya Lin\",\n    role: \"Staff Product Designer · Design Systems\",\n    summary: \"Owns token architecture, accessibility reviews and Figma library sync.\",\n    status: \"Active\",\n    variant: \"success\",\n    team: \"Core UI\",\n  },\n  {\n    id: \"usr-2\",\n    name: \"Ari Cohen\",\n    role: \"Lead Frontend Engineer · Platform\",\n    summary: \"Maintains custom elements runtime, SSR pipelines and bundle budgets.\",\n    status: \"In review\",\n    variant: \"warning\",\n    team: \"Web Runtime\",\n  },\n  {\n    id: \"usr-3\",\n    name: \"Noa Levi\",\n    role: \"Content Strategist · Social & Growth\",\n    summary: \"Manages Q4 launch campaigns, social post templates and release notes.\",\n    status: \"Active\",\n    variant: \"info\",\n    team: \"Marketing\",\n  },\n] as const;\n\nexport default function Example() {\n  const [selected, setSelected] = useState<string[]>([\"usr-1\"]);\n  const all = selected.length === records.length;\n  const toggle = (id: string, on: boolean) =>\n    setSelected((list) => (on ? [...list, id] : list.filter((x) => x !== id)));\n\n  return (\n    <GridWrap>\n      <GridToolbar>\n        <GridSelectAll>\n          <Checkbox\n            aria-label=\"Select all records\"\n            checked={all}\n            indeterminate={selected.length > 0 && !all}\n            onCheckedChange={(on) => setSelected(on ? records.map((r) => r.id) : [])}\n          />\n          <span>{selected.length ? `${selected.length} selected` : `${records.length} records`}</span>\n        </GridSelectAll>\n      </GridToolbar>\n\n      <Grid>\n        {records.map((person) => {\n          const isSelected = selected.includes(person.id);\n          return (\n            <GridItem\n              key={person.id}\n              selected={isSelected}\n              onSelectedChange={(on) => toggle(person.id, on)}\n            >\n              <GridItemHeader>\n                <div className=\"ayy-cluster\" style={{ \"--ayy-gap\": \"var(--ayy-space-3)\" } as React.CSSProperties}>\n                  <GridItemSelect>\n                    <Checkbox\n                      aria-label={`Select ${person.name}`}\n                      checked={isSelected}\n                      onCheckedChange={(on) => toggle(person.id, on)}\n                    />\n                  </GridItemSelect>\n                  <Avatar name={person.name} size=\"sm\" />\n                  <div>\n                    <GridItemTitle>{person.name}</GridItemTitle>\n                    <GridItemDescription>{person.role}</GridItemDescription>\n                  </div>\n                </div>\n                <GridItemActions>\n                  <Button\n                    variant=\"ghost\"\n                    size=\"icon-sm\"\n                    aria-label={`Edit ${person.name}`}\n                    onClick={() => toast(`Edit ${person.name}`)}\n                  >\n                    <Icon icon={PencilEdit02Icon} name=\"square-pen\" />\n                  </Button>\n                  <DropdownMenu>\n                    <DropdownMenuTrigger\n                      variant=\"ghost\"\n                      size=\"icon-sm\"\n                      aria-label={`More actions for ${person.name}`}\n                    >\n                      <Icon icon={MoreHorizontalIcon} name=\"ellipsis\" />\n                    </DropdownMenuTrigger>\n                    <DropdownMenuContent align=\"end\">\n                      <DropdownMenuLabel>{person.name}</DropdownMenuLabel>\n                      <DropdownMenuItem onSelect={() => toast(`Edit ${person.name}`)}>\n                        <Icon icon={PencilEdit02Icon} name=\"square-pen\" />\n                        Edit record\n                      </DropdownMenuItem>\n                      <DropdownMenuItem onSelect={() => toast.success(`Duplicated ${person.name}`)} shortcut=\"Mod+D\">\n                        <Icon icon={Copy01Icon} name=\"copy\" />\n                        Duplicate\n                      </DropdownMenuItem>\n                      <DropdownMenuItem onSelect={() => toast.success(`Copied ${person.name}`)} shortcut=\"Mod+C\">\n                        <Icon icon={CopyLinkIcon} name=\"square-link\" />\n                        Copy profile link\n                      </DropdownMenuItem>\n                      <DropdownMenuItem onSelect={() => toast(`Archived ${person.name}`)}>\n                        <Icon icon={Archive02Icon} name=\"archive\" />\n                        Archive\n                      </DropdownMenuItem>\n                      <DropdownMenuSeparator />\n                      <DropdownMenuItem destructive onSelect={() => toast.error(`Removed ${person.name}`)}>\n                        <Icon icon={Delete02Icon} name=\"trash\" />\n                        Delete\n                      </DropdownMenuItem>\n                    </DropdownMenuContent>\n                  </DropdownMenu>\n                </GridItemActions>\n              </GridItemHeader>\n\n              <GridItemBody>\n                <p>{person.summary}</p>\n              </GridItemBody>\n\n              <GridItemFooter>\n                <Badge variant={person.variant}>{person.status}</Badge>\n                <span>{person.team}</span>\n              </GridItemFooter>\n            </GridItem>\n          );\n        })}\n      </Grid>\n\n      <ActionBar open={selected.length > 0} onClear={() => setSelected([])}>\n        <ActionBarSelection>\n          <ActionBarCount>{selected.length} selected</ActionBarCount>\n          <ActionBarClose />\n        </ActionBarSelection>\n        <ActionBarSeparator />\n        <ActionBarActions>\n          <ActionBarButton onClick={() => toast(`Editing ${selected.length} records`)}>\n            <Icon icon={PencilEdit02Icon} name=\"square-pen\" />\n            Edit\n          </ActionBarButton>\n          <ActionBarButton onClick={() => toast.success(`Duplicated ${selected.length} records`)}>\n            <Icon icon={Copy01Icon} name=\"copy\" />\n            Duplicate\n          </ActionBarButton>\n          <ActionBarButton onClick={() => toast.success(`Copied ${selected.length} records`)}>\n            <Icon icon={CopyLinkIcon} name=\"square-link\" />\n            Copy\n          </ActionBarButton>\n          <ActionBarButton onClick={() => toast(`Archived ${selected.length} records`)}>\n            <Icon icon={Archive02Icon} name=\"archive\" />\n            Archive\n          </ActionBarButton>\n          <ActionBarButton\n            destructive\n            onClick={() => {\n              toast.error(`Deleted ${selected.length} records`);\n              setSelected([]);\n            }}\n          >\n            <Icon icon={Delete02Icon} name=\"trash\" />\n            Delete\n          </ActionBarButton>\n        </ActionBarActions>\n      </ActionBar>\n    </GridWrap>\n  );\n}"
         }
       ],
+      "family": "data-views",
       "files": {
         "css": "src/components/grid/grid.css",
         "js": "src/components/grid/grid.ts",

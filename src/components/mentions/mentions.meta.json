@@ -2,7 +2,6 @@
   "name": "Mentions",
   "slug": "mentions",
   "category": "Forms",
-  "family": "input",
   "description": "A multi-line text field that opens a floating suggestions list right at the caret when someone types @ or #, for tagging teammates, channels or issues inside comments and notes.",
   "aka": ["mentions", "mention-input", "mention-field", "at-mentions"],
   "classes": {

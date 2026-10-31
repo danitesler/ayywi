@@ -272,8 +272,8 @@ for (const renderer of ["react", "html"] as const) {
 
 test("FAB sits above the bottom nav on phones and in the shell's corner on wide screens", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
-  await open(page, "fab");
-  const shell = stage(page, 1);
+  await open(page, "button");
+  const shell = example(page, "fab-app");
   const fab = shell.getByRole("button", { name: "New task" });
   const nav = shell.locator(".ayy-bottom-nav");
   // The page above the example still settles after it opens and moves both, so two separate reads can straddle the

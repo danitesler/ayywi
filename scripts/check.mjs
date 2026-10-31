@@ -5,7 +5,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cssRuleFindings, lintPaths, loadContract } from "../cli/lint.mjs";
-import { ATTRIBUTES, CATEGORIES, ORDER, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
+import { ATTRIBUTES, CATEGORIES, FAMILIES, ORDER, PUBLIC_HOOKS, STATES, UTILITIES } from "./lib/contract.mjs";
 import { contrast, mix } from "./lib/contrast.mjs";
 import { DEFAULT_PACK, loadPacks } from "./lib/icon-packs.mjs";
 import { links as cdnLinks, PINNED, tags as cdnTags } from "./lib/readme-pins.mjs";
@@ -177,12 +177,9 @@ for (const slug of readdirSync(join(root, "src/components"))) {
     }
   }
   if ("category" in meta && !(meta.category in CATEGORIES)) fail(files.meta, `category "${meta.category}" should be one of: ${Object.keys(CATEGORIES).join(", ")} (scripts/lib/contract.mjs)`);
-  // Family: the component this one is a variation of, one level deep (the preview nests it under that one).
-  if ("family" in meta) {
-    const parentFile = `src/components/${meta.family}/${meta.family}.meta.json`;
-    if (meta.family === slug) fail(files.meta, `family "${meta.family}" can't be the component itself`);
-    else if (!existsSync(join(root, parentFile))) fail(files.meta, `family "${meta.family}" isn't a component`);
-    else if ("family" in JSON.parse(read(parentFile))) fail(files.meta, `family "${meta.family}" has a family of its own — point at the top one`);
+  if ("family" in meta) fail(files.meta, `"family" is gone — add the slug to a FAMILIES entry in scripts/lib/contract.mjs`);
+  for (const [key, v] of Object.entries(meta.variants ?? {})) {
+    if ("prop" in v && (typeof v.prop !== "string" || !v.component)) fail(files.meta, `variant "${key}": "prop" names the prop on its "component", so it needs both`);
   }
 
   // States: every one in STATES, each either { when, looks } or { none }; a state the CSS styles can't be "none".
@@ -321,6 +318,18 @@ for (const slug of readdirSync(join(root, "src/components"))) {
   }
   for (const s of ORDER) {
     if (!componentSlugs.includes(s)) fail("scripts/lib/contract.mjs", `ORDER lists "${s}", which is not in src/components`);
+  }
+  // Families: real components, one family each, at least two to a family.
+  const familyOf = new Map();
+  for (const [id, f] of Object.entries(FAMILIES)) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) fail("scripts/lib/contract.mjs", `FAMILIES id "${id}" should be lower-case kebab-case`);
+    if (typeof f.label !== "string" || !f.label) fail("scripts/lib/contract.mjs", `family "${id}" has no label`);
+    if ((f.members ?? []).length < 2) fail("scripts/lib/contract.mjs", `family "${id}" needs two members or more — a lone component sits in the sidebar on its own`);
+    for (const s of f.members ?? []) {
+      if (!componentSlugs.includes(s)) fail("scripts/lib/contract.mjs", `family "${id}" lists "${s}", which is not in src/components`);
+      if (familyOf.has(s)) fail("scripts/lib/contract.mjs", `"${s}" is in families "${familyOf.get(s)}" and "${id}" — one at most`);
+      familyOf.set(s, id);
+    }
   }
 
   function checkNoDuplicates(file, re, desc) {

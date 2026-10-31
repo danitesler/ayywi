@@ -112,18 +112,27 @@ test("the components sidebar lists every component A–Z, with families nested a
   for (const c of manifest.components as { name: string; slug: string }[]) {
     await expect(nav.locator(`[data-route="components/${c.slug}"]`), c.slug).toHaveText(c.name);
   }
-  // A family opens to its members: Input holds Textarea, Number field…
-  const input = nav.locator("details", { has: page.locator("summary", { hasText: /^Input$/ }) });
-  await expect(input.getByRole("link", { name: "Textarea", exact: true })).toBeHidden();
-  await input.locator("summary").click();
-  await expect(input.getByRole("link", { name: "Textarea", exact: true })).toBeVisible();
+  // A family is named for its job and opens to its members: Text entry holds Input, Textarea…
+  const family = (label: string) => nav.locator("details", { has: page.locator("summary", { hasText: new RegExp(`^${label}$`) }) });
+  const textEntry = family("Text entry");
+  await expect(textEntry.getByRole("link", { name: "Textarea", exact: true })).toBeHidden();
+  await textEntry.locator("summary").click();
+  await expect(textEntry.getByRole("link", { name: "Input", exact: true })).toBeVisible();
+  await expect(textEntry.getByRole("link", { name: "Textarea", exact: true })).toBeVisible();
+  // No family repeats a member's name in its own header.
+  for (const label of await nav.locator("summary").allTextContents()) {
+    expect(manifest.components.map((c: { name: string }) => c.name), label).not.toContain(label.trim());
+  }
   // The family holding the current page is open.
   await page.goto("/#/components/combobox");
   await examplesLoaded(page);
-  await expect(nav.locator("details", { has: page.locator("summary", { hasText: /^Select$/ }) })).toHaveAttribute("open", "");
+  await expect(family("Dropdowns")).toHaveAttribute("open", "");
   await expect(nav.getByRole("link", { name: "Combobox", exact: true })).toHaveAttribute("aria-current", "page");
-
+  // Typing a family's name shows all of it.
   const filter = page.getByRole("searchbox", { name: "Filter components" });
+  await filter.fill("loading");
+  for (const name of ["Progress", "Progress ring", "Spinner"]) await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
+
   await filter.fill("area");
   const textarea = nav.getByRole("link", { name: "Textarea", exact: true });
   await expect(textarea).toBeVisible();

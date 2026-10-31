@@ -27,13 +27,12 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 
 ### Actions
 
-- [Button](llms/button.md): The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions.
+- [Button](llms/button.md): The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions, and as a round floating action button for the main action of a phone screen.
 - [Hover actions](llms/hover-actions.md): Small buttons that appear over a picture, a video or a card when someone points at it, for quick actions like copy, annotate or pin. They stay out of the way until needed, and a tooltip names each one.
 - [Toolbar](llms/toolbar.md): A row or column of tools for one surface, like an editor, a canvas or a text selection. It's a single tab stop with arrow keys between the tools, and can be fixed, floating or vertical.
 - [Action bar](llms/action-bar.md): A bar that appears at the bottom of the screen once someone selects rows or cards in a table, grid or list. It shows how many are selected and offers actions that apply to all of them, such as archive or delete. It goes away when the selection is cleared.
 - [Dropdown menu](llms/menu.md): A list of actions that opens from a button. It supports submenus and works fully from the keyboard.
 - [Command palette](llms/command.md): A search box above a list of actions and places, so people can find and run things from the keyboard. It can sit inline on a page or in a popover, or open as a dialog from a shortcut.
-- [Floating action button](llms/fab.md): A round floating button for the main action of a phone screen, like composing or adding something. It stays in the corner over the content and can show a label when extended.
 
 ### Navigation
 
@@ -128,7 +127,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Chat](llms/chat.md): The layout of a conversation, with other people's messages on one side and the reader's own on the other. It includes a typing indicator and quick-reply buttons, for assistants and support chats.
 - [Code block](llms/code-block.md): A container for showing code, with a header, a file name, a copy button and optional line numbers. It styles syntax highlighting without tying you to a particular highlighter.
 - [Table](llms/table.md): Data table with quiet hairlines, muted sentence-case headers and hover rows, styled on plain table elements under .ayy-table. Optional frame with toolbar and pager; densities, column lines, sticky header, pinned and resizable columns; sortable, selectable (including drag-to-select across rows), expandable, grouped, linked and disabled rows; column menus with icons, insertion and wrapping; inline editable, empty, truncated and media cells; row actions. Cell content stays inside its column and ends in … unless the column wraps.
-- [Grid](llms/grid.md): A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar.
+- [Card grid](llms/grid.md): A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar.
 - [Chart](llms/chart.md): Charts for reading data at a glance: bars, lines, areas, pies and donuts, scatters, gauges and more. They're drawn with plain markup and CSS instead of a charting library, and each comes with a data table for screen readers. Colours, hover details and a switchable legend are built in.
 
 ## Optional

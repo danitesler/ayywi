@@ -83,7 +83,6 @@ export * from "./components/search-bar/search-bar";
 export * from "./components/filter-bar/filter-bar";
 export * from "./components/sorting/sorting";
 export * from "./components/top-bar/top-bar";
-export * from "./components/fab/fab";
 export * from "./components/shortcut/shortcut";
 export * from "./components/settings/settings";
 export * from "./components/color-picker/color-picker";

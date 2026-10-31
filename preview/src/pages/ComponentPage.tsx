@@ -18,8 +18,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@danitesler/ayywi/react";
-import { STATES } from "../../../scripts/lib/contract.mjs";
-import { components, type ComponentEntry } from "../data";
+import { FAMILIES, STATES } from "../../../scripts/lib/contract.mjs";
+import { familyMembers, type ComponentEntry } from "../data";
 import { COMPONENT_VIEWS, type ComponentView } from "../routes";
 import { Showcase } from "../Showcase";
 import type { Renderer } from "../settings";
@@ -85,8 +85,7 @@ function RefTable({ caption, head, rows }: { caption: string; head: string[]; ro
 const show = (v: string | boolean) => <code className="ayy-code">{String(v)}</code>;
 
 function Overview({ c, renderer }: { c: ComponentEntry; renderer: Renderer }) {
-  const family = c.family ? components.find((x) => x.slug === c.family) : undefined;
-  const members = components.filter((x) => x.family === (c.family ?? c.slug) && x.slug !== c.slug);
+  const related = c.family ? familyMembers(c.family).filter((x) => x.slug !== c.slug) : [];
   return (
     <>
       {c.examples.map((ex) => (
@@ -99,11 +98,11 @@ function Overview({ c, renderer }: { c: ComponentEntry; renderer: Renderer }) {
         <Guidance title="Don't" items={c.dont} tone="no" />
       </div>
 
-      {(family || members.length > 0) && (
+      {c.family && related.length > 0 && (
         <>
-          <h2 className="pv-h pv-h--section">Related</h2>
-          <nav className="ayy-cluster pv-links" aria-label={`Related to ${c.name}`}>
-            {[...(family ? [family] : []), ...members].map((x) => (
+          <h2 className="pv-h pv-h--section">More in {FAMILIES[c.family].label}</h2>
+          <nav className="ayy-cluster pv-links" aria-label={`More in ${FAMILIES[c.family].label}`}>
+            {related.map((x) => (
               <a key={x.slug} className={buttonClass({ variant: "outline", size: "sm" })} href={`#/components/${x.slug}`}>
                 {x.name}
               </a>
@@ -140,7 +139,10 @@ function Properties({ c }: { c: ComponentEntry }) {
             caption="Variants"
             head={["Name", "Values", "Default"]}
             rows={Object.entries(c.variants).map(([name, v]) => [
-              <code className="ayy-code">{name}</code>,
+              <>
+                <code className="ayy-code">{v.prop ?? name}</code>
+                {v.component && v.component !== Object.keys(c.react.components)[0] && <span className="ayy-muted"> on {show(`<${v.component}>`)}</span>}
+              </>,
               <span className="pv-ref__values">{v.values.map((x) => <span key={String(x)}>{show(x)}</span>)}</span>,
               show(v.default),
             ])}
