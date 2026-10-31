@@ -4,6 +4,8 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 
 **Classes**
 - `.ayy-chip` — A <label> around a native <input type="checkbox"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed="true".
+- `.ayy-chip--sm` — Small: a step under the default (24px compact), sm text, tighter padding. For a dense toolbar.
+- `.ayy-chip--lg` — Large: a medium control tall (32px compact), md text, more padding. For a main filter row or touch.
 - `.ayy-chip--removable` — An active filter: a <span> with its text and an __remove button. Not a control itself.
 - `.ayy-chip__count` — Number of results after the label, muted, tabular digits.
 - `.ayy-chip__remove` — The remove (×) button of a removable chip. Needs an aria-label ("Remove Status: Open").
@@ -21,13 +23,16 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 - `loading` — doesn't apply: Filtering shows its loading in the results (Skeleton), not on the chip.
 
 **Sizes**
-- Density — Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.
+- `sm` — --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), control sm text minus 1px, 8px side padding.
+- `md` (default) — --ayy-size-control-dense tall, which is the sm control height by default (28px compact, 32 comfortable, 40 touch); control sm text, 12px side padding. A data-size scope moves it: sm to the xs height, lg to the md height.
+- `lg` — Control md height (32px compact, 40 comfortable, 44 touch), control md text, 16px side padding.
+- Density — Every size follows data-density with the control scale.
 - Width — Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars).
 
 **React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "@danitesler/ayywi/react";`
-- `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
-- `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode
-- `<ChipRemovable>` renders <span class="ayy-chip ayy-chip--removable">… <button class="ayy-chip__remove">. Props: `onRemove` () => void; `removeLabel` string — default "Remove " + the text
+- `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `size` "sm" | "md" | "lg"; `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
+- `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `size` "sm" | "md" | "lg"; `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode
+- `<ChipRemovable>` renders <span class="ayy-chip ayy-chip--removable">… <button class="ayy-chip__remove">. Props: `size` "sm" | "md" | "lg"; `onRemove` () => void; `removeLabel` string — default "Remove " + the text
 - `<ChipGroup>` renders <div role="group" class="ayy-chip-group">. Props: `scroll` boolean — one line that scrolls sideways
 
 **Accessibility**
@@ -188,6 +193,74 @@ export default function Example() {
           </Button>
         </div>
       )}
+    </div>
+  );
+}
+```
+
+## Chip — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <div role="group" class="ayy-chip-group" aria-label="Small status filters">
+    <label class="ayy-chip ayy-chip--sm"><input type="checkbox" name="status-sm" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
+    <label class="ayy-chip ayy-chip--sm"><input type="checkbox" name="status-sm" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
+    <span class="ayy-chip ayy-chip--sm ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+  </div>
+  <div role="group" class="ayy-chip-group" aria-label="Medium status filters">
+    <label class="ayy-chip"><input type="checkbox" name="status-md" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
+    <label class="ayy-chip"><input type="checkbox" name="status-md" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
+    <span class="ayy-chip ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+  </div>
+  <div role="group" class="ayy-chip-group" aria-label="Large status filters">
+    <label class="ayy-chip ayy-chip--lg"><input type="checkbox" name="status-lg" checked value="open" />Open<span class="ayy-chip__count">12</span></label>
+    <label class="ayy-chip ayy-chip--lg"><input type="checkbox" name="status-lg" value="closed" />Closed<span class="ayy-chip__count">31</span></label>
+    <span class="ayy-chip ayy-chip--lg ayy-chip--removable">Assignee: Mira<button type="button" class="ayy-chip__remove" aria-label="Remove Assignee: Mira"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button></span>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Chip, ChipGroup, ChipRemovable } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <ChipGroup aria-label="Small status filters">
+        <Chip size="sm" name="status-sm" value="open" defaultChecked count={12}>
+          Open
+        </Chip>
+        <Chip size="sm" name="status-sm" value="closed" count={31}>
+          Closed
+        </Chip>
+        <ChipRemovable size="sm" onRemove={() => {}}>
+          Assignee: Mira
+        </ChipRemovable>
+      </ChipGroup>
+      <ChipGroup aria-label="Medium status filters">
+        <Chip name="status-md" value="open" defaultChecked count={12}>
+          Open
+        </Chip>
+        <Chip name="status-md" value="closed" count={31}>
+          Closed
+        </Chip>
+        <ChipRemovable onRemove={() => {}}>Assignee: Mira</ChipRemovable>
+      </ChipGroup>
+      <ChipGroup aria-label="Large status filters">
+        <Chip size="lg" name="status-lg" value="open" defaultChecked count={12}>
+          Open
+        </Chip>
+        <Chip size="lg" name="status-lg" value="closed" count={31}>
+          Closed
+        </Chip>
+        <ChipRemovable size="lg" onRemove={() => {}}>
+          Assignee: Mira
+        </ChipRemovable>
+      </ChipGroup>
     </div>
   );
 }

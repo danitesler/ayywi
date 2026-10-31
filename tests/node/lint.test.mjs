@@ -27,6 +27,15 @@ test("unknown React variant and unlabeled icon button", () => {
   assert.deepEqual(rules(tsx, "a.tsx"), ["unknown-variant", "icon-button-label"]);
 });
 
+test("every icon-only button size needs a label", () => {
+  for (const size of ["icon", "icon-xs", "icon-sm", "icon-lg", "icon-xl"]) {
+    const cls = size === "icon" ? "ayy-button--icon" : `ayy-button--${size}`;
+    assert.deepEqual(rules(`<button className="ayy-button ${cls}"><svg /></button>`, "a.tsx"), ["icon-button-label"], `class ${size}`);
+    assert.deepEqual(rules(`<Button size="${size}"><svg /></Button>`, "a.tsx"), ["icon-button-label"], `prop ${size}`);
+    assert.deepEqual(rules(`<Button size="${size}" aria-label="Add"><svg /></Button>`, "a.tsx"), [], `labelled ${size}`);
+  }
+});
+
 test("unknown element attribute value", () => {
   assert.deepEqual(rules(`<ayy-tooltip class="ayy-tooltip" side="left"></ayy-tooltip>`, "a.html"), ["unknown-attribute-value"]);
 });
@@ -37,6 +46,14 @@ test("data-theme and data-density values", () => {
   assert.deepEqual(rules(`<div :data-theme="mode" data-theme={mode}></div>`, "a.vue"), [], "bound values are skipped");
   const [f] = lintText(`<html data-theme="soft">`, "a.html", contract);
   assert.match(f.message, /dark-contrast/);
+});
+
+test("data-size values", () => {
+  assert.deepEqual(rules(`<div data-size="sm"></div><section data-size="md"><p data-size="lg"></p></section>`, "a.html"), []);
+  assert.deepEqual(rules(`<div data-size="xl"></div>`, "a.html"), ["unknown-attribute-value"]);
+  assert.deepEqual(rules(`<div :data-size="dense ? 'sm' : 'md'" data-size={size}></div>`, "a.vue"), [], "bound values are skipped");
+  const [f] = lintText(`<div data-size="huge">`, "a.html", contract);
+  assert.match(f.message, /sm, md, lg/);
 });
 
 test("CSS: raw colours, unknown tokens, physical properties, :dir()", () => {

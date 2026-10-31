@@ -6,12 +6,15 @@
   "aka": ["breadcrumb", "breadcrumbs", "crumbs"],
   "classes": {
     "ayy-breadcrumb": "Root <nav aria-label=\"Breadcrumb\">.",
+    "ayy-breadcrumb--sm": "Small trail: --ayy-text-xs.",
+    "ayy-breadcrumb--lg": "Large trail: --ayy-text-md.",
     "ayy-breadcrumb--pill": "Bordered, blurred capsule that stays readable over hero images and grids.",
     "ayy-breadcrumb__list": "The <ol>. Wraps on wide screens; one line on phones, ancestors cut with an ellipsis first.",
     "ayy-breadcrumb__item": "Each <li>. A slash separates items; screen readers skip it.",
     "ayy-breadcrumb__link": "Link to an ancestor page; its target is a small control tall (40px at touch density) without changing the line. The last item is a <span aria-current=\"page\"> instead."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "pill": { "values": [true, false], "default": false }
   },
   "states": {
@@ -25,16 +28,22 @@
     "loading": { "none": "No loading state." }
   },
   "sizes": {
-    "density": "sm text at every density.",
+    "scale": {
+      "sm": "--ayy-text-xs (13px).",
+      "md": "--ayy-text-sm (14px).",
+      "lg": "--ayy-text-md (16px)."
+    },
+    "density": "Text sizes are fixed at every density; link targets grow to a control tall.",
     "width": "Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes."
   },
-  "js": "breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
+  "js": "breadcrumbClass({ size?, pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
   "react": {
     "import": "import { Breadcrumb } from \"@danitesler/ayywi/react\";",
     "components": {
       "Breadcrumb": {
         "renders": "<nav aria-label=\"Breadcrumb\"><ol>…",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — the text size of the trail.",
           "items": "{ label: ReactNode; href?: string }[] — top level first; the last one is the current page.",
           "pill": "boolean",
           "aria-label": "Defaults to \"Breadcrumb\" (translate it)."
@@ -57,5 +66,5 @@
     "Don't include the current page as a link.",
     "Don't use it as the only navigation."
   ],
-  "examples": [{ "id": "basic", "title": "Plain and pill" }]
+  "examples": [{ "id": "basic", "title": "Plain and pill" }, { "id": "sizes", "title": "Sizes" }]
 }

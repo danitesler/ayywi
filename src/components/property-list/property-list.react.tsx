@@ -7,19 +7,22 @@ import {
   propertyListRowClass,
   propertyListTermClass,
   propertyListValueClass,
+  type PropertyListSize,
 } from "./property-list";
 
 export interface PropertyListProps extends HTMLAttributes<HTMLDListElement> {
+  /** sm: the compact spacing with smaller text. lg: more air, larger text, a wider term column. */
+  size?: PropertyListSize;
   /** Tight rows with a shorter term column, for a dense summary. */
   compact?: boolean;
 }
 
 /** A record's attributes as a <dl> of PropertyRow rows. */
 export const PropertyList = /* @__PURE__ */ forwardRef<HTMLDListElement, PropertyListProps>(function PropertyList(
-  { compact, className, ...props },
+  { size, compact, className, ...props },
   ref,
 ) {
-  return <dl ref={ref} className={propertyListClass({ compact, className })} {...props} />;
+  return <dl ref={ref} className={propertyListClass({ size, compact, className })} {...props} />;
 });
 
 export interface PropertyRowProps extends HTMLAttributes<HTMLDivElement> {

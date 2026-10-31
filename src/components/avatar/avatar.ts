@@ -1,6 +1,6 @@
 import { cx } from "../../lib/cx";
 
-export const avatarSizes = ["sm", "md", "lg", "xl"] as const;
+export const avatarSizes = ["xs", "sm", "md", "lg", "xl", "2xl"] as const;
 export type AvatarSize = (typeof avatarSizes)[number];
 export const avatarShapes = ["circle", "square"] as const;
 export type AvatarShape = (typeof avatarShapes)[number];

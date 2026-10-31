@@ -5,6 +5,17 @@ export const paginationEllipsisClass = "ayy-pagination__ellipsis";
 export const paginationSizeClass = "ayy-pagination__size";
 export const paginationSizeLabelClass = "ayy-pagination__size-label";
 
+export const paginationSizes = ["sm", "md", "lg"] as const;
+export type PaginationSize = (typeof paginationSizes)[number];
+
+/**
+ * Add next to paginationClass on the <nav>: `cx(paginationClass, paginationRootSizeClass("sm"))`. md is the default and
+ * adds nothing. (paginationSizeClass is taken: it's the page size picker.)
+ */
+export function paginationRootSizeClass(size?: PaginationSize): string | undefined {
+  return size && size !== "md" ? `ayy-pagination--${size}` : undefined;
+}
+
 export interface PaginationLinkClassOptions {
   /** Previous / next: stays visible on phones, where the numbers hide. */
   step?: boolean;

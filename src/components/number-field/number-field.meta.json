@@ -8,12 +8,13 @@
   "classes": {
     "ayy-number-field": "The bordered box around the buttons and the input. Draws the focus ring while you type.",
     "ayy-number-field--sm": "Small height, for a cart line or a table cell.",
+    "ayy-number-field--lg": "Large height and text, for a main quantity on a phone.",
     "ayy-number-field__input": "The <input type=\"number\">: centred tabular digits, no spinner arrows.",
     "ayy-number-field__decrement": "The minus <button> before the input. Needs an aria-label. aria-disabled=\"true\" at min.",
     "ayy-number-field__increment": "The plus <button> after the input. Needs an aria-label. aria-disabled=\"true\" at max."
   },
   "variants": {
-    "size": { "values": ["sm", "md"], "default": "md", "component": "NumberField" }
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "NumberField" }
   },
   "states": {
     "default": { "looks": "One box like an Input (wash fill, line-strong border): minus, the number centred in tabular figures, plus." },
@@ -28,7 +29,8 @@
   "sizes": {
     "scale": {
       "sm": "Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.",
-      "md": "Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide."
+      "md": "Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide.",
+      "lg": "Control lg height (36px compact, 44 comfortable, 48 touch); the number is 4.5rem wide, in lg text."
     },
     "density": "Height, step-button width and text follow data-density.",
     "width": "Hugs its content (step buttons plus the number box)."
@@ -45,7 +47,7 @@
           "min": "number",
           "max": "number",
           "step": "number, default 1",
-          "size": "\"sm\" | \"md\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
           "decrementLabel": "string, default \"Decrease\" — say what changes (\"Remove a guest\")",
           "incrementLabel": "string, default \"Increase\"",
           "className": "On the outer box; every other prop goes to the input (id, name, aria-label…)",
@@ -68,5 +70,5 @@
     "Don't use it for large or exact numbers (a price, a phone number, a year) — use an Input; for a rough amount use a Slider.",
     "Don't use it for a choice between a few named sizes — use a Segmented control or compact Choice cards."
   ],
-  "examples": [{ "id": "basic", "title": "Guests and quantity" }]
+  "examples": [{ "id": "basic", "title": "Guests, quantity and sizes" }]
 }

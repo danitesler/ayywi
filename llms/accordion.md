@@ -4,6 +4,8 @@ Category: Layout. A stack of sections that expand and collapse, for FAQs and for
 
 **Classes**
 - `.ayy-accordion` — Root <div>: a column of items with hairlines above, between and below.
+- `.ayy-accordion--sm` — Tighter rows: 12px above and below the question, sm question text, xs answer text. Reaches only its own items.
+- `.ayy-accordion--lg` — Roomier rows: 20px above and below the question, lg question text, md answer text.
 - `.ayy-accordion__item` — A native <details>. Give every item in the accordion the same name attribute to allow only one open at a time. `open` expands it.
 - `.ayy-accordion__trigger` — The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.
 - `.ayy-accordion__content` — The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you.
@@ -20,11 +22,14 @@ Category: Layout. A stack of sections that expand and collapse, for FAQs and for
 - `open` (`[open] on the <details>`) — Chevron points up and the content rolls open in text-soft sm text. With the same name on each item, opening one closes the others.
 
 **Sizes**
+- `sm` — 12px block padding, --ayy-text-sm question, --ayy-text-xs answer.
+- `md` (default) — 16px block padding, --ayy-text-md question, --ayy-text-sm answer.
+- `lg` — 20px block padding, --ayy-text-lg question, --ayy-text-md answer.
 - Density — Doesn't follow data-density.
 - Width — Fills its container.
 
 **React** — `import { Accordion, AccordionItem } from "@danitesler/ayywi/react";`
-- `<Accordion>` renders <div class="ayy-accordion">. Props: `single` boolean — one item open at a time (a shared name on every <details>).
+- `<Accordion>` renders <div class="ayy-accordion">. Props: `size` "sm" | "md" | "lg" — row padding and text size.; `single` boolean — one item open at a time (a shared name on every <details>).
 - `<AccordionItem>` renders <details class="ayy-accordion__item"><summary class="ayy-accordion__trigger">…<div class="ayy-accordion__content">. Props: `label` The always-visible row: the question or section name.; `open` Start expanded.
 
 **Accessibility**
@@ -90,6 +95,94 @@ export default function Example() {
         <p>Enterprise plans can bring their own storage bucket.</p>
       </AccordionItem>
     </Accordion>
+  );
+}
+```
+
+## Accordion — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 32rem)">
+  <div class="ayy-accordion ayy-accordion--sm">
+    <details class="ayy-accordion__item" open>
+      <summary class="ayy-accordion__trigger">Can I cancel any time?</summary>
+      <div class="ayy-accordion__content">
+        <p>Yes. Your plan runs to the end of the billing period.</p>
+      </div>
+    </details>
+    <details class="ayy-accordion__item">
+      <summary class="ayy-accordion__trigger">Do viewers need a paid seat?</summary>
+      <div class="ayy-accordion__content">
+        <p>No. Viewers and commenters are free on every plan.</p>
+      </div>
+    </details>
+  </div>
+  <div class="ayy-accordion">
+    <details class="ayy-accordion__item" open>
+      <summary class="ayy-accordion__trigger">Can I cancel any time?</summary>
+      <div class="ayy-accordion__content">
+        <p>Yes. Your plan runs to the end of the billing period.</p>
+      </div>
+    </details>
+    <details class="ayy-accordion__item">
+      <summary class="ayy-accordion__trigger">Do viewers need a paid seat?</summary>
+      <div class="ayy-accordion__content">
+        <p>No. Viewers and commenters are free on every plan.</p>
+      </div>
+    </details>
+  </div>
+  <div class="ayy-accordion ayy-accordion--lg">
+    <details class="ayy-accordion__item" open>
+      <summary class="ayy-accordion__trigger">Can I cancel any time?</summary>
+      <div class="ayy-accordion__content">
+        <p>Yes. Your plan runs to the end of the billing period.</p>
+      </div>
+    </details>
+    <details class="ayy-accordion__item">
+      <summary class="ayy-accordion__trigger">Do viewers need a paid seat?</summary>
+      <div class="ayy-accordion__content">
+        <p>No. Viewers and commenters are free on every plan.</p>
+      </div>
+    </details>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Accordion, AccordionItem } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 32rem)" }}>
+      <Accordion size="sm">
+        <AccordionItem label="Can I cancel any time?" open>
+          <p>Yes. Your plan runs to the end of the billing period.</p>
+        </AccordionItem>
+        <AccordionItem label="Do viewers need a paid seat?">
+          <p>No. Viewers and commenters are free on every plan.</p>
+        </AccordionItem>
+      </Accordion>
+      <Accordion>
+        <AccordionItem label="Can I cancel any time?" open>
+          <p>Yes. Your plan runs to the end of the billing period.</p>
+        </AccordionItem>
+        <AccordionItem label="Do viewers need a paid seat?">
+          <p>No. Viewers and commenters are free on every plan.</p>
+        </AccordionItem>
+      </Accordion>
+      <Accordion size="lg">
+        <AccordionItem label="Can I cancel any time?" open>
+          <p>Yes. Your plan runs to the end of the billing period.</p>
+        </AccordionItem>
+        <AccordionItem label="Do viewers need a paid seat?">
+          <p>No. Viewers and commenters are free on every plan.</p>
+        </AccordionItem>
+      </Accordion>
+    </div>
   );
 }
 ```

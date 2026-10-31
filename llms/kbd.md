@@ -4,6 +4,8 @@ Category: Data display. A small keycap for showing a keyboard key or shortcut in
 
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
+- `.ayy-kbd--sm` — Small keycap: 0.6875em of the surrounding text. For a hint inside a small control or a menu row.
+- `.ayy-kbd--lg` — Large keycap: 0.875em of the surrounding text. For a hint in a help page or an empty state.
 
 **States**
 - `default` — A small keycap: wash fill, line-strong border with a 2px bottom edge, mono text-soft at 0.75em.
@@ -16,11 +18,14 @@ Category: Data display. A small keycap for showing a keyboard key or shortcut in
 - `loading` — doesn't apply: No loading state.
 
 **Sizes**
+- `sm` — 0.6875em of the surrounding text (11px in 16px text).
+- `md` (default) — 0.75em of the surrounding text (12px in 16px text).
+- `lg` — 0.875em of the surrounding text (14px in 16px text).
 - Density — Scales with the text around it (1.6em tall); scales when surrounding text uses --ayy-text-s.
 - Width — At least 1.6em wide, grows with the key name.
 
 **React** — `import { Kbd, KeyboardHint } from "@danitesler/ayywi/react";`
-- `<Kbd>` renders <kbd class="ayy-kbd">. Props: `keyName` string — a modifier or key drawn for the platform ("mod", "meta", "alt", "ctrl", "shift", "enter", "backspace"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.; `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
+- `<Kbd>` renders <kbd class="ayy-kbd">. Props: `size` "sm" | "md" | "lg" — stepped from the text around it; `keyName` string — a modifier or key drawn for the platform ("mod", "meta", "alt", "ctrl", "shift", "enter", "backspace"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.; `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
 - `<KeyboardHint>` renders <kbd class="ayy-kbd">. Props: `keyName` string — optional modifier/key name to adapt ("mod", "meta", "alt", "ctrl", "shift"); `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
 
 **Accessibility**
@@ -195,6 +200,40 @@ export default function Example() {
         <Kbd keyName="mod" /> + <Kbd>У</Kbd>
       </div>
       <p className="ayy-muted">{status}</p>
+    </div>
+  );
+}
+```
+
+## Keyboard hint — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <p>Small, inside a menu row: Save <kbd class="ayy-kbd ayy-kbd--sm">Ctrl</kbd> <kbd class="ayy-kbd ayy-kbd--sm">S</kbd></p>
+  <p>Medium, in a sentence: press <kbd class="ayy-kbd">/</kbd> to search.</p>
+  <p>Large, in a help page: jump to the next section with <kbd class="ayy-kbd ayy-kbd--lg">J</kbd>.</p>
+</div>
+```
+
+React:
+
+```tsx
+import { Kbd } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <p>
+        Small, inside a menu row: Save <Kbd size="sm" keyName="mod" /> <Kbd size="sm">S</Kbd>
+      </p>
+      <p>
+        Medium, in a sentence: press <Kbd>/</Kbd> to search.
+      </p>
+      <p>
+        Large, in a help page: jump to the next section with <Kbd size="lg">J</Kbd>.
+      </p>
     </div>
   );
 }

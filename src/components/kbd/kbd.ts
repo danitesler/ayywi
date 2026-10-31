@@ -3,6 +3,14 @@ import { getPlatform, type Platform } from "../shortcut/shortcut";
 export const kbdClass = "ayy-kbd";
 export const keyboardHintClass = kbdClass;
 
+export const kbdSizes = ["sm", "md", "lg"] as const;
+export type KbdSize = (typeof kbdSizes)[number];
+
+/** Add next to kbdClass: `cx(kbdClass, kbdSizeClass("sm"))`. md is the default and adds nothing. */
+export function kbdSizeClass(size?: KbdSize): string | undefined {
+  return size && size !== "md" ? `ayy-kbd--${size}` : undefined;
+}
+
 /**
  * Platform-specific key labels and symbols for modifier keys.
  * macOS uses symbols (⌘, ⌥, ⇧, ⌃); Windows uses names (Ctrl, Alt, Shift, Win); Linux uses Super for Meta.

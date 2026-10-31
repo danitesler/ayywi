@@ -1,0 +1,24 @@
+<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (@danitesler/ayywi/elements) places it next to the trigger. -->
+<div class="ayy-cluster">
+  <ayy-popover align="start">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm" popovertarget="sizes-popover-small-html" aria-haspopup="dialog">Small</button>
+    <div class="ayy-popover ayy-popover--sm" id="sizes-popover-small-html" popover role="dialog" aria-labelledby="sizes-title-small-html">
+      <p id="sizes-title-small-html" class="ayy-h6">Autosave is on</p>
+      <p class="ayy-muted">Changes are saved as you type.</p>
+    </div>
+  </ayy-popover>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-button ayy-button--outline" popovertarget="sizes-popover-medium-html" aria-haspopup="dialog">Medium</button>
+    <div class="ayy-popover" id="sizes-popover-medium-html" popover role="dialog" aria-labelledby="sizes-title-medium-html">
+      <p id="sizes-title-medium-html" class="ayy-h6">Autosave is on</p>
+      <p class="ayy-muted">Changes are saved as you type.</p>
+    </div>
+  </ayy-popover>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--lg" popovertarget="sizes-popover-large-html" aria-haspopup="dialog">Large</button>
+    <div class="ayy-popover ayy-popover--lg" id="sizes-popover-large-html" popover role="dialog" aria-labelledby="sizes-title-large-html">
+      <p id="sizes-title-large-html" class="ayy-h6">Autosave is on</p>
+      <p class="ayy-muted">Changes are saved as you type.</p>
+    </div>
+  </ayy-popover>
+</div>

@@ -1,13 +1,18 @@
 import { cx } from "../../lib/cx";
 
+export const propertyListSizes = ["sm", "md", "lg"] as const;
+export type PropertyListSize = (typeof propertyListSizes)[number];
+
 export interface PropertyListClassOptions {
+  /** sm: the compact spacing with smaller text. lg: more air, larger text, a wider term column. */
+  size?: PropertyListSize;
   /** Tight rows with a shorter term column, for a dense summary. */
   compact?: boolean;
   className?: string;
 }
 
-export function propertyListClass({ compact, className }: PropertyListClassOptions = {}): string {
-  return cx("ayy-property-list", compact && "ayy-property-list--compact", className);
+export function propertyListClass({ size = "md", compact, className }: PropertyListClassOptions = {}): string {
+  return cx("ayy-property-list", size !== "md" && `ayy-property-list--${size}`, compact && "ayy-property-list--compact", className);
 }
 
 export const propertyListRowClass = "ayy-property-list__row";

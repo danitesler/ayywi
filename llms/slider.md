@@ -3,6 +3,10 @@
 Category: Forms. A control for choosing a value, or a range between two values, by dragging a handle along a track. It's a native range input, so the keyboard, forms and screen readers work as usual. Also called: slider, range, range-input.
 
 **Classes**
+- `.ayy-slider--sm` — Thinner 4px track and a 14px thumb.
+- `.ayy-slider--lg` — Thicker 8px track and a 24px thumb, in a medium control tall box.
+- `.ayy-slider-range--sm` — A range with the small track and thumb; sizes both inputs inside it.
+- `.ayy-slider-range--lg` — A range with the large track and thumb; sizes both inputs inside it.
 - `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.
 - `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing.
 
@@ -17,12 +21,15 @@ Category: Forms. A control for choosing a value, or a range between two values, 
 - `loading` — doesn't apply: No loading look.
 
 **Sizes**
-- Density — The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.
+- `sm` — 4px track, 14px thumb, in the sm control height box (28px compact, 32 comfortable, 40 touch).
+- `md` (default) — 6px track, 18px thumb, in the sm control height box.
+- `lg` — 8px track, 24px thumb, in the md control height box (32px compact, 40 comfortable, 44 touch).
+- Density — The control box follows data-density; track and thumb are fixed. A data-size scope doesn't resize it: set size on it.
 - Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
 
 **React** — `import { Slider, SliderRange } from "@danitesler/ayywi/react";`
-- `<Slider>` renders <input type="range" class="ayy-slider">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
-- `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean
+- `<Slider>` renders <input type="range" class="ayy-slider">. Props: `size` "sm" | "md" | "lg" (the native size attribute is not exposed); `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
+- `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `size` "sm" | "md" | "lg"; `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean
 
 **Accessibility**
 - It's a native range input: arrow keys step, Page Up/Down jump, Home/End go to the ends, and screen readers read the value. Give it a <label> (or aria-label); add aria-valuetext when the number needs a unit ("12 people").
@@ -125,6 +132,44 @@ export default function Example() {
         labels={["Minimum price", "Maximum price"]}
         names={["price_min", "price_max"]}
       />
+    </div>
+  );
+}
+```
+
+## Slider — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 22rem)">
+  <input type="range" class="ayy-slider ayy-slider--sm" min="0" max="100" step="1" style="--ayy-value: 30" aria-label="Small slider" value="30" />
+  <input type="range" class="ayy-slider" min="0" max="100" step="1" style="--ayy-value: 50" aria-label="Medium slider" value="50" />
+  <input type="range" class="ayy-slider ayy-slider--lg" min="0" max="100" step="1" style="--ayy-value: 70" aria-label="Large slider" value="70" />
+  <div role="group" class="ayy-slider-range ayy-slider-range--sm" style="--ayy-from: 20; --ayy-to: 60" aria-label="Small range">
+    <input type="range" class="ayy-slider" aria-label="Small range minimum" min="0" max="100" step="1" value="20" />
+    <input type="range" class="ayy-slider" aria-label="Small range maximum" min="0" max="100" step="1" value="60" />
+  </div>
+  <div role="group" class="ayy-slider-range ayy-slider-range--lg" style="--ayy-from: 20; --ayy-to: 60" aria-label="Large range">
+    <input type="range" class="ayy-slider" aria-label="Large range minimum" min="0" max="100" step="1" value="20" />
+    <input type="range" class="ayy-slider" aria-label="Large range maximum" min="0" max="100" step="1" value="60" />
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Slider, SliderRange } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 22rem)" }}>
+      <Slider size="sm" defaultValue={30} aria-label="Small slider" />
+      <Slider defaultValue={50} aria-label="Medium slider" />
+      <Slider size="lg" defaultValue={70} aria-label="Large slider" />
+      <SliderRange size="sm" defaultValue={[20, 60]} labels={["Small range minimum", "Small range maximum"]} aria-label="Small range" />
+      <SliderRange size="lg" defaultValue={[20, 60]} labels={["Large range minimum", "Large range maximum"]} aria-label="Large range" />
     </div>
   );
 }

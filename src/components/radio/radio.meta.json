@@ -6,12 +6,17 @@
   "aka": ["radio", "radio-group"],
   "classes": {
     "ayy-radio": "On <input type=\"radio\">. Size follows density. aria-invalid=\"true\" tints the ring destructive (dashed in High Contrast).",
+    "ayy-radio--sm": "Small circle (--ayy-size-check-sm) and small label text. Wins over the size of its group.",
+    "ayy-radio--lg": "Large circle (--ayy-size-check-lg) and large label text. Wins over the size of its group.",
     "ayy-radio-group": "On the <fieldset> holding the radios. Vertical stack.",
     "ayy-radio-group--horizontal": "Options in a wrapping row.",
+    "ayy-radio-group--sm": "Every radio, label and the legend in the group small, with tighter rows.",
+    "ayy-radio-group--lg": "Every radio, label and the legend in the group large, with looser rows.",
     "ayy-radio-group__legend": "The group's <legend>."
   },
   "variants": {
-    "orientation": { "values": ["vertical", "horizontal"], "default": "vertical" }
+    "orientation": { "values": ["vertical", "horizontal"], "default": "vertical" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
   "states": {
     "default": { "looks": "A circle --ayy-size-check wide with a line-hover border on a wash fill." },
@@ -24,10 +29,15 @@
     "loading": { "none": "Choosing is instant." }
   },
   "sizes": {
-    "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+    "scale": {
+      "sm": "--ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.",
+      "md": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+      "lg": "--ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch."
+    },
+    "density": "Each size grows a step with data-density.",
     "width": "Fixed circle. The group stacks (vertical) or wraps in a row (horizontal)."
   },
-  "js": "radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string",
+  "js": "radioClass, radioGroupLegendClass constants; radioSizeClass(size?) → string | undefined (the --sm / --lg class); radioGroupClass({ orientation?, size?, className? }) → string",
   "react": {
     "import": "import { RadioGroup, Radio } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -38,10 +48,11 @@
           "name": "string — generated if omitted",
           "value / defaultValue": "Selected value (controlled / uncontrolled).",
           "onValueChange": "(value: string) => void",
-          "orientation": "\"vertical\" | \"horizontal\""
+          "orientation": "\"vertical\" | \"horizontal\"",
+          "size": "\"sm\" | \"md\" | \"lg\" — every radio, label and the legend in the group"
         }
       },
-      "Radio": { "renders": "<input type=\"radio\">", "props": { "value": "string (required)", "...rest": "All native <input> attributes." } }
+      "Radio": { "renders": "<input type=\"radio\">", "props": { "value": "string (required)", "size": "\"sm\" | \"md\" | \"lg\" — this radio only; wins over the group (the native size attribute is not exposed)", "...rest": "All native <input> attributes." } }
     }
   },
   "a11y": [
@@ -50,7 +61,8 @@
   ],
   "do": [
     "Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).",
-    "Pre-select the most common option when there's a sensible default."
+    "Pre-select the most common option when there's a sensible default.",
+    "Set the size on the RadioGroup so every option, label and the legend change together."
   ],
   "dont": [
     "Don't use radios for more than ~6 options — use Select.",
@@ -58,5 +70,5 @@
     "Don't use radios for independent on/off choices — use Checkbox.",
     "Don't use a single radio on its own — use a Checkbox."
   ],
-  "examples": [{ "id": "group", "title": "Group" }]
+  "examples": [{ "id": "group", "title": "Group" }, { "id": "sizes", "title": "Sizes" }]
 }

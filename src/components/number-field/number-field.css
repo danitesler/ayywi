@@ -125,6 +125,19 @@
   inline-size: calc(var(--ayy-size-control-sm) - 2px);
 }
 
+.ayy-number-field--lg {
+  block-size: var(--ayy-size-control-lg);
+}
+
+.ayy-number-field--lg .ayy-number-field__input {
+  inline-size: 4.5rem;
+  font-size: var(--ayy-control-text-lg);
+}
+
+.ayy-number-field--lg :is(.ayy-number-field__decrement, .ayy-number-field__increment) {
+  inline-size: calc(var(--ayy-size-control-lg) - 2px);
+}
+
 @media (forced-colors: active) {
   .ayy-number-field {
     border-color: FieldText;

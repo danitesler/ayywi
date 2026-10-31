@@ -4,6 +4,8 @@ Category: Actions. A list of actions that opens from a button. It supports subme
 
 **Classes**
 - `.ayy-menu` — On the element with popover and role="menu".
+- `.ayy-menu--sm` — Small panel: rows the sm control tall with sm text and 16px icons. Put it on every panel, a flyout included; the React DropdownMenu does that for you.
+- `.ayy-menu--lg` — Large panel: rows the lg control tall with lg text and 20px icons, at least 13rem wide.
 - `.ayy-menu--sub` — Submenu flyout panel.
 - `.ayy-menu--static` — Static menu rendered inline in a page or window without popover behavior.
 - `.ayy-menu__item` — Each action: a <button role="menuitem">.
@@ -35,7 +37,10 @@ Category: Actions. A list of actions that opens from a button. It supports subme
 - `open` (`:popover-open or [aria-expanded="true"] on a parent row or split row's __more`) — Fades in and scales up from 97%; parent rows and a split row's trailing button keep the hover background while their menu is open.
 
 **Sizes**
-- Density — Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.
+- `sm` — Rows the sm control height (28px compact, 32 comfortable, 40 touch), control sm text, 16px icons, at least 10rem wide.
+- `md` (default) — Rows the md control height (32px compact, 40 comfortable, 44 touch), control md text, 18px icons, at least 11rem wide.
+- `lg` — Rows the lg control height (36px compact, 44 comfortable, 48 touch), control lg text, 20px icons, at least 13rem wide.
+- Density — Every size follows data-density with the control scale.
 - Width — At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item.
 
 **Custom element** `<ayy-menu>` (@danitesler/ayywi/elements) — A trigger <button> and a [popover] element with role="menu" containing .ayy-menu__item buttons, optional submenu panels (a role="dialog" one goes right after the menu, not inside it), split rows (.ayy-menu__row with a .ayy-menu__more button) and expandable groups.
@@ -47,9 +52,9 @@ Category: Actions. A list of actions that opens from a button. It supports subme
 - event `ayy-submenu-layout`: { open: boolean, width: number, height: number, side: FloatingSide }
 
 **React** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuRow, DropdownMenuMore, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuSelectedItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@danitesler/ayywi/react";`
-- `<DropdownMenu>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `anchorPoint` { x: number; y: number }; `boundary` Element | Rect
+- `<DropdownMenu>` renders nothing (state provider). Props: `size` "sm" | "md" | "lg" — every panel of the menu, flyouts included; `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `anchorPoint` { x: number; y: number }; `boundary` Element | Rect
 - `<DropdownMenuTrigger>` renders Button. Props: `...ButtonProps` variant, size…; `asChild` boolean — clone custom trigger element without button styling
-- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"; `static` boolean; `boundary` Element | Rect; `subSide` "end" | "start"; `onSubmenuLayout` (layout) => void
+- `<DropdownMenuContent>` renders <div popover role="menu">. Props: `size` "sm" | "md" | "lg" — this panel; wins over DropdownMenu; `side` "bottom" | "top" | "start" | "end"; `align` "start" | "center" | "end"; `static` boolean; `boundary` Element | Rect; `subSide` "end" | "start"; `onSubmenuLayout` (layout) => void
 - `<DropdownMenuRow>` renders <div role="presentation" class="ayy-menu__row">. Props: `children` A DropdownMenuItem and, beside it, a DropdownMenuMore inside a DropdownMenuSub
 - `<DropdownMenuMore>` renders <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded>. Props: `icon` ReactNode — the button's icon (e.g. MoreHorizontal).; `aria-label` Required: name the row it belongs to, e.g. "More options for Duplicate project".
 - `<DropdownMenuItem>` renders <button role="menuitem">. Props: `onSelect` () => void — runs when chosen; the menu then closes unless closeOnSelect=false; `destructive` boolean; `selected` boolean — reserves space on inline start for checkmark indicator; `shortcut` string — shortcut keys like "Mod+D" (shown as keycaps, ⌘D on a Mac, Ctrl+D elsewhere); `value` ReactNode; `description` ReactNode; `icon` ReactNode; `closeOnSelect` boolean
@@ -57,7 +62,7 @@ Category: Actions. A list of actions that opens from a button. It supports subme
 - `<DropdownMenuSeparator>` renders <div role="separator">.
 - `<DropdownMenuSub>` renders nothing (submenu state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void; `inline` boolean
 - `<DropdownMenuSubTrigger>` renders <button role="menuitem" aria-haspopup="menu">. Props: `icon` ReactNode; `value` ReactNode; `description` ReactNode; `selected` boolean — reserves space on inline start for checkmark indicator
-- `<DropdownMenuSubContent>` renders <div popover role="menu">, <div popover role="dialog"> (placed after the DropdownMenuContent) or <div role="group"> (inline). Props: `side` "end" | "start"; `align` "start"
+- `<DropdownMenuSubContent>` renders <div popover role="menu">, <div popover role="dialog"> (placed after the DropdownMenuContent) or <div role="group"> (inline). Props: `size` "sm" | "md" | "lg" — this flyout; wins over DropdownMenu; `side` "end" | "start"; `align` "start"
 - `<DropdownMenuCheckboxItem>` renders <button role="menuitemcheckbox">. Props: `checked` boolean; `onCheckedChange` (checked: boolean) => void; `closeOnSelect` boolean
 - `<DropdownMenuSelectedItem>` renders <button role="menuitemcheckbox">. Props: `selected` boolean; `onSelectedChange` (selected: boolean) => void; `closeOnSelect` boolean
 - `<DropdownMenuRadioGroup>` renders <div role="group">. Props: `value` string; `onValueChange` (value: string) => void; `closeOnSelect` boolean
@@ -394,6 +399,95 @@ export default function Example() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+```
+
+## Dropdown menu — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-cluster" style="align-items: flex-start">
+  <div role="menu" class="ayy-menu ayy-menu--sm ayy-menu--static" aria-label="Project actions, small">
+    <div role="presentation" class="ayy-menu__label">Project</div>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item"><svg class="ayy-icon" data-ayy-icon="square-pen" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.9999 13.5C18.9999 16.7875 18.9999 18.4312 18.092 19.5376C17.9258 19.7401 17.7401 19.9258 17.5375 20.092C16.4312 21 14.7874 21 11.4999 21H11C7.22876 21 5.34316 21 4.17159 19.8284C3.00003 18.6569 3 16.7712 3 13V12.5C3 9.21252 3 7.56879 3.90794 6.46244C4.07417 6.2599 4.2599 6.07417 4.46244 5.90794C5.56879 5 7.21252 5 10.5 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Rename<span class="ayy-menu__shortcut"><span class="ayy-shortcut" data-keys="Mod+E"><span class="ayy-sr-only">Ctrl E</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">E</kbd></span></span></button>
+    <button type="button" role="menuitem" tabindex="-1" aria-describedby="menu-duplicate-hint-sm" class="ayy-menu__item ayy-menu__item--described"><svg class="ayy-icon" data-ayy-icon="copy" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-menu__item-text"><span>Duplicate</span><span id="menu-duplicate-hint-sm" class="ayy-menu__description">Keeps the pages, not the people</span></span></button>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item"><svg class="ayy-icon" data-ayy-icon="share-2" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 6.5C21 8.15685 19.6569 9.5 18 9.5C16.3431 9.5 15 8.15685 15 6.5C15 4.84315 16.3431 3.5 18 3.5C19.6569 3.5 21 4.84315 21 6.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12Z" stroke="currentColor" stroke-width="1.5"></path><path d="M21 17.5C21 19.1569 19.6569 20.5 18 20.5C16.3431 20.5 15 19.1569 15 17.5C15 15.8431 16.3431 14.5 18 14.5C19.6569 14.5 21 15.8431 21 17.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M8.72852 10.7495L15.2285 7.75M8.72852 13.25L15.2285 16.2495" stroke="currentColor" stroke-width="1.5"></path></svg>Share<span class="ayy-menu__value">Team</span></button>
+    <div role="separator" class="ayy-menu__separator"></div>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item ayy-menu__item--destructive"><svg class="ayy-icon" data-ayy-icon="trash" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M9.5 16.5L9.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M14.5 16.5L14.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>Delete</button>
+  </div>
+  <div role="menu" class="ayy-menu ayy-menu--static" aria-label="Project actions, medium">
+    <div role="presentation" class="ayy-menu__label">Project</div>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item"><svg class="ayy-icon" data-ayy-icon="square-pen" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.9999 13.5C18.9999 16.7875 18.9999 18.4312 18.092 19.5376C17.9258 19.7401 17.7401 19.9258 17.5375 20.092C16.4312 21 14.7874 21 11.4999 21H11C7.22876 21 5.34316 21 4.17159 19.8284C3.00003 18.6569 3 16.7712 3 13V12.5C3 9.21252 3 7.56879 3.90794 6.46244C4.07417 6.2599 4.2599 6.07417 4.46244 5.90794C5.56879 5 7.21252 5 10.5 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Rename<span class="ayy-menu__shortcut"><span class="ayy-shortcut" data-keys="Mod+E"><span class="ayy-sr-only">Ctrl E</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">E</kbd></span></span></button>
+    <button type="button" role="menuitem" tabindex="-1" aria-describedby="menu-duplicate-hint-md" class="ayy-menu__item ayy-menu__item--described"><svg class="ayy-icon" data-ayy-icon="copy" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-menu__item-text"><span>Duplicate</span><span id="menu-duplicate-hint-md" class="ayy-menu__description">Keeps the pages, not the people</span></span></button>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item"><svg class="ayy-icon" data-ayy-icon="share-2" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 6.5C21 8.15685 19.6569 9.5 18 9.5C16.3431 9.5 15 8.15685 15 6.5C15 4.84315 16.3431 3.5 18 3.5C19.6569 3.5 21 4.84315 21 6.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12Z" stroke="currentColor" stroke-width="1.5"></path><path d="M21 17.5C21 19.1569 19.6569 20.5 18 20.5C16.3431 20.5 15 19.1569 15 17.5C15 15.8431 16.3431 14.5 18 14.5C19.6569 14.5 21 15.8431 21 17.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M8.72852 10.7495L15.2285 7.75M8.72852 13.25L15.2285 16.2495" stroke="currentColor" stroke-width="1.5"></path></svg>Share<span class="ayy-menu__value">Team</span></button>
+    <div role="separator" class="ayy-menu__separator"></div>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item ayy-menu__item--destructive"><svg class="ayy-icon" data-ayy-icon="trash" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M9.5 16.5L9.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M14.5 16.5L14.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>Delete</button>
+  </div>
+  <div role="menu" class="ayy-menu ayy-menu--lg ayy-menu--static" aria-label="Project actions, large">
+    <div role="presentation" class="ayy-menu__label">Project</div>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item"><svg class="ayy-icon" data-ayy-icon="square-pen" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"></path><path d="M18.9999 13.5C18.9999 16.7875 18.9999 18.4312 18.092 19.5376C17.9258 19.7401 17.7401 19.9258 17.5375 20.092C16.4312 21 14.7874 21 11.4999 21H11C7.22876 21 5.34316 21 4.17159 19.8284C3.00003 18.6569 3 16.7712 3 13V12.5C3 9.21252 3 7.56879 3.90794 6.46244C4.07417 6.2599 4.2599 6.07417 4.46244 5.90794C5.56879 5 7.21252 5 10.5 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Rename<span class="ayy-menu__shortcut"><span class="ayy-shortcut" data-keys="Mod+E"><span class="ayy-sr-only">Ctrl E</span><kbd class="ayy-kbd" aria-hidden="true">Ctrl</kbd><kbd class="ayy-kbd" aria-hidden="true">E</kbd></span></span></button>
+    <button type="button" role="menuitem" tabindex="-1" aria-describedby="menu-duplicate-hint-lg" class="ayy-menu__item ayy-menu__item--described"><svg class="ayy-icon" data-ayy-icon="copy" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 14.5C7.5 11.2002 7.5 9.55025 8.52513 8.52513C9.55025 7.5 11.2002 7.5 14.5 7.5C17.7998 7.5 19.4497 7.5 20.4749 8.52513C21.5 9.55025 21.5 11.2002 21.5 14.5C21.5 17.7998 21.5 19.4497 20.4749 20.4749C19.4497 21.5 17.7998 21.5 14.5 21.5C11.2002 21.5 9.55025 21.5 8.52513 20.4749C7.5 19.4497 7.5 17.7998 7.5 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M7.5 16.5C6.10355 16.5 5.40533 16.5 4.84402 16.3036C3.83866 15.9518 3.0482 15.1613 2.69641 14.156C2.5 13.5947 2.5 12.8964 2.5 11.5V9.5C2.5 6.20017 2.5 4.55025 3.52513 3.52513C4.55025 2.5 6.20017 2.5 9.5 2.5H11.5C12.8964 2.5 13.5947 2.5 14.156 2.69641C15.1613 3.0482 15.9518 3.83866 16.3036 4.84402C16.5 5.40533 16.5 6.10355 16.5 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-menu__item-text"><span>Duplicate</span><span id="menu-duplicate-hint-lg" class="ayy-menu__description">Keeps the pages, not the people</span></span></button>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item"><svg class="ayy-icon" data-ayy-icon="share-2" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 6.5C21 8.15685 19.6569 9.5 18 9.5C16.3431 9.5 15 8.15685 15 6.5C15 4.84315 16.3431 3.5 18 3.5C19.6569 3.5 21 4.84315 21 6.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12Z" stroke="currentColor" stroke-width="1.5"></path><path d="M21 17.5C21 19.1569 19.6569 20.5 18 20.5C16.3431 20.5 15 19.1569 15 17.5C15 15.8431 16.3431 14.5 18 14.5C19.6569 14.5 21 15.8431 21 17.5Z" stroke="currentColor" stroke-width="1.5"></path><path d="M8.72852 10.7495L15.2285 7.75M8.72852 13.25L15.2285 16.2495" stroke="currentColor" stroke-width="1.5"></path></svg>Share<span class="ayy-menu__value">Team</span></button>
+    <div role="separator" class="ayy-menu__separator"></div>
+    <button type="button" role="menuitem" tabindex="-1" class="ayy-menu__item ayy-menu__item--destructive"><svg class="ayy-icon" data-ayy-icon="trash" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M9.5 16.5L9.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path><path d="M14.5 16.5L14.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>Delete</button>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Copy01Icon, Delete02Icon, PencilEdit02Icon, Share08Icon } from "@hugeicons/core-free-icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  Icon,
+} from "@danitesler/ayywi/react";
+
+const items = (
+  <>
+    <DropdownMenuLabel>Project</DropdownMenuLabel>
+    <DropdownMenuItem icon={<Icon icon={PencilEdit02Icon} name="square-pen" />} shortcut="Mod+E">
+      Rename
+    </DropdownMenuItem>
+    <DropdownMenuItem icon={<Icon icon={Copy01Icon} name="copy" />} description="Keeps the pages, not the people">
+      Duplicate
+    </DropdownMenuItem>
+    <DropdownMenuItem icon={<Icon icon={Share08Icon} name="share-2" />} value="Team">
+      Share
+    </DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem destructive icon={<Icon icon={Delete02Icon} name="trash" />}>
+      Delete
+    </DropdownMenuItem>
+  </>
+);
+
+export default function Example() {
+  // static keeps each menu in the page, so the three sizes can be compared side by side.
+  return (
+    <div className="ayy-cluster" style={{ alignItems: "flex-start" }}>
+      <DropdownMenu size="sm">
+        <DropdownMenuContent static aria-label="Project actions, small">
+          {items}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DropdownMenu>
+        <DropdownMenuContent static aria-label="Project actions, medium">
+          {items}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DropdownMenu size="lg">
+        <DropdownMenuContent static aria-label="Project actions, large">
+          {items}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
 ```

@@ -1,8 +1,10 @@
 import { forwardRef, type HTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
-import { emptyStateActionsClass, emptyStateClass, emptyStateDescriptionClass, emptyStateTitleClass } from "./empty-state";
+import { emptyStateActionsClass, emptyStateClass, emptyStateDescriptionClass, emptyStateTitleClass, type EmptyStateSize } from "./empty-state";
 
 export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
+  /** sm: the compact spacing with smaller text. lg: roomier, for a whole page. */
+  size?: EmptyStateSize;
   /** A dashed outline around the empty area. */
   bordered?: boolean;
   /** Less padding, for a card, a table or a side panel. */
@@ -10,8 +12,8 @@ export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** What a list, table or page shows when there's nothing in it: an optional IconTile, a title, a description, actions. */
-export const EmptyState = /* @__PURE__ */ forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyState({ bordered, compact, className, ...props }, ref) {
-  return <div ref={ref} className={emptyStateClass({ bordered, compact, className })} {...props} />;
+export const EmptyState = /* @__PURE__ */ forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyState({ size, bordered, compact, className, ...props }, ref) {
+  return <div ref={ref} className={emptyStateClass({ size, bordered, compact, className })} {...props} />;
 });
 
 export interface EmptyStateTitleProps extends HTMLAttributes<HTMLHeadingElement> {}

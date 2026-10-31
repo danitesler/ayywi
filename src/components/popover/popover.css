@@ -24,6 +24,19 @@
     display var(--ayy-duration-fast) allow-discrete;
 }
 
+/* Sizes step the padding, the text and how wide it may grow. */
+.ayy-popover--sm {
+  max-inline-size: min(18rem, calc(100vw - 1rem));
+  padding: var(--ayy-space-3);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-popover--lg {
+  max-inline-size: min(28rem, calc(100vw - 1rem));
+  padding: var(--ayy-space-5);
+  font-size: var(--ayy-text-md);
+}
+
 .ayy-popover:not(:popover-open) {
   opacity: 0;
   transform: scale(0.97);

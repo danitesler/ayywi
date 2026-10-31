@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
-import { nextTabIndex, tabsClass, tabsListClass, tabsPanelClass, tabsTabClass } from "./tabs";
+import { nextTabIndex, tabsClass, tabsListClass, tabsPanelClass, tabsSizeClass, tabsTabClass, type TabsSize } from "./tabs";
 
 interface TabsContextValue {
   value: string;
@@ -31,10 +31,12 @@ export interface TabsProps extends Omit<HTMLAttributes<HTMLDivElement>, "default
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  /** Height of the tab list and the size of its labels. */
+  size?: TabsSize;
 }
 
 export const Tabs = /* @__PURE__ */ forwardRef<HTMLDivElement, TabsProps>(function Tabs(
-  { value: controlled, defaultValue = "", onValueChange, className, ...props },
+  { value: controlled, defaultValue = "", onValueChange, size, className, ...props },
   ref,
 ) {
   const [uncontrolled, setUncontrolled] = useState(defaultValue);
@@ -56,7 +58,7 @@ export const Tabs = /* @__PURE__ */ forwardRef<HTMLDivElement, TabsProps>(functi
 
   return (
     <TabsContext.Provider value={{ value, select, idFor }}>
-      <div ref={ref} className={cx(tabsClass, className)} {...props} />
+      <div ref={ref} className={cx(tabsClass, tabsSizeClass(size), className)} {...props} />
     </TabsContext.Provider>
   );
 });

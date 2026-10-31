@@ -6,6 +6,8 @@
   "aka": ["card", "panel-card", "view-card", "media-card", "shot-card", "capture-card", "thumbnail-card"],
   "classes": {
     "ayy-card": "Root surface.",
+    "ayy-card--sm": "Tighter: 12px padding on the header, content and footer, a sm title and an xs description.",
+    "ayy-card--lg": "Roomier: 24px padding and an lg title.",
     "ayy-card--interactive": "Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.",
     "ayy-card--spotlight": "Pointer-following glow + lit border. Colour via the --ayy-spot custom property.",
     "ayy-card--transparent": "No fill and no rest shadow: the page shows through. The line border, radius and padding stay. Pairs with spotlight for rows on a plain page.",
@@ -30,6 +32,7 @@
     "ayy-card__view-badges": "View: row of Badges at the end of the body (Edited, Uploaded)."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "interactive": { "values": [true, false], "default": false },
     "spotlight": { "values": [true, false], "default": false },
     "transparent": { "values": [false, true], "default": false },
@@ -48,16 +51,22 @@
     "menu-open": { "when": "view card :has([aria-expanded=\"true\"]), a menu inside it is open", "looks": "Stays revealed while its ⋯ menu is open." }
   },
   "sizes": {
+    "scale": {
+      "sm": "12px padding on the header, content and footer; --ayy-text-sm title, --ayy-text-xs description.",
+      "md": "20px padding; --ayy-text-md title, --ayy-text-sm description.",
+      "lg": "24px padding; --ayy-text-lg title, --ayy-text-sm description."
+    },
     "density": "Padding and text don't follow data-density.",
     "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem)."
   },
-  "js": "cardClass({ interactive?, spotlight?, transparent?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
+  "js": "cardClass({ size?, interactive?, spotlight?, transparent?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
   "react": {
     "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from \"@danitesler/ayywi/react\";",
     "components": {
       "Card": {
         "renders": "<div>",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — padding of the header, content and footer, and the size of the title",
           "interactive": "boolean",
           "spotlight": "boolean — tracks the pointer for you",
           "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"",
@@ -120,6 +129,7 @@
     { "id": "basic", "title": "Basic" },
     { "id": "spotlight", "title": "Interactive with spotlight" },
     { "id": "media", "title": "Linked card with media" },
-    { "id": "view", "title": "View cards: capture history" }
+    { "id": "view", "title": "View cards: capture history" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

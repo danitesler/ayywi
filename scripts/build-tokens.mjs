@@ -2,10 +2,10 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkMode, finish, output } from "./lib/output.mjs";
-import { DENSITIES, loadTokens } from "./lib/tokens.mjs";
+import { DENSITIES, SIZE_SCOPES, loadTokens } from "./lib/tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const { tokens, resolve, toCss, rawIn, valueIn, themes, brands } = loadTokens(root);
+const { tokens, byName, resolve, toCss, rawIn, valueIn, themes, brands } = loadTokens(root);
 const extraThemes = themes.filter((t) => t.name !== t.base);
 
 const decl = (t, v) => `  ${t.cssVar}: ${v};`;
@@ -16,9 +16,27 @@ const staticTokens = tokens.filter((t) => t.light === undefined && t.css === und
 const themed = tokens.filter((t) => t.light !== undefined && t.css === undefined);
 const derived = tokens.filter((t) => t.css !== undefined);
 const dense = tokens.filter((t) => t.density !== undefined);
+// Tokens a size scope (data-size) can send to another step. Each keeps a private copy of its default (--_ayy-size-control-md),
+// which no scope touches, so data-size="md" can put it back inside a small or large one.
+const scoped = tokens.filter((t) => t.size !== undefined);
+const pristine = (t) => t.cssVar.replace("--", "--_");
 
 const densityBlock = (mode) =>
-  dense.map((t) => decl(t, toCss(mode === "compact" ? t.value : t.density[mode], t.type))).join("\n");
+  [
+    ...dense.map((t) => decl(t, toCss(mode === "compact" ? t.value : t.density[mode], t.type))),
+    ...scoped.map((t) => `  ${pristine(t)}: ${toCss(mode === "compact" ? t.value : t.density[mode], t.type)};`),
+  ].join("\n");
+
+// A scope names a step; a token without an entry for it stays at its default (so "sm" also undoes an outer "lg").
+// A step that is itself a scoped token (control-dense's "lg" is control-md) points at that token's pristine copy: the scope
+// rule is remapping it in the same breath, so its public name would give the step after the next one.
+const scopeValue = (t, scope) => {
+  const ref = scope === "md" ? undefined : t.size[scope];
+  if (!ref) return `var(${pristine(t)})`;
+  const target = byName.get(ref.slice(1, -1));
+  return target.size !== undefined ? `var(${pristine(target)})` : toCss(ref, t.type);
+};
+const scopeBlock = (scope) => scoped.map((t) => `  ${t.cssVar}: ${scopeValue(t, scope)};`).join("\n");
 const darkBlock = themed.map((t) => decl(t, toCss(t.value, t.type))).join("\n");
 const lightBlock = themed.map((t) => decl(t, toCss(t.light, t.type))).join("\n");
 
@@ -27,6 +45,7 @@ const css = `${HEADER}
 /* Theme-independent tokens. Density-aware ones hold their compact value here. */
 :root {
 ${staticTokens.map((t) => decl(t, toCss(t.value, t.type))).join("\n")}
+${scoped.map((t) => `  ${pristine(t)}: ${toCss(t.value, t.type)};`).join("\n")}
 }
 
 /* Dark: the default, or forced with data-theme="dark" / .dark on any element */
@@ -78,6 +97,12 @@ ${indent(densityBlock("touch"))}
   }
 }
 ${DENSITIES.map((mode) => `\n[data-density="${mode}"] {\n${densityBlock(mode)}\n}`).join("\n")}
+
+/* Size scope: data-size="sm" | "md" | "lg" on any element makes the controls below it that don't name a size use that step.
+   It reads the density-aware tokens above, so it follows data-density set on the same element or an ancestor (a data-density
+   on a descendant starts over). Explicit sizes (.ayy-input--lg) keep theirs: only the default step moves. After the density
+   blocks, with :root listed too, so it wins over the touch rule on <html> in the unlayered build as well. */
+${SIZE_SCOPES.map((scope) => `\n[data-size="${scope}"],\n:root[data-size="${scope}"] {\n${scopeBlock(scope)}\n}`).join("\n")}
 `;
 
 output(join(root, "src/css/tokens.css"), css);

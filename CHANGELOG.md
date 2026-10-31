@@ -12,6 +12,26 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **Size scope**
+  - A toolbar, form or panel needed `size="sm"` on every control to be small → `data-size="sm"` (or `"lg"`) on its container makes every control inside it that doesn't name a size use that step; `"md"` puts the default back inside a scope, explicit sizes keep theirs, and it follows `data-density` set on the same element or an ancestor.
+  - Buttons, inputs, selects, switches, checkboxes, radios, tabs, pagination, chips, step markers and menu rows follow a scope; Textarea, Slider, FAB and rows that are large by default (App shell links, Settings rows) keep their size.
+  - **Tokens**: `--ayy-size-control-xs` (one step under small) and `--ayy-size-control-dense` (the height of controls that are small by default: chips, pagination links and step markers), both growing with the density. Button's extra-small size, Chip, Pagination and Steps read them instead of repeating the same arithmetic; nothing looks different without a scope.
+  - **Linter**: `data-size` values are checked like `data-theme` and `data-density`.
+  - **Preview**: the Density page has a Size scope section with a live demo, an AI prompt and the code.
+
+- **Sizes**
+  - Only buttons, inputs and a few other controls came in small, medium and large → fifteen more components follow the same scale, and five that already had one gained the step they were missing.
+  - **[Checkbox](#/checkbox)**, **[Radio](#/radio)** and **[Switch](#/switch)** had one size → `sm`, `md` and `lg`; the label beside or around them takes the matching text size, and a Radio group's `size` sets every radio, label and legend in it at once.
+  - **[Textarea](#/textarea)**, **[Badge](#/badge)**, **[Chip](#/chip)** and **[Keyboard hint](#/kbd)** had one size → `sm`, `md` and `lg`; Textarea matches the Input scale, and removable Chips follow too.
+  - **[Tabs](#/tabs)**, **[Pagination](#/pagination)**, **[Breadcrumb](#/breadcrumb)** and **[Steps](#/steps)** had one size → `sm`, `md` and `lg`; tabs nested inside a panel keep their own size.
+  - **[Alert](#/alert)**, **[Card](#/card)**, **[Slider](#/slider)** and **[Accordion](#/accordion)** had one size → `sm`, `md` and `lg` (padding and title for Card, track and thumb for Slider, including a range slider, rows for Accordion).
+  - **[Segmented control](#/segmented-control)**, **[Number field](#/number-field)** and **[FAB](#/fab)** stopped at `sm` and `md` → an `lg` too; **[Search bar](#/search-bar)** started at `md` → an `sm` too; **[Avatar](#/avatar)** ran from `sm` to `xl` → an `xs` (20px) and a `2xl` (80px).
+  - **Tokens**: a small and a large step for the checkbox and radio size (`--ayy-size-check-sm`, `--ayy-size-check-lg`) and the switch height (`--ayy-size-switch-sm`, `--ayy-size-switch-lg`), each growing with the density.
+  - **[Choice card](#/choice-card)**, **[Property list](#/property-list)**, **[Empty state](#/empty-state)** and **[Tree](#/tree)** had a `compact` option or one size → `sm`, `md` and `lg`; `sm` is what `compact` always was plus smaller text where it applies, so `compact` keeps working, and a Choice group's `size` sets every card and its corner radio or checkbox.
+  - **[Menu](#/menu)** had one size → `sm`, `md` and `lg` on the `DropdownMenu` (flyouts follow it) or on a single panel; rows, text and icons step together.
+  - **[Button](#/button)** ran from `sm` to `lg` → an `xs` and an `xl`, with `icon-xs` and `icon-xl` for icon-only buttons; icon-only buttons of the new sizes get the automatic tooltip like the others.
+  - **[Popover](#/popover)** and **[Code block](#/code-block)** had one size → `sm`, `md` and `lg` for the panel's padding, text and widest width, and for the code's padding and text.
+
 - **Icons page**
   Packs were picked from a dropdown with a code snippet below → a centered tab per pack, a preview limited to five rows of icons, and a copyable AI prompt (with the code as a second tab) for using the pack.
 
@@ -236,6 +256,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   E2E runs rebuilt and served the shared `preview/dist/`, so another session building in the same checkout deleted files from under a running suite → each run serves its own build of the current sources (reused when one already exists), and builds in one checkout wait for each other instead of overlapping.
 
 ### Fixed
+
+- **[Menu](#/menu)**
+  A static menu (`ayy-menu--static`, a menu shown in the page without a trigger) was invisible → it shows like any other menu.
+
+- **Linter**
+  The icon-only button check only knew `size="icon"` and `size="icon-sm"` as a prop, so an unlabelled `<Button size="icon-lg">` passed → it covers every icon-only size as a prop or a class, including the new `icon-xs` and `icon-xl`.
 
 - **React components**
   Importing one React component bundled every component, about 150 kB gzipped → an app ships only the components it uses (a Button on its own is about 4–6 kB).

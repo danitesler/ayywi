@@ -3,6 +3,8 @@ import { basename, join } from "node:path";
 
 export const PREFIX = "ayy";
 export const DENSITIES = ["compact", "comfortable", "touch"];
+/** What data-size="…" can be on any element. "md" is the default: it puts the default tokens back. */
+export const SIZE_SCOPES = ["sm", "md", "lg"];
 /** The two base themes. Every other theme (tokens/themes/*.json) builds on one of them. */
 export const BASE_THEMES = [
   { name: "dark", base: "dark", description: "The default: near-black background, white text." },
@@ -39,6 +41,7 @@ function flatten(source, file = "tokens.json") {
           light: ext.light,
           css: ext.css,
           density: ext.density,
+          size: ext.size,
           category: categoryOf.get(key),
           description: value.$description,
         });
@@ -67,6 +70,15 @@ export function loadTokens(root) {
 
   for (const t of tokens) {
     if (t.light !== undefined && t.density !== undefined) throw new Error(`${t.name}: a token can't be both themed and density-aware`);
+    if (t.size === undefined) continue;
+    // A size scope sends a "default" token to another step of the same ladder, so both must follow density.
+    if (t.density === undefined) throw new Error(`${t.name}: size needs density — a scope can only remap a density-aware token`);
+    for (const [scope, ref] of Object.entries(t.size)) {
+      if (scope === "md" || !SIZE_SCOPES.includes(scope)) throw new Error(`${t.name}: size scope "${scope}" — use ${SIZE_SCOPES.filter((s) => s !== "md").join(" or ")} ("md" is the default and always restores it)`);
+      const target = byName.get(String(ref).match(REF)?.[1] ?? "");
+      if (!target) throw new Error(`${t.name}: size.${scope} must be a {reference} to a token, got ${JSON.stringify(ref)}`);
+      if (target.density === undefined) throw new Error(`${t.name}: size.${scope} points at ${target.name}, which isn't density-aware`);
+    }
   }
 
   function refOf(value) {

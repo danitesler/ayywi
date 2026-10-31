@@ -18,6 +18,7 @@ export default function Example() {
         <FieldHint id="guests-hint">Up to 8 per booking.</FieldHint>
       </Field>
       <NumberField size="sm" defaultValue={1} min={0} max={20} aria-label="Quantity of Ethiopia Guji, 250 g" />
+      <NumberField size="lg" defaultValue={2} min={0} max={20} aria-label="Quantity of Kenya Nyeri, 1 kg" />
     </div>
   );
 }

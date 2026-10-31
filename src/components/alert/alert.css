@@ -19,6 +19,28 @@
   line-height: var(--ayy-leading-normal);
 }
 
+.ayy-alert--sm {
+  padding: var(--ayy-space-2) var(--ayy-space-3);
+  column-gap: var(--ayy-space-2);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-alert--sm > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.ayy-alert--lg {
+  padding: var(--ayy-space-4) var(--ayy-space-5);
+  column-gap: var(--ayy-space-4);
+  font-size: var(--ayy-text-md);
+}
+
+.ayy-alert--lg > svg {
+  inline-size: 1.375rem;
+  block-size: 1.375rem;
+}
+
 .ayy-alert:has(> svg) {
   grid-template-columns: auto minmax(0, 1fr);
 }

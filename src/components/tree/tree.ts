@@ -2,14 +2,19 @@ import { cx } from "../../lib/cx";
 import { ArrowRight01Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
 
+export const treeSizes = ["sm", "md", "lg"] as const;
+export type TreeSize = (typeof treeSizes)[number];
+
 export interface TreeClassOptions {
+  /** sm is the same as compact; lg has taller rows and a wider indent. */
+  size?: TreeSize;
   /** Tighter rows, a smaller indent and the small control text. */
   compact?: boolean;
   className?: string;
 }
 
-export function treeClass({ compact, className }: TreeClassOptions = {}): string {
-  return cx("ayy-tree", compact && "ayy-tree--compact", className);
+export function treeClass({ size = "md", compact, className }: TreeClassOptions = {}): string {
+  return cx("ayy-tree", size !== "md" && `ayy-tree--${size}`, compact && "ayy-tree--compact", className);
 }
 
 export const treeItemClass = "ayy-tree__item";

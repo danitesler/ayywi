@@ -13,7 +13,7 @@
 }
 
 .ayy-steps__item {
-  --_marker: var(--ayy-size-control-sm);
+  --_marker: var(--ayy-size-control-dense);
   counter-increment: ayy-step;
   display: flex;
   flex: 1 1 0;
@@ -24,6 +24,25 @@
   font-size: var(--ayy-text-sm);
   font-weight: var(--ayy-weight-medium);
   line-height: var(--ayy-leading-snug);
+}
+
+/* sm: a step under the default marker (24px at compact density); lg: a medium control tall. */
+.ayy-steps--sm .ayy-steps__item {
+  --_marker: var(--ayy-size-control-xs);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-steps--sm .ayy-steps__item::before {
+  font-size: calc(var(--ayy-text-s) - 0.0625rem);
+}
+
+.ayy-steps--lg .ayy-steps__item {
+  --_marker: var(--ayy-size-control-md);
+  font-size: var(--ayy-text-md);
+}
+
+.ayy-steps--lg .ayy-steps__item::before {
+  font-size: var(--ayy-text-sm);
 }
 
 /* The number (or tick) in a circle. */

@@ -6,13 +6,17 @@
   "aka": ["pagination", "pager"],
   "classes": {
     "ayy-pagination": "Root <nav aria-label=\"Pagination\">. A wrapping row.",
+    "ayy-pagination--sm": "Small links: a step under the sm control height, text a pixel smaller.",
+    "ayy-pagination--lg": "Large links: the md control height and md text.",
     "ayy-pagination__link": "A page: <a href> when pages have URLs, <button> otherwise. aria-current=\"page\" marks the current one (outlined tint, heavier). aria-disabled=\"true\" (a link without href) or disabled dims an end you can't go past.",
     "ayy-pagination__size": "Optional page size picker: a <div> holding a <label> and a small Select. Goes first in the <nav>.",
     "ayy-pagination__size-label": "The picker's <label for>, \"Rows per page\". Visually hidden below 48rem, still the select's name.",
     "ayy-pagination__link--step": "Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.",
     "ayy-pagination__ellipsis": "The \"…\" for skipped pages, aria-hidden."
   },
-  "variants": {},
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
   "states": {
     "default": { "looks": "Muted pill links at the sm control height, in tabular figures; previous and next carry an arrow and a word." },
     "hover": { "when": ".ayy-pagination__link:hover", "looks": "Wash fill, text colour." },
@@ -24,16 +28,22 @@
     "loading": { "none": "Show the loading in the list or table it pages (Skeleton rows), not here." }
   },
   "sizes": {
-    "density": "Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.",
+    "scale": {
+      "sm": "Links --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.",
+      "md": "Links --ayy-size-control-dense tall, the sm control height by default (28px compact, 32 comfortable, 40 touch); sm control text. A data-size scope moves it: sm to the xs height, lg to the md height.",
+      "lg": "Links the md control height (32px compact, 40 comfortable, 44 touch), md control text. The page size picker steps up with it."
+    },
+    "density": "Every size follows data-density with the control scale.",
     "width": "Hugs its links and wraps. Below 48rem only previous, the current page and next show."
   },
-  "js": "paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
+  "js": "paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationRootSizeClass(size?) → string | undefined (the --sm / --lg class for the <nav>; md adds nothing; paginationSizeClass is the page size picker); paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
   "react": {
     "import": "import { Pagination } from \"@danitesler/ayywi/react\";",
     "components": {
       "Pagination": {
         "renders": "<nav class=\"ayy-pagination\"> with previous, pages from paginationRange() and next",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — the height of the links and the size of their text.",
           "page": "The current page, 1-based.",
           "count": "How many pages there are.",
           "siblings": "Pages either side of the current one. Default 1.",
@@ -65,5 +75,5 @@
     "Don't use it to step through a sign-up or checkout — use Steps.",
     "Don't show it when everything fits on one page."
   ],
-  "examples": [{ "id": "basic", "title": "Under a table" }, { "id": "page-size", "title": "With a page size picker" }]
+  "examples": [{ "id": "basic", "title": "Under a table" }, { "id": "page-size", "title": "With a page size picker" }, { "id": "sizes", "title": "Sizes" } ]
 }

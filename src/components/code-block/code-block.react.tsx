@@ -30,6 +30,7 @@ import {
   codeBlockPreClass,
   codeBlockSelectorClass,
   SUPPORTED_LANGUAGES,
+  type CodeBlockSize,
   type LanguagePreset,
   tokenizeCode,
   tokenKeywordClass,
@@ -46,16 +47,18 @@ import {
 } from "./code-block";
 
 export interface CodeBlockProps extends HTMLAttributes<HTMLDivElement> {
+  /** Padding and text size of the code. */
+  size?: CodeBlockSize;
   /** Display line numbers with CSS counters. */
   numbered?: boolean;
 }
 
 export const CodeBlock = /* @__PURE__ */ forwardRef<HTMLDivElement, CodeBlockProps>(function CodeBlock(
-  { numbered, className, children, ...props },
+  { size, numbered, className, children, ...props },
   ref,
 ) {
   return (
-    <div ref={ref} className={codeBlockClass({ numbered, className })} {...props}>
+    <div ref={ref} className={codeBlockClass({ size, numbered, className })} {...props}>
       {children}
     </div>
   );

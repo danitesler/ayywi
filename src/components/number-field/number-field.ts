@@ -2,7 +2,7 @@ import { cx } from "../../lib/cx";
 import { MinusSignIcon, PlusSignIcon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
 
-export const numberFieldSizes = ["sm", "md"] as const;
+export const numberFieldSizes = ["sm", "md", "lg"] as const;
 export type NumberFieldSize = (typeof numberFieldSizes)[number];
 
 export function numberFieldClass({ size = "md", className }: { size?: NumberFieldSize; className?: string } = {}): string {

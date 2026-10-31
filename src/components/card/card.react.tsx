@@ -12,9 +12,12 @@ import {
   cardMediaClass,
   cardTitleClass,
   trackSpotlight,
+  type CardSize,
 } from "./card";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  /** Padding of the header, content and footer, and the size of the title. */
+  size?: CardSize;
   interactive?: boolean;
   spotlight?: boolean;
   /** No fill and no shadow: the page shows through, the border stays. */
@@ -28,13 +31,13 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = /* @__PURE__ */ forwardRef<HTMLDivElement, CardProps>(function Card(
-  { interactive, spotlight, transparent, featured, view, spotColor, className, style, onPointerMove, ...props },
+  { size, interactive, spotlight, transparent, featured, view, spotColor, className, style, onPointerMove, ...props },
   ref,
 ) {
   return (
     <div
       ref={ref}
-      className={cardClass({ interactive, spotlight, transparent, featured, view, className })}
+      className={cardClass({ size, interactive, spotlight, transparent, featured, view, className })}
       style={spotColor ? ({ "--ayy-spot": spotColor, ...style } as CSSProperties) : style}
       onPointerMove={
         spotlight

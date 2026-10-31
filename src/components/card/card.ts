@@ -1,6 +1,11 @@
 import { cx } from "../../lib/cx";
 
+export const cardSizes = ["sm", "md", "lg"] as const;
+export type CardSize = (typeof cardSizes)[number];
+
 export interface CardClassOptions {
+  /** Padding of the header, content and footer, and the size of the title. */
+  size?: CardSize;
   /** Lift + shadow on hover. Use when the whole card is clickable. */
   interactive?: boolean;
   /** Pointer-following glow. Needs pointer tracking (React Card does it; else @danitesler/ayywi/elements). */
@@ -14,9 +19,10 @@ export interface CardClassOptions {
   className?: string;
 }
 
-export function cardClass({ interactive, spotlight, transparent, featured, view, className }: CardClassOptions = {}): string {
+export function cardClass({ size = "md", interactive, spotlight, transparent, featured, view, className }: CardClassOptions = {}): string {
   return cx(
     "ayy-card",
+    size !== "md" && `ayy-card--${size}`,
     interactive && "ayy-card--interactive",
     spotlight && "ayy-card--spotlight",
     transparent && "ayy-card--transparent",

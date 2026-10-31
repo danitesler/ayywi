@@ -4,6 +4,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 
 **Classes**
 - `.ayy-search-bar` — Root: a <form role="search"> holding the field and an optional Cancel.
+- `.ayy-search-bar--sm` — Shorter field and smaller text, for a toolbar or a table header.
 - `.ayy-search-bar--lg` — Taller field and text, for a search screen.
 - `.ayy-search-bar__field` — The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.
 - `.ayy-search-bar__input` — <input type="search" enterkeyhint="search" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.
@@ -23,13 +24,14 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 - `typing` (`.ayy-search-bar__input:not(:placeholder-shown)`) — The clear button shows at the inline end (the input needs a placeholder for this).
 
 **Sizes**
+- `sm` — The sm control height (28px compact, 32 comfortable, 40 touch), sm text.
 - `md` (default) — The md control height (32px compact, 40 comfortable, 44 touch).
 - `lg` — The lg control height (40px compact, 48 comfortable, 52 touch), larger text: the top of a phone list.
 - Density — The field height follows data-density (the heights above).
 - Width — The field fills its row; Cancel takes its own width after it.
 
 **React** — `import { SearchBar } from "@danitesler/ayywi/react";`
-- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "md" | "lg"; `shortcut` string — keyboard shortcut hint (e.g. "Mod+K"); hidden while typing; `formProps` FormHTMLAttributes — props for the <form>
+- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "sm" | "md" | "lg"; `shortcut` string — keyboard shortcut hint (e.g. "Mod+K"); hidden while typing; `formProps` FormHTMLAttributes — props for the <form>
 
 **Accessibility**
 - role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks").
@@ -47,7 +49,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 - Don't use it for a whole-app ⌘K search on desktop — that's the Command palette.
 - Don't remove the placeholder: the clear button relies on it.
 
-## Search bar — Empty and with text
+## Search bar — Empty, with text and sizes
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -68,6 +70,20 @@ HTML (also Vue/Svelte/Angular templates, server templates):
       <button type="button" class="ayy-search-bar__clear" aria-label="Clear search"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
     </div>
   </form>
+  <form role="search" class="ayy-search-bar ayy-search-bar--sm">
+    <div class="ayy-search-bar__field">
+      <svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <input type="search" enterkeyhint="search" class="ayy-search-bar__input" aria-label="Filter this table" placeholder="Filter this table" value="Mira" />
+      <button type="button" class="ayy-search-bar__clear" aria-label="Clear search"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+    </div>
+  </form>
+  <form role="search" class="ayy-search-bar ayy-search-bar--lg">
+    <div class="ayy-search-bar__field">
+      <svg class="ayy-icon" data-ayy-icon="search" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 17L21 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+      <input type="search" enterkeyhint="search" class="ayy-search-bar__input" aria-label="Search everything" placeholder="Search everything" />
+      <button type="button" class="ayy-search-bar__clear" aria-label="Clear search"><svg class="ayy-icon" data-ayy-icon="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+    </div>
+  </form>
 </div>
 ```
 
@@ -81,6 +97,8 @@ export default function Example() {
     <div className="ayy-stack" style={{ inlineSize: "min(100%, 24rem)" }}>
       <SearchBar placeholder="Search tasks" label="Search tasks" />
       <SearchBar placeholder="Search tasks" label="Search tasks" defaultValue="milk" />
+      <SearchBar size="sm" placeholder="Filter this table" label="Filter this table" defaultValue="Mira" />
+      <SearchBar size="lg" placeholder="Search everything" label="Search everything" />
     </div>
   );
 }

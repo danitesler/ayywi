@@ -2,14 +2,19 @@ import { cx } from "../../lib/cx";
 import { Copy01Icon, Tick02Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
 
+export const codeBlockSizes = ["sm", "md", "lg"] as const;
+export type CodeBlockSize = (typeof codeBlockSizes)[number];
+
 export interface CodeBlockClassOptions {
+  /** Padding and text size of the code. */
+  size?: CodeBlockSize;
   /** Line numbers using CSS counters. */
   numbered?: boolean;
   className?: string;
 }
 
-export function codeBlockClass({ numbered, className }: CodeBlockClassOptions = {}): string {
-  return cx("ayy-code-block", numbered && "ayy-code-block--numbered", className);
+export function codeBlockClass({ size = "md", numbered, className }: CodeBlockClassOptions = {}): string {
+  return cx("ayy-code-block", size !== "md" && `ayy-code-block--${size}`, numbered && "ayy-code-block--numbered", className);
 }
 
 export type ClassOptionsOrString = string | { className?: string };

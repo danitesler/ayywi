@@ -22,6 +22,15 @@
   vertical-align: 0.1em;
 }
 
+/* Em-based, so a key follows the text it sits in; --sm and --lg step it down and up from there. */
+.ayy-kbd--sm {
+  font-size: 0.6875em;
+}
+
+.ayy-kbd--lg {
+  font-size: 0.875em;
+}
+
 @media (forced-colors: active) {
   .ayy-kbd {
     border-color: CanvasText;

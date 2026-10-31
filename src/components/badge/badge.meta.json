@@ -6,6 +6,8 @@
   "aka": ["badge", "pill", "status-pill", "count-badge"],
   "classes": {
     "ayy-badge": "Root. Neutral by default.",
+    "ayy-badge--sm": "Small: text a pixel under the default, tighter padding. For counts and tags inside dense rows.",
+    "ayy-badge--lg": "Large: text a pixel over the default, more padding. For a status next to a title.",
     "ayy-badge--muted": "Quieter neutral.",
     "ayy-badge--outline": "Border only.",
     "ayy-badge--success": "Positive status.",
@@ -17,7 +19,8 @@
     "ayy-badge__dot--static": "Dot without the pulse."
   },
   "variants": {
-    "variant": { "values": ["default", "muted", "outline", "success", "warning", "destructive", "info", "ai"], "default": "default" }
+    "variant": { "values": ["default", "muted", "outline", "success", "warning", "destructive", "info", "ai"], "default": "default" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
   "states": {
     "default": { "looks": "An s pill: wash fill, line-strong border, text colour. muted: hairline and muted text; outline: no fill. success, warning, destructive, info and ai: 10% tint, 30% border and text in their colour. A __dot pulses unless --static." },
@@ -30,10 +33,15 @@
     "loading": { "none": "No loading look; a pulsing __dot shows a live state, not progress." }
   },
   "sizes": {
-    "density": "Text size follows data-density via --ayy-text-s.",
+    "scale": {
+      "sm": "--ayy-text-s minus 1px (12px compact, 13 touch), 8px side padding.",
+      "md": "--ayy-text-s (13px compact, 14 touch), 10px side padding.",
+      "lg": "--ayy-text-s plus 1px (14px compact, 15 touch), 12px side padding and 4px block padding."
+    },
+    "density": "Text size follows data-density via --ayy-text-s; every size steps with it.",
     "width": "Hugs its text, never wraps."
   },
-  "js": "badgeClass({ variant?, className? }) → string",
+  "js": "badgeClass({ variant?, size?, className? }) → string",
   "react": {
     "import": "import { Badge } from \"@danitesler/ayywi/react\";",
     "components": {
@@ -41,6 +49,7 @@
         "renders": "<span>",
         "props": {
           "variant": "\"default\" | \"muted\" | \"outline\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"ai\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
           "dot": "boolean | \"pulse\" | \"static\" — leading status dot"
         }
       }
@@ -63,6 +72,7 @@
   ],
   "examples": [
     { "id": "variants", "title": "Variants" },
-    { "id": "dot", "title": "Status dot" }
+    { "id": "dot", "title": "Status dot" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

@@ -4,6 +4,8 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 
 **Classes**
 - `.ayy-tabs` — Wrapper (block). Also put it on <ayy-tabs>.
+- `.ayy-tabs--sm` — Small: the track is a small control tall, tab text is control sm, tighter padding. Reaches only its own list, not tabs nested in a panel.
+- `.ayy-tabs--lg` — Large: the track is a large control tall, tab text is control lg, more padding.
 - `.ayy-tabs__list` — role="tablist" pill container.
 - `.ayy-tabs__tab` — role="tab" button. Selected when aria-selected="true".
 - `.ayy-tabs__panel` — role="tabpanel". Hide inactive panels with the hidden attribute.
@@ -20,7 +22,10 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 - `loading` — doesn't apply: Show loading in the panel (Skeleton), not on the tab.
 
 **Sizes**
-- Density — The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.
+- `sm` — Track at the sm control height (28px compact, 32 comfortable, 40 touch), control sm text, 8px side padding.
+- `md` (default) — Track at the md control height (32px compact, 40 comfortable, 44 touch), control md text, 12px side padding.
+- `lg` — Track at the lg control height (36px compact, 44 comfortable, 48 touch), control lg text, 16px side padding.
+- Density — Every size follows data-density with the control scale.
 - Width — The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container.
 
 **Custom element** `<ayy-tabs>` (@danitesler/ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
@@ -29,7 +34,7 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 - event `ayy-value-change`: { value: string } — the user picked a tab
 
 **React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@danitesler/ayywi/react";`
-- `<Tabs>` renders <div>. Props: `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
+- `<Tabs>` renders <div>. Props: `size` "sm" | "md" | "lg" — the height of the tab list and its labels.; `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
 - `<TabsList>` renders <div role="tablist">. Props: `aria-label` Recommended.
 - `<TabsTrigger>` renders <button role="tab">. Props: `value` string (required); `icon` ReactNode — optional icon before the label.
 - `<TabsContent>` renders <div role="tabpanel">. Props: `value` string (required); `keepMounted` Keep children mounted while hidden. Default false.
@@ -219,6 +224,89 @@ export default function Example() {
         <p className="ayy-muted">Open-source add-ons for Playnite.</p>
       </TabsContent>
     </Tabs>
+  );
+}
+```
+
+## Tabs — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- <ayy-tabs> (@danitesler/ayywi/elements) wires ids, clicks and arrow keys. -->
+<div class="ayy-stack">
+  <ayy-tabs class="ayy-tabs ayy-tabs--sm" value="all">
+    <div class="ayy-tabs__list" role="tablist" aria-label="Small tabs">
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
+    </div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
+  </ayy-tabs>
+  <ayy-tabs class="ayy-tabs" value="all">
+    <div class="ayy-tabs__list" role="tablist" aria-label="Medium tabs">
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
+    </div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
+  </ayy-tabs>
+  <ayy-tabs class="ayy-tabs ayy-tabs--lg" value="all">
+    <div class="ayy-tabs__list" role="tablist" aria-label="Large tabs">
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="all" aria-selected="true">All</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="open" aria-selected="false" tabindex="-1">Open</button>
+      <button type="button" class="ayy-tabs__tab" role="tab" data-value="closed" aria-selected="false" tabindex="-1">Closed</button>
+    </div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="all"></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="open" hidden></div>
+    <div class="ayy-tabs__panel" role="tabpanel" data-value="closed" hidden></div>
+  </ayy-tabs>
+</div>
+```
+
+React:
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <Tabs size="sm" defaultValue="all">
+        <TabsList aria-label="Small tabs">
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" />
+        <TabsContent value="open" />
+        <TabsContent value="closed" />
+      </Tabs>
+      <Tabs defaultValue="all">
+        <TabsList aria-label="Medium tabs">
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" />
+        <TabsContent value="open" />
+        <TabsContent value="closed" />
+      </Tabs>
+      <Tabs size="lg" defaultValue="all">
+        <TabsList aria-label="Large tabs">
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" />
+        <TabsContent value="open" />
+        <TabsContent value="closed" />
+      </Tabs>
+    </div>
   );
 }
 ```

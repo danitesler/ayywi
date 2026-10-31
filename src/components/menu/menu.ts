@@ -3,6 +3,14 @@ import { connectPopover, type PopoverController, type PopoverControllerOptions }
 import { place, supportsPopover, supportsPopoverSource, type FloatingSide, type PlaceBoundary } from "../../lib/position";
 
 export const menuClass = "ayy-menu";
+
+export const menuSizes = ["sm", "md", "lg"] as const;
+export type MenuSize = (typeof menuSizes)[number];
+
+/** Add next to menuClass on every panel, a flyout's included: `cx(menuClass, menuSizeClass("sm"))`. md is the default and adds nothing. */
+export function menuSizeClass(size?: MenuSize): string | undefined {
+  return size && size !== "md" ? `ayy-menu--${size}` : undefined;
+}
 export const menuRowClass = "ayy-menu__row";
 export const menuMoreClass = "ayy-menu__more";
 export const menuLabelClass = "ayy-menu__label";

@@ -1,6 +1,12 @@
 /* Dropdown menu: a native popover with role="menu". Keyboard handling comes from React DropdownMenu or <ayy-menu>. */
 
 .ayy-menu {
+  /* Every panel starts at md, so a flyout inside a large panel doesn't inherit its size; --sm and --lg below change them. */
+  --_menu-h: var(--ayy-size-control-md);
+  --_menu-fs: var(--ayy-control-text-md);
+  --_menu-lfs: var(--ayy-text-sm);
+  --_menu-dfs: var(--ayy-text-s);
+  --_menu-icon: 1.125rem;
   box-sizing: border-box;
   min-inline-size: 11rem;
   max-inline-size: min(20rem, calc(100vw - 1rem));
@@ -17,6 +23,24 @@
     transform var(--ayy-duration-fast) var(--ayy-ease-menu),
     overlay var(--ayy-duration-fast) allow-discrete,
     display var(--ayy-duration-fast) allow-discrete;
+}
+
+/* Sizes step the row height, the text and the icons. Every panel carries its own class, a flyout included. */
+.ayy-menu--sm {
+  --_menu-h: var(--ayy-size-control-sm);
+  --_menu-fs: var(--ayy-control-text-sm);
+  --_menu-lfs: var(--ayy-text-xs);
+  --_menu-dfs: calc(var(--ayy-text-s) - 0.0625rem);
+  --_menu-icon: 1rem;
+  min-inline-size: 10rem;
+}
+
+.ayy-menu--lg {
+  --_menu-h: var(--ayy-size-control-lg);
+  --_menu-fs: var(--ayy-control-text-lg);
+  --_menu-dfs: var(--ayy-text-sm);
+  --_menu-icon: 1.25rem;
+  min-inline-size: 13rem;
 }
 
 .ayy-menu:not(:popover-open) {
@@ -38,7 +62,7 @@
   align-items: center;
   gap: var(--ayy-space-2);
   inline-size: 100%;
-  min-block-size: var(--ayy-size-control-md);
+  min-block-size: var(--_menu-h, var(--ayy-size-control-md));
   margin: 0;
   padding-block: 0;
   padding-inline: var(--ayy-space-2) var(--ayy-space-3);
@@ -47,7 +71,7 @@
   background: transparent;
   color: inherit;
   font-family: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--_menu-fs, var(--ayy-control-text-md));
   text-align: start;
   text-decoration: none;
   white-space: nowrap;
@@ -75,8 +99,8 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: var(--ayy-size-control-md);
-  block-size: var(--ayy-size-control-md);
+  inline-size: var(--_menu-h, var(--ayy-size-control-md));
+  block-size: var(--_menu-h, var(--ayy-size-control-md));
   margin: 0;
   padding: 0;
   border: 0;
@@ -84,7 +108,7 @@
   background: transparent;
   color: var(--ayy-color-muted);
   font-family: inherit;
-  font-size: var(--ayy-control-text-md);
+  font-size: var(--_menu-fs, var(--ayy-control-text-md));
   cursor: pointer;
 }
 
@@ -114,7 +138,9 @@
   z-index: 1;
 }
 
-.ayy-menu--static {
+/* The second selector matches the closed look's specificity above, so a static menu (never "open") isn't faded out. */
+.ayy-menu--static,
+.ayy-menu--static:not(:popover-open) {
   position: static;
   inset: auto;
   opacity: 1;
@@ -134,8 +160,8 @@
 
 .ayy-menu__item > svg {
   flex: none;
-  inline-size: 1.125rem;
-  block-size: 1.125rem;
+  inline-size: var(--_menu-icon, 1.125rem);
+  block-size: var(--_menu-icon, 1.125rem);
   color: var(--ayy-color-muted);
 }
 
@@ -159,7 +185,7 @@
 
 .ayy-menu__description {
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-s);
+  font-size: var(--_menu-dfs, var(--ayy-text-s));
   line-height: var(--ayy-leading-snug);
   white-space: normal;
 }
@@ -217,7 +243,7 @@
 .ayy-menu__value {
   margin-inline-start: auto;
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-s);
+  font-size: var(--_menu-dfs, var(--ayy-text-s));
   white-space: nowrap;
 }
 
@@ -278,7 +304,7 @@
 .ayy-menu__label {
   padding: var(--ayy-space-1-5) var(--ayy-space-2) var(--ayy-space-1);
   color: var(--ayy-color-muted);
-  font-size: var(--ayy-text-sm);
+  font-size: var(--_menu-lfs, var(--ayy-text-sm));
   font-weight: var(--ayy-weight-regular);
 }
 

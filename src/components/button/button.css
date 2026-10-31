@@ -198,6 +198,24 @@
 
 /* ---- Sizes ---- */
 
+/* xs is a step under sm and xl a step over lg, built from the control tokens so both follow data-density. */
+.ayy-button--xs {
+  --_h: var(--ayy-size-control-xs);
+  --_ic: 0.875rem;
+  gap: var(--ayy-space-1);
+  block-size: var(--_h);
+  padding-inline: calc(var(--ayy-control-pad-sm) - 0.25rem);
+  font-size: calc(var(--ayy-control-text-sm) - 0.0625rem);
+}
+
+.ayy-button--xl {
+  --_h: calc(var(--ayy-size-control-lg) + 0.5rem);
+  --_ic: var(--ayy-size-icon-lg);
+  block-size: var(--_h);
+  padding-inline: calc(var(--ayy-control-pad-lg) + 0.25rem);
+  font-size: calc(var(--ayy-control-text-lg) + 0.0625rem);
+}
+
 .ayy-button--sm {
   --_h: var(--ayy-size-control-sm);
   gap: var(--ayy-space-1-5);
@@ -218,9 +236,19 @@
   --_ic: var(--ayy-size-icon-md);
 }
 
+.ayy-button--icon-xs {
+  --_ic: 0.875rem;
+}
+
+.ayy-button--icon-xl {
+  --_ic: var(--ayy-size-icon-lg);
+}
+
 .ayy-button--icon,
+.ayy-button--icon-xs,
 .ayy-button--icon-sm,
-.ayy-button--icon-lg {
+.ayy-button--icon-lg,
+.ayy-button--icon-xl {
   aspect-ratio: 1;
   padding-inline: 0;
 }
@@ -232,6 +260,12 @@
 }
 .ayy-button--icon-lg {
   block-size: var(--ayy-size-control-lg);
+}
+.ayy-button--icon-xs {
+  block-size: var(--ayy-size-control-xs);
+}
+.ayy-button--icon-xl {
+  block-size: calc(var(--ayy-size-control-lg) + 0.5rem);
 }
 
 /* Block: fills its container's width (a card footer, a phone form). */
@@ -249,8 +283,8 @@
 .ayy-button--end {
   justify-content: flex-end;
 }
-.ayy-button--start:not(.ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link),
-.ayy-button--end:not(.ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link) {
+.ayy-button--start:not(.ayy-button--icon, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--icon-xl, .ayy-button--link),
+.ayy-button--end:not(.ayy-button--icon, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--icon-xl, .ayy-button--link) {
   padding-inline: calc((var(--_h) - var(--_ic)) / 2 - 1px);
 }
 

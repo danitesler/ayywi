@@ -4,7 +4,11 @@ Category: Forms. A large option for picking one or more things that need more ex
 
 **Classes**
 - `.ayy-choice-group` — Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role="radiogroup" for radio cards.
+- `.ayy-choice-group--sm` — Every card in the group small. A card with its own size keeps it.
+- `.ayy-choice-group--lg` — Every card in the group large. A card with its own size keeps it.
 - `.ayy-choice-group--scroll` — One row that scrolls sideways instead of wrapping: a day strip, sizes on a phone. Cards stay at least --ayy-min wide.
+- `.ayy-choice-card--sm` — Small: 12px padding, xs text, a small corner radio or checkbox.
+- `.ayy-choice-card--lg` — Large: 20px padding, md text, a large corner radio or checkbox.
 - `.ayy-choice-group__legend` — The group's question, as the fieldset's <legend>.
 - `.ayy-choice-card` — A <label> card around a native <input class="ayy-radio"> or ayy-checkbox, drawn in the inline-end corner. Chosen: a text-colour border, 2px.
 - `.ayy-choice-card--compact` — A time slot or a size: centred text, input hidden, filled when chosen; a disabled one is struck through.
@@ -23,12 +27,15 @@ Category: Forms. A large option for picking one or more things that need more ex
 - `loading` — doesn't apply: Load the options before showing them; use Skeletons in the cards' shape meanwhile.
 
 **Sizes**
-- Density — Card padding is fixed; the corner input follows --ayy-size-check. Compact cards are at least the lg control height.
+- `sm` — 12px padding, --ayy-text-xs, the corner input at --ayy-size-check-sm (14px compact, 16 comfortable, 18 touch).
+- `md` (default) — 16px padding, --ayy-text-sm, the corner input at --ayy-size-check (16px compact, 18 comfortable, 20 touch).
+- `lg` — 20px padding, --ayy-text-md, the corner input at --ayy-size-check-lg (20px compact, 22 comfortable, 24 touch).
+- Density — Card padding is fixed; the corner input follows the check size and the density. Compact cards (time slots) keep their own spacing and are at least the lg control height; size changes only their text.
 - Width — The group is a grid of columns at least --ayy-min wide (12rem, 6rem for compact) that fills its box; scroll makes one sideways row.
 
 **React** — `import { ChoiceGroup, ChoiceCard } from "@danitesler/ayywi/react";`
-- `<ChoiceGroup>` renders <fieldset role="radiogroup" class="ayy-choice-group"><legend>…. Props: `legend` ReactNode — the question; `type` "radio" (one choice, kept by the group) | "checkbox" (cards that combine); `name` Shared radio name. Generated if omitted.; `value / defaultValue` The chosen card's value.; `onValueChange` (value: string) => void; `min` CSS length — narrowest card; `scroll` boolean — one row that scrolls sideways; `disabled` boolean — every card
-- `<ChoiceCard>` renders <label class="ayy-choice-card"><input class="ayy-radio">…. Props: `value` string; `title` ReactNode; `description` ReactNode; `meta` ReactNode — price or date; `icon` ReactNode — an Icon or Icon tile above the title; `compact` boolean; `type` "checkbox" | "radio" — outside a radio ChoiceGroup; `checked / defaultChecked` boolean — outside a radio ChoiceGroup; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `inputProps` Props for the native input (name for checkbox cards).
+- `<ChoiceGroup>` renders <fieldset role="radiogroup" class="ayy-choice-group"><legend>…. Props: `size` "sm" | "md" | "lg" — every card in the group; a card with its own size keeps it; `legend` ReactNode — the question; `type` "radio" (one choice, kept by the group) | "checkbox" (cards that combine); `name` Shared radio name. Generated if omitted.; `value / defaultValue` The chosen card's value.; `onValueChange` (value: string) => void; `min` CSS length — narrowest card; `scroll` boolean — one row that scrolls sideways; `disabled` boolean — every card
+- `<ChoiceCard>` renders <label class="ayy-choice-card"><input class="ayy-radio">…. Props: `size` "sm" | "md" | "lg" — this card only; wins over the group; `value` string; `title` ReactNode; `description` ReactNode; `meta` ReactNode — price or date; `icon` ReactNode — an Icon or Icon tile above the title; `compact` boolean; `type` "checkbox" | "radio" — outside a radio ChoiceGroup; `checked / defaultChecked` boolean — outside a radio ChoiceGroup; `onCheckedChange` (checked: boolean) => void; `disabled` boolean; `inputProps` Props for the native input (name for checkbox cards).
 
 **Accessibility**
 - Each card is a native radio or checkbox labelled by the whole card: Space picks it, arrow keys move between radios, and the title, description and price are its name.
@@ -172,6 +179,55 @@ export default function Example() {
         inputProps={{ name: "extras" }}
       />
     </ChoiceGroup>
+  );
+}
+```
+
+## Choice card — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 36rem)">
+  <fieldset role="radiogroup" class="ayy-choice-group ayy-choice-group--sm">
+    <legend class="ayy-choice-group__legend">Small</legend>
+    <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="delivery-sm" checked value="standard" /><span class="ayy-choice-card__title">Standard</span><span class="ayy-choice-card__description">3–5 days</span><span class="ayy-choice-card__meta">Free</span></label>
+    <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="delivery-sm" value="express" /><span class="ayy-choice-card__title">Express</span><span class="ayy-choice-card__description">Next day</span><span class="ayy-choice-card__meta">$9</span></label>
+  </fieldset>
+  <fieldset role="radiogroup" class="ayy-choice-group">
+    <legend class="ayy-choice-group__legend">Medium</legend>
+    <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="delivery-md" checked value="standard" /><span class="ayy-choice-card__title">Standard</span><span class="ayy-choice-card__description">3–5 days</span><span class="ayy-choice-card__meta">Free</span></label>
+    <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="delivery-md" value="express" /><span class="ayy-choice-card__title">Express</span><span class="ayy-choice-card__description">Next day</span><span class="ayy-choice-card__meta">$9</span></label>
+  </fieldset>
+  <fieldset role="radiogroup" class="ayy-choice-group ayy-choice-group--lg">
+    <legend class="ayy-choice-group__legend">Large</legend>
+    <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="delivery-lg" checked value="standard" /><span class="ayy-choice-card__title">Standard</span><span class="ayy-choice-card__description">3–5 days</span><span class="ayy-choice-card__meta">Free</span></label>
+    <label class="ayy-choice-card"><input type="radio" class="ayy-radio" name="delivery-lg" value="express" /><span class="ayy-choice-card__title">Express</span><span class="ayy-choice-card__description">Next day</span><span class="ayy-choice-card__meta">$9</span></label>
+  </fieldset>
+</div>
+```
+
+React:
+
+```tsx
+import { ChoiceCard, ChoiceGroup } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 36rem)" }}>
+      <ChoiceGroup legend="Small" name="delivery-sm" size="sm" defaultValue="standard">
+        <ChoiceCard value="standard" title="Standard" description="3–5 days" meta="Free" />
+        <ChoiceCard value="express" title="Express" description="Next day" meta="$9" />
+      </ChoiceGroup>
+      <ChoiceGroup legend="Medium" name="delivery-md" defaultValue="standard">
+        <ChoiceCard value="standard" title="Standard" description="3–5 days" meta="Free" />
+        <ChoiceCard value="express" title="Express" description="Next day" meta="$9" />
+      </ChoiceGroup>
+      <ChoiceGroup legend="Large" name="delivery-lg" size="lg" defaultValue="standard">
+        <ChoiceCard value="standard" title="Standard" description="3–5 days" meta="Free" />
+        <ChoiceCard value="express" title="Express" description="Next day" meta="$9" />
+      </ChoiceGroup>
+    </div>
   );
 }
 ```

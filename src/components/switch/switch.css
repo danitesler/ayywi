@@ -1,7 +1,7 @@
 /*
  * Works on <input type="checkbox" role="switch"> (recommended: native forms + keyboard)
  * and on <button role="switch" aria-checked="…">. The thumb is ::before, so no child markup.
- * Size follows --ayy-size-switch (density-aware): width is 1.8× the height.
+ * Size follows --ayy-size-switch (density-aware): width is 1.8× the height. --sm and --lg step it down and up.
  */
 .ayy-switch {
   --_h: var(--ayy-size-switch);
@@ -25,6 +25,14 @@
   transition:
     background-color var(--ayy-duration-fast) ease,
     border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-switch--sm {
+  --_h: var(--ayy-size-switch-sm);
+}
+
+.ayy-switch--lg {
+  --_h: var(--ayy-size-switch-lg);
 }
 
 /* The thumb moves with inset-inline-start (a logical property), so it slides the right way in RTL without

@@ -7,10 +7,13 @@
   "aka": ["textarea", "text-area"],
   "classes": {
     "ayy-textarea": "Root, on the <textarea>.",
+    "ayy-textarea--sm": "Small: 4rem tall to start, tighter padding, sm text. Pairs with a small Input.",
+    "ayy-textarea--lg": "Large: 6.5rem tall to start, more padding, lg text.",
     "ayy-textarea--autosize": "Grows with content (CSS field-sizing). Falls back to fixed height.",
     "ayy-textarea--mono": "Monospace font."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "autosize": { "values": [true, false], "default": false },
     "mono": { "values": [true, false], "default": false }
   },
@@ -25,14 +28,19 @@
     "loading": { "none": "No loading look; disable it and show a Spinner in the submit Button while the text is sent." }
   },
   "sizes": {
-    "density": "Text follows control md; the minimum height (5rem) and padding don't change.",
+    "scale": {
+      "sm": "Control sm text, 8px side padding, at least 4rem tall.",
+      "md": "Control field text, 12px side padding, at least 5rem tall.",
+      "lg": "Control lg text, 16px side padding, at least 6.5rem tall."
+    },
+    "density": "Text follows the control scale and data-density; the minimum heights and padding don't change. A data-size scope doesn't resize it (it is multi-line): set size on it.",
     "width": "Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls)."
   },
-  "js": "textareaClass({ autosize?, mono?, className? }) → string",
+  "js": "textareaClass({ size?, autosize?, mono?, className? }) → string",
   "react": {
     "import": "import { Textarea } from \"@danitesler/ayywi/react\";",
     "components": {
-      "Textarea": { "renders": "<textarea>", "props": { "autosize": "boolean", "mono": "boolean", "...rest": "All native <textarea> attributes." } }
+      "Textarea": { "renders": "<textarea>", "props": { "size": "\"sm\" | \"md\" | \"lg\"", "autosize": "boolean", "mono": "boolean", "...rest": "All native <textarea> attributes." } }
     }
   },
   "a11y": ["Label it (Field + Label), same as Input."],
@@ -44,5 +52,5 @@
     "Don't use it for rich text editing — use a dedicated editor and theme it with ayywi tokens.",
     "Don't disable resize on non-autosize textareas; users need it."
   ],
-  "examples": [{ "id": "basic", "title": "Basic, autosize, mono" }]
+  "examples": [{ "id": "basic", "title": "Basic, autosize, mono" }, { "id": "sizes", "title": "Sizes" }]
 }

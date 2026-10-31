@@ -52,10 +52,38 @@
   border-radius: var(--ayy-radius-card);
 }
 
-/* Compact: inside a card, a table cell or a sidebar panel. */
-.ayy-empty-state--compact {
+/* Compact: inside a card, a table cell or a sidebar panel. sm is compact with smaller text; lg is roomier, for a page. */
+.ayy-empty-state--compact,
+.ayy-empty-state--sm {
   padding-block: var(--ayy-space-6);
   padding-inline: var(--ayy-space-4);
+}
+
+.ayy-empty-state--sm .ayy-empty-state__title {
+  font-size: var(--ayy-text-md);
+}
+
+.ayy-empty-state--sm .ayy-empty-state__description {
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-empty-state--lg {
+  gap: var(--ayy-space-3);
+  padding-block: var(--ayy-space-16);
+  padding-inline: var(--ayy-space-8);
+}
+
+.ayy-empty-state--lg .ayy-empty-state__title {
+  font-size: var(--ayy-text-2xl);
+}
+
+.ayy-empty-state--lg .ayy-empty-state__description {
+  max-inline-size: 52ch;
+  font-size: var(--ayy-text-md);
+}
+
+.ayy-empty-state--lg .ayy-empty-state__actions {
+  margin-block-start: var(--ayy-space-4);
 }
 
 @media (forced-colors: active) {

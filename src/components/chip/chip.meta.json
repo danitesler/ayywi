@@ -6,6 +6,8 @@
   "aka": ["chip", "tag", "token", "filter-chip"],
   "classes": {
     "ayy-chip": "A <label> around a native <input type=\"checkbox\"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed=\"true\".",
+    "ayy-chip--sm": "Small: a step under the default (24px compact), sm text, tighter padding. For a dense toolbar.",
+    "ayy-chip--lg": "Large: a medium control tall (32px compact), md text, more padding. For a main filter row or touch.",
     "ayy-chip--removable": "An active filter: a <span> with its text and an __remove button. Not a control itself.",
     "ayy-chip__count": "Number of results after the label, muted, tabular digits.",
     "ayy-chip__remove": "The remove (×) button of a removable chip. Needs an aria-label (\"Remove Status: Open\").",
@@ -13,6 +15,7 @@
     "ayy-chip-group--scroll": "One line that scrolls sideways instead of wrapping (a phone toolbar)."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "type": { "values": ["checkbox", "radio"], "default": "checkbox", "component": "Chip" },
     "scroll": { "values": [false, true], "default": false, "component": "ChipGroup" }
   },
@@ -27,16 +30,22 @@
     "loading": { "none": "Filtering shows its loading in the results (Skeleton), not on the chip." }
   },
   "sizes": {
-    "density": "Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.",
+    "scale": {
+      "sm": "--ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), control sm text minus 1px, 8px side padding.",
+      "md": "--ayy-size-control-dense tall, which is the sm control height by default (28px compact, 32 comfortable, 40 touch); control sm text, 12px side padding. A data-size scope moves it: sm to the xs height, lg to the md height.",
+      "lg": "Control md height (32px compact, 40 comfortable, 44 touch), control md text, 16px side padding."
+    },
+    "density":"Every size follows data-density with the control scale.",
     "width": "Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars)."
   },
-  "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
+  "js": "chipClass({ size?, removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
   "react": {
     "import": "import { Chip, ChipButton, ChipRemovable, ChipGroup } from \"@danitesler/ayywi/react\";",
     "components": {
       "Chip": {
         "renders": "<label class=\"ayy-chip\"><input type=\"checkbox\">…",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\"",
           "type": "\"checkbox\" (filters that combine) | \"radio\" (one choice; same name in the group)",
           "checked / defaultChecked": "boolean",
           "onCheckedChange": "(checked: boolean) => void",
@@ -49,11 +58,11 @@
       },
       "ChipButton": {
         "renders": "<button type=\"button\" class=\"ayy-chip\" aria-pressed>",
-        "props": { "pressed": "boolean", "onPressedChange": "(pressed: boolean) => void", "count": "ReactNode" }
+        "props": { "size": "\"sm\" | \"md\" | \"lg\"", "pressed": "boolean", "onPressedChange": "(pressed: boolean) => void", "count": "ReactNode" }
       },
       "ChipRemovable": {
         "renders": "<span class=\"ayy-chip ayy-chip--removable\">… <button class=\"ayy-chip__remove\">",
-        "props": { "onRemove": "() => void", "removeLabel": "string — default \"Remove \" + the text" }
+        "props": { "size": "\"sm\" | \"md\" | \"lg\"", "onRemove": "() => void", "removeLabel": "string — default \"Remove \" + the text" }
       },
       "ChipGroup": {
         "renders": "<div role=\"group\" class=\"ayy-chip-group\">",
@@ -81,6 +90,7 @@
   ],
   "examples": [
     { "id": "filters", "title": "Filters and one choice" },
-    { "id": "filter-bar", "title": "Filter bar with active filters" }
+    { "id": "filter-bar", "title": "Filter bar with active filters" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

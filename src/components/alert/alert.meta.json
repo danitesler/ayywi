@@ -6,6 +6,8 @@
   "aka": ["alert", "banner", "callout", "notice", "admonition"],
   "classes": {
     "ayy-alert": "Root. Neutral by default.",
+    "ayy-alert--sm": "Compact: 8px by 12px padding, --ayy-text-xs text, a 16px icon. For a message inside a card or a form row.",
+    "ayy-alert--lg": "Roomy: 16px by 20px padding, --ayy-text-md text, a 22px icon. For a page-level notice.",
     "ayy-alert--info": "Blue tint.",
     "ayy-alert--success": "Green tint.",
     "ayy-alert--warning": "Amber tint.",
@@ -15,7 +17,8 @@
     "ayy-alert__actions": "Row of buttons."
   },
   "variants": {
-    "variant": { "values": ["default", "info", "success", "warning", "destructive"], "default": "default" }
+    "variant": { "values": ["default", "info", "success", "warning", "destructive"], "default": "default" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
   },
   "states": {
     "default": { "looks": "Wash fill, line-strong border, control radius; semibold title, text-soft description. info, success, warning and destructive tint the icon, an 8% fill and a 35% border in their colour." },
@@ -28,14 +31,19 @@
     "loading": { "none": "Not a loading indicator; use a Spinner, Progress or Skeleton." }
   },
   "sizes": {
-    "density": "Padding and sm text are fixed.",
+    "scale": {
+      "sm": "8px by 12px padding, --ayy-text-xs (13px), a 16px icon.",
+      "md": "12px by 16px padding, --ayy-text-sm (14px), an 18px icon.",
+      "lg": "16px by 20px padding, --ayy-text-md (16px), a 22px icon."
+    },
+    "density": "Padding and text are fixed at every density.",
     "width": "Fills its container."
   },
-  "js": "alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
+  "js": "alertClass({ variant?, size?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
   "react": {
     "import": "import { Alert, AlertTitle, AlertDescription, AlertActions } from \"@danitesler/ayywi/react\";",
     "components": {
-      "Alert": { "renders": "<div>", "props": { "variant": "\"default\" | \"info\" | \"success\" | \"warning\" | \"destructive\"" } },
+      "Alert": { "renders": "<div>", "props": { "size": "\"sm\" | \"md\" | \"lg\" — padding, text and icon", "variant": "\"default\" | \"info\" | \"success\" | \"warning\" | \"destructive\"" } },
       "AlertTitle": { "renders": "<p>" },
       "AlertDescription": { "renders": "<p>" },
       "AlertActions": { "renders": "<div>" }
@@ -55,5 +63,5 @@
     "Don't stack several alerts — combine them into one.",
     "Don't use destructive for things that aren't errors."
   ],
-  "examples": [{ "id": "variants", "title": "Variants" }]
+  "examples": [{ "id": "variants", "title": "Variants" }, { "id": "sizes", "title": "Sizes" }]
 }

@@ -5,6 +5,7 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 **Classes**
 - `.ayy-number-field` — The bordered box around the buttons and the input. Draws the focus ring while you type.
 - `.ayy-number-field--sm` — Small height, for a cart line or a table cell.
+- `.ayy-number-field--lg` — Large height and text, for a main quantity on a phone.
 - `.ayy-number-field__input` — The <input type="number">: centred tabular digits, no spinner arrows.
 - `.ayy-number-field__decrement` — The minus <button> before the input. Needs an aria-label. aria-disabled="true" at min.
 - `.ayy-number-field__increment` — The plus <button> after the input. Needs an aria-label. aria-disabled="true" at max.
@@ -22,11 +23,12 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 **Sizes**
 - `sm` — Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.
 - `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide.
+- `lg` — Control lg height (36px compact, 44 comfortable, 48 touch); the number is 4.5rem wide, in lg text.
 - Density — Height, step-button width and text follow data-density.
 - Width — Hugs its content (step buttons plus the number box).
 
 **React** — `import { NumberField } from "@danitesler/ayywi/react";`
-- `<NumberField>` renders <div class="ayy-number-field"><button class="ayy-number-field__decrement"><input type="number"><button class="ayy-number-field__increment">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number; `max` number; `step` number, default 1; `size` "sm" | "md"; `decrementLabel` string, default "Decrease" — say what changes ("Remove a guest"); `incrementLabel` string, default "Increase"; `className` On the outer box; every other prop goes to the input (id, name, aria-label…); `style` On the outer box
+- `<NumberField>` renders <div class="ayy-number-field"><button class="ayy-number-field__decrement"><input type="number"><button class="ayy-number-field__increment">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number; `max` number; `step` number, default 1; `size` "sm" | "md" | "lg"; `decrementLabel` string, default "Decrease" — say what changes ("Remove a guest"); `incrementLabel` string, default "Increase"; `className` On the outer box; every other prop goes to the input (id, name, aria-label…); `style` On the outer box
 
 **Accessibility**
 - Label the input (a <label for> its id, or aria-label naming the item: "Quantity of Ethiopia Guji, 250 g"). The buttons need their own aria-labels.
@@ -42,7 +44,7 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 - Don't use it for large or exact numbers (a price, a phone number, a year) — use an Input; for a rough amount use a Slider.
 - Don't use it for a choice between a few named sizes — use a Segmented control or compact Choice cards.
 
-## Number field — Guests and quantity
+## Number field — Guests, quantity and sizes
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -60,6 +62,11 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <div class="ayy-number-field ayy-number-field--sm">
     <button type="button" class="ayy-number-field__decrement" aria-label="Decrease" aria-disabled="false"><svg class="ayy-icon" data-ayy-icon="minus" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12L4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
     <input type="number" inputmode="numeric" class="ayy-number-field__input" min="0" max="20" step="1" aria-label="Quantity of Ethiopia Guji, 250 g" value="1"/>
+    <button type="button" class="ayy-number-field__increment" aria-label="Increase" aria-disabled="false"><svg class="ayy-icon" data-ayy-icon="plus" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+  </div>
+  <div class="ayy-number-field ayy-number-field--lg">
+    <button type="button" class="ayy-number-field__decrement" aria-label="Decrease" aria-disabled="false"><svg class="ayy-icon" data-ayy-icon="minus" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12L4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+    <input type="number" inputmode="numeric" class="ayy-number-field__input" min="0" max="20" step="1" aria-label="Quantity of Kenya Nyeri, 1 kg" value="2"/>
     <button type="button" class="ayy-number-field__increment" aria-label="Increase" aria-disabled="false"><svg class="ayy-icon" data-ayy-icon="plus" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V20M20 12H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
   </div>
 </div>
@@ -88,6 +95,7 @@ export default function Example() {
         <FieldHint id="guests-hint">Up to 8 per booking.</FieldHint>
       </Field>
       <NumberField size="sm" defaultValue={1} min={0} max={20} aria-label="Quantity of Ethiopia Guji, 250 g" />
+      <NumberField size="lg" defaultValue={2} min={0} max={20} aria-label="Quantity of Kenya Nyeri, 1 kg" />
     </div>
   );
 }

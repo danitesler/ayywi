@@ -6,6 +6,7 @@ Category: Actions. A round floating button for the main action of a phone screen
 - `.ayy-fab` — A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.
 - `.ayy-fab--extended` — Icon and a visible label: a wider pill ("Compose"). Needs no aria-label.
 - `.ayy-fab--secondary` — A raised surface with a border instead of the primary fill: less emphasis.
+- `.ayy-fab--lg` — Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.
 - `.ayy-fab--sm` — Smaller (the control-lg size), for a second action stacked above the main one.
 - `.ayy-fab--inline` — Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page).
 
@@ -22,11 +23,12 @@ Category: Actions. A round floating button for the main action of a phone screen
 **Sizes**
 - `sm` — The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.
 - `md` (default) — The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.
-- Density — Its diameter follows data-density through the lg control height (the sizes above).
+- `lg` — The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon.
+- Density — Its diameter follows data-density through the lg control height (the sizes above). A data-size scope doesn't resize it: set size on it.
 - Width — Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow).
 
 **React** — `import { Fab } from "@danitesler/ayywi/react";`
-- `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
+- `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md" | "lg"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
 
 **Accessibility**
 - An icon-only FAB needs an aria-label that says the action ("New task"), not the icon ("Plus").
@@ -43,7 +45,7 @@ Category: Actions. A round floating button for the main action of a phone screen
 - Don't put destructive or minor actions (Delete, Share, Settings) in a FAB — use a Top bar action or a Menu.
 - Don't use it on desktop layouts where a toolbar button fits better.
 
-## Floating action button — Icon, extended, secondary, small
+## Floating action button — Icon, extended, secondary, small, large
 
 HTML (also Vue/Svelte/Angular templates, server templates):
 
@@ -54,6 +56,7 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <button type="button" class="ayy-fab ayy-fab--extended ayy-fab--inline"><svg class="ayy-icon" data-ayy-icon="pencil-line" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M11 20H17" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>Compose</button>
   <button type="button" class="ayy-fab ayy-fab--secondary ayy-fab--inline" aria-label="Record a voice note"><svg class="ayy-icon" data-ayy-icon="mic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 6.5C7 4.01472 9.01472 2 11.5 2C13.9853 2 16 4.01472 16 6.5V11.5C16 13.9853 13.9853 16 11.5 16C9.01472 16 7 13.9853 7 11.5V6.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M11.5 19H11.0828C7.57267 19 4.57706 16.4623 4 13M11.5 19H11.9172C15.4273 19 18.4229 16.4623 19 13M11.5 19V22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
   <button type="button" class="ayy-fab ayy-fab--secondary ayy-fab--sm ayy-fab--inline" aria-label="Quick note"><svg class="ayy-icon" data-ayy-icon="pencil-line" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M11 20H17" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></button>
+  <button type="button" class="ayy-fab ayy-fab--lg ayy-fab--inline" aria-label="New task, large"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
 </div>
 ```
 
@@ -80,6 +83,9 @@ export default function Example() {
       </Fab>
       <Fab inline size="sm" variant="secondary" aria-label="Quick note">
         <Icon icon={PencilEdit01Icon} name="pencil-line" />
+      </Fab>
+      <Fab inline size="lg" aria-label="New task, large">
+        <Icon icon={Add01Icon} name="add" />
       </Fab>
     </div>
   );

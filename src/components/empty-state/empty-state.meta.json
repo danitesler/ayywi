@@ -7,12 +7,15 @@
   "classes": {
     "ayy-empty-state": "Root. Centred column with generous block padding.",
     "ayy-empty-state--bordered": "A dashed outline around the empty area (a board column, a drop target).",
+    "ayy-empty-state--sm": "Small: the compact spacing, a md title and an xs description. Inside a card, a table body or a side panel.",
+    "ayy-empty-state--lg": "Large: 64px block padding, a 2xl title and a md description. A whole page that is empty.",
     "ayy-empty-state--compact": "Less padding: inside a card, a table body or a side panel.",
     "ayy-empty-state__title": "What's empty, as a heading (\"No projects yet\").",
     "ayy-empty-state__description": "One sentence: why it's empty, or what will appear here.",
     "ayy-empty-state__actions": "The button that fixes it (primary), maybe a secondary link."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" , "component": "EmptyState" },
     "bordered": { "values": [false, true], "default": false, "component": "EmptyState" },
     "compact": { "values": [false, true], "default": false, "component": "EmptyState" }
   },
@@ -27,16 +30,21 @@
     "loading": { "none": "While loading show Skeletons, never an empty state." }
   },
   "sizes": {
+    "scale": {
+      "sm": "The compact spacing (24px block, 16px inline padding), --ayy-text-md title, --ayy-text-xs description. Same spacing as compact, with smaller text.",
+      "md": "48px block and 24px inline padding, --ayy-text-lg title, --ayy-text-sm description.",
+      "lg": "64px block and 32px inline padding, --ayy-text-2xl title, --ayy-text-md description up to 52ch."
+    },
     "density": "Doesn't follow data-density.",
     "width": "Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content."
   },
-  "js": "emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.",
+  "js": "emptyStateClass({ size?, bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.",
   "react": {
     "import": "import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from \"@danitesler/ayywi/react\";",
     "components": {
       "EmptyState": {
         "renders": "<div class=\"ayy-empty-state\">",
-        "props": { "bordered": "boolean — dashed outline.", "compact": "boolean — less padding." }
+        "props": { "size": "\"sm\" | \"md\" | \"lg\"", "bordered": "boolean — dashed outline.", "compact": "boolean — less padding." }
       },
       "EmptyStateTitle": { "renders": "<h2 class=\"ayy-empty-state__title\">" },
       "EmptyStateDescription": { "renders": "<p class=\"ayy-empty-state__description\">" },
@@ -60,5 +68,5 @@
     "Don't leave a table with only headers and nothing under them.",
     "Don't blame the user (\"You haven't…\"); say what's next."
   ],
-  "examples": [{ "id": "basic", "title": "First run" }, { "id": "search", "title": "No results, compact" }]
+  "examples": [{ "id": "basic", "title": "First run" }, { "id": "search", "title": "No results, compact" }, { "id": "sizes", "title": "Sizes" }]
 }

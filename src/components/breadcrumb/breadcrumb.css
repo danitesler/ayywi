@@ -19,6 +19,14 @@
   line-height: var(--ayy-leading-snug);
 }
 
+.ayy-breadcrumb--sm .ayy-breadcrumb__list {
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-breadcrumb--lg .ayy-breadcrumb__list {
+  font-size: var(--ayy-text-md);
+}
+
 .ayy-breadcrumb__item {
   display: inline-flex;
   align-items: center;

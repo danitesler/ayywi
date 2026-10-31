@@ -1,7 +1,9 @@
-/* Native <input type="radio"> with a drawn circle and dot. Group radios in a <fieldset class="ayy-radio-group">. */
+/* Native <input type="radio"> with a drawn circle and dot. Group radios in a <fieldset class="ayy-radio-group">.
+   Size follows --ayy-size-check (density-aware); --sm and --lg step it down and up. */
 
 .ayy-radio {
-  --_s: var(--ayy-size-check);
+  /* A group sets --_radio-s for all its radios (.ayy-radio-group--sm); --sm and --lg on one radio win. */
+  --_s: var(--_radio-s, var(--ayy-size-check));
 
   appearance: none;
   -webkit-appearance: none;
@@ -21,6 +23,14 @@
   transition:
     background-color var(--ayy-duration-fast) ease,
     border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-radio--sm {
+  --_s: var(--ayy-size-check-sm);
+}
+
+.ayy-radio--lg {
+  --_s: var(--ayy-size-check-lg);
 }
 
 .ayy-radio::before {
@@ -78,6 +88,26 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: var(--ayy-space-2) var(--ayy-space-5);
+}
+
+.ayy-radio-group--sm {
+  --_radio-s: var(--ayy-size-check-sm);
+  row-gap: var(--ayy-space-1-5);
+}
+
+.ayy-radio-group--lg {
+  --_radio-s: var(--ayy-size-check-lg);
+  row-gap: var(--ayy-space-3);
+}
+
+.ayy-radio-group--sm .ayy-label,
+.ayy-radio-group--sm .ayy-radio-group__legend {
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-radio-group--lg .ayy-label,
+.ayy-radio-group--lg .ayy-radio-group__legend {
+  font-size: var(--ayy-control-text-lg);
 }
 
 .ayy-radio-group__legend {

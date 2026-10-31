@@ -1,14 +1,16 @@
 import { forwardRef, type HTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
-import { alertActionsClass, alertClass, alertDescriptionClass, alertTitleClass, type AlertVariant } from "./alert";
+import { alertActionsClass, alertClass, alertDescriptionClass, alertTitleClass, type AlertSize, type AlertVariant } from "./alert";
 
 export interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   variant?: AlertVariant;
+  /** Padding, text and icon size. */
+  size?: AlertSize;
 }
 
 /** Inline message. Put an optional <Icon> first, then AlertTitle / AlertDescription / AlertActions. */
-export const Alert = /* @__PURE__ */ forwardRef<HTMLDivElement, AlertProps>(function Alert({ variant, className, ...props }, ref) {
-  return <div ref={ref} className={alertClass({ variant, className })} {...props} />;
+export const Alert = /* @__PURE__ */ forwardRef<HTMLDivElement, AlertProps>(function Alert({ variant, size, className, ...props }, ref) {
+  return <div ref={ref} className={alertClass({ variant, size, className })} {...props} />;
 });
 
 export interface AlertTitleProps extends HTMLAttributes<HTMLParagraphElement> {}

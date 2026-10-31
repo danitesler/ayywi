@@ -49,6 +49,21 @@
   outline-color: var(--ayy-color-destructive);
 }
 
+/* Sizes match Input: the same side padding and text size, and a taller or shorter default box. */
+.ayy-textarea--sm {
+  min-block-size: 4rem;
+  padding-block: var(--ayy-space-1-5);
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-textarea--lg {
+  min-block-size: 6.5rem;
+  padding-block: var(--ayy-space-3);
+  padding-inline: var(--ayy-space-4);
+  font-size: var(--ayy-control-text-lg);
+}
+
 /* Grows with its content (Chromium today; other browsers keep the fixed min height). */
 .ayy-textarea--autosize {
   field-sizing: content;

@@ -4,6 +4,8 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 
 **Classes**
 - `.ayy-steps` — Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.
+- `.ayy-steps--sm` — Small: markers a step under the sm control height, text --ayy-text-xs.
+- `.ayy-steps--lg` — Large: markers the md control height, text --ayy-text-md.
 - `.ayy-steps--vertical` — A column, with the lines running down between the markers: for a side panel or a phone.
 - `.ayy-steps__item` — A step <li>. aria-current="step" marks the current one (filled marker, bold label); every step before it is drawn as done (tick, solid line); the ones after as to do.
 - `.ayy-steps__label` — The step's name, one line (cut with an ellipsis in the row).
@@ -19,11 +21,14 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 - `loading` — doesn't apply: No loading look.
 
 **Sizes**
-- Density — Markers are the sm control height (28px compact, 32 comfortable, 40 touch).
+- `sm` — Markers --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), --ayy-text-xs labels.
+- `md` (default) — Markers --ayy-size-control-dense tall, the sm control height by default (28px compact, 32 comfortable, 40 touch); --ayy-text-sm labels. A data-size scope moves it: sm to the xs height, lg to the md height.
+- `lg` — Markers the md control height (32px compact, 40 comfortable, 44 touch), --ayy-text-md labels.
+- Density — Every marker follows data-density with the control scale.
 - Width — Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone.
 
 **React** — `import { Steps } from "@danitesler/ayywi/react";`
-- `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
+- `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `size` "sm" | "md" | "lg" — marker and label size.; `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
 
 **Accessibility**
 - It's an ordered list with aria-current="step" on the current item, so screen readers hear "step 2 of 4, current". Give the <ol> an aria-label ("Checkout progress").
@@ -74,6 +79,52 @@ export default function Example() {
     <div className="ayy-stack" style={{ inlineSize: "min(100%, 36rem)", "--ayy-gap": "var(--ayy-space-8)" } as CSSProperties}>
       <Steps steps={STEPS} current={2} aria-label="Checkout progress" />
       <Steps steps={["Create your account", "Invite your team", "Connect your data"]} current={1} vertical aria-label="Setup progress" />
+    </div>
+  );
+}
+```
+
+## Steps — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 36rem); --ayy-gap: var(--ayy-space-6)">
+  <ol class="ayy-steps ayy-steps--sm" aria-label="Small checkout progress">
+    <li class="ayy-steps__item"><span class="ayy-steps__label"><span class="ayy-sr-only">Done: </span>Cart</span></li>
+    <li class="ayy-steps__item"><span class="ayy-steps__label"><span class="ayy-sr-only">Done: </span>Shipping</span></li>
+    <li class="ayy-steps__item" aria-current="step"><span class="ayy-steps__label">Payment</span></li>
+    <li class="ayy-steps__item"><span class="ayy-steps__label">Review</span></li>
+  </ol>
+  <ol class="ayy-steps" aria-label="Medium checkout progress">
+    <li class="ayy-steps__item"><span class="ayy-steps__label"><span class="ayy-sr-only">Done: </span>Cart</span></li>
+    <li class="ayy-steps__item"><span class="ayy-steps__label"><span class="ayy-sr-only">Done: </span>Shipping</span></li>
+    <li class="ayy-steps__item" aria-current="step"><span class="ayy-steps__label">Payment</span></li>
+    <li class="ayy-steps__item"><span class="ayy-steps__label">Review</span></li>
+  </ol>
+  <ol class="ayy-steps ayy-steps--lg" aria-label="Large checkout progress">
+    <li class="ayy-steps__item"><span class="ayy-steps__label"><span class="ayy-sr-only">Done: </span>Cart</span></li>
+    <li class="ayy-steps__item"><span class="ayy-steps__label"><span class="ayy-sr-only">Done: </span>Shipping</span></li>
+    <li class="ayy-steps__item" aria-current="step"><span class="ayy-steps__label">Payment</span></li>
+    <li class="ayy-steps__item"><span class="ayy-steps__label">Review</span></li>
+  </ol>
+</div>
+```
+
+React:
+
+```tsx
+import type { CSSProperties } from "react";
+import { Steps } from "@danitesler/ayywi/react";
+
+const STEPS = ["Cart", "Shipping", "Payment", "Review"];
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 36rem)", "--ayy-gap": "var(--ayy-space-6)" } as CSSProperties}>
+      <Steps size="sm" steps={STEPS} current={2} aria-label="Small checkout progress" />
+      <Steps steps={STEPS} current={2} aria-label="Medium checkout progress" />
+      <Steps size="lg" steps={STEPS} current={2} aria-label="Large checkout progress" />
     </div>
   );
 }

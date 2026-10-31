@@ -19,6 +19,11 @@ export default function Example() {
           Grid
         </SegmentedControlItem>
       </SegmentedControl>
+      <SegmentedControl aria-label="Theme" defaultValue="auto" size="lg">
+        <SegmentedControlItem value="light">Light</SegmentedControlItem>
+        <SegmentedControlItem value="auto">Auto</SegmentedControlItem>
+        <SegmentedControlItem value="dark">Dark</SegmentedControlItem>
+      </SegmentedControl>
       <SegmentedControl aria-label="Billing cycle" defaultValue="yearly" full>
         <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
         <SegmentedControlItem value="yearly">Yearly · save 20%</SegmentedControlItem>

@@ -56,12 +56,33 @@
   color: var(--ayy-color-muted);
 }
 
-.ayy-property-list--compact .ayy-property-list__row {
+/* sm is compact with smaller text; lg has more air, larger text and a wider term column. */
+.ayy-property-list--compact .ayy-property-list__row,
+.ayy-property-list--sm .ayy-property-list__row {
   padding-block: var(--ayy-space-1-5);
 }
 
-.ayy-property-list--compact .ayy-property-list__term {
+.ayy-property-list--compact .ayy-property-list__term,
+.ayy-property-list--sm .ayy-property-list__term {
   flex-basis: 7rem;
+}
+
+.ayy-property-list--sm .ayy-property-list__row {
+  font-size: calc(var(--ayy-text-s) - 0.0625rem);
+}
+
+.ayy-property-list--lg .ayy-property-list__row {
+  padding-block: var(--ayy-space-4);
+  font-size: calc(var(--ayy-text-s) + 0.0625rem);
+}
+
+.ayy-property-list--lg .ayy-property-list__term {
+  flex-basis: 9rem;
+}
+
+.ayy-property-list--lg .ayy-property-list__icon {
+  inline-size: var(--ayy-size-icon-md);
+  block-size: var(--ayy-size-icon-md);
 }
 
 @media (forced-colors: active) {

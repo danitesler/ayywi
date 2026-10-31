@@ -5,9 +5,12 @@
   "description": "A small floating panel attached to a button, for extra content or controls that don't need a full dialog. It closes when you click outside or press Esc.",
   "aka": ["popover", "popup", "flyout"],
   "classes": {
-    "ayy-popover": "On the element with the popover attribute. Surface, padding, shadow, fade/scale transition."
+    "ayy-popover": "On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.",
+    "ayy-popover--sm": "Small: 12px padding, --ayy-text-xs, at most 18rem wide.",
+    "ayy-popover--lg": "Large: 20px padding, --ayy-text-md, at most 28rem wide."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" , "component": "PopoverContent" },
     "side": { "values": ["bottom", "top", "start", "end"], "default": "bottom", "component": "PopoverContent" },
     "align": { "values": ["center", "start", "end"], "default": "center", "component": "PopoverContent" }
   },
@@ -23,10 +26,15 @@
     "open": { "when": ":popover-open", "looks": "Fades in and scales up from 97% next to its trigger (React Popover, <ayy-popover>); light-dismisses on Esc or a click outside." }
   },
   "sizes": {
-    "density": "Padding is fixed; its controls follow data-density.",
-    "width": "As wide as its content, at most 22rem (or the viewport minus 1rem)."
+    "scale": {
+      "sm": "12px padding, --ayy-text-xs, at most 18rem wide.",
+      "md": "16px padding, --ayy-text-sm, at most 22rem wide.",
+      "lg": "20px padding, --ayy-text-md, at most 28rem wide."
+    },
+    "density": "Padding and text are fixed; its controls follow data-density.",
+    "width": "As wide as its content, up to the maximum of its size (or the viewport minus 1rem)."
   },
-  "js": "popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, crossAxisOffset?, boundary?, onToggle? }) → { open, close, isOpen, update, destroy }",
+  "js": "popoverClass constant; popoverSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing); connectPopover(trigger, content, { side?, align?, offset?, crossAxisOffset?, boundary?, onToggle? }) → { open, close, isOpen, update, destroy }",
   "element": {
     "tag": "ayy-popover",
     "attributes": {
@@ -44,7 +52,7 @@
       "PopoverTrigger": { "renders": "Button", "props": { "asChild": "boolean — clone child element and merge trigger props", "...ButtonProps": "variant, size…" } },
       "PopoverContent": {
         "renders": "<div popover role=\"dialog\">",
-        "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"center\" | \"start\" | \"end\"" }
+        "props": { "size": "\"sm\" | \"md\" | \"lg\"", "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"center\" | \"start\" | \"end\"" }
       }
     }
   },
@@ -63,5 +71,5 @@
     "Don't open popovers on hover — hover hints are a Tooltip.",
     "Don't nest popovers more than one level."
   ],
-  "examples": [{ "id": "share", "title": "Share link" }]
+  "examples": [{ "id": "share", "title": "Share link" }, { "id": "sizes", "title": "Sizes" }]
 }

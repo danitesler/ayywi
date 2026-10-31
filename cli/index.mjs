@@ -15,7 +15,7 @@ const HELP = `ayywi ${version}
   ayywi lint [paths…] [--json] [--max-warnings N]
       Check UI code (HTML, JSX/TSX, Vue, Svelte, Angular, CSS…) against the ayywi contract. Rules:
         unknown-class, unknown-token, unknown-variant, unknown-element, unknown-attribute-value (data-theme,
-        data-density, element attributes), reserved-prefix (your own .ayy-* classes), icon-button-label,
+        data-density, data-size, element attributes), reserved-prefix (your own .ayy-* classes), icon-button-label,
         hardcoded-color (hex, rgb()…, named colours, also in style="" and style={{}}), dir-selector,
         physical-property (left/right CSS), img-size (<img> without width/height), icon-library (a second icon set).
       Structure (warnings): rebuilt-component (a class named after an ayywi component, like .x-chip or .sidebar,

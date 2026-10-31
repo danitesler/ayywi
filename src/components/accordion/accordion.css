@@ -10,6 +10,27 @@
   border-block-start: 1px solid var(--ayy-color-hairline);
 }
 
+/* Sizes reach only the accordion's own items, so one nested in an answer keeps its size. */
+.ayy-accordion--sm > .ayy-accordion__item > .ayy-accordion__trigger {
+  padding-block: var(--ayy-space-3);
+  font-size: var(--ayy-text-sm);
+}
+
+.ayy-accordion--sm > .ayy-accordion__item > .ayy-accordion__content {
+  padding-block-end: var(--ayy-space-3);
+  font-size: var(--ayy-text-xs);
+}
+
+.ayy-accordion--lg > .ayy-accordion__item > .ayy-accordion__trigger {
+  padding-block: var(--ayy-space-5);
+  font-size: var(--ayy-text-lg);
+}
+
+.ayy-accordion--lg > .ayy-accordion__item > .ayy-accordion__content {
+  padding-block-end: var(--ayy-space-5);
+  font-size: var(--ayy-text-md);
+}
+
 .ayy-accordion__trigger {
   display: flex;
   align-items: center;

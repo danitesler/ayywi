@@ -4,6 +4,8 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 
 **Classes**
 - `.ayy-textarea` — Root, on the <textarea>.
+- `.ayy-textarea--sm` — Small: 4rem tall to start, tighter padding, sm text. Pairs with a small Input.
+- `.ayy-textarea--lg` — Large: 6.5rem tall to start, more padding, lg text.
 - `.ayy-textarea--autosize` — Grows with content (CSS field-sizing). Falls back to fixed height.
 - `.ayy-textarea--mono` — Monospace font.
 
@@ -18,11 +20,14 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 - `loading` — doesn't apply: No loading look; disable it and show a Spinner in the submit Button while the text is sent.
 
 **Sizes**
-- Density — Text follows control md; the minimum height (5rem) and padding don't change.
+- `sm` — Control sm text, 8px side padding, at least 4rem tall.
+- `md` (default) — Control field text, 12px side padding, at least 5rem tall.
+- `lg` — Control lg text, 16px side padding, at least 6.5rem tall.
+- Density — Text follows the control scale and data-density; the minimum heights and padding don't change. A data-size scope doesn't resize it (it is multi-line): set size on it.
 - Width — Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls).
 
 **React** — `import { Textarea } from "@danitesler/ayywi/react";`
-- `<Textarea>` renders <textarea>. Props: `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
+- `<Textarea>` renders <textarea>. Props: `size` "sm" | "md" | "lg"; `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
 
 **Accessibility**
 - Label it (Field + Label), same as Input.
@@ -60,6 +65,34 @@ export default function Example() {
       <Textarea placeholder="Write a short description…" aria-label="Description" />
       <Textarea autosize rows={2} placeholder="I grow as you type" aria-label="Notes" />
       <Textarea mono rows={3} defaultValue={'{\n  "theme": "dark"\n}'} aria-label="Config" />
+    </div>
+  );
+}
+```
+
+## Textarea — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 26.25rem)">
+  <textarea class="ayy-textarea ayy-textarea--sm" placeholder="Small: a quick reply" aria-label="Small textarea"></textarea>
+  <textarea class="ayy-textarea" placeholder="Medium: a short description" aria-label="Medium textarea"></textarea>
+  <textarea class="ayy-textarea ayy-textarea--lg" placeholder="Large: a long-form answer" aria-label="Large textarea"></textarea>
+</div>
+```
+
+React:
+
+```tsx
+import { Textarea } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 26.25rem)" }}>
+      <Textarea size="sm" placeholder="Small: a quick reply" aria-label="Small textarea" />
+      <Textarea placeholder="Medium: a short description" aria-label="Medium textarea" />
+      <Textarea size="lg" placeholder="Large: a long-form answer" aria-label="Large textarea" />
     </div>
   );
 }
