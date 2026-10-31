@@ -104,6 +104,8 @@
   --ayy-space-32: 8rem;
   --ayy-space-0-5: 0.125rem;
   --ayy-space-1-5: 0.375rem;
+  --ayy-size-control-xs: 1.5rem;
+  --ayy-size-control-dense: 1.75rem;
   --ayy-size-control-sm: 1.75rem;
   --ayy-size-control-md: 2rem;
   --ayy-size-control-lg: 2.25rem;
@@ -151,6 +153,13 @@
   --ayy-z-overlay: 50;
   --ayy-z-tooltip: 60;
   --ayy-z-toast: 70;
+  --_ayy-size-control-dense: 1.75rem;
+  --_ayy-size-control-md: 2rem;
+  --_ayy-size-switch: 1.25rem;
+  --_ayy-size-check: 1rem;
+  --_ayy-control-text-md: 0.8125rem;
+  --_ayy-control-text-field: 0.8125rem;
+  --_ayy-control-pad-md: 1rem;
 }
 
 /* Dark: the default, or forced with data-theme="dark" / .dark on any element */
@@ -337,6 +346,8 @@
 @media (pointer: coarse) {
   :root:not([data-density]) {
     --ayy-text-s: 0.875rem;
+    --ayy-size-control-xs: 2.25rem;
+    --ayy-size-control-dense: 2.5rem;
     --ayy-size-control-sm: 2.5rem;
     --ayy-size-control-md: 2.75rem;
     --ayy-size-control-lg: 3rem;
@@ -353,11 +364,20 @@
     --ayy-control-pad-sm: 1rem;
     --ayy-control-pad-md: 1.25rem;
     --ayy-control-pad-lg: 1.75rem;
+    --_ayy-size-control-dense: 2.5rem;
+    --_ayy-size-control-md: 2.75rem;
+    --_ayy-size-switch: 1.625rem;
+    --_ayy-size-check: 1.25rem;
+    --_ayy-control-text-md: 0.875rem;
+    --_ayy-control-text-field: 1rem;
+    --_ayy-control-pad-md: 1.25rem;
   }
 }
 
 [data-density="compact"] {
   --ayy-text-s: 0.8125rem;
+  --ayy-size-control-xs: 1.5rem;
+  --ayy-size-control-dense: 1.75rem;
   --ayy-size-control-sm: 1.75rem;
   --ayy-size-control-md: 2rem;
   --ayy-size-control-lg: 2.25rem;
@@ -374,10 +394,19 @@
   --ayy-control-pad-sm: 0.75rem;
   --ayy-control-pad-md: 1rem;
   --ayy-control-pad-lg: 1.25rem;
+  --_ayy-size-control-dense: 1.75rem;
+  --_ayy-size-control-md: 2rem;
+  --_ayy-size-switch: 1.25rem;
+  --_ayy-size-check: 1rem;
+  --_ayy-control-text-md: 0.8125rem;
+  --_ayy-control-text-field: 0.8125rem;
+  --_ayy-control-pad-md: 1rem;
 }
 
 [data-density="comfortable"] {
   --ayy-text-s: 0.8125rem;
+  --ayy-size-control-xs: 1.75rem;
+  --ayy-size-control-dense: 2rem;
   --ayy-size-control-sm: 2rem;
   --ayy-size-control-md: 2.5rem;
   --ayy-size-control-lg: 2.75rem;
@@ -394,10 +423,19 @@
   --ayy-control-pad-sm: 0.875rem;
   --ayy-control-pad-md: 1.125rem;
   --ayy-control-pad-lg: 1.5rem;
+  --_ayy-size-control-dense: 2rem;
+  --_ayy-size-control-md: 2.5rem;
+  --_ayy-size-switch: 1.375rem;
+  --_ayy-size-check: 1.125rem;
+  --_ayy-control-text-md: 0.8125rem;
+  --_ayy-control-text-field: 0.8125rem;
+  --_ayy-control-pad-md: 1.125rem;
 }
 
 [data-density="touch"] {
   --ayy-text-s: 0.875rem;
+  --ayy-size-control-xs: 2.25rem;
+  --ayy-size-control-dense: 2.5rem;
   --ayy-size-control-sm: 2.5rem;
   --ayy-size-control-md: 2.75rem;
   --ayy-size-control-lg: 3rem;
@@ -414,4 +452,49 @@
   --ayy-control-pad-sm: 1rem;
   --ayy-control-pad-md: 1.25rem;
   --ayy-control-pad-lg: 1.75rem;
+  --_ayy-size-control-dense: 2.5rem;
+  --_ayy-size-control-md: 2.75rem;
+  --_ayy-size-switch: 1.625rem;
+  --_ayy-size-check: 1.25rem;
+  --_ayy-control-text-md: 0.875rem;
+  --_ayy-control-text-field: 1rem;
+  --_ayy-control-pad-md: 1.25rem;
+}
+
+/* Size scope: data-size="sm" | "md" | "lg" on any element makes the controls below it that don't name a size use that step.
+   It reads the density-aware tokens above, so it follows data-density set on the same element or an ancestor (a data-density
+   on a descendant starts over). Explicit sizes (.ayy-input--lg) keep theirs: only the default step moves. After the density
+   blocks, with :root listed too, so it wins over the touch rule on <html> in the unlayered build as well. */
+
+[data-size="sm"],
+:root[data-size="sm"] {
+  --ayy-size-control-dense: var(--ayy-size-control-xs);
+  --ayy-size-control-md: var(--ayy-size-control-sm);
+  --ayy-size-switch: var(--ayy-size-switch-sm);
+  --ayy-size-check: var(--ayy-size-check-sm);
+  --ayy-control-text-md: var(--ayy-control-text-sm);
+  --ayy-control-text-field: var(--_ayy-control-text-field);
+  --ayy-control-pad-md: var(--ayy-control-pad-sm);
+}
+
+[data-size="md"],
+:root[data-size="md"] {
+  --ayy-size-control-dense: var(--_ayy-size-control-dense);
+  --ayy-size-control-md: var(--_ayy-size-control-md);
+  --ayy-size-switch: var(--_ayy-size-switch);
+  --ayy-size-check: var(--_ayy-size-check);
+  --ayy-control-text-md: var(--_ayy-control-text-md);
+  --ayy-control-text-field: var(--_ayy-control-text-field);
+  --ayy-control-pad-md: var(--_ayy-control-pad-md);
+}
+
+[data-size="lg"],
+:root[data-size="lg"] {
+  --ayy-size-control-dense: var(--_ayy-size-control-md);
+  --ayy-size-control-md: var(--ayy-size-control-lg);
+  --ayy-size-switch: var(--ayy-size-switch-lg);
+  --ayy-size-check: var(--ayy-size-check-lg);
+  --ayy-control-text-md: var(--ayy-control-text-lg);
+  --ayy-control-text-field: var(--ayy-control-text-lg);
+  --ayy-control-pad-md: var(--ayy-control-pad-lg);
 }

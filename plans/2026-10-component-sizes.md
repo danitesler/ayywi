@@ -64,15 +64,44 @@ Left alone on purpose: **Table** already has `--compact` and `--spacious`.
 - **Table.** Already has `--compact` and `--spacious`.
 - **Choice card `compact` (time slots).** A different shape with its own metrics; `size` changes only its text.
 
+## Size scope (`data-size`)
+
+Shipped. `data-size="sm" | "md" | "lg"` on any element makes the controls below it that don't name a size use that step,
+like Ant Design's `componentSize`. It works the way density does: tokens.json says where each "default" token goes in a
+scope (`$extensions.ayywi.size`), the generator turns that into rules after the density blocks, and every component that
+reads those tokens follows without being edited. Explicit sizes keep theirs; `md` restores the default inside a scope
+through a private pristine copy of each token.
+
+What I checked, by rendering every example's HTML with and without a scope:
+
+- 32 components follow fully. The rest don't change because their default is not the medium step: Textarea (multi-line),
+  Slider, FAB, and rows that are large by default (App shell links, Settings rows), plus toast and action-bar buttons and
+  the chart, picker and swipe parts, which size themselves. Their metas say so where it matters (Textarea, Slider, FAB).
+- Chips, pagination links and step markers are small by default, so they got their own ladder token
+  (`--ayy-size-control-dense`: small by default, a scope sends it to `xs` or `md`). That also replaced the same
+  `control-sm minus 4px` arithmetic in five places with `--ayy-size-control-xs`.
+- With no `data-size`, nothing changes: 72,426 element measurements (207 examples × 3 densities × 2 themes) match the
+  previous commit exactly. A control that nudged one token by 0.8px was caught in 202 of them, so the comparison can
+  see a difference.
+- Cost: +267 bytes gzipped on `ayywi.min.css`.
+
+Found and fixed while building it: a scope rule that said `dense → control-md` also remaps `control-md` in the same
+rule, so large-scope chips came out at the large step. Steps that are themselves scoped now point at their pristine
+copy; a node test and a browser test cover it.
+
+Known limits, documented on the Density page and in the contract:
+
+- A `data-density` on a **descendant** of a scope starts over (it redefines the default step on that element). Put
+  `data-density` on the same element or outside.
+- Chip's remove button, and parts that are sized in fixed units, don't move.
+
+Possible later: a `Textarea` and `Slider` that follow the scope (they'd need their default heights derived from the
+control tokens, which changes them at comfortable and touch density today).
+
 ## Not done yet
 
-1. **A scope-wide size.** Ant Design's `componentSize` sizes everything under one provider. ayywi's `data-density` is
-   scoped the same way but changes what each step means, not which step controls use. Because density works by
-   redefining tokens, a `data-size="sm"` could remap `--ayy-size-control-md` to the `sm` value for a subtree and shrink
-   every component that defaults to `md` without editing them. Untested; components that size themselves from other
-   tokens (chip, pagination) wouldn't follow without more work. This is a design decision, not a follow-up.
-2. **Sizes for the rest.** Timeline, Skeleton, Dropzone, Color picker and Mentions are sized by one or two of the five
-   systems; none has enough evidence yet.
+- **Sizes for the rest.** Timeline, Skeleton, Dropzone, Color picker and Mentions are sized by one or two of the five
+  systems; none has enough evidence yet.
 
 ## A hazard to keep in mind
 

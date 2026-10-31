@@ -48,6 +48,14 @@ test("data-theme and data-density values", () => {
   assert.match(f.message, /dark-contrast/);
 });
 
+test("data-size values", () => {
+  assert.deepEqual(rules(`<div data-size="sm"></div><section data-size="md"><p data-size="lg"></p></section>`, "a.html"), []);
+  assert.deepEqual(rules(`<div data-size="xl"></div>`, "a.html"), ["unknown-attribute-value"]);
+  assert.deepEqual(rules(`<div :data-size="dense ? 'sm' : 'md'" data-size={size}></div>`, "a.vue"), [], "bound values are skipped");
+  const [f] = lintText(`<div data-size="huge">`, "a.html", contract);
+  assert.match(f.message, /sm, md, lg/);
+});
+
 test("CSS: raw colours, unknown tokens, physical properties, :dir()", () => {
   const css = `.x { color: #fff; margin-left: 4px; background: var(--ayy-color-nope); }
 .y:dir(rtl) { padding-inline-start: var(--ayy-space-2); }`;

@@ -7,10 +7,13 @@ import {
   CardContent,
   CardHeader,
   Checkbox,
+  Chip,
+  ChipGroup,
   Field,
   Icon,
   Input,
   Label,
+  Pagination,
   SegmentedControl,
   SegmentedControlItem,
   Select,
@@ -21,15 +24,40 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
 } from "@danitesler/ayywi/react";
 import { Add01Icon, FilterIcon } from "@hugeicons/core-free-icons";
+import { CodeBlock } from "../CodeBlock";
+import { buildPrompt } from "../prompts";
 
 export const densityPage = {
   route: "density",
   title: "Density",
-  keywords: "density compact comfortable touch sizes scale height padding",
-  text: "density compact comfortable touch sizes scale height padding",
+  keywords: "density compact comfortable touch sizes scale height padding size scope data-size small large dense toolbar form",
+  text: "density compact comfortable touch sizes scale height padding size scope data-size small large dense toolbar form",
 };
+
+type SizeScope = "md" | "sm" | "lg";
+
+const SCOPE_CODE = `<!-- Every control that doesn't name a size uses the small step -->
+<div class="ayy-cluster" data-size="sm">
+  <input class="ayy-input" placeholder="Filter services…" aria-label="Filter services" />
+  <button class="ayy-button ayy-button--outline">Filters</button>
+  <button class="ayy-button">Add service</button>
+  <!-- An explicit size keeps its own -->
+  <button class="ayy-button ayy-button--lg">Publish</button>
+</div>
+
+<!-- data-size="md" puts the default back inside a scope -->
+<div data-size="sm">
+  …
+  <div data-size="md"><button class="ayy-button">Back to the default</button></div>
+</div>`;
+
+const SCOPE_REQUEST = `In this app, make the toolbar above the table and the settings side panel compact. Put data-size="sm" on each container, so every button, input, select, switch, checkbox, tab and chip inside it uses the small step, instead of adding size="sm" to each control. Leave the one primary action at its own size, and don't add a size to controls that should stay as they are. If part of a compact container needs the default back, use data-size="md" on it.`;
 
 export interface DensityPageProps {
   density: DensityMode;
@@ -37,6 +65,7 @@ export interface DensityPageProps {
 }
 
 const SIZES = [
+  { name: "Extra-small controls", compact: "24px", comfortable: "28px", touch: "36px" },
   { name: "Small controls", compact: "28px", comfortable: "32px", touch: "40px" },
   { name: "Default controls", compact: "32px", comfortable: "40px", touch: "44px" },
   { name: "Large controls", compact: "40px", comfortable: "48px", touch: "52px" },
@@ -129,6 +158,7 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
     setActiveDensity(density === "comfortable" || density === "touch" ? density : "compact");
   }, [density]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [scope, setScope] = useState<SizeScope>("sm");
 
   const handleDensityChange = (value: string) => {
     const next = value as "compact" | "comfortable" | "touch";
@@ -259,6 +289,92 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
           subtitle="44px height · Touch screens"
         />
       </div>
+
+      {/* Size scope */}
+      <h2 className="pv-h pv-h--section">Size scope</h2>
+      <p className="pv-note">
+        Density changes what every size means. A size scope changes which size controls use: <code>data-size="sm"</code> on a toolbar, a form or a panel makes every control inside it that doesn't name a size small, with no <code>size</code> on each one. Explicit sizes keep theirs, and <code>data-size="md"</code> puts the default back inside a scope. It follows the density set on the same element or an ancestor.
+      </p>
+
+      <Card data-size={scope === "md" ? undefined : scope}>
+        <CardHeader>
+          <div className="ayy-cluster" style={{ justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--ayy-space-3)" }}>
+            <div>
+              <strong>Services</strong>
+              <p className="ayy-muted" style={{ margin: 0, fontSize: "var(--ayy-text-xs)" }}>
+                The same markup in each scope. Only the container's data-size changes.
+              </p>
+            </div>
+            <SegmentedControl size="sm" aria-label="Size scope" value={scope} onValueChange={(next) => setScope(next as SizeScope)}>
+              <SegmentedControlItem value="sm">Small</SegmentedControlItem>
+              <SegmentedControlItem value="md">Default</SegmentedControlItem>
+              <SegmentedControlItem value="lg">Large</SegmentedControlItem>
+            </SegmentedControl>
+          </div>
+        </CardHeader>
+        <CardContent className="ayy-stack">
+          <div className="ayy-cluster" style={{ alignItems: "center" }}>
+            <Input placeholder="Filter services…" aria-label="Filter services" style={{ maxInlineSize: "14rem" }} />
+            <ChipGroup aria-label="Status">
+              <Chip name="scope-status" value="healthy" defaultChecked>
+                Healthy
+              </Chip>
+              <Chip name="scope-status" value="warning">
+                Warning
+              </Chip>
+            </ChipGroup>
+            <Button variant="outline">
+              <Icon icon={FilterIcon} name="filter" />
+              Filters
+            </Button>
+            <Button>
+              <Icon icon={Add01Icon} name="add" />
+              Add service
+            </Button>
+            <Button size="lg" variant="secondary">
+              Publish (always large)
+            </Button>
+          </div>
+          <div className="ayy-cluster" style={{ alignItems: "center" }}>
+            <Field inline>
+              <Switch id="pv-scope-switch" defaultChecked />
+              <Label htmlFor="pv-scope-switch">Auto-sync</Label>
+            </Field>
+            <Field inline>
+              <Checkbox id="pv-scope-check" defaultChecked />
+              <Label htmlFor="pv-scope-check">Alerts</Label>
+            </Field>
+          </div>
+          <Tabs defaultValue="all">
+            <TabsList aria-label="Service type">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="services">Services</TabsTrigger>
+              <TabsTrigger value="databases">Databases</TabsTrigger>
+            </TabsList>
+            <TabsContent value="all" />
+            <TabsContent value="services" />
+            <TabsContent value="databases" />
+          </Tabs>
+          <Pagination page={2} count={8} href={(page) => `#/docs/density?page=${page}`} aria-label="Services pages" />
+        </CardContent>
+      </Card>
+
+      <p className="pv-note">
+        Buttons, inputs, selects, switches, checkboxes, radios, tabs, pagination, chips, step markers and menu rows follow it. A few controls keep their own size: a textarea (it is multi-line), a slider, a floating action button, and rows that are large by default (the App shell's links, Settings rows). Give those a size where you want one.
+      </p>
+
+      <Tabs defaultValue="prompt">
+        <TabsList aria-label="Use a size scope">
+          <TabsTrigger value="prompt">AI prompt</TabsTrigger>
+          <TabsTrigger value="code">Code</TabsTrigger>
+        </TabsList>
+        <TabsContent value="prompt">
+          <CodeBlock code={buildPrompt(SCOPE_REQUEST)} label="prompt" copyLabel="Copy prompt" wrap />
+        </TabsContent>
+        <TabsContent value="code">
+          <CodeBlock code={SCOPE_CODE} label="html" language="html" wrap />
+        </TabsContent>
+      </Tabs>
 
       {/* Sizes table */}
       <h2 className="pv-h pv-h--section">Sizes</h2>

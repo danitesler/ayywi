@@ -23,8 +23,8 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 - `loading` — doesn't apply: Filtering shows its loading in the results (Skeleton), not on the chip.
 
 **Sizes**
-- `sm` — Control sm height minus 4px (24px compact, 28 comfortable, 36 touch), control sm text minus 1px, 8px side padding.
-- `md` (default) — Control sm height (28px compact, 32 comfortable, 40 touch), control sm text, 12px side padding.
+- `sm` — --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), control sm text minus 1px, 8px side padding.
+- `md` (default) — --ayy-size-control-dense tall, which is the sm control height by default (28px compact, 32 comfortable, 40 touch); control sm text, 12px side padding. A data-size scope moves it: sm to the xs height, lg to the md height.
 - `lg` — Control md height (32px compact, 40 comfortable, 44 touch), control md text, 16px side padding.
 - Density — Every size follows data-density with the control scale.
 - Width — Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars).

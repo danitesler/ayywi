@@ -11,7 +11,7 @@
   /* fit-content: in a stack it keeps its own width instead of stretching. */
   inline-size: fit-content;
   max-inline-size: 100%;
-  block-size: var(--ayy-size-control-sm);
+  block-size: var(--ayy-size-control-dense);
   margin: 0;
   padding-block: 0;
   padding-inline: var(--ayy-space-3);
@@ -33,9 +33,9 @@
     color var(--ayy-duration-fast) ease;
 }
 
-/* md is the default (a small control tall); sm is a step under it, lg a medium control tall. */
+/* md is the default (the dense control height, a small control); sm is a step under it, lg a medium control tall. */
 .ayy-chip--sm {
-  block-size: calc(var(--ayy-size-control-sm) - 0.25rem);
+  block-size: var(--ayy-size-control-xs);
   padding-inline: var(--ayy-space-2);
   font-size: calc(var(--ayy-control-text-sm) - 0.0625rem);
 }

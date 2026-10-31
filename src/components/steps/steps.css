@@ -13,7 +13,7 @@
 }
 
 .ayy-steps__item {
-  --_marker: var(--ayy-size-control-sm);
+  --_marker: var(--ayy-size-control-dense);
   counter-increment: ayy-step;
   display: flex;
   flex: 1 1 0;
@@ -28,7 +28,7 @@
 
 /* sm: a step under the default marker (24px at compact density); lg: a medium control tall. */
 .ayy-steps--sm .ayy-steps__item {
-  --_marker: calc(var(--ayy-size-control-sm) - 0.25rem);
+  --_marker: var(--ayy-size-control-xs);
   font-size: var(--ayy-text-xs);
 }
 

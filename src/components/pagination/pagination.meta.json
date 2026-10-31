@@ -29,8 +29,8 @@
   },
   "sizes": {
     "scale": {
-      "sm": "Links the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.",
-      "md": "Links the sm control height (28px compact, 32 comfortable, 40 touch), sm control text.",
+      "sm": "Links --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.",
+      "md": "Links --ayy-size-control-dense tall, the sm control height by default (28px compact, 32 comfortable, 40 touch); sm control text. A data-size scope moves it: sm to the xs height, lg to the md height.",
       "lg": "Links the md control height (32px compact, 40 comfortable, 44 touch), md control text. The page size picker steps up with it."
     },
     "density": "Every size follows data-density with the control scale.",

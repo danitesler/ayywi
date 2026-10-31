@@ -21,8 +21,8 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 - `loading` — doesn't apply: No loading look.
 
 **Sizes**
-- `sm` — Markers the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), --ayy-text-xs labels.
-- `md` (default) — Markers the sm control height (28px compact, 32 comfortable, 40 touch), --ayy-text-sm labels.
+- `sm` — Markers --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), --ayy-text-xs labels.
+- `md` (default) — Markers --ayy-size-control-dense tall, the sm control height by default (28px compact, 32 comfortable, 40 touch); --ayy-text-sm labels. A data-size scope moves it: sm to the xs height, lg to the md height.
 - `lg` — Markers the md control height (32px compact, 40 comfortable, 44 touch), --ayy-text-md labels.
 - Density — Every marker follows data-density with the control scale.
 - Width — Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone.

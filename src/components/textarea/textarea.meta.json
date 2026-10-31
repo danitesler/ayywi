@@ -33,7 +33,7 @@
       "md": "Control field text, 12px side padding, at least 5rem tall.",
       "lg": "Control lg text, 16px side padding, at least 6.5rem tall."
     },
-    "density": "Text follows the control scale and data-density; the minimum heights and padding don't change.",
+    "density": "Text follows the control scale and data-density; the minimum heights and padding don't change. A data-size scope doesn't resize it (it is multi-line): set size on it.",
     "width": "Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls)."
   },
   "js": "textareaClass({ size?, autosize?, mono?, className? }) → string",

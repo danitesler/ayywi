@@ -24,7 +24,7 @@ Category: Forms. A control for choosing a value, or a range between two values, 
 - `sm` — 4px track, 14px thumb, in the sm control height box (28px compact, 32 comfortable, 40 touch).
 - `md` (default) — 6px track, 18px thumb, in the sm control height box.
 - `lg` — 8px track, 24px thumb, in the md control height box (32px compact, 40 comfortable, 44 touch).
-- Density — The control box follows data-density; track and thumb are fixed.
+- Density — The control box follows data-density; track and thumb are fixed. A data-size scope doesn't resize it: set size on it.
 - Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
 
 **React** — `import { Slider, SliderRange } from "@danitesler/ayywi/react";`

@@ -35,7 +35,7 @@
       "md": "The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.",
       "lg": "The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon."
     },
-    "density": "Its diameter follows data-density through the lg control height (the sizes above).",
+    "density": "Its diameter follows data-density through the lg control height (the sizes above). A data-size scope doesn't resize it: set size on it.",
     "width": "Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow)."
   },
   "js": "fabClass({ variant?, size?, extended?, inline?, className? }) → string; fabVariants, fabSizes.",

@@ -23,8 +23,8 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 - `loading` — doesn't apply: Show the loading in the list or table it pages (Skeleton rows), not here.
 
 **Sizes**
-- `sm` — Links the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.
-- `md` (default) — Links the sm control height (28px compact, 32 comfortable, 40 touch), sm control text.
+- `sm` — Links --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.
+- `md` (default) — Links --ayy-size-control-dense tall, the sm control height by default (28px compact, 32 comfortable, 40 touch); sm control text. A data-size scope moves it: sm to the xs height, lg to the md height.
 - `lg` — Links the md control height (32px compact, 40 comfortable, 44 touch), md control text. The page size picker steps up with it.
 - Density — Every size follows data-density with the control scale.
 - Width — Hugs its links and wraps. Below 48rem only previous, the current page and next show.

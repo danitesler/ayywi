@@ -94,7 +94,7 @@ export function loadContract(path = manifestPath()) {
   const hooks = new Set(Object.keys(manifest.publicCustomProperties ?? {}));
   // Global attributes with a fixed set of values, e.g. data-theme: "dark" | "light" | … — the quoted names before " — ".
   const globalAttrs = new Map();
-  for (const attr of ["data-theme", "data-density"]) {
+  for (const attr of ["data-theme", "data-density", "data-size"]) {
     const head = String(manifest.attributes?.[attr] ?? "").split(" — ")[0];
     const values = [...head.matchAll(/"([\w-]+)"/g)].map((m) => m[1]);
     if (values.length) globalAttrs.set(attr, values);
@@ -643,8 +643,8 @@ function lintMarkup(text, contract, coUse = new Map()) {
     }
   }
 
-  // data-theme / data-density with a literal value (bound values like :data-theme="x" or data-theme={x} are skipped)
-  for (const m of text.matchAll(/(?<=\s)(data-theme|data-density)=(["'])([^"'{}$]*)\2/g)) {
+  // data-theme / data-density / data-size with a literal value (bound values like :data-theme="x" or data-theme={x} are skipped)
+  for (const m of text.matchAll(/(?<=\s)(data-theme|data-density|data-size)=(["'])([^"'{}$]*)\2/g)) {
     const allowed = contract.globalAttrs.get(m[1]);
     if (allowed && !allowed.includes(m[3])) push("unknown-attribute-value", `${m[1]}="${m[3]}" — expected one of: ${allowed.join(", ")}`, m.index);
   }

@@ -200,7 +200,7 @@
 
 /* xs is a step under sm and xl a step over lg, built from the control tokens so both follow data-density. */
 .ayy-button--xs {
-  --_h: calc(var(--ayy-size-control-sm) - 0.25rem);
+  --_h: var(--ayy-size-control-xs);
   --_ic: 0.875rem;
   gap: var(--ayy-space-1);
   block-size: var(--_h);
@@ -262,7 +262,7 @@
   block-size: var(--ayy-size-control-lg);
 }
 .ayy-button--icon-xs {
-  block-size: calc(var(--ayy-size-control-sm) - 0.25rem);
+  block-size: var(--ayy-size-control-xs);
 }
 .ayy-button--icon-xl {
   block-size: calc(var(--ayy-size-control-lg) + 0.5rem);

@@ -10,7 +10,7 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `.ayy-button--destructive` — Tinted red. Irreversible actions.
 - `.ayy-button--link` — Looks like a text link.
 - `.ayy-button--ring` — Showcase call to action: quiet fill inside a gradient ring that spins on keyboard focus and mouse hover (not after a tap). For marketing and portfolio pages; one per view.
-- `.ayy-button--xs` — Extra small: a step under sm (--ayy-size-control-sm minus 4px: 24px compact, 28 comfortable, 36 touch), sm text a pixel smaller, 14px icon, 4px gap. For a table cell or a tag-like action.
+- `.ayy-button--xs` — Extra small: a step under sm (--ayy-size-control-xs: 24px compact, 28 comfortable, 36 touch), sm text a pixel smaller, 14px icon, 4px gap. For a table cell or a tag-like action.
 - `.ayy-button--xl` — Extra large: a step over lg (--ayy-size-control-lg plus 8px: 44px compact, 52 comfortable, 56 touch), lg text a pixel larger, --ayy-size-icon-lg (24px) icon. For a hero call to action.
 - `.ayy-button--sm` — Small control step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-text-sm, --ayy-size-icon-sm (16px) icon, 6px gap.
 - `.ayy-button--lg` — Large control step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-text-lg, --ayy-size-icon-md (20px) icon, 8px gap. Matches large App shell links.
@@ -36,7 +36,7 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
-- `xs` — A step under sm: --ayy-size-control-sm minus 4px tall (24px compact, 28 comfortable, 36 touch), 12px inline padding less 4px, sm text minus 1px, 14px icon, 4px gap.
+- `xs` — A step under sm: --ayy-size-control-xs tall (24px compact, 28 comfortable, 36 touch), 12px inline padding less 4px, sm text minus 1px, 14px icon, 4px gap.
 - `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (13/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
 - `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (13/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
 - `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/15/16px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.

@@ -24,7 +24,7 @@ Category: Actions. A round floating button for the main action of a phone screen
 - `sm` — The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.
 - `md` (default) — The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.
 - `lg` — The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon.
-- Density — Its diameter follows data-density through the lg control height (the sizes above).
+- Density — Its diameter follows data-density through the lg control height (the sizes above). A data-size scope doesn't resize it: set size on it.
 - Width — Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow).
 
 **React** — `import { Fab } from "@danitesler/ayywi/react";`

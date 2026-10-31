@@ -14,8 +14,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--ayy-space-1);
-  min-inline-size: var(--_pg-h, var(--ayy-size-control-sm));
-  block-size: var(--_pg-h, var(--ayy-size-control-sm));
+  min-inline-size: var(--_pg-h, var(--ayy-size-control-dense));
+  block-size: var(--_pg-h, var(--ayy-size-control-dense));
   margin: 0;
   padding-inline: var(--ayy-space-2);
   border: 1px solid transparent;
@@ -37,7 +37,7 @@
 
 /* md is the default (a small control tall); sm is a step under it, lg a medium control tall. */
 .ayy-pagination--sm {
-  --_pg-h: calc(var(--ayy-size-control-sm) - 0.25rem);
+  --_pg-h: var(--ayy-size-control-xs);
   --_pg-fs: calc(var(--ayy-control-text-sm) - 0.0625rem);
 }
 
@@ -77,7 +77,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-inline-size: var(--_pg-h, var(--ayy-size-control-sm));
+  min-inline-size: var(--_pg-h, var(--ayy-size-control-dense));
   color: var(--ayy-color-muted);
   user-select: none;
 }

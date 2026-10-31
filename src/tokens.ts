@@ -153,6 +153,8 @@ export const tokens = {
   "space.32": { cssVar: "--ayy-space-32", type: "dimension", value: "8rem", description: "Generous padding around sections on wide screens." },
   "space.0-5": { cssVar: "--ayy-space-0-5", type: "dimension", value: "0.125rem" },
   "space.1-5": { cssVar: "--ayy-space-1-5", type: "dimension", value: "0.375rem" },
+  "size.control-xs": { cssVar: "--ayy-size-control-xs", type: "dimension", value: "1.5rem", density: {"comfortable":"1.75rem","touch":"2.25rem"}, description: "Extra-small control height, one step under small." },
+  "size.control-dense": { cssVar: "--ayy-size-control-dense", type: "dimension", value: "1.75rem", density: {"comfortable":"2rem","touch":"2.5rem"}, description: "Height of a control that is small by default: chips, pagination links, step markers. A size scope (data-size) sends it to control-xs or control-md." },
   "size.control-sm": { cssVar: "--ayy-size-control-sm", type: "dimension", value: "1.75rem", density: {"comfortable":"2rem","touch":"2.5rem"}, description: "Small control height." },
   "size.control-md": { cssVar: "--ayy-size-control-md", type: "dimension", value: "2rem", density: {"comfortable":"2.5rem","touch":"2.75rem"}, description: "Default control height." },
   "size.control-lg": { cssVar: "--ayy-size-control-lg", type: "dimension", value: "2.25rem", density: {"comfortable":"2.75rem","touch":"3rem"}, description: "Large control height." },
