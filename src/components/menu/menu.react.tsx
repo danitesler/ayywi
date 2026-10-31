@@ -32,8 +32,10 @@ import {
   menuRowClass,
   menuSeparatorClass,
   menuShortcutClass,
+  menuSizeClass,
   menuValueClass,
   type MenuController,
+  type MenuSize,
   type MenuSubmenuLayout,
 } from "./menu";
 
@@ -45,6 +47,7 @@ interface MenuContextValue {
   contentRef: MutableRefObject<HTMLDivElement | null>;
   controllerRef: MutableRefObject<MenuController | null>;
   boundary?: PlaceBoundary;
+  size?: MenuSize;
   parentSub?: boolean;
 }
 
@@ -64,6 +67,8 @@ export interface DropdownMenuProps {
   anchorPoint?: { x: number; y: number };
   /** Optional boundary to constrain placement. */
   boundary?: PlaceBoundary;
+  /** Row height, text and icons of every panel in the menu, flyouts included. */
+  size?: MenuSize;
   children: ReactNode;
 }
 
@@ -74,6 +79,7 @@ export function DropdownMenu({
   onOpenChange,
   anchorPoint,
   boundary,
+  size,
   children,
 }: DropdownMenuProps) {
   const [uncontrolled, setUncontrolled] = useState(defaultOpen);
@@ -98,7 +104,7 @@ export function DropdownMenu({
   }, [anchorPoint]);
 
   return (
-    <MenuContext.Provider value={{ open, setOpen, contentId, triggerRef, contentRef, controllerRef, boundary }}>
+    <MenuContext.Provider value={{ open, setOpen, contentId, triggerRef, contentRef, controllerRef, boundary, size }}>
       {children}
     </MenuContext.Provider>
   );
@@ -141,10 +147,12 @@ export interface DropdownMenuContentProps extends HTMLAttributes<HTMLDivElement>
   boundary?: PlaceBoundary;
   subSide?: FloatingSide;
   onSubmenuLayout?: (layout: MenuSubmenuLayout) => void;
+  /** Overrides the size set on DropdownMenu, for this panel. */
+  size?: MenuSize;
 }
 
 export const DropdownMenuContent = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuContentProps>(function DropdownMenuContent(
-  { side = "bottom", align = "start", static: isStatic, boundary, subSide, onSubmenuLayout, className, ...props },
+  { side = "bottom", align = "start", static: isStatic, boundary, subSide, onSubmenuLayout, size, className, ...props },
   ref,
 ) {
   const ctx = useMenu("DropdownMenuContent");
@@ -192,7 +200,7 @@ export const DropdownMenuContent = /* @__PURE__ */ forwardRef<HTMLDivElement, Dr
       ref={mergeRefs(ref, ctx.contentRef)}
       id={ctx.contentId}
       role="menu"
-      className={cx(menuClass, isStatic && "ayy-menu--static", className)}
+      className={cx(menuClass, menuSizeClass(size ?? ctx.size), isStatic && "ayy-menu--static", className)}
       popover={isStatic ? undefined : "auto"}
       {...props}
     />
@@ -478,6 +486,8 @@ export const DropdownMenuMore = /* @__PURE__ */ forwardRef<HTMLButtonElement, Dr
 export interface DropdownMenuSubContentProps extends HTMLAttributes<HTMLDivElement> {
   side?: FloatingSide;
   align?: FloatingAlign;
+  /** Overrides the size set on DropdownMenu, for this flyout. */
+  size?: MenuSize;
 }
 
 /**
@@ -485,8 +495,9 @@ export interface DropdownMenuSubContentProps extends HTMLAttributes<HTMLDivEleme
  * only hold items: put the DropdownMenuSub around the DropdownMenuContent and this right after it.
  */
 export const DropdownMenuSubContent = /* @__PURE__ */ forwardRef<HTMLDivElement, DropdownMenuSubContentProps>(
-  function DropdownMenuSubContent({ side, align, className, children, ...props }, ref) {
+  function DropdownMenuSubContent({ side, align, size, className, children, ...props }, ref) {
     const sub = useSubmenu("DropdownMenuSubContent");
+    const menu = useContext(MenuContext);
 
     if (sub.inline) {
       return (
@@ -509,7 +520,7 @@ export const DropdownMenuSubContent = /* @__PURE__ */ forwardRef<HTMLDivElement,
         id={sub.subContentId}
         role="menu"
         popover="auto"
-        className={cx(menuClass, "ayy-menu--sub", className)}
+        className={cx(menuClass, menuSizeClass(size ?? menu?.size), "ayy-menu--sub", className)}
         {...props}
       >
         {children}

@@ -10,10 +10,14 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `.ayy-button--destructive` — Tinted red. Irreversible actions.
 - `.ayy-button--link` — Looks like a text link.
 - `.ayy-button--ring` — Showcase call to action: quiet fill inside a gradient ring that spins on keyboard focus and mouse hover (not after a tap). For marketing and portfolio pages; one per view.
+- `.ayy-button--xs` — Extra small: a step under sm (--ayy-size-control-sm minus 4px: 24px compact, 28 comfortable, 36 touch), sm text a pixel smaller, 14px icon, 4px gap. For a table cell or a tag-like action.
+- `.ayy-button--xl` — Extra large: a step over lg (--ayy-size-control-lg plus 8px: 44px compact, 52 comfortable, 56 touch), lg text a pixel larger, --ayy-size-icon-lg (24px) icon. For a hero call to action.
 - `.ayy-button--sm` — Small control step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-text-sm, --ayy-size-icon-sm (16px) icon, 6px gap.
 - `.ayy-button--lg` — Large control step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-text-lg, --ayy-size-icon-md (20px) icon, 8px gap. Matches large App shell links.
 - `.ayy-button--icon` — Square at the md control height (32px compact, 40 comfortable, 44 touch), for a single 16px icon.
 - `.ayy-button--icon-sm` — Square at the sm control height (28px compact, 32 comfortable, 40 touch), for a single 16px icon.
+- `.ayy-button--icon-xs` — Square at the xs height (24px compact, 28 comfortable, 36 touch), for a single 14px icon.
+- `.ayy-button--icon-xl` — Square at the xl height (44px compact, 52 comfortable, 56 touch), for a single 24px icon.
 - `.ayy-button--icon-lg` — Square at the lg control height (40px compact, 48 comfortable, 52 touch), for a single 20px icon beside a large button.
 - `.ayy-button--block` — Fills its container's width: a card footer, a phone form, a dialog's only action.
 - `.ayy-button--start` — Icon and label sit at the inline start of a wide button, laid out like an App shell row of the same size: the icon is centred in a square as wide as the button is high, so a sm, md or lg button lines up with a sm, md or lg menu item. Use with block.
@@ -32,17 +36,21 @@ Category: Actions. The control for starting an action, like saving, submitting o
 - `loading` (`aria-busy="true" with an aria-hidden .ayy-spinner as the first child (React: loading)`) — Spinner before the label; clicks and form submits are ignored; stays focusable. Keep the label (or "Saving…") so the width barely moves.
 
 **Sizes**
+- `xs` — A step under sm: --ayy-size-control-sm minus 4px tall (24px compact, 28 comfortable, 36 touch), 12px inline padding less 4px, sm text minus 1px, 14px icon, 4px gap.
 - `sm` — Control sm step: --ayy-size-control-sm tall (28px compact, 32 comfortable, 40 touch), --ayy-control-pad-sm inline padding, --ayy-control-text-sm (13/13/14px), --ayy-size-icon-sm (16px) icon, 6px gap.
 - `md` (default) — Control md step: --ayy-size-control-md tall (32px compact, 40 comfortable, 44 touch), --ayy-control-pad-md inline padding, --ayy-control-text-md (13/13/14px), --ayy-size-icon-sm (16px) icon, 8px gap.
 - `lg` — Control lg step: --ayy-size-control-lg tall (40px compact, 48 comfortable, 52 touch), --ayy-control-pad-lg inline padding, --ayy-control-text-lg (14/15/16px), --ayy-size-icon-md (20px) icon, 8px gap. Matches lg App shell links.
+- `xl` — A step over lg: --ayy-size-control-lg plus 8px tall (44px compact, 52 comfortable, 56 touch), lg padding plus 4px, lg text plus 1px, --ayy-size-icon-lg (24px) icon.
+- `icon-xs` — Square at the xs height (24/28/36px) with a 14px icon.
 - `icon` — Square at the md control height (32/40/44px) with a 16px icon (needs aria-label).
 - `icon-sm` — Square at the sm control height (28/32/40px) with a 16px icon.
 - `icon-lg` — Square at the lg control height (36/44/48px) with a 20px icon.
-- Density — Height, inline padding and label size follow data-density across all steps (sm/md/lg); icons stay fixed at 16px (sm/md) and 20px (lg).
+- `icon-xl` — Square at the xl height (44/52/56px) with a 24px icon.
+- Density — Height, inline padding and label size follow data-density across all steps (xs to xl); icons stay fixed at 14px (xs), 16px (sm/md), 20px (lg) and 24px (xl).
 - Width — Hugs its label. block (ayy-button--block) fills its container: a phone form, a card footer, a dialog's only action.
 
 **React** — `import { Button, SplitButton } from "@danitesler/ayywi/react";`
-- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "sm" | "md" | "lg" | "icon" | "icon-sm" | "icon-lg"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `tooltip` ReactNode | boolean — custom tooltip text or element; icon-only buttons show their aria-label on hover by default (pass false to disable).; `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top").; `...rest` All native <button> attributes.
+- `<Button>` renders <button>. Props: `variant` "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link" | "ring"; `size` "xs" | "sm" | "md" | "lg" | "xl" | "icon-xs" | "icon-sm" | "icon" | "icon-lg" | "icon-xl"; `type` Defaults to "button" (not "submit").; `block` boolean — full width (ayy-button--block).; `align` "start" | "center" | "end" — where the icon and label sit in a wide button; center is the default.; `loading` boolean — a Spinner before the label and aria-busy="true"; clicks and form submits are ignored while it's set. Stays focusable.; `tooltip` ReactNode | boolean — custom tooltip text or element; icon-only buttons show their aria-label on hover by default (pass false to disable).; `tooltipSide` "top" | "bottom" | "start" | "end" — placement of the tooltip (default "top").; `...rest` All native <button> attributes.
 - `<SplitButton>` renders <div role="group" class="ayy-button-split">. Props: `block` boolean — full width (ayy-button-split--block); the main action grows, the menu trigger stays square.; `...rest` All native <div> attributes.
 
 **Accessibility**
@@ -108,28 +116,57 @@ export default function Example() {
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
+<button type="button" class="ayy-button ayy-button--xs">Extra small</button>
 <button type="button" class="ayy-button ayy-button--sm">Small</button>
 <button type="button" class="ayy-button">Medium</button>
 <button type="button" class="ayy-button ayy-button--lg">Large</button>
+<button type="button" class="ayy-button ayy-button--xl">Extra large</button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--xs">Extra small</button>
 <button type="button" class="ayy-button ayy-button--outline ayy-button--sm">Small</button>
 <button type="button" class="ayy-button ayy-button--outline">Medium</button>
 <button type="button" class="ayy-button ayy-button--outline ayy-button--lg">Large</button>
+<button type="button" class="ayy-button ayy-button--outline ayy-button--xl">Extra large</button>
+<button type="button" class="ayy-button ayy-button--secondary ayy-button--icon-xs" aria-label="Add, extra small"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+<span class="ayy-tooltip"><button type="button" class="ayy-button ayy-button--secondary ayy-button--icon-sm" aria-label="Add, small" aria-describedby="add-small-tip"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><span role="tooltip" id="add-small-tip" class="ayy-tooltip__content" data-side="top">Add</span></span>
+<span class="ayy-tooltip"><button type="button" class="ayy-button ayy-button--secondary ayy-button--icon" aria-label="Add, medium" aria-describedby="add-medium-tip"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><span role="tooltip" id="add-medium-tip" class="ayy-tooltip__content" data-side="top">Add</span></span>
+<span class="ayy-tooltip"><button type="button" class="ayy-button ayy-button--secondary ayy-button--icon-lg" aria-label="Add, large" aria-describedby="add-large-tip"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button><span role="tooltip" id="add-large-tip" class="ayy-tooltip__content" data-side="top">Add</span></span>
+<button type="button" class="ayy-button ayy-button--secondary ayy-button--icon-xl" aria-label="Add, extra large"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
 ```
 
 React:
 
 ```tsx
-import { Button } from "@danitesler/ayywi/react";
+import { Add01Icon } from "@hugeicons/core-free-icons";
+import { Button, Icon } from "@danitesler/ayywi/react";
 
 export default function Example() {
   return (
     <>
+      <Button size="xs">Extra small</Button>
       <Button size="sm">Small</Button>
       <Button>Medium</Button>
       <Button size="lg">Large</Button>
+      <Button size="xl">Extra large</Button>
+      <Button variant="outline" size="xs">Extra small</Button>
       <Button variant="outline" size="sm">Small</Button>
       <Button variant="outline">Medium</Button>
       <Button variant="outline" size="lg">Large</Button>
+      <Button variant="outline" size="xl">Extra large</Button>
+      <Button variant="secondary" size="icon-xs" aria-label="Add, extra small">
+        <Icon icon={Add01Icon} name="add" />
+      </Button>
+      <Button variant="secondary" size="icon-sm" aria-label="Add, small">
+        <Icon icon={Add01Icon} name="add" />
+      </Button>
+      <Button variant="secondary" size="icon" aria-label="Add, medium">
+        <Icon icon={Add01Icon} name="add" />
+      </Button>
+      <Button variant="secondary" size="icon-lg" aria-label="Add, large">
+        <Icon icon={Add01Icon} name="add" />
+      </Button>
+      <Button variant="secondary" size="icon-xl" aria-label="Add, extra large">
+        <Icon icon={Add01Icon} name="add" />
+      </Button>
     </>
   );
 }

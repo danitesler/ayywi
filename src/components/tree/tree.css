@@ -121,23 +121,47 @@ ayy-tree {
   cursor: not-allowed;
 }
 
-.ayy-tree--compact {
+/* sm is the compact tree: the same size, spelled like every other component's. lg has taller rows and a wider indent. */
+.ayy-tree--compact,
+.ayy-tree--sm {
   font-size: var(--ayy-control-text-sm);
 }
 
-.ayy-tree--compact .ayy-tree__row {
+.ayy-tree--compact .ayy-tree__row,
+.ayy-tree--sm .ayy-tree__row {
   min-block-size: var(--ayy-size-control-sm);
   padding-block: var(--ayy-space-0-5);
   gap: var(--ayy-space-1-5);
 }
 
-.ayy-tree--compact .ayy-tree__group {
+.ayy-tree--compact .ayy-tree__group,
+.ayy-tree--sm .ayy-tree__group {
   padding-inline-start: var(--ayy-space-4);
 }
 
-.ayy-tree--compact .ayy-tree__toggle {
+.ayy-tree--compact .ayy-tree__toggle,
+.ayy-tree--sm .ayy-tree__toggle {
   inline-size: var(--ayy-space-4);
   block-size: var(--ayy-space-4);
+}
+
+.ayy-tree--lg {
+  font-size: var(--ayy-control-text-lg);
+}
+
+.ayy-tree--lg .ayy-tree__row {
+  min-block-size: var(--ayy-size-control-lg);
+  padding-inline: var(--ayy-space-3);
+  gap: var(--ayy-space-3);
+}
+
+.ayy-tree--lg .ayy-tree__group {
+  padding-inline-start: var(--ayy-space-6);
+}
+
+.ayy-tree--lg .ayy-tree__toggle {
+  inline-size: var(--ayy-space-6);
+  block-size: var(--ayy-space-6);
 }
 
 @media (forced-colors: active) {

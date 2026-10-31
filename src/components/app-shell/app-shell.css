@@ -834,8 +834,8 @@ ayy-app-shell {
    icon and label start where a link's do (the 1px border is taken off the padding). A button set to a small size (sm or
    icon-sm) keeps it in a big or medium sidebar, so a button and its icon-only neighbour come out the same height; a
    small sidebar sizes them all. Icon-only buttons are square rows and keep no padding. */
-.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
-.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--xs, .ayy-button--sm, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--xs, .ayy-button--sm, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]),
 .ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]),
 .ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) {
   gap: var(--_gap);
@@ -843,18 +843,18 @@ ayy-app-shell {
   font-size: var(--_text);
 }
 
-.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
-.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
+.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--xs, .ayy-button--sm, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
+.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--xs, .ayy-button--sm, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--link, [tabindex="-1"]) > svg,
 .ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > svg,
 .ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--link, [tabindex="-1"]) > svg {
   inline-size: var(--_icon);
   block-size: var(--_icon);
 }
 
-.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]),
-.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--sm, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]),
-.ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]),
-.ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--icon, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--link, [tabindex="-1"]) {
+.ayy-app-shell > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--xs, .ayy-button--sm, .ayy-button--icon, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--icon-xl, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--xs, .ayy-button--sm, .ayy-button--icon, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--icon-xl, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell--sm > .ayy-app-shell__sidebar :not(.ayy-app-shell__head) > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--icon, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--icon-xl, .ayy-button--link, [tabindex="-1"]),
+.ayy-app-shell--sm > .ayy-app-shell__sidebar > .ayy-button:not(.ayy-app-shell__toggle, .ayy-button--icon, .ayy-button--icon-xs, .ayy-button--icon-sm, .ayy-button--icon-lg, .ayy-button--icon-xl, .ayy-button--link, [tabindex="-1"]) {
   justify-content: flex-start;
   padding-inline: calc(var(--_pad) - 1px);
 }

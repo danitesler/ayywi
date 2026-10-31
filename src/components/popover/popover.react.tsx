@@ -18,7 +18,7 @@ import { cx } from "../../lib/cx";
 import type { FloatingAlign, FloatingSide } from "../../lib/position";
 import { mergeRefs } from "../../lib/refs";
 import { Button, type ButtonProps } from "../button/button.react";
-import { connectPopover, popoverClass, type PopoverController } from "./popover";
+import { connectPopover, popoverClass, popoverSizeClass, type PopoverController, type PopoverSize } from "./popover";
 
 interface PopoverContextValue {
   open: boolean;
@@ -101,10 +101,12 @@ export const PopoverTrigger = /* @__PURE__ */ forwardRef<HTMLButtonElement, Popo
 export interface PopoverContentProps extends HTMLAttributes<HTMLDivElement> {
   side?: FloatingSide;
   align?: FloatingAlign;
+  /** Padding, text size and the widest it grows. */
+  size?: PopoverSize;
 }
 
 export const PopoverContent = /* @__PURE__ */ forwardRef<HTMLDivElement, PopoverContentProps>(function PopoverContent(
-  { side = "bottom", align = "center", className, ...props },
+  { side = "bottom", align = "center", size, className, ...props },
   ref,
 ) {
   const ctx = usePopover("PopoverContent");
@@ -149,7 +151,7 @@ export const PopoverContent = /* @__PURE__ */ forwardRef<HTMLDivElement, Popover
       ref={mergeRefs(ref, ctx.contentRef)}
       id={ctx.contentId}
       role="dialog"
-      className={cx(popoverClass, className)}
+      className={cx(popoverClass, popoverSizeClass(size), className)}
       popover="auto"
       {...props}
     />

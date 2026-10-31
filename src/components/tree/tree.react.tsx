@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type Reac
 import { ArrowRight01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { Icon } from "../icon/icon.react";
-import { connectTree, treeClass, treeGroupClass, treeItemClass, treeLabelClass, treeRowClass, treeToggleClass, type TreeController } from "./tree";
+import { connectTree, treeClass, treeGroupClass, treeItemClass, treeLabelClass, treeRowClass, treeToggleClass, type TreeController, type TreeSize } from "./tree";
 
 export interface TreeNode {
   id: string;
@@ -33,6 +33,8 @@ export interface TreeProps extends Omit<HTMLAttributes<HTMLUListElement>, "onSel
   onSelectedChange?: (id: string | null) => void;
   /** Double-click or Enter on a node. */
   onActivate?: (id: string) => void;
+  /** Row height, indent and text. sm is the same as compact. */
+  size?: TreeSize;
   /** Tighter rows, a smaller indent and the small control text. */
   compact?: boolean;
 }
@@ -49,6 +51,7 @@ export const Tree = /* @__PURE__ */ forwardRef<HTMLUListElement, TreeProps>(func
     defaultSelectedId,
     onSelectedChange,
     onActivate,
+    size,
     compact,
     className,
     ...props
@@ -130,7 +133,7 @@ export const Tree = /* @__PURE__ */ forwardRef<HTMLUListElement, TreeProps>(func
     });
 
   return (
-    <ul ref={mergeRefs(ref, local)} className={treeClass({ compact, className })} role="tree" aria-label={label} {...props}>
+    <ul ref={mergeRefs(ref, local)} className={treeClass({ size, compact, className })} role="tree" aria-label={label} {...props}>
       {render(nodes, 1)}
     </ul>
   );

@@ -2,6 +2,14 @@ import { autoPlace, supportsPopover, type FloatingAlign, type FloatingSide, type
 
 export const popoverClass = "ayy-popover";
 
+export const popoverSizes = ["sm", "md", "lg"] as const;
+export type PopoverSize = (typeof popoverSizes)[number];
+
+/** Add next to popoverClass on the panel: `cx(popoverClass, popoverSizeClass("lg"))`. md is the default and adds nothing. */
+export function popoverSizeClass(size?: PopoverSize): string | undefined {
+  return size && size !== "md" ? `ayy-popover--${size}` : undefined;
+}
+
 export interface PopoverControllerOptions {
   side?: FloatingSide;
   align?: FloatingAlign;

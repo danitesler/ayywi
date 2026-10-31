@@ -7,7 +7,11 @@
   "aka": ["choice-card", "option-card", "plan-card"],
   "classes": {
     "ayy-choice-group": "Grid of cards that adapts to its box (cards at least --ayy-min wide, default 12rem, 6rem for compact cards). Usually a <fieldset>, role=\"radiogroup\" for radio cards.",
+    "ayy-choice-group--sm": "Every card in the group small. A card with its own size keeps it.",
+    "ayy-choice-group--lg": "Every card in the group large. A card with its own size keeps it.",
     "ayy-choice-group--scroll": "One row that scrolls sideways instead of wrapping: a day strip, sizes on a phone. Cards stay at least --ayy-min wide.",
+    "ayy-choice-card--sm": "Small: 12px padding, xs text, a small corner radio or checkbox.",
+    "ayy-choice-card--lg": "Large: 20px padding, md text, a large corner radio or checkbox.",
     "ayy-choice-group__legend": "The group's question, as the fieldset's <legend>.",
     "ayy-choice-card": "A <label> card around a native <input class=\"ayy-radio\"> or ayy-checkbox, drawn in the inline-end corner. Chosen: a text-colour border, 2px.",
     "ayy-choice-card--compact": "A time slot or a size: centred text, input hidden, filled when chosen; a disabled one is struck through.",
@@ -16,6 +20,7 @@
     "ayy-choice-card__meta": "A price or a date, at the bottom so a row of cards lines them up."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "compact": { "values": [false, true], "default": false, "component": "ChoiceCard" },
     "type": { "values": ["radio", "checkbox"], "default": "radio", "component": "ChoiceGroup" },
     "scroll": { "values": [false, true], "default": false, "component": "ChoiceGroup" }
@@ -31,16 +36,22 @@
     "loading": { "none": "Load the options before showing them; use Skeletons in the cards' shape meanwhile." }
   },
   "sizes": {
-    "density": "Card padding is fixed; the corner input follows --ayy-size-check. Compact cards are at least the lg control height.",
+    "scale": {
+      "sm": "12px padding, --ayy-text-xs, the corner input at --ayy-size-check-sm (14px compact, 16 comfortable, 18 touch).",
+      "md": "16px padding, --ayy-text-sm, the corner input at --ayy-size-check (16px compact, 18 comfortable, 20 touch).",
+      "lg": "20px padding, --ayy-text-md, the corner input at --ayy-size-check-lg (20px compact, 22 comfortable, 24 touch)."
+    },
+    "density": "Card padding is fixed; the corner input follows the check size and the density. Compact cards (time slots) keep their own spacing and are at least the lg control height; size changes only their text.",
     "width": "The group is a grid of columns at least --ayy-min wide (12rem, 6rem for compact) that fills its box; scroll makes one sideways row."
   },
-  "js": "choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.",
+  "js": "choiceCardClass({ size?, compact?, className? }), choiceGroupClass({ size?, scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.",
   "react": {
     "import": "import { ChoiceGroup, ChoiceCard } from \"@danitesler/ayywi/react\";",
     "components": {
       "ChoiceGroup": {
         "renders": "<fieldset role=\"radiogroup\" class=\"ayy-choice-group\"><legend>…",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — every card in the group; a card with its own size keeps it",
           "legend": "ReactNode — the question",
           "type": "\"radio\" (one choice, kept by the group) | \"checkbox\" (cards that combine)",
           "name": "Shared radio name. Generated if omitted.",
@@ -54,6 +65,7 @@
       "ChoiceCard": {
         "renders": "<label class=\"ayy-choice-card\"><input class=\"ayy-radio\">…",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — this card only; wins over the group",
           "value": "string",
           "title": "ReactNode",
           "description": "ReactNode",
@@ -89,6 +101,7 @@
   "examples": [
     { "id": "plans", "title": "Plans" },
     { "id": "slots", "title": "Time slots" },
-    { "id": "add-ons", "title": "Add-ons that combine" }
+    { "id": "add-ons", "title": "Add-ons that combine" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

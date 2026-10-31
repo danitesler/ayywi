@@ -6,6 +6,8 @@
   "aka": ["menu", "dropdown", "dropdown-menu", "context-menu", "menu-item", "submenu", "nested-menu", "cascading-menu"],
   "classes": {
     "ayy-menu": "On the element with popover and role=\"menu\".",
+    "ayy-menu--sm": "Small panel: rows the sm control tall with sm text and 16px icons. Put it on every panel, a flyout included; the React DropdownMenu does that for you.",
+    "ayy-menu--lg": "Large panel: rows the lg control tall with lg text and 20px icons, at least 13rem wide.",
     "ayy-menu--sub": "Submenu flyout panel.",
     "ayy-menu--static": "Static menu rendered inline in a page or window without popover behavior.",
     "ayy-menu__item": "Each action: a <button role=\"menuitem\">.",
@@ -26,6 +28,7 @@
     "ayy-menu__separator": "Divider (role=\"separator\")."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "side": { "values": ["bottom", "top", "start", "end"], "default": "bottom", "component": "DropdownMenuContent" },
     "align": { "values": ["start", "center", "end"], "default": "start", "component": "DropdownMenuContent" },
     "trailingMenu": { "values": [false, true], "default": false, "component": "DropdownMenuRow" }
@@ -42,10 +45,15 @@
     "open": { "when": ":popover-open or [aria-expanded=\"true\"] on a parent row or split row's __more", "looks": "Fades in and scales up from 97%; parent rows and a split row's trailing button keep the hover background while their menu is open." }
   },
   "sizes": {
-    "density": "Items are the md control height (32px compact, 40 comfortable, 44 touch) with control md text.",
+    "scale": {
+      "sm": "Rows the sm control height (28px compact, 32 comfortable, 40 touch), control sm text, 16px icons, at least 10rem wide.",
+      "md": "Rows the md control height (32px compact, 40 comfortable, 44 touch), control md text, 18px icons, at least 11rem wide.",
+      "lg": "Rows the lg control height (36px compact, 44 comfortable, 48 touch), control lg text, 20px icons, at least 13rem wide."
+    },
+    "density": "Every size follows data-density with the control scale.",
     "width": "At least 11rem, at most 20rem (or the viewport minus 1rem); grows with its longest item."
   },
-  "js": "menuItemClass({ destructive?, sub?, expand?, described?, selected?, className? }); menuClass, menuRowClass, menuMoreClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass, menuItemSelectedClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })",
+  "js": "menuItemClass({ destructive?, sub?, expand?, described?, selected?, className? }); menuSizeClass(size?) → string | undefined (the --sm / --lg class for a panel; md adds nothing); menuClass, menuRowClass, menuMoreClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass, menuItemSelectedClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })",
   "element": {
     "tag": "ayy-menu",
     "attributes": {
@@ -63,11 +71,11 @@
   "react": {
     "import": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuRow, DropdownMenuMore, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuCheckboxItem, DropdownMenuSelectedItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from \"@danitesler/ayywi/react\";",
     "components": {
-      "DropdownMenu": { "renders": "nothing (state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void", "anchorPoint": "{ x: number; y: number }", "boundary": "Element | Rect" } },
+      "DropdownMenu": { "renders": "nothing (state provider)", "props": { "size": "\"sm\" | \"md\" | \"lg\" — every panel of the menu, flyouts included", "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void", "anchorPoint": "{ x: number; y: number }", "boundary": "Element | Rect" } },
       "DropdownMenuTrigger": { "renders": "Button", "props": { "...ButtonProps": "variant, size…", "asChild": "boolean — clone custom trigger element without button styling" } },
       "DropdownMenuContent": {
         "renders": "<div popover role=\"menu\">",
-        "props": { "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"start\" | \"center\" | \"end\"", "static": "boolean", "boundary": "Element | Rect", "subSide": "\"end\" | \"start\"", "onSubmenuLayout": "(layout) => void" }
+        "props": { "size": "\"sm\" | \"md\" | \"lg\" — this panel; wins over DropdownMenu", "side": "\"bottom\" | \"top\" | \"start\" | \"end\"", "align": "\"start\" | \"center\" | \"end\"", "static": "boolean", "boundary": "Element | Rect", "subSide": "\"end\" | \"start\"", "onSubmenuLayout": "(layout) => void" }
       },
       "DropdownMenuRow": { "renders": "<div role=\"presentation\" class=\"ayy-menu__row\">", "props": { "children": "A DropdownMenuItem and, beside it, a DropdownMenuMore inside a DropdownMenuSub" } },
       "DropdownMenuMore": { "renders": "<button type=\"button\" role=\"menuitem\" aria-haspopup=\"menu\" aria-expanded>", "props": { "icon": "ReactNode — the button's icon (e.g. MoreHorizontal).", "aria-label": "Required: name the row it belongs to, e.g. \"More options for Duplicate project\"." } },
@@ -79,7 +87,7 @@
       "DropdownMenuSeparator": { "renders": "<div role=\"separator\">" },
       "DropdownMenuSub": { "renders": "nothing (submenu state provider)", "props": { "open / defaultOpen": "boolean", "onOpenChange": "(open: boolean) => void", "inline": "boolean" } },
       "DropdownMenuSubTrigger": { "renders": "<button role=\"menuitem\" aria-haspopup=\"menu\">", "props": { "icon": "ReactNode", "value": "ReactNode", "description": "ReactNode", "selected": "boolean — reserves space on inline start for checkmark indicator" } },
-      "DropdownMenuSubContent": { "renders": "<div popover role=\"menu\">, <div popover role=\"dialog\"> (placed after the DropdownMenuContent) or <div role=\"group\"> (inline)", "props": { "side": "\"end\" | \"start\"", "align": "\"start\"" } },
+      "DropdownMenuSubContent": { "renders": "<div popover role=\"menu\">, <div popover role=\"dialog\"> (placed after the DropdownMenuContent) or <div role=\"group\"> (inline)", "props": { "size": "\"sm\" | \"md\" | \"lg\" — this flyout; wins over DropdownMenu", "side": "\"end\" | \"start\"", "align": "\"start\"" } },
       "DropdownMenuCheckboxItem": { "renders": "<button role=\"menuitemcheckbox\">", "props": { "checked": "boolean", "onCheckedChange": "(checked: boolean) => void", "closeOnSelect": "boolean" } },
       "DropdownMenuSelectedItem": { "renders": "<button role=\"menuitemcheckbox\">", "props": { "selected": "boolean", "onSelectedChange": "(selected: boolean) => void", "closeOnSelect": "boolean" } },
       "DropdownMenuRadioGroup": { "renders": "<div role=\"group\">", "props": { "value": "string", "onValueChange": "(value: string) => void", "closeOnSelect": "boolean" } },
@@ -110,6 +118,7 @@
     "Don't nest submenus more than one level."
   ],
   "examples": [
-    { "id": "actions", "title": "Item actions" }
+    { "id": "actions", "title": "Item actions" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

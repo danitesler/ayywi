@@ -56,7 +56,7 @@ test("MCP handshake and tools", async (t) => {
   const button = await call("get_component", { name: "Button" });
   for (const state of ["default", "hover", "pressed", "focus", "disabled", "selected", "error", "loading"]) assert.match(button, new RegExp(`^- ${state}\\b`, "m"));
   assert.match(button, /^- selected — doesn't apply: /m);
-  assert.match(button, /Sizes:\n- sm — /);
+  assert.match(button, /Sizes:\n- (?:xs|sm) — /);
   assert.match(await call("get_tokens", { group: "color" }), /--ayy-color-bg/);
   const brand = await call("create_brand", { color: "#0ea5e9", name: "sky", shape: "soft" });
   assert.match(brand, /\[data-brand="sky"\]/);

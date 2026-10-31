@@ -13,9 +13,9 @@ States lists the ones a component has besides default; what each looks like, how
 
 ## Button (Actions)
 The control for starting an action, like saving, submitting or opening something. It comes in a few weights, from a strong primary button to quieter ones for secondary actions.
-- Classes: `.ayy-button` `.ayy-button--secondary` `.ayy-button--outline` `.ayy-button--ghost` `.ayy-button--destructive` `.ayy-button--link` `.ayy-button--ring` `.ayy-button--sm` `.ayy-button--lg` `.ayy-button--icon` `.ayy-button--icon-sm` `.ayy-button--icon-lg` `.ayy-button--block` `.ayy-button--start` `.ayy-button--end` `.ayy-button-split` `.ayy-button-split--block`
+- Classes: `.ayy-button` `.ayy-button--secondary` `.ayy-button--outline` `.ayy-button--ghost` `.ayy-button--destructive` `.ayy-button--link` `.ayy-button--ring` `.ayy-button--xs` `.ayy-button--xl` `.ayy-button--sm` `.ayy-button--lg` `.ayy-button--icon` `.ayy-button--icon-sm` `.ayy-button--icon-xs` `.ayy-button--icon-xl` `.ayy-button--icon-lg` `.ayy-button--block` `.ayy-button--start` `.ayy-button--end` `.ayy-button-split` `.ayy-button-split--block`
 - States: hover, pressed, focus, disabled, loading
-- Sizes: `sm` `md` `lg` `icon` `icon-sm` `icon-lg`
+- Sizes: `xs` `sm` `md` `lg` `xl` `icon-xs` `icon` `icon-sm` `icon-lg` `icon-xl`
 - JS: buttonClass({ variant?, size?, block?, align?, className? }) → string; splitButtonClass({ block?, className? }) → string. Loading in HTML: aria-busy="true" plus <span class="ayy-spinner" aria-hidden="true"></span> as the first child.
 - A11y: Icon-only buttons need aria-label and should always have a visible Tooltip on hover/focus. In a SplitButton, give the trailing menu trigger an explicit aria-label naming what it opens ("More deploy options"). Use disabled on <button>; on <a> use aria-disabled="true" (the class handles both). Visible focus ring on :focus-visible is built in — never remove it. While it works, set aria-busy="true" and put an aria-hidden .ayy-spinner first inside (React: loading). Don't disable it: focus would jump away.
 
@@ -45,10 +45,11 @@ A bar that appears at the bottom of the screen once someone selects rows or card
 
 ## Dropdown menu (Actions)
 A list of actions that opens from a button. It supports submenus and works fully from the keyboard.
-- Classes: `.ayy-menu` `.ayy-menu--sub` `.ayy-menu--static` `.ayy-menu__item` `.ayy-menu__row` `.ayy-menu__more` `.ayy-menu__item--destructive` `.ayy-menu__item--selected` `.ayy-menu__item--sub` `.ayy-menu__item--expand` `.ayy-menu__item--described` `.ayy-menu__item-text` `.ayy-menu__description` `.ayy-menu__value` `.ayy-menu__chevron` `.ayy-menu__group--inline` `.ayy-menu__shortcut` `.ayy-menu__label` `.ayy-menu__separator`
+- Classes: `.ayy-menu` `.ayy-menu--sm` `.ayy-menu--lg` `.ayy-menu--sub` `.ayy-menu--static` `.ayy-menu__item` `.ayy-menu__row` `.ayy-menu__more` `.ayy-menu__item--destructive` `.ayy-menu__item--selected` `.ayy-menu__item--sub` `.ayy-menu__item--expand` `.ayy-menu__item--described` `.ayy-menu__item-text` `.ayy-menu__description` `.ayy-menu__value` `.ayy-menu__chevron` `.ayy-menu__group--inline` `.ayy-menu__shortcut` `.ayy-menu__label` `.ayy-menu__separator`
 - States: hover, focus, disabled, selected, open
+- Sizes: `sm` `md` `lg`
 - Element: `<ayy-menu side align open>`, events `ayy-select`, `ayy-open-change`, `ayy-submenu-layout`
-- JS: menuItemClass({ destructive?, sub?, expand?, described?, selected?, className? }); menuClass, menuRowClass, menuMoreClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass, menuItemSelectedClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })
+- JS: menuItemClass({ destructive?, sub?, expand?, described?, selected?, className? }); menuSizeClass(size?) → string | undefined (the --sm / --lg class for a panel; md adds nothing); menuClass, menuRowClass, menuMoreClass, menuLabelClass, menuSeparatorClass, menuShortcutClass, menuValueClass, menuChevronClass, menuDescriptionClass, menuGroupInlineClass, menuItemSelectedClass constants; connectMenu(trigger, content, { side?, align?, at?, boundary?, static?, subSide?, onSelect?, onToggle?, onSubmenuLayout? })
 - A11y: Opening moves focus to the first item; arrows move, Home/End jump, letters jump to matching items. ArrowRight / ArrowLeft open and close submenus (mirrored in RTL); Esc inside a submenu closes only that panel. Esc or Tab closes the menu and focus returns to the trigger. A submenu panel holding more than items (an Icon picker) is role="dialog" and sits outside the menu, which may only hold items: in HTML right after it, named by its row's aria-controls; in React, the DropdownMenuSub wraps the DropdownMenuContent and the DropdownMenuSubContent follows it. Icon-only triggers (⋯) need aria-label. A split row is two menu items: the action and its trailing More button, which arrows reach like any other item. Label the button with its row ("More options for Duplicate project"), not just "More".
 
 ## Command palette (Actions)
@@ -140,10 +141,11 @@ A table of contents for long pages. It lists links to the sections beside the co
 
 ## Tree (Navigation)
 A hierarchical list of folders, files or records: groups that open and close with a chevron, one selected row and arrow-key navigation. Use it to browse a folder or file structure, or as a picker inside a card.
-- Classes: `.ayy-tree` `.ayy-tree__item` `.ayy-tree__row` `.ayy-tree__toggle` `.ayy-tree__icon` `.ayy-tree__label` `.ayy-tree__group` `.ayy-tree--compact`
+- Classes: `.ayy-tree` `.ayy-tree--sm` `.ayy-tree--lg` `.ayy-tree__item` `.ayy-tree__row` `.ayy-tree__toggle` `.ayy-tree__icon` `.ayy-tree__label` `.ayy-tree__group` `.ayy-tree--compact`
 - States: hover, focus, disabled, selected, expanded
+- Sizes: `sm` `md` `lg`
 - Element: `<ayy-tree>`, events `ayy-select`, `ayy-activate`, `ayy-toggle`
-- JS: treeClass({ compact?, className? }) → root classes; treeItemClass, treeRowClass, treeToggleClass, treeIconClass, treeLabelClass, treeGroupClass constants; treeChevronIcon (the ArrowRight01Icon SVG, directional); connectTree(root, { onSelect?, onActivate?, onToggle? }) → { focus(id?), destroy() } — expansion, single selection, roving tabindex and keyboard movement on plain markup.
+- JS: treeClass({ size?, compact?, className? }) → root classes; treeItemClass, treeRowClass, treeToggleClass, treeIconClass, treeLabelClass, treeGroupClass constants; treeChevronIcon (the ArrowRight01Icon SVG, directional); connectTree(root, { onSelect?, onActivate?, onToggle? }) → { focus(id?), destroy() } — expansion, single selection, roving tabindex and keyboard movement on plain markup.
 - A11y: The tree is a <ul role="tree"> with a name (label in React, aria-label in HTML); each node is a <li role="treeitem"> with aria-level, and children sit in a <ul role="group">. aria-expanded is only on parents and aria-selected is on every node, so the state is announced rather than drawn only as a wash. The toggle is decorative (aria-hidden) and the item's aria-label is the node label, never the toggle. One visible item has tabindex="0" and the rest -1 (a roving tab stop). Tab enters the tree on the selected node, then the arrow keys, Home and End move through the visible nodes: Right closes an open group or opens a closed one and steps into its first child, Left closes an open group or moves to the parent. Enter activates a node and Space selects it. Double-click activates too. A composing IME and fields inside a row (a rename input) keep their keys. aria-disabled="true" keeps a node readable and reachable by the keyboard while it refuses selection and activation; colour is backed by opacity and, in High Contrast, GrayText. Long labels wrap inside the row instead of scrolling the tree sideways, and touch density raises the rows to the 44px target.
 
 ## Field (Forms)
@@ -339,9 +341,10 @@ Round colour options for picking one colour, as for a tag, a list or a drawing t
 
 ## Choice card (Forms)
 A large option for picking one or more things that need more explanation than a radio label, like plans, delivery methods or add-ons. The whole card is clickable and works as a normal radio or checkbox.
-- Classes: `.ayy-choice-group` `.ayy-choice-group--scroll` `.ayy-choice-group__legend` `.ayy-choice-card` `.ayy-choice-card--compact` `.ayy-choice-card__title` `.ayy-choice-card__description` `.ayy-choice-card__meta`
+- Classes: `.ayy-choice-group` `.ayy-choice-group--sm` `.ayy-choice-group--lg` `.ayy-choice-group--scroll` `.ayy-choice-card--sm` `.ayy-choice-card--lg` `.ayy-choice-group__legend` `.ayy-choice-card` `.ayy-choice-card--compact` `.ayy-choice-card__title` `.ayy-choice-card__description` `.ayy-choice-card__meta`
 - States: hover, focus, disabled, selected, error
-- JS: choiceCardClass({ compact?, className? }), choiceGroupClass({ scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: choiceCardClass({ size?, compact?, className? }), choiceGroupClass({ size?, scroll?, className? }) → string; choiceGroupLegendClass, choiceCardTitleClass, choiceCardDescriptionClass, choiceCardMetaClass constants.
 - A11y: Each card is a native radio or checkbox labelled by the whole card: Space picks it, arrow keys move between radios, and the title, description and price are its name. Group them in a <fieldset> with a <legend> (ChoiceGroup legend) so the question is announced with each option. Chosen is a thicker border (and a filled card when compact), not colour alone; High Contrast outlines it with the system highlight. A full slot stays in the group as disabled, struck through, so people see what isn't available.
 
 ## Slider (Forms)
@@ -478,10 +481,11 @@ A window that opens over the page and asks for attention, for confirmations, for
 
 ## Popover (Overlays)
 A small floating panel attached to a button, for extra content or controls that don't need a full dialog. It closes when you click outside or press Esc.
-- Classes: `.ayy-popover`
+- Classes: `.ayy-popover` `.ayy-popover--sm` `.ayy-popover--lg`
 - States: open
+- Sizes: `sm` `md` `lg`
 - Element: `<ayy-popover side align open>`, events `ayy-open-change`
-- JS: popoverClass constant; connectPopover(trigger, content, { side?, align?, offset?, crossAxisOffset?, boundary?, onToggle? }) → { open, close, isOpen, update, destroy }
+- JS: popoverClass constant; popoverSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing); connectPopover(trigger, content, { side?, align?, offset?, crossAxisOffset?, boundary?, onToggle? }) → { open, close, isOpen, update, destroy }
 - A11y: Give the content an accessible name (aria-label or aria-labelledby pointing at its heading). The trigger gets aria-expanded automatically; Esc and click-outside close it and focus returns to the trigger. It's not a focus trap — use Dialog when the user must finish something first.
 
 ## Tooltip (Overlays)
@@ -540,9 +544,10 @@ A placeholder shaped like the content that's loading, so the page doesn't jump w
 
 ## Empty state (Feedback)
 What a list, table or page shows when it has nothing to display yet, or nothing matches a search. It explains why it's empty and offers the action that fills it.
-- Classes: `.ayy-empty-state` `.ayy-empty-state--bordered` `.ayy-empty-state--compact` `.ayy-empty-state__title` `.ayy-empty-state__description` `.ayy-empty-state__actions`
+- Classes: `.ayy-empty-state` `.ayy-empty-state--bordered` `.ayy-empty-state--sm` `.ayy-empty-state--lg` `.ayy-empty-state--compact` `.ayy-empty-state__title` `.ayy-empty-state__description` `.ayy-empty-state__actions`
 - States: none, it's static
-- JS: emptyStateClass({ bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: emptyStateClass({ size?, bordered?, compact?, className? }) → string; emptyStateTitleClass, emptyStateDescriptionClass, emptyStateActionsClass constants.
 - A11y: The title is a real heading at the level that fits the page (h2 under the page's h1, h3 inside a card). The icon tile is decorative: the title carries the meaning. When results change because of a search or filter, put the empty state inside a role="status" region (or announce the count) so screen reader users hear that nothing matched.
 
 ## Badge (Data display)
@@ -617,9 +622,10 @@ Rows of people, records or settings, each with an image or icon, a title, a desc
 
 ## Property list (Data display)
 A record's attributes as a definition list: a muted term (an icon and a label) and its value, side by side, wrapping under each other when the value doesn't fit.
-- Classes: `.ayy-property-list` `.ayy-property-list--compact` `.ayy-property-list__row` `.ayy-property-list__term` `.ayy-property-list__label` `.ayy-property-list__icon` `.ayy-property-list__value` `.ayy-property-list__empty`
+- Classes: `.ayy-property-list` `.ayy-property-list--sm` `.ayy-property-list--lg` `.ayy-property-list--compact` `.ayy-property-list__row` `.ayy-property-list__term` `.ayy-property-list__label` `.ayy-property-list__icon` `.ayy-property-list__value` `.ayy-property-list__empty`
 - States: empty
-- JS: propertyListClass({ compact?, className? }) → string; propertyListRowClass, propertyListTermClass, propertyListLabelClass, propertyListIconClass, propertyListValueClass, propertyListEmptyClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: propertyListClass({ size?, compact?, className? }) → string; propertyListRowClass, propertyListTermClass, propertyListLabelClass, propertyListIconClass, propertyListValueClass, propertyListEmptyClass constants.
 - A11y: It's a real <dl>: screen readers announce a definition list and pair each term with its value. Each row is a <div> inside the <dl> (valid HTML) with exactly one <dt> and one <dd>, so the rows can wrap and flex. Icons in the term are decorative; the label names the row. An empty value says "Not set" in text, not a dash or a blank cell. A value edited in place keeps the nested InlineEdit's own label ("Change the version"); the term names the attribute, the control names the action.
 
 ## Swipe actions (Data display)
@@ -653,9 +659,10 @@ The layout of a conversation, with other people's messages on one side and the r
 
 ## Code block (Data display)
 A container for showing code, with a header, a file name, a copy button and optional line numbers. It styles syntax highlighting without tying you to a particular highlighter.
-- Classes: `.ayy-code-block` `.ayy-code-block--numbered` `.ayy-code-block__header` `.ayy-code-block__filename` `.ayy-code-block__actions` `.ayy-code-block__selector` `.ayy-code-block__chevron` `.ayy-code-block__menu` `.ayy-code-block__copy` `.ayy-code-block__pre` `.ayy-code-block__code` `.ayy-code-block__line` `.ayy-token-keyword` `.ayy-token-string` `.ayy-token-comment` `.ayy-token-function` `.ayy-token-number` `.ayy-token-operator` `.ayy-token-tag` `.ayy-token-attribute` `.ayy-token-property` `.ayy-token-punctuation` `.ayy-token-boolean`
+- Classes: `.ayy-code-block` `.ayy-code-block--sm` `.ayy-code-block--lg` `.ayy-code-block--numbered` `.ayy-code-block__header` `.ayy-code-block__filename` `.ayy-code-block__actions` `.ayy-code-block__selector` `.ayy-code-block__chevron` `.ayy-code-block__menu` `.ayy-code-block__copy` `.ayy-code-block__pre` `.ayy-code-block__code` `.ayy-code-block__line` `.ayy-token-keyword` `.ayy-token-string` `.ayy-token-comment` `.ayy-token-function` `.ayy-token-number` `.ayy-token-operator` `.ayy-token-tag` `.ayy-token-attribute` `.ayy-token-property` `.ayy-token-punctuation` `.ayy-token-boolean`
 - States: hover, pressed, focus, copied
-- JS: codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass({ className? }); codeBlockFilenameClass({ className? }); codeBlockActionsClass({ className? }); codeBlockSelectorClass({ className? }); codeBlockChevronClass({ className? }); codeBlockMenuClass({ className? }); codeBlockCopyClass({ className? }); codeBlockPreClass({ className? }); codeBlockCodeClass({ className? }); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) switches a code block to the chosen language: its label, and the code (and file name) from the block's own <template data-language="…" data-filename="…"> for that language, else the code stays; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).
+- Sizes: `sm` `md` `lg`
+- JS: codeBlockClass({ size?, numbered?, className? }) → string; codeBlockHeaderClass({ className? }); codeBlockFilenameClass({ className? }); codeBlockActionsClass({ className? }); codeBlockSelectorClass({ className? }); codeBlockChevronClass({ className? }); codeBlockMenuClass({ className? }); codeBlockCopyClass({ className? }); codeBlockPreClass({ className? }); codeBlockCodeClass({ className? }); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) switches a code block to the chosen language: its label, and the code (and file name) from the block's own <template data-language="…" data-filename="…"> for that language, else the code stays; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).
 - A11y: Pre element is scrollable via keyboard by adding tabindex="0". Copy button has an accessible label (aria-label) and announces state changes. Line numbers use CSS counters with user-select: none to avoid being copied into the clipboard. Syntax token classes maintain WCAG AA 4.5:1 contrast against the surface background in light and dark themes.
 
 ## Table (Data display)

@@ -5,6 +5,8 @@ Category: Feedback. What a list, table or page shows when it has nothing to disp
 **Classes**
 - `.ayy-empty-state` — Root. Centred column with generous block padding.
 - `.ayy-empty-state--bordered` — A dashed outline around the empty area (a board column, a drop target).
+- `.ayy-empty-state--sm` — Small: the compact spacing, a md title and an xs description. Inside a card, a table body or a side panel.
+- `.ayy-empty-state--lg` — Large: 64px block padding, a 2xl title and a md description. A whole page that is empty.
 - `.ayy-empty-state--compact` — Less padding: inside a card, a table body or a side panel.
 - `.ayy-empty-state__title` — What's empty, as a heading ("No projects yet").
 - `.ayy-empty-state__description` — One sentence: why it's empty, or what will appear here.
@@ -21,11 +23,14 @@ Category: Feedback. What a list, table or page shows when it has nothing to disp
 - `loading` — doesn't apply: While loading show Skeletons, never an empty state.
 
 **Sizes**
+- `sm` — The compact spacing (24px block, 16px inline padding), --ayy-text-md title, --ayy-text-xs description. Same spacing as compact, with smaller text.
+- `md` (default) — 48px block and 24px inline padding, --ayy-text-lg title, --ayy-text-sm description.
+- `lg` — 64px block and 32px inline padding, --ayy-text-2xl title, --ayy-text-md description up to 52ch.
 - Density — Doesn't follow data-density.
 - Width — Fills its container. compact has less padding (in a card, table cell or sidebar); bordered adds a dashed card outline for an area that will hold content.
 
 **React** — `import { EmptyState, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from "@danitesler/ayywi/react";`
-- `<EmptyState>` renders <div class="ayy-empty-state">. Props: `bordered` boolean — dashed outline.; `compact` boolean — less padding.
+- `<EmptyState>` renders <div class="ayy-empty-state">. Props: `size` "sm" | "md" | "lg"; `bordered` boolean — dashed outline.; `compact` boolean — less padding.
 - `<EmptyStateTitle>` renders <h2 class="ayy-empty-state__title">.
 - `<EmptyStateDescription>` renders <p class="ayy-empty-state__description">.
 - `<EmptyStateActions>` renders <div class="ayy-empty-state__actions">.
@@ -126,6 +131,66 @@ export default function Example() {
         </EmptyStateActions>
       </EmptyState>
     </Card>
+  );
+}
+```
+
+## Empty state — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 40rem)">
+  <div class="ayy-empty-state ayy-empty-state--sm ayy-empty-state--bordered">
+    <h2 class="ayy-empty-state__title">No comments yet</h2>
+    <p class="ayy-empty-state__description">Comments from your team show up here.</p>
+  </div>
+  <div class="ayy-empty-state ayy-empty-state--bordered">
+    <h2 class="ayy-empty-state__title">No comments yet</h2>
+    <p class="ayy-empty-state__description">Comments from your team show up here.</p>
+  </div>
+  <div class="ayy-empty-state ayy-empty-state--lg ayy-empty-state--bordered">
+    <span class="ayy-icon-tile ayy-icon-tile--lg" aria-hidden="true"><svg class="ayy-icon" data-ayy-icon="folder" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></span>
+    <h2 class="ayy-empty-state__title">No projects yet</h2>
+    <p class="ayy-empty-state__description">Projects hold your pages, forms and the people working on them. Start one from scratch or from a template.</p>
+    <div class="ayy-empty-state__actions">
+      <button type="button" class="ayy-button ayy-button--lg"><svg class="ayy-icon" data-ayy-icon="add" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.001 5.00003V19.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M19.002 12.002L4.99998 12.002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>New project</button>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Add01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
+import { Button, EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateTitle, Icon, IconTile } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 40rem)" }}>
+      <EmptyState size="sm" bordered>
+        <EmptyStateTitle>No comments yet</EmptyStateTitle>
+        <EmptyStateDescription>Comments from your team show up here.</EmptyStateDescription>
+      </EmptyState>
+      <EmptyState bordered>
+        <EmptyStateTitle>No comments yet</EmptyStateTitle>
+        <EmptyStateDescription>Comments from your team show up here.</EmptyStateDescription>
+      </EmptyState>
+      <EmptyState size="lg" bordered>
+        <IconTile size="lg">
+          <Icon icon={Folder01Icon} name="folder" />
+        </IconTile>
+        <EmptyStateTitle>No projects yet</EmptyStateTitle>
+        <EmptyStateDescription>Projects hold your pages, forms and the people working on them. Start one from scratch or from a template.</EmptyStateDescription>
+        <EmptyStateActions>
+          <Button size="lg">
+            <Icon icon={Add01Icon} name="add" />
+            New project
+          </Button>
+        </EmptyStateActions>
+      </EmptyState>
+    </div>
   );
 }
 ```

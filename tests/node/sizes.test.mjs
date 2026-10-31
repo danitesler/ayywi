@@ -18,6 +18,8 @@ const SIZED = [
   ["paginationRootSizeClass", "ayy-pagination"],
   ["accordionSizeClass", "ayy-accordion"],
   ["sliderSizeClass", "ayy-slider"],
+  ["menuSizeClass", "ayy-menu"],
+  ["popoverSizeClass", "ayy-popover"],
 ];
 
 const CLASS_OPTIONS = [
@@ -29,6 +31,11 @@ const CLASS_OPTIONS = [
   ["alertClass", "ayy-alert"],
   ["cardClass", "ayy-card"],
   ["searchBarClass", "ayy-search-bar"],
+  ["treeClass", "ayy-tree"],
+  ["emptyStateClass", "ayy-empty-state"],
+  ["propertyListClass", "ayy-property-list"],
+  ["choiceCardClass", "ayy-choice-card"],
+  ["codeBlockClass", "ayy-code-block"],
 ];
 
 test("size helpers add --sm and --lg, and nothing for md", { skip }, async () => {
@@ -46,7 +53,11 @@ test("size helpers add --sm and --lg, and nothing for md", { skip }, async () =>
     assert.doesNotMatch(lib[name]({ size: "md" }), /--(sm|md|lg)\b/, name);
   }
   assert.equal(lib.radioGroupClass({ size: "lg", orientation: "horizontal" }), "ayy-radio-group ayy-radio-group--horizontal ayy-radio-group--lg");
+  assert.equal(lib.choiceGroupClass({ size: "lg" }), "ayy-choice-group ayy-choice-group--lg");
   assert.deepEqual(lib.avatarSizes, ["xs", "sm", "md", "lg", "xl", "2xl"]);
+  assert.deepEqual(lib.buttonSizes.filter((x) => /^(xs|xl|icon-xs|icon-xl)$/.test(x)).sort(), ["icon-xl", "icon-xs", "xl", "xs"]);
+  assert.equal(lib.buttonClass({ size: "xs" }), "ayy-button ayy-button--xs");
+  assert.equal(lib.buttonClass({ size: "icon-xl" }), "ayy-button ayy-button--icon-xl");
   for (const name of ["segmentedControlSizes", "numberFieldSizes", "fabSizes"]) assert.ok(lib[name].includes("lg"), name);
   assert.ok(lib.searchBarSizes.includes("sm"));
 });
@@ -63,9 +74,12 @@ test("every size class a helper can return is defined in the built CSS", { skip 
     lib.radioGroupClass({ size: "sm" }),
     lib.radioGroupClass({ size: "lg" }),
     ...["segmentedControlClass", "numberFieldClass", "fabClass"].map((name) => lib[name]({ size: "lg" })),
+    lib.choiceGroupClass({ size: "sm" }),
+    lib.choiceGroupClass({ size: "lg" }),
+    ...["xs", "xl", "icon-xs", "icon-xl"].map((size) => lib.buttonClass({ size })),
     ...lib.avatarSizes.map((s) => lib.avatarClass({ size: s })),
   ];
-  for (const cls of emitted.flatMap((s) => s.split(" ")).filter((c) => /--(xs|sm|lg|2xl)$/.test(c))) {
+  for (const cls of emitted.flatMap((s) => s.split(" ")).filter((c) => /--(xs|sm|lg|xl|2xl|icon-xs|icon-xl)$/.test(c))) {
     assert.ok(defined(cls), `.${cls} is returned by a helper but the CSS doesn't define it`);
   }
 });
@@ -89,6 +103,23 @@ test("React components pass size through to the markup", { skip }, async () => {
   assert.match(html(createElement(ui.Slider, { size: "sm" })), /ayy-slider--sm/);
   assert.match(html(createElement(ui.ChipRemovable, { size: "sm", onRemove() {} }, "Mira")), /ayy-chip--sm/);
   assert.match(html(createElement(ui.Kbd, { size: "lg" }, "K")), /ayy-kbd--lg/);
+  assert.match(html(createElement(ui.Tree, { size: "lg", label: "Folders", nodes: [{ id: "a", label: "A" }] })), /ayy-tree--lg/);
+  assert.match(html(createElement(ui.EmptyState, { size: "sm" })), /ayy-empty-state--sm/);
+  assert.match(html(createElement(ui.PropertyList, { size: "lg" })), /ayy-property-list--lg/);
+  assert.match(html(createElement(ui.ChoiceGroup, { size: "sm" })), /ayy-choice-group--sm/);
+  assert.match(html(createElement(ui.ChoiceCard, { size: "lg", title: "Pro", type: "radio" })), /ayy-choice-card--lg/);
+  assert.match(html(createElement(ui.CodeBlock, { size: "sm" })), /ayy-code-block--sm/);
+  assert.match(html(createElement(ui.Popover, null, createElement(ui.PopoverContent, { size: "lg" }))), /ayy-popover--lg/);
+  // Menu: the size set on DropdownMenu reaches its panel; a panel's own size wins.
+  const menu = (root, panel) => html(createElement(ui.DropdownMenu, { size: root }, createElement(ui.DropdownMenuContent, { static: true, size: panel })));
+  assert.match(menu("lg"), /ayy-menu ayy-menu--lg/);
+  assert.match(menu("lg", "sm"), /ayy-menu--sm/);
+  assert.doesNotMatch(menu(undefined), /ayy-menu--(sm|lg)/);
+  // Icon-only buttons of the new sizes still get the automatic tooltip, like the older ones.
+  for (const size of ["icon-xs", "icon-sm", "icon", "icon-lg", "icon-xl"]) {
+    assert.match(html(createElement(ui.Button, { size, "aria-label": "Add" })), /ayy-tooltip/, `${size} gets a tooltip`);
+  }
+  assert.doesNotMatch(html(createElement(ui.Button, { size: "xl" }, "Go")), /ayy-tooltip/);
   // The native `size` attribute (width in characters) must not leak onto inputs that now take a visual size.
   assert.doesNotMatch(html(createElement(ui.Checkbox, { size: "lg" })), / size="/);
   assert.doesNotMatch(html(createElement(ui.Slider, { size: "lg" })), / size="/);

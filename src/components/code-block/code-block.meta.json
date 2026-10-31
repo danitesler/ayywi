@@ -6,6 +6,8 @@
   "aka": ["code-block", "codeblock", "syntax-highlighter", "code-snippet", "code-view", "code-box"],
   "classes": {
     "ayy-code-block": "Bordered container for code with rounded corners and surface background.",
+    "ayy-code-block--sm": "Small code: 12px padding and --ayy-text-xs. The header keeps its size.",
+    "ayy-code-block--lg": "Large code: 20px padding and --ayy-text-md. The header keeps its size.",
     "ayy-code-block--numbered": "Adds line numbers using CSS counters.",
     "ayy-code-block__header": "Top toolbar with filename and copy button.",
     "ayy-code-block__filename": "File title, path, or language indicator.",
@@ -30,6 +32,7 @@
     "ayy-token-boolean": "Syntax token for boolean literals and nullish values."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" , "component": "CodeBlock" },
     "numbered": { "values": [false, true], "default": false, "component": "CodeBlock" }
   },
   "states": {
@@ -44,16 +47,22 @@
     "copied": { "when": ".ayy-code-block__copy[data-copied=\"true\"]", "looks": "Copy button turns success colour and displays checkmark feedback icon and \"Copied!\" tooltip." }
   },
   "sizes": {
+    "scale": {
+      "sm": "12px padding and --ayy-text-xs (13px) code.",
+      "md": "16px padding and --ayy-text-sm (14px) code.",
+      "lg": "20px padding and --ayy-text-md (16px) code."
+    },
     "density": "Padding and copy button follow data-density.",
     "width": "Fills its container width; code pre scrolls horizontally when lines overflow."
   },
-  "js": "codeBlockClass({ numbered?, className? }) → string; codeBlockHeaderClass({ className? }); codeBlockFilenameClass({ className? }); codeBlockActionsClass({ className? }); codeBlockSelectorClass({ className? }); codeBlockChevronClass({ className? }); codeBlockMenuClass({ className? }); codeBlockCopyClass({ className? }); codeBlockPreClass({ className? }); codeBlockCodeClass({ className? }); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) switches a code block to the chosen language: its label, and the code (and file name) from the block's own <template data-language=\"…\" data-filename=\"…\"> for that language, else the code stays; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
+  "js": "codeBlockClass({ size?, numbered?, className? }) → string; codeBlockHeaderClass({ className? }); codeBlockFilenameClass({ className? }); codeBlockActionsClass({ className? }); codeBlockSelectorClass({ className? }); codeBlockChevronClass({ className? }); codeBlockMenuClass({ className? }); codeBlockCopyClass({ className? }); codeBlockPreClass({ className? }); codeBlockCodeClass({ className? }); highlightCode(code, language?) → string; tokenizeCode(code, language?) → CodeToken[]; copyCodeBlock(button, { code?, timeout?, label?, copiedLabel? }) copies the code and shows the copied state; syncCodeBlockSelector(selectOrLang, codeBlock?) switches a code block to the chosen language: its label, and the code (and file name) from the block's own <template data-language=\"…\" data-filename=\"…\"> for that language, else the code stays; SUPPORTED_LANGUAGES, LANGUAGE_SNIPPETS; codeBlockCopyIcon, codeBlockCheckIcon (SVG markup).",
   "react": {
     "import": "import { CodeBlock, CodeBlockHeader, CodeBlockFilename, CodeBlockActions, CodeBlockSelector, CodeBlockCopy, CodeBlockPre, CodeBlockCode } from \"@danitesler/ayywi/react\";",
     "components": {
       "CodeBlock": {
         "renders": "<div class=\"ayy-code-block\">",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — padding and text size of the code",
           "numbered": "boolean — display line numbers with CSS counters"
         }
       },
@@ -124,6 +133,7 @@
   "examples": [
     { "id": "basic", "title": "Code block with filename and copy" },
     { "id": "numbered", "title": "Numbered lines" },
-    { "id": "selector", "title": "Language selector" }
+    { "id": "selector", "title": "Language selector" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }

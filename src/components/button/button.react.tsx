@@ -45,9 +45,11 @@ export const Button = /* @__PURE__ */ forwardRef<HTMLButtonElement, ButtonProps>
   const hasParentTooltip = useContext(tooltipContext);
   const isIconOnly =
     size === "icon" ||
+    size === "icon-xs" ||
     size === "icon-sm" ||
     size === "icon-lg" ||
-    (Boolean(className) && /\bayy-button--icon(?:-sm|-lg)?\b/.test(className!));
+    size === "icon-xl" ||
+    (Boolean(className) && /\bayy-button--icon(?:-xs|-sm|-lg|-xl)?\b/.test(className!));
 
   const ariaLabel = props["aria-label"];
   const defaultLabel = ariaLabel ? generalActionLabel(ariaLabel) : props.title;

@@ -49,22 +49,37 @@ density tokens so `data-density` still works.
 | Search bar | `sm` added | |
 | FAB | `lg` added | MUI has small/medium/large |
 | Avatar | `xs` and `2xl` added | Radix, Chakra, Mantine all go wider than `sm`–`xl` |
+| Choice card | Radix + Chakra cards | The corner radio or checkbox steps with the new check tokens; `ChoiceGroup size` sets every card. Time-slot (`compact`) cards keep their own spacing |
+| Property list, Empty state, Tree | 3, 2, 2 | Each already had a `compact` option; `sm` shares its rules and adds smaller text (Tree's `sm` is its `compact`), `lg` is new |
+| Menu | Radix, Chakra, Carbon | `DropdownMenu size` reaches every panel, flyouts included; a panel can override it |
+| Button | Radix 4 steps, Chakra and Mantine 5 | `xs`, `xl`, `icon-xs`, `icon-xl`. The app shell's row styling and the icon-only tooltip and lint rules all key off size names, so they were updated too |
+| Popover, Code block | Radix/Chakra/Mantine, Chakra | Padding and text; Popover also its widest width |
 
 Left alone on purpose: **Table** already has `--compact` and `--spacious`.
 
-## Not done yet, in order of how much I'd want them
+## Left out on purpose
 
-1. **Menu.** Radix and Chakra size it. It has sub-menus, rows and a React context to thread through, so it needs
-   its own pass.
-2. **Choice card.** Radix `CheckboxCards`/`RadioCards` (1–3) and Chakra's cards. Its indicator already reads
-   `--ayy-size-check`, so the new tokens are half the work.
-3. **Property list, Empty state, Tree.** Radix/Chakra/Mantine `DataList`, Chakra/Mantine `EmptyState`, Chakra
-   `TreeView`.
-4. **Stat `lg`**, **Button `xs`/`xl`** (Chakra `2xs`–`2xl`, Mantine `xs`–`xl`), **Popover** (Radix 1–4), **Code block**.
-5. **A scope-wide size.** Ant Design's `componentSize` sizes everything under one provider. ayywi's `data-density`
-   does this for height; a `data-size` that sets the step for every control in a toolbar or a form would close the
-   gap with `size="sm"` on each control. It needs every component to read a shared variable, so it is a design
-   decision, not a quick follow-up.
+- **Stat `lg`.** Its default is already a 48px number and there is no larger type token, so an `lg` would be a
+  made-up literal. A bigger number is the `.ayy-display` / `.ayy-h1` job.
+- **Table.** Already has `--compact` and `--spacious`.
+- **Choice card `compact` (time slots).** A different shape with its own metrics; `size` changes only its text.
+
+## Not done yet
+
+1. **A scope-wide size.** Ant Design's `componentSize` sizes everything under one provider. ayywi's `data-density` is
+   scoped the same way but changes what each step means, not which step controls use. Because density works by
+   redefining tokens, a `data-size="sm"` could remap `--ayy-size-control-md` to the `sm` value for a subtree and shrink
+   every component that defaults to `md` without editing them. Untested; components that size themselves from other
+   tokens (chip, pagination) wouldn't follow without more work. This is a design decision, not a follow-up.
+2. **Sizes for the rest.** Timeline, Skeleton, Dropzone, Color picker and Mentions are sized by one or two of the five
+   systems; none has enough evidence yet.
+
+## A hazard to keep in mind
+
+Custom properties inherit, and popovers (menus, popovers, date pickers) sit inside whatever DOM element renders them. A
+private variable such as `--_h` or `--_icon` set by an ancestor leaks into them. The sizes in this work use
+component-specific names (`--_menu-h`, `--_card-pad`, `--_choice-pad`…) for that reason, and the menu resets its
+values on every panel so a flyout inside a large menu doesn't inherit large. New sizes should do the same.
 
 ## Docs issue found on the way
 

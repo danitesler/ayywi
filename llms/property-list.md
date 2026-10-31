@@ -4,6 +4,8 @@ Category: Data display. A record's attributes as a definition list: a muted term
 
 **Classes**
 - `.ayy-property-list` — Root <dl>. Rows stack with no gap; the rows own the padding.
+- `.ayy-property-list--sm` — Small: the compact rows (6px block padding, a 7rem term basis) with text a pixel smaller.
+- `.ayy-property-list--lg` — Large: 16px block padding, text a pixel larger, a 9rem term basis and 20px icons.
 - `.ayy-property-list--compact` — Tight rows: 6px block padding instead of 12px and a 7rem term basis instead of 8rem.
 - `.ayy-property-list__row` — The <div> that holds one <dt> and one <dd>: a wrapping flex row with the term at an 8rem basis and the value taking the rest.
 - `.ayy-property-list__term` — The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. The term never grows; the value takes the remaining width.
@@ -24,11 +26,14 @@ Category: Data display. A record's attributes as a definition list: a muted term
 - `empty` (`PropertyRow empty (emptyText, default "Not set")`) — The __empty span takes --ayy-color-muted instead of a blank value; forced colours draw it as GrayText.
 
 **Sizes**
+- `sm` — 6px block padding, a 7rem term, --ayy-text-s minus 1px text (12px compact, 13 touch).
+- `md` (default) — 12px block padding, an 8rem term, --ayy-text-s text (13px compact, 14 touch).
+- `lg` — 16px block padding, a 9rem term, --ayy-text-s plus 1px text (14px compact, 15 touch), 20px icons.
 - Density — Row text follows data-density through --ayy-text-s (13px compact and comfortable, 14px touch). compact swaps the 12px block padding for 6px.
 - Width — Fills its container. The term takes an 8rem basis (7rem compact) and the value 10rem; when they don't fit together the value wraps under its term. Long unbroken values wrap inside the value.
 
 **React** — `import { PropertyList, PropertyRow } from "@danitesler/ayywi/react";`
-- `<PropertyList>` renders <dl class="ayy-property-list">. Props: `compact` boolean — tight rows with a shorter term column, for a dense summary.
+- `<PropertyList>` renders <dl class="ayy-property-list">. Props: `size` "sm" | "md" | "lg" — row padding, text and term column; `compact` boolean — tight rows with a shorter term column, for a dense summary.
 - `<PropertyRow>` renders <div class="ayy-property-list__row"> <dt class="ayy-property-list__term"> (icon and label) <dd class="ayy-property-list__value">. Props: `label` ReactNode (required) — the term's text.; `icon` ReactNode — an Icon before the label (give it className="ayy-property-list__icon").; `empty` boolean — there is no value: show emptyText muted instead of children.; `emptyText` ReactNode — what an empty value reads. Default "Not set".
 
 **Accessibility**
@@ -251,6 +256,88 @@ export default function Example() {
           sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
         </PropertyRow>
       </PropertyList>
+    </div>
+  );
+}
+```
+
+## Property list — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 32rem)">
+  <dl class="ayy-property-list ayy-property-list--sm">
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="badge-check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.9905 19H19M18.9905 19C18.3678 19.6175 17.2393 19.4637 16.4479 19.4637C15.4765 19.4637 15.0087 19.6537 14.3154 20.347C13.7251 20.9374 12.9337 22 12 22C11.0663 22 10.2749 20.9374 9.68457 20.347C8.99128 19.6537 8.52349 19.4637 7.55206 19.4637C6.76068 19.4637 5.63218 19.6175 5.00949 19C4.38181 18.3776 4.53628 17.2444 4.53628 16.4479C4.53628 15.4414 4.31616 14.9786 3.59938 14.2618C2.53314 13.1956 2.00002 12.6624 2 12C2.00001 11.3375 2.53312 10.8044 3.59935 9.73817C4.2392 9.09832 4.53628 8.46428 4.53628 7.55206C4.53628 6.76065 4.38249 5.63214 5 5.00944C5.62243 4.38178 6.7556 4.53626 7.55208 4.53626C8.46427 4.53626 9.09832 4.2392 9.73815 3.59937C10.8044 2.53312 11.3375 2 12 2C12.6625 2 13.1956 2.53312 14.2618 3.59937C14.9015 4.23907 15.5355 4.53626 16.4479 4.53626C17.2393 4.53626 18.3679 4.38247 18.9906 5C19.6182 5.62243 19.4637 6.75559 19.4637 7.55206C19.4637 8.55858 19.6839 9.02137 20.4006 9.73817C21.4669 10.8044 22 11.3375 22 12C22 12.6624 21.4669 13.1956 20.4006 14.2618C19.6838 14.9786 19.4637 15.4414 19.4637 16.4479C19.4637 17.2444 19.6182 18.3776 18.9905 19Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12.8929C9 12.8929 10.2 13.5447 10.8 14.5C10.8 14.5 12.6 10.75 15 9.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-property-list__label">Status</span></dt>
+      <dd class="ayy-property-list__value"><span class="ayy-badge ayy-badge--success">Live</span></dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="user" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg><span class="ayy-property-list__label">Owner</span></dt>
+      <dd class="ayy-property-list__value">Maya Chen</dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-property-list__label">Due date</span></dt>
+      <dd class="ayy-property-list__value">24 Nov 2026</dd>
+    </div>
+  </dl>
+  <dl class="ayy-property-list">
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="badge-check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.9905 19H19M18.9905 19C18.3678 19.6175 17.2393 19.4637 16.4479 19.4637C15.4765 19.4637 15.0087 19.6537 14.3154 20.347C13.7251 20.9374 12.9337 22 12 22C11.0663 22 10.2749 20.9374 9.68457 20.347C8.99128 19.6537 8.52349 19.4637 7.55206 19.4637C6.76068 19.4637 5.63218 19.6175 5.00949 19C4.38181 18.3776 4.53628 17.2444 4.53628 16.4479C4.53628 15.4414 4.31616 14.9786 3.59938 14.2618C2.53314 13.1956 2.00002 12.6624 2 12C2.00001 11.3375 2.53312 10.8044 3.59935 9.73817C4.2392 9.09832 4.53628 8.46428 4.53628 7.55206C4.53628 6.76065 4.38249 5.63214 5 5.00944C5.62243 4.38178 6.7556 4.53626 7.55208 4.53626C8.46427 4.53626 9.09832 4.2392 9.73815 3.59937C10.8044 2.53312 11.3375 2 12 2C12.6625 2 13.1956 2.53312 14.2618 3.59937C14.9015 4.23907 15.5355 4.53626 16.4479 4.53626C17.2393 4.53626 18.3679 4.38247 18.9906 5C19.6182 5.62243 19.4637 6.75559 19.4637 7.55206C19.4637 8.55858 19.6839 9.02137 20.4006 9.73817C21.4669 10.8044 22 11.3375 22 12C22 12.6624 21.4669 13.1956 20.4006 14.2618C19.6838 14.9786 19.4637 15.4414 19.4637 16.4479C19.4637 17.2444 19.6182 18.3776 18.9905 19Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12.8929C9 12.8929 10.2 13.5447 10.8 14.5C10.8 14.5 12.6 10.75 15 9.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-property-list__label">Status</span></dt>
+      <dd class="ayy-property-list__value"><span class="ayy-badge ayy-badge--success">Live</span></dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="user" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg><span class="ayy-property-list__label">Owner</span></dt>
+      <dd class="ayy-property-list__value">Maya Chen</dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-property-list__label">Due date</span></dt>
+      <dd class="ayy-property-list__value">24 Nov 2026</dd>
+    </div>
+  </dl>
+  <dl class="ayy-property-list ayy-property-list--lg">
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="badge-check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.9905 19H19M18.9905 19C18.3678 19.6175 17.2393 19.4637 16.4479 19.4637C15.4765 19.4637 15.0087 19.6537 14.3154 20.347C13.7251 20.9374 12.9337 22 12 22C11.0663 22 10.2749 20.9374 9.68457 20.347C8.99128 19.6537 8.52349 19.4637 7.55206 19.4637C6.76068 19.4637 5.63218 19.6175 5.00949 19C4.38181 18.3776 4.53628 17.2444 4.53628 16.4479C4.53628 15.4414 4.31616 14.9786 3.59938 14.2618C2.53314 13.1956 2.00002 12.6624 2 12C2.00001 11.3375 2.53312 10.8044 3.59935 9.73817C4.2392 9.09832 4.53628 8.46428 4.53628 7.55206C4.53628 6.76065 4.38249 5.63214 5 5.00944C5.62243 4.38178 6.7556 4.53626 7.55208 4.53626C8.46427 4.53626 9.09832 4.2392 9.73815 3.59937C10.8044 2.53312 11.3375 2 12 2C12.6625 2 13.1956 2.53312 14.2618 3.59937C14.9015 4.23907 15.5355 4.53626 16.4479 4.53626C17.2393 4.53626 18.3679 4.38247 18.9906 5C19.6182 5.62243 19.4637 6.75559 19.4637 7.55206C19.4637 8.55858 19.6839 9.02137 20.4006 9.73817C21.4669 10.8044 22 11.3375 22 12C22 12.6624 21.4669 13.1956 20.4006 14.2618C19.6838 14.9786 19.4637 15.4414 19.4637 16.4479C19.4637 17.2444 19.6182 18.3776 18.9905 19Z" stroke="currentColor" stroke-width="1.5"></path><path d="M9 12.8929C9 12.8929 10.2 13.5447 10.8 14.5C10.8 14.5 12.6 10.75 15 9.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-property-list__label">Status</span></dt>
+      <dd class="ayy-property-list__value"><span class="ayy-badge ayy-badge--success">Live</span></dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="user" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="12" cy="6.99988" r="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle></svg><span class="ayy-property-list__label">Owner</span></dt>
+      <dd class="ayy-property-list__value">Maya Chen</dd>
+    </div>
+    <div class="ayy-property-list__row">
+      <dt class="ayy-property-list__term"><svg class="ayy-icon ayy-property-list__icon" data-ayy-icon="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 2V6M8 2V6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M3 10H21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.1258 14H12.0008M12.1258 18H12.0008M7.625 14H7.5M7.625 18H7.5M16.625 14H16.5M12.2508 14C12.2508 14.1381 12.1389 14.25 12.0008 14.25C11.8628 14.25 11.7508 14.1381 11.7508 14C11.7508 13.8619 11.8628 13.75 12.0008 13.75C12.1389 13.75 12.2508 13.8619 12.2508 14ZM12.2508 18C12.2508 18.1381 12.1389 18.25 12.0008 18.25C11.8628 18.25 11.7508 18.1381 11.7508 18C11.7508 17.8619 11.8628 17.75 12.0008 17.75C12.1389 17.75 12.2508 17.8619 12.2508 18ZM7.75 14C7.75 14.1381 7.63807 14.25 7.5 14.25C7.36193 14.25 7.25 14.1381 7.25 14C7.25 13.8619 7.36193 13.75 7.5 13.75C7.63807 13.75 7.75 13.8619 7.75 14ZM7.75 18C7.75 18.1381 7.63807 18.25 7.5 18.25C7.36193 18.25 7.25 18.1381 7.25 18C7.25 17.8619 7.36193 17.75 7.5 17.75C7.63807 17.75 7.75 17.8619 7.75 18ZM16.75 14C16.75 14.1381 16.6381 14.25 16.5 14.25C16.3619 14.25 16.25 14.1381 16.25 14C16.25 13.8619 16.3619 13.75 16.5 13.75C16.6381 13.75 16.75 13.8619 16.75 14Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg><span class="ayy-property-list__label">Due date</span></dt>
+      <dd class="ayy-property-list__value">24 Nov 2026</dd>
+    </div>
+  </dl>
+</div>
+```
+
+React:
+
+```tsx
+import { Calendar03Icon, CheckmarkBadge01Icon, UserIcon } from "@hugeicons/core-free-icons";
+import { Badge, Icon, PropertyList, PropertyRow } from "@danitesler/ayywi/react";
+
+const rows = (
+  <>
+    <PropertyRow label="Status" icon={<Icon icon={CheckmarkBadge01Icon} name="badge-check" className="ayy-property-list__icon" />}>
+      <Badge variant="success">Live</Badge>
+    </PropertyRow>
+    <PropertyRow label="Owner" icon={<Icon icon={UserIcon} name="user" className="ayy-property-list__icon" />}>
+      Maya Chen
+    </PropertyRow>
+    <PropertyRow label="Due date" icon={<Icon icon={Calendar03Icon} name="calendar" className="ayy-property-list__icon" />}>
+      24 Nov 2026
+    </PropertyRow>
+  </>
+);
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 32rem)" }}>
+      <PropertyList size="sm">{rows}</PropertyList>
+      <PropertyList>{rows}</PropertyList>
+      <PropertyList size="lg">{rows}</PropertyList>
     </div>
   );
 }

@@ -21,6 +21,7 @@ import {
   choiceCardTitleClass,
   choiceGroupClass,
   choiceGroupLegendClass,
+  type ChoiceCardSize,
 } from "./choice-card";
 
 interface ChoiceContextValue {
@@ -44,6 +45,8 @@ export interface ChoiceGroupProps extends Omit<HTMLAttributes<HTMLFieldSetElemen
   onValueChange?: (value: string) => void;
   /** Narrowest card before the grid drops a column (default 12rem, 6rem for compact cards). */
   min?: string;
+  /** Size of every card in the group: padding, text and the corner radio or checkbox. A card with its own size keeps it. */
+  size?: ChoiceCardSize;
   /** One row that scrolls sideways instead of wrapping (a day strip). */
   scroll?: boolean;
   disabled?: boolean;
@@ -51,7 +54,7 @@ export interface ChoiceGroupProps extends Omit<HTMLAttributes<HTMLFieldSetElemen
 
 /** A <fieldset> grid of choice cards; role="radiogroup" for radio cards. */
 export const ChoiceGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, ChoiceGroupProps>(function ChoiceGroup(
-  { legend, type = "radio", name, value: controlled, defaultValue, onValueChange, min, scroll, disabled, className, style, children, ...props },
+  { legend, type = "radio", name, value: controlled, defaultValue, onValueChange, min, size, scroll, disabled, className, style, children, ...props },
   ref,
 ) {
   const generated = useId();
@@ -66,7 +69,7 @@ export const ChoiceGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, Choic
       ref={ref}
       role={type === "radio" ? "radiogroup" : undefined}
       disabled={disabled}
-      className={choiceGroupClass({ scroll, className })}
+      className={choiceGroupClass({ size, scroll, className })}
       style={min ? ({ "--ayy-min": min, ...style } as CSSProperties) : style}
       {...props}
     >
@@ -86,6 +89,8 @@ export interface ChoiceCardProps extends Omit<LabelHTMLAttributes<HTMLLabelEleme
   meta?: ReactNode;
   /** An Icon or Icon tile above the title. */
   icon?: ReactNode;
+  /** Padding, text and the corner radio or checkbox. Overrides the size of the ChoiceGroup. */
+  size?: ChoiceCardSize;
   /** A time slot or a size: centred, input hidden, filled when chosen. */
   compact?: boolean;
   /** Outside a ChoiceGroup: "checkbox" (default) for several choices, "radio" with your own name and checked. */
@@ -100,7 +105,7 @@ export interface ChoiceCardProps extends Omit<LabelHTMLAttributes<HTMLLabelEleme
 
 /** A card-sized radio or checkbox: the whole card is the label. */
 export const ChoiceCard = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChoiceCardProps>(function ChoiceCard(
-  { value, title, description, meta, icon, compact, type, checked, defaultChecked, onCheckedChange, disabled, inputProps, className, ...props },
+  { value, title, description, meta, icon, size, compact, type, checked, defaultChecked, onCheckedChange, disabled, inputProps, className, ...props },
   ref,
 ) {
   const group = useContext(ChoiceContext);
@@ -112,7 +117,7 @@ export const ChoiceCard = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChoiceCar
     if (isRadioGroup && event.currentTarget.checked && value !== undefined) group.select(value);
   };
   return (
-    <label ref={ref} className={choiceCardClass({ compact, className })} {...props}>
+    <label ref={ref} className={choiceCardClass({ size, compact, className })} {...props}>
       <input
         {...inputProps}
         type={kind}

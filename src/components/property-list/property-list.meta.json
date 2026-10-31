@@ -6,6 +6,8 @@
   "aka": ["property-list", "description-list", "key-value", "details-list", "metadata-list"],
   "classes": {
     "ayy-property-list": "Root <dl>. Rows stack with no gap; the rows own the padding.",
+    "ayy-property-list--sm": "Small: the compact rows (6px block padding, a 7rem term basis) with text a pixel smaller.",
+    "ayy-property-list--lg": "Large: 16px block padding, text a pixel larger, a 9rem term basis and 20px icons.",
     "ayy-property-list--compact": "Tight rows: 6px block padding instead of 12px and a 7rem term basis instead of 8rem.",
     "ayy-property-list__row": "The <div> that holds one <dt> and one <dd>: a wrapping flex row with the term at an 8rem basis and the value taking the rest.",
     "ayy-property-list__term": "The <dt>: a decorative icon and the label, at an 8rem basis and in --ayy-color-muted. The term never grows; the value takes the remaining width.",
@@ -15,6 +17,7 @@
     "ayy-property-list__empty": "What an empty value reads (\"Not set\"): muted, in place of the value."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" , "component": "PropertyList" },
     "compact": { "values": [false, true], "default": false, "component": "PropertyList" }
   },
   "states": {
@@ -29,16 +32,22 @@
     "empty": { "when": "PropertyRow empty (emptyText, default \"Not set\")", "looks": "The __empty span takes --ayy-color-muted instead of a blank value; forced colours draw it as GrayText." }
   },
   "sizes": {
+    "scale": {
+      "sm": "6px block padding, a 7rem term, --ayy-text-s minus 1px text (12px compact, 13 touch).",
+      "md": "12px block padding, an 8rem term, --ayy-text-s text (13px compact, 14 touch).",
+      "lg": "16px block padding, a 9rem term, --ayy-text-s plus 1px text (14px compact, 15 touch), 20px icons."
+    },
     "density": "Row text follows data-density through --ayy-text-s (13px compact and comfortable, 14px touch). compact swaps the 12px block padding for 6px.",
     "width": "Fills its container. The term takes an 8rem basis (7rem compact) and the value 10rem; when they don't fit together the value wraps under its term. Long unbroken values wrap inside the value."
   },
-  "js": "propertyListClass({ compact?, className? }) → string; propertyListRowClass, propertyListTermClass, propertyListLabelClass, propertyListIconClass, propertyListValueClass, propertyListEmptyClass constants.",
+  "js": "propertyListClass({ size?, compact?, className? }) → string; propertyListRowClass, propertyListTermClass, propertyListLabelClass, propertyListIconClass, propertyListValueClass, propertyListEmptyClass constants.",
   "react": {
     "import": "import { PropertyList, PropertyRow } from \"@danitesler/ayywi/react\";",
     "components": {
       "PropertyList": {
         "renders": "<dl class=\"ayy-property-list\">",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — row padding, text and term column",
           "compact": "boolean — tight rows with a shorter term column, for a dense summary."
         }
       },
@@ -72,5 +81,5 @@
     "Don't use it for values people compare across columns — use Table.",
     "Don't hand-build the rows: the <dt>/<dd> pairing is what screen readers announce."
   ],
-  "examples": [{ "id": "record", "title": "Record" }, { "id": "compact", "title": "Compact" }]
+  "examples": [{ "id": "record", "title": "Record" }, { "id": "compact", "title": "Compact" }, { "id": "sizes", "title": "Sizes" }]
 }

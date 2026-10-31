@@ -4,6 +4,8 @@ Category: Data display. A container for showing code, with a header, a file name
 
 **Classes**
 - `.ayy-code-block` — Bordered container for code with rounded corners and surface background.
+- `.ayy-code-block--sm` — Small code: 12px padding and --ayy-text-xs. The header keeps its size.
+- `.ayy-code-block--lg` — Large code: 20px padding and --ayy-text-md. The header keeps its size.
 - `.ayy-code-block--numbered` — Adds line numbers using CSS counters.
 - `.ayy-code-block__header` — Top toolbar with filename and copy button.
 - `.ayy-code-block__filename` — File title, path, or language indicator.
@@ -39,11 +41,14 @@ Category: Data display. A container for showing code, with a header, a file name
 - `copied` (`.ayy-code-block__copy[data-copied="true"]`) — Copy button turns success colour and displays checkmark feedback icon and "Copied!" tooltip.
 
 **Sizes**
+- `sm` — 12px padding and --ayy-text-xs (13px) code.
+- `md` (default) — 16px padding and --ayy-text-sm (14px) code.
+- `lg` — 20px padding and --ayy-text-md (16px) code.
 - Density — Padding and copy button follow data-density.
 - Width — Fills its container width; code pre scrolls horizontally when lines overflow.
 
 **React** — `import { CodeBlock, CodeBlockHeader, CodeBlockFilename, CodeBlockActions, CodeBlockSelector, CodeBlockCopy, CodeBlockPre, CodeBlockCode } from "@danitesler/ayywi/react";`
-- `<CodeBlock>` renders <div class="ayy-code-block">. Props: `numbered` boolean — display line numbers with CSS counters
+- `<CodeBlock>` renders <div class="ayy-code-block">. Props: `size` "sm" | "md" | "lg" — padding and text size of the code; `numbered` boolean — display line numbers with CSS counters
 - `<CodeBlockHeader>` renders <div class="ayy-code-block__header">. Props: 
 - `<CodeBlockFilename>` renders <span class="ayy-code-block__filename">. Props: 
 - `<CodeBlockActions>` renders <div class="ayy-code-block__actions">. Props: 
@@ -449,6 +454,54 @@ export default function Example() {
         <CodeBlockCode language={lang} code={code} />
       </CodeBlockPre>
     </CodeBlock>
+  );
+}
+```
+
+## Code block — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: 100%; max-inline-size: 36rem">
+  <div class="ayy-code-block ayy-code-block--sm ayy-code-block--numbered">
+    <pre class="ayy-code-block__pre" tabindex="0"><code class="ayy-code-block__code"><span class="ayy-code-block__line"><span class="ayy-token-keyword">const</span> theme = <span class="ayy-token-function">getTheme</span>();</span><span class="ayy-code-block__line"><span class="ayy-token-function">setDensity</span>(<span class="ayy-token-string">&quot;touch&quot;</span>);</span><span class="ayy-code-block__line"><span class="ayy-token-comment">// Controls grow a step</span></span></code></pre>
+  </div>
+  <div class="ayy-code-block ayy-code-block--numbered">
+    <pre class="ayy-code-block__pre" tabindex="0"><code class="ayy-code-block__code"><span class="ayy-code-block__line"><span class="ayy-token-keyword">const</span> theme = <span class="ayy-token-function">getTheme</span>();</span><span class="ayy-code-block__line"><span class="ayy-token-function">setDensity</span>(<span class="ayy-token-string">&quot;touch&quot;</span>);</span><span class="ayy-code-block__line"><span class="ayy-token-comment">// Controls grow a step</span></span></code></pre>
+  </div>
+  <div class="ayy-code-block ayy-code-block--lg ayy-code-block--numbered">
+    <pre class="ayy-code-block__pre" tabindex="0"><code class="ayy-code-block__code"><span class="ayy-code-block__line"><span class="ayy-token-keyword">const</span> theme = <span class="ayy-token-function">getTheme</span>();</span><span class="ayy-code-block__line"><span class="ayy-token-function">setDensity</span>(<span class="ayy-token-string">&quot;touch&quot;</span>);</span><span class="ayy-code-block__line"><span class="ayy-token-comment">// Controls grow a step</span></span></code></pre>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { CodeBlock, CodeBlockCode, CodeBlockPre } from "@danitesler/ayywi/react";
+
+const lines = (
+  <CodeBlockCode>
+    <span className="ayy-code-block__line"><span className="ayy-token-keyword">const</span> theme = <span className="ayy-token-function">getTheme</span>();</span>
+    <span className="ayy-code-block__line"><span className="ayy-token-function">setDensity</span>(<span className="ayy-token-string">"touch"</span>);</span>
+    <span className="ayy-code-block__line"><span className="ayy-token-comment">// Controls grow a step</span></span>
+  </CodeBlockCode>
+);
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "100%", maxInlineSize: "36rem" }}>
+      <CodeBlock size="sm" numbered>
+        <CodeBlockPre tabIndex={0}>{lines}</CodeBlockPre>
+      </CodeBlock>
+      <CodeBlock numbered>
+        <CodeBlockPre tabIndex={0}>{lines}</CodeBlockPre>
+      </CodeBlock>
+      <CodeBlock size="lg" numbered>
+        <CodeBlockPre tabIndex={0}>{lines}</CodeBlockPre>
+      </CodeBlock>
+    </div>
   );
 }
 ```

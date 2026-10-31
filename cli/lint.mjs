@@ -680,7 +680,7 @@ function lintMarkup(text, contract, coUse = new Map()) {
   // Icon-only buttons need an accessible name
   for (const m of text.matchAll(/<(button|a|Button)(?=[\s/>])/g)) {
     const openTag = text.slice(m.index, tagEnd(text, m.index));
-    const icon = /ayy-button--icon(?:-sm)?\b/.test(openTag) || /\bsize=(?:"|\{\s*["'])icon(?:-sm)?["']/.test(openTag);
+    const icon = /ayy-button--icon(?:-xs|-sm|-lg|-xl)?\b/.test(openTag) || /\bsize=(?:"|\{\s*["'])icon(?:-xs|-sm|-lg|-xl)?["']/.test(openTag);
     if (icon && !/\baria-label(?:ledby)?\s*=/.test(openTag) && !/\{\s*\.\.\./.test(openTag))
       push("icon-button-label", "icon-only button needs aria-label (or aria-labelledby)", m.index);
   }

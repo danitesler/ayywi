@@ -4,6 +4,8 @@ Category: Overlays. A small floating panel attached to a button, for extra conte
 
 **Classes**
 - `.ayy-popover` — On the element with the popover attribute. Surface, padding, shadow, fade/scale transition.
+- `.ayy-popover--sm` — Small: 12px padding, --ayy-text-xs, at most 18rem wide.
+- `.ayy-popover--lg` — Large: 20px padding, --ayy-text-md, at most 28rem wide.
 
 **States**
 - `default` — Closed: hidden. Open: raised surface, line-strong border, control radius, overlay shadow, sm text.
@@ -17,8 +19,11 @@ Category: Overlays. A small floating panel attached to a button, for extra conte
 - `open` (`:popover-open`) — Fades in and scales up from 97% next to its trigger (React Popover, <ayy-popover>); light-dismisses on Esc or a click outside.
 
 **Sizes**
-- Density — Padding is fixed; its controls follow data-density.
-- Width — As wide as its content, at most 22rem (or the viewport minus 1rem).
+- `sm` — 12px padding, --ayy-text-xs, at most 18rem wide.
+- `md` (default) — 16px padding, --ayy-text-sm, at most 22rem wide.
+- `lg` — 20px padding, --ayy-text-md, at most 28rem wide.
+- Density — Padding and text are fixed; its controls follow data-density.
+- Width — As wide as its content, up to the maximum of its size (or the viewport minus 1rem).
 
 **Custom element** `<ayy-popover>` (@danitesler/ayywi/elements) — A trigger <button> (optionally data-ayy-trigger) and an element with the popover attribute.
 - attribute `side`: bottom | top | start | end
@@ -29,7 +34,7 @@ Category: Overlays. A small floating panel attached to a button, for extra conte
 **React** — `import { Popover, PopoverTrigger, PopoverContent } from "@danitesler/ayywi/react";`
 - `<Popover>` renders nothing (state provider). Props: `open / defaultOpen` boolean; `onOpenChange` (open: boolean) => void
 - `<PopoverTrigger>` renders Button. Props: `asChild` boolean — clone child element and merge trigger props; `...ButtonProps` variant, size…
-- `<PopoverContent>` renders <div popover role="dialog">. Props: `side` "bottom" | "top" | "start" | "end"; `align` "center" | "start" | "end"
+- `<PopoverContent>` renders <div popover role="dialog">. Props: `size` "sm" | "md" | "lg"; `side` "bottom" | "top" | "start" | "end"; `align` "center" | "start" | "end"
 
 **Accessibility**
 - Give the content an accessible name (aria-label or aria-labelledby pointing at its heading).
@@ -89,6 +94,81 @@ export default function Example() {
         </div>
       </PopoverContent>
     </Popover>
+  );
+}
+```
+
+## Popover — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<!-- popovertarget opens it natively (even without JS, centred). <ayy-popover> (@danitesler/ayywi/elements) places it next to the trigger. -->
+<div class="ayy-cluster">
+  <ayy-popover align="start">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--sm" popovertarget="sizes-popover-small-html" aria-haspopup="dialog">Small</button>
+    <div class="ayy-popover ayy-popover--sm" id="sizes-popover-small-html" popover role="dialog" aria-labelledby="sizes-title-small-html">
+      <p id="sizes-title-small-html" class="ayy-h6">Autosave is on</p>
+      <p class="ayy-muted">Changes are saved as you type.</p>
+    </div>
+  </ayy-popover>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-button ayy-button--outline" popovertarget="sizes-popover-medium-html" aria-haspopup="dialog">Medium</button>
+    <div class="ayy-popover" id="sizes-popover-medium-html" popover role="dialog" aria-labelledby="sizes-title-medium-html">
+      <p id="sizes-title-medium-html" class="ayy-h6">Autosave is on</p>
+      <p class="ayy-muted">Changes are saved as you type.</p>
+    </div>
+  </ayy-popover>
+  <ayy-popover align="start">
+    <button type="button" class="ayy-button ayy-button--outline ayy-button--lg" popovertarget="sizes-popover-large-html" aria-haspopup="dialog">Large</button>
+    <div class="ayy-popover ayy-popover--lg" id="sizes-popover-large-html" popover role="dialog" aria-labelledby="sizes-title-large-html">
+      <p id="sizes-title-large-html" class="ayy-h6">Autosave is on</p>
+      <p class="ayy-muted">Changes are saved as you type.</p>
+    </div>
+  </ayy-popover>
+</div>
+```
+
+React:
+
+```tsx
+import { Popover, PopoverContent, PopoverTrigger } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-cluster">
+      <Popover>
+        <PopoverTrigger variant="outline" size="sm">
+          Small
+        </PopoverTrigger>
+        <PopoverContent size="sm" align="start" aria-labelledby="popover-sm-title">
+          <p id="popover-sm-title" className="ayy-h6">
+            Autosave is on
+          </p>
+          <p className="ayy-muted">Changes are saved as you type.</p>
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger variant="outline">Medium</PopoverTrigger>
+        <PopoverContent align="start" aria-labelledby="popover-md-title">
+          <p id="popover-md-title" className="ayy-h6">
+            Autosave is on
+          </p>
+          <p className="ayy-muted">Changes are saved as you type.</p>
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger variant="outline" size="lg">
+          Large
+        </PopoverTrigger>
+        <PopoverContent size="lg" align="start" aria-labelledby="popover-lg-title">
+          <p id="popover-lg-title" className="ayy-h6">
+            Autosave is on
+          </p>
+          <p className="ayy-muted">Changes are saved as you type.</p>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
 ```

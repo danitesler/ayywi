@@ -6,6 +6,8 @@
   "aka": ["tree", "tree-view", "file-tree", "folder-tree", "treeitem"],
   "classes": {
     "ayy-tree": "Root <ul role=\"tree\">. Its aria-label names it (\"Folders\"). <ayy-tree> wraps it with display: contents.",
+    "ayy-tree--sm": "Small: the same as --compact (28px rows, sm text, a 16px indent), spelled like every other size.",
+    "ayy-tree--lg": "Large: 36px rows, lg text, a 24px indent and toggle.",
     "ayy-tree__item": "One <li role=\"treeitem\">. Carries aria-level, aria-selected on every node, aria-expanded only on parents, and a roving tabindex: exactly one visible item is 0, the rest -1. aria-disabled=\"true\" makes it unselectable.",
     "ayy-tree__row": "The clickable row inside the item: toggle, optional icon and label. Hover and selected washes sit here, and so does the focus ring.",
     "ayy-tree__toggle": "The decorative <span aria-hidden=\"true\"> holding the chevron. Clicking it opens or closes the group without selecting the row; the treeitem's aria-expanded carries the state.",
@@ -15,6 +17,7 @@
     "ayy-tree--compact": "Tighter rows at the sm control height, small control text, a 16px indent and a 16px toggle."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "compact": { "values": [true, false], "default": false }
   },
   "states": {
@@ -29,10 +32,15 @@
     "expanded": { "when": "aria-expanded=\"true\" on a parent treeitem", "looks": "Its group is not hidden and the chevron turns down: rotate(90deg) in LTR, the mirror in RTL (--_ayy-dir). The treeitem's aria-expanded, not the decorative toggle, carries the state." }
   },
   "sizes": {
+    "scale": {
+      "sm": "The sm control height (28px compact, 32 comfortable, 40 touch), sm control text, 16px indent and toggle. Same as compact.",
+      "md": "The md control height (32px compact, 40 comfortable, 44 touch), md control text, 20px indent and toggle.",
+      "lg": "The lg control height (36px compact, 44 comfortable, 48 touch), lg control text, 24px indent and toggle."
+    },
     "density": "Rows are at least the md control height (32px compact, 40px comfortable, 44px touch) with --ayy-control-text-md; --compact uses the sm height (28, 32, 40) and --ayy-control-text-sm. The toggle is 20px (16px compact), so touch density keeps a comfortable target.",
     "width": "Fills its container. Child groups indent by --ayy-space-5 (--ayy-space-4 compact) using padding-inline-start, so they indent from the right in RTL. Labels take the leftover width and wrap anywhere."
   },
-  "js": "treeClass({ compact?, className? }) → root classes; treeItemClass, treeRowClass, treeToggleClass, treeIconClass, treeLabelClass, treeGroupClass constants; treeChevronIcon (the ArrowRight01Icon SVG, directional); connectTree(root, { onSelect?, onActivate?, onToggle? }) → { focus(id?), destroy() } — expansion, single selection, roving tabindex and keyboard movement on plain markup.",
+  "js": "treeClass({ size?, compact?, className? }) → root classes; treeItemClass, treeRowClass, treeToggleClass, treeIconClass, treeLabelClass, treeGroupClass constants; treeChevronIcon (the ArrowRight01Icon SVG, directional); connectTree(root, { onSelect?, onActivate?, onToggle? }) → { focus(id?), destroy() } — expansion, single selection, roving tabindex and keyboard movement on plain markup.",
   "element": {
     "tag": "ayy-tree",
     "children": "Wraps the <ul role=\"tree\"> and makes it work: the toggle opens and closes a group, a row selects, double-click or Enter activates, and the arrow keys, Home and End move the roving tab stop. focus(id) moves to a node from code.",
@@ -49,6 +57,7 @@
       "Tree": {
         "renders": "<ul class=\"ayy-tree\" role=\"tree\" aria-label> with a <li class=\"ayy-tree__item\" role=\"treeitem\"> per node, a __row inside it, and a nested <ul class=\"ayy-tree__group\" role=\"group\" hidden> for children",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — row height, indent and text; sm is the same as compact",
           "label": "string — accessible name of the tree (\"Folders\")",
           "nodes": "TreeNode[] — { id: string; label: string; icon?: ReactNode; children?: TreeNode[]; disabled?: boolean }, nested in display order",
           "expandedIds / defaultExpandedIds": "string[] — open group ids; expandedIds makes it controlled, defaultExpandedIds sets the starting ones",
@@ -82,6 +91,7 @@
   ],
   "examples": [
     { "id": "folders", "title": "Project files" },
-    { "id": "picker", "title": "Choose a folder" }
+    { "id": "picker", "title": "Choose a folder" },
+    { "id": "sizes", "title": "Sizes" }
   ]
 }
