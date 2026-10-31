@@ -30,8 +30,6 @@ import {
   TabsTrigger,
 } from "@danitesler/ayywi/react";
 import { Add01Icon, FilterIcon } from "@hugeicons/core-free-icons";
-import { CodeBlock } from "../CodeBlock";
-import { buildPrompt } from "../prompts";
 
 export const densityPage = {
   route: "density",
@@ -41,23 +39,6 @@ export const densityPage = {
 };
 
 type SizeScope = "md" | "sm" | "lg";
-
-const SCOPE_CODE = `<!-- Every control that doesn't name a size uses the small step -->
-<div class="ayy-cluster" data-size="sm">
-  <input class="ayy-input" placeholder="Filter services…" aria-label="Filter services" />
-  <button class="ayy-button ayy-button--outline">Filters</button>
-  <button class="ayy-button">Add service</button>
-  <!-- An explicit size keeps its own -->
-  <button class="ayy-button ayy-button--lg">Publish</button>
-</div>
-
-<!-- data-size="md" puts the default back inside a scope -->
-<div data-size="sm">
-  …
-  <div data-size="md"><button class="ayy-button">Back to the default</button></div>
-</div>`;
-
-const SCOPE_REQUEST = `In this app, make the toolbar above the table and the settings side panel compact. Put data-size="sm" on each container, so every button, input, select, switch, checkbox, tab and chip inside it uses the small step, instead of adding size="sm" to each control. Leave the one primary action at its own size, and don't add a size to controls that should stay as they are. If part of a compact container needs the default back, use data-size="md" on it.`;
 
 export interface DensityPageProps {
   density: DensityMode;
@@ -358,23 +339,6 @@ export function DensityPage({ density, setDensity }: DensityPageProps) {
           <Pagination page={2} count={8} href={(page) => `#/docs/density?page=${page}`} aria-label="Services pages" />
         </CardContent>
       </Card>
-
-      <p className="pv-note">
-        Buttons, inputs, selects, switches, checkboxes, radios, tabs, pagination, chips, step markers and menu rows follow it. A few controls keep their own size: a textarea (it is multi-line), a slider, a floating action button, and rows that are large by default (the App shell's links, Settings rows). Give those a size where you want one.
-      </p>
-
-      <Tabs defaultValue="prompt">
-        <TabsList aria-label="Use a size scope">
-          <TabsTrigger value="prompt">AI prompt</TabsTrigger>
-          <TabsTrigger value="code">Code</TabsTrigger>
-        </TabsList>
-        <TabsContent value="prompt">
-          <CodeBlock code={buildPrompt(SCOPE_REQUEST)} label="prompt" copyLabel="Copy prompt" wrap />
-        </TabsContent>
-        <TabsContent value="code">
-          <CodeBlock code={SCOPE_CODE} label="html" language="html" wrap />
-        </TabsContent>
-      </Tabs>
 
       {/* Sizes table */}
       <h2 className="pv-h pv-h--section">Sizes</h2>
