@@ -59,14 +59,17 @@ import {
   type TableColumnActionDetail,
   type TablePin,
   type TableResizeDetail,
+  type TableSize,
 } from "./table";
 
 export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
   /** Return false to handle a column menu action in React state. */
   onColumnAction?: (detail: TableColumnActionDetail) => boolean | void;
-  /** Tighter rows. */
+  /** Row height and cell padding: sm tighter rows, lg roomier rows and columns. */
+  size?: TableSize;
+  /** @deprecated Use size="sm". */
   compact?: boolean;
-  /** Roomier rows and columns. */
+  /** @deprecated Use size="lg". */
   spacious?: boolean;
   /** Lines between the columns too. */
   bordered?: boolean;
@@ -90,7 +93,7 @@ export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
 
 /** Wrapped in a horizontally scrollable container so wide tables never break the layout. */
 export const Table = /* @__PURE__ */ forwardRef<HTMLTableElement, TableProps>(function Table(
-  { compact, spacious, bordered, sticky, fixed, reorderable, onColumnResize, onCellEdit, onColumnReorder, onRowReorder, onColumnAction, wrapperProps, className, ...props },
+  { size, compact, spacious, bordered, sticky, fixed, reorderable, onColumnResize, onCellEdit, onColumnReorder, onRowReorder, onColumnAction, wrapperProps, className, ...props },
   ref,
 ) {
   const own = useRef<HTMLTableElement>(null);
@@ -141,7 +144,7 @@ export const Table = /* @__PURE__ */ forwardRef<HTMLTableElement, TableProps>(fu
       <table
         ref={mergeRefs(own, ref)}
         data-reorderable={reorderable ? "" : undefined}
-        className={tableClass({ compact, spacious, bordered, sticky, fixed, reorderable, className })}
+        className={tableClass({ size, compact, spacious, bordered, sticky, fixed, reorderable, className })}
         {...props}
       />
     </div>

@@ -17,14 +17,26 @@ import {
   Select,
   Skeleton,
   Spinner,
+  SegmentedControl,
+  SegmentedControlItem,
   Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@danitesler/ayywi/react";
 import { Add01Icon, CheckmarkCircle02Icon, PauseIcon, PlayIcon } from "@hugeicons/core-free-icons";
+import { CodeBlock } from "../CodeBlock";
+import { components } from "../data";
+import { buildPrompt } from "../prompts";
 import { themeOptions } from "../themes";
+import { SCOPE_CODE, SCOPE_REQUEST } from "./Density";
 import { IconsPage } from "./Icons";
 import { IllustrationPage } from "./Illustration";
 
@@ -233,6 +245,60 @@ const ICON_MARKS = [
   { name: "icon-xl", size: "xl" },
 ] as const;
 
+/** What sm / md / lg resolve to; each cell is compact / comfortable / touch. md is what a scope-less control uses. */
+const SIZE_STEPS = [
+  { label: "Control height", tokens: ["size.control-sm", "size.control-md", "size.control-lg"] },
+  { label: "Dense control height (chips, pagination, step markers)", tokens: ["size.control-xs", "size.control-dense", "size.control-md"] },
+  { label: "Switch height", tokens: ["size.switch-sm", "size.switch", "size.switch-lg"] },
+  { label: "Checkbox & radio", tokens: ["size.check-sm", "size.check", "size.check-lg"] },
+  { label: "Control text", tokens: ["control.text-sm", "control.text-md", "control.text-lg"] },
+  { label: "Control padding", tokens: ["control.pad-sm", "control.pad-md", "control.pad-lg"] },
+] as const;
+
+/**
+ * Components whose default size follows data-size on an ancestor. Keep in step with the data-size entry in
+ * scripts/lib/contract.mjs (ATTRIBUTES); the rest keep their own size inside a scope.
+ */
+const FOLLOWS_SCOPE = new Set([
+  "button", "input", "select", "combobox", "date-time-picker", "number-field", "pin-input", "record-picker", "search-bar",
+  "segmented-control", "tag-input", "switch", "checkbox", "radio", "choice-card", "chip", "pagination", "steps", "tabs",
+  "menu", "toolbar", "filter-bar", "sorting", "rating", "tree",
+]);
+
+const SIZED = components
+  .filter((c) => c.variants.size)
+  .map((c) => ({ slug: c.slug, name: c.name, values: c.variants.size.values.map(String), scoped: FOLLOWS_SCOPE.has(c.slug) }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+type Scope = "sm" | "md" | "lg";
+
+function GroupSizingDemo() {
+  const [scope, setScope] = useState<Scope>("sm");
+  return (
+    <div className="ayy-stack">
+      <SegmentedControl size="sm" aria-label="Group size" value={scope} onValueChange={(next) => setScope(next as Scope)}>
+        <SegmentedControlItem value="sm">data-size="sm"</SegmentedControlItem>
+        <SegmentedControlItem value="md">No scope</SegmentedControlItem>
+        <SegmentedControlItem value="lg">data-size="lg"</SegmentedControlItem>
+      </SegmentedControl>
+      <div className="ayy-cluster" style={{ alignItems: "center" }} data-size={scope === "md" ? undefined : scope}>
+        <Input aria-label="Filter projects" placeholder="Filter projects…" style={{ maxInlineSize: "12rem" }} />
+        <Select aria-label="Status" defaultValue="active">
+          <option value="active">Active</option>
+          <option value="archived">Archived</option>
+        </Select>
+        <Switch aria-label="Show archived" defaultChecked />
+        <Checkbox aria-label="Only mine" defaultChecked />
+        <Button variant="outline">Filters</Button>
+        <Button>
+          <Icon icon={Add01Icon} name="add" />
+          New project
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function SpacingPage() {
   return (
     <article className="pv-page">
@@ -281,6 +347,84 @@ function SpacingPage() {
           </div>
         ))}
       </div>
+
+      <h2 className="pv-h pv-h--section">Size steps</h2>
+      <p className="pv-note">
+        Components that come in sizes use <code>sm</code>, <code>md</code> and <code>lg</code>: a <code>size</code> prop in React, a{" "}
+        <code>--sm</code> or <code>--lg</code> class in HTML. <code>md</code> is the default and adds no class. Each step reads the tokens
+        below, so it still grows with density (compact / comfortable / touch).
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Token</TableHead>
+            <TableHead>sm</TableHead>
+            <TableHead>md</TableHead>
+            <TableHead>lg</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {SIZE_STEPS.map((row) => (
+            <TableRow key={row.label}>
+              <TableCell>
+                <strong>{row.label}</strong>
+              </TableCell>
+              {row.tokens.map((name) => (
+                <TableCell key={name} title={tokens[name].cssVar}>
+                  {densityPx(tokens[name])}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <h2 className="pv-h pv-h--section">Group sizing</h2>
+      <p className="pv-note">
+        To make a whole toolbar, form or panel small or large, put <code>data-size="sm"</code> or <code>"lg"</code> on its container
+        instead of a size on every control. Controls inside that don't name a size take that step; explicit sizes keep theirs, and{" "}
+        <code>data-size="md"</code> puts the default back for part of a scope. See <a href="#/docs/density">Density</a> for how it
+        combines with <code>data-density</code>.
+      </p>
+      <GroupSizingDemo />
+      <Tabs defaultValue="prompt">
+        <TabsList aria-label="Use group sizing">
+          <TabsTrigger value="prompt">AI prompt</TabsTrigger>
+          <TabsTrigger value="code">Code</TabsTrigger>
+        </TabsList>
+        <TabsContent value="prompt">
+          <CodeBlock code={buildPrompt(SCOPE_REQUEST)} label="prompt" copyLabel="Copy prompt" wrap />
+        </TabsContent>
+        <TabsContent value="code">
+          <CodeBlock code={SCOPE_CODE} label="html" language="html" wrap />
+        </TabsContent>
+      </Tabs>
+
+      <h2 className="pv-h pv-h--section">Components with sizes</h2>
+      <p className="pv-note">
+        {SIZED.length} components take a <code>size</code>. Group sizing says whether one with no size of its own follows{" "}
+        <code>data-size</code> on an ancestor, or keeps its own size inside a scope.
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Component</TableHead>
+            <TableHead>Sizes</TableHead>
+            <TableHead>Group sizing</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {SIZED.map((c) => (
+            <TableRow key={c.slug}>
+              <TableCell>
+                <a href={`#/components/${c.slug}`}>{c.name}</a>
+              </TableCell>
+              <TableCell className="ayy-mono">{c.values.join(" · ")}</TableCell>
+              <TableCell>{c.scoped ? <Badge variant="success">Follows</Badge> : <span className="ayy-muted">Own size</span>}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       <h2 className="pv-h pv-h--section">Icons and targets</h2>
       <p className="pv-note">Icons beside text, a switch, a checkbox, and the smallest comfortable target for a finger.</p>
@@ -595,7 +739,7 @@ export interface Foundation {
 export const foundations: Foundation[] = [
   { route: "colors", title: "Colors", groups: ["color", "accent"], keywords: `theme themes dark light soft gray contrast accents ${colorCategories.join(" ")}`, Page: ColorsPage },
   { route: "typography", title: "Typography", groups: ["font", "text"], keywords: "type fonts headings", Page: TypographyPage },
-  { route: "spacing", title: "Spacing & sizing", groups: ["space", "size", "control"], keywords: "layout gap padding sizes scale height controls", Page: SpacingPage },
+  { route: "spacing", title: "Spacing & sizing", groups: ["space", "size", "control"], keywords: "layout gap padding sizes scale height controls sm md lg small medium large data-size group sizing size scope", Page: SpacingPage },
   { route: "elevation", title: "Radius & elevation", groups: ["radius", "shadow"], keywords: "corners depth shadow", Page: ElevationPage },
   { route: "motion", title: "Motion", groups: ["ease", "duration"], keywords: "animation easing transition reduced motion", Page: MotionPage },
   { route: "illustration", title: "Illustration", groups: [], keywords: "illustrations sketches spot illustration hover animation loop beats storytelling empty state onboarding feature cards principles", Page: IllustrationPage },

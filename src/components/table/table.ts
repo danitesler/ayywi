@@ -3,10 +3,14 @@ import { connectDragDrop, dragPreviewChip } from "../drag-drop/drag-drop";
 import { iconPickerClassConstant, type IconPickerChange } from "../icon-picker/icon-picker";
 import { connectInlineEdit, type InlineEditController } from "../inline-edit/inline-edit";
 
+export type TableSize = "sm" | "md" | "lg";
+
 export interface TableClassOptions {
-  /** Tighter rows. */
+  /** Row height and cell padding: sm tighter rows, lg roomier rows and columns. */
+  size?: TableSize;
+  /** @deprecated Use size="sm". */
   compact?: boolean;
-  /** Roomier rows and columns. */
+  /** @deprecated Use size="lg". */
   spacious?: boolean;
   /** Lines between the columns too. */
   bordered?: boolean;
@@ -19,11 +23,12 @@ export interface TableClassOptions {
   className?: string;
 }
 
-export function tableClass({ compact, spacious, bordered, sticky, fixed, reorderable, className }: TableClassOptions = {}): string {
+export function tableClass({ size, compact, spacious, bordered, sticky, fixed, reorderable, className }: TableClassOptions = {}): string {
   return cx(
     "ayy-table",
-    compact && "ayy-table--compact",
-    spacious && "ayy-table--spacious",
+    size && size !== "md" && `ayy-table--${size}`,
+    !size && compact && "ayy-table--compact",
+    !size && spacious && "ayy-table--spacious",
     bordered && "ayy-table--bordered",
     sticky && "ayy-table--sticky",
     fixed && "ayy-table--fixed",

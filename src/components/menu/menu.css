@@ -10,6 +10,10 @@
   box-sizing: border-box;
   min-inline-size: 11rem;
   max-inline-size: min(20rem, calc(100vw - 1rem));
+  /* Never taller than the room beside its trigger (set while placed) or the viewport; a long menu scrolls inside. */
+  max-block-size: var(--_ayy-room-block, calc(100dvh - 1rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--ayy-space-1);
   border: 1px solid var(--ayy-color-line-strong);
   border-radius: var(--ayy-radius-control);

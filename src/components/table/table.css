@@ -94,11 +94,14 @@
   color: var(--ayy-color-text);
 }
 
+/* Sizes step the header height and the cell padding. --compact and --spacious are the old names for --sm and --lg. */
+.ayy-table--sm,
 .ayy-table--compact {
   --_th: 2rem;
   --_pad-block: var(--ayy-space-1-5);
 }
 
+.ayy-table--lg,
 .ayy-table--spacious {
   --_th: 2.75rem;
   --_pad-block: var(--ayy-space-4);
@@ -655,6 +658,8 @@
   margin-block: calc(-1 * var(--ayy-space-1));
 }
 
+.ayy-table--sm .ayy-table__reorder .ayy-drag-handle,
+.ayy-table--sm .ayy-table__expand,
 .ayy-table--compact .ayy-table__reorder .ayy-drag-handle,
 .ayy-table--compact .ayy-table__expand {
   inline-size: 1.25rem;

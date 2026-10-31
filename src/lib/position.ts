@@ -45,6 +45,9 @@ export function place(floating: HTMLElement, anchor: Element, options: PlaceOpti
   floating.style.inset = "auto";
   floating.style.margin = "0";
   floating.style.translate = "none";
+  // Measure at full height; the room on the chosen side is set again below. Uncapping clamps the scroll, so keep it.
+  const scrolled = floating.scrollTop;
+  floating.style.removeProperty("--_ayy-room-block");
 
   const a = anchor.getBoundingClientRect();
   // Layout size, not getBoundingClientRect(): entry animations scale the element while we measure.
@@ -64,17 +67,24 @@ export function place(floating: HTMLElement, anchor: Element, options: PlaceOpti
   const minX = bound.left + padding;
   const maxX = Math.max(minX, bound.right - f.width - padding);
   const minY = bound.top + padding;
-  const maxY = Math.max(minY, bound.bottom - f.height - padding);
+  const maxY0 = bound.bottom - padding;
 
   const space: Record<Physical, number> = {
     top: a.top - minY,
-    bottom: maxY + f.height - a.bottom,
+    bottom: maxY0 - a.bottom,
     left: a.left - minX,
     right: maxX + f.width - a.right,
   };
   let physical = toPhysical(side);
   const needed = physical === "top" || physical === "bottom" ? f.height + offset : f.width + offset;
   if (space[physical] < needed && space[OPPOSITE[physical]] > space[physical]) physical = OPPOSITE[physical];
+
+  // Panels that read --_ayy-room-block (Popover, Menu) cap their height to the room on that side and scroll inside.
+  const room = physical === "top" || physical === "bottom" ? space[physical] - offset : maxY0 - minY;
+  floating.style.setProperty("--_ayy-room-block", `${Math.max(0, Math.floor(room))}px`);
+  f.height = floating.offsetHeight;
+  floating.scrollTop = scrolled;
+  const maxY = Math.max(minY, maxY0 - f.height);
 
   let x: number;
   let y: number;
@@ -106,14 +116,16 @@ export function place(floating: HTMLElement, anchor: Element, options: PlaceOpti
  */
 export function autoPlace(floating: HTMLElement, anchor: Element, options: PlaceOptions = {}): () => void {
   let frame = 0;
-  const update = () => {
+  const update = (event?: Event) => {
+    // Scrolling inside the floating element doesn't move it.
+    if (event?.type === "scroll" && event.target instanceof Node && floating.contains(event.target)) return;
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(() => place(floating, anchor, options));
   };
   place(floating, anchor, options);
   window.addEventListener("scroll", update, { capture: true, passive: true });
   window.addEventListener("resize", update, { passive: true });
-  const sizes = typeof ResizeObserver === "function" ? new ResizeObserver(update) : null;
+  const sizes = typeof ResizeObserver === "function" ? new ResizeObserver(() => update()) : null;
   sizes?.observe(floating);
   sizes?.observe(anchor);
   return () => {

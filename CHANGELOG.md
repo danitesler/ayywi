@@ -18,6 +18,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - **Tokens**: `--ayy-size-control-xs` (one step under small) and `--ayy-size-control-dense` (the height of controls that are small by default: chips, pagination links and step markers), both growing with the density. Button's extra-small size, Chip, Pagination and Steps read them instead of repeating the same arithmetic; nothing looks different without a scope.
   - **Linter**: `data-size` values are checked like `data-theme` and `data-density`.
   - **Preview**: the Density page has a Size scope section with a live demo, an AI prompt and the code.
+  - **Preview**: the Spacing & sizing page lists the sm / md / lg token values, explains group sizing with a live demo and a prompt, and lists every component that takes a size and whether it follows a scope.
 
 - **Sizes**
   - Only buttons, inputs and a few other controls came in small, medium and large → fifteen more components follow the same scale, and five that already had one gained the step they were missing.
@@ -31,6 +32,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   - **[Menu](#/menu)** had one size → `sm`, `md` and `lg` on the `DropdownMenu` (flyouts follow it) or on a single panel; rows, text and icons step together.
   - **[Button](#/button)** ran from `sm` to `lg` → an `xs` and an `xl`, with `icon-xs` and `icon-xl` for icon-only buttons; icon-only buttons of the new sizes get the automatic tooltip like the others.
   - **[Popover](#/popover)** and **[Code block](#/code-block)** had one size → `sm`, `md` and `lg` for the panel's padding, text and widest width, and for the code's padding and text.
+  - **[Table](#/table)** had `compact` and `spacious` options, named unlike every other component and clashing with the app-wide density → `size="sm"`, `"md"` and `"lg"` (`.ayy-table--sm`, `.ayy-table--lg`); `compact` and `spacious` keep working as aliases.
 
 - **Icons page**
   Packs were picked from a dropdown with a code snippet below → a centered tab per pack, a preview limited to five rows of icons, and a copyable AI prompt (with the code as a second tab) for using the pack.
@@ -256,6 +258,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   E2E runs rebuilt and served the shared `preview/dist/`, so another session building in the same checkout deleted files from under a running suite → each run serves its own build of the current sources (reused when one already exists), and builds in one checkout wait for each other instead of overlapping.
 
 ### Fixed
+
+- **[Popover](#/popover)** and **[Menu](#/menu)**
+  A long popover or menu could run past the bottom or top of the window → it stops at the room beside its trigger (or the window's height) and scrolls inside.
 
 - **[Menu](#/menu)**
   A static menu (`ayy-menu--static`, a menu shown in the page without a trigger) was invisible → it shows like any other menu.

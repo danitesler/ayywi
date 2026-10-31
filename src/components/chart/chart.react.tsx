@@ -1186,7 +1186,7 @@ export const TableChart = /* @__PURE__ */ forwardRef<HTMLTableElement, TableChar
   ref,
 ) {
   return (
-    <Table ref={ref} compact={compact} className={className} {...props}>
+    <Table ref={ref} size={compact ? "sm" : undefined} className={className} {...props}>
       {label && <TableCaption>{label}</TableCaption>}
       <TableHeader>
         <TableRow>

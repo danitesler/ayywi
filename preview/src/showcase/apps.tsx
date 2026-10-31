@@ -649,7 +649,7 @@ function DashboardApp() {
               <CardDescription>By views in the selected range.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table compact>
+              <Table size="sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Page</TableHead>

@@ -174,16 +174,16 @@ const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD
 const day = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
 const PAGE_SIZE_OPTIONS = [5, 10, 25];
 
-type Density = "compact" | "default" | "spacious";
+type Size = "sm" | "md" | "lg";
 
 /**
- * One table, every variation: open Props to switch the density, column lines, the frame (toolbar and pager), a sticky
+ * One table, every variation: open Props to switch the size, column lines, the frame (toolbar and pager), a sticky
  * header, pinned columns, resizable columns, inline cell editing, selectable (including drag-to-select across rows),
  * expandable, grouped, linked and disabled rows, truncated text and the loading look. Search for a name that isn't
  * there to see the empty row.
  */
 export default function Example({ setControls }: { setControls?: (node: ReactNode) => void } = {}) {
-  const [density, setDensity] = useState<Density>("default");
+  const [size, setSize] = useState<Size>("md");
   const [frame, setFrame] = useState(true);
   const [bordered, setBordered] = useState(false);
   const [sticky, setSticky] = useState(true);
@@ -233,12 +233,12 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
     setControls(
       <div className="ayy-stack">
         <div className="ayy-spread">
-          <Label htmlFor="tp-density">Density</Label>
+          <Label htmlFor="tp-size">Size</Label>
           <div style={{ inlineSize: "7.5rem" }}>
-            <Select id="tp-density" size="sm" value={density} onChange={(e) => setDensity(e.target.value as Density)}>
-              <option value="compact">Compact</option>
-              <option value="default">Default</option>
-              <option value="spacious">Spacious</option>
+            <Select id="tp-size" size="sm" value={size} onChange={(e) => setSize(e.target.value as Size)}>
+              <option value="sm">Small</option>
+              <option value="md">Medium</option>
+              <option value="lg">Large</option>
             </Select>
           </div>
         </div>
@@ -263,7 +263,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
         {toggle("tp-reveal", "Actions on hover", reveal, setReveal)}
       </div>,
     );
-  }, [setControls, density, frame, bordered, sticky, pinName, pinActions, resizable, reorderable, rowReorder, editable, selectable, expandable, grouped, rowLinks, disabledRows, reveal, truncate, loading]);
+  }, [setControls, size, frame, bordered, sticky, pinName, pinActions, resizable, reorderable, rowReorder, editable, selectable, expandable, grouped, rowLinks, disabledRows, reveal, truncate, loading]);
 
   useEffect(() => () => setControls?.(null), [setControls]);
 
@@ -606,8 +606,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
   const table = (
     <Table
       key={`${resizable}-${reorderable}-${selectable}-${expandable}-${hidden.join()}`}
-      compact={density === "compact"}
-      spacious={density === "spacious"}
+      size={size}
       bordered={bordered}
       sticky={sticky}
       reorderable={reorderable}

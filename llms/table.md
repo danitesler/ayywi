@@ -12,8 +12,10 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - `.ayy-table__pager` — Bar under the table: the range shown and a Pagination.
 - `.ayy-table-wrap` — Scroll container around the table.
 - `.ayy-table` — On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.
-- `.ayy-table--compact` — Tighter rows (2rem headers).
-- `.ayy-table--spacious` — Roomier rows and columns.
+- `.ayy-table--sm` — Small: tighter rows (2rem headers, 6px block padding).
+- `.ayy-table--lg` — Large: roomier rows and columns (2.75rem headers, 16px padding).
+- `.ayy-table--compact` — Deprecated: the old name for --sm.
+- `.ayy-table--spacious` — Deprecated: the old name for --lg.
 - `.ayy-table--bordered` — Lines between the columns too.
 - `.ayy-table--sticky` — Header and footer rows stick while the wrap or container scrolls.
 - `.ayy-table--fixed` — table-layout: fixed.
@@ -60,7 +62,10 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - `row-reordering` (`tr[data-dragging] or tr[data-drop-edge]`) — Dragged row dims to 40%; the neighbour it will land beside gets a 2px primary line on that edge. Forced colours: Highlight border.
 
 **Sizes**
-- Density — Headers 2.25rem, cells padded 12px; compact 2rem headers, tighter rows; spacious 2.75rem, 16px. Text follows data-density.
+- `sm` — 2rem headers, 6px block padding.
+- `md` (default) — 2.25rem headers, cells padded 12px.
+- `lg` — 2.75rem headers, cells padded 16px.
+- Density — Text follows data-density through --ayy-text-s. compact and spacious are deprecated aliases for size sm and lg.
 - Width — Fills its wrap, which scrolls when columns don't fit. After a column resize it stays at least as wide as its wrap, even with no data columns.
 
 **Custom element** `<ayy-table>` (@danitesler/ayywi/elements) — 
@@ -74,7 +79,7 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 - event `ayy-column-action`: { action, column, key, value } before a column action. Cancel to handle it in application state. data-column-action: sort-ascending, sort-descending, duplicate, hide, delete, freeze, wrap, icon (data-column-value), insert-before/insert-after (logical order), insert-left/insert-right (physical direction), add, filter, group, group-by (data-column-value). Filter/group open the toolbar button with data-table-control=filters/groups.
 
 **React** — `import { Table, TableContainer, TableToolbar, TableHeading, TableTitle, TableDescription, TableTools, TablePager, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableEdit, TableResize, TableExpand, TableGroup, TableEmpty, TableRowLink, TableMedia, TableSecondary, TableRowActions, TableCaption } from "@danitesler/ayywi/react";`
-- `<Table>` renders <div class="ayy-table-wrap"><table>. Props: `compact` boolean; `spacious` boolean; `bordered` boolean; `sticky` boolean; `fixed` boolean; `reorderable` boolean; `onColumnResize` ({ column, key, width }) => void; `onCellEdit` ({ row, cell, column, key, value }) => void; `onColumnReorder` ({ from, to, key, targetKey }) => boolean | void; `onRowReorder` ({ from, to, id }) => boolean | void — a row's DragHandle was dropped or moved by key. React doesn't move rows itself: reorder your data and return false.; `onColumnAction` ({ action, column, key, value }) => boolean | void — return false to update application state; `wrapperProps` props for the .ayy-table-wrap (a max-block-size for sticky)
+- `<Table>` renders <div class="ayy-table-wrap"><table>. Props: `size` "sm" | "md" | "lg" — row height and cell padding; `compact` boolean — deprecated, use size="sm"; `spacious` boolean — deprecated, use size="lg"; `bordered` boolean; `sticky` boolean; `fixed` boolean; `reorderable` boolean; `onColumnResize` ({ column, key, width }) => void; `onCellEdit` ({ row, cell, column, key, value }) => void; `onColumnReorder` ({ from, to, key, targetKey }) => boolean | void; `onRowReorder` ({ from, to, id }) => boolean | void — a row's DragHandle was dropped or moved by key. React doesn't move rows itself: reorder your data and return false.; `onColumnAction` ({ action, column, key, value }) => boolean | void — return false to update application state; `wrapperProps` props for the .ayy-table-wrap (a max-block-size for sticky)
 - `<TableContainer>` renders <div class="ayy-table-container">.
 - `<TableToolbar>` renders <div class="ayy-table__toolbar">.
 - `<TableHeading>` renders <div class="ayy-table__heading">.
@@ -446,16 +451,16 @@ const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD
 const day = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
 const PAGE_SIZE_OPTIONS = [5, 10, 25];
 
-type Density = "compact" | "default" | "spacious";
+type Size = "sm" | "md" | "lg";
 
 /**
- * One table, every variation: open Props to switch the density, column lines, the frame (toolbar and pager), a sticky
+ * One table, every variation: open Props to switch the size, column lines, the frame (toolbar and pager), a sticky
  * header, pinned columns, resizable columns, inline cell editing, selectable (including drag-to-select across rows),
  * expandable, grouped, linked and disabled rows, truncated text and the loading look. Search for a name that isn't
  * there to see the empty row.
  */
 export default function Example({ setControls }: { setControls?: (node: ReactNode) => void } = {}) {
-  const [density, setDensity] = useState<Density>("default");
+  const [size, setSize] = useState<Size>("md");
   const [frame, setFrame] = useState(true);
   const [bordered, setBordered] = useState(false);
   const [sticky, setSticky] = useState(true);
@@ -505,12 +510,12 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
     setControls(
       <div className="ayy-stack">
         <div className="ayy-spread">
-          <Label htmlFor="tp-density">Density</Label>
+          <Label htmlFor="tp-size">Size</Label>
           <div style={{ inlineSize: "7.5rem" }}>
-            <Select id="tp-density" size="sm" value={density} onChange={(e) => setDensity(e.target.value as Density)}>
-              <option value="compact">Compact</option>
-              <option value="default">Default</option>
-              <option value="spacious">Spacious</option>
+            <Select id="tp-size" size="sm" value={size} onChange={(e) => setSize(e.target.value as Size)}>
+              <option value="sm">Small</option>
+              <option value="md">Medium</option>
+              <option value="lg">Large</option>
             </Select>
           </div>
         </div>
@@ -535,7 +540,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
         {toggle("tp-reveal", "Actions on hover", reveal, setReveal)}
       </div>,
     );
-  }, [setControls, density, frame, bordered, sticky, pinName, pinActions, resizable, reorderable, rowReorder, editable, selectable, expandable, grouped, rowLinks, disabledRows, reveal, truncate, loading]);
+  }, [setControls, size, frame, bordered, sticky, pinName, pinActions, resizable, reorderable, rowReorder, editable, selectable, expandable, grouped, rowLinks, disabledRows, reveal, truncate, loading]);
 
   useEffect(() => () => setControls?.(null), [setControls]);
 
@@ -878,8 +883,7 @@ export default function Example({ setControls }: { setControls?: (node: ReactNod
   const table = (
     <Table
       key={`${resizable}-${reorderable}-${selectable}-${expandable}-${hidden.join()}`}
-      compact={density === "compact"}
-      spacious={density === "spacious"}
+      size={size}
       bordered={bordered}
       sticky={sticky}
       reorderable={reorderable}

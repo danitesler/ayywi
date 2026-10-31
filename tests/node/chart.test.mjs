@@ -45,7 +45,7 @@ test("TableChart supports compact variant and custom format", { skip }, async ()
     }),
   );
 
-  assert.match(markup, /<table class="ayy-table ayy-table--compact">/);
+  assert.match(markup, /<table class="ayy-table ayy-table--sm">/);
   assert.match(markup, /<td class="ayy-table__num">\$50,000<\/td>/);
 });
 

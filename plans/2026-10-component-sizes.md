@@ -55,7 +55,7 @@ density tokens so `data-density` still works.
 | Button | Radix 4 steps, Chakra and Mantine 5 | `xs`, `xl`, `icon-xs`, `icon-xl`. The app shell's row styling and the icon-only tooltip and lint rules all key off size names, so they were updated too |
 | Popover, Code block | Radix/Chakra/Mantine, Chakra | Padding and text; Popover also its widest width |
 
-Left alone on purpose: **Table** already has `--compact` and `--spacious`.
+**Table** later moved its `--compact` and `--spacious` to `--sm` and `--lg` (the old names stay as aliases).
 
 ## Left out on purpose
 

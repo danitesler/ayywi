@@ -14,8 +14,10 @@
     "ayy-table__pager": "Bar under the table: the range shown and a Pagination.",
     "ayy-table-wrap": "Scroll container around the table.",
     "ayy-table": "On the <table>. Styles thead/tbody/tfoot/tr/th/td/caption inside.",
-    "ayy-table--compact": "Tighter rows (2rem headers).",
-    "ayy-table--spacious": "Roomier rows and columns.",
+    "ayy-table--sm": "Small: tighter rows (2rem headers, 6px block padding).",
+    "ayy-table--lg": "Large: roomier rows and columns (2.75rem headers, 16px padding).",
+    "ayy-table--compact": "Deprecated: the old name for --sm.",
+    "ayy-table--spacious": "Deprecated: the old name for --lg.",
     "ayy-table--bordered": "Lines between the columns too.",
     "ayy-table--sticky": "Header and footer rows stick while the wrap or container scrolls.",
     "ayy-table--fixed": "table-layout: fixed.",
@@ -47,6 +49,7 @@
     "ayy-table__row-actions--reveal": "Shows only on row hover, focus, selection or open menu (always on touch)."
   },
   "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "Table" },
     "compact": { "values": [true, false], "default": false, "component": "Table" },
     "spacious": { "values": [true, false], "default": false, "component": "Table" },
     "bordered": { "values": [true, false], "default": false, "component": "Table" },
@@ -79,10 +82,15 @@
     "row-reordering": { "when": "tr[data-dragging] or tr[data-drop-edge]", "looks": "Dragged row dims to 40%; the neighbour it will land beside gets a 2px primary line on that edge. Forced colours: Highlight border." }
   },
   "sizes": {
-    "density": "Headers 2.25rem, cells padded 12px; compact 2rem headers, tighter rows; spacious 2.75rem, 16px. Text follows data-density.",
+    "scale": {
+      "sm": "2rem headers, 6px block padding.",
+      "md": "2.25rem headers, cells padded 12px.",
+      "lg": "2.75rem headers, cells padded 16px."
+    },
+    "density": "Text follows data-density through --ayy-text-s. compact and spacious are deprecated aliases for size sm and lg.",
     "width": "Fills its wrap, which scrolls when columns don't fit. After a column resize it stays at least as wide as its wrap, even with no data columns."
   },
-  "js": "tableClass({ compact?, spacious?, bordered?, sticky?, fixed?, reorderable?, className? }); tableRowActionsClass({ reveal?, className? }); tablePinClassName(pin); a table…Class constant per class; nextSortDirection(current); compareValues(a, b, direction?) sorts numbers (\"$1,240\", \"12 GB\") by value, text naturally, empty last; connectTableResize(table, { onResize? }); connectTableDragSelect(table, { onRowChange? }); connectTableEdit(table, { onCellEdit? }); connectTableColumnReorder(table, { onColumnReorder?, selector? }); connectTableColumns(table, { onColumnAction? }); connectTable(table, { onColumnAction?, onSort?, onSelectionChange?, onExpandChange?, onResize?, onCellEdit?, onColumnReorder? }) wires plain markup (used by <ayy-table>).",
+  "js": "tableClass({ size?, compact? (deprecated), spacious? (deprecated), bordered?, sticky?, fixed?, reorderable?, className? }); tableRowActionsClass({ reveal?, className? }); tablePinClassName(pin); a table…Class constant per class; nextSortDirection(current); compareValues(a, b, direction?) sorts numbers (\"$1,240\", \"12 GB\") by value, text naturally, empty last; connectTableResize(table, { onResize? }); connectTableDragSelect(table, { onRowChange? }); connectTableEdit(table, { onCellEdit? }); connectTableColumnReorder(table, { onColumnReorder?, selector? }); connectTableColumns(table, { onColumnAction? }); connectTable(table, { onColumnAction?, onSort?, onSelectionChange?, onExpandChange?, onResize?, onCellEdit?, onColumnReorder? }) wires plain markup (used by <ayy-table>).",
   "element": {
     "tag": "ayy-table",
     "description": "Column menus use data-column-action for sort-ascending/sort-descending (a Sort submenu), duplicate, hide, delete, freeze, wrap, icon, insertion and shared filter/group controls. Multiple pinned columns receive cumulative offsets. Wraps an .ayy-table (or its wrap or container). Sort buttons reorder each body's rows (data-sort-value wins over text; detail rows move with their row, group rows stay); row checkboxes set aria-selected, with select-all, Shift+click ranges, and drag-to-select by holding and moving across rows; expand buttons flip aria-expanded; resize handles resize columns; .ayy-table__edit inputs commit inline edits on Enter/blur and revert on Escape; column headers drag to reorder columns; rows with an .ayy-drag-handle in a .ayy-table__reorder cell drag to reorder rows, and a focused handle moves its row with the arrow keys (the detail row follows).",
@@ -104,8 +112,9 @@
       "Table": {
         "renders": "<div class=\"ayy-table-wrap\"><table>",
         "props": {
-          "compact": "boolean",
-          "spacious": "boolean",
+          "size": "\"sm\" | \"md\" | \"lg\" — row height and cell padding",
+          "compact": "boolean — deprecated, use size=\"sm\"",
+          "spacious": "boolean — deprecated, use size=\"lg\"",
           "bordered": "boolean",
           "sticky": "boolean",
           "fixed": "boolean",

@@ -7,6 +7,10 @@
   box-sizing: border-box;
   inline-size: max-content;
   max-inline-size: min(22rem, calc(100vw - 1rem));
+  /* Never taller than the room beside its trigger (set while placed) or the viewport; longer content scrolls inside. */
+  max-block-size: var(--_ayy-room-block, calc(100dvh - 1rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--ayy-space-4);
   border: 1px solid var(--ayy-color-line-strong);
   border-radius: var(--ayy-radius-control);
