@@ -83,6 +83,16 @@
   --_size: var(--ayy-size-control-lg);
 }
 
+/* Large: the one thing a screen is for, or a big touch target. */
+.ayy-fab--lg {
+  --_size: calc(var(--ayy-size-control-lg) + var(--ayy-space-6));
+}
+
+.ayy-fab--lg > svg {
+  inline-size: var(--ayy-size-icon-lg);
+  block-size: var(--ayy-size-icon-lg);
+}
+
 /* Not floating: in a toolbar, a card or an empty state, placed by its container. */
 .ayy-fab--inline {
   position: relative;

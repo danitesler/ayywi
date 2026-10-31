@@ -48,9 +48,11 @@
   display: none;
 }
 
+.ayy-avatar--xs { --_s: 1.25rem; font-size: 0.5625rem; }
 .ayy-avatar--sm { --_s: 1.5rem; }
 .ayy-avatar--lg { --_s: 2.5rem; }
 .ayy-avatar--xl { --_s: 3.5rem; }
+.ayy-avatar--2xl { --_s: 5rem; }
 
 .ayy-avatar--square {
   border-radius: var(--ayy-radius-lg);

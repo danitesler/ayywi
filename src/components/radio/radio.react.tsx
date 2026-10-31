@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "../../lib/cx";
-import { radioClass, radioGroupClass, radioGroupLegendClass } from "./radio";
+import { radioClass, radioGroupClass, radioGroupLegendClass, radioSizeClass, type RadioSize } from "./radio";
 
 interface RadioGroupContextValue {
   name: string;
@@ -29,11 +29,13 @@ export interface RadioGroupProps extends Omit<FieldsetHTMLAttributes<HTMLFieldSe
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   orientation?: "vertical" | "horizontal";
+  /** Size of every radio and label in the group. A Radio with its own size keeps it. */
+  size?: RadioSize;
 }
 
 /** A <fieldset> of radios sharing one name and one value. */
 export const RadioGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, RadioGroupProps>(function RadioGroup(
-  { label, name, value: controlled, defaultValue, onValueChange, orientation, className, children, ...props },
+  { label, name, value: controlled, defaultValue, onValueChange, orientation, size, className, children, ...props },
   ref,
 ) {
   const generated = useId();
@@ -45,7 +47,7 @@ export const RadioGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, RadioG
   };
   return (
     <RadioGroupContext.Provider value={{ name: name ?? generated, value, select }}>
-      <fieldset ref={ref} className={radioGroupClass({ orientation, className })} {...props}>
+      <fieldset ref={ref} className={radioGroupClass({ orientation, size, className })} {...props}>
         {label ? <legend className={radioGroupLegendClass}>{label}</legend> : null}
         {children}
       </fieldset>
@@ -53,12 +55,14 @@ export const RadioGroup = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, RadioG
   );
 });
 
-export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value"> {
+export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "size"> {
   value: string;
+  /** Visual size. Overrides the size of the RadioGroup. (The native `size` attribute does nothing on a radio.) */
+  size?: RadioSize;
 }
 
 /** A native radio. Inside a RadioGroup it takes its name and checked state from the group. */
-export const Radio = /* @__PURE__ */ forwardRef<HTMLInputElement, RadioProps>(function Radio({ value, className, onChange, ...props }, ref) {
+export const Radio = /* @__PURE__ */ forwardRef<HTMLInputElement, RadioProps>(function Radio({ value, size, className, onChange, ...props }, ref) {
   const group = useContext(RadioGroupContext);
   const groupProps = group
     ? {
@@ -70,5 +74,5 @@ export const Radio = /* @__PURE__ */ forwardRef<HTMLInputElement, RadioProps>(fu
         },
       }
     : { onChange };
-  return <input ref={ref} type="radio" value={value} className={cx(radioClass, className)} {...groupProps} {...props} />;
+  return <input ref={ref} type="radio" value={value} className={cx(radioClass, radioSizeClass(size), className)} {...groupProps} {...props} />;
 });

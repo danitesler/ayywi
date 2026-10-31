@@ -19,6 +19,9 @@ export default function Example() {
       <Fab inline size="sm" variant="secondary" aria-label="Quick note">
         <Icon icon={PencilEdit01Icon} name="pencil-line" />
       </Fab>
+      <Fab inline size="lg" aria-label="New task, large">
+        <Icon icon={Add01Icon} name="add" />
+      </Fab>
     </div>
   );
 }

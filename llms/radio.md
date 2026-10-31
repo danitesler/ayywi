@@ -4,8 +4,12 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 
 **Classes**
 - `.ayy-radio` — On <input type="radio">. Size follows density. aria-invalid="true" tints the ring destructive (dashed in High Contrast).
+- `.ayy-radio--sm` — Small circle (--ayy-size-check-sm) and small label text. Wins over the size of its group.
+- `.ayy-radio--lg` — Large circle (--ayy-size-check-lg) and large label text. Wins over the size of its group.
 - `.ayy-radio-group` — On the <fieldset> holding the radios. Vertical stack.
 - `.ayy-radio-group--horizontal` — Options in a wrapping row.
+- `.ayy-radio-group--sm` — Every radio, label and the legend in the group small, with tighter rows.
+- `.ayy-radio-group--lg` — Every radio, label and the legend in the group large, with looser rows.
 - `.ayy-radio-group__legend` — The group's <legend>.
 
 **States**
@@ -19,12 +23,15 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 - `loading` — doesn't apply: Choosing is instant.
 
 **Sizes**
-- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- `sm` — --ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.
+- `md` (default) — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- `lg` — --ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch.
+- Density — Each size grows a step with data-density.
 - Width — Fixed circle. The group stacks (vertical) or wraps in a row (horizontal).
 
 **React** — `import { RadioGroup, Radio } from "@danitesler/ayywi/react";`
-- `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"
-- `<Radio>` renders <input type="radio">. Props: `value` string (required); `...rest` All native <input> attributes.
+- `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"; `size` "sm" | "md" | "lg" — every radio, label and the legend in the group
+- `<Radio>` renders <input type="radio">. Props: `value` string (required); `size` "sm" | "md" | "lg" — this radio only; wins over the group (the native size attribute is not exposed); `...rest` All native <input> attributes.
 
 **Accessibility**
 - Arrow keys move between radios in a group natively — no JS needed.
@@ -33,6 +40,7 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 **Do**
 - Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).
 - Pre-select the most common option when there's a sensible default.
+- Set the size on the RadioGroup so every option, label and the legend change together.
 
 **Don't**
 - Don't use radios for more than ~6 options — use Select.
@@ -83,6 +91,65 @@ export default function Example() {
         </label>
         <label className="ayy-label">
           <Radio value="yearly" /> Yearly
+        </label>
+      </RadioGroup>
+    </>
+  );
+}
+```
+
+## Radio — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<fieldset class="ayy-radio-group ayy-radio-group--sm">
+  <legend class="ayy-radio-group__legend">Small</legend>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="plan-sm" value="solo" /> Solo</label>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="plan-sm" checked value="team" /> Team</label>
+</fieldset>
+<fieldset class="ayy-radio-group">
+  <legend class="ayy-radio-group__legend">Medium</legend>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="plan-md" value="solo" /> Solo</label>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="plan-md" checked value="team" /> Team</label>
+</fieldset>
+<fieldset class="ayy-radio-group ayy-radio-group--lg">
+  <legend class="ayy-radio-group__legend">Large</legend>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="plan-lg" value="solo" /> Solo</label>
+  <label class="ayy-label"><input type="radio" class="ayy-radio" name="plan-lg" checked value="team" /> Team</label>
+</fieldset>
+```
+
+React:
+
+```tsx
+import { Radio, RadioGroup } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <RadioGroup label="Small" name="plan-sm" size="sm" defaultValue="team">
+        <label className="ayy-label">
+          <Radio value="solo" /> Solo
+        </label>
+        <label className="ayy-label">
+          <Radio value="team" /> Team
+        </label>
+      </RadioGroup>
+      <RadioGroup label="Medium" name="plan-md" defaultValue="team">
+        <label className="ayy-label">
+          <Radio value="solo" /> Solo
+        </label>
+        <label className="ayy-label">
+          <Radio value="team" /> Team
+        </label>
+      </RadioGroup>
+      <RadioGroup label="Large" name="plan-lg" size="lg" defaultValue="team">
+        <label className="ayy-label">
+          <Radio value="solo" /> Solo
+        </label>
+        <label className="ayy-label">
+          <Radio value="team" /> Team
         </label>
       </RadioGroup>
     </>

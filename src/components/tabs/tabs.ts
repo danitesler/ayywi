@@ -4,6 +4,14 @@ export const tabsTabClass = "ayy-tabs__tab";
 export const tabsPanelClass = "ayy-tabs__panel";
 export const tabsCountClass = "ayy-tabs__count";
 
+export const tabsSizes = ["sm", "md", "lg"] as const;
+export type TabsSize = (typeof tabsSizes)[number];
+
+/** Add next to tabsClass on the root: `cx(tabsClass, tabsSizeClass("sm"))`. md is the default and adds nothing. */
+export function tabsSizeClass(size?: TabsSize): string | undefined {
+  return size && size !== "md" ? `ayy-tabs--${size}` : undefined;
+}
+
 /**
  * Next tab index for a key press, following the WAI-ARIA tabs pattern.
  * Arrow keys follow visual direction, so they flip in RTL. Returns null for keys tabs don't handle.

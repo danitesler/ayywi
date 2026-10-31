@@ -6,16 +6,18 @@
   "aka": ["avatar", "profile-pic", "user-pic"],
   "classes": {
     "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
+    "ayy-avatar--xs": "20px, with 9px initials. For a dense table row or a mention.",
     "ayy-avatar--sm": "24px.",
     "ayy-avatar--lg": "40px.",
     "ayy-avatar--xl": "56px.",
+    "ayy-avatar--2xl": "80px. For a profile header.",
     "ayy-avatar--square": "Rounded square (workspaces, teams).",
     "ayy-avatar__fallback": "Initials, underneath the image.",
     "ayy-avatar__image": "The <img alt=\"\">. Covers the initials when it loads.",
     "ayy-avatar-group": "Overlapping stack of avatars."
   },
   "variants": {
-    "size": { "values": ["sm", "md", "lg", "xl"], "default": "md" },
+    "size": { "values": ["xs", "sm", "md", "lg", "xl", "2xl"], "default": "md" },
     "shape": { "values": ["circle", "square"], "default": "circle" }
   },
   "states": {
@@ -30,10 +32,12 @@
   },
   "sizes": {
     "scale": {
+      "xs": "1.25rem (20px), initials fixed at 9px.",
       "sm": "1.5rem (24px).",
       "md": "2rem (32px).",
       "lg": "2.5rem (40px).",
-      "xl": "3.5rem (56px)."
+      "xl": "3.5rem (56px).",
+      "2xl": "5rem (80px)."
     },
     "density": "Doesn't follow data-density. Initials are 38% of the size.",
     "width": "Square. A group overlaps them by 20% with a page-colour ring."
@@ -48,7 +52,7 @@
           "name": "string (required) — accessible name and initials",
           "src": "string — image URL",
           "fallback": "string — custom initials",
-          "size": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "size": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"",
           "shape": "\"circle\" | \"square\""
         }
       },

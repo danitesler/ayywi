@@ -76,6 +76,25 @@
   block-size: 1.25em;
 }
 
+/* Sizes live on the root and reach only its own list, so tabs nested in a panel keep theirs. */
+.ayy-tabs--sm > .ayy-tabs__list {
+  block-size: var(--ayy-size-control-sm);
+}
+
+.ayy-tabs--sm > .ayy-tabs__list > .ayy-tabs__tab {
+  padding-inline: var(--ayy-space-2);
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-tabs--lg > .ayy-tabs__list {
+  block-size: var(--ayy-size-control-lg);
+}
+
+.ayy-tabs--lg > .ayy-tabs__list > .ayy-tabs__tab {
+  padding-inline: var(--ayy-space-4);
+  font-size: var(--ayy-control-text-lg);
+}
+
 /* Count beside a tab label, e.g. how many items a filter shows. */
 .ayy-tabs__count {
   display: inline-flex;

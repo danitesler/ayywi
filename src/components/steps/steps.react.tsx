@@ -1,11 +1,13 @@
 import { forwardRef, type OlHTMLAttributes, type ReactNode } from "react";
-import { stepsClass, stepsItemClass, stepsLabelClass } from "./steps";
+import { stepsClass, stepsItemClass, stepsLabelClass, type StepsSize } from "./steps";
 
 export interface StepsProps extends OlHTMLAttributes<HTMLOListElement> {
   /** The step names, in order. */
   steps: ReactNode[];
   /** Index of the step you're on (0-based). Steps before it are shown as done. */
   current: number;
+  /** Marker and label size. */
+  size?: StepsSize;
   /** A column instead of a row. */
   vertical?: boolean;
   /** Read before a finished step's name. Default "Done: " (translate it). */
@@ -14,11 +16,11 @@ export interface StepsProps extends OlHTMLAttributes<HTMLOListElement> {
 
 /** Where you are in a short flow. Give it an aria-label ("Checkout progress"). */
 export const Steps = /* @__PURE__ */ forwardRef<HTMLOListElement, StepsProps>(function Steps(
-  { steps, current, vertical, doneLabel = "Done: ", className, ...props },
+  { steps, current, size, vertical, doneLabel = "Done: ", className, ...props },
   ref,
 ) {
   return (
-    <ol ref={ref} className={stepsClass({ vertical, className })} {...props}>
+    <ol ref={ref} className={stepsClass({ size, vertical, className })} {...props}>
       {steps.map((step, i) => (
         <li key={i} className={stepsItemClass} aria-current={i === current ? "step" : undefined}>
           <span className={stepsLabelClass}>

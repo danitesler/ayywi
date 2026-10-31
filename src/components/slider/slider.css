@@ -10,6 +10,23 @@
   --_rest: color-mix(in srgb, var(--ayy-color-text) 14%, transparent);
 }
 
+/* sm: a thinner track and a smaller thumb; lg: a thicker track and a bigger thumb in a medium control tall. A range sizes
+   the two inputs inside it too, since each input declares its own thumb. */
+.ayy-slider--sm,
+.ayy-slider-range--sm,
+.ayy-slider-range--sm > .ayy-slider {
+  --_track: 0.25rem;
+  --_thumb: 0.875rem;
+}
+
+.ayy-slider--lg,
+.ayy-slider-range--lg,
+.ayy-slider-range--lg > .ayy-slider {
+  --_track: 0.5rem;
+  --_thumb: 1.5rem;
+  block-size: var(--ayy-size-control-md);
+}
+
 .ayy-slider {
   --_v: clamp(0, var(--ayy-value, 0), 100);
   -webkit-appearance: none;

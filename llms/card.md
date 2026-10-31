@@ -4,6 +4,8 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 
 **Classes**
 - `.ayy-card` — Root surface.
+- `.ayy-card--sm` — Tighter: 12px padding on the header, content and footer, a sm title and an xs description.
+- `.ayy-card--lg` — Roomier: 24px padding and an lg title.
 - `.ayy-card--interactive` — Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.
 - `.ayy-card--spotlight` — Pointer-following glow + lit border. Colour via the --ayy-spot custom property.
 - `.ayy-card--transparent` — No fill and no rest shadow: the page shows through. The line border, radius and padding stay. Pairs with spotlight for rows on a plain page.
@@ -39,11 +41,14 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - `menu-open` (`view card :has([aria-expanded="true"]), a menu inside it is open`) — Stays revealed while its ⋯ menu is open.
 
 **Sizes**
+- `sm` — 12px padding on the header, content and footer; --ayy-text-sm title, --ayy-text-xs description.
+- `md` (default) — 20px padding; --ayy-text-md title, --ayy-text-sm description.
+- `lg` — 24px padding; --ayy-text-lg title, --ayy-text-sm description.
 - Density — Padding and text don't follow data-density.
 - Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem).
 
 **React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from "@danitesler/ayywi/react";`
-- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `transparent` boolean — no fill, no rest shadow (ayy-card--transparent).; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
+- `<Card>` renders <div>. Props: `size` "sm" | "md" | "lg" — padding of the header, content and footer, and the size of the title; `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `transparent` boolean — no fill, no rest shadow (ayy-card--transparent).; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
 - `<CardDescription>` renders <p>.
@@ -127,6 +132,100 @@ export default function Example() {
         </Button>
       </CardFooter>
     </Card>
+  );
+}
+```
+
+## Card — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 22.5rem)">
+  <div class="ayy-card ayy-card--sm">
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title">Weekly report</h3>
+      <p class="ayy-card__description">Activity across your workspace.</p>
+    </div>
+    <div class="ayy-card__content">
+      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
+    </div>
+    <div class="ayy-card__footer">
+      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    </div>
+  </div>
+  <div class="ayy-card">
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title">Weekly report</h3>
+      <p class="ayy-card__description">Activity across your workspace.</p>
+    </div>
+    <div class="ayy-card__content">
+      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
+    </div>
+    <div class="ayy-card__footer">
+      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    </div>
+  </div>
+  <div class="ayy-card ayy-card--lg">
+    <div class="ayy-card__header">
+      <h3 class="ayy-card__title">Weekly report</h3>
+      <p class="ayy-card__description">Activity across your workspace.</p>
+    </div>
+    <div class="ayy-card__content">
+      <p class="ayy-muted">12 projects · updated 2 minutes ago</p>
+    </div>
+    <div class="ayy-card__footer">
+      <button type="button" class="ayy-button ayy-button--sm">Open report</button>
+    </div>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 22.5rem)" }}>
+      <Card size="sm">
+        <CardHeader>
+          <CardTitle>Weekly report</CardTitle>
+          <CardDescription>Activity across your workspace.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm">Open report</Button>
+        </CardFooter>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Weekly report</CardTitle>
+          <CardDescription>Activity across your workspace.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm">Open report</Button>
+        </CardFooter>
+      </Card>
+      <Card size="lg">
+        <CardHeader>
+          <CardTitle>Weekly report</CardTitle>
+          <CardDescription>Activity across your workspace.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="ayy-muted">12 projects · updated 2 minutes ago</p>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm">Open report</Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
 ```

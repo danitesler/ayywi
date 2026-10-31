@@ -6,11 +6,14 @@ const photo =
 export default function Example() {
   return (
     <>
+      <Avatar name="Maya Chen" src={photo} size="xs" />
       <Avatar name="Maya Chen" src={photo} size="sm" />
       <Avatar name="Maya Chen" src={photo} />
       <Avatar name="Maya Chen" src={photo} size="lg" />
       <Avatar name="Maya Chen" src={photo} size="xl" />
+      <Avatar name="Maya Chen" src={photo} size="2xl" />
       <Avatar name="Northwind" shape="square" size="xl" />
+      <Avatar name="Maya Chen" size="xs" />
     </>
   );
 }

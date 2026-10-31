@@ -2,7 +2,7 @@ import { cx } from "../../lib/cx";
 
 export const fabVariants = ["primary", "secondary"] as const;
 export type FabVariant = (typeof fabVariants)[number];
-export const fabSizes = ["sm", "md"] as const;
+export const fabSizes = ["sm", "md", "lg"] as const;
 export type FabSize = (typeof fabSizes)[number];
 
 export interface FabClassOptions {

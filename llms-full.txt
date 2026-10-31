@@ -397,8 +397,12 @@ Built from: Navbar, Button, Badge, Card, Icon tile, Frame, Segmented control, Li
 | size.control-sm | `--ayy-size-control-sm` | 1.75rem |  | Small control height. · density: comfortable 2rem, touch 2.5rem |
 | size.control-md | `--ayy-size-control-md` | 2rem |  | Default control height. · density: comfortable 2.5rem, touch 2.75rem |
 | size.control-lg | `--ayy-size-control-lg` | 2.25rem |  | Large control height. · density: comfortable 2.75rem, touch 3rem |
+| size.switch-sm | `--ayy-size-switch-sm` | 1rem |  | Height of a small switch. · density: comfortable 1.125rem, touch 1.375rem |
 | size.switch | `--ayy-size-switch` | 1.25rem |  | Height of a switch; its width follows. · density: comfortable 1.375rem, touch 1.625rem |
+| size.switch-lg | `--ayy-size-switch-lg` | 1.5rem |  | Height of a large switch. · density: comfortable 1.625rem, touch 1.875rem |
+| size.check-sm | `--ayy-size-check-sm` | 0.875rem |  | Size of a small checkbox or radio. · density: comfortable 1rem, touch 1.125rem |
 | size.check | `--ayy-size-check` | 1rem |  | Size of a checkbox or radio. · density: comfortable 1.125rem, touch 1.25rem |
+| size.check-lg | `--ayy-size-check-lg` | 1.25rem |  | Size of a large checkbox or radio. · density: comfortable 1.375rem, touch 1.5rem |
 | size.touch | `--ayy-size-touch` | 2.75rem |  | The smallest comfortable target for a finger. |
 | size.container | `--ayy-size-container` | 87.5rem |  | The widest page content gets: navbar, hero and grids. Used by .ayy-container. |
 | size.measure | `--ayy-size-measure` | 46rem |  | A comfortable width for reading long text. Used by .ayy-prose. |
@@ -910,6 +914,7 @@ Category: Actions. A round floating button for the main action of a phone screen
 - `.ayy-fab` — A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.
 - `.ayy-fab--extended` — Icon and a visible label: a wider pill ("Compose"). Needs no aria-label.
 - `.ayy-fab--secondary` — A raised surface with a border instead of the primary fill: less emphasis.
+- `.ayy-fab--lg` — Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.
 - `.ayy-fab--sm` — Smaller (the control-lg size), for a second action stacked above the main one.
 - `.ayy-fab--inline` — Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page).
 
@@ -922,11 +927,12 @@ Category: Actions. A round floating button for the main action of a phone screen
 **Sizes**
 - `sm` — The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.
 - `md` (default) — The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.
+- `lg` — The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon.
 - Density — Its diameter follows data-density through the lg control height (the sizes above).
 - Width — Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow).
 
 **React** — `import { Fab } from "@danitesler/ayywi/react";`
-- `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
+- `<Fab>` renders <button type="button" class="ayy-fab">, or <a> with href. Props: `variant` "primary" | "secondary"; `size` "sm" | "md" | "lg"; `extended` boolean — icon and a label; otherwise give it aria-label; `inline` boolean — not floating; `href` string — renders an <a>; `type` "button" | "submit" | "reset" — default "button"
 
 **Accessibility**
 - An icon-only FAB needs an aria-label that says the action ("New task"), not the icon ("Plus").
@@ -938,7 +944,7 @@ Category: Actions. A round floating button for the main action of a phone screen
 - Use extended when the action isn't obvious from an icon, or on the first screens of an app.
 - Hide it on screens where the main action is already on screen (a form's Save) or while a sheet is open.
 
-**Examples**: Icon, extended, secondary, small, In an app shell, above the bottom nav. Copy-ready HTML and React in llms/fab.md.
+**Examples**: Icon, extended, secondary, small, large, In an app shell, above the bottom nav. Copy-ready HTML and React in llms/fab.md.
 
 ## Navbar
 
@@ -1241,6 +1247,8 @@ Category: Navigation. A trail of links that shows where the current page sits in
 
 **Classes**
 - `.ayy-breadcrumb` — Root <nav aria-label="Breadcrumb">.
+- `.ayy-breadcrumb--sm` — Small trail: --ayy-text-xs.
+- `.ayy-breadcrumb--lg` — Large trail: --ayy-text-md.
 - `.ayy-breadcrumb--pill` — Bordered, blurred capsule that stays readable over hero images and grids.
 - `.ayy-breadcrumb__list` — The <ol>. Wraps on wide screens; one line on phones, ancestors cut with an ellipsis first.
 - `.ayy-breadcrumb__item` — Each <li>. A slash separates items; screen readers skip it.
@@ -1252,11 +1260,14 @@ Category: Navigation. A trail of links that shows where the current page sits in
 - `selected` (`[aria-current="page"] on the last item`)
 
 **Sizes**
-- Density — sm text at every density.
+- `sm` — --ayy-text-xs (13px).
+- `md` (default) — --ayy-text-sm (14px).
+- `lg` — --ayy-text-md (16px).
+- Density — Text sizes are fixed at every density; link targets grow to a control tall.
 - Width — Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes.
 
 **React** — `import { Breadcrumb } from "@danitesler/ayywi/react";`
-- `<Breadcrumb>` renders <nav aria-label="Breadcrumb"><ol>…. Props: `items` { label: ReactNode; href?: string }[] — top level first; the last one is the current page.; `pill` boolean; `aria-label` Defaults to "Breadcrumb" (translate it).
+- `<Breadcrumb>` renders <nav aria-label="Breadcrumb"><ol>…. Props: `size` "sm" | "md" | "lg" — the text size of the trail.; `items` { label: ReactNode; href?: string }[] — top level first; the last one is the current page.; `pill` boolean; `aria-label` Defaults to "Breadcrumb" (translate it).
 
 **Accessibility**
 - Wrap it in <nav aria-label="Breadcrumb"> and use an <ol>, so it's announced as an ordered path.
@@ -1267,7 +1278,7 @@ Category: Navigation. A trail of links that shows where the current page sits in
 - Use the page titles as they appear in their own headings.
 - Use pill over imagery or the ambient grid; plain elsewhere.
 
-**Examples**: Plain and pill. Copy-ready HTML and React in llms/breadcrumb.md.
+**Examples**: Plain and pill, Sizes. Copy-ready HTML and React in llms/breadcrumb.md.
 
 ## Pagination
 
@@ -1275,6 +1286,8 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 
 **Classes**
 - `.ayy-pagination` — Root <nav aria-label="Pagination">. A wrapping row.
+- `.ayy-pagination--sm` — Small links: a step under the sm control height, text a pixel smaller.
+- `.ayy-pagination--lg` — Large links: the md control height and md text.
 - `.ayy-pagination__link` — A page: <a href> when pages have URLs, <button> otherwise. aria-current="page" marks the current one (outlined tint, heavier). aria-disabled="true" (a link without href) or disabled dims an end you can't go past.
 - `.ayy-pagination__size` — Optional page size picker: a <div> holding a <label> and a small Select. Goes first in the <nav>.
 - `.ayy-pagination__size-label` — The picker's <label for>, "Rows per page". Visually hidden below 48rem, still the select's name.
@@ -1288,11 +1301,14 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 - `selected` (`[aria-current="page"]`)
 
 **Sizes**
-- Density — Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.
+- `sm` — Links the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.
+- `md` (default) — Links the sm control height (28px compact, 32 comfortable, 40 touch), sm control text.
+- `lg` — Links the md control height (32px compact, 40 comfortable, 44 touch), md control text. The page size picker steps up with it.
+- Density — Every size follows data-density with the control scale.
 - Width — Hugs its links and wraps. Below 48rem only previous, the current page and next show.
 
 **React** — `import { Pagination } from "@danitesler/ayywi/react";`
-- `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `pageSize` How many items a page holds. Shows the picker when onPageSizeChange is also set.; `pageSizeOptions` number[] — the sizes the picker offers. Default [10, 25, 50]; pageSize is added if missing.; `onPageSizeChange` (pageSize) => void — set the size and go back to page 1.; `labels` { nav?, previous?, next?, pageSize? } — text for translation. Defaults "Pagination", "Previous", "Next", "Rows per page".
+- `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `size` "sm" | "md" | "lg" — the height of the links and the size of their text.; `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `pageSize` How many items a page holds. Shows the picker when onPageSizeChange is also set.; `pageSizeOptions` number[] — the sizes the picker offers. Default [10, 25, 50]; pageSize is added if missing.; `onPageSizeChange` (pageSize) => void — set the size and go back to page 1.; `labels` { nav?, previous?, next?, pageSize? } — text for translation. Defaults "Pagination", "Previous", "Next", "Rows per page".
 
 **Accessibility**
 - It's a <nav aria-label="Pagination">: give a second one on the page a different label.
@@ -1307,7 +1323,7 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 - Offer a page size picker (pageSize, onPageSizeChange) on long tables so people choose how much they scan.
 - Show the range next to it ("41–60 of 1,280") in muted text.
 
-**Examples**: Under a table, With a page size picker. Copy-ready HTML and React in llms/pagination.md.
+**Examples**: Under a table, Sizes, With a page size picker. Copy-ready HTML and React in llms/pagination.md.
 
 ## Steps
 
@@ -1315,6 +1331,8 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 
 **Classes**
 - `.ayy-steps` — Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.
+- `.ayy-steps--sm` — Small: markers a step under the sm control height, text --ayy-text-xs.
+- `.ayy-steps--lg` — Large: markers the md control height, text --ayy-text-md.
 - `.ayy-steps--vertical` — A column, with the lines running down between the markers: for a side panel or a phone.
 - `.ayy-steps__item` — A step <li>. aria-current="step" marks the current one (filled marker, bold label); every step before it is drawn as done (tick, solid line); the ones after as to do.
 - `.ayy-steps__label` — The step's name, one line (cut with an ellipsis in the row).
@@ -1323,11 +1341,14 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 - `selected` (`[aria-current="step"]`)
 
 **Sizes**
-- Density — Markers are the sm control height (28px compact, 32 comfortable, 40 touch).
+- `sm` — Markers the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), --ayy-text-xs labels.
+- `md` (default) — Markers the sm control height (28px compact, 32 comfortable, 40 touch), --ayy-text-sm labels.
+- `lg` — Markers the md control height (32px compact, 40 comfortable, 44 touch), --ayy-text-md labels.
+- Density — Every marker follows data-density with the control scale.
 - Width — Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone.
 
 **React** — `import { Steps } from "@danitesler/ayywi/react";`
-- `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
+- `<Steps>` renders <ol class="ayy-steps"> of <li class="ayy-steps__item">. Props: `size` "sm" | "md" | "lg" — marker and label size.; `steps` ReactNode[] — the step names, in order.; `current` Index of the current step (0-based).; `vertical` boolean — a column.; `doneLabel` Read before a finished step's name. Default "Done: " (translate it).
 
 **Accessibility**
 - It's an ordered list with aria-current="step" on the current item, so screen readers hear "step 2 of 4, current". Give the <ol> an aria-label ("Checkout progress").
@@ -1339,7 +1360,7 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 - Name steps by what happens in them (Account, Team, Billing), in one or two words.
 - Use the vertical version beside a long form on wide screens, or when the row wouldn't fit a phone.
 
-**Examples**: Checkout, row and column. Copy-ready HTML and React in llms/steps.md.
+**Examples**: Checkout, row and column, Sizes. Copy-ready HTML and React in llms/steps.md.
 
 ## Table of contents
 
@@ -1570,6 +1591,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 
 **Classes**
 - `.ayy-search-bar` — Root: a <form role="search"> holding the field and an optional Cancel.
+- `.ayy-search-bar--sm` — Shorter field and smaller text, for a toolbar or a table header.
 - `.ayy-search-bar--lg` — Taller field and text, for a search screen.
 - `.ayy-search-bar__field` — The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.
 - `.ayy-search-bar__input` — <input type="search" enterkeyhint="search" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.
@@ -1584,13 +1606,14 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 - `typing` (`.ayy-search-bar__input:not(:placeholder-shown)`)
 
 **Sizes**
+- `sm` — The sm control height (28px compact, 32 comfortable, 40 touch), sm text.
 - `md` (default) — The md control height (32px compact, 40 comfortable, 44 touch).
 - `lg` — The lg control height (40px compact, 48 comfortable, 52 touch), larger text: the top of a phone list.
 - Density — The field height follows data-density (the heights above).
 - Width — The field fills its row; Cancel takes its own width after it.
 
 **React** — `import { SearchBar } from "@danitesler/ayywi/react";`
-- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "md" | "lg"; `shortcut` string — keyboard shortcut hint (e.g. "Mod+K"); hidden while typing; `formProps` FormHTMLAttributes — props for the <form>
+- `<SearchBar>` renders <form role="search" class="ayy-search-bar"><div class="ayy-search-bar__field">… <input type="search" class="ayy-search-bar__input"> …</div></form>; other props go on the input. Props: `value / defaultValue` string; `onValueChange` (value: string) => void — every keystroke, and "" when cleared; `onSearch` (value: string) => void — Enter / the Search key; `onCancel` () => void — shows a Cancel button that runs it; `label` string — the input's name. Default "Search"; `clearLabel` string — default "Clear search"; `cancelText` string — default "Cancel"; `size` "sm" | "md" | "lg"; `shortcut` string — keyboard shortcut hint (e.g. "Mod+K"); hidden while typing; `formProps` FormHTMLAttributes — props for the <form>
 
 **Accessibility**
 - role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks").
@@ -1603,7 +1626,7 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 - Say what it searches in the placeholder and the label ("Search notes").
 - Put it in a Top bar's second row on a list's first screen.
 
-**Examples**: Empty and with text, Large, with Cancel. Copy-ready HTML and React in llms/search-bar.md.
+**Examples**: Empty, with text and sizes, Large, with Cancel. Copy-ready HTML and React in llms/search-bar.md.
 
 ## Filter bar
 
@@ -1708,6 +1731,8 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 
 **Classes**
 - `.ayy-textarea` — Root, on the <textarea>.
+- `.ayy-textarea--sm` — Small: 4rem tall to start, tighter padding, sm text. Pairs with a small Input.
+- `.ayy-textarea--lg` — Large: 6.5rem tall to start, more padding, lg text.
 - `.ayy-textarea--autosize` — Grows with content (CSS field-sizing). Falls back to fixed height.
 - `.ayy-textarea--mono` — Monospace font.
 
@@ -1718,11 +1743,14 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 - `error` (`aria-invalid="true" (with a FieldError)`)
 
 **Sizes**
-- Density — Text follows control md; the minimum height (5rem) and padding don't change.
+- `sm` — Control sm text, 8px side padding, at least 4rem tall.
+- `md` (default) — Control field text, 12px side padding, at least 5rem tall.
+- `lg` — Control lg text, 16px side padding, at least 6.5rem tall.
+- Density — Text follows the control scale and data-density; the minimum heights and padding don't change.
 - Width — Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls).
 
 **React** — `import { Textarea } from "@danitesler/ayywi/react";`
-- `<Textarea>` renders <textarea>. Props: `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
+- `<Textarea>` renders <textarea>. Props: `size` "sm" | "md" | "lg"; `autosize` boolean; `mono` boolean; `...rest` All native <textarea> attributes.
 
 **Accessibility**
 - Label it (Field + Label), same as Input.
@@ -1731,7 +1759,7 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 - Use a textarea for descriptions, notes, prompts and config snippets (mono).
 - Set rows for a sensible starting height.
 
-**Examples**: Basic, autosize, mono. Copy-ready HTML and React in llms/textarea.md.
+**Examples**: Basic, autosize, mono, Sizes. Copy-ready HTML and React in llms/textarea.md.
 
 ## Mentions
 
@@ -2409,6 +2437,8 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 
 **Classes**
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
+- `.ayy-checkbox--sm` — Small box (--ayy-size-check-sm). The label that wraps it, or sits beside it in an inline Field, takes the small control text.
+- `.ayy-checkbox--lg` — Large box (--ayy-size-check-lg) and large label text.
 
 **States**
 - `hover` (`:hover`)
@@ -2419,11 +2449,14 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 - `indeterminate` (`:indeterminate (el.indeterminate = true; React: indeterminate)`)
 
 **Sizes**
-- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.
+- `sm` — --ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.
+- `md` (default) — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- `lg` — --ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch.
+- Density — Each size grows a step with data-density. Wrap the box in a .ayy-label so the label is part of the hit area.
 - Width — Fixed square.
 
 **React** — `import { Checkbox } from "@danitesler/ayywi/react";`
-- `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
+- `<Checkbox>` renders <input type="checkbox">. Props: `size` "sm" | "md" | "lg" (visual size; the native size attribute is not exposed); `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
 
 **Accessibility**
 - A colour alone doesn't say what it means: keep the priority or status in the label too.
@@ -2435,8 +2468,9 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 - Use a checkbox for choices submitted with a form (terms, preferences saved with a Save button).
 - Use checkboxes to select several items in a list or table, with an indeterminate select-all.
 - Phrase labels positively: "Email me updates", not "Don't email me".
+- Match the size to the controls around it: sm beside sm buttons and inputs, lg in forms made for touch.
 
-**Examples**: States, Coloured by priority. Copy-ready HTML and React in llms/checkbox.md.
+**Examples**: States, Sizes, Coloured by priority. Copy-ready HTML and React in llms/checkbox.md.
 
 ## Radio
 
@@ -2444,8 +2478,12 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 
 **Classes**
 - `.ayy-radio` — On <input type="radio">. Size follows density. aria-invalid="true" tints the ring destructive (dashed in High Contrast).
+- `.ayy-radio--sm` — Small circle (--ayy-size-check-sm) and small label text. Wins over the size of its group.
+- `.ayy-radio--lg` — Large circle (--ayy-size-check-lg) and large label text. Wins over the size of its group.
 - `.ayy-radio-group` — On the <fieldset> holding the radios. Vertical stack.
 - `.ayy-radio-group--horizontal` — Options in a wrapping row.
+- `.ayy-radio-group--sm` — Every radio, label and the legend in the group small, with tighter rows.
+- `.ayy-radio-group--lg` — Every radio, label and the legend in the group large, with looser rows.
 - `.ayy-radio-group__legend` — The group's <legend>.
 
 **States**
@@ -2456,12 +2494,15 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 - `error` (`aria-invalid="true" on each radio of the group`)
 
 **Sizes**
-- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- `sm` — --ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.
+- `md` (default) — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- `lg` — --ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch.
+- Density — Each size grows a step with data-density.
 - Width — Fixed circle. The group stacks (vertical) or wraps in a row (horizontal).
 
 **React** — `import { RadioGroup, Radio } from "@danitesler/ayywi/react";`
-- `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"
-- `<Radio>` renders <input type="radio">. Props: `value` string (required); `...rest` All native <input> attributes.
+- `<RadioGroup>` renders <fieldset> (+ <legend>). Props: `label` ReactNode — legend text; `name` string — generated if omitted; `value / defaultValue` Selected value (controlled / uncontrolled).; `onValueChange` (value: string) => void; `orientation` "vertical" | "horizontal"; `size` "sm" | "md" | "lg" — every radio, label and the legend in the group
+- `<Radio>` renders <input type="radio">. Props: `value` string (required); `size` "sm" | "md" | "lg" — this radio only; wins over the group (the native size attribute is not exposed); `...rest` All native <input> attributes.
 
 **Accessibility**
 - Arrow keys move between radios in a group natively — no JS needed.
@@ -2470,8 +2511,9 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 **Do**
 - Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).
 - Pre-select the most common option when there's a sensible default.
+- Set the size on the RadioGroup so every option, label and the legend change together.
 
-**Examples**: Group. Copy-ready HTML and React in llms/radio.md.
+**Examples**: Group, Sizes. Copy-ready HTML and React in llms/radio.md.
 
 ## Segmented control
 
@@ -2480,6 +2522,7 @@ Category: Forms. A short row of options where one is always selected, for switch
 **Classes**
 - `.ayy-segmented-control` — Root, a role="radiogroup" with an aria-label. The pill track.
 - `.ayy-segmented-control--sm` — Small height, for toolbars and card headers.
+- `.ayy-segmented-control--lg` — Large height and text, for a main choice on a phone or a settings screen.
 - `.ayy-segmented-control--full` — Fills its container with equal segments.
 - `.ayy-segmented-control__option` — A <label> around a native <input type="radio">, which stays in the page (focus, forms) but draws nothing. The checked one is filled; the focused one gets the ring.
 
@@ -2492,11 +2535,12 @@ Category: Forms. A short row of options where one is always selected, for switch
 **Sizes**
 - `sm` — Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.
 - `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch).
+- `lg` — Control lg height (36px compact, 44 comfortable, 48 touch), 16px side padding, lg text.
 - Density — Height and text follow data-density.
 - Width — Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments.
 
 **React** — `import { SegmentedControl, SegmentedControlItem } from "@danitesler/ayywi/react";`
-- `<SegmentedControl>` renders <div role="radiogroup" class="ayy-segmented-control">. Props: `value / defaultValue` The selected option's value.; `onValueChange` (value: string) => void; `name` Shared radio name, for forms. Generated if omitted.; `size` "sm" | "md"; `full` boolean — equal segments across the container.
+- `<SegmentedControl>` renders <div role="radiogroup" class="ayy-segmented-control">. Props: `value / defaultValue` The selected option's value.; `onValueChange` (value: string) => void; `name` Shared radio name, for forms. Generated if omitted.; `size` "sm" | "md" | "lg"; `full` boolean — equal segments across the container.
 - `<SegmentedControlItem>` renders <label class="ayy-segmented-control__option"><input type="radio">…. Props: `value` This option's value.; `disabled` boolean; `inputProps` Props for the native radio.
 
 **Accessibility**
@@ -2509,7 +2553,7 @@ Category: Forms. A short row of options where one is always selected, for switch
 - Keep labels short and parallel (7 days · 30 days · 90 days).
 - Use size sm in a toolbar or card header, and full on a phone when it's the main control of the screen.
 
-**Examples**: Date range and billing cycle. Copy-ready HTML and React in llms/segmented-control.md.
+**Examples**: Date range, billing cycle and sizes. Copy-ready HTML and React in llms/segmented-control.md.
 
 ## Chip
 
@@ -2517,6 +2561,8 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 
 **Classes**
 - `.ayy-chip` — A <label> around a native <input type="checkbox"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed="true".
+- `.ayy-chip--sm` — Small: a step under the default (24px compact), sm text, tighter padding. For a dense toolbar.
+- `.ayy-chip--lg` — Large: a medium control tall (32px compact), md text, more padding. For a main filter row or touch.
 - `.ayy-chip--removable` — An active filter: a <span> with its text and an __remove button. Not a control itself.
 - `.ayy-chip__count` — Number of results after the label, muted, tabular digits.
 - `.ayy-chip__remove` — The remove (×) button of a removable chip. Needs an aria-label ("Remove Status: Open").
@@ -2530,13 +2576,16 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 - `selected` (`:has(> input:checked) or [aria-pressed="true"]`)
 
 **Sizes**
-- Density — Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.
+- `sm` — Control sm height minus 4px (24px compact, 28 comfortable, 36 touch), control sm text minus 1px, 8px side padding.
+- `md` (default) — Control sm height (28px compact, 32 comfortable, 40 touch), control sm text, 12px side padding.
+- `lg` — Control md height (32px compact, 40 comfortable, 44 touch), control md text, 16px side padding.
+- Density — Every size follows data-density with the control scale.
 - Width — Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars).
 
 **React** — `import { Chip, ChipButton, ChipRemovable, ChipGroup } from "@danitesler/ayywi/react";`
-- `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
-- `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode
-- `<ChipRemovable>` renders <span class="ayy-chip ayy-chip--removable">… <button class="ayy-chip__remove">. Props: `onRemove` () => void; `removeLabel` string — default "Remove " + the text
+- `<Chip>` renders <label class="ayy-chip"><input type="checkbox">…. Props: `size` "sm" | "md" | "lg"; `type` "checkbox" (filters that combine) | "radio" (one choice; same name in the group); `checked / defaultChecked` boolean; `onCheckedChange` (checked: boolean) => void; `name` string; `value` string; `disabled` boolean; `count` ReactNode — results for this filter; `inputProps` Props for the native input.
+- `<ChipButton>` renders <button type="button" class="ayy-chip" aria-pressed>. Props: `size` "sm" | "md" | "lg"; `pressed` boolean; `onPressedChange` (pressed: boolean) => void; `count` ReactNode
+- `<ChipRemovable>` renders <span class="ayy-chip ayy-chip--removable">… <button class="ayy-chip__remove">. Props: `size` "sm" | "md" | "lg"; `onRemove` () => void; `removeLabel` string — default "Remove " + the text
 - `<ChipGroup>` renders <div role="group" class="ayy-chip-group">. Props: `scroll` boolean — one line that scrolls sideways
 
 **Accessibility**
@@ -2551,7 +2600,7 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 - Show the filters in force as removable chips above the results, with a Clear all button.
 - Use ChipGroup scroll in a phone toolbar so the chips stay on one line.
 
-**Examples**: Filters and one choice, Filter bar with active filters. Copy-ready HTML and React in llms/chip.md.
+**Examples**: Filters and one choice, Sizes, Filter bar with active filters. Copy-ready HTML and React in llms/chip.md.
 
 ## Color swatch
 
@@ -2648,6 +2697,10 @@ Category: Forms. A large option for picking one or more things that need more ex
 Category: Forms. A control for choosing a value, or a range between two values, by dragging a handle along a track. It's a native range input, so the keyboard, forms and screen readers work as usual. Also called: slider, range, range-input.
 
 **Classes**
+- `.ayy-slider--sm` — Thinner 4px track and a 14px thumb.
+- `.ayy-slider--lg` — Thicker 8px track and a 24px thumb, in a medium control tall box.
+- `.ayy-slider-range--sm` — A range with the small track and thumb; sizes both inputs inside it.
+- `.ayy-slider-range--lg` — A range with the large track and thumb; sizes both inputs inside it.
 - `.ayy-slider` — On <input type="range">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.
 - `.ayy-slider-range` — A role="group" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing.
 
@@ -2657,12 +2710,15 @@ Category: Forms. A control for choosing a value, or a range between two values, 
 - `disabled` (`:disabled`)
 
 **Sizes**
-- Density — The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.
+- `sm` — 4px track, 14px thumb, in the sm control height box (28px compact, 32 comfortable, 40 touch).
+- `md` (default) — 6px track, 18px thumb, in the sm control height box.
+- `lg` — 8px track, 24px thumb, in the md control height box (32px compact, 40 comfortable, 44 touch).
+- Density — The control box follows data-density; track and thumb are fixed.
 - Width — Fills its container. A range (two thumbs) is .ayy-slider-range.
 
 **React** — `import { Slider, SliderRange } from "@danitesler/ayywi/react";`
-- `<Slider>` renders <input type="range" class="ayy-slider">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
-- `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean
+- `<Slider>` renders <input type="range" class="ayy-slider">. Props: `size` "sm" | "md" | "lg" (the native size attribute is not exposed); `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number, default 0; `max` number, default 100; `step` number, default 1
+- `<SliderRange>` renders <div role="group" class="ayy-slider-range"> with two range inputs. Props: `size` "sm" | "md" | "lg"; `value / defaultValue` [number, number]; `onValueChange` (value: [number, number]) => void; `min` number; `max` number; `step` number; `labels` [string, string] — the thumbs' names ("Minimum price", "Maximum price"); `names` [string, string] — form names; `disabled` boolean
 
 **Accessibility**
 - It's a native range input: arrow keys step, Page Up/Down jump, Home/End go to the ends, and screen readers read the value. Give it a <label> (or aria-label); add aria-valuetext when the number needs a unit ("12 people").
@@ -2675,7 +2731,7 @@ Category: Forms. A control for choosing a value, or a range between two values, 
 - Use a range slider to filter by price or size between a min and a max.
 - Pick a step that matches what people choose (5, 10, 0.5), and print the value next to the label.
 
-**Examples**: With its value, Price range. Copy-ready HTML and React in llms/slider.md.
+**Examples**: With its value, Sizes, Price range. Copy-ready HTML and React in llms/slider.md.
 
 ## Number field
 
@@ -2684,6 +2740,7 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 **Classes**
 - `.ayy-number-field` — The bordered box around the buttons and the input. Draws the focus ring while you type.
 - `.ayy-number-field--sm` — Small height, for a cart line or a table cell.
+- `.ayy-number-field--lg` — Large height and text, for a main quantity on a phone.
 - `.ayy-number-field__input` — The <input type="number">: centred tabular digits, no spinner arrows.
 - `.ayy-number-field__decrement` — The minus <button> before the input. Needs an aria-label. aria-disabled="true" at min.
 - `.ayy-number-field__increment` — The plus <button> after the input. Needs an aria-label. aria-disabled="true" at max.
@@ -2697,11 +2754,12 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 **Sizes**
 - `sm` — Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.
 - `md` (default) — Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide.
+- `lg` — Control lg height (36px compact, 44 comfortable, 48 touch); the number is 4.5rem wide, in lg text.
 - Density — Height, step-button width and text follow data-density.
 - Width — Hugs its content (step buttons plus the number box).
 
 **React** — `import { NumberField } from "@danitesler/ayywi/react";`
-- `<NumberField>` renders <div class="ayy-number-field"><button class="ayy-number-field__decrement"><input type="number"><button class="ayy-number-field__increment">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number; `max` number; `step` number, default 1; `size` "sm" | "md"; `decrementLabel` string, default "Decrease" — say what changes ("Remove a guest"); `incrementLabel` string, default "Increase"; `className` On the outer box; every other prop goes to the input (id, name, aria-label…); `style` On the outer box
+- `<NumberField>` renders <div class="ayy-number-field"><button class="ayy-number-field__decrement"><input type="number"><button class="ayy-number-field__increment">. Props: `value / defaultValue` number; `onValueChange` (value: number) => void; `min` number; `max` number; `step` number, default 1; `size` "sm" | "md" | "lg"; `decrementLabel` string, default "Decrease" — say what changes ("Remove a guest"); `incrementLabel` string, default "Increase"; `className` On the outer box; every other prop goes to the input (id, name, aria-label…); `style` On the outer box
 
 **Accessibility**
 - Label the input (a <label for> its id, or aria-label naming the item: "Quantity of Ethiopia Guji, 250 g"). The buttons need their own aria-labels.
@@ -2713,7 +2771,7 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 - Set min and max (min 1 for guests, 0 when zero removes the line) and say the limit in a hint.
 - Use size sm in a cart line or a table row.
 
-**Examples**: Guests and quantity. Copy-ready HTML and React in llms/number-field.md.
+**Examples**: Guests, quantity and sizes. Copy-ready HTML and React in llms/number-field.md.
 
 ## Rating
 
@@ -2802,6 +2860,8 @@ Category: Forms. An on/off control for a setting that takes effect right away. I
 
 **Classes**
 - `.ayy-switch` — On <input type="checkbox" role="switch"> (preferred) or <button role="switch" aria-checked>. Thumb is ::before.
+- `.ayy-switch--sm` — Small track (--ayy-size-switch-sm). The label beside it in an inline Field, or wrapping it, takes the small control text.
+- `.ayy-switch--lg` — Large track (--ayy-size-switch-lg) and large label text.
 
 **States**
 - `hover` (`:hover`)
@@ -2810,11 +2870,14 @@ Category: Forms. An on/off control for a setting that takes effect right away. I
 - `selected` (`:checked or [aria-checked="true"]`)
 
 **Sizes**
-- Density — --ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.
+- `sm` — --ayy-size-switch-sm sets the height: 16px compact, 18 comfortable, 22 touch.
+- `md` (default) — --ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch.
+- `lg` — --ayy-size-switch-lg sets the height: 24px compact, 26 comfortable, 30 touch.
+- Density — Each size grows a step with data-density; the width is 1.8× the height.
 - Width — Fixed. Put it in an inline Field with its label.
 
 **React** — `import { Switch } from "@danitesler/ayywi/react";`
-- `<Switch>` renders <input type="checkbox" role="switch">. Props: `checked / defaultChecked` Controlled / uncontrolled, same as a checkbox.; `onCheckedChange` (checked: boolean) => void; `...rest` All native <input> attributes (name, value, disabled, required…).
+- `<Switch>` renders <input type="checkbox" role="switch">. Props: `size` "sm" | "md" | "lg" (visual size; the native size attribute is not exposed); `checked / defaultChecked` Controlled / uncontrolled, same as a checkbox.; `onCheckedChange` (checked: boolean) => void; `...rest` All native <input> attributes (name, value, disabled, required…).
 
 **Accessibility**
 - Always pair with a <label for> (Field inline) or aria-label.
@@ -2825,7 +2888,7 @@ Category: Forms. An on/off control for a setting that takes effect right away. I
 - Use a switch for settings that take effect instantly (enable sync, dark mode).
 - Make the label describe the 'on' state: 'Sync on save', not 'Toggle sync'.
 
-**Examples**: States. Copy-ready HTML and React in llms/switch.md.
+**Examples**: States, Sizes. Copy-ready HTML and React in llms/switch.md.
 
 ## Shortcut
 
@@ -3021,6 +3084,8 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 
 **Classes**
 - `.ayy-card` — Root surface.
+- `.ayy-card--sm` — Tighter: 12px padding on the header, content and footer, a sm title and an xs description.
+- `.ayy-card--lg` — Roomier: 24px padding and an lg title.
 - `.ayy-card--interactive` — Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.
 - `.ayy-card--spotlight` — Pointer-following glow + lit border. Colour via the --ayy-spot custom property.
 - `.ayy-card--transparent` — No fill and no rest shadow: the page shows through. The line border, radius and padding stay. Pairs with spotlight for rows on a plain page.
@@ -3051,11 +3116,14 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - `menu-open` (`view card :has([aria-expanded="true"]), a menu inside it is open`)
 
 **Sizes**
+- `sm` — 12px padding on the header, content and footer; --ayy-text-sm title, --ayy-text-xs description.
+- `md` (default) — 20px padding; --ayy-text-md title, --ayy-text-sm description.
+- `lg` — 24px padding; --ayy-text-lg title, --ayy-text-sm description.
 - Density — Padding and text don't follow data-density.
 - Width — Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem).
 
 **React** — `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from "@danitesler/ayywi/react";`
-- `<Card>` renders <div>. Props: `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `transparent` boolean — no fill, no rest shadow (ayy-card--transparent).; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
+- `<Card>` renders <div>. Props: `size` "sm" | "md" | "lg" — padding of the header, content and footer, and the size of the title; `interactive` boolean; `spotlight` boolean — tracks the pointer for you; `spotColor` CSS colour for the spotlight, e.g. "var(--ayy-accent-product)"; `transparent` boolean — no fill, no rest shadow (ayy-card--transparent).; `featured` boolean — the recommended or chosen card (ayy-card--featured).; `view` boolean — the view type (ayy-card--view): a capture, recording or picture to open
 - `<CardHeader>` renders <div>.
 - `<CardTitle>` renders <h3>.
 - `<CardDescription>` renders <p>.
@@ -3089,7 +3157,7 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 - Use the view type (view) for captures, recordings and pictures people open — a screenshot history, a media library — in .ayy-grid; pass the picture's real width and height, and keep the box at 16 / 10 so rows line up (portrait pictures letterbox over the blur).
 - On a view card, group three or more actions in one Hover actions bar (top end, group, reveal) ending in a ⋯ DropdownMenu; show a recording's length in CardViewBadge and add CardViewPlay.
 
-**Examples**: Basic, Interactive with spotlight, Linked card with media, View cards: capture history. Copy-ready HTML and React in llms/card.md.
+**Examples**: Basic, Sizes, Interactive with spotlight, Linked card with media, View cards: capture history. Copy-ready HTML and React in llms/card.md.
 
 ## Tabs
 
@@ -3097,6 +3165,8 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 
 **Classes**
 - `.ayy-tabs` — Wrapper (block). Also put it on <ayy-tabs>.
+- `.ayy-tabs--sm` — Small: the track is a small control tall, tab text is control sm, tighter padding. Reaches only its own list, not tabs nested in a panel.
+- `.ayy-tabs--lg` — Large: the track is a large control tall, tab text is control lg, more padding.
 - `.ayy-tabs__list` — role="tablist" pill container.
 - `.ayy-tabs__tab` — role="tab" button. Selected when aria-selected="true".
 - `.ayy-tabs__panel` — role="tabpanel". Hide inactive panels with the hidden attribute.
@@ -3109,7 +3179,10 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 - `selected` (`.ayy-tabs__tab[aria-selected="true"]`)
 
 **Sizes**
-- Density — The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.
+- `sm` — Track at the sm control height (28px compact, 32 comfortable, 40 touch), control sm text, 8px side padding.
+- `md` (default) — Track at the md control height (32px compact, 40 comfortable, 44 touch), control md text, 12px side padding.
+- `lg` — Track at the lg control height (36px compact, 44 comfortable, 48 touch), control lg text, 16px side padding.
+- Density — Every size follows data-density with the control scale.
 - Width — The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container.
 
 **Custom element** `<ayy-tabs>` (@danitesler/ayywi/elements) — A [role=tablist] of [role=tab] buttons and [role=tabpanel] panels, paired by data-value (or by order). Ids, aria-controls/labelledby, tabindex and hidden are managed for you.
@@ -3118,7 +3191,7 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 - event `ayy-value-change`: { value: string } — the user picked a tab
 
 **React** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@danitesler/ayywi/react";`
-- `<Tabs>` renders <div>. Props: `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
+- `<Tabs>` renders <div>. Props: `size` "sm" | "md" | "lg" — the height of the tab list and its labels.; `value / defaultValue` Selected tab value (controlled / uncontrolled).; `onValueChange` (value: string) => void
 - `<TabsList>` renders <div role="tablist">. Props: `aria-label` Recommended.
 - `<TabsTrigger>` renders <button role="tab">. Props: `value` string (required); `icon` ReactNode — optional icon before the label.
 - `<TabsContent>` renders <div role="tabpanel">. Props: `value` string (required); `keepMounted` Keep children mounted while hidden. Default false.
@@ -3133,7 +3206,7 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 - Keep tab labels to one or two words.
 - Keep the tab set stable — don't add/remove tabs based on content.
 
-**Examples**: Basic, With icons, Filters with counts. Copy-ready HTML and React in llms/tabs.md.
+**Examples**: Basic, Sizes, With icons, Filters with counts. Copy-ready HTML and React in llms/tabs.md.
 
 ## Accordion
 
@@ -3141,6 +3214,8 @@ Category: Layout. A stack of sections that expand and collapse, for FAQs and for
 
 **Classes**
 - `.ayy-accordion` — Root <div>: a column of items with hairlines above, between and below.
+- `.ayy-accordion--sm` — Tighter rows: 12px above and below the question, sm question text, xs answer text. Reaches only its own items.
+- `.ayy-accordion--lg` — Roomier rows: 20px above and below the question, lg question text, md answer text.
 - `.ayy-accordion__item` — A native <details>. Give every item in the accordion the same name attribute to allow only one open at a time. `open` expands it.
 - `.ayy-accordion__trigger` — The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.
 - `.ayy-accordion__content` — The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you.
@@ -3151,11 +3226,14 @@ Category: Layout. A stack of sections that expand and collapse, for FAQs and for
 - `open` (`[open] on the <details>`)
 
 **Sizes**
+- `sm` — 12px block padding, --ayy-text-sm question, --ayy-text-xs answer.
+- `md` (default) — 16px block padding, --ayy-text-md question, --ayy-text-sm answer.
+- `lg` — 20px block padding, --ayy-text-lg question, --ayy-text-md answer.
 - Density — Doesn't follow data-density.
 - Width — Fills its container.
 
 **React** — `import { Accordion, AccordionItem } from "@danitesler/ayywi/react";`
-- `<Accordion>` renders <div class="ayy-accordion">. Props: `single` boolean — one item open at a time (a shared name on every <details>).
+- `<Accordion>` renders <div class="ayy-accordion">. Props: `size` "sm" | "md" | "lg" — row padding and text size.; `single` boolean — one item open at a time (a shared name on every <details>).
 - `<AccordionItem>` renders <details class="ayy-accordion__item"><summary class="ayy-accordion__trigger">…<div class="ayy-accordion__content">. Props: `label` The always-visible row: the question or section name.; `open` Start expanded.
 
 **Accessibility**
@@ -3168,7 +3246,7 @@ Category: Layout. A stack of sections that expand and collapse, for FAQs and for
 - Use single on FAQ lists so the page doesn't grow into a wall of text.
 - Open the first item when most people need it.
 
-**Examples**: FAQ. Copy-ready HTML and React in llms/accordion.md.
+**Examples**: FAQ, Sizes. Copy-ready HTML and React in llms/accordion.md.
 
 ## Carousel
 
@@ -3472,6 +3550,8 @@ Category: Feedback. A message placed in the flow of a page to tell someone somet
 
 **Classes**
 - `.ayy-alert` — Root. Neutral by default.
+- `.ayy-alert--sm` — Compact: 8px by 12px padding, --ayy-text-xs text, a 16px icon. For a message inside a card or a form row.
+- `.ayy-alert--lg` — Roomy: 16px by 20px padding, --ayy-text-md text, a 22px icon. For a page-level notice.
 - `.ayy-alert--info` — Blue tint.
 - `.ayy-alert--success` — Green tint.
 - `.ayy-alert--warning` — Amber tint.
@@ -3484,11 +3564,14 @@ Category: Feedback. A message placed in the flow of a page to tell someone somet
 - `error` (`destructive (ayy-alert--destructive), role="alert" when it appears after an action`)
 
 **Sizes**
-- Density — Padding and sm text are fixed.
+- `sm` — 8px by 12px padding, --ayy-text-xs (13px), a 16px icon.
+- `md` (default) — 12px by 16px padding, --ayy-text-sm (14px), an 18px icon.
+- `lg` — 16px by 20px padding, --ayy-text-md (16px), a 22px icon.
+- Density — Padding and text are fixed at every density.
 - Width — Fills its container.
 
 **React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "@danitesler/ayywi/react";`
-- `<Alert>` renders <div>. Props: `variant` "default" | "info" | "success" | "warning" | "destructive"
+- `<Alert>` renders <div>. Props: `size` "sm" | "md" | "lg" — padding, text and icon; `variant` "default" | "info" | "success" | "warning" | "destructive"
 - `<AlertTitle>` renders <p>.
 - `<AlertDescription>` renders <p>.
 - `<AlertActions>` renders <div>.
@@ -3501,7 +3584,7 @@ Category: Feedback. A message placed in the flow of a page to tell someone somet
 - Use an alert for page- or section-level messages that stay until they're resolved: a billing issue, read-only mode, maintenance.
 - Lead with what happened, then say what to do about it.
 
-**Examples**: Variants. Copy-ready HTML and React in llms/alert.md.
+**Examples**: Variants, Sizes. Copy-ready HTML and React in llms/alert.md.
 
 ## Toast
 
@@ -3783,6 +3866,8 @@ Category: Data display. A small label that marks the status, category or count o
 
 **Classes**
 - `.ayy-badge` — Root. Neutral by default.
+- `.ayy-badge--sm` — Small: text a pixel under the default, tighter padding. For counts and tags inside dense rows.
+- `.ayy-badge--lg` — Large: text a pixel over the default, more padding. For a status next to a title.
 - `.ayy-badge--muted` — Quieter neutral.
 - `.ayy-badge--outline` — Border only.
 - `.ayy-badge--success` — Positive status.
@@ -3797,11 +3882,14 @@ Category: Data display. A small label that marks the status, category or count o
 - `error` (`destructive (ayy-badge--destructive)`)
 
 **Sizes**
-- Density — Text size follows data-density via --ayy-text-s.
+- `sm` — --ayy-text-s minus 1px (12px compact, 13 touch), 8px side padding.
+- `md` (default) — --ayy-text-s (13px compact, 14 touch), 10px side padding.
+- `lg` — --ayy-text-s plus 1px (14px compact, 15 touch), 12px side padding and 4px block padding.
+- Density — Text size follows data-density via --ayy-text-s; every size steps with it.
 - Width — Hugs its text, never wraps.
 
 **React** — `import { Badge } from "@danitesler/ayywi/react";`
-- `<Badge>` renders <span>. Props: `variant` "default" | "muted" | "outline" | "success" | "warning" | "destructive" | "info" | "ai"; `dot` boolean | "pulse" | "static" — leading status dot
+- `<Badge>` renders <span>. Props: `variant` "default" | "muted" | "outline" | "success" | "warning" | "destructive" | "info" | "ai"; `size` "sm" | "md" | "lg"; `dot` boolean | "pulse" | "static" — leading status dot
 
 **Accessibility**
 - Colour is never the only signal — the label text must say the status.
@@ -3812,7 +3900,7 @@ Category: Data display. A small label that marks the status, category or count o
 - Keep labels to one or two words.
 - Use the status variants for status, accent spotlights for categories.
 
-**Examples**: Variants, Status dot. Copy-ready HTML and React in llms/badge.md.
+**Examples**: Variants, Sizes, Status dot. Copy-ready HTML and React in llms/badge.md.
 
 ## Status dot
 
@@ -3856,13 +3944,18 @@ Category: Data display. A small keycap for showing a keyboard key or shortcut in
 
 **Classes**
 - `.ayy-kbd` — The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.
+- `.ayy-kbd--sm` — Small keycap: 0.6875em of the surrounding text. For a hint inside a small control or a menu row.
+- `.ayy-kbd--lg` — Large keycap: 0.875em of the surrounding text. For a hint in a help page or an empty state.
 
 **Sizes**
+- `sm` — 0.6875em of the surrounding text (11px in 16px text).
+- `md` (default) — 0.75em of the surrounding text (12px in 16px text).
+- `lg` — 0.875em of the surrounding text (14px in 16px text).
 - Density — Scales with the text around it (1.6em tall); scales when surrounding text uses --ayy-text-s.
 - Width — At least 1.6em wide, grows with the key name.
 
 **React** — `import { Kbd, KeyboardHint } from "@danitesler/ayywi/react";`
-- `<Kbd>` renders <kbd class="ayy-kbd">. Props: `keyName` string — a modifier or key drawn for the platform ("mod", "meta", "alt", "ctrl", "shift", "enter", "backspace"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.; `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
+- `<Kbd>` renders <kbd class="ayy-kbd">. Props: `size` "sm" | "md" | "lg" — stepped from the text around it; `keyName` string — a modifier or key drawn for the platform ("mod", "meta", "alt", "ctrl", "shift", "enter", "backspace"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.; `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
 - `<KeyboardHint>` renders <kbd class="ayy-kbd">. Props: `keyName` string — optional modifier/key name to adapt ("mod", "meta", "alt", "ctrl", "shift"); `platform` "mac" | "windows" | "linux" — force a target platform instead of detecting it
 
 **Accessibility**
@@ -3876,7 +3969,7 @@ Category: Data display. A small keycap for showing a keyboard key or shortcut in
 - Adapt modifiers to the user's OS: ⌘ / ⌥ / ⇧ / ⌃ on macOS, Ctrl / Alt / Shift / Win on Windows, and Ctrl / Alt / Shift / Super on Linux (or use <Shortcut keys="Mod+K" /> / <Kbd keyName="mod" />).
 - Listen to event.code (physical key like 'KeyE') or use matchShortcut(event, 'Mod+E') rather than event.key === 'e' so hotkeys work across keyboard layouts and languages (e.g. Russian Cyrillic Cmd+У).
 
-**Examples**: Shortcuts in text, Platform adaptation (macOS, Windows, Linux), Multi-language hotkey handling. Copy-ready HTML and React in llms/kbd.md.
+**Examples**: Shortcuts in text, Sizes, Platform adaptation (macOS, Windows, Linux), Multi-language hotkey handling. Copy-ready HTML and React in llms/kbd.md.
 
 ## Text highlight
 
@@ -3915,9 +4008,11 @@ Category: Data display. A small picture that stands for a person or a workspace.
 
 **Classes**
 - `.ayy-avatar` — Root (role="img" + aria-label). 32px circle.
+- `.ayy-avatar--xs` — 20px, with 9px initials. For a dense table row or a mention.
 - `.ayy-avatar--sm` — 24px.
 - `.ayy-avatar--lg` — 40px.
 - `.ayy-avatar--xl` — 56px.
+- `.ayy-avatar--2xl` — 80px. For a profile header.
 - `.ayy-avatar--square` — Rounded square (workspaces, teams).
 - `.ayy-avatar__fallback` — Initials, underneath the image.
 - `.ayy-avatar__image` — The <img alt="">. Covers the initials when it loads.
@@ -3927,15 +4022,17 @@ Category: Data display. A small picture that stands for a person or a workspace.
 - `error` (`a broken image (React and @danitesler/ayywi/elements set hidden on it)`)
 
 **Sizes**
+- `xs` — 1.25rem (20px), initials fixed at 9px.
 - `sm` — 1.5rem (24px).
 - `md` (default) — 2rem (32px).
 - `lg` — 2.5rem (40px).
 - `xl` — 3.5rem (56px).
+- `2xl` — 5rem (80px).
 - Density — Doesn't follow data-density. Initials are 38% of the size.
 - Width — Square. A group overlaps them by 20% with a page-colour ring.
 
 **React** — `import { Avatar, AvatarGroup } from "@danitesler/ayywi/react";`
-- `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "sm" | "md" | "lg" | "xl"; `shape` "circle" | "square"
+- `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "xs" | "sm" | "md" | "lg" | "xl" | "2xl"; `shape` "circle" | "square"
 - `<AvatarGroup>` renders <div role="group">.
 
 **Accessibility**

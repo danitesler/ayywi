@@ -5,9 +5,13 @@
   "description": "An on/off control for a setting that takes effect right away. It's a native checkbox with a switch look and the right accessible role.",
   "aka": ["switch", "toggle", "toggle-switch"],
   "classes": {
-    "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before."
+    "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before.",
+    "ayy-switch--sm": "Small track (--ayy-size-switch-sm). The label beside it in an inline Field, or wrapping it, takes the small control text.",
+    "ayy-switch--lg": "Large track (--ayy-size-switch-lg) and large label text."
   },
-  "variants": {},
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
   "states": {
     "default": { "looks": "Off: a pill (wash-hover fill, line-strong border) with a muted thumb at the inline start." },
     "hover": { "when": ":hover", "looks": "Border turns line-hover." },
@@ -19,16 +23,22 @@
     "loading": { "none": "Settings switch instantly; don't put a spinner on a switch." }
   },
   "sizes": {
-    "density": "--ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.",
+    "scale": {
+      "sm": "--ayy-size-switch-sm sets the height: 16px compact, 18 comfortable, 22 touch.",
+      "md": "--ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch.",
+      "lg": "--ayy-size-switch-lg sets the height: 24px compact, 26 comfortable, 30 touch."
+    },
+    "density": "Each size grows a step with data-density; the width is 1.8× the height.",
     "width": "Fixed. Put it in an inline Field with its label."
   },
-  "js": "switchClass constant",
+  "js": "switchClass constant; switchSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)",
   "react": {
     "import": "import { Switch } from \"@danitesler/ayywi/react\";",
     "components": {
       "Switch": {
         "renders": "<input type=\"checkbox\" role=\"switch\">",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" (visual size; the native size attribute is not exposed)",
           "checked / defaultChecked": "Controlled / uncontrolled, same as a checkbox.",
           "onCheckedChange": "(checked: boolean) => void",
           "...rest": "All native <input> attributes (name, value, disabled, required…)."
@@ -50,5 +60,5 @@
     "Don't use a switch to choose between more than two options — use Tabs or a select.",
     "Don't require a Save click after flipping a switch."
   ],
-  "examples": [{ "id": "basic", "title": "States" }]
+  "examples": [{ "id": "basic", "title": "States" }, { "id": "sizes", "title": "Sizes" }]
 }

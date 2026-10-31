@@ -1981,6 +1981,17 @@
       "description": "Large control height."
     },
     {
+      "name": "size.switch-sm",
+      "cssVar": "--ayy-size-switch-sm",
+      "type": "dimension",
+      "value": "1rem",
+      "density": {
+        "comfortable": "1.125rem",
+        "touch": "1.375rem"
+      },
+      "description": "Height of a small switch."
+    },
+    {
       "name": "size.switch",
       "cssVar": "--ayy-size-switch",
       "type": "dimension",
@@ -1992,6 +2003,28 @@
       "description": "Height of a switch; its width follows."
     },
     {
+      "name": "size.switch-lg",
+      "cssVar": "--ayy-size-switch-lg",
+      "type": "dimension",
+      "value": "1.5rem",
+      "density": {
+        "comfortable": "1.625rem",
+        "touch": "1.875rem"
+      },
+      "description": "Height of a large switch."
+    },
+    {
+      "name": "size.check-sm",
+      "cssVar": "--ayy-size-check-sm",
+      "type": "dimension",
+      "value": "0.875rem",
+      "density": {
+        "comfortable": "1rem",
+        "touch": "1.125rem"
+      },
+      "description": "Size of a small checkbox or radio."
+    },
+    {
       "name": "size.check",
       "cssVar": "--ayy-size-check",
       "type": "dimension",
@@ -2001,6 +2034,17 @@
         "touch": "1.25rem"
       },
       "description": "Size of a checkbox or radio."
+    },
+    {
+      "name": "size.check-lg",
+      "cssVar": "--ayy-size-check-lg",
+      "type": "dimension",
+      "value": "1.25rem",
+      "density": {
+        "comfortable": "1.375rem",
+        "touch": "1.5rem"
+      },
+      "description": "Size of a large checkbox or radio."
     },
     {
       "name": "size.touch",
@@ -3581,6 +3625,7 @@
         "ayy-fab": "A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
         "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
         "ayy-fab--secondary": "A raised surface with a border instead of the primary fill: less emphasis.",
+        "ayy-fab--lg": "Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.",
         "ayy-fab--sm": "Smaller (the control-lg size), for a second action stacked above the main one.",
         "ayy-fab--inline": "Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page)."
       },
@@ -3595,7 +3640,8 @@
         "size": {
           "values": [
             "sm",
-            "md"
+            "md",
+            "lg"
           ],
           "default": "md"
         },
@@ -3647,7 +3693,8 @@
       "sizes": {
         "scale": {
           "sm": "The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.",
-          "md": "The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch."
+          "md": "The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.",
+          "lg": "The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon."
         },
         "density": "Its diameter follows data-density through the lg control height (the sizes above).",
         "width": "Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow)."
@@ -3660,7 +3707,7 @@
             "renders": "<button type=\"button\" class=\"ayy-fab\">, or <a> with href",
             "props": {
               "variant": "\"primary\" | \"secondary\"",
-              "size": "\"sm\" | \"md\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "extended": "boolean — icon and a label; otherwise give it aria-label",
               "inline": "boolean — not floating",
               "href": "string — renders an <a>",
@@ -3687,9 +3734,9 @@
       "examples": [
         {
           "id": "variants",
-          "title": "Icon, extended, secondary, small",
-          "html": "<!-- ayy-fab--inline places them in the row for this page; in an app they float at the bottom corner. -->\n<div class=\"ayy-cluster\" style=\"align-items: center; --ayy-gap: var(--ayy-space-6)\">\n  <button type=\"button\" class=\"ayy-fab ayy-fab--inline\" aria-label=\"New task\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--extended ayy-fab--inline\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>Compose</button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--inline\" aria-label=\"Record a voice note\"><svg class=\"ayy-icon\" data-ayy-icon=\"mic\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7 6.5C7 4.01472 9.01472 2 11.5 2C13.9853 2 16 4.01472 16 6.5V11.5C16 13.9853 13.9853 16 11.5 16C9.01472 16 7 13.9853 7 11.5V6.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11.5 19H11.0828C7.57267 19 4.57706 16.4623 4 13M11.5 19H11.9172C15.4273 19 18.4229 16.4623 19 13M11.5 19V22\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--sm ayy-fab--inline\" aria-label=\"Quick note\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg></button>\n</div>",
-          "react": "import { Add01Icon, Mic01Icon, PencilEdit01Icon } from \"@hugeicons/core-free-icons\";\nimport type { CSSProperties } from \"react\";\nimport { Fab, Icon } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // inline places them in the row for this page; in an app they float at the bottom corner.\n  return (\n    <div className=\"ayy-cluster\" style={{ alignItems: \"center\", \"--ayy-gap\": \"var(--ayy-space-6)\" } as CSSProperties}>\n      <Fab inline aria-label=\"New task\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n      <Fab inline extended>\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n        Compose\n      </Fab>\n      <Fab inline variant=\"secondary\" aria-label=\"Record a voice note\">\n        <Icon icon={Mic01Icon} name=\"mic\" />\n      </Fab>\n      <Fab inline size=\"sm\" variant=\"secondary\" aria-label=\"Quick note\">\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n      </Fab>\n    </div>\n  );\n}"
+          "title": "Icon, extended, secondary, small, large",
+          "html": "<!-- ayy-fab--inline places them in the row for this page; in an app they float at the bottom corner. -->\n<div class=\"ayy-cluster\" style=\"align-items: center; --ayy-gap: var(--ayy-space-6)\">\n  <button type=\"button\" class=\"ayy-fab ayy-fab--inline\" aria-label=\"New task\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--extended ayy-fab--inline\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>Compose</button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--inline\" aria-label=\"Record a voice note\"><svg class=\"ayy-icon\" data-ayy-icon=\"mic\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7 6.5C7 4.01472 9.01472 2 11.5 2C13.9853 2 16 4.01472 16 6.5V11.5C16 13.9853 13.9853 16 11.5 16C9.01472 16 7 13.9853 7 11.5V6.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11.5 19H11.0828C7.57267 19 4.57706 16.4623 4 13M11.5 19H11.9172C15.4273 19 18.4229 16.4623 19 13M11.5 19V22\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--secondary ayy-fab--sm ayy-fab--inline\" aria-label=\"Quick note\"><svg class=\"ayy-icon\" data-ayy-icon=\"pencil-line\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 20H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  <button type=\"button\" class=\"ayy-fab ayy-fab--lg ayy-fab--inline\" aria-label=\"New task, large\"><svg class=\"ayy-icon\" data-ayy-icon=\"add\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.001 5.00003V19.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19.002 12.002L4.99998 12.002\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n</div>",
+          "react": "import { Add01Icon, Mic01Icon, PencilEdit01Icon } from \"@hugeicons/core-free-icons\";\nimport type { CSSProperties } from \"react\";\nimport { Fab, Icon } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  // inline places them in the row for this page; in an app they float at the bottom corner.\n  return (\n    <div className=\"ayy-cluster\" style={{ alignItems: \"center\", \"--ayy-gap\": \"var(--ayy-space-6)\" } as CSSProperties}>\n      <Fab inline aria-label=\"New task\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n      <Fab inline extended>\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n        Compose\n      </Fab>\n      <Fab inline variant=\"secondary\" aria-label=\"Record a voice note\">\n        <Icon icon={Mic01Icon} name=\"mic\" />\n      </Fab>\n      <Fab inline size=\"sm\" variant=\"secondary\" aria-label=\"Quick note\">\n        <Icon icon={PencilEdit01Icon} name=\"pencil-line\" />\n      </Fab>\n      <Fab inline size=\"lg\" aria-label=\"New task, large\">\n        <Icon icon={Add01Icon} name=\"add\" />\n      </Fab>\n    </div>\n  );\n}"
         },
         {
           "id": "app",
@@ -4599,12 +4646,22 @@
       ],
       "classes": {
         "ayy-breadcrumb": "Root <nav aria-label=\"Breadcrumb\">.",
+        "ayy-breadcrumb--sm": "Small trail: --ayy-text-xs.",
+        "ayy-breadcrumb--lg": "Large trail: --ayy-text-md.",
         "ayy-breadcrumb--pill": "Bordered, blurred capsule that stays readable over hero images and grids.",
         "ayy-breadcrumb__list": "The <ol>. Wraps on wide screens; one line on phones, ancestors cut with an ellipsis first.",
         "ayy-breadcrumb__item": "Each <li>. A slash separates items; screen readers skip it.",
         "ayy-breadcrumb__link": "Link to an ancestor page; its target is a small control tall (40px at touch density) without changing the line. The last item is a <span aria-current=\"page\"> instead."
       },
       "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
         "pill": {
           "values": [
             true,
@@ -4643,16 +4700,22 @@
         }
       },
       "sizes": {
-        "density": "sm text at every density.",
+        "scale": {
+          "sm": "--ayy-text-xs (13px).",
+          "md": "--ayy-text-sm (14px).",
+          "lg": "--ayy-text-md (16px)."
+        },
+        "density": "Text sizes are fixed at every density; link targets grow to a control tall.",
         "width": "Hugs its items and wraps. pill puts it in a blurred, bordered capsule for heroes."
       },
-      "js": "breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
+      "js": "breadcrumbClass({ size?, pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.",
       "react": {
         "import": "import { Breadcrumb } from \"@danitesler/ayywi/react\";",
         "components": {
           "Breadcrumb": {
             "renders": "<nav aria-label=\"Breadcrumb\"><ol>…",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — the text size of the trail.",
               "items": "{ label: ReactNode; href?: string }[] — top level first; the last one is the current page.",
               "pill": "boolean",
               "aria-label": "Defaults to \"Breadcrumb\" (translate it)."
@@ -4681,6 +4744,12 @@
           "title": "Plain and pill",
           "html": "<nav class=\"ayy-breadcrumb\" aria-label=\"Breadcrumb\">\n  <ol class=\"ayy-breadcrumb__list\">\n    <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#home\">Home</a></li>\n    <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#work\">Case studies</a></li>\n    <li class=\"ayy-breadcrumb__item\"><span aria-current=\"page\">Oktopost</span></li>\n  </ol>\n</nav>\n<nav class=\"ayy-breadcrumb ayy-breadcrumb--pill\" aria-label=\"Breadcrumb, pill\">\n  <ol class=\"ayy-breadcrumb__list\">\n    <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#home\">Home</a></li>\n    <li class=\"ayy-breadcrumb__item\"><span aria-current=\"page\">My projects</span></li>\n  </ol>\n</nav>",
           "react": "import { Breadcrumb } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <Breadcrumb\n        items={[\n          { label: \"Home\", href: \"#home\" },\n          { label: \"Case studies\", href: \"#work\" },\n          { label: \"Oktopost\" },\n        ]}\n      />\n      <Breadcrumb pill aria-label=\"Breadcrumb, pill\" items={[{ label: \"Home\", href: \"#home\" }, { label: \"My projects\" }]} />\n    </>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\">\n  <nav class=\"ayy-breadcrumb ayy-breadcrumb--sm\" aria-label=\"Breadcrumb, small\">\n    <ol class=\"ayy-breadcrumb__list\">\n      <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#home\">Home</a></li>\n      <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#work\">Case studies</a></li>\n      <li class=\"ayy-breadcrumb__item\"><span aria-current=\"page\">Oktopost</span></li>\n    </ol>\n  </nav>\n  <nav class=\"ayy-breadcrumb\" aria-label=\"Breadcrumb, medium\">\n    <ol class=\"ayy-breadcrumb__list\">\n      <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#home\">Home</a></li>\n      <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#work\">Case studies</a></li>\n      <li class=\"ayy-breadcrumb__item\"><span aria-current=\"page\">Oktopost</span></li>\n    </ol>\n  </nav>\n  <nav class=\"ayy-breadcrumb ayy-breadcrumb--lg\" aria-label=\"Breadcrumb, large\">\n    <ol class=\"ayy-breadcrumb__list\">\n      <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#home\">Home</a></li>\n      <li class=\"ayy-breadcrumb__item\"><a class=\"ayy-breadcrumb__link\" href=\"#work\">Case studies</a></li>\n      <li class=\"ayy-breadcrumb__item\"><span aria-current=\"page\">Oktopost</span></li>\n    </ol>\n  </nav>\n</div>",
+          "react": "import { Breadcrumb } from \"@danitesler/ayywi/react\";\n\nconst ITEMS = [{ label: \"Home\", href: \"#home\" }, { label: \"Case studies\", href: \"#work\" }, { label: \"Oktopost\" }];\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Breadcrumb size=\"sm\" aria-label=\"Breadcrumb, small\" items={ITEMS} />\n      <Breadcrumb aria-label=\"Breadcrumb, medium\" items={ITEMS} />\n      <Breadcrumb size=\"lg\" aria-label=\"Breadcrumb, large\" items={ITEMS} />\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -4701,13 +4770,24 @@
       ],
       "classes": {
         "ayy-pagination": "Root <nav aria-label=\"Pagination\">. A wrapping row.",
+        "ayy-pagination--sm": "Small links: a step under the sm control height, text a pixel smaller.",
+        "ayy-pagination--lg": "Large links: the md control height and md text.",
         "ayy-pagination__link": "A page: <a href> when pages have URLs, <button> otherwise. aria-current=\"page\" marks the current one (outlined tint, heavier). aria-disabled=\"true\" (a link without href) or disabled dims an end you can't go past.",
         "ayy-pagination__size": "Optional page size picker: a <div> holding a <label> and a small Select. Goes first in the <nav>.",
         "ayy-pagination__size-label": "The picker's <label for>, \"Rows per page\". Visually hidden below 48rem, still the select's name.",
         "ayy-pagination__link--step": "Previous / next, with an arrow Icon (directional) and a word. Stays visible on phones, where the numbers hide.",
         "ayy-pagination__ellipsis": "The \"…\" for skipped pages, aria-hidden."
       },
-      "variants": {},
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      },
       "states": {
         "default": {
           "looks": "Muted pill links at the sm control height, in tabular figures; previous and next carry an arrow and a word."
@@ -4739,16 +4819,22 @@
         }
       },
       "sizes": {
-        "density": "Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.",
+        "scale": {
+          "sm": "Links the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.",
+          "md": "Links the sm control height (28px compact, 32 comfortable, 40 touch), sm control text.",
+          "lg": "Links the md control height (32px compact, 40 comfortable, 44 touch), md control text. The page size picker steps up with it."
+        },
+        "density": "Every size follows data-density with the control scale.",
         "width": "Hugs its links and wraps. Below 48rem only previous, the current page and next show."
       },
-      "js": "paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
+      "js": "paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationRootSizeClass(size?) → string | undefined (the --sm / --lg class for the <nav>; md adds nothing; paginationSizeClass is the page size picker); paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | \"…\")[] — which pages to show, always the same number of slots.",
       "react": {
         "import": "import { Pagination } from \"@danitesler/ayywi/react\";",
         "components": {
           "Pagination": {
             "renders": "<nav class=\"ayy-pagination\"> with previous, pages from paginationRange() and next",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — the height of the links and the size of their text.",
               "page": "The current page, 1-based.",
               "count": "How many pages there are.",
               "siblings": "Pages either side of the current one. Default 1.",
@@ -4788,6 +4874,12 @@
           "react": "import { Pagination } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-spread\" style={{ inlineSize: \"100%\" }}>\n      <p className=\"ayy-muted\">41–60 of 1,280 invoices</p>\n      <Pagination page={3} count={64} href={(page) => `?page=${page}`} />\n    </div>\n  );\n}"
         },
         {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\">\n  <nav class=\"ayy-pagination ayy-pagination--sm\" aria-label=\"Small pagination\">\n    <a class=\"ayy-pagination__link ayy-pagination__link--step\" href=\"?page=2\" rel=\"prev\"><svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-left\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Previous</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=1\">1</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=2\">2</a>\n    <a class=\"ayy-pagination__link\" aria-current=\"page\" href=\"?page=3\">3</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=4\">4</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=5\">5</a>\n    <span class=\"ayy-pagination__ellipsis\" aria-hidden=\"true\">…</span>\n    <a class=\"ayy-pagination__link\" href=\"?page=64\">64</a>\n    <a class=\"ayy-pagination__link ayy-pagination__link--step\" href=\"?page=4\" rel=\"next\">Next<svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-right\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></a>\n  </nav>\n  <nav class=\"ayy-pagination\" aria-label=\"Medium pagination\">\n    <a class=\"ayy-pagination__link ayy-pagination__link--step\" href=\"?page=2\" rel=\"prev\"><svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-left\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Previous</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=1\">1</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=2\">2</a>\n    <a class=\"ayy-pagination__link\" aria-current=\"page\" href=\"?page=3\">3</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=4\">4</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=5\">5</a>\n    <span class=\"ayy-pagination__ellipsis\" aria-hidden=\"true\">…</span>\n    <a class=\"ayy-pagination__link\" href=\"?page=64\">64</a>\n    <a class=\"ayy-pagination__link ayy-pagination__link--step\" href=\"?page=4\" rel=\"next\">Next<svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-right\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></a>\n  </nav>\n  <nav class=\"ayy-pagination ayy-pagination--lg\" aria-label=\"Large pagination\">\n    <a class=\"ayy-pagination__link ayy-pagination__link--step\" href=\"?page=2\" rel=\"prev\"><svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-left\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Previous</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=1\">1</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=2\">2</a>\n    <a class=\"ayy-pagination__link\" aria-current=\"page\" href=\"?page=3\">3</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=4\">4</a>\n    <a class=\"ayy-pagination__link\" href=\"?page=5\">5</a>\n    <span class=\"ayy-pagination__ellipsis\" aria-hidden=\"true\">…</span>\n    <a class=\"ayy-pagination__link\" href=\"?page=64\">64</a>\n    <a class=\"ayy-pagination__link ayy-pagination__link--step\" href=\"?page=4\" rel=\"next\">Next<svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-right\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></a>\n  </nav>\n</div>",
+          "react": "import { Pagination } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Pagination size=\"sm\" page={3} count={64} href={(page) => `?page=${page}`} aria-label=\"Small pagination\" />\n      <Pagination page={3} count={64} href={(page) => `?page=${page}`} aria-label=\"Medium pagination\" />\n      <Pagination size=\"lg\" page={3} count={64} href={(page) => `?page=${page}`} aria-label=\"Large pagination\" />\n    </div>\n  );\n}"
+        },
+        {
           "id": "page-size",
           "title": "With a page size picker",
           "html": "<div class=\"ayy-spread\" style=\"inline-size:100%\"><p class=\"ayy-muted\">1–10 of 1,280 invoices</p><nav class=\"ayy-pagination\" aria-label=\"Pagination\"><div class=\"ayy-pagination__size\"><label class=\"ayy-pagination__size-label\" for=\"_R_2_\">Rows per page</label><div class=\"ayy-select ayy-select--sm\"><select class=\"ayy-select__control\" id=\"_R_2_\"><option value=\"10\" selected=\"\">10</option><option value=\"25\">25</option><option value=\"50\">50</option></select></div></div><button class=\"ayy-pagination__link ayy-pagination__link--step\" type=\"button\" disabled=\"\"><svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-left\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Previous</button><button class=\"ayy-pagination__link\" aria-current=\"page\" type=\"button\">1</button><button class=\"ayy-pagination__link\" type=\"button\">2</button><button class=\"ayy-pagination__link\" type=\"button\">3</button><button class=\"ayy-pagination__link\" type=\"button\">4</button><button class=\"ayy-pagination__link\" type=\"button\">5</button><span class=\"ayy-pagination__ellipsis\" aria-hidden=\"true\">…</span><button class=\"ayy-pagination__link\" type=\"button\">128</button><button class=\"ayy-pagination__link ayy-pagination__link--step\" type=\"button\">Next<svg class=\"ayy-icon ayy-icon--directional\" data-ayy-icon=\"chevron-right\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button></nav></div>",
@@ -4813,11 +4905,22 @@
       ],
       "classes": {
         "ayy-steps": "Root <ol>, a row of steps with lines between them. Numbers come from a CSS counter.",
+        "ayy-steps--sm": "Small: markers a step under the sm control height, text --ayy-text-xs.",
+        "ayy-steps--lg": "Large: markers the md control height, text --ayy-text-md.",
         "ayy-steps--vertical": "A column, with the lines running down between the markers: for a side panel or a phone.",
         "ayy-steps__item": "A step <li>. aria-current=\"step\" marks the current one (filled marker, bold label); every step before it is drawn as done (tick, solid line); the ones after as to do.",
         "ayy-steps__label": "The step's name, one line (cut with an ellipsis in the row)."
       },
       "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "component": "Steps"
+        },
         "vertical": {
           "values": [
             false,
@@ -4855,16 +4958,22 @@
         }
       },
       "sizes": {
-        "density": "Markers are the sm control height (28px compact, 32 comfortable, 40 touch).",
+        "scale": {
+          "sm": "Markers the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), --ayy-text-xs labels.",
+          "md": "Markers the sm control height (28px compact, 32 comfortable, 40 touch), --ayy-text-sm labels.",
+          "lg": "Markers the md control height (32px compact, 40 comfortable, 44 touch), --ayy-text-md labels."
+        },
+        "density": "Every marker follows data-density with the control scale.",
         "width": "Fills its container. In a row narrower than 36rem only the current step keeps a visible label; vertical stacks them for a side panel or phone."
       },
-      "js": "stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.",
+      "js": "stepsClass({ size?, vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.",
       "react": {
         "import": "import { Steps } from \"@danitesler/ayywi/react\";",
         "components": {
           "Steps": {
             "renders": "<ol class=\"ayy-steps\"> of <li class=\"ayy-steps__item\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — marker and label size.",
               "steps": "ReactNode[] — the step names, in order.",
               "current": "Index of the current step (0-based).",
               "vertical": "boolean — a column.",
@@ -4895,6 +5004,12 @@
           "title": "Checkout, row and column",
           "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 36rem); --ayy-gap: var(--ayy-space-8)\">\n  <ol class=\"ayy-steps\" aria-label=\"Checkout progress\">\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Cart</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Shipping</span></li>\n    <li class=\"ayy-steps__item\" aria-current=\"step\"><span class=\"ayy-steps__label\">Payment</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\">Review</span></li>\n  </ol>\n  <ol class=\"ayy-steps ayy-steps--vertical\" aria-label=\"Setup progress\">\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Create your account</span></li>\n    <li class=\"ayy-steps__item\" aria-current=\"step\"><span class=\"ayy-steps__label\">Invite your team</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\">Connect your data</span></li>\n  </ol>\n</div>",
           "react": "import type { CSSProperties } from \"react\";\nimport { Steps } from \"@danitesler/ayywi/react\";\n\nconst STEPS = [\"Cart\", \"Shipping\", \"Payment\", \"Review\"];\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 36rem)\", \"--ayy-gap\": \"var(--ayy-space-8)\" } as CSSProperties}>\n      <Steps steps={STEPS} current={2} aria-label=\"Checkout progress\" />\n      <Steps steps={[\"Create your account\", \"Invite your team\", \"Connect your data\"]} current={1} vertical aria-label=\"Setup progress\" />\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 36rem); --ayy-gap: var(--ayy-space-6)\">\n  <ol class=\"ayy-steps ayy-steps--sm\" aria-label=\"Small checkout progress\">\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Cart</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Shipping</span></li>\n    <li class=\"ayy-steps__item\" aria-current=\"step\"><span class=\"ayy-steps__label\">Payment</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\">Review</span></li>\n  </ol>\n  <ol class=\"ayy-steps\" aria-label=\"Medium checkout progress\">\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Cart</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Shipping</span></li>\n    <li class=\"ayy-steps__item\" aria-current=\"step\"><span class=\"ayy-steps__label\">Payment</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\">Review</span></li>\n  </ol>\n  <ol class=\"ayy-steps ayy-steps--lg\" aria-label=\"Large checkout progress\">\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Cart</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\"><span class=\"ayy-sr-only\">Done: </span>Shipping</span></li>\n    <li class=\"ayy-steps__item\" aria-current=\"step\"><span class=\"ayy-steps__label\">Payment</span></li>\n    <li class=\"ayy-steps__item\"><span class=\"ayy-steps__label\">Review</span></li>\n  </ol>\n</div>",
+          "react": "import type { CSSProperties } from \"react\";\nimport { Steps } from \"@danitesler/ayywi/react\";\n\nconst STEPS = [\"Cart\", \"Shipping\", \"Payment\", \"Review\"];\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 36rem)\", \"--ayy-gap\": \"var(--ayy-space-6)\" } as CSSProperties}>\n      <Steps size=\"sm\" steps={STEPS} current={2} aria-label=\"Small checkout progress\" />\n      <Steps steps={STEPS} current={2} aria-label=\"Medium checkout progress\" />\n      <Steps size=\"lg\" steps={STEPS} current={2} aria-label=\"Large checkout progress\" />\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -5604,6 +5719,7 @@
       ],
       "classes": {
         "ayy-search-bar": "Root: a <form role=\"search\"> holding the field and an optional Cancel.",
+        "ayy-search-bar--sm": "Shorter field and smaller text, for a toolbar or a table header.",
         "ayy-search-bar--lg": "Taller field and text, for a search screen.",
         "ayy-search-bar__field": "The pill: a magnifier icon, the input and the clear button. The focus ring goes around it.",
         "ayy-search-bar__input": "<input type=\"search\" enterkeyhint=\"search\" aria-label placeholder>. Needs a placeholder: the clear button hides while it shows.",
@@ -5614,6 +5730,7 @@
       "variants": {
         "size": {
           "values": [
+            "sm",
             "md",
             "lg"
           ],
@@ -5655,6 +5772,7 @@
       },
       "sizes": {
         "scale": {
+          "sm": "The sm control height (28px compact, 32 comfortable, 40 touch), sm text.",
           "md": "The md control height (32px compact, 40 comfortable, 44 touch).",
           "lg": "The lg control height (40px compact, 48 comfortable, 52 touch), larger text: the top of a phone list."
         },
@@ -5675,7 +5793,7 @@
               "label": "string — the input's name. Default \"Search\"",
               "clearLabel": "string — default \"Clear search\"",
               "cancelText": "string — default \"Cancel\"",
-              "size": "\"md\" | \"lg\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "shortcut": "string — keyboard shortcut hint (e.g. \"Mod+K\"); hidden while typing",
               "formProps": "FormHTMLAttributes — props for the <form>"
             }
@@ -5701,9 +5819,9 @@
       "examples": [
         {
           "id": "basic",
-          "title": "Empty and with text",
-          "html": "<!-- The clear button shows while there's text (it reads the placeholder); @danitesler/ayywi/elements makes it clear the field. -->\n<div class=\"ayy-stack\" style=\"inline-size: min(100%, 24rem)\">\n  <form role=\"search\" class=\"ayy-search-bar\">\n    <div class=\"ayy-search-bar__field\">\n      <svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" enterkeyhint=\"search\" class=\"ayy-search-bar__input\" aria-label=\"Search tasks\" placeholder=\"Search tasks\" />\n      <button type=\"button\" class=\"ayy-search-bar__clear\" aria-label=\"Clear search\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </form>\n  <form role=\"search\" class=\"ayy-search-bar\">\n    <div class=\"ayy-search-bar__field\">\n      <svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" enterkeyhint=\"search\" class=\"ayy-search-bar__input\" aria-label=\"Search tasks\" placeholder=\"Search tasks\" value=\"milk\" />\n      <button type=\"button\" class=\"ayy-search-bar__clear\" aria-label=\"Clear search\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </form>\n</div>",
-          "react": "import { SearchBar } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <SearchBar placeholder=\"Search tasks\" label=\"Search tasks\" />\n      <SearchBar placeholder=\"Search tasks\" label=\"Search tasks\" defaultValue=\"milk\" />\n    </div>\n  );\n}"
+          "title": "Empty, with text and sizes",
+          "html": "<!-- The clear button shows while there's text (it reads the placeholder); @danitesler/ayywi/elements makes it clear the field. -->\n<div class=\"ayy-stack\" style=\"inline-size: min(100%, 24rem)\">\n  <form role=\"search\" class=\"ayy-search-bar\">\n    <div class=\"ayy-search-bar__field\">\n      <svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" enterkeyhint=\"search\" class=\"ayy-search-bar__input\" aria-label=\"Search tasks\" placeholder=\"Search tasks\" />\n      <button type=\"button\" class=\"ayy-search-bar__clear\" aria-label=\"Clear search\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </form>\n  <form role=\"search\" class=\"ayy-search-bar\">\n    <div class=\"ayy-search-bar__field\">\n      <svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" enterkeyhint=\"search\" class=\"ayy-search-bar__input\" aria-label=\"Search tasks\" placeholder=\"Search tasks\" value=\"milk\" />\n      <button type=\"button\" class=\"ayy-search-bar__clear\" aria-label=\"Clear search\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </form>\n  <form role=\"search\" class=\"ayy-search-bar ayy-search-bar--sm\">\n    <div class=\"ayy-search-bar__field\">\n      <svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" enterkeyhint=\"search\" class=\"ayy-search-bar__input\" aria-label=\"Filter this table\" placeholder=\"Filter this table\" value=\"Mira\" />\n      <button type=\"button\" class=\"ayy-search-bar__clear\" aria-label=\"Clear search\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </form>\n  <form role=\"search\" class=\"ayy-search-bar ayy-search-bar--lg\">\n    <div class=\"ayy-search-bar__field\">\n      <svg class=\"ayy-icon\" data-ayy-icon=\"search\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n      <input type=\"search\" enterkeyhint=\"search\" class=\"ayy-search-bar__input\" aria-label=\"Search everything\" placeholder=\"Search everything\" />\n      <button type=\"button\" class=\"ayy-search-bar__clear\" aria-label=\"Clear search\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n  </form>\n</div>",
+          "react": "import { SearchBar } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <SearchBar placeholder=\"Search tasks\" label=\"Search tasks\" />\n      <SearchBar placeholder=\"Search tasks\" label=\"Search tasks\" defaultValue=\"milk\" />\n      <SearchBar size=\"sm\" placeholder=\"Filter this table\" label=\"Filter this table\" defaultValue=\"Mira\" />\n      <SearchBar size=\"lg\" placeholder=\"Search everything\" label=\"Search everything\" />\n    </div>\n  );\n}"
         },
         {
           "id": "cancel",
@@ -6049,10 +6167,20 @@
       ],
       "classes": {
         "ayy-textarea": "Root, on the <textarea>.",
+        "ayy-textarea--sm": "Small: 4rem tall to start, tighter padding, sm text. Pairs with a small Input.",
+        "ayy-textarea--lg": "Large: 6.5rem tall to start, more padding, lg text.",
         "ayy-textarea--autosize": "Grows with content (CSS field-sizing). Falls back to fixed height.",
         "ayy-textarea--mono": "Monospace font."
       },
       "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
         "autosize": {
           "values": [
             true,
@@ -6099,16 +6227,22 @@
         }
       },
       "sizes": {
-        "density": "Text follows control md; the minimum height (5rem) and padding don't change.",
+        "scale": {
+          "sm": "Control sm text, 8px side padding, at least 4rem tall.",
+          "md": "Control field text, 12px side padding, at least 5rem tall.",
+          "lg": "Control lg text, 16px side padding, at least 6.5rem tall."
+        },
+        "density": "Text follows the control scale and data-density; the minimum heights and padding don't change.",
         "width": "Fills its container. autosize grows with its content (Chromium; elsewhere it keeps 5rem and scrolls)."
       },
-      "js": "textareaClass({ autosize?, mono?, className? }) → string",
+      "js": "textareaClass({ size?, autosize?, mono?, className? }) → string",
       "react": {
         "import": "import { Textarea } from \"@danitesler/ayywi/react\";",
         "components": {
           "Textarea": {
             "renders": "<textarea>",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "autosize": "boolean",
               "mono": "boolean",
               "...rest": "All native <textarea> attributes."
@@ -6133,6 +6267,12 @@
           "title": "Basic, autosize, mono",
           "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 26.25rem)\">\n  <textarea class=\"ayy-textarea\" placeholder=\"Write a short description…\" aria-label=\"Description\"></textarea>\n  <textarea class=\"ayy-textarea ayy-textarea--autosize\" rows=\"2\" placeholder=\"I grow as you type\" aria-label=\"Notes\"></textarea>\n  <textarea class=\"ayy-textarea ayy-textarea--mono\" rows=\"3\" aria-label=\"Config\">{\n  \"theme\": \"dark\"\n}</textarea>\n</div>",
           "react": "import { Textarea } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 26.25rem)\" }}>\n      <Textarea placeholder=\"Write a short description…\" aria-label=\"Description\" />\n      <Textarea autosize rows={2} placeholder=\"I grow as you type\" aria-label=\"Notes\" />\n      <Textarea mono rows={3} defaultValue={'{\\n  \"theme\": \"dark\"\\n}'} aria-label=\"Config\" />\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 26.25rem)\">\n  <textarea class=\"ayy-textarea ayy-textarea--sm\" placeholder=\"Small: a quick reply\" aria-label=\"Small textarea\"></textarea>\n  <textarea class=\"ayy-textarea\" placeholder=\"Medium: a short description\" aria-label=\"Medium textarea\"></textarea>\n  <textarea class=\"ayy-textarea ayy-textarea--lg\" placeholder=\"Large: a long-form answer\" aria-label=\"Large textarea\"></textarea>\n</div>",
+          "react": "import { Textarea } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 26.25rem)\" }}>\n      <Textarea size=\"sm\" placeholder=\"Small: a quick reply\" aria-label=\"Small textarea\" />\n      <Textarea placeholder=\"Medium: a short description\" aria-label=\"Medium textarea\" />\n      <Textarea size=\"lg\" placeholder=\"Large: a long-form answer\" aria-label=\"Large textarea\" />\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -8095,9 +8235,20 @@
         "tickbox"
       ],
       "classes": {
-        "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density."
+        "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density.",
+        "ayy-checkbox--sm": "Small box (--ayy-size-check-sm). The label that wraps it, or sits beside it in an inline Field, takes the small control text.",
+        "ayy-checkbox--lg": "Large box (--ayy-size-check-lg) and large label text."
       },
-      "variants": {},
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      },
       "states": {
         "default": {
           "looks": "A box --ayy-size-check square with a line-hover border (or --ayy-check-color) on a wash fill."
@@ -8134,16 +8285,22 @@
         }
       },
       "sizes": {
-        "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.",
+        "scale": {
+          "sm": "--ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.",
+          "md": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+          "lg": "--ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch."
+        },
+        "density": "Each size grows a step with data-density. Wrap the box in a .ayy-label so the label is part of the hit area.",
         "width": "Fixed square."
       },
-      "js": "checkboxClass constant",
+      "js": "checkboxClass constant; checkboxSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)",
       "react": {
         "import": "import { Checkbox } from \"@danitesler/ayywi/react\";",
         "components": {
           "Checkbox": {
             "renders": "<input type=\"checkbox\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" (visual size; the native size attribute is not exposed)",
               "indeterminate": "boolean — mixed state",
               "onCheckedChange": "(checked: boolean) => void",
               "checked / defaultChecked": "Controlled / uncontrolled.",
@@ -8161,7 +8318,8 @@
       "do": [
         "Use a checkbox for choices submitted with a form (terms, preferences saved with a Save button).",
         "Use checkboxes to select several items in a list or table, with an indeterminate select-all.",
-        "Phrase labels positively: \"Email me updates\", not \"Don't email me\"."
+        "Phrase labels positively: \"Email me updates\", not \"Don't email me\".",
+        "Match the size to the controls around it: sm beside sm buttons and inputs, lg in forms made for touch."
       ],
       "dont": [
         "Don't use a checkbox for settings that apply instantly — use Switch.",
@@ -8174,6 +8332,12 @@
           "title": "States",
           "html": "<div class=\"ayy-stack\">\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox\" checked /> Email me when a deploy fails</label>\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox\" /> Weekly summary</label>\n  <!-- Indeterminate is a DOM property, not an attribute: set it from JS with input.indeterminate = true -->\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox\" /> Select all projects</label>\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox\" disabled checked /> Security alerts (always on)</label>\n</div>",
           "react": "import { Checkbox } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <label className=\"ayy-label\">\n        <Checkbox defaultChecked />\n        Email me when a deploy fails\n      </label>\n      <label className=\"ayy-label\">\n        <Checkbox />\n        Weekly summary\n      </label>\n      <label className=\"ayy-label\">\n        <Checkbox indeterminate />\n        Select all projects\n      </label>\n      <label className=\"ayy-label\">\n        <Checkbox disabled defaultChecked />\n        Security alerts (always on)\n      </label>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\">\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox ayy-checkbox--sm\" checked /> Small: dense tables and menus</label>\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox\" checked /> Medium: the default</label>\n  <label class=\"ayy-label\"><input type=\"checkbox\" class=\"ayy-checkbox ayy-checkbox--lg\" checked /> Large: forms people fill in on a phone</label>\n</div>",
+          "react": "import { Checkbox } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <label className=\"ayy-label\">\n        <Checkbox size=\"sm\" defaultChecked /> Small: dense tables and menus\n      </label>\n      <label className=\"ayy-label\">\n        <Checkbox defaultChecked /> Medium: the default\n      </label>\n      <label className=\"ayy-label\">\n        <Checkbox size=\"lg\" defaultChecked /> Large: forms people fill in on a phone\n      </label>\n    </div>\n  );\n}"
         },
         {
           "id": "colored",
@@ -8200,8 +8364,12 @@
       ],
       "classes": {
         "ayy-radio": "On <input type=\"radio\">. Size follows density. aria-invalid=\"true\" tints the ring destructive (dashed in High Contrast).",
+        "ayy-radio--sm": "Small circle (--ayy-size-check-sm) and small label text. Wins over the size of its group.",
+        "ayy-radio--lg": "Large circle (--ayy-size-check-lg) and large label text. Wins over the size of its group.",
         "ayy-radio-group": "On the <fieldset> holding the radios. Vertical stack.",
         "ayy-radio-group--horizontal": "Options in a wrapping row.",
+        "ayy-radio-group--sm": "Every radio, label and the legend in the group small, with tighter rows.",
+        "ayy-radio-group--lg": "Every radio, label and the legend in the group large, with looser rows.",
         "ayy-radio-group__legend": "The group's <legend>."
       },
       "variants": {
@@ -8211,6 +8379,14 @@
             "horizontal"
           ],
           "default": "vertical"
+        },
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
         }
       },
       "states": {
@@ -8245,10 +8421,15 @@
         }
       },
       "sizes": {
-        "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+        "scale": {
+          "sm": "--ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.",
+          "md": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+          "lg": "--ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch."
+        },
+        "density": "Each size grows a step with data-density.",
         "width": "Fixed circle. The group stacks (vertical) or wraps in a row (horizontal)."
       },
-      "js": "radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string",
+      "js": "radioClass, radioGroupLegendClass constants; radioSizeClass(size?) → string | undefined (the --sm / --lg class); radioGroupClass({ orientation?, size?, className? }) → string",
       "react": {
         "import": "import { RadioGroup, Radio } from \"@danitesler/ayywi/react\";",
         "components": {
@@ -8259,13 +8440,15 @@
               "name": "string — generated if omitted",
               "value / defaultValue": "Selected value (controlled / uncontrolled).",
               "onValueChange": "(value: string) => void",
-              "orientation": "\"vertical\" | \"horizontal\""
+              "orientation": "\"vertical\" | \"horizontal\"",
+              "size": "\"sm\" | \"md\" | \"lg\" — every radio, label and the legend in the group"
             }
           },
           "Radio": {
             "renders": "<input type=\"radio\">",
             "props": {
               "value": "string (required)",
+              "size": "\"sm\" | \"md\" | \"lg\" — this radio only; wins over the group (the native size attribute is not exposed)",
               "...rest": "All native <input> attributes."
             }
           }
@@ -8277,7 +8460,8 @@
       ],
       "do": [
         "Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).",
-        "Pre-select the most common option when there's a sensible default."
+        "Pre-select the most common option when there's a sensible default.",
+        "Set the size on the RadioGroup so every option, label and the legend change together."
       ],
       "dont": [
         "Don't use radios for more than ~6 options — use Select.",
@@ -8291,6 +8475,12 @@
           "title": "Group",
           "html": "<fieldset class=\"ayy-radio-group\">\n  <legend class=\"ayy-radio-group__legend\">Visibility</legend>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"visibility-html\" value=\"private\" /> Only me</label>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"visibility-html\" value=\"team\" checked /> My team</label>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"visibility-html\" value=\"public\" /> Anyone with the link</label>\n</fieldset>\n<fieldset class=\"ayy-radio-group ayy-radio-group--horizontal\">\n  <legend class=\"ayy-radio-group__legend\">Billing</legend>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"billing-html\" value=\"monthly\" checked /> Monthly</label>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"billing-html\" value=\"yearly\" /> Yearly</label>\n</fieldset>",
           "react": "import { Radio, RadioGroup } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <RadioGroup label=\"Visibility\" defaultValue=\"team\">\n        <label className=\"ayy-label\">\n          <Radio value=\"private\" /> Only me\n        </label>\n        <label className=\"ayy-label\">\n          <Radio value=\"team\" /> My team\n        </label>\n        <label className=\"ayy-label\">\n          <Radio value=\"public\" /> Anyone with the link\n        </label>\n      </RadioGroup>\n      <RadioGroup label=\"Billing\" defaultValue=\"monthly\" orientation=\"horizontal\">\n        <label className=\"ayy-label\">\n          <Radio value=\"monthly\" /> Monthly\n        </label>\n        <label className=\"ayy-label\">\n          <Radio value=\"yearly\" /> Yearly\n        </label>\n      </RadioGroup>\n    </>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<fieldset class=\"ayy-radio-group ayy-radio-group--sm\">\n  <legend class=\"ayy-radio-group__legend\">Small</legend>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan-sm\" value=\"solo\" /> Solo</label>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan-sm\" checked value=\"team\" /> Team</label>\n</fieldset>\n<fieldset class=\"ayy-radio-group\">\n  <legend class=\"ayy-radio-group__legend\">Medium</legend>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan-md\" value=\"solo\" /> Solo</label>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan-md\" checked value=\"team\" /> Team</label>\n</fieldset>\n<fieldset class=\"ayy-radio-group ayy-radio-group--lg\">\n  <legend class=\"ayy-radio-group__legend\">Large</legend>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan-lg\" value=\"solo\" /> Solo</label>\n  <label class=\"ayy-label\"><input type=\"radio\" class=\"ayy-radio\" name=\"plan-lg\" checked value=\"team\" /> Team</label>\n</fieldset>",
+          "react": "import { Radio, RadioGroup } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <RadioGroup label=\"Small\" name=\"plan-sm\" size=\"sm\" defaultValue=\"team\">\n        <label className=\"ayy-label\">\n          <Radio value=\"solo\" /> Solo\n        </label>\n        <label className=\"ayy-label\">\n          <Radio value=\"team\" /> Team\n        </label>\n      </RadioGroup>\n      <RadioGroup label=\"Medium\" name=\"plan-md\" defaultValue=\"team\">\n        <label className=\"ayy-label\">\n          <Radio value=\"solo\" /> Solo\n        </label>\n        <label className=\"ayy-label\">\n          <Radio value=\"team\" /> Team\n        </label>\n      </RadioGroup>\n      <RadioGroup label=\"Large\" name=\"plan-lg\" size=\"lg\" defaultValue=\"team\">\n        <label className=\"ayy-label\">\n          <Radio value=\"solo\" /> Solo\n        </label>\n        <label className=\"ayy-label\">\n          <Radio value=\"team\" /> Team\n        </label>\n      </RadioGroup>\n    </>\n  );\n}"
         }
       ],
       "files": {
@@ -8315,6 +8505,7 @@
       "classes": {
         "ayy-segmented-control": "Root, a role=\"radiogroup\" with an aria-label. The pill track.",
         "ayy-segmented-control--sm": "Small height, for toolbars and card headers.",
+        "ayy-segmented-control--lg": "Large height and text, for a main choice on a phone or a settings screen.",
         "ayy-segmented-control--full": "Fills its container with equal segments.",
         "ayy-segmented-control__option": "A <label> around a native <input type=\"radio\">, which stays in the page (focus, forms) but draws nothing. The checked one is filled; the focused one gets the ring."
       },
@@ -8322,7 +8513,8 @@
         "size": {
           "values": [
             "sm",
-            "md"
+            "md",
+            "lg"
           ],
           "default": "md",
           "component": "SegmentedControl"
@@ -8369,7 +8561,8 @@
       "sizes": {
         "scale": {
           "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.",
-          "md": "Control md height (32px compact, 40 comfortable, 44 touch)."
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+          "lg": "Control lg height (36px compact, 44 comfortable, 48 touch), 16px side padding, lg text."
         },
         "density": "Height and text follow data-density.",
         "width": "Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments."
@@ -8384,7 +8577,7 @@
               "value / defaultValue": "The selected option's value.",
               "onValueChange": "(value: string) => void",
               "name": "Shared radio name, for forms. Generated if omitted.",
-              "size": "\"sm\" | \"md\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "full": "boolean — equal segments across the container."
             }
           },
@@ -8417,9 +8610,9 @@
       "examples": [
         {
           "id": "basic",
-          "title": "Date range and billing cycle",
-          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 24rem)\">\n  <div role=\"radiogroup\" class=\"ayy-segmented-control\" aria-label=\"Date range\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-1\" value=\"7d\"/>7 days</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-1\" checked=\"\" value=\"30d\"/>30 days</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-1\" value=\"90d\"/>90 days</label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-segmented-control ayy-segmented-control--sm\" aria-label=\"View\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-2\" checked=\"\" value=\"list\"/><svg class=\"ayy-icon\" data-ayy-icon=\"layout-list\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2 11.4C2 10.2417 2.24173 10 3.4 10H20.6C21.7583 10 22 10.2417 22 11.4V12.6C22 13.7583 21.7583 14 20.6 14H3.4C2.24173 14 2 13.7583 2 12.6V11.4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M2 3.4C2 2.24173 2.24173 2 3.4 2H20.6C21.7583 2 22 2.24173 22 3.4V4.6C22 5.75827 21.7583 6 20.6 6H3.4C2.24173 6 2 5.75827 2 4.6V3.4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M2 19.4C2 18.2417 2.24173 18 3.4 18H20.6C21.7583 18 22 18.2417 22 19.4V20.6C22 21.7583 21.7583 22 20.6 22H3.4C2.24173 22 2 21.7583 2 20.6V19.4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>List</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-2\" value=\"grid\"/><svg class=\"ayy-icon\" data-ayy-icon=\"layout-grid\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M3.88884 9.66294C4.39329 10 5.09552 10 6.49998 10C7.90445 10 8.60668 10 9.11113 9.66294C9.32951 9.51702 9.51701 9.32952 9.66292 9.11114C9.99998 8.60669 9.99998 7.90446 9.99998 6.5C9.99998 5.09554 9.99998 4.39331 9.66292 3.88886C9.51701 3.67048 9.32951 3.48298 9.11113 3.33706C8.60668 3 7.90445 3 6.49998 3C5.09552 3 4.39329 3 3.88884 3.33706C3.67046 3.48298 3.48296 3.67048 3.33705 3.88886C2.99998 4.39331 2.99998 5.09554 2.99998 6.5C2.99998 7.90446 2.99998 8.60669 3.33705 9.11114C3.48296 9.32952 3.67046 9.51702 3.88884 9.66294Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.8888 9.66294C15.3933 10 16.0955 10 17.5 10C18.9044 10 19.6067 10 20.1111 9.66294C20.3295 9.51702 20.517 9.32952 20.6629 9.11114C21 8.60669 21 7.90446 21 6.5C21 5.09554 21 4.39331 20.6629 3.88886C20.517 3.67048 20.3295 3.48298 20.1111 3.33706C19.6067 3 18.9044 3 17.5 3C16.0955 3 15.3933 3 14.8888 3.33706C14.6705 3.48298 14.483 3.67048 14.337 3.88886C14 4.39331 14 5.09554 14 6.5C14 7.90446 14 8.60669 14.337 9.11114C14.483 9.32952 14.6705 9.51702 14.8888 9.66294Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3.88884 20.6629C4.39329 21 5.09552 21 6.49998 21C7.90445 21 8.60668 21 9.11113 20.6629C9.32951 20.517 9.51701 20.3295 9.66292 20.1111C9.99998 19.6067 9.99998 18.9045 9.99998 17.5C9.99998 16.0955 9.99998 15.3933 9.66292 14.8889C9.51701 14.6705 9.32951 14.483 9.11113 14.3371C8.60668 14 7.90445 14 6.49998 14C5.09552 14 4.39329 14 3.88884 14.3371C3.67046 14.483 3.48296 14.6705 3.33705 14.8889C2.99998 15.3933 2.99998 16.0955 2.99998 17.5C2.99998 18.9045 2.99998 19.6067 3.33705 20.1111C3.48296 20.3295 3.67046 20.517 3.88884 20.6629Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.8888 20.6629C15.3933 21 16.0955 21 17.5 21C18.9044 21 19.6067 21 20.1111 20.6629C20.3295 20.517 20.517 20.3295 20.6629 20.1111C21 19.6067 21 18.9045 21 17.5C21 16.0955 21 15.3933 20.6629 14.8889C20.517 14.6705 20.3295 14.483 20.1111 14.3371C19.6067 14 18.9044 14 17.5 14C16.0955 14 15.3933 14 14.8888 14.3371C14.6705 14.483 14.483 14.6705 14.337 14.8889C14 15.3933 14 16.0955 14 17.5C14 18.9045 14 19.6067 14.337 20.1111C14.483 20.3295 14.6705 20.517 14.8888 20.6629Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Grid</label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-segmented-control ayy-segmented-control--full\" aria-label=\"Billing cycle\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-3\" value=\"monthly\"/>Monthly</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-3\" checked=\"\" value=\"yearly\"/>Yearly · save 20%</label>\n  </div>\n</div>",
-          "react": "import { GridViewIcon, ListViewIcon } from \"@hugeicons/core-free-icons\";\nimport { Icon, SegmentedControl, SegmentedControlItem } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <SegmentedControl aria-label=\"Date range\" defaultValue=\"30d\">\n        <SegmentedControlItem value=\"7d\">7 days</SegmentedControlItem>\n        <SegmentedControlItem value=\"30d\">30 days</SegmentedControlItem>\n        <SegmentedControlItem value=\"90d\">90 days</SegmentedControlItem>\n      </SegmentedControl>\n      <SegmentedControl aria-label=\"View\" defaultValue=\"list\" size=\"sm\">\n        <SegmentedControlItem value=\"list\">\n          <Icon icon={ListViewIcon} name=\"layout-list\" />\n          List\n        </SegmentedControlItem>\n        <SegmentedControlItem value=\"grid\">\n          <Icon icon={GridViewIcon} name=\"layout-grid\" />\n          Grid\n        </SegmentedControlItem>\n      </SegmentedControl>\n      <SegmentedControl aria-label=\"Billing cycle\" defaultValue=\"yearly\" full>\n        <SegmentedControlItem value=\"monthly\">Monthly</SegmentedControlItem>\n        <SegmentedControlItem value=\"yearly\">Yearly · save 20%</SegmentedControlItem>\n      </SegmentedControl>\n    </div>\n  );\n}"
+          "title": "Date range, billing cycle and sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 24rem)\">\n  <div role=\"radiogroup\" class=\"ayy-segmented-control\" aria-label=\"Date range\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-1\" value=\"7d\"/>7 days</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-1\" checked=\"\" value=\"30d\"/>30 days</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-1\" value=\"90d\"/>90 days</label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-segmented-control ayy-segmented-control--sm\" aria-label=\"View\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-2\" checked=\"\" value=\"list\"/><svg class=\"ayy-icon\" data-ayy-icon=\"layout-list\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M2 11.4C2 10.2417 2.24173 10 3.4 10H20.6C21.7583 10 22 10.2417 22 11.4V12.6C22 13.7583 21.7583 14 20.6 14H3.4C2.24173 14 2 13.7583 2 12.6V11.4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M2 3.4C2 2.24173 2.24173 2 3.4 2H20.6C21.7583 2 22 2.24173 22 3.4V4.6C22 5.75827 21.7583 6 20.6 6H3.4C2.24173 6 2 5.75827 2 4.6V3.4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M2 19.4C2 18.2417 2.24173 18 3.4 18H20.6C21.7583 18 22 18.2417 22 19.4V20.6C22 21.7583 21.7583 22 20.6 22H3.4C2.24173 22 2 21.7583 2 20.6V19.4Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path></svg>List</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-2\" value=\"grid\"/><svg class=\"ayy-icon\" data-ayy-icon=\"layout-grid\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M3.88884 9.66294C4.39329 10 5.09552 10 6.49998 10C7.90445 10 8.60668 10 9.11113 9.66294C9.32951 9.51702 9.51701 9.32952 9.66292 9.11114C9.99998 8.60669 9.99998 7.90446 9.99998 6.5C9.99998 5.09554 9.99998 4.39331 9.66292 3.88886C9.51701 3.67048 9.32951 3.48298 9.11113 3.33706C8.60668 3 7.90445 3 6.49998 3C5.09552 3 4.39329 3 3.88884 3.33706C3.67046 3.48298 3.48296 3.67048 3.33705 3.88886C2.99998 4.39331 2.99998 5.09554 2.99998 6.5C2.99998 7.90446 2.99998 8.60669 3.33705 9.11114C3.48296 9.32952 3.67046 9.51702 3.88884 9.66294Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.8888 9.66294C15.3933 10 16.0955 10 17.5 10C18.9044 10 19.6067 10 20.1111 9.66294C20.3295 9.51702 20.517 9.32952 20.6629 9.11114C21 8.60669 21 7.90446 21 6.5C21 5.09554 21 4.39331 20.6629 3.88886C20.517 3.67048 20.3295 3.48298 20.1111 3.33706C19.6067 3 18.9044 3 17.5 3C16.0955 3 15.3933 3 14.8888 3.33706C14.6705 3.48298 14.483 3.67048 14.337 3.88886C14 4.39331 14 5.09554 14 6.5C14 7.90446 14 8.60669 14.337 9.11114C14.483 9.32952 14.6705 9.51702 14.8888 9.66294Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M3.88884 20.6629C4.39329 21 5.09552 21 6.49998 21C7.90445 21 8.60668 21 9.11113 20.6629C9.32951 20.517 9.51701 20.3295 9.66292 20.1111C9.99998 19.6067 9.99998 18.9045 9.99998 17.5C9.99998 16.0955 9.99998 15.3933 9.66292 14.8889C9.51701 14.6705 9.32951 14.483 9.11113 14.3371C8.60668 14 7.90445 14 6.49998 14C5.09552 14 4.39329 14 3.88884 14.3371C3.67046 14.483 3.48296 14.6705 3.33705 14.8889C2.99998 15.3933 2.99998 16.0955 2.99998 17.5C2.99998 18.9045 2.99998 19.6067 3.33705 20.1111C3.48296 20.3295 3.67046 20.517 3.88884 20.6629Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.8888 20.6629C15.3933 21 16.0955 21 17.5 21C18.9044 21 19.6067 21 20.1111 20.6629C20.3295 20.517 20.517 20.3295 20.6629 20.1111C21 19.6067 21 18.9045 21 17.5C21 16.0955 21 15.3933 20.6629 14.8889C20.517 14.6705 20.3295 14.483 20.1111 14.3371C19.6067 14 18.9044 14 17.5 14C16.0955 14 15.3933 14 14.8888 14.3371C14.6705 14.483 14.483 14.6705 14.337 14.8889C14 15.3933 14 16.0955 14 17.5C14 18.9045 14 19.6067 14.337 20.1111C14.483 20.3295 14.6705 20.517 14.8888 20.6629Z\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Grid</label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-segmented-control ayy-segmented-control--lg\" aria-label=\"Theme\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-lg\" value=\"light\"/>Light</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-lg\" checked=\"\" value=\"auto\"/>Auto</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-lg\" value=\"dark\"/>Dark</label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-segmented-control ayy-segmented-control--full\" aria-label=\"Billing cycle\">\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-3\" value=\"monthly\"/>Monthly</label>\n    <label class=\"ayy-segmented-control__option\"><input type=\"radio\" name=\"segmented-control-basic-3\" checked=\"\" value=\"yearly\"/>Yearly · save 20%</label>\n  </div>\n</div>",
+          "react": "import { GridViewIcon, ListViewIcon } from \"@hugeicons/core-free-icons\";\nimport { Icon, SegmentedControl, SegmentedControlItem } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 24rem)\" }}>\n      <SegmentedControl aria-label=\"Date range\" defaultValue=\"30d\">\n        <SegmentedControlItem value=\"7d\">7 days</SegmentedControlItem>\n        <SegmentedControlItem value=\"30d\">30 days</SegmentedControlItem>\n        <SegmentedControlItem value=\"90d\">90 days</SegmentedControlItem>\n      </SegmentedControl>\n      <SegmentedControl aria-label=\"View\" defaultValue=\"list\" size=\"sm\">\n        <SegmentedControlItem value=\"list\">\n          <Icon icon={ListViewIcon} name=\"layout-list\" />\n          List\n        </SegmentedControlItem>\n        <SegmentedControlItem value=\"grid\">\n          <Icon icon={GridViewIcon} name=\"layout-grid\" />\n          Grid\n        </SegmentedControlItem>\n      </SegmentedControl>\n      <SegmentedControl aria-label=\"Theme\" defaultValue=\"auto\" size=\"lg\">\n        <SegmentedControlItem value=\"light\">Light</SegmentedControlItem>\n        <SegmentedControlItem value=\"auto\">Auto</SegmentedControlItem>\n        <SegmentedControlItem value=\"dark\">Dark</SegmentedControlItem>\n      </SegmentedControl>\n      <SegmentedControl aria-label=\"Billing cycle\" defaultValue=\"yearly\" full>\n        <SegmentedControlItem value=\"monthly\">Monthly</SegmentedControlItem>\n        <SegmentedControlItem value=\"yearly\">Yearly · save 20%</SegmentedControlItem>\n      </SegmentedControl>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -8442,6 +8635,8 @@
       ],
       "classes": {
         "ayy-chip": "A <label> around a native <input type=\"checkbox\"> or radio (which stays in the page but draws nothing), or a <button aria-pressed>. On when the input is checked or aria-pressed=\"true\".",
+        "ayy-chip--sm": "Small: a step under the default (24px compact), sm text, tighter padding. For a dense toolbar.",
+        "ayy-chip--lg": "Large: a medium control tall (32px compact), md text, more padding. For a main filter row or touch.",
         "ayy-chip--removable": "An active filter: a <span> with its text and an __remove button. Not a control itself.",
         "ayy-chip__count": "Number of results after the label, muted, tabular digits.",
         "ayy-chip__remove": "The remove (×) button of a removable chip. Needs an aria-label (\"Remove Status: Open\").",
@@ -8449,6 +8644,14 @@
         "ayy-chip-group--scroll": "One line that scrolls sideways instead of wrapping (a phone toolbar)."
       },
       "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
         "type": {
           "values": [
             "checkbox",
@@ -8497,16 +8700,22 @@
         }
       },
       "sizes": {
-        "density": "Fixed at the sm control height (28px compact, 32 comfortable, 40 touch) and control sm text.",
+        "scale": {
+          "sm": "Control sm height minus 4px (24px compact, 28 comfortable, 36 touch), control sm text minus 1px, 8px side padding.",
+          "md": "Control sm height (28px compact, 32 comfortable, 40 touch), control sm text, 12px side padding.",
+          "lg": "Control md height (32px compact, 40 comfortable, 44 touch), control md text, 16px side padding."
+        },
+        "density": "Every size follows data-density with the control scale.",
         "width": "Hugs its label. A group wraps; scroll keeps one line that scrolls sideways (phone toolbars)."
       },
-      "js": "chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
+      "js": "chipClass({ size?, removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).",
       "react": {
         "import": "import { Chip, ChipButton, ChipRemovable, ChipGroup } from \"@danitesler/ayywi/react\";",
         "components": {
           "Chip": {
             "renders": "<label class=\"ayy-chip\"><input type=\"checkbox\">…",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "type": "\"checkbox\" (filters that combine) | \"radio\" (one choice; same name in the group)",
               "checked / defaultChecked": "boolean",
               "onCheckedChange": "(checked: boolean) => void",
@@ -8520,6 +8729,7 @@
           "ChipButton": {
             "renders": "<button type=\"button\" class=\"ayy-chip\" aria-pressed>",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "pressed": "boolean",
               "onPressedChange": "(pressed: boolean) => void",
               "count": "ReactNode"
@@ -8528,6 +8738,7 @@
           "ChipRemovable": {
             "renders": "<span class=\"ayy-chip ayy-chip--removable\">… <button class=\"ayy-chip__remove\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "onRemove": "() => void",
               "removeLabel": "string — default \"Remove \" + the text"
             }
@@ -8564,6 +8775,12 @@
           "title": "Filters and one choice",
           "html": "<div class=\"ayy-stack\">\n  <div role=\"group\" class=\"ayy-chip-group\" aria-label=\"Status\">\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status\" checked=\"\" value=\"open\"/>Open<span class=\"ayy-chip__count\">12</span></label>\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status\" value=\"pending\"/>Pending<span class=\"ayy-chip__count\">4</span></label>\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status\" value=\"closed\"/>Closed<span class=\"ayy-chip__count\">31</span></label>\n  </div>\n  <div role=\"radiogroup\" class=\"ayy-chip-group\" aria-label=\"Category\">\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" checked=\"\" value=\"all\"/>All</label>\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" value=\"coffee\"/>Coffee</label>\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" value=\"tea\"/>Tea</label>\n    <label class=\"ayy-chip\"><input type=\"radio\" name=\"category\" value=\"gear\"/>Brewing gear</label>\n  </div>\n</div>",
           "react": "import { Chip, ChipGroup } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <ChipGroup aria-label=\"Status\">\n        <Chip name=\"status\" value=\"open\" defaultChecked count={12}>\n          Open\n        </Chip>\n        <Chip name=\"status\" value=\"pending\" count={4}>\n          Pending\n        </Chip>\n        <Chip name=\"status\" value=\"closed\" count={31}>\n          Closed\n        </Chip>\n      </ChipGroup>\n      <ChipGroup role=\"radiogroup\" aria-label=\"Category\">\n        <Chip type=\"radio\" name=\"category\" value=\"all\" defaultChecked>\n          All\n        </Chip>\n        <Chip type=\"radio\" name=\"category\" value=\"coffee\">\n          Coffee\n        </Chip>\n        <Chip type=\"radio\" name=\"category\" value=\"tea\">\n          Tea\n        </Chip>\n        <Chip type=\"radio\" name=\"category\" value=\"gear\">\n          Brewing gear\n        </Chip>\n      </ChipGroup>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\">\n  <div role=\"group\" class=\"ayy-chip-group\" aria-label=\"Small status filters\">\n    <label class=\"ayy-chip ayy-chip--sm\"><input type=\"checkbox\" name=\"status-sm\" checked value=\"open\" />Open<span class=\"ayy-chip__count\">12</span></label>\n    <label class=\"ayy-chip ayy-chip--sm\"><input type=\"checkbox\" name=\"status-sm\" value=\"closed\" />Closed<span class=\"ayy-chip__count\">31</span></label>\n    <span class=\"ayy-chip ayy-chip--sm ayy-chip--removable\">Assignee: Mira<button type=\"button\" class=\"ayy-chip__remove\" aria-label=\"Remove Assignee: Mira\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button></span>\n  </div>\n  <div role=\"group\" class=\"ayy-chip-group\" aria-label=\"Medium status filters\">\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status-md\" checked value=\"open\" />Open<span class=\"ayy-chip__count\">12</span></label>\n    <label class=\"ayy-chip\"><input type=\"checkbox\" name=\"status-md\" value=\"closed\" />Closed<span class=\"ayy-chip__count\">31</span></label>\n    <span class=\"ayy-chip ayy-chip--removable\">Assignee: Mira<button type=\"button\" class=\"ayy-chip__remove\" aria-label=\"Remove Assignee: Mira\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button></span>\n  </div>\n  <div role=\"group\" class=\"ayy-chip-group\" aria-label=\"Large status filters\">\n    <label class=\"ayy-chip ayy-chip--lg\"><input type=\"checkbox\" name=\"status-lg\" checked value=\"open\" />Open<span class=\"ayy-chip__count\">12</span></label>\n    <label class=\"ayy-chip ayy-chip--lg\"><input type=\"checkbox\" name=\"status-lg\" value=\"closed\" />Closed<span class=\"ayy-chip__count\">31</span></label>\n    <span class=\"ayy-chip ayy-chip--lg ayy-chip--removable\">Assignee: Mira<button type=\"button\" class=\"ayy-chip__remove\" aria-label=\"Remove Assignee: Mira\"><svg class=\"ayy-icon\" data-ayy-icon=\"x\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button></span>\n  </div>\n</div>",
+          "react": "import { Chip, ChipGroup, ChipRemovable } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <ChipGroup aria-label=\"Small status filters\">\n        <Chip size=\"sm\" name=\"status-sm\" value=\"open\" defaultChecked count={12}>\n          Open\n        </Chip>\n        <Chip size=\"sm\" name=\"status-sm\" value=\"closed\" count={31}>\n          Closed\n        </Chip>\n        <ChipRemovable size=\"sm\" onRemove={() => {}}>\n          Assignee: Mira\n        </ChipRemovable>\n      </ChipGroup>\n      <ChipGroup aria-label=\"Medium status filters\">\n        <Chip name=\"status-md\" value=\"open\" defaultChecked count={12}>\n          Open\n        </Chip>\n        <Chip name=\"status-md\" value=\"closed\" count={31}>\n          Closed\n        </Chip>\n        <ChipRemovable onRemove={() => {}}>Assignee: Mira</ChipRemovable>\n      </ChipGroup>\n      <ChipGroup aria-label=\"Large status filters\">\n        <Chip size=\"lg\" name=\"status-lg\" value=\"open\" defaultChecked count={12}>\n          Open\n        </Chip>\n        <Chip size=\"lg\" name=\"status-lg\" value=\"closed\" count={31}>\n          Closed\n        </Chip>\n        <ChipRemovable size=\"lg\" onRemove={() => {}}>\n          Assignee: Mira\n        </ChipRemovable>\n      </ChipGroup>\n    </div>\n  );\n}"
         },
         {
           "id": "filter-bar",
@@ -8926,10 +9143,23 @@
         "range-input"
       ],
       "classes": {
+        "ayy-slider--sm": "Thinner 4px track and a 14px thumb.",
+        "ayy-slider--lg": "Thicker 8px track and a 24px thumb, in a medium control tall box.",
+        "ayy-slider-range--sm": "A range with the small track and thumb; sizes both inputs inside it.",
+        "ayy-slider-range--lg": "A range with the large track and thumb; sizes both inputs inside it.",
         "ayy-slider": "On <input type=\"range\">. --ayy-value (0–100, where the value sits between min and max) fills the track up to the thumb; React and @danitesler/ayywi/elements keep it in sync, so in HTML set the starting one inline.",
         "ayy-slider-range": "A role=\"group\" around two .ayy-slider inputs (the min, then the max) sharing one track, filled between --ayy-from and --ayy-to (0–100). @danitesler/ayywi/elements keeps them in sync and stops the thumbs crossing."
       },
-      "variants": {},
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      },
       "states": {
         "default": {
           "looks": "A 6px pill track in a 14% text tint, filled in the text colour up to an 18px page-coloured thumb with a text-colour rim."
@@ -8960,16 +9190,22 @@
         }
       },
       "sizes": {
-        "density": "The control box is the sm control height (28px compact, 32 comfortable, 40 touch); track and thumb stay 6px and 18px.",
+        "scale": {
+          "sm": "4px track, 14px thumb, in the sm control height box (28px compact, 32 comfortable, 40 touch).",
+          "md": "6px track, 18px thumb, in the sm control height box.",
+          "lg": "8px track, 24px thumb, in the md control height box (32px compact, 40 comfortable, 44 touch)."
+        },
+        "density": "The control box follows data-density; track and thumb are fixed.",
         "width": "Fills its container. A range (two thumbs) is .ayy-slider-range."
       },
-      "js": "sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.",
+      "js": "sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants; sliderSizeClass(size?, range = false) → string | undefined (the --sm / --lg class for a slider, or a range when range is true; md adds nothing).",
       "react": {
         "import": "import { Slider, SliderRange } from \"@danitesler/ayywi/react\";",
         "components": {
           "Slider": {
             "renders": "<input type=\"range\" class=\"ayy-slider\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" (the native size attribute is not exposed)",
               "value / defaultValue": "number",
               "onValueChange": "(value: number) => void",
               "min": "number, default 0",
@@ -8980,6 +9216,7 @@
           "SliderRange": {
             "renders": "<div role=\"group\" class=\"ayy-slider-range\"> with two range inputs",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "value / defaultValue": "[number, number]",
               "onValueChange": "(value: [number, number]) => void",
               "min": "number",
@@ -9016,6 +9253,12 @@
           "react": "import { useState } from \"react\";\nimport { Field, FieldHint, Label, Slider } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  const [spots, setSpots] = useState(12);\n  return (\n    <Field style={{ inlineSize: \"min(100%, 22rem)\" }}>\n      <div className=\"ayy-spread\">\n        <Label htmlFor=\"class-size\">Class size</Label>\n        <output htmlFor=\"class-size\" className=\"ayy-muted\">\n          {spots} people\n        </output>\n      </div>\n      <Slider id=\"class-size\" min={4} max={30} value={spots} onValueChange={setSpots} aria-describedby=\"class-size-hint\" />\n      <FieldHint id=\"class-size-hint\">Bookings close when the class is full.</FieldHint>\n    </Field>\n  );\n}"
         },
         {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 22rem)\">\n  <input type=\"range\" class=\"ayy-slider ayy-slider--sm\" min=\"0\" max=\"100\" step=\"1\" style=\"--ayy-value: 30\" aria-label=\"Small slider\" value=\"30\" />\n  <input type=\"range\" class=\"ayy-slider\" min=\"0\" max=\"100\" step=\"1\" style=\"--ayy-value: 50\" aria-label=\"Medium slider\" value=\"50\" />\n  <input type=\"range\" class=\"ayy-slider ayy-slider--lg\" min=\"0\" max=\"100\" step=\"1\" style=\"--ayy-value: 70\" aria-label=\"Large slider\" value=\"70\" />\n  <div role=\"group\" class=\"ayy-slider-range ayy-slider-range--sm\" style=\"--ayy-from: 20; --ayy-to: 60\" aria-label=\"Small range\">\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Small range minimum\" min=\"0\" max=\"100\" step=\"1\" value=\"20\" />\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Small range maximum\" min=\"0\" max=\"100\" step=\"1\" value=\"60\" />\n  </div>\n  <div role=\"group\" class=\"ayy-slider-range ayy-slider-range--lg\" style=\"--ayy-from: 20; --ayy-to: 60\" aria-label=\"Large range\">\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Large range minimum\" min=\"0\" max=\"100\" step=\"1\" value=\"20\" />\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Large range maximum\" min=\"0\" max=\"100\" step=\"1\" value=\"60\" />\n  </div>\n</div>",
+          "react": "import { Slider, SliderRange } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 22rem)\" }}>\n      <Slider size=\"sm\" defaultValue={30} aria-label=\"Small slider\" />\n      <Slider defaultValue={50} aria-label=\"Medium slider\" />\n      <Slider size=\"lg\" defaultValue={70} aria-label=\"Large slider\" />\n      <SliderRange size=\"sm\" defaultValue={[20, 60]} labels={[\"Small range minimum\", \"Small range maximum\"]} aria-label=\"Small range\" />\n      <SliderRange size=\"lg\" defaultValue={[20, 60]} labels={[\"Large range minimum\", \"Large range maximum\"]} aria-label=\"Large range\" />\n    </div>\n  );\n}"
+        },
+        {
           "id": "range",
           "title": "Price range",
           "html": "<!-- @danitesler/ayywi/elements keeps the fill in step and stops the thumbs crossing; update the price text from the input event. -->\n<div class=\"ayy-stack\" style=\"inline-size: min(100%, 22rem)\">\n  <div class=\"ayy-spread\">\n    <span class=\"ayy-label\" id=\"price-label\">Price</span>\n    <span class=\"ayy-muted\">$18 – $64</span>\n  </div>\n  <div role=\"group\" class=\"ayy-slider-range\" style=\"--ayy-from: 18; --ayy-to: 64\" aria-labelledby=\"price-label\">\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Minimum price\" min=\"0\" max=\"100\" step=\"2\" name=\"price_min\" value=\"18\"/>\n    <input type=\"range\" class=\"ayy-slider\" aria-label=\"Maximum price\" min=\"0\" max=\"100\" step=\"2\" name=\"price_max\" value=\"64\"/>\n  </div>\n</div>",
@@ -9044,6 +9287,7 @@
       "classes": {
         "ayy-number-field": "The bordered box around the buttons and the input. Draws the focus ring while you type.",
         "ayy-number-field--sm": "Small height, for a cart line or a table cell.",
+        "ayy-number-field--lg": "Large height and text, for a main quantity on a phone.",
         "ayy-number-field__input": "The <input type=\"number\">: centred tabular digits, no spinner arrows.",
         "ayy-number-field__decrement": "The minus <button> before the input. Needs an aria-label. aria-disabled=\"true\" at min.",
         "ayy-number-field__increment": "The plus <button> after the input. Needs an aria-label. aria-disabled=\"true\" at max."
@@ -9052,7 +9296,8 @@
         "size": {
           "values": [
             "sm",
-            "md"
+            "md",
+            "lg"
           ],
           "default": "md",
           "component": "NumberField"
@@ -9091,7 +9336,8 @@
       "sizes": {
         "scale": {
           "sm": "Control sm height (28px compact, 32 comfortable, 40 touch); the number is 2.75rem wide.",
-          "md": "Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide."
+          "md": "Control md height (32px compact, 40 comfortable, 44 touch); the number is 3.5rem wide.",
+          "lg": "Control lg height (36px compact, 44 comfortable, 48 touch); the number is 4.5rem wide, in lg text."
         },
         "density": "Height, step-button width and text follow data-density.",
         "width": "Hugs its content (step buttons plus the number box)."
@@ -9108,7 +9354,7 @@
               "min": "number",
               "max": "number",
               "step": "number, default 1",
-              "size": "\"sm\" | \"md\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "decrementLabel": "string, default \"Decrease\" — say what changes (\"Remove a guest\")",
               "incrementLabel": "string, default \"Increase\"",
               "className": "On the outer box; every other prop goes to the input (id, name, aria-label…)",
@@ -9134,9 +9380,9 @@
       "examples": [
         {
           "id": "basic",
-          "title": "Guests and quantity",
-          "html": "<div class=\"ayy-stack\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"guests\">Guests</label>\n    <div class=\"ayy-number-field\">\n      <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Remove a guest\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"minus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"1\" max=\"8\" step=\"1\" id=\"guests\" aria-describedby=\"guests-hint\" name=\"guests\" value=\"2\"/>\n      <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Add a guest\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n    <p class=\"ayy-field__hint\" id=\"guests-hint\">Up to 8 per booking.</p>\n  </div>\n  <div class=\"ayy-number-field ayy-number-field--sm\">\n    <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Decrease\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"minus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"0\" max=\"20\" step=\"1\" aria-label=\"Quantity of Ethiopia Guji, 250 g\" value=\"1\"/>\n    <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Increase\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  </div>\n</div>",
-          "react": "import { Field, FieldHint, Label, NumberField } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Field>\n        <Label htmlFor=\"guests\">Guests</Label>\n        <NumberField\n          id=\"guests\"\n          name=\"guests\"\n          defaultValue={2}\n          min={1}\n          max={8}\n          decrementLabel=\"Remove a guest\"\n          incrementLabel=\"Add a guest\"\n          aria-describedby=\"guests-hint\"\n        />\n        <FieldHint id=\"guests-hint\">Up to 8 per booking.</FieldHint>\n      </Field>\n      <NumberField size=\"sm\" defaultValue={1} min={0} max={20} aria-label=\"Quantity of Ethiopia Guji, 250 g\" />\n    </div>\n  );\n}"
+          "title": "Guests, quantity and sizes",
+          "html": "<div class=\"ayy-stack\">\n  <div class=\"ayy-field\">\n    <label class=\"ayy-label\" for=\"guests\">Guests</label>\n    <div class=\"ayy-number-field\">\n      <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Remove a guest\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"minus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n      <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"1\" max=\"8\" step=\"1\" id=\"guests\" aria-describedby=\"guests-hint\" name=\"guests\" value=\"2\"/>\n      <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Add a guest\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    </div>\n    <p class=\"ayy-field__hint\" id=\"guests-hint\">Up to 8 per booking.</p>\n  </div>\n  <div class=\"ayy-number-field ayy-number-field--sm\">\n    <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Decrease\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"minus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"0\" max=\"20\" step=\"1\" aria-label=\"Quantity of Ethiopia Guji, 250 g\" value=\"1\"/>\n    <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Increase\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  </div>\n  <div class=\"ayy-number-field ayy-number-field--lg\">\n    <button type=\"button\" class=\"ayy-number-field__decrement\" aria-label=\"Decrease\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"minus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M20 12L4 12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n    <input type=\"number\" inputmode=\"numeric\" class=\"ayy-number-field__input\" min=\"0\" max=\"20\" step=\"1\" aria-label=\"Quantity of Kenya Nyeri, 1 kg\" value=\"2\"/>\n    <button type=\"button\" class=\"ayy-number-field__increment\" aria-label=\"Increase\" aria-disabled=\"false\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button>\n  </div>\n</div>",
+          "react": "import { Field, FieldHint, Label, NumberField } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Field>\n        <Label htmlFor=\"guests\">Guests</Label>\n        <NumberField\n          id=\"guests\"\n          name=\"guests\"\n          defaultValue={2}\n          min={1}\n          max={8}\n          decrementLabel=\"Remove a guest\"\n          incrementLabel=\"Add a guest\"\n          aria-describedby=\"guests-hint\"\n        />\n        <FieldHint id=\"guests-hint\">Up to 8 per booking.</FieldHint>\n      </Field>\n      <NumberField size=\"sm\" defaultValue={1} min={0} max={20} aria-label=\"Quantity of Ethiopia Guji, 250 g\" />\n      <NumberField size=\"lg\" defaultValue={2} min={0} max={20} aria-label=\"Quantity of Kenya Nyeri, 1 kg\" />\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -9415,9 +9661,20 @@
         "toggle-switch"
       ],
       "classes": {
-        "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before."
+        "ayy-switch": "On <input type=\"checkbox\" role=\"switch\"> (preferred) or <button role=\"switch\" aria-checked>. Thumb is ::before.",
+        "ayy-switch--sm": "Small track (--ayy-size-switch-sm). The label beside it in an inline Field, or wrapping it, takes the small control text.",
+        "ayy-switch--lg": "Large track (--ayy-size-switch-lg) and large label text."
       },
-      "variants": {},
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      },
       "states": {
         "default": {
           "looks": "Off: a pill (wash-hover fill, line-strong border) with a muted thumb at the inline start."
@@ -9449,16 +9706,22 @@
         }
       },
       "sizes": {
-        "density": "--ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch; the width is 1.8× that.",
+        "scale": {
+          "sm": "--ayy-size-switch-sm sets the height: 16px compact, 18 comfortable, 22 touch.",
+          "md": "--ayy-size-switch sets the height: 20px compact, 22 comfortable, 26 touch.",
+          "lg": "--ayy-size-switch-lg sets the height: 24px compact, 26 comfortable, 30 touch."
+        },
+        "density": "Each size grows a step with data-density; the width is 1.8× the height.",
         "width": "Fixed. Put it in an inline Field with its label."
       },
-      "js": "switchClass constant",
+      "js": "switchClass constant; switchSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)",
       "react": {
         "import": "import { Switch } from \"@danitesler/ayywi/react\";",
         "components": {
           "Switch": {
             "renders": "<input type=\"checkbox\" role=\"switch\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" (visual size; the native size attribute is not exposed)",
               "checked / defaultChecked": "Controlled / uncontrolled, same as a checkbox.",
               "onCheckedChange": "(checked: boolean) => void",
               "...rest": "All native <input> attributes (name, value, disabled, required…)."
@@ -9486,6 +9749,12 @@
           "title": "States",
           "html": "<div class=\"ayy-stack\">\n  <div class=\"ayy-field ayy-field--inline\">\n    <input class=\"ayy-switch\" type=\"checkbox\" role=\"switch\" id=\"sw-sync-html\" checked />\n    <label class=\"ayy-label\" for=\"sw-sync-html\">Sync on save</label>\n  </div>\n  <div class=\"ayy-field ayy-field--inline\">\n    <input class=\"ayy-switch\" type=\"checkbox\" role=\"switch\" id=\"sw-telemetry-html\" />\n    <label class=\"ayy-label\" for=\"sw-telemetry-html\">Share anonymous usage</label>\n  </div>\n  <div class=\"ayy-field ayy-field--inline\">\n    <input class=\"ayy-switch\" type=\"checkbox\" role=\"switch\" id=\"sw-disabled-html\" disabled checked />\n    <label class=\"ayy-label\" for=\"sw-disabled-html\">Managed by your organisation</label>\n  </div>\n</div>",
           "react": "import { Field, Label, Switch } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Field inline>\n        <Switch id=\"sw-sync\" defaultChecked />\n        <Label htmlFor=\"sw-sync\">Sync on save</Label>\n      </Field>\n      <Field inline>\n        <Switch id=\"sw-telemetry\" />\n        <Label htmlFor=\"sw-telemetry\">Share anonymous usage</Label>\n      </Field>\n      <Field inline>\n        <Switch id=\"sw-disabled\" disabled defaultChecked />\n        <Label htmlFor=\"sw-disabled\">Managed by your organisation</Label>\n      </Field>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\">\n  <div class=\"ayy-field ayy-field--inline\">\n    <input type=\"checkbox\" role=\"switch\" class=\"ayy-switch ayy-switch--sm\" id=\"sw-size-sm\" checked />\n    <label class=\"ayy-label\" for=\"sw-size-sm\">Small: rows in a dense settings list</label>\n  </div>\n  <div class=\"ayy-field ayy-field--inline\">\n    <input type=\"checkbox\" role=\"switch\" class=\"ayy-switch\" id=\"sw-size-md\" checked />\n    <label class=\"ayy-label\" for=\"sw-size-md\">Medium: the default</label>\n  </div>\n  <div class=\"ayy-field ayy-field--inline\">\n    <input type=\"checkbox\" role=\"switch\" class=\"ayy-switch ayy-switch--lg\" id=\"sw-size-lg\" checked />\n    <label class=\"ayy-label\" for=\"sw-size-lg\">Large: a main on/off setting</label>\n  </div>\n</div>",
+          "react": "import { Field, Label, Switch } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Field inline>\n        <Switch id=\"sw-size-sm\" size=\"sm\" defaultChecked />\n        <Label htmlFor=\"sw-size-sm\">Small: rows in a dense settings list</Label>\n      </Field>\n      <Field inline>\n        <Switch id=\"sw-size-md\" defaultChecked />\n        <Label htmlFor=\"sw-size-md\">Medium: the default</Label>\n      </Field>\n      <Field inline>\n        <Switch id=\"sw-size-lg\" size=\"lg\" defaultChecked />\n        <Label htmlFor=\"sw-size-lg\">Large: a main on/off setting</Label>\n      </Field>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -10113,6 +10382,8 @@
       ],
       "classes": {
         "ayy-card": "Root surface.",
+        "ayy-card--sm": "Tighter: 12px padding on the header, content and footer, a sm title and an xs description.",
+        "ayy-card--lg": "Roomier: 24px padding and an lg title.",
         "ayy-card--interactive": "Lifts on hover (mouse and trackpad only, so a tap doesn't leave it lifted). Use when the whole card is clickable.",
         "ayy-card--spotlight": "Pointer-following glow + lit border. Colour via the --ayy-spot custom property.",
         "ayy-card--transparent": "No fill and no rest shadow: the page shows through. The line border, radius and padding stay. Pairs with spotlight for rows on a plain page.",
@@ -10137,6 +10408,14 @@
         "ayy-card__view-badges": "View: row of Badges at the end of the body (Edited, Uploaded)."
       },
       "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
         "interactive": {
           "values": [
             true,
@@ -10209,16 +10488,22 @@
         }
       },
       "sizes": {
+        "scale": {
+          "sm": "12px padding on the header, content and footer; --ayy-text-sm title, --ayy-text-xs description.",
+          "md": "20px padding; --ayy-text-md title, --ayy-text-sm description.",
+          "lg": "24px padding; --ayy-text-lg title, --ayy-text-sm description."
+        },
         "density": "Padding and text don't follow data-density.",
         "width": "Fills its grid cell or container; height follows content, and the footer sits at the bottom of a stretched card. A view card is as tall as its picture's box: --ayy-ratio of its width. Put view cards in .ayy-grid with --ayy-min (14–16rem)."
       },
-      "js": "cardClass({ interactive?, spotlight?, transparent?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
+      "js": "cardClass({ size?, interactive?, spotlight?, transparent?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.",
       "react": {
         "import": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardMedia, CardLink, CardViewMedia, CardViewImage, CardViewBadge, CardViewPlay, CardViewBody, CardViewText, CardViewTitle, CardViewMeta, CardViewBadges } from \"@danitesler/ayywi/react\";",
         "components": {
           "Card": {
             "renders": "<div>",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — padding of the header, content and footer, and the size of the title",
               "interactive": "boolean",
               "spotlight": "boolean — tracks the pointer for you",
               "spotColor": "CSS colour for the spotlight, e.g. \"var(--ayy-accent-product)\"",
@@ -10327,6 +10612,12 @@
           "react": "import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Card style={{ maxInlineSize: \"22.5rem\" }}>\n      <CardHeader>\n        <CardTitle>Weekly report</CardTitle>\n        <CardDescription>A summary of activity across your workspace.</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n      </CardContent>\n      <CardFooter>\n        <Button size=\"sm\">Open report</Button>\n        <Button size=\"sm\" variant=\"ghost\">\n          Share\n        </Button>\n      </CardFooter>\n    </Card>\n  );\n}"
         },
         {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 22.5rem)\">\n  <div class=\"ayy-card ayy-card--sm\">\n    <div class=\"ayy-card__header\">\n      <h3 class=\"ayy-card__title\">Weekly report</h3>\n      <p class=\"ayy-card__description\">Activity across your workspace.</p>\n    </div>\n    <div class=\"ayy-card__content\">\n      <p class=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n    </div>\n    <div class=\"ayy-card__footer\">\n      <button type=\"button\" class=\"ayy-button ayy-button--sm\">Open report</button>\n    </div>\n  </div>\n  <div class=\"ayy-card\">\n    <div class=\"ayy-card__header\">\n      <h3 class=\"ayy-card__title\">Weekly report</h3>\n      <p class=\"ayy-card__description\">Activity across your workspace.</p>\n    </div>\n    <div class=\"ayy-card__content\">\n      <p class=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n    </div>\n    <div class=\"ayy-card__footer\">\n      <button type=\"button\" class=\"ayy-button ayy-button--sm\">Open report</button>\n    </div>\n  </div>\n  <div class=\"ayy-card ayy-card--lg\">\n    <div class=\"ayy-card__header\">\n      <h3 class=\"ayy-card__title\">Weekly report</h3>\n      <p class=\"ayy-card__description\">Activity across your workspace.</p>\n    </div>\n    <div class=\"ayy-card__content\">\n      <p class=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n    </div>\n    <div class=\"ayy-card__footer\">\n      <button type=\"button\" class=\"ayy-button ayy-button--sm\">Open report</button>\n    </div>\n  </div>\n</div>",
+          "react": "import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 22.5rem)\" }}>\n      <Card size=\"sm\">\n        <CardHeader>\n          <CardTitle>Weekly report</CardTitle>\n          <CardDescription>Activity across your workspace.</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n        </CardContent>\n        <CardFooter>\n          <Button size=\"sm\">Open report</Button>\n        </CardFooter>\n      </Card>\n      <Card>\n        <CardHeader>\n          <CardTitle>Weekly report</CardTitle>\n          <CardDescription>Activity across your workspace.</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n        </CardContent>\n        <CardFooter>\n          <Button size=\"sm\">Open report</Button>\n        </CardFooter>\n      </Card>\n      <Card size=\"lg\">\n        <CardHeader>\n          <CardTitle>Weekly report</CardTitle>\n          <CardDescription>Activity across your workspace.</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p className=\"ayy-muted\">12 projects · updated 2 minutes ago</p>\n        </CardContent>\n        <CardFooter>\n          <Button size=\"sm\">Open report</Button>\n        </CardFooter>\n      </Card>\n    </div>\n  );\n}"
+        },
+        {
           "id": "spotlight",
           "title": "Interactive with spotlight",
           "html": "<!-- Pointer tracking comes from @danitesler/ayywi/elements (or call trackSpotlight on pointermove yourself). -->\n<div class=\"ayy-card ayy-card--interactive ayy-card--spotlight\" style=\"inline-size: 15rem; --ayy-spot: var(--ayy-accent-product)\">\n  <div class=\"ayy-card__header\">\n    <span class=\"ayy-badge ayy-badge--info\">Product</span>\n    <h3 class=\"ayy-card__title\">Roadmap</h3>\n    <p class=\"ayy-card__description\">Move your pointer over me.</p>\n  </div>\n</div>\n<div class=\"ayy-card ayy-card--interactive ayy-card--spotlight ayy-card--transparent\" style=\"inline-size: 15rem; --ayy-spot: var(--ayy-accent-ai)\">\n  <div class=\"ayy-card__header\">\n    <span class=\"ayy-badge ayy-badge--ai\">AI</span>\n    <h3 class=\"ayy-card__title\">Assistant</h3>\n    <p class=\"ayy-card__description\">No fill: just the glow and border.</p>\n  </div>\n</div>",
@@ -10365,12 +10656,23 @@
       ],
       "classes": {
         "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
+        "ayy-tabs--sm": "Small: the track is a small control tall, tab text is control sm, tighter padding. Reaches only its own list, not tabs nested in a panel.",
+        "ayy-tabs--lg": "Large: the track is a large control tall, tab text is control lg, more padding.",
         "ayy-tabs__list": "role=\"tablist\" pill container.",
         "ayy-tabs__tab": "role=\"tab\" button. Selected when aria-selected=\"true\".",
         "ayy-tabs__panel": "role=\"tabpanel\". Hide inactive panels with the hidden attribute.",
         "ayy-tabs__count": "Small count after a tab's label (items in a filter). Inverts with the selected tab."
       },
-      "variants": {},
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      },
       "states": {
         "default": {
           "looks": "A pill track (wash fill, line border) with text-soft tab labels."
@@ -10402,10 +10704,15 @@
         }
       },
       "sizes": {
-        "density": "The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.",
+        "scale": {
+          "sm": "Track at the sm control height (28px compact, 32 comfortable, 40 touch), control sm text, 8px side padding.",
+          "md": "Track at the md control height (32px compact, 40 comfortable, 44 touch), control md text, 12px side padding.",
+          "lg": "Track at the lg control height (36px compact, 44 comfortable, 48 touch), control lg text, 16px side padding."
+        },
+        "density": "Every size follows data-density with the control scale.",
         "width": "The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container."
       },
-      "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
+      "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; tabsSizeClass(size?) → string | undefined (the --sm / --lg class for the root; md adds nothing); nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
       "element": {
         "tag": "ayy-tabs",
         "attributes": {
@@ -10423,6 +10730,7 @@
           "Tabs": {
             "renders": "<div>",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — the height of the tab list and its labels.",
               "value / defaultValue": "Selected tab value (controlled / uncontrolled).",
               "onValueChange": "(value: string) => void"
             }
@@ -10473,6 +10781,12 @@
           "react": "import { Tabs, TabsContent, TabsList, TabsTrigger } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Tabs defaultValue=\"overview\">\n      <TabsList aria-label=\"Project settings\">\n        <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n        <TabsTrigger value=\"activity\">Activity</TabsTrigger>\n        <TabsTrigger value=\"members\">Members</TabsTrigger>\n        <TabsTrigger value=\"billing\" disabled>\n          Billing\n        </TabsTrigger>\n      </TabsList>\n      <TabsContent value=\"overview\">\n        <p className=\"ayy-muted\">3 environments · 12 deploys this week</p>\n      </TabsContent>\n      <TabsContent value=\"activity\">\n        <p className=\"ayy-muted\">Latest changes from your team.</p>\n      </TabsContent>\n      <TabsContent value=\"members\">\n        <p className=\"ayy-muted\">People with access to this project.</p>\n      </TabsContent>\n      <TabsContent value=\"billing\" />\n    </Tabs>\n  );\n}"
         },
         {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<!-- <ayy-tabs> (@danitesler/ayywi/elements) wires ids, clicks and arrow keys. -->\n<div class=\"ayy-stack\">\n  <ayy-tabs class=\"ayy-tabs ayy-tabs--sm\" value=\"all\">\n    <div class=\"ayy-tabs__list\" role=\"tablist\" aria-label=\"Small tabs\">\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"all\" aria-selected=\"true\">All</button>\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"open\" aria-selected=\"false\" tabindex=\"-1\">Open</button>\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"closed\" aria-selected=\"false\" tabindex=\"-1\">Closed</button>\n    </div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"all\"></div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"open\" hidden></div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"closed\" hidden></div>\n  </ayy-tabs>\n  <ayy-tabs class=\"ayy-tabs\" value=\"all\">\n    <div class=\"ayy-tabs__list\" role=\"tablist\" aria-label=\"Medium tabs\">\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"all\" aria-selected=\"true\">All</button>\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"open\" aria-selected=\"false\" tabindex=\"-1\">Open</button>\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"closed\" aria-selected=\"false\" tabindex=\"-1\">Closed</button>\n    </div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"all\"></div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"open\" hidden></div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"closed\" hidden></div>\n  </ayy-tabs>\n  <ayy-tabs class=\"ayy-tabs ayy-tabs--lg\" value=\"all\">\n    <div class=\"ayy-tabs__list\" role=\"tablist\" aria-label=\"Large tabs\">\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"all\" aria-selected=\"true\">All</button>\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"open\" aria-selected=\"false\" tabindex=\"-1\">Open</button>\n      <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"closed\" aria-selected=\"false\" tabindex=\"-1\">Closed</button>\n    </div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"all\"></div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"open\" hidden></div>\n    <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"closed\" hidden></div>\n  </ayy-tabs>\n</div>",
+          "react": "import { Tabs, TabsContent, TabsList, TabsTrigger } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <Tabs size=\"sm\" defaultValue=\"all\">\n        <TabsList aria-label=\"Small tabs\">\n          <TabsTrigger value=\"all\">All</TabsTrigger>\n          <TabsTrigger value=\"open\">Open</TabsTrigger>\n          <TabsTrigger value=\"closed\">Closed</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"all\" />\n        <TabsContent value=\"open\" />\n        <TabsContent value=\"closed\" />\n      </Tabs>\n      <Tabs defaultValue=\"all\">\n        <TabsList aria-label=\"Medium tabs\">\n          <TabsTrigger value=\"all\">All</TabsTrigger>\n          <TabsTrigger value=\"open\">Open</TabsTrigger>\n          <TabsTrigger value=\"closed\">Closed</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"all\" />\n        <TabsContent value=\"open\" />\n        <TabsContent value=\"closed\" />\n      </Tabs>\n      <Tabs size=\"lg\" defaultValue=\"all\">\n        <TabsList aria-label=\"Large tabs\">\n          <TabsTrigger value=\"all\">All</TabsTrigger>\n          <TabsTrigger value=\"open\">Open</TabsTrigger>\n          <TabsTrigger value=\"closed\">Closed</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"all\" />\n        <TabsContent value=\"open\" />\n        <TabsContent value=\"closed\" />\n      </Tabs>\n    </div>\n  );\n}"
+        },
+        {
           "id": "icons",
           "title": "With icons",
           "html": "<!-- Tabs with custom icons before each label. -->\n<ayy-tabs class=\"ayy-tabs\" value=\"code\">\n  <div class=\"ayy-tabs__list\" role=\"tablist\" aria-label=\"Project\">\n    <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"code\" aria-selected=\"true\"><svg class=\"ayy-icon\" data-ayy-icon=\"code\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 6.99998L19.0664 9.64296C20.3554 10.7541 21 11.3096 21 12C21 12.6903 20.3555 13.2459 19.0664 14.357L16 17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M8 6.99998L4.93365 9.64296C3.64455 10.7541 3 11.3096 3 12C3 12.6903 3.64455 13.2459 4.93365 14.357L8 17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>Code</button>\n    <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"pull-requests\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ayy-icon\" data-ayy-icon=\"git-pull-request\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M6 8L6 16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M18 16V12C18 9.17156 18 7.75735 17.1213 6.87867C16.2426 5.99999 14.8284 5.99999 12 5.99999L11 5.99999M11 5.99999C11 5.29976 12.9943 3.99152 13.5 3.49999M11 5.99999C11 6.70022 12.9943 8.00846 13.5 8.49999\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><circle cx=\"6\" cy=\"18\" r=\"2\" stroke=\"currentColor\" stroke-width=\"1.5\"/><circle cx=\"6\" cy=\"6\" r=\"2\" stroke=\"currentColor\" stroke-width=\"1.5\"/><circle cx=\"18\" cy=\"18\" r=\"2\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg>Pull requests</button>\n    <button type=\"button\" class=\"ayy-tabs__tab\" role=\"tab\" data-value=\"deployments\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ayy-icon\" data-ayy-icon=\"rocket\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 10.1667L12.1232 6.04344C13.2481 4.91858 13.8105 4.35614 14.4312 3.90314C15.7047 2.9737 17.1818 2.36187 18.7395 2.11858C19.4988 2 20.2942 2 21.885 2C21.9681 2 22 2.03812 22 2.11504C22 3.70584 22 4.50125 21.8814 5.26046C21.6381 6.81818 21.0263 8.29527 20.0969 9.56878C19.6439 10.1895 19.0814 10.7519 17.9566 11.8768L13.8333 16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M10.341 8.09838C8.63808 8.09838 6.49778 7.73765 4.9043 8.39769C3.73671 8.88132 2.87754 10.0012 2 10.8787L5.30597 12.2955C6.18208 12.671 5.64651 13.7766 5.50147 14.5018C5.33985 15.3099 5.34886 15.3397 5.93158 15.9224L8.07758 18.0684C8.6603 18.6511 8.69008 18.6602 9.49816 18.4985C10.2234 18.3535 11.329 17.8179 11.7044 18.694L13.1213 22C13.9988 21.1225 15.1187 20.2633 15.6023 19.0957C16.2624 17.5022 15.9016 15.3619 15.9016 13.659\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M12 20L11 21\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M4 12L3 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M15 4.07996C16.2 4.25996 17.46 4.73996 18.1614 5.45996C19.0576 6.25211 19.68 7.31996 19.92 8.99996\" stroke=\"currentColor\" stroke-linecap=\"square\" stroke-width=\"1.5\"/><path d=\"M17.94 6.06006L16.5 7.50006\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"/></svg>Deployments</button>\n  </div>\n  <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"code\">\n    <p class=\"ayy-muted\">Browse repository source files and commits.</p>\n  </div>\n  <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"pull-requests\" hidden>\n    <p class=\"ayy-muted\">Review open proposals and merge requests.</p>\n  </div>\n  <div class=\"ayy-tabs__panel\" role=\"tabpanel\" data-value=\"deployments\" hidden>\n    <p class=\"ayy-muted\">View production releases and deploy status.</p>\n  </div>\n</ayy-tabs>",
@@ -10506,11 +10820,22 @@
       ],
       "classes": {
         "ayy-accordion": "Root <div>: a column of items with hairlines above, between and below.",
+        "ayy-accordion--sm": "Tighter rows: 12px above and below the question, sm question text, xs answer text. Reaches only its own items.",
+        "ayy-accordion--lg": "Roomier rows: 20px above and below the question, lg question text, md answer text.",
         "ayy-accordion__item": "A native <details>. Give every item in the accordion the same name attribute to allow only one open at a time. `open` expands it.",
         "ayy-accordion__trigger": "The <summary>: the question, medium weight, with a chevron at the inline end that turns over when open.",
         "ayy-accordion__content": "The answer below the trigger, in soft text. Paragraphs and lists inside are spaced for you."
       },
       "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "component": "Accordion"
+        },
         "single": {
           "values": [
             false,
@@ -10552,16 +10877,22 @@
         }
       },
       "sizes": {
+        "scale": {
+          "sm": "12px block padding, --ayy-text-sm question, --ayy-text-xs answer.",
+          "md": "16px block padding, --ayy-text-md question, --ayy-text-sm answer.",
+          "lg": "20px block padding, --ayy-text-lg question, --ayy-text-md answer."
+        },
         "density": "Doesn't follow data-density.",
         "width": "Fills its container."
       },
-      "js": "accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.",
+      "js": "accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants; accordionSizeClass(size?) → string | undefined (the --sm / --lg class for the root; md adds nothing).",
       "react": {
         "import": "import { Accordion, AccordionItem } from \"@danitesler/ayywi/react\";",
         "components": {
           "Accordion": {
             "renders": "<div class=\"ayy-accordion\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — row padding and text size.",
               "single": "boolean — one item open at a time (a shared name on every <details>)."
             }
           },
@@ -10596,6 +10927,12 @@
           "title": "FAQ",
           "html": "<div class=\"ayy-accordion\" style=\"inline-size: min(100%, 40rem)\">\n  <details class=\"ayy-accordion__item\" name=\"accordion-faq-1\" open=\"\">\n    <summary class=\"ayy-accordion__trigger\">Can I cancel any time?</summary>\n    <div class=\"ayy-accordion__content\">\n      <p>Yes. Your plan runs to the end of the billing period, then your projects switch to read-only. Nothing is deleted for 90 days.</p>\n    </div>\n  </details>\n  <details class=\"ayy-accordion__item\" name=\"accordion-faq-1\">\n    <summary class=\"ayy-accordion__trigger\">Do viewers need a paid seat?</summary>\n    <div class=\"ayy-accordion__content\">\n      <p>No. Only people who edit pages count as editors. Viewers and commenters are free on every plan.</p>\n    </div>\n  </details>\n  <details class=\"ayy-accordion__item\" name=\"accordion-faq-1\">\n    <summary class=\"ayy-accordion__trigger\">Where is my data stored?</summary>\n    <div class=\"ayy-accordion__content\">\n      <p>In the EU or the US, your choice when you create a workspace. Backups stay in the same region.</p>\n      <p>Enterprise plans can bring their own storage bucket.</p>\n    </div>\n  </details>\n</div>",
           "react": "import { Accordion, AccordionItem } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <Accordion single style={{ inlineSize: \"min(100%, 40rem)\" }}>\n      <AccordionItem label=\"Can I cancel any time?\" open>\n        <p>Yes. Your plan runs to the end of the billing period, then your projects switch to read-only. Nothing is deleted for 90 days.</p>\n      </AccordionItem>\n      <AccordionItem label=\"Do viewers need a paid seat?\">\n        <p>No. Only people who edit pages count as editors. Viewers and commenters are free on every plan.</p>\n      </AccordionItem>\n      <AccordionItem label=\"Where is my data stored?\">\n        <p>In the EU or the US, your choice when you create a workspace. Backups stay in the same region.</p>\n        <p>Enterprise plans can bring their own storage bucket.</p>\n      </AccordionItem>\n    </Accordion>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 32rem)\">\n  <div class=\"ayy-accordion ayy-accordion--sm\">\n    <details class=\"ayy-accordion__item\" open>\n      <summary class=\"ayy-accordion__trigger\">Can I cancel any time?</summary>\n      <div class=\"ayy-accordion__content\">\n        <p>Yes. Your plan runs to the end of the billing period.</p>\n      </div>\n    </details>\n    <details class=\"ayy-accordion__item\">\n      <summary class=\"ayy-accordion__trigger\">Do viewers need a paid seat?</summary>\n      <div class=\"ayy-accordion__content\">\n        <p>No. Viewers and commenters are free on every plan.</p>\n      </div>\n    </details>\n  </div>\n  <div class=\"ayy-accordion\">\n    <details class=\"ayy-accordion__item\" open>\n      <summary class=\"ayy-accordion__trigger\">Can I cancel any time?</summary>\n      <div class=\"ayy-accordion__content\">\n        <p>Yes. Your plan runs to the end of the billing period.</p>\n      </div>\n    </details>\n    <details class=\"ayy-accordion__item\">\n      <summary class=\"ayy-accordion__trigger\">Do viewers need a paid seat?</summary>\n      <div class=\"ayy-accordion__content\">\n        <p>No. Viewers and commenters are free on every plan.</p>\n      </div>\n    </details>\n  </div>\n  <div class=\"ayy-accordion ayy-accordion--lg\">\n    <details class=\"ayy-accordion__item\" open>\n      <summary class=\"ayy-accordion__trigger\">Can I cancel any time?</summary>\n      <div class=\"ayy-accordion__content\">\n        <p>Yes. Your plan runs to the end of the billing period.</p>\n      </div>\n    </details>\n    <details class=\"ayy-accordion__item\">\n      <summary class=\"ayy-accordion__trigger\">Do viewers need a paid seat?</summary>\n      <div class=\"ayy-accordion__content\">\n        <p>No. Viewers and commenters are free on every plan.</p>\n      </div>\n    </details>\n  </div>\n</div>",
+          "react": "import { Accordion, AccordionItem } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 32rem)\" }}>\n      <Accordion size=\"sm\">\n        <AccordionItem label=\"Can I cancel any time?\" open>\n          <p>Yes. Your plan runs to the end of the billing period.</p>\n        </AccordionItem>\n        <AccordionItem label=\"Do viewers need a paid seat?\">\n          <p>No. Viewers and commenters are free on every plan.</p>\n        </AccordionItem>\n      </Accordion>\n      <Accordion>\n        <AccordionItem label=\"Can I cancel any time?\" open>\n          <p>Yes. Your plan runs to the end of the billing period.</p>\n        </AccordionItem>\n        <AccordionItem label=\"Do viewers need a paid seat?\">\n          <p>No. Viewers and commenters are free on every plan.</p>\n        </AccordionItem>\n      </Accordion>\n      <Accordion size=\"lg\">\n        <AccordionItem label=\"Can I cancel any time?\" open>\n          <p>Yes. Your plan runs to the end of the billing period.</p>\n        </AccordionItem>\n        <AccordionItem label=\"Do viewers need a paid seat?\">\n          <p>No. Viewers and commenters are free on every plan.</p>\n        </AccordionItem>\n      </Accordion>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -11580,6 +11917,8 @@
       ],
       "classes": {
         "ayy-alert": "Root. Neutral by default.",
+        "ayy-alert--sm": "Compact: 8px by 12px padding, --ayy-text-xs text, a 16px icon. For a message inside a card or a form row.",
+        "ayy-alert--lg": "Roomy: 16px by 20px padding, --ayy-text-md text, a 22px icon. For a page-level notice.",
         "ayy-alert--info": "Blue tint.",
         "ayy-alert--success": "Green tint.",
         "ayy-alert--warning": "Amber tint.",
@@ -11598,6 +11937,14 @@
             "destructive"
           ],
           "default": "default"
+        },
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
         }
       },
       "states": {
@@ -11628,16 +11975,22 @@
         }
       },
       "sizes": {
-        "density": "Padding and sm text are fixed.",
+        "scale": {
+          "sm": "8px by 12px padding, --ayy-text-xs (13px), a 16px icon.",
+          "md": "12px by 16px padding, --ayy-text-sm (14px), an 18px icon.",
+          "lg": "16px by 20px padding, --ayy-text-md (16px), a 22px icon."
+        },
+        "density": "Padding and text are fixed at every density.",
         "width": "Fills its container."
       },
-      "js": "alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
+      "js": "alertClass({ variant?, size?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants",
       "react": {
         "import": "import { Alert, AlertTitle, AlertDescription, AlertActions } from \"@danitesler/ayywi/react\";",
         "components": {
           "Alert": {
             "renders": "<div>",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — padding, text and icon",
               "variant": "\"default\" | \"info\" | \"success\" | \"warning\" | \"destructive\""
             }
           },
@@ -11672,6 +12025,12 @@
           "title": "Variants",
           "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 32.5rem)\">\n  <div class=\"ayy-alert\">\n    <svg class=\"ayy-icon\" data-ayy-icon=\"info\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M12 16V12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n    <p class=\"ayy-alert__title\">Read-only mode</p>\n    <p class=\"ayy-alert__description\">You're viewing a shared project. Ask the owner for edit access.</p>\n  </div>\n  <div class=\"ayy-alert ayy-alert--warning\">\n    <svg class=\"ayy-icon\" data-ayy-icon=\"triangle-alert\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M13.9248 21H10.0752C5.44476 21 3.12955 21 2.27636 19.4939C1.42317 17.9879 2.60736 15.9914 4.97574 11.9985L6.90057 8.75333C9.17559 4.91778 10.3131 3 12 3C13.6869 3 14.8244 4.91777 17.0994 8.75332L19.0243 11.9985C21.3926 15.9914 22.5768 17.9879 21.7236 19.4939C20.8704 21 18.5552 21 13.9248 21Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M12 9V13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/><path d=\"M12.125 16.75H12M12.25 16.75C12.25 16.8881 12.1381 17 12 17C11.8619 17 11.75 16.8881 11.75 16.75C11.75 16.6119 11.8619 16.5 12 16.5C12.1381 16.5 12.25 16.6119 12.25 16.75Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"/></svg>\n    <p class=\"ayy-alert__title\">Your trial ends in 3 days</p>\n    <p class=\"ayy-alert__description\">Add a payment method to keep your projects online.</p>\n    <div class=\"ayy-alert__actions\">\n      <button type=\"button\" class=\"ayy-button ayy-button--sm\">Add payment method</button>\n      <button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-button--sm\">Later</button>\n    </div>\n  </div>\n  <div class=\"ayy-alert ayy-alert--destructive\" role=\"alert\">\n    <p class=\"ayy-alert__title\">Deploy failed</p>\n    <p class=\"ayy-alert__description\">The build ran out of memory. Increase the limit or split the job.</p>\n  </div>\n</div>",
           "react": "import { Alert02Icon, InformationCircleIcon } from \"@hugeicons/core-free-icons\";\nimport { Alert, AlertActions, AlertDescription, AlertTitle, Button, Icon } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 32.5rem)\" }}>\n      <Alert>\n        <Icon icon={InformationCircleIcon} name=\"info\" />\n        <AlertTitle>Read-only mode</AlertTitle>\n        <AlertDescription>You're viewing a shared project. Ask the owner for edit access.</AlertDescription>\n      </Alert>\n      <Alert variant=\"warning\">\n        <Icon icon={Alert02Icon} name=\"triangle-alert\" />\n        <AlertTitle>Your trial ends in 3 days</AlertTitle>\n        <AlertDescription>Add a payment method to keep your projects online.</AlertDescription>\n        <AlertActions>\n          <Button size=\"sm\">Add payment method</Button>\n          <Button size=\"sm\" variant=\"ghost\">\n            Later\n          </Button>\n        </AlertActions>\n      </Alert>\n      <Alert variant=\"destructive\" role=\"alert\">\n        <AlertTitle>Deploy failed</AlertTitle>\n        <AlertDescription>The build ran out of memory. Increase the limit or split the job.</AlertDescription>\n      </Alert>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\" style=\"inline-size: min(100%, 32.5rem)\">\n  <div class=\"ayy-alert ayy-alert--info ayy-alert--sm\">\n    <svg class=\"ayy-icon\" data-ayy-icon=\"info\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M12 16V12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n    <p class=\"ayy-alert__title\">Autosave is on</p>\n    <p class=\"ayy-alert__description\">Changes are saved as you type.</p>\n  </div>\n  <div class=\"ayy-alert ayy-alert--info\">\n    <svg class=\"ayy-icon\" data-ayy-icon=\"info\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M12 16V12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n    <p class=\"ayy-alert__title\">Autosave is on</p>\n    <p class=\"ayy-alert__description\">Changes are saved as you type.</p>\n  </div>\n  <div class=\"ayy-alert ayy-alert--info ayy-alert--lg\">\n    <svg class=\"ayy-icon\" data-ayy-icon=\"info\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M12 16V12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>\n    <p class=\"ayy-alert__title\">Autosave is on</p>\n    <p class=\"ayy-alert__description\">Changes are saved as you type.</p>\n  </div>\n</div>",
+          "react": "import { InformationCircleIcon } from \"@hugeicons/core-free-icons\";\nimport { Alert, AlertDescription, AlertTitle, Icon } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\" style={{ inlineSize: \"min(100%, 32.5rem)\" }}>\n      <Alert size=\"sm\" variant=\"info\">\n        <Icon icon={InformationCircleIcon} name=\"info\" />\n        <AlertTitle>Autosave is on</AlertTitle>\n        <AlertDescription>Changes are saved as you type.</AlertDescription>\n      </Alert>\n      <Alert variant=\"info\">\n        <Icon icon={InformationCircleIcon} name=\"info\" />\n        <AlertTitle>Autosave is on</AlertTitle>\n        <AlertDescription>Changes are saved as you type.</AlertDescription>\n      </Alert>\n      <Alert size=\"lg\" variant=\"info\">\n        <Icon icon={InformationCircleIcon} name=\"info\" />\n        <AlertTitle>Autosave is on</AlertTitle>\n        <AlertDescription>Changes are saved as you type.</AlertDescription>\n      </Alert>\n    </div>\n  );\n}"
         }
       ],
       "files": {
@@ -12572,6 +12931,8 @@
       ],
       "classes": {
         "ayy-badge": "Root. Neutral by default.",
+        "ayy-badge--sm": "Small: text a pixel under the default, tighter padding. For counts and tags inside dense rows.",
+        "ayy-badge--lg": "Large: text a pixel over the default, more padding. For a status next to a title.",
         "ayy-badge--muted": "Quieter neutral.",
         "ayy-badge--outline": "Border only.",
         "ayy-badge--success": "Positive status.",
@@ -12595,6 +12956,14 @@
             "ai"
           ],
           "default": "default"
+        },
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
         }
       },
       "states": {
@@ -12625,10 +12994,15 @@
         }
       },
       "sizes": {
-        "density": "Text size follows data-density via --ayy-text-s.",
+        "scale": {
+          "sm": "--ayy-text-s minus 1px (12px compact, 13 touch), 8px side padding.",
+          "md": "--ayy-text-s (13px compact, 14 touch), 10px side padding.",
+          "lg": "--ayy-text-s plus 1px (14px compact, 15 touch), 12px side padding and 4px block padding."
+        },
+        "density": "Text size follows data-density via --ayy-text-s; every size steps with it.",
         "width": "Hugs its text, never wraps."
       },
-      "js": "badgeClass({ variant?, className? }) → string",
+      "js": "badgeClass({ variant?, size?, className? }) → string",
       "react": {
         "import": "import { Badge } from \"@danitesler/ayywi/react\";",
         "components": {
@@ -12636,6 +13010,7 @@
             "renders": "<span>",
             "props": {
               "variant": "\"default\" | \"muted\" | \"outline\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"ai\"",
+              "size": "\"sm\" | \"md\" | \"lg\"",
               "dot": "boolean | \"pulse\" | \"static\" — leading status dot"
             }
           }
@@ -12662,6 +13037,12 @@
           "title": "Variants",
           "html": "<span class=\"ayy-badge\">Default</span>\n<span class=\"ayy-badge ayy-badge--muted\">Muted</span>\n<span class=\"ayy-badge ayy-badge--outline\">Outline</span>\n<span class=\"ayy-badge ayy-badge--success\">Synced</span>\n<span class=\"ayy-badge ayy-badge--warning\">Pending</span>\n<span class=\"ayy-badge ayy-badge--destructive\">Failed</span>\n<span class=\"ayy-badge ayy-badge--info\">Info</span>\n<span class=\"ayy-badge ayy-badge--ai\">AI</span>",
           "react": "import { Badge } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <Badge>Default</Badge>\n      <Badge variant=\"muted\">Muted</Badge>\n      <Badge variant=\"outline\">Outline</Badge>\n      <Badge variant=\"success\">Synced</Badge>\n      <Badge variant=\"warning\">Pending</Badge>\n      <Badge variant=\"destructive\">Failed</Badge>\n      <Badge variant=\"info\">Info</Badge>\n      <Badge variant=\"ai\">AI</Badge>\n    </>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<span class=\"ayy-badge ayy-badge--success ayy-badge--sm\">Synced</span>\n<span class=\"ayy-badge ayy-badge--success\">Synced</span>\n<span class=\"ayy-badge ayy-badge--success ayy-badge--lg\">Synced</span>\n<span class=\"ayy-badge ayy-badge--warning ayy-badge--sm\"><span class=\"ayy-badge__dot\" aria-hidden=\"true\"></span>Pending</span>\n<span class=\"ayy-badge ayy-badge--warning\"><span class=\"ayy-badge__dot\" aria-hidden=\"true\"></span>Pending</span>\n<span class=\"ayy-badge ayy-badge--warning ayy-badge--lg\"><span class=\"ayy-badge__dot\" aria-hidden=\"true\"></span>Pending</span>",
+          "react": "import { Badge } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <>\n      <Badge size=\"sm\" variant=\"success\">Synced</Badge>\n      <Badge variant=\"success\">Synced</Badge>\n      <Badge size=\"lg\" variant=\"success\">Synced</Badge>\n      <Badge size=\"sm\" variant=\"warning\" dot>Pending</Badge>\n      <Badge variant=\"warning\" dot>Pending</Badge>\n      <Badge size=\"lg\" variant=\"warning\" dot>Pending</Badge>\n    </>\n  );\n}"
         },
         {
           "id": "dot",
@@ -12819,9 +13200,21 @@
         "shortcut-key"
       ],
       "classes": {
-        "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
+        "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.",
+        "ayy-kbd--sm": "Small keycap: 0.6875em of the surrounding text. For a hint inside a small control or a menu row.",
+        "ayy-kbd--lg": "Large keycap: 0.875em of the surrounding text. For a hint in a help page or an empty state."
       },
-      "variants": {},
+      "variants": {
+        "size": {
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "component": "Kbd"
+        }
+      },
       "states": {
         "default": {
           "looks": "A small keycap: wash fill, line-strong border with a 2px bottom edge, mono text-soft at 0.75em."
@@ -12849,16 +13242,22 @@
         }
       },
       "sizes": {
+        "scale": {
+          "sm": "0.6875em of the surrounding text (11px in 16px text).",
+          "md": "0.75em of the surrounding text (12px in 16px text).",
+          "lg": "0.875em of the surrounding text (14px in 16px text)."
+        },
         "density": "Scales with the text around it (1.6em tall); scales when surrounding text uses --ayy-text-s.",
         "width": "At least 1.6em wide, grows with the key name."
       },
-      "js": "kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names (\"mod\" → ⌘ on Mac, Ctrl on Windows/Linux; \"meta\" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name (\"Command\" for ⌘).",
+      "js": "kbdClass and keyboardHintClass constants; kbdSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing). platformKeyLabel(key, platform) maps modifier names to platform symbols/names (\"mod\" → ⌘ on Mac, Ctrl on Windows/Linux; \"meta\" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name (\"Command\" for ⌘).",
       "react": {
         "import": "import { Kbd, KeyboardHint } from \"@danitesler/ayywi/react\";",
         "components": {
           "Kbd": {
             "renders": "<kbd class=\"ayy-kbd\">",
             "props": {
+              "size": "\"sm\" | \"md\" | \"lg\" — stepped from the text around it",
               "keyName": "string — a modifier or key drawn for the platform (\"mod\", \"meta\", \"alt\", \"ctrl\", \"shift\", \"enter\", \"backspace\"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.",
               "platform": "\"mac\" | \"windows\" | \"linux\" — force a target platform instead of detecting it"
             }
@@ -12896,6 +13295,12 @@
           "title": "Shortcuts in text",
           "html": "<div class=\"ayy-stack\">\n  <p>Press <kbd class=\"ayy-kbd\">/</kbd> to search, or <kbd class=\"ayy-kbd\" aria-label=\"Command K\">⌘K</kbd> to open the command menu.</p>\n  <p class=\"ayy-muted\">Save a draft with <kbd class=\"ayy-kbd\">Ctrl</kbd> + <kbd class=\"ayy-kbd\">S</kbd>.</p>\n</div>",
           "react": "import { Kbd } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <p>\n        Press <Kbd>/</Kbd> to search, or <Kbd aria-label=\"Command K\">⌘K</Kbd> to open the command menu.\n      </p>\n      <p className=\"ayy-muted\">\n        Save a draft with <Kbd keyName=\"mod\" /> + <Kbd>S</Kbd>.\n      </p>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "sizes",
+          "title": "Sizes",
+          "html": "<div class=\"ayy-stack\">\n  <p>Small, inside a menu row: Save <kbd class=\"ayy-kbd ayy-kbd--sm\">Ctrl</kbd> <kbd class=\"ayy-kbd ayy-kbd--sm\">S</kbd></p>\n  <p>Medium, in a sentence: press <kbd class=\"ayy-kbd\">/</kbd> to search.</p>\n  <p>Large, in a help page: jump to the next section with <kbd class=\"ayy-kbd ayy-kbd--lg\">J</kbd>.</p>\n</div>",
+          "react": "import { Kbd } from \"@danitesler/ayywi/react\";\n\nexport default function Example() {\n  return (\n    <div className=\"ayy-stack\">\n      <p>\n        Small, inside a menu row: Save <Kbd size=\"sm\" keyName=\"mod\" /> <Kbd size=\"sm\">S</Kbd>\n      </p>\n      <p>\n        Medium, in a sentence: press <Kbd>/</Kbd> to search.\n      </p>\n      <p>\n        Large, in a help page: jump to the next section with <Kbd size=\"lg\">J</Kbd>.\n      </p>\n    </div>\n  );\n}"
         },
         {
           "id": "platform",
@@ -13042,9 +13447,11 @@
       ],
       "classes": {
         "ayy-avatar": "Root (role=\"img\" + aria-label). 32px circle.",
+        "ayy-avatar--xs": "20px, with 9px initials. For a dense table row or a mention.",
         "ayy-avatar--sm": "24px.",
         "ayy-avatar--lg": "40px.",
         "ayy-avatar--xl": "56px.",
+        "ayy-avatar--2xl": "80px. For a profile header.",
         "ayy-avatar--square": "Rounded square (workspaces, teams).",
         "ayy-avatar__fallback": "Initials, underneath the image.",
         "ayy-avatar__image": "The <img alt=\"\">. Covers the initials when it loads.",
@@ -13053,10 +13460,12 @@
       "variants": {
         "size": {
           "values": [
+            "xs",
             "sm",
             "md",
             "lg",
-            "xl"
+            "xl",
+            "2xl"
           ],
           "default": "md"
         },
@@ -13097,10 +13506,12 @@
       },
       "sizes": {
         "scale": {
+          "xs": "1.25rem (20px), initials fixed at 9px.",
           "sm": "1.5rem (24px).",
           "md": "2rem (32px).",
           "lg": "2.5rem (40px).",
-          "xl": "3.5rem (56px)."
+          "xl": "3.5rem (56px).",
+          "2xl": "5rem (80px)."
         },
         "density": "Doesn't follow data-density. Initials are 38% of the size.",
         "width": "Square. A group overlaps them by 20% with a page-colour ring."
@@ -13115,7 +13526,7 @@
               "name": "string (required) — accessible name and initials",
               "src": "string — image URL",
               "fallback": "string — custom initials",
-              "size": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+              "size": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"",
               "shape": "\"circle\" | \"square\""
             }
           },
@@ -13142,8 +13553,8 @@
         {
           "id": "sizes",
           "title": "Sizes",
-          "html": "<span class=\"ayy-avatar ayy-avatar--sm\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--lg\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--xl\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--xl ayy-avatar--square\" role=\"img\" aria-label=\"Northwind\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">N</span></span>",
-          "react": "import { Avatar } from \"@danitesler/ayywi/react\";\n\nconst photo =\n  \"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\";\n\nexport default function Example() {\n  return (\n    <>\n      <Avatar name=\"Maya Chen\" src={photo} size=\"sm\" />\n      <Avatar name=\"Maya Chen\" src={photo} />\n      <Avatar name=\"Maya Chen\" src={photo} size=\"lg\" />\n      <Avatar name=\"Maya Chen\" src={photo} size=\"xl\" />\n      <Avatar name=\"Northwind\" shape=\"square\" size=\"xl\" />\n    </>\n  );\n}"
+          "html": "<span class=\"ayy-avatar ayy-avatar--xs\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--sm\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--lg\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--xl\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--2xl\" role=\"img\" aria-label=\"Maya Chen\">\n  <span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span>\n  <img class=\"ayy-avatar__image\" alt=\"\" src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\" />\n</span>\n<span class=\"ayy-avatar ayy-avatar--xl ayy-avatar--square\" role=\"img\" aria-label=\"Northwind\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">N</span></span>\n<span class=\"ayy-avatar ayy-avatar--xs\" role=\"img\" aria-label=\"Maya Chen\"><span class=\"ayy-avatar__fallback\" aria-hidden=\"true\">MC</span></span>",
+          "react": "import { Avatar } from \"@danitesler/ayywi/react\";\n\nconst photo =\n  \"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>\";\n\nexport default function Example() {\n  return (\n    <>\n      <Avatar name=\"Maya Chen\" src={photo} size=\"xs\" />\n      <Avatar name=\"Maya Chen\" src={photo} size=\"sm\" />\n      <Avatar name=\"Maya Chen\" src={photo} />\n      <Avatar name=\"Maya Chen\" src={photo} size=\"lg\" />\n      <Avatar name=\"Maya Chen\" src={photo} size=\"xl\" />\n      <Avatar name=\"Maya Chen\" src={photo} size=\"2xl\" />\n      <Avatar name=\"Northwind\" shape=\"square\" size=\"xl\" />\n      <Avatar name=\"Maya Chen\" size=\"xs\" />\n    </>\n  );\n}"
         },
         {
           "id": "fallback",

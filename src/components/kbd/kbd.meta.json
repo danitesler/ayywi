@@ -5,9 +5,13 @@
   "description": "A small keycap for showing a keyboard key or shortcut in help text, menus and tooltips. Shortcuts adapt to the platform, so Mac users see their own symbols.",
   "aka": ["kbd", "keyboard-hint", "keycap", "hotkey", "shortcut-key"],
   "classes": {
-    "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge."
+    "ayy-kbd": "The <kbd>: monospace, 0.75em of the surrounding text, a hairline border with a heavier bottom edge.",
+    "ayy-kbd--sm": "Small keycap: 0.6875em of the surrounding text. For a hint inside a small control or a menu row.",
+    "ayy-kbd--lg": "Large keycap: 0.875em of the surrounding text. For a hint in a help page or an empty state."
   },
-  "variants": {},
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "Kbd" }
+  },
   "states": {
     "default": { "looks": "A small keycap: wash fill, line-strong border with a 2px bottom edge, mono text-soft at 0.75em." },
     "hover": { "none": "A key label, not a control." },
@@ -19,16 +23,22 @@
     "loading": { "none": "No loading state." }
   },
   "sizes": {
+    "scale": {
+      "sm": "0.6875em of the surrounding text (11px in 16px text).",
+      "md": "0.75em of the surrounding text (12px in 16px text).",
+      "lg": "0.875em of the surrounding text (14px in 16px text)."
+    },
     "density": "Scales with the text around it (1.6em tall); scales when surrounding text uses --ayy-text-s.",
     "width": "At least 1.6em wide, grows with the key name."
   },
-  "js": "kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names (\"mod\" → ⌘ on Mac, Ctrl on Windows/Linux; \"meta\" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name (\"Command\" for ⌘).",
+  "js": "kbdClass and keyboardHintClass constants; kbdSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing). platformKeyLabel(key, platform) maps modifier names to platform symbols/names (\"mod\" → ⌘ on Mac, Ctrl on Windows/Linux; \"meta\" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name (\"Command\" for ⌘).",
   "react": {
     "import": "import { Kbd, KeyboardHint } from \"@danitesler/ayywi/react\";",
     "components": {
       "Kbd": {
         "renders": "<kbd class=\"ayy-kbd\">",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" — stepped from the text around it",
           "keyName": "string — a modifier or key drawn for the platform (\"mod\", \"meta\", \"alt\", \"ctrl\", \"shift\", \"enter\", \"backspace\"). Symbols get an aria-label with the key's name. The server and first render draw Windows names, then the user's platform.",
           "platform": "\"mac\" | \"windows\" | \"linux\" — force a target platform instead of detecting it"
         }
@@ -62,6 +72,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "Shortcuts in text" },
+    { "id": "sizes", "title": "Sizes" },
     { "id": "platform", "title": "Platform adaptation (macOS, Windows, Linux)" },
     { "id": "multilingual", "title": "Multi-language hotkey handling" }
   ]

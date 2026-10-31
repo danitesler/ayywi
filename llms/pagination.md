@@ -4,6 +4,8 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 
 **Classes**
 - `.ayy-pagination` — Root <nav aria-label="Pagination">. A wrapping row.
+- `.ayy-pagination--sm` — Small links: a step under the sm control height, text a pixel smaller.
+- `.ayy-pagination--lg` — Large links: the md control height and md text.
 - `.ayy-pagination__link` — A page: <a href> when pages have URLs, <button> otherwise. aria-current="page" marks the current one (outlined tint, heavier). aria-disabled="true" (a link without href) or disabled dims an end you can't go past.
 - `.ayy-pagination__size` — Optional page size picker: a <div> holding a <label> and a small Select. Goes first in the <nav>.
 - `.ayy-pagination__size-label` — The picker's <label for>, "Rows per page". Visually hidden below 48rem, still the select's name.
@@ -21,11 +23,14 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 - `loading` — doesn't apply: Show the loading in the list or table it pages (Skeleton rows), not here.
 
 **Sizes**
-- Density — Links are the sm control height (28px compact, 32 comfortable, 40 touch) with sm control text.
+- `sm` — Links the sm control height minus 4px (24px compact, 28 comfortable, 36 touch), sm control text minus 1px.
+- `md` (default) — Links the sm control height (28px compact, 32 comfortable, 40 touch), sm control text.
+- `lg` — Links the md control height (32px compact, 40 comfortable, 44 touch), md control text. The page size picker steps up with it.
+- Density — Every size follows data-density with the control scale.
 - Width — Hugs its links and wraps. Below 48rem only previous, the current page and next show.
 
 **React** — `import { Pagination } from "@danitesler/ayywi/react";`
-- `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `pageSize` How many items a page holds. Shows the picker when onPageSizeChange is also set.; `pageSizeOptions` number[] — the sizes the picker offers. Default [10, 25, 50]; pageSize is added if missing.; `onPageSizeChange` (pageSize) => void — set the size and go back to page 1.; `labels` { nav?, previous?, next?, pageSize? } — text for translation. Defaults "Pagination", "Previous", "Next", "Rows per page".
+- `<Pagination>` renders <nav class="ayy-pagination"> with previous, pages from paginationRange() and next. Props: `size` "sm" | "md" | "lg" — the height of the links and the size of their text.; `page` The current page, 1-based.; `count` How many pages there are.; `siblings` Pages either side of the current one. Default 1.; `href` (page) => string — pages become links (?page=3).; `onPageChange` (page) => void — without href, pages become buttons; with it, links still work and the handler runs instead of navigating.; `pageSize` How many items a page holds. Shows the picker when onPageSizeChange is also set.; `pageSizeOptions` number[] — the sizes the picker offers. Default [10, 25, 50]; pageSize is added if missing.; `onPageSizeChange` (pageSize) => void — set the size and go back to page 1.; `labels` { nav?, previous?, next?, pageSize? } — text for translation. Defaults "Pagination", "Previous", "Next", "Rows per page".
 
 **Accessibility**
 - It's a <nav aria-label="Pagination">: give a second one on the page a different label.
@@ -76,6 +81,64 @@ export default function Example() {
     <div className="ayy-spread" style={{ inlineSize: "100%" }}>
       <p className="ayy-muted">41–60 of 1,280 invoices</p>
       <Pagination page={3} count={64} href={(page) => `?page=${page}`} />
+    </div>
+  );
+}
+```
+
+## Pagination — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <nav class="ayy-pagination ayy-pagination--sm" aria-label="Small pagination">
+    <a class="ayy-pagination__link ayy-pagination__link--step" href="?page=2" rel="prev"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Previous</a>
+    <a class="ayy-pagination__link" href="?page=1">1</a>
+    <a class="ayy-pagination__link" href="?page=2">2</a>
+    <a class="ayy-pagination__link" aria-current="page" href="?page=3">3</a>
+    <a class="ayy-pagination__link" href="?page=4">4</a>
+    <a class="ayy-pagination__link" href="?page=5">5</a>
+    <span class="ayy-pagination__ellipsis" aria-hidden="true">…</span>
+    <a class="ayy-pagination__link" href="?page=64">64</a>
+    <a class="ayy-pagination__link ayy-pagination__link--step" href="?page=4" rel="next">Next<svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+  </nav>
+  <nav class="ayy-pagination" aria-label="Medium pagination">
+    <a class="ayy-pagination__link ayy-pagination__link--step" href="?page=2" rel="prev"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Previous</a>
+    <a class="ayy-pagination__link" href="?page=1">1</a>
+    <a class="ayy-pagination__link" href="?page=2">2</a>
+    <a class="ayy-pagination__link" aria-current="page" href="?page=3">3</a>
+    <a class="ayy-pagination__link" href="?page=4">4</a>
+    <a class="ayy-pagination__link" href="?page=5">5</a>
+    <span class="ayy-pagination__ellipsis" aria-hidden="true">…</span>
+    <a class="ayy-pagination__link" href="?page=64">64</a>
+    <a class="ayy-pagination__link ayy-pagination__link--step" href="?page=4" rel="next">Next<svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+  </nav>
+  <nav class="ayy-pagination ayy-pagination--lg" aria-label="Large pagination">
+    <a class="ayy-pagination__link ayy-pagination__link--step" href="?page=2" rel="prev"><svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>Previous</a>
+    <a class="ayy-pagination__link" href="?page=1">1</a>
+    <a class="ayy-pagination__link" href="?page=2">2</a>
+    <a class="ayy-pagination__link" aria-current="page" href="?page=3">3</a>
+    <a class="ayy-pagination__link" href="?page=4">4</a>
+    <a class="ayy-pagination__link" href="?page=5">5</a>
+    <span class="ayy-pagination__ellipsis" aria-hidden="true">…</span>
+    <a class="ayy-pagination__link" href="?page=64">64</a>
+    <a class="ayy-pagination__link ayy-pagination__link--step" href="?page=4" rel="next">Next<svg class="ayy-icon ayy-icon--directional" data-ayy-icon="chevron-right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></a>
+  </nav>
+</div>
+```
+
+React:
+
+```tsx
+import { Pagination } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <Pagination size="sm" page={3} count={64} href={(page) => `?page=${page}`} aria-label="Small pagination" />
+      <Pagination page={3} count={64} href={(page) => `?page=${page}`} aria-label="Medium pagination" />
+      <Pagination size="lg" page={3} count={64} href={(page) => `?page=${page}`} aria-label="Large pagination" />
     </div>
   );
 }

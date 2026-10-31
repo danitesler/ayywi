@@ -2,8 +2,11 @@ import { cx } from "../../lib/cx";
 import { Cancel01Icon, Search01Icon } from "../../lib/icons";
 import { iconSvg } from "../icon/icon";
 
-export function searchBarClass({ size = "md", className }: { size?: "md" | "lg"; className?: string } = {}): string {
-  return cx("ayy-search-bar", size === "lg" && "ayy-search-bar--lg", className);
+export const searchBarSizes = ["sm", "md", "lg"] as const;
+export type SearchBarSize = (typeof searchBarSizes)[number];
+
+export function searchBarClass({ size = "md", className }: { size?: SearchBarSize; className?: string } = {}): string {
+  return cx("ayy-search-bar", size !== "md" && `ayy-search-bar--${size}`, className);
 }
 
 /** The magnifier, as SVG markup (Hugeicons Search01). */

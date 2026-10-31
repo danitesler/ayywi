@@ -5,9 +5,13 @@
   "description": "A box for turning an option on or off, or for picking several items from a list. It's the native checkbox with a clearer look, and it can show a mixed state when only some of a group is selected.",
   "aka": ["checkbox", "check-box", "tickbox"],
   "classes": {
-    "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density."
+    "ayy-checkbox": "On <input type=\"checkbox\">. Draws the box and mark; size follows density.",
+    "ayy-checkbox--sm": "Small box (--ayy-size-check-sm). The label that wraps it, or sits beside it in an inline Field, takes the small control text.",
+    "ayy-checkbox--lg": "Large box (--ayy-size-check-lg) and large label text."
   },
-  "variants": {},
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
   "states": {
     "default": { "looks": "A box --ayy-size-check square with a line-hover border (or --ayy-check-color) on a wash fill." },
     "hover": { "when": ":hover", "looks": "Border turns text-soft." },
@@ -20,16 +24,22 @@
     "indeterminate": { "when": ":indeterminate (el.indeterminate = true; React: indeterminate)", "looks": "Primary fill with a bar instead of the tick: some of a group selected." }
   },
   "sizes": {
-    "density": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.",
+    "scale": {
+      "sm": "--ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.",
+      "md": "--ayy-size-check: 16px compact, 18 comfortable, 20 touch.",
+      "lg": "--ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch."
+    },
+    "density": "Each size grows a step with data-density. Wrap the box in a .ayy-label so the label is part of the hit area.",
     "width": "Fixed square."
   },
-  "js": "checkboxClass constant",
+  "js": "checkboxClass constant; checkboxSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)",
   "react": {
     "import": "import { Checkbox } from \"@danitesler/ayywi/react\";",
     "components": {
       "Checkbox": {
         "renders": "<input type=\"checkbox\">",
         "props": {
+          "size": "\"sm\" | \"md\" | \"lg\" (visual size; the native size attribute is not exposed)",
           "indeterminate": "boolean — mixed state",
           "onCheckedChange": "(checked: boolean) => void",
           "checked / defaultChecked": "Controlled / uncontrolled.",
@@ -47,12 +57,13 @@
   "do": [
     "Use a checkbox for choices submitted with a form (terms, preferences saved with a Save button).",
     "Use checkboxes to select several items in a list or table, with an indeterminate select-all.",
-    "Phrase labels positively: \"Email me updates\", not \"Don't email me\"."
+    "Phrase labels positively: \"Email me updates\", not \"Don't email me\".",
+    "Match the size to the controls around it: sm beside sm buttons and inputs, lg in forms made for touch."
   ],
   "dont": [
     "Don't use a checkbox for settings that apply instantly — use Switch.",
     "Don't use checkboxes to pick exactly one option — use Radio.",
     "Don't use a checkbox to trigger an immediate action."
   ],
-  "examples": [{ "id": "basic", "title": "States" }, { "id": "colored", "title": "Coloured by priority" }]
+  "examples": [{ "id": "basic", "title": "States" }, { "id": "sizes", "title": "Sizes" }, { "id": "colored", "title": "Coloured by priority" }]
 }

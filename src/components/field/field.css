@@ -27,6 +27,17 @@
   cursor: pointer;
 }
 
+/* The label text follows the size of the checkbox, radio or switch it wraps, or sits beside in an inline Field. */
+.ayy-label:has(> :is(.ayy-checkbox--sm, .ayy-radio--sm, .ayy-switch--sm)),
+.ayy-field--inline:has(> :is(.ayy-checkbox--sm, .ayy-radio--sm, .ayy-switch--sm)) .ayy-label {
+  font-size: var(--ayy-control-text-sm);
+}
+
+.ayy-label:has(> :is(.ayy-checkbox--lg, .ayy-radio--lg, .ayy-switch--lg)),
+.ayy-field--inline:has(> :is(.ayy-checkbox--lg, .ayy-radio--lg, .ayy-switch--lg)) .ayy-label {
+  font-size: var(--ayy-control-text-lg);
+}
+
 .ayy-field:has(:is(input, select, textarea, .ayy-select__control, .ayy-shortcut-recorder):is(:disabled, [aria-disabled="true"])) .ayy-label,
 .ayy-label:has(> :is(:disabled, [aria-disabled="true"])) {
   opacity: var(--ayy-opacity-disabled);

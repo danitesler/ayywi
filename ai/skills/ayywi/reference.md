@@ -61,9 +61,9 @@ A search box above a list of actions and places, so people can find and run thin
 
 ## Floating action button (Actions)
 A round floating button for the main action of a phone screen, like composing or adding something. It stays in the corner over the content and can show a label when extended.
-- Classes: `.ayy-fab` `.ayy-fab--extended` `.ayy-fab--secondary` `.ayy-fab--sm` `.ayy-fab--inline`
+- Classes: `.ayy-fab` `.ayy-fab--extended` `.ayy-fab--secondary` `.ayy-fab--lg` `.ayy-fab--sm` `.ayy-fab--inline`
 - States: hover, pressed, focus, disabled
-- Sizes: `sm` `md`
+- Sizes: `sm` `md` `lg`
 - JS: fabClass({ variant?, size?, extended?, inline?, className? }) → string; fabVariants, fabSizes.
 - A11y: An icon-only FAB needs an aria-label that says the action ("New task"), not the icon ("Plus"). Put it after the main content in the DOM so it comes after what it acts on in the tab order, not before the page. It must not cover content for good: the App shell keeps it out of the bottom nav, and lists need room at their end (padding-block-end of the FAB's height) so the last row can scroll clear of it.
 
@@ -108,23 +108,26 @@ The bottom of a website page: the brand with a short line about the product, gro
 
 ## Breadcrumb (Navigation)
 A trail of links that shows where the current page sits in the site, from the top level down. It lets people jump back to any page above it.
-- Classes: `.ayy-breadcrumb` `.ayy-breadcrumb--pill` `.ayy-breadcrumb__list` `.ayy-breadcrumb__item` `.ayy-breadcrumb__link`
+- Classes: `.ayy-breadcrumb` `.ayy-breadcrumb--sm` `.ayy-breadcrumb--lg` `.ayy-breadcrumb--pill` `.ayy-breadcrumb__list` `.ayy-breadcrumb__item` `.ayy-breadcrumb__link`
 - States: hover, focus, selected
-- JS: breadcrumbClass({ pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: breadcrumbClass({ size?, pill?, className? }) → string; breadcrumbListClass, breadcrumbItemClass, breadcrumbLinkClass constants.
 - A11y: Wrap it in <nav aria-label="Breadcrumb"> and use an <ol>, so it's announced as an ordered path. The current page is plain text with aria-current="page", not a link to itself.
 
 ## Pagination (Navigation)
 Controls for moving between the pages of a long table or list: previous, next and page numbers. On phones it shrinks to the essentials.
-- Classes: `.ayy-pagination` `.ayy-pagination__link` `.ayy-pagination__size` `.ayy-pagination__size-label` `.ayy-pagination__link--step` `.ayy-pagination__ellipsis`
+- Classes: `.ayy-pagination` `.ayy-pagination--sm` `.ayy-pagination--lg` `.ayy-pagination__link` `.ayy-pagination__size` `.ayy-pagination__size-label` `.ayy-pagination__link--step` `.ayy-pagination__ellipsis`
 - States: hover, focus, disabled, selected
-- JS: paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
+- Sizes: `sm` `md` `lg`
+- JS: paginationClass, paginationEllipsisClass, paginationSizeClass, paginationSizeLabelClass constants; paginationRootSizeClass(size?) → string | undefined (the --sm / --lg class for the <nav>; md adds nothing; paginationSizeClass is the page size picker); paginationLinkClass({ step?, className? }) → string; paginationRange(page, count, siblings = 1) → (number | "…")[] — which pages to show, always the same number of slots.
 - A11y: It's a <nav aria-label="Pagination">: give a second one on the page a different label. The current page has aria-current="page"; it's outlined and bolder as well as tinted. Previous and next say so in words; their arrows are decorative and mirror in right-to-left text. An end you can't go past is aria-disabled (or disabled): screen readers hear it's unavailable. After a page change in place, move focus to the top of the updated table or list, or announce the new range.
 
 ## Steps (Navigation)
 A progress indicator for a short flow like sign-up or checkout. It shows which step you're on, which are done and which are still to come.
-- Classes: `.ayy-steps` `.ayy-steps--vertical` `.ayy-steps__item` `.ayy-steps__label`
+- Classes: `.ayy-steps` `.ayy-steps--sm` `.ayy-steps--lg` `.ayy-steps--vertical` `.ayy-steps__item` `.ayy-steps__label`
 - States: selected
-- JS: stepsClass({ vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: stepsClass({ size?, vertical?, className? }) → string; stepsItemClass, stepsLabelClass constants.
 - A11y: It's an ordered list with aria-current="step" on the current item, so screen readers hear "step 2 of 4, current". Give the <ol> an aria-label ("Checkout progress"). Done steps say so in text, not only with a tick: put an .ayy-sr-only "Done: " before their label (React does it). The markers are generated content with empty alt text, so numbers aren't read twice.
 
 ## Table of contents (Navigation)
@@ -169,9 +172,9 @@ One box per character for verification codes, two-factor authentication tokens a
 
 ## Search bar (Forms)
 A rounded search field with a magnifier and a clear button, often used at the top of a phone list. It's a real search form, so phones show a search key on the keyboard.
-- Classes: `.ayy-search-bar` `.ayy-search-bar--lg` `.ayy-search-bar__field` `.ayy-search-bar__input` `.ayy-search-bar__clear` `.ayy-search-bar__shortcut` `.ayy-search-bar__cancel`
+- Classes: `.ayy-search-bar` `.ayy-search-bar--sm` `.ayy-search-bar--lg` `.ayy-search-bar__field` `.ayy-search-bar__input` `.ayy-search-bar__clear` `.ayy-search-bar__shortcut` `.ayy-search-bar__cancel`
 - States: hover, focus, disabled, typing
-- Sizes: `md` `lg`
+- Sizes: `sm` `md` `lg`
 - JS: searchBarClass({ size?, className? }) → string; clearSearchBar(button) empties the field a clear button belongs to, fires input and focuses it (@danitesler/ayywi/elements does it for every clear button); searchBarIcon, searchBarClearIcon (SVG markup).
 - A11y: role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks"). The clear button is a real button named "Clear search"; clearing puts focus back in the field. Esc in a type="search" input clears it in most browsers; Cancel is for leaving the search, not clearing it. Results that update as you type should say how many there are in a polite live region.
 
@@ -193,9 +196,10 @@ A dropdown for choosing how a list, table or feed is ordered. It matches the fil
 
 ## Textarea (Forms)
 A multi-line text field for longer text like comments and descriptions. It can grow as you type.
-- Classes: `.ayy-textarea` `.ayy-textarea--autosize` `.ayy-textarea--mono`
+- Classes: `.ayy-textarea` `.ayy-textarea--sm` `.ayy-textarea--lg` `.ayy-textarea--autosize` `.ayy-textarea--mono`
 - States: hover, focus, disabled, error
-- JS: textareaClass({ autosize?, mono?, className? }) → string
+- Sizes: `sm` `md` `lg`
+- JS: textareaClass({ size?, autosize?, mono?, className? }) → string
 - A11y: Label it (Field + Label), same as Input.
 
 ## Mentions (Forms)
@@ -295,31 +299,34 @@ A searchable grid of icons and emoji with a remove button, for marking a column,
 
 ## Checkbox (Forms)
 A box for turning an option on or off, or for picking several items from a list. It's the native checkbox with a clearer look, and it can show a mixed state when only some of a group is selected.
-- Classes: `.ayy-checkbox`
+- Classes: `.ayy-checkbox` `.ayy-checkbox--sm` `.ayy-checkbox--lg`
 - States: hover, focus, disabled, selected, error, indeterminate
-- JS: checkboxClass constant
+- Sizes: `sm` `md` `lg`
+- JS: checkboxClass constant; checkboxSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)
 - A11y: A colour alone doesn't say what it means: keep the priority or status in the label too. Wrap it in a <label class="ayy-label"> with the text, or pair with <label for>. Indeterminate is announced as "mixed" automatically. Group related checkboxes in a <fieldset> with a <legend>.
 
 ## Radio (Forms)
 A set of options where exactly one can be chosen. It's built on native radio buttons, grouped under a legend.
-- Classes: `.ayy-radio` `.ayy-radio-group` `.ayy-radio-group--horizontal` `.ayy-radio-group__legend`
+- Classes: `.ayy-radio` `.ayy-radio--sm` `.ayy-radio--lg` `.ayy-radio-group` `.ayy-radio-group--horizontal` `.ayy-radio-group--sm` `.ayy-radio-group--lg` `.ayy-radio-group__legend`
 - States: hover, focus, disabled, selected, error
-- JS: radioClass, radioGroupLegendClass constants; radioGroupClass({ orientation?, className? }) → string
+- Sizes: `sm` `md` `lg`
+- JS: radioClass, radioGroupLegendClass constants; radioSizeClass(size?) → string | undefined (the --sm / --lg class); radioGroupClass({ orientation?, size?, className? }) → string
 - A11y: Arrow keys move between radios in a group natively — no JS needed. Always give the group a legend (label prop) and each radio a wrapping <label class="ayy-label">.
 
 ## Segmented control (Forms)
 A short row of options where one is always selected, for switching a view, a range or a setting that changes what you see. It looks like tabs but works like radio buttons.
-- Classes: `.ayy-segmented-control` `.ayy-segmented-control--sm` `.ayy-segmented-control--full` `.ayy-segmented-control__option`
+- Classes: `.ayy-segmented-control` `.ayy-segmented-control--sm` `.ayy-segmented-control--lg` `.ayy-segmented-control--full` `.ayy-segmented-control__option`
 - States: hover, focus, disabled, selected
-- Sizes: `sm` `md`
+- Sizes: `sm` `md` `lg`
 - JS: segmentedControlClass({ size?, full?, className? }) → string; segmentedControlOptionClass constant.
 - A11y: It's a radio group: give the root an aria-label ("Date range"). Arrow keys move the choice, Tab leaves the group — the browser does it. The checked segment is filled and bolder, not only coloured; High Contrast mode fills it with the system highlight. An icon-only segment needs text for screen readers: an .ayy-sr-only span or aria-label on the input.
 
 ## Chip (Forms)
 A compact pill for filters and choices. Chips can be switched on and off, work as single or multiple choice, or be removable when they stand for filters that are applied.
-- Classes: `.ayy-chip` `.ayy-chip--removable` `.ayy-chip__count` `.ayy-chip__remove` `.ayy-chip-group` `.ayy-chip-group--scroll`
+- Classes: `.ayy-chip` `.ayy-chip--sm` `.ayy-chip--lg` `.ayy-chip--removable` `.ayy-chip__count` `.ayy-chip__remove` `.ayy-chip-group` `.ayy-chip-group--scroll`
 - States: hover, focus, disabled, selected
-- JS: chipClass({ removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
+- Sizes: `sm` `md` `lg`
+- JS: chipClass({ size?, removable?, className? }), chipGroupClass({ scroll?, className? }) → string; chipCountClass, chipRemoveClass constants; chipRemoveIcon (SVG markup of the cross).
 - A11y: Checkbox and radio chips are native inputs: Space toggles, radios in a group move with the arrow keys, and screen readers announce "checked". Button chips announce "pressed". Give the group an aria-label naming what it filters ("Status"), and radio chips role="radiogroup". The on state is a border, a wash and a tick, not colour alone; High Contrast fills it with the system highlight. Every remove button needs an aria-label with the filter it removes. After removing one, move focus to the next chip or the search field so it isn't lost.
 
 ## Color swatch (Forms)
@@ -339,16 +346,17 @@ A large option for picking one or more things that need more explanation than a 
 
 ## Slider (Forms)
 A control for choosing a value, or a range between two values, by dragging a handle along a track. It's a native range input, so the keyboard, forms and screen readers work as usual.
-- Classes: `.ayy-slider` `.ayy-slider-range`
+- Classes: `.ayy-slider--sm` `.ayy-slider--lg` `.ayy-slider-range--sm` `.ayy-slider-range--lg` `.ayy-slider` `.ayy-slider-range`
 - States: hover, focus, disabled
-- JS: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: sliderPercent(input) → 0–100 for --ayy-value; syncSlider(input) updates --ayy-value (or the range's --ayy-from / --ayy-to and keeps the thumbs from crossing). @danitesler/ayywi/elements runs it on every input event; call it after setting a value from code. sliderClass, sliderRangeClass constants; sliderSizeClass(size?, range = false) → string | undefined (the --sm / --lg class for a slider, or a range when range is true; md adds nothing).
 - A11y: It's a native range input: arrow keys step, Page Up/Down jump, Home/End go to the ends, and screen readers read the value. Give it a <label> (or aria-label); add aria-valuetext when the number needs a unit ("12 people"). Show the value in text next to the label (an <output>), so it doesn't depend on the thumb's position. Each thumb of a range has its own name ("Minimum price", "Maximum price"); name the group with aria-labelledby. The focus ring is on the thumb. In High Contrast the fill and the thumb take system colours.
 
 ## Number field (Forms)
 A number input with minus and plus buttons, for small quantities like seats, guests or items. Typing and arrow keys work as in any number field.
-- Classes: `.ayy-number-field` `.ayy-number-field--sm` `.ayy-number-field__input` `.ayy-number-field__decrement` `.ayy-number-field__increment`
+- Classes: `.ayy-number-field` `.ayy-number-field--sm` `.ayy-number-field--lg` `.ayy-number-field__input` `.ayy-number-field__decrement` `.ayy-number-field__increment`
 - States: hover, focus, disabled, error
-- Sizes: `sm` `md`
+- Sizes: `sm` `md` `lg`
 - JS: numberFieldClass({ size?, className? }) → string; part class constants; numberFieldMinusIcon, numberFieldPlusIcon (SVG markup); stepNumberField(button) steps the input (stepUp/stepDown), fires input and change, and returns the new value; syncNumberField(field) sets the buttons' aria-disabled from min and max. @danitesler/ayywi/elements runs both for every .ayy-number-field on the page.
 - A11y: Label the input (a <label for> its id, or aria-label naming the item: "Quantity of Ethiopia Guji, 250 g"). The buttons need their own aria-labels. At min or max the button gets aria-disabled instead of disabled, so focus stays on it while you click. The input is a real number field: type a value, or use the arrow keys.
 
@@ -369,9 +377,10 @@ An area for dropping files or clicking to choose them. It's a real file input un
 
 ## Switch (Forms)
 An on/off control for a setting that takes effect right away. It's a native checkbox with a switch look and the right accessible role.
-- Classes: `.ayy-switch`
+- Classes: `.ayy-switch` `.ayy-switch--sm` `.ayy-switch--lg`
 - States: hover, focus, disabled, selected
-- JS: switchClass constant
+- Sizes: `sm` `md` `lg`
+- JS: switchClass constant; switchSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)
 - A11y: Always pair with a <label for> (Field inline) or aria-label. Space toggles it; that's native checkbox behaviour. The thumb direction flips automatically in RTL.
 
 ## Shortcut (Forms)
@@ -405,24 +414,27 @@ A container for previewing a design at different screen sizes. It has a toolbar 
 
 ## Card (Layout)
 A surface that groups related content so it reads as one unit, like a project, a summary or a block of settings. It can react to hover when it's clickable, and it has a media version for captures, recordings and pictures.
-- Classes: `.ayy-card` `.ayy-card--interactive` `.ayy-card--spotlight` `.ayy-card--transparent` `.ayy-card--featured` `.ayy-card__header` `.ayy-card__title` `.ayy-card__description` `.ayy-card__content` `.ayy-card__footer` `.ayy-card__media` `.ayy-card__link` `.ayy-card--view` `.ayy-card__view-media` `.ayy-card__view-backdrop` `.ayy-card__view-image` `.ayy-card__view-badge` `.ayy-card__view-play` `.ayy-card__view-body` `.ayy-card__view-text` `.ayy-card__view-title` `.ayy-card__view-meta` `.ayy-card__view-badges`
+- Classes: `.ayy-card` `.ayy-card--sm` `.ayy-card--lg` `.ayy-card--interactive` `.ayy-card--spotlight` `.ayy-card--transparent` `.ayy-card--featured` `.ayy-card__header` `.ayy-card__title` `.ayy-card__description` `.ayy-card__content` `.ayy-card__footer` `.ayy-card__media` `.ayy-card__link` `.ayy-card--view` `.ayy-card__view-media` `.ayy-card__view-backdrop` `.ayy-card__view-image` `.ayy-card__view-badge` `.ayy-card__view-play` `.ayy-card__view-body` `.ayy-card__view-text` `.ayy-card__view-title` `.ayy-card__view-meta` `.ayy-card__view-badges`
 - States: hover, focus, selected, menu-open
-- JS: cardClass({ interactive?, spotlight?, transparent?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.
+- Sizes: `sm` `md` `lg`
+- JS: cardClass({ size?, interactive?, spotlight?, transparent?, featured?, view?, className? }) → string; cardHeaderClass, cardTitleClass, cardDescriptionClass, cardContentClass, cardFooterClass, cardMediaClass, cardLinkClass constants; trackSpotlight(pointerEvent) sets --ayy-mx/--ayy-my.
 - A11y: If the whole card is a link, put ayy-card__link on the title's <a> — don't wrap the card in <a>. Screen readers then announce just the title, not the whole card. Media images are content: give them alt text, or alt="" when the title already says it all. Spotlight layers are pseudo-elements, invisible to assistive tech. View cards: when the picture opens something, CardViewMedia is a <button> or <a> with an aria-label that names the item and the action ("Annotate the pricing page capture from 2 minutes ago"); the body is decoration on top of it. View cards reveal their body and actions on focus as well as hover, and always show them on touch screens, so nothing is hover-only. The backdrop is aria-hidden.
 
 ## Tabs (Layout)
 Tabs for switching between panels of related content on the same page. They can be used fully from the keyboard.
-- Classes: `.ayy-tabs` `.ayy-tabs__list` `.ayy-tabs__tab` `.ayy-tabs__panel` `.ayy-tabs__count`
+- Classes: `.ayy-tabs` `.ayy-tabs--sm` `.ayy-tabs--lg` `.ayy-tabs__list` `.ayy-tabs__tab` `.ayy-tabs__panel` `.ayy-tabs__count`
 - States: hover, focus, disabled, selected
+- Sizes: `sm` `md` `lg`
 - Element: `<ayy-tabs value>`, events `ayy-value-change`
-- JS: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.
+- JS: tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; tabsSizeClass(size?) → string | undefined (the --sm / --lg class for the root; md adds nothing); nextTabIndex(key, current, count, rtl) for custom keyboard handling.
 - A11y: Arrow keys move between tabs (flipped in RTL), Home/End jump to first/last. Activation follows focus. Only the selected tab is in the tab order (roving tabindex). Give the tablist an aria-label when there's no visible heading.
 
 ## Accordion (Layout)
 A stack of sections that expand and collapse, for FAQs and for settings with a lot of detail. Only the heading shows until someone opens a section, and opening one can close the others.
-- Classes: `.ayy-accordion` `.ayy-accordion__item` `.ayy-accordion__trigger` `.ayy-accordion__content`
+- Classes: `.ayy-accordion` `.ayy-accordion--sm` `.ayy-accordion--lg` `.ayy-accordion__item` `.ayy-accordion__trigger` `.ayy-accordion__content`
 - States: hover, focus, open
-- JS: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants.
+- Sizes: `sm` `md` `lg`
+- JS: accordionClass, accordionItemClass, accordionTriggerClass, accordionContentClass constants; accordionSizeClass(size?) → string | undefined (the --sm / --lg class for the root; md adds nothing).
 - A11y: It's native <details>/<summary>: Enter and Space toggle it and the open state is announced. Don't add aria-expanded or a click handler. Keep the summary text short and complete (a question), since it's the only part people see. Find-in-page opens a closed item that contains the match.
 
 ## Carousel (Layout)
@@ -482,9 +494,10 @@ A short hint that appears when someone hovers or focuses an element, for naming 
 
 ## Alert (Feedback)
 A message placed in the flow of a page to tell someone something they should notice, like a warning, an error or a confirmation. It can carry a title, a short explanation and actions.
-- Classes: `.ayy-alert` `.ayy-alert--info` `.ayy-alert--success` `.ayy-alert--warning` `.ayy-alert--destructive` `.ayy-alert__title` `.ayy-alert__description` `.ayy-alert__actions`
+- Classes: `.ayy-alert` `.ayy-alert--sm` `.ayy-alert--lg` `.ayy-alert--info` `.ayy-alert--success` `.ayy-alert--warning` `.ayy-alert--destructive` `.ayy-alert__title` `.ayy-alert__description` `.ayy-alert__actions`
 - States: error
-- JS: alertClass({ variant?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
+- Sizes: `sm` `md` `lg`
+- JS: alertClass({ variant?, size?, className? }) → string; alertTitleClass, alertDescriptionClass, alertActionsClass constants
 - A11y: Static alerts need no role. If it appears in response to an action, add role="alert" (urgent) or role="status" (polite). The icon is decorative: aria-hidden="true". The text must carry the meaning.
 
 ## Toast (Feedback)
@@ -534,9 +547,10 @@ What a list, table or page shows when it has nothing to display yet, or nothing 
 
 ## Badge (Data display)
 A small label that marks the status, category or count of something, like "New" or "Paid". It can include a status dot for things that are live.
-- Classes: `.ayy-badge` `.ayy-badge--muted` `.ayy-badge--outline` `.ayy-badge--success` `.ayy-badge--warning` `.ayy-badge--destructive` `.ayy-badge--info` `.ayy-badge--ai` `.ayy-badge__dot` `.ayy-badge__dot--static`
+- Classes: `.ayy-badge` `.ayy-badge--sm` `.ayy-badge--lg` `.ayy-badge--muted` `.ayy-badge--outline` `.ayy-badge--success` `.ayy-badge--warning` `.ayy-badge--destructive` `.ayy-badge--info` `.ayy-badge--ai` `.ayy-badge__dot` `.ayy-badge__dot--static`
 - States: error
-- JS: badgeClass({ variant?, className? }) → string
+- Sizes: `sm` `md` `lg`
+- JS: badgeClass({ variant?, size?, className? }) → string
 - A11y: Colour is never the only signal — the label text must say the status. The dot is aria-hidden; it's decorative.
 
 ## Status dot (Data display)
@@ -549,9 +563,10 @@ A small coloured dot that shows the state of something, like someone being onlin
 
 ## Keyboard hint (Data display)
 A small keycap for showing a keyboard key or shortcut in help text, menus and tooltips. Shortcuts adapt to the platform, so Mac users see their own symbols.
-- Classes: `.ayy-kbd`
+- Classes: `.ayy-kbd` `.ayy-kbd--sm` `.ayy-kbd--lg`
 - States: none, it's static
-- JS: kbdClass and keyboardHintClass constants. platformKeyLabel(key, platform) maps modifier names to platform symbols/names ("mod" → ⌘ on Mac, Ctrl on Windows/Linux; "meta" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name ("Command" for ⌘).
+- Sizes: `sm` `md` `lg`
+- JS: kbdClass and keyboardHintClass constants; kbdSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing). platformKeyLabel(key, platform) maps modifier names to platform symbols/names ("mod" → ⌘ on Mac, Ctrl on Windows/Linux; "meta" → ⌘ on Mac, Win on Windows, Super on Linux); platformKeyName(key, platform) gives its spoken name ("Command" for ⌘).
 - A11y: Use the <kbd> element: screen readers and search know it's a key. Write modifier names out where symbols may not read well ("Ctrl" rather than "^"), or add aria-label="Command K" to a <kbd>⌘K</kbd> (screen readers pronounce "⌘" as "place of interest sign"). A shortcut hint doesn't replace aria-keyshortcuts on the control it triggers.
 
 ## Text highlight (Data display)
@@ -563,9 +578,9 @@ A way to mark text inside a sentence, for search matches or phrases that need at
 
 ## Avatar (Data display)
 A small picture that stands for a person or a workspace. When there's no image, or it fails to load, it shows initials instead.
-- Classes: `.ayy-avatar` `.ayy-avatar--sm` `.ayy-avatar--lg` `.ayy-avatar--xl` `.ayy-avatar--square` `.ayy-avatar__fallback` `.ayy-avatar__image` `.ayy-avatar-group`
+- Classes: `.ayy-avatar` `.ayy-avatar--xs` `.ayy-avatar--sm` `.ayy-avatar--lg` `.ayy-avatar--xl` `.ayy-avatar--2xl` `.ayy-avatar--square` `.ayy-avatar__fallback` `.ayy-avatar__image` `.ayy-avatar-group`
 - States: error
-- Sizes: `sm` `md` `lg` `xl`
+- Sizes: `xs` `sm` `md` `lg` `xl` `2xl`
 - JS: avatarClass({ size?, shape?, className? }); avatarInitials(name); avatarGroupClass, avatarImageClass, avatarFallbackClass constants
 - A11y: The name goes on the root (aria-label); the <img> has alt="" and the initials are aria-hidden, so it's announced once. Give an AvatarGroup an aria-label like "5 collaborators". A failed image is hidden by React or @danitesler/ayywi/elements so the initials show. With CSS alone it renders as a plain disc.
 

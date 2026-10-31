@@ -96,6 +96,15 @@
   font-size: var(--ayy-control-text-sm);
 }
 
+.ayy-segmented-control--lg {
+  block-size: var(--ayy-size-control-lg);
+}
+
+.ayy-segmented-control--lg .ayy-segmented-control__option {
+  padding-inline: var(--ayy-space-4);
+  font-size: var(--ayy-control-text-lg);
+}
+
 /* Full width: equal segments across the container (a phone toolbar, a card footer). */
 .ayy-segmented-control--full {
   display: flex;

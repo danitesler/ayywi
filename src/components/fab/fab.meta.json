@@ -9,12 +9,13 @@
     "ayy-fab": "A <button> (or <a>) with an icon and an aria-label: primary fill, a lifted shadow, size from data-density. position: fixed at the bottom inline-end corner. In an .ayy-app-shell, place it after __main and before the bottom nav.",
     "ayy-fab--extended": "Icon and a visible label: a wider pill (\"Compose\"). Needs no aria-label.",
     "ayy-fab--secondary": "A raised surface with a border instead of the primary fill: less emphasis.",
+    "ayy-fab--lg": "Larger (the lg control height plus 24px) with a 24px icon, for the one thing a screen is for.",
     "ayy-fab--sm": "Smaller (the control-lg size), for a second action stacked above the main one.",
     "ayy-fab--inline": "Not floating: in the flow, placed by its container (an empty state, a toolbar, a docs page)."
   },
   "variants": {
     "variant": { "values": ["primary", "secondary"], "default": "primary" },
-    "size": { "values": ["sm", "md"], "default": "md" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md" },
     "extended": { "values": [false, true], "default": false },
     "inline": { "values": [false, true], "default": false }
   },
@@ -31,7 +32,8 @@
   "sizes": {
     "scale": {
       "sm": "The lg control height: 40px compact, 48 comfortable, 52 touch. A second action stacked above the main one.",
-      "md": "The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch."
+      "md": "The lg control height plus 12px: 52px compact, 60 comfortable, 64 touch.",
+      "lg": "The lg control height plus 24px (60px compact, 68 comfortable, 72 touch), with a 24px icon."
     },
     "density": "Its diameter follows data-density through the lg control height (the sizes above).",
     "width": "Square, a circle. extended (ayy-fab--extended) hugs its icon and label as a pill. Takes no room: it floats over the content (inline puts it back in the flow)."
@@ -44,7 +46,7 @@
         "renders": "<button type=\"button\" class=\"ayy-fab\">, or <a> with href",
         "props": {
           "variant": "\"primary\" | \"secondary\"",
-          "size": "\"sm\" | \"md\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
           "extended": "boolean — icon and a label; otherwise give it aria-label",
           "inline": "boolean — not floating",
           "href": "string — renders an <a>",
@@ -69,7 +71,7 @@
     "Don't use it on desktop layouts where a toolbar button fits better."
   ],
   "examples": [
-    { "id": "variants", "title": "Icon, extended, secondary, small" },
+    { "id": "variants", "title": "Icon, extended, secondary, small, large" },
     { "id": "app", "title": "In an app shell, above the bottom nav" }
   ]
 }

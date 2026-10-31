@@ -4,6 +4,8 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 
 **Classes**
 - `.ayy-checkbox` — On <input type="checkbox">. Draws the box and mark; size follows density.
+- `.ayy-checkbox--sm` — Small box (--ayy-size-check-sm). The label that wraps it, or sits beside it in an inline Field, takes the small control text.
+- `.ayy-checkbox--lg` — Large box (--ayy-size-check-lg) and large label text.
 
 **States**
 - `default` — A box --ayy-size-check square with a line-hover border (or --ayy-check-color) on a wash fill.
@@ -17,11 +19,14 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 - `indeterminate` (`:indeterminate (el.indeterminate = true; React: indeterminate)`) — Primary fill with a bar instead of the tick: some of a group selected.
 
 **Sizes**
-- Density — --ayy-size-check: 16px compact, 18 comfortable, 20 touch. Wrap it in a .ayy-label so the label is part of the hit area.
+- `sm` — --ayy-size-check-sm: 14px compact, 16 comfortable, 18 touch.
+- `md` (default) — --ayy-size-check: 16px compact, 18 comfortable, 20 touch.
+- `lg` — --ayy-size-check-lg: 20px compact, 22 comfortable, 24 touch.
+- Density — Each size grows a step with data-density. Wrap the box in a .ayy-label so the label is part of the hit area.
 - Width — Fixed square.
 
 **React** — `import { Checkbox } from "@danitesler/ayywi/react";`
-- `<Checkbox>` renders <input type="checkbox">. Props: `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
+- `<Checkbox>` renders <input type="checkbox">. Props: `size` "sm" | "md" | "lg" (visual size; the native size attribute is not exposed); `indeterminate` boolean — mixed state; `onCheckedChange` (checked: boolean) => void; `checked / defaultChecked` Controlled / uncontrolled.; `...rest` All native <input> attributes.
 
 **Accessibility**
 - A colour alone doesn't say what it means: keep the priority or status in the label too.
@@ -33,6 +38,7 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 - Use a checkbox for choices submitted with a form (terms, preferences saved with a Save button).
 - Use checkboxes to select several items in a list or table, with an indeterminate select-all.
 - Phrase labels positively: "Email me updates", not "Don't email me".
+- Match the size to the controls around it: sm beside sm buttons and inputs, lg in forms made for touch.
 
 **Don't**
 - Don't use a checkbox for settings that apply instantly — use Switch.
@@ -76,6 +82,40 @@ export default function Example() {
       <label className="ayy-label">
         <Checkbox disabled defaultChecked />
         Security alerts (always on)
+      </label>
+    </div>
+  );
+}
+```
+
+## Checkbox — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack">
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox ayy-checkbox--sm" checked /> Small: dense tables and menus</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox" checked /> Medium: the default</label>
+  <label class="ayy-label"><input type="checkbox" class="ayy-checkbox ayy-checkbox--lg" checked /> Large: forms people fill in on a phone</label>
+</div>
+```
+
+React:
+
+```tsx
+import { Checkbox } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack">
+      <label className="ayy-label">
+        <Checkbox size="sm" defaultChecked /> Small: dense tables and menus
+      </label>
+      <label className="ayy-label">
+        <Checkbox defaultChecked /> Medium: the default
+      </label>
+      <label className="ayy-label">
+        <Checkbox size="lg" defaultChecked /> Large: forms people fill in on a phone
       </label>
     </div>
   );

@@ -33,6 +33,27 @@
     color var(--ayy-duration-fast) ease;
 }
 
+/* md is the default (a small control tall); sm is a step under it, lg a medium control tall. */
+.ayy-chip--sm {
+  block-size: calc(var(--ayy-size-control-sm) - 0.25rem);
+  padding-inline: var(--ayy-space-2);
+  font-size: calc(var(--ayy-control-text-sm) - 0.0625rem);
+}
+
+.ayy-chip--lg {
+  block-size: var(--ayy-size-control-md);
+  padding-inline: var(--ayy-space-4);
+  font-size: var(--ayy-control-text-md);
+}
+
+.ayy-chip--removable.ayy-chip--sm {
+  padding-inline-end: var(--ayy-space-0-5);
+}
+
+.ayy-chip--removable.ayy-chip--lg {
+  padding-inline-end: var(--ayy-space-1-5);
+}
+
 /* The input stays in the page (focus, forms, screen readers) but draws nothing; the chip shows its state. */
 .ayy-chip > input {
   position: absolute;

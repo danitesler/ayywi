@@ -3,7 +3,7 @@ import { Cancel01Icon, Search01Icon } from "../../lib/icons";
 import { mergeRefs } from "../../lib/refs";
 import { Icon } from "../icon/icon.react";
 import { Shortcut } from "../shortcut/shortcut.react";
-import { searchBarClass } from "./search-bar";
+import { searchBarClass, type SearchBarSize } from "./search-bar";
 
 export interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "size" | "onChange" | "onSubmit"> {
   value?: string;
@@ -20,7 +20,7 @@ export interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   clearLabel?: string;
   /** The Cancel button's text. Default "Cancel". */
   cancelText?: string;
-  size?: "md" | "lg";
+  size?: SearchBarSize;
   /** Keyboard shortcut hint shown at the end of the field (e.g. "Mod+E"). Hides while typing. */
   shortcut?: string;
   /** Props for the <form role="search">. */

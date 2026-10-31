@@ -4,6 +4,8 @@ Category: Data display. A small label that marks the status, category or count o
 
 **Classes**
 - `.ayy-badge` — Root. Neutral by default.
+- `.ayy-badge--sm` — Small: text a pixel under the default, tighter padding. For counts and tags inside dense rows.
+- `.ayy-badge--lg` — Large: text a pixel over the default, more padding. For a status next to a title.
 - `.ayy-badge--muted` — Quieter neutral.
 - `.ayy-badge--outline` — Border only.
 - `.ayy-badge--success` — Positive status.
@@ -25,11 +27,14 @@ Category: Data display. A small label that marks the status, category or count o
 - `loading` — doesn't apply: No loading look; a pulsing __dot shows a live state, not progress.
 
 **Sizes**
-- Density — Text size follows data-density via --ayy-text-s.
+- `sm` — --ayy-text-s minus 1px (12px compact, 13 touch), 8px side padding.
+- `md` (default) — --ayy-text-s (13px compact, 14 touch), 10px side padding.
+- `lg` — --ayy-text-s plus 1px (14px compact, 15 touch), 12px side padding and 4px block padding.
+- Density — Text size follows data-density via --ayy-text-s; every size steps with it.
 - Width — Hugs its text, never wraps.
 
 **React** — `import { Badge } from "@danitesler/ayywi/react";`
-- `<Badge>` renders <span>. Props: `variant` "default" | "muted" | "outline" | "success" | "warning" | "destructive" | "info" | "ai"; `dot` boolean | "pulse" | "static" — leading status dot
+- `<Badge>` renders <span>. Props: `variant` "default" | "muted" | "outline" | "success" | "warning" | "destructive" | "info" | "ai"; `size` "sm" | "md" | "lg"; `dot` boolean | "pulse" | "static" — leading status dot
 
 **Accessibility**
 - Colour is never the only signal — the label text must say the status.
@@ -77,6 +82,38 @@ export default function Example() {
       <Badge variant="destructive">Failed</Badge>
       <Badge variant="info">Info</Badge>
       <Badge variant="ai">AI</Badge>
+    </>
+  );
+}
+```
+
+## Badge — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<span class="ayy-badge ayy-badge--success ayy-badge--sm">Synced</span>
+<span class="ayy-badge ayy-badge--success">Synced</span>
+<span class="ayy-badge ayy-badge--success ayy-badge--lg">Synced</span>
+<span class="ayy-badge ayy-badge--warning ayy-badge--sm"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
+<span class="ayy-badge ayy-badge--warning"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
+<span class="ayy-badge ayy-badge--warning ayy-badge--lg"><span class="ayy-badge__dot" aria-hidden="true"></span>Pending</span>
+```
+
+React:
+
+```tsx
+import { Badge } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <>
+      <Badge size="sm" variant="success">Synced</Badge>
+      <Badge variant="success">Synced</Badge>
+      <Badge size="lg" variant="success">Synced</Badge>
+      <Badge size="sm" variant="warning" dot>Pending</Badge>
+      <Badge variant="warning" dot>Pending</Badge>
+      <Badge size="lg" variant="warning" dot>Pending</Badge>
     </>
   );
 }

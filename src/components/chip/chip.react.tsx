@@ -9,9 +9,10 @@ import {
 } from "react";
 import { Cancel01Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
-import { chipClass, chipCountClass, chipGroupClass, chipRemoveClass } from "./chip";
+import { chipClass, chipCountClass, chipGroupClass, chipRemoveClass, type ChipSize } from "./chip";
 
 export interface ChipProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, "onChange"> {
+  size?: ChipSize;
   /** "checkbox" (default) for filters that combine, "radio" for one choice in a group (give them one name). */
   type?: "checkbox" | "radio";
   checked?: boolean;
@@ -28,7 +29,7 @@ export interface ChipProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, "
 
 /** A filter or choice chip: a <label> around a visually hidden native checkbox (or radio). Children are the label and an optional Icon. */
 export const Chip = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChipProps>(function Chip(
-  { type = "checkbox", checked, defaultChecked, onCheckedChange, name, value, disabled, count, inputProps, className, children, ...props },
+  { size, type = "checkbox", checked, defaultChecked, onCheckedChange, name, value, disabled, count, inputProps, className, children, ...props },
   ref,
 ) {
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +37,7 @@ export const Chip = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChipProps>(func
     onCheckedChange?.(event.currentTarget.checked);
   };
   return (
-    <label ref={ref} className={chipClass({ className })} {...props}>
+    <label ref={ref} className={chipClass({ size, className })} {...props}>
       <input
         {...inputProps}
         type={type}
@@ -54,6 +55,7 @@ export const Chip = /* @__PURE__ */ forwardRef<HTMLLabelElement, ChipProps>(func
 });
 
 export interface ChipButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  size?: ChipSize;
   /** On or off: aria-pressed. */
   pressed: boolean;
   onPressedChange?: (pressed: boolean) => void;
@@ -62,7 +64,7 @@ export interface ChipButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 
 /** A toggle chip for apps that filter as you click: <button aria-pressed>. */
 export const ChipButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ChipButtonProps>(function ChipButton(
-  { pressed, onPressedChange, count, type = "button", className, children, onClick, ...props },
+  { size, pressed, onPressedChange, count, type = "button", className, children, onClick, ...props },
   ref,
 ) {
   return (
@@ -70,7 +72,7 @@ export const ChipButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ChipButt
       ref={ref}
       type={type}
       aria-pressed={pressed}
-      className={chipClass({ className })}
+      className={chipClass({ size, className })}
       onClick={(event) => {
         onClick?.(event);
         if (!event.defaultPrevented) onPressedChange?.(!pressed);
@@ -84,6 +86,7 @@ export const ChipButton = /* @__PURE__ */ forwardRef<HTMLButtonElement, ChipButt
 });
 
 export interface ChipRemovableProps extends HTMLAttributes<HTMLSpanElement> {
+  size?: ChipSize;
   onRemove: () => void;
   /** Accessible name of the remove button. Default: "Remove " + the chip's text when it's a string. */
   removeLabel?: string;
@@ -91,11 +94,11 @@ export interface ChipRemovableProps extends HTMLAttributes<HTMLSpanElement> {
 
 /** An active filter ("Status: Open") with a remove button. */
 export const ChipRemovable = /* @__PURE__ */ forwardRef<HTMLSpanElement, ChipRemovableProps>(function ChipRemovable(
-  { onRemove, removeLabel, className, children, ...props },
+  { size, onRemove, removeLabel, className, children, ...props },
   ref,
 ) {
   return (
-    <span ref={ref} className={chipClass({ removable: true, className })} {...props}>
+    <span ref={ref} className={chipClass({ size, removable: true, className })} {...props}>
       {children}
       <button
         type="button"

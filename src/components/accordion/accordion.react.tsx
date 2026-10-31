@@ -1,20 +1,22 @@
 import { createContext, forwardRef, useContext, useId, type DetailsHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "../../lib/cx";
-import { accordionClass, accordionContentClass, accordionItemClass, accordionTriggerClass } from "./accordion";
+import { accordionClass, accordionContentClass, accordionItemClass, accordionSizeClass, accordionTriggerClass, type AccordionSize } from "./accordion";
 
 const AccordionContext = /* @__PURE__ */ createContext<string | undefined>(undefined);
 
 export interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
   /** Only one item open at a time (every <details> gets the same name). */
   single?: boolean;
+  /** Row padding and text size. */
+  size?: AccordionSize;
 }
 
 /** A stack of AccordionItem, divided by hairlines. */
-export const Accordion = /* @__PURE__ */ forwardRef<HTMLDivElement, AccordionProps>(function Accordion({ single, className, ...props }, ref) {
+export const Accordion = /* @__PURE__ */ forwardRef<HTMLDivElement, AccordionProps>(function Accordion({ single, size, className, ...props }, ref) {
   const name = useId();
   return (
     <AccordionContext.Provider value={single ? name : undefined}>
-      <div ref={ref} className={cx(accordionClass, className)} {...props} />
+      <div ref={ref} className={cx(accordionClass, accordionSizeClass(size), className)} {...props} />
     </AccordionContext.Provider>
   );
 });

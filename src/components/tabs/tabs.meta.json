@@ -6,12 +6,16 @@
   "aka": ["tabs", "tab", "tab-list", "tablist"],
   "classes": {
     "ayy-tabs": "Wrapper (block). Also put it on <ayy-tabs>.",
+    "ayy-tabs--sm": "Small: the track is a small control tall, tab text is control sm, tighter padding. Reaches only its own list, not tabs nested in a panel.",
+    "ayy-tabs--lg": "Large: the track is a large control tall, tab text is control lg, more padding.",
     "ayy-tabs__list": "role=\"tablist\" pill container.",
     "ayy-tabs__tab": "role=\"tab\" button. Selected when aria-selected=\"true\".",
     "ayy-tabs__panel": "role=\"tabpanel\". Hide inactive panels with the hidden attribute.",
     "ayy-tabs__count": "Small count after a tab's label (items in a filter). Inverts with the selected tab."
   },
-  "variants": {},
+  "variants": {
+    "size": { "values": ["sm", "md", "lg"], "default": "md" }
+  },
   "states": {
     "default": { "looks": "A pill track (wash fill, line border) with text-soft tab labels." },
     "hover": { "when": ".ayy-tabs__tab:hover", "looks": "Tab label turns full text colour." },
@@ -23,10 +27,15 @@
     "loading": { "none": "Show loading in the panel (Skeleton), not on the tab." }
   },
   "sizes": {
-    "density": "The track is the md control height (32px compact, 40 comfortable, 44 touch); tab text control md.",
+    "scale": {
+      "sm": "Track at the sm control height (28px compact, 32 comfortable, 40 touch), control sm text, 8px side padding.",
+      "md": "Track at the md control height (32px compact, 40 comfortable, 44 touch), control md text, 12px side padding.",
+      "lg": "Track at the lg control height (36px compact, 44 comfortable, 48 touch), control lg text, 16px side padding."
+    },
+    "density": "Every size follows data-density with the control scale.",
     "width": "The list hugs its tabs and scrolls sideways when they don't fit; panels fill the container."
   },
-  "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
+  "js": "tabsClass/tabsListClass/tabsTabClass/tabsPanelClass/tabsCountClass constants; tabsSizeClass(size?) → string | undefined (the --sm / --lg class for the root; md adds nothing); nextTabIndex(key, current, count, rtl) for custom keyboard handling.",
   "element": {
     "tag": "ayy-tabs",
     "attributes": {
@@ -39,7 +48,7 @@
   "react": {
     "import": "import { Tabs, TabsList, TabsTrigger, TabsContent } from \"@danitesler/ayywi/react\";",
     "components": {
-      "Tabs": { "renders": "<div>", "props": { "value / defaultValue": "Selected tab value (controlled / uncontrolled).", "onValueChange": "(value: string) => void" } },
+      "Tabs": { "renders": "<div>", "props": { "size": "\"sm\" | \"md\" | \"lg\" — the height of the tab list and its labels.", "value / defaultValue": "Selected tab value (controlled / uncontrolled).", "onValueChange": "(value: string) => void" } },
       "TabsList": { "renders": "<div role=\"tablist\">", "props": { "aria-label": "Recommended." } },
       "TabsTrigger": { "renders": "<button role=\"tab\">", "props": { "value": "string (required)", "icon": "ReactNode — optional icon before the label." } },
       "TabsContent": { "renders": "<div role=\"tabpanel\">", "props": { "value": "string (required)", "keepMounted": "Keep children mounted while hidden. Default false." } }
@@ -63,6 +72,7 @@
   ],
   "examples": [
     { "id": "basic", "title": "Basic" },
+    { "id": "sizes", "title": "Sizes" },
     { "id": "icons", "title": "With icons" },
     { "id": "counts", "title": "Filters with counts" }
   ]

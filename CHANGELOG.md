@@ -12,6 +12,15 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **Sizes**
+  - Only buttons, inputs and a few other controls came in small, medium and large → fifteen more components follow the same scale, and five that already had one gained the step they were missing.
+  - **[Checkbox](#/checkbox)**, **[Radio](#/radio)** and **[Switch](#/switch)** had one size → `sm`, `md` and `lg`; the label beside or around them takes the matching text size, and a Radio group's `size` sets every radio, label and legend in it at once.
+  - **[Textarea](#/textarea)**, **[Badge](#/badge)**, **[Chip](#/chip)** and **[Keyboard hint](#/kbd)** had one size → `sm`, `md` and `lg`; Textarea matches the Input scale, and removable Chips follow too.
+  - **[Tabs](#/tabs)**, **[Pagination](#/pagination)**, **[Breadcrumb](#/breadcrumb)** and **[Steps](#/steps)** had one size → `sm`, `md` and `lg`; tabs nested inside a panel keep their own size.
+  - **[Alert](#/alert)**, **[Card](#/card)**, **[Slider](#/slider)** and **[Accordion](#/accordion)** had one size → `sm`, `md` and `lg` (padding and title for Card, track and thumb for Slider, including a range slider, rows for Accordion).
+  - **[Segmented control](#/segmented-control)**, **[Number field](#/number-field)** and **[FAB](#/fab)** stopped at `sm` and `md` → an `lg` too; **[Search bar](#/search-bar)** started at `md` → an `sm` too; **[Avatar](#/avatar)** ran from `sm` to `xl` → an `xs` (20px) and a `2xl` (80px).
+  - **Tokens**: a small and a large step for the checkbox and radio size (`--ayy-size-check-sm`, `--ayy-size-check-lg`) and the switch height (`--ayy-size-switch-sm`, `--ayy-size-switch-lg`), each growing with the density.
+
 - **Icons page**
   Packs were picked from a dropdown with a code snippet below → a centered tab per pack, a preview limited to five rows of icons, and a copyable AI prompt (with the code as a second tab) for using the pack.
 

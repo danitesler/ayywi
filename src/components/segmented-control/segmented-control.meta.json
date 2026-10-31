@@ -7,11 +7,12 @@
   "classes": {
     "ayy-segmented-control": "Root, a role=\"radiogroup\" with an aria-label. The pill track.",
     "ayy-segmented-control--sm": "Small height, for toolbars and card headers.",
+    "ayy-segmented-control--lg": "Large height and text, for a main choice on a phone or a settings screen.",
     "ayy-segmented-control--full": "Fills its container with equal segments.",
     "ayy-segmented-control__option": "A <label> around a native <input type=\"radio\">, which stays in the page (focus, forms) but draws nothing. The checked one is filled; the focused one gets the ring."
   },
   "variants": {
-    "size": { "values": ["sm", "md"], "default": "md", "component": "SegmentedControl" },
+    "size": { "values": ["sm", "md", "lg"], "default": "md", "component": "SegmentedControl" },
     "full": { "values": [false, true], "default": false, "component": "SegmentedControl" }
   },
   "states": {
@@ -27,7 +28,8 @@
   "sizes": {
     "scale": {
       "sm": "Control sm height (28px compact, 32 comfortable, 40 touch), tighter padding, sm text.",
-      "md": "Control md height (32px compact, 40 comfortable, 44 touch)."
+      "md": "Control md height (32px compact, 40 comfortable, 44 touch).",
+      "lg": "Control lg height (36px compact, 44 comfortable, 48 touch), 16px side padding, lg text."
     },
     "density": "Height and text follow data-density.",
     "width": "Hugs its options and scrolls sideways when they don't fit. full (ayy-segmented-control--full) fills the container with equal segments."
@@ -42,7 +44,7 @@
           "value / defaultValue": "The selected option's value.",
           "onValueChange": "(value: string) => void",
           "name": "Shared radio name, for forms. Generated if omitted.",
-          "size": "\"sm\" | \"md\"",
+          "size": "\"sm\" | \"md\" | \"lg\"",
           "full": "boolean — equal segments across the container."
         }
       },
@@ -68,5 +70,5 @@
     "Don't use it for an on/off setting — use Switch.",
     "Don't use it for navigation between pages — use links."
   ],
-  "examples": [{ "id": "basic", "title": "Date range and billing cycle" }]
+  "examples": [{ "id": "basic", "title": "Date range, billing cycle and sizes" }]
 }

@@ -3,7 +3,16 @@ import { cx } from "../../lib/cx";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "../../lib/icons";
 import { Icon } from "../icon/icon.react";
 import { Select } from "../select/select.react";
-import { paginationClass, paginationEllipsisClass, paginationLinkClass, paginationRange, paginationSizeClass, paginationSizeLabelClass } from "./pagination";
+import {
+  paginationClass,
+  paginationEllipsisClass,
+  paginationLinkClass,
+  paginationRange,
+  paginationRootSizeClass,
+  paginationSizeClass,
+  paginationSizeLabelClass,
+  type PaginationSize,
+} from "./pagination";
 
 export interface PaginationLabels {
   /** The nav's name. Default "Pagination". */
@@ -35,11 +44,13 @@ export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onCh
   onPageSizeChange?: (pageSize: number) => void;
   /** Visible and accessible text, for translation. */
   labels?: PaginationLabels;
+  /** Height of the page links and the size of their text. */
+  size?: PaginationSize;
 }
 
 /** Previous, numbered pages with "…" gaps, and next. On phones only previous, the current page and next show. */
 export const Pagination = /* @__PURE__ */ forwardRef<HTMLElement, PaginationProps>(function Pagination(
-  { page, count, siblings = 1, href, onPageChange, pageSize, pageSizeOptions = [10, 25, 50], onPageSizeChange, labels, className, ...props },
+  { page, count, siblings = 1, href, onPageChange, pageSize, pageSizeOptions = [10, 25, 50], onPageSizeChange, labels, size, className, ...props },
   ref,
 ) {
   const text = { nav: "Pagination", previous: "Previous", next: "Next", pageSize: "Rows per page", ...labels };
@@ -77,11 +88,11 @@ export const Pagination = /* @__PURE__ */ forwardRef<HTMLElement, PaginationProp
     );
   };
   return (
-    <nav ref={ref} className={cx(paginationClass, className)} aria-label={text.nav} {...props}>
+    <nav ref={ref} className={cx(paginationClass, paginationRootSizeClass(size), className)} aria-label={text.nav} {...props}>
       {onPageSizeChange && pageSize ? (
         <div className={paginationSizeClass}>
           <label className={paginationSizeLabelClass} htmlFor={sizeId}>{text.pageSize}</label>
-          <Select id={sizeId} size="sm" value={pageSize} onChange={(event) => onPageSizeChange(Number(event.target.value))}>
+          <Select id={sizeId} size={size === "lg" ? "md" : "sm"} value={pageSize} onChange={(event) => onPageSizeChange(Number(event.target.value))}>
             {sizes.map((n) => (
               <option key={n} value={n}>
                 {n}

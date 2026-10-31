@@ -1,6 +1,14 @@
 export const sliderClass = "ayy-slider";
 export const sliderRangeClass = "ayy-slider-range";
 
+export const sliderSizes = ["sm", "md", "lg"] as const;
+export type SliderSize = (typeof sliderSizes)[number];
+
+/** Add next to sliderClass (or sliderRangeClass): `cx(sliderClass, sliderSizeClass("lg"))`. md is the default and adds nothing. */
+export function sliderSizeClass(size?: SliderSize, range = false): string | undefined {
+  return size && size !== "md" ? `${range ? sliderRangeClass : sliderClass}--${size}` : undefined;
+}
+
 /** Where a range input's value sits between its min and max, 0–100: the number --ayy-value takes. */
 export function sliderPercent(input: Pick<HTMLInputElement, "min" | "max" | "value">): number {
   const min = input.min === "" ? 0 : Number(input.min);

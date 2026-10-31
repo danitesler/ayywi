@@ -27,6 +27,18 @@
     background-color var(--ayy-duration-base) ease;
 }
 
+/* Sizes step the text by a pixel (density-aware, from --ayy-text-s) and re-pad the pill around it. */
+.ayy-badge--sm {
+  padding-inline: var(--ayy-space-2);
+  font-size: calc(var(--ayy-text-s) - 0.0625rem);
+}
+
+.ayy-badge--lg {
+  padding-block: var(--ayy-space-1);
+  padding-inline: var(--ayy-space-3);
+  font-size: calc(var(--ayy-text-s) + 0.0625rem);
+}
+
 .ayy-badge--muted {
   --_line: var(--ayy-color-hairline);
   --_fg: var(--ayy-color-muted);

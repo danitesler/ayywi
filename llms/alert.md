@@ -4,6 +4,8 @@ Category: Feedback. A message placed in the flow of a page to tell someone somet
 
 **Classes**
 - `.ayy-alert` — Root. Neutral by default.
+- `.ayy-alert--sm` — Compact: 8px by 12px padding, --ayy-text-xs text, a 16px icon. For a message inside a card or a form row.
+- `.ayy-alert--lg` — Roomy: 16px by 20px padding, --ayy-text-md text, a 22px icon. For a page-level notice.
 - `.ayy-alert--info` — Blue tint.
 - `.ayy-alert--success` — Green tint.
 - `.ayy-alert--warning` — Amber tint.
@@ -23,11 +25,14 @@ Category: Feedback. A message placed in the flow of a page to tell someone somet
 - `loading` — doesn't apply: Not a loading indicator; use a Spinner, Progress or Skeleton.
 
 **Sizes**
-- Density — Padding and sm text are fixed.
+- `sm` — 8px by 12px padding, --ayy-text-xs (13px), a 16px icon.
+- `md` (default) — 12px by 16px padding, --ayy-text-sm (14px), an 18px icon.
+- `lg` — 16px by 20px padding, --ayy-text-md (16px), a 22px icon.
+- Density — Padding and text are fixed at every density.
 - Width — Fills its container.
 
 **React** — `import { Alert, AlertTitle, AlertDescription, AlertActions } from "@danitesler/ayywi/react";`
-- `<Alert>` renders <div>. Props: `variant` "default" | "info" | "success" | "warning" | "destructive"
+- `<Alert>` renders <div>. Props: `size` "sm" | "md" | "lg" — padding, text and icon; `variant` "default" | "info" | "success" | "warning" | "destructive"
 - `<AlertTitle>` renders <p>.
 - `<AlertDescription>` renders <p>.
 - `<AlertActions>` renders <div>.
@@ -101,6 +106,59 @@ export default function Example() {
       <Alert variant="destructive" role="alert">
         <AlertTitle>Deploy failed</AlertTitle>
         <AlertDescription>The build ran out of memory. Increase the limit or split the job.</AlertDescription>
+      </Alert>
+    </div>
+  );
+}
+```
+
+## Alert — Sizes
+
+HTML (also Vue/Svelte/Angular templates, server templates):
+
+```html
+<div class="ayy-stack" style="inline-size: min(100%, 32.5rem)">
+  <div class="ayy-alert ayy-alert--info ayy-alert--sm">
+    <svg class="ayy-icon" data-ayy-icon="info" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle><path d="M12 16V12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+    <p class="ayy-alert__title">Autosave is on</p>
+    <p class="ayy-alert__description">Changes are saved as you type.</p>
+  </div>
+  <div class="ayy-alert ayy-alert--info">
+    <svg class="ayy-icon" data-ayy-icon="info" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle><path d="M12 16V12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+    <p class="ayy-alert__title">Autosave is on</p>
+    <p class="ayy-alert__description">Changes are saved as you type.</p>
+  </div>
+  <div class="ayy-alert ayy-alert--info ayy-alert--lg">
+    <svg class="ayy-icon" data-ayy-icon="info" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle><path d="M12 16V12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M12.125 8.25H12M12.25 8.25C12.25 8.11193 12.1381 8 12 8C11.8619 8 11.75 8.11193 11.75 8.25C11.75 8.38807 11.8619 8.5 12 8.5C12.1381 8.5 12.25 8.38807 12.25 8.25Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+    <p class="ayy-alert__title">Autosave is on</p>
+    <p class="ayy-alert__description">Changes are saved as you type.</p>
+  </div>
+</div>
+```
+
+React:
+
+```tsx
+import { InformationCircleIcon } from "@hugeicons/core-free-icons";
+import { Alert, AlertDescription, AlertTitle, Icon } from "@danitesler/ayywi/react";
+
+export default function Example() {
+  return (
+    <div className="ayy-stack" style={{ inlineSize: "min(100%, 32.5rem)" }}>
+      <Alert size="sm" variant="info">
+        <Icon icon={InformationCircleIcon} name="info" />
+        <AlertTitle>Autosave is on</AlertTitle>
+        <AlertDescription>Changes are saved as you type.</AlertDescription>
+      </Alert>
+      <Alert variant="info">
+        <Icon icon={InformationCircleIcon} name="info" />
+        <AlertTitle>Autosave is on</AlertTitle>
+        <AlertDescription>Changes are saved as you type.</AlertDescription>
+      </Alert>
+      <Alert size="lg" variant="info">
+        <Icon icon={InformationCircleIcon} name="info" />
+        <AlertTitle>Autosave is on</AlertTitle>
+        <AlertDescription>Changes are saved as you type.</AlertDescription>
       </Alert>
     </div>
   );

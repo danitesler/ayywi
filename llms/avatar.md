@@ -4,9 +4,11 @@ Category: Data display. A small picture that stands for a person or a workspace.
 
 **Classes**
 - `.ayy-avatar` — Root (role="img" + aria-label). 32px circle.
+- `.ayy-avatar--xs` — 20px, with 9px initials. For a dense table row or a mention.
 - `.ayy-avatar--sm` — 24px.
 - `.ayy-avatar--lg` — 40px.
 - `.ayy-avatar--xl` — 56px.
+- `.ayy-avatar--2xl` — 80px. For a profile header.
 - `.ayy-avatar--square` — Rounded square (workspaces, teams).
 - `.ayy-avatar__fallback` — Initials, underneath the image.
 - `.ayy-avatar__image` — The <img alt="">. Covers the initials when it loads.
@@ -23,15 +25,17 @@ Category: Data display. A small picture that stands for a person or a workspace.
 - `loading` — doesn't apply: Initials show until the image loads; use a circle Skeleton only when the name isn't known yet.
 
 **Sizes**
+- `xs` — 1.25rem (20px), initials fixed at 9px.
 - `sm` — 1.5rem (24px).
 - `md` (default) — 2rem (32px).
 - `lg` — 2.5rem (40px).
 - `xl` — 3.5rem (56px).
+- `2xl` — 5rem (80px).
 - Density — Doesn't follow data-density. Initials are 38% of the size.
 - Width — Square. A group overlaps them by 20% with a page-colour ring.
 
 **React** — `import { Avatar, AvatarGroup } from "@danitesler/ayywi/react";`
-- `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "sm" | "md" | "lg" | "xl"; `shape` "circle" | "square"
+- `<Avatar>` renders <span role="img">. Props: `name` string (required) — accessible name and initials; `src` string — image URL; `fallback` string — custom initials; `size` "xs" | "sm" | "md" | "lg" | "xl" | "2xl"; `shape` "circle" | "square"
 - `<AvatarGroup>` renders <div role="group">.
 
 **Accessibility**
@@ -53,6 +57,10 @@ Category: Data display. A small picture that stands for a person or a workspace.
 HTML (also Vue/Svelte/Angular templates, server templates):
 
 ```html
+<span class="ayy-avatar ayy-avatar--xs" role="img" aria-label="Maya Chen">
+  <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+  <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+</span>
 <span class="ayy-avatar ayy-avatar--sm" role="img" aria-label="Maya Chen">
   <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
   <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
@@ -69,7 +77,12 @@ HTML (also Vue/Svelte/Angular templates, server templates):
   <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
   <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
 </span>
+<span class="ayy-avatar ayy-avatar--2xl" role="img" aria-label="Maya Chen">
+  <span class="ayy-avatar__fallback" aria-hidden="true">MC</span>
+  <img class="ayy-avatar__image" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%235b9dff'/><circle cx='20' cy='16' r='7' fill='%23dbe8ff'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23dbe8ff'/></svg>" />
+</span>
 <span class="ayy-avatar ayy-avatar--xl ayy-avatar--square" role="img" aria-label="Northwind"><span class="ayy-avatar__fallback" aria-hidden="true">N</span></span>
+<span class="ayy-avatar ayy-avatar--xs" role="img" aria-label="Maya Chen"><span class="ayy-avatar__fallback" aria-hidden="true">MC</span></span>
 ```
 
 React:
@@ -83,11 +96,14 @@ const photo =
 export default function Example() {
   return (
     <>
+      <Avatar name="Maya Chen" src={photo} size="xs" />
       <Avatar name="Maya Chen" src={photo} size="sm" />
       <Avatar name="Maya Chen" src={photo} />
       <Avatar name="Maya Chen" src={photo} size="lg" />
       <Avatar name="Maya Chen" src={photo} size="xl" />
+      <Avatar name="Maya Chen" src={photo} size="2xl" />
       <Avatar name="Northwind" shape="square" size="xl" />
+      <Avatar name="Maya Chen" size="xs" />
     </>
   );
 }

@@ -1,4 +1,4 @@
-/* Native <input type="checkbox"> with a drawn box and check mark (::before). Size follows --ayy-size-check (density-aware).
+/* Native <input type="checkbox"> with a drawn box and check mark (::before). Size follows --ayy-size-check (density-aware); --sm and --lg step it down and up.
    --ayy-check-color recolours the box (a priority, a label colour): its border when empty, its fill when checked.
    --ayy-check-fg is the tick on that fill, for a colour primary-fg wouldn't read on. */
 
@@ -23,6 +23,14 @@
   transition:
     background-color var(--ayy-duration-fast) ease,
     border-color var(--ayy-duration-fast) ease;
+}
+
+.ayy-checkbox--sm {
+  --_s: var(--ayy-size-check-sm);
+}
+
+.ayy-checkbox--lg {
+  --_s: var(--ayy-size-check-lg);
 }
 
 .ayy-checkbox::before {

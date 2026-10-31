@@ -1,6 +1,6 @@
 import { cx } from "../../lib/cx";
 
-export const segmentedControlSizes = ["sm", "md"] as const;
+export const segmentedControlSizes = ["sm", "md", "lg"] as const;
 export type SegmentedControlSize = (typeof segmentedControlSizes)[number];
 
 export interface SegmentedControlClassOptions {
