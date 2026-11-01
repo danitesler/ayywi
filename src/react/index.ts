@@ -167,7 +167,7 @@ export {
   type CardToastStatusProps,
   type CardToastThumbProps,
 } from "../components/toast/toast.react";
-export { cardToast, inlineToastClass, type CardToastOptions, type CardToastHandle } from "../components/toast/toast";
+export { cardToast, inlineToastClass, type CardToastOptions, type CardToastHandle, type ToastAction } from "../components/toast/toast";
 
 export {
   Alert,

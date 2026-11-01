@@ -18,6 +18,15 @@ export function toastClass({ variant = "default", className }: ToastClassOptions
   return cx("ayy-toast", variant !== "default" && `ayy-toast--${variant}`, className);
 }
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+  /** Button look. Default "secondary". */
+  variant?: "secondary" | "outline" | "ghost";
+  /** Accessible name when the label is short. */
+  ariaLabel?: string;
+}
+
 export interface ToastOptions {
   title?: string;
   description?: string;
@@ -26,6 +35,8 @@ export interface ToastOptions {
   duration?: number;
   /** One action button, e.g. { label: "Undo", onClick }. The toast closes after it runs. */
   action?: { label: string; onClick: () => void };
+  /** Several buttons, after action when both are given. Each closes the toast after it runs. */
+  actions?: ToastAction[];
   /** Show a copy button to copy the message or custom text to clipboard. Default true for "long" variant. */
   copyable?: boolean;
   /** Custom text to copy to clipboard (defaults to message, or message + description). */
@@ -467,19 +478,22 @@ function showToast(message: string, options: ToastOptions = {}): ToastHandle {
     window.setTimeout(remove, 600);
   };
 
-  if (options.action) {
+  if (options.action || options.actions?.length) {
     const actions = document.createElement("div");
     actions.className = "ayy-toast__actions";
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "ayy-button ayy-button--secondary ayy-button--sm";
-    button.textContent = options.action.label;
-    const run = options.action.onClick;
-    button.addEventListener("click", () => {
-      run();
-      dismiss();
-    });
-    actions.append(button);
+    const entries: ToastAction[] = [...(options.action ? [options.action] : []), ...(options.actions ?? [])];
+    for (const action of entries) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `ayy-button ayy-button--${action.variant ?? "secondary"} ayy-button--sm`;
+      button.textContent = action.label;
+      if (action.ariaLabel) button.setAttribute("aria-label", action.ariaLabel);
+      button.addEventListener("click", () => {
+        action.onClick();
+        dismiss();
+      });
+      actions.append(button);
+    }
     toast.append(actions);
   }
 

@@ -330,8 +330,10 @@
 
 .ayy-toast__actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--ayy-space-1-5);
   align-items: center;
-  flex-shrink: 0;
+  min-inline-size: 0;
 }
 
 .ayy-toast__close,

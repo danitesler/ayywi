@@ -3402,3 +3402,33 @@ test("every toast icon button names itself in an ayywi tooltip, never title", as
   expect(await page.locator(".pv-stage .ayy-toast__close[title], .pv-stage .ayy-toast__action[title], .pv-stage .ayy-toast__copy[title]").count()).toBe(0);
   expect(await page.locator(".pv-stage .ayy-tooltip > .ayy-toast__close").count()).toBeGreaterThan(3);
 });
+
+
+test("toast runs one of several actions, wraps them on a phone, and closes", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await open(page, "toast", { renderer: "react" });
+  await page.evaluate(() => {
+    const w = window as unknown as { ayywi: { toast: (m: string, o: object) => void }; __ran: string[] };
+    w.__ran = [];
+    w.ayywi.toast("Reminder", {
+      description: "Call the bank about the card", duration: Infinity,
+      action: { label: "Open", onClick: () => w.__ran.push("open") },
+      actions: [
+        { label: "1h", ariaLabel: "Snooze 1 hour", variant: "outline", onClick: () => w.__ran.push("1h") },
+        { label: "3h", ariaLabel: "Snooze 3 hours", variant: "outline", onClick: () => w.__ran.push("3h") },
+        { label: "Tomorrow", ariaLabel: "Snooze until tomorrow", variant: "outline", onClick: () => w.__ran.push("tomorrow") },
+      ],
+    });
+  });
+  const t = page.locator(".ayy-toaster .ayy-toast", { hasText: "Reminder" });
+  await settle(t);
+  const buttons = t.locator(".ayy-toast__actions .ayy-button");
+  await expect(buttons).toHaveText(["Open", "1h", "3h", "Tomorrow"]);
+  await expect(buttons.nth(0)).toHaveClass(/ayy-button--secondary/);
+  await expect(buttons.nth(1)).toHaveClass(/ayy-button--outline/);
+  await expect(buttons.nth(1)).toHaveAccessibleName("Snooze 1 hour");
+  expect(await t.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+  await t.getByRole("button", { name: "Snooze 3 hours" }).click();
+  expect(await page.evaluate(() => (window as unknown as { __ran: string[] }).__ran)).toEqual(["3h"]);
+  await expect(t).toBeHidden();
+});

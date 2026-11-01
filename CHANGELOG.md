@@ -148,6 +148,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 
+- **[Toast](#/toast)**
+  One action button → any number of buttons (Open, then snooze times), each closing the toast.
+
 - **[Button](#/button)**
   The floating action button had a page of its own → it's part of Button, with the same `Fab`, `fabClass()` and `.ayy-fab` classes; its examples are on Button's page and old FAB links open it.
 

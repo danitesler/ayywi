@@ -21,6 +21,14 @@ const TOAST_TRIGGERS = [
     toast("Project archived", {
       action: { label: "Undo", onClick: () => toast.info("Project restored") },
     }),
+  () => toast("Reminder", {
+    description: "Call the bank about the card",
+    action: { label: "Open", onClick: () => toast("Opened") },
+    actions: [
+      { label: "1h", ariaLabel: "Snooze 1 hour", variant: "outline", onClick: () => toast("Snoozed for 1 hour") },
+      { label: "Tomorrow", ariaLabel: "Snooze until tomorrow", variant: "outline", onClick: () => toast("Snoozed until tomorrow") },
+    ],
+  }),
   () => toast.error("Build failed", { description: "3 type errors in api/server.ts" }),
   () => {
     let handle: CardToastHandle;
