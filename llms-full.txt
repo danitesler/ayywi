@@ -71,6 +71,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Write or edit a rich document: notes, a page, a description with headings, lists, to-dos, images and embeds | BlockEditor (<ayy-block-editor> in HTML): Notion-style blocks with / for block types, Markdown shortcuts, a formatting bar, @ mentions and drag handles; store its value (blocks) or convert with blockEditorToMarkdown / blockEditorToHtml. | a <textarea> with a Markdown preview, execCommand on one big contenteditable, or a third-party rich text library |
 | Mention people or reference issues inline in a comment (@user, #issue) | Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox. | contenteditable rich-text hacks or an unanchored dropdown under a textarea |
 | Give or display a star rating or review score | Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores). | buttons or spans of ★ characters with custom click handlers |
+| Show records on the days they happen (events, deadlines, posts) | EventCalendar with events { id, date, title, time?, color? }; onAddEvent adds a + per day, onEventClick opens one. | a Date picker grid with dots, or a hand-built 7-column grid |
 | Cards grouped into columns by status or stage (kanban, pipeline) | Board with a BoardColumn per stage and BoardCards; pass onMove to drag cards between columns (Drag and drop does the moving). | flex columns of Cards with inline styles |
 | An editable list of things to tick off (packing list, release steps, subtasks) | Checklist: Enter adds the next item, Backspace on an empty one removes it, a count and progress on top. | Checkboxes next to hand-wired inputs |
 | Find text in a document, sheet or log and step through the matches | FindBar above the content (floating over an editor): the app finds the matches and passes current and total; Enter and Shift+Enter step, Esc closes. | a Search bar with hand-made arrows and a counter |
@@ -469,6 +470,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 ## Public custom properties
 
+- `--ayy-event-color`: Colour of an event in the Event calendar; defaults to primary.
 - `--ayy-board-column-width`: Width of a board column (default 17rem).
 - `--ayy-spot`: The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card or page: it lights card spotlights, the active contents item, icon tiles, the scroll-progress bar and .ayy-accent-text.
 - `--ayy-scrollbar-size`: Width of a Scrollbar's gutter (default 0.5rem). The thumb is 4px thinner than the gutter.
@@ -560,7 +562,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Scrollbar, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
-- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Board, Card grid, Chart
+- **Data display** (Values, people and records.): Badge, Status dot, Keyboard hint, Text highlight, Avatar, Icon, Icon tile, Stat, List, Property list, Swipe actions, Timeline, Frame, Chat, Code block, Table, Board, Event calendar, Card grid, Chart
 
 ## Button
 
@@ -4480,6 +4482,51 @@ Category: Data display. Cards grouped into columns by status or stage, with opti
 - Use a board for cards grouped into columns by status or stage.
 
 **Examples**: Release board. Copy-ready HTML and React in llms/board.md.
+
+## Event calendar
+
+Category: Data display. A month grid of events, deadlines or posts, with navigation, selection and adding per day. Also called: event-calendar, month-view, schedule-view, agenda-month.
+
+**Classes**
+- `.ayy-event-calendar` — Calendar root.
+- `.ayy-event-calendar__header` — Month title and navigation.
+- `.ayy-event-calendar__title` — Live month heading.
+- `.ayy-event-calendar__nav` — Previous, today and next buttons.
+- `.ayy-event-calendar__weekdays` — Seven weekday headings.
+- `.ayy-event-calendar__grid` — Six weeks of days.
+- `.ayy-event-calendar__day` — One day cell.
+- `.ayy-event-calendar__day-head` — Date and add control.
+- `.ayy-event-calendar__date` — Day number.
+- `.ayy-event-calendar__add` — Add an event on this day.
+- `.ayy-event-calendar__events` — List of the day's events.
+- `.ayy-event-calendar__event` — Event button with an optional colour.
+- `.ayy-event-calendar__time` — Event time.
+- `.ayy-event-calendar__event-title` — Truncated event title.
+
+**States**
+- `hover` (`Hover a day or event`)
+- `pressed` (`Press an event or navigation control`)
+- `focus` (`Focus a control`)
+- `selected` (`An event has aria-current=true`)
+- `today` (`A day has aria-current=date`)
+- `outside` (`A day has data-outside`)
+- `done` (`An event has data-done`)
+
+**Sizes**
+- Density — Navigation and add controls follow density and size scope.
+- Width — Seven equal columns fill the available width.
+
+**React** — `import { EventCalendar } from "@danitesler/ayywi/react";`
+- `<EventCalendar>` renders section with a month header and a 42-day event grid. Props: `events` EventCalendarEvent[] — events with id, date, title and optional time, color and done; `month / defaultMonth` string — first of the shown month; month is controlled; `onMonthChange` (month: string) => void; `today` string — today as an ISO date; `weekStart` Weekday — first day of week; `locale` string — date label locale; `selectedId` string | null — selected event; `onEventClick` (id: string) => void; `onAddEvent` (date: string) => void — show add buttons; `labels` Partial<EventCalendarLabels> — translated labels
+
+**Accessibility**
+- The month title labels the grid; each day announces its full date and event count.
+- Events and add actions are buttons with visible focus.
+
+**Do**
+- Use an event calendar to show records on the days they happen.
+
+**Examples**: Schedule. Copy-ready HTML and React in llms/event-calendar.md.
 
 ## Card grid
 

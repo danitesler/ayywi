@@ -661,3 +661,5 @@ export { Checklist, type ChecklistProps } from "../components/checklist/checklis
 export type { ChecklistItem, ChecklistLabels } from "../components/checklist/checklist";
 
 export { Board, BoardColumn, BoardCard, type BoardProps, type BoardColumnProps, type BoardCardProps } from "../components/board/board.react";
+
+export { EventCalendar, type EventCalendarProps } from "../components/event-calendar/event-calendar.react";

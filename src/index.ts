@@ -109,3 +109,5 @@ export * from "./components/find-bar/find-bar";
 export * from "./components/checklist/checklist";
 
 export * from "./components/board/board";
+
+export * from "./components/event-calendar/event-calendar";

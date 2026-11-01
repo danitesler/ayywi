@@ -2,6 +2,7 @@
 
 /** Custom properties consumers may set. Everything else starting with --ayy- must be a token. */
 export const PUBLIC_HOOKS = {
+  "--ayy-event-color": "Colour of an event in the Event calendar; defaults to primary.",
   "--ayy-board-column-width": "Width of a board column (default 17rem).",
   "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card or page: it lights card spotlights, the active contents item, icon tiles, the scroll-progress bar and .ayy-accent-text.",
   "--ayy-scrollbar-size": "Width of a Scrollbar's gutter (default 0.5rem). The thumb is 4px thinner than the gutter.",
@@ -107,7 +108,7 @@ export const ORDER = [
   "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator", "scrollbar", "drag-drop",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
-  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "property-list", "swipe", "timeline", "frame", "chat", "code-block", "table", "board", "grid", "chart",
+  "badge", "status-dot", "kbd", "text-highlight", "avatar", "icon", "icon-tile", "stat", "list", "property-list", "swipe", "timeline", "frame", "chat", "code-block", "table", "board", "event-calendar", "grid", "chart",
 ];
 
 /** Component families: components that do one job, named for the job, members in the order the preview lists them.
@@ -117,7 +118,7 @@ export const FAMILIES = {
   "app-layout": { label: "App layout", members: ["app-shell", "top-bar", "bottom-nav"] },
   cards: { label: "Cards", members: ["card", "choice-card"] },
   color: { label: "Color", members: ["color-picker", "swatch"] },
-  "data-views": { label: "Data views", members: ["table", "board", "grid"] },
+  "data-views": { label: "Data views", members: ["table", "board", "event-calendar", "grid"] },
   dropdowns: { label: "Dropdowns", members: ["select", "combobox"] },
   icons: { label: "Icons", members: ["icon", "icon-tile"] },
   lists: { label: "Lists", members: ["list", "swipe", "checklist"] },
@@ -285,6 +286,7 @@ export const NEEDS = [
   { need: "Write or edit a rich document: notes, a page, a description with headings, lists, to-dos, images and embeds", use: ["block-editor"], how: "BlockEditor (<ayy-block-editor> in HTML): Notion-style blocks with / for block types, Markdown shortcuts, a formatting bar, @ mentions and drag handles; store its value (blocks) or convert with blockEditorToMarkdown / blockEditorToHtml.", not: "a <textarea> with a Markdown preview, execCommand on one big contenteditable, or a third-party rich text library" },
   { need: "Mention people or reference issues inline in a comment (@user, #issue)", use: ["mentions", "field"], how: "Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox.", not: "contenteditable rich-text hacks or an unanchored dropdown under a textarea" },
   { need: "Give or display a star rating or review score", use: ["rating", "field"], how: "Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores).", not: "buttons or spans of ★ characters with custom click handlers" },
+  { need: "Show records on the days they happen (events, deadlines, posts)", use: ["event-calendar"], how: "EventCalendar with events { id, date, title, time?, color? }; onAddEvent adds a + per day, onEventClick opens one.", not: "a Date picker grid with dots, or a hand-built 7-column grid" },
   { need: "Cards grouped into columns by status or stage (kanban, pipeline)", use: ["board"], how: "Board with a BoardColumn per stage and BoardCards; pass onMove to drag cards between columns (Drag and drop does the moving).", not: "flex columns of Cards with inline styles" },
   { need: "An editable list of things to tick off (packing list, release steps, subtasks)", use: ["checklist"], how: "Checklist: Enter adds the next item, Backspace on an empty one removes it, a count and progress on top.", not: "Checkboxes next to hand-wired inputs" },
   { need: "Find text in a document, sheet or log and step through the matches", use: ["find-bar"], how: "FindBar above the content (floating over an editor): the app finds the matches and passes current and total; Enter and Shift+Enter step, Esc closes.", not: "a Search bar with hand-made arrows and a counter" },

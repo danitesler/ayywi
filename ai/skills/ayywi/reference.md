@@ -7,7 +7,7 @@ Global attributes: `data-theme`, `data-density`, `data-size`, `data-brand`, `dir
 
 Utilities: `.ayy-h1`, `.ayy-h2`, `.ayy-h3`, `.ayy-h4`, `.ayy-h5`, `.ayy-h6`, `.ayy-lede`, `.ayy-lead`, `.ayy-body`, `.ayy-small`, `.ayy-xs`, `.ayy-callout`, `.ayy-muted`, `.ayy-faint`, `.ayy-eyebrow`, `.ayy-signature`, `.ayy-mono`, `.ayy-tabular`, `.ayy-display`, `.ayy-text-outline`, `.ayy-accent-text`, `.ayy-gradient-text`, `.ayy-link`, `.ayy-text-highlight`, `.ayy-code`, `.ayy-prose`, `.ayy-container`, `.ayy-grid`, `.ayy-stack`, `.ayy-cluster`, `.ayy-spread`, `.ayy-split`, `.ayy-center`, `.ayy-bleed`, `.ayy-divider`, `.ayy-surface`, `.ayy-glass`, `.ayy-dot-grid`, `.ayy-glow`, `.ayy-sr-only`, `.ayy-truncate`, `.ayy-clamp-2`, `.ayy-clamp-3`, `.ayy-scroll`, `.ayy-skip-link`, `.ayy-bg-grid`, `.ayy-scroll-progress`, `.ayy-reveal`.
 
-Public custom properties: `--ayy-board-column-width`, `--ayy-spot`, `--ayy-scrollbar-size`, `--ayy-mx`, `--ayy-my`, `--ayy-dot`, `--ayy-value`, `--ayy-start`, `--ayy-x`, `--ayy-count`, `--ayy-y`, `--ayy-z`, `--ayy-columns`, `--ayy-chart-color`, `--ayy-chart-height`, `--ayy-from`, `--ayy-to`, `--ayy-sidebar-w`, `--ayy-detail-w`, `--ayy-check-color`, `--ayy-check-fg`, `--ayy-progress-color`, `--ayy-swatch`, `--ayy-table-bg`, `--ayy-table-truncate`, `--ayy-swipe-bg`, `--ayy-font-body-adjust`, `--ayy-gap`, `--ayy-min`, `--ayy-ratio`, `--ayy-slide`.
+Public custom properties: `--ayy-event-color`, `--ayy-board-column-width`, `--ayy-spot`, `--ayy-scrollbar-size`, `--ayy-mx`, `--ayy-my`, `--ayy-dot`, `--ayy-value`, `--ayy-start`, `--ayy-x`, `--ayy-count`, `--ayy-y`, `--ayy-z`, `--ayy-columns`, `--ayy-chart-color`, `--ayy-chart-height`, `--ayy-from`, `--ayy-to`, `--ayy-sidebar-w`, `--ayy-detail-w`, `--ayy-check-color`, `--ayy-check-fg`, `--ayy-progress-color`, `--ayy-swatch`, `--ayy-table-bg`, `--ayy-table-truncate`, `--ayy-swipe-bg`, `--ayy-font-body-adjust`, `--ayy-gap`, `--ayy-min`, `--ayy-ratio`, `--ayy-slide`.
 
 States lists the ones a component has besides default; what each looks like, how to reach it, and what to use where one doesn't apply are in llms/<slug>.md or get_component.
 
@@ -686,6 +686,13 @@ Cards grouped into columns by status or stage, with optional dragging and adding
 - States: hover, pressed, focus, selected, dragging
 - JS: boardClass({ className? }); boardColumnClass, boardHeaderClass, boardTitleClass, boardCountClass, boardActionsClass, boardCardsClass, boardCardClass, boardEmptyClass, boardAddClass.
 - A11y: Label the board and each column; cards are focusable. Alt+arrow keys move cards along and across columns; Drag and drop announces moves.
+
+## Event calendar (Data display)
+A month grid of events, deadlines or posts, with navigation, selection and adding per day.
+- Classes: `.ayy-event-calendar` `.ayy-event-calendar__header` `.ayy-event-calendar__title` `.ayy-event-calendar__nav` `.ayy-event-calendar__weekdays` `.ayy-event-calendar__grid` `.ayy-event-calendar__day` `.ayy-event-calendar__day-head` `.ayy-event-calendar__date` `.ayy-event-calendar__add` `.ayy-event-calendar__events` `.ayy-event-calendar__event` `.ayy-event-calendar__time` `.ayy-event-calendar__event-title`
+- States: hover, pressed, focus, selected, today, outside, done
+- JS: eventCalendarClass({ className? }); eventCalendarMonth({ month, events, today?, weekStart? }); eventCalendarLabels.
+- A11y: The month title labels the grid; each day announces its full date and event count. Events and add actions are buttons with visible focus.
 
 ## Card grid (Data display)
 A grid of cards that can be selected, for media, projects, posts and records. It combines card selection, quick actions on each item and a select-all control, and works with the Action bar.

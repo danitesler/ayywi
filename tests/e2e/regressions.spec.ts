@@ -800,3 +800,17 @@ test("React Checklist: items replaced by the parent win over the ones typed", as
   await expect(page.locator(".ayy-checklist__item")).toHaveCount(1);
   await expect(page.locator(".ayy-checklist__count")).toHaveText("0 of 1 done");
 });
+
+test("React EventCalendar: a month set by the parent wins, and arrows report through onMonthChange", async ({ page }) => {
+  await reactPage(page, `import { useState } from "react";
+    import { EventCalendar, Button } from "ayywi";
+    function App() {
+      const [month, setMonth] = useState("2026-10-01");
+      return <div><EventCalendar locale="en-US" today="2026-10-14" weekStart={1} events={[]} month={month} onMonthChange={(m) => { window.__log.push(["month", m]); setMonth(m); }} /><Button onClick={() => setMonth("2026-12-01")}>Jump to December</Button></div>;
+    }`);
+  await page.getByRole("button", { name: "Jump to December" }).click();
+  await expect(page.getByRole("heading", { name: "December 2026" })).toBeVisible();
+  await page.getByRole("button", { name: "Next month" }).click();
+  await expect(page.getByRole("heading", { name: "January 2027" })).toBeVisible();
+  expect(await logs(page, "month")).toEqual([["2027-01-01"]]);
+});
