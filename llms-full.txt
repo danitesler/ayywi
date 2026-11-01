@@ -4502,6 +4502,9 @@ Category: Data display. A month grid of events, deadlines or posts, with navigat
 - `.ayy-event-calendar__event` — Event button with an optional colour.
 - `.ayy-event-calendar__time` — Event time.
 - `.ayy-event-calendar__event-title` — Truncated event title.
+- `.ayy-event-calendar__body` — Drag and drop wrapper around the grid.
+- `.ayy-event-calendar__more` — Button opening the overflow popover.
+- `.ayy-event-calendar__popover-list` — Full list of a day's events in the popover.
 
 **States**
 - `hover` (`Hover a day or event`)
@@ -4517,7 +4520,7 @@ Category: Data display. A month grid of events, deadlines or posts, with navigat
 - Width — Seven equal columns fill the available width.
 
 **React** — `import { EventCalendar } from "@danitesler/ayywi/react";`
-- `<EventCalendar>` renders section with a month header and a 42-day event grid. Props: `events` EventCalendarEvent[] — events with id, date, title and optional time, color and done; `month / defaultMonth` string — first of the shown month; month is controlled; `onMonthChange` (month: string) => void; `today` string — today as an ISO date; `weekStart` Weekday — first day of week; `locale` string — date label locale; `selectedId` string | null — selected event; `onEventClick` (id: string) => void; `onAddEvent` (date: string) => void — show add buttons; `labels` Partial<EventCalendarLabels> — translated labels
+- `<EventCalendar>` renders section with a month header and a 42-day event grid. Props: `events` EventCalendarEvent[] — events with id, date, title and optional time, color and done; `month / defaultMonth` string — first of the shown month; month is controlled; `onMonthChange` (month: string) => void; `today` string — today as an ISO date; `weekStart` Weekday — first day of week; `locale` string — date label locale; `selectedId` string | null — selected event; `onEventClick` (id: string) => void; `onAddEvent` (date: string) => void — show add buttons; `labels` Partial<EventCalendarLabels> — translated labels; `maxEvents` number | auto — visible rows per day; `onEventMove` (id: string, date: string) => void — move an event
 
 **Accessibility**
 - The month title labels the grid; each day announces its full date and event count.

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { eventCalendarMonth } from "../../dist/index.js";
+import { eventCalendarMonth, eventCalendarShiftDate } from "../../dist/index.js";
 test("eventCalendarMonth lays out 42 days and sorts each day's events", () => {
   const events = [
     { id: "a", date: "2026-10-14", title: "Design review", time: "09:30" },
@@ -15,4 +15,12 @@ test("eventCalendarMonth lays out 42 days and sorts each day's events", () => {
   assert.equal(day.today, true); assert.deepEqual(day.events.map((e) => e.id), ["b", "d", "a", "c"]);
   assert.equal(days.flatMap((d) => d.events).some((e) => e.id === "x"), false);
   assert.equal(eventCalendarMonth({ month: "2026-10-01", events: [], weekStart: 0 })[0].date, "2026-09-27");
+});
+
+
+test("eventCalendarShiftDate", () => {
+  assert.equal(eventCalendarShiftDate("2026-10-30", "ArrowRight", false), "2026-10-31");
+  assert.equal(eventCalendarShiftDate("2026-10-30", "ArrowRight", true), "2026-10-29");
+  assert.equal(eventCalendarShiftDate("2026-10-30", "ArrowDown", false), "2026-11-06");
+  assert.equal(eventCalendarShiftDate("2026-10-01", "ArrowUp", true), "2026-09-24");
 });

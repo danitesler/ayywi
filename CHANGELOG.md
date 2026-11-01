@@ -13,7 +13,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 ### Added
 
 - **[Event calendar](#/event-calendar)**
-  A month of events on their days, with today, other months' days, an add button per day and selection.
+  A month of events on their days, with today, other months' days, an add button per day, selection, "+N more" when a day is full, and drag or Alt+arrow keys to move an event.
 
 - **[Board](#/board)**
   Columns of cards by status or stage, with counts, empty columns, an add button and drag between columns.

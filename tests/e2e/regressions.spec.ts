@@ -814,3 +814,17 @@ test("React EventCalendar: a month set by the parent wins, and arrows report thr
   await expect(page.getByRole("heading", { name: "January 2027" })).toBeVisible();
   expect(await logs(page, "month")).toEqual([["2027-01-01"]]);
 });
+
+test("React EventCalendar: Alt+Arrow moves an event exactly once", async ({ page }) => {
+  await reactPage(page, `import { useState } from "react";
+    import { EventCalendar } from "ayywi";
+    function App() {
+      const [events, setEvents] = useState([{ id: "a", date: "2026-10-14", title: "Review" }]);
+      return <EventCalendar events={events} month="2026-10-01" today="2026-10-14" onEventMove={(id, date) => { window.__log.push(["move", id, date]); setEvents(es => es.map(e => e.id === id ? { ...e, date } : e)); }} />;
+    }`);
+  const event = page.getByRole("button", { name: "Review" });
+  await event.focus();
+  await page.keyboard.press("Alt+ArrowRight");
+  await expect(page.locator('[data-date="2026-10-15"] .ayy-event-calendar__event')).toHaveCount(1);
+  expect(await logs(page, "move")).toEqual([["a", "2026-10-15"]]);
+});

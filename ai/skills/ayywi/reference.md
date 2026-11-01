@@ -689,7 +689,7 @@ Cards grouped into columns by status or stage, with optional dragging and adding
 
 ## Event calendar (Data display)
 A month grid of events, deadlines or posts, with navigation, selection and adding per day.
-- Classes: `.ayy-event-calendar` `.ayy-event-calendar__header` `.ayy-event-calendar__title` `.ayy-event-calendar__nav` `.ayy-event-calendar__weekdays` `.ayy-event-calendar__grid` `.ayy-event-calendar__day` `.ayy-event-calendar__day-head` `.ayy-event-calendar__date` `.ayy-event-calendar__add` `.ayy-event-calendar__events` `.ayy-event-calendar__event` `.ayy-event-calendar__time` `.ayy-event-calendar__event-title`
+- Classes: `.ayy-event-calendar` `.ayy-event-calendar__header` `.ayy-event-calendar__title` `.ayy-event-calendar__nav` `.ayy-event-calendar__weekdays` `.ayy-event-calendar__grid` `.ayy-event-calendar__day` `.ayy-event-calendar__day-head` `.ayy-event-calendar__date` `.ayy-event-calendar__add` `.ayy-event-calendar__events` `.ayy-event-calendar__event` `.ayy-event-calendar__time` `.ayy-event-calendar__event-title` `.ayy-event-calendar__body` `.ayy-event-calendar__more` `.ayy-event-calendar__popover-list`
 - States: hover, pressed, focus, selected, today, outside, done
 - JS: eventCalendarClass({ className? }); eventCalendarMonth({ month, events, today?, weekStart? }); eventCalendarLabels.
 - A11y: The month title labels the grid; each day announces its full date and event count. Events and add actions are buttons with visible focus.

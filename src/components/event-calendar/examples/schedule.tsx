@@ -18,5 +18,5 @@ export default function Example() {
   const [month, setMonth] = useState("2026-10-01");
   const [selected, setSelected] = useState<string | null>("e1");
   const [next, setNext] = useState(1);
-  return <EventCalendar locale="en-US" today="2026-10-14" weekStart={1} month={month} onMonthChange={setMonth} events={events} selectedId={selected} onEventClick={(id) => setSelected((value) => value === id ? null : id)} onAddEvent={(date) => { setEvents((items) => [...items, { id: `new-${next}`, date, title: "New event" }]); setNext((n) => n + 1); }} />;
+  return <EventCalendar locale="en-US" today="2026-10-14" weekStart={1} month={month} onMonthChange={setMonth} events={events} onEventMove={(id, date) => setEvents((items) => items.map((event) => event.id === id ? { ...event, date } : event))} selectedId={selected} onEventClick={(id) => setSelected((value) => value === id ? null : id)} onAddEvent={(date) => { setEvents((items) => [...items, { id: `new-${next}`, date, title: "New event" }]); setNext((n) => n + 1); }} />;
 }
