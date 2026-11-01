@@ -12,6 +12,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Find bar](#/find-bar)**
+  Find text in a page with a match count, previous and next, match case and optional replace.
+
 - **[Dialog](#/dialog)**
   New confirmDialog(), choiceDialog() and promptDialog(): ask one question from code and await the answer.
 

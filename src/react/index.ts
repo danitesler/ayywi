@@ -654,3 +654,5 @@ export { BlockEditor, type BlockEditorProps } from "../components/block-editor/b
 export type { BlockEditorBlock, BlockEditorBlockType, BlockEditorMention, BlockEditorMentionOption, BlockEditorMentionSource, BlockEditorTone } from "../components/block-editor/block-editor";
 
 export { confirmDialog, choiceDialog, promptDialog, type ConfirmDialogOptions, type ChoiceDialogOptions, type DialogChoice, type PromptDialogOptions } from "../components/dialog/dialog-prompt";
+
+export { FindBar, type FindBarProps } from "../components/find-bar/find-bar.react";

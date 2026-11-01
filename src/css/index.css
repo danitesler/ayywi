@@ -62,6 +62,7 @@
 @import "../components/bottom-nav/bottom-nav.css" layer(ayywi.components);
 @import "../components/top-bar/top-bar.css" layer(ayywi.components);
 @import "../components/search-bar/search-bar.css" layer(ayywi.components);
+@import "../components/find-bar/find-bar.css" layer(ayywi.components);
 @import "../components/filter-bar/filter-bar.css" layer(ayywi.components);
 @import "../components/sorting/sorting.css" layer(ayywi.components);
 @import "../components/breadcrumb/breadcrumb.css" layer(ayywi.components);

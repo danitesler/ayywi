@@ -102,7 +102,7 @@ export const CATEGORIES = {
 export const ORDER = [
   "button", "hover-actions", "toolbar", "action-bar", "menu", "command",
   "navbar", "app-shell", "bottom-nav", "top-bar", "footer", "breadcrumb", "pagination", "steps", "toc", "tree",
-  "field", "input", "pin-input", "search-bar", "filter-bar", "sorting", "textarea", "mentions", "block-editor", "inline-edit", "select", "combobox", "tag-input", "record-picker", "transfer-list", "date-time-picker", "color-picker", "icon-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "rating", "dropzone", "switch", "shortcut", "settings",
+  "field", "input", "pin-input", "search-bar", "find-bar", "filter-bar", "sorting", "textarea", "mentions", "block-editor", "inline-edit", "select", "combobox", "tag-input", "record-picker", "transfer-list", "date-time-picker", "color-picker", "icon-picker", "checkbox", "radio", "segmented-control", "chip", "swatch", "choice-card", "slider", "number-field", "rating", "dropzone", "switch", "shortcut", "settings",
   "page-header", "showcase", "card", "tabs", "accordion", "carousel", "separator", "scrollbar", "drag-drop",
   "dialog", "popover", "tooltip",
   "alert", "toast", "progress", "progress-ring", "spinner", "skeleton", "empty-state",
@@ -123,7 +123,7 @@ export const FAMILIES = {
   loading: { label: "Loading", members: ["progress", "progress-ring", "spinner"] },
   "multi-pickers": { label: "Multi-pickers", members: ["tag-input", "record-picker"] },
   "status-labels": { label: "Status labels", members: ["badge", "status-dot"] },
-  "text-entry": { label: "Text entry", members: ["input", "textarea", "number-field", "search-bar", "pin-input", "mentions", "inline-edit"] },
+  "text-entry": { label: "Text entry", members: ["input", "textarea", "number-field", "search-bar", "find-bar", "pin-input", "mentions", "inline-edit"] },
   "view-controls": { label: "View controls", members: ["filter-bar", "sorting"] },
 };
 
@@ -284,6 +284,7 @@ export const NEEDS = [
   { need: "Write or edit a rich document: notes, a page, a description with headings, lists, to-dos, images and embeds", use: ["block-editor"], how: "BlockEditor (<ayy-block-editor> in HTML): Notion-style blocks with / for block types, Markdown shortcuts, a formatting bar, @ mentions and drag handles; store its value (blocks) or convert with blockEditorToMarkdown / blockEditorToHtml.", not: "a <textarea> with a Markdown preview, execCommand on one big contenteditable, or a third-party rich text library" },
   { need: "Mention people or reference issues inline in a comment (@user, #issue)", use: ["mentions", "field"], how: "Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox.", not: "contenteditable rich-text hacks or an unanchored dropdown under a textarea" },
   { need: "Give or display a star rating or review score", use: ["rating", "field"], how: "Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores).", not: "buttons or spans of ★ characters with custom click handlers" },
+  { need: "Find text in a document, sheet or log and step through the matches", use: ["find-bar"], how: "FindBar above the content (floating over an editor): the app finds the matches and passes current and total; Enter and Shift+Enter step, Esc closes.", not: "a Search bar with hand-made arrows and a counter" },
   { need: "Search or filter by typing", use: ["search-bar", "combobox", "command"], how: "Search bar to filter what's on screen, Combobox to pick a value, Command palette (⌘K) to jump anywhere.", not: "an <input> with a hand-drawn magnifier" },
   { need: "Pick a date or time", use: ["date-time-picker", "input"], how: "DatePicker or DatePickerGrid for one date near today; DateRange or DateRangePicker for a start and end span; TimePicker or TimePickerTrigger for discrete hours and minutes; DateTimePicker or DateTimePickerTrigger for combined date and time; Input type=\"date\" for a birth date, type=\"time\" for rapid keyboard entry.", not: "a hand-built month grid or time dropdown" },
   { need: "Pick an icon or emoji", use: ["icon-picker"], how: "IconPicker (<ayy-icon-picker>) in a Popover or a menu's submenu panel: search, a grid of Hugeicons and emoji, and a remove button.", not: "a menu with one item per icon, a hand-built emoji grid" },

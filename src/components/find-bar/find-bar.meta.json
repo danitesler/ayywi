@@ -1,0 +1,32 @@
+{
+  "name": "Find bar",
+  "slug": "find-bar",
+  "category": "Forms",
+  "description": "Find and replace text in a document, sheet or log, with a match count and controls to step through matches.",
+  "aka": ["find-bar", "findbar", "find-replace", "find-and-replace", "search-replace"],
+  "classes": {
+    "ayy-find-bar": "Search controls in a surface.",
+    "ayy-find-bar--floating": "Positions the bar at the inline end of its containing block.",
+    "ayy-find-bar__row": "Wrapping row of controls.",
+    "ayy-find-bar__input": "Flexible query or replacement input.",
+    "ayy-find-bar__count": "Match count or no-results message."
+  },
+  "variants": { "floating": { "values": [true, false], "default": false }, "replace": { "values": [true, false], "default": false } },
+  "states": {
+    "default": { "looks": "A surface with input, count and navigation controls." },
+    "hover": { "when": "Hover on a button or input", "looks": "The control uses its own hover style." },
+    "pressed": { "when": "Press a button", "looks": "The button uses its own pressed style." },
+    "focus": { "when": "Focus a button or input", "looks": "The control uses its own focus ring." },
+    "disabled": { "when": "There are no matches", "looks": "Navigation and replacement buttons are disabled." },
+    "selected": { "when": "Match case has aria-pressed=true", "looks": "The button has a primary tint and text." },
+    "error": { "when": "A nonempty query has no matches", "looks": "The query has aria-invalid and the count says No results." },
+    "loading": { "none": "The app counts matches; show the old count until the new one arrives." }
+  },
+  "sizes": { "density": "Inputs and buttons follow the control density and size scope.", "width": "Fills the container; rows wrap when space is limited." },
+  "js": "findBarClass({ floating?, className? }); findBarCountText(query, current, total, labels?); findBarLabels.",
+  "react": { "import": "import { FindBar } from \"@danitesler/ayywi/react\";", "components": { "FindBar": { "renders": "div.ayy-find-bar with query, count and controls", "props": { "query": "string — controlled query", "onQueryChange": "(query: string) => void", "current": "number — current match, one-based", "total": "number — match count", "onNext / onPrevious": "() => void — step through matches", "matchCase / onMatchCaseChange": "boolean and callback — optional case control", "replace": "boolean — show replacement controls", "replacement / onReplacementChange": "string and callback — controlled replacement", "onReplace / onReplaceAll": "() => void — replace matches", "onClose": "() => void — show a close button", "floating": "boolean — float at the inline end", "autoFocus": "boolean — focus the query", "labels": "Partial<FindBarLabels> — translated control names and count" } } } },
+  "a11y": ["Inputs and icon buttons have accessible names; the count is a live region.", "Enter and Shift+Enter step matches; Escape closes. Enter during IME composition does nothing."],
+  "do": ["Use a find bar to find and replace text in a document, sheet or log.", "Pass the current match and count from the app, and translate labels."],
+  "dont": ["Don't use a find bar to filter a list of records — use a Search bar."],
+  "examples": [{ "id": "document", "title": "Find in a document" }]
+}

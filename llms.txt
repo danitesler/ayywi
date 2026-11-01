@@ -53,6 +53,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Input](llms/input.md): A single-line text field for names, emails, passwords, search and other short text. It can hold icons, addons and buttons inside the field.
 - [PIN input](llms/pin-input.md): One box per character for verification codes, two-factor authentication tokens and passcodes. Typing advances to the next box, Backspace steps back, and pasting or SMS autofill fills the whole code at once.
 - [Search bar](llms/search-bar.md): A rounded search field with a magnifier and a clear button, often used at the top of a phone list. It's a real search form, so phones show a search key on the keyboard.
+- [Find bar](llms/find-bar.md): Find and replace text in a document, sheet or log, with a match count and controls to step through matches.
 - [Filter bar](llms/filter-bar.md): A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all.
 - [Sorting](llms/sorting.md): A dropdown for choosing how a list, table or feed is ordered. It matches the filter bar and sits next to it.
 - [Textarea](llms/textarea.md): A multi-line text field for longer text like comments and descriptions. It can grow as you type.

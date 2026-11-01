@@ -172,6 +172,13 @@ A rounded search field with a magnifier and a clear button, often used at the to
 - JS: searchBarClass({ size?, className? }) → string; clearSearchBar(button) empties the field a clear button belongs to, fires input and focuses it (@danitesler/ayywi/elements does it for every clear button); searchBarIcon, searchBarClearIcon (SVG markup).
 - A11y: role="search" makes the form a search landmark. Name the input (aria-label, or a <label>) by what it searches ("Search tasks"). The clear button is a real button named "Clear search"; clearing puts focus back in the field. Esc in a type="search" input clears it in most browsers; Cancel is for leaving the search, not clearing it. Results that update as you type should say how many there are in a polite live region.
 
+## Find bar (Forms)
+Find and replace text in a document, sheet or log, with a match count and controls to step through matches.
+- Classes: `.ayy-find-bar` `.ayy-find-bar--floating` `.ayy-find-bar__row` `.ayy-find-bar__input` `.ayy-find-bar__count`
+- States: hover, pressed, focus, disabled, selected, error
+- JS: findBarClass({ floating?, className? }); findBarCountText(query, current, total, labels?); findBarLabels.
+- A11y: Inputs and icon buttons have accessible names; the count is a live region. Enter and Shift+Enter step matches; Escape closes. Enter during IME composition does nothing.
+
 ## Filter bar (Forms)
 A bar that brings together everything needed to filter a list, table or feed: quick filter tabs, filter menus, search, and the filters currently applied with a way to clear them all.
 - Classes: `.ayy-filter-bar` `.ayy-filter-bar--flush` `.ayy-filter-bar--sticky` `.ayy-filter-bar--sm` `.ayy-filter-bar__main` `.ayy-filter-bar__group` `.ayy-filter-bar__tabs` `.ayy-filter-bar__tab` `.ayy-filter-bar__tab-count` `.ayy-filter-bar__trigger` `.ayy-filter-bar__trigger-badge` `.ayy-filter-bar__active` `.ayy-filter-bar__summary` `.ayy-filter-bar__clear`

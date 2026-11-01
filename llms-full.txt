@@ -71,6 +71,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Write or edit a rich document: notes, a page, a description with headings, lists, to-dos, images and embeds | BlockEditor (<ayy-block-editor> in HTML): Notion-style blocks with / for block types, Markdown shortcuts, a formatting bar, @ mentions and drag handles; store its value (blocks) or convert with blockEditorToMarkdown / blockEditorToHtml. | a <textarea> with a Markdown preview, execCommand on one big contenteditable, or a third-party rich text library |
 | Mention people or reference issues inline in a comment (@user, #issue) | Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox. | contenteditable rich-text hacks or an unanchored dropdown under a textarea |
 | Give or display a star rating or review score | Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores). | buttons or spans of ★ characters with custom click handlers |
+| Find text in a document, sheet or log and step through the matches | FindBar above the content (floating over an editor): the app finds the matches and passes current and total; Enter and Shift+Enter step, Esc closes. | a Search bar with hand-made arrows and a counter |
 | Search or filter by typing | Search bar to filter what's on screen, Combobox to pick a value, Command palette (⌘K) to jump anywhere. | an <input> with a hand-drawn magnifier |
 | Pick a date or time | DatePicker or DatePickerGrid for one date near today; DateRange or DateRangePicker for a start and end span; TimePicker or TimePickerTrigger for discrete hours and minutes; DateTimePicker or DateTimePickerTrigger for combined date and time; Input type="date" for a birth date, type="time" for rapid keyboard entry. | a hand-built month grid or time dropdown |
 | Pick an icon or emoji | IconPicker (<ayy-icon-picker>) in a Popover or a menu's submenu panel: search, a grid of Hugeicons and emoji, and a remove button. | a menu with one item per icon, a hand-built emoji grid |
@@ -552,7 +553,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
-- **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Filter bar, Sorting, Textarea, Mentions, Block editor, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
+- **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Find bar, Filter bar, Sorting, Textarea, Mentions, Block editor, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Scrollbar, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
@@ -1621,6 +1622,42 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 - Put it in a Top bar's second row on a list's first screen.
 
 **Examples**: Empty, with text and sizes, Large, with Cancel. Copy-ready HTML and React in llms/search-bar.md.
+
+## Find bar
+
+Category: Forms. Find and replace text in a document, sheet or log, with a match count and controls to step through matches. Also called: find-bar, findbar, find-replace, find-and-replace, search-replace.
+
+**Classes**
+- `.ayy-find-bar` — Search controls in a surface.
+- `.ayy-find-bar--floating` — Positions the bar at the inline end of its containing block.
+- `.ayy-find-bar__row` — Wrapping row of controls.
+- `.ayy-find-bar__input` — Flexible query or replacement input.
+- `.ayy-find-bar__count` — Match count or no-results message.
+
+**States**
+- `hover` (`Hover on a button or input`)
+- `pressed` (`Press a button`)
+- `focus` (`Focus a button or input`)
+- `disabled` (`There are no matches`)
+- `selected` (`Match case has aria-pressed=true`)
+- `error` (`A nonempty query has no matches`)
+
+**Sizes**
+- Density — Inputs and buttons follow the control density and size scope.
+- Width — Fills the container; rows wrap when space is limited.
+
+**React** — `import { FindBar } from "@danitesler/ayywi/react";`
+- `<FindBar>` renders div.ayy-find-bar with query, count and controls. Props: `query` string — controlled query; `onQueryChange` (query: string) => void; `current` number — current match, one-based; `total` number — match count; `onNext / onPrevious` () => void — step through matches; `matchCase / onMatchCaseChange` boolean and callback — optional case control; `replace` boolean — show replacement controls; `replacement / onReplacementChange` string and callback — controlled replacement; `onReplace / onReplaceAll` () => void — replace matches; `onClose` () => void — show a close button; `floating` boolean — float at the inline end; `autoFocus` boolean — focus the query; `labels` Partial<FindBarLabels> — translated control names and count
+
+**Accessibility**
+- Inputs and icon buttons have accessible names; the count is a live region.
+- Enter and Shift+Enter step matches; Escape closes. Enter during IME composition does nothing.
+
+**Do**
+- Use a find bar to find and replace text in a document, sheet or log.
+- Pass the current match and count from the app, and translate labels.
+
+**Examples**: Find in a document. Copy-ready HTML and React in llms/find-bar.md.
 
 ## Filter bar
 

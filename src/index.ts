@@ -103,3 +103,5 @@ export * from "./components/block-editor/block-editor";
 export function cssVar(name: TokenName): string {
   return `var(${tokens[name].cssVar})`;
 }
+
+export * from "./components/find-bar/find-bar";
