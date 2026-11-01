@@ -62,6 +62,7 @@ Category: Overlays. A window that opens over the page and asks for attention, fo
 - Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion.
 
 **Do**
+- Use confirmDialog(), choiceDialog() or promptDialog() for a quick question from code (delete, discard changes, rename); compose a Dialog yourself when it needs more than one field.
 - Use a dialog for short, focused tasks that must finish before continuing (rename, create).
 - Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.
 - Use a side modal to edit or inspect a record without leaving the page, and for a few project options, filters or a mobile nav drawer.

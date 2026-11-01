@@ -10,3 +10,5 @@ export { setThemeCustomization, createThemeCustomization, createThemeText } from
 export { setBrand, createBrand, brandCss } from "../brand";
 export { brandPresets } from "../tokens";
 export { chartColors, chartTheme } from "../components/chart/chart";
+
+export { confirmDialog, choiceDialog, promptDialog } from "../components/dialog/dialog-prompt";

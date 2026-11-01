@@ -9,7 +9,7 @@ Generated from source by scripts/build-manifest.mjs. Structured version: manifes
 - Any framework / plain HTML: load `@danitesler/ayywi/css` and write the class names below.
 - React: `import { Button } from "@danitesler/ayywi/react"` plus the CSS.
 - Vue, Svelte, Angular, Solid, Lit: class names or helpers (`import { buttonClass } from "@danitesler/ayywi"`), and `import "@danitesler/ayywi/elements"` for interactive components (<ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>).
-- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setIconPack, getIconPack, THEME_PRESETS, setThemeCustomization, createThemeCustomization, createThemeText, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
+- Plain HTML: `<link rel="stylesheet" href=".../dist/ayywi.min.css">` + `<script src=".../dist/elements.global.js" defer></script>` (also gives window.ayywi: toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setIconPack, getIconPack, THEME_PRESETS, setThemeCustomization, createThemeCustomization, createThemeText, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme, confirmDialog, choiceDialog, promptDialog). Add `<link rel="stylesheet" href=".../dist/fonts.css">` before it for ayywi's fonts (Sora, Unbounded; system fonts otherwise), and `<script src=".../dist/theme-init.js"></script>` in <head> so a saved theme applies before the first paint.
 - Copy-ready HTML and React examples: one page per component, `llms/<slug>.md` (llms/button.md, llms/table.md…), listed in llms.txt. This file has every component's API but no examples.
 - Check your work: `npx @danitesler/ayywi lint`.
 
@@ -82,7 +82,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Show a code snippet, command or config file | CodeBlock with CodeBlockHeader, CodeBlockFilename, CodeBlockCopy, CodeBlockPre and CodeBlockCode (numbered for line numbers, .ayy-token-* for syntax tokens). | a raw <pre> with custom background and copy button |
 | Show activity history, audit log or chronological events | Timeline of TimelineItems (TimelineMarker with pulse on live events, TimelineTime, TimelineTitle, TimelineBody; alternate for wide milestone pages). | divs with a border-left line and absolute dots |
 | Show more actions behind a button (⋯, a user menu) | DropdownMenu of items; destructive item last. | a hand-built absolutely positioned <div> |
-| Ask to confirm, or collect a few fields over the page | Dialog (DialogContent, title, body, footer with the primary action last). | window.confirm(), a fixed <div> with a backdrop |
+| Ask to confirm, or collect a few fields over the page | Dialog (DialogContent, title, body, footer with the primary action last). For one question from code: await confirmDialog(), choiceDialog() or promptDialog(). | window.confirm(), a fixed <div> with a backdrop |
 | A side panel, drawer or bottom sheet | Dialog with side="end", "start" or "bottom". | a custom fixed div that slides in |
 | Settings for an app | The Settings pattern: a full-size Dialog holding the App shell in settings mode, Settings groups of SettingsRow / SettingsLink. | a settings page with Tabs, a small dialog, rows built from divs |
 | Small extra content on click (details, a mini form) | Popover. | a hand-positioned div |
@@ -3460,6 +3460,7 @@ Category: Overlays. A window that opens over the page and asks for attention, fo
 - Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion.
 
 **Do**
+- Use confirmDialog(), choiceDialog() or promptDialog() for a quick question from code (delete, discard changes, rename); compose a Dialog yourself when it needs more than one field.
 - Use a dialog for short, focused tasks that must finish before continuing (rename, create).
 - Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.
 - Use a side modal to edit or inspect a record without leaving the page, and for a few project options, filters or a mobile nav drawer.

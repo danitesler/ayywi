@@ -64,7 +64,7 @@ Need → component (name one for every piece before you write it; MCP `pick_comp
 - Show a code snippet, command or config file: CodeBlock with CodeBlockHeader, CodeBlockFilename, CodeBlockCopy, CodeBlockPre and CodeBlockCode (numbered for line numbers, .ayy-token-* for syntax tokens). Not a raw <pre> with custom background and copy button.
 - Show activity history, audit log or chronological events: Timeline of TimelineItems (TimelineMarker with pulse on live events, TimelineTime, TimelineTitle, TimelineBody; alternate for wide milestone pages). Not divs with a border-left line and absolute dots.
 - Show more actions behind a button (⋯, a user menu): DropdownMenu of items; destructive item last. Not a hand-built absolutely positioned <div>.
-- Ask to confirm, or collect a few fields over the page: Dialog (DialogContent, title, body, footer with the primary action last). Not window.confirm(), a fixed <div> with a backdrop.
+- Ask to confirm, or collect a few fields over the page: Dialog (DialogContent, title, body, footer with the primary action last). For one question from code: await confirmDialog(), choiceDialog() or promptDialog(). Not window.confirm(), a fixed <div> with a backdrop.
 - A side panel, drawer or bottom sheet: Dialog with side="end", "start" or "bottom". Not a custom fixed div that slides in.
 - Settings for an app: The Settings pattern: a full-size Dialog holding the App shell in settings mode, Settings groups of SettingsRow / SettingsLink. Not a settings page with Tabs, a small dialog, rows built from divs.
 - Small extra content on click (details, a mini form): Popover. Not a hand-positioned div.

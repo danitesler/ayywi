@@ -652,3 +652,5 @@ export { TransferList, type TransferListProps, type TransferListOption } from ".
 export { Mentions, type MentionsProps, type MentionOption } from "../components/mentions/mentions.react";
 export { BlockEditor, type BlockEditorProps } from "../components/block-editor/block-editor.react";
 export type { BlockEditorBlock, BlockEditorBlockType, BlockEditorMention, BlockEditorMentionOption, BlockEditorMentionSource, BlockEditorTone } from "../components/block-editor/block-editor";
+
+export { confirmDialog, choiceDialog, promptDialog, type ConfirmDialogOptions, type ChoiceDialogOptions, type DialogChoice, type PromptDialogOptions } from "../components/dialog/dialog-prompt";

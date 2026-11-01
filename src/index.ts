@@ -28,6 +28,7 @@ export * from "./components/field/field";
 export * from "./components/switch/switch";
 export * from "./components/tabs/tabs";
 export * from "./components/dialog/dialog";
+export * from "./components/dialog/dialog-prompt";
 export * from "./components/popover/popover";
 export * from "./components/menu/menu";
 export * from "./components/tooltip/tooltip";

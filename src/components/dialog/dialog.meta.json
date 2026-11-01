@@ -46,7 +46,7 @@
     "density": "Padding is fixed (--ayy-space-6); its controls follow data-density.",
     "width": "The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem; full is 4rem clear of the viewport on each axis, and the whole screen below 48rem."
   },
-  "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
+  "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). confirmDialog(options) resolves true or false; choiceDialog(options) resolves the chosen value or null; promptDialog(options) resolves trimmed text or null. Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
   "element": {
     "tag": "ayy-dialog",
     "attributes": {
@@ -87,6 +87,7 @@
     "Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion."
   ],
   "do": [
+    "Use confirmDialog(), choiceDialog() or promptDialog() for a quick question from code (delete, discard changes, rename); compose a Dialog yourself when it needs more than one field.",
     "Use a dialog for short, focused tasks that must finish before continuing (rename, create).",
     "Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.",
     "Use a side modal to edit or inspect a record without leaving the page, and for a few project options, filters or a mobile nav drawer.",

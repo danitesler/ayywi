@@ -468,7 +468,7 @@ A window that opens over the page and asks for attention, for confirmations, for
 - States: hover, focus, open
 - Sizes: `sm` `md` `lg` `xl` `full`
 - Element: `<ayy-dialog open persistent>`, events `ayy-open-change`
-- JS: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
+- JS: dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). confirmDialog(options) resolves true or false; choiceDialog(options) resolves the chosen value or null; promptDialog(options) resolves trimmed text or null. Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor="id" command="show-modal"> in modern browsers.
 - A11y: Always include a DialogTitle (or aria-label on the dialog). Focus moves into the dialog on open and returns to the trigger on close (native behaviour). Esc closes; background is inert while open; page scroll is locked. A side modal is still a modal: same rules. A body with only text that scrolls needs tabindex="0" so keyboard users can scroll it; form fields inside make that unnecessary. Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion.
 
 ## Popover (Overlays)

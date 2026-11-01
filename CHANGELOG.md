@@ -12,6 +12,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Dialog](#/dialog)**
+  New confirmDialog(), choiceDialog() and promptDialog(): ask one question from code and await the answer.
+
 - **Size scope**
   - A toolbar, form or panel needed `size="sm"` on every control to be small → `data-size="sm"` (or `"lg"`) on its container makes every control inside it that doesn't name a size use that step; `"md"` puts the default back inside a scope, explicit sizes keep theirs, and it follows `data-density` set on the same element or an ancestor.
   - Buttons, inputs, selects, switches, checkboxes, radios, tabs, pagination, chips, step markers and menu rows follow a scope; Textarea, Slider, FAB and rows that are large by default (App shell links, Settings rows) keep their size.

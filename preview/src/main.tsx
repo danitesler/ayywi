@@ -1,13 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { chartColors, chartTheme, setDensity, setTheme, toast } from "@danitesler/ayywi";
+import { chartColors, chartTheme, choiceDialog, confirmDialog, promptDialog, setDensity, setTheme, toast } from "@danitesler/ayywi";
 import "@danitesler/ayywi/elements";
 import "../../src/css/index.css";
 import "./preview.css";
 import { loadIconPacksOnDemand } from "./icon-packs";
 
 // Plain-HTML examples call window.ayywi.* exactly like pages using dist/elements.global.js.
-Object.assign(window, { ayywi: { toast, setTheme, setDensity, chartColors, chartTheme } });
+Object.assign(window, { ayywi: { toast, setTheme, setDensity, chartColors, chartTheme, confirmDialog, choiceDialog, promptDialog } });
 loadIconPacksOnDemand();
 
 // ?app=<id> renders one showcase app on its own, for the device preview's iframe. Each is its own bundle, so the

@@ -11,7 +11,7 @@
     "@danitesler/ayywi/fonts.css": "Self-hosted brand fonts (Sora, Unbounded, Caveat; woff2, unicode-range subsets). @danitesler/ayywi/fonts-google.css loads them from Google instead.",
     "ayywi": "Framework-free JS: tokens, class helpers (buttonClass…), controllers that wire behaviour onto your markup and return a cleanup (connectActionBar, connectAppShell, connectBlockEditor, connectCarousel, connectColorPicker, connectCombobox, connectCommand, connectDatePicker, connectDateRange, connectDateTimePicker, connectDragDrop, connectGrid, connectIconPicker, connectInlineEdit, connectMentions, connectMenu, connectNavbar, connectPinInput, connectPopover, connectRecordPicker, connectShortcutRecorder, connectSwipe, connectTable, connectTableColumnReorder, connectTableColumns, connectTableDragSelect, connectTableEdit, connectTableResize, connectTableRowReorder, connectTagInput, connectTimePicker, connectToc, connectToolbar, connectTransferList, connectTree, enhanceTooltip), toast(), iconSvg(), paginationRange(), setTheme/setDensity/getColorScheme, themeInitScript, createBrand/brandCss/setBrand, cssVar(). Server-safe.",
     "@danitesler/ayywi/react": "React components (re-exports everything from ayywi). Marked \"use client\".",
-    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setIconPack, getIconPack, THEME_PRESETS, setThemeCustomization, createThemeCustomization, createThemeText, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme).",
+    "@danitesler/ayywi/elements": "Custom elements for any framework or plain HTML: <ayy-toolbar>, <ayy-action-bar>, <ayy-menu>, <ayy-command>, <ayy-navbar>, <ayy-app-shell>, <ayy-toc>, <ayy-tree>, <ayy-pin-input>, <ayy-mentions>, <ayy-block-editor>, <ayy-inline-edit>, <ayy-combobox>, <ayy-tag-input>, <ayy-record-picker>, <ayy-transfer-list>, <ayy-date-picker>, <ayy-date-range>, <ayy-time-picker>, <ayy-date-time-picker>, <ayy-color-picker>, <ayy-icon-picker>, <ayy-shortcut-recorder>, <ayy-tabs>, <ayy-carousel>, <ayy-drag-drop>, <ayy-dialog>, <ayy-popover>, <ayy-tooltip>, <ayy-swipe>, <ayy-table>, <ayy-grid>, plus the card spotlight. dist/elements.global.js registers them from a <script> and exposes window.ayywi (toast, configureToaster, trackInputModality, getInputModality, setTheme, getTheme, getResolvedTheme, getColorScheme, setDensity, getDensity, setIconPack, getIconPack, THEME_PRESETS, setThemeCustomization, createThemeCustomization, createThemeText, setBrand, createBrand, brandCss, brandPresets, chartColors, chartTheme, confirmDialog, choiceDialog, promptDialog).",
     "@danitesler/ayywi/tokens.json": "DTCG-style token source ($value = dark, extensions hold light/density). Extra themes are defined in tokens/themes/*.json.",
     "@danitesler/ayywi/tokens/<file>": "Exports for other platforms: dark.json, light.json, dark-contrast.json, light-gray.json, density/*.json (plain DTCG, for Style Dictionary / Figma), brands/<name>/<theme>.json (a brand's overrides to layer over its theme), ayywi.scss, Ayywi.swift (SwiftUI), Ayywi.kt (Jetpack Compose).",
     "npx @danitesler/ayywi": "CLI: `lint` (checks app code against this manifest), `brand` (a brand stylesheet from a seed colour, contrast checked), `init` (sets up AI agent files + MCP), `mcp` (MCP server over stdio)."
@@ -307,7 +307,7 @@
       "use": [
         "dialog"
       ],
-      "how": "Dialog (DialogContent, title, body, footer with the primary action last).",
+      "how": "Dialog (DialogContent, title, body, footer with the primary action last). For one question from code: await confirmDialog(), choiceDialog() or promptDialog().",
       "not": "window.confirm(), a fixed <div> with a backdrop"
     },
     {
@@ -11669,7 +11669,7 @@
         "density": "Padding is fixed (--ayy-space-6); its controls follow data-density.",
         "width": "The width above, never more than the viewport minus 2rem; at most the viewport height minus 2rem, the body scrolls. Side modals are full height (the size sets their width); a bottom sheet is full width below 40rem; full is 4rem clear of the viewport on each axis, and the whole screen below 48rem."
       },
-      "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
+      "js": "dialogClass({ size?, side?, className? }); isBackdropClick(dialog, event); dialogCloseIcon (the Hugeicons close icon as SVG markup). confirmDialog(options) resolves true or false; choiceDialog(options) resolves the chosen value or null; promptDialog(options) resolves trimmed text or null. Without any JS helper: dialog.showModal() / dialog.close(), or natively <button commandfor=\"id\" command=\"show-modal\"> in modern browsers.",
       "element": {
         "tag": "ayy-dialog",
         "attributes": {
@@ -11735,6 +11735,7 @@
         "Opening and closing fade/scale (side modals slide); the closing animation is skipped in browsers without @starting-style and under reduced motion."
       ],
       "do": [
+        "Use confirmDialog(), choiceDialog() or promptDialog() for a quick question from code (delete, discard changes, rename); compose a Dialog yourself when it needs more than one field.",
         "Use a dialog for short, focused tasks that must finish before continuing (rename, create).",
         "Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.",
         "Use a side modal to edit or inspect a record without leaving the page, and for a few project options, filters or a mobile nav drawer.",
