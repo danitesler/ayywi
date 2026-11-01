@@ -659,3 +659,5 @@ export { FindBar, type FindBarProps } from "../components/find-bar/find-bar.reac
 
 export { Checklist, type ChecklistProps } from "../components/checklist/checklist.react";
 export type { ChecklistItem, ChecklistLabels } from "../components/checklist/checklist";
+
+export { Board, BoardColumn, BoardCard, type BoardProps, type BoardColumnProps, type BoardCardProps } from "../components/board/board.react";

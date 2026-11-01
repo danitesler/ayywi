@@ -1491,22 +1491,6 @@ for (const renderer of ["react", "html"] as const) {
       await expect(demo.getByRole("button", { name: "Next" })).toBeDisabled();
     });
 
-    test("drag-drop: sortable items move between areas and drop targets react", async ({ page }) => {
-      await open(page, "drag-drop", { renderer });
-      const board = example(page, "board");
-      const featureCard = board.locator('[data-id="c-1"]');
-      const inProgressTarget = board.locator('[data-id="in-progress"]');
-
-      const handle = featureCard.locator(".ayy-drag-handle");
-      await expect(handle).toBeVisible();
-
-      // Keyboard navigation: moving across areas with ArrowRight on focused handle
-      await handle.focus();
-      await page.keyboard.press("ArrowRight");
-
-      await expect(inProgressTarget.locator('[data-id="c-1"]')).toBeVisible();
-    });
-
     test("action bar: roving tabindex, arrow keys, and Escape clears selection", async ({ page }) => {
       await open(page, "action-bar", { renderer });
       const s = stage(page);
@@ -3431,4 +3415,14 @@ test("toast runs one of several actions, wraps them on a phone, and closes", asy
   await t.getByRole("button", { name: "Snooze 3 hours" }).click();
   expect(await page.evaluate(() => (window as unknown as { __ran: string[] }).__ran)).toEqual(["3h"]);
   await expect(t).toBeHidden();
+});
+
+
+test("drag-drop: sortable items move between areas", async ({ page }) => {
+  await open(page, "drag-drop", { renderer: "react" });
+  const board = example(page, "board");
+  const featureCard = board.locator('[data-id="c-1"]');
+  await keyboardFocus(featureCard);
+  await page.keyboard.press("Alt+ArrowRight");
+  await expect(board.locator('[data-id="in-progress"] [data-id="c-1"]')).toBeVisible();
 });

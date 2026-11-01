@@ -12,6 +12,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Board](#/board)**
+  Columns of cards by status or stage, with counts, empty columns, an add button and drag between columns.
+
 - **[Checklist](#/checklist)**
   An editable list to tick off: Enter adds, Backspace on an empty item removes, with a count and progress.
 

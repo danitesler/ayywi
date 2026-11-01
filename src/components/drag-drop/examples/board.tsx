@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Badge, DragDropArea, DragHandle, DropTarget, SortableItem, type DragMove } from "@danitesler/ayywi/react";
+import { Badge, Board, BoardCard, BoardColumn, type DragMove } from "@danitesler/ayywi/react";
 
 interface Card {
   id: string;
@@ -53,28 +53,17 @@ export default function Example() {
   };
 
   return (
-    <DragDropArea onMove={handleMove} style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--ayy-space-4)", inlineSize: "100%" }}>
+    <Board onMove={handleMove} aria-label="Work board">
       {columns.map((col) => (
-        <div key={col.id} style={{ display: "flex", flexDirection: "column", gap: "var(--ayy-space-2)" }}>
-          <div className="ayy-spread">
-            <span style={{ fontWeight: "var(--ayy-weight-semibold)", fontSize: "var(--ayy-text-sm)" }}>{col.title}</span>
-            <span className="ayy-muted ayy-small">{col.cards.length}</span>
-          </div>
-          <DropTarget data-id={col.id} data-accepts={col.accepts} style={{ minBlockSize: "12rem" }}>
-            {col.cards.map((card) => (
-              <SortableItem key={card.id} data-id={card.id} data-type={card.type}>
-                <DragHandle aria-label={`Move ${card.title}`} />
-                <div style={{ flex: 1, minInlineSize: 0, fontSize: "var(--ayy-text-xs)" }}>
-                  {card.title}
-                </div>
-                <Badge variant={card.type === "bug" ? "destructive" : "info"}>
-                  {card.type}
-                </Badge>
-              </SortableItem>
-            ))}
-          </DropTarget>
-        </div>
+        <BoardColumn key={col.id} id={col.id} title={col.title} count={col.cards.length} accepts={col.accepts}>
+          {col.cards.map((card) => (
+            <BoardCard key={card.id} id={card.id} type={card.type}>
+              <span>{card.title}</span>
+              <Badge variant={card.type === "bug" ? "destructive" : "info"}>{card.type}</Badge>
+            </BoardCard>
+          ))}
+        </BoardColumn>
       ))}
-    </DragDropArea>
+    </Board>
   );
 }

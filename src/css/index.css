@@ -92,6 +92,7 @@
 @import "../components/chat/chat.css" layer(ayywi.components);
 @import "../components/code-block/code-block.css" layer(ayywi.components);
 @import "../components/table/table.css" layer(ayywi.components);
+@import "../components/board/board.css" layer(ayywi.components);
 @import "../components/grid/grid.css" layer(ayywi.components);
 @import "../components/chart/chart.css" layer(ayywi.components);
 

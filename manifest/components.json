@@ -207,6 +207,14 @@
       "not": "buttons or spans of ★ characters with custom click handlers"
     },
     {
+      "need": "Cards grouped into columns by status or stage (kanban, pipeline)",
+      "use": [
+        "board"
+      ],
+      "how": "Board with a BoardColumn per stage and BoardCards; pass onMove to drag cards between columns (Drag and drop does the moving).",
+      "not": "flex columns of Cards with inline styles"
+    },
+    {
       "need": "An editable list of things to tick off (packing list, release steps, subtasks)",
       "use": [
         "checklist"
@@ -823,6 +831,7 @@
       "label": "Data views",
       "members": [
         "table",
+        "board",
         "grid"
       ]
     },
@@ -902,6 +911,7 @@
     "loading": "Waiting on work: aria-busy=\"true\" with a Spinner, a Skeleton, or an indeterminate Progress."
   },
   "publicCustomProperties": {
+    "--ayy-board-column-width": "Width of a board column (default 17rem).",
     "--ayy-spot": "The content's accent colour, inherited by everything inside (usually an --ayy-accent-* token). Set it on a card or page: it lights card spotlights, the active contents item, icon tiles, the scroll-progress bar and .ayy-accent-text.",
     "--ayy-scrollbar-size": "Width of a Scrollbar's gutter (default 0.5rem). The thumb is 4px thinner than the gutter.",
     "--ayy-mx": "Card spotlight pointer X in px (set by React Card or @danitesler/ayywi/elements).",
@@ -11801,8 +11811,8 @@
         {
           "id": "board",
           "title": "Board with drop targets",
-          "html": "<ayy-drag-drop handle=\"\" areas=\".ayy-drop-target\" style=\"display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ayy-space-4);inline-size:100%\"><div style=\"display:flex;flex-direction:column;gap:var(--ayy-space-2)\"><div class=\"ayy-spread\"><span style=\"font-weight:var(--ayy-weight-semibold);font-size:var(--ayy-text-sm)\">Backlog</span><span class=\"ayy-muted ayy-small\">2</span></div><ul class=\"ayy-drop-target ayy-sortable\" data-id=\"backlog\" style=\"min-block-size:12rem\"><li class=\"ayy-draggable ayy-sortable__item\" data-id=\"c-1\" data-type=\"feature\"><button type=\"button\" class=\"ayy-drag-handle\" aria-label=\"Move Add keyboard shortcut recorder\"><svg class=\"ayy-icon\" data-ayy-icon=\"grip-vertical\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 6C16 6.55228 15.5523 7 15 7C14.4477 7 14 6.55228 14 6C14 5.44772 14.4477 5 15 5C15.5523 5 16 5.44772 16 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 6C10 6.55228 9.55228 7 9 7C8.44772 7 8 6.55228 8 6C8 5.44772 8.44772 5 9 5C9.55228 5 10 5.44772 10 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 18C16 18.5523 15.5523 19 15 19C14.4477 19 14 18.5523 14 18C14 17.4477 14.4477 17 15 17C15.5523 17 16 17.4477 16 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 12C16 12.5523 15.5523 13 15 13C14.4477 13 14 12.5523 14 12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 18C10 18.5523 9.55228 19 9 19C8.44772 19 8 18.5523 8 18C8 17.4477 8.44772 17 9 17C9.55228 17 10 17.4477 10 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12C8 11.4477 8.44772 11 9 11C9.55228 11 10 11.4477 10 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button><div style=\"flex:1;min-inline-size:0;font-size:var(--ayy-text-xs)\">Add keyboard shortcut recorder</div><span class=\"ayy-badge ayy-badge--info\">feature</span></li><li class=\"ayy-draggable ayy-sortable__item\" data-id=\"c-2\" data-type=\"bug\"><button type=\"button\" class=\"ayy-drag-handle\" aria-label=\"Move Fix tooltip flicker on hover\"><svg class=\"ayy-icon\" data-ayy-icon=\"grip-vertical\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 6C16 6.55228 15.5523 7 15 7C14.4477 7 14 6.55228 14 6C14 5.44772 14.4477 5 15 5C15.5523 5 16 5.44772 16 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 6C10 6.55228 9.55228 7 9 7C8.44772 7 8 6.55228 8 6C8 5.44772 8.44772 5 9 5C9.55228 5 10 5.44772 10 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 18C16 18.5523 15.5523 19 15 19C14.4477 19 14 18.5523 14 18C14 17.4477 14.4477 17 15 17C15.5523 17 16 17.4477 16 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 12C16 12.5523 15.5523 13 15 13C14.4477 13 14 12.5523 14 12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 18C10 18.5523 9.55228 19 9 19C8.44772 19 8 18.5523 8 18C8 17.4477 8.44772 17 9 17C9.55228 17 10 17.4477 10 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12C8 11.4477 8.44772 11 9 11C9.55228 11 10 11.4477 10 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button><div style=\"flex:1;min-inline-size:0;font-size:var(--ayy-text-xs)\">Fix tooltip flicker on hover</div><span class=\"ayy-badge ayy-badge--destructive\">bug</span></li></ul></div><div style=\"display:flex;flex-direction:column;gap:var(--ayy-space-2)\"><div class=\"ayy-spread\"><span style=\"font-weight:var(--ayy-weight-semibold);font-size:var(--ayy-text-sm)\">In Progress</span><span class=\"ayy-muted ayy-small\">1</span></div><ul class=\"ayy-drop-target ayy-sortable\" data-id=\"in-progress\" style=\"min-block-size:12rem\"><li class=\"ayy-draggable ayy-sortable__item\" data-id=\"c-3\" data-type=\"feature\"><button type=\"button\" class=\"ayy-drag-handle\" aria-label=\"Move Table column reordering\"><svg class=\"ayy-icon\" data-ayy-icon=\"grip-vertical\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 6C16 6.55228 15.5523 7 15 7C14.4477 7 14 6.55228 14 6C14 5.44772 14.4477 5 15 5C15.5523 5 16 5.44772 16 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 6C10 6.55228 9.55228 7 9 7C8.44772 7 8 6.55228 8 6C8 5.44772 8.44772 5 9 5C9.55228 5 10 5.44772 10 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 18C16 18.5523 15.5523 19 15 19C14.4477 19 14 18.5523 14 18C14 17.4477 14.4477 17 15 17C15.5523 17 16 17.4477 16 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 12C16 12.5523 15.5523 13 15 13C14.4477 13 14 12.5523 14 12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 18C10 18.5523 9.55228 19 9 19C8.44772 19 8 18.5523 8 18C8 17.4477 8.44772 17 9 17C9.55228 17 10 17.4477 10 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12C8 11.4477 8.44772 11 9 11C9.55228 11 10 11.4477 10 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button><div style=\"flex:1;min-inline-size:0;font-size:var(--ayy-text-xs)\">Table column reordering</div><span class=\"ayy-badge ayy-badge--info\">feature</span></li></ul></div><div style=\"display:flex;flex-direction:column;gap:var(--ayy-space-2)\"><div class=\"ayy-spread\"><span style=\"font-weight:var(--ayy-weight-semibold);font-size:var(--ayy-text-sm)\">QA (Features only)</span><span class=\"ayy-muted ayy-small\">1</span></div><ul class=\"ayy-drop-target ayy-sortable\" data-id=\"qa-features\" data-accepts=\"feature\" style=\"min-block-size:12rem\"><li class=\"ayy-draggable ayy-sortable__item\" data-id=\"c-4\" data-type=\"feature\"><button type=\"button\" class=\"ayy-drag-handle\" aria-label=\"Move File upload drop zone\"><svg class=\"ayy-icon\" data-ayy-icon=\"grip-vertical\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M16 6C16 6.55228 15.5523 7 15 7C14.4477 7 14 6.55228 14 6C14 5.44772 14.4477 5 15 5C15.5523 5 16 5.44772 16 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 6C10 6.55228 9.55228 7 9 7C8.44772 7 8 6.55228 8 6C8 5.44772 8.44772 5 9 5C9.55228 5 10 5.44772 10 6Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 18C16 18.5523 15.5523 19 15 19C14.4477 19 14 18.5523 14 18C14 17.4477 14.4477 17 15 17C15.5523 17 16 17.4477 16 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 12C16 12.5523 15.5523 13 15 13C14.4477 13 14 12.5523 14 12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 18C10 18.5523 9.55228 19 9 19C8.44772 19 8 18.5523 8 18C8 17.4477 8.44772 17 9 17C9.55228 17 10 17.4477 10 18Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M10 12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12C8 11.4477 8.44772 11 9 11C9.55228 11 10 11.4477 10 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></button><div style=\"flex:1;min-inline-size:0;font-size:var(--ayy-text-xs)\">File upload drop zone</div><span class=\"ayy-badge ayy-badge--info\">feature</span></li></ul></div></ayy-drag-drop>",
-          "react": "import { useState } from \"react\";\nimport { Badge, DragDropArea, DragHandle, DropTarget, SortableItem, type DragMove } from \"@danitesler/ayywi/react\";\n\ninterface Card {\n  id: string;\n  title: string;\n  type: \"feature\" | \"bug\";\n}\n\ninterface Column {\n  id: string;\n  title: string;\n  accepts?: string;\n  cards: Card[];\n}\n\nconst INITIAL_COLUMNS: Column[] = [\n  {\n    id: \"backlog\",\n    title: \"Backlog\",\n    cards: [\n      { id: \"c-1\", title: \"Add keyboard shortcut recorder\", type: \"feature\" },\n      { id: \"c-2\", title: \"Fix tooltip flicker on hover\", type: \"bug\" },\n    ],\n  },\n  {\n    id: \"in-progress\",\n    title: \"In Progress\",\n    cards: [{ id: \"c-3\", title: \"Table column reordering\", type: \"feature\" }],\n  },\n  {\n    id: \"qa-features\",\n    title: \"QA (Features only)\",\n    accepts: \"feature\",\n    cards: [{ id: \"c-4\", title: \"File upload drop zone\", type: \"feature\" }],\n  },\n];\n\nexport default function Example() {\n  const [columns, setColumns] = useState<Column[]>(INITIAL_COLUMNS);\n\n  const handleMove = ({ fromId, toId, fromIndex, toIndex }: DragMove) => {\n    if (!fromId || !toId) return;\n    setColumns((cols) => {\n      const next = cols.map((c) => ({ ...c, cards: [...c.cards] }));\n      const sourceCol = next.find((c) => c.id === fromId);\n      const targetCol = next.find((c) => c.id === toId);\n      if (!sourceCol || !targetCol) return cols;\n      const [moved] = sourceCol.cards.splice(fromIndex, 1);\n      targetCol.cards.splice(toIndex, 0, moved);\n      return next;\n    });\n  };\n\n  return (\n    <DragDropArea onMove={handleMove} style={{ display: \"grid\", gridTemplateColumns: \"repeat(3, minmax(0, 1fr))\", gap: \"var(--ayy-space-4)\", inlineSize: \"100%\" }}>\n      {columns.map((col) => (\n        <div key={col.id} style={{ display: \"flex\", flexDirection: \"column\", gap: \"var(--ayy-space-2)\" }}>\n          <div className=\"ayy-spread\">\n            <span style={{ fontWeight: \"var(--ayy-weight-semibold)\", fontSize: \"var(--ayy-text-sm)\" }}>{col.title}</span>\n            <span className=\"ayy-muted ayy-small\">{col.cards.length}</span>\n          </div>\n          <DropTarget data-id={col.id} data-accepts={col.accepts} style={{ minBlockSize: \"12rem\" }}>\n            {col.cards.map((card) => (\n              <SortableItem key={card.id} data-id={card.id} data-type={card.type}>\n                <DragHandle aria-label={`Move ${card.title}`} />\n                <div style={{ flex: 1, minInlineSize: 0, fontSize: \"var(--ayy-text-xs)\" }}>\n                  {card.title}\n                </div>\n                <Badge variant={card.type === \"bug\" ? \"destructive\" : \"info\"}>\n                  {card.type}\n                </Badge>\n              </SortableItem>\n            ))}\n          </DropTarget>\n        </div>\n      ))}\n    </DragDropArea>\n  );\n}"
+          "html": "<ayy-drag-drop areas=\".ayy-drop-target\"><div class=\"ayy-board\" aria-label=\"Work board\"><section class=\"ayy-board__column\" aria-labelledby=\"_R_1_\"><header class=\"ayy-board__header\"><h3 class=\"ayy-board__title\" id=\"_R_1_\">Backlog</h3><span class=\"ayy-board__count\">2</span></header><ul class=\"ayy-drop-target ayy-sortable ayy-board__cards\" data-id=\"backlog\" aria-labelledby=\"_R_1_\"><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-1\" data-type=\"feature\" tabindex=\"0\"><span>Add keyboard shortcut recorder</span><span class=\"ayy-badge ayy-badge--info\">feature</span></li><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-2\" data-type=\"bug\" tabindex=\"0\"><span>Fix tooltip flicker on hover</span><span class=\"ayy-badge ayy-badge--destructive\">bug</span></li></ul></section><section class=\"ayy-board__column\" aria-labelledby=\"_R_2_\"><header class=\"ayy-board__header\"><h3 class=\"ayy-board__title\" id=\"_R_2_\">In Progress</h3><span class=\"ayy-board__count\">1</span></header><ul class=\"ayy-drop-target ayy-sortable ayy-board__cards\" data-id=\"in-progress\" aria-labelledby=\"_R_2_\"><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-3\" data-type=\"feature\" tabindex=\"0\"><span>Table column reordering</span><span class=\"ayy-badge ayy-badge--info\">feature</span></li></ul></section><section class=\"ayy-board__column\" aria-labelledby=\"_R_3_\"><header class=\"ayy-board__header\"><h3 class=\"ayy-board__title\" id=\"_R_3_\">QA (Features only)</h3><span class=\"ayy-board__count\">1</span></header><ul class=\"ayy-drop-target ayy-sortable ayy-board__cards\" data-id=\"qa-features\" data-accepts=\"feature\" aria-labelledby=\"_R_3_\"><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-4\" data-type=\"feature\" tabindex=\"0\"><span>File upload drop zone</span><span class=\"ayy-badge ayy-badge--info\">feature</span></li></ul></section></div></ayy-drag-drop>",
+          "react": "import { useState } from \"react\";\nimport { Badge, Board, BoardCard, BoardColumn, type DragMove } from \"@danitesler/ayywi/react\";\n\ninterface Card {\n  id: string;\n  title: string;\n  type: \"feature\" | \"bug\";\n}\n\ninterface Column {\n  id: string;\n  title: string;\n  accepts?: string;\n  cards: Card[];\n}\n\nconst INITIAL_COLUMNS: Column[] = [\n  {\n    id: \"backlog\",\n    title: \"Backlog\",\n    cards: [\n      { id: \"c-1\", title: \"Add keyboard shortcut recorder\", type: \"feature\" },\n      { id: \"c-2\", title: \"Fix tooltip flicker on hover\", type: \"bug\" },\n    ],\n  },\n  {\n    id: \"in-progress\",\n    title: \"In Progress\",\n    cards: [{ id: \"c-3\", title: \"Table column reordering\", type: \"feature\" }],\n  },\n  {\n    id: \"qa-features\",\n    title: \"QA (Features only)\",\n    accepts: \"feature\",\n    cards: [{ id: \"c-4\", title: \"File upload drop zone\", type: \"feature\" }],\n  },\n];\n\nexport default function Example() {\n  const [columns, setColumns] = useState<Column[]>(INITIAL_COLUMNS);\n\n  const handleMove = ({ fromId, toId, fromIndex, toIndex }: DragMove) => {\n    if (!fromId || !toId) return;\n    setColumns((cols) => {\n      const next = cols.map((c) => ({ ...c, cards: [...c.cards] }));\n      const sourceCol = next.find((c) => c.id === fromId);\n      const targetCol = next.find((c) => c.id === toId);\n      if (!sourceCol || !targetCol) return cols;\n      const [moved] = sourceCol.cards.splice(fromIndex, 1);\n      targetCol.cards.splice(toIndex, 0, moved);\n      return next;\n    });\n  };\n\n  return (\n    <Board onMove={handleMove} aria-label=\"Work board\">\n      {columns.map((col) => (\n        <BoardColumn key={col.id} id={col.id} title={col.title} count={col.cards.length} accepts={col.accepts}>\n          {col.cards.map((card) => (\n            <BoardCard key={card.id} id={card.id} type={card.type}>\n              <span>{card.title}</span>\n              <Badge variant={card.type === \"bug\" ? \"destructive\" : \"info\"}>{card.type}</Badge>\n            </BoardCard>\n          ))}\n        </BoardColumn>\n      ))}\n    </Board>\n  );\n}"
         }
       ],
       "files": {
@@ -15763,6 +15773,131 @@
         "react": "src/components/table/table.react.tsx",
         "meta": "src/components/table/table.meta.json",
         "element": "src/components/table/table.element.ts"
+      }
+    },
+    {
+      "name": "Board",
+      "slug": "board",
+      "category": "Data display",
+      "description": "Cards grouped into columns by status or stage, with optional dragging and adding.",
+      "aka": [
+        "board",
+        "kanban",
+        "kanban-board",
+        "pipeline"
+      ],
+      "classes": {
+        "ayy-board": "Horizontally scrollable board.",
+        "ayy-board__column": "One status or stage.",
+        "ayy-board__header": "Column title, count and actions.",
+        "ayy-board__title": "Column heading.",
+        "ayy-board__count": "Number of cards.",
+        "ayy-board__actions": "Column actions at the inline end.",
+        "ayy-board__cards": "Scrollable sortable card list.",
+        "ayy-board__card": "Interactive sortable card.",
+        "ayy-board__empty": "Empty column message.",
+        "ayy-board__add": "Add card button."
+      },
+      "variants": {},
+      "states": {
+        "default": {
+          "looks": "Columns with headings, counts and cards."
+        },
+        "hover": {
+          "when": "Hover a card",
+          "looks": "Card's interactive hover treatment."
+        },
+        "pressed": {
+          "when": "Press a card",
+          "looks": "Card and Drag and drop provide the interaction feedback."
+        },
+        "focus": {
+          "when": "Focus a card or button",
+          "looks": "The control has its focus ring."
+        },
+        "disabled": {
+          "none": "Disable an action or use aria-disabled on a draggable item."
+        },
+        "selected": {
+          "when": "selected on BoardCard",
+          "looks": "Card uses the featured treatment and aria-current."
+        },
+        "error": {
+          "none": "Show an Alert or inline error near the board."
+        },
+        "loading": {
+          "none": "Show Skeleton cards in the column."
+        },
+        "dragging": {
+          "when": "A card is dragged",
+          "looks": "Drag and drop marks the card, targets and drop edge."
+        }
+      },
+      "sizes": {
+        "density": "Controls follow density and size scope.",
+        "width": "Columns use --ayy-board-column-width (17rem by default); the board scrolls inline."
+      },
+      "js": "boardClass({ className? }); boardColumnClass, boardHeaderClass, boardTitleClass, boardCountClass, boardActionsClass, boardCardsClass, boardCardClass, boardEmptyClass, boardAddClass.",
+      "react": {
+        "import": "import { Board, BoardColumn, BoardCard } from \"@danitesler/ayywi/react\";",
+        "components": {
+          "Board": {
+            "renders": "div.ayy-board, optionally a DragDropArea",
+            "props": {
+              "onMove": "(move: DragMove) => void — update card state",
+              "accepts": "(item, area) => boolean — optional drop rule"
+            }
+          },
+          "BoardColumn": {
+            "renders": "section with heading and DropTarget",
+            "props": {
+              "id": "string — column ID",
+              "title": "ReactNode — heading",
+              "count": "number — card count",
+              "icon": "ReactNode — optional icon",
+              "actions": "ReactNode — column actions",
+              "emptyText": "ReactNode — empty message",
+              "accepts": "string — accepted card types",
+              "onAdd": "() => void — show add button",
+              "addLabel": "string — add button label",
+              "footer": "ReactNode — replaces add button"
+            }
+          },
+          "BoardCard": {
+            "renders": "li.ayy-card.ayy-sortable__item",
+            "props": {
+              "id": "string — card ID",
+              "selected": "boolean — featured card",
+              "type": "string — type checked by drop targets"
+            }
+          }
+        }
+      },
+      "a11y": [
+        "Label the board and each column; cards are focusable.",
+        "Alt+arrow keys move cards along and across columns; Drag and drop announces moves."
+      ],
+      "do": [
+        "Use a board for cards grouped into columns by status or stage.",
+        "Update the controlled card lists in onMove and provide stable IDs."
+      ],
+      "dont": [
+        "Don't use a board for a simple list — use List or Table."
+      ],
+      "examples": [
+        {
+          "id": "release",
+          "title": "Release board",
+          "html": "<ayy-drag-drop areas=\".ayy-drop-target\"><div class=\"ayy-board\" aria-label=\"Release board\"><section class=\"ayy-board__column\" aria-labelledby=\"_R_1_\"><header class=\"ayy-board__header\"><h3 class=\"ayy-board__title\" id=\"_R_1_\">To do</h3><span class=\"ayy-board__count\">3</span></header><ul class=\"ayy-drop-target ayy-sortable ayy-board__cards\" data-id=\"todo\" aria-labelledby=\"_R_1_\"><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-1\" tabindex=\"0\"><span>Write release notes</span><span class=\"ayy-badge ayy-badge--muted\">Docs</span></li><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-2\" tabindex=\"0\"><span>Fix tooltip flicker</span><span class=\"ayy-badge ayy-badge--muted\">Bug</span></li><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-3\" tabindex=\"0\"><span>Update screenshots</span><span class=\"ayy-badge ayy-badge--muted\">Docs</span></li></ul><button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-board__add\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Add card</button></section><section class=\"ayy-board__column\" aria-labelledby=\"_R_2_\"><header class=\"ayy-board__header\"><h3 class=\"ayy-board__title\" id=\"_R_2_\">In progress</h3><span class=\"ayy-board__count\">1</span></header><ul class=\"ayy-drop-target ayy-sortable ayy-board__cards\" data-id=\"doing\" aria-labelledby=\"_R_2_\"><li class=\"ayy-draggable ayy-sortable__item ayy-card ayy-card--interactive ayy-board__card\" data-id=\"c-4\" tabindex=\"0\"><span>Table column reordering</span><span class=\"ayy-badge ayy-badge--muted\">Feature</span></li></ul><button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-board__add\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Add card</button></section><section class=\"ayy-board__column\" aria-labelledby=\"_R_3_\"><header class=\"ayy-board__header\"><h3 class=\"ayy-board__title\" id=\"_R_3_\">Done</h3><span class=\"ayy-board__count\">0</span></header><ul class=\"ayy-drop-target ayy-sortable ayy-board__cards\" data-id=\"done\" aria-labelledby=\"_R_3_\"><li class=\"ayy-board__empty\">Drop cards here</li></ul><button type=\"button\" class=\"ayy-button ayy-button--ghost ayy-board__add\"><svg class=\"ayy-icon\" data-ayy-icon=\"plus\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12 4V20M20 12H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg>Add card</button></section></div></ayy-drag-drop>",
+          "react": "import { useState } from \"react\";\nimport { Badge, Board, BoardCard, BoardColumn, type DragMove } from \"@danitesler/ayywi/react\";\n\ninterface Card { id: string; title: string; tag: string }\ninterface Column { id: string; title: string; cards: Card[] }\nconst initial: Column[] = [\n  { id: \"todo\", title: \"To do\", cards: [{ id: \"c-1\", title: \"Write release notes\", tag: \"Docs\" }, { id: \"c-2\", title: \"Fix tooltip flicker\", tag: \"Bug\" }, { id: \"c-3\", title: \"Update screenshots\", tag: \"Docs\" }] },\n  { id: \"doing\", title: \"In progress\", cards: [{ id: \"c-4\", title: \"Table column reordering\", tag: \"Feature\" }] },\n  { id: \"done\", title: \"Done\", cards: [] },\n];\nexport default function Example() {\n  const [columns, setColumns] = useState(initial);\n  const [nextId, setNextId] = useState(1);\n  const move = ({ fromId, toId, fromIndex, toIndex }: DragMove) => setColumns((previous) => {\n    const next = previous.map((column) => ({ ...column, cards: [...column.cards] }));\n    const from = next.find((column) => column.id === fromId);\n    const to = next.find((column) => column.id === toId);\n    if (!from || !to) return previous;\n    const [card] = from.cards.splice(fromIndex, 1);\n    to.cards.splice(toIndex, 0, card);\n    return next;\n  });\n  const add = (id: string) => {\n    setColumns((previous) => previous.map((column) => column.id === id ? { ...column, cards: [...column.cards, { id: `new-${nextId}`, title: \"New card\", tag: \"Feature\" }] } : column));\n    setNextId((n) => n + 1);\n  };\n  return <Board aria-label=\"Release board\" onMove={move}>{columns.map((column) => <BoardColumn key={column.id} id={column.id} title={column.title} count={column.cards.length} emptyText=\"Drop cards here\" onAdd={() => add(column.id)}>{column.cards.map((card) => <BoardCard key={card.id} id={card.id}><span>{card.title}</span><Badge variant=\"muted\">{card.tag}</Badge></BoardCard>)}</BoardColumn>)}</Board>;\n}"
+        }
+      ],
+      "family": "data-views",
+      "files": {
+        "css": "src/components/board/board.css",
+        "js": "src/components/board/board.ts",
+        "react": "src/components/board/board.react.tsx",
+        "meta": "src/components/board/board.meta.json"
       }
     },
     {
